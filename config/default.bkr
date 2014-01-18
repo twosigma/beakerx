@@ -1,0 +1,22 @@
+/* default notebook.  slash-star comments are supported but not double-slash.
+ * triple quotes define multi-line string constants.
+ */
+{
+    "beaker":"1",
+    "evaluators": [
+        {"name":"Html","plugin":"./plugin/evaluator/html.js","shellID":null},
+        {"name":"Latex","plugin":"./plugin/evaluator/latex.js","shellID":null}
+    ],
+    "cells":[
+        {"id":"root","class":["notebook","container"]},
+        {"id":"section001", "class":["section","container"], "title":"Hello Beaker","collapsed":false},
+        {"id":"code001","class":["code"],"evaluator":"Html","input":{"body":""},"output":{}}
+    ],
+    "tagMap":{
+        "root":["section001"],
+        "section001":["code001"]
+    },
+    "tagMap2":{
+        "initialization":[]
+    }
+}

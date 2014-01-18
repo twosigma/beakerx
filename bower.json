@@ -1,0 +1,19 @@
+{
+    "name": "beaker",
+    "version": "0.0.0",
+    "private": true,
+    "dependencies": {
+        "jquery": "2.0.3",
+        "angular": "1.2.6",
+        "angular-route": "1.2.6",
+        "angular-animate": "1.2.6",
+        "d3": "3.3.9",
+        "underscore": "1.5.2",
+        "underscore.string": "2.3.3",
+        "codemirror": "3.19.0",
+        "q": "0.9.7",
+        "angular-bootstrap": "0.3.0",
+        "bootstrap": "2.3.2",
+        "font-awesome": "4.0.3"
+    }
+}

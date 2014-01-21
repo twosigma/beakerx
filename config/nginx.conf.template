@@ -1,0 +1,127 @@
+#!/usr/bin/python
+#
+# Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import getpass
+import json
+import os
+import socket
+import sys
+import time
+
+user = getpass.getuser()
+host = socket.gethostname()
+
+dest_dir = sys.argv[1]
+port_base = int(sys.argv[2])
+install_dir = sys.argv[3]
+nginx_dir = sys.argv[5]
+static_dir = sys.argv[6]
+extra_rules = sys.argv[7]
+
+port_main    = port_base
+port_clear   = port_base + 1 # unencrypted
+port_beaker  = port_base + 2 # java/com/twosigma/beaker/module/WebServerModule.java:53
+
+os.system("mkdir -p " + dest_dir + "/conf")
+os.system("mkdir -p " + dest_dir + "/logs")
+os.system("rm -f " + dest_dir + "/conf/mime.types " + dest_dir + "/html")
+os.system("ln -s " + nginx_dir + "/conf/mime.types " + dest_dir + "/conf/mime.types")
+os.system("ln -s " + static_dir + " " + dest_dir + "/html")
+
+dest = open(dest_dir + "/conf/nginx.conf", 'w')
+
+substitutions = {"user":user, "host":host,
+                 "install_dir": install_dir,
+                 "dest_dir": dest_dir,
+                 "port_main":port_main,
+                 "port_beaker":port_beaker,
+                 "port_clear":port_clear
+                 }
+
+plugin_section = ''
+plugins_object = json.loads(open(dest_dir + "/plugins").read())
+
+for p in plugins_object:
+    plugin = plugins_object[p]
+    substitutions['port'] = port_base + plugin['portOffset']
+    plugin_section = plugin_section + (plugin['nginx'] % substitutions)
+
+substitutions["extra_rules"] = extra_rules % substitutions
+substitutions["plugin_section"] = plugin_section
+
+template = """
+worker_processes  1;
+daemon off;
+
+#debug level logging is quite voluminous
+#error_log  stderr  debug;
+
+pid nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    types_hash_max_size 2048;
+
+
+#    turn this on for debugging
+#    access_log access.log;
+    access_log off;
+
+    sendfile        on;
+
+    # i tried setting to 0 and removing the keepalive timer from the ipython client.
+    # but it did not fix the problem.
+    #keepalive_timeout  0;
+    keepalive_timeout  1000;
+    proxy_read_timeout 1000000;
+
+    server {
+
+# Exactly one of the two following sections should be active.
+
+# https
+#        listen       %(port_main)s ssl;
+#        server_name  localhost;
+#        ssl_certificate %(host)s.cer;
+#        ssl_certificate_key %(host)s.key;
+         client_max_body_size 100M;
+# kerberos
+        listen       %(port_clear)s;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        # html directory is missing now XXX
+        # this is also a problem for favicon XXX
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+
+	location /beaker/ {
+	    proxy_pass http://127.0.0.1:%(port_beaker)s/;
+        }
+        %(plugin_section)s
+        %(extra_rules)s
+    }
+}
+"""
+
+dest.write(template % substitutions)

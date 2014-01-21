@@ -175,7 +175,9 @@ public class StartProcessRest
         preStdoutGobbler.start();
         preproc.waitFor();
 
-        String command = nginxDir + "/sbin/nginx -p " + dir;
+        // String command = nginxDir + "/sbin/nginx -p " + dir;
+	// XXX Mac only
+        String command = "nginx -p " + dir + " -c " + dir + "/conf/nginx.conf";
         Process proc = Runtime.getRuntime().exec(command);
         StreamGobbler errorGobbler = new StreamGobbler(_OutputLogService, proc.getErrorStream(), "nginx", "stderr", false, null);
         errorGobbler.start();

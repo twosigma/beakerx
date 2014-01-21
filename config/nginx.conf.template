@@ -76,7 +76,8 @@ events {
 }
 
 http {
-    include       mime.types;
+# XXX mac only
+    include       /usr/local/etc/nginx/mime.types;
     default_type  application/octet-stream;
     types_hash_max_size 2048;
 

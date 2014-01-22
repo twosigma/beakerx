@@ -1,1 +1,204 @@
-{"beaker":"1","evaluators":[{"name":"Html","plugin":"./plugin/evaluator/html.js","shellID":null},{"name":"Latex","plugin":"./plugin/evaluator/latex.js","shellID":null},{"name":"Python","plugin":"IPython","shellID":"35C574C819E94C0A809C6255A98F8D58","imports":"","supplementalClassPath":""}],"cells":[{"id":"root","class":["notebook","container"]},{"id":"section001","class":["section","container"],"title":"Beaker Tutorial","collapsed":false},{"id":"markdownEnGyEN","class":["markdown"],"body":"#Overview\n\nBeaker is a polyglot lab notebook for data scientists. You can transition between different evaluation and markup languages during your data analysis to produce a document that captures your whole process to share with others or keep for your own reference.\n\nThis text is written in Markdown. The current list of markup languages is:\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n\n","mode":"edit"},{"id":"code001","class":["code"],"evaluator":"Html","input":{"body":""},"output":{}}],"tagMap":{"root":["section001"],"section001":["markdownEnGyEN","code001"]},"tagMap2":{"initialization":[],"Html":["code001"]}}
+{
+    "beaker": "1",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "./plugin/evaluator/html.js",
+            "shellID": null
+        },
+        {
+            "name": "Latex",
+            "plugin": "./plugin/evaluator/latex.js",
+            "shellID": null
+        },
+        {
+            "name": "Python",
+            "plugin": "IPython",
+            "shellID": "35C574C819E94C0A809C6255A98F8D58",
+            "imports": "",
+            "supplementalClassPath": ""
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "shellID": null,
+            "jsSetting2": "",
+            "jsSetting1": ""
+        }
+    ],
+    "cells": [
+        {
+            "id": "root",
+            "class": [
+                "notebook",
+                "container"
+            ]
+        },
+        {
+            "id": "section001",
+            "class": [
+                "section",
+                "container"
+            ],
+            "title": "Beaker Tutorial",
+            "collapsed": false
+        },
+        {
+            "id": "markdownEnGyEN",
+            "class": [
+                "markdown"
+            ],
+            "body": "#Overview\n\nBeaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.\n\nBeaker content is organized into \"cells.\" This cell is written using Markdown. To edit the content, move your mouse over the cell and click the 'eye' icon.\n\n##Text\n\nThere are several options for adding text to your notebook:\n\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n##Code\n\nThere are also many available programming languages:\n\n* Python\n* JavaScript\n\nWe are planning to add support very soon for:\n\n* R\n* Groovy\n* Scala\n\n##Plugins\n\nAll of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.\n\n\n",
+            "mode": "preview"
+        },
+        {
+            "id": "Section8EWbZ9",
+            "class": [
+                "section",
+                "container"
+            ],
+            "title": "Running code",
+            "collapsed": false
+        },
+        {
+            "id": "markdownJjF1as",
+            "class": [
+                "markdown"
+            ],
+            "body": "The pink cell below contains some JavaScript code. To run the code, move your cursor into the cell and press CTRL-ENTER.",
+            "mode": "preview"
+        },
+        {
+            "id": "codecWlPMc",
+            "class": [
+                "code"
+            ],
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "factorial "
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "markdownCInWzc",
+            "class": [
+                "markdown"
+            ],
+            "body": "And here's another cell of JavaScript code.",
+            "mode": "preview"
+        },
+        {
+            "id": "Section2enUlh",
+            "class": [
+                "section",
+                "container"
+            ],
+            "title": "Working with cells",
+            "collapsed": false
+        },
+        {
+            "id": "markdownDfaAFR",
+            "class": [
+                "markdown"
+            ],
+            "body": "Move your cursor to the area below this text. You'll see a bar appear with the text 'insert cell.' Click on that bar and add a new JavaScript cell.\n\nClick into the new cell and press CTRL-SHIFT-A. This will create a new cell of the same type.\n\n",
+            "mode": "preview"
+        },
+        {
+            "id": "markdownB58chY",
+            "class": [
+                "markdown"
+            ],
+            "body": "Move your cursor into one of our JavaScript cells. Note that using the UP and DOWN keys will move your cursor between the different code cells. \n\nPressing CTRL-SHIFT-E within a code cell will allow you to change the cell's language.\n\nTo the right of the cells, you'll see a hierarchical representation of brackets. Clicking on the brackets will bring up menus that let you do everything from change languages to hiding output to deleting cells. Explore the options available in these menus.",
+            "mode": "preview"
+        },
+        {
+            "id": "SectionIQvToW",
+            "class": [
+                "section",
+                "container"
+            ],
+            "title": "Adding cells",
+            "collapsed": false
+        },
+        {
+            "id": "SectionkfKSFY",
+            "class": [
+                "section",
+                "container"
+            ],
+            "title": "Manipulating cells",
+            "collapsed": false
+        },
+        {
+            "id": "SectionEt3gzB",
+            "class": [
+                "section",
+                "container"
+            ],
+            "title": "Section cells",
+            "collapsed": false
+        },
+        {
+            "id": "markdownso9XEe",
+            "class": [
+                "markdown"
+            ],
+            "body": "Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any type of cell including other sections. Try clicking the +/- buttons to get a feel for how the hierarchy works and how it corresponds to the bracket menus on the right.\n\nTry adding and removing some section cells of different levels.",
+            "mode": "preview"
+        },
+        {
+            "id": "code001",
+            "class": [
+                "code"
+            ],
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "var factorial = 1;\nfor(var i = 2; i <  5; i++) {\n  factorial *= i;\n}\nfactorial"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        }
+    ],
+    "tagMap": {
+        "root": [
+            "section001",
+            "Section8EWbZ9",
+            "Section2enUlh"
+        ],
+        "section001": [
+            "markdownEnGyEN"
+        ],
+        "Section8EWbZ9": [
+            "markdownJjF1as",
+            "code001",
+            "markdownCInWzc",
+            "codecWlPMc"
+        ],
+        "Section2enUlh": [
+            "SectionIQvToW",
+            "SectionkfKSFY",
+            "SectionEt3gzB"
+        ],
+        "SectionIQvToW": [
+            "markdownDfaAFR"
+        ],
+        "SectionkfKSFY": [
+            "markdownB58chY"
+        ],
+        "SectionEt3gzB": [
+            "markdownso9XEe"
+        ]
+    },
+    "tagMap2": {
+        "initialization": [],
+        "Html": [],
+        "JavaScript": [
+            "code001",
+            "codecWlPMc"
+        ]
+    }
+}

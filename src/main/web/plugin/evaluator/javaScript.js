@@ -161,6 +161,7 @@
             return Q.fcall(function () {
                 console.log("Perform evaluation. code:", code);
                 modelOutput.result = "" + eval(code);
+                bkHelper.refreshRootScope();
             });
         },
         autocomplete2: function (editor, options, cb) {

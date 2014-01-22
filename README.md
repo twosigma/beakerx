@@ -43,3 +43,43 @@ Beaker changes all of that. With its polyglot nature, hierarchical section forma
 
 Beaker was built as an internal Two Sigma project but is now being released to the public under the Apache 2.0 license. Is currently available to contributors via a private GitHub repo and will be made public in the near future.
  
+#Running Beaker
+
+We've only tried running Beaker on Mac OS X. We'll be working on support for Linux and Windows soon.
+
+##Install dependencies
+
+###[Homebrew](http://brew.sh/)
+
+    ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+    
+###Gradle
+
+    brew install gradle
+    
+###NPM
+
+    brew install npm
+    
+###Nginx
+
+    brew install nginx
+    
+##Clone this repo
+
+    git clone https://github.com/twosigma/beaker-notebook.git
+    
+##Build and run Beaker
+
+    cd beaker-notebook
+    gradle run
+    
+##Connect your browser
+
+You will see a message like this:
+
+    Connect to http://jchendy.mbpjchendy.local:8801/beaker/
+    
+Replace the hostname with localhost and paste it into your browser. Connect to http://localhost:8801/beaker/
+
+

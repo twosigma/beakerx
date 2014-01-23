@@ -20,7 +20,7 @@
  */
 (function () {
     'use strict';
-    var url = "./tsplugin/evaluator/ipython.js";
+    var url = "./plugin/evaluator/ipython.js";
     var PLUGIN_NAME = "IPython";
     var COMMAND = "ipythonPlugin";
     var kernels = {};

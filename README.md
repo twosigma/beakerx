@@ -45,25 +45,21 @@ Beaker was built as an internal Two Sigma project but is now being released to t
  
 #Running Beaker
 
-We've only tried running Beaker on Mac OS X. We'll be working on support for Linux and Windows soon.
+We've only tried running Beaker on Mac OS X. We'll be working on support for Linux soon.
 
 ##Install dependencies
+
+###XCode
+
+    https://itunes.apple.com/us/app/xcode/id497799835
 
 ###[Homebrew](http://brew.sh/)
 
     ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
     
-###Gradle
+###Gradle, NPM, and Nginx
 
-    brew install gradle
-    
-###NPM
-
-    brew install npm
-    
-###Nginx
-
-    brew install nginx
+    brew install gradle npm nginx
     
 ##Clone this repo
 

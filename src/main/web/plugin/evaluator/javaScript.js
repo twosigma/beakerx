@@ -159,8 +159,15 @@
         background: "#FFE0F0",
         evaluate: function (code, modelOutput) {
             return Q.fcall(function () {
-                console.log("Perform evaluation. code:", code);
-                modelOutput.result = "" + eval(code);
+                try {
+                    modelOutput.result = "" + eval(code);
+                } catch (err) {
+                    modelOutput.result = {
+                        type: "BeakerDisplay",
+                        innertype: "Error",
+                        object: "" + err
+                    };
+                }
                 bkHelper.refreshRootScope();
             });
         },

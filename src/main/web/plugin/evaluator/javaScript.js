@@ -162,7 +162,11 @@
                 try {
                     modelOutput.result = "" + eval(code);
                 } catch (err) {
-                    modelOutput.result = "" + err;
+                    modelOutput.result = {
+                        type: "BeakerDisplay",
+                        innertype: "Error",
+                        object: "" + err
+                    };
                 }
                 bkHelper.refreshRootScope();
             });

@@ -160,7 +160,11 @@
         evaluate: function (code, modelOutput) {
             return Q.fcall(function () {
                 console.log("Perform evaluation. code:", code);
-                modelOutput.result = "" + eval(code);
+		try {
+		    modelOutput.result = "" + eval(code);
+		} catch (err) {
+		    modelOutput.result = "" + err;
+		}
                 bkHelper.refreshRootScope();
             });
         },

@@ -52,9 +52,7 @@ public class Main {
         final StartProcessRest processStarter = Init.injector.getInstance(StartProcessRest.class);
         String beakerCore = Global.getBeakerCoreDirectory();
         processStarter.readPluginConfig(Global.getConfigDir() + "/plugins");
-        processStarter.setPluginLocation("R", beakerCore + "/../jvm/bin");
-        processStarter.setPluginLocation("Scala", beakerCore + "/../jvm/bin");
-        processStarter.setPluginLocation("MATLAB", beakerCore + "/../jvm/bin");
+        processStarter.setPluginLocation("IPython", "src/main/sh");
 
         Init.run(args);
 

@@ -207,7 +207,7 @@
             var nginx =
                 "location /ipython/kernels/ {proxy_pass http://127.0.0.1:%(port)s/kernels;}" +
                     "location ~ /ipython/kernels/[0-9a-f-]+/  {" +
-                    "auth_gss off; rewrite ^/ipython/(.*)$ /$1 break; " +
+                    "rewrite ^/ipython/(.*)$ /$1 break; " +
                     "proxy_pass http://127.0.0.1:%(port)s; " +
                     "proxy_http_version 1.1; " +
                     "proxy_set_header Upgrade $http_upgrade; " +

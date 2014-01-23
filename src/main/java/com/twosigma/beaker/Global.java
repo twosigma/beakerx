@@ -47,7 +47,7 @@ public class Global {
         return getBeakerCoreDirectory() + "/config";
     }
     public static String getNginxPath() {
-        return "nginx";
+        return "";
     }
     public static boolean getDisablePluginsLaunching() {
         return !System.getProperty("twosigma.beaker.rest.startprocess.disablePluginLaunching", "false").equals("false");

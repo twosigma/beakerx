@@ -57,17 +57,9 @@ We've only tried running Beaker on Mac OS X. We'll be working on support for Lin
 
     ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
     
-###Gradle
+###Gradle, NPM, and Nginx
 
-    brew install gradle
-    
-###NPM
-
-    brew install npm
-    
-###Nginx
-
-    brew install nginx
+    brew install gradle npm nginx
     
 ##Clone this repo
 

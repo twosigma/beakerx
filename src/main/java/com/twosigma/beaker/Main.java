@@ -53,6 +53,7 @@ public class Main {
         String beakerCore = Global.getBeakerCoreDirectory();
         processStarter.readPluginConfig(Global.getConfigDir() + "/plugins");
         processStarter.setPluginLocation("IPython", "src/main/sh");
+        processStarter.setPluginLocation("Julia", "src/main/sh");
 
         Init.run(args);
 

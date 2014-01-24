@@ -37,12 +37,14 @@
             ) {
             var nameToUrl = {// for known plugins, so we can refer to the plugin with either its name or URL
                 "IPython": "./plugin/evaluator/ipython.js",
+                "Julia": "./plugin/evaluator/julia.js",
                 "JavaScript": "./plugin/evaluator/javaScript.js",
                 "Latex": "./plugin/evaluator/latex.js",
                 "Html": "./plugin/evaluator/html.js"
             };
             var knownEvaluators = [
                 {name: "IPython"},
+                {name: "Julia"},
                 {name: "Html"},
                 {name: "JavaScript"},
                 {name: "Latex"}

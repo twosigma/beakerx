@@ -20,13 +20,13 @@
 (function () {
     'use strict';
     var menuItems = [
-//        {
-//            name: "Tutorial notebook",
-//            action: function () {
-//                bkHelper.openURI("file:config/tutorial.bkr");
-//            },
-//            tooltip: "Open the tutorial notebook"
-//        },
+        {
+            name: "Tutorial notebook",
+            action: function () {
+                bkHelper.openURI("file:config/tutorial.bkr");
+            },
+            tooltip: "Open the tutorial notebook"
+        },
         {
             name: "Keyboard shortcuts...",
             action: function () {

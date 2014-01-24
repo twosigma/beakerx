@@ -146,7 +146,7 @@
                             object: (value.ename === "KeyboardInterrupt") ? "Interrupted" : [value.evalue, trace]
                         };
                     } else if (type === "stream") {
-                        var json = JSON.stringify({evaluator: "ipython",
+                        var json = JSON.stringify({evaluator: "julia",
                             type: (type === "stream" ? "text" : "html"),
                             line: value.data});
                         $.cometd.publish("/service/outputlog/put", json);

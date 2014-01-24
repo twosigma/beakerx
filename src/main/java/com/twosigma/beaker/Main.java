@@ -52,7 +52,7 @@ public class Main {
         final StartProcessRest processStarter = Init.injector.getInstance(StartProcessRest.class);
         String beakerCore = Global.getBeakerCoreDirectory();
         processStarter.readPluginConfig(Global.getConfigDir() + "/plugins");
-        processStarter.setPluginLocation("IPython", "src/main/sh");
+        processStarter.setPluginLocation("Python", "src/main/sh");
         processStarter.setPluginLocation("Julia", "src/main/sh");
 
         Init.run(args);

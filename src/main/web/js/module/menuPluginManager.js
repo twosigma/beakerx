@@ -182,11 +182,9 @@
                         console.log("error: could not find menu item " + parent);
                 },
                 clearItem: function (pname) {
-
                     var parent = _.find(_.values(menus), function (it) {
                         return it.name === pname;
                     });
-                    console.log(parent, pname, parent === undefined);
 
                     if (parent) {
                         parent.items = [];

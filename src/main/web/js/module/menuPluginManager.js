@@ -38,6 +38,7 @@
                 "Debug": "./plugin/menu/debug.js",
                 "Help": "./plugin/menu/help.js"
             };
+            var DEFAULT_PRIORITY = 0;
             var menus = {};
             var plugins = [];
             var _menuIndex = 0;
@@ -73,41 +74,67 @@
                     var pluginObj = _.find(plugins, function (it) {
                         return it.url === url;
                     });
+                    var addItem = function (existingItems, newItem) {
+                        // check if an entry with same name already exist
+                        var existing = _(existingItems).find(function (it) {
+                            return it.name === newItem.name;
+                        });
+
+                        if (existing) {
+                            existing.priority = existing.priority ? existing.priority : DEFAULT_PRIORITY;
+                            newItem.priority = newItem.priority ? newItem.priority : DEFAULT_PRIORITY;
+                            if (existing.priority <= newItem.priority) {
+                                // replace in place
+                                existingItems.splice(existingItems.indexOf(existing), 1, newItem)
+                            } else {
+                                // ignore and warn
+                                console.warn("ignoring menu item " + newItem.name + "because priority="
+                                    + newItem.priority + "is smaller than existing (" + existing.priority + ")");
+                            }
+                        } else {
+                            existingItems = existingItems.push(newItem);
+                        }
+                    };
                     var add = function (toBeAdded) {
-                        if (toBeAdded) {
-                            var parentMenu = _.find(_.values(menus), function (it) {
-                                return it.name === toBeAdded.parent;
+                        if (!toBeAdded) {
+                            return;
+                        }
+                        var parentMenu = _.find(_.values(menus), function (it) {
+                            return it.name === toBeAdded.parent;
+                        });
+                        if (!parentMenu) {
+                            parentMenu = {
+                                name: toBeAdded.parent,
+                                items: []
+                            };
+                            menus[index + parentMenu.name] = parentMenu;
+                            //console.log("addMenu onReady index", index, "parentMenu", parentMenu.name);
+                        }
+                        if (toBeAdded.submenu) {
+                            var subMenu = _.find(parentMenu.items, function (it) {
+                                return it.name === toBeAdded.submenu;
                             });
-                            if (!parentMenu) {
-                                parentMenu = {
-                                    name: toBeAdded.parent,
+                            if (!subMenu) {
+                                subMenu = {
+                                    name: toBeAdded.submenu,
+                                    type: "submenu",
                                     items: []
                                 };
-                                menus[index + parentMenu.name] = parentMenu;
-                                //console.log("addMenu onReady index", index, "parentMenu", parentMenu.name);
-                            }
-                            if (toBeAdded.submenu) {
-                                var subMenu = _.find(parentMenu.items, function (it) {
-                                    return it.name === toBeAdded.submenu;
-                                });
-                                if (!subMenu) {
-                                    subMenu = {
-                                        name: toBeAdded.submenu,
-                                        type: "submenu",
-                                        items: []
-                                    };
-                                    parentMenu.items.push(subMenu);
-                                } else {
-                                    subMenu.disabled = false;
-                                    subMenu.type = "submenu";
-                                    if (!subMenu.items) {
-                                        subMenu.items = [];
-                                    }
-                                }
-                                subMenu.items = subMenu.items.concat(toBeAdded.items);
+                                parentMenu.items.push(subMenu);
                             } else {
-                                parentMenu.items = parentMenu.items.concat(toBeAdded.items);
+                                subMenu.disabled = false;
+                                subMenu.type = "submenu";
+                                if (!subMenu.items) {
+                                    subMenu.items = [];
+                                }
                             }
+                            toBeAdded.items.forEach(function (item) {
+                                addItem(subMenu.items, item);
+                            });
+                        } else {
+                            toBeAdded.items.forEach(function (item) {
+                                addItem(parentMenu.items, item);
+                            });
                         }
                     };
                     if (!pluginObj) {
@@ -154,10 +181,13 @@
                     } else
                         console.log("error: could not find menu item " + parent);
                 },
-                clearItem: function (parent) {
+                clearItem: function (pname) {
+
                     var parent = _.find(_.values(menus), function (it) {
-                        return it.name === parent;
+                        return it.name === pname;
                     });
+                    console.log(parent, pname, parent === undefined);
+
                     if (parent) {
                         parent.items = [];
                     } else {

@@ -24,4 +24,4 @@ do
     esac
 done
 
-exec ipython notebook --IPKernelApp.pyloab='inline' --NotebookApp.ip=127.0.0.1 --NotebookApp.port=$1 --NotebookApp.open_browser=False
+exec $BEAKER_IPYTHON notebook --pylab inline --IPKernelApp.pyloab='inline' --NotebookApp.ip=127.0.0.1 --NotebookApp.port=$1 --NotebookApp.open_browser=False

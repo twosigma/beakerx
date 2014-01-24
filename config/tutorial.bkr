@@ -13,7 +13,7 @@
         },
         {
             "name": "Python",
-            "plugin": "IPython",
+            "plugin": "Python",
             "shellID": "35C574C819E94C0A809C6255A98F8D58",
             "imports": "",
             "supplementalClassPath": ""

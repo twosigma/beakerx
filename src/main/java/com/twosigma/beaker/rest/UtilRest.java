@@ -17,7 +17,7 @@
 package com.twosigma.beaker.rest;
 
 import com.google.inject.Singleton;
-import com.twosigma.beaker.Global;
+import com.twosigma.beaker.Platform;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -122,7 +122,7 @@ public class UtilRest
             fileName = _defaultNotebook;
         String contents = readFile(fileName);
         if (null == contents) {
-            String installDir = Global.getBeakerCoreDirectory();
+            String installDir = Platform.getBeakerCoreDirectory();
             String defaultDefault = installDir + "/config/default.bkr";
             contents = readFile(defaultDefault);
             if (null == contents) {

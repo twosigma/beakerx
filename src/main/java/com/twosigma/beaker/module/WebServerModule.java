@@ -22,7 +22,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.twosigma.beaker.Global;
+import com.twosigma.beaker.Platform;
 import com.twosigma.beaker.rest.filter.OwnerFilter;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -56,7 +56,7 @@ public class WebServerModule
 
     @Provides @Singleton
     public Server getServer(final Injector injector, Connector connector) {
-        String staticDir = Global.getStaticDir();
+        String staticDir = Platform.getStaticDir();
         Server server = new Server();
         server.addConnector(connector);
         ServletContextHandler servletHandler = new ServletContextHandler();

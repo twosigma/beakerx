@@ -17,7 +17,7 @@
 package com.twosigma.beaker.rest.filter;
 
 import com.google.inject.Singleton;
-import com.twosigma.beaker.Global;
+import com.twosigma.beaker.Platform;
 import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.Filter;
@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 public class OwnerFilter
     implements Filter
 {
-    public static final String USER = Global.getUser();
+    public static final String USER = Platform.getUser();
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)

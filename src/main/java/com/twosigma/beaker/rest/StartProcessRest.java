@@ -17,7 +17,7 @@ package com.twosigma.beaker.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.Global;
+import com.twosigma.beaker.Platform;
 import com.twosigma.beaker.cometd.OutputLogService;
 import com.twosigma.beaker.json.serializer.StringObject;
 import java.io.BufferedReader;
@@ -50,7 +50,7 @@ public class StartProcessRest
     @Inject
     private OutputLogService _OutputLogService;
     private static boolean DISABLE_PLUGIN_LAUNCHING =
-            Global.getDisablePluginsLaunching();
+            Platform.getDisablePluginsLaunching();
     private List<Process> plugins = new ArrayList<Process>();
     private int _portBase;
     private Map<String, List<String>> _args = new HashMap<String, List<String>>();
@@ -160,10 +160,10 @@ public class StartProcessRest
     public void startReverseProxy(int portBase, Boolean useKerberos)
             throws InterruptedException, IOException {
         _portBase = portBase;
-        String installDir = Global.getBeakerCoreDirectory();
-        String nginxDir = Global.getNginxPath();
-        String staticDir = Global.getStaticDir();
-        String configDir = Global.getConfigDir();
+        String installDir = Platform.getBeakerCoreDirectory();
+        String nginxDir = Platform.getNginxPath();
+        String staticDir = Platform.getStaticDir();
+        String configDir = Platform.getConfigDir();
         String dir = _dotDir;
         String[] preCommand = {configDir + "/nginx.conf.template", dir,
             Integer.toString(portBase), installDir, Boolean.toString(useKerberos),

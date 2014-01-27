@@ -18,14 +18,14 @@ package com.twosigma.beaker;
 import com.google.inject.Injector;
 
 /**
- * This is the point of contact for retrieving global settings in code.
+ * This is where platform-specific settings are stored.
  *
  * @author alee
  */
-public class Global {
+public class Platform {
     private static Injector _injector;
 
-    private Global() {
+    private Platform() {
 
     }
     public static void setInjector(Injector ij) {
@@ -54,5 +54,8 @@ public class Global {
     }
     public static int getBeakerPortBase() {
         return 8800;
+    }
+    public static boolean getKerberosDefault() {
+        return false;
     }
 }

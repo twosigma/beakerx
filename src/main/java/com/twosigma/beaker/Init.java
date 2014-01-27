@@ -65,7 +65,7 @@ public class Init {
     static int findPortBase() {
         int width = 10; // currently we use 6
         int tries = 0;
-        int base = Global.getBeakerPortBase();
+        int base = Platform.getBeakerPortBase();
         while (!portRangeAvailable(base, width)) {
             System.out.println("Port range " + base + "-" + (base + width - 1) + " taken, searching...");
             base += width * (int) (1 + Math.random() * 100);
@@ -86,7 +86,7 @@ public class Init {
 
         portBaseString = Integer.toString(portBase);
 
-        Global.setInjector(injector);
+        Platform.setInjector(injector);
 
         final StartProcessRest processStarter = injector.getInstance(StartProcessRest.class);
         final UtilRest utilRest = injector.getInstance(UtilRest.class);
@@ -118,7 +118,7 @@ public class Init {
         final StartProcessRest processStarter = injector.getInstance(StartProcessRest.class);
         final UtilRest utilRest = injector.getInstance(UtilRest.class);
 
-        Boolean useKerberos = true;
+        Boolean useKerberos = Platform.getKerberosDefault();
         Boolean useHttps = false;
         // XXX use some library for parsing args.
         for (int i = 0; i < args.length; i++) {

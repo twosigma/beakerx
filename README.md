@@ -78,4 +78,7 @@ You will see a message like this:
     
 Replace the hostname with localhost and paste it into your browser. Connect to http://localhost:8801/beaker/
 
+##Plugin Languages
+
+Beaker can run a variety of backend languages that must be installed independently.  Currently that means [IPython](http://ipython.org/ipython-doc/stable/install/install.html).  You can also run Julia by installing IPython and [Julia](http://julialang.org/downloads/) and then in a Julia REPL saying Pkg.add("IJulia").
 

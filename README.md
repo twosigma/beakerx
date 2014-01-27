@@ -74,9 +74,9 @@ We've only tried running Beaker on Mac OS X. We'll be working on support for Lin
 
 You will see a message like this:
 
-    Connect to http://jchendy.mbpjchendy.local:8801/beaker/
+    Connect to http://mbpjchendy.local:8801/beaker/
     
-Replace the hostname with localhost and paste it into your browser. Connect to http://localhost:8801/beaker/
+Open that URL in any modern web browser (we primarily use Chrome, but also testing Firefox and Safari).
 
 ##Plugin Languages
 

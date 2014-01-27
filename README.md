@@ -76,7 +76,7 @@ You will see a message like this:
 
     Connect to http://mbpjchendy.local:8801/beaker/
     
-Open that URL in any modern web browser (we primarily use Chrome, but also testing Firefox and Safari).
+Open that URL in any modern web browser (we primarily use Chrome, but also testing Firefox and Safari).  You can also just use http://localhost:8801/beaker.
 
 ##Plugin Languages
 

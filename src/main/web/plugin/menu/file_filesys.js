@@ -109,10 +109,20 @@
         var toAdd = [
             {
                 parent: "File",
+                items: [
+                    {
+                        name: "Open",
+                        autoReduce: true,
+                        items:[]
+                    }]
+            },
+            {
+                parent: "File",
                 submenu: "Open",
                 items: [
                     {
                         name: "Open... (File)",
+                        reducedName: "Open...",
                         tooltip: "Open a file from file system",
                         action: function () {
                             bkHelper.showFileChooser(
@@ -137,10 +147,19 @@
             },
             {
                 parent: "File",
+                items: [
+                    {
+                        name: "Save As",
+                        autoReduce: true
+                    }]
+            },
+            {
+                parent: "File",
                 submenu: "Save As",
                 items: [
                     {
                         name: "Save as... (file)",
+                        reducedName: "Save as...",
                         tooltip: "Save a file from file system",
                         action: function () {
                             var saveAsPath = function (path) {

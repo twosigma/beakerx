@@ -97,7 +97,7 @@
             restrict: 'E',
             template: '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">' +
                 '<li ng-repeat="item in menuItems" ng-class="getItemClass(item)">' +
-                '<a href="#" tabindex="-1" ng-click="item.action()" ng-class="getAClass(item)" eat-click>' +
+                '<a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item)" eat-click>' +
                 '<i class="icon-ok" ng-show="isMenuItemChecked(item)"> </i> ' +
                 '{{getName(item)}}' +
                 '</a>' +
@@ -105,7 +105,7 @@
                 // otherwise there is a gap and you can't hit the submenu. BEAKER-433
                 '<ul class="dropdown-menu">' +
                 '<li ng-repeat="subitem in getSubItems(item)" ng-class="getItemClass(subitem)">' +
-                '<a href="#"  tabindex="-1" ng-click="subitem.action()" ng-class="getAClass(subitem)" title="{{subitem.tooltip}}" eat-click>' +
+                '<a href="#"  tabindex="-1" ng-click="runAction(subitem)" ng-class="getAClass(subitem)" title="{{subitem.tooltip}}" eat-click>' +
                 '<i class="icon-ok" ng-show="isMenuItemChecked(subitem)"> </i> ' +
                 '{{getName(subitem)}}' +
                 '</a>' +
@@ -127,6 +127,14 @@
                     var result = [];
                     if (item.disabled) {
                         result.push("disabled-link");
+                    } else if (item.items && item.items.length <= 1 && item.autoReduce) {
+                        if (item.items.length === 0) {
+                            result.push("disabled-link");
+                        } else if (item.items.length === 1) {
+                            if (item.items[0].disabled) {
+                                result.push("disabled-link");
+                            }
+                        }
                     }
                     return result.join(" ");
                 };
@@ -135,29 +143,49 @@
                     var result = [];
                     if (item.type === "divider") {
                         result.push("divider");
-                    }
-                    if (item.type === "submenu" || item.items) {
-                        result.push("dropdown-submenu");
-                        // Add any extra submenu classes. (e.g. to specify if it should be left or right).
-                        if ($scope.submenuClasses) {
-                            _.each(
-                                $scope.submenuClasses.split(' '),
-                                function (elt) {
-                                    result.push(elt);
-                                }
-                            );
+                    } else if (item.type === "submenu" || item.items) {
+                        if (item.items && item.items.length <= 1 && item.autoReduce) {
+
+                        } else {
+                            result.push("dropdown-submenu");
+                            // Add any extra submenu classes. (e.g. to specify if it should be left or right).
+                            if ($scope.submenuClasses) {
+                                _.each(
+                                    $scope.submenuClasses.split(' '),
+                                    function (elt) {
+                                        result.push(elt);
+                                    }
+                                );
+                            }
                         }
                     }
                     return result.join(" ");
                 };
 
-                $scope.getName = function (item) {
-                    if (_.isFunction(item.name)) {
-                        return item.name();
+                $scope.runAction = function (item) {
+                    console.log("runAction", item);
+                    if (item.items && item.items.length == 1 && item.autoReduce) {
+                        item.items[0].action();
                     } else {
-                        return item.name;
+                        item.action();
                     }
-                    return "";
+                };
+
+                $scope.getName = function (item) {
+                    var name = "";
+                    if (item.items && item.items.length == 1 && item.autoReduce) {
+                        if (item.items[0].reducedName) {
+                            name = item.items[0].reducedName;
+                        } else {
+                            name = item.items[0].name;
+                        }
+                    } else {
+                        name = item.name;
+                    }
+                    if (_.isFunction(name)) {
+                        name = name();
+                    }
+                    return name;
                 };
 
                 $scope.isMenuItemChecked = function (item) {

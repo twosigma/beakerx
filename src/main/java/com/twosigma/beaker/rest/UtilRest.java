@@ -25,8 +25,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -154,7 +156,7 @@ public class UtilRest
     }
     // return list of URLs of plugins (js) for the client to load on startup.
 
-    private List<String> _menuPlugins = new ArrayList<String>();
+    private Set<String> _menuPlugins = new LinkedHashSet<String>();
     
     @POST
     @Path("addMenuPlugin")
@@ -166,11 +168,11 @@ public class UtilRest
     // return list of URLs of plugins (js) for the client to load on startup.
     @GET
     @Path("menuplugins")
-    public List<String> menuPlugins() {
+    public Set<String> menuPlugins() {
         return _menuPlugins;
     }
 
-    private List<String> _controlPanelMenuPlugins = new ArrayList<String>();
+    private Set<String> _controlPanelMenuPlugins = new LinkedHashSet<String>();
     @POST
     @Path("addControlMenuPlugin")
     public void addControlPanelMenuPlugin(
@@ -180,7 +182,7 @@ public class UtilRest
     // return list of URLs of plugins (js) for the client to load on startup.
     @GET
     @Path("controlpanelmenuplugins")
-    public List<String> controlPanelMenuPlugins() {
+    public Set<String> controlPanelMenuPlugins() {
         return _controlPanelMenuPlugins;
     }
 

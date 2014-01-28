@@ -53,11 +53,10 @@
                     return plugins;
                 };
                 menuPluginManager.clear();
-                menuPluginManager.addMenu("./plugin/menu/forControlPanel.js");
                 $.get('/beaker/rest/util/controlpanelmenuplugins')
                     .done(function (menus) {
                         menus.forEach(function (menu) {
-                            menuPluginManager.addMenu(menu);
+                            menuPluginManager.addControlMenu(menu);
                         });
                     });
 

@@ -1,0 +1,12 @@
+{
+    "bkApp":[
+        "./plugin/menu/file.js",
+        "./plugin/menu/notebook.js",
+        "./plugin/menu/file_filesys.js",
+        "./plugin/menu/evaluators.js",
+        "./plugin/menu/help.js"
+    ],
+    "bkControl": [
+        "./plugin/menu/forControlPanel.js"
+    ]
+}

@@ -28,8 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -145,17 +147,22 @@ public class UtilRest
     public void addInitPlugin(String p) {
         _initPlugins.add(p);
     }
-    // return list of URLs of plugins (js) for the client to load on startup.
     @GET
     @Path("initplugins")
     public List<String> initPlugins() {
         return _initPlugins;
     }
+    // return list of URLs of plugins (js) for the client to load on startup.
 
     private List<String> _menuPlugins = new ArrayList<String>();
-    public void addMenuPlugin(String p) {
-        _menuPlugins.add(p);
+    
+    @POST
+    @Path("addMenuPlugin")
+    public void addMenuPlugin(
+            @FormParam("url") String urlAsString) {
+        _menuPlugins.add(urlAsString);
     }
+    
     // return list of URLs of plugins (js) for the client to load on startup.
     @GET
     @Path("menuplugins")
@@ -164,8 +171,11 @@ public class UtilRest
     }
 
     private List<String> _controlPanelMenuPlugins = new ArrayList<String>();
-    public void addControlPanelMenuPlugin(String p) {
-        _controlPanelMenuPlugins.add(p);
+    @POST
+    @Path("addControlMenuPlugin")
+    public void addControlPanelMenuPlugin(
+        @FormParam("url") String urlAsString) {
+        _controlPanelMenuPlugins.add(urlAsString);
     }
     // return list of URLs of plugins (js) for the client to load on startup.
     @GET

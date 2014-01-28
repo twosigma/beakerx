@@ -20,8 +20,18 @@ import com.twosigma.beaker.rest.StartProcessRest;
 import com.twosigma.beaker.rest.UtilRest;
 import java.io.IOException;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.Iterator;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.server.Server;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 
 /**
  * The actual implementation of initialization operations to be performed in the main function
@@ -108,6 +118,40 @@ public class Init {
         }
         processStarter.setDotDir(dotDir);
         utilRest.setDotDir(dotDir);
+
+        try{
+            JSONParser parser = new JSONParser();
+            File menuConfigFile = new File(dotDir + "/conf/menu.json");
+            if (!menuConfigFile.exists()) {
+                // from menu.default.json
+                FileUtils.copyFile(new File("./config/menu.default.json"), menuConfigFile);
+            }
+            Object obj = parser.parse(new FileReader(menuConfigFile));
+            JSONObject jsonObject =  (JSONObject) obj;
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("bkApp");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    utilRest.addMenuPlugin(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("bkControl");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    utilRest.addControlPanelMenuPlugin(iterator.next());
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("failed getting menu plugins from config file", e);
+        } catch (IOException e) {
+            throw new RuntimeException("failed getting menu plugins from config file", e);
+        } catch (ParseException e) {
+            throw new RuntimeException("failed getting menu plugins from config file", e);
+        }
     }
 
     static void run(String[] args) throws

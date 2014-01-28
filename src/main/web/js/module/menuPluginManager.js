@@ -26,14 +26,6 @@
     ]);
     module.factory('menuPluginManager', function ($http, bkUtils, bkHelper // bkHelper is used by plugins via eval right now
         ) {
-        var nameToUrl = {
-            "Evaluators": "./plugin/menu/evaluators.js",
-            "File": "./plugin/menu/file.js",
-            "File_FileSys": "./plugin/menu/file_filesys.js",
-            "Notebook": "./plugin/menu/notebook.js",
-            "Debug": "./plugin/menu/debug.js",
-            "Help": "./plugin/menu/help.js"
-        };
         var DEFAULT_PRIORITY = 0;
         var menus = {};
         var plugins = [];
@@ -49,12 +41,6 @@
             },
             reset: function () {
                 this.clear();
-                this.addMenu("File");
-                this.addMenu("Notebook");
-                this.addMenu("File_FileSys");
-                this.addMenu("Evaluators");
-                this.addMenu("Help");
-
                 var self = this;
                 $.get('/beaker/rest/util/menuplugins')
                     .done(function (menus) {
@@ -63,10 +49,8 @@
                         });
                     });
             },
-            addMenu: function (nameOrUrl) {
+            addMenu: function (url) {
                 var index = _menuIndex++;
-                //console.log("addMenu index", index, "nameOrUrl", nameOrUrl);
-                var url = nameToUrl[nameOrUrl] ? nameToUrl[nameOrUrl] : nameOrUrl;
                 var pluginObj = _.find(plugins, function (it) {
                     return it.url === url;
                 });

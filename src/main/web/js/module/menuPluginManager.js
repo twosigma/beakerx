@@ -20,184 +20,180 @@
  */
 (function () {
     'use strict';
-    angular.module('M_menuPlugin', [
-            'M_bkCore',
-            'M_bkHelper'
-        ])
-        .factory('menuPluginManager', function (
-            $http,
-            bkUtils,
-            bkHelper // bkHelper is used by plugins via eval right now
-            )
-        {
-            var nameToUrl = {
-                "Evaluators": "./plugin/menu/evaluators.js",
-                "File": "./plugin/menu/file.js",
-                "File_FileSys": "./plugin/menu/file_filesys.js",
-                "Notebook": "./plugin/menu/notebook.js",
-                "Debug": "./plugin/menu/debug.js",
-                "Help": "./plugin/menu/help.js"
-            };
-            var DEFAULT_PRIORITY = 0;
-            var menus = {};
-            var plugins = [];
-            var _menuIndex = 0;
-            return {
-                clear: function () {
-                    _menuIndex = 0;
-                    menus = {};
-                    _.each(plugins, function (it) {
-                        it.status = "cancelled";
-                    });
-                    plugins = [];
-                },
-                reset: function () {
-                    this.clear();
-                    this.addMenu("File");
-                    this.addMenu("Notebook");
-                    this.addMenu("File_FileSys");
-                    this.addMenu("Evaluators");
-                    this.addMenu("Help");
+    var module = angular.module('M_menuPlugin', [
+        'M_bkCore',
+        'M_bkHelper'
+    ]);
+    module.factory('menuPluginManager', function ($http, bkUtils, bkHelper // bkHelper is used by plugins via eval right now
+        ) {
+        var nameToUrl = {
+            "Evaluators": "./plugin/menu/evaluators.js",
+            "File": "./plugin/menu/file.js",
+            "File_FileSys": "./plugin/menu/file_filesys.js",
+            "Notebook": "./plugin/menu/notebook.js",
+            "Debug": "./plugin/menu/debug.js",
+            "Help": "./plugin/menu/help.js"
+        };
+        var DEFAULT_PRIORITY = 0;
+        var menus = {};
+        var plugins = [];
+        var _menuIndex = 0;
+        return {
+            clear: function () {
+                _menuIndex = 0;
+                menus = {};
+                _.each(plugins, function (it) {
+                    it.status = "cancelled";
+                });
+                plugins = [];
+            },
+            reset: function () {
+                this.clear();
+                this.addMenu("File");
+                this.addMenu("Notebook");
+                this.addMenu("File_FileSys");
+                this.addMenu("Evaluators");
+                this.addMenu("Help");
 
-                    var self = this;
-                    $.get('/beaker/rest/util/menuplugins')
-                        .done(function (menus) {
-                            menus.forEach(function (menu) {
-                                self.addMenu(menu);
-                            });
+                var self = this;
+                $.get('/beaker/rest/util/menuplugins')
+                    .done(function (menus) {
+                        menus.forEach(function (menu) {
+                            self.addMenu(menu);
                         });
-                },
-                addMenu: function (nameOrUrl) {
-                    var index = _menuIndex++;
-                    //console.log("addMenu index", index, "nameOrUrl", nameOrUrl);
-                    var url = nameToUrl[nameOrUrl] ? nameToUrl[nameOrUrl] : nameOrUrl;
-                    var pluginObj = _.find(plugins, function (it) {
-                        return it.url === url;
                     });
-                    var addItem = function (existingItems, newItem) {
-                        // check if an entry with same name already exist
-                        var existing = _(existingItems).find(function (it) {
-                            return it.name === newItem.name;
-                        });
+            },
+            addMenu: function (nameOrUrl) {
+                var index = _menuIndex++;
+                //console.log("addMenu index", index, "nameOrUrl", nameOrUrl);
+                var url = nameToUrl[nameOrUrl] ? nameToUrl[nameOrUrl] : nameOrUrl;
+                var pluginObj = _.find(plugins, function (it) {
+                    return it.url === url;
+                });
+                var addItem = function (existingItems, newItem) {
+                    // check if an entry with same name already exist
+                    var existing = _(existingItems).find(function (it) {
+                        return it.name === newItem.name;
+                    });
 
-                        if (existing) {
-                            existing.priority = existing.priority ? existing.priority : DEFAULT_PRIORITY;
-                            newItem.priority = newItem.priority ? newItem.priority : DEFAULT_PRIORITY;
-                            if (existing.priority <= newItem.priority) {
-                                // replace in place
-                                existingItems.splice(existingItems.indexOf(existing), 1, newItem)
-                            } else {
-                                // ignore and warn
-                                console.warn("ignoring menu item " + newItem.name + "because priority="
-                                    + newItem.priority + "is smaller than existing (" + existing.priority + ")");
-                            }
+                    if (existing) {
+                        existing.priority = existing.priority ? existing.priority : DEFAULT_PRIORITY;
+                        newItem.priority = newItem.priority ? newItem.priority : DEFAULT_PRIORITY;
+                        if (existing.priority <= newItem.priority) {
+                            // replace in place
+                            existingItems.splice(existingItems.indexOf(existing), 1, newItem)
                         } else {
-                            existingItems = existingItems.push(newItem);
+                            // ignore and warn
+                            console.warn("ignoring menu item " + newItem.name + "because priority="
+                                + newItem.priority + "is smaller than existing (" + existing.priority + ")");
                         }
-                    };
-                    var add = function (toBeAdded) {
-                        if (!toBeAdded) {
-                            return;
-                        }
-                        var parentMenu = _.find(_.values(menus), function (it) {
-                            return it.name === toBeAdded.parent;
+                    } else {
+                        existingItems = existingItems.push(newItem);
+                    }
+                };
+                var add = function (toBeAdded) {
+                    if (!toBeAdded) {
+                        return;
+                    }
+                    var parentMenu = _.find(_.values(menus), function (it) {
+                        return it.name === toBeAdded.parent;
+                    });
+                    if (!parentMenu) {
+                        parentMenu = {
+                            name: toBeAdded.parent,
+                            items: []
+                        };
+                        menus[index + parentMenu.name] = parentMenu;
+                        //console.log("addMenu onReady index", index, "parentMenu", parentMenu.name);
+                    }
+                    if (toBeAdded.submenu) {
+                        var subMenu = _.find(parentMenu.items, function (it) {
+                            return it.name === toBeAdded.submenu;
                         });
-                        if (!parentMenu) {
-                            parentMenu = {
-                                name: toBeAdded.parent,
+                        if (!subMenu) {
+                            subMenu = {
+                                name: toBeAdded.submenu,
+                                type: "submenu",
                                 items: []
                             };
-                            menus[index + parentMenu.name] = parentMenu;
-                            //console.log("addMenu onReady index", index, "parentMenu", parentMenu.name);
-                        }
-                        if (toBeAdded.submenu) {
-                            var subMenu = _.find(parentMenu.items, function (it) {
-                                return it.name === toBeAdded.submenu;
-                            });
-                            if (!subMenu) {
-                                subMenu = {
-                                    name: toBeAdded.submenu,
-                                    type: "submenu",
-                                    items: []
-                                };
-                                parentMenu.items.push(subMenu);
-                            } else {
-                                subMenu.disabled = false;
-                                subMenu.type = "submenu";
-                                if (!subMenu.items) {
-                                    subMenu.items = [];
-                                }
-                            }
-                            toBeAdded.items.forEach(function (item) {
-                                addItem(subMenu.items, item);
-                            });
+                            parentMenu.items.push(subMenu);
                         } else {
-                            toBeAdded.items.forEach(function (item) {
-                                addItem(parentMenu.items, item);
-                            });
+                            subMenu.disabled = false;
+                            subMenu.type = "submenu";
+                            if (!subMenu.items) {
+                                subMenu.items = [];
+                            }
                         }
-                    };
-                    if (!pluginObj) {
-                        pluginObj = {
-                            url: url,
-                            status: "not ready",
-                            onReady: function (toAdd) {
-                                if (this.status === "cancelled") {
-                                    return;
-                                }
-                                this.status = "ready";
-                                if (_.isArray(toAdd)) {
-                                    _.each(toAdd, add);
-                                } else {
-                                    add(toAdd);
-                                }
-                                this.displayMessage = this.url + "(" + this.status + ")";
-                                bkUtils.refreshRootScope();
-                            },
-                            displayMessage: "loading from " + url
-                        };
-                        plugins.push(pluginObj);
-                        $http({method: 'GET', url: url})
-                            .success(function (ret) {
-                                // XXX should use generalUtils.js/loadJS
-                                eval(ret);
-                            })
-                            .error(function () {
-                                console.log("error", arguments);
-                            });
-                    }
-                },
-                removeMenu: function (name) {
-                    if (menus[name]) {
-                        delete menus[name];
-                    }
-                },
-                addItem: function (parent, item, submenu) {
-                    var parent = _.find(_.values(menus), function (it) {
-                        return it.name === parent;
-                    });
-                    if (parent) {
-                        parent.items.push({name: item, type: "submenu", items: submenu});
-                    } else
-                        console.log("error: could not find menu item " + parent);
-                },
-                clearItem: function (pname) {
-                    var parent = _.find(_.values(menus), function (it) {
-                        return it.name === pname;
-                    });
-
-                    if (parent) {
-                        parent.items = [];
+                        toBeAdded.items.forEach(function (item) {
+                            addItem(subMenu.items, item);
+                        });
                     } else {
-                        console.log("error: could not find menu item " + parent);
+                        toBeAdded.items.forEach(function (item) {
+                            addItem(parentMenu.items, item);
+                        });
                     }
-                },
-                getMenus: function () {
-                    return menus;
-                },
-                getMenuPlugins: function () {
-                    return plugins;
+                };
+                if (!pluginObj) {
+                    pluginObj = {
+                        url: url,
+                        status: "not ready",
+                        onReady: function (toAdd) {
+                            if (this.status === "cancelled") {
+                                return;
+                            }
+                            this.status = "ready";
+                            if (_.isArray(toAdd)) {
+                                _.each(toAdd, add);
+                            } else {
+                                add(toAdd);
+                            }
+                            this.displayMessage = this.url + "(" + this.status + ")";
+                            bkUtils.refreshRootScope();
+                        },
+                        displayMessage: "loading from " + url
+                    };
+                    plugins.push(pluginObj);
+                    $http({method: 'GET', url: url})
+                        .success(function (ret) {
+                            // XXX should use generalUtils.js/loadJS
+                            eval(ret);
+                        })
+                        .error(function () {
+                            console.log("error", arguments);
+                        });
                 }
-            };
-        });
+            },
+            removeMenu: function (name) {
+                if (menus[name]) {
+                    delete menus[name];
+                }
+            },
+            addItem: function (parent, item, submenu) {
+                var parent = _.find(_.values(menus), function (it) {
+                    return it.name === parent;
+                });
+                if (parent) {
+                    parent.items.push({name: item, type: "submenu", items: submenu});
+                } else
+                    console.log("error: could not find menu item " + parent);
+            },
+            clearItem: function (pname) {
+                var parent = _.find(_.values(menus), function (it) {
+                    return it.name === pname;
+                });
+
+                if (parent) {
+                    parent.items = [];
+                } else {
+                    console.log("error: could not find menu item " + parent);
+                }
+            },
+            getMenus: function () {
+                return menus;
+            },
+            getMenuPlugins: function () {
+                return plugins;
+            }
+        };
+    });
 })();

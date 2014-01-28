@@ -121,11 +121,7 @@ public class Init {
 
         try{
             JSONParser parser = new JSONParser();
-            File menuConfigFile = new File(dotDir + "/conf/menu.json");
-            if (!menuConfigFile.exists()) {
-                // from menu.default.json
-                FileUtils.copyFile(new File("./config/menu.default.json"), menuConfigFile);
-            }
+            File menuConfigFile = new File("./config/menu.default.json");
             Object obj = parser.parse(new FileReader(menuConfigFile));
             JSONObject jsonObject =  (JSONObject) obj;
             {

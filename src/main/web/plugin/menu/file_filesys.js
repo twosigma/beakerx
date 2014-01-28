@@ -109,15 +109,6 @@
         var toAdd = [
             {
                 parent: "File",
-                items: [
-                    {
-                        name: "Open",
-                        autoReduce: true,
-                        items:[]
-                    }]
-            },
-            {
-                parent: "File",
                 submenu: "Open",
                 items: [
                     {
@@ -144,14 +135,6 @@
                         }
                     }
                 ]
-            },
-            {
-                parent: "File",
-                items: [
-                    {
-                        name: "Save As",
-                        autoReduce: true
-                    }]
             },
             {
                 parent: "File",

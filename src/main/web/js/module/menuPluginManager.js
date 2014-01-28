@@ -158,8 +158,9 @@
                 });
                 if (parent) {
                     parent.items.push({name: item, type: "submenu", items: submenu});
-                } else
-                    console.log("error: could not find menu item " + parent);
+                } else {
+                    //console.log("error: could not find menu item " + parent);
+                }
             },
             clearItem: function (pname) {
                 var parent = _.find(_.values(menus), function (it) {
@@ -169,7 +170,7 @@
                 if (parent) {
                     parent.items = [];
                 } else {
-                    console.log("error: could not find menu item " + parent);
+                    //console.log("error: could not find menu item " + parent);
                 }
             },
             getMenus: function () {

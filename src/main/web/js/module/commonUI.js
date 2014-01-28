@@ -163,7 +163,6 @@
                 };
 
                 $scope.runAction = function (item) {
-                    console.log("runAction", item);
                     if (item.items && item.items.length == 1 && item.autoReduce) {
                         item.items[0].action();
                     } else {

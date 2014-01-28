@@ -32,10 +32,8 @@
         },
         {
             name: "Open",
-            action: function () {
-                alert("not supported yet");
-            },
-            tooltip: "Open a file from file system", disabled: true
+            autoReduce: true,
+            items:[]
         },
         {
             name: "Save",
@@ -60,6 +58,11 @@
             action: function () {
                 bkHelper.gotoControlPanel();
             }
+        },
+        {
+            name: "Save As",
+            autoReduce: true,
+            items:[]
         }
 //        ,
 //        {

@@ -143,7 +143,6 @@
                 var self = this;
                 $.get('/beaker/rest/util/menuplugins')
                     .done(function (menus) {
-                        console.log(menus);
                         menus.forEach(function (menu) {
                             _addMenu(menu);
                         });

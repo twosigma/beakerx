@@ -18,6 +18,7 @@ package com.twosigma.beaker;
 import com.google.inject.Injector;
 import com.twosigma.beaker.rest.StartProcessRest;
 import com.twosigma.beaker.rest.UtilRest;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -160,6 +161,7 @@ public class Init {
 
         Boolean useKerberos = Platform.getKerberosDefault();
         Boolean useHttps = false;
+        Boolean openBrowser=true;
         // XXX use some library for parsing args.
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--disable-kerberos")) {
@@ -184,6 +186,8 @@ public class Init {
                 } else {
                     System.err.println("missing argument to --plugin-option, ignoring it");
                 }
+            } else if (args[i].equals("--do-not-open-browser")) {
+                openBrowser=false;
             } else {
                 System.err.println("ignoring unrecognized command line option: " + args[i]);
             }
@@ -197,14 +201,17 @@ public class Init {
         String localhostname = java.net.InetAddress.getLocalHost().getHostName();
         // right now kerberos or https can be used but not both.
         System.out.println("");
+        String url;
         if (useHttps) {
-            System.out.println("Connect to https://"
-                    + localhostname + ":" + portBaseString + "/beaker/");
+            url = "https://" + localhostname + ":" + portBaseString + "/beaker/";
         } else {
-            System.out.println("Connect to http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
-                    + localhostname + ":" + (portBase + 1) + "/beaker/");
+            url = "http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
+                    + localhostname + ":" + (portBase + 1) + "/beaker/";
         }
+        System.out.println("Connect to " + url);
         System.out.println("");
-
+        if (openBrowser) {
+            Desktop.getDesktop().browse(java.net.URI.create(url));
+        }
     }
 }

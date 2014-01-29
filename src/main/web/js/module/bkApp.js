@@ -350,7 +350,9 @@
                 };
                 startAutoBackup();
                 $scope.gotoControlPanel = function (event) {
-                    if (event.button === 1) {
+                    if (event.button === 1 // middle click
+                        || (event.button === 0 // left click
+                            && (navigator.appVersion.indexOf("Mac")!= -1 ? event.metaKey : event.ctrlKey))) {
                         window.open("./");
                     } else {
                         bkCoreManager.gotoControlPanel();

@@ -31,7 +31,7 @@ nginx_dir = sys.argv[5]
 static_dir = sys.argv[6]
 extra_rules = sys.argv[7]
 client_temp_dir = dest_dir + "/nginx_client_temp"
-print client_temp_dir
+
 port_main    = port_base
 port_clear   = port_base + 1 # unencrypted
 port_beaker  = port_base + 2 # java/com/twosigma/beaker/module/WebServerModule.java:53

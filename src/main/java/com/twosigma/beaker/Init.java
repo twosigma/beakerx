@@ -161,7 +161,7 @@ public class Init {
 
         Boolean useKerberos = Platform.getKerberosDefault();
         Boolean useHttps = false;
-        Boolean openBrowser=Platform.isOpenBrowserByDefault();
+        Boolean openBrowser = Platform.isOpenBrowserByDefault();
         // XXX use some library for parsing args.
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--disable-kerberos")) {
@@ -189,10 +189,10 @@ public class Init {
             } else if (args[i].startsWith("--open-browser")) {
                 String value = args[i+1].toLowerCase();
                 if (value.equals("true") || value.equals("t") || value.equals("yes") || value.equals("y")) {
-                    openBrowser=true;
+                    openBrowser = true;
                     i++;
                 } else if (value.equals("false") || value.equals("f") || value.equals("no") || value.equals("n")) {
-                    openBrowser=false;
+                    openBrowser = false;
                     i++;
                 } else {
                     System.err.println("ignoring command line flag --open-browser: unrecognized value, possible values are: true or false");

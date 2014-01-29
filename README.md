@@ -83,5 +83,6 @@ Open that URL in any modern web browser (we primarily use Chrome, but also testi
 Beaker can run a variety of backend languages that must be installed independently.  Currently that means [IPython](http://ipython.org/ipython-doc/stable/install/install.html).  You can also run Julia by installing IPython and [Julia](http://julialang.org/downloads/) and then in a Julia REPL saying Pkg.add("IJulia").
 
 ### R
-After install [R](http://cran.r-project.org/bin/macosx/)
-install.packages('Rserve',,'http://www.rforge.net/')
+Install [R](http://cran.r-project.org/bin/macosx/) then say:
+
+    install.packages('Rserve',,'http://www.rforge.net/')

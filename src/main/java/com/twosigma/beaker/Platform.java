@@ -58,4 +58,8 @@ public class Platform {
     public static boolean getKerberosDefault() {
         return false;
     }
+    public static boolean isOpenBrowserByDefault() {
+        return true;
+    }
+
 }

@@ -30,13 +30,15 @@ install_dir = sys.argv[3]
 nginx_dir = sys.argv[5]
 static_dir = sys.argv[6]
 extra_rules = sys.argv[7]
-
+client_temp_dir = dest_dir + "/nginx_client_temp"
+print client_temp_dir
 port_main    = port_base
 port_clear   = port_base + 1 # unencrypted
 port_beaker  = port_base + 2 # java/com/twosigma/beaker/module/WebServerModule.java:53
 
 os.system("mkdir -p " + dest_dir + "/conf")
 os.system("mkdir -p " + dest_dir + "/logs")
+os.system("mkdir -p " + client_temp_dir)
 os.system("rm -f " + dest_dir + "/conf/mime.types " + dest_dir + "/html")
 os.system("ln -s " + nginx_dir + "/conf/mime.types " + dest_dir + "/conf/mime.types")
 os.system("ln -s " + static_dir + " " + dest_dir + "/html")
@@ -48,7 +50,8 @@ substitutions = {"user":user, "host":host,
                  "dest_dir": dest_dir,
                  "port_main":port_main,
                  "port_beaker":port_beaker,
-                 "port_clear":port_clear
+                 "port_clear":port_clear,
+                 "client_temp_dir":client_temp_dir
                  }
 
 plugin_section = ''
@@ -104,6 +107,7 @@ http {
 #        ssl_certificate %(host)s.cer;
 #        ssl_certificate_key %(host)s.key;
          client_max_body_size 100M;
+         client_body_temp_path %(client_temp_dir)s;
 # kerberos
         listen       %(port_clear)s;
 

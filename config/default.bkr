@@ -1,22 +1,74 @@
-/* default notebook.  slash-star comments are supported but not double-slash.
- * triple quotes define multi-line string constants.
- */
 {
-    "beaker":"1",
+    "beaker": "1",
     "evaluators": [
-        {"name":"Html","plugin":"./plugin/evaluator/html.js","shellID":null},
-        {"name":"Latex","plugin":"./plugin/evaluator/latex.js","shellID":null}
+        {
+            "name": "Html",
+            "plugin": "./plugin/evaluator/html.js",
+            "shellID": null
+        },
+        {
+            "name": "Latex",
+            "plugin": "./plugin/evaluator/latex.js",
+            "shellID": null
+        },
+        {
+            "name": "Python",
+            "plugin": "Python",
+            "shellID": "595CD9D6B74B4CD88C073D44E5CB6DAF",
+            "imports": "",
+            "supplementalClassPath": ""
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "shellID": null,
+            "jsSetting2": "",
+            "jsSetting1": ""
+        }
     ],
-    "cells":[
-        {"id":"root","class":["notebook","container"]},
-        {"id":"section001", "class":["section","container"], "title":"Hello Beaker","collapsed":false},
-        {"id":"code001","class":["code"],"evaluator":"Html","input":{"body":""},"output":{}}
+    "cells": [
+        {
+            "id": "root",
+            "class": [
+                "notebook",
+                "container"
+            ]
+        },
+        {
+            "id": "section001",
+            "class": [
+                "section",
+                "container"
+            ],
+            "title": "Hello Beaker",
+            "collapsed": false
+        },
+        {
+            "id": "code001",
+            "class": [
+                "code"
+            ],
+            "evaluator": "Python",
+            "input": {
+                "body": ""
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        }
     ],
-    "tagMap":{
-        "root":["section001"],
-        "section001":["code001"]
+    "tagMap": {
+        "root": [
+            "section001"
+        ],
+        "section001": [
+            "code001"
+        ]
     },
-    "tagMap2":{
-        "initialization":[]
+    "tagMap2": {
+        "initialization": [],
+        "Python": [
+            "code001"
+        ]
     }
 }

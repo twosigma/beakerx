@@ -4,7 +4,8 @@
         "./plugin/menu/notebook.js",
         "./plugin/menu/file_filesys.js",
         "./plugin/menu/evaluators.js",
-        "./plugin/menu/help.js"
+        "./plugin/menu/help.js",
+        "./plugin/menu/file_ipython.js"
     ],
     "bkControl": [
         "./plugin/menu/forControlPanel.js"

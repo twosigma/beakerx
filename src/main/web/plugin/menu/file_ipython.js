@@ -40,7 +40,7 @@
                 }
             };
             if (ipyCodeCell.input && ipyCodeCell.input.length > 0) {
-                bkrCodeCell.input.body = _.reduce(ipyCodeCell.input, function (text, line) { return text + line; });
+                bkrCodeCell.input.body = ipyCodeCell.input.join('\n');
             }
             if (ipyCodeCell.outputs && ipyCodeCell.outputs.length > 0) {
                 var ipyOutput = ipyCodeCell.outputs[0];
@@ -69,7 +69,7 @@
                 "mode": "preview"
             };
             if (ipyMDCell.source && ipyMDCell.source.length > 0) {
-                bkrMDCell.body = _.reduce(ipyMDCell.source, function (text, line) { return text + line; });
+                bkrMDCell.body = ipyMDCell.source.join("\n");
             }
 
             return bkrMDCell;
@@ -82,7 +82,7 @@
                 "body": ""
             };
             if (ipyRawCell.source && ipyRawCell.source.length > 0) {
-                bkrTextCell.body = _.reduce(ipyRawCell.source, function (text, line) { return text + line; });
+                bkrTextCell.body = ipyRawCell.source.join("\n");
             }
             return bkrTextCell;
         };
@@ -94,7 +94,7 @@
                 "body": ""
             };
             if (ipyHeadingCell.source && ipyHeadingCell.source.length > 0) {
-                bkrTextCell.body = _.reduce(ipyHeadingCell.source, function (text, line) { return text + line; });
+                bkrTextCell.body = ipyHeadingCell.source.join("\n");
             }
             bkrTextCell.body = "<h" + ipyHeadingCell.level + ">" + bkrTextCell.body + "</h" + ipyHeadingCell.level + ">";
             return bkrTextCell;
@@ -137,9 +137,9 @@
 
         return {
             convert: function (ipyNb) {
-                if (ipyNb.nbformat !== 3 || ipyNb.nbformat_minor !== 0) {
-                    throw "unrecognized iPython notebook format version"
-                }
+//                if (ipyNb.nbformat !== 3 || ipyNb.nbformat_minor !== 0) {
+//                    throw "unrecognized iPython notebook format version"
+//                }
 
                 var bkrNb = newBeakerNotebook();
                 ipyNb.worksheets[0].cells.forEach(function (cell) {
@@ -166,9 +166,20 @@
         };
     })();
 
-    var load = function (path) {
+    var loadFromFile = function (path) {
         var deferred = bkHelper.newDeferred();
         bkHelper.httpGet("/beaker/rest/fileio/load", {path: path}).
+            success(function (data) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status, header, config) {
+                deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
+    };
+    var loadFromHttp = function (url) {
+        var deferred = bkHelper.newDeferred();
+        bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
             success(function (data) {
                 deferred.resolve(data);
             }).
@@ -185,6 +196,7 @@
                 path = path.substring(IPYTHON_PATH_PREFIX.length + 2);
             }
             if (path) {
+                var load = path.indexOf("http") === 0 ? loadFromHttp : loadFromFile;
                 load(path).then(function (ret) {
                     var ipyNbJson = ret.value;
                     var ipyNb = JSON.parse(ipyNbJson);

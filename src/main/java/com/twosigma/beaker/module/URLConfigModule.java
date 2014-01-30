@@ -20,6 +20,7 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.cometd.OutputLogService;
 import com.twosigma.beaker.rest.FileIORest;
+import com.twosigma.beaker.rest.HttpProxyRest;
 import com.twosigma.beaker.rest.OutputLogRest;
 import com.twosigma.beaker.rest.RecentMenuRest;
 import com.twosigma.beaker.rest.SessionBackupRest;
@@ -63,6 +64,7 @@ public class URLConfigModule
         bind(UtilRest.class);
         bind(StartProcessRest.class);
         bind(FileIORest.class);
+        bind(HttpProxyRest.class);
         bind(OutputLogRest.class);
         bind(SessionBackupRest.class);
         bind(RecentMenuRest.class);

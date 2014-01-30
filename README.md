@@ -80,7 +80,13 @@ Open that URL in any modern web browser (we primarily use Chrome, but also testi
 
 ##Plugin Languages
 
-Beaker can run a variety of backend languages that must be installed independently.  Currently that means [IPython](http://ipython.org/ipython-doc/stable/install/install.html).  You can also run Julia by installing IPython and [Julia](http://julialang.org/downloads/) and then in a Julia REPL saying Pkg.add("IJulia").
+Beaker can run a variety of backend languages that must be installed independently.  
+
+###Python
+Our Python plugin uses the [IPython](http://ipython.org/ipython-doc/stable/install/install.html) kernel and notebook server. The easiest way to install this is using [Anaconda](https://store.continuum.io/cshop/anaconda/). The default install should give you everything you need.
+
+###Julia
+Download [Julia](http://julialang.org/downloads/) and then in a Julia REPL saying Pkg.add("IJulia").
 
 ### R
 Install [R](http://cran.r-project.org/bin/macosx/) then say:

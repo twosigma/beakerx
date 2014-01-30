@@ -89,6 +89,13 @@
     ];
     var helpMenuItems = [
         {
+            name: "Tutorial notebook",
+            action: function () {
+                bkHelper.openURI("file:config/tutorial.bkr");
+            },
+            tooltip: "Open the tutorial notebook"
+        },
+        {
             name: "Keyboard Shortcuts...",
             action: function () {
                 window.open("./keyboardShortcuts.html");

@@ -34,23 +34,30 @@
                 "evaluator": "Python",
                 "class": ["code"],
                 "input": {
-                    "body": _.reduce(ipyCodeCell.input, function (text, line) { return text + line; })
+                    "body": ""
                 },
                 "output": {
                 }
             };
-
-            var ipyOutput = ipyCodeCell.outputs[0];
-            if (ipyOutput.output_type === "pyout" && ipyOutput.text) {
-                bkrCodeCell.output.selectedType = "Text";
-                bkrCodeCell.output.result = ipyOutput.text[0]
-            } else if (ipyOutput.output_type === "display_data" && ipyOutput.png) {
-                bkrCodeCell.output.selectedType = "Image";
-                bkrCodeCell.output.result = {
-                    "type": "ImageIcon",
-                    "imageData": ipyOutput.png
-                }
+            if (ipyCodeCell.input && ipyCodeCell.input.length > 0) {
+                bkrCodeCell.input.body = _.reduce(ipyCodeCell.input, function (text, line) { return text + line; });
             }
+            if (ipyCodeCell.outputs && ipyCodeCell.outputs.length > 0) {
+                var ipyOutput = ipyCodeCell.outputs[0];
+                if (ipyOutput.output_type === "pyout" && ipyOutput.text) {
+                    bkrCodeCell.output.selectedType = "Text";
+                    bkrCodeCell.output.result = ipyOutput.text[0]
+                } else if (ipyOutput.output_type === "display_data" && ipyOutput.png) {
+                    bkrCodeCell.output.selectedType = "Image";
+                    bkrCodeCell.output.result = {
+                        "type": "ImageIcon",
+                        "imageData": ipyOutput.png
+                    }
+                }
+            } else {
+                bkrCodeCell.output.result = "";
+            }
+
             return bkrCodeCell;
         };
 
@@ -58,9 +65,13 @@
             var bkrMDCell = {
                 "id": "markdown" + generateID(6),
                 "class": ["markdown"],
-                "body": ipyMDCell.source[0],
+                "body": "",
                 "mode": "preview"
             };
+            if (ipyMDCell.source && ipyMDCell.source.length > 0) {
+                bkrMDCell.body = _.reduce(ipyMDCell.source, function (text, line) { return text + line; });
+            }
+
             return bkrMDCell;
         };
 
@@ -68,8 +79,11 @@
             var bkrTextCell = {
                 "id": "text" + generateID(6),
                 "class": ["text"],
-                "body": ipyRawCell.source[0]
+                "body": ""
             };
+            if (ipyRawCell.source && ipyRawCell.source.length > 0) {
+                bkrTextCell.body = _.reduce(ipyRawCell.source, function (text, line) { return text + line; });
+            }
             return bkrTextCell;
         };
 
@@ -77,8 +91,12 @@
             var bkrTextCell = {
                 "id": "text" + generateID(6),
                 "class": ["text"],
-                "body": "<h" + ipyHeadingCell.level + ">" + ipyHeadingCell.source[0] + "</h" + ipyHeadingCell.level + ">"
+                "body": ""
             };
+            if (ipyHeadingCell.source && ipyHeadingCell.source.length > 0) {
+                bkrTextCell.body = _.reduce(ipyHeadingCell.source, function (text, line) { return text + line; });
+            }
+            bkrTextCell.body = "<h" + ipyHeadingCell.level + ">" + bkrTextCell.body + "</h" + ipyHeadingCell.level + ">";
             return bkrTextCell;
         };
 

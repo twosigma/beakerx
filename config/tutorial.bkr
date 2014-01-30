@@ -14,7 +14,7 @@
         {
             "name": "Python",
             "plugin": "Python",
-            "shellID": "35C574C819E94C0A809C6255A98F8D58",
+            "shellID": "3650D8A2EA2647F0A9B0B81FAC80F0D4",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -48,7 +48,7 @@
             "class": [
                 "markdown"
             ],
-            "body": "#Overview\n\nBeaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.\n\nBeaker content is organized into \"cells.\" This cell is written using Markdown. To edit the content, move your mouse over the cell and click the 'eye' icon.\n\n##Text\n\nThere are several options for adding text to your notebook:\n\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n##Code\n\nThere are also many available programming languages:\n\n* Python\n* JavaScript\n\nWe are planning to add support very soon for:\n\n* R\n* Groovy\n* Scala\n\n##Plugins\n\nAll of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.\n\n\n",
+            "body": "#Overview\n\nBeaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.\n\nBeaker content is organized into \"cells.\" This cell is written using Markdown. To edit the content, move your mouse over the cell and click the 'eye' icon.\n\n##Text\n\nThere are several options for adding text to your notebook:\n\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n##Code\n\nThere are also many available programming languages:\n\n* Python\n* Julia\n* JavaScript\n\nWe are planning to add support very soon for:\n\n* R\n* Groovy\n* Scala\n\n##Plugins\n\nAll of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.\n\n\n",
             "mode": "preview"
         },
         {
@@ -61,24 +61,23 @@
             "collapsed": false
         },
         {
-            "id": "markdownJjF1as",
-            "class": [
-                "markdown"
-            ],
-            "body": "The pink cell below contains some JavaScript code. To run the code, move your cursor into the cell and press CTRL-ENTER.",
-            "mode": "preview"
-        },
-        {
             "id": "codecWlPMc",
             "class": [
                 "code"
             ],
-            "evaluator": "JavaScript",
+            "evaluator": "Python",
             "input": {
-                "body": "factorial "
+                "body": "++a"
             },
             "output": {
-                "selectedType": "Hidden"
+                "selectedType": "BeakerDisplay",
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>1</pre></div>"
+                },
+                "outputArrived": true,
+                "elapsedTime": 34
             }
         },
         {
@@ -86,7 +85,7 @@
             "class": [
                 "markdown"
             ],
-            "body": "And here's another cell of JavaScript code.",
+            "body": "And here's some more Python.",
             "mode": "preview"
         },
         {
@@ -150,17 +149,48 @@
             "mode": "preview"
         },
         {
-            "id": "code001",
+            "id": "codeh1TYII",
             "class": [
                 "code"
             ],
-            "evaluator": "JavaScript",
+            "evaluator": "Python",
             "input": {
-                "body": "var factorial = 1;\nfor(var i = 2; i <  5; i++) {\n  factorial *= i;\n}\nfactorial"
+                "body": "a = 1\na"
             },
             "output": {
-                "selectedType": "Hidden"
+                "selectedType": "BeakerDisplay",
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>1</pre></div>"
+                },
+                "outputArrived": true,
+                "elapsedTime": 48
             }
+        },
+        {
+            "id": "code3E0zXv",
+            "class": [
+                "code"
+            ],
+            "evaluator": "Python",
+            "input": {
+                "body": "hist([1,2,2])"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "result": "",
+                "outputArrived": false,
+                "elapsedTime": 22
+            }
+        },
+        {
+            "id": "markdownEmlByI",
+            "class": [
+                "markdown"
+            ],
+            "body": "Here's some Python code. To run it, move your cursor into the cell and press CTRL-ENTER.",
+            "mode": "preview"
         }
     ],
     "tagMap": {
@@ -173,10 +203,11 @@
             "markdownEnGyEN"
         ],
         "Section8EWbZ9": [
-            "markdownJjF1as",
-            "code001",
+            "markdownEmlByI",
+            "codeh1TYII",
             "markdownCInWzc",
-            "codecWlPMc"
+            "codecWlPMc",
+            "code3E0zXv"
         ],
         "Section2enUlh": [
             "SectionIQvToW",
@@ -196,9 +227,11 @@
     "tagMap2": {
         "initialization": [],
         "Html": [],
-        "JavaScript": [
-            "code001",
-            "codecWlPMc"
+        "JavaScript": [],
+        "Python": [
+            "codeh1TYII",
+            "codecWlPMc",
+            "code3E0zXv"
         ]
     }
 }

@@ -9,4 +9,5 @@ src/manifest.mf
 gradle.properties
 
 .idea
+src/main/main.iml
 nbproject/

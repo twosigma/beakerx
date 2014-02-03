@@ -18,7 +18,7 @@
  */
 (function () {
     'use strict';
-    var load = function (path) {
+    var loadFromFile = function (path) {
         var deferred = bkHelper.newDeferred();
         bkHelper.httpGet("/beaker/rest/fileio/load", {path: path}).
             success(function (data) {
@@ -29,6 +29,18 @@
             });
         return deferred.promise;
     };
+    var loadFromHttp = function (url) {
+        var deferred = bkHelper.newDeferred();
+        bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
+            success(function (data) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status, header, config) {
+                deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
+    };
+
     var save = function (path, json) {
         var deferred = bkHelper.newDeferred();
         bkHelper.httpPost("/beaker/rest/fileio/save", {path: path, content: json}).
@@ -51,28 +63,45 @@
         var notebookJson = bkHelper.toPrettyJson(notebookModel);
         return save(path, notebookJson);
     });
-
-    var openURI_filesys = function (path) {
-        console.log("openURI_filesys", path);
-        if (!path) {
-            return;
-        }
-        load(path).then(function (ret) {
-            var notebookJson = ret.value;
-            bkHelper.loadNotebook(notebookJson, true, path);
-            bkHelper.setSaveFunction(function (notebookModel) {
-                return save(path, bkHelper.toPrettyJson(notebookModel));
-            });
-            bkHelper.evaluate("initialization");
-            document.title = path.replace(/^.*[\\\/]/, '');
-        }, errorHandler);
-    };
     bkHelper.setPathOpener("file", {
-        open: function (url) {
-            openURI_filesys(url);
+        open: function (path) {
+            if (!path) {
+                return;
+            }
+            loadFromFile(path).then(function (ret) {
+                var notebookJson = ret.value;
+                bkHelper.loadNotebook(notebookJson, true, path);
+                bkHelper.setSaveFunction(function (notebookModel) {
+                    return save(path, bkHelper.toPrettyJson(notebookModel));
+                });
+                bkHelper.evaluate("initialization");
+                document.title = path.replace(/^.*[\\\/]/, '');
+            }, errorHandler);
         }
     });
-
+    var IPYTHON_PATH_PREFIX = "ipython";
+    bkHelper.setPathOpener(IPYTHON_PATH_PREFIX, {
+        open: function (path) {
+            console.log(path);
+            if (path.indexOf(IPYTHON_PATH_PREFIX + ":/") === 0) {
+                path = path.substring(IPYTHON_PATH_PREFIX.length + 2);
+            }
+            if (path) {
+                var load = path.indexOf("http") === 0 ? loadFromHttp : loadFromFile;
+                load(path).then(function (ret) {
+                    var ipyNbJson = ret.value;
+                    var ipyNb = JSON.parse(ipyNbJson);
+                    var bkrNb = notebookConverter.convert(ipyNb);
+                    bkHelper.loadNotebook(bkrNb, true);
+                    bkHelper.evaluate("initialization");
+                    document.title = path.replace(/^.*[\\\/]/, '');
+                }, function (data, status, headers, config) {
+                    bkHelper.showErrorModal(data);
+                    bkHelper.refreshRootScope();
+                });
+            }
+        }
+    });
     var fileMenuItems = [
         {
             name: "New",
@@ -124,7 +153,6 @@
                     }
                 }).success(function (list) {
                         self.showSpinner = false;
-                        console.log(list);
                         callback(list);
                     }).error(function () {
                         self.showSpinner = false;
@@ -136,6 +164,18 @@
             },
             showSpinner: false
         };
+        var treeViewChooserTemplate = '<div class="modal-header">' +
+            '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
+            '</div>' +
+            '<div class="modal-body">' +
+            '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
+            '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
+            '</div>' +
+            '<div class="modal-footer">' +
+            '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
+            '   <button ng-click="close()" class="btn">Cancel</button>' +
+            '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
+            '</div>';
         var toAdd = [
             { parent: "File", items: fileMenuItems },
             {
@@ -148,19 +188,23 @@
                         action: function () {
                             bkHelper.showFileChooser(
                                 bkHelper.openURI,
-                                '<div class="modal-header">' +
-                                    '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
-                                    '</div>' +
-                                    '<div class="modal-body">' +
-                                    '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-                                    '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
-                                    '</div>' +
-                                    '<div class="modal-footer">' +
-                                    '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
-                                    '   <button ng-click="close()" class="btn">Cancel</button>' +
-                                    '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
-                                    '</div>', // template
-                                fileChooserStrategy// strategy
+                                treeViewChooserTemplate,
+                                fileChooserStrategy
+                            );
+                        }
+                    },
+                    {
+                        name: "Open... (IPython)",
+                        reducedName: "Open...",
+                        tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
+                        action: function () {
+                            bkHelper.showFileChooser(
+                                function (path) {
+                                    console.log("Path ===== ", path);
+                                    bkHelper.openURI(IPYTHON_PATH_PREFIX + ":/" + path);
+                                },
+                                treeViewChooserTemplate,
+                                fileChooserStrategy
                             );
                         }
                     }

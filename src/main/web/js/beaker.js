@@ -101,8 +101,10 @@
         // setup routing. the template is going to replace ng-view
         beaker.config(function ($routeProvider) {
             $routeProvider.when('/session/:sessionID', {
-                template: "<bk-app></bk-app>"
-            }).when('/open/:path', {
+                    template: "<bk-app></bk-app>"
+                }).when('/open', {
+                    template: "<bk-app></bk-app>"
+                }).when('/open/:uri', {
                     template: "<bk-app></bk-app>"
                 }).when('/control', {
                     template: "<bk-control></bk-control>"
@@ -181,7 +183,7 @@
                 openURI: function (uri) {
                     if (!uri) return;
                     bkCoreManager.log("open", {uri: uri, user: user});
-                    $location.path("/open/" + encodeURIComponent(uri));
+                    $location.path("/open").search({"uri":uri});
                 },
                 newSession: function () {
                     $location.path("/session/new");

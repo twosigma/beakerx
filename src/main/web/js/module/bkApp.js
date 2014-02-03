@@ -404,7 +404,7 @@
                     }
                 } else {
                     var pathType = "";
-                    var path = decodeURIComponent($routeParams.path);
+                    var path = $routeParams.uri;
                     _impl.openPath(path, undefined, true);
                 }
             }

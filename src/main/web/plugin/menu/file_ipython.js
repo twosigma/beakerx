@@ -256,7 +256,7 @@
                         action: function () {
                             bkHelper.showFileChooser(
                                 function (path) {
-                                    bkHelper.openURI(IPYTHON_PATH_PREFIX + ":/" + path);
+                                    bkHelper.openURI(encodeURIComponent(IPYTHON_PATH_PREFIX + ":/" + path));
                                 },
                                 '<div class="modal-header">' +
                                     '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +

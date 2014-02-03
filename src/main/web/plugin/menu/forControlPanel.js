@@ -64,6 +64,7 @@
                 return save(path, bkHelper.toPrettyJson(notebookModel));
             });
             bkHelper.evaluate("initialization");
+            document.title = path.replace(/^.*[\\\/]/, '');
         }, errorHandler);
     };
     bkHelper.setPathOpener("file", {

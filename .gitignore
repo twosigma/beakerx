@@ -4,6 +4,7 @@ node_modules
 src/main/web/vendor/bower_components
 src/build.xml
 src/manifest.mf
+*~
 
 .gradle
 gradle.properties

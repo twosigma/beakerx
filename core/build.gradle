@@ -1,0 +1,32 @@
+apply plugin:'application'
+mainClassName = 'com.twosigma.beaker.Main'
+
+task (installBower, type: Exec) {
+    commandLine 'npm', 'install'
+}
+
+task (bowerInstall, type: Exec) {
+    commandLine './node_modules/bower/bin/bower', 'install'
+}
+
+bowerInstall.dependsOn installBower
+build.dependsOn bowerInstall
+run.dependsOn bowerInstall
+run.dependsOn jar
+
+dependencies {
+    compile project(':shared')
+}
+
+/* for testing
+run {
+  args '--disable-kerberos', '--default-notebook', 'config/default-test.bkr'
+}
+*/
+
+build.dependsOn jar
+
+/* need to remove META-INF/*.SF to use this */
+jar {
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}

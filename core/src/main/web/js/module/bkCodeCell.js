@@ -341,14 +341,19 @@
                                 var cursorPos = editor.indexFromPos(cur);
                                 // We might want this defined by the plugin.
                                 var onResults = function (results, matched_text) {
-                                    var start = token.string === "." ? token.start + 1 : token.start;
+                                    var start = token.start;
+                                    var end = token.end;
+                                    if (token.string === ".") {
+                                        start += 1;
+                                    }
                                     if (matched_text) {
-                                        start = start - matched_text.length + token.string.length;
+                                        start += (cursorPos - token.start - matched_text.length);
+                                        end = start + matched_text.length;
                                     }
                                     showHintCB({
                                         list: _.uniq(results),
                                         from: CodeMirror.Pos(cur.line, start),
-                                        to: CodeMirror.Pos(cur.line, token.end)
+                                        to: CodeMirror.Pos(cur.line, end)
                                     });
                                 };
                                 scope.autocomplete(cursorPos, onResults);

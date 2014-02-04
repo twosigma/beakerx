@@ -1,2 +1,0 @@
-library(Rserve)
-run.Rserve()

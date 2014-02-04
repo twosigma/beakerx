@@ -1,7 +1,0 @@
-apply plugin:'application'
-mainClassName = 'com.twosigma.beaker.Main'
-
-dependencies {
-    compile project(':shared')
-    compile group: 'net.rforge', name: 'Rserve', version: '0.6-8.1'
-}

@@ -1,1 +1,1 @@
-include "shared", "core", "plugins:r"
+include "shared", "core", "plugin:r"

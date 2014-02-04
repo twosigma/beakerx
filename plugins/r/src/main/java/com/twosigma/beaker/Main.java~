@@ -16,11 +16,14 @@
 package com.twosigma.beaker;
 
 import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.twosigma.beaker.module.GuiceCometdModule;
 import com.twosigma.beaker.module.SerializerModule;
 import com.twosigma.beaker.module.URLConfigModule;
 import com.twosigma.beaker.module.WebServerModule;
-import com.twosigma.beaker.rest.StartProcessRest;
+import com.twosigma.beaker.r.plugin.r.StartRPlugin;
+import org.eclipse.jetty.server.Server;
+
 
 /**
  * In the main function, create modules and perform initialization.
@@ -41,22 +44,21 @@ public class Main {
     {
         java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
 
-        Init.portBase = Init.findPortBase();
+        Injector injector = Guice.createInjector(new WebServerModule(8803), // XXX this has 2 added to it
+                                                 new URLConfigModule(),
+                                                 new SerializerModule(),
+                                                 new GuiceCometdModule());
+        // Hack to prevent jersey from trying to contact the prod US
+        // jms server. This is set in ts/messagingjms properties.
+        // See BEAKER-402.
+        System.clearProperty("java.naming.provider.url");
 
-        Init.injector = Guice.createInjector(new WebServerModule(Init.portBase),
-                new URLConfigModule(),
-                new SerializerModule(),
-                new GuiceCometdModule());
-        Init.init();
+        Platform.setInjector(injector);
 
-        final StartProcessRest processStarter = Init.injector.getInstance(StartProcessRest.class);
-        String beakerCore = Platform.getBeakerCoreDirectory();
-        processStarter.readPluginConfig(Platform.getConfigDir() + "/plugins");
-        processStarter.setPluginLocation("Python", "src/main/sh");
-        processStarter.setPluginLocation("Julia", "src/main/sh");
-        processStarter.setPluginLocation("R", "src/main/sh");
+        StartRPlugin.StartRserve(injector);
 
-        Init.run(args);
-
+        Server server = injector.getInstance(Server.class);
+        server.start();
+        System.out.println("Server started");
     }
 }

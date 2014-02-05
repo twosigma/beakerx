@@ -36,9 +36,9 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 public class WebServerModule
     extends AbstractModule
 {
-    private int _portBase;
-    public WebServerModule(int portBase) {
-        _portBase = portBase;
+    private int _port;
+    public WebServerModule(int port) {
+        _port = port;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class WebServerModule
     @Provides @Singleton
     Connector getConnector() {
         final Connector conn = new SelectChannelConnector();
-        conn.setPort(_portBase + 2);
+        conn.setPort(_port);
         return conn;
     }
 

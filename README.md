@@ -68,6 +68,9 @@ We've only tried running Beaker on Mac OS X. We'll be working on support for Lin
 ##Build and run Beaker
 
     cd beaker-notebook
+    cd plugin/r
+    gradle installApp
+    cd ../../core
     gradle run
     
 ##Connect your browser

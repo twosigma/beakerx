@@ -15,6 +15,6 @@
 # limitations under the License.
 
 echo port=$1
+# only works if cwd is core
 cd ../plugin/r
-# XXX this is a hack
-gradle run
+build/install/r/bin/r $1

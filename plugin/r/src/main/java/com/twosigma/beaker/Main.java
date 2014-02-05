@@ -44,7 +44,12 @@ public class Main {
     {
         java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
 
-        Injector injector = Guice.createInjector(new WebServerModule(8803), // XXX this has 2 added to it
+        if (args.length != 1) {
+            System.out.println("usage: rPlugin <port>");
+        }
+        int port = Integer.parseInt(args[0]);
+
+        Injector injector = Guice.createInjector(new WebServerModule(port),
                                                  new URLConfigModule(),
                                                  new SerializerModule(),
                                                  new GuiceCometdModule());

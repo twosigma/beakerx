@@ -47,7 +47,7 @@
             restrict: 'E',
             template: '<div class="bkcell">' +
                 '<div ng-if="isDebugging()">' +
-                '[Debug]: cell ID = {{cellmodel.id}}, parent = {{getParentID()}}, level = {{getLevel()}} ' +
+                '[Debug]: cell ID = {{cellmodel.id}}, parent = {{getParentID()}}, level = {{getNestedLevel()}} ' +
                 '<a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>' +
                 '<a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()">show less</a>' +
                 '<div collapse="!isShowDebugInfo()">' +
@@ -112,11 +112,11 @@
                 $scope.isDebugging = function () {
                     return getBkBaseViewModel().isDebugging();
                 };
-                $scope.getLevel = function () {
+                $scope.getNestedLevel = function () {
                     // bkCell is using isolated scope, $scope is the isolated scope
                     // $scope.$parent is the scope resulted from ng-repeat (ng-repeat creates a prototypal scope for each ng-repeated item)
                     // $Scope.$parent.$parent is the container cell(which initiates ng-repeat) scope
-                    return $scope.$parent.$parent.getLevel ? $scope.$parent.$parent.getLevel() + 1 : 1;
+                    return $scope.$parent.$parent.getNestedLevel ? $scope.$parent.$parent.getNestedLevel() + 1 : 1;
                 };
                 $scope.getParentID = function () {
                     return $scope.$parent.$parent.cellmodel ? $scope.$parent.$parent.cellmodel.id : 'root';

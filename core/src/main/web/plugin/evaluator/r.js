@@ -32,7 +32,7 @@
         init: function () {
             if (!initialized) {
                 cometd.unregisterTransport("websocket");
-                // cometd.init(serverUrl + "cometd");
+                cometd.init(serverUrl + "cometd");
                 initialized = true;
             }
         },

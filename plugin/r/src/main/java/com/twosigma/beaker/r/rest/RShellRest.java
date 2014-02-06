@@ -257,7 +257,7 @@ public class RShellRest {
         } catch (REXPMismatchException e) {
             return false;
         }
-        obj.finished(null);
+        obj.finished(null); // XXX hacked out
         return true;
     }
 

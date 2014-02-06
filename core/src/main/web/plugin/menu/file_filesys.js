@@ -68,7 +68,7 @@
         if (!path) {
             return;
         }
-        var load = path.indexOf("http") === 0 ? loadFromHttp : loadFromFile;
+        var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
         load(path).then(function (ret) {
             var notebookJson = ret.value;
             bkHelper.loadNotebook(notebookJson, true, path);

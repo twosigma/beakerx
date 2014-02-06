@@ -429,11 +429,12 @@
             setOutputCellText(cell, "pending");
             var evaluateCell = function () {
                 var evaluator = evaluatorManager.getEvaluator(cell.evaluator);
-                bkUtils.log("evaluate", {plugin: evaluator.evaluator.pluginName,
-                                         length: cell.input.body.length});
                 if (evaluator) {
                     var evalP = lastPromise.then(function () {
                         _theEvaluator = evaluator.evaluator;
+                        bkUtils.log("evaluate", {
+                            plugin: evaluator.evaluator.pluginName,
+                            length: cell.input.body.length});
                         return _theEvaluator.evaluate(cell.input.body, cell.output);
                     });
                     evalP.catch(function (ret) {

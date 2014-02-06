@@ -68,7 +68,7 @@
             if (!path) {
                 return;
             }
-            var load = path.indexOf("http") === 0 ? loadFromHttp : loadFromFile;
+            var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
             load(path).then(function (ret) {
                 var notebookJson = ret.value;
                 bkHelper.loadNotebook(notebookJson, true, path);
@@ -87,7 +87,7 @@
                 path = path.substring(IPYNB_PATH_PREFIX.length + 2);
             }
             if (path) {
-                var load = path.indexOf("http") === 0 ? loadFromHttp : loadFromFile;
+                var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
                 load(path).then(function (ret) {
                     var ipyNbJson = ret.value;
                     var ipyNb = JSON.parse(ipyNbJson);

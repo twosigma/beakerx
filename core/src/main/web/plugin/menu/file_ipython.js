@@ -189,11 +189,11 @@
         return deferred.promise;
     };
 
-    var IPYTHON_PATH_PREFIX = "ipython";
-    bkHelper.setPathOpener(IPYTHON_PATH_PREFIX, {
+    var IPYNB_PATH_PREFIX = "ipynb";
+    bkHelper.setPathOpener(IPYNB_PATH_PREFIX, {
         open: function (path) {
-            if (path.indexOf(IPYTHON_PATH_PREFIX + ":/") === 0) {
-                path = path.substring(IPYTHON_PATH_PREFIX.length + 2);
+            if (path.indexOf(IPYNB_PATH_PREFIX + ":/") === 0) {
+                path = path.substring(IPYNB_PATH_PREFIX.length + 2);
             }
             if (path) {
                 var load = path.indexOf("http") === 0 ? loadFromHttp : loadFromFile;
@@ -250,13 +250,13 @@
                 submenu: "Open",
                 items: [
                     {
-                        name: "Open... (IPython)",
+                        name: "Open... (.ipynb)",
                         reducedName: "Open...",
                         tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
                         action: function () {
                             bkHelper.showFileChooser(
                                 function (path) {
-                                    bkHelper.openURI(IPYTHON_PATH_PREFIX + ":/" + path);
+                                    bkHelper.openURI(IPYNB_PATH_PREFIX + ":/" + path);
                                 },
                                 '<div class="modal-header">' +
                                     '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +

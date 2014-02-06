@@ -14,21 +14,21 @@
  *  limitations under the License.
  */
 /**
- * Python eval plugin
+ * IPython eval plugin
  * For creating and config evaluators that uses a IPython kernel for evaluating python code and updating
  * code cell outputs.
  */
 (function () {
     'use strict';
-    var url = "./plugin/evaluator/python.js";
-    var PLUGIN_NAME = "Python";
-    var COMMAND = "pythonPlugin";
+    var url = "./plugin/evaluator/ipython.js";
+    var PLUGIN_NAME = "IPython";
+    var COMMAND = "ipythonPlugin";
     var kernels = {};
     var _theCancelFunction = null;
     var now = function () {
         return new Date().getTime();
     };
-    var PythonProto = {
+    var IPythonProto = {
         pluginName: PLUGIN_NAME,
         cmMode: "python",
         background: "#EAEAFF",
@@ -42,7 +42,7 @@
                 shellID = IPython.utils.uuid();
             }
 
-            var kernel = new IPython.Kernel("/python/kernels/");
+            var kernel = new IPython.Kernel("/ipython/kernels/");
             kernels[shellID] = kernel;
             kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
             // keepalive for the websockets
@@ -146,7 +146,7 @@
                             object: (value.ename === "KeyboardInterrupt") ? "Interrupted" : [value.evalue, trace]
                         };
                     } else if (type === "stream") {
-                        var json = JSON.stringify({evaluator: "python",
+                        var json = JSON.stringify({evaluator: "ipython",
                                                    type: (type === "stream" ? "text" : "html"),
                                                    line: value.data});
                         $.cometd.publish("/service/outputlog/put", json);
@@ -205,9 +205,9 @@
              this is safe because the URL has the kernel ID in it, and that's a 128-bit
              random number, only delivered via the secure channel. */
             var nginx =
-                "location /python/kernels/ {proxy_pass http://127.0.0.1:%(port)s/kernels;}" +
-                    "location ~ /python/kernels/[0-9a-f-]+/  {" +
-                    "rewrite ^/python/(.*)$ /$1 break; " +
+                "location /ipython/kernels/ {proxy_pass http://127.0.0.1:%(port)s/kernels;}" +
+                    "location ~ /ipython/kernels/[0-9a-f-]+/  {" +
+                    "rewrite ^/ipython/(.*)$ /$1 break; " +
                     "proxy_pass http://127.0.0.1:%(port)s; " +
                     "proxy_http_version 1.1; " +
                     "proxy_set_header Upgrade $http_upgrade; " +
@@ -228,7 +228,7 @@
                     if (bkHelper.restartAlert(ret)) {
                         return;
                     }
-                    var PythonShell = function (settings, cb) {
+                    var IPythonShell = function (settings, cb) {
                         var self = this;
                         var setShellIdCB = function (shellID) {
                             settings.shellID = shellID;
@@ -253,14 +253,14 @@
                             this[action]();
                         };
                     };
-                    PythonShell.prototype = PythonProto;
-                    bkHelper.getLoadingPlugin(url).onReady(PythonShell);
+                    IPythonShell.prototype = IPythonProto;
+                    bkHelper.getLoadingPlugin(url).onReady(IPythonShell);
                 }).fail(function () {
                     console.log("process start failed", arguments);
                 });
         };
         var onFail = function () {
-            console.log("failed to load python libs");
+            console.log("failed to load ipython libs");
         };
         bkHelper.loadList(["./vendor/ipython/namespace.js",
                            "./vendor/ipython/utils.js",

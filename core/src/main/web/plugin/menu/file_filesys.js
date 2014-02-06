@@ -19,7 +19,7 @@
  */
 (function () {
     'use strict';
-    var load = function (path) {
+    var loadFromFile = function (path) {
         var deferred = bkHelper.newDeferred();
         bkHelper.httpGet("/beaker/rest/fileio/load", {path: path}).
             success(function (data) {
@@ -30,6 +30,18 @@
             });
         return deferred.promise;
     };
+    var loadFromHttp = function (url) {
+        var deferred = bkHelper.newDeferred();
+        bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
+            success(function (data) {
+                deferred.resolve(data);
+            }).
+            error(function (data, status, header, config) {
+                deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
+    };
+
     var save = function (path, json) {
         var deferred = bkHelper.newDeferred();
         bkHelper.httpPost("/beaker/rest/fileio/save", {path: path, content: json}).
@@ -56,6 +68,7 @@
         if (!path) {
             return;
         }
+        var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
         load(path).then(function (ret) {
             var notebookJson = ret.value;
             bkHelper.loadNotebook(notebookJson, true, path);
@@ -126,6 +139,7 @@
                                     '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
                                     '</div>' +
                                     '<div class="modal-footer">' +
+                                    "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
                                     '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
                                     '   <button ng-click="close()" class="btn">Cancel</button>' +
                                     '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +

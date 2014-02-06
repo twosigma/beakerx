@@ -169,6 +169,7 @@
                 command: COMMAND,
                 started: "Server started",
                 nginx: "location /rsh/ {proxy_pass http://127.0.0.1:%(port)s/;}",
+                waitfor: "org.eclipse.jetty.server.AbstractConnector - Started SelectChannelConnector",
                 record: "true",
                 stream: "stdout"
             }

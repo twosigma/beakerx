@@ -68,7 +68,8 @@
             if (!path) {
                 return;
             }
-            loadFromFile(path).then(function (ret) {
+            var load = path.indexOf("http") === 0 ? loadFromHttp : loadFromFile;
+            load(path).then(function (ret) {
                 var notebookJson = ret.value;
                 bkHelper.loadNotebook(notebookJson, true, path);
                 bkHelper.setSaveFunction(function (notebookModel) {
@@ -82,7 +83,6 @@
     var IPYNB_PATH_PREFIX = "ipynb";
     bkHelper.setPathOpener(IPYNB_PATH_PREFIX, {
         open: function (path) {
-            console.log(path);
             if (path.indexOf(IPYNB_PATH_PREFIX + ":/") === 0) {
                 path = path.substring(IPYNB_PATH_PREFIX.length + 2);
             }
@@ -172,6 +172,7 @@
             '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
             '</div>' +
             '<div class="modal-footer">' +
+            "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
             '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
             '   <button ng-click="close()" class="btn">Cancel</button>' +
             '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
@@ -200,8 +201,9 @@
                         action: function () {
                             bkHelper.showFileChooser(
                                 function (path) {
-                                    console.log("Path ===== ", path);
-                                    bkHelper.openURI(IPYNB_PATH_PREFIX + ":/" + path);
+                                    if (path) {
+                                        bkHelper.openURI(IPYNB_PATH_PREFIX + ":/" + path);
+                                    }
                                 },
                                 treeViewChooserTemplate,
                                 fileChooserStrategy

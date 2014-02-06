@@ -14,25 +14,34 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.jvm.json.serializer;
+package com.twosigma.beaker.jvm;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-import com.twosigma.beaker.jvm.TableDisplay;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 
-public class SerializeUtils {
-    public static void writeObject(Object obj, JsonGenerator jgen)
+
+public class TableDisplaySerializer
+    extends JsonSerializer<TableDisplay>
+{
+    public TableDisplaySerializer() {
+    }
+    
+    @Override
+    public void serialize(TableDisplay value,
+                          JsonGenerator jgen,
+                          SerializerProvider provider)
         throws IOException, JsonProcessingException
     {
-        if (obj == null) {
-            jgen.writeObject("null");
-        } else if (obj instanceof TableDisplay) {
-            jgen.writeObject(obj);
-        } else {
-            jgen.writeObject(obj.toString());
-        }
+        jgen.writeStartObject();
+        jgen.writeObjectField("type", "TableDisplay");
+        jgen.writeObjectField("timeZone", "UTC");
+        jgen.writeObjectField("rowCount", 2);
+        jgen.writeObjectField("columnCount", 2);
+        jgen.writeObjectField("columnNames", value.columns);
+        jgen.writeObjectField("values", value.values);
+        jgen.writeEndObject();
     }
 }

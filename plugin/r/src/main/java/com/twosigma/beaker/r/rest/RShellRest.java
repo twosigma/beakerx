@@ -266,17 +266,16 @@ public class RShellRest {
 	RConnection con = getEvaluator(shellID);
         String dotDir = System.getProperty("user.home") + "/.beaker";
         String file = dotDir + "/rplot.svg";
-        // XXX removed temporarily until we figure how to move up to java7
-        //try {
-        //java.nio.file.Path p = java.nio.file.Paths.get(file);
-        //java.nio.file.Files.deleteIfExists(p);
-        //} catch (IOException e) {
+        try {
+            java.nio.file.Path p = java.nio.file.Paths.get(file);
+            java.nio.file.Files.deleteIfExists(p);
+        } catch (IOException e) {
             // ignore
-        //}
+        }
 
 	try {
             // direct graphical output
-            // con.eval("svg('" + file + "')"); // XXX removed temporarily
+            con.eval("svg('" + file + "')"); // XXX removed temporarily
             String tryCode = "beaker_eval_=try({" + code + "\n},silent=TRUE)";
 	    REXP result = con.eval(tryCode);
 
@@ -310,11 +309,11 @@ public class RShellRest {
 	}
 
         // flush graphical output
-	// try {
-            // con.eval("dev.off()"); // XXX temporarily disabled
-	//} catch (RserveException e) {
-        //obj.error("from dev.off(): " + e.getMessage());
-        //}
+	 try {
+             con.eval("dev.off()");
+	} catch (RserveException e) {
+             obj.error("from dev.off(): " + e.getMessage());
+        }
 
         // addPngResults(file, obj);
         addSvgResults(file, obj);

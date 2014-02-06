@@ -89,7 +89,9 @@ Beaker can run a variety of backend languages that must be installed independent
 Our Python plugin uses the [IPython](http://ipython.org/ipython-doc/stable/install/install.html) kernel and notebook server. The easiest way to install this is using [Anaconda](https://store.continuum.io/cshop/anaconda/). The default install should give you everything you need.
 
 ###Julia
-Download [Julia](http://julialang.org/downloads/) and then in a Julia REPL saying Pkg.add("IJulia").
+Download [Julia](http://julialang.org/downloads/) and then in a Julia REPL saying
+
+    Pkg.add("IJulia").
 
 ### R
 Install [R](http://cran.r-project.org/bin/macosx/) and [XQuartz](http://xquartz.macosforge.org/landing/) then run R and say:

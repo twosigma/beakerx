@@ -24,6 +24,8 @@ import com.twosigma.beaker.r.json.serializer.StringObject;
 import com.twosigma.beaker.r.json.serializer.StringObjectSerializer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObjectSerializer;
+import com.twosigma.beaker.jvm.json.serializer.EvaluationResultSerializer;
+import com.twosigma.beaker.jvm.object.EvaluationResult;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -38,6 +40,8 @@ public class SerializerModule
 {
     @Override
     protected void configure() {
+        bind(SimpleEvaluationObjectSerializer.class);
+        bind(EvaluationResultSerializer.class);
     }
 
     @Provides @Singleton
@@ -47,9 +51,9 @@ public class SerializerModule
         SimpleModule module =
             new SimpleModule("MySerializer", new Version(1, 0, 0, null));
 
-        System.out.println("addSerializer(StringObject.class)");
         module.addSerializer(StringObject.class, new StringObjectSerializer());
         module.addSerializer(SimpleEvaluationObject.class, new SimpleEvaluationObjectSerializer());
+        module.addSerializer(EvaluationResult.class, new EvaluationResultSerializer());
 
         mapper.registerModule(module);
 

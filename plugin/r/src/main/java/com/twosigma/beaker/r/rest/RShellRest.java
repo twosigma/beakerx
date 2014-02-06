@@ -110,7 +110,6 @@ public class RShellRest {
         throws InterruptedException, RserveException
     {
 	String shellID = UUID.randomUUID().toString();
-        System.out.println("Creating a new shell: " + shellID);
 	newEvaluator(shellID);
 	return new StringObject(shellID);
     }
@@ -121,7 +120,6 @@ public class RShellRest {
         throws InterruptedException, RserveException
     {
 	String shellID = UUID.randomUUID().toString();
-	// System.out.println("Creating a new shell: " + shellID);
 	newEvaluator(shellID);
 	return new StringObject(shellID);
     }
@@ -131,16 +129,13 @@ public class RShellRest {
         throws InterruptedException, UnknownHostException, RserveException
     {
 	String shellID = UUID.randomUUID().toString();
-	// System.out.println("Creating a new shell (POST): " + shellID);
 	newEvaluator(shellID);
-	//return new StringObject(shellID);
 	Response res = Response
             .status(Response.Status.OK)
             .header("Access-Control-Allow-Origin", "http://" + InetAddress.getLocalHost().getHostName() + ":1088")
             .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
             .header("Access-Control-Allow-Headers", "Authorization, X-Requested-With, Content-Type, Origin, Accept")
             .header("Access-Control-Expose-Headers", "Authorization, X-Requested-With, Content-Type, Origin, Accept")
-//		.header("Access-Control-Max-Age", "1728000")
             .header("Access-Control-Allow-Credentials", "true")
             .entity(new StringObject(shellID))
             .build();
@@ -153,16 +148,13 @@ public class RShellRest {
         throws InterruptedException, UnknownHostException, RserveException
     {
 	String shellID = UUID.randomUUID().toString();
-	//System.out.println("Creating a new shell (OPTIONS): " + shellID);
 	newEvaluator(shellID);
-	//return new StringObject(shellID);
 	Response res = Response
             .status(Response.Status.OK)
             .header("Access-Control-Allow-Origin", "http://" + InetAddress.getLocalHost().getHostName() + ":1088")
             .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
             .header("Access-Control-Allow-Headers", "Authorization, X-Requested-With, Content-Type, Origin, Accept")
             .header("Access-Control-Expose-Headers", "Authorization, X-Requested-With, Content-Type, Origin, Accept")
-//		.header("Access-Control-Max-Age", "1728000")
             .header("Access-Control-Allow-Credentials", "true")
             .build();
 	return res;
@@ -345,18 +337,10 @@ public class RShellRest {
         return completionStrings;
     }
 
-    private void newEvaluator(String id)
-	throws RserveException
-    {
+    private void newEvaluator(String id) {
         try {
             RConnection con = new RConnection();
-            System.out.println("connection:");
-            System.out.println(con);
-            REXP x = con.eval("R.version.string");
-            System.out.println("version: " + x.asString());
             _shells.put(id, con);
-        } catch (REXPMismatchException e) {
-            System.out.println("REXPMismatchException");
         } catch (RserveException e) {
             System.out.println("RserveException");
         }

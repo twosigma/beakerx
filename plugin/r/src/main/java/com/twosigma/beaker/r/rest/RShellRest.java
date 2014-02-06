@@ -94,9 +94,9 @@ public class RShellRest {
     @POST
     @Path("getShell")
     public StringObject getShell(@FormParam("shellid") String shellID)
-	throws InterruptedException, RserveException
+        throws InterruptedException, RserveException
     {
-	if (!shellID.isEmpty() && _shells.containsKey(shellID)) {
+        if (!shellID.isEmpty() && _shells.containsKey(shellID)) {
             // System.out.println("found shell " + shellID + " on server.");
             return new StringObject(shellID);
         } else {
@@ -109,10 +109,9 @@ public class RShellRest {
     public StringObject newShell()
         throws InterruptedException, RserveException
     {
-	String shellID = UUID.randomUUID().toString();
-        System.out.println("Creating a new shell: " + shellID);
-	newEvaluator(shellID);
-	return new StringObject(shellID);
+        String shellID = UUID.randomUUID().toString();
+        newEvaluator(shellID);
+        return new StringObject(shellID);
     }
 
     @POST
@@ -120,31 +119,27 @@ public class RShellRest {
     public StringObject newShell2()
         throws InterruptedException, RserveException
     {
-	String shellID = UUID.randomUUID().toString();
-	// System.out.println("Creating a new shell: " + shellID);
-	newEvaluator(shellID);
-	return new StringObject(shellID);
+        String shellID = UUID.randomUUID().toString();
+        newEvaluator(shellID);
+        return new StringObject(shellID);
     }
     @POST
     @Path("newShell3")
     public Response newShell3()
         throws InterruptedException, UnknownHostException, RserveException
     {
-	String shellID = UUID.randomUUID().toString();
-	// System.out.println("Creating a new shell (POST): " + shellID);
-	newEvaluator(shellID);
-	//return new StringObject(shellID);
-	Response res = Response
+        String shellID = UUID.randomUUID().toString();
+        newEvaluator(shellID);
+        Response res = Response
             .status(Response.Status.OK)
             .header("Access-Control-Allow-Origin", "http://" + InetAddress.getLocalHost().getHostName() + ":1088")
             .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
             .header("Access-Control-Allow-Headers", "Authorization, X-Requested-With, Content-Type, Origin, Accept")
             .header("Access-Control-Expose-Headers", "Authorization, X-Requested-With, Content-Type, Origin, Accept")
-//		.header("Access-Control-Max-Age", "1728000")
             .header("Access-Control-Allow-Credentials", "true")
             .entity(new StringObject(shellID))
             .build();
-	return res;
+        return res;
     }
 
     @OPTIONS
@@ -152,20 +147,17 @@ public class RShellRest {
     public Response newShell3OP()
         throws InterruptedException, UnknownHostException, RserveException
     {
-	String shellID = UUID.randomUUID().toString();
-	//System.out.println("Creating a new shell (OPTIONS): " + shellID);
-	newEvaluator(shellID);
-	//return new StringObject(shellID);
-	Response res = Response
+        String shellID = UUID.randomUUID().toString();
+        newEvaluator(shellID);
+        Response res = Response
             .status(Response.Status.OK)
             .header("Access-Control-Allow-Origin", "http://" + InetAddress.getLocalHost().getHostName() + ":1088")
             .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
             .header("Access-Control-Allow-Headers", "Authorization, X-Requested-With, Content-Type, Origin, Accept")
             .header("Access-Control-Expose-Headers", "Authorization, X-Requested-With, Content-Type, Origin, Accept")
-//		.header("Access-Control-Max-Age", "1728000")
             .header("Access-Control-Allow-Credentials", "true")
             .build();
-	return res;
+        return res;
     }
 
     private String readFile(String name) {
@@ -264,29 +256,28 @@ public class RShellRest {
     @POST
     @Path("evaluate")
     public SimpleEvaluationObject evaluate(@FormParam("shellID") String shellID,
-					   @FormParam("code") String code)
-	throws InterruptedException, REXPMismatchException
+                                           @FormParam("code") String code)
+        throws InterruptedException, REXPMismatchException
     {
         boolean gotMismatch = false;
-	// System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
-	SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
+        // System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
+        SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
         obj.started();
-	RConnection con = getEvaluator(shellID);
+        RConnection con = getEvaluator(shellID);
         String dotDir = System.getProperty("user.home") + "/.beaker";
         String file = dotDir + "/rplot.svg";
-        // XXX removed temporarily until we figure how to move up to java7
-        //try {
-        //java.nio.file.Path p = java.nio.file.Paths.get(file);
-        //java.nio.file.Files.deleteIfExists(p);
-        //} catch (IOException e) {
+        try {
+            java.nio.file.Path p = java.nio.file.Paths.get(file);
+            java.nio.file.Files.deleteIfExists(p);
+        } catch (IOException e) {
             // ignore
-        //}
+        }
 
-	try {
+        try {
             // direct graphical output
-            // con.eval("svg('" + file + "')"); // XXX removed temporarily
+            con.eval("svg('" + file + "')");
             String tryCode = "beaker_eval_=try({" + code + "\n},silent=TRUE)";
-	    REXP result = con.eval(tryCode);
+            REXP result = con.eval(tryCode);
 
             /*
             if (null != result)
@@ -311,23 +302,23 @@ public class RShellRest {
                 con.eval("print(beaker_eval_)");
                 con.eval("print(\"" + endMagic + "\")");
             }
-	} catch (RserveException e) {
-	    obj.error(e.getMessage());
-	} catch (REXPMismatchException e) {
+        } catch (RserveException e) {
+            obj.error(e.getMessage());
+        } catch (REXPMismatchException e) {
             gotMismatch = true;
-	}
+        }
 
         // flush graphical output
-	// try {
-            // con.eval("dev.off()"); // XXX temporarily disabled
-	//} catch (RserveException e) {
-        //obj.error("from dev.off(): " + e.getMessage());
-        //}
+         try {
+             con.eval("dev.off()");
+        } catch (RserveException e) {
+             obj.error("from dev.off(): " + e.getMessage());
+        }
 
         // addPngResults(file, obj);
         addSvgResults(file, obj);
 
-	return obj;
+        return obj;
     }
 
     @POST
@@ -345,27 +336,19 @@ public class RShellRest {
         return completionStrings;
     }
 
-    private void newEvaluator(String id)
-	throws RserveException
-    {
+    private void newEvaluator(String id) {
         try {
             RConnection con = new RConnection();
-            System.out.println("connection:");
-            System.out.println(con);
-            REXP x = con.eval("R.version.string");
-            System.out.println("version: " + x.asString());
             _shells.put(id, con);
-        } catch (REXPMismatchException e) {
-            System.out.println("REXPMismatchException");
         } catch (RserveException e) {
             System.out.println("RserveException");
         }
     }
 
     private RConnection getEvaluator(String shellID) {
-	if (shellID == null || shellID.isEmpty()) {
-	    shellID = "default";
-	}
-	return _shells.get(shellID);
+        if (shellID == null || shellID.isEmpty()) {
+            shellID = "default";
+        }
+        return _shells.get(shellID);
     }
 }

@@ -92,6 +92,6 @@ Our Python plugin uses the [IPython](http://ipython.org/ipython-doc/stable/insta
 Download [Julia](http://julialang.org/downloads/) and then in a Julia REPL saying Pkg.add("IJulia").
 
 ### R
-Install [R](http://cran.r-project.org/bin/macosx/) then say:
+Install [R](http://cran.r-project.org/bin/macosx/) and [XQuartz](http://xquartz.macosforge.org/landing/) then run R and say:
 
     install.packages('Rserve',,'http://www.rforge.net/')

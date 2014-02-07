@@ -37,9 +37,6 @@ public class TableDisplaySerializer
     {
         jgen.writeStartObject();
         jgen.writeObjectField("type", "TableDisplay");
-        jgen.writeObjectField("timeZone", "UTC");
-        jgen.writeObjectField("rowCount", 2);
-        jgen.writeObjectField("columnCount", 2);
         jgen.writeObjectField("columnNames", value.columns);
         jgen.writeObjectField("values", value.values);
         jgen.writeEndObject();

@@ -12,8 +12,8 @@
             "shellID": null
         },
         {
-            "name": "Python",
-            "plugin": "Python",
+            "name": "IPython",
+            "plugin": "IPython",
             "shellID": "595CD9D6B74B4CD88C073D44E5CB6DAF",
             "imports": "",
             "supplementalClassPath": ""
@@ -48,7 +48,7 @@
             "class": [
                 "code"
             ],
-            "evaluator": "Python",
+            "evaluator": "IPython",
             "input": {
                 "body": ""
             },
@@ -67,7 +67,7 @@
     },
     "tagMap2": {
         "initialization": [],
-        "Python": [
+        "IPython": [
             "code001"
         ]
     }

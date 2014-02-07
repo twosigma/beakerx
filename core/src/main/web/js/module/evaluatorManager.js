@@ -36,7 +36,7 @@
             menuPluginManager // TODO, we need to get rid of this dependency
             ) {
             var nameToUrl = {// for known plugins, so we can refer to the plugin with either its name or URL
-                "Python": "./plugin/evaluator/python.js",
+                "IPython": "./plugin/evaluator/ipython.js",
                 "Julia": "./plugin/evaluator/julia.js",
                 "R": "./plugin/evaluator/r.js",
                 "JavaScript": "./plugin/evaluator/javaScript.js",
@@ -44,7 +44,7 @@
                 "Html": "./plugin/evaluator/html.js"
             };
             var knownEvaluators = [
-                {name: "Python"},
+                {name: "IPython"},
                 {name: "Julia"},
                 {name: "R"},
                 {name: "Html"},

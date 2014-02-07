@@ -31,7 +31,7 @@
         var convertCodeCell = function (ipyCodeCell) {
             var bkrCodeCell = {
                 "id": "code" + generateID(6),
-                "evaluator": "Python",
+                "evaluator": "IPython",
                 "class": ["code"],
                 "input": {
                     "body": ""
@@ -113,8 +113,8 @@
                         "plugin": "./plugin/evaluator/latex.js"
                     },
                     {
-                        "name": "Python",
-                        "plugin": "Python",
+                        "name": "IPython",
+                        "plugin": "IPython",
                         "imports": "",
                         "supplementalClassPath": ""
                     }
@@ -130,7 +130,7 @@
                 },
                 tagMap2: {
                     "initialization": [],
-                    "Python": []
+                    "IPython": []
                 }
             };
         };
@@ -158,7 +158,7 @@
                     if (bkrCell) {
                         bkrNb.cells.push(bkrCell);
                         bkrNb.tagMap.root.push(bkrCell.id);
-                        bkrNb.tagMap2.Python.push(bkrCell.id);
+                        bkrNb.tagMap2.IPython.push(bkrCell.id);
                     }
                 });
                 return bkrNb;

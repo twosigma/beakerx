@@ -12,8 +12,8 @@
             "shellID": null
         },
         {
-            "name": "Python",
-            "plugin": "Python",
+            "name": "IPython",
+            "plugin": "IPython",
             "shellID": "3650D8A2EA2647F0A9B0B81FAC80F0D4",
             "imports": "",
             "supplementalClassPath": ""
@@ -48,7 +48,7 @@
             "class": [
                 "markdown"
             ],
-            "body": "#Overview\n\nBeaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.\n\nBeaker content is organized into \"cells.\" This cell is written using Markdown. To edit the content, move your mouse over the cell and click the 'eye' icon.\n\n##Text\n\nThere are several options for adding text to your notebook:\n\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n##Code\n\nThere are also many available programming languages:\n\n* Python\n* Julia\n* JavaScript\n\nWe are planning to add support very soon for:\n\n* R\n* Groovy\n* Scala\n\n##Plugins\n\nAll of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.\n\n\n",
+            "body": "#Overview\n\nBeaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.\n\nBeaker content is organized into \"cells.\" This cell is written using Markdown. To edit the content, move your mouse over the cell and click the 'eye' icon.\n\n##Text\n\nThere are several options for adding text to your notebook:\n\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n##Code\n\nThere are also many available programming languages:\n\n* IPython\n* Julia\n* JavaScript\n\nWe are planning to add support very soon for:\n\n* R\n* Groovy\n* Scala\n\n##Plugins\n\nAll of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.\n\n\n",
             "mode": "preview"
         },
         {
@@ -65,7 +65,7 @@
             "class": [
                 "code"
             ],
-            "evaluator": "Python",
+            "evaluator": "IPython",
             "input": {
                 "body": "++a"
             },
@@ -85,7 +85,7 @@
             "class": [
                 "markdown"
             ],
-            "body": "And here's some more Python.",
+            "body": "And here's some more IPython.",
             "mode": "preview"
         },
         {
@@ -153,7 +153,7 @@
             "class": [
                 "code"
             ],
-            "evaluator": "Python",
+            "evaluator": "IPython",
             "input": {
                 "body": "a = 1\na"
             },
@@ -173,7 +173,7 @@
             "class": [
                 "code"
             ],
-            "evaluator": "Python",
+            "evaluator": "IPython",
             "input": {
                 "body": "hist([1,2,2])"
             },
@@ -189,7 +189,7 @@
             "class": [
                 "markdown"
             ],
-            "body": "Here's some Python code. To run it, move your cursor into the cell and press CTRL-ENTER.",
+            "body": "Here's some IPython code. To run it, move your cursor into the cell and press CTRL-ENTER.",
             "mode": "preview"
         }
     ],
@@ -228,7 +228,7 @@
         "initialization": [],
         "Html": [],
         "JavaScript": [],
-        "Python": [
+        "IPython": [
             "codeh1TYII",
             "codecWlPMc",
             "code3E0zXv"

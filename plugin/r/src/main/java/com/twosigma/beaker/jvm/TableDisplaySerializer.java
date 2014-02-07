@@ -39,6 +39,7 @@ public class TableDisplaySerializer
         jgen.writeObjectField("type", "TableDisplay");
         jgen.writeObjectField("columnNames", value.columns);
         jgen.writeObjectField("values", value.values);
+        // there is an optional field timeStrings XXX
         jgen.writeEndObject();
     }
 }

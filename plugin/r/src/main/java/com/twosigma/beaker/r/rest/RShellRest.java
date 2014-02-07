@@ -44,6 +44,7 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.r.json.serializer.StringObject;
 import com.twosigma.beaker.rest.ROutputHandler;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.TableDisplay;
 
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
@@ -223,6 +224,7 @@ public class RShellRest {
     }
 
     private boolean isDataFrame(REXP result, SimpleEvaluationObject obj) {
+        TableDisplay table;
         try {
             RList list = result.asList();
             int cols = list.size();
@@ -246,10 +248,11 @@ public class RShellRest {
                 }
                 values.add(row);
             }
+            table = new TableDisplay(values, Arrays.asList(names), classes);
         } catch (REXPMismatchException e) {
             return false;
         }
-        obj.finished(null); // XXX hacked out
+        obj.finished(table);
         return true;
     }
 

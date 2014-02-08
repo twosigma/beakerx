@@ -73,13 +73,7 @@ We've only tried running Beaker on Mac OS X. We'll be working on support for Lin
     cd ../../core
     gradle run
     
-##Connect your browser
-
-You will see a message like this:
-
-    Connect to http://mbpjchendy.local:8801/beaker/
-    
-Open that URL in any modern web browser (we primarily use Chrome, but also testing Firefox and Safari).  You can also just use http://localhost:8801/beaker.
+Your default browser will automatically launch and connect to Beaker.
 
 ##Plugin Languages
 

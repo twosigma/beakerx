@@ -73,7 +73,7 @@ We've only tried running Beaker on Mac OS X. We'll be working on support for Lin
     cd ../../core
     gradle run
     
-Your default browser will automatically launch and connect to Beaker.
+Your default browser will automatically launch and connect to Beaker.  If you need JDK7 get it from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html).
 
 ##Plugin Languages
 

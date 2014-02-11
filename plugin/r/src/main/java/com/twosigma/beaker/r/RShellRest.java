@@ -44,7 +44,7 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.json.serializer.StringObject;
 import com.twosigma.beaker.r.ROutputHandler;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.TableDisplay;
+import com.twosigma.beaker.jvm.object.TableDisplay;
 
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;

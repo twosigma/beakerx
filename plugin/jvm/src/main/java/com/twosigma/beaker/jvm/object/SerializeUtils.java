@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.jvm.json.serializer;
+package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
-import com.twosigma.beaker.jvm.TableDisplay;
+import com.twosigma.beaker.jvm.object.TableDisplay;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 

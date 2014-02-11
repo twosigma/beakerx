@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.jvm;
+package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;

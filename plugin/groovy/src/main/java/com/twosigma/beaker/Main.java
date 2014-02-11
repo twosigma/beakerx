@@ -21,7 +21,6 @@ import com.twosigma.beaker.jvm.module.GuiceCometdModule;
 import com.twosigma.beaker.jvm.module.SerializerModule;
 import com.twosigma.beaker.module.URLConfigModule;
 import com.twosigma.beaker.jvm.module.WebServerModule;
-import com.twosigma.beaker.r.plugin.r.StartRPlugin;
 import org.eclipse.jetty.server.Server;
 
 
@@ -45,7 +44,7 @@ public class Main {
         java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
 
         if (args.length != 1) {
-            System.out.println("usage: rPlugin <port>");
+            System.out.println("usage: groovyPlugin <port>");
         }
         int port = Integer.parseInt(args[0]);
 
@@ -59,8 +58,6 @@ public class Main {
         System.clearProperty("java.naming.provider.url");
 
         Platform.setInjector(injector);
-
-        StartRPlugin.StartRserve(injector);
 
         Server server = injector.getInstance(Server.class);
         server.start();

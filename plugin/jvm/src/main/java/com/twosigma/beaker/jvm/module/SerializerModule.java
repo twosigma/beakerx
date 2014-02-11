@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.r.module;
+package com.twosigma.beaker.jvm.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.r.json.serializer.StringObject;
-import com.twosigma.beaker.r.json.serializer.StringObjectSerializer;
+import com.twosigma.beaker.json.serializer.StringObject;
+import com.twosigma.beaker.json.serializer.StringObjectSerializer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObjectSerializer;
 import com.twosigma.beaker.jvm.json.serializer.EvaluationResultSerializer;

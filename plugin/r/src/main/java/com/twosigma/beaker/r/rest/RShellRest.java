@@ -41,7 +41,7 @@ import javax.ws.rs.core.Response;
 import javax.imageio.ImageIO;
 
 import com.google.inject.Singleton;
-import com.twosigma.beaker.r.json.serializer.StringObject;
+import com.twosigma.beaker.json.serializer.StringObject;
 import com.twosigma.beaker.rest.ROutputHandler;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.TableDisplay;
@@ -77,20 +77,6 @@ public class RShellRest {
         _rOutputHandler = new ROutputHandler(stream, beginMagic, endMagic);
         _rOutputHandler.start();
     }
-
-    @POST
-    @Path("test")
-    public String test1()
-    {
-        return "tresult";
-    }
-    @POST
-    @Path("test2")
-    public StringObject test2()
-    {
-        return new StringObject("tresult2");
-    }
-
 
     @POST
     @Path("getShell")

@@ -19,8 +19,6 @@ package com.twosigma.beaker.r.plugin.r;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.twosigma.beaker.Platform;
-import com.twosigma.beaker.r.module.GuiceCometdModule;
-import com.twosigma.beaker.r.module.SerializerModule;
 import com.twosigma.beaker.rest.ErrorGobbler;
 import com.twosigma.beaker.r.rest.RShellRest;
 import java.io.BufferedReader;

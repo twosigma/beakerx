@@ -4,6 +4,5 @@ mainClassName = 'com.twosigma.beaker.Main'
 dependencies {
     compile project(':shared')
     compile project(':plugin:jvm')
-    compile group: 'net.rforge', name: 'Rserve', version: '0.6-8.1'
     compile group: 'com.google.collections', name: 'google-collections', version: '1.0'
 }

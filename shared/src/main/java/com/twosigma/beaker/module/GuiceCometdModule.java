@@ -33,14 +33,7 @@ import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.JacksonJSONContextServer;
 
-/**
- * Taken from https://github.com/Ovea/cometd-contrib/blob/master/src/main/java/com/ovea/cometd/guice/GuiceCometdModule.java
- *
- * Didn't release because of baggage (ovea-json)
- * Created: Oct 16, 2012
- *
- * @author snguyen
- */
+// Should load from cometd-contrib
 public class GuiceCometdModule
     extends AbstractModule
 {

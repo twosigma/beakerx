@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.r.rest;
+package com.twosigma.beaker.r;
 
 import java.io.File;
 import java.io.InputStream;
@@ -42,7 +42,7 @@ import javax.imageio.ImageIO;
 
 import com.google.inject.Singleton;
 import com.twosigma.beaker.json.serializer.StringObject;
-import com.twosigma.beaker.rest.ROutputHandler;
+import com.twosigma.beaker.r.ROutputHandler;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.TableDisplay;
 

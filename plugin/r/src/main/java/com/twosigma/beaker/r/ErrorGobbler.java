@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.rest;
+package com.twosigma.beaker.r;
 
 import java.io.BufferedReader;
 import java.io.IOException;

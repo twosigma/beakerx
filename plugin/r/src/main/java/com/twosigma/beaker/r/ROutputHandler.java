@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.rest;
+package com.twosigma.beaker.r;
 
 /*
  * Watch the output of the R process and capture the part between

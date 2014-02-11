@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.r.plugin.r;
+package com.twosigma.beaker.r;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.twosigma.beaker.Platform;
-import com.twosigma.beaker.rest.ErrorGobbler;
-import com.twosigma.beaker.r.rest.RShellRest;
+import com.twosigma.beaker.r.ErrorGobbler;
+import com.twosigma.beaker.r.RShellRest;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;

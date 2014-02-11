@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.module;
+package com.twosigma.beaker.r;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import com.twosigma.beaker.r.rest.RShellRest;
+import com.twosigma.beaker.r.RShellRest;
 import com.twosigma.beaker.servlet.GuiceCometdServlet;
 import java.util.HashMap;
 import org.cometd.server.JacksonJSONContextServer;

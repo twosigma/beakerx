@@ -48,5 +48,6 @@ subprojects {
         compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17.1'
         compile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
         compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1' 
+        compile group: 'com.google.collections', name: 'google-collections', version: '1.0'
     }
 }

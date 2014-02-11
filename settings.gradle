@@ -1,1 +1,1 @@
-include "shared", "core", "plugin:r"
+include "shared", "core", "plugin:jvm", "plugin:r", "plugin:groovy"

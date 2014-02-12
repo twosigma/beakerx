@@ -21,7 +21,7 @@
     'use strict';
 
     // utilities
-    var createTagMap = function (cells) {
+    var generateCellMap = function (cells) {
         var decoratedCells = {
             "root": {
                 id: "root",
@@ -32,6 +32,9 @@
                 allDescendants: []
             }
         };
+        if (!cells || cells.length === 0) {
+            return decoratedCells;
+        }
 
         cells.forEach(function (cell, index) {
             decoratedCells[cell.id] = {
@@ -49,7 +52,8 @@
         stack.peek = function () {
             return this[this.length - 1];
         };
-        _(decoratedCells).chain().toArray().slice(1).each(function (cell) {
+        _(decoratedCells).each(function (cell) {
+            if (cell.id === "root") { return; }
             while (stack.peek().level >= cell.level) {
                 stack.pop();
             }
@@ -63,20 +67,77 @@
         return decoratedCells;
     };
 
+    var generateTagMap = function (cellMap) {
+        // initialization cells
+        var initializationCells = _(cellMap).chain()
+            .filter(function (cell) {
+                return cell.raw && cell.raw.initialization;
+            })
+            .map(function (cell) {
+                if (cell.raw.type === "code") {
+                    return cell;
+                } else {
+                    return _(cell.allDescendants).chain()
+                        .map(function (childId) {
+                            return cellMap[childId];
+                        })
+                        .filter(function (c) {
+                            return c.raw.type === "code";
+                        })
+                        .value();
+                }
+            })
+            .flatten()
+            .uniq()
+            .sortBy(function (cell) {
+                return cell.rawIndex;
+            })
+            .map(function (cell) {
+                return cell.raw;
+            })
+            .value();
+
+        // evaluators
+        var evaluatorMap = {};
+        evaluatorMap.add = function(key, value) {
+            if (!this[key]) {
+                this[key] = [];
+            }
+            this[key].push(value);
+        };
+        _(cellMap).chain()
+            .filter(function (cell) {
+                return cell.raw && cell.raw.type === "code";
+            })
+            .each(function (codeCell) {
+                evaluatorMap.add(codeCell.raw.evaluator, codeCell.raw);
+            });
+
+        return {
+            initialization: initializationCells,
+            evaluator: evaluatorMap
+        };
+    };
+
     var module = angular.module("M_bkNotebookCellModelManager", []);
     module.factory("bkNotebookCellModelManager", function () {
         var cells = [];
         var cellMap = {};
-        var recreateTagMap = function () {
-            cellMap = createTagMap(cells);
+        var tagMap = {};
+        var recreateCellMap = function () {
+            cellMap = generateCellMap(cells);
+            tagMap = generateTagMap(cellMap);
         };
         return {
-            _getTagMap: function () {
+            _getCellMap: function () {
                 return cellMap;
+            },
+            _getTagMap: function () {
+                return tagMap;
             },
             reset: function (_cells_) {
                 cells = _cells_;
-                recreateTagMap();
+                recreateCellMap();
             },
             getCells: function () {
                 return cells;
@@ -135,16 +196,20 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                recreateTagMap();
+                recreateCellMap();
             },
             insertAfter: function (id, cell) {
+                if (!_.isObject(cell)) {
+                    throw "unacceptable"
+                }
+
                 var index = this.getIndex(id);
                 if (index !== -1) {
                     cells.splice(index + 1, 0, cell);
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                recreateTagMap();
+                recreateCellMap();
             },
             moveUp: function (id) {
                 var index = this.getIndex(id);
@@ -159,7 +224,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                recreateTagMap();
+                recreateCellMap();
             },
             moveDown: function (id) {
                 var index = this.getIndex(id);
@@ -174,14 +239,14 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                recreateTagMap();
+                recreateCellMap();
             },
             delete: function (id) {
                 var index = this.getIndex(id);
                 if (index !== -1) {
                     cells.splice(index, 1);
                 }
-                recreateTagMap();
+                recreateCellMap();
             },
             deleteSection: function (id) {
                 var cell = this.getCell(id);
@@ -194,8 +259,60 @@
                 var index = this.getIndex(id);
                 var descendants = this.getAllDescendants(id);
                 cells.splice(index, descendants.length + 1);
-                recreateTagMap();
+                recreateCellMap();
                 return [cell].concat(descendants);
+            },
+
+            // not tested
+            getNext: function (id) {
+                var index = this.getIndex(id);
+                if (index === cells.length - 1) {
+                    return null;
+                }
+                return this.getCellAtIndex(index + 1);
+            },
+            getPrev: function (id) {
+                var index = this.getIndex(id);
+                if (index === 0) {
+                    return null;
+                }
+                return this.getCellAtIndex(index - 1);
+            },
+            isContainer: function (id) {
+                return this.getCell(id).level || this.getCell(id).level === 0;
+            },
+            isEmpty: function (id) {
+                return this._getDecoratedCell(id).allDescendants.length === 0;
+            },
+            appendAfter: function (id, cell) {
+                if (this.isContainer(id) && !this.isEmpty(id)) {
+                    // add to tail
+                    var descendants = this.getAllDescendants(id);
+                    this.insertAfter(descendants[descendants.length - 1].id, this.clipboard);
+                } else {
+                    // append after
+                    this.insertAfter(id, cell);
+                }
+            },
+            getInitializationCells: function () {
+                return tagMap.initialization;
+            },
+            getCellsWithEvaluator: function (evaluator) {
+                return tagMap.evaluator[evaluator];
+            },
+            clipboard: null,
+            cut: function (id) {
+                if (this.clipboard) {
+                    this.delete(this.clipboard);
+                }
+                this.clipboard = this.getCell(id);
+                this.delete(id);
+            },
+            paste: function (destinationID) {
+                if (this.clipboard) {
+                    this.append(destinationID, this.clipboard);
+                    this.clipboard = null;
+                }
             }
         };
     });

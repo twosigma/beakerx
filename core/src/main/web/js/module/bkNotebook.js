@@ -227,13 +227,15 @@
                             {
                                 name: "Code cell",
                                 action: function () {
-                                    bkBaseSessionModel.cellOp.addLast("root", undefined, "codeCell");
+                                    var newCell = bkBaseSessionModel.newCodeCell();
+                                    bkBaseSessionModel.cellOp.appendAfter("root", newCell);
                                 }
                             },
                             {
                                 name: "Section cell",
                                 action: function () {
-                                    bkBaseSessionModel.cellOp.addLast("root", undefined, "sectionCell");
+                                    var newCell = bkBaseSessionModel.newSectionCell();
+                                    bkBaseSessionModel.cellOp.appendAfter("root", newCell);
                                 }
                             }
                         ]

@@ -47,7 +47,7 @@ describe("M_bkNotebookCellModelManager", function() {
                     sect05, // h2
                         sect06 // h3
             ]);
-            var theTree = bkNotebookCellModelManager._getTagMap();
+            var theTree = bkNotebookCellModelManager._getCellMap();
 
             expect(theTree["root"].children).toEqual(["sect02"]);
             expect(theTree["code04"].children).toEqual([]);
@@ -158,6 +158,8 @@ describe("M_bkNotebookCellModelManager", function() {
             expect(bkNotebookCellModelManager.getAllDescendants("sect05")).toEqual([sect06]);
             expect(bkNotebookCellModelManager.getAllDescendants("sect02")).toEqual([code04, sect03, code05, sect04, code06, sect05, sect06, sect07, code07]);
             expect(bkNotebookCellModelManager.getAllDescendants("sect08")).toEqual([sect09, sect10, code08, code09]);
+            expect(bkNotebookCellModelManager.getAllDescendants("root"))
+                .toEqual(cells);
         });
         it("should delete cell", function () {
             bkNotebookCellModelManager.reset([code01, code02, code03, code04]);
@@ -234,6 +236,52 @@ describe("M_bkNotebookCellModelManager", function() {
                         sect06 // h3
             ]);
             expect(bkNotebookCellModelManager.getAllCodeCells("sect02")).toEqual([code04, code05, code06]);
-        })
+        });
+        it("should generate tag maps", function () {
+            var cells = [
+                code01,
+                sect01, // h2
+                    code02,
+                    code03,
+                sect02, // h1
+                    code04,
+                    sect03, // h2
+                        code05,
+                        sect04, // h3
+                            code06,
+                    sect05, // h2
+                        sect06, // h3
+                    sect07, // h2
+                        code07,
+                sect08, // h1
+                    sect09, //h3
+                    sect10, //h2
+                        code08,
+                        code09
+            ];
+
+            code08.initialization = true;
+            bkNotebookCellModelManager.reset(cells);
+            expect(bkNotebookCellModelManager.getInitializationCells()).toEqual([code08]);
+            sect08.initialization = true;
+            bkNotebookCellModelManager.reset(cells);
+            expect(bkNotebookCellModelManager.getInitializationCells()).toEqual([code08, code09]);
+            sect01.initialization = true;
+            bkNotebookCellModelManager.reset(cells);
+            expect(bkNotebookCellModelManager.getInitializationCells()).toEqual([code02, code03, code08, code09]);
+            code06.initialization = true;
+            bkNotebookCellModelManager.reset(cells);
+            expect(bkNotebookCellModelManager.getInitializationCells()).toEqual([code02, code03, code06, code08, code09]);
+            code01.evaluator = "Groovy";
+            code02.evaluator = "R";
+            code04.evaluator = "IPython"
+            code08.evaluator = "Groovy";
+            code09.evaluator = "IPython";
+            bkNotebookCellModelManager.reset(cells);
+            expect(bkNotebookCellModelManager.getCellsWithEvaluator("Groovy")).toEqual([code01, code08]);
+            expect(bkNotebookCellModelManager.getCellsWithEvaluator("IPython")).toEqual([code04, code09]);
+            expect(bkNotebookCellModelManager.getCellsWithEvaluator("R")).toEqual([code02]);
+        });
+
     });
 });

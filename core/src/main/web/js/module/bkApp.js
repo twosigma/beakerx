@@ -111,8 +111,7 @@
                             }
 
                             // Backup current session if it's not empty.
-                            if (bkBaseSessionModel.getSessionID() &&
-                                Object.keys(bkBaseSessionModel.getNotebookModel()).length > 0) {
+                            if (bkBaseSessionModel.getSessionID() && !_.isEmpty(bkBaseSessionModel.getNotebookModel())) {
                                 bkSession.backupSession(bkBaseSessionModel.getSessionData());
                             }
 
@@ -236,7 +235,8 @@
                         },
                         evaluate: function (toEval) {
                             var cellOp = bkBaseSessionModel.cellOp;
-                            // toEval can be a tagName (string)
+                            // toEval can be a tagName (string), which is for now either "initialization" or the name
+                            //      of an evaluator, user defined tags is not supported yet.
                             // or a cellID (string)
                             // or a cellModel
                             // or an array of cellModels
@@ -244,22 +244,24 @@
                                 if (cellOp.getCell(toEval)) {
                                     // this is a cellID
                                     if (cellOp.isContainer(toEval)) {
-                                        // this is a section cell, in this case toEval is going to be an array of cellModel
-                                        var cellIDs = bkBaseSessionModel.hierachicalLayout.getAllCellsInOrder(toEval);
-                                        toEval = _.map(cellIDs, function (cellID) {
-                                            return cellOp.getCell(cellID);
-                                        });
+                                        // this is a section cell or root cell
+                                        // in this case toEval is going to be an array of cellModels
+                                        toEval = bkBaseSessionModel.cellOp.getAllCodeCells(toEval);
                                     } else {
                                         // single cell, just get the cell model from cellID
                                         toEval = cellOp.getCell(toEval);
                                     }
                                 } else {
-                                    // not a cellID, assuming it is a tagName
-                                    // in this case toEval is going to be an array of cellModel
-                                    var cellIDs = bkBaseSessionModel.hierachicalLayout.getTaggedCellsInOrder(toEval);
-                                    toEval = _.map(cellIDs, function (cellID) {
-                                        return cellOp.getCell(cellID);
-                                    });
+                                    // not a cellID
+                                    if (toEval === "initialization") {
+                                        // in this case toEval is going to be an array of cellModels
+                                        toEval = bkBaseSessionModel.cellOp.getInitializationCells(toEval);
+                                    } else {
+                                        // assume it is a evaluator name,
+                                        // in this case toEval is going to be an array of cellModels
+                                        toEval = bkBaseSessionModel.cellOp.getCellsWithEvaluator(toEval);
+                                    }
+                                    // TODO, we want to support user tagging cell in the future
                                 }
                             }
                             if (!_.isArray(toEval)) {
@@ -378,7 +380,7 @@
                 var sessionID = $routeParams.sessionID;
                 if (sessionID) {
                     if (sessionID === "new") {
-                        bkCoreManager.newDefaultNotebook(function (notebookJSON) {
+                        bkCoreManager.getDefaultNotebook().then(function (notebookJSON) {
                             _impl.loadNotebook(notebookJSON, true);
                             document.title = "New Notebook";
                         });

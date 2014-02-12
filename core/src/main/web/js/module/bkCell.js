@@ -47,7 +47,7 @@
             restrict: 'E',
             template: '<div class="bkcell">' +
                 '<div ng-if="isDebugging()">' +
-                '[Debug]: cell ID = {{cellmodel.id}}, parent = {{getParentID()}}, level = {{getNestedLevel()}} ' +
+                '[Debug]: cell ID = {{cellmodel.id}}, parent = {{getParentID()}}, level = {{cellmodel.level}} ' +
                 '<a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>' +
                 '<a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()">show less</a>' +
                 '<div collapse="!isShowDebugInfo()">' +
@@ -94,12 +94,7 @@
                         return !bkBaseSessionModel.cellOp.isContainer($scope.cellmodel.id);
                     },
                     attachCell: function (newCell) {
-                        var parentID = bkBaseSessionModel.cellOp.getParentID($scope.cellmodel.id);
-                        var myIndex = bkBaseSessionModel.cellOp.getIndex($scope.cellmodel.id, parentID);
-                        bkBaseSessionModel.cellOp.attach(newCell.id, parentID, myIndex + 1);
-                    },
-                    insertSectionCell: function (level) { // treat section cell insertion differently
-                        bkBaseSessionModel.cellOp.insertSection($scope.cellmodel.id, level);
+                        bkBaseSessionModel.cellOp.insertAfter($scope.cellmodel.id, newCell);
                     }
                 };
 
@@ -124,7 +119,7 @@
                 $scope.cellview.menu.addItem({
                     name: "Delete cell",
                     action: function () {
-                        bkBaseSessionModel.cellOp.deleteCell($scope.cellmodel.id, false);
+                        bkBaseSessionModel.cellOp.delete($scope.cellmodel.id, false);
                     }
                 });
                 $scope.cellview.menu.addItem({
@@ -157,7 +152,7 @@
                     }
                 });
                 $scope.getTypeCellUrl = function () {
-                    var type = $scope.cellmodel.class[0];
+                    var type = $scope.cellmodel.type;
                     return type + "Cell.html";
                 };
             },
@@ -205,20 +200,21 @@
                 };
 
                 $scope.newCodeCell = function (evaluatorName) {
-                    var newCell = bkBaseSessionModel.cellOp.newCodeCell(undefined, evaluatorName);
+                    var newCell = bkBaseSessionModel.newCodeCell(evaluatorName);
                     $scope.config.attachCell(newCell);
                 };
                 $scope.newTextCell = function () {
-                    var newCell = bkBaseSessionModel.cellOp.newTextCell();
+                    var newCell = bkBaseSessionModel.newTextCell();
                     $scope.config.attachCell(newCell);
                 };
                 $scope.newMarkdownCell = function () {
-                    var newCell = bkBaseSessionModel.cellOp.newMarkdownCell();
+                    var newCell = bkBaseSessionModel.newMarkdownCell();
                     $scope.config.attachCell(newCell);
                 };
 
                 $scope.newSectionCell = function (level) {
-                    $scope.config.insertSectionCell(level);
+                    var newCell = bkBaseSessionModel.newSectionCell(level);
+                    $scope.config.attachCell(newCell);
                 };
             },
             link: function (scope, element, attrs) {
@@ -281,13 +277,13 @@
                 $scope.cellview.menu.addItemToHead({
                     name: "Delete section and children",
                     action: function () {
-                        bkBaseSessionModel.cellOp.deleteCell($scope.cellmodel.id);
+                        bkBaseSessionModel.cellOp.delete($scope.cellmodel.id);
                     }
                 });
                 $scope.cellview.menu.addItemToHead({
                     name: "Delete section header",
                     action: function () {
-                        bkBaseSessionModel.cellOp.deleteCell($scope.cellmodel.id, false);
+                        bkBaseSessionModel.cellOp.delete($scope.cellmodel.id, false);
                     }
                 });
                 $scope.cellview.menu.addItem({
@@ -296,13 +292,15 @@
                         {
                             name: "Code cell",
                             action: function () {
-                                bkBaseSessionModel.cellOp.addFirst($scope.cellmodel.id, undefined, "codeCell");
+                                var newCell = bkBaseSessionModel.newCodeCell();
+                                bkBaseSessionModel.cellOp.insertAfter($scope.cellmodel.id, newCell);
                             }
                         },
                         {
                             name: "Section cell",
                             action: function () {
-                                bkBaseSessionModel.cellOp.addFirst($scope.cellmodel.id, undefined, "sectionCell");
+                                var newCell = bkBaseSessionModel.newSectionCell($scope.cellmodel.level + 1);
+                                bkBaseSessionModel.cellOp.insertAfter($scope.cellmodel.id, newCell);
                             }
                         }
                     ]
@@ -316,8 +314,7 @@
                         cellModel: $scope.cellmodel,
                         evViewModel: evaluatorManager.getViewModel(),
                         notebookModel: {
-                            cells: bkBaseSessionModel.cellOp.getAllDescendants($scope.cellmodel.id),
-                            tagMap: bkBaseSessionModel.getNotebookModel().tagMap
+                            cells: bkBaseSessionModel.cellOp.getAllDescendants($scope.cellmodel.id)
                         }
                     };
                 };
@@ -352,14 +349,10 @@
                         if (bkBaseSessionModel.isNotebookLocked()) {
                             return false;
                         }
-                        return bkBaseSessionModel.cellOp.isContainer($scope.cellmodel.id)
-                            && !$scope.cellmodel.hideTitle;
+                        return !$scope.cellmodel.hideTitle;
                     },
                     attachCell: function (newCell) {
-                        bkBaseSessionModel.cellOp.attach(newCell.id, $scope.cellmodel.id, 0);
-                    },
-                    insertSectionCell: function (level) {
-                        bkBaseSessionModel.cellOp.insertSection($scope.cellmodel.id, level);
+                        bkBaseSessionModel.cellOp.insertAfter($scope.cellmodel.id, newCell);
                     }
                 };
             },

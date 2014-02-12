@@ -67,7 +67,20 @@
     module.factory("bkNotebookCellModelManager", function () {
         var cells = [];
         var cellMap = {};
-        var cellOp = {
+        var recreateTagMap = function () {
+            cellMap = createTagMap(cells);
+        };
+        return {
+            _getTagMap: function () {
+                return cellMap;
+            },
+            reset: function (_cells_) {
+                cells = _cells_;
+                recreateTagMap();
+            },
+            getCells: function () {
+                return cells;
+            },
             getIndex: function (id) {
                 return cellMap[id] ? cellMap[id].rawIndex : -1;
             },
@@ -183,22 +196,6 @@
                 cells.splice(index, descendants.length + 1);
                 recreateTagMap();
                 return [cell].concat(descendants);
-            }
-        };
-        var recreateTagMap = function () {
-            cellMap = createTagMap(cells);
-        };
-        return {
-            reset: function (_cells_) {
-                cells = _cells_;
-                recreateTagMap();
-            },
-            cellOp: cellOp,
-            getCells: function () {
-                return cells;
-            },
-            _getTagMap: function () {
-                return cellMap;
             }
         };
     });

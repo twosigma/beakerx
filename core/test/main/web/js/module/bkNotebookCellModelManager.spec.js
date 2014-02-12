@@ -57,22 +57,22 @@ describe("M_bkNotebookCellModelManager", function() {
         });
         it("should get a cell from id", function () {
             bkNotebookCellModelManager.reset([code01]);
-            expect(bkNotebookCellModelManager.cellOp.getCell("code01")).toBe(code01);
+            expect(bkNotebookCellModelManager.getCell("code01")).toBe(code01);
         });
         it("should get a cell from index", function () {
             bkNotebookCellModelManager.reset([code01]);
-            expect(bkNotebookCellModelManager.cellOp.getCellAtIndex(0)).toBe(code01);
-            expect(bkNotebookCellModelManager.cellOp.getCellAtIndex(-1)).toBe(undefined);
+            expect(bkNotebookCellModelManager.getCellAtIndex(0)).toBe(code01);
+            expect(bkNotebookCellModelManager.getCellAtIndex(-1)).toBe(undefined);
         });
         it("should get the type of a cell", function () {
             bkNotebookCellModelManager.reset([code01]);
-            expect(bkNotebookCellModelManager.cellOp.getCellType("code01")).toBe("code");
+            expect(bkNotebookCellModelManager.getCellType("code01")).toBe("code");
         });
         it("should get the index of a cell in cells list", function () {
             bkNotebookCellModelManager.reset([code01, code02, code03]);
-            expect(bkNotebookCellModelManager.cellOp.getIndex("code01")).toBe(0);
-            expect(bkNotebookCellModelManager.cellOp.getIndex("code02")).toBe(1);
-            expect(bkNotebookCellModelManager.cellOp.getIndex("code03")).toBe(2);
+            expect(bkNotebookCellModelManager.getIndex("code01")).toBe(0);
+            expect(bkNotebookCellModelManager.getIndex("code02")).toBe(1);
+            expect(bkNotebookCellModelManager.getIndex("code03")).toBe(2);
         });
         it("should get the parent of a cell", function () {
             var cells = [
@@ -97,9 +97,9 @@ describe("M_bkNotebookCellModelManager", function() {
                         code09
             ];
             bkNotebookCellModelManager.reset(cells);
-            expect(bkNotebookCellModelManager.cellOp.getParent("code01")).toBeUndefined();
-            expect(bkNotebookCellModelManager.cellOp.getParent("code02")).toBe(sect01);
-            expect(bkNotebookCellModelManager.cellOp.getParent("code06")).toBe(sect04);
+            expect(bkNotebookCellModelManager.getParent("code01")).toBeUndefined();
+            expect(bkNotebookCellModelManager.getParent("code02")).toBe(sect01);
+            expect(bkNotebookCellModelManager.getParent("code06")).toBe(sect04);
         });
         it("should get children of a cell", function () {
             var cells = [
@@ -124,11 +124,11 @@ describe("M_bkNotebookCellModelManager", function() {
                         code09
             ];
             bkNotebookCellModelManager.reset(cells);
-            expect(bkNotebookCellModelManager.cellOp.getChildren("code01")).toEqual([]);
-            expect(bkNotebookCellModelManager.cellOp.getChildren("sect01")).toEqual([code02, code03]);
-            expect(bkNotebookCellModelManager.cellOp.getChildren("sect05")).toEqual([sect06]);
-            expect(bkNotebookCellModelManager.cellOp.getChildren("sect02")).toEqual([code04, sect03, sect05, sect07]);
-            expect(bkNotebookCellModelManager.cellOp.getChildren("sect08")).toEqual([sect09, sect10]);
+            expect(bkNotebookCellModelManager.getChildren("code01")).toEqual([]);
+            expect(bkNotebookCellModelManager.getChildren("sect01")).toEqual([code02, code03]);
+            expect(bkNotebookCellModelManager.getChildren("sect05")).toEqual([sect06]);
+            expect(bkNotebookCellModelManager.getChildren("sect02")).toEqual([code04, sect03, sect05, sect07]);
+            expect(bkNotebookCellModelManager.getChildren("sect08")).toEqual([sect09, sect10]);
         });
         it("should get all descendants of a cell", function () {
             var cells = [
@@ -153,53 +153,53 @@ describe("M_bkNotebookCellModelManager", function() {
                         code09
             ];
             bkNotebookCellModelManager.reset(cells);
-            expect(bkNotebookCellModelManager.cellOp.getAllDescendants("code01")).toEqual([]);
-            expect(bkNotebookCellModelManager.cellOp.getAllDescendants("sect01")).toEqual([code02, code03]);
-            expect(bkNotebookCellModelManager.cellOp.getAllDescendants("sect05")).toEqual([sect06]);
-            expect(bkNotebookCellModelManager.cellOp.getAllDescendants("sect02")).toEqual([code04, sect03, code05, sect04, code06, sect05, sect06, sect07, code07]);
-            expect(bkNotebookCellModelManager.cellOp.getAllDescendants("sect08")).toEqual([sect09, sect10, code08, code09]);
+            expect(bkNotebookCellModelManager.getAllDescendants("code01")).toEqual([]);
+            expect(bkNotebookCellModelManager.getAllDescendants("sect01")).toEqual([code02, code03]);
+            expect(bkNotebookCellModelManager.getAllDescendants("sect05")).toEqual([sect06]);
+            expect(bkNotebookCellModelManager.getAllDescendants("sect02")).toEqual([code04, sect03, code05, sect04, code06, sect05, sect06, sect07, code07]);
+            expect(bkNotebookCellModelManager.getAllDescendants("sect08")).toEqual([sect09, sect10, code08, code09]);
         });
         it("should delete cell", function () {
             bkNotebookCellModelManager.reset([code01, code02, code03, code04]);
-            bkNotebookCellModelManager.cellOp.delete("code02");
+            bkNotebookCellModelManager.delete("code02");
             expect(bkNotebookCellModelManager.getCells()).toEqual([code01, code03, code04]);
-            bkNotebookCellModelManager.cellOp.delete("code01");
+            bkNotebookCellModelManager.delete("code01");
             expect(bkNotebookCellModelManager.getCells()).toEqual([code03, code04]);
-            bkNotebookCellModelManager.cellOp.delete("code04");
+            bkNotebookCellModelManager.delete("code04");
             expect(bkNotebookCellModelManager.getCells()).toEqual([code03]);
-            bkNotebookCellModelManager.cellOp.delete("code05");
+            bkNotebookCellModelManager.delete("code05");
             expect(bkNotebookCellModelManager.getCells()).toEqual([code03]);
         });
         it("should insert cell - before", function () {
             bkNotebookCellModelManager.reset([code01, code03]);
-            bkNotebookCellModelManager.cellOp.insertBefore("code03", code02);
-            bkNotebookCellModelManager.cellOp.insertBefore("code01", code04);
+            bkNotebookCellModelManager.insertBefore("code03", code02);
+            bkNotebookCellModelManager.insertBefore("code01", code04);
             expect(bkNotebookCellModelManager.getCells()).toEqual([code04, code01, code02, code03]);
 
-            expect(function () { bkNotebookCellModelManager.cellOp.insertBefore("code00", code04) })
+            expect(function () { bkNotebookCellModelManager.insertBefore("code00", code04) })
                 .toThrow("target cell code00 was not found");
         });
         it("should insert cell - after", function () {
             bkNotebookCellModelManager.reset([code01, code03]);
-            bkNotebookCellModelManager.cellOp.insertAfter("code01", code02);
-            bkNotebookCellModelManager.cellOp.insertAfter("code03", code04);
+            bkNotebookCellModelManager.insertAfter("code01", code02);
+            bkNotebookCellModelManager.insertAfter("code03", code04);
             expect(bkNotebookCellModelManager.getCells()).toEqual([code01, code02, code03, code04]);
 
-            expect(function () { bkNotebookCellModelManager.cellOp.insertAfter("code00", code04) })
+            expect(function () { bkNotebookCellModelManager.insertAfter("code00", code04) })
                 .toThrow("target cell code00 was not found");
         });
         it("should move a cell up", function () {
             bkNotebookCellModelManager.reset([code01, code02, code03]);
-            bkNotebookCellModelManager.cellOp.moveUp("code02");
+            bkNotebookCellModelManager.moveUp("code02");
             expect(bkNotebookCellModelManager.getCells()).toEqual([code02, code01, code03]);
-            bkNotebookCellModelManager.cellOp.moveUp("code02");
+            bkNotebookCellModelManager.moveUp("code02");
             expect(bkNotebookCellModelManager.getCells()).toEqual([code02, code01, code03]);
         });
         it("should move a cell down", function () {
             bkNotebookCellModelManager.reset([code01, code02, code03]);
-            bkNotebookCellModelManager.cellOp.moveDown("code02");
+            bkNotebookCellModelManager.moveDown("code02");
             expect(bkNotebookCellModelManager.getCells()).toEqual([code01, code03, code02]);
-            bkNotebookCellModelManager.cellOp.moveDown("code02");
+            bkNotebookCellModelManager.moveDown("code02");
             expect(bkNotebookCellModelManager.getCells()).toEqual([code01, code03, code02]);
         });
         it("should delete a section", function () {
@@ -213,13 +213,13 @@ describe("M_bkNotebookCellModelManager", function() {
                     sect05, // h2
                         sect06 // h3
             ]);
-            expect(function () { bkNotebookCellModelManager.cellOp.deleteSection("code04") })
+            expect(function () { bkNotebookCellModelManager.deleteSection("code04") })
                 .toThrow("target cell code04 is not a section cell");
-            bkNotebookCellModelManager.cellOp.deleteSection("sect03");
+            bkNotebookCellModelManager.deleteSection("sect03");
             expect(bkNotebookCellModelManager.getCells()).toEqual([sect02, code04, sect05, sect06]);
-            bkNotebookCellModelManager.cellOp.deleteSection("sect02");
+            bkNotebookCellModelManager.deleteSection("sect02");
             expect(bkNotebookCellModelManager.getCells()).toEqual([]);
-            expect(function () { bkNotebookCellModelManager.cellOp.deleteSection("sect02") })
+            expect(function () { bkNotebookCellModelManager.deleteSection("sect02") })
                 .toThrow("target cell sect02 was not found");
         });
         it("should get code cells", function () {
@@ -233,7 +233,7 @@ describe("M_bkNotebookCellModelManager", function() {
                     sect05, // h2
                         sect06 // h3
             ]);
-            expect(bkNotebookCellModelManager.cellOp.getAllCodeCells("sect02")).toEqual([code04, code05, code06]);
+            expect(bkNotebookCellModelManager.getAllCodeCells("sect02")).toEqual([code04, code05, code06]);
         })
     });
 });

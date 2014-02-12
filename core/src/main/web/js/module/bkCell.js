@@ -344,6 +344,20 @@
                         shareMenu.items = getShareMenu($scope);
                     }
                 });
+                $scope.cellview.menu.addItem({
+                    name: "Initialization Cell",
+                    isChecked: function () {
+                        return $scope.cellmodel.initialization;
+                    },
+                    action: function () {
+                        if ($scope.cellmodel.initialization) {
+                            $scope.cellmodel.initialization = undefined;
+                        } else {
+                            $scope.cellmodel.initialization = true;
+                        }
+                        bkBaseSessionModel.cellOp.recreateCellMap();
+                    }
+                });
                 $scope.newCellMenuConfig = {
                     isShow: function () {
                         if (bkBaseSessionModel.isNotebookLocked()) {

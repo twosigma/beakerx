@@ -39,6 +39,7 @@
                 "IPython": "./plugin/evaluator/ipython.js",
                 "Julia": "./plugin/evaluator/julia.js",
                 "R": "./plugin/evaluator/r.js",
+                "Groovy": "./plugin/evaluator/groovy.js",
                 "JavaScript": "./plugin/evaluator/javaScript.js",
                 "Latex": "./plugin/evaluator/latex.js",
                 "Html": "./plugin/evaluator/html.js"
@@ -47,6 +48,7 @@
                 {name: "IPython"},
                 {name: "Julia"},
                 {name: "R"},
+                {name: "Groovy"},
                 {name: "Html"},
                 {name: "JavaScript"},
                 {name: "Latex"}

@@ -13,12 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.groovy.rest;
+package com.twosigma.beaker.groovy;
 
 import com.google.inject.Singleton;
-
 import com.twosigma.beaker.json.serializer.StringObject;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import groovy.lang.GroovyShell;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -38,15 +38,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-/**
- *
- * @author alee
- */
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
 @Path("groovysh")
 public class GroovyShellRest
 {
+
+    private final Map<String, GroovyShell> _shells = new HashMap<String, GroovyShell>();
 
     public GroovyShellRest() throws IOException {
 	newEvaluator("default");
@@ -55,7 +53,12 @@ public class GroovyShellRest
     @Path("getShell")
     public StringObject getShell(
             @FormParam("shellid") String shellID) throws InterruptedException {
-        return null;
+        if (!shellID.isEmpty() && _shells.containsKey(shellID)) {
+            // System.out.println("found shell " + shellID + " on server.");
+            return new StringObject(shellID);
+        } else {
+            return newShell();
+        }
     }
 
     @POST
@@ -120,8 +123,11 @@ public class GroovyShellRest
 	    @FormParam("shellID") String shellID,
 	    @FormParam("code") String code
 	    ) throws InterruptedException {
-	// System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
+        System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
 	SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
+        obj.started();
+        GroovyShell shell = getEvaluator(shellID);
+        obj.finished(shell.evaluate(code));
 	return obj;
     }
 
@@ -173,5 +179,13 @@ public class GroovyShellRest
     }
 
     private void newEvaluator(String id) {
+        _shells.put(id, new GroovyShell());
+    }
+
+    private GroovyShell getEvaluator(String shellID) {
+        if (shellID == null || shellID.isEmpty()) {
+            shellID = "default";
+        }
+        return _shells.get(shellID);
     }
 }

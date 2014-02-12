@@ -234,6 +234,7 @@
                             }
                         },
                         evaluate: function (toEval) {
+                            console.log(toEval);
                             var cellOp = bkBaseSessionModel.cellOp;
                             // toEval can be a tagName (string), which is for now either "initialization" or the name
                             //      of an evaluator, user defined tags is not supported yet.
@@ -241,12 +242,12 @@
                             // or a cellModel
                             // or an array of cellModels
                             if (typeof toEval === "string") {
-                                if (cellOp.getCell(toEval)) {
+                                if (cellOp.hasCell(toEval)) {
                                     // this is a cellID
                                     if (cellOp.isContainer(toEval)) {
                                         // this is a section cell or root cell
                                         // in this case toEval is going to be an array of cellModels
-                                        toEval = bkBaseSessionModel.cellOp.getAllCodeCells(toEval);
+                                        toEval = cellOp.getAllCodeCells(toEval);
                                     } else {
                                         // single cell, just get the cell model from cellID
                                         toEval = cellOp.getCell(toEval);
@@ -255,11 +256,12 @@
                                     // not a cellID
                                     if (toEval === "initialization") {
                                         // in this case toEval is going to be an array of cellModels
-                                        toEval = bkBaseSessionModel.cellOp.getInitializationCells(toEval);
+                                        toEval = cellOp.getInitializationCells(toEval);
                                     } else {
+                                        console.log(toEval);
                                         // assume it is a evaluator name,
                                         // in this case toEval is going to be an array of cellModels
-                                        toEval = bkBaseSessionModel.cellOp.getCellsWithEvaluator(toEval);
+                                        toEval = cellOp.getCellsWithEvaluator(toEval);
                                     }
                                     // TODO, we want to support user tagging cell in the future
                                 }

@@ -148,8 +148,11 @@
             getCellAtIndex: function (index) {
                 return cells[index];
             },
+            hasCell: function (id) {
+                return !!cellMap[id];
+            },
             _getDecoratedCell: function (id) {
-                if (cellMap[id]) {
+                if (this.hasCell(id)) {
                     return cellMap[id];
                 } else {
                     throw "target cell " + id + " was not found";

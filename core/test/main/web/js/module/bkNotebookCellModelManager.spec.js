@@ -6,7 +6,7 @@ describe("M_bkNotebookCellModelManager", function() {
     function SectionCell (id, level) {
         this.type = "section";
         this.id = id;
-        this.level = level; // for level, root is 0, h1 is 1, h2 is 2
+        this.level = level; // root is 0, h1 is 1, h2 is 2
     };
     var code01 = new CodeCell("code01");
     var code02 = new CodeCell("code02");

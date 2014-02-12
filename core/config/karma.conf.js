@@ -16,6 +16,7 @@ module.exports = function (config) {
         files: [
             'src/main/web/vendor/bower_components/angular/angular.js',
             'src/main/web/vendor/bower_components/angular-mocks/angular-mocks.js',
+            'src/main/web/vendor/bower_components/underscore/underscore.js',
             'src/main/web/js/module/bkNotebookCellModelManager.js',
             'test/main/web/js/module/bkNotebookCellModelManager.spec.js'
         ],

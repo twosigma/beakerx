@@ -20,49 +20,100 @@
 (function () {
     'use strict';
 
+    // utilities
+    var createTagMap = function (cells) {
+        var decoratedCells = {
+            "root": {
+                id: "root",
+                raw: null,
+                level: 0,
+                parent: null,
+                children: [],
+                allDescendants: []
+            }
+        };
+
+        cells.forEach(function (cell, index) {
+            decoratedCells[cell.id] = {
+                id: cell.id,
+                raw: cell,
+                rawIndex: index,
+                level: cell.level > 0 ? cell.level : Number.POSITIVE_INFINITY,
+                parent: null,
+                children: [],
+                allDescendants: []
+            }
+        });
+
+        var stack = [decoratedCells.root];
+        stack.peek = function () {
+            return this[this.length - 1];
+        };
+        _(decoratedCells).chain().toArray().slice(1).each(function (cell) {
+            while (stack.peek().level >= cell.level) {
+                stack.pop();
+            }
+            decoratedCells[stack.peek().id].children.push(cell.id);
+            decoratedCells[cell.id].parent = stack.peek().id;
+            stack.forEach(function (c) {
+                decoratedCells[c.id].allDescendants.push(cell.id);
+            });
+            stack.push(cell);
+        });
+        return decoratedCells;
+    };
+
     var module = angular.module("M_bkNotebookCellModelManager", []);
     module.factory("bkNotebookCellModelManager", function () {
         var cells = [];
-        var cleanup = function () {
-        };
-
+        var cellMap = {};
         var cellOp = {
             getIndex: function (id) {
-                for (var i = 0; i < cells.length; ++i) {
-                    if (cells[i].id === id) {
-                        return i;
-                    }
-                }
-                return -1;
+                return cellMap[id] ? cellMap[id].rawIndex : -1;
             },
             getCellAtIndex: function (index) {
                 return cells[index];
             },
+            _getDecoratedCell: function (id) {
+                if (cellMap[id]) {
+                    return cellMap[id];
+                } else {
+                    throw "target cell " + id + " was not found";
+                }
+            },
             getCell: function (id) {
-                return _(cells).find(function (cell) {
-                    return cell.id === id;
-                });
+                return this._getDecoratedCell(id).raw;
             },
             getCellType: function (id) {
                 return this.getCell(id).type;
             },
             getCellLevel: function () {
-
+                return this.getCell(id).level;
+            },
+            getParent: function (id) {
+                var parentId = this._getDecoratedCell(id).parent;
+                if (parentId === "root") {
+                    return;
+                } else {
+                    return this.getCell(parentId);
+                }
             },
             getChildren: function (id) {
-                var target = this.getCell(id);
-                if (target.type !== "section") {
-                    return [];
-                }
-                var i, cell, children = [];
-                for (i = this.getIndex(id) + 1; i < cells.length; ++i) {
-                    cell = cells[i];
-                    if (cell.level && cell.level <= target.level) {
-                        break;
-                    }
-                    children.push(cell);
-                }
-                return children;
+                var self = this;
+                return this._getDecoratedCell(id).children.map(function (childId) {
+                    return self.getCell(childId);
+                });
+            },
+            getAllDescendants: function (id) {
+                var self = this;
+                return this._getDecoratedCell(id).allDescendants.map(function (childId) {
+                    return self.getCell(childId);
+                });
+            },
+            getAllCodeCells: function (id) {
+                return this.getAllDescendants(id).filter(function (cell) {
+                    return cell.type === "code";
+                });
             },
             insertBefore: function (id, cell) {
                 var index = this.getIndex(id);
@@ -71,6 +122,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
+                recreateTagMap();
             },
             insertAfter: function (id, cell) {
                 var index = this.getIndex(id);
@@ -79,6 +131,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
+                recreateTagMap();
             },
             moveUp: function (id) {
                 var index = this.getIndex(id);
@@ -93,6 +146,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
+                recreateTagMap();
             },
             moveDown: function (id) {
                 var index = this.getIndex(id);
@@ -107,12 +161,14 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
+                recreateTagMap();
             },
             delete: function (id) {
                 var index = this.getIndex(id);
                 if (index !== -1) {
                     cells.splice(index, 1);
                 }
+                recreateTagMap();
             },
             deleteSection: function (id) {
                 var cell = this.getCell(id);
@@ -123,21 +179,26 @@
                     throw "target cell " + id + " is not a section cell";
                 }
                 var index = this.getIndex(id);
-                var children = this.getChildren(id);
-                cells.splice(index, children.length + 1);
-                return [cell].concat(children);
+                var descendants = this.getAllDescendants(id);
+                cells.splice(index, descendants.length + 1);
+                recreateTagMap();
+                return [cell].concat(descendants);
             }
         };
-
+        var recreateTagMap = function () {
+            cellMap = createTagMap(cells);
+        };
         return {
             reset: function (_cells_) {
-                /* reset the notebook cell model to be managed */
-                cleanup();
                 cells = _cells_;
+                recreateTagMap();
             },
             cellOp: cellOp,
             getCells: function () {
                 return cells;
+            },
+            _getTagMap: function () {
+                return cellMap;
             }
         };
     });

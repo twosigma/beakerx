@@ -124,10 +124,6 @@
         var cells = [];
         var cellMap = {};
         var tagMap = {};
-        var recreateCellMap = function () {
-            cellMap = generateCellMap(cells);
-            tagMap = generateTagMap(cellMap);
-        };
         return {
             _getCellMap: function () {
                 return cellMap;
@@ -135,9 +131,13 @@
             _getTagMap: function () {
                 return tagMap;
             },
+            recreateCellMap: function () {
+                cellMap = generateCellMap(cells);
+                tagMap = generateTagMap(cellMap);
+            },
             reset: function (_cells_) {
                 cells = _cells_;
-                recreateCellMap();
+                this.recreateCellMap();
             },
             getCells: function () {
                 return cells;
@@ -199,7 +199,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                recreateCellMap();
+                this.recreateCellMap();
             },
             insertAfter: function (id, cell) {
                 if (!_.isObject(cell)) {
@@ -212,7 +212,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                recreateCellMap();
+                this.recreateCellMap();
             },
             moveUp: function (id) {
                 var index = this.getIndex(id);
@@ -227,7 +227,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                recreateCellMap();
+                this.recreateCellMap();
             },
             moveDown: function (id) {
                 var index = this.getIndex(id);
@@ -242,14 +242,14 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                recreateCellMap();
+                this.recreateCellMap();
             },
             delete: function (id) {
                 var index = this.getIndex(id);
                 if (index !== -1) {
                     cells.splice(index, 1);
                 }
-                recreateCellMap();
+                this.recreateCellMap();
             },
             deleteSection: function (id) {
                 var cell = this.getCell(id);
@@ -262,7 +262,7 @@
                 var index = this.getIndex(id);
                 var descendants = this.getAllDescendants(id);
                 cells.splice(index, descendants.length + 1);
-                recreateCellMap();
+                this.recreateCellMap();
                 return [cell].concat(descendants);
             },
 
@@ -282,7 +282,7 @@
                 return this.getCellAtIndex(index - 1);
             },
             isContainer: function (id) {
-                return this.getCell(id).level || this.getCell(id).level === 0;
+                return this._getDecoratedCell(id).level || id === "root";
             },
             isEmpty: function (id) {
                 return this._getDecoratedCell(id).allDescendants.length === 0;

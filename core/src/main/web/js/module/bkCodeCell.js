@@ -195,6 +195,7 @@
                         } else {
                             $scope.cellmodel.initialization = true;
                         }
+                        bkBaseSessionModel.cellOp.recreateCellMap();
                     }
                 });
                 $scope.$on("$destroy", function () {

@@ -119,7 +119,7 @@
                 $scope.cellview.menu.addItem({
                     name: "Delete cell",
                     action: function () {
-                        bkBaseSessionModel.cellOp.delete($scope.cellmodel.id, false);
+                        bkBaseSessionModel.cellOp.delete($scope.cellmodel.id);
                     }
                 });
                 $scope.cellview.menu.addItem({
@@ -277,35 +277,41 @@
                         bkBaseSessionModel.setEdited(true);
                     }
                 });
-                $scope.cellview.menu.removeItem("Delete cell");
-
                 $scope.cellview.menu.addItemToHead({
                     name: "Delete section and children",
                     action: function () {
                         bkBaseSessionModel.cellOp.delete($scope.cellmodel.id);
                     }
                 });
-                $scope.cellview.menu.addItemToHead({
-                    name: "Delete section header",
-                    action: function () {
-                        bkBaseSessionModel.cellOp.delete($scope.cellmodel.id, false);
-                    }
-                });
                 $scope.cellview.menu.addItem({
-                    name: "Add to head",
+                    name: "Change Header Level",
                     items: [
                         {
-                            name: "Code cell",
+                            name: "H1",
                             action: function () {
-                                var newCell = bkBaseSessionModel.newCodeCell();
-                                bkBaseSessionModel.cellOp.insertAfter($scope.cellmodel.id, newCell);
+                                $scope.cellmodel.level = 1;
+                                bkBaseSessionModel.cellOp.reset();
                             }
                         },
                         {
-                            name: "Section cell",
+                            name: "H2",
                             action: function () {
-                                var newCell = bkBaseSessionModel.newSectionCell($scope.cellmodel.level + 1);
-                                bkBaseSessionModel.cellOp.insertAfter($scope.cellmodel.id, newCell);
+                                $scope.cellmodel.level = 2;
+                                bkBaseSessionModel.cellOp.reset();
+                            }
+                        },
+                        {
+                            name: "H3",
+                            action: function () {
+                                $scope.cellmodel.level = 3;
+                                bkBaseSessionModel.cellOp.reset();
+                            }
+                        },
+                        {
+                            name: "H4",
+                            action: function () {
+                                $scope.cellmodel.level = 4;
+                                bkBaseSessionModel.cellOp.reset();
                             }
                         }
                     ]
@@ -331,7 +337,7 @@
                     return bkCellPluginManager.getPlugin(cellType);
                 };
                 $scope.cellview.menu.addItem({
-                    name: "Run",
+                    name: "Run all",
                     action: function () {
                         bkCoreManager.getBkApp().evaluate($scope.cellmodel.id).
                             catch(function (data) {
@@ -349,18 +355,21 @@
                         shareMenu.items = getShareMenu($scope);
                     }
                 });
+                $scope.isInitializationCell = function () {
+                    return $scope.cellmodel.initialization;
+                };
                 $scope.cellview.menu.addItem({
                     name: "Initialization Cell",
                     isChecked: function () {
-                        return $scope.cellmodel.initialization;
+                        return $scope.isInitializationCell();
                     },
                     action: function () {
-                        if ($scope.cellmodel.initialization) {
+                        if ($scope.isInitializationCell()) {
                             $scope.cellmodel.initialization = undefined;
                         } else {
                             $scope.cellmodel.initialization = true;
                         }
-                        bkBaseSessionModel.cellOp.recreateCellMap();
+                        bkBaseSessionModel.cellOp.reset();
                     }
                 });
                 $scope.newCellMenuConfig = {
@@ -376,12 +385,27 @@
                 };
             },
             link: function (scope, element, attrs) {
+                console.log("section element ", element);
                 var titleElement = $(element.find(".bk-section-title").first());
                 titleElement.bind('blur', function () {
                     scope.resetTitle(titleElement.html().trim());
                 });
                 scope.$watch('isContentEditable()', function (newValue) {
                     titleElement.attr('contenteditable', newValue);
+                });
+                if (scope.isInitializationCell()) {
+                    element.closest(".bkcell").addClass("initcell");
+                } else {
+                    element.closest(".bkcell").removeClass("initcell");
+                }
+                scope.$watch('isInitializationCell()', function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        if (newValue) {
+                            element.closest(".bkcell").addClass("initcell");
+                        } else {
+                            element.closest(".bkcell").removeClass("initcell");
+                        }
+                    }
                 });
             }
         };

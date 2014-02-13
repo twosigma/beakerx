@@ -237,7 +237,6 @@
                             }
                         },
                         evaluate: function (toEval) {
-                            console.log(toEval);
                             var cellOp = bkBaseSessionModel.cellOp;
                             // toEval can be a tagName (string), which is for now either "initialization" or the name
                             //      of an evaluator, user defined tags is not supported yet.
@@ -259,7 +258,7 @@
                                     // not a cellID
                                     if (toEval === "initialization") {
                                         // in this case toEval is going to be an array of cellModels
-                                        toEval = cellOp.getInitializationCells(toEval);
+                                        toEval = bkBaseSessionModel.getInitializationCells(toEval);
                                     } else {
                                         console.log(toEval);
                                         // assume it is a evaluator name,

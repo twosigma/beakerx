@@ -124,6 +124,10 @@
         var cells = [];
         var cellMap = {};
         var tagMap = {};
+        var recreateCellMap = function () {
+            cellMap = generateCellMap(cells);
+            tagMap = generateTagMap(cellMap);
+        };
         return {
             _getCellMap: function () {
                 return cellMap;
@@ -131,13 +135,11 @@
             _getTagMap: function () {
                 return tagMap;
             },
-            recreateCellMap: function () {
-                cellMap = generateCellMap(cells);
-                tagMap = generateTagMap(cellMap);
-            },
             reset: function (_cells_) {
-                cells = _cells_;
-                this.recreateCellMap();
+                if (_cells_) {
+                    cells = _cells_;
+                }
+                recreateCellMap();
             },
             getCells: function () {
                 return cells;
@@ -199,7 +201,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                this.recreateCellMap();
+                recreateCellMap();
             },
             insertAfter: function (id, cell) {
                 if (!_.isObject(cell)) {
@@ -212,7 +214,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                this.recreateCellMap();
+                recreateCellMap();
             },
             moveUp: function (id) {
                 var index = this.getIndex(id);
@@ -227,7 +229,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                this.recreateCellMap();
+                recreateCellMap();
             },
             moveDown: function (id) {
                 var index = this.getIndex(id);
@@ -242,7 +244,7 @@
                 } else {
                     throw "target cell " + id + " was not found";
                 }
-                this.recreateCellMap();
+                recreateCellMap();
             },
             delete: function (id) {
                 // delete the cell,
@@ -252,7 +254,7 @@
                 if (index !== -1) {
                     cells.splice(index, 1);
                 }
-                this.recreateCellMap();
+                recreateCellMap();
             },
             deleteSection: function (id) {
                 // delete the section cell as well as all its descendants
@@ -266,7 +268,7 @@
                 var index = this.getIndex(id);
                 var descendants = this.getAllDescendants(id);
                 cells.splice(index, descendants.length + 1);
-                this.recreateCellMap();
+                recreateCellMap();
                 return [cell].concat(descendants);
             },
 

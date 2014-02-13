@@ -220,26 +220,10 @@
                         shareMenu.items = getShareMenu($scope);
                     }
                 });
+                $scope.isInitializationCell = function () {
+                    return bkBaseSessionModel.getNotebookModel().initializeAll;
+                };
                 $scope.menuItems = [
-                    {
-                        name: "Add cell",
-                        items: [
-                            {
-                                name: "Code cell",
-                                action: function () {
-                                    var newCell = bkBaseSessionModel.newCodeCell();
-                                    bkBaseSessionModel.cellOp.appendAfter("root", newCell);
-                                }
-                            },
-                            {
-                                name: "Section cell",
-                                action: function () {
-                                    var newCell = bkBaseSessionModel.newSectionCell();
-                                    bkBaseSessionModel.cellOp.appendAfter("root", newCell);
-                                }
-                            }
-                        ]
-                    },
                     {
                         name: "Run all",
                         action: function () {
@@ -247,6 +231,20 @@
                                 catch(function (data) {
                                     console.error(data);
                                 });
+                        }
+                    },
+                    {
+                        name: "Initialization Cell",
+                        isChecked: function () {
+                            return $scope.isInitializationCell();
+                        },
+                        action: function () {
+                            if ($scope.isInitializationCell()) {
+                                bkBaseSessionModel.getNotebookModel().initializeAll = undefined;
+                            } else {
+                                bkBaseSessionModel.getNotebookModel().initializeAll = true;
+                            }
+                            bkBaseSessionModel.cellOp.reset();
                         }
                     },
                     shareMenu
@@ -262,6 +260,20 @@
                         menu.css("left", event.clientX - 150);
                         menu.find('.dropdown-toggle').first().dropdown('toggle');
                         event.stopPropagation();
+                    }
+                });
+                if (scope.isInitializationCell()) {
+                    div.addClass("initcell");
+                } else {
+                    div.removeClass("initcell");
+                }
+                scope.$watch('isInitializationCell()', function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        if (newValue) {
+                            div.addClass("initcell");
+                        } else {
+                            div.removeClass("initcell");
+                        }
                     }
                 });
             }

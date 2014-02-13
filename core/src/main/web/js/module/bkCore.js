@@ -165,6 +165,13 @@
                     "type": "markdown",
                     "body": ""
                 };
+            },
+            getInitializationCells: function () {
+                if (_notebookModel.initializeAll) {
+                    return this.cellOp.getAllCodeCells("root");
+                } else {
+                    return this.cellOp.getInitializationCells();
+                }
             }
         };
 

@@ -188,15 +188,15 @@
                 $scope.cellmenu.addItem({
                     name: "Initialization Cell",
                     isChecked: function () {
-                        return $scope.cellmodel.initialization;
+                        return $scope.isInitializationCell();
                     },
                     action: function () {
-                        if ($scope.cellmodel.initialization) {
+                        if ($scope.isInitializationCell()) {
                             $scope.cellmodel.initialization = undefined;
                         } else {
                             $scope.cellmodel.initialization = true;
                         }
-                        bkBaseSessionModel.cellOp.recreateCellMap();
+                        bkBaseSessionModel.cellOp.reset();
                     }
                 });
                 $scope.$on("$destroy", function () {
@@ -396,21 +396,17 @@
                     }
                 });
 
-                // TODO, this is a quick hack to get initialization cell easily identified in UI
-                // we want to refactor this so it doesn't rely on the actually DOM structure (.parent().parent() to
-                // get the outter div) but instead, expose the cell view model to the code cell, and have the code cell
-                // controller update the view model to update the actual UI.
                 if (scope.isInitializationCell()) {
-                    element.parent().parent().addClass("initcell");
+                    element.closest(".bkcell").addClass("initcell");
                 } else {
-                    element.parent().parent().removeClass("initcell");
+                    element.closest(".bkcell").removeClass("initcell");
                 }
                 scope.$watch('isInitializationCell()', function (newValue, oldValue) {
                     if (newValue !== oldValue) {
                         if (newValue) {
-                            element.parent().parent().addClass("initcell");
+                            element.closest(".bkcell").addClass("initcell");
                         } else {
-                            element.parent().parent().removeClass("initcell");
+                            element.closest(".bkcell").removeClass("initcell");
                         }
                     }
                 });

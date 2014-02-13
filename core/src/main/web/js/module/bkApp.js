@@ -33,7 +33,8 @@
         'M_bkNotebook',
         'M_evaluatorManager',
         'M_menuPlugin',
-        'M_bkCellPluginManager'
+        'M_bkCellPluginManager',
+        'M_bkNotebookVersionManager'
     ]);
 
     /**
@@ -59,7 +60,8 @@
                 bkCellPluginManager,
                 bkBaseSessionModel,
                 bkCoreManager,
-                bkAppEvaluate)
+                bkAppEvaluate,
+                bkNotebookVersionManager)
             {
                 var _impl = (function () {
                     var showTransientMessage = function (message) {
@@ -120,6 +122,7 @@
                                 sessionID = bkUtils.generateID(6);
                             }
                             bkBaseSessionModel.setSessionID(sessionID);
+                            notebookModel = bkNotebookVersionManager.open(notebookModel);
                             if (notebookModel && notebookModel.evaluators) {
                                 for (var i = 0; i < notebookModel.evaluators.length; ++i) {
                                     evaluatorManager.newEvaluator(notebookModel.evaluators[i], alwaysCreateNewEvaluators);

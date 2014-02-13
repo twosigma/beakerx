@@ -14,11 +14,12 @@
  *  limitations under the License.
  */
 /**
- * M_bkNotebookCellModelManager
- * Notebook Cell Model doesn't own the notebook model.
+ * M_bkNotebookVersionManager
+ * Offers utilities to convert beaker notebook of old versions to the latest version
  */
 (function () {
     'use strict';
+    var module = angular.module('M_bkNotebookVersionManager', []);
 
     var bkNbV1Converter = (function () {
         // in v1, cell level by definition is the count of steps away from "root" in the tree
@@ -148,8 +149,6 @@
         };
     })();
 
-
-    var module = angular.module('M_bkNotebookVersionManager', []);
     module.factory('bkNotebookVersionManager', function () {
         return {
             open: function (notebook) {

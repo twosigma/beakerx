@@ -89,3 +89,5 @@ Download [Julia](http://julialang.org/downloads/) and then in a Julia REPL sayin
 Install [R](http://cran.r-project.org/bin/macosx/) and [XQuartz](http://xquartz.macosforge.org/landing/) then run R and say:
 
     install.packages('Rserve',,'http://www.rforge.net/')
+
+(answer "yes" if it asks about installing a personal version or creating a directory.)

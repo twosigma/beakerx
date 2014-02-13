@@ -125,17 +125,24 @@
                 };
             },
             newSectionCell: function (level, title, id) {
+                if (!level && level !== 0) {
+                    level = 1;
+                }
                 if (level <= 0) {
                     throw "creating section cell with level " + level + " is not allowed";
                 }
+                if (!title) {
+                    title= "New Section H" + level
+                }
+
                 if (!id) {
                     id = "section" + generalUtils.generateID(6);
                 }
                 return {
                     "id": id,
                     "type": "section",
-                    "title": title !== undefined ? title : "New Section",
-                    "level": level ? level : 1
+                    "title": title,
+                    "level": level
                 };
             },
             newTextCell: function (id) {

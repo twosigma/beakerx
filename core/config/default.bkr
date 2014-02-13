@@ -1,5 +1,5 @@
 {
-    "beaker": "1",
+    "beaker": "2",
     "evaluators": [
         {
             "name": "Html",

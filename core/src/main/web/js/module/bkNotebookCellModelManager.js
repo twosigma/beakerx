@@ -282,7 +282,7 @@
                 return this.getCellAtIndex(index - 1);
             },
             isContainer: function (id) {
-                return this._getDecoratedCell(id).level || id === "root";
+                return id === "root" || !!this.getCell(id).level;
             },
             isEmpty: function (id) {
                 return this._getDecoratedCell(id).allDescendants.length === 0;

@@ -272,6 +272,11 @@
                         bkBaseSessionModel.setEdited(true);
                     }
                 });
+                $scope.$watch('cellmodel.initialization', function (newVal, oldVal) {
+                    if (newVal !== oldVal) {
+                        bkBaseSessionModel.setEdited(true);
+                    }
+                });
                 $scope.cellview.menu.removeItem("Delete cell");
 
                 $scope.cellview.menu.addItemToHead({

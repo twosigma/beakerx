@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.module;
+package com.twosigma.beaker.jvm.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;

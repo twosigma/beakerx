@@ -245,6 +245,9 @@
                 this.recreateCellMap();
             },
             delete: function (id) {
+                // delete the cell,
+                // note that if this is a section, its descendants are not deleted.
+                // to delete a seciton with all its descendants use deleteSection instead.
                 var index = this.getIndex(id);
                 if (index !== -1) {
                     cells.splice(index, 1);
@@ -252,6 +255,7 @@
                 this.recreateCellMap();
             },
             deleteSection: function (id) {
+                // delete the section cell as well as all its descendants
                 var cell = this.getCell(id);
                 if (!cell) {
                     throw "target cell " + id + " was not found";

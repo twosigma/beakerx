@@ -132,7 +132,7 @@
                         // if no evaluator specified, use the current evaluator
                         evaluatorName = $scope.cellmodel.evaluator;
                     }
-                    var newCell = bkBaseSessionModel.newCodeCell(undefined, evaluatorName);
+                    var newCell = bkBaseSessionModel.newCodeCell(evaluatorName);
                     bkBaseSessionModel.cellOp.appendAfter(thisCellID, newCell);
                     $rootScope.$$phase || $rootScope.$apply();
 

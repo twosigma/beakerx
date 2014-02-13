@@ -13,18 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * M_bkNotebookCellModelManager
- * Notebook Cell Model doesn't own the notebook model.
- */
-(function () {
-    'use strict';
-    var module = angular.module('M_bkNotebookVersionManager', []);
-    module.factory('bkNotebookVersionManager', function () {
-        return {
-            open: function (notebook) {
-                return "notebook opened";
-            }
-        };
+describe("M_bkNotebookVersionManager", function() {
+    var bkNotebookVersionManager;
+    beforeEach(module("M_bkNotebookVersionManager"));
+    beforeEach(inject(function (_bkNotebookVersionManager_) {
+        bkNotebookVersionManager = _bkNotebookVersionManager_;
+    }));
+
+    describe("bkNotebookVersionManager", function () {
+        it("should open a notebook", function () {
+            expect(bkNotebookVersionManager.open()).toBe("notebook opened");
+        });
     });
-})();
+});

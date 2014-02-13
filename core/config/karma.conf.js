@@ -18,7 +18,8 @@ module.exports = function (config) {
             'src/main/web/vendor/bower_components/angular-mocks/angular-mocks.js',
             'src/main/web/vendor/bower_components/underscore/underscore.js',
             'src/main/web/js/module/bkNotebookCellModelManager.js',
-            'test/unit/main/web/js/module/bkNotebookCellModelManager.spec.js'
+            'src/main/web/js/module/bkNotebookVersionManager.js',
+            'test/unit/**/*.js'
         ],
 
 

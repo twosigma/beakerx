@@ -66,7 +66,7 @@
     var Groovy = {
         pluginName: PLUGIN_NAME,
         cmMode: "groovy",
-        background: "#C0FOD0",
+        background: "#E0FFE0",
         newShell: function (shellID, cb) {
             if (!shellID) {
                 shellID = "";

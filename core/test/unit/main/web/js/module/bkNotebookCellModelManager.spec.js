@@ -297,6 +297,31 @@ describe("M_bkNotebookCellModelManager", function() {
             expect(bkNotebookCellModelManager.getCellsWithEvaluator("IPython")).toEqual([code04, code09]);
             expect(bkNotebookCellModelManager.getCellsWithEvaluator("R")).toEqual([code02]);
         });
+        it("should shift a continuous segment of cells", function () {
+            bkNotebookCellModelManager.reset([code01, code02, code03, code04, code05]);
+            expect(function () {
+                bkNotebookCellModelManager.shiftSegment(1, 2, 3);
+            }).toThrow("Illegal shifting, result would be out of bound");
+            expect(function () {
+                bkNotebookCellModelManager.shiftSegment(1, 2, -2);
+            }).toThrow("Illegal shifting, result would be out of bound");
+            bkNotebookCellModelManager.shiftSegment(1, 2, 2);
+            expect(bkNotebookCellModelManager.getCells()).toEqual([code01, code04, code05, code02, code03]);
+            bkNotebookCellModelManager.shiftSegment(3, 2, -2);
+            expect(bkNotebookCellModelManager.getCells()).toEqual([code01, code02, code03, code04, code05]);
+        });
+        it("should move a section cell up and down", function () {
+            bkNotebookCellModelManager.reset([sect02, sect08, code01]);
+            expect(bkNotebookCellModelManager.isPossibleToMoveSectionUp("sect02")).toBe(false);
+            expect(bkNotebookCellModelManager.isPossibleToMoveSectionUp("sect08")).toBe(true);
+            expect(bkNotebookCellModelManager.isPossibleToMoveSectionDown("sect02")).toBe(true);
+            expect(bkNotebookCellModelManager.isPossibleToMoveSectionDown("sect08")).toBe(false);
+
+            bkNotebookCellModelManager.moveSectionUp("sect08");
+            expect(bkNotebookCellModelManager.getCells()).toEqual([sect08, code01, sect02]);
+            bkNotebookCellModelManager.moveSectionDown("sect08");
+            expect(bkNotebookCellModelManager.getCells()).toEqual([sect02, sect08, code01]);
+        });
 
     });
 });

@@ -271,8 +271,81 @@
                 recreateCellMap();
                 return [cell].concat(descendants);
             },
+            shiftSegment: function (segBegin, segLength, offset) {
+                if (offset === 0) {
+                    return;
+                }
+                // this function shifts a continuous sequence of cells
+                if (segBegin + offset < 0 || segBegin + segLength - 1 + offset >= cells.length) {
+                    throw "Illegal shifting, result would be out of bound";
+                }
+                var slice1 = cells.slice(0, segBegin);
+                var slice2 = cells.slice(segBegin, segBegin + segLength);
+                var slice3 = cells.slice(segBegin + segLength);
+                var toBeMoved;
+                if (offset > 0) {
+                    // moving from slice 3 to slice 1
+                    toBeMoved = slice3.splice(0, offset);
+                    slice1 = slice1.concat(toBeMoved);
+                } else {
+                    // moving from slice 1 to slice 3
+                    toBeMoved = slice1.splice(slice1.length + offset, -offset);
+                    slice3 = toBeMoved.concat(slice3);
+                }
+                cells = _.flatten([slice1, slice2, slice3]);
+                recreateCellMap();
+            },
+            getPrevSibling: function (id) {
+                var parentId = this._getDecoratedCell(id).parent;
+                if (!parentId) {
+                    return null;
+                }
+                var siblingIds = this._getDecoratedCell(parentId).children;
+                var myIndexAmongSiblings = siblingIds.indexOf(id);
+                if (myIndexAmongSiblings === 0) {
+                    return null;
+                }
+                return this.getCell(siblingIds[myIndexAmongSiblings - 1]);
+            },
+            getNextSibling: function (id) {
+                var parentId = this._getDecoratedCell(id).parent;
+                if (!parentId) {
+                    return null;
+                }
+                var siblingIds = this._getDecoratedCell(parentId).children;
+                var myIndexAmongSiblings = siblingIds.indexOf(id);
+                if (myIndexAmongSiblings === siblingIds.length - 1) {
+                    return null;
+                }
+                return this.getCell(siblingIds[myIndexAmongSiblings + 1]);
+            },
+            isPossibleToMoveSectionUp: function (id) {
+                return !!this.getPrevSibling(id);
+            },
+            moveSectionUp: function (id) {
+                var index = this.getIndex(id);
+                var length = this.getSectionLength(id);
+                var prevSib = this.getPrevSibling(id);
+                if (!prevSib) {
+                    throw "Cannot move section up";
+                }
+                var prevSibId = prevSib.id;
+                var offset = -1 * this.getSectionLength(prevSibId);
+                this.shiftSegment(index, length, offset);
+            },
+            isPossibleToMoveSectionDown: function (id) {
+                return !!this.getNextSibling(id);
+            },
+            moveSectionDown: function (id) {
+                var nextSib = this.getNextSibling(id);
+                this.moveSectionUp(nextSib.id);
+            },
+            getSectionLength: function (id) {
+                // the cell itself plus all descendants
+                return 1 + this._getDecoratedCell(id).allDescendants.length;
+            },
 
-            // not tested
+            // The following has not been unit tested
             getNext: function (id) {
                 var index = this.getIndex(id);
                 if (index === cells.length - 1) {

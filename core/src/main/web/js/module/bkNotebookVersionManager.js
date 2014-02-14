@@ -176,6 +176,11 @@
                     }
                 }
 
+                // if beaker version is undefined
+                // treat it as beaker notebook v1
+                if (_.isUndefined(notebook.beaker)) {
+                    notebook.beaker = "1";
+                }
                 //check version and see if need conversion
                 if (notebook.beaker === "1") {
                     notebook = bkNbV1Converter.convert(notebook);

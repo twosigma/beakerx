@@ -331,7 +331,7 @@
                                         start += 1;
                                     }
                                     if (matched_text) {
-                                        start += (cursorPos - token.start - matched_text.length);
+                                        start += (cur.ch - token.start - matched_text.length);
                                         end = start + matched_text.length;
                                     }
                                     showHintCB({

@@ -385,7 +385,6 @@
                 };
             },
             link: function (scope, element, attrs) {
-                console.log("section element ", element);
                 var titleElement = $(element.find(".bk-section-title").first());
                 titleElement.bind('blur', function () {
                     scope.resetTitle(titleElement.html().trim());

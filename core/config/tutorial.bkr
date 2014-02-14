@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "99BDDC2DA14641BB8001F5A877F39EA5",
+            "shellID": "E6925BB0442042D080184FAE5005A1BD",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,7 +28,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "50a25db8-5c5e-4af9-ab3e-542d546c0957"
+            "shellID": "574dc950-c76a-47e7-82eb-79bc043b66f0"
         }
     ],
     "cells": [
@@ -53,8 +53,8 @@
             "class": [
                 "markdown"
             ],
-            "body": "#Overview\n\nBeaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.\n\nBeaker content is organized into \"cells.\" This cell is written using Markdown. To edit the content, move your mouse over the cell and click the 'eye' icon.\n\n##Text\n\nThere are several options for adding text to your notebook:\n\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n##Code\n\nThere are also many available programming languages:\n\n* IPython\n* Julia\n* JavaScript\n\nWe are planning to add support very soon for:\n\n* R\n* Groovy\n* Scala\n\n##Plugins\n\nAll of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.\n\n\n",
-            "mode": "preview"
+            "body": "#Overview\n\nBeaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.\n\nBeaker content is organized into \"cells.\" This cell is written using Markdown. To edit the content, move your mouse over the cell and click the 'eye' icon.\n\n##Text\n\nThere are several options for adding text to your notebook:\n\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n##Code\n\nThere are also many available programming languages:\n\n* IPython\n* Julia\n* JavaScript\n* R\n\nWe are planning to add support very soon for:\n\n* Groovy\n* Scala\n\n##Plugins\n\nAll of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.\n\n\n",
+            "mode": "edit"
         },
         {
             "id": "Section8EWbZ9",
@@ -72,12 +72,12 @@
             ],
             "evaluator": "IPython",
             "input": {
-                "body": "++a"
+                "body": "a=a*2\na"
             },
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": true,
-                "elapsedTime": 34
+                "elapsedTime": 85
             }
         },
         {
@@ -160,7 +160,7 @@
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": true,
-                "elapsedTime": 48
+                "elapsedTime": 80
             }
         },
         {
@@ -174,8 +174,8 @@
             },
             "output": {
                 "selectedType": "Hidden",
-                "outputArrived": false,
-                "elapsedTime": 22
+                "outputArrived": true,
+                "elapsedTime": 463
             }
         },
         {

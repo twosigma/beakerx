@@ -123,21 +123,22 @@
                     }
                 });
                 $scope.cellview.menu.addItem({
-                    name: "Move",
-                    items: [
-                        {
-                            name: "Up",
-                            action: function () {
-                                bkBaseSessionModel.cellOp.moveUp($scope.cellmodel.id);
-                            }
-                        },
-                        {
-                            name: "Down",
-                            action: function () {
-                                bkBaseSessionModel.cellOp.moveDown($scope.cellmodel.id);
-                            }
-                        }
-                    ]
+                    name: "Move up",
+                    disabled: function () {
+                        return !bkBaseSessionModel.cellOp.isPossibleToMoveSectionUp($scope.cellmodel.id);
+                    },
+                    action: function () {
+                        bkBaseSessionModel.cellOp.moveSectionUp($scope.cellmodel.id);
+                    }
+                });
+                $scope.cellview.menu.addItem({
+                    name: "Move down",
+                    disabled: function () {
+                        return !bkBaseSessionModel.cellOp.isPossibleToMoveSectionDown($scope.cellmodel.id);
+                    },
+                    action: function () {
+                        bkBaseSessionModel.cellOp.moveSectionDown($scope.cellmodel.id);
+                    }
                 });
                 $scope.cellview.menu.addItem({
                     name: "Cut",
@@ -146,7 +147,10 @@
                     }
                 });
                 $scope.cellview.menu.addItem({
-                    name: "Paste(After)",
+                    name: "Paste (append after)",
+                    disabled: function () {
+                        return !bkBaseSessionModel.cellOp.clipboard;
+                    },
                     action: function () {
                         bkBaseSessionModel.cellOp.paste($scope.cellmodel.id);
                     }

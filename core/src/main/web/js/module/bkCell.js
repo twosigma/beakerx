@@ -278,7 +278,7 @@
                     }
                 });
                 $scope.cellview.menu.addItemToHead({
-                    name: "Delete section and children",
+                    name: "Delete section and all sub-sections",
                     action: function () {
                         bkBaseSessionModel.cellOp.delete($scope.cellmodel.id);
                     }

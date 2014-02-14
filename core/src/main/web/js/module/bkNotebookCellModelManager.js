@@ -139,6 +139,7 @@
                 if (_cells_) {
                     cells = _cells_;
                 }
+                this.clipboard = null;
                 recreateCellMap();
             },
             getCells: function () {
@@ -338,6 +339,9 @@
             },
             moveSectionDown: function (id) {
                 var nextSib = this.getNextSibling(id);
+                if (!nextSib) {
+                    throw "Cannot move section down";
+                }
                 this.moveSectionUp(nextSib.id);
             },
             getSectionLength: function (id) {
@@ -392,7 +396,7 @@
             },
             paste: function (destinationID) {
                 if (this.clipboard) {
-                    this.append(destinationID, this.clipboard);
+                    this.appendAfter(destinationID, this.clipboard);
                     this.clipboard = null;
                 }
             }

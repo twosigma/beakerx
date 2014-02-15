@@ -490,11 +490,11 @@
             ],
             "evaluator": "JavaScript",
             "input": {
-                "body": "//Make a simple bar chart\n\n//Should be able to do something like this to read in data: \n//bkHelper.evaluateCode(\"IPython\", \"1\").then(function(){...})\n\nd3.select(\"#barchart1\")\n  .selectAll(\"div\")\n    .data([2,5,4])\n  .enter().append(\"div\")\n    .style(\"width\", function(d) { return d * 10 + \"px\"; })\n    .text(function(d) { return d; });"
+                "body": "//Make a simple bar chart\n\nvar data = [2, 5, 4, 7]\n\n//Should be able to do something like this to read in data: \n//bkHelper.evaluateCode(\"IPython\", \"1\").then(function(){data = ...})\n\nd3.select(\"#barchart1\")\n  .selectAll(\"div\")\n    .data(data)\n  .enter().append(\"div\")\n    .style(\"width\", function(d) { return d * 10 + \"px\"; })\n    .text(function(d) { return d; });"
             },
             "output": {
                 "selectedType": "Text",
-                "result": "[object HTMLDivElement],[object HTMLDivElement],[object HTMLDivElement]"
+                "result": ",,,[object HTMLDivElement]"
             }
         },
         {

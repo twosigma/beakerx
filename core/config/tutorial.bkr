@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "E6925BB0442042D080184FAE5005A1BD",
+            "shellID": "275D6E29B4684DBB864B1A35B63822C5",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -54,7 +54,7 @@
                 "markdown"
             ],
             "body": "#Overview\n\nBeaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.\n\nBeaker content is organized into \"cells.\" This cell is written using Markdown. To edit the content, move your mouse over the cell and click the 'eye' icon.\n\n##Text\n\nThere are several options for adding text to your notebook:\n\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n##Code\n\nThere are also many available programming languages:\n\n* IPython\n* Julia\n* JavaScript\n* R\n\nWe are planning to add support very soon for:\n\n* Groovy\n* Scala\n\n##Plugins\n\nAll of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.\n\n\n",
-            "mode": "edit"
+            "mode": "preview"
         },
         {
             "id": "Section8EWbZ9",
@@ -448,6 +448,56 @@
             }
         },
         {
+            "id": "Sectionviqq24",
+            "class": [
+                "section",
+                "container"
+            ],
+            "title": "Working with d3.js",
+            "collapsed": false
+        },
+        {
+            "id": "codeyA37u9",
+            "class": [
+                "code"
+            ],
+            "evaluator": "Html",
+            "input": {
+                "body": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\"></div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
+            },
+            "output": {
+                "selectedType": "BeakerDisplay",
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\"></div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
+                },
+                "elapsedTime": 0
+            }
+        },
+        {
+            "id": "markdownmEE28X",
+            "class": [
+                "markdown"
+            ],
+            "body": "TODO: Figure out how to import data from Python into d3",
+            "mode": "preview"
+        },
+        {
+            "id": "codetIF8Fx",
+            "class": [
+                "code"
+            ],
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "//Make a simple bar chart\n\n//Should be able to do something like this to read in data: \n//bkHelper.evaluateCode(\"IPython\", \"1\").then(function(){...})\n\nd3.select(\"#barchart1\")\n  .selectAll(\"div\")\n    .data([2,5,4])\n  .enter().append(\"div\")\n    .style(\"width\", function(d) { return d * 10 + \"px\"; })\n    .text(function(d) { return d; });"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "[object HTMLDivElement],[object HTMLDivElement],[object HTMLDivElement]"
+            }
+        },
+        {
             "id": "markdownEmlByI",
             "class": [
                 "markdown"
@@ -462,7 +512,8 @@
             "Section8EWbZ9",
             "Section2enUlh",
             "SectionpjDGkv",
-            "SectionpfjX2U"
+            "SectionpfjX2U",
+            "Sectionviqq24"
         ],
         "section001": [
             "markdownEnGyEN"
@@ -502,12 +553,21 @@
             "codeK0EmdK",
             "codeDF97hS",
             "codeAEuaJ8"
+        ],
+        "Sectionviqq24": [
+            "markdownmEE28X",
+            "codeyA37u9",
+            "codetIF8Fx"
         ]
     },
     "tagMap2": {
         "initialization": [],
-        "Html": [],
-        "JavaScript": [],
+        "Html": [
+            "codeyA37u9"
+        ],
+        "JavaScript": [
+            "codetIF8Fx"
+        ],
         "IPython": [
             "codeh1TYII",
             "codecWlPMc",

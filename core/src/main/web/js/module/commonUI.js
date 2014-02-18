@@ -122,16 +122,22 @@
             },
             replace: true,
             controller: function ($scope) {
+                var isItemDisabled = function (item) {
+                    if (_.isFunction(item.disabled)) {
+                        return item.disabled();
+                    }
+                    return item.disabled;
+                }
 
                 $scope.getAClass = function (item) {
                     var result = [];
-                    if (item.disabled) {
+                    if (isItemDisabled(item)) {
                         result.push("disabled-link");
                     } else if (item.items && item.items.length <= 1 && item.autoReduce) {
                         if (item.items.length === 0) {
                             result.push("disabled-link");
                         } else if (item.items.length === 1) {
-                            if (item.items[0].disabled) {
+                            if (isItemDisabled(item.items[0])) {
                                 result.push("disabled-link");
                             }
                         }

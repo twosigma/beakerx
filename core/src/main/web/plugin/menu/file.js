@@ -20,7 +20,7 @@
 (function () {
     'use strict';
     var newNotebook = function () {
-        bkHelper.newDefaultNotebook(function (notebookJSON) {
+        bkHelper.getDefaultNotebook().then(function (notebookJSON) {
             bkHelper.loadNotebook(notebookJSON, true);
         });
     };

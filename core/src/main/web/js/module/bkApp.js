@@ -33,7 +33,8 @@
         'M_bkNotebook',
         'M_evaluatorManager',
         'M_menuPlugin',
-        'M_bkCellPluginManager'
+        'M_bkCellPluginManager',
+        'M_bkNotebookVersionManager'
     ]);
 
     /**
@@ -59,7 +60,8 @@
                 bkCellPluginManager,
                 bkBaseSessionModel,
                 bkCoreManager,
-                bkAppEvaluate)
+                bkAppEvaluate,
+                bkNotebookVersionManager)
             {
                 var _impl = (function () {
                     var showTransientMessage = function (message) {
@@ -111,8 +113,7 @@
                             }
 
                             // Backup current session if it's not empty.
-                            if (bkBaseSessionModel.getSessionID() &&
-                                Object.keys(bkBaseSessionModel.getNotebookModel()).length > 0) {
+                            if (bkBaseSessionModel.getSessionID() && !_.isEmpty(bkBaseSessionModel.getNotebookModel())) {
                                 bkSession.backupSession(bkBaseSessionModel.getSessionData());
                             }
 
@@ -121,6 +122,7 @@
                                 sessionID = bkUtils.generateID(6);
                             }
                             bkBaseSessionModel.setSessionID(sessionID);
+                            notebookModel = bkNotebookVersionManager.open(notebookModel);
                             if (notebookModel && notebookModel.evaluators) {
                                 for (var i = 0; i < notebookModel.evaluators.length; ++i) {
                                     evaluatorManager.newEvaluator(notebookModel.evaluators[i], alwaysCreateNewEvaluators);
@@ -236,30 +238,34 @@
                         },
                         evaluate: function (toEval) {
                             var cellOp = bkBaseSessionModel.cellOp;
-                            // toEval can be a tagName (string)
+                            // toEval can be a tagName (string), which is for now either "initialization" or the name
+                            //      of an evaluator, user defined tags is not supported yet.
                             // or a cellID (string)
                             // or a cellModel
                             // or an array of cellModels
                             if (typeof toEval === "string") {
-                                if (cellOp.getCell(toEval)) {
+                                if (cellOp.hasCell(toEval)) {
                                     // this is a cellID
                                     if (cellOp.isContainer(toEval)) {
-                                        // this is a section cell, in this case toEval is going to be an array of cellModel
-                                        var cellIDs = bkBaseSessionModel.hierachicalLayout.getAllCellsInOrder(toEval);
-                                        toEval = _.map(cellIDs, function (cellID) {
-                                            return cellOp.getCell(cellID);
-                                        });
+                                        // this is a section cell or root cell
+                                        // in this case toEval is going to be an array of cellModels
+                                        toEval = cellOp.getAllCodeCells(toEval);
                                     } else {
                                         // single cell, just get the cell model from cellID
                                         toEval = cellOp.getCell(toEval);
                                     }
                                 } else {
-                                    // not a cellID, assuming it is a tagName
-                                    // in this case toEval is going to be an array of cellModel
-                                    var cellIDs = bkBaseSessionModel.hierachicalLayout.getTaggedCellsInOrder(toEval);
-                                    toEval = _.map(cellIDs, function (cellID) {
-                                        return cellOp.getCell(cellID);
-                                    });
+                                    // not a cellID
+                                    if (toEval === "initialization") {
+                                        // in this case toEval is going to be an array of cellModels
+                                        toEval = bkBaseSessionModel.getInitializationCells(toEval);
+                                    } else {
+                                        console.log(toEval);
+                                        // assume it is a evaluator name,
+                                        // in this case toEval is going to be an array of cellModels
+                                        toEval = cellOp.getCellsWithEvaluator(toEval);
+                                    }
+                                    // TODO, we want to support user tagging cell in the future
                                 }
                             }
                             if (!_.isArray(toEval)) {
@@ -378,7 +384,7 @@
                 var sessionID = $routeParams.sessionID;
                 if (sessionID) {
                     if (sessionID === "new") {
-                        bkCoreManager.newDefaultNotebook(function (notebookJSON) {
+                        bkCoreManager.getDefaultNotebook().then(function (notebookJSON) {
                             _impl.loadNotebook(notebookJSON, true);
                             document.title = "New Notebook";
                         });

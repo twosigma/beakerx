@@ -16,7 +16,7 @@
 <div ng-hide='cellmodel.hideTitle'>
     <i class='fa fa-plus-square-o bksectiontoggleplus' ng-click='toggleShowChildren()' ng-hide='isShowChildren()'></i>
     <i class='fa fa-minus-square-o bksectiontoggleminus' ng-click='toggleShowChildren()' ng-show='isShowChildren()'></i>
-    <span class='section{{getLevel()}} bk-section-title' contenteditable="true">{{cellmodel.title}}</span>
+    <span class='section{{cellmodel.level}} bk-section-title' contenteditable="true">{{cellmodel.title}}</span>
 </div>
 <new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></new-cell-menu>
 <div bk-show="isShowChildren()">

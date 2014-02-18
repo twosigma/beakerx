@@ -52,16 +52,16 @@
             refreshRootScope: function () {
                 angularUtils.refreshRootScope();
             },
-            newDefaultNotebook: function (cb) {
-                var req = $.ajax({
-                    type: "GET",
-                    datatype: "json",
-                    url: "/beaker/rest/util/default"
-                });
-                req.done(cb);
-                req.fail(function (jqXHR, textStatus) {
-                    console.error( "default notebook request failed: " + textStatus );
-                });
+            getDefaultNotebook: function () {
+                var deferred = angularUtils.newDeferred();
+                angularUtils.httpGet("/beaker/rest/util/default").
+                    success(function (data) {
+                        deferred.resolve(data);
+                    }).
+                    error(function (data, status, header, config) {
+                        deferred.reject(data, status, header, config);
+                    });
+                return deferred.promise;
             },
             loadJS: function (url, success) {
                 generalUtils.loadJS(url, success);

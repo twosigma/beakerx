@@ -87,6 +87,7 @@
                 };
                 $scope.$watch('cellmodel.id', editedListener);
                 $scope.$watch('cellmodel.evaluator', editedListener);
+                $scope.$watch('cellmodel.initialization', editedListener);
                 $scope.$watch('cellmodel.input.body', editedListener);
                 $scope.$watch('cellmodel.output.result', editedListener);
 
@@ -131,14 +132,8 @@
                         // if no evaluator specified, use the current evaluator
                         evaluatorName = $scope.cellmodel.evaluator;
                     }
-                    var newCell = bkBaseSessionModel.cellOp.newCodeCell(undefined, evaluatorName);
-                    if (!bkBaseSessionModel.cellOp.isContainer(thisCellID)) {
-                        var parentID = bkBaseSessionModel.cellOp.getParentID(thisCellID);
-                        var myIndex = bkBaseSessionModel.cellOp.getIndex(thisCellID, parentID);
-                        bkBaseSessionModel.cellOp.attach(newCell.id, parentID, myIndex + 1);
-                    } else {
-                        bkBaseSessionModel.cellOp.attach(newCell.id, thisCellID, 0);
-                    }
+                    var newCell = bkBaseSessionModel.newCodeCell(evaluatorName);
+                    bkBaseSessionModel.cellOp.appendAfter(thisCellID, newCell);
                     $rootScope.$$phase || $rootScope.$apply();
 
                 };
@@ -187,32 +182,21 @@
                 });
 
                 $scope.isInitializationCell = function () {
-                    var thisCellID = $scope.cellmodel.id;
-                    return bkBaseSessionModel.cellTagOp.hasTag(thisCellID, "initialization");
+                    return $scope.cellmodel.initialization;
                 };
 
                 $scope.cellmenu.addItem({
                     name: "Initialization Cell",
                     isChecked: function () {
-                        var thisCellID = $scope.cellmodel.id;
-                        return bkBaseSessionModel.cellTagOp.hasTag(thisCellID, "initialization");
+                        return $scope.isInitializationCell();
                     },
                     action: function () {
-                        var thisCellID = $scope.cellmodel.id;
-                        if (bkBaseSessionModel.cellTagOp.hasTag(thisCellID, "initialization")) {
-                            bkBaseSessionModel.cellTagOp.removeTag(thisCellID, "initialization");
+                        if ($scope.isInitializationCell()) {
+                            $scope.cellmodel.initialization = undefined;
                         } else {
-                            bkBaseSessionModel.cellTagOp.addTag(thisCellID, "initialization");
+                            $scope.cellmodel.initialization = true;
                         }
-                    }
-                });
-                $scope.$watch("cellmodel.evaluator", function (newValue, oldValue) {
-                    var thisCellID = $scope.cellmodel.id;
-                    if (newValue !== oldValue) {
-                        if (oldValue) {
-                            bkBaseSessionModel.cellTagOp.removeTag(thisCellID, oldValue);
-                        }
-                        bkBaseSessionModel.cellTagOp.addTag(thisCellID, newValue);
+                        bkBaseSessionModel.cellOp.reset();
                     }
                 });
                 $scope.$on("$destroy", function () {
@@ -254,26 +238,26 @@
                 var moveFocusDown = function () {
                     // move focus to next code cell
                     var thisCellID = scope.cellmodel.id;
-                    var nextCellID = bkBaseSessionModel.cellOp.getNext(thisCellID);
-                    while (nextCellID) {
-                        if (bkCoreManager.getFocusable(nextCellID)) {
-                            bkCoreManager.getFocusable(nextCellID).focus();
+                    var nextCell = bkBaseSessionModel.cellOp.getNext(thisCellID);
+                    while (nextCell) {
+                        if (bkCoreManager.getFocusable(nextCell.id)) {
+                            bkCoreManager.getFocusable(nextCell.id).focus();
                             break;
                         } else {
-                            nextCellID = bkBaseSessionModel.cellOp.getNext(nextCellID);
+                            nextCell = bkBaseSessionModel.cellOp.getNext(nextCell.id);
                         }
                     }
                 };
                 var moveFocusUp = function () {
                     // move focus to prev code cell
                     var thisCellID = scope.cellmodel.id;
-                    var prevCellID = bkBaseSessionModel.cellOp.getPrev(thisCellID);
-                    while (prevCellID) {
-                        if (bkCoreManager.getFocusable(prevCellID)) {
-                            bkCoreManager.getFocusable(prevCellID).focus();
+                    var prevCell = bkBaseSessionModel.cellOp.getPrev(thisCellID);
+                    while (prevCell) {
+                        if (bkCoreManager.getFocusable(prevCell.id)) {
+                            bkCoreManager.getFocusable(prevCell.id).focus();
                             break;
                         } else {
-                            prevCellID = bkBaseSessionModel.cellOp.getPrev(prevCellID);
+                            prevCell = bkBaseSessionModel.cellOp.getPrev(prevCell.id);
                         }
                     }
                 };
@@ -412,21 +396,17 @@
                     }
                 });
 
-                // TODO, this is a quick hack to get initialization cell easily identified in UI
-                // we want to refactor this so it doesn't rely on the actually DOM structure (.parent().parent() to
-                // get the outter div) but instead, expose the cell view model to the code cell, and have the code cell
-                // controller update the view model to update the actual UI.
                 if (scope.isInitializationCell()) {
-                    element.parent().parent().addClass("initcell");
+                    element.closest(".bkcell").addClass("initcell");
                 } else {
-                    element.parent().parent().removeClass("initcell");
+                    element.closest(".bkcell").removeClass("initcell");
                 }
                 scope.$watch('isInitializationCell()', function (newValue, oldValue) {
                     if (newValue !== oldValue) {
                         if (newValue) {
-                            element.parent().parent().addClass("initcell");
+                            element.closest(".bkcell").addClass("initcell");
                         } else {
-                            element.parent().parent().removeClass("initcell");
+                            element.closest(".bkcell").removeClass("initcell");
                         }
                     }
                 });

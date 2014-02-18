@@ -1,5 +1,5 @@
 {
-    "beaker": "1",
+    "beaker": "2",
     "evaluators": [
         {
             "name": "Html",
@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "275D6E29B4684DBB864B1A35B63822C5",
+            "shellID": "BEB47A0977764BAA89D5372EF6045790",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,131 +28,39 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "574dc950-c76a-47e7-82eb-79bc043b66f0"
+            "shellID": "02dc59e3-12db-4950-86af-1840a268bffc"
         }
     ],
     "cells": [
         {
-            "id": "root",
-            "class": [
-                "notebook",
-                "container"
-            ]
-        },
-        {
             "id": "section001",
-            "class": [
-                "section",
-                "container"
-            ],
+            "type": "section",
+            "level": 1,
             "title": "Beaker Tutorial",
             "collapsed": false
         },
         {
             "id": "markdownEnGyEN",
-            "class": [
-                "markdown"
-            ],
+            "type": "markdown",
             "body": "#Overview\n\nBeaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.\n\nBeaker content is organized into \"cells.\" This cell is written using Markdown. To edit the content, move your mouse over the cell and click the 'eye' icon.\n\n##Text\n\nThere are several options for adding text to your notebook:\n\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n##Code\n\nThere are also many available programming languages:\n\n* IPython\n* Julia\n* JavaScript\n* R\n\nWe are planning to add support very soon for:\n\n* Groovy\n* Scala\n\n##Plugins\n\nAll of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.\n\n\n",
             "mode": "preview"
         },
         {
             "id": "Section8EWbZ9",
-            "class": [
-                "section",
-                "container"
-            ],
+            "type": "section",
+            "level": 1,
             "title": "Running code",
             "collapsed": false
         },
         {
-            "id": "codecWlPMc",
-            "class": [
-                "code"
-            ],
-            "evaluator": "IPython",
-            "input": {
-                "body": "a=a*2\na"
-            },
-            "output": {
-                "selectedType": "Hidden",
-                "outputArrived": true,
-                "elapsedTime": 85
-            }
-        },
-        {
-            "id": "markdownCInWzc",
-            "class": [
-                "markdown"
-            ],
-            "body": "And here's some more IPython.",
-            "mode": "preview"
-        },
-        {
-            "id": "Section2enUlh",
-            "class": [
-                "section",
-                "container"
-            ],
-            "title": "Working with cells",
-            "collapsed": false
-        },
-        {
-            "id": "markdownDfaAFR",
-            "class": [
-                "markdown"
-            ],
-            "body": "Move your cursor to the area below this text. You'll see a bar appear with the text 'insert cell.' Click on that bar and add a new JavaScript cell.\n\nClick into the new cell and press CTRL-SHIFT-A. This will create a new cell of the same type.\n\n",
-            "mode": "preview"
-        },
-        {
-            "id": "markdownB58chY",
-            "class": [
-                "markdown"
-            ],
-            "body": "Move your cursor into one of our JavaScript cells. Note that using the UP and DOWN keys will move your cursor between the different code cells. \n\nPressing CTRL-SHIFT-E within a code cell will allow you to change the cell's language.\n\nTo the right of the cells, you'll see a hierarchical representation of brackets. Clicking on the brackets will bring up menus that let you do everything from change languages to hiding output to deleting cells. Explore the options available in these menus.",
-            "mode": "preview"
-        },
-        {
-            "id": "SectionIQvToW",
-            "class": [
-                "section",
-                "container"
-            ],
-            "title": "Adding cells",
-            "collapsed": false
-        },
-        {
-            "id": "SectionkfKSFY",
-            "class": [
-                "section",
-                "container"
-            ],
-            "title": "Manipulating cells",
-            "collapsed": false
-        },
-        {
-            "id": "SectionEt3gzB",
-            "class": [
-                "section",
-                "container"
-            ],
-            "title": "Section cells",
-            "collapsed": false
-        },
-        {
-            "id": "markdownso9XEe",
-            "class": [
-                "markdown"
-            ],
-            "body": "Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any type of cell including other sections. Try clicking the +/- buttons to get a feel for how the hierarchy works and how it corresponds to the bracket menus on the right.\n\nTry adding and removing some section cells of different levels.",
+            "id": "markdownEmlByI",
+            "type": "markdown",
+            "body": "Here's some IPython code. To run it, move your cursor into the cell and press CTRL-ENTER.",
             "mode": "preview"
         },
         {
             "id": "codeh1TYII",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "IPython",
             "input": {
                 "body": "a = 1\na"
@@ -164,10 +72,27 @@
             }
         },
         {
+            "id": "markdownCInWzc",
+            "type": "markdown",
+            "body": "And here's some more IPython.",
+            "mode": "preview"
+        },
+        {
+            "id": "codecWlPMc",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "a=a*2\na"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "outputArrived": true,
+                "elapsedTime": 85
+            }
+        },
+        {
             "id": "code3E0zXv",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "IPython",
             "input": {
                 "body": "hist([1,2,2])"
@@ -179,19 +104,61 @@
             }
         },
         {
+            "id": "Section2enUlh",
+            "type": "section",
+            "level": 1,
+            "title": "Working with cells",
+            "collapsed": false
+        },
+        {
+            "id": "SectionIQvToW",
+            "type": "section",
+            "level": 2,
+            "title": "Adding cells",
+            "collapsed": false
+        },
+        {
+            "id": "markdownDfaAFR",
+            "type": "markdown",
+            "body": "Move your cursor to the area below this text. You'll see a bar appear with the text 'insert cell.' Click on that bar and add a new JavaScript cell.\n\nClick into the new cell and press CTRL-SHIFT-A. This will create a new cell of the same type.\n\n",
+            "mode": "preview"
+        },
+        {
+            "id": "SectionkfKSFY",
+            "type": "section",
+            "level": 2,
+            "title": "Manipulating cells",
+            "collapsed": false
+        },
+        {
+            "id": "markdownB58chY",
+            "type": "markdown",
+            "body": "Move your cursor into one of our JavaScript cells. Note that using the UP and DOWN keys will move your cursor between the different code cells. \n\nPressing CTRL-SHIFT-E within a code cell will allow you to change the cell's language.\n\nTo the right of the cells, you'll see a hierarchical representation of brackets. Clicking on the brackets will bring up menus that let you do everything from change languages to hiding output to deleting cells. Explore the options available in these menus.",
+            "mode": "preview"
+        },
+        {
+            "id": "SectionEt3gzB",
+            "type": "section",
+            "level": 2,
+            "title": "Section cells",
+            "collapsed": false
+        },
+        {
+            "id": "markdownso9XEe",
+            "type": "markdown",
+            "body": "Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any type of cell including other sections. Try clicking the +/- buttons to get a feel for how the hierarchy works and how it corresponds to the bracket menus on the right.\n\nTry adding and removing some section cells of different levels.",
+            "mode": "preview"
+        },
+        {
             "id": "SectionpjDGkv",
-            "class": [
-                "section",
-                "container"
-            ],
+            "type": "section",
+            "level": 1,
             "title": "R examples",
             "collapsed": false
         },
         {
             "id": "codeHZjtj9",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "R",
             "input": {
                 "body": "data <- c(1,1,1,2,3,3,4,5,5,5)"
@@ -203,9 +170,7 @@
         },
         {
             "id": "codeY69oh7",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "R",
             "input": {
                 "body": "hist(data)"
@@ -217,9 +182,7 @@
         },
         {
             "id": "code9i3xs2",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "R",
             "input": {
                 "body": "DF = data.frame(x=c(\"b\",\"b\",\"b\",\"a\",\"a\"),v=rnorm(5))"
@@ -260,9 +223,7 @@
         },
         {
             "id": "codezB5I5w",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "R",
             "input": {
                 "body": "for (i in 1:10) {\n  print(i);\n}"
@@ -274,9 +235,7 @@
         },
         {
             "id": "codeZCInZV",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "R",
             "input": {
                 "body": "library(ggplot2)\nqplot(1:10, data)"
@@ -288,9 +247,7 @@
         },
         {
             "id": "coden2V0oT",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "R",
             "input": {
                 "body": "occur <- matrix(c(4,3,2),ncol=3,byrow=TRUE)\ncolnames(occur) <- c(\"A\",\"B\",\"C\")\noccur"
@@ -302,9 +259,7 @@
         },
         {
             "id": "codenl0dfP",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "R",
             "input": {
                 "body": "a <- c(\"Sometimes\",\"Sometimes\",\"Never\",\"Always\",\"Always\",\"Sometimes\",\"Sometimes\",\"Never\")\nb <- c(\"Maybe\",\"Maybe\",\"Yes\",\"Maybe\",\"Maybe\",\"No\",\"Yes\",\"No\")\nresults <- table(a,b)"
@@ -316,18 +271,14 @@
         },
         {
             "id": "SectionpfjX2U",
-            "class": [
-                "section",
-                "container"
-            ],
+            "type": "section",
+            "level": 1,
             "title": "Python examples",
             "collapsed": false
         },
         {
             "id": "codeqPMAfv",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "IPython",
             "input": {
                 "body": "import pandas as pd\ndf = pd.DataFrame([[1, 2], [1, 3], [4, 6]], columns=['A', 'B'])\ndf"
@@ -388,10 +339,26 @@
             }
         },
         {
+            "id": "codeK0EmdK",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "df['A']"
+            },
+            "output": {
+                "selectedType": "BeakerDisplay",
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>0    1\n1    1\n2    4\nName: A, dtype: int64</pre></div>"
+                },
+                "outputArrived": true,
+                "elapsedTime": 77
+            }
+        },
+        {
             "id": "codeDF97hS",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "IPython",
             "input": {
                 "body": "df['A'].hist(figsize=(10,10))"
@@ -409,9 +376,7 @@
         },
         {
             "id": "codeAEuaJ8",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "IPython",
             "input": {
                 "body": "plot([1,4,3,5,2])"
@@ -428,163 +393,108 @@
             }
         },
         {
-            "id": "codeK0EmdK",
-            "class": [
-                "code"
-            ],
-            "evaluator": "IPython",
-            "input": {
-                "body": "df['A']"
-            },
-            "output": {
-                "selectedType": "BeakerDisplay",
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>0    1\n1    1\n2    4\nName: A, dtype: int64</pre></div>"
-                },
-                "outputArrived": true,
-                "elapsedTime": 77
-            }
-        },
-        {
             "id": "Sectionviqq24",
-            "class": [
-                "section",
-                "container"
-            ],
+            "type": "section",
+            "level": 1,
             "title": "Working with d3.js",
             "collapsed": false
         },
         {
+            "id": "markdownmEE28X",
+            "type": "markdown",
+            "body": "This example loads some data using Python then builds a bar chart of the data using d3 in HTML and JavaScript cells.\n\nRight now the process for getting the data from Python to JS is fairly complex. We are looking into ways to simplify this.",
+            "mode": "preview"
+        },
+        {
+            "id": "codezCEI2n",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "#Load some data into a DataFrame\n\nimport pandas as pd\ndf = pd.DataFrame([[1, 2], [1, 3], [4, 6]], columns=['A', 'B'])\ndf"
+            },
+            "output": {
+                "selectedType": "Table",
+                "result": {
+                    "type": "TableDisplay",
+                    "tableDisplayModel": {
+                        "columnNames": [
+                            "",
+                            "A",
+                            "B"
+                        ],
+                        "values": [
+                            [
+                                "0",
+                                " 1",
+                                " 2"
+                            ],
+                            [
+                                "1",
+                                " 1",
+                                " 3"
+                            ],
+                            [
+                                "2",
+                                " 4",
+                                " 6"
+                            ]
+                        ]
+                    },
+                    "columnNames": [
+                        "",
+                        "A",
+                        "B"
+                    ],
+                    "values": [
+                        [
+                            "0",
+                            " 1",
+                            " 2"
+                        ],
+                        [
+                            "1",
+                            " 1",
+                            " 3"
+                        ],
+                        [
+                            "2",
+                            " 4",
+                            " 6"
+                        ]
+                    ]
+                },
+                "outputArrived": true,
+                "elapsedTime": 218
+            }
+        },
+        {
             "id": "codeyA37u9",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\"></div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
+                "body": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\">The d3 bar chart will appear here</div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
             },
             "output": {
                 "selectedType": "BeakerDisplay",
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\"></div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
+                    "object": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\">The d3 chart will appear here</div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
                 },
-                "elapsedTime": 0
+                "elapsedTime": 52
             }
-        },
-        {
-            "id": "markdownmEE28X",
-            "class": [
-                "markdown"
-            ],
-            "body": "TODO: Figure out how to import data from Python into d3",
-            "mode": "preview"
         },
         {
             "id": "codetIF8Fx",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "//Make a simple bar chart\n\nvar data = [2, 5, 4, 7]\n\n//Should be able to do something like this to read in data: \n//bkHelper.evaluateCode(\"IPython\", \"1\").then(function(){data = ...})\n\nd3.select(\"#barchart1\")\n  .selectAll(\"div\")\n    .data(data)\n  .enter().append(\"div\")\n    .style(\"width\", function(d) { return d * 10 + \"px\"; })\n    .text(function(d) { return d; });"
+                "body": "//Currently accessing Python values from JavaScript requires constructing a full cell object\n//The \"body\" is Python code that will be evaluated, in this case, simply returning the DataFrame created above\ncell = { evaluator: \"IPython\", input: { body: \"df\" }, output: {} };\n\n//Use the bkHelper API to evaluate the cell\nbkHelper.evaluate(cell).then(function(){\n  \n  \t//After the evaluation we are reading one column of the data into an array\n\tvar data = cell.output.result.values;\n\tvar col = [];\n  \t_.each(data, function(a){col.push(a[2])})\n    \n    //Here is the D3 part\n\td3.select(\"#barchart1\")\n  \t\t.selectAll(\"div\")\n    \t.data(col)\n  \t\t.enter().append(\"div\")\n    \t.style(\"width\", function(d) { return d * 10 + \"px\"; })\n    \t.text(function(d) { return d; });\n})"
             },
             "output": {
                 "selectedType": "Text",
-                "result": ",,,[object HTMLDivElement]"
+                "result": "[object Object]"
             }
-        },
-        {
-            "id": "markdownEmlByI",
-            "class": [
-                "markdown"
-            ],
-            "body": "Here's some IPython code. To run it, move your cursor into the cell and press CTRL-ENTER.",
-            "mode": "preview"
         }
-    ],
-    "tagMap": {
-        "root": [
-            "section001",
-            "Section8EWbZ9",
-            "Section2enUlh",
-            "SectionpjDGkv",
-            "SectionpfjX2U",
-            "Sectionviqq24"
-        ],
-        "section001": [
-            "markdownEnGyEN"
-        ],
-        "Section8EWbZ9": [
-            "markdownEmlByI",
-            "codeh1TYII",
-            "markdownCInWzc",
-            "codecWlPMc",
-            "code3E0zXv"
-        ],
-        "Section2enUlh": [
-            "SectionIQvToW",
-            "SectionkfKSFY",
-            "SectionEt3gzB"
-        ],
-        "SectionIQvToW": [
-            "markdownDfaAFR"
-        ],
-        "SectionkfKSFY": [
-            "markdownB58chY"
-        ],
-        "SectionEt3gzB": [
-            "markdownso9XEe"
-        ],
-        "SectionpjDGkv": [
-            "codeHZjtj9",
-            "codeY69oh7",
-            "code9i3xs2",
-            "codezB5I5w",
-            "codeZCInZV",
-            "coden2V0oT",
-            "codenl0dfP"
-        ],
-        "SectionpfjX2U": [
-            "codeqPMAfv",
-            "codeK0EmdK",
-            "codeDF97hS",
-            "codeAEuaJ8"
-        ],
-        "Sectionviqq24": [
-            "markdownmEE28X",
-            "codeyA37u9",
-            "codetIF8Fx"
-        ]
-    },
-    "tagMap2": {
-        "initialization": [],
-        "Html": [
-            "codeyA37u9"
-        ],
-        "JavaScript": [
-            "codetIF8Fx"
-        ],
-        "IPython": [
-            "codeh1TYII",
-            "codecWlPMc",
-            "code3E0zXv",
-            "codeqPMAfv",
-            "codeDF97hS",
-            "codeAEuaJ8",
-            "codeK0EmdK"
-        ],
-        "R": [
-            "codeHZjtj9",
-            "codeY69oh7",
-            "code9i3xs2",
-            "codezB5I5w",
-            "codeZCInZV",
-            "coden2V0oT",
-            "codenl0dfP"
-        ]
-    }
+    ]
 }

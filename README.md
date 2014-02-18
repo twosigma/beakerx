@@ -51,7 +51,9 @@ We've only tried running Beaker on Mac OS X. We'll be working on support for Lin
 
 ###XCode
 
-Install XCode from the [Mac App Store](https://itunes.apple.com/us/app/xcode/id497799835)
+Install/update XCode from the [Mac App Store](https://itunes.apple.com/us/app/xcode/id497799835)
+
+Launch XCode to complete installation, accept license, et cetera
 
 ###Java
 

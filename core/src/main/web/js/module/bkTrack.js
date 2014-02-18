@@ -29,8 +29,22 @@
         this.$get = function () {
             if (!_trackingService) {
                 return {
-                    log: function () {
-                        // do nothing
+                    log: function (event, obj) {
+                        // log to ga
+                        if (ga && event === "open") {
+                            var notebookType = obj.uri ? obj.uri.substring(0, obj.uri.indexOf(':/')) || "file" : "file";
+                            ga("send", "event", "file", "open", notebookType, {
+                                "dimension2": notebookType,
+                                "metric3": 1
+                            });
+                        } else if (ga && event === "evaluate") {
+                            var pluginName = obj.plugin;
+                            ga("send", "event", "notebook", "evaluate", pluginName, {
+                                "dimension3": pluginName,
+                                "metric7": 1,
+                                "metric4": 2
+                            });
+                        }
                     }
                 };
             }

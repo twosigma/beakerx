@@ -129,6 +129,9 @@
                 .map(function (id) {
                     return cellMap[id];
                 })
+                .filter(function (cell) {
+                    return !cell.hideTitle;
+                })
                 .map(function (cell) {
                     return convertCell(cell, tagMap, tagMap2);
                 })

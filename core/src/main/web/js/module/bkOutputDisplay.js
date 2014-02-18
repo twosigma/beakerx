@@ -218,7 +218,7 @@
                 if (!resultType2DisplayTypesMap[type]) {
                     resultType2DisplayTypesMap[type] = displays;
                 } else {
-                    Array.prototype.splice(resultType2DisplayTypesMap[type], [index, 0].concat(displays));
+                    Array.prototype.splice.apply(resultType2DisplayTypesMap[type], [index, 0].concat(displays));
                 }
             },
             getApplicableDisplays: (function () {

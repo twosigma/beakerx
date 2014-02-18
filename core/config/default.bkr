@@ -1,5 +1,5 @@
 {
-    "beaker": "1",
+    "beaker": "2",
     "evaluators": [
         {
             "name": "Html",
@@ -21,33 +21,20 @@
         {
             "name": "JavaScript",
             "plugin": "JavaScript",
-            "shellID": null,
-            "jsSetting2": "",
-            "jsSetting1": ""
+            "shellID": null
         }
     ],
     "cells": [
         {
-            "id": "root",
-            "class": [
-                "notebook",
-                "container"
-            ]
-        },
-        {
             "id": "section001",
-            "class": [
-                "section",
-                "container"
-            ],
+            "type": "section",
+            "level": 1,
             "title": "Hello Beaker",
             "collapsed": false
         },
         {
             "id": "code001",
-            "class": [
-                "code"
-            ],
+            "type": "code",
             "evaluator": "IPython",
             "input": {
                 "body": ""
@@ -56,19 +43,5 @@
                 "selectedType": "Hidden"
             }
         }
-    ],
-    "tagMap": {
-        "root": [
-            "section001"
-        ],
-        "section001": [
-            "code001"
-        ]
-    },
-    "tagMap2": {
-        "initialization": [],
-        "IPython": [
-            "code001"
-        ]
-    }
+    ]
 }

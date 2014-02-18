@@ -51,27 +51,33 @@ We've only tried running Beaker on Mac OS X. We'll be working on support for Lin
 
 ###XCode
 
-    https://itunes.apple.com/us/app/xcode/id497799835
+Install/update XCode from the [Mac App Store](https://itunes.apple.com/us/app/xcode/id497799835)
 
+Launch XCode to complete installation, accept license, et cetera
+
+###Java
+
+Install JDK 7 from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html).
+    
 ###[Homebrew](http://brew.sh/)
 
     ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
-    
+
 ###Gradle, NPM, and Nginx
 
     brew install gradle npm nginx
-    
+
 ##Clone this repo
 
     git clone https://github.com/twosigma/beaker-notebook.git
-    
+
 ##Build and run Beaker
 
     cd beaker-notebook
     gradle :plugin:r:installApp
     gradle :core:run
-    
-Your default browser will automatically launch and connect to Beaker.  If you need JDK7 get it from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html).
+
+Your default browser will automatically launch and connect to Beaker.
 
 ##Plugin Languages
 

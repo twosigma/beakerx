@@ -194,8 +194,8 @@
             findTable: function (elem) {
                 return bkCoreManager.findTable(elem);
             },
-            newDefaultNotebook: function (cb) {
-                return bkCoreManager.newDefaultNotebook(cb);
+            getDefaultNotebook: function () {
+                return bkCoreManager.getDefaultNotebook();
             },
             getRecentMenuItems: function () {
                 return bkCoreManager.getRecentMenuItems();

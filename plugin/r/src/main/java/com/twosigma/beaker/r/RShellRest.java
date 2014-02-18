@@ -227,7 +227,7 @@ public class RShellRest {
             }
             if (array.length < 1) return false;
             for (int j=0; j < array[0].length; j++) {
-                List row = new ArrayList();
+                List<String> row = new ArrayList<String>();
                 for (int i=0; i<cols; i++) {
                     if (array[i].length != array[0].length) return false;
                     row.add(array[i][j]);

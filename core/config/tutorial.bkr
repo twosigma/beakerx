@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "BEB47A0977764BAA89D5372EF6045790",
+            "shellID": "E42363342E8041EF8BB30E0CA333ADE7",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,7 +28,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "02dc59e3-12db-4950-86af-1840a268bffc"
+            "shellID": "9a1f6fdc-1ddb-4dfa-9996-91ee946fcf7c"
         }
     ],
     "cells": [
@@ -489,7 +489,7 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "//Currently accessing Python values from JavaScript requires constructing a full cell object\n//The \"body\" is Python code that will be evaluated, in this case, simply returning the DataFrame created above\ncell = { evaluator: \"IPython\", input: { body: \"df\" }, output: {} };\n\n//Use the bkHelper API to evaluate the cell\nbkHelper.evaluate(cell).then(function(){\n  \n  \t//After the evaluation we are reading one column of the data into an array\n\tvar data = cell.output.result.values;\n\tvar col = [];\n  \t_.each(data, function(a){col.push(a[2])})\n    \n    //Here is the D3 part\n\td3.select(\"#barchart1\")\n  \t\t.selectAll(\"div\")\n    \t.data(col)\n  \t\t.enter().append(\"div\")\n    \t.style(\"width\", function(d) { return d * 10 + \"px\"; })\n    \t.text(function(d) { return d; });\n})"
+                "body": "//Currently accessing Python values from JavaScript requires constructing a full cell object\n//The \"body\" is Python code that will be evaluated, in this case, simply returning the DataFrame created above\nvar cell = { evaluator: \"IPython\", input: { body: \"df\" }, output: {} };\n\n//Use the bkHelper API to evaluate the cell\nbkHelper.evaluate(cell).then(function(){\n  \n  \t//After the evaluation we are reading one column of the data into an array\n\tvar data = cell.output.result.values;\n\tvar col = [];\n  \t_.each(data, function(a){col.push(a[2])})\n    \n    //Here is the D3 part\n\td3.select(\"#barchart1\")\n  \t\t.selectAll(\"div\")\n    \t.data(col)\n  \t\t.enter().append(\"div\")\n    \t.style(\"width\", function(d) { return d * 10 + \"px\"; })\n    \t.text(function(d) { return d; });\n})"
             },
             "output": {
                 "selectedType": "Text",

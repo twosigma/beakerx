@@ -34,15 +34,14 @@
                         if (ga && event === "open") {
                             var notebookType = obj.uri ? obj.uri.substring(0, obj.uri.indexOf(':/')) || "file" : "file";
                             ga("send", "event", "file", "open", notebookType, {
-                                "dimension2": notebookType,
-                                "metric3": 1
+                                "dimension1": notebookType,
+                                "metric1": 1
                             });
                         } else if (ga && event === "evaluate") {
                             var pluginName = obj.plugin;
                             ga("send", "event", "notebook", "evaluate", pluginName, {
-                                "dimension3": pluginName,
-                                "metric7": 1,
-                                "metric4": 2
+                                "dimension2": pluginName,
+                                "metric2": 1
                             });
                         }
                     }

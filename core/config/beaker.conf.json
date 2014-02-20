@@ -1,4 +1,6 @@
 {
+    "init": [
+    ],
     "bkApp":[
         "./plugin/menu/file.js",
         "./plugin/menu/notebook.js",

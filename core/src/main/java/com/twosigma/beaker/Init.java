@@ -126,6 +126,14 @@ public class Init {
             Object obj = parser.parse(new FileReader(menuConfigFile));
             JSONObject jsonObject =  (JSONObject) obj;
             {
+                JSONArray menus = (JSONArray) jsonObject.get("init");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    utilRest.addInitPlugin(iterator.next());
+                }
+            }
+            {
                 JSONArray menus = (JSONArray) jsonObject.get("bkApp");
                 @SuppressWarnings("unchecked")
                 Iterator<String> iterator = menus.iterator();
@@ -146,9 +154,7 @@ public class Init {
                 @SuppressWarnings("unchecked")
                 Iterator<String> iterator = menus.iterator();
                 while (iterator.hasNext()) {
-                    String next = iterator.next();
-                    System.out.println(next);
-                    utilRest.addCellMenuPlugin(next);
+                    utilRest.addCellMenuPlugin(iterator.next());
                 }
             }
 

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import com.twosigma.beaker.jvm.object.TableDisplay;
+import javax.swing.ImageIcon;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 
@@ -27,12 +28,19 @@ public class SerializeUtils {
     public static void writeObject(Object obj, JsonGenerator jgen)
         throws IOException, JsonProcessingException
     {
-        if (obj == null) {
-            jgen.writeObject("null");
-        } else if (obj instanceof TableDisplay) {
-            jgen.writeObject(obj);
-        } else {
-            jgen.writeObject(obj.toString());
+        try {
+            if (obj == null) {
+                jgen.writeObject("null");
+            } else if (obj instanceof TableDisplay) {
+                jgen.writeObject(obj);
+            } else if (obj instanceof ImageIcon) {
+                jgen.writeObject(obj);
+            } else {
+                jgen.writeObject(obj.toString());
+            }
+        } catch (Exception e) {
+            System.err.println("Serialization error:");
+            System.err.println(e);
         }
     }
 }

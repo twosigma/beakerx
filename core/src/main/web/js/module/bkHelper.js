@@ -17,7 +17,7 @@
  * M_bkHelper
  * The bkHelper should be a subset of bkCore({@link M_bkCore}) utilities that are exposed for usages external to Beaker.
  */
-(function () {
+(function (require) {
     'use strict';
     var module = angular.module('M_bkHelper', [
         'M_bkCore',
@@ -221,7 +221,12 @@
             newDeferred: function () {
                 return bkCoreManager.newDeferred();
             },
-
+            loadModule: function (url, name) {
+                return bkCoreManager.loadModule(url, name);
+            },
+            require: function (nameOrUrl) {
+                return bkCoreManager.require(nameOrUrl);
+            },
             // input cell
             setInputCellKeyMapMode: function (keyMapMode) {
                 return bkCoreManager.setCMKeyMapMode(keyMapMode);
@@ -244,4 +249,4 @@
         window.bkHelper = bkHelper; // TODO, we want to revisit the decision of making this global
         return bkHelper;
     });
-})();
+})(window.require);

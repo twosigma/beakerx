@@ -15,6 +15,7 @@
         "q": "0.9.7",
         "angular-bootstrap": "0.3.0",
         "bootstrap": "2.3.2",
-        "font-awesome": "4.0.3"
+        "font-awesome": "4.0.3",
+        "requirejs": "2.1.11"
     }
 }

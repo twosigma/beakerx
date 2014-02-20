@@ -92,6 +92,12 @@
             },
             delay: function () {
                 return angularUtils.delay();
+            },
+            loadModule: function (url, name) {
+                return generalUtils.loadModule(url, name);
+            },
+            require: function (nameOrUrl) {
+                return generalUtils.require(nameOrUrl);
             }
         };
         return bkUtils;

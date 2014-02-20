@@ -336,6 +336,12 @@
             newDeferred: function () {
                 return bkUtils.newDeferred();
             },
+            loadModule: function (url, name) {
+                return bkUtils.loadModule(url, name);
+            },
+            require: function (nameOrUrl) {
+                return bkUtils.require(nameOrUrl);
+            },
             showFileChooser: function (callback, template, strategy) {
                 if (!template) {
                     // use default template

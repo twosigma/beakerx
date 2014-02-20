@@ -47,7 +47,7 @@ public class ImageIconSerializer extends JsonSerializer<ImageIcon>
             BufferedImage image = new BufferedImage(value.getIconWidth(),
                                                     value.getIconHeight(),
                                                     BufferedImage.TYPE_INT_RGB);
-            Graphics g = null; //image.createGraphics();
+            Graphics g = image.createGraphics();
             value.paintIcon(null, g, 0, 0);
             g.dispose();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

@@ -19,7 +19,6 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.json.serializer.StringObject;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import groovy.lang.GroovyShell;
-import groovy.lang.MissingPropertyException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -124,14 +123,14 @@ public class GroovyShellRest
 	    @FormParam("shellID") String shellID,
 	    @FormParam("code") String code
 	    ) throws InterruptedException {
-        System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
+        // System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
 	SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
         obj.started();
         GroovyShell shell = getEvaluator(shellID);
         Object result;
         try {
             result = shell.evaluate(code);
-        } catch (MissingPropertyException e) {
+        } catch (Exception e) {
             obj.error(e);
             return obj;
         }

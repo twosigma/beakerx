@@ -122,7 +122,7 @@ public class Init {
 
         try{
             JSONParser parser = new JSONParser();
-            File menuConfigFile = new File(Platform.getBeakerCoreDirectory() + "/config/menu.json");
+            File menuConfigFile = new File(Platform.getBeakerCoreDirectory() + "/config/beaker.conf.json");
             Object obj = parser.parse(new FileReader(menuConfigFile));
             JSONObject jsonObject =  (JSONObject) obj;
             {
@@ -139,6 +139,16 @@ public class Init {
                 Iterator<String> iterator = menus.iterator();
                 while (iterator.hasNext()) {
                     utilRest.addControlPanelMenuPlugin(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("bkCell");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    String next = iterator.next();
+                    System.out.println(next);
+                    utilRest.addCellMenuPlugin(next);
                 }
             }
 

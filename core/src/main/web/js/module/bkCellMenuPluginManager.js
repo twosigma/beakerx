@@ -31,23 +31,15 @@
             reset: function () {
                 var self = this;
                 $.get('/beaker/rest/util/cellmenuplugins')
-                    .done(function (menus) {
-                        menus.forEach(function (menu) {
-                            self.loadPlugin(menu).then(bkUtils.refreshRootScope);
-                        });
+                    .done(function (menuUrls) {
+                        menuUrls.forEach(self.loadPlugin);
                     });
             },
             loadPlugin: function (url) {
-                var deferred = Q.defer();
-                var pluginObj = {
-                    onReady: function (plugin) {
-                        _cellMenuPlugins[plugin.cellType] = plugin;
-                        deferred.resolve(plugin);
-                    }
-                };
-                bkUtils.loadingPlugins.add(url, pluginObj);
-                generalUtils.loadJS(url);
-                return deferred.promise;
+                return bkUtils.loadModule(url).then(function (ex) {
+                    _cellMenuPlugins[ex.cellType] = ex.plugin;
+                    return ex.plugin;
+                });
             },
             getPlugin: function (cellType) {
                 return _cellMenuPlugins[cellType];

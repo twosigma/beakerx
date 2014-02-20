@@ -145,6 +145,7 @@ public class UtilRest
         return clean(contents);
     }
 
+    /* Init Plugins */
     private List<String> _initPlugins = new ArrayList<String>();
     public void addInitPlugin(String p) {
         _initPlugins.add(p);
@@ -154,24 +155,24 @@ public class UtilRest
     public List<String> initPlugins() {
         return _initPlugins;
     }
-    // return list of URLs of plugins (js) for the client to load on startup.
 
+    /* bkApp Menu Plugins */
     private Set<String> _menuPlugins = new LinkedHashSet<String>();
-    
+
     @POST
     @Path("addMenuPlugin")
     public void addMenuPlugin(
             @FormParam("url") String urlAsString) {
         _menuPlugins.add(urlAsString);
     }
-    
-    // return list of URLs of plugins (js) for the client to load on startup.
+
     @GET
     @Path("menuplugins")
     public Set<String> menuPlugins() {
         return _menuPlugins;
     }
 
+    /* bkControl Menu Plugins */
     private Set<String> _controlPanelMenuPlugins = new LinkedHashSet<String>();
     @POST
     @Path("addControlMenuPlugin")
@@ -179,18 +180,19 @@ public class UtilRest
         @FormParam("url") String urlAsString) {
         _controlPanelMenuPlugins.add(urlAsString);
     }
-    // return list of URLs of plugins (js) for the client to load on startup.
     @GET
     @Path("controlpanelmenuplugins")
     public Set<String> controlPanelMenuPlugins() {
         return _controlPanelMenuPlugins;
     }
 
+    /* bkCell Menu Plugins */
     private List<String> _cellMenuPlugins = new ArrayList<String>();
+    @POST
+    @Path("addCellMenuPlugin")
     public void addCellMenuPlugin(String p) {
         _cellMenuPlugins.add(p);
     }
-    // return list of URLs of plugins (js) for the client to load on startup.
     @GET
     @Path("cellmenuplugins")
     public List<String> cellMenuPlugins() {

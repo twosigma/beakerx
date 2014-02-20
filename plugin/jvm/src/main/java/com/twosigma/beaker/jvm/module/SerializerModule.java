@@ -28,6 +28,8 @@ import com.twosigma.beaker.jvm.object.EvaluationResultSerializer;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.TableDisplaySerializer;
 import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.jvm.object.ImageIconSerializer;
+import javax.swing.ImageIcon;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -58,6 +60,7 @@ public class SerializerModule
         module.addSerializer(SimpleEvaluationObject.class, new SimpleEvaluationObjectSerializer());
         module.addSerializer(EvaluationResult.class, new EvaluationResultSerializer());
         module.addSerializer(TableDisplay.class, new TableDisplaySerializer());
+        module.addSerializer(ImageIcon.class, new ImageIconSerializer());
 
         mapper.registerModule(module);
 

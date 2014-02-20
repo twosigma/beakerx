@@ -4,5 +4,7 @@ mainClassName = 'com.twosigma.beaker.Main'
 dependencies {
     compile project(':shared')
     compile project(':plugin:jvm')
-    compile group: 'com.google.collections', name: 'google-collections', version: '1.0'
+    // would prefer "groovy" over "groovy-all" but that gives me this problem:
+    // http://stackoverflow.com/questions/11738732/exception-java-lang-incompatibleclasschangeerror-while-running-groovy-in-eclipse
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.2.1'
 }

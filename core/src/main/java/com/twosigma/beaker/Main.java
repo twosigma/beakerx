@@ -55,6 +55,7 @@ public class Main {
         processStarter.setPluginLocation("IPython", "src/main/sh");
         processStarter.setPluginLocation("Julia", "src/main/sh");
         processStarter.setPluginLocation("R", "src/main/sh");
+        processStarter.setPluginLocation("Groovy", "src/main/sh");
 
         Init.run(args);
 

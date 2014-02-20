@@ -17,9 +17,9 @@ package com.twosigma.beaker;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.twosigma.beaker.groovy.URLConfigModule;
 import com.twosigma.beaker.jvm.module.GuiceCometdModule;
 import com.twosigma.beaker.jvm.module.SerializerModule;
-import com.twosigma.beaker.module.URLConfigModule;
 import com.twosigma.beaker.jvm.module.WebServerModule;
 import org.eclipse.jetty.server.Server;
 

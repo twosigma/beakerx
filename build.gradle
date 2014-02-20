@@ -54,7 +54,7 @@ subprojects {
 }
 
 task makeDist(type:Exec) {
-    commandLine 'zip', '-r', 'beaker-notebook.zip', 'core/config', 'core/src/main/web', 'core/src/main/sh', 'core/build/install/core', 'plugin/r/src/main/r', 'plugin/r/build/install/r', 'plugin/groovy/build/install/groovy'
+    commandLine 'zip', '-r', 'beaker-notebook.zip', 'core/config', 'core/src/main/web', 'core/src/main/sh', 'core/build/install/core', 'plugin/r/src/main/r', 'plugin/r/build/install/r', 'plugin/groovy/build/install/groovy', 'beaker.command'
 }
 
 makeDist.dependsOn (":core:installApp")

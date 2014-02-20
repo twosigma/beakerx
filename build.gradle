@@ -50,4 +50,8 @@ subprojects {
         compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1' 
         compile group: 'com.google.collections', name: 'google-collections', version: '1.0'
     }
+    
+}
+task makeDist(type:Exec) {
+    commandLine 'zip', '-r', 'beaker-notebook.zip', 'core/config', 'core/src/main/web', 'core/src/main/sh', 'core/build/install/core', 'plugin/r/src/main/r', 'plugin/r/build/install/r', 'plugin/groovy/build/install/groovy'
 }

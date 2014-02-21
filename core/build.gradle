@@ -24,9 +24,8 @@ run {
 }
 */
 
-build.dependsOn jar
-
-/* need to remove META-INF/*.SF to use this */
-jar {
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-}
+// need to remove META-INF/*.SF to use this.
+// build.dependsOn jar
+//jar {
+//    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+//}

@@ -24,26 +24,17 @@
     module.provider('trackingService', function () {
         var _trackingService = null;
         this.config = function (trackingService) {
-            _trackingService = trackingService;
+            if (_.isFunction(trackingService)) {
+                _trackingService = trackingService();
+            } else {
+                _trackingService = trackingService;
+            }
         };
         this.$get = function () {
             if (!_trackingService) {
                 return {
                     log: function (event, obj) {
-                        // log to ga
-                        if (ga && event === "open") {
-                            var notebookType = obj.uri ? obj.uri.substring(0, obj.uri.indexOf(':/')) || "file" : "file";
-                            ga("send", "event", "file", "open", notebookType, {
-                                "dimension1": notebookType,
-                                "metric1": 1
-                            });
-                        } else if (ga && event === "evaluate") {
-                            var pluginName = obj.plugin;
-                            ga("send", "event", "notebook", "evaluate", pluginName, {
-                                "dimension2": pluginName,
-                                "metric2": 1
-                            });
-                        }
+                        // do nothing
                     }
                 };
             }

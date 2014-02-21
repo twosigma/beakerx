@@ -92,6 +92,28 @@
             },
             delay: function () {
                 return angularUtils.delay();
+            },
+            // wrapper around requireJS
+            moduleMap: {},
+            loadModule: function (url, name) {
+                // name is optional, if provided, it can be used to retrieve the loaded module later.
+                var that = this;
+                if (_.isString(url)) {
+                    var deferred = this.newDeferred();
+                    window.require([url], function (ret) {
+                        if (!_.isEmpty(name)) {
+                            that.moduleMap[name] = url;
+                        }
+                        deferred.resolve(ret);
+                    });
+                    return deferred.promise;
+                } else {
+                    throw "illegal arg" + url;
+                }
+            },
+            require: function (nameOrUrl) {
+                var url = this.moduleMap.hasOwnProperty(nameOrUrl) ? this.moduleMap[nameOrUrl] : nameOrUrl;
+                return window.require(url);
             }
         };
         return bkUtils;

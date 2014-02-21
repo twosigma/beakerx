@@ -21,7 +21,6 @@
 (function () {
     'use strict';
     var module = angular.module('M_generalUtils', []);
-
     module.factory('generalUtils', function () {
         return {
             generateID: function (length) {
@@ -49,6 +48,13 @@
                     e.onerror = failure;
                 }
                 document.head.appendChild(e);
+            },
+            loadCss: function (url) {
+                var link = document.createElement("link");
+                link.type = "text/css";
+                link.rel = "stylesheet";
+                link.href = url;
+                document.getElementsByTagName("head")[0].appendChild(link);
             },
             // offsetX is not defined in firefox
             eventOffsetX: function (elem, event) {

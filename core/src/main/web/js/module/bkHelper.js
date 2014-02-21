@@ -221,7 +221,12 @@
             newDeferred: function () {
                 return bkCoreManager.newDeferred();
             },
-
+            loadModule: function (url, name) {
+                return bkCoreManager.loadModule(url, name);
+            },
+            require: function (nameOrUrl) {
+                return bkCoreManager.require(nameOrUrl);
+            },
             // input cell
             setInputCellKeyMapMode: function (keyMapMode) {
                 return bkCoreManager.setCMKeyMapMode(keyMapMode);

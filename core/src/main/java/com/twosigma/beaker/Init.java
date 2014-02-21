@@ -122,11 +122,27 @@ public class Init {
 
         try{
             JSONParser parser = new JSONParser();
-            File menuConfigFile = new File(Platform.getBeakerCoreDirectory() + "/config/menu.json");
+            File menuConfigFile = new File(Platform.getBeakerCoreDirectory() + "/config/beaker.conf.json");
             Object obj = parser.parse(new FileReader(menuConfigFile));
             JSONObject jsonObject =  (JSONObject) obj;
             {
-                JSONArray menus = (JSONArray) jsonObject.get("bkApp");
+                JSONArray menus = (JSONArray) jsonObject.get("init");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    utilRest.addInitPlugin(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("control-panel-menu-plugins");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    utilRest.addControlPanelMenuPlugin(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("notebook-app-menu-plugins");
                 @SuppressWarnings("unchecked")
                 Iterator<String> iterator = menus.iterator();
                 while (iterator.hasNext()) {
@@ -134,11 +150,11 @@ public class Init {
                 }
             }
             {
-                JSONArray menus = (JSONArray) jsonObject.get("bkControl");
+                JSONArray menus = (JSONArray) jsonObject.get("notebook-cell-menu-plugins");
                 @SuppressWarnings("unchecked")
                 Iterator<String> iterator = menus.iterator();
                 while (iterator.hasNext()) {
-                    utilRest.addControlPanelMenuPlugin(iterator.next());
+                    utilRest.addCellMenuPlugin(iterator.next());
                 }
             }
 

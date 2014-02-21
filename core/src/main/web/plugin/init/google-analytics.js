@@ -1,7 +1,9 @@
 (function () {
     "use strict";
     var gaService = function () {
-        ga('send', 'pageview');
+        if (ga) {
+            ga('send', 'pageview');
+        }
         return {
             log: function (event, obj) {
                 if (ga && event === "open") {

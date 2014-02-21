@@ -45,56 +45,5 @@ Beaker was built as an internal Two Sigma project but is now being released to t
  
 #Running Beaker
 
-We've only tried running Beaker on Mac OS X. We'll be working on support for Linux soon.
-
-##Install dependencies
-
-###XCode
-
-Install/update XCode from the [Mac App Store](https://itunes.apple.com/us/app/xcode/id497799835)
-
-Launch XCode to complete installation, accept license, et cetera
-
-###Java
-
-Install JDK 7 from [Oracle](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html).
-    
-###[Homebrew](http://brew.sh/)
-
-    ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
-
-###Gradle, NPM, and Nginx
-
-    brew install gradle npm nginx
-
-##Clone this repo
-
-    git clone https://github.com/twosigma/beaker-notebook.git
-
-##Build and run Beaker
-
-    cd beaker-notebook
-    gradle :plugin:r:installApp
-    gradle :core:run
-
-Your default browser will automatically launch and connect to Beaker.
-
-##Plugin Languages
-
-Beaker can run a variety of backend languages that must be installed independently.  
-
-###Python
-Our Python plugin uses the [IPython](http://ipython.org/ipython-doc/stable/install/install.html) kernel and notebook server. The easiest way to install this is using [Anaconda](https://store.continuum.io/cshop/anaconda/). The default install should give you everything you need.
-
-###Julia
-Download [Julia](http://julialang.org/downloads/) and then in a Julia REPL saying
-
-    Pkg.add("IJulia")
-
-### R
-Install [R](http://cran.r-project.org/bin/macosx/) and [XQuartz](http://xquartz.macosforge.org/landing/) then run R and say:
-
-    install.packages('Rserve',,'http://www.rforge.net/')
-    install.packages("ggplot2")
-
-(answer "yes" if it asks about installing a personal version or creating a directory.)
+[Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run)
+[Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run)

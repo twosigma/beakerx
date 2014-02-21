@@ -134,15 +134,7 @@ public class Init {
                 }
             }
             {
-                JSONArray menus = (JSONArray) jsonObject.get("bkApp");
-                @SuppressWarnings("unchecked")
-                Iterator<String> iterator = menus.iterator();
-                while (iterator.hasNext()) {
-                    utilRest.addMenuPlugin(iterator.next());
-                }
-            }
-            {
-                JSONArray menus = (JSONArray) jsonObject.get("bkControl");
+                JSONArray menus = (JSONArray) jsonObject.get("control-panel-menu-plugins");
                 @SuppressWarnings("unchecked")
                 Iterator<String> iterator = menus.iterator();
                 while (iterator.hasNext()) {
@@ -150,7 +142,15 @@ public class Init {
                 }
             }
             {
-                JSONArray menus = (JSONArray) jsonObject.get("bkCell");
+                JSONArray menus = (JSONArray) jsonObject.get("notebook-app-menu-plugins");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    utilRest.addMenuPlugin(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("notebook-cell-menu-plugins");
                 @SuppressWarnings("unchecked")
                 Iterator<String> iterator = menus.iterator();
                 while (iterator.hasNext()) {

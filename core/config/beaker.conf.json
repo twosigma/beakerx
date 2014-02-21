@@ -1,18 +1,19 @@
 {
+    "conf-format": "1",
     "init": [
+        "./plugin/init/google-analytics.js"
     ],
-    "bkApp":[
-        "./plugin/menu/file.js",
-        "./plugin/menu/notebook.js",
-        "./plugin/menu/file_filesys.js",
-        "./plugin/menu/evaluators.js",
-        "./plugin/menu/help.js",
-        "./plugin/menu/file_ipython.js"
-    ],
-    "bkControl": [
+    "control-panel-menu-plugins": [
         "./plugin/menu/forControlPanel.js"
     ],
-    "bkCell": [
-        "./plugin/menu/cell/fake.js"
+    "notebook-app-menu-plugins":[
+        "./plugin/menu/file.js",
+        "./plugin/menu/file_filesys.js",
+        "./plugin/menu/file_ipython.js",
+        "./plugin/menu/notebook.js",
+        "./plugin/menu/evaluators.js",
+        "./plugin/menu/help.js"
+    ],
+    "notebook-cell-menu-plugins": [
     ]
 }

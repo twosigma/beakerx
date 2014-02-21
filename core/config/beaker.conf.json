@@ -1,7 +1,7 @@
 {
     "conf-format": "1",
     "init": [
-        "./plugin/init/google-analytics.js"
+        "./plugin/init/ga-track.js"
     ],
     "control-panel-menu-plugins": [
         "./plugin/menu/forControlPanel.js"

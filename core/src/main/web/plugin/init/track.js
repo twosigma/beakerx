@@ -1,11 +1,18 @@
 (function () {
     "use strict";
     var gaService = function () {
-        if (ga) {
-            ga('send', 'pageview');
-        }
+        var _enabled = false;
         return {
+            enable: function () {
+                if (!_enabled) {
+                    _enabled = true;
+                    if (ga) {
+                        ga('send', 'pageview');
+                    }
+                }
+            },
             log: function (event, obj) {
+                if (!_enabled) { return; }
                 if (ga && event === "open") {
                     var notebookType = obj.uri ? obj.uri.substring(0, obj.uri.indexOf(':/')) || "file" : "file";
                     ga("send", "event", "file", "open", notebookType, {

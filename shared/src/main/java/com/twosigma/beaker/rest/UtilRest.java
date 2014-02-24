@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 
 /**
  * RESTful API for general utilities
@@ -47,6 +55,10 @@ import javax.ws.rs.core.MediaType;
 @Path("util")
 public class UtilRest
 {
+    public UtilRest() {
+
+    }
+    
     @GET
     @Path("whoami")
     public String whoami(@Context HttpServletRequest request) {
@@ -90,8 +102,7 @@ public class UtilRest
         return js;
     }
 
-    private String readFile(String name) {
-        File file = new File(name);
+    private String readFile(File file) {
         try {
             FileInputStream fis = new FileInputStream(file);
             byte[] data = new byte[(int)file.length()];
@@ -99,9 +110,9 @@ public class UtilRest
             fis.close();
             return new String(data, "UTF-8");
         } catch (FileNotFoundException e) {
-            System.out.println("ERROR reading default notebook: " + e);
+            System.out.println("ERROR reading file" + file.getName() + ": " + e);
         } catch (IOException e) {
-            System.out.println("ERROR reading default notebook: " + e);
+            System.out.println("ERROR reading file" + file.getName() + ": " + e);
         }
         return null;
     }
@@ -124,11 +135,11 @@ public class UtilRest
             fileName = _dotDir + "/default.bkr";
         else
             fileName = _defaultNotebook;
-        String contents = readFile(fileName);
+        String contents = readFile(new File(fileName));
         if (null == contents) {
             String installDir = Platform.getBeakerCoreDirectory();
             String defaultDefault = installDir + "/config/default.bkr";
-            contents = readFile(defaultDefault);
+            contents = readFile(new File(defaultDefault));
             if (null == contents) {
                 System.out.println("Double bogey, delivering empty string to client.");
                 contents = "";
@@ -143,6 +154,111 @@ public class UtilRest
             }
         }
         return clean(contents);
+    }
+    
+    public void resetConfig() {
+        File configFile = new File(_dotDir, "beaker.conf.json");
+        if (!configFile.exists()) {
+            try {
+                PrintWriter out = new PrintWriter(configFile);
+                out.print(readFile(new File(Platform.getBeakerCoreDirectory(), "/config/beaker.conf.json")));
+                out.close();
+            } catch (FileNotFoundException e) {
+                System.out.println("ERROR writing default default, " + e);
+            }
+        }
+        try{            
+            JSONParser parser = new JSONParser();            
+            Object obj = parser.parse(readFile(configFile));
+            
+            JSONObject jsonObject =  (JSONObject) obj;
+            {
+                Boolean allowTracking = (Boolean) jsonObject.get("allow-anonymous-usage-tracking");
+                if (allowTracking == null) {
+                    setAllowAnonymousTracking(null);
+                } else if (allowTracking.equals(Boolean.TRUE)) {
+                    setAllowAnonymousTracking("true");
+                } else if (allowTracking.equals(Boolean.FALSE)) {
+                    setAllowAnonymousTracking("false");
+                } else {
+                    setAllowAnonymousTracking(null);
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("init");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    addInitPlugin(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("control-panel-menu-plugins");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    addControlPanelMenuPlugin(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("notebook-app-menu-plugins");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    addMenuPlugin(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("notebook-cell-menu-plugins");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    addCellMenuPlugin(iterator.next());
+                }
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException("failed getting beaker configurations from config file", e);
+        }
+    }
+    
+    private Boolean _isAllowAnonymousTracking = null;
+    @POST
+    @Path("setAllowAnonymousTracking")
+    public void setAllowAnonymousTracking(
+        @FormParam("allow") String allow)
+    {        
+        
+        if (allow == null) {
+            _isAllowAnonymousTracking = null;            
+        } else if (allow.equals("true")) {
+            _isAllowAnonymousTracking = Boolean.TRUE;
+        } else if (allow.equals("false")) {
+            _isAllowAnonymousTracking = Boolean.FALSE;
+        } else {
+            _isAllowAnonymousTracking = null;
+        }       
+        
+        File configFile = new File(_dotDir, "beaker.conf.json");
+        try {
+            ObjectMapper om = new ObjectMapper();
+            TypeReference readType = new TypeReference<HashMap<String, Object>>() {};            
+            Map<String, Object> configs = om.readValue(configFile, readType);
+            Boolean oldValue = (Boolean) configs.get("allow-anonymous-usage-tracking");
+            // If value changed, write it to the file too
+            if ((_isAllowAnonymousTracking == null && oldValue != null)
+                    || (_isAllowAnonymousTracking != null && !(_isAllowAnonymousTracking.equals(oldValue)))) {
+                configs.put("allow-anonymous-usage-tracking", _isAllowAnonymousTracking);
+                om.writerWithDefaultPrettyPrinter().writeValue(configFile, configs);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @GET
+    @Path("isAllowAnonymousTracking")
+    public Boolean isAllowAnonymousTracking() {
+        return _isAllowAnonymousTracking;
     }
 
     /* Init Plugins */

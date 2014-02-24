@@ -28,7 +28,7 @@
         return {
             restrict: 'E',
             templateUrl: './template/bkControl.html',
-            controller: function ($scope, bkCoreManager, bkSession, menuPluginManager) {
+            controller: function ($scope, bkCoreManager, bkSession, menuPluginManager, trackingService) {
                 document.title = "Beaker";
                 var _impl = {
                     _pathOpeners: {},
@@ -93,6 +93,53 @@
                         location.reload();
                     }
                 };
+                $scope.isAllowAnonymousTracking = false;
+                $scope.$watch("isAllowAnonymousTracking", function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        if (newValue) {
+                            trackingService.enable();
+                        }
+                        var allow = null;
+                        if (newValue) {
+                            allow = "true";
+                        } else if (newValue === false) {
+                            allow = "false";
+                        }
+                        bkCoreManager.httpPost("./rest/util/setAllowAnonymousTracking", {allow: allow});
+                    }
+                });
+                $scope.showWhatWeLog = function () {
+                    var template = "<div class='modal-header'>" +
+                        "<h3>What will we log</h3>" +
+                        "</div>" +
+                        "<div class='modal-body'>" +
+                        "<p><b>What we log</b></p>" +
+                        "<p>We use Google Analytics to collect usage info. Google Analytics collects data such as how long you spend in Beaker, what browser you're using, and your geographic region.</p>" +
+                        "<p>In addition to the standard Google Analytics collection, we're logging how many times you run cells in each language and what types of notebooks you open (local .bkr file, remote .ipynb, et cetera).</p>" +
+                        "<p><b>What we <i>don't</i> log</b></p>" +
+                        "<p>We will never log any of the code you run, the names of your notebooks, your IP address, or any other personal or sensitive information.</p>" +
+                        "</div>" +
+                        '<div class="modal-footer">' +
+                        "   <button class='btn' ng-click='close()' class='btn'>Got it</button>"
+                        '</div>';
+                    return bkCoreManager.showFileChooser(function () {
+                        
+                    }, template);
+                }
+
+                bkCoreManager.httpGet("./rest/util/isAllowAnonymousTracking").then(function (allow) {
+                    switch (allow.data) {
+                        case "true":
+                            $scope.isAllowAnonymousTracking = true;
+                            break;
+                        case "false":
+                            $scope.isAllowAnonymousTracking = false;
+                            break;
+                        default:
+                            $scope.isAllowAnonymousTracking = null;
+                    }
+                });
+                
             }
         };
     });

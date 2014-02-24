@@ -1,5 +1,6 @@
 {
     "conf-format": "1",
+    "allow-anonymous-usage-tracking": null,
     "init": [
         "./plugin/init/track.js"
     ],

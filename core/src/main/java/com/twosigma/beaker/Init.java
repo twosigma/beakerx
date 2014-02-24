@@ -28,10 +28,6 @@ import java.net.ServerSocket;
 import java.util.Iterator;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.server.Server;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 
 /**
@@ -118,53 +114,8 @@ public class Init {
             }
         }
         processStarter.setDotDir(dotDir);
-        utilRest.setDotDir(dotDir);
-
-        try{
-            JSONParser parser = new JSONParser();
-            File menuConfigFile = new File(Platform.getBeakerCoreDirectory() + "/config/beaker.conf.json");
-            Object obj = parser.parse(new FileReader(menuConfigFile));
-            JSONObject jsonObject =  (JSONObject) obj;
-            {
-                JSONArray menus = (JSONArray) jsonObject.get("init");
-                @SuppressWarnings("unchecked")
-                Iterator<String> iterator = menus.iterator();
-                while (iterator.hasNext()) {
-                    utilRest.addInitPlugin(iterator.next());
-                }
-            }
-            {
-                JSONArray menus = (JSONArray) jsonObject.get("control-panel-menu-plugins");
-                @SuppressWarnings("unchecked")
-                Iterator<String> iterator = menus.iterator();
-                while (iterator.hasNext()) {
-                    utilRest.addControlPanelMenuPlugin(iterator.next());
-                }
-            }
-            {
-                JSONArray menus = (JSONArray) jsonObject.get("notebook-app-menu-plugins");
-                @SuppressWarnings("unchecked")
-                Iterator<String> iterator = menus.iterator();
-                while (iterator.hasNext()) {
-                    utilRest.addMenuPlugin(iterator.next());
-                }
-            }
-            {
-                JSONArray menus = (JSONArray) jsonObject.get("notebook-cell-menu-plugins");
-                @SuppressWarnings("unchecked")
-                Iterator<String> iterator = menus.iterator();
-                while (iterator.hasNext()) {
-                    utilRest.addCellMenuPlugin(iterator.next());
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("failed getting menu plugins from config file", e);
-        } catch (IOException e) {
-            throw new RuntimeException("failed getting menu plugins from config file", e);
-        } catch (ParseException e) {
-            throw new RuntimeException("failed getting menu plugins from config file", e);
-        }
+        utilRest.setDotDir(dotDir);        
+        utilRest.resetConfig();
     }
 
     static void run(String[] args) throws

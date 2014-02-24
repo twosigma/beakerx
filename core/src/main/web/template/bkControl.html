@@ -55,4 +55,20 @@
             </div>
         </div>
     </div>
+    <div class="row" ng-show="isAllowAnonymousTracking == null">
+        <div class="span6 well">
+            <p>
+                <b>Share anonymous usage info?</b>
+            </p>
+            <p>
+                We would like to collect anonymous usage info to help improve our product. In the spirit of open software, the data we log will be made publicly accessible.<br>
+            </p>
+            <p>
+                <a class="cursor_hand" ng-click="showWhatWeLog()">What will we log?</a>
+            </p>
+            <button class="btn" ng-click="isAllowAnonymousTracking = false">No, don't share</button>
+            <button class="btn btn-primary" ng-click="isAllowAnonymousTracking = true">Yes, share my info</button>
+        </div>
+
+    </div>
 </div>

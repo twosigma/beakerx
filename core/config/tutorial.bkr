@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "E42363342E8041EF8BB30E0CA333ADE7",
+            "shellID": "0A21923659474B4A9E6CDF124183693A",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,7 +28,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "9a1f6fdc-1ddb-4dfa-9996-91ee946fcf7c"
+            "shellID": "f97d08b2-6726-4b2d-9a81-1afe400241d5"
         }
     ],
     "cells": [
@@ -37,6 +37,38 @@
             "type": "section",
             "level": 1,
             "title": "Beaker Tutorial",
+            "collapsed": false
+        },
+        {
+            "id": "sectionA6FarX",
+            "type": "section",
+            "title": "Additional materials",
+            "level": 2,
+            "collapsed": false
+        },
+        {
+            "id": "codewQAk41",
+            "type": "code",
+            "evaluator": "Html",
+            "input": {
+                "body": "<div class=\"row-fluid\">\n  \n  <div class=\"span3\">\n    <h2>Beaker</h2>\n    <a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a>\n  </div>\n\n  <div class=\"span3\">\n    <h2>Python</h2>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n  </div>\n\n  <div class=\"span3\">\n    <h2>R</h2>\n    TODO\n  </div>\n  \n  <div class=\"span3\">\n    <h2>Groovy</h2>\n    TODO\n  </div>  \n\n  \n</div>",
+                "hidden": true
+            },
+            "output": {
+                "selectedType": "BeakerDisplay",
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<div class=\"row-fluid\">\n  \n  <div class=\"span3\">\n    <h2>Beaker</h2>\n    <a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a>\n  </div>\n\n  <div class=\"span3\">\n    <h2>Python</h2>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n  </div>\n\n  <div class=\"span3\">\n    <h2>R</h2>\n    TODO\n  </div>\n  \n  <div class=\"span3\">\n    <h2>Groovy</h2>\n    TODO\n  </div>  \n\n  \n</div>"
+                },
+                "elapsedTime": 0
+            }
+        },
+        {
+            "id": "section9wSkbn",
+            "type": "section",
+            "title": "Beaker basics",
+            "level": 1,
             "collapsed": false
         },
         {
@@ -464,7 +496,7 @@
                     ]
                 },
                 "outputArrived": true,
-                "elapsedTime": 218
+                "elapsedTime": 829
             }
         },
         {
@@ -479,9 +511,9 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\">The d3 chart will appear here</div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
+                    "object": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\">The d3 bar chart will appear here</div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
                 },
-                "elapsedTime": 52
+                "elapsedTime": 65
             }
         },
         {

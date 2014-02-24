@@ -21,10 +21,12 @@ import com.twosigma.beaker.Platform;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * RESTful API for general utilities
@@ -47,6 +53,10 @@ import javax.ws.rs.core.MediaType;
 @Path("util")
 public class UtilRest
 {
+    public UtilRest() {
+
+    }
+    
     @GET
     @Path("whoami")
     public String whoami(@Context HttpServletRequest request) {
@@ -90,8 +100,7 @@ public class UtilRest
         return js;
     }
 
-    private String readFile(String name) {
-        File file = new File(name);
+    private String readFile(File file) {
         try {
             FileInputStream fis = new FileInputStream(file);
             byte[] data = new byte[(int)file.length()];
@@ -99,9 +108,9 @@ public class UtilRest
             fis.close();
             return new String(data, "UTF-8");
         } catch (FileNotFoundException e) {
-            System.out.println("ERROR reading file" + name + ": " + e);
+            System.out.println("ERROR reading file" + file.getName() + ": " + e);
         } catch (IOException e) {
-            System.out.println("ERROR reading file" + name + ": " + e);
+            System.out.println("ERROR reading file" + file.getName() + ": " + e);
         }
         return null;
     }
@@ -124,11 +133,11 @@ public class UtilRest
             fileName = _dotDir + "/default.bkr";
         else
             fileName = _defaultNotebook;
-        String contents = readFile(fileName);
+        String contents = readFile(new File(fileName));
         if (null == contents) {
             String installDir = Platform.getBeakerCoreDirectory();
             String defaultDefault = installDir + "/config/default.bkr";
-            contents = readFile(defaultDefault);
+            contents = readFile(new File(defaultDefault));
             if (null == contents) {
                 System.out.println("Double bogey, delivering empty string to client.");
                 contents = "";
@@ -143,6 +152,58 @@ public class UtilRest
             }
         }
         return clean(contents);
+    }
+    
+    public void resetConfig() {
+        File configFile = new File(_dotDir, "beaker.conf.json");
+        if (!configFile.exists()) {
+            try {
+                PrintWriter out = new PrintWriter(configFile);
+                out.print(readFile(new File(Platform.getBeakerCoreDirectory(), "/config/beaker.conf.json")));
+                out.close();
+            } catch (FileNotFoundException e) {
+                System.out.println("ERROR writing default default, " + e);
+            }
+        }
+        try{
+            JSONParser parser = new JSONParser();            
+            Object obj = parser.parse(clean(readFile(configFile)));
+            JSONObject jsonObject =  (JSONObject) obj;
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("init");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    _initPlugins.add(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("control-panel-menu-plugins");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    _controlPanelMenuPlugins.add(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("notebook-app-menu-plugins");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    _menuPlugins.add(iterator.next());
+                }
+            }
+            {
+                JSONArray menus = (JSONArray) jsonObject.get("notebook-cell-menu-plugins");
+                @SuppressWarnings("unchecked")
+                Iterator<String> iterator = menus.iterator();
+                while (iterator.hasNext()) {
+                    _cellMenuPlugins.add(iterator.next());
+                }
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException("failed getting menu plugins from config file", e);
+        }
     }
 
     /* Init Plugins */

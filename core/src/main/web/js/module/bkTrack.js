@@ -41,6 +41,12 @@
             return {
                 log: function (event, object) {
                     _trackingService.log(event, object);
+                },
+                enable: function () {
+                    // some tracking service will need to be enabled before being used
+                    if (_trackingService.enable && _.isFunction(_trackingService.enable)) {
+                        _trackingService.enable();
+                    }
                 }
             };
         };

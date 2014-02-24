@@ -28,7 +28,7 @@
         return {
             restrict: 'E',
             templateUrl: './template/bkControl.html',
-            controller: function ($scope, bkCoreManager, bkSession, menuPluginManager) {
+            controller: function ($scope, bkCoreManager, bkSession, menuPluginManager, trackingService) {
                 document.title = "Beaker";
                 var _impl = {
                     _pathOpeners: {},
@@ -93,6 +93,34 @@
                         location.reload();
                     }
                 };
+                $scope.isAllowAnonymousTracking = false;
+                $scope.$watch("isAllowAnonymousTracking", function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        if (newValue) {
+                            trackingService.enable();
+                        }
+                        var allow = null;
+                        if (newValue) {
+                            allow = "true";
+                        } else if (newValue === false) {
+                            allow = "false";
+                        }
+                        bkCoreManager.httpPost("./rest/util/setAllowAnonymousTracking", {allow: allow});
+                    }
+                });
+
+                bkCoreManager.httpGet("./rest/util/isAllowAnonymousTracking").then(function (allow) {
+                    switch (allow.data) {
+                        case "true":
+                            $scope.isAllowAnonymousTracking = true;
+                            break;
+                        case "false":
+                            $scope.isAllowAnonymousTracking = false;
+                            break;
+                        default:
+                            $scope.isAllowAnonymousTracking = null;
+                    }
+                });
             }
         };
     });

@@ -53,10 +53,26 @@ subprojects {
     
 }
 
+def buildTime() {
+    return new Date().format("yyyy-MM-dd HH:mm z")
+}
+
+def gitSha() {
+    return "git rev-parse --short HEAD".execute().text.trim()
+}
+
+def versionHtml() {
+    return "<div>build time: " + buildTime() + "<br>" + "git sha: " + gitSha() + "<br></div>"
+}
+
+task writeVersion {
+    new File('core/src/main/web/template/version.html').write(versionHtml())
+}
+
 task makeDist(type:Exec) {
     commandLine 'zip', '-r', 'beaker-notebook.zip', 'core/config', 'core/src/main/web', 'core/src/main/sh', 'core/build/install/core', 'plugin/r/src/main/r', 'plugin/r/build/install/r', 'plugin/groovy/build/install/groovy', 'beaker.command'
 }
 
-makeDist.dependsOn (":core:installApp")
-makeDist.dependsOn (":plugin:r:installApp")
-makeDist.dependsOn (":plugin:groovy:installApp")
+makeDist.dependsOn(":core:installApp")
+makeDist.dependsOn(":plugin:r:installApp")
+makeDist.dependsOn(":plugin:groovy:installApp")

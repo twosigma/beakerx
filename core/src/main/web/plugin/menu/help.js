@@ -21,6 +21,13 @@
     'use strict';
     var menuItems = [
         {
+            name: "About Beaker...",
+            action: function () {
+                bkHelper.showFileChooser(undefined, "template/about.html");
+            },
+            tooltip: "Basic information about this application"
+        },
+        {
             name: "Tutorial notebook",
             action: function () {
                 bkHelper.openURI("file:config/tutorial.bkr");

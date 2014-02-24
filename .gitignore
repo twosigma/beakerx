@@ -2,6 +2,7 @@ build
 beaker/*
 node_modules
 core/src/main/web/vendor/bower_components
+core/src/main/web/template/version.html
 *~
 
 .gradle

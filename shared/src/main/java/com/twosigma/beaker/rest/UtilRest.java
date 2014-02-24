@@ -99,9 +99,9 @@ public class UtilRest
             fis.close();
             return new String(data, "UTF-8");
         } catch (FileNotFoundException e) {
-            System.out.println("ERROR reading default notebook: " + e);
+            System.out.println("ERROR reading file" + name + ": " + e);
         } catch (IOException e) {
-            System.out.println("ERROR reading default notebook: " + e);
+            System.out.println("ERROR reading file" + name + ": " + e);
         }
         return null;
     }

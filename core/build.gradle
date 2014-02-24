@@ -9,10 +9,15 @@ task (bowerInstall, type: Exec) {
     commandLine './node_modules/bower/bin/bower', 'install'
 }
 
+task (copyNginx, type: Exec) {
+    commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx'.split()
+}
+
 bowerInstall.dependsOn installBower
 build.dependsOn bowerInstall
 run.dependsOn bowerInstall
 run.dependsOn jar
+run.dependsOn copyNginx
 
 dependencies {
     compile project(':shared')

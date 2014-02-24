@@ -40,7 +40,7 @@ os.system("mkdir -p " + dest_dir + "/conf")
 os.system("mkdir -p " + dest_dir + "/logs")
 os.system("mkdir -p " + client_temp_dir)
 os.system("rm -f " + dest_dir + "/conf/mime.types " + dest_dir + "/html")
-os.system("ln -s " + nginx_dir + "/conf/mime.types " + dest_dir + "/conf/mime.types")
+os.system("ln -s " + "nginx/mime.types " + dest_dir + "/conf/mime.types")
 os.system("ln -s " + static_dir + " " + dest_dir + "/html")
 
 dest = open(dest_dir + "/conf/nginx.conf", 'w')
@@ -71,6 +71,7 @@ daemon off;
 
 #debug level logging is quite voluminous
 #error_log  stderr  debug;
+error_log  stderr  error;
 
 pid nginx.pid;
 
@@ -79,8 +80,6 @@ events {
 }
 
 http {
-# XXX mac only
-    include       /usr/local/etc/nginx/mime.types;
     default_type  application/octet-stream;
     types_hash_max_size 2048;
 
@@ -108,6 +107,12 @@ http {
 #        ssl_certificate_key %(host)s.key;
          client_max_body_size 100M;
          client_body_temp_path %(client_temp_dir)s;
+         proxy_temp_path %(client_temp_dir)s;
+         fastcgi_temp_path %(client_temp_dir)s;
+         uwsgi_temp_path %(client_temp_dir)s;
+         scgi_temp_path %(client_temp_dir)s;
+
+
 # kerberos
         listen       %(port_clear)s;
 

@@ -176,7 +176,7 @@ public class StartProcessRest
         preproc.waitFor();
 
         String nginxCommand = !nginxDir.isEmpty() ? (nginxDir + "/sbin/nginx -p " + dir) :
-                ("nginx -p " + dir + " -c " + dir + "/conf/nginx.conf");
+                ("nginx/nginx -p " + dir + " -c " + dir + "/conf/nginx.conf");
         Process proc = Runtime.getRuntime().exec(nginxCommand);
         StreamGobbler errorGobbler = new StreamGobbler(_OutputLogService, proc.getErrorStream(), "nginx", "stderr", false, null);
         errorGobbler.start();

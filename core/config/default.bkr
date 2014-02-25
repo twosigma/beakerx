@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "C943B9B510FA472DB416009DCD15EF29",
+            "shellID": "BD67DDF962194BD8A10A9D164DE9F36A",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,12 +28,12 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "774760b3-7110-4c3a-89ea-910803ed6d79"
+            "shellID": "35490d5b-d8aa-4484-86b4-7f10b63b87a1"
         },
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "shellID": "6adf607f-3d6c-4fe7-8feb-bf7a2d16074d"
+            "shellID": "72177339-15f9-4cb8-a784-e601b041feea"
         }
     ],
     "cells": [
@@ -49,7 +49,7 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "#Python"
+                "body": "#Python - will turn light blue if plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -60,7 +60,7 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#R"
+                "body": "#R - will turn dark blue if plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -71,7 +71,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "//Groovy"
+                "body": "//Groovy - will turn green if plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -82,7 +82,7 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "//JavaScript"
+                "body": "//JavaScript - will turn pink if plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"

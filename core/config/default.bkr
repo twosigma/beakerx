@@ -14,14 +14,26 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "595CD9D6B74B4CD88C073D44E5CB6DAF",
+            "shellID": "C943B9B510FA472DB416009DCD15EF29",
             "imports": "",
             "supplementalClassPath": ""
         },
         {
             "name": "JavaScript",
             "plugin": "JavaScript",
-            "shellID": null
+            "shellID": null,
+            "jsSetting2": "",
+            "jsSetting1": ""
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "shellID": "774760b3-7110-4c3a-89ea-910803ed6d79"
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "shellID": "6adf607f-3d6c-4fe7-8feb-bf7a2d16074d"
         }
     ],
     "cells": [
@@ -37,7 +49,40 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": ""
+                "body": "#Python"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "code2uVtKX",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "#R"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "codeD2ujjG",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "//Groovy"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "code301W1U",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "//JavaScript"
             },
             "output": {
                 "selectedType": "Hidden"

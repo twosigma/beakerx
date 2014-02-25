@@ -329,7 +329,7 @@
                         cellModel: $scope.cellmodel,
                         evViewModel: evaluatorManager.getViewModel(),
                         notebookModel: {
-                            cells: bkBaseSessionModel.cellOp.getAllDescendants($scope.cellmodel.id)
+                            cells: [$scope.cellmodel].concat(bkBaseSessionModel.cellOp.getAllDescendants($scope.cellmodel.id))
                         }
                     };
                 };

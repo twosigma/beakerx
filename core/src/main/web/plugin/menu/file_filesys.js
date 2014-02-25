@@ -105,7 +105,6 @@
                     }
                 }).success(function (list) {
                         self.showSpinner = false;
-                        console.log(list);
                         callback(list);
                     }).error(function () {
                         self.showSpinner = false;

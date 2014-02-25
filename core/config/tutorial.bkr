@@ -29,6 +29,11 @@
             "name": "R",
             "plugin": "R",
             "shellID": "a08baa8a-425f-4678-bd3c-69f192732d0b"
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "shellID": "0b4738ef-b853-4e39-aaea-f99bef1c1550"
         }
     ],
     "cells": [
@@ -402,6 +407,106 @@
                 },
                 "outputArrived": true,
                 "elapsedTime": 261
+            }
+        },
+        {
+            "id": "sectionF7ZQVV",
+            "type": "section",
+            "title": "Groovy examples",
+            "level": 1,
+            "collapsed": false
+        },
+        {
+            "id": "codelwaUwX",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "def a = 1 //local variable\nb = 2 //global variable"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "1",
+                "elapsedTime": 465
+            }
+        },
+        {
+            "id": "codeiXI4Hu",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "a //error"
+            },
+            "output": {
+                "selectedType": "BeakerDisplay",
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Error",
+                    "object": "groovy.lang.MissingPropertyException: No such property: a for class: Script2"
+                },
+                "elapsedTime": 102
+            }
+        },
+        {
+            "id": "codeZsp72T",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "b //this works"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "codeyiu160",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "//closure example\ntimesTwo = {x -> x*2}"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "Script12$_run_closure1@3f7cd159",
+                "elapsedTime": 129
+            }
+        },
+        {
+            "id": "code0SVic5",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "timesTwo(4)"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "8",
+                "elapsedTime": 130
+            }
+        },
+        {
+            "id": "codexiOErG",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "timesTwo(\"Multiplying Strings!\")"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "Multiplying Strings!Multiplying Strings!",
+                "elapsedTime": 114
+            }
+        },
+        {
+            "id": "code77FYkc",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "l = [1,2,3,4] //list\nm = [a:1, b:2] //map"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "{a=1, b=2}",
+                "elapsedTime": 77
             }
         },
         {

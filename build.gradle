@@ -66,7 +66,7 @@ def versionHtml() {
 }
 
 task writeVersion {
-    new File('core/src/main/web/template/version.html').write(versionHtml())
+    file('core/src/main/web/template/version.html').write(versionHtml())
 }
 
 task makeDist(type:Exec) {

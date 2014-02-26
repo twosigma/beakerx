@@ -18,7 +18,6 @@ package com.twosigma.beaker;
 import com.google.inject.Injector;
 import com.twosigma.beaker.rest.StartProcessRest;
 import com.twosigma.beaker.rest.UtilRest;
-import java.awt.Desktop;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -184,10 +183,11 @@ public class Init {
             url = "http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
                     + localhostname + ":" + (portBase + 1) + "/beaker/";
         }
-        System.out.println("Connect to " + url);
-        System.out.println("");
         if (openBrowser) {
-            Desktop.getDesktop().browse(java.net.URI.create(url));
+            System.out.println("Connecting to " + url + "\n");
+            Platform.openUrl(url);
+        } else {
+            System.out.println("Connect to " + url + "\n");
         }
     }
 }

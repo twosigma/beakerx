@@ -61,5 +61,13 @@ public class Platform {
     public static boolean isOpenBrowserByDefault() {
         return true;
     }
-
+    public static void openUrl(String url) {
+        boolean onMac = System.getProperty("os.name").equals("Mac OS X");
+        String[] cmd = {onMac ? "open" : "xdg-open", url};
+        try {
+            Runtime.getRuntime().exec(cmd);
+        } catch (Exception e) {
+            System.err.println("error opening url: " + e);
+        }
+    }
 }

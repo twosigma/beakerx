@@ -115,7 +115,7 @@ public class RecentMenuRest {
     }
     private static String transformUrl(String input) {
         String ret;
-        if (input.contains(":/")) {
+        if (input.contains(":/") || input.startsWith("file:")) {
             ret = input;
         } else {
             ret = "file:" + input;

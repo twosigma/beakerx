@@ -126,20 +126,22 @@
                         
                     }, template);
                 }
-
-                bkCoreManager.httpGet("./rest/util/isAllowAnonymousTracking").then(function (allow) {
-                    switch (allow.data) {
-                        case "true":
-                            $scope.isAllowAnonymousTracking = true;
-                            break;
-                        case "false":
-                            $scope.isAllowAnonymousTracking = false;
-                            break;
-                        default:
-                            $scope.isAllowAnonymousTracking = null;
-                    }
-                });
-                
+                if (trackingService.isNeedPermission()) {
+                    bkCoreManager.httpGet("./rest/util/isAllowAnonymousTracking").then(function (allow) {
+                        switch (allow.data) {
+                            case "true":
+                                $scope.isAllowAnonymousTracking = true;
+                                break;
+                            case "false":
+                                $scope.isAllowAnonymousTracking = false;
+                                break;
+                            default:
+                                $scope.isAllowAnonymousTracking = null;
+                        }
+                    });
+                } else {
+                    $scope.isAllowAnonymousTracking = true;
+                }
             }
         };
     });

@@ -342,6 +342,9 @@
             require: function (nameOrUrl) {
                 return bkUtils.require(nameOrUrl);
             },
+            isMiddleClick: function (event) {
+                return bkUtils.isMiddleClick(event);
+            },
             showFileChooser: function (callback, template, strategy) {
                 if (!template) {
                     // use default template

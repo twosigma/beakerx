@@ -114,6 +114,9 @@
             require: function (nameOrUrl) {
                 var url = this.moduleMap.hasOwnProperty(nameOrUrl) ? this.moduleMap[nameOrUrl] : nameOrUrl;
                 return window.require(url);
+            },
+            isMiddleClick: function (event) {
+                return generalUtils.isMiddleClick(event);
             }
         };
         return bkUtils;

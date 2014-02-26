@@ -87,7 +87,7 @@
                     return menuPluginManager.getMenus();
                 };
                 $scope.gotoControlPanel = function (event) {
-                    if (event.button === 1) {
+                    if (bkCoreManager.isMiddleClick(event)) {
                         window.open("./");
                     } else {
                         location.reload();

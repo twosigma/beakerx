@@ -179,6 +179,11 @@
                     }
                     return result;
                 }
+            },
+            isMiddleClick: function (event) {
+                return event.button === 1 // middle click
+                || (event.button === 0 // left click
+                    && (navigator.appVersion.indexOf("Mac")!= -1 ? event.metaKey : event.ctrlKey));
             }
         };
     });

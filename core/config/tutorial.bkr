@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "7F837A53BB204FA6BB3C789725D56DFD",
+            "shellID": "5408B3329A4744D98EEC3BB131400225",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,12 +28,12 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "07cea3f3-8287-4950-9955-e9bac24d6e43"
+            "shellID": "bbebd5ac-70db-4bc2-a7b2-708d02e9011e"
         },
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "shellID": "f6bc8f3a-dbf6-4c6d-a566-5fecd39a4655"
+            "shellID": "b469f452-4dfd-4451-8ec6-3f6b4f705b85"
         }
     ],
     "cells": [
@@ -49,7 +49,7 @@
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n    <h1>Overview</h1>\n\n\t\t<p>Beaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.</p>\n\n    <h2>Language support</h2>\n\n    <p><strong>Text:</strong> Markdown, HTML, Latex, plain text</p>\n\n    <p><strong>Code:</strong> Python (with IPython additions), Julia, JavaScript, R, Groovy</p>\n\n    <h2>Plugins</h2>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h1>Additional tutorials</h1>\n    <h2>Beaker</h2>\n    <a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a>\n\n    <h2>Python</h2>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h2>R</h2>\n    TODO\n\n    <h2>Groovy</h2>\n    TODO\n  </div>  \n\n  \n</div>",
+                "body": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n    <h1>Overview</h1>\n\n\t\t<p>Beaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.</p>\n\n    <h2>Language support</h2>\n\n    <p><strong>Text:</strong> Markdown, HTML, Latex, plain text</p>\n\n    <p><strong>Code:</strong> Python (with IPython additions), Julia, JavaScript, R, Groovy</p>\n\n    <h2>Plugins</h2>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h1>Additional tutorials</h1>\n    <h2>Beaker</h2>\n    <p><a href=\"http://dl.dropboxusercontent.com/s/hkl3gbypachu9qz/faq.html\" target=\"_blank\">Help/FAQ</a> </p>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h2>Python</h2>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h2>R</h2>\n    TODO\n\n    <h2>Groovy</h2>\n    TODO\n  </div>  \n\n  \n</div>",
                 "hidden": true
             },
             "output": {
@@ -57,7 +57,7 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n    <h1>Overview</h1>\n\n\t\t<p>Beaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.</p>\n\n    <h2>Language support</h2>\n\n    <p><strong>Text:</strong> Markdown, HTML, Latex, plain text</p>\n\n    <p><strong>Code:</strong> Python (with IPython additions), Julia, JavaScript, R, Groovy</p>\n\n    <h2>Plugins</h2>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h1>Additional tutorials</h1>\n    <h2>Beaker</h2>\n    <a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a>\n\n    <h2>Python</h2>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h2>R</h2>\n    TODO\n\n    <h2>Groovy</h2>\n    TODO\n  </div>  \n\n  \n</div>"
+                    "object": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n    <h1>Overview</h1>\n\n\t\t<p>Beaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.</p>\n\n    <h2>Language support</h2>\n\n    <p><strong>Text:</strong> Markdown, HTML, Latex, plain text</p>\n\n    <p><strong>Code:</strong> Python (with IPython additions), Julia, JavaScript, R, Groovy</p>\n\n    <h2>Plugins</h2>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h1>Additional tutorials</h1>\n    <h2>Beaker</h2>\n    <p><a href=\"http://dl.dropboxusercontent.com/s/hkl3gbypachu9qz/faq.html\" target=\"_blank\">Help/FAQ</a> </p>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h2>Python</h2>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h2>R</h2>\n    TODO\n\n    <h2>Groovy</h2>\n    TODO\n  </div>  \n\n  \n</div>"
                 },
                 "elapsedTime": 0
             }

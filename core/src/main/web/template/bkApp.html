@@ -20,32 +20,23 @@
                TODO - is there a more bootstrappy way to achieve left-alignment of the navbar and the rows?
             -->
         <div class="container pull-left" style="margin-left: 10px; padding-left: 0px;">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+            <a class="brand" href="./#/control" ng-click="gotoControlPanel($event)" eat-click>
+                <img src="./img/icon.png" width="24px" height="24px"></img>
+                Beaker
             </a>
-
-            <a class="brand" href="./#/control" ng-click="gotoControlPanel($event)" eat-click><img src="./img/icon.png"
-                                                                                                   width="24px"
-                                                                                                   height="24px"></img>
-                Beaker</a>
-
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    <li class="dropdown" ng-repeat="m in getMenus()">
-                        <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}<b
-                            class="caret"></b></a>
-                        <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
-                    </li>
-                    <li class="pull-right" style="padding: 10px 15px 10px; cursor: default;">
-                        <span><font color="#009AA6">{{message}}{{(message !== "" && isEdited()) ? "|" : "" }}{{isEdited() ? "edited" : ""}}</font></span>
-                    </li>
-                    <li class="pull-right" style="padding: 10px 15px 10px; cursor: default;">
-                        <span ng-show="disconnected"><font color="red">offline</font></span>
-                    </li>
-                </ul>
-            </div>
+            <ul class="nav">
+                <li class="dropdown" ng-repeat="m in getMenus()">
+                    <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}<b
+                        class="caret"></b></a>
+                    <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
+                </li>
+                <li class="pull-right" style="padding: 10px 15px 10px; cursor: default;">
+                    <span><font color="#009AA6">{{message}}{{(message !== "" && isEdited()) ? "|" : "" }}{{isEdited() ? "edited" : ""}}</font></span>
+                </li>
+                <li class="pull-right" style="padding: 10px 15px 10px; cursor: default;">
+                    <span ng-show="disconnected"><font color="red">offline</font></span>
+                </li>
+            </ul>
             <span class="brand" ng-if="loading"><i class='fa fa-refresh fa-spin'></i></span>
         </div>
     </div>

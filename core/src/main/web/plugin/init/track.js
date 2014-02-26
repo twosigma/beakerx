@@ -26,6 +26,9 @@
                         "metric2": 1
                     });
                 }
+            },
+            isNeedPermission: function () {
+                return true;
             }
         };
     };

@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo port=$1
-# only works if cwd is core
+port=$1
+shift
+export GROOVY_OPTS="$*"
 cd ../plugin/groovy
-build/install/groovy/bin/groovy $1
+build/install/groovy/bin/groovy $port

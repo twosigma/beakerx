@@ -14,7 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo port=$1
-# only works if cwd is core
 cd ../plugin/r
 build/install/r/bin/r $1

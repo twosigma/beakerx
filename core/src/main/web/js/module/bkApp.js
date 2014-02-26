@@ -52,6 +52,7 @@
                 $routeParams,
                 $location,
                 $q,
+                $http,
                 cometd,
                 bkUtils,
                 bkSession,
@@ -87,7 +88,51 @@
                                 });
                             }
                         };
-                        bkHelper.showFileChooser(saveAsFile, 'template/saveAsMenuModal.html');
+                        bkCoreManager.httpGet("/beaker/rest/fileio/getHomeDirectory").success(function (ret) {
+                            var homeDir = ret.value;
+                            var fileChooserStrategy = { result: "" };
+                            fileChooserStrategy.close = function (ev, closeFunc) {
+                                if (ev.which === 13) {
+                                    closeFunc(this.result);
+                                }
+                            };
+                            fileChooserStrategy.treeViewfs = {
+                                getChildren: function (path, callback) {
+                                    var self = this;
+                                    this.showSpinner = true;
+                                    $http({
+                                        method: 'GET',
+                                        url: "/beaker/rest/fileio/getDecoratedChildren",
+                                        params: { path: path }
+                                    }).success(function (list) {
+                                        self.showSpinner = false;
+                                        callback(list);
+                                    }).error(function () {
+                                        self.showSpinner = false;
+                                        console.log("Error loading children");
+                                    });
+                                },
+                                open: function (path) {
+                                    fileChooserStrategy.result = path;
+                                },
+                                showSpinner: false
+                            };
+                            bkCoreManager.showFileChooser(
+                                saveAsFile,
+                                '<div class="modal-header">' +
+                                    '   <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
+                                    '</div>' +
+                                    '<div class="modal-body">' +
+                                    '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
+                                    '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
+                                    '</div>' +
+                                    '<div class="modal-footer">' +
+                                    '   <p><input id="saveAsFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
+                                    '   <button ng-click="close()" class="btn">Cancel</button>' +
+                                    '   <button ng-click="close(getStrategy().result)" class="btn btn-primary" >Save</button>' +
+                                    '</div>',
+                                fileChooserStrategy);
+                        });
                         return deferred.promise;
                     };
                     var _saveFunc = defaultSaveFunc;
@@ -356,9 +401,8 @@
                 };
                 startAutoBackup();
                 $scope.gotoControlPanel = function (event) {
-                    if (event.button === 1 // middle click
-                        || (event.button === 0 // left click
-                            && (navigator.appVersion.indexOf("Mac")!= -1 ? event.metaKey : event.ctrlKey))) {
+                    if (bkCoreManager.isMiddleClick(event)) {
+                        bkSession.backupSession(bkBaseSessionModel.getSessionData());
                         window.open("./");
                     } else {
                         bkCoreManager.gotoControlPanel();

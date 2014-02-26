@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "0A21923659474B4A9E6CDF124183693A",
+            "shellID": "7F837A53BB204FA6BB3C789725D56DFD",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,7 +28,12 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "f97d08b2-6726-4b2d-9a81-1afe400241d5"
+            "shellID": "07cea3f3-8287-4950-9955-e9bac24d6e43"
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "shellID": "f6bc8f3a-dbf6-4c6d-a566-5fecd39a4655"
         }
     ],
     "cells": [
@@ -40,18 +45,11 @@
             "collapsed": false
         },
         {
-            "id": "sectionA6FarX",
-            "type": "section",
-            "title": "Additional materials",
-            "level": 2,
-            "collapsed": false
-        },
-        {
             "id": "codewQAk41",
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<div class=\"row-fluid\">\n  \n  <div class=\"span3\">\n    <h2>Beaker</h2>\n    <a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a>\n  </div>\n\n  <div class=\"span3\">\n    <h2>Python</h2>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n  </div>\n\n  <div class=\"span3\">\n    <h2>R</h2>\n    TODO\n  </div>\n  \n  <div class=\"span3\">\n    <h2>Groovy</h2>\n    TODO\n  </div>  \n\n  \n</div>",
+                "body": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n    <h1>Overview</h1>\n\n\t\t<p>Beaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.</p>\n\n    <h2>Language support</h2>\n\n    <p><strong>Text:</strong> Markdown, HTML, Latex, plain text</p>\n\n    <p><strong>Code:</strong> Python (with IPython additions), Julia, JavaScript, R, Groovy</p>\n\n    <h2>Plugins</h2>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h1>Additional tutorials</h1>\n    <h2>Beaker</h2>\n    <a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a>\n\n    <h2>Python</h2>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h2>R</h2>\n    TODO\n\n    <h2>Groovy</h2>\n    TODO\n  </div>  \n\n  \n</div>",
                 "hidden": true
             },
             "output": {
@@ -59,23 +57,10 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<div class=\"row-fluid\">\n  \n  <div class=\"span3\">\n    <h2>Beaker</h2>\n    <a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a>\n  </div>\n\n  <div class=\"span3\">\n    <h2>Python</h2>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n  </div>\n\n  <div class=\"span3\">\n    <h2>R</h2>\n    TODO\n  </div>\n  \n  <div class=\"span3\">\n    <h2>Groovy</h2>\n    TODO\n  </div>  \n\n  \n</div>"
+                    "object": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n    <h1>Overview</h1>\n\n\t\t<p>Beaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.</p>\n\n    <h2>Language support</h2>\n\n    <p><strong>Text:</strong> Markdown, HTML, Latex, plain text</p>\n\n    <p><strong>Code:</strong> Python (with IPython additions), Julia, JavaScript, R, Groovy</p>\n\n    <h2>Plugins</h2>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h1>Additional tutorials</h1>\n    <h2>Beaker</h2>\n    <a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a>\n\n    <h2>Python</h2>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h2>R</h2>\n    TODO\n\n    <h2>Groovy</h2>\n    TODO\n  </div>  \n\n  \n</div>"
                 },
                 "elapsedTime": 0
             }
-        },
-        {
-            "id": "section9wSkbn",
-            "type": "section",
-            "title": "Beaker basics",
-            "level": 1,
-            "collapsed": false
-        },
-        {
-            "id": "markdownEnGyEN",
-            "type": "markdown",
-            "body": "#Overview\n\nBeaker is the ideal environment for analyzing data and documenting your process and results using the languages and toolkits of your choice.\n\nBeaker content is organized into \"cells.\" This cell is written using Markdown. To edit the content, move your mouse over the cell and click the 'eye' icon.\n\n##Text\n\nThere are several options for adding text to your notebook:\n\n* Markdown\n* HTML\n* Latex\n* Plain text\n\n##Code\n\nThere are also many available programming languages:\n\n* IPython\n* Julia\n* JavaScript\n* R\n\nWe are planning to add support very soon for:\n\n* Groovy\n* Scala\n\n##Plugins\n\nAll of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.\n\n\n",
-            "mode": "preview"
         },
         {
             "id": "Section8EWbZ9",
@@ -106,21 +91,8 @@
         {
             "id": "markdownCInWzc",
             "type": "markdown",
-            "body": "And here's some more IPython.",
+            "body": "And here's a basic histogram from matplotlib.",
             "mode": "preview"
-        },
-        {
-            "id": "codecWlPMc",
-            "type": "code",
-            "evaluator": "IPython",
-            "input": {
-                "body": "a=a*2\na"
-            },
-            "output": {
-                "selectedType": "Hidden",
-                "outputArrived": true,
-                "elapsedTime": 85
-            }
         },
         {
             "id": "code3E0zXv",
@@ -197,7 +169,7 @@
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 100
+                "elapsedTime": 138
             }
         },
         {
@@ -209,7 +181,7 @@
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 105
+                "elapsedTime": 197
             }
         },
         {
@@ -220,49 +192,8 @@
                 "body": "DF = data.frame(x=c(\"b\",\"b\",\"b\",\"a\",\"a\"),v=rnorm(5))"
             },
             "output": {
-                "selectedType": "Table",
-                "elapsedTime": 227,
-                "result": {
-                    "type": "TableDisplay",
-                    "columnNames": [
-                        "x",
-                        "v"
-                    ],
-                    "values": [
-                        [
-                            "b",
-                            "-0.2078896137718179"
-                        ],
-                        [
-                            "b",
-                            "0.29414643460655227"
-                        ],
-                        [
-                            "b",
-                            "-0.7525402161591138"
-                        ],
-                        [
-                            "a",
-                            "0.11462497400691758"
-                        ],
-                        [
-                            "a",
-                            "0.9384206478779393"
-                        ]
-                    ]
-                }
-            }
-        },
-        {
-            "id": "codezB5I5w",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": "for (i in 1:10) {\n  print(i);\n}"
-            },
-            "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 131
+                "elapsedTime": 227
             }
         },
         {
@@ -274,7 +205,19 @@
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 815
+                "elapsedTime": 201
+            }
+        },
+        {
+            "id": "codezB5I5w",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "library(ggplot2)\ncde <- geom_histogram(position=\"fill\", binwidth = 500)\nggplot(diamonds, aes(x=price, fill=clarity)) + cde"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 1369
             }
         },
         {
@@ -286,7 +229,7 @@
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 83
+                "elapsedTime": 105
             }
         },
         {
@@ -298,7 +241,7 @@
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 77
+                "elapsedTime": 114
             }
         },
         {
@@ -316,56 +259,7 @@
                 "body": "import pandas as pd\ndf = pd.DataFrame([[1, 2], [1, 3], [4, 6]], columns=['A', 'B'])\ndf"
             },
             "output": {
-                "selectedType": "Table",
-                "result": {
-                    "type": "TableDisplay",
-                    "tableDisplayModel": {
-                        "columnNames": [
-                            "",
-                            "A",
-                            "B"
-                        ],
-                        "values": [
-                            [
-                                "0",
-                                " 1",
-                                " 2"
-                            ],
-                            [
-                                "1",
-                                " 1",
-                                " 3"
-                            ],
-                            [
-                                "2",
-                                " 4",
-                                " 6"
-                            ]
-                        ]
-                    },
-                    "columnNames": [
-                        "",
-                        "A",
-                        "B"
-                    ],
-                    "values": [
-                        [
-                            "0",
-                            " 1",
-                            " 2"
-                        ],
-                        [
-                            "1",
-                            " 1",
-                            " 3"
-                        ],
-                        [
-                            "2",
-                            " 4",
-                            " 6"
-                        ]
-                    ]
-                },
+                "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 169
             }
@@ -378,12 +272,7 @@
                 "body": "df['A']"
             },
             "output": {
-                "selectedType": "BeakerDisplay",
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>0    1\n1    1\n2    4\nName: A, dtype: int64</pre></div>"
-                },
+                "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 77
             }
@@ -396,12 +285,7 @@
                 "body": "df['A'].hist(figsize=(10,10))"
             },
             "output": {
-                "selectedType": "BeakerDisplay",
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>&lt;matplotlib.axes.AxesSubplot at 0x106ee1590&gt;</pre></div><div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_png\"><img src=\"data:image/png;base64,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\n753dVPt5/03ul7/8ZVx00UUxPDzc93f03ut7r9PDajrfUPQjH/nIqd+2XL16dRw/fjz+8pe/dPky\nPpCm+43NropXAAABr0lEQVRYmZz33dSOHz8eN9xwQ9x8882T/gev9+DZTbWd99/0nH/++fGlL30p\nfve735321733puds+3n/TW737t2xY8eOuOSSS2LDhg3xm9/8Jm655ZbTnlPy3uv0sPrnbyh67Nix\neOyxx2LdunWnPefw4cOnrr+9e/dGr9eb9OvBnG7dunXxyCOPRET0/UasTM77rr9erxe33357rFix\nIjZv3jzpc7wHJzed7bz/zu6NN9449YcF//Wvf41f/epXMTw8fNpzvPfObjr7ef9N7r777ovx8fF4\n5ZVXYvv27fH5z3/+1PvsHSXvvb7fIPS9ms43FH388cfjoYceilmzZsWcOXNi+/btXb6EZm3YsCGe\nfvrpeOONN2LRokVxzz33xPHjxyPCN2Kdjqn2877r77nnnotHH300rrrqqlP/oXzffffFq6++GhHe\ng/1MZzvvv7N7/fXXY+PGjXHy5Mk4efJkfO1rX4svfOELvhH1NE1nP++/6XnnS3zZ955vEAoA0JHO\nv0EoAMCHlcMKAKAjDisAgI44rAAAOuKwAgDoiMMKAKAjDisAgI44rAAAOvJfWiM1rAhzIn8AAAAA\nSUVORK5CYII=\n\"></div>"
-                },
+                "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 369
             }
@@ -414,14 +298,99 @@
                 "body": "plot([1,4,3,5,2])"
             },
             "output": {
-                "selectedType": "BeakerDisplay",
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>[&lt;matplotlib.lines.Line2D at 0x10756e290&gt;]</pre></div><div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_png\"><img src=\"data:image/png;base64,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\nAAAASUVORK5CYII=\n\"></div>"
-                },
+                "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 261
+            }
+        },
+        {
+            "id": "sectionF7ZQVV",
+            "type": "section",
+            "title": "Groovy examples",
+            "level": 1,
+            "collapsed": false
+        },
+        {
+            "id": "codelwaUwX",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "def a = 1 //local variable\nb = 2 //global variable"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 465
+            }
+        },
+        {
+            "id": "codeiXI4Hu",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "a //error"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 102
+            }
+        },
+        {
+            "id": "codeZsp72T",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "b //this works"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "codeyiu160",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "//closure example\ntimesTwo = {x -> x*2}"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 129
+            }
+        },
+        {
+            "id": "code0SVic5",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "timesTwo(4)"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 130
+            }
+        },
+        {
+            "id": "codexiOErG",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "timesTwo(\"Multiplying Strings!\")"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 114
+            }
+        },
+        {
+            "id": "code77FYkc",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "l = [1,2,3,4] //list\nm = [a:1, b:2] //map"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 77
             }
         },
         {
@@ -445,56 +414,7 @@
                 "body": "#Load some data into a DataFrame\n\nimport pandas as pd\ndf = pd.DataFrame([[1, 2], [1, 3], [4, 6]], columns=['A', 'B'])\ndf"
             },
             "output": {
-                "selectedType": "Table",
-                "result": {
-                    "type": "TableDisplay",
-                    "tableDisplayModel": {
-                        "columnNames": [
-                            "",
-                            "A",
-                            "B"
-                        ],
-                        "values": [
-                            [
-                                "0",
-                                " 1",
-                                " 2"
-                            ],
-                            [
-                                "1",
-                                " 1",
-                                " 3"
-                            ],
-                            [
-                                "2",
-                                " 4",
-                                " 6"
-                            ]
-                        ]
-                    },
-                    "columnNames": [
-                        "",
-                        "A",
-                        "B"
-                    ],
-                    "values": [
-                        [
-                            "0",
-                            " 1",
-                            " 2"
-                        ],
-                        [
-                            "1",
-                            " 1",
-                            " 3"
-                        ],
-                        [
-                            "2",
-                            " 4",
-                            " 6"
-                        ]
-                    ]
-                },
+                "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 829
             }
@@ -507,12 +427,7 @@
                 "body": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\">The d3 bar chart will appear here</div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
             },
             "output": {
-                "selectedType": "BeakerDisplay",
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\">The d3 bar chart will appear here</div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
-                },
+                "selectedType": "Hidden",
                 "elapsedTime": 65
             }
         },
@@ -524,8 +439,7 @@
                 "body": "//Currently accessing Python values from JavaScript requires constructing a full cell object\n//The \"body\" is Python code that will be evaluated, in this case, simply returning the DataFrame created above\nvar cell = { evaluator: \"IPython\", input: { body: \"df\" }, output: {} };\n\n//Use the bkHelper API to evaluate the cell\nbkHelper.evaluate(cell).then(function(){\n  \n  \t//After the evaluation we are reading one column of the data into an array\n\tvar data = cell.output.result.values;\n\tvar col = [];\n  \t_.each(data, function(a){col.push(a[2])})\n    \n    //Here is the D3 part\n\td3.select(\"#barchart1\")\n  \t\t.selectAll(\"div\")\n    \t.data(col)\n  \t\t.enter().append(\"div\")\n    \t.style(\"width\", function(d) { return d * 10 + \"px\"; })\n    \t.text(function(d) { return d; });\n})"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "[object Object]"
+                "selectedType": "Hidden"
             }
         }
     ]

@@ -401,9 +401,8 @@
                 };
                 startAutoBackup();
                 $scope.gotoControlPanel = function (event) {
-                    if (event.button === 1 // middle click
-                        || (event.button === 0 // left click
-                            && (navigator.appVersion.indexOf("Mac")!= -1 ? event.metaKey : event.ctrlKey))) {
+                    if (bkCoreManager.isMiddleClick(event)) {
+                        bkSession.backupSession(bkBaseSessionModel.getSessionData());
                         window.open("./");
                     } else {
                         bkCoreManager.gotoControlPanel();

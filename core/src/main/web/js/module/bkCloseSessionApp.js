@@ -26,12 +26,19 @@
         'M_evaluatorManager'
     ]);
 
-    bkApp.directive('bkCloseSessionApp', function () {
+    bkApp.directive('bkCloseSessionApp', function (
+        $routeParams,
+        $location,
+        $q,
+        bkCoreManager,
+        bkSession,
+        evaluatorManager)
+    {
         return {
             restrict: 'E',
             template: "<div>Closing session {{sessionID}}</div>",
             scope: {},
-            controller: function ($scope, $routeParams, $location, $q, bkCoreManager, bkSession, evaluatorManager) {
+            controller: function ($scope) {
                 var sessionID = $routeParams.sessionID;
                 $scope.sessionID = sessionID;
                 bkSession.loadSession(sessionID).then(function (ret) {

@@ -35,12 +35,12 @@
         };
     });
 
-    treeView.directive("treeView", function () {
+    treeView.directive("treeView", function ($templateCache) {
         return {
             restrict: 'E',
             template: "<tree-node data='root' fs='fs' displayname='{{ rooturi }}'></tree-node>",
             scope: {rooturi: "@", fs: "="},
-            controller: function ($scope, $templateCache) {
+            controller: function ($scope) {
                 if (!$templateCache.get('treeNodeChildren.html')) {
                     $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children' data='d' fs='fs'></tree-node>");
                 }

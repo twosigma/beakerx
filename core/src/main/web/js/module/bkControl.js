@@ -24,11 +24,11 @@
     var bkControl = angular.module('M_bkControl',
         ['M_bkCore', 'M_bkSession', 'M_menuPlugin']);
 
-    bkControl.directive('bkControl', function () {
+    bkControl.directive('bkControl', function (bkCoreManager, bkSession, menuPluginManager, trackingService) {
         return {
             restrict: 'E',
             templateUrl: './template/bkControl.html',
-            controller: function ($scope, bkCoreManager, bkSession, menuPluginManager, trackingService) {
+            controller: function ($scope) {
                 document.title = "Beaker";
                 var _impl = {
                     _pathOpeners: {},
@@ -144,7 +144,7 @@
         };
     });
 
-    bkControl.directive('bkControlItem', function () {
+    bkControl.directive('bkControlItem', function (bkSession, $location) {
         return {
             restrict: 'E',
             template: "<table class='table table-striped'>" +
@@ -160,7 +160,7 @@
                 "<button class='btn' ng-click='close(session)'>Close</button></div></td>" +
                 "</tr></tbody>" +
                 "</table>",
-            controller: function ($scope, bkSession, $location) {
+            controller: function ($scope) {
                 $scope.open = function (session) {
                     $location.path("session/" + session.id);
                 };

@@ -29,17 +29,20 @@
         'M_generalUtils',
         'M_bkShare'
     ]);
-    M_bkCodeCell.directive('codeCell', function (generalUtils, bkBaseSessionModel, bkCoreManager) {
+    M_bkCodeCell.directive('codeCell', function (
+        $rootScope,
+        generalUtils,
+        bkShare,
+        evaluatorManager,
+        bkCellPluginManager,
+        bkBaseSessionModel,
+        bkCoreManager)
+    {
         return {
             restrict: 'E',
             templateUrl: "./template/bkCodeCell.html",
             scope: { cellmodel: "=", cellmenu: "="},
-            controller: function (
-                $scope,
-                $rootScope,
-                bkShare,
-                evaluatorManager,
-                bkCellPluginManager) {
+            controller: function ($scope) {
                 $scope.cellview = {
                     inputMenu: [],
                     displays: []
@@ -413,11 +416,11 @@
             }
         };
     });
-    M_bkCodeCell.directive('inputMenu', function () {
+    M_bkCodeCell.directive('inputMenu', function (bkCoreManager) {
         return {
             restrict: 'E',
             templateUrl: "./template/bkCodeCellInputMenu.html",
-            controller: function ($scope, bkCoreManager) {
+            controller: function ($scope) {
                 $scope.getItemClass = function (item) {
                     var result = [];
                     if (item.items) {

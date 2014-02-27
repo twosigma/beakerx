@@ -39,21 +39,21 @@
      * we want to separate out the layout specific stuffs(idea of a section) from other
      * stuffs like evaluator panel
      */
-    bkNotebook.directive('bkNotebook', function (generalUtils) {
+    bkNotebook.directive('bkNotebook', function (
+        generalUtils,
+        cometd,
+        bkShare,
+        evaluatorManager,
+        bkCellPluginManager,
+        bkBaseSessionModel,
+        bkCoreManager,
+        bkOutputLog)
+    {
         return {
             restrict: 'E',
             templateUrl: "./template/bkNotebook.html",
             scope: {},
-            controller: function (
-                $scope,
-                cometd,
-                generalUtils,
-                bkShare,
-                evaluatorManager,
-                bkCellPluginManager,
-                bkBaseSessionModel,
-                bkCoreManager,
-                bkOutputLog) {
+            controller: function ($scope) {
                 var _impl = {
                     _viewModel: {
                         _hideEvaluators: true,

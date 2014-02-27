@@ -42,7 +42,7 @@
      * - When exporting (a.k.a. sharing), we will need both the cell model and the view model
      * - TODO, this is currently strongly tied to the hierarchical notebook layout, we want to change that
      */
-    M_bkCell.directive('bkCell', function (generalUtils) {
+    M_bkCell.directive('bkCell', function (generalUtils, bkBaseSessionModel, bkCoreManager) {
         return {
             restrict: 'E',
             template: '<div class="bkcell">' +
@@ -61,10 +61,7 @@
             scope: {
                 cellmodel: "="
             },
-            controller: function (
-                $scope,
-                bkBaseSessionModel,
-                bkCoreManager) {
+            controller: function ($scope) {
                 var getBkBaseViewModel = function () {
                     return bkCoreManager.getBkNotebook().getViewModel();
                 };
@@ -189,12 +186,12 @@
             scope: { items: '=' }
         };
     });
-    M_bkCell.directive('newCellMenu', function (generalUtils) {
+    M_bkCell.directive('newCellMenu', function (generalUtils, bkBaseSessionModel, bkCoreManager, evaluatorManager) {
         return {
             restrict: 'E',
             templateUrl: "./template/newCellMenu.html",
             scope: { config: '=' },
-            controller: function ($scope, bkBaseSessionModel, bkCoreManager, evaluatorManager) {
+            controller: function ($scope) {
                 $scope.getEvaluators = function () {
                     return evaluatorManager.getAllEvaluators();
                 };
@@ -239,19 +236,19 @@
         };
     });
 
-    M_bkCell.directive('sectionCell', function () {
+    M_bkCell.directive('sectionCell', function (
+        generalUtils,
+        bkShare,
+        evaluatorManager,
+        bkBaseSessionModel,
+        bkCoreManager,
+        bkCellPluginManager)
+    {
         return {
             restrict: 'E',
             templateUrl: "./template/bkSectionCell.html",
             //scope: { cell: "=" },
-            controller: function (
-                $scope,
-                generalUtils,
-                bkShare,
-                evaluatorManager,
-                bkBaseSessionModel,
-                bkCoreManager,
-                bkCellPluginManager) {
+            controller: function ($scope) {
                 $scope.toggleShowChildren = function () {
                     if ($scope.cellmodel.collapsed === undefined) {
                         $scope.cellmodel.collapsed = false;

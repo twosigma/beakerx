@@ -24,11 +24,11 @@
         'M_evaluatorManager'
     ]);
 
-    bkNotebookEvaluators.directive('bkNotebookEvaluators', function () {
+    bkNotebookEvaluators.directive('bkNotebookEvaluators', function (evaluatorManager, bkCoreManager, menuPluginManager) {
         return {
             restrict: 'E',
             templateUrl: "./template/bkNotebook_evaluators.html",
-            controller: function ($scope, evaluatorManager, bkCoreManager, menuPluginManager) {
+            controller: function ($scope) {
                 $scope.isHideEvaluators = function () {
                     return bkCoreManager.getBkNotebook().getViewModel().isHideEvaluators();
                 };
@@ -78,14 +78,14 @@
         };
     });
 
-    bkNotebookEvaluators.directive('bkNotebookEvaluatorsEvaluatorSettings', function ($compile) {
+    bkNotebookEvaluators.directive('bkNotebookEvaluatorsEvaluatorSettings', function ($compile, bkBaseSessionModel) {
         return {
             restrict: 'E',
             template: '<div ng-show="evaluator.loading"><accordion-group heading="Loading {{evaluator.url}}...">' +
                 '</accordion-group></div>' +
                 '<div ng-hide="evaluator.loading"><accordion-group heading="{{evaluator.name}} (plugin: {{evaluator.evaluator.settings.plugin}})">' +
                 '<div class="bbody"></div></accordion-group></div>',
-            controller: function ($scope, bkBaseSessionModel) {
+            controller: function ($scope) {
                 $scope.set = function (val) {
                     $scope.evaluator.evaluator.perform(val);
                     bkBaseSessionModel.setEdited(true);
@@ -112,11 +112,12 @@
         };
     });
 
-    bkNotebookEvaluators.directive('bkNotebookEvaluatorsAddEvaluatorPanel', function () {
+    bkNotebookEvaluators.directive('bkNotebookEvaluatorsAddEvaluatorPanel',
+        function (bkBaseSessionModel, evaluatorManager) {
         return {
             restrict: 'E',
             templateUrl: './template/bkNotebook_addEvaluatorPanel.html',
-            controller: function ($scope, bkBaseSessionModel, evaluatorManager) {
+            controller: function ($scope) {
                 $scope.pluginForNewEvaluator = "";
                 $scope.newEvaluatorName = "";
                 $scope.getPlugins = function () {

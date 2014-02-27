@@ -42,27 +42,27 @@
      * - This is the beaker App
      * - menus + plugins + notebook(notebook model + evaluator)
      */
-    module.directive('bkApp', function () {
+    module.directive('bkApp', function (
+        $routeParams,
+        $location,
+        $q,
+        $http,
+        cometd,
+        bkUtils,
+        bkSession,
+        evaluatorManager,
+        menuPluginManager,
+        bkCellPluginManager,
+        bkBaseSessionModel,
+        bkCoreManager,
+        bkAppEvaluate,
+        bkNotebookVersionManager)
+    {
         return {
             restrict: 'E',
             templateUrl: "./template/bkApp.html",
             scope: {},
-            controller: function (
-                $scope,
-                $routeParams,
-                $location,
-                $q,
-                $http,
-                cometd,
-                bkUtils,
-                bkSession,
-                evaluatorManager,
-                menuPluginManager,
-                bkCellPluginManager,
-                bkBaseSessionModel,
-                bkCoreManager,
-                bkAppEvaluate,
-                bkNotebookVersionManager)
+            controller: function ($scope)
             {
                 var _impl = (function () {
                     var showTransientMessage = function (message) {

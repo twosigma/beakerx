@@ -26,7 +26,7 @@
         'M_bkOutputDisplay'
     ]);
 
-    module.directive('bkCodeCellOutput', function () {
+    module.directive('bkCodeCellOutput', function (generalUtils, outputDisplayFactory, evaluatorManager) {
         return {
             restrict: "E",
             template: '<div class="bkcell"><bk-output-display ' +
@@ -40,7 +40,7 @@
                 model: "=",
                 evaluatorId: "@"
             },
-            controller: function ($scope, generalUtils, outputDisplayFactory, evaluatorManager) {
+            controller: function ($scope) {
                 var _shareMenuItems = [];
 
                 $scope.getOutputResult = function () {

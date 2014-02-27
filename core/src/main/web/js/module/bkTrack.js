@@ -35,6 +35,9 @@
                 return {
                     log: function (event, obj) {
                         // do nothing
+                    },
+                    isNeedPermission: function () {
+                        return false;
                     }
                 };
             }
@@ -47,6 +50,11 @@
                     if (_trackingService.enable && _.isFunction(_trackingService.enable)) {
                         _trackingService.enable();
                     }
+                },
+                isNeedPermission: function () {
+                    return _trackingService.isNeedPermission
+                        && _.isFunction(_trackingService.isNeedPermission)
+                        && _trackingService.isNeedPermission();
                 }
             };
         };

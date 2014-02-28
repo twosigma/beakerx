@@ -1,11 +1,11 @@
 {
-    "name": "beaker",
-    "version": "0.0.0",
-    "private": true,
-    "dependencies": {
-        "bower": "1.2.8",
-        "karma": "~0.10",
-        "karma-jasmine": "~0.1",
-        "karma-ng-scenario": "~0.1.0"
-    }
+  "name": "beaker",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "bower": "1.2.8",
+    "karma": "~0.10",
+    "karma-jasmine": "~0.1",
+    "karma-ng-scenario": "~0.1.0"
+  }
 }

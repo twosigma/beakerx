@@ -224,7 +224,7 @@ public class StartProcessRest
         port = _portBase + pConfig.portOffset;
         pluginName = name;
         installDir = _pluginLocations.get(pluginName);
-        command = installDir + "/" + command + " " + Integer.toString(port);
+        command = installDir + "/" + command;
 
         List<String> extraArgs = _args.get(pluginName);
         if (extraArgs != null) {
@@ -232,6 +232,7 @@ public class StartProcessRest
                 command += " " + s;
             }
         }
+        command += " " + Integer.toString(port);
 
         if (DISABLE_PLUGIN_LAUNCHING) {
             System.out.println("Would run: " + command);

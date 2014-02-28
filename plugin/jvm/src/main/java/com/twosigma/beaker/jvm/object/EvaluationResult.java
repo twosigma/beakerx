@@ -14,13 +14,16 @@
  *  limitations under the License.
  */
 package com.twosigma.beaker.jvm.object;
-public class EvaluationResult
-{
-    private final Object _value;
-    public EvaluationResult(Object value) {
-        _value = value;
-    }
-    public Object getValue() {
-        return _value;
-    }
+
+public class EvaluationResult {
+
+  private final Object _value;
+
+  public EvaluationResult(Object value) {
+    _value = value;
+  }
+
+  public Object getValue() {
+    return _value;
+  }
 }

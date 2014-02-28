@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
@@ -24,13 +23,12 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 public class EvaluationResultSerializer
-    extends JsonSerializer<EvaluationResult>
-{
-    @Override
-        public void serialize(EvaluationResult evalResult, JsonGenerator jgen, SerializerProvider sp)
-        throws IOException, JsonProcessingException
-        {
-            Object obj = evalResult.getValue();
-            SerializeUtils.writeObject(obj, jgen);
-        }
+        extends JsonSerializer<EvaluationResult> {
+
+  @Override
+  public void serialize(EvaluationResult evalResult, JsonGenerator jgen, SerializerProvider sp)
+          throws IOException, JsonProcessingException {
+    Object obj = evalResult.getValue();
+    SerializeUtils.writeObject(obj, jgen);
+  }
 }

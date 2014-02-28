@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.jvm.module;
 
 import com.google.inject.AbstractModule;
@@ -35,97 +34,94 @@ import org.cometd.server.JacksonJSONContextServer;
 
 // Should load from cometd-contrib
 public class GuiceCometdModule
-    extends AbstractModule
-{
-    @Override
-    protected final void configure() {
-        bind(BayeuxServer.class).to(BayeuxServerImpl.class).in(Scopes.SINGLETON);
-        if (discoverBindings()) {
-            // automatically add services
-            bindListener(new AbstractMatcher<TypeLiteral<?>>() {
-                    public boolean matches(TypeLiteral<?> o) {
-                        return o.getRawType().isAnnotationPresent(Service.class);
-                    }
-                }, new TypeListener() {
-                public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                    final Provider<ServerAnnotationProcessor> processor = encounter.getProvider(ServerAnnotationProcessor.class);
-                    encounter.register(new InjectionListener<I>() {
-                        public void afterInjection(I injectee) {
-                            processor.get().process(injectee);
-                        }
-                    });
-                }
-            }
-            );
-            // automatically add extensions
-            bindListener(new AbstractMatcher<TypeLiteral<?>>() {
-                    public boolean matches(TypeLiteral<?> o) {
-                        return BayeuxServer.Extension.class.isAssignableFrom(o.getRawType());
-                    }
-                }, new TypeListener() {
-                public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                    final Provider<BayeuxServer> server = encounter.getProvider(BayeuxServer.class);
-                    encounter.register(new InjectionListener<I>() {
-                        public void afterInjection(I injectee) {
-                            server.get().addExtension(BayeuxServer.Extension.class.cast(injectee));
-                        }
-                    });
-                }
-            }
-            );
-            // automatically add session listeners
-            bindListener(new AbstractMatcher<TypeLiteral<?>>() {
-                    public boolean matches(TypeLiteral<?> o) {
-                        return BayeuxServer.BayeuxServerListener.class.isAssignableFrom(o.getRawType());
-                    }
-                }, new TypeListener() {
-                public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                    final Provider<BayeuxServer> server = encounter.getProvider(BayeuxServer.class);
-                    encounter.register(new InjectionListener<I>() {
-                        public void afterInjection(I injectee) {
-                            server.get().addListener(BayeuxServer.BayeuxServerListener.class.cast(injectee));
-                        }
-                    });
-                }
-            }
-            );
+        extends AbstractModule {
+
+  @Override
+  protected final void configure() {
+    bind(BayeuxServer.class).to(BayeuxServerImpl.class).in(Scopes.SINGLETON);
+    if (discoverBindings()) {
+      // automatically add services
+      bindListener(new AbstractMatcher<TypeLiteral<?>>() {
+        public boolean matches(TypeLiteral<?> o) {
+          return o.getRawType().isAnnotationPresent(Service.class);
         }
-        applicationBindings();
-    }
-
-    protected void applicationBindings() {
-    }
-
-    @Singleton
-    @Provides
-    public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om) {
-        BayeuxServerImpl server = new BayeuxServerImpl();
-        server.setOption(BayeuxServerImpl.JSON_CONTEXT, new JacksonJSONContextServer() {
-            @Override
-            public ObjectMapper getObjectMapper() {
-                return om;
+      }, new TypeListener() {
+        public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
+          final Provider<ServerAnnotationProcessor> processor = encounter.getProvider(ServerAnnotationProcessor.class);
+          encounter.register(new InjectionListener<I>() {
+            public void afterInjection(I injectee) {
+              processor.get().process(injectee);
             }
-        });
-        configure(server);
-        try {
-            server.start();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
+          });
         }
-        return server;
+      });
+      // automatically add extensions
+      bindListener(new AbstractMatcher<TypeLiteral<?>>() {
+        public boolean matches(TypeLiteral<?> o) {
+          return BayeuxServer.Extension.class.isAssignableFrom(o.getRawType());
+        }
+      }, new TypeListener() {
+        public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
+          final Provider<BayeuxServer> server = encounter.getProvider(BayeuxServer.class);
+          encounter.register(new InjectionListener<I>() {
+            public void afterInjection(I injectee) {
+              server.get().addExtension(BayeuxServer.Extension.class.cast(injectee));
+            }
+          });
+        }
+      });
+      // automatically add session listeners
+      bindListener(new AbstractMatcher<TypeLiteral<?>>() {
+        public boolean matches(TypeLiteral<?> o) {
+          return BayeuxServer.BayeuxServerListener.class.isAssignableFrom(o.getRawType());
+        }
+      }, new TypeListener() {
+        public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
+          final Provider<BayeuxServer> server = encounter.getProvider(BayeuxServer.class);
+          encounter.register(new InjectionListener<I>() {
+            public void afterInjection(I injectee) {
+              server.get().addListener(BayeuxServer.BayeuxServerListener.class.cast(injectee));
+            }
+          });
+        }
+      });
     }
+    applicationBindings();
+  }
 
-    protected boolean discoverBindings() {
-        return true;
+  protected void applicationBindings() {
+  }
+
+  @Singleton
+  @Provides
+  public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om) {
+    BayeuxServerImpl server = new BayeuxServerImpl();
+    server.setOption(BayeuxServerImpl.JSON_CONTEXT, new JacksonJSONContextServer() {
+      @Override
+      public ObjectMapper getObjectMapper() {
+        return om;
+      }
+    });
+    configure(server);
+    try {
+      server.start();
+    } catch (Exception e) {
+      throw new RuntimeException(e.getMessage(), e);
     }
+    return server;
+  }
 
-    protected void configure(BayeuxServerImpl server) {
+  protected boolean discoverBindings() {
+    return true;
+  }
+
+  protected void configure(BayeuxServerImpl server) {
 //	server.setOption("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
-    }
+  }
 
-    @Provides
-    @Singleton
-    ServerAnnotationProcessor annotationProcessor(BayeuxServer server) {
-        return new ServerAnnotationProcessor(server);
-    }
+  @Provides
+  @Singleton
+  ServerAnnotationProcessor annotationProcessor(BayeuxServer server) {
+    return new ServerAnnotationProcessor(server);
+  }
 }

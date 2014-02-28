@@ -17,32 +17,32 @@
  * M_bkoVega
  * This is the output display component for displaying vega JSON (http://trifacta.github.io/vega/).
  */
-(function () {
-    'use strict';
-    beaker.bkoDirective('bkoVega', function () {
-        return {
-            template: "<input type='text' ng-model='model'></input>" +
-                "<button ng-click='parse()'>parse</button>" +
-                "<div id='vis'></div>",
-            controller: function ($scope) {
-                var parse = function (spec) {
+(function() {
+  'use strict';
+  beaker.bkoDirective('bkoVega', function() {
+    return {
+      template: "<input type='text' ng-model='model'></input>" +
+          "<button ng-click='parse()'>parse</button>" +
+          "<div id='vis'></div>",
+      controller: function($scope) {
+        var parse = function(spec) {
 
-                    if (_.isString(spec)) {
-                        try {
-                            spec = JSON.parse(spec);
-                        } catch (err) {
-                            console.log(err);
-                        }
-                    }
-                    vg.parse.spec(spec, function (chart) {
-                        var view = chart({el: "#vis"}).update();
-                    });
-                };
-                $scope.parse = function () {
-                    console.log("parse", $scope.model.getCellModel());
-                    parse($scope.model.getCellModel());
-                };
+          if (_.isString(spec)) {
+            try {
+              spec = JSON.parse(spec);
+            } catch (err) {
+              console.log(err);
             }
+          }
+          vg.parse.spec(spec, function(chart) {
+            var view = chart({el: "#vis"}).update();
+          });
         };
-    });
+        $scope.parse = function() {
+          console.log("parse", $scope.model.getCellModel());
+          parse($scope.model.getCellModel());
+        };
+      }
+    };
+  });
 })();

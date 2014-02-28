@@ -13,17 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.jvm.updater;
 
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.google.common.collect.HashBiMap;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.BayeuxServer.SubscriptionListener;
 import org.cometd.bayeux.server.LocalSession;
@@ -33,60 +28,67 @@ import org.cometd.bayeux.server.ServerSession;
 import com.twosigma.beaker.Platform;
 
 public class UpdateManager
-    implements SubscriptionListener
-{
-    private static final Pattern PATTERN = Pattern.compile("^/object_update/((\\w|-)+)$");
-    private static final UpdateManager INSTANCE;
-    static {
-        INSTANCE = new UpdateManager();
+        implements SubscriptionListener {
+
+  private static final Pattern PATTERN = Pattern.compile("^/object_update/((\\w|-)+)$");
+  private static final UpdateManager INSTANCE;
+
+  static {
+    INSTANCE = new UpdateManager();
+  }
+  private HashBiMap<String, Object> _idToObject;
+  private LocalSession _localSession;
+
+  public static UpdateManager getInstance() {
+    return INSTANCE;
+  }
+
+  private UpdateManager() {
+    BayeuxServer bayeuxServer = Platform.getInjector().getInstance(BayeuxServer.class);
+    bayeuxServer.addListener(this);
+    _localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
+    _localSession.handshake();
+    _idToObject = HashBiMap.<String, Object>create();
+  }
+
+  public String register(Object obj) {
+    if (_idToObject.containsValue(obj)) {
+      return _idToObject.inverse().get(obj);
     }
-    private HashBiMap<String, Object> _idToObject;
-    private LocalSession _localSession;
-    public static UpdateManager getInstance() {
-        return INSTANCE;
+    String id = UUID.randomUUID().toString();
+    _idToObject.put(id, obj);
+    return id;
+  }
+
+  private String getId(ServerChannel channel) {
+    Matcher matcher = PATTERN.matcher(channel.getId());
+    if (!matcher.matches()) {
+      return null;
     }
-    private UpdateManager() {
-        BayeuxServer bayeuxServer = Platform.getInjector().getInstance(BayeuxServer.class);
-        bayeuxServer.addListener(this);
-        _localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
-        _localSession.handshake();
-        _idToObject = HashBiMap.<String, Object>create();
+    return matcher.group(1);
+  }
+
+  @Override
+  public void subscribed(ServerSession session, ServerChannel channel) {
+    String id = getId(channel);
+    if (id == null) {
+      return;
     }
-    public String register(Object obj) {
-        if (_idToObject.containsValue(obj)) {
-            return _idToObject.inverse().get(obj);
-        }
-        String id = UUID.randomUUID().toString();
-        _idToObject.put(id, obj);
-        return id;
+    if (_idToObject.containsKey(id)) {
+      Object obj = _idToObject.get(id);
+      Updater updater = UpdaterFactory.getUpdater(session, _localSession, channel.getId(), obj);
+      updater.deliverUpdate(obj);
+    } else {
+      System.out.println("Client is trying to subscribe to nonexisting object " + id);
     }
-    private String getId(ServerChannel channel) {
-        Matcher matcher = PATTERN.matcher(channel.getId());
-        if (!matcher.matches()) {
-            return null;
-        }
-        return matcher.group(1);
+  }
+
+  @Override
+  public void unsubscribed(ServerSession session, ServerChannel channel) {
+    String id = getId(channel);
+    if (id == null) {
+      return;
     }
-    @Override
-    public void subscribed(ServerSession session, ServerChannel channel) {
-        String id = getId(channel);
-        if (id == null) {
-            return;
-        }
-        if (_idToObject.containsKey(id)) {
-            Object obj = _idToObject.get(id);
-            Updater updater = UpdaterFactory.getUpdater(session, _localSession, channel.getId(), obj);
-            updater.deliverUpdate(obj);
-        } else {
-            System.out.println("Client is trying to subscribe to nonexisting object " + id);
-        }
-    }
-    @Override
-    public void unsubscribed(ServerSession session, ServerChannel channel) {
-        String id = getId(channel);
-        if (id == null) {
-            return;
-        }
-        _idToObject.remove(id);
-    }
+    _idToObject.remove(id);
+  }
 }

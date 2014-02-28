@@ -17,62 +17,47 @@
  * M_bkDebug
  * This module is for debug only and should never be used in code
  */
-(function () {
-    'use strict';
-    var module = angular.module("M_bkDebug",[
-        "M_angularUtils",
-        "M_bkApp",
-        "M_bkCellPluginManager",
-        "M_bkCore",
-        "M_bkHelper",
-        "M_bkOutputLog",
-        "M_bkRecentMenu",
-        "M_bkSession",
-        "M_bkShare",
-        "M_bkTrack",
-        "M_bkUtils",
-        "M_cometd",
-        "M_evaluatorManager",
-        "M_generalUtils",
-        "M_menuPlugin"
-     ]);
-    module.factory("bkDebug", function (
-        $injector,
-        angularUtils,
-        bkAppEvaluate,
-        bkCellPluginManager,
-        bkBaseSessionModel,
-        bkCoreManager,
-        bkHelper,
-        bkOutputLog,
-        bkRecentMenu,
-        bkSession,
-        bkShare,
-        trackingService,
-        bkUtils,
-        cometd,
-        evaluatorManager,
-        generalUtils,
-        menuPluginManager)
-    {
-        return {
-            $injector: $injector,
-            angularUtils: angularUtils,
-            bkAppEvaluate: bkAppEvaluate,
-            bkCellPluginManager: bkCellPluginManager,
-            bkBaseSessionModel: bkBaseSessionModel,
-            bkCoreManager: bkCoreManager,
-            bkHelper: bkHelper,
-            bkOutputLog: bkOutputLog,
-            bkRecentMenu: bkRecentMenu,
-            bkSession: bkSession,
-            bkShare: bkShare,
-            trackingService: trackingService,
-            bkUtils: bkUtils,
-            cometd: cometd,
-            evaluatorManager: evaluatorManager,
-            generalUtils: generalUtils,
-            menuPluginManager: menuPluginManager
-        };
-    });
+(function() {
+  'use strict';
+  var module = angular.module("M_bkDebug", [
+    "M_angularUtils",
+    "M_bkApp",
+    "M_bkCellPluginManager",
+    "M_bkCore",
+    "M_bkHelper",
+    "M_bkOutputLog",
+    "M_bkRecentMenu",
+    "M_bkSession",
+    "M_bkShare",
+    "M_bkTrack",
+    "M_bkUtils",
+    "M_cometd",
+    "M_evaluatorManager",
+    "M_generalUtils",
+    "M_menuPlugin"
+  ]);
+  module.factory("bkDebug", function(
+      $injector, angularUtils, bkAppEvaluate, bkCellPluginManager, bkBaseSessionModel,
+      bkCoreManager, bkHelper, bkOutputLog, bkRecentMenu, bkSession, bkShare, trackingService,
+      bkUtils, cometd, evaluatorManager, generalUtils, menuPluginManager) {
+    return {
+      $injector: $injector,
+      angularUtils: angularUtils,
+      bkAppEvaluate: bkAppEvaluate,
+      bkCellPluginManager: bkCellPluginManager,
+      bkBaseSessionModel: bkBaseSessionModel,
+      bkCoreManager: bkCoreManager,
+      bkHelper: bkHelper,
+      bkOutputLog: bkOutputLog,
+      bkRecentMenu: bkRecentMenu,
+      bkSession: bkSession,
+      bkShare: bkShare,
+      trackingService: trackingService,
+      bkUtils: bkUtils,
+      cometd: cometd,
+      evaluatorManager: evaluatorManager,
+      generalUtils: generalUtils,
+      menuPluginManager: menuPluginManager
+    };
+  });
 })();

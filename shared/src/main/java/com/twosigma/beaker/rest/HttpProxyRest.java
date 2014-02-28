@@ -36,23 +36,22 @@ import javax.ws.rs.core.MediaType;
 @Path("httpProxy")
 public class HttpProxyRest {
 
-    @GET
-    @Path("load")
-    public StringObject load(
-            @QueryParam("url") String urlString) throws IOException
-    {
-        //urlString = "https://raw.github.com/ethanwhite/progbio/master/ipynbs/ipython-notebook.ipynb";
-        URL url = new URL(urlString);
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(url.openStream()));
+  @GET
+  @Path("load")
+  public StringObject load(
+          @QueryParam("url") String urlString) throws IOException {
+    //urlString = "https://raw.github.com/ethanwhite/progbio/master/ipynbs/ipython-notebook.ipynb";
+    URL url = new URL(urlString);
+    BufferedReader in = new BufferedReader(
+            new InputStreamReader(url.openStream()));
 
-        StringBuilder fullText = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null) {
-            fullText.append(inputLine);
-            fullText.append("\n");
-        }
-        in.close();
-        return new StringObject(fullText.toString());
+    StringBuilder fullText = new StringBuilder();
+    String inputLine;
+    while ((inputLine = in.readLine()) != null) {
+      fullText.append(inputLine);
+      fullText.append("\n");
     }
+    in.close();
+    return new StringObject(fullText.toString());
+  }
 }

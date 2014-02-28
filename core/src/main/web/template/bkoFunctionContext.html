@@ -16,11 +16,11 @@
 <pre ng-if="isDebugging()">{{model | json}}</pre>
 
 <form class="form-horizontal">
-    <div class="control-group {{getInputClass(beginTime)}}">
-        <label class="control-label">From Time:</label>
+  <div class="control-group {{getInputClass(beginTime)}}">
+    <label class="control-label">From Time:</label>
 
-        <div class="controls">
-            <input type="text" class="begintime" ng-model="beginTime.inputText" title="{{timeFormatTooltip}}">
+    <div class="controls">
+      <input type="text" class="begintime" ng-model="beginTime.inputText" title="{{timeFormatTooltip}}">
             <span class="help-inline">
                 <i class="icon-resize-full" ng-show="!beginTime.isUpdating && !beginTime.isInputSynced()"
                    title="unsynced"></i>
@@ -29,13 +29,13 @@
                 <i class="icon-warning-sign" ng-show="getInputClass(beginTime)==='warning'"></i>
                 {{getInputMessage(beginTime)}}
             </span>
-        </div>
     </div>
-    <div class="control-group {{getInputClass(endTime)}}">
-        <label class="control-label">To Time:</label>
+  </div>
+  <div class="control-group {{getInputClass(endTime)}}">
+    <label class="control-label">To Time:</label>
 
-        <div class="controls">
-            <input type="text" class="endtime" ng-model="endTime.inputText" title="{{timeFormatTooltip}}">
+    <div class="controls">
+      <input type="text" class="endtime" ng-model="endTime.inputText" title="{{timeFormatTooltip}}">
             <span class="help-inline">
                 <i class="icon-resize-full" ng-show="!endTime.isUpdating && !endTime.isInputSynced()"
                    title="unsynced"></i>
@@ -44,21 +44,21 @@
                 <i class="icon-warning-sign" ng-show="getInputClass(endTime)==='warning'"></i>
                 {{getInputMessage(endTime)}}
             </span>
-        </div>
     </div>
-    <div class="control-group">
-        <label class="control-label">Time Zone:</label>
+  </div>
+  <div class="control-group">
+    <label class="control-label">Time Zone:</label>
 
-        <div class="controls">
-            <select class="selectpicker timezone" ng-model="timeZone.input">
-                <option ng-repeat="tz in getTimeZones()">{{tz}}</option>
-            </select>
+    <div class="controls">
+      <select class="selectpicker timezone" ng-model="timeZone.input">
+        <option ng-repeat="tz in getTimeZones()">{{tz}}</option>
+      </select>
             <span class="help-inline">
                 <i class="icon-resize-full" ng-show="!timeZone.isUpdating && !timeZone.isInputSynced()"
                    title="unsynced"></i>
                 <i class="icon-refresh" ng-show="timeZone.isUpdating" title="syncing"></i>
                 {{getInputMessage(timeZone)}}
             </span>
-        </div>
     </div>
+  </div>
 </form>

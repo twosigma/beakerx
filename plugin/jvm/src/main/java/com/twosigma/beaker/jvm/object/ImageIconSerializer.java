@@ -13,13 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.jvm.object;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -32,31 +29,30 @@ import org.codehaus.jackson.map.SerializerProvider;
 /*
  * Wire format as png for images.
  */
-public class ImageIconSerializer extends JsonSerializer<ImageIcon>
-{
-    public ImageIconSerializer() {
+public class ImageIconSerializer extends JsonSerializer<ImageIcon> {
+
+  public ImageIconSerializer() {
+  }
+
+  @Override
+  public void serialize(ImageIcon value, JsonGenerator jgen, SerializerProvider provider)
+          throws IOException, JsonProcessingException {
+
+    synchronized (value) {
+
+      BufferedImage image = new BufferedImage(value.getIconWidth(),
+              value.getIconHeight(),
+              BufferedImage.TYPE_INT_RGB);
+      Graphics g = image.createGraphics();
+      value.paintIcon(null, g, 0, 0);
+      g.dispose();
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      ImageIO.write(image, "png", baos);
+      byte[] dataToEncode = baos.toByteArray();
+      jgen.writeStartObject();
+      jgen.writeObjectField("type", value.getClass().getSimpleName());
+      jgen.writeObjectField("imageData", dataToEncode);
+      jgen.writeEndObject();
     }
-
-    @Override
-    public void serialize(ImageIcon value, JsonGenerator jgen, SerializerProvider provider)
-	throws IOException, JsonProcessingException
-    {
-
-	synchronized(value) {
-
-            BufferedImage image = new BufferedImage(value.getIconWidth(),
-                                                    value.getIconHeight(),
-                                                    BufferedImage.TYPE_INT_RGB);
-            Graphics g = image.createGraphics();
-            value.paintIcon(null, g, 0, 0);
-            g.dispose();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(image, "png", baos);
-            byte[] dataToEncode = baos.toByteArray();
-	    jgen.writeStartObject();
-            jgen.writeObjectField("type", value.getClass().getSimpleName());
-            jgen.writeObjectField("imageData", dataToEncode);
-	    jgen.writeEndObject();
-	}
-    }
+  }
 }

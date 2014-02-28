@@ -2,15 +2,15 @@ apply plugin:'application'
 mainClassName = 'com.twosigma.beaker.Main'
 
 task (installBower, type: Exec) {
-    commandLine 'npm', 'install'
+  commandLine 'npm', 'install'
 }
 
 task (bowerInstall, type: Exec) {
-    commandLine './node_modules/bower/bin/bower', 'install'
+  commandLine './node_modules/bower/bin/bower', 'install'
 }
 
 task (copyNginx, type: Exec) {
-    commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx'.split()
+  commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx'.split()
 }
 
 bowerInstall.dependsOn installBower
@@ -20,7 +20,7 @@ run.dependsOn jar
 run.dependsOn copyNginx
 
 dependencies {
-    compile project(':shared')
+  compile project(':shared')
 }
 
 /* for testing
@@ -30,7 +30,7 @@ run {
 */
 
 // need to remove META-INF/*.SF to use this.
-// build.dependsOn jar
+//build.dependsOn jar
 //jar {
-//    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+//  from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 //}

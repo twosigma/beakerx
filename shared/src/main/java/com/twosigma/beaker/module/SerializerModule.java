@@ -13,9 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.module;
-
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
@@ -36,46 +34,47 @@ import org.codehaus.jackson.map.module.SimpleModule;
  * @author snguyen
  */
 public class SerializerModule
-    extends AbstractModule
-{
-    @Override
-    protected void configure() {
-    }
+        extends AbstractModule {
 
-    @Provides @Singleton
-    public ObjectMapper getObjectMapper(Injector injector) {
-        ObjectMapper mapper = new ObjectMapper();
+  @Override
+  protected void configure() {
+  }
 
-        SimpleModule module =
+  @Provides
+  @Singleton
+  public ObjectMapper getObjectMapper(Injector injector) {
+    ObjectMapper mapper = new ObjectMapper();
+
+    SimpleModule module =
             new SimpleModule("MySerializer", new Version(1, 0, 0, null));
 
-        module.addSerializer(StringObject.class, new StringObjectSerializer());
+    module.addSerializer(StringObject.class, new StringObjectSerializer());
 
-        module.addSerializer(
-                SessionBackupRest.Plugin.class,
-                new SessionBackupRest.PluginSerializer());
-        module.addSerializer(
-                SessionBackupRest.Session.class,
-                new SessionBackupRest.SessionSerializer());
+    module.addSerializer(
+            SessionBackupRest.Plugin.class,
+            new SessionBackupRest.PluginSerializer());
+    module.addSerializer(
+            SessionBackupRest.Session.class,
+            new SessionBackupRest.SessionSerializer());
 
-        mapper.registerModule(module);
+    mapper.registerModule(module);
 
-        SerializationConfig config = mapper.getSerializationConfig();
+    SerializationConfig config = mapper.getSerializationConfig();
 
-        // Pretty
-        mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
+    // Pretty
+    mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 
-        // Manually serialize everything, either through mixin or serializer
-        mapper.disable(SerializationConfig.Feature.AUTO_DETECT_GETTERS);
-        mapper.disable(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS);
-        mapper.disable(SerializationConfig.Feature.AUTO_DETECT_FIELDS);
+    // Manually serialize everything, either through mixin or serializer
+    mapper.disable(SerializationConfig.Feature.AUTO_DETECT_GETTERS);
+    mapper.disable(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS);
+    mapper.disable(SerializationConfig.Feature.AUTO_DETECT_FIELDS);
 
-        return mapper;
-    }
+    return mapper;
+  }
 
-    @Provides @Singleton
-    public JacksonJsonProvider getJackson(ObjectMapper mapper) {
-        return new JacksonJsonProvider(mapper);
-    }
-
+  @Provides
+  @Singleton
+  public JacksonJsonProvider getJackson(ObjectMapper mapper) {
+    return new JacksonJsonProvider(mapper);
+  }
 }

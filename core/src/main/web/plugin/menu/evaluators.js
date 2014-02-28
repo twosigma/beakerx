@@ -17,9 +17,9 @@
  * evaluator menu plugin
  * Add an item to the evaluators menu that is a placeholder to show available evaluators.
  */
-(function () {
-    'use strict';
-    var evaluatorsMenuItems = [];
-    var toAdd = {items: evaluatorsMenuItems, parent: "Evaluators"};
-    pluginObj.onReady(toAdd);
+(function() {
+  'use strict';
+  var evaluatorsMenuItems = [];
+  var toAdd = {items: evaluatorsMenuItems, parent: "Evaluators"};
+  pluginObj.onReady(toAdd);
 })();

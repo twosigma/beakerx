@@ -19,23 +19,25 @@ import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerSession;
 
 public abstract class AbstractUpdater
-    implements Updater
-{
-    private ServerSession _session;
-    private LocalSession _localSession;
-    private String _channelId;
-    private Object _updatingObject;
+        implements Updater {
 
-    public void initialize(ServerSession session, LocalSession localSession, String channelId, Object updatingObject) {
-        _session = session;
-        _localSession = localSession;
-        _channelId = channelId;
-        _updatingObject = updatingObject;
-    }
-    protected Object getUpdateingObject() {
-        return _updatingObject;
-    }
-    public void deliverUpdate(Object update) {
-        _session.deliver(_localSession, _channelId, update, null);
-    }
+  private ServerSession _session;
+  private LocalSession _localSession;
+  private String _channelId;
+  private Object _updatingObject;
+
+  public void initialize(ServerSession session, LocalSession localSession, String channelId, Object updatingObject) {
+    _session = session;
+    _localSession = localSession;
+    _channelId = channelId;
+    _updatingObject = updatingObject;
+  }
+
+  protected Object getUpdateingObject() {
+    return _updatingObject;
+  }
+
+  public void deliverUpdate(Object update) {
+    _session.deliver(_localSession, _channelId, update, null);
+  }
 }

@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.module;
 
 import com.google.inject.AbstractModule;
@@ -32,49 +31,53 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
  * The WebServer Module that sets up the server singleton to be started in Init
+ *
  * @author snguyen
  */
 public class WebServerModule
-    extends AbstractModule
-{
-    private int _portBase;
-    public WebServerModule(int portBase) {
-        _portBase = portBase;
-    }
+        extends AbstractModule {
 
-    @Override
-    protected void configure() {
-        bind(OwnerFilter.class);
-    }
+  private int _portBase;
 
-    @Provides @Singleton
-    Connector getConnector() {
-        final Connector conn = new SelectChannelConnector();
-        conn.setPort(_portBase + 2);
-        return conn;
-    }
+  public WebServerModule(int portBase) {
+    _portBase = portBase;
+  }
 
-    @Provides @Singleton
-    public Server getServer(final Injector injector, Connector connector) {
-        String staticDir = Platform.getStaticDir();
-        Server server = new Server();
-        server.addConnector(connector);
-        ServletContextHandler servletHandler = new ServletContextHandler();
-        servletHandler.addEventListener(new GuiceServletContextListener() {
-            @Override
-            protected Injector getInjector() {
-                return injector;
-            }
-        });
+  @Override
+  protected void configure() {
+    bind(OwnerFilter.class);
+  }
 
-        servletHandler.addFilter(GuiceFilter.class, "/*", null);
-        servletHandler.addServlet(DefaultServlet.class, "/*");
-        servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);
-        servletHandler.setInitParameter("maxCacheSize", "0");
-        servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
+  @Provides
+  @Singleton
+  Connector getConnector() {
+    final Connector conn = new SelectChannelConnector();
+    conn.setPort(_portBase + 2);
+    return conn;
+  }
 
-        server.setHandler(servletHandler);
+  @Provides
+  @Singleton
+  public Server getServer(final Injector injector, Connector connector) {
+    String staticDir = Platform.getStaticDir();
+    Server server = new Server();
+    server.addConnector(connector);
+    ServletContextHandler servletHandler = new ServletContextHandler();
+    servletHandler.addEventListener(new GuiceServletContextListener() {
+      @Override
+      protected Injector getInjector() {
+        return injector;
+      }
+    });
 
-        return server;
-    }
+    servletHandler.addFilter(GuiceFilter.class, "/*", null);
+    servletHandler.addServlet(DefaultServlet.class, "/*");
+    servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);
+    servletHandler.setInitParameter("maxCacheSize", "0");
+    servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
+
+    server.setHandler(servletHandler);
+
+    return server;
+  }
 }

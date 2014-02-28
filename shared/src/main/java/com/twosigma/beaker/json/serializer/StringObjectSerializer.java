@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.json.serializer;
 
 import java.io.IOException;
@@ -23,24 +22,23 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
 /**
- * Serializer for StringObject. Basically wrap a string in to a JSON object
- * like: { "value": originalStringText }
+ * Serializer for StringObject. Basically wrap a string in to a JSON object like: { "value":
+ * originalStringText }
+ *
  * @author alee
  */
-public class StringObjectSerializer extends JsonSerializer<StringObject>
-{
-    public StringObjectSerializer() {
-    }
+public class StringObjectSerializer extends JsonSerializer<StringObject> {
 
-    @Override
-    public void serialize(StringObject value, JsonGenerator jgen, SerializerProvider provider)
-        throws IOException, JsonProcessingException
-    {
-        synchronized(value) {
-            jgen.writeStartObject();
-            jgen.writeObjectField("value", value.getText());
-            jgen.writeEndObject();
-        }
-    }
+  public StringObjectSerializer() {
+  }
 
+  @Override
+  public void serialize(StringObject value, JsonGenerator jgen, SerializerProvider provider)
+          throws IOException, JsonProcessingException {
+    synchronized (value) {
+      jgen.writeStartObject();
+      jgen.writeObjectField("value", value.getText());
+      jgen.writeEndObject();
+    }
+  }
 }

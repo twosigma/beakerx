@@ -17,22 +17,22 @@
  * M_bkOutputLog
  * This module owns the service of get output log from the server.
  */
-(function () {
-    'use strict';
-    angular.module('M_bkOutputLog', [])
-        .factory('bkOutputLog', function () {
-            var getLog = function (cb) {
-                var req = $.ajax({
-                    type: "GET",
-                    datatype: "json",
-                    url: "/beaker/rest/outputlog/get",
-                    data: {}
-                });
-                req.done(cb);
-                req.error(function () {
-                    console.log("failed to get output log");
-                });
-            };
-            return {getLog: getLog};
-        });
+(function() {
+  'use strict';
+  angular.module('M_bkOutputLog', [])
+      .factory('bkOutputLog', function() {
+        var getLog = function(cb) {
+          var req = $.ajax({
+            type: "GET",
+            datatype: "json",
+            url: "/beaker/rest/outputlog/get",
+            data: {}
+          });
+          req.done(cb);
+          req.error(function() {
+            console.log("failed to get output log");
+          });
+        };
+        return {getLog: getLog};
+      });
 })();

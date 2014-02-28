@@ -17,31 +17,31 @@
  * 'Help' menu plugin
  * This creates the 'Help' menu.
  */
-(function () {
-    'use strict';
-    var menuItems = [
-        {
-            name: "About Beaker...",
-            action: function () {
-                bkHelper.showFileChooser(undefined, "template/about.html");
-            },
-            tooltip: "Basic information about this application"
-        },
-        {
-            name: "Tutorial notebook",
-            action: function () {
-                bkHelper.openURI("file:config/tutorial.bkr");
-            },
-            tooltip: "Open the tutorial notebook"
-        },
-        {
-            name: "Keyboard shortcuts...",
-            action: function () {
-                window.open("./keyboardShortcuts.html");
-            },
-            tooltip: "Show keyboard shortcuts"
-        }
-    ];
-    var toAdd = {items: menuItems, parent: "Help"};
-    pluginObj.onReady(toAdd);
+(function() {
+  'use strict';
+  var menuItems = [
+    {
+      name: "About Beaker...",
+      action: function() {
+        bkHelper.showFileChooser(undefined, "template/about.html");
+      },
+      tooltip: "Basic information about this application"
+    },
+    {
+      name: "Tutorial notebook",
+      action: function() {
+        bkHelper.openURI("file:config/tutorial.bkr");
+      },
+      tooltip: "Open the tutorial notebook"
+    },
+    {
+      name: "Keyboard shortcuts...",
+      action: function() {
+        window.open("./keyboardShortcuts.html");
+      },
+      tooltip: "Show keyboard shortcuts"
+    }
+  ];
+  var toAdd = {items: menuItems, parent: "Help"};
+  pluginObj.onReady(toAdd);
 })();

@@ -19,7 +19,10 @@ import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerSession;
 
 public interface Updater {
-    public Updater getInstance(ServerSession session, LocalSession localSession, String channelId, Object updatingObject);
-    public boolean isApplicable(Object o);
-    public void deliverUpdate(Object update);
+
+  public Updater getInstance(ServerSession session, LocalSession localSession, String channelId, Object updatingObject);
+
+  public boolean isApplicable(Object o);
+
+  public void deliverUpdate(Object update);
 }

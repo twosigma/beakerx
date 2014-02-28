@@ -15,27 +15,28 @@
  */
 /**
  * 'Debug' menu plugin
- * This plugs in the 'Debug' menu for beaker and make the debugging info display mechanism in beaker core available
+ * This plugs in the 'Debug' menu for beaker and make the debugging info display mechanism in beaker
+ * core available
  * through UI.
  */
-(function () {
-    'use strict';
-    var menuItems = [
-        {name: "Debug",
-            action: function () {
-                bkHelper.getBkNotebookViewModel().toggleDebugging();
-            },
-            tooltip: "Display debug info",
-            isChecked: function () {
-                return bkHelper.getBkNotebookViewModel().isDebugging();
-            }
-        },
-        {name: "Force Refresh",
-            action: function () {
-                bkHelper.refreshRootScope();
-            },
-            tooltip: "Recompute view from model" }
-    ];
-    var toAdd = {items: menuItems, parent: "Debug"};
-    pluginObj.onReady(toAdd);
+(function() {
+  'use strict';
+  var menuItems = [
+    {name: "Debug",
+      action: function() {
+        bkHelper.getBkNotebookViewModel().toggleDebugging();
+      },
+      tooltip: "Display debug info",
+      isChecked: function() {
+        return bkHelper.getBkNotebookViewModel().isDebugging();
+      }
+    },
+    {name: "Force Refresh",
+      action: function() {
+        bkHelper.refreshRootScope();
+      },
+      tooltip: "Recompute view from model" }
+  ];
+  var toAdd = {items: menuItems, parent: "Debug"};
+  pluginObj.onReady(toAdd);
 })();

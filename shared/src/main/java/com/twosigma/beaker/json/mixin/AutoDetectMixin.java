@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.json.mixin;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -24,4 +23,5 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
  * @author snguyen
  */
 @JsonAutoDetect
-public interface AutoDetectMixin {}
+public interface AutoDetectMixin {
+}

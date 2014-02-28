@@ -17,80 +17,80 @@
  *  M_bkRecentMenu
  *  This module owns the service of retrieving recent menu items and updating the recent menu.
  */
-(function () {
-    'use strict';
-    var module = angular.module('M_bkRecentMenu', ['M_bkUtils']);
+(function() {
+  'use strict';
+  var module = angular.module('M_bkRecentMenu', ['M_bkUtils']);
 
-    module.provider("bkRecentMenu", function () {
-        var _server = null;
-        this.configServer = function (server) {
-            _server = server;
-        };
-        this.$get = function ($location, bkUtils) {
-            var opItems = {
-                EMPTY: {name: "(Empty)", disabled: true},
-                DIVIDER: {type: "divider"},
-                CLEARING: {name: "(Clearing...)", disabled: true},
-                UPDATING: {name: "(Updating...)", disabled: true},
-                CLEAR: {name: "Clear", action: function () {
-                    clearMenu();
-                } },
-                REFRESH: {name: "Refresh", action: function () {
-                    refreshMenu();
-                } }
-            };
-            var _recentMenu = [opItems.EMPTY];
-            var refreshMenu = function () {
-                if (!_server) {
-                    return;
-                }
-                _recentMenu.splice(0, _recentMenu.length, opItems.UPDATING);
-                _server.getItems(function (items) {
-                    var i, HISTORY_LENGTH = 10;
-                    var getShortName = function (url) {
-                        if (url && url[url.length - 1] === "/") {
-                            url = url.substring(0, url.length - 1);
-                        }
-                        return url.replace(/^.*[\\\/]/, '');
-                    };
-                    if (_.isEmpty(items)) {
-                        _recentMenu.splice(0, _recentMenu.length, opItems.EMPTY);
-                    } else {
-                        _recentMenu.splice(0, _recentMenu.length);
-                        for (i = 0; i < items.length && i < HISTORY_LENGTH; ++i) {
-                            (function () {
-                                var item = items[i];
-                                _recentMenu.push({
-                                    name: getShortName(item),
-                                    action: function () {
-                                        // TODO, this is a hack
-                                        // this should ideally be going through beakerRoot.openURI()
-                                        $location.path("/open/" + encodeURIComponent(item));
-                                    },
-                                    tooltip: item
-                                });
-                            })();
-                        }
-                    }
-                    bkUtils.refreshRootScope();
+  module.provider("bkRecentMenu", function() {
+    var _server = null;
+    this.configServer = function(server) {
+      _server = server;
+    };
+    this.$get = function($location, bkUtils) {
+      var opItems = {
+        EMPTY: {name: "(Empty)", disabled: true},
+        DIVIDER: {type: "divider"},
+        CLEARING: {name: "(Clearing...)", disabled: true},
+        UPDATING: {name: "(Updating...)", disabled: true},
+        CLEAR: {name: "Clear", action: function() {
+          clearMenu();
+        } },
+        REFRESH: {name: "Refresh", action: function() {
+          refreshMenu();
+        } }
+      };
+      var _recentMenu = [opItems.EMPTY];
+      var refreshMenu = function() {
+        if (!_server) {
+          return;
+        }
+        _recentMenu.splice(0, _recentMenu.length, opItems.UPDATING);
+        _server.getItems(function(items) {
+          var i, HISTORY_LENGTH = 10;
+          var getShortName = function(url) {
+            if (url && url[url.length - 1] === "/") {
+              url = url.substring(0, url.length - 1);
+            }
+            return url.replace(/^.*[\\\/]/, '');
+          };
+          if (_.isEmpty(items)) {
+            _recentMenu.splice(0, _recentMenu.length, opItems.EMPTY);
+          } else {
+            _recentMenu.splice(0, _recentMenu.length);
+            for (i = 0; i < items.length && i < HISTORY_LENGTH; ++i) {
+              (function() {
+                var item = items[i];
+                _recentMenu.push({
+                  name: getShortName(item),
+                  action: function() {
+                    // TODO, this is a hack
+                    // this should ideally be going through beakerRoot.openURI()
+                    $location.path("/open/" + encodeURIComponent(item));
+                  },
+                  tooltip: item
                 });
-            };
-            var clearMenu = function () {
-                _recentMenu.splice(0, _recentMenu.length, opItems.CLEARING);
-                _server.clear(refreshMenu);
-            };
+              })();
+            }
+          }
+          bkUtils.refreshRootScope();
+        });
+      };
+      var clearMenu = function() {
+        _recentMenu.splice(0, _recentMenu.length, opItems.CLEARING);
+        _server.clear(refreshMenu);
+      };
 
-            refreshMenu(); // initialize
-            return {
-                getMenuItems: function () {
-                    return _recentMenu;
-                },
-                recordRecentDocument: function (doc) {
-                    if (_server) {
-                        _server.addItem(doc, refreshMenu);
-                    }
-                }
-            };
-        };
-    });
+      refreshMenu(); // initialize
+      return {
+        getMenuItems: function() {
+          return _recentMenu;
+        },
+        recordRecentDocument: function(doc) {
+          if (_server) {
+            _server.addItem(doc, refreshMenu);
+          }
+        }
+      };
+    };
+  });
 })();

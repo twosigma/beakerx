@@ -217,7 +217,7 @@
     });
 
     beaker.run(function(evaluatorManager) {
-      if (window.bkInit && window.bkInit.getExtraEvaluators) {
+      if (window.bkInit && window.bkInit.getEvaluators) {
         evaluatorManager.setEvaluators(window.bkInit.getEvaluators());
       }
     });

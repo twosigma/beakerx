@@ -18,7 +18,7 @@
  * This module loads/unloads plugins and evaluators and maintains the lists. It also serves as the
  * single point of contact of all eval plugins.
  */
-(function() {
+(function () {
   'use strict';
   angular.module('M_evaluatorManager', [
         'M_generalUtils',
@@ -28,8 +28,10 @@
         'M_bkCore', // TODO, we need to get rid of this dependency
         'M_menuPlugin' // TODO, we need to get rid of this dependency
       ])
-      .factory('evaluatorManager', function(
-          generalUtils, bkUtils, bkSession,
+      .factory('evaluatorManager', function (
+          generalUtils,
+          bkUtils,
+          bkSession,
           bkBaseSessionModel, // TODO, we need to get rid of this dependency
           menuPluginManager // TODO, we need to get rid of this dependency
           ) {
@@ -54,8 +56,12 @@
         var plugins = [];
         var evaluators = [];
         var evaluatorsAndLoadingPlugins = [];
-        var setEvaluators = function(map) {
-          nameToUrl = {};
+        var setEvaluators = function (map) {
+          // XXX this should suffice but a copy of this pointer is escaping.
+          // nameToUrl = {}
+          for (var key in nameToUrl) {
+            delete nameToUrl[key];
+          }
           knownEvaluators = [];
           for (var key in map) {
             if (map.hasOwnProperty(key)) {
@@ -64,18 +70,18 @@
             }
           }
         }
-        var getPlugin = function(pluginName, cb) {
-          if (_.find(plugins, function(it) {
+        var getPlugin = function (pluginName, cb) {
+          if (_.find(plugins, function (it) {
             return it.name === pluginName;
           })) {
-            cb(_.find(plugins,function(it) {
+            cb(_.find(plugins,function (it) {
               return it.name === pluginName;
             }).plugin);
           } else {
             setupPlugin(pluginName, false, cb);
           }
         };
-        var updateEvaluatorsAndLoadingPlugins = function() {
+        var updateEvaluatorsAndLoadingPlugins = function () {
           var i, j;
           evaluatorsAndLoadingPlugins = [];
           for (i in evaluators) {
@@ -95,14 +101,14 @@
             evaluatorsAndLoadingPlugins.push({loading: true, url: p.url});
           }
         };
-        var updateEvaluatorsMenu = function(evaluator) {
+        var updateEvaluatorsMenu = function (evaluator) {
           var actions = [];
           var name = evaluator.pluginName;
           for (var property in evaluator.spec) {
             var widg = evaluator.spec[property];
             var item = widg.name ? widg.name : widg.action;
             if (widg.type === "action") {
-              actions.push({name: item, action: function() {
+              actions.push({name: item, action: function () {
                 evaluator.perform(widg.action);
               }});
             }
@@ -110,15 +116,15 @@
           if (actions.length > 0)
             menuPluginManager.addItem("Evaluators", name, actions);
         };
-        var newEvaluator = function(settings, alwaysCreateNewEvaluator) {
-          getPlugin(settings.plugin, function(Shell) {
+        var newEvaluator = function (settings, alwaysCreateNewEvaluator) {
+          getPlugin(settings.plugin, function (Shell) {
             if (!Shell) {
               console.error("you need to setup plugin first");
             }
             if (alwaysCreateNewEvaluator) { // don't reuse even if found shell matching the ID in settings
               settings.shellID = null;
             }
-            var evaluator = new Shell(settings, function() {
+            var evaluator = new Shell(settings, function () {
               // The callback is for when the plugin has
               // finished initialization.  Note that it
               // cannot be called synchronously, since
@@ -131,9 +137,9 @@
             });
           });
         };
-        var setupPlugin = function(nameOrUrl, makeEvaluator, cb) {
+        var setupPlugin = function (nameOrUrl, makeEvaluator, cb) {
           var url = nameToUrl[nameOrUrl] ? nameToUrl[nameOrUrl] : nameOrUrl;
-          var pluginObj = _.find(plugins, function(it) {
+          var pluginObj = _.find(plugins, function (it) {
             return it.url === url;
           });
           if (pluginObj) {
@@ -152,7 +158,7 @@
               plugin: null,
               status: "not ready",
               callbackOnReady: cb ? [cb] : [],
-              onReady: function(MyShell) {
+              onReady: function (MyShell) {
                 this.status = "ready";
                 this.name = MyShell.prototype.pluginName;
                 this.plugin = MyShell;
@@ -176,68 +182,68 @@
             plugins.push(pluginObj);
             bkSession.recordLoadedPlugin(pluginObj.name, pluginObj.url);
             updateEvaluatorsAndLoadingPlugins();
-            generalUtils.loadJS(url, function() {
-            }, function() {
+            generalUtils.loadJS(url, function () {
+            }, function () {
               alert("could not load plugin, bad url:\n" + url);
             });
           }
         }
         return {
           setupPlugin: setupPlugin,
-          getPlugins: function() {
+          getPlugins: function () {
             return plugins;
           },
           getPlugin: getPlugin,
           newEvaluator: newEvaluator,
           setEvaluators: setEvaluators,
           nameToUrl: nameToUrl,
-          createEvaluatorThenExit: function(settings) {
-            this.getPlugin(settings.plugin, function(Shell) {
+          createEvaluatorThenExit: function (settings) {
+            this.getPlugin(settings.plugin, function (Shell) {
               if (!Shell) {
                 console.error("you need to setup plugin first");
               }
               var temp = {};
-              temp.evaluator = new Shell(settings, function() {
+              temp.evaluator = new Shell(settings, function () {
                 if (temp.evaluator.exit) {
                   temp.evaluator.exit();
                 }
               });
             });
           },
-          getEvaluator: function(evaluatorName) {
-            return _.find(evaluators, function(it) {
+          getEvaluator: function (evaluatorName) {
+            return _.find(evaluators, function (it) {
               return it.name === evaluatorName;
             });
           },
-          getAllEvaluators: function() {
+          getAllEvaluators: function () {
             return evaluators;
           },
-          getEvaluatorsAndLoadingPlugins: function() {
+          getEvaluatorsAndLoadingPlugins: function () {
             return evaluatorsAndLoadingPlugins;
           },
-          getKnownEvaluators: function() {
+          getKnownEvaluators: function () {
             return knownEvaluators;
           },
-          removeAllEvaluators: function() {
+          removeAllEvaluators: function () {
             menuPluginManager.clearItem("Evaluators");
             evaluators.splice(0, evaluators.length);
           },
-          reset: function() {
+          reset: function () {
             evaluatorsAndLoadingPlugins.splice(0, evaluatorsAndLoadingPlugins.length);
             plugins.splice(0, plugins.length);
             this.removeAllEvaluators();
           },
-          exitAllEvaluators: function() {
-            _.each(evaluators, function(ev) {
+          exitAllEvaluators: function () {
+            _.each(evaluators, function (ev) {
               if (ev.evaluator && ev.evaluator.exit) {
                 ev.evaluator.exit();
               }
             });
             this.removeAllEvaluators();
           },
-          getViewModel: function() {
+          getViewModel: function () {
             var ret = {};
-            _.each(evaluators, function(ev) {
+            _.each(evaluators, function (ev) {
               ret[ev.name] = {
                 cm: {
                   "background": ev.evaluator.background,

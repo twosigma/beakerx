@@ -56,7 +56,9 @@
             var plugins = [];
             var evaluators = [];
             var evaluatorsAndLoadingPlugins = [];
-            var addEvaluators = function (map) {
+            var setEvaluators = function (map) {
+                nameToUrl = {};
+                knownEvaluators = [];
                 for (var key in map) {
                     if (map.hasOwnProperty(key)) {
                         nameToUrl[key] = map[key];
@@ -188,7 +190,7 @@
                 },
                 getPlugin: getPlugin,
                 newEvaluator: newEvaluator,
-                addEvaluators: addEvaluators,
+                setEvaluators: setEvaluators,
                 nameToUrl: nameToUrl,
                 createEvaluatorThenExit: function (settings) {
                     this.getPlugin(settings.plugin, function (Shell) {

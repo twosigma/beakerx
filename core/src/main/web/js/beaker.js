@@ -217,7 +217,7 @@
 
         beaker.run(function (evaluatorManager) {
             if (window.bkInit && window.bkInit.getExtraEvaluators) {
-                evaluatorManager.addEvaluators(window.bkInit.getExtraEvaluators());
+                evaluatorManager.setEvaluators(window.bkInit.getEvaluators());
             }
         });
     };

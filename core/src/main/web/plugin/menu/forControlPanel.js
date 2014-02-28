@@ -16,211 +16,211 @@
 /**
  * This plugins menu items for the control panel
  */
-(function () {
-    'use strict';
-    var loadFromFile = function (path) {
-        var deferred = bkHelper.newDeferred();
-        bkHelper.httpGet("/beaker/rest/fileio/load", {path: path}).
-            success(function (data) {
-                deferred.resolve(data);
-            }).
-            error(function (data, status, header, config) {
-                deferred.reject(data, status, header, config);
-            });
-        return deferred.promise;
-    };
-    var loadFromHttp = function (url) {
-        var deferred = bkHelper.newDeferred();
-        bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
-            success(function (data) {
-                deferred.resolve(data);
-            }).
-            error(function (data, status, header, config) {
-                deferred.reject(data, status, header, config);
-            });
-        return deferred.promise;
-    };
+(function() {
+  'use strict';
+  var loadFromFile = function(path) {
+    var deferred = bkHelper.newDeferred();
+    bkHelper.httpGet("/beaker/rest/fileio/load", {path: path}).
+        success(function(data) {
+          deferred.resolve(data);
+        }).
+        error(function(data, status, header, config) {
+          deferred.reject(data, status, header, config);
+        });
+    return deferred.promise;
+  };
+  var loadFromHttp = function(url) {
+    var deferred = bkHelper.newDeferred();
+    bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
+        success(function(data) {
+          deferred.resolve(data);
+        }).
+        error(function(data, status, header, config) {
+          deferred.reject(data, status, header, config);
+        });
+    return deferred.promise;
+  };
 
-    var save = function (path, json) {
-        var deferred = bkHelper.newDeferred();
-        bkHelper.httpPost("/beaker/rest/fileio/save", {path: path, content: json}).
-            success(function (data) {
-                bkHelper.setNotebookUrl(path);
-                deferred.resolve(data);
-            }).
-            error(function (data, status, header, config) {
-                deferred.reject(data, status, header, config);
+  var save = function(path, json) {
+    var deferred = bkHelper.newDeferred();
+    bkHelper.httpPost("/beaker/rest/fileio/save", {path: path, content: json}).
+        success(function(data) {
+          bkHelper.setNotebookUrl(path);
+          deferred.resolve(data);
+        }).
+        error(function(data, status, header, config) {
+          deferred.reject(data, status, header, config);
+        });
+    return deferred.promise;
+  };
+
+  var errorHandler = function(data, status, headers, config) {
+    bkHelper.showErrorModal(data);
+    bkHelper.refreshRootScope();
+  };
+
+  bkHelper.registerSaveFunc("file", function(path, notebookModel) {
+    var notebookJson = bkHelper.toPrettyJson(notebookModel);
+    return save(path, notebookJson);
+  });
+  bkHelper.setPathOpener("file", {
+    open: function(path) {
+      if (!path) {
+        return;
+      }
+      var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
+      load(path).then(function(ret) {
+        var notebookJson = ret.value;
+        bkHelper.loadNotebook(notebookJson, true, path);
+        bkHelper.setSaveFunction(function(notebookModel) {
+          return save(path, bkHelper.toPrettyJson(notebookModel));
+        });
+        bkHelper.evaluate("initialization");
+        document.title = path.replace(/^.*[\\\/]/, '');
+      }, errorHandler);
+    }
+  });
+  var IPYNB_PATH_PREFIX = "ipynb";
+  bkHelper.setPathOpener(IPYNB_PATH_PREFIX, {
+    open: function(path) {
+      if (path.indexOf(IPYNB_PATH_PREFIX + ":/") === 0) {
+        path = path.substring(IPYNB_PATH_PREFIX.length + 2);
+      }
+      if (path) {
+        var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
+        load(path).then(function(ret) {
+          var ipyNbJson = ret.value;
+          var ipyNb = JSON.parse(ipyNbJson);
+          var bkrNb = notebookConverter.convert(ipyNb);
+          bkHelper.loadNotebook(bkrNb, true);
+          bkHelper.evaluate("initialization");
+          document.title = path.replace(/^.*[\\\/]/, '');
+        }, function(data, status, headers, config) {
+          bkHelper.showErrorModal(data);
+          bkHelper.refreshRootScope();
+        });
+      }
+    }
+  });
+  var fileMenuItems = [
+    {
+      name: "New",
+      tooltip: "Open a new notebook with default languages(Evaluators)",
+      action: function() {
+        bkHelper.newSession();
+      }
+    },
+    {
+      name: "Open recent",
+      items: function() {
+        return bkHelper.getRecentMenuItems();
+      }
+    }
+  ];
+  var helpMenuItems = [
+    {
+      name: "About Beaker...",
+      action: function() {
+        bkHelper.showFileChooser(undefined, "template/about.html");
+      },
+      tooltip: "Basic information about this application"
+    },
+    {
+      name: "Tutorial notebook",
+      action: function() {
+        bkHelper.openURI("file:config/tutorial.bkr");
+      },
+      tooltip: "Open the tutorial notebook"
+    },
+    {
+      name: "Keyboard Shortcuts...",
+      action: function() {
+        window.open("./keyboardShortcuts.html");
+      },
+      tooltip: "Show keyboard shortcuts"
+    }
+  ];
+  bkHelper.httpGet("/beaker/rest/fileio/getHomeDirectory").success(function(ret) {
+    var homeDir = ret.value;
+    var fileChooserStrategy = { result: "" };
+    fileChooserStrategy.close = function(ev, closeFunc) {
+      if (ev.which === 13) {
+        closeFunc(this.result);
+      }
+    };
+    fileChooserStrategy.treeViewfs = { // file service
+      getChildren: function(path, callback) {
+        var self = this;
+        this.showSpinner = true;
+        $http({
+          method: 'GET',
+          url: "/beaker/rest/fileio/getDecoratedChildren",
+          params: {
+            path: path
+          }
+        }).success(function(list) {
+              self.showSpinner = false;
+              callback(list);
+            }).error(function() {
+              self.showSpinner = false;
+              console.log("Error loading children");
             });
-        return deferred.promise;
+      },
+      open: function(path) {
+        fileChooserStrategy.result = path;
+      },
+      showSpinner: false
     };
-
-    var errorHandler = function (data, status, headers, config) {
-        bkHelper.showErrorModal(data);
-        bkHelper.refreshRootScope();
-    };
-
-    bkHelper.registerSaveFunc("file", function (path, notebookModel) {
-        var notebookJson = bkHelper.toPrettyJson(notebookModel);
-        return save(path, notebookJson);
-    });
-    bkHelper.setPathOpener("file", {
-        open: function (path) {
-            if (!path) {
-                return;
+    var treeViewChooserTemplate = '<div class="modal-header">' +
+        '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
+        '</div>' +
+        '<div class="modal-body">' +
+        '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
+        '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
+        '</div>' +
+        '<div class="modal-footer">' +
+        "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
+        '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
+        '   <button ng-click="close()" class="btn">Cancel</button>' +
+        '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
+        '</div>';
+    var toAdd = [
+      { parent: "File", items: fileMenuItems },
+      {
+        parent: "File",
+        submenu: "Open",
+        items: [
+          {
+            name: "Open... (File)",
+            tooltip: "Open a file from file system",
+            action: function() {
+              bkHelper.showFileChooser(
+                  bkHelper.openURI,
+                  treeViewChooserTemplate,
+                  fileChooserStrategy
+              );
             }
-            var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-            load(path).then(function (ret) {
-                var notebookJson = ret.value;
-                bkHelper.loadNotebook(notebookJson, true, path);
-                bkHelper.setSaveFunction(function (notebookModel) {
-                    return save(path, bkHelper.toPrettyJson(notebookModel));
-                });
-                bkHelper.evaluate("initialization");
-                document.title = path.replace(/^.*[\\\/]/, '');
-            }, errorHandler);
-        }
-    });
-    var IPYNB_PATH_PREFIX = "ipynb";
-    bkHelper.setPathOpener(IPYNB_PATH_PREFIX, {
-        open: function (path) {
-            if (path.indexOf(IPYNB_PATH_PREFIX + ":/") === 0) {
-                path = path.substring(IPYNB_PATH_PREFIX.length + 2);
-            }
-            if (path) {
-                var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-                load(path).then(function (ret) {
-                    var ipyNbJson = ret.value;
-                    var ipyNb = JSON.parse(ipyNbJson);
-                    var bkrNb = notebookConverter.convert(ipyNb);
-                    bkHelper.loadNotebook(bkrNb, true);
-                    bkHelper.evaluate("initialization");
-                    document.title = path.replace(/^.*[\\\/]/, '');
-                }, function (data, status, headers, config) {
-                    bkHelper.showErrorModal(data);
-                    bkHelper.refreshRootScope();
-                });
-            }
-        }
-    });
-    var fileMenuItems = [
-        {
-            name: "New",
-            tooltip: "Open a new notebook with default languages(Evaluators)",
-            action: function () {
-                bkHelper.newSession();
-            }
-        },
-        {
-            name: "Open recent",
-            items: function () {
-                return bkHelper.getRecentMenuItems();
-            }
-        }
-    ];
-    var helpMenuItems = [
-        {
-            name: "About Beaker...",
-            action: function () {
-                bkHelper.showFileChooser(undefined, "template/about.html");
-            },
-            tooltip: "Basic information about this application"
-        },
-        {
-            name: "Tutorial notebook",
-            action: function () {
-                bkHelper.openURI("file:config/tutorial.bkr");
-            },
-            tooltip: "Open the tutorial notebook"
-        },
-        {
-            name: "Keyboard Shortcuts...",
-            action: function () {
-                window.open("./keyboardShortcuts.html");
-            },
-            tooltip: "Show keyboard shortcuts"
-        }
-    ];
-    bkHelper.httpGet("/beaker/rest/fileio/getHomeDirectory").success(function (ret) {
-        var homeDir = ret.value;
-        var fileChooserStrategy = { result: "" };
-        fileChooserStrategy.close = function (ev, closeFunc) {
-            if (ev.which === 13) {
-                closeFunc(this.result);
-            }
-        };
-        fileChooserStrategy.treeViewfs = { // file service
-            getChildren: function (path, callback) {
-                var self = this;
-                this.showSpinner = true;
-                $http({
-                    method: 'GET',
-                    url: "/beaker/rest/fileio/getDecoratedChildren",
-                    params: {
-                        path: path
+          },
+          {
+            name: "Open... (.ipynb)",
+            reducedName: "Open...",
+            tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
+            action: function() {
+              bkHelper.showFileChooser(
+                  function(path) {
+                    if (path) {
+                      bkHelper.openURI(IPYNB_PATH_PREFIX + ":/" + path);
                     }
-                }).success(function (list) {
-                        self.showSpinner = false;
-                        callback(list);
-                    }).error(function () {
-                        self.showSpinner = false;
-                        console.log("Error loading children");
-                    });
-            },
-            open: function (path) {
-                fileChooserStrategy.result = path;
-            },
-            showSpinner: false
-        };
-        var treeViewChooserTemplate = '<div class="modal-header">' +
-            '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
-            '</div>' +
-            '<div class="modal-body">' +
-            '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-            '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
-            '</div>' +
-            '<div class="modal-footer">' +
-            "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
-            '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
-            '   <button ng-click="close()" class="btn">Cancel</button>' +
-            '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
-            '</div>';
-        var toAdd = [
-            { parent: "File", items: fileMenuItems },
-            {
-                parent: "File",
-                submenu: "Open",
-                items: [
-                    {
-                        name: "Open... (File)",
-                        tooltip: "Open a file from file system",
-                        action: function () {
-                            bkHelper.showFileChooser(
-                                bkHelper.openURI,
-                                treeViewChooserTemplate,
-                                fileChooserStrategy
-                            );
-                        }
-                    },
-                    {
-                        name: "Open... (.ipynb)",
-                        reducedName: "Open...",
-                        tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
-                        action: function () {
-                            bkHelper.showFileChooser(
-                                function (path) {
-                                    if (path) {
-                                        bkHelper.openURI(IPYNB_PATH_PREFIX + ":/" + path);
-                                    }
-                                },
-                                treeViewChooserTemplate,
-                                fileChooserStrategy
-                            );
-                        }
-                    }
-                ]
-            },
-            { parent: "Help", items: helpMenuItems }
-        ];
-        pluginObj.onReady(toAdd);
-    });
+                  },
+                  treeViewChooserTemplate,
+                  fileChooserStrategy
+              );
+            }
+          }
+        ]
+      },
+      { parent: "Help", items: helpMenuItems }
+    ];
+    pluginObj.onReady(toAdd);
+  });
 })();

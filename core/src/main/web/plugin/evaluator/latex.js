@@ -17,31 +17,31 @@
  * LaTex eval plugin
  * For creating and config evaluators that evaluate LaTex code and update code cell results.
  */
-(function () {
-    'use strict';
-    var url = "./plugin/evaluator/latex.js";
-    var Latex = {
-        pluginName: "Latex",
-        cmMode: "stex",
-        evaluate: function (code, modelOutput) {
-            var startTime = new Date().getTime();
-            return Q.fcall(function () {
-                modelOutput.result = {
-                    type: "BeakerDisplay",
-                    innertype: "Latex",
-                    object: code};
-                modelOutput.elapsedTime = new Date().getTime() - startTime;
-                bkHelper.refreshRootScope();
-            });
-        },
-        spec: {
-        }
-    };
-    var Latex0 = function (settings, cb) {
-        this.settings = settings;
-        window.setTimeout(cb, 0);
-    };
-    Latex0.prototype = Latex;
+(function() {
+  'use strict';
+  var url = "./plugin/evaluator/latex.js";
+  var Latex = {
+    pluginName: "Latex",
+    cmMode: "stex",
+    evaluate: function(code, modelOutput) {
+      var startTime = new Date().getTime();
+      return Q.fcall(function() {
+        modelOutput.result = {
+          type: "BeakerDisplay",
+          innertype: "Latex",
+          object: code};
+        modelOutput.elapsedTime = new Date().getTime() - startTime;
+        bkHelper.refreshRootScope();
+      });
+    },
+    spec: {
+    }
+  };
+  var Latex0 = function(settings, cb) {
+    this.settings = settings;
+    window.setTimeout(cb, 0);
+  };
+  Latex0.prototype = Latex;
 
-    bkHelper.getLoadingPlugin(url).onReady(Latex0);
+  bkHelper.getLoadingPlugin(url).onReady(Latex0);
 })();

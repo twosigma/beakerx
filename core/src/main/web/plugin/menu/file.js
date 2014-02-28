@@ -15,63 +15,64 @@
  */
 /**
  * 'File' menu plugin
- * This plugs in the 'File' menu that is the container of menu items like New, Open, Save, Close for notebooks
+ * This plugs in the 'File' menu that is the container of menu items like New, Open, Save,
+ * Close for notebooks
  */
-(function () {
-    'use strict';
-    var newNotebook = function () {
-        bkHelper.getDefaultNotebook().then(function (notebookJSON) {
-            bkHelper.loadNotebook(notebookJSON, true);
-        });
-    };
-    var fileMenuItems = [
-        {
-            name: "New",
-            action: newNotebook,
-            tooltip: "Open a new notebook with default languages (Evaluators)"
-        },
-        {
-            name: "Open",
-            autoReduce: true,
-            items:[]
-        },
-        {
-            name: "Save",
-            action: function () {
-                bkHelper.saveNotebook();
-            }
-        },
-        {
-            name: "Close",
-            action: function () {
-                bkHelper.closeNotebook();
-            }
-        },
-        {
-            name: "Open recent",
-            items: function () {
-                return bkHelper.getRecentMenuItems();
-            }
-        },
-        {
-            name: "Control panel",
-            action: function () {
-                bkHelper.gotoControlPanel();
-            }
-        },
-        {
-            name: "Save As",
-            autoReduce: true,
-            items:[]
-        }
+(function() {
+  'use strict';
+  var newNotebook = function() {
+    bkHelper.getDefaultNotebook().then(function(notebookJSON) {
+      bkHelper.loadNotebook(notebookJSON, true);
+    });
+  };
+  var fileMenuItems = [
+    {
+      name: "New",
+      action: newNotebook,
+      tooltip: "Open a new notebook with default languages (Evaluators)"
+    },
+    {
+      name: "Open",
+      autoReduce: true,
+      items: []
+    },
+    {
+      name: "Save",
+      action: function() {
+        bkHelper.saveNotebook();
+      }
+    },
+    {
+      name: "Close",
+      action: function() {
+        bkHelper.closeNotebook();
+      }
+    },
+    {
+      name: "Open recent",
+      items: function() {
+        return bkHelper.getRecentMenuItems();
+      }
+    },
+    {
+      name: "Control panel",
+      action: function() {
+        bkHelper.gotoControlPanel();
+      }
+    },
+    {
+      name: "Save As",
+      autoReduce: true,
+      items: []
+    }
 //        ,
 //        {
 //            name: "Current open",
-//            items: function () {
+//            items: function() {
 //                return bkHelper.getCurrentOpenMenuItems();
 //            }
 //        }
-    ];
-    var toAdd = {items: fileMenuItems, parent: "File"};
-    pluginObj.onReady(toAdd);
+  ];
+  var toAdd = {items: fileMenuItems, parent: "File"};
+  pluginObj.onReady(toAdd);
 })();

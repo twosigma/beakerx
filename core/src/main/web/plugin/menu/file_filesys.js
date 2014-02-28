@@ -17,187 +17,183 @@
  * File menu plugin
  * This adds file system specific menu items to the File menu.
  */
-(function () {
-    'use strict';
-    var loadFromFile = function (path) {
-        var deferred = bkHelper.newDeferred();
-        bkHelper.httpGet("/beaker/rest/fileio/load", {path: path}).
-            success(function (data) {
-                deferred.resolve(data);
-            }).
-            error(function (data, status, header, config) {
-                deferred.reject(data, status, header, config);
-            });
-        return deferred.promise;
+(function() {
+  'use strict';
+  var loadFromFile = function(path) {
+    var deferred = bkHelper.newDeferred();
+    bkHelper.httpGet("/beaker/rest/fileio/load", {path: path}).
+        success(function(data) {
+          deferred.resolve(data);
+        }).
+        error(function(data, status, header, config) {
+          deferred.reject(data, status, header, config);
+        });
+    return deferred.promise;
+  };
+  var loadFromHttp = function(url) {
+    var deferred = bkHelper.newDeferred();
+    bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
+        success(function(data) {
+          deferred.resolve(data);
+        }).
+        error(function(data, status, header, config) {
+          deferred.reject(data, status, header, config);
+        });
+    return deferred.promise;
+  };
+
+  var save = function(path, json) {
+    var deferred = bkHelper.newDeferred();
+    bkHelper.httpPost("/beaker/rest/fileio/save", {path: path, content: json}).
+        success(function(data) {
+          bkHelper.setNotebookUrl(path);
+          deferred.resolve(data);
+        }).
+        error(function(data, status, header, config) {
+          deferred.reject(data, status, header, config);
+        });
+    return deferred.promise;
+  };
+
+  var errorHandler = function(data, status, headers, config) {
+    bkHelper.showErrorModal(data);
+    bkHelper.refreshRootScope();
+  };
+
+  bkHelper.registerSaveFunc("file", function(path, notebookModel) {
+    var notebookJson = bkHelper.toPrettyJson(notebookModel);
+    return save(path, notebookJson);
+  });
+  var openURI_filesys = function(path) {
+    if (!path) {
+      return;
+    }
+    var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
+    load(path).then(function(ret) {
+      var notebookJson = ret.value;
+      bkHelper.loadNotebook(notebookJson, true, path);
+      bkHelper.setSaveFunction(function(notebookModel) {
+        return save(path, bkHelper.toPrettyJson(notebookModel));
+      });
+      bkHelper.evaluate("initialization");
+      document.title = path.replace(/^.*[\\\/]/, '');
+    }, errorHandler);
+  };
+  bkHelper.setPathOpener("file", {
+    open: function(url) {
+      openURI_filesys(url);
+    }
+  });
+
+  bkHelper.httpGet("/beaker/rest/fileio/getHomeDirectory").success(function(ret) {
+    var homeDir = ret.value;
+    var fileChooserStrategy = { result: "" };
+    fileChooserStrategy.close = function(ev, closeFunc) {
+      if (ev.which === 13) {
+        closeFunc(this.result);
+      }
     };
-    var loadFromHttp = function (url) {
-        var deferred = bkHelper.newDeferred();
-        bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
-            success(function (data) {
-                deferred.resolve(data);
-            }).
-            error(function (data, status, header, config) {
-                deferred.reject(data, status, header, config);
+    fileChooserStrategy.treeViewfs = { // file service
+      getChildren: function(path, callback) {
+        var self = this;
+        this.showSpinner = true;
+        $http({
+          method: 'GET',
+          url: "/beaker/rest/fileio/getDecoratedChildren",
+          params: {
+            path: path
+          }
+        }).success(function(list) {
+              self.showSpinner = false;
+              callback(list);
+            }).error(function() {
+              self.showSpinner = false;
+              console.log("Error loading children");
             });
-        return deferred.promise;
+      },
+      open: function(path) {
+        fileChooserStrategy.result = path;
+      },
+      showSpinner: false
     };
 
-    var save = function (path, json) {
-        var deferred = bkHelper.newDeferred();
-        bkHelper.httpPost("/beaker/rest/fileio/save", {path: path, content: json}).
-            success(function (data) {
-                bkHelper.setNotebookUrl(path);
-                deferred.resolve(data);
-            }).
-            error(function (data, status, header, config) {
-                deferred.reject(data, status, header, config);
-            });
-        return deferred.promise;
-    };
 
-    var errorHandler = function (data, status, headers, config) {
-        bkHelper.showErrorModal(data);
-        bkHelper.refreshRootScope();
-    };
-
-    bkHelper.registerSaveFunc("file", function (path, notebookModel) {
-        var notebookJson = bkHelper.toPrettyJson(notebookModel);
-        return save(path, notebookJson);
-    });
-    var openURI_filesys = function (path) {
-        if (!path) {
-            return;
-        }
-        var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-        load(path).then(function (ret) {
-            var notebookJson = ret.value;
-            bkHelper.loadNotebook(notebookJson, true, path);
-            bkHelper.setSaveFunction(function (notebookModel) {
-                return save(path, bkHelper.toPrettyJson(notebookModel));
-            });
-            bkHelper.evaluate("initialization");
-            document.title = path.replace(/^.*[\\\/]/, '');
-        }, errorHandler);
-    };
-    bkHelper.setPathOpener("file", {
-        open: function (url) {
-            openURI_filesys(url);
-        }
-    });
-
-    bkHelper.httpGet("/beaker/rest/fileio/getHomeDirectory").success(function (ret) {
-        var homeDir = ret.value;
-        var fileChooserStrategy = { result: "" };
-        fileChooserStrategy.close = function (ev, closeFunc) {
-            if (ev.which === 13) {
-                closeFunc(this.result);
+    var toAdd = [
+      {
+        parent: "File",
+        submenu: "Open",
+        items: [
+          {
+            name: "Open... (File)",
+            reducedName: "Open...",
+            tooltip: "Open a file from file system",
+            action: function() {
+              bkHelper.showFileChooser(
+                  bkHelper.openURI,
+                  '<div class="modal-header">' +
+                      '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
+                      '</div>' +
+                      '<div class="modal-body">' +
+                      '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
+                      '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
+                      '</div>' +
+                      '<div class="modal-footer">' +
+                      "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
+                      '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
+                      '   <button ng-click="close()" class="btn">Cancel</button>' +
+                      '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
+                      '</div>', // template
+                  fileChooserStrategy// strategy
+              );
             }
-        };
-        fileChooserStrategy.treeViewfs = { // file service
-            getChildren: function (path, callback) {
-                var self = this;
-                this.showSpinner = true;
-                $http({
-                    method: 'GET',
-                    url: "/beaker/rest/fileio/getDecoratedChildren",
-                    params: {
-                        path: path
-                    }
-                }).success(function (list) {
-                        self.showSpinner = false;
-                        callback(list);
-                    }).error(function () {
-                        self.showSpinner = false;
-                        console.log("Error loading children");
+          }
+        ]
+      },
+      {
+        parent: "File",
+        submenu: "Save As",
+        items: [
+          {
+            name: "Save as... (file)",
+            reducedName: "Save as...",
+            tooltip: "Save a file from file system",
+            action: function() {
+              var saveAsPath = function(path) {
+                if (!path) {
+                  return;
+                }
+                bkHelper.setSaveFunction(function(notebookModel) {
+                  var notebookJson = bkHelper.toPrettyJson(notebookModel);
+                  return save(path, notebookJson).then(function() {
+                    bkHelper.setSaveFunction(function(notebookModel) {
+                      return save(path, bkHelper.toPrettyJson(notebookModel));
                     });
-            },
-            open: function (path) {
-                fileChooserStrategy.result = path;
-            },
-            showSpinner: false
-        };
-
-
-        var toAdd = [
-            {
-                parent: "File",
-                submenu: "Open",
-                items: [
-                    {
-                        name: "Open... (File)",
-                        reducedName: "Open...",
-                        tooltip: "Open a file from file system",
-                        action: function () {
-                            bkHelper.showFileChooser(
-                                bkHelper.openURI,
-                                '<div class="modal-header">' +
-                                    '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
-                                    '</div>' +
-                                    '<div class="modal-body">' +
-                                    '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-                                    '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
-                                    '</div>' +
-                                    '<div class="modal-footer">' +
-                                    "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
-                                    '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
-                                    '   <button ng-click="close()" class="btn">Cancel</button>' +
-                                    '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
-                                    '</div>', // template
-                                fileChooserStrategy// strategy
-                            );
-                        }
-                    }
-                ]
-            },
-            {
-                parent: "File",
-                submenu: "Save As",
-                items: [
-                    {
-                        name: "Save as... (file)",
-                        reducedName: "Save as...",
-                        tooltip: "Save a file from file system",
-                        action: function () {
-                            var saveAsPath = function (path) {
-                                if (!path) {
-                                    return;
-                                }
-                                bkHelper.setSaveFunction(function (notebookModel) {
-                                    var notebookJson = bkHelper.toPrettyJson(notebookModel);
-                                    return save(path, notebookJson).then(function () {
-                                        bkHelper.setSaveFunction(function (notebookModel) {
-                                            return save(path, bkHelper.toPrettyJson(notebookModel));
-                                        });
-                                        document.title = path.replace(/^.*[\\\/]/, '');
-                                    });
-                                });
-                                return bkHelper.saveNotebook();
-                            };
-                            bkHelper.showFileChooser(
-                                saveAsPath,
-                                '<div class="modal-header">' +
-                                    '   <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
-                                    '</div>' +
-                                    '<div class="modal-body">' +
-                                    '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-                                    '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
-                                    '</div>' +
-                                    '<div class="modal-footer">' +
-                                    '   <p><input id="saveAsFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
-                                    '   <button ng-click="close()" class="btn">Cancel</button>' +
-                                    '   <button ng-click="close(getStrategy().result)" class="btn btn-primary" >Save</button>' +
-                                    '</div>', // template
-                                fileChooserStrategy // strategy
-                            );
-                        }
-                    }
-                ]
+                    document.title = path.replace(/^.*[\\\/]/, '');
+                  });
+                });
+                return bkHelper.saveNotebook();
+              };
+              bkHelper.showFileChooser(
+                  saveAsPath,
+                  '<div class="modal-header">' +
+                      '   <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
+                      '</div>' +
+                      '<div class="modal-body">' +
+                      '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
+                      '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
+                      '</div>' +
+                      '<div class="modal-footer">' +
+                      '   <p><input id="saveAsFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
+                      '   <button ng-click="close()" class="btn">Cancel</button>' +
+                      '   <button ng-click="close(getStrategy().result)" class="btn btn-primary" >Save</button>' +
+                      '</div>', // template
+                  fileChooserStrategy // strategy
+              );
             }
-        ];
-        pluginObj.onReady(toAdd);
-    });
-
-
-
-
+          }
+        ]
+      }
+    ];
+    pluginObj.onReady(toAdd);
+  });
 })();

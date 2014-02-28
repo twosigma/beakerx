@@ -15,48 +15,49 @@
  */
 /**
  * M_bkTrack
- * This module owns the service that can be configured to 3rd party provided usage metric logging services.
+ * This module owns the service that can be configured to 3rd party provided usage metric
+ * logging services.
  */
-(function () {
-    'use strict';
-    var module = angular.module('M_bkTrack', []);
+(function() {
+  'use strict';
+  var module = angular.module('M_bkTrack', []);
 
-    module.provider('trackingService', function () {
-        var _trackingService = null;
-        this.config = function (trackingService) {
-            if (_.isFunction(trackingService)) {
-                _trackingService = trackingService();
-            } else {
-                _trackingService = trackingService;
-            }
+  module.provider('trackingService', function() {
+    var _trackingService = null;
+    this.config = function(trackingService) {
+      if (_.isFunction(trackingService)) {
+        _trackingService = trackingService();
+      } else {
+        _trackingService = trackingService;
+      }
+    };
+    this.$get = function() {
+      if (!_trackingService) {
+        return {
+          log: function(event, obj) {
+            // do nothing
+          },
+          isNeedPermission: function() {
+            return false;
+          }
         };
-        this.$get = function () {
-            if (!_trackingService) {
-                return {
-                    log: function (event, obj) {
-                        // do nothing
-                    },
-                    isNeedPermission: function () {
-                        return false;
-                    }
-                };
-            }
-            return {
-                log: function (event, object) {
-                    _trackingService.log(event, object);
-                },
-                enable: function () {
-                    // some tracking service will need to be enabled before being used
-                    if (_trackingService.enable && _.isFunction(_trackingService.enable)) {
-                        _trackingService.enable();
-                    }
-                },
-                isNeedPermission: function () {
-                    return _trackingService.isNeedPermission
-                        && _.isFunction(_trackingService.isNeedPermission)
-                        && _trackingService.isNeedPermission();
-                }
-            };
-        };
-    });
+      }
+      return {
+        log: function(event, object) {
+          _trackingService.log(event, object);
+        },
+        enable: function() {
+          // some tracking service will need to be enabled before being used
+          if (_trackingService.enable && _.isFunction(_trackingService.enable)) {
+            _trackingService.enable();
+          }
+        },
+        isNeedPermission: function() {
+          return _trackingService.isNeedPermission
+              && _.isFunction(_trackingService.isNeedPermission)
+              && _trackingService.isNeedPermission();
+        }
+      };
+    };
+  });
 })();

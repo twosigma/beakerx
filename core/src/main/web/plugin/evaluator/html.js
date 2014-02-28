@@ -17,31 +17,31 @@
  * HTML eval plugin
  * For creating and config evaluators that evaluate HTML code and update code cell results.
  */
-(function () {
-    'use strict';
-    var url = "./plugin/evaluator/html.js";
-    var Html = {
-        pluginName: "Html",
-        cmMode: "htmlmixed",
-        evaluate: function (code, modelOutput) {
-            var startTime = new Date().getTime();
-            return Q.fcall(function () {
-                modelOutput.result = {
-                    type: "BeakerDisplay",
-                    innertype: "Html",
-                    object: code};
-                modelOutput.elapsedTime = new Date().getTime() - startTime;
-                bkHelper.refreshRootScope();
-            });
-        },
-        spec: {
-        }
-    };
-    var Html0 = function (settings, cb) {
-        this.settings = settings;
-        window.setTimeout(cb, 0);
-    };
-    Html0.prototype = Html;
+(function() {
+  'use strict';
+  var url = "./plugin/evaluator/html.js";
+  var Html = {
+    pluginName: "Html",
+    cmMode: "htmlmixed",
+    evaluate: function(code, modelOutput) {
+      var startTime = new Date().getTime();
+      return Q.fcall(function() {
+        modelOutput.result = {
+          type: "BeakerDisplay",
+          innertype: "Html",
+          object: code};
+        modelOutput.elapsedTime = new Date().getTime() - startTime;
+        bkHelper.refreshRootScope();
+      });
+    },
+    spec: {
+    }
+  };
+  var Html0 = function(settings, cb) {
+    this.settings = settings;
+    window.setTimeout(cb, 0);
+  };
+  Html0.prototype = Html;
 
-    bkHelper.getLoadingPlugin(url).onReady(Html0);
+  bkHelper.getLoadingPlugin(url).onReady(Html0);
 })();

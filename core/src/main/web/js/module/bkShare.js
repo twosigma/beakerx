@@ -15,52 +15,52 @@
  */
 /**
  * M_bkShare
- * This module owns the bkShare service which communicate with the backend to create sharable content as well as to
- * return URL of the shard content.
+ * This module owns the bkShare service which communicate with the backend to create sharable
+ * content as well as to return URL of the shard content.
  */
-(function () {
-    'use strict';
-    var module = angular.module('M_bkShare', []);
+(function() {
+  'use strict';
+  var module = angular.module('M_bkShare', []);
 
-    module.provider("bkShare", function () {
-        var _sharingService = null;
-        this.config = function (sharingService) {
-            _sharingService = sharingService;
+  module.provider("bkShare", function() {
+    var _sharingService = null;
+    this.config = function(sharingService) {
+      _sharingService = sharingService;
+    };
+    this.$get = function() {
+      if (!_sharingService) {
+        var noOp = function() {
+          // do nothing for now
+          // we might consider logging error or warning:
+          //console.error("no sharing service available");
         };
-        this.$get = function () {
-            if (!_sharingService) {
-                var noOp = function () {
-                    // do nothing for now
-                    // we might consider logging error or warning:
-                    //console.error("no sharing service available");
-                };
-                return {
-                    publish: noOp,
-                    getSharableUrl: noOp
-                };
-            }
-            // the reason of wrapping the strategy instead of just return
-            // it (_sharingService) is to make the API explicit.
-            return {
-                publish: function (uri, content, cb) {
-                    return _sharingService.publish(uri, content, cb);
-                },
-                generateExcel: function (path, table, cb) {
-                    return _sharingService.generateExcel(path, table, cb);
-                },
-                getSharableUrl: function (uri) {
-                    return _sharingService.getSharableUrl(uri);
-                },
-                getSharableUrl_SectionCell: function (uri) {
-                    return _sharingService.getSharableUrl_SectionCell(uri);
-                },
-                getSharableUrl_CodeCell: function (uri) {
-                    return _sharingService.getSharableUrl_CodeCell(uri);
-                },
-                getSharableUrl_Notebook: function (uri) {
-                    return _sharingService.getSharableUrl_Notebook(uri);
-                }
-            };
+        return {
+          publish: noOp,
+          getSharableUrl: noOp
         };
-    });
+      }
+      // the reason of wrapping the strategy instead of just return
+      // it (_sharingService) is to make the API explicit.
+      return {
+        publish: function(uri, content, cb) {
+          return _sharingService.publish(uri, content, cb);
+        },
+        generateExcel: function(path, table, cb) {
+          return _sharingService.generateExcel(path, table, cb);
+        },
+        getSharableUrl: function(uri) {
+          return _sharingService.getSharableUrl(uri);
+        },
+        getSharableUrl_SectionCell: function(uri) {
+          return _sharingService.getSharableUrl_SectionCell(uri);
+        },
+        getSharableUrl_CodeCell: function(uri) {
+          return _sharingService.getSharableUrl_CodeCell(uri);
+        },
+        getSharableUrl_Notebook: function(uri) {
+          return _sharingService.getSharableUrl_Notebook(uri);
+        }
+      };
+    };
+  });
 })();

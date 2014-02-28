@@ -17,46 +17,51 @@
  * M_bkoLatex
  * This is the output display component for displaying results of LaTex code.
  */
-(function () {
-    'use strict';
-    beaker.bkoDirective('Latex', ["generalUtils", function (generalUtils) {
+(function() {
+  'use strict';
+  beaker.bkoDirective('Latex', ["generalUtils", function(generalUtils) {
 
-        var deferred = Q.defer();
+    var deferred = Q.defer();
 
-        // config MathJax
-        var scriptConfigMathJax = document.createElement('script');
-        scriptConfigMathJax.type = 'text/x-mathjax-config';
-        scriptConfigMathJax.innerHTML =
-            "MathJax.Hub.Config({tex2jax: {" +
-                "displayMath: [['MATH_JAX_BEGIN', 'MATH_JAX_END']]," +
-                "inlineMath: [['MATH_JAX_INLINE_BEGIN', 'MATH_JAX_INLINE_END']]" +
-                "}});";
-        document.head.appendChild(scriptConfigMathJax);
+    // config MathJax
+    var scriptConfigMathJax = document.createElement('script');
+    scriptConfigMathJax.type = 'text/x-mathjax-config';
+    scriptConfigMathJax.innerHTML =
+        "MathJax.Hub.Config({tex2jax: {" +
+            "displayMath: [['MATH_JAX_BEGIN', 'MATH_JAX_END']]," +
+            "inlineMath: [['MATH_JAX_INLINE_BEGIN', 'MATH_JAX_INLINE_END']]" +
+            "}});";
+    document.head.appendChild(scriptConfigMathJax);
 
-        // load MathJax
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = "./vendor/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-        script.onload = function () { console.log("resolving loadMathJax"); deferred.resolve(); };
-        script.onerror = function () { deferred.reject("Failed to config MathJax"); };
-        document.head.appendChild(script);
+    // load MathJax
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "./vendor/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.onload = function() {
+      console.log("resolving loadMathJax");
+      deferred.resolve();
+    };
+    script.onerror = function() {
+      deferred.reject("Failed to config MathJax");
+    };
+    document.head.appendChild(script);
 
-        var mathJaxIsReady = deferred.promise;
+    var mathJaxIsReady = deferred.promise;
 
-        var updateMathJax = function (elementId) {
-            mathJaxIsReady.then(function () {
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub, elementId]);
-            });
-        };
+    var updateMathJax = function(elementId) {
+      mathJaxIsReady.then(function() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub, elementId]);
+      });
+    };
 
-        return {
-            template: "<div id='{{id}}'>MATH_JAX_INLINE_BEGIN{{model.getCellModel()}}MATH_JAX_INLINE_END</div>",
-            controller: function ($scope) {
-                $scope.id = "latex_" + generalUtils.generateID(6);
-                $scope.$watch('model.getCellModel()', function () {
-                    updateMathJax($scope.id);
-                });
-            }
-        };
-    }]);
+    return {
+      template: "<div id='{{id}}'>MATH_JAX_INLINE_BEGIN{{model.getCellModel()}}MATH_JAX_INLINE_END</div>",
+      controller: function($scope) {
+        $scope.id = "latex_" + generalUtils.generateID(6);
+        $scope.$watch('model.getCellModel()', function() {
+          updateMathJax($scope.id);
+        });
+      }
+    };
+  }]);
 })();

@@ -17,18 +17,18 @@
  * M_bkoImage
  * This is the output display component for displaying images transferred in byte arrays.
  */
-(function () {
-    'use strict';
-    beaker.bkoDirective("Image", function () {
-        return {
-            template: "<img />",
-            link: function (scope, element, attrs) {
-               var img = element.find("img").first();
-                if (scope.model.getCellModel()) {
-                    img.attr("src", "data:image/png;base64," +
-                        scope.model.getCellModel().imageData);
-                }
-            }
-        };
-    });
+(function() {
+  'use strict';
+  beaker.bkoDirective("Image", function() {
+    return {
+      template: "<img />",
+      link: function(scope, element, attrs) {
+        var img = element.find("img").first();
+        if (scope.model.getCellModel()) {
+          img.attr("src", "data:image/png;base64," +
+              scope.model.getCellModel().imageData);
+        }
+      }
+    };
+  });
 })();

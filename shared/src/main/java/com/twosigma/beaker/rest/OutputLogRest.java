@@ -34,22 +34,22 @@ import javax.ws.rs.core.MediaType;
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
 @Path("outputlog")
-public class OutputLogRest
-{
-    @Inject
-    private OutputLogService _OutputLogService;
+public class OutputLogRest {
 
-    @GET
-    @Path("get")
-    public List<OutputLogService.OutputLine> get(@QueryParam("linecount") String lineCount) {
-        // lineCount ignored XXX
-        return _OutputLogService.log;
-    }
+  @Inject
+  private OutputLogService _OutputLogService;
 
-    @GET
-    @Path("clear")
-    public String clear() {
-        _OutputLogService.log = new ArrayList<OutputLogService.OutputLine>();
-        return "\"ok\"";
-    }
+  @GET
+  @Path("get")
+  public List<OutputLogService.OutputLine> get(@QueryParam("linecount") String lineCount) {
+    // lineCount ignored XXX
+    return _OutputLogService.log;
+  }
+
+  @GET
+  @Path("clear")
+  public String clear() {
+    _OutputLogService.log = new ArrayList<OutputLogService.OutputLine>();
+    return "\"ok\"";
+  }
 }

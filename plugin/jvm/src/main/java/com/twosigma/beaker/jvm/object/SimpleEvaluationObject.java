@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.jvm.object;
 
 import java.util.Observable;
@@ -21,60 +20,57 @@ import java.util.Observable;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
- * Abstraction around an evaluation, for communication of the state
- * over REST to the plugin.
+ * Abstraction around an evaluation, for communication of the state over REST to the plugin.
  */
 public class SimpleEvaluationObject
-    extends Observable
-{
-    private EvaluationStatus _status;
+        extends Observable {
 
-    private EvaluationResult _result;
+  private EvaluationStatus _status;
+  private EvaluationResult _result;
+  private final String _expression;
 
-    private final String _expression;
+  public SimpleEvaluationObject(String expression) {
+    _expression = expression;
+    _status = EvaluationStatus.QUEUED;
+  }
 
-    public SimpleEvaluationObject(String expression) {
-	_expression = expression;
-	_status = EvaluationStatus.QUEUED;
-    }
+  public synchronized void started() {
+    _status = EvaluationStatus.RUNNING;
+    setChanged();
+    notifyObservers();
+  }
 
-    public synchronized void started() {
-	_status = EvaluationStatus.RUNNING;
-	setChanged();
-	notifyObservers();
-    }
+  public synchronized void finished(Object result) {
+    _status = EvaluationStatus.FINISHED;
+    _result = new EvaluationResult(result);
+    setChanged();
+    notifyObservers();
+  }
 
-    public synchronized void finished(Object result) {
-	_status = EvaluationStatus.FINISHED;
-	_result = new EvaluationResult(result);
-	setChanged();
-	notifyObservers();
-    }
+  public synchronized void error(Object result) {
+    _status = EvaluationStatus.ERROR;
+    _result = new EvaluationResult(result);
+    setChanged();
+    notifyObservers();
+  }
 
-    public synchronized void error(Object result) {
-	_status = EvaluationStatus.ERROR;
-	_result = new EvaluationResult(result);
-	setChanged();
-	notifyObservers();
-    }
+  @JsonProperty("expression")
+  public String getExpression() {
+    return _expression;
+  }
 
-    @JsonProperty("expression")
-    public String getExpression() {
-	return _expression;
-    }
+  @JsonProperty("status")
+  public synchronized EvaluationStatus getStatus() {
+    return _status;
+  }
 
-    @JsonProperty("status")
-    public synchronized EvaluationStatus getStatus() {
-	return _status;
-    }
+  @JsonProperty("result")
+  public synchronized EvaluationResult getResult() {
+    return _result;
+  }
 
-    @JsonProperty("result")
-    public synchronized EvaluationResult getResult() {
-	return _result;
-    }
+  public static enum EvaluationStatus {
 
-
-    public static enum EvaluationStatus {
-	QUEUED, RUNNING, FINISHED, ERROR
-    }
+    QUEUED, RUNNING, FINISHED, ERROR
+  }
 }

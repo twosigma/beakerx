@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.rest.filter;
 
 import com.google.inject.Singleton;
@@ -29,44 +28,41 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
- * A filter that only allow the user that started the daemon to access it
- * Created: Feb 5, 2013
+ * A filter that only allow the user that started the daemon to access it Created: Feb 5, 2013
  *
  * @author snguyen
  */
 @Singleton
 public class OwnerFilter
-    implements Filter
-{
-    public static final String USER = Platform.getUser();
+        implements Filter {
 
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
-        throws IOException, ServletException
-    {
-        HttpServletRequest request = (HttpServletRequest)req;
-        HttpServletResponse response = (HttpServletResponse)res;
+  public static final String USER = Platform.getUser();
 
-        Principal userPrincipal = request.getUserPrincipal();
+  @Override
+  public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
+          throws IOException, ServletException {
+    HttpServletRequest request = (HttpServletRequest) req;
+    HttpServletResponse response = (HttpServletResponse) res;
 
-        if (userPrincipal != null && USER.equals(userPrincipal.getName())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+    Principal userPrincipal = request.getUserPrincipal();
 
-        // Invalid user
-        System.out.println("returning 401");
-        response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-        response.setContentLength(0);
+    if (userPrincipal != null && USER.equals(userPrincipal.getName())) {
+      filterChain.doFilter(request, response);
+      return;
     }
 
-    @Override
-    public void init(FilterConfig arg0) throws ServletException {}
+    // Invalid user
+    System.out.println("returning 401");
+    response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+    response.setContentLength(0);
+  }
 
-    @Override
-    public void destroy() {}
+  @Override
+  public void init(FilterConfig arg0) throws ServletException {
+  }
 
-
+  @Override
+  public void destroy() {
+  }
 }

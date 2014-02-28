@@ -23,51 +23,64 @@ import com.google.inject.Injector;
  * @author alee
  */
 public class Platform {
-    private static Injector _injector;
 
-    private Platform() {
+  private static Injector _injector;
 
+  private Platform() {
+  }
+
+  public static void setInjector(Injector ij) {
+    _injector = ij;
+  }
+
+  public static Injector getInjector() {
+    return _injector;
+  }
+
+  public static String getUser() {
+    return System.getProperty("user.name");
+  }
+
+  public static String getBeakerCoreDirectory() {
+    return System.getProperty("user.dir");
+  }
+
+  public static String getStaticDir() {
+    return getBeakerCoreDirectory() + "/src/main/web";
+  }
+
+  public static String getConfigDir() {
+    return getBeakerCoreDirectory() + "/config";
+  }
+
+  public static String getNginxPath() {
+    return "";
+  }
+
+  public static boolean getDisablePluginsLaunching() {
+    return !System.getProperty("twosigma.beaker.rest.startprocess.disablePluginLaunching", "false")
+            .equals("false");
+  }
+
+  public static int getBeakerPortBase() {
+    return 8800;
+  }
+
+  public static boolean getKerberosDefault() {
+    return false;
+  }
+
+  public static boolean isOpenBrowserByDefault() {
+    return true;
+  }
+
+  public static void openUrl(String url) {
+    boolean onMac = System.getProperty("os.name").equals("Mac OS X");
+    String[] cmd = {onMac ? "open" : "xdg-open", url};
+    try {
+      Runtime.getRuntime().exec(cmd);
+    } catch (Exception e) {
+      System.err.println("error opening url: " + e);
     }
-    public static void setInjector(Injector ij) {
-        _injector = ij;
-    }
-    public static Injector getInjector() {
-        return _injector;
-    }
-    public static String getUser() {
-        return System.getProperty("user.name");
-    }
-    public static String getBeakerCoreDirectory() {
-        return System.getProperty("user.dir");
-    }
-    public static String getStaticDir() {
-        return getBeakerCoreDirectory() + "/src/main/web";
-    }
-    public static String getConfigDir() {
-        return getBeakerCoreDirectory() + "/config";
-    }
-    public static String getNginxPath() {
-        return "";
-    }
-    public static boolean getDisablePluginsLaunching() {
-        return !System.getProperty("twosigma.beaker.rest.startprocess.disablePluginLaunching", "false").equals("false");
-    }
-    public static int getBeakerPortBase() {
-        return 8800;
-    }
-    public static boolean getKerberosDefault() {
-        return false;
-    }
-    public static boolean isOpenBrowserByDefault() {
-        return true;
-    }
-    public static void openUrl(String url) {
-        boolean onMac = System.getProperty("os.name").equals("Mac OS X");
-        String[] cmd = {onMac ? "open" : "xdg-open", url};
-        try {
-            Runtime.getRuntime().exec(cmd);
-        } catch (Exception e) {
-            System.err.println("error opening url: " + e);
-        }
-    }
+  }
 }

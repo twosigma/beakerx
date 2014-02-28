@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.servlet;
 
 import javax.servlet.ServletException;
@@ -29,45 +28,44 @@ import org.cometd.server.BayeuxServerImpl;
 import org.eclipse.jetty.util.Loader;
 
 /**
- * Taken from https://github.com/Ovea/cometd-contrib/blob/master/src/main/java/com/ovea/cometd/guice/GuiceCometdServlet.java
+ * Taken from
+ * https://github.com/Ovea/cometd-contrib/blob/master/src/main/java/com/ovea/cometd/guice/GuiceCometdServlet.java
  *
- * Didn't release because of baggage (ovea-json)
- * Created: Oct 16, 2012
+ * Didn't release because of baggage (ovea-json) Created: Oct 16, 2012
  *
  * @author snguyen
  */
 @Singleton
 public class GuiceCometdServlet
-    extends AnnotationCometdServlet
-{
-    private static final long serialVersionUID = -7354582894239989530L;
+        extends AnnotationCometdServlet {
 
-    private final Injector injector;
+  private static final long serialVersionUID = -7354582894239989530L;
+  private final Injector injector;
 
-    @Inject
-    public GuiceCometdServlet(Injector injector) {
-        this.injector = injector;
-    }
+  @Inject
+  public GuiceCometdServlet(Injector injector) {
+    this.injector = injector;
+  }
 
-    @Override
-    public void init() throws ServletException {
-        getServletContext().setAttribute(BayeuxServer.ATTRIBUTE, newBayeuxServer());
-        super.init();
-    }
+  @Override
+  public void init() throws ServletException {
+    getServletContext().setAttribute(BayeuxServer.ATTRIBUTE, newBayeuxServer());
+    super.init();
+  }
 
-    @Override
-    protected BayeuxServerImpl newBayeuxServer() {
-        return injector.getInstance(BayeuxServerImpl.class);
-    }
+  @Override
+  protected BayeuxServerImpl newBayeuxServer() {
+    return injector.getInstance(BayeuxServerImpl.class);
+  }
 
-    @Override
-    protected ServerAnnotationProcessor newServerAnnotationProcessor(BayeuxServer bayeuxServer) {
-        return injector.getInstance(ServerAnnotationProcessor.class);
-    }
+  @Override
+  protected ServerAnnotationProcessor newServerAnnotationProcessor(BayeuxServer bayeuxServer) {
+    return injector.getInstance(ServerAnnotationProcessor.class);
+  }
 
-    @SuppressWarnings({"unchecked"})
-    @Override
-    protected Object newService(String serviceClassName) throws Exception {
-        return injector.getInstance(Loader.loadClass(getClass(), serviceClassName));
-    }
+  @SuppressWarnings({"unchecked"})
+  @Override
+  protected Object newService(String serviceClassName) throws Exception {
+    return injector.getInstance(Loader.loadClass(getClass(), serviceClassName));
+  }
 }

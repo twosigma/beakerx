@@ -13,7 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
@@ -22,24 +21,22 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-
 public class TableDisplaySerializer
-    extends JsonSerializer<TableDisplay>
-{
-    public TableDisplaySerializer() {
-    }
-    
-    @Override
-    public void serialize(TableDisplay value,
-                          JsonGenerator jgen,
-                          SerializerProvider provider)
-        throws IOException, JsonProcessingException
-    {
-        jgen.writeStartObject();
-        jgen.writeObjectField("type", "TableDisplay");
-        jgen.writeObjectField("columnNames", value.columns);
-        jgen.writeObjectField("values", value.values);
-        // there is an optional field timeStrings XXX
-        jgen.writeEndObject();
-    }
+        extends JsonSerializer<TableDisplay> {
+
+  public TableDisplaySerializer() {
+  }
+
+  @Override
+  public void serialize(TableDisplay value,
+          JsonGenerator jgen,
+          SerializerProvider provider)
+          throws IOException, JsonProcessingException {
+    jgen.writeStartObject();
+    jgen.writeObjectField("type", "TableDisplay");
+    jgen.writeObjectField("columnNames", value.columns);
+    jgen.writeObjectField("values", value.values);
+    // there is an optional field timeStrings XXX
+    jgen.writeEndObject();
+  }
 }

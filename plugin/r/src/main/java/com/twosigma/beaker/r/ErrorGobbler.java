@@ -13,37 +13,34 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.r;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 
 /**
- * ErrorGobbler that takes a stream from a evaluator process and write to
- * outputLog
+ * ErrorGobbler that takes a stream from a evaluator process and write to outputLog
  */
-
 public class ErrorGobbler extends Thread {
-    private InputStream _is;
 
-    public ErrorGobbler(InputStream is) {
-        _is = is;
-    }
+  private InputStream _is;
 
-    public void run() {
-        try {
-            InputStreamReader isr = new InputStreamReader(_is);
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                System.err.println(line);
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+  public ErrorGobbler(InputStream is) {
+    _is = is;
+  }
+
+  public void run() {
+    try {
+      InputStreamReader isr = new InputStreamReader(_is);
+      BufferedReader br = new BufferedReader(isr);
+      String line = null;
+      while ((line = br.readLine()) != null) {
+        System.err.println(line);
+      }
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
     }
+  }
 }

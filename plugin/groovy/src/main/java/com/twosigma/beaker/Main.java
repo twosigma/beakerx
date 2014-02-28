@@ -21,46 +21,46 @@ import com.twosigma.beaker.groovy.URLConfigModule;
 import com.twosigma.beaker.jvm.module.GuiceCometdModule;
 import com.twosigma.beaker.jvm.module.SerializerModule;
 import com.twosigma.beaker.jvm.module.WebServerModule;
+import java.util.logging.Logger;
 import org.eclipse.jetty.server.Server;
-
 
 /**
  * In the main function, create modules and perform initialization.
  */
 public class Main {
-    private static final java.util.logging.Logger GuiceComponentProviderFactoryLogger =
-            java.util.logging.Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
-    private static final java.util.logging.Logger WebApplicationImplLogger =
-            java.util.logging.Logger.getLogger(com.sun.jersey.server.impl.application.WebApplicationImpl.class.getName());
 
-    static {
-        GuiceComponentProviderFactoryLogger.setLevel(java.util.logging.Level.WARNING);
-        WebApplicationImplLogger.setLevel(java.util.logging.Level.WARNING);
+  private static final Logger GuiceComponentProviderFactoryLogger =
+          Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
+  private static final Logger WebApplicationImplLogger =
+          Logger.getLogger(com.sun.jersey.server.impl.application.WebApplicationImpl.class.getName());
+
+  static {
+    GuiceComponentProviderFactoryLogger.setLevel(java.util.logging.Level.WARNING);
+    WebApplicationImplLogger.setLevel(java.util.logging.Level.WARNING);
+  }
+
+  public static void main(String[] args)
+          throws Exception {
+    java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
+
+    if (args.length != 1) {
+      System.out.println("usage: groovyPlugin <port>");
     }
+    int port = Integer.parseInt(args[0]);
 
-    public static void main(String[] args)
-            throws Exception
-    {
-        java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
+    Injector injector = Guice.createInjector(new WebServerModule(port),
+            new URLConfigModule(),
+            new SerializerModule(),
+            new GuiceCometdModule());
+    // Hack to prevent jersey from trying to contact the prod US
+    // jms server. This is set in ts/messagingjms properties.
+    // See BEAKER-402.
+    System.clearProperty("java.naming.provider.url");
 
-        if (args.length != 1) {
-            System.out.println("usage: groovyPlugin <port>");
-        }
-        int port = Integer.parseInt(args[0]);
+    Platform.setInjector(injector);
 
-        Injector injector = Guice.createInjector(new WebServerModule(port),
-                                                 new URLConfigModule(),
-                                                 new SerializerModule(),
-                                                 new GuiceCometdModule());
-        // Hack to prevent jersey from trying to contact the prod US
-        // jms server. This is set in ts/messagingjms properties.
-        // See BEAKER-402.
-        System.clearProperty("java.naming.provider.url");
-
-        Platform.setInjector(injector);
-
-        Server server = injector.getInstance(Server.class);
-        server.start();
-        System.out.println("Server started");
-    }
+    Server server = injector.getInstance(Server.class);
+    server.start();
+    System.out.println("Server started");
+  }
 }

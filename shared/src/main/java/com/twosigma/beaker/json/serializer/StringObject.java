@@ -13,20 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.json.serializer;
 
 /**
  * A thin wrapper for java String for serializing a String as a JSON object
+ *
  * @author alee
  */
-public class StringObject
-{
-    private String _s;
-    public StringObject(String s) {
-        _s = s;
-    }
-    public String getText() {
-        return _s;
-    }
+public class StringObject {
+
+  private String _s;
+
+  public StringObject(String s) {
+    _s = s;
+  }
+
+  public String getText() {
+    return _s;
+  }
 }

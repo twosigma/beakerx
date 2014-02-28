@@ -13,18 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.jvm.object;
 
 import java.util.List;
 
 public class TableDisplay {
-    public List<List> values;
-    public List<String> columns;
-    public List<Class> classes;
-    public TableDisplay(List<List> values, List<String> columns, List<Class> classes) {
-        this.values = values;
-        this.columns = columns;
-        this.classes = classes;
-    }
+
+  public List<List> values;
+  public List<String> columns;
+  public List<Class> classes;
+
+  public TableDisplay(List<List> values, List<String> columns, List<Class> classes) {
+    this.values = values;
+    this.columns = columns;
+    this.classes = classes;
+  }
 }

@@ -46,101 +46,101 @@ import org.apache.commons.io.IOUtils;
 @Path("fileio")
 public class FileIORest {
 
-    @GET
-    @Path("getHomeDirectory")
-    public StringObject getHomeDirector() {
-        return new StringObject(System.getProperty("user.home"));
+  @GET
+  @Path("getHomeDirectory")
+  public StringObject getHomeDirector() {
+    return new StringObject(System.getProperty("user.home"));
+  }
+
+  @POST
+  @Path("save")
+  public StringObject save(
+          @FormParam("path") String path,
+          @FormParam("content") String contentAsString) throws FileNotFoundException, IOException {
+    if (path.startsWith("file:")) {
+      path = path.substring(5); // get rid of prefix "file:"
+    }
+    FileOutputStream fos = new FileOutputStream(path);
+    fos.write(contentAsString.getBytes());
+    fos.close();
+    return new StringObject("done");
+  }
+
+  @GET
+  @Path("load")
+  public StringObject load(
+          @QueryParam("path") String path) throws FileNotFoundException, IOException {
+    if (path.startsWith("file:")) {
+      path = path.substring(5); // get rid of prefix "file:"
+    }
+    FileInputStream fin = new FileInputStream(path);
+    byte[] content = IOUtils.toByteArray(fin);
+    fin.close();
+    return new StringObject(new String(content));
+  }
+  private static MimeMap MIME_MAP = null;
+
+  public static String getMimeTypeForFileName(String filename) {
+    String extension = filename;
+
+    //remove parameters before checking extension
+    extension = extension.split("\\?")[0];
+    extension = extension.split("%3F")[0];
+
+    int extensionIndex = extension.lastIndexOf('.');
+    if (extensionIndex > 0 && extensionIndex < extension.length()) {
+      extension = extension.substring(extensionIndex + 1);
+    } else {
+      extension = "";
+    }
+    return getMimeTypeForExtension(extension);
+  }
+  private static final String BEAKER_NOTEBOOK_EXTENSION = ".bkr";
+  private static final String BEAKER_NOTEBOOK_MIME_TYPE =
+          "application/prs.twosigma.beaker.notebook+json";
+
+  public static String getMimeTypeForExtension(String extension) {
+    if (MIME_MAP == null) {
+      try {
+        MIME_MAP = new MimeMap();
+      } catch (IOException ex) {
+        return "";
+      }
     }
 
-    @POST
-    @Path("save")
-    public StringObject save(
-            @FormParam("path") String path,
-            @FormParam("content") String contentAsString) throws FileNotFoundException, IOException {
-        if (path.startsWith("file:")) {
-            path = path.substring(5); // get rid of prefix "file:"
-        }
-        FileOutputStream fos = new FileOutputStream(path);
-        fos.write(contentAsString.getBytes());
-        fos.close();
-        return new StringObject("done");
+    String result;
+    String extensionWithDot = "." + extension;
+
+    if (extensionWithDot.equals(BEAKER_NOTEBOOK_EXTENSION)) {
+      return BEAKER_NOTEBOOK_MIME_TYPE;
+    }
+    try {
+      result = MIME_MAP.getMimeType(extension);
+    } catch (IOException ex) {
+      result = null;
     }
 
-    @GET
-    @Path("load")
-    public StringObject load(
-            @QueryParam("path") String path) throws FileNotFoundException, IOException {
-        if (path.startsWith("file:")) {
-            path = path.substring(5); // get rid of prefix "file:"
-        }
-        FileInputStream fin = new FileInputStream(path);
-        byte[] content = IOUtils.toByteArray(fin);
-        fin.close();
-        return new StringObject(new String(content));
+    if (result == null || result.equals("application/octet-stream")) {
+      result = extension;
     }
-    private static MimeMap MIME_MAP = null;
+    return result;
+  }
 
-    public static String getMimeTypeForFileName(String filename) {
-        String extension = filename;
-
-        //remove parameters before checking extension
-        extension = extension.split("\\?")[0];
-        extension = extension.split("%3F")[0];
-
-        int extensionIndex = extension.lastIndexOf('.');
-        if (extensionIndex > 0 && extensionIndex < extension.length()) {
-            extension = extension.substring(extensionIndex + 1);
-        } else {
-            extension = "";
-        }
-        return getMimeTypeForExtension(extension);
+  @GET
+  @Path("getDecoratedChildren")
+  public List<Map<String, Object>> getDecoratedChildren(
+          @QueryParam("path") String path) {
+    File f = new File(path);
+    File[] children = f.listFiles();
+    List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>(children.length);
+    for (File cf : children) {
+      if (!cf.isHidden()) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("uri", cf.getPath());
+        map.put("type", cf.isDirectory() ? "directory" : getMimeTypeForFileName(cf.getPath()));
+        ret.add(map);
+      }
     }
-    private static final String BEAKER_NOTEBOOK_EXTENSION = ".bkr";
-    private static final String BEAKER_NOTEBOOK_MIME_TYPE =
-            "application/prs.twosigma.beaker.notebook+json";
-
-    public static String getMimeTypeForExtension(String extension) {
-        if (MIME_MAP == null) {
-            try {
-                MIME_MAP = new MimeMap();
-            } catch (IOException ex) {
-                return "";
-            }
-        }
-
-        String result;
-        String extensionWithDot = "." + extension;
-
-        if (extensionWithDot.equals(BEAKER_NOTEBOOK_EXTENSION)) {
-            return BEAKER_NOTEBOOK_MIME_TYPE;
-        }
-        try {
-            result = MIME_MAP.getMimeType(extension);
-        } catch (IOException ex) {
-            result = null;
-        }
-
-        if (result == null || result.equals("application/octet-stream")) {
-            result = extension;
-        }
-        return result;
-    }
-
-    @GET
-    @Path("getDecoratedChildren")
-    public List<Map<String, Object>> getDecoratedChildren(
-            @QueryParam("path") String path) {
-        File f = new File(path);
-        File[] children = f.listFiles();
-        List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>(children.length);
-        for (File cf : children) {
-            if (!cf.isHidden()) {
-                Map<String, Object> map = new HashMap<String, Object>();
-                map.put("uri", cf.getPath());
-                map.put("type", cf.isDirectory() ? "directory" : getMimeTypeForFileName(cf.getPath()));
-                ret.add(map);
-            }
-        }
-        return ret;
-    }
+    return ret;
+  }
 }

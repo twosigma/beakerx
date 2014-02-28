@@ -13,44 +13,45 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package com.twosigma.beaker.groovy;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import com.twosigma.beaker.groovy.GroovyShellRest;
 import com.twosigma.beaker.servlet.GuiceCometdServlet;
 import java.util.HashMap;
 import org.cometd.server.JacksonJSONContextServer;
-
 
 /**
  * The module for configuring servlets, REST binding.
  */
 public class URLConfigModule
-    extends ServletModule
-{
-    @SuppressWarnings("serial")
-    @Override
-    protected void configureServlets() {
-        bind(GuiceContainer.class);
+        extends ServletModule {
 
-        serve("/rest/*").with(GuiceContainer.class,
-            new HashMap<String, String>() {{
-                /**
-                 * You can put in here config that is normally in web.xml
-                 *
-                 */
-            }});
+  @SuppressWarnings("serial")
+  @Override
+  protected void configureServlets() {
+    bind(GuiceContainer.class);
 
-        bind(GuiceCometdServlet.class);
-        serve("/cometd/*").with(GuiceCometdServlet.class,
-            new HashMap<String, String>() {{
-                put("jsonContext",
-                    JacksonJSONContextServer.class.getCanonicalName());
-            }});
+    serve("/rest/*").with(GuiceContainer.class,
+            new HashMap<String, String>() {
+      {
+        /**
+         * You can put in here config that is normally in web.xml
+         *
+         */
+      }
+    });
 
-        // REST binding
-        bind(GroovyShellRest.class);
-    }
+    bind(GuiceCometdServlet.class);
+    serve("/cometd/*").with(GuiceCometdServlet.class,
+            new HashMap<String, String>() {
+      {
+        put("jsonContext",
+                JacksonJSONContextServer.class.getCanonicalName());
+      }
+    });
+
+    // REST binding
+    bind(GroovyShellRest.class);
+  }
 }

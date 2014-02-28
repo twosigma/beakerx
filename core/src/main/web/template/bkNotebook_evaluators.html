@@ -14,36 +14,37 @@
     limitations under the License.
 -->
 <div modal="!isHideEvaluators()" close='hideEvaluators()'>
-    <div class="modal-header">
-        <h3>Plugin Manager</h3>
-    </div>
-    <div class="modal-body modal-large">
-        <tabs>
-            <pane heading="Evaluators">
-                <div>
-                  <button ng-repeat="eval in getKnownEvaluators()" ng-click="addKnownEvaluator(eval.name)">{{eval.name}}</button>
-                </div>
-                <div class="input-append addeval">
-                    <input type="text" ng-enter='addPlugin()' ng-model="$parent.$parent.newPluginUrl"></input>
-                    <button class="btn" ng-click='addPlugin()'>Add Plugin from URL</button>
-                </div>
-                <accordion>
-                    <bk-notebook-evaluators-evaluator-settings ng-repeat="evaluator in getEvaluatorsAndLoadingPlugins()">
-                    </bk-notebook-evaluators-evaluator-settings>
-                </accordion>
-            </pane>
-            <pane heading="Menus">
-                <div class="input-append">
-                    <input type="text" ng-model="$parent.$parent.newMenuPluginUrl"></input>
-                    <button class="btn" ng-click='addMenuPlugin()'>Add Plugin from URL</button>
-                </div>
-                <div ng-repeat="plugin in getMenuPlugins()">
-                    {{plugin.url}}
-                </div>
-            </pane>
-        </tabs>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click='hideEvaluators()'>Close</button>
-    </div>
+  <div class="modal-header">
+    <h3>Plugin Manager</h3>
+  </div>
+  <div class="modal-body modal-large">
+    <tabs>
+      <pane heading="Evaluators">
+        <div>
+          <button ng-repeat="eval in getKnownEvaluators()" ng-click="addKnownEvaluator(eval.name)">{{eval.name}}
+          </button>
+        </div>
+        <div class="input-append addeval">
+          <input type="text" ng-enter='addPlugin()' ng-model="$parent.$parent.newPluginUrl"></input>
+          <button class="btn" ng-click='addPlugin()'>Add Plugin from URL</button>
+        </div>
+        <accordion>
+          <bk-notebook-evaluators-evaluator-settings ng-repeat="evaluator in getEvaluatorsAndLoadingPlugins()">
+          </bk-notebook-evaluators-evaluator-settings>
+        </accordion>
+      </pane>
+      <pane heading="Menus">
+        <div class="input-append">
+          <input type="text" ng-model="$parent.$parent.newMenuPluginUrl"></input>
+          <button class="btn" ng-click='addMenuPlugin()'>Add Plugin from URL</button>
+        </div>
+        <div ng-repeat="plugin in getMenuPlugins()">
+          {{plugin.url}}
+        </div>
+      </pane>
+    </tabs>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click='hideEvaluators()'>Close</button>
+  </div>
 </div>

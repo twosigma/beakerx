@@ -14,52 +14,55 @@
     limitations under the License.
 -->
 <div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="brand" href="./#/control" ng-click="gotoControlPanel($event)" eat-click>
-                <img src="./img/icon.png" width="24px" height="24px"></img>
-                Beaker
-            </a>
-            <ul class="nav">
-                <li class="dropdown" ng-repeat="m in getMenus()">
-                    <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}<b
-                        class="caret"></b></a>
-                    <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
-                </li>
-                <li class="pull-right" style="padding: 10px 15px 10px; cursor: default;">
-                    <span ng-show="disconnected"><font color="red">offline</font></span>
-                </li>
-            </ul>
-        </div>
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="./#/control" ng-click="gotoControlPanel($event)" eat-click>
+        <img src="./img/icon.png" width="24px" height="24px"></img>
+        Beaker
+      </a>
+      <ul class="nav">
+        <li class="dropdown" ng-repeat="m in getMenus()">
+          <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}<b
+              class="caret"></b></a>
+          <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
+        </li>
+        <li class="pull-right" style="padding: 10px 15px 10px; cursor: default;">
+          <span ng-show="disconnected"><font color="red">offline</font></span>
+        </li>
+      </ul>
     </div>
+  </div>
 </div>
 <div class="container">
-    <div class="row">
-        <div class="span12">
-            <button class='btn' ng-click="newNotebook()">New Notebook</button>
-            <!--<button class='btn' ng-click="openTutorial()">Tutorial</button>-->
-            <br/><br/>
+  <div class="row">
+    <div class="span12">
+      <button class='btn' ng-click="newNotebook()">New Notebook</button>
+      <!--<button class='btn' ng-click="openTutorial()">Tutorial</button>-->
+      <br/><br/>
 
-            <div ng-show='sessions.length > 0'>
-                <h4>Open notebooks:</h4>
-                <bk-control-item></bk-control-item>
-            </div>
-        </div>
+      <div ng-show='sessions.length > 0'>
+        <h4>Open notebooks:</h4>
+        <bk-control-item></bk-control-item>
+      </div>
     </div>
-    <div class="row" ng-show="isAllowAnonymousTracking == null">
-        <div class="span6 well">
-            <p>
-                <b>Share anonymous usage info?</b>
-            </p>
-            <p>
-                We would like to collect anonymous usage info to help improve our product. In the spirit of open software, the data we log will be made publicly accessible.<br>
-            </p>
-            <p>
-                <a class="cursor_hand" ng-click="showWhatWeLog()">What will we log?</a>
-            </p>
-            <button class="btn" ng-click="isAllowAnonymousTracking = false">No, don't share</button>
-            <button class="btn btn-primary" ng-click="isAllowAnonymousTracking = true">Yes, share my info</button>
-        </div>
+  </div>
+  <div class="row" ng-show="isAllowAnonymousTracking == null">
+    <div class="span6 well">
+      <p>
+        <b>Share anonymous usage info?</b>
+      </p>
 
+      <p>
+        We would like to collect anonymous usage info to help improve our product. In the spirit of open software, the
+        data we log will be made publicly accessible.<br>
+      </p>
+
+      <p>
+        <a class="cursor_hand" ng-click="showWhatWeLog()">What will we log?</a>
+      </p>
+      <button class="btn" ng-click="isAllowAnonymousTracking = false">No, don't share</button>
+      <button class="btn btn-primary" ng-click="isAllowAnonymousTracking = true">Yes, share my info</button>
     </div>
+
+  </div>
 </div>

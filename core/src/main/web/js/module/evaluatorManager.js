@@ -57,7 +57,11 @@
             var evaluators = [];
             var evaluatorsAndLoadingPlugins = [];
             var setEvaluators = function (map) {
-                nameToUrl = {};
+                // XXX this should suffice but a copy of this pointer is escaping.
+                // nameToUrl = {}
+                for (var key in nameToUrl) {
+                    delete nameToUrl[key];
+                }
                 knownEvaluators = [];
                 for (var key in map) {
                     if (map.hasOwnProperty(key)) {

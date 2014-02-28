@@ -18,14 +18,9 @@ package com.twosigma.beaker;
 import com.google.inject.Injector;
 import com.twosigma.beaker.rest.StartProcessRest;
 import com.twosigma.beaker.rest.UtilRest;
-import java.io.IOException;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Iterator;
-import org.apache.commons.io.FileUtils;
 import org.eclipse.jetty.server.Server;
 
 

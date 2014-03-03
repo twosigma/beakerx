@@ -36,8 +36,8 @@ public class UpdateManager
   static {
     INSTANCE = new UpdateManager();
   }
-  private HashBiMap<String, Object> _idToObject;
-  private LocalSession _localSession;
+  private final HashBiMap<String, Object> _idToObject;
+  private final LocalSession _localSession;
 
   public static UpdateManager getInstance() {
     return INSTANCE;

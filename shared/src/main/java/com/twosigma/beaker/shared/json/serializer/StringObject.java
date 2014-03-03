@@ -20,7 +20,7 @@ package com.twosigma.beaker.shared.json.serializer;
  */
 public class StringObject {
 
-  private String _s;
+  private final String _s;
 
   public StringObject(String s) {
     _s = s;

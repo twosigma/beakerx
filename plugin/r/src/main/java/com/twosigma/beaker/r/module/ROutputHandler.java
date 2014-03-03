@@ -28,12 +28,12 @@ import java.io.InputStreamReader;
 
 public class ROutputHandler extends Thread {
 
-  private InputStream _stream;
+  private final InputStream _stream;
   private String _captured;
   private boolean _recording;
   private SimpleEvaluationObject _dest;
-  private String _beginMagic;
-  private String _endMagic;
+  private final String _beginMagic;
+  private final String _endMagic;
 
   public ROutputHandler(InputStream stream, String beginMagic, String endMagic) {
     _stream = stream;

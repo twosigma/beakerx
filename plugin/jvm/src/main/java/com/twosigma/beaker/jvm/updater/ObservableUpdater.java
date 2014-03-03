@@ -27,7 +27,7 @@ public class ObservableUpdater
         extends AbstractUpdater
         implements Observer, Runnable {
 
-  private ScheduledExecutorService _executor = Executors.newSingleThreadScheduledExecutor();
+  private final ScheduledExecutorService _executor = Executors.newSingleThreadScheduledExecutor();
   private Object _updateObject = null;
 
   @Override
@@ -51,6 +51,7 @@ public class ObservableUpdater
     }
   }
 
+  @Override
   public Updater getInstance(ServerSession session, LocalSession localSession, String channelId, Object updatingObject) {
     ObservableUpdater result = new ObservableUpdater();
     result.initialize(session, localSession, channelId, updatingObject);
@@ -58,6 +59,7 @@ public class ObservableUpdater
     return result;
   }
 
+  @Override
   public boolean isApplicable(Object o) {
     return o instanceof Observable;
   }

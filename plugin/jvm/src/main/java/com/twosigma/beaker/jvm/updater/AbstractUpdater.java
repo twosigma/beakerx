@@ -37,6 +37,7 @@ public abstract class AbstractUpdater
     return _updatingObject;
   }
 
+  @Override
   public void deliverUpdate(Object update) {
     _session.deliver(_localSession, _channelId, update, null);
   }

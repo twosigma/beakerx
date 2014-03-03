@@ -48,8 +48,8 @@ import org.codehaus.jackson.map.SerializerProvider;
 @Path("sessionbackup")
 public class SessionBackupRest {
 
-  private static String BEAKR_DIRECTORY_NAME = ".beaker";
-  private static String BACKUP_DIRECTORY_NAME = "backups";
+  private static final String BEAKR_DIRECTORY_NAME = ".beaker";
+  private static final String BACKUP_DIRECTORY_NAME = "backups";
   private static File _backupDirectory;
 
   public SessionBackupRest() {
@@ -89,8 +89,8 @@ public class SessionBackupRest {
       pluginUrl = url;
     }
   }
-  private Map<String, Session> _sessions = new HashMap<String, Session>();
-  private List<Plugin> _plugins = new ArrayList<Plugin>();
+  private final Map<String, Session> _sessions = new HashMap<String, Session>();
+  private final List<Plugin> _plugins = new ArrayList<Plugin>();
 
   @POST
   @Path("backup")

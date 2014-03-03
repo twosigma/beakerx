@@ -34,7 +34,7 @@ public class SerializeUtils {
       } else {
         jgen.writeObject(obj.toString());
       }
-    } catch (Exception e) {
+    } catch (IOException e) {
       System.err.println("Serialization error:");
       System.err.println(e);
     }

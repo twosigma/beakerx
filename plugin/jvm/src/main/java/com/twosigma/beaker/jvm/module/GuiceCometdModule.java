@@ -42,13 +42,16 @@ public class GuiceCometdModule
     if (discoverBindings()) {
       // automatically add services
       bindListener(new AbstractMatcher<TypeLiteral<?>>() {
+        @Override
         public boolean matches(TypeLiteral<?> o) {
           return o.getRawType().isAnnotationPresent(Service.class);
         }
       }, new TypeListener() {
+        @Override
         public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
           final Provider<ServerAnnotationProcessor> processor = encounter.getProvider(ServerAnnotationProcessor.class);
           encounter.register(new InjectionListener<I>() {
+            @Override
             public void afterInjection(I injectee) {
               processor.get().process(injectee);
             }
@@ -57,13 +60,16 @@ public class GuiceCometdModule
       });
       // automatically add extensions
       bindListener(new AbstractMatcher<TypeLiteral<?>>() {
+        @Override
         public boolean matches(TypeLiteral<?> o) {
           return BayeuxServer.Extension.class.isAssignableFrom(o.getRawType());
         }
       }, new TypeListener() {
+        @Override
         public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
           final Provider<BayeuxServer> server = encounter.getProvider(BayeuxServer.class);
           encounter.register(new InjectionListener<I>() {
+            @Override
             public void afterInjection(I injectee) {
               server.get().addExtension(BayeuxServer.Extension.class.cast(injectee));
             }
@@ -72,13 +78,16 @@ public class GuiceCometdModule
       });
       // automatically add session listeners
       bindListener(new AbstractMatcher<TypeLiteral<?>>() {
+        @Override
         public boolean matches(TypeLiteral<?> o) {
           return BayeuxServer.BayeuxServerListener.class.isAssignableFrom(o.getRawType());
         }
       }, new TypeListener() {
+        @Override
         public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
           final Provider<BayeuxServer> server = encounter.getProvider(BayeuxServer.class);
           encounter.register(new InjectionListener<I>() {
+            @Override
             public void afterInjection(I injectee) {
               server.get().addListener(BayeuxServer.BayeuxServerListener.class.cast(injectee));
             }

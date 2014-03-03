@@ -19,6 +19,7 @@ import com.google.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,9 +44,9 @@ import org.apache.commons.collections.list.UnmodifiableList;
 @SuppressWarnings("unchecked")
 public class RecentMenuRest {
 
-  private static String BEAKR_DIRECTORY_NAME = ".beaker";
-  private static String CONFIGURATION_DIRECTORY_NAME = "conf";
-  private static String RECENT_DOCUMENTS_FILE_NAME = "recentDocuments";
+  private static final String BEAKR_DIRECTORY_NAME = ".beaker";
+  private static final String CONFIGURATION_DIRECTORY_NAME = "conf";
+  private static final String RECENT_DOCUMENTS_FILE_NAME = "recentDocuments";
   private static File _recentDocumentsDirectory;
   private final File _recentDocumentsFile;
   private final List<String> _recentDocuments;
@@ -69,7 +70,7 @@ public class RecentMenuRest {
       try {
         bufferedReader = new BufferedReader(new InputStreamReader(
                 new FileInputStream(_recentDocumentsFile)));
-      } catch (IOException ex) {
+      } catch (FileNotFoundException ex) {
         return;
       }
       try {

@@ -33,6 +33,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.codehaus.groovy.control.CompilationFailedException;
 
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
@@ -126,7 +127,7 @@ public class GroovyShellRest {
     Object result;
     try {
       result = shell.evaluate(code);
-    } catch (Exception e) {
+    } catch (CompilationFailedException e) {
       obj.error(e);
       return obj;
     }

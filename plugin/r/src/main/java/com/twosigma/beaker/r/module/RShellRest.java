@@ -58,8 +58,8 @@ import org.rosuda.REngine.RList;
 @Path("rsh")
 public class RShellRest {
 
-  private static String beginMagic = "**beaker_begin_magic**";
-  private static String endMagic = "**beaker_end_magic**";
+  private static final String BEGIN_MAGIC = "**beaker_begin_magic**";
+  private static final String END_MAGIC = "**beaker_end_magic**";
   private final Map<String, RConnection> _shells = new HashMap<String, RConnection>();
   private ROutputHandler _rOutputHandler = null;
 
@@ -69,7 +69,7 @@ public class RShellRest {
   }
 
   public void setOutput(InputStream stream) {
-    _rOutputHandler = new ROutputHandler(stream, beginMagic, endMagic);
+    _rOutputHandler = new ROutputHandler(stream, BEGIN_MAGIC, END_MAGIC);
     _rOutputHandler.start();
   }
 
@@ -284,9 +284,9 @@ public class RShellRest {
         // nothing
       } else {
         _rOutputHandler.reset(obj);
-        con.eval("print(\"" + beginMagic + "\")");
+        con.eval("print(\"" + BEGIN_MAGIC + "\")");
         con.eval("print(beaker_eval_)");
-        con.eval("print(\"" + endMagic + "\")");
+        con.eval("print(\"" + END_MAGIC + "\")");
       }
     } catch (RserveException e) {
       obj.error(e.getMessage());

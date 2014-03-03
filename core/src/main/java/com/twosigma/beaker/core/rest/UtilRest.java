@@ -264,7 +264,7 @@ public class UtilRest {
   }
 
   /* Init Plugins */
-  private List<String> _initPlugins = new ArrayList<String>();
+  private final List<String> _initPlugins = new ArrayList<String>();
 
   public void addInitPlugin(String p) {
     _initPlugins.add(p);
@@ -277,7 +277,7 @@ public class UtilRest {
   }
 
   /* bkApp Menu Plugins */
-  private Set<String> _menuPlugins = new LinkedHashSet<String>();
+  private final Set<String> _menuPlugins = new LinkedHashSet<String>();
 
   @POST
   @Path("addMenuPlugin")
@@ -293,7 +293,7 @@ public class UtilRest {
   }
 
   /* bkControl Menu Plugins */
-  private Set<String> _controlPanelMenuPlugins = new LinkedHashSet<String>();
+  private final Set<String> _controlPanelMenuPlugins = new LinkedHashSet<String>();
 
   @POST
   @Path("addControlMenuPlugin")
@@ -309,7 +309,7 @@ public class UtilRest {
   }
 
   /* bkCell Menu Plugins */
-  private List<String> _cellMenuPlugins = new ArrayList<String>();
+  private final List<String> _cellMenuPlugins = new ArrayList<String>();
 
   @POST
   @Path("addCellMenuPlugin")

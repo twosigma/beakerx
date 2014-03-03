@@ -16,6 +16,7 @@
 package com.twosigma.beaker.shared;
 
 import com.google.inject.Injector;
+import java.io.IOException;
 
 /**
  * This is where platform-specific settings are stored.
@@ -77,7 +78,7 @@ public class Platform {
     String[] cmd = {onMac ? "open" : "xdg-open", url};
     try {
       Runtime.getRuntime().exec(cmd);
-    } catch (Exception e) {
+    } catch (IOException e) {
       System.err.println("error opening url: " + e);
     }
   }

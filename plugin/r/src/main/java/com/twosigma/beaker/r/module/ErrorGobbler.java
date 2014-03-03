@@ -25,12 +25,13 @@ import java.io.InputStreamReader;
  */
 public class ErrorGobbler extends Thread {
 
-  private InputStream _is;
+  private final InputStream _is;
 
   public ErrorGobbler(InputStream is) {
     _is = is;
   }
 
+  @Override
   public void run() {
     try {
       InputStreamReader isr = new InputStreamReader(_is);

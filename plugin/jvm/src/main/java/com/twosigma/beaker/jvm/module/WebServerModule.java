@@ -35,7 +35,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 public class WebServerModule
         extends AbstractModule {
 
-  private int _port;
+  private final int _port;
 
   public WebServerModule(int port) {
     _port = port;

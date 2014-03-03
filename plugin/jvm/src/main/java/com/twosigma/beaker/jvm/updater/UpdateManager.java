@@ -25,7 +25,7 @@ import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
 import org.cometd.bayeux.server.ServerSession;
 
-import com.twosigma.beaker.Platform;
+import com.twosigma.beaker.shared.Platform;
 
 public class UpdateManager
         implements SubscriptionListener {

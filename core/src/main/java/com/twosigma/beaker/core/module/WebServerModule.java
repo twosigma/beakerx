@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.jvm.module;
+package com.twosigma.beaker.core.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
@@ -35,10 +35,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 public class WebServerModule
         extends AbstractModule {
 
-  private int _port;
+  private int _portBase;
 
-  public WebServerModule(int port) {
-    _port = port;
+  public WebServerModule(int portBase) {
+    _portBase = portBase;
   }
 
   @Override
@@ -50,7 +50,7 @@ public class WebServerModule
   @Singleton
   Connector getConnector() {
     final Connector conn = new SelectChannelConnector();
-    conn.setPort(_port);
+    conn.setPort(_portBase + 2);
     return conn;
   }
 

@@ -1,5 +1,5 @@
 apply plugin:'application'
-mainClassName = 'com.twosigma.beaker.Main'
+mainClassName = 'com.twosigma.beaker.core.Main'
 
 task (installBower, type: Exec) {
   commandLine 'npm', 'install'

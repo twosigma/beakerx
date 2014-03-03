@@ -1,5 +1,5 @@
 apply plugin:'application'
-mainClassName = 'com.twosigma.beaker.Main'
+mainClassName = 'com.twosigma.beaker.r.Main'
 
 dependencies {
     compile project(':shared')

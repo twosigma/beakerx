@@ -15,8 +15,9 @@
  */
 package com.twosigma.beaker.core.rest;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.shared.Platform;
+import com.google.inject.name.Named;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -64,11 +65,11 @@ public class UtilRest {
   @GET
   @Path("allStackTraces")
   public List<Map<String, Object>> getAllStackTraces() {
-    List<Map<String, Object>> out = new ArrayList<Map<String, Object>>();
+    List<Map<String, Object>> out = new ArrayList<>();
     Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
 
     for (Thread t : allStackTraces.keySet()) {
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new HashMap<>();
       map.put("thread", t);
       map.put("stackTraces", allStackTraces.get(t));
       out.add(map);
@@ -118,17 +119,16 @@ public class UtilRest {
   public void setDotDir(String dirName) {
     _dotDir = dirName;
   }
-  ;
 
-    private String _defaultNotebook = null;
+  private String _defaultNotebook = null;
 
   public void setDefaultNotebook(String fileName) {
     _defaultNotebook = fileName;
   }
 
-  ;
+  @Inject private @Named("install-dir") String _installDir;
 
-    @GET
+  @GET
   @Path("default")
   public String defaultNotebook() {
     String fileName;
@@ -139,8 +139,7 @@ public class UtilRest {
     }
     String contents = readFile(new File(fileName));
     if (null == contents) {
-      String installDir = Platform.getBeakerCoreDirectory();
-      String defaultDefault = installDir + "/config/default.bkr";
+      String defaultDefault = _installDir + "/config/default.bkr";
       contents = readFile(new File(defaultDefault));
       if (null == contents) {
         System.out.println("Double bogey, delivering empty string to client.");
@@ -163,7 +162,7 @@ public class UtilRest {
     if (!configFile.exists()) {
       try {
         PrintWriter out = new PrintWriter(configFile);
-        out.print(readFile(new File(Platform.getBeakerCoreDirectory(), "/config/beaker.conf.json")));
+        out.print(readFile(new File(_installDir, "/config/beaker.conf.json")));
         out.close();
       } catch (FileNotFoundException e) {
         System.out.println("ERROR writing default default, " + e);
@@ -264,7 +263,7 @@ public class UtilRest {
   }
 
   /* Init Plugins */
-  private final List<String> _initPlugins = new ArrayList<String>();
+  private final List<String> _initPlugins = new ArrayList<>();
 
   public void addInitPlugin(String p) {
     _initPlugins.add(p);
@@ -277,7 +276,7 @@ public class UtilRest {
   }
 
   /* bkApp Menu Plugins */
-  private final Set<String> _menuPlugins = new LinkedHashSet<String>();
+  private final Set<String> _menuPlugins = new LinkedHashSet<>();
 
   @POST
   @Path("addMenuPlugin")
@@ -293,7 +292,7 @@ public class UtilRest {
   }
 
   /* bkControl Menu Plugins */
-  private final Set<String> _controlPanelMenuPlugins = new LinkedHashSet<String>();
+  private final Set<String> _controlPanelMenuPlugins = new LinkedHashSet<>();
 
   @POST
   @Path("addControlMenuPlugin")
@@ -309,7 +308,7 @@ public class UtilRest {
   }
 
   /* bkCell Menu Plugins */
-  private final List<String> _cellMenuPlugins = new ArrayList<String>();
+  private final List<String> _cellMenuPlugins = new ArrayList<>();
 
   @POST
   @Path("addCellMenuPlugin")

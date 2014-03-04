@@ -40,7 +40,7 @@ import org.codehaus.groovy.control.CompilationFailedException;
 @Path("groovysh")
 public class GroovyShellRest {
 
-  private final Map<String, GroovyShell> _shells = new HashMap<String, GroovyShell>();
+  private final Map<String, GroovyShell> _shells = new HashMap<>();
 
   public GroovyShellRest() throws IOException {
     newEvaluator("default");

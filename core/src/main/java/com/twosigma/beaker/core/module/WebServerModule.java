@@ -17,11 +17,12 @@ package com.twosigma.beaker.core.module;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.twosigma.beaker.shared.Platform;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -35,10 +36,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 public class WebServerModule
         extends AbstractModule {
 
-  private final int _portBase;
-
-  public WebServerModule(int portBase) {
-    _portBase = portBase;
+  public WebServerModule() {
   }
 
   @Override
@@ -48,16 +46,17 @@ public class WebServerModule
 
   @Provides
   @Singleton
-  Connector getConnector() {
+  Connector getConnector(final Injector injector) {
     final Connector conn = new SelectChannelConnector();
-    conn.setPort(_portBase + 2);
+    Integer portBase = injector.getInstance(Key.get(Integer.class, Names.named("port-base")));
+    conn.setPort(portBase + 2);
     return conn;
   }
 
   @Provides
   @Singleton
   public Server getServer(final Injector injector, Connector connector) {
-    String staticDir = Platform.getStaticDir();
+    String staticDir = injector.getInstance(Key.get(String.class, Names.named("static-dir")));
     Server server = new Server();
     server.addConnector(connector);
     ServletContextHandler servletHandler = new ServletContextHandler();

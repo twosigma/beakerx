@@ -19,19 +19,21 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.google.common.collect.HashBiMap;
+import com.google.inject.Inject;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.BayeuxServer.SubscriptionListener;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
 import org.cometd.bayeux.server.ServerSession;
 
-import com.twosigma.beaker.shared.Platform;
 
 public class UpdateManager
         implements SubscriptionListener {
 
   private static final Pattern PATTERN = Pattern.compile("^/object_update/((\\w|-)+)$");
   private static final UpdateManager INSTANCE;
+
+  @Inject private BayeuxServer _bayeuxServer;
 
   static {
     INSTANCE = new UpdateManager();
@@ -44,9 +46,8 @@ public class UpdateManager
   }
 
   private UpdateManager() {
-    BayeuxServer bayeuxServer = Platform.getInjector().getInstance(BayeuxServer.class);
-    bayeuxServer.addListener(this);
-    _localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
+    _bayeuxServer.addListener(this);
+    _localSession = _bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
     _localSession.handshake();
     _idToObject = HashBiMap.<String, Object>create();
   }

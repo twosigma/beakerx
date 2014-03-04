@@ -15,7 +15,6 @@
  */
 package com.twosigma.beaker.r;
 
-import com.twosigma.beaker.shared.Platform;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.twosigma.beaker.jvm.module.GuiceCometdModule;
@@ -57,8 +56,6 @@ public class Main {
     // jms server. This is set in ts/messagingjms properties.
     // See BEAKER-402.
     System.clearProperty("java.naming.provider.url");
-
-    Platform.setInjector(injector);
 
     StartRPlugin.StartRserve(injector);
 

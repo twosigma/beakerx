@@ -15,8 +15,9 @@
  */
 package com.twosigma.beaker.shared.rest.filter;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.shared.Platform;
+import com.google.inject.name.Named;
 import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.Filter;
@@ -32,10 +33,9 @@ import javax.servlet.http.HttpServletResponse;
  * A filter that only allow the user that started the daemon to access it
  */
 @Singleton
-public class OwnerFilter
-        implements Filter {
+public class OwnerFilter implements Filter {
 
-  public static final String USER = Platform.getUser();
+  @Inject private @Named("username") String USER;
 
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)

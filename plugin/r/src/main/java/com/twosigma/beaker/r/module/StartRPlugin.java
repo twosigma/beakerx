@@ -16,7 +16,8 @@
 package com.twosigma.beaker.r.module;
 
 import com.google.inject.Injector;
-import com.twosigma.beaker.shared.Platform;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -31,17 +32,20 @@ public class StartRPlugin {
 
   public static void StartRserve(Injector injector)
           throws IOException {
+
+    String installDir = injector.getInstance(Key.get(String.class, Names.named("install-dir")));
+
     System.out.println("Platform.getBeakerCoreDirectory() = "
-            + Platform.getBeakerCoreDirectory());
+        + installDir);
 
     String[] command = {
       "Rscript",
-      Platform.getBeakerCoreDirectory() + "/src/main/r/Rserve"
+      installDir + "/src/main/r/Rserve"
     };
 
     // Need to clear out some environment variables in order for a
     // new Java process to work correctly.
-    List<String> environmentList = new ArrayList<String>();
+    List<String> environmentList = new ArrayList<>();
     for (Entry<String, String> entry : System.getenv().entrySet()) {
       if (!("CLASSPATH".equals(entry.getKey()))) {
         environmentList.add(entry.getKey() + "=" + entry.getValue());

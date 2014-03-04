@@ -16,12 +16,13 @@
 package com.twosigma.beaker.jvm.module;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.twosigma.beaker.shared.Platform;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -36,6 +37,7 @@ public class WebServerModule
         extends AbstractModule {
 
   private final int _port;
+  @Inject private @Named("static-dir") String _staticDir;
 
   public WebServerModule(int port) {
     _port = port;
@@ -57,7 +59,6 @@ public class WebServerModule
   @Provides
   @Singleton
   public Server getServer(final Injector injector, Connector connector) {
-    String staticDir = Platform.getStaticDir();
     Server server = new Server();
     server.addConnector(connector);
     ServletContextHandler servletHandler = new ServletContextHandler();
@@ -70,7 +71,7 @@ public class WebServerModule
 
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
     servletHandler.addServlet(DefaultServlet.class, "/*");
-    servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);
+    servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", _staticDir);
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
 

@@ -17,7 +17,7 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.shared.Platform;
+import com.google.inject.name.Named;
 import com.twosigma.beaker.shared.cometd.OutputLogService;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 import java.io.BufferedReader;
@@ -47,17 +47,14 @@ public class StartProcessRest {
 
   @Inject
   private OutputLogService _OutputLogService;
-  private static boolean DISABLE_PLUGIN_LAUNCHING =
-          Platform.getDisablePluginsLaunching();
-  private List<Process> plugins = new ArrayList<Process>();
-  private int _portBase;
-  private Map<String, List<String>> _args = new HashMap<String, List<String>>();
-  private Map<String, String> _pluginLocations = new HashMap<String, String>();
+  private List<Process> plugins = new ArrayList<>();
+  private Map<String, List<String>> _args = new HashMap<>();
+  private Map<String, String> _pluginLocations = new HashMap<>();
   private String _dotDir;
   private String _extraRules = "";
   private String[] _env = null;
   private Map<String, PluginConfig> _plugins;
-  private List<String> flags = new ArrayList<String>();
+  private List<String> flags = new ArrayList<>();
   private ObjectMapper _mapper = new ObjectMapper();
 
   static class PluginConfig {
@@ -91,8 +88,8 @@ public class StartProcessRest {
     }
   }
 
-  public void readPluginConfig(String defaultFile)
-          throws IOException, FileNotFoundException {
+  public void readPluginConfig() throws IOException, FileNotFoundException {
+    String defaultFile = _installDir + "/plugins";
     File file = new File(_dotDir + "/plugins");
     TypeReference readType = new TypeReference<HashMap<String, PluginConfig>>() {
     };
@@ -162,7 +159,7 @@ public class StartProcessRest {
   public void addArg(String plugin, String arg) {
     List<String> old = _args.get(plugin);
     if (old == null) {
-      old = new ArrayList<String>();
+      old = new ArrayList<>();
       _args.put(plugin, old);
     }
     old.add(arg);
@@ -175,17 +172,19 @@ public class StartProcessRest {
     }
   }
 
-  public void startReverseProxy(int portBase, Boolean useKerberos)
+  @Inject private @Named("install-dir") String _installDir;
+  @Inject private @Named("nginx-path") String _nginxDir;
+  @Inject private @Named("static-dir") String _staticDir;
+  @Inject private @Named("config-dir") String _configDir;
+  @Inject private @Named("port-base") Integer _portBase;
+  @Inject private @Named("use-kerberos") Boolean _useKerberos;
+
+  public void startReverseProxy()
           throws InterruptedException, IOException {
-    _portBase = portBase;
-    String installDir = Platform.getBeakerCoreDirectory();
-    String nginxDir = Platform.getNginxPath();
-    String staticDir = Platform.getStaticDir();
-    String configDir = Platform.getConfigDir();
     String dir = _dotDir;
-    String[] preCommand = {configDir + "/nginx.conf.template", dir,
-      Integer.toString(portBase), installDir, Boolean.toString(useKerberos),
-      nginxDir, staticDir + "/static", _extraRules};
+    String[] preCommand = {_configDir + "/nginx.conf.template", dir,
+      Integer.toString(_portBase), _installDir, Boolean.toString(_useKerberos),
+      _nginxDir, _staticDir + "/static", _extraRules};
     Process preproc = Runtime.getRuntime().exec(preCommand);
     StreamGobbler preErrorGobbler = new StreamGobbler(_OutputLogService, preproc.getErrorStream(), "pre", "stderr", false, null);
     preErrorGobbler.start();
@@ -193,7 +192,7 @@ public class StartProcessRest {
     preStdoutGobbler.start();
     preproc.waitFor();
 
-    String nginxCommand = !nginxDir.isEmpty() ? (nginxDir + "/sbin/nginx -p " + dir)
+    String nginxCommand = !_nginxDir.isEmpty() ? (_nginxDir + "/sbin/nginx -p " + dir)
             : ("nginx/nginx -p " + dir + " -c " + dir + "/conf/nginx.conf");
     Process proc = Runtime.getRuntime().exec(nginxCommand);
     StreamGobbler errorGobbler = new StreamGobbler(_OutputLogService, proc.getErrorStream(), "nginx", "stderr", false, null);
@@ -250,11 +249,6 @@ public class StartProcessRest {
       }
     }
     command += " " + Integer.toString(port);
-
-    if (DISABLE_PLUGIN_LAUNCHING) {
-      System.out.println("Would run: " + command);
-      return new StringObject(("done"));
-    }
 
     System.out.println("starting process " + command);
     Process proc = Runtime.getRuntime().exec(command, _env);

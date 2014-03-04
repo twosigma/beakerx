@@ -22,20 +22,18 @@ import com.twosigma.beaker.core.module.SerializerModule;
 import com.twosigma.beaker.core.module.URLConfigModule;
 import com.twosigma.beaker.core.module.WebServerModule;
 import com.twosigma.beaker.core.rest.StartProcessRest;
+import java.util.logging.Logger;
 
 /**
  * In the main function, create modules and perform initialization.
  */
 public class Main {
 
-  private static final java.util.logging.Logger GuiceComponentProviderFactoryLogger =
-          java.util.logging.Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
-  private static final java.util.logging.Logger WebApplicationImplLogger =
-          java.util.logging.Logger.getLogger(com.sun.jersey.server.impl.application.WebApplicationImpl.class.getName());
-
   static {
-    GuiceComponentProviderFactoryLogger.setLevel(java.util.logging.Level.WARNING);
-    WebApplicationImplLogger.setLevel(java.util.logging.Level.WARNING);
+    Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName())
+        .setLevel(java.util.logging.Level.WARNING);
+    Logger.getLogger(com.sun.jersey.server.impl.application.WebApplicationImpl.class.getName())
+        .setLevel(java.util.logging.Level.WARNING);
   }
 
   public static void main(String[] args)

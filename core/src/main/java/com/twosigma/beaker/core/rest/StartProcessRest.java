@@ -17,6 +17,7 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.core.module.config.BeakerCoreConfig;
 import com.twosigma.beaker.shared.cometd.OutputLogService;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 import com.twosigma.beaker.shared.module.config.BeakerConfig;
@@ -65,13 +66,15 @@ public class StartProcessRest {
   private final Boolean useKerberos;
 
   @Inject
-  private StartProcessRest(BeakerConfig bkConfig) {
+  private StartProcessRest(
+      BeakerConfig bkConfig,
+      BeakerCoreConfig bkcConfig) {
     this.installDir = bkConfig.getInstallDirectory();
-    this.nginxDir = bkConfig.getNginxPath();
+    this.nginxDir = bkcConfig.getNginxPath();
     this.staticDir = bkConfig.getStaticDirectory();
-    this.configDir = bkConfig.getConfigDirectory();
-    this.portBase = bkConfig.getPortBase();
-    this.useKerberos = bkConfig.getUseKerberos();
+    this.configDir = bkcConfig.getConfigDirectory();
+    this.portBase = bkcConfig.getPortBase();
+    this.useKerberos = bkcConfig.getUseKerberos();
   }
 
   public void readPluginConfig() throws IOException, FileNotFoundException {

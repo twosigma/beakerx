@@ -16,12 +16,36 @@
 
 package com.twosigma.beaker.shared.module.config;
 
+
 /**
- * BeakerConfig
+ * BeakerConfigImpl
  *
  */
-public interface BeakerConfig {
-  public String getUsername();
-  public String getInstallDirectory(); // a.k.a beaker core directory
-  public String getStaticDirectory();
+public class DefaultBeakerConfig implements BeakerConfig {
+
+  private final String username;
+  private final String installDir;
+  private final String staticDir;
+
+  public DefaultBeakerConfig() {
+    this.username = System.getProperty("user.name");
+    this.installDir = System.getProperty("user.dir");
+    this.staticDir = installDir + "/src/main/web";
+  }
+
+  @Override
+  public String getUsername() {
+    return this.username;
+  }
+
+  @Override
+  public String getInstallDirectory() {
+    return this.installDir;
+  }
+
+  @Override
+  public String getStaticDirectory() {
+    return this.staticDir;
+  }
+
 }

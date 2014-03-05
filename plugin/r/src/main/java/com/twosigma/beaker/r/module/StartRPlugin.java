@@ -32,14 +32,11 @@ public class StartRPlugin {
   public static void StartRserve(Injector injector)
           throws IOException {
 
-    String installDir = injector.getInstance(BeakerConfig.class).getInstallDirectory();
-
-    System.out.println("Platform.getBeakerCoreDirectory() = "
-        + installDir);
+    String beakerCoreDir = injector.getInstance(BeakerConfig.class).getInstallDirectory();
 
     String[] command = {
       "Rscript",
-      installDir + "/src/main/r/Rserve"
+      beakerCoreDir + "/src/main/r/Rserve"
     };
 
     // Need to clear out some environment variables in order for a

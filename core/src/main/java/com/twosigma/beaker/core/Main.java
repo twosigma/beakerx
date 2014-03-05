@@ -21,18 +21,20 @@ import com.twosigma.beaker.shared.module.GuiceCometdModule;
 import com.twosigma.beaker.core.module.SerializerModule;
 import com.twosigma.beaker.core.module.URLConfigModule;
 import com.twosigma.beaker.core.module.WebServerModule;
+import com.twosigma.beaker.core.module.config.BeakerCoreConfigModule;
+import com.twosigma.beaker.core.module.config.BeakerCoreConfigPref;
 import com.twosigma.beaker.core.rest.StartProcessRest;
 import com.twosigma.beaker.core.rest.UtilRest;
 import com.twosigma.beaker.shared.module.basicutils.BasicUtils;
 import com.twosigma.beaker.shared.module.basicutils.BasicUtilsModule;
-import com.twosigma.beaker.shared.module.config.BeakerConfig;
-import com.twosigma.beaker.shared.module.config.BeakerConfigModule;
-import com.twosigma.beaker.shared.module.config.BeakerConfigPref;
+import com.twosigma.beaker.shared.module.config.DefaultBeakerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -56,18 +58,32 @@ public class Main {
     JerseyLogger.setLevel(Level.OFF);
   }
 
-  final static Integer DEFAULT_PORT_BASE = 8800;
+  private static final Integer DEFAULT_PORT_BASE = 8800;
+  private static final Boolean OPEN_BROWSER_DEFAULT = Boolean.TRUE;
+  private static final Boolean USE_HTTPS_DEFAULT = Boolean.FALSE;
+  private static final Boolean USE_KERBEROS_DEFAULT = Boolean.FALSE;
+  private static final Integer CLEAR_PORT_OFFSE = 1;
+  private static final Integer BEAKER_SERVER_PORT_OFFSET = 2;
 
   public static void main(String[] args) throws Exception {
     final CliOptions cliOptions = new CliOptions(args);
+
     final Integer portBase = cliOptions.getPortBase() != null ?
         cliOptions.getPortBase() : findPortBase(DEFAULT_PORT_BASE);
+    final Boolean useKerberos = cliOptions.getDisableKerberos() != null ?
+        !cliOptions.getDisableKerberos() : USE_KERBEROS_DEFAULT;
+    final Boolean openBrowser = cliOptions.getOpenBrowser() != null ?
+        cliOptions.getOpenBrowser() : OPEN_BROWSER_DEFAULT;
+    final Boolean useHttps = cliOptions.getUseHttps() != null ?
+        cliOptions.getUseHttps() : USE_HTTPS_DEFAULT;
 
-    BeakerConfigPref beakerPref = createBeakerConfigPref(cliOptions, portBase);
-    WebAppConfigPref webAppPref = createWebAppConfigPref(portBase + 2);
+    BeakerCoreConfigPref beakerCorePref =
+        createBeakerCoreConfigPref(useKerberos, portBase);
+    WebAppConfigPref webAppPref = createWebAppConfigPref(portBase + BEAKER_SERVER_PORT_OFFSET);
 
     Injector injector = Guice.createInjector(
-        new BeakerConfigModule(beakerPref),
+        new DefaultBeakerConfigModule(),
+        new BeakerCoreConfigModule(beakerCorePref),
         new WebAppConfigModule(webAppPref),
         new BasicUtilsModule(),
         new WebServerModule(),
@@ -94,7 +110,6 @@ public class Main {
       }
     });
 
-
     String dotDir = System.getProperty("user.home") + "/.beaker";
 
     File dotFile = new File(dotDir);
@@ -119,40 +134,44 @@ public class Main {
     Server server = injector.getInstance(Server.class);
     server.start();
 
-    BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
-    Boolean openBrowser = bkConfig.getOpenBrowser();
-    String initUrl = bkConfig.getInitUrl();
+    // openBrower and show connection instruction message
+    final String initUrl = getInitUrl(useHttps, portBase, useKerberos);
     if (openBrowser) {
       injector.getInstance(BasicUtils.class).openUrl(initUrl);
+      System.out.println("\nConnecting to " + initUrl + "\n");
+    } else {
+      System.out.println("\nConnect to " + initUrl + "\n");
     }
 
-    String connectionMessage = bkConfig.getConnectionMessage();
-    System.out.println(connectionMessage);
   }
 
-  private static BeakerConfigPref createBeakerConfigPref(
-      final CliOptions cliOptions,
+  private static String getInitUrl(Boolean useHttps, Integer portBase, Boolean useKerberos) throws UnknownHostException {
+    String initUrl;
+
+    final String localhostname = InetAddress.getLocalHost().getHostName();
+
+    if (useHttps) {
+      initUrl = "https://" + localhostname + ":" + portBase + "/beaker/";
+    } else {
+      initUrl = "http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
+              + localhostname + ":" + (portBase + CLEAR_PORT_OFFSE) + "/beaker/";
+    }
+    return initUrl;
+  }
+
+  private static BeakerCoreConfigPref createBeakerCoreConfigPref(
+      final Boolean useKerberos,
       final Integer portBase) {
-    return new BeakerConfigPref() {
+    return new BeakerCoreConfigPref() {
 
       @Override
-      public Boolean getDisableKerberos() {
-        return cliOptions.getDisableKerberos();
-      }
-
-      @Override
-      public Boolean getOpenBrowser() {
-        return cliOptions.getOpenBrowser();
+      public Boolean getUseKerberos() {
+        return useKerberos;
       }
 
       @Override
       public Integer getPortBase() {
         return portBase;
-      }
-
-      @Override
-      public Boolean getUseHttps() {
-        return cliOptions.getUseHttps();
       }
     };
   }
@@ -211,7 +230,7 @@ public class Main {
     return true;
   }
 
-  private static class CliOptions implements BeakerConfigPref {
+  private static class CliOptions {
 
     // This should reflect user pref so default should be null;
     // It is up to the ConfigModule to provide actual default when seeing null's.
@@ -279,22 +298,18 @@ public class Main {
       }
     }
 
-    @Override
     public Boolean getDisableKerberos() {
       return this.disableKerberosPref;
     }
 
-    @Override
     public Boolean getOpenBrowser() {
       return this.openBrowserPref;
     }
 
-    @Override
     public Integer getPortBase() {
       return this.portBase;
     }
 
-    @Override
     public Boolean getUseHttps() {
       return null;
     }

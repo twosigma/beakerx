@@ -16,12 +16,17 @@
 
 package com.twosigma.beaker.shared.module.config;
 
+import com.google.inject.AbstractModule;
+
 /**
- * BeakerConfig
+ * BeakerConfigModule
  *
  */
-public interface BeakerConfig {
-  public String getUsername();
-  public String getInstallDirectory(); // a.k.a beaker core directory
-  public String getStaticDirectory();
+public class DefaultBeakerConfigModule extends AbstractModule {
+
+  @Override
+  protected void configure() {
+    bind(BeakerConfig.class).to(DefaultBeakerConfig.class);
+  }
+
 }

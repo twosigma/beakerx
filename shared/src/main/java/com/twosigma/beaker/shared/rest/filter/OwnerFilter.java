@@ -39,7 +39,7 @@ public class OwnerFilter implements Filter {
 
   @Inject
   private OwnerFilter(BeakerConfig bkConfig) {
-    this.user = bkConfig.getUserName();
+    this.user = bkConfig.getUsername();
   }
 
   @Override

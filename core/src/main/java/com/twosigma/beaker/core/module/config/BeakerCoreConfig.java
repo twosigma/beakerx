@@ -14,25 +14,15 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.shared.module.config;
-
-import com.google.inject.AbstractModule;
+package com.twosigma.beaker.core.module.config;
 
 /**
- * BeakerConfigModule
+ * BeakerCoreConfig
  *
  */
-public class BeakerConfigModule extends AbstractModule {
-  private final BeakerConfigPref pref;
-
-  public BeakerConfigModule(BeakerConfigPref pref) {
-    this.pref = pref;
-  }
-
-  @Override
-  protected void configure() {
-    bind(BeakerConfigPref.class).toInstance(pref);
-    bind(BeakerConfig.class).to(BeakerConfigImpl.class);
-  }
-
+public interface BeakerCoreConfig {
+  public String getConfigDirectory();
+  public String getNginxPath();
+  public Integer getPortBase();
+  public Boolean getUseKerberos();
 }

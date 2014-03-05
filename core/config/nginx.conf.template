@@ -20,6 +20,11 @@ import os
 import socket
 import sys
 import time
+import shutil
+
+print "XXX nginx.conf.template"
+print sys.argv
+print "YYY"
 
 user = getpass.getuser()
 host = socket.gethostname()
@@ -36,12 +41,19 @@ port_main    = port_base
 port_clear   = port_base + 1 # unencrypted
 port_beaker  = port_base + 2 # java/com/twosigma/beaker/module/WebServerModule.java:53
 
-os.system("mkdir -p " + dest_dir + "/conf")
-os.system("mkdir -p " + dest_dir + "/logs")
-os.system("mkdir -p " + client_temp_dir)
-os.system("rm -f " + dest_dir + "/conf/mime.types " + dest_dir + "/html")
-os.system("ln -s " + "nginx/mime.types " + dest_dir + "/conf/mime.types")
-os.system("ln -s " + static_dir + " " + dest_dir + "/html")
+def mkdirp(p):
+    if not os.path.exists(p):
+        os.makedirs(p)
+
+mkdirp(dest_dir + "/conf")
+mkdirp(dest_dir + "/logs")
+mkdirp(client_temp_dir)
+shutil.rmtree(dest_dir + "/conf/mime.types", True)
+shutil.rmtree(dest_dir + "/html", True)
+shutil.copytree(static_dir, dest_dir + "/html")
+# for now ignore this
+#os.system("ln -s " + "nginx/mime.types " + dest_dir + "/conf/mime.types")
+
 
 dest = open(dest_dir + "/conf/nginx.conf", 'w')
 
@@ -106,11 +118,11 @@ http {
 #        ssl_certificate %(host)s.cer;
 #        ssl_certificate_key %(host)s.key;
          client_max_body_size 100M;
-         client_body_temp_path %(client_temp_dir)s;
-         proxy_temp_path %(client_temp_dir)s;
-         fastcgi_temp_path %(client_temp_dir)s;
-         uwsgi_temp_path %(client_temp_dir)s;
-         scgi_temp_path %(client_temp_dir)s;
+         client_body_temp_path "%(client_temp_dir)s";
+         proxy_temp_path "%(client_temp_dir)s";
+         fastcgi_temp_path "%(client_temp_dir)s";
+         uwsgi_temp_path "%(client_temp_dir)s";
+         scgi_temp_path "%(client_temp_dir)s";
 
 
 # kerberos

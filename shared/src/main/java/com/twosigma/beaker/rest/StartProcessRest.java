@@ -56,7 +56,7 @@ public class StartProcessRest {
   private Map<String, List<String>> _args = new HashMap<String, List<String>>();
   private Map<String, String> _pluginLocations = new HashMap<String, String>();
   private String _dotDir;
-  private String _extraRules = "";
+  private String _extraRules = "\"\"";
   private String[] _env = null;
   private Map<String, PluginConfig> _plugins;
   private List<String> flags = new ArrayList<String>();
@@ -185,9 +185,14 @@ public class StartProcessRest {
     String staticDir = Platform.getStaticDir();
     String configDir = Platform.getConfigDir();
     String dir = _dotDir;
-    String[] preCommand = {configDir + "/nginx.conf.template", dir,
+    String[] preCommand = {"python", configDir + "/nginx.conf.template", dir,
       Integer.toString(portBase), installDir, Boolean.toString(useKerberos),
-      nginxDir, staticDir + "/static", _extraRules};
+      "ignored", staticDir + "/static", _extraRules};
+    System.err.println("ZZZ preCommand:");
+    for (int i = 0; i < preCommand.length; i++) {
+	System.err.println(preCommand[i]);
+    }
+    System.err.println("ZZZ end");
     Process preproc = Runtime.getRuntime().exec(preCommand);
     StreamGobbler preErrorGobbler = new StreamGobbler(_OutputLogService, preproc.getErrorStream(), "pre", "stderr", false, null);
     preErrorGobbler.start();
@@ -196,7 +201,7 @@ public class StartProcessRest {
     preproc.waitFor();
 
     String nginxCommand = !nginxDir.isEmpty() ? (nginxDir + "/sbin/nginx -p " + dir)
-            : ("nginx/nginx -p " + dir + " -c " + dir + "/conf/nginx.conf");
+            : ("nginx -p \"" + dir + "\" -c \"" + dir + "/conf/nginx.conf\"");
     Process proc = Runtime.getRuntime().exec(nginxCommand);
     StreamGobbler errorGobbler = new StreamGobbler(_OutputLogService, proc.getErrorStream(), "nginx", "stderr", false, null);
     errorGobbler.start();

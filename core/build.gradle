@@ -2,11 +2,11 @@ apply plugin:'application'
 mainClassName = 'com.twosigma.beaker.Main'
 
 task (installBower, type: Exec) {
-  commandLine 'npm', 'install'
+  commandLine 'cmd', '/c', 'npm', 'install'
 }
 
 task (bowerInstall, type: Exec) {
-  commandLine './node_modules/bower/bin/bower', 'install'
+  commandLine 'cmd', '/c', 'bower', 'install'
 }
 
 task (copyNginx, type: Exec) {
@@ -17,7 +17,7 @@ bowerInstall.dependsOn installBower
 build.dependsOn bowerInstall
 run.dependsOn bowerInstall
 run.dependsOn jar
-run.dependsOn copyNginx
+//run.dependsOn copyNginx
 
 dependencies {
   compile project(':shared')

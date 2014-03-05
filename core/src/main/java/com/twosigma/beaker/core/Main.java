@@ -30,6 +30,7 @@ import com.twosigma.beaker.shared.module.platform.BasicUtils;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jetty.server.Server;
 
@@ -38,17 +39,19 @@ import org.eclipse.jetty.server.Server;
  */
 public class Main {
 
+  private static final Logger GuiceComponentProviderFactoryLogger =
+          Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
+  private static final Logger WebApplicationImplLogger =
+          Logger.getLogger(com.sun.jersey.server.impl.application.WebApplicationImpl.class.getName());
+  private static final Logger JerseyLogger = Logger.getLogger("com.sun.jersey");
+
   static {
-    Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName())
-        .setLevel(java.util.logging.Level.WARNING);
-    Logger.getLogger(com.sun.jersey.server.impl.application.WebApplicationImpl.class.getName())
-        .setLevel(java.util.logging.Level.WARNING);
+    GuiceComponentProviderFactoryLogger.setLevel(Level.WARNING);
+    WebApplicationImplLogger.setLevel(Level.WARNING);
+    JerseyLogger.setLevel(Level.OFF);
   }
 
   public static void main(String[] args) throws Exception {
-
-    Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
-
 
     Boolean disableKerberosPref = Boolean.FALSE;
     Boolean openBrowserPref = null;

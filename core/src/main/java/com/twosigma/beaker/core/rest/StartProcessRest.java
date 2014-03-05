@@ -17,9 +17,9 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.twosigma.beaker.shared.cometd.OutputLogService;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import com.twosigma.beaker.shared.module.config.BeakerConfig;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -57,39 +57,25 @@ public class StartProcessRest {
   private List<String> flags = new ArrayList<>();
   private ObjectMapper _mapper = new ObjectMapper();
 
-  static class PluginConfig {
+  private final String installDir;
+  private final String nginxDir;
+  private final String staticDir;
+  private final String configDir;
+  private final Integer portBase;
+  private final Boolean useKerberos;
 
-    public int portOffset;
-    public String nginx;
-
-    public PluginConfig(int p, String n) {
-      portOffset = p;
-      nginx = n;
-    }
-    // for jackson json serialization
-
-    public int getPortOffset() {
-      return portOffset;
-    }
-
-    public String getNginx() {
-      return nginx;
-    }
-
-    public void setPortOffset(int p) {
-      portOffset = p;
-    }
-
-    public void setNginx(String n) {
-      nginx = n;
-    }
-
-    public PluginConfig() {
-    }
+  @Inject
+  private StartProcessRest(BeakerConfig bkConfig) {
+    this.installDir = bkConfig.getInstallDirectory();
+    this.nginxDir = bkConfig.getNginxPath();
+    this.staticDir = bkConfig.getStaticDirectory();
+    this.configDir = bkConfig.getConfigDirectory();
+    this.portBase = bkConfig.getPortBase();
+    this.useKerberos = bkConfig.getUseKerberos();
   }
 
   public void readPluginConfig() throws IOException, FileNotFoundException {
-    String defaultFile = _installDir + "/plugins";
+    String defaultFile = this.installDir + "/plugins";
     File file = new File(_dotDir + "/plugins");
     TypeReference readType = new TypeReference<HashMap<String, PluginConfig>>() {
     };
@@ -172,19 +158,12 @@ public class StartProcessRest {
     }
   }
 
-  @Inject private @Named("install-dir") String _installDir;
-  @Inject private @Named("nginx-path") String _nginxDir;
-  @Inject private @Named("static-dir") String _staticDir;
-  @Inject private @Named("config-dir") String _configDir;
-  @Inject private @Named("port-base") Integer _portBase;
-  @Inject private @Named("use-kerberos") Boolean _useKerberos;
-
   public void startReverseProxy()
           throws InterruptedException, IOException {
     String dir = _dotDir;
-    String[] preCommand = {_configDir + "/nginx.conf.template", dir,
-      Integer.toString(_portBase), _installDir, Boolean.toString(_useKerberos),
-      _nginxDir, _staticDir + "/static", _extraRules};
+    String[] preCommand = {this.configDir + "/nginx.conf.template", dir,
+      Integer.toString(this.portBase), this.installDir, Boolean.toString(this.useKerberos),
+      this.nginxDir, this.staticDir + "/static", _extraRules};
     Process preproc = Runtime.getRuntime().exec(preCommand);
     StreamGobbler preErrorGobbler = new StreamGobbler(_OutputLogService, preproc.getErrorStream(), "pre", "stderr", false, null);
     preErrorGobbler.start();
@@ -192,7 +171,7 @@ public class StartProcessRest {
     preStdoutGobbler.start();
     preproc.waitFor();
 
-    String nginxCommand = !_nginxDir.isEmpty() ? (_nginxDir + "/sbin/nginx -p " + dir)
+    String nginxCommand = !this.nginxDir.isEmpty() ? (this.nginxDir + "/sbin/nginx -p " + dir)
             : ("nginx/nginx -p " + dir + " -c " + dir + "/conf/nginx.conf");
     Process proc = Runtime.getRuntime().exec(nginxCommand);
     StreamGobbler errorGobbler = new StreamGobbler(_OutputLogService, proc.getErrorStream(), "nginx", "stderr", false, null);
@@ -233,14 +212,14 @@ public class StartProcessRest {
       return new StringObject(("process was already started, not starting another one"));
     }
 
-    String installDir;
+    String pluginInstallDir;
     int port;
     boolean record = recordString != null && recordString.equals("true");
     String pluginName;
-    port = _portBase + pConfig.portOffset;
+    port = this.portBase + pConfig.portOffset;
     pluginName = name;
-    installDir = _pluginLocations.get(pluginName);
-    command = installDir + "/" + command;
+    pluginInstallDir = _pluginLocations.get(pluginName);
+    command = pluginInstallDir + "/" + command;
 
     List<String> extraArgs = _args.get(pluginName);
     if (extraArgs != null) {
@@ -283,5 +262,36 @@ public class StartProcessRest {
     plugins.add(proc);
     System.out.println("Done starting " + pluginName);
     return new StringObject(("done"));
+  }
+
+  static class PluginConfig {
+
+    public int portOffset;
+    public String nginx;
+
+    public PluginConfig(int p, String n) {
+      portOffset = p;
+      nginx = n;
+    }
+    // for jackson json serialization
+
+    public int getPortOffset() {
+      return portOffset;
+    }
+
+    public String getNginx() {
+      return nginx;
+    }
+
+    public void setPortOffset(int p) {
+      portOffset = p;
+    }
+
+    public void setNginx(String n) {
+      nginx = n;
+    }
+
+    public PluginConfig() {
+    }
   }
 }

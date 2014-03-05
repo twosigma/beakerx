@@ -16,8 +16,7 @@
 package com.twosigma.beaker.r.module;
 
 import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.name.Names;
+import com.twosigma.beaker.shared.module.config.BeakerConfig;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class StartRPlugin {
   public static void StartRserve(Injector injector)
           throws IOException {
 
-    String installDir = injector.getInstance(Key.get(String.class, Names.named("install-dir")));
+    String installDir = injector.getInstance(BeakerConfig.class).getInstallDirectory();
 
     System.out.println("Platform.getBeakerCoreDirectory() = "
         + installDir);

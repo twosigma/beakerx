@@ -22,6 +22,9 @@ import com.twosigma.beaker.jvm.module.SerializerModule;
 import com.twosigma.beaker.jvm.module.WebServerModule;
 import com.twosigma.beaker.r.module.URLConfigModule;
 import com.twosigma.beaker.r.module.StartRPlugin;
+import com.twosigma.beaker.shared.module.config.WebAppConfigModule;
+import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
+import com.twosigma.beaker.shared.module.config.WebAppConfigPrefImpl;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -46,16 +49,14 @@ public class Main {
     if (args.length != 1) {
       System.out.println("usage: rPlugin <port>");
     }
-    int port = Integer.parseInt(args[0]);
-
-    Injector injector = Guice.createInjector(new WebServerModule(port),
-            new URLConfigModule(),
-            new SerializerModule(),
-            new GuiceCometdModule());
-    // Hack to prevent jersey from trying to contact the prod US
-    // jms server. This is set in ts/messagingjms properties.
-    // See BEAKER-402.
-    System.clearProperty("java.naming.provider.url");
+    final int port = Integer.parseInt(args[0]);
+    WebAppConfigPref webAppPref = new WebAppConfigPrefImpl(port);
+    Injector injector = Guice.createInjector(
+        new WebAppConfigModule(webAppPref),
+        new WebServerModule(),
+        new URLConfigModule(),
+        new SerializerModule(),
+        new GuiceCometdModule());
 
     StartRPlugin.StartRserve(injector);
 

@@ -17,7 +17,7 @@ package com.twosigma.beaker.shared.rest.filter;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
+import com.twosigma.beaker.shared.module.config.BeakerConfig;
 import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.Filter;
@@ -35,7 +35,12 @@ import javax.servlet.http.HttpServletResponse;
 @Singleton
 public class OwnerFilter implements Filter {
 
-  @Inject private @Named("username") String USER;
+  private final String user;
+
+  @Inject
+  private OwnerFilter(BeakerConfig bkConfig) {
+    this.user = bkConfig.getUserName();
+  }
 
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
@@ -45,7 +50,7 @@ public class OwnerFilter implements Filter {
 
     Principal userPrincipal = request.getUserPrincipal();
 
-    if (userPrincipal != null && USER.equals(userPrincipal.getName())) {
+    if (userPrincipal != null && this.user.equals(userPrincipal.getName())) {
       filterChain.doFilter(request, response);
       return;
     }

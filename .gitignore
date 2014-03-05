@@ -15,3 +15,6 @@ nbproject/
 build.xml
 manifest.mf
 
+/shared/src/main/dist/
+/core/src/main/dist/
+/plugin/jvm/src/main/dist/

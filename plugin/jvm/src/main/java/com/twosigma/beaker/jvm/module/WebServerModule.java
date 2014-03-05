@@ -16,13 +16,13 @@
 package com.twosigma.beaker.jvm.module;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
+import com.twosigma.beaker.shared.module.config.BeakerConfig;
+import com.twosigma.beaker.shared.module.config.WebAppConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -33,15 +33,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 /**
  * The WebServer Module that sets up the server singleton to be started in Init
  */
-public class WebServerModule
-        extends AbstractModule {
-
-  private final int _port;
-  @Inject private @Named("static-dir") String _staticDir;
-
-  public WebServerModule(int port) {
-    _port = port;
-  }
+public class WebServerModule extends AbstractModule {
 
   @Override
   protected void configure() {
@@ -50,15 +42,18 @@ public class WebServerModule
 
   @Provides
   @Singleton
-  Connector getConnector() {
+  Connector getConnector(final Injector injector) {
     final Connector conn = new SelectChannelConnector();
-    conn.setPort(_port);
+    WebAppConfig webAppConfig = injector.getInstance(WebAppConfig.class);
+    conn.setPort(webAppConfig.getPort());
     return conn;
   }
 
   @Provides
   @Singleton
   public Server getServer(final Injector injector, Connector connector) {
+    BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
+    String staticDir = bkConfig.getStaticDirectory();
     Server server = new Server();
     server.addConnector(connector);
     ServletContextHandler servletHandler = new ServletContextHandler();
@@ -71,7 +66,7 @@ public class WebServerModule
 
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
     servletHandler.addServlet(DefaultServlet.class, "/*");
-    servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", _staticDir);
+    servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
 

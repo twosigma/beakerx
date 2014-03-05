@@ -17,7 +17,7 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
+import com.twosigma.beaker.shared.module.config.BeakerConfig;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -53,7 +53,11 @@ import org.json.simple.parser.ParseException;
 @Path("util")
 public class UtilRest {
 
-  public UtilRest() {
+  private final String installDir;
+
+  @Inject
+  public UtilRest(BeakerConfig bkConfig) {
+    this.installDir = bkConfig.getInstallDirectory();
   }
 
   @GET
@@ -126,8 +130,6 @@ public class UtilRest {
     _defaultNotebook = fileName;
   }
 
-  @Inject private @Named("install-dir") String _installDir;
-
   @GET
   @Path("default")
   public String defaultNotebook() {
@@ -139,7 +141,7 @@ public class UtilRest {
     }
     String contents = readFile(new File(fileName));
     if (null == contents) {
-      String defaultDefault = _installDir + "/config/default.bkr";
+      String defaultDefault = this.installDir + "/config/default.bkr";
       contents = readFile(new File(defaultDefault));
       if (null == contents) {
         System.out.println("Double bogey, delivering empty string to client.");
@@ -162,7 +164,7 @@ public class UtilRest {
     if (!configFile.exists()) {
       try {
         PrintWriter out = new PrintWriter(configFile);
-        out.print(readFile(new File(_installDir, "/config/beaker.conf.json")));
+        out.print(readFile(new File(this.installDir, "/config/beaker.conf.json")));
         out.close();
       } catch (FileNotFoundException e) {
         System.out.println("ERROR writing default default, " + e);

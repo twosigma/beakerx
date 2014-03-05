@@ -13,25 +13,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.shared.module.platform;
 
-import com.google.inject.Singleton;
-import java.io.IOException;
+package com.twosigma.beaker.shared.module.basicutils;
+
+import com.google.inject.AbstractModule;
 
 /**
- * BasicUtils
+ * BasicUtilsModule
  *
  */
-@Singleton
-public class BasicUtils {
+public class BasicUtilsModule extends AbstractModule {
 
-  public void openUrl(String url) {
-    boolean onMac = System.getProperty("os.name").equals("Mac OS X");
-    String[] cmd = {onMac ? "open" : "xdg-open", url};
-    try {
-      Runtime.getRuntime().exec(cmd);
-    } catch (IOException e) {
-      System.err.println("error opening url: " + e);
-    }
+  @Override
+  protected void configure() {
+    bind(BasicUtils.class).to(BasicUtilsImpl.class);
   }
+
 }

@@ -75,6 +75,8 @@ public class Main {
     final Boolean useHttps = cliOptions.getUseHttps() != null ?
         cliOptions.getUseHttps() : USE_HTTPS_DEFAULT;
 
+    // create preferences for beaker core from cli options and others
+    // to be used by BeakerCoreConfigModule to initialize its config
     BeakerCoreConfigPref beakerCorePref = createBeakerCoreConfigPref(
         useKerberos,
         portBase,

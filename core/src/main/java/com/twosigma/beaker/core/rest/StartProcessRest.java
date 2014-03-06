@@ -51,7 +51,6 @@ public class StartProcessRest {
   private List<Process> plugins = new ArrayList<>();
   private Map<String, List<String>> _args = new HashMap<>();
   private String _extraRules = "";
-  private String[] _env = null;
   private Map<String, PluginConfig> _plugins;
   private List<String> flags = new ArrayList<>();
   private ObjectMapper _mapper = new ObjectMapper();
@@ -64,6 +63,7 @@ public class StartProcessRest {
   private final String pluginDir;
   private final Integer portBase;
   private final Boolean useKerberos;
+  private final Map<String, String[]> envps;
 
   @Inject
   private StartProcessRest(
@@ -77,6 +77,7 @@ public class StartProcessRest {
     this.pluginDir = bkcConfig.getPluginDirectory();
     this.portBase = bkcConfig.getPortBase();
     this.useKerberos = bkcConfig.getUseKerberos();
+    this.envps = bkcConfig.getPluginEnvps();
 
     // Add shutdown hook
     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -147,10 +148,6 @@ public class StartProcessRest {
       _plugins.put(command, new PluginConfig(i, nginx));
     }
     writePluginConfig();
-  }
-
-  public void setEnv(String[] env) {
-    _env = env;
   }
 
   public void setExtraRules(String rules) {
@@ -246,7 +243,9 @@ public class StartProcessRest {
     command += " " + Integer.toString(port);
 
     System.out.println("starting process " + command);
-    Process proc = Runtime.getRuntime().exec(command, _env);
+
+    String[] env = envps.get(pluginName);
+    Process proc = Runtime.getRuntime().exec(command, env);
 
     InputStreamReader ir;
     if (null == stream) {

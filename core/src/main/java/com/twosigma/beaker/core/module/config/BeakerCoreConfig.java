@@ -26,6 +26,7 @@ public interface BeakerCoreConfig {
   public String getConfigDirectory();
   public String getPluginDirectory();
   public String getNginxPath();
+  public String getNginxExtraRules();
   public Integer getPortBase();
   public Boolean getUseKerberos();
   public String getDefaultNotebookUrl();

@@ -35,6 +35,7 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
   private final String configDir;
   private final String pluginDir;
   private final String nginxPath;
+  private final String nginxExtraRules;
   private final Boolean useKerberos;
   private final Integer portBase;
   private final String defaultNotebookUrl;
@@ -52,6 +53,7 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
     this.configDir = bkConfig.getInstallDirectory() + "/config";
     this.pluginDir = bkConfig.getInstallDirectory() + "/src/main/sh";
     this.nginxPath = "";
+    this.nginxExtraRules = "";
 
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
     final String mainDefaultNotebookPath = bkConfig.getDotDirectory() + "/default.bkr";
@@ -108,6 +110,11 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
   @Override
   public String getNginxPath() {
     return this.nginxPath;
+  }
+
+  @Override
+  public String getNginxExtraRules() {
+    return this.nginxExtraRules;
   }
 
   @Override

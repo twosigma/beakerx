@@ -50,13 +50,13 @@ public class StartProcessRest {
   private OutputLogService _OutputLogService;
   private List<Process> plugins = new ArrayList<>();
   private Map<String, List<String>> _args = new HashMap<>();
-  private String _extraRules = "";
   private Map<String, PluginConfig> _plugins;
   private List<String> flags = new ArrayList<>();
   private ObjectMapper _mapper = new ObjectMapper();
 
   private final String installDir;
   private final String nginxDir;
+  private final String nginxExtraRules;
   private final String staticDir;
   private final String configDir;
   private final String dotDir;
@@ -71,6 +71,7 @@ public class StartProcessRest {
       BeakerCoreConfig bkcConfig) throws IOException {
     this.installDir = bkConfig.getInstallDirectory();
     this.nginxDir = bkcConfig.getNginxPath();
+    this.nginxExtraRules = bkcConfig.getNginxExtraRules();
     this.staticDir = bkConfig.getStaticDirectory();
     this.configDir = bkcConfig.getConfigDirectory();
     this.dotDir = bkConfig.getDotDirectory();
@@ -150,10 +151,6 @@ public class StartProcessRest {
     writePluginConfig();
   }
 
-  public void setExtraRules(String rules) {
-    _extraRules = rules;
-  }
-
   private void addArg(String plugin, String arg) {
     List<String> old = _args.get(plugin);
     if (old == null) {
@@ -176,9 +173,16 @@ public class StartProcessRest {
 
   private void startReverseProxy() throws InterruptedException, IOException {
     String dir = this.dotDir;
-    String[] preCommand = {this.configDir + "/nginx.conf.template", dir,
-      Integer.toString(this.portBase), this.installDir, Boolean.toString(this.useKerberos),
-      this.nginxDir, this.staticDir + "/static", _extraRules};
+    String[] preCommand = {
+      this.configDir + "/nginx.conf.template",
+      dir, // dest_dir
+      Integer.toString(this.portBase), // port_base
+      this.installDir, // install_dir
+      Boolean.toString(this.useKerberos), //
+      this.nginxDir, // nginx_dir
+      this.staticDir + "/static", // static_dir
+      this.nginxExtraRules};
+
     Process preproc = Runtime.getRuntime().exec(preCommand);
     StreamGobbler preErrorGobbler = new StreamGobbler(_OutputLogService, preproc.getErrorStream(), "pre", "stderr", false, null);
     preErrorGobbler.start();

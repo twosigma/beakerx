@@ -53,6 +53,7 @@ public class Main {
     String beakerCore = Platform.getBeakerCoreDirectory();
     processStarter.readPluginConfig(Platform.getConfigDir() + "/plugins");
     processStarter.setPluginLocation("IPython", "src/main/sh");
+    processStarter.setPluginLocation("IRuby", "src/main/sh");
     processStarter.setPluginLocation("Julia", "src/main/sh");
     processStarter.setPluginLocation("R", "src/main/sh");
     processStarter.setPluginLocation("Groovy", "src/main/sh");

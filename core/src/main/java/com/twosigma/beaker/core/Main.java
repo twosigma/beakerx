@@ -24,7 +24,6 @@ import com.twosigma.beaker.core.module.WebServerModule;
 import com.twosigma.beaker.core.module.config.DefaultBeakerCoreConfigModule;
 import com.twosigma.beaker.core.module.config.BeakerCoreConfigPref;
 import com.twosigma.beaker.core.rest.StartProcessRest;
-import com.twosigma.beaker.core.rest.UtilRest;
 import com.twosigma.beaker.shared.module.basicutils.BasicUtils;
 import com.twosigma.beaker.shared.module.basicutils.BasicUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultBeakerConfigModule;
@@ -92,9 +91,7 @@ public class Main {
 
     final StartProcessRest processStarter = injector.getInstance(StartProcessRest.class);
 
-    for (Map.Entry<String, String> e: cliOptions.getPluginOptions().entrySet()) {
-      processStarter.addArg(e.getKey(), e.getValue());
-    }
+
 
     // Add shutdown hook
     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -111,6 +108,10 @@ public class Main {
     processStarter.setPluginLocation("Julia", "src/main/sh");
     processStarter.setPluginLocation("R", "src/main/sh");
     processStarter.setPluginLocation("Groovy", "src/main/sh");
+
+    for (Map.Entry<String, String> e: cliOptions.getPluginOptions().entrySet()) {
+      processStarter.addArg(e.getKey(), e.getValue());
+    }
 
     processStarter.startReverseProxy();
 

@@ -21,7 +21,7 @@ import com.twosigma.beaker.shared.module.GuiceCometdModule;
 import com.twosigma.beaker.core.module.SerializerModule;
 import com.twosigma.beaker.core.module.URLConfigModule;
 import com.twosigma.beaker.core.module.WebServerModule;
-import com.twosigma.beaker.core.module.config.BeakerCoreConfigModule;
+import com.twosigma.beaker.core.module.config.DefaultBeakerCoreConfigModule;
 import com.twosigma.beaker.core.module.config.BeakerCoreConfigPref;
 import com.twosigma.beaker.core.rest.StartProcessRest;
 import com.twosigma.beaker.core.rest.UtilRest;
@@ -30,7 +30,6 @@ import com.twosigma.beaker.shared.module.basicutils.BasicUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultBeakerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -58,7 +57,7 @@ public class Main {
     JerseyLogger.setLevel(Level.OFF);
   }
 
-  private static final Integer DEFAULT_PORT_BASE = 8800;
+  private static final Integer PORT_BASE_START_DEFAULT = 8800;
   private static final Boolean OPEN_BROWSER_DEFAULT = Boolean.TRUE;
   private static final Boolean USE_HTTPS_DEFAULT = Boolean.FALSE;
   private static final Boolean USE_KERBEROS_DEFAULT = Boolean.FALSE;
@@ -69,7 +68,7 @@ public class Main {
     final CliOptions cliOptions = new CliOptions(args);
 
     final Integer portBase = cliOptions.getPortBase() != null ?
-        cliOptions.getPortBase() : findPortBase(DEFAULT_PORT_BASE);
+        cliOptions.getPortBase() : findPortBase(PORT_BASE_START_DEFAULT);
     final Boolean useKerberos = cliOptions.getDisableKerberos() != null ?
         !cliOptions.getDisableKerberos() : USE_KERBEROS_DEFAULT;
     final Boolean openBrowser = cliOptions.getOpenBrowser() != null ?
@@ -78,12 +77,12 @@ public class Main {
         cliOptions.getUseHttps() : USE_HTTPS_DEFAULT;
 
     BeakerCoreConfigPref beakerCorePref =
-        createBeakerCoreConfigPref(useKerberos, portBase);
+        createBeakerCoreConfigPref(useKerberos, portBase, cliOptions.getDefaultNotebookUrl());
     WebAppConfigPref webAppPref = createWebAppConfigPref(portBase + BEAKER_SERVER_PORT_OFFSET);
 
     Injector injector = Guice.createInjector(
         new DefaultBeakerConfigModule(),
-        new BeakerCoreConfigModule(beakerCorePref),
+        new DefaultBeakerCoreConfigModule(beakerCorePref),
         new WebAppConfigModule(webAppPref),
         new BasicUtilsModule(),
         new WebServerModule(),
@@ -92,13 +91,10 @@ public class Main {
         new GuiceCometdModule());
 
     final StartProcessRest processStarter = injector.getInstance(StartProcessRest.class);
-    final UtilRest utilRest = injector.getInstance(UtilRest.class);
 
     for (Map.Entry<String, String> e: cliOptions.getPluginOptions().entrySet()) {
       processStarter.addArg(e.getKey(), e.getValue());
     }
-
-    utilRest.setDefaultNotebook(cliOptions.getDefaultNotebookUrl());
 
     // Add shutdown hook
     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -109,19 +105,6 @@ public class Main {
         System.out.println("done, exiting");
       }
     });
-
-    String dotDir = System.getProperty("user.home") + "/.beaker";
-
-    File dotFile = new File(dotDir);
-    if (!dotFile.exists()) {
-      if (!dotFile.mkdir()) {
-        System.out.println("failed to create " + dotDir);
-      }
-    }
-    processStarter.setDotDir(dotDir);
-    utilRest.setDotDir(dotDir);
-    utilRest.resetConfig();
-
 
     processStarter.readPluginConfig();
     processStarter.setPluginLocation("IPython", "src/main/sh");
@@ -161,7 +144,8 @@ public class Main {
 
   private static BeakerCoreConfigPref createBeakerCoreConfigPref(
       final Boolean useKerberos,
-      final Integer portBase) {
+      final Integer portBase,
+      final String defaultNotebookUrl) {
     return new BeakerCoreConfigPref() {
 
       @Override
@@ -172,6 +156,11 @@ public class Main {
       @Override
       public Integer getPortBase() {
         return portBase;
+      }
+
+      @Override
+      public String getDefaultNotebookUrl() {
+        return defaultNotebookUrl;
       }
     };
   }

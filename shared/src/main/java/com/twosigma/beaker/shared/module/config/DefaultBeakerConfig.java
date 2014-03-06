@@ -16,6 +16,8 @@
 
 package com.twosigma.beaker.shared.module.config;
 
+import java.io.File;
+
 
 /**
  * BeakerConfigImpl
@@ -26,11 +28,20 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String username;
   private final String installDir;
   private final String staticDir;
+  private final String dotDir;
 
   public DefaultBeakerConfig() {
     this.username = System.getProperty("user.name");
     this.installDir = System.getProperty("user.dir");
     this.staticDir = installDir + "/src/main/web";
+    this.dotDir = System.getProperty("user.home") + "/.beaker";
+
+    File dotFile = new File(dotDir);
+    if (!dotFile.exists()) {
+      if (!dotFile.mkdir()) {
+        System.out.println("failed to create " + dotDir);
+      }
+    }
   }
 
   @Override
@@ -46,6 +57,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getStaticDirectory() {
     return this.staticDir;
+  }
+
+  @Override
+  public String getDotDirectory() {
+    return this.dotDir;
   }
 
 }

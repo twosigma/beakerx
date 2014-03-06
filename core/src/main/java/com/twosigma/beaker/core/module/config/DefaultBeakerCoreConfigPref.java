@@ -14,15 +14,27 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.shared.module.config;
+package com.twosigma.beaker.core.module.config;
 
 /**
- * BeakerConfig
+ * DefaultBeakerCoreConfigPref
  *
  */
-public interface BeakerConfig {
-  public String getUsername();
-  public String getInstallDirectory(); // a.k.a beaker core directory
-  public String getStaticDirectory();
-  public String getDotDirectory();
+public class DefaultBeakerCoreConfigPref implements BeakerCoreConfigPref {
+
+  @Override
+  public Boolean getUseKerberos() {
+    return null;
+  }
+
+  @Override
+  public Integer getPortBase() {
+    return null;
+  }
+
+  @Override
+  public String getDefaultNotebookUrl() {
+    return null;
+  }
+
 }

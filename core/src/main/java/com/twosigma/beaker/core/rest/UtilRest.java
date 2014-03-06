@@ -17,6 +17,7 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.core.module.config.BeakerCoreConfig;
 import com.twosigma.beaker.shared.module.config.BeakerConfig;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,11 +54,16 @@ import org.json.simple.parser.ParseException;
 @Path("util")
 public class UtilRest {
 
-  private final String installDir;
+  private final BeakerConfig bkConfig;
+  private final BeakerCoreConfig bkCoreConfig;
 
   @Inject
-  public UtilRest(BeakerConfig bkConfig) {
-    this.installDir = bkConfig.getInstallDirectory();
+  public UtilRest(
+      BeakerConfig bkConfig,
+      BeakerCoreConfig bkCoreConfig) {
+    this.bkConfig = bkConfig;
+    this.bkCoreConfig = bkCoreConfig;
+    resetConfig();
   }
 
   @GET
@@ -118,53 +124,36 @@ public class UtilRest {
     }
     return null;
   }
-  private String _dotDir = null;
-
-  public void setDotDir(String dirName) {
-    _dotDir = dirName;
-  }
-
-  private String _defaultNotebook = null;
-
-  public void setDefaultNotebook(String fileName) {
-    _defaultNotebook = fileName;
-  }
 
   @GET
   @Path("default")
   public String defaultNotebook() {
-    String fileName;
-    if (null == _defaultNotebook) {
-      fileName = _dotDir + "/default.bkr";
-    } else {
-      fileName = _defaultNotebook;
+    String defaultNotebookUrl = this.bkCoreConfig.getDefaultNotebookUrl();
+
+    // TODO, assume default notebook url is a file path for now.
+    File defaultNotebookFile = new File(defaultNotebookUrl);
+
+    if (!defaultNotebookFile.exists()) {
+      System.out.println("Warning, default notebook was not found");
+      return "";
     }
-    String contents = readFile(new File(fileName));
-    if (null == contents) {
-      String defaultDefault = this.installDir + "/config/default.bkr";
-      contents = readFile(new File(defaultDefault));
-      if (null == contents) {
-        System.out.println("Double bogey, delivering empty string to client.");
-        contents = "";
-      } else {
-        try {
-          PrintWriter out = new PrintWriter(fileName);
-          out.print(contents);
-          out.close();
-        } catch (FileNotFoundException e) {
-          System.out.println("ERROR writing default default, " + e);
-        }
-      }
+
+    String content = readFile(defaultNotebookFile);
+    if (content == null) {
+      System.out.println("Warning, default notebook is empty");
+      return "";
     }
-    return clean(contents);
+
+    return clean(content);
   }
 
-  public void resetConfig() {
-    File configFile = new File(_dotDir, "beaker.conf.json");
+  private void resetConfig() {
+    String dotDir = this.bkConfig.getDotDirectory();
+    File configFile = new File(dotDir, "beaker.conf.json");
     if (!configFile.exists()) {
       try {
         PrintWriter out = new PrintWriter(configFile);
-        out.print(readFile(new File(this.installDir, "/config/beaker.conf.json")));
+        out.print(readFile(new File(this.bkConfig.getInstallDirectory(), "/config/beaker.conf.json")));
         out.close();
       } catch (FileNotFoundException e) {
         System.out.println("ERROR writing default default, " + e);
@@ -223,6 +212,7 @@ public class UtilRest {
       throw new RuntimeException("failed getting beaker configurations from config file", e);
     }
   }
+
   private Boolean _isAllowAnonymousTracking = null;
 
   @POST
@@ -240,7 +230,8 @@ public class UtilRest {
       _isAllowAnonymousTracking = null;
     }
 
-    File configFile = new File(_dotDir, "beaker.conf.json");
+    String dotDir = this.bkConfig.getDotDirectory();
+    File configFile = new File(dotDir, "beaker.conf.json");
     try {
       ObjectMapper om = new ObjectMapper();
       TypeReference readType = new TypeReference<HashMap<String, Object>>() {

@@ -22,10 +22,10 @@ import com.google.inject.AbstractModule;
  * BeakerCoreConfigModule
  *
  */
-public class BeakerCoreConfigModule extends AbstractModule {
+public class DefaultBeakerCoreConfigModule extends AbstractModule {
   private final BeakerCoreConfigPref pref;
 
-  public BeakerCoreConfigModule(BeakerCoreConfigPref pref) {
+  public DefaultBeakerCoreConfigModule(BeakerCoreConfigPref pref) {
     //this.pref = pref != null ? pref : new DefaultBeakerCoreConfigPref();
     this.pref = pref;
   }
@@ -33,7 +33,7 @@ public class BeakerCoreConfigModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(BeakerCoreConfigPref.class).toInstance(pref);
-    bind(BeakerCoreConfig.class).to(BeakerCoreConfigImpl.class);
+    bind(BeakerCoreConfig.class).to(DefaultBeakerCoreConfig.class);
   }
 
 }

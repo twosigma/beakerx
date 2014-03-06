@@ -51,7 +51,6 @@ public class StartProcessRest {
   private List<Process> plugins = new ArrayList<>();
   private Map<String, List<String>> _args = new HashMap<>();
   private Map<String, String> _pluginLocations = new HashMap<>();
-  private String _dotDir;
   private String _extraRules = "";
   private String[] _env = null;
   private Map<String, PluginConfig> _plugins;
@@ -62,6 +61,7 @@ public class StartProcessRest {
   private final String nginxDir;
   private final String staticDir;
   private final String configDir;
+  private final String dotDir;
   private final Integer portBase;
   private final Boolean useKerberos;
 
@@ -73,13 +73,14 @@ public class StartProcessRest {
     this.nginxDir = bkcConfig.getNginxPath();
     this.staticDir = bkConfig.getStaticDirectory();
     this.configDir = bkcConfig.getConfigDirectory();
+    this.dotDir = bkConfig.getDotDirectory();
     this.portBase = bkcConfig.getPortBase();
     this.useKerberos = bkcConfig.getUseKerberos();
   }
 
   public void readPluginConfig() throws IOException, FileNotFoundException {
     String defaultFile = this.installDir + "/plugins";
-    File file = new File(_dotDir + "/plugins");
+    File file = new File(this.dotDir + "/plugins");
     TypeReference readType = new TypeReference<HashMap<String, PluginConfig>>() {
     };
     try {
@@ -91,9 +92,8 @@ public class StartProcessRest {
     }
   }
 
-  public void writePluginConfig()
-          throws IOException, FileNotFoundException {
-    File file = new File(_dotDir + "/plugins");
+  public void writePluginConfig() throws IOException, FileNotFoundException {
+    File file = new File(this.dotDir + "/plugins");
     _mapper.writerWithDefaultPrettyPrinter().writeValue(file, _plugins);
   }
 
@@ -129,10 +129,6 @@ public class StartProcessRest {
     writePluginConfig();
   }
 
-  public void setDotDir(String dirName) {
-    _dotDir = dirName;
-  }
-
   public void setEnv(String[] env) {
     _env = env;
   }
@@ -163,7 +159,7 @@ public class StartProcessRest {
 
   public void startReverseProxy()
           throws InterruptedException, IOException {
-    String dir = _dotDir;
+    String dir = this.dotDir;
     String[] preCommand = {this.configDir + "/nginx.conf.template", dir,
       Integer.toString(this.portBase), this.installDir, Boolean.toString(this.useKerberos),
       this.nginxDir, this.staticDir + "/static", _extraRules};

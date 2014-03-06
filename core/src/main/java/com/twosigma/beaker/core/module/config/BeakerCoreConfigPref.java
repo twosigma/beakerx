@@ -23,4 +23,5 @@ package com.twosigma.beaker.core.module.config;
 public interface BeakerCoreConfigPref {
   public Boolean getUseKerberos();
   public Integer getPortBase();
+  public String getDefaultNotebookUrl();
 }

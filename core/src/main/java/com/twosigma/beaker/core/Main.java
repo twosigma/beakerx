@@ -91,18 +91,6 @@ public class Main {
 
     final StartProcessRest processStarter = injector.getInstance(StartProcessRest.class);
 
-    // Add shutdown hook
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      @Override
-      public void run() {
-        System.out.println("\nshutting down beaker");
-        processStarter.shutdownPlugins();
-        System.out.println("done, exiting");
-      }
-    });
-
-    processStarter.readPluginConfig();
-
     for (Map.Entry<String, String> e: cliOptions.getPluginOptions().entrySet()) {
       processStarter.addArg(e.getKey(), e.getValue());
     }

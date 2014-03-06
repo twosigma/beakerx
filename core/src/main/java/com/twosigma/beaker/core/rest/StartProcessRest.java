@@ -68,7 +68,7 @@ public class StartProcessRest {
   @Inject
   private StartProcessRest(
       BeakerConfig bkConfig,
-      BeakerCoreConfig bkcConfig) {
+      BeakerCoreConfig bkcConfig) throws IOException {
     this.installDir = bkConfig.getInstallDirectory();
     this.nginxDir = bkcConfig.getNginxPath();
     this.staticDir = bkConfig.getStaticDirectory();
@@ -77,9 +77,23 @@ public class StartProcessRest {
     this.pluginDir = bkcConfig.getPluginDirectory();
     this.portBase = bkcConfig.getPortBase();
     this.useKerberos = bkcConfig.getUseKerberos();
+
+    // Add shutdown hook
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+      @Override
+      public void run() {
+        System.out.println("\nshutting down beaker");
+        shutdownPlugins();
+        System.out.println("done, exiting");
+      }
+    });
+
+    // Read cached plugin config (e.g. port offset, nginx config)
+    readPluginConfig();
+
   }
 
-  public void readPluginConfig() throws IOException, FileNotFoundException {
+  private void readPluginConfig() throws IOException, FileNotFoundException {
 
     File file = new File(this.dotDir + "/plugins");
     TypeReference readType = new TypeReference<HashMap<String, PluginConfig>>() {};
@@ -147,7 +161,7 @@ public class StartProcessRest {
     old.add(arg);
   }
 
-  public void shutdownPlugins() {
+  private void shutdownPlugins() {
     StreamGobbler.shuttingDown();
     for (Process p : plugins) {
       p.destroy(); // send SIGTERM

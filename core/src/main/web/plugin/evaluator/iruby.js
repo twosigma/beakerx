@@ -31,7 +31,7 @@
   var IRubyProto = {
     pluginName: PLUGIN_NAME,
     cmMode: "ruby",
-    background: "#EAEAFF",
+    background: "#CC342D",
     newShell: function(shellID, cb) {
       // check in kernel table if shellID exists, then do nothing or still callback?
       if (kernels[shellID]) {

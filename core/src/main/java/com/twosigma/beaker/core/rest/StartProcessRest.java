@@ -64,6 +64,7 @@ public class StartProcessRest {
   private final Integer portBase;
   private final Boolean useKerberos;
   private final Map<String, String[]> envps;
+  private final String defaultPluginConfigFile;
 
   @Inject
   private StartProcessRest(
@@ -79,6 +80,7 @@ public class StartProcessRest {
     this.portBase = bkcConfig.getPortBase();
     this.useKerberos = bkcConfig.getUseKerberos();
     this.envps = bkcConfig.getPluginEnvps();
+    this.defaultPluginConfigFile = bkcConfig.getDefaultConfigFile();
 
     // Add shutdown hook
     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -107,8 +109,7 @@ public class StartProcessRest {
     try {
       _plugins = _mapper.readValue(file, readType);
     } catch (FileNotFoundException e) {
-      String defaultFile = this.installDir + "/plugins";
-      file = new File(defaultFile);
+      file = new File(this.defaultPluginConfigFile);
       _plugins = _mapper.readValue(file, readType);
       writePluginConfig();
     }
@@ -181,7 +182,8 @@ public class StartProcessRest {
       Boolean.toString(this.useKerberos), //
       this.nginxDir, // nginx_dir
       this.staticDir + "/static", // static_dir
-      this.nginxExtraRules};
+      this.nginxExtraRules
+    };
 
     Process preproc = Runtime.getRuntime().exec(preCommand);
     StreamGobbler preErrorGobbler = new StreamGobbler(_OutputLogService, preproc.getErrorStream(), "pre", "stderr", false, null);

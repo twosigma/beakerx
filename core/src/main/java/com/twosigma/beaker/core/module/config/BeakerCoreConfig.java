@@ -29,6 +29,7 @@ public interface BeakerCoreConfig {
   public String getNginxExtraRules();
   public Integer getPortBase();
   public Boolean getUseKerberos();
+  public String getDefaultConfigFile();
   public String getDefaultNotebookUrl();
   public Map<String, String> getPluginOptions();
   public Map<String, String[]> getPluginEnvps();

@@ -91,6 +91,11 @@ public class StartProcessRest {
     // Read cached plugin config (e.g. port offset, nginx config)
     readPluginConfig();
 
+    // record plugin options from cli and to pass through to individual plugins
+    for (Map.Entry<String, String> e: bkcConfig.getPluginOptions().entrySet()) {
+      addArg(e.getKey(), e.getValue());
+    }
+
   }
 
   private void readPluginConfig() throws IOException, FileNotFoundException {
@@ -152,7 +157,7 @@ public class StartProcessRest {
     _extraRules = rules;
   }
 
-  public void addArg(String plugin, String arg) {
+  private void addArg(String plugin, String arg) {
     List<String> old = _args.get(plugin);
     if (old == null) {
       old = new ArrayList<>();
@@ -168,8 +173,11 @@ public class StartProcessRest {
     }
   }
 
-  public void startReverseProxy()
-          throws InterruptedException, IOException {
+  public void start() throws InterruptedException, IOException {
+    startReverseProxy();
+  }
+
+  private void startReverseProxy() throws InterruptedException, IOException {
     String dir = this.dotDir;
     String[] preCommand = {this.configDir + "/nginx.conf.template", dir,
       Integer.toString(this.portBase), this.installDir, Boolean.toString(this.useKerberos),

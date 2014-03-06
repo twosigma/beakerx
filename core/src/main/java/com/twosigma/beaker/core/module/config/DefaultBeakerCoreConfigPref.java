@@ -16,6 +16,8 @@
 
 package com.twosigma.beaker.core.module.config;
 
+import java.util.Map;
+
 /**
  * DefaultBeakerCoreConfigPref
  *
@@ -34,6 +36,11 @@ public class DefaultBeakerCoreConfigPref implements BeakerCoreConfigPref {
 
   @Override
   public String getDefaultNotebookUrl() {
+    return null;
+  }
+
+  @Override
+  public Map<String, String> getPluginOptions() {
     return null;
   }
 

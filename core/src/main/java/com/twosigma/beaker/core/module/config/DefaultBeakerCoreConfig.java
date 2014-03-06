@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 /**
  * BeakerCoreConfigImpl
@@ -36,6 +37,7 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
   private final Boolean useKerberos;
   private final Integer portBase;
   private final String defaultNotebookUrl;
+  private final Map<String, String> pluginOptions;
 
   @Inject
   public DefaultBeakerCoreConfig(
@@ -61,6 +63,7 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
           new File(defaultDefaultNotebookPath));
       this.defaultNotebookUrl = mainDefaultNotebookPath;
     }
+    this.pluginOptions = pref.getPluginOptions();
   }
 
   private static void ensureMainDefaultNotebook(
@@ -132,6 +135,11 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
       System.out.println("ERROR reading file" + file.getName() + ": " + e);
     }
     return null;
+  }
+
+  @Override
+  public Map<String, String> getPluginOptions() {
+    return this.pluginOptions;
   }
 
 }

@@ -75,8 +75,12 @@ public class Main {
     final Boolean useHttps = cliOptions.getUseHttps() != null ?
         cliOptions.getUseHttps() : USE_HTTPS_DEFAULT;
 
-    BeakerCoreConfigPref beakerCorePref =
-        createBeakerCoreConfigPref(useKerberos, portBase, cliOptions.getDefaultNotebookUrl());
+    BeakerCoreConfigPref beakerCorePref = createBeakerCoreConfigPref(
+        useKerberos,
+        portBase,
+        cliOptions.getDefaultNotebookUrl(),
+        cliOptions.getPluginOptions());
+
     WebAppConfigPref webAppPref = createWebAppConfigPref(portBase + BEAKER_SERVER_PORT_OFFSET);
 
     Injector injector = Guice.createInjector(
@@ -89,13 +93,8 @@ public class Main {
         new SerializerModule(),
         new GuiceCometdModule());
 
-    final StartProcessRest processStarter = injector.getInstance(StartProcessRest.class);
-
-    for (Map.Entry<String, String> e: cliOptions.getPluginOptions().entrySet()) {
-      processStarter.addArg(e.getKey(), e.getValue());
-    }
-
-    processStarter.startReverseProxy();
+    StartProcessRest processStarter = injector.getInstance(StartProcessRest.class);
+    processStarter.start();
 
     Server server = injector.getInstance(Server.class);
     server.start();
@@ -128,7 +127,8 @@ public class Main {
   private static BeakerCoreConfigPref createBeakerCoreConfigPref(
       final Boolean useKerberos,
       final Integer portBase,
-      final String defaultNotebookUrl) {
+      final String defaultNotebookUrl,
+      final Map<String, String> pluginOptions) {
     return new BeakerCoreConfigPref() {
 
       @Override
@@ -144,6 +144,11 @@ public class Main {
       @Override
       public String getDefaultNotebookUrl() {
         return defaultNotebookUrl;
+      }
+
+      @Override
+      public Map<String, String> getPluginOptions() {
+        return pluginOptions;
       }
     };
   }

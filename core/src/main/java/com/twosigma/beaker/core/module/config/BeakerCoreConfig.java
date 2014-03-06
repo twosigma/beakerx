@@ -16,6 +16,8 @@
 
 package com.twosigma.beaker.core.module.config;
 
+import java.util.Map;
+
 /**
  * BeakerCoreConfig
  *
@@ -27,4 +29,5 @@ public interface BeakerCoreConfig {
   public Integer getPortBase();
   public Boolean getUseKerberos();
   public String getDefaultNotebookUrl();
+  public Map<String, String> getPluginOptions();
 }

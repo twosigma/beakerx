@@ -91,8 +91,6 @@ public class Main {
 
     final StartProcessRest processStarter = injector.getInstance(StartProcessRest.class);
 
-
-
     // Add shutdown hook
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
@@ -104,10 +102,6 @@ public class Main {
     });
 
     processStarter.readPluginConfig();
-    processStarter.setPluginLocation("IPython", "src/main/sh");
-    processStarter.setPluginLocation("Julia", "src/main/sh");
-    processStarter.setPluginLocation("R", "src/main/sh");
-    processStarter.setPluginLocation("Groovy", "src/main/sh");
 
     for (Map.Entry<String, String> e: cliOptions.getPluginOptions().entrySet()) {
       processStarter.addArg(e.getKey(), e.getValue());

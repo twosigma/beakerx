@@ -50,7 +50,6 @@ public class StartProcessRest {
   private OutputLogService _OutputLogService;
   private List<Process> plugins = new ArrayList<>();
   private Map<String, List<String>> _args = new HashMap<>();
-  private Map<String, String> _pluginLocations = new HashMap<>();
   private String _extraRules = "";
   private String[] _env = null;
   private Map<String, PluginConfig> _plugins;
@@ -62,6 +61,7 @@ public class StartProcessRest {
   private final String staticDir;
   private final String configDir;
   private final String dotDir;
+  private final String pluginDir;
   private final Integer portBase;
   private final Boolean useKerberos;
 
@@ -74,25 +74,26 @@ public class StartProcessRest {
     this.staticDir = bkConfig.getStaticDirectory();
     this.configDir = bkcConfig.getConfigDirectory();
     this.dotDir = bkConfig.getDotDirectory();
+    this.pluginDir = bkcConfig.getPluginDirectory();
     this.portBase = bkcConfig.getPortBase();
     this.useKerberos = bkcConfig.getUseKerberos();
   }
 
   public void readPluginConfig() throws IOException, FileNotFoundException {
-    String defaultFile = this.installDir + "/plugins";
+
     File file = new File(this.dotDir + "/plugins");
-    TypeReference readType = new TypeReference<HashMap<String, PluginConfig>>() {
-    };
+    TypeReference readType = new TypeReference<HashMap<String, PluginConfig>>() {};
     try {
       _plugins = _mapper.readValue(file, readType);
     } catch (FileNotFoundException e) {
+      String defaultFile = this.installDir + "/plugins";
       file = new File(defaultFile);
       _plugins = _mapper.readValue(file, readType);
       writePluginConfig();
     }
   }
 
-  public void writePluginConfig() throws IOException, FileNotFoundException {
+  private void writePluginConfig() throws IOException, FileNotFoundException {
     File file = new File(this.dotDir + "/plugins");
     _mapper.writerWithDefaultPrettyPrinter().writeValue(file, _plugins);
   }
@@ -131,10 +132,6 @@ public class StartProcessRest {
 
   public void setEnv(String[] env) {
     _env = env;
-  }
-
-  public void setPluginLocation(String plugin, String location) {
-    _pluginLocations.put(plugin, location);
   }
 
   public void setExtraRules(String rules) {
@@ -183,14 +180,14 @@ public class StartProcessRest {
   @POST
   @Path("runCommand")
   public StringObject runCommand(
-          @FormParam("command") String command,
-          @FormParam("started") String started,
-          @FormParam("stream") String stream,
-          @FormParam("nginx") String nginx,
-          @FormParam("waitfor") String waitfor,
-          @FormParam("record") String recordString,
-          @FormParam("flag") String flag)
-          throws InterruptedException, IOException {
+      @FormParam("command") String command,
+      @FormParam("started") String started,
+      @FormParam("stream") String stream,
+      @FormParam("nginx") String nginx,
+      @FormParam("waitfor") String waitfor,
+      @FormParam("record") String recordString,
+      @FormParam("flag") String flag)
+      throws InterruptedException, IOException {
 
     String name = flag;
     PluginConfig pConfig = _plugins.get(name);
@@ -211,14 +208,12 @@ public class StartProcessRest {
       return new StringObject(("process was already started, not starting another one"));
     }
 
-    String pluginInstallDir;
     int port;
     boolean record = recordString != null && recordString.equals("true");
     String pluginName;
     port = this.portBase + pConfig.portOffset;
     pluginName = name;
-    pluginInstallDir = _pluginLocations.get(pluginName);
-    command = pluginInstallDir + "/" + command;
+    command = this.pluginDir + "/" + command;
 
     List<String> extraArgs = _args.get(pluginName);
     if (extraArgs != null) {

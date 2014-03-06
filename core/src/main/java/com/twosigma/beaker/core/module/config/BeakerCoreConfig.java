@@ -22,6 +22,7 @@ package com.twosigma.beaker.core.module.config;
  */
 public interface BeakerCoreConfig {
   public String getConfigDirectory();
+  public String getPluginDirectory();
   public String getNginxPath();
   public Integer getPortBase();
   public Boolean getUseKerberos();

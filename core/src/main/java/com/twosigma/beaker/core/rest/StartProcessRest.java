@@ -50,7 +50,7 @@ public class StartProcessRest {
   private OutputLogService _OutputLogService;
   private List<Process> plugins = new ArrayList<>();
   private Map<String, List<String>> _args = new HashMap<>();
-  private Map<String, PluginConfig> _plugins;
+  private Map<String, PluginConfig> _plugins = new HashMap<>();
   private List<String> flags = new ArrayList<>();
   private ObjectMapper _mapper = new ObjectMapper();
 
@@ -64,7 +64,6 @@ public class StartProcessRest {
   private final Integer portBase;
   private final Boolean useKerberos;
   private final Map<String, String[]> envps;
-  private final String defaultPluginConfigFile;
 
   @Inject
   private StartProcessRest(
@@ -80,7 +79,6 @@ public class StartProcessRest {
     this.portBase = bkcConfig.getPortBase();
     this.useKerberos = bkcConfig.getUseKerberos();
     this.envps = bkcConfig.getPluginEnvps();
-    this.defaultPluginConfigFile = bkcConfig.getDefaultConfigFile();
 
     // Add shutdown hook
     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -92,27 +90,11 @@ public class StartProcessRest {
       }
     });
 
-    // Read cached plugin config (e.g. port offset, nginx config)
-    readPluginConfig();
-
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, String> e: bkcConfig.getPluginOptions().entrySet()) {
       addArg(e.getKey(), e.getValue());
     }
 
-  }
-
-  private void readPluginConfig() throws IOException, FileNotFoundException {
-
-    File file = new File(this.dotDir + "/plugins");
-    TypeReference readType = new TypeReference<HashMap<String, PluginConfig>>() {};
-    try {
-      _plugins = _mapper.readValue(file, readType);
-    } catch (FileNotFoundException e) {
-      file = new File(this.defaultPluginConfigFile);
-      _plugins = _mapper.readValue(file, readType);
-      writePluginConfig();
-    }
   }
 
   private void writePluginConfig() throws IOException, FileNotFoundException {
@@ -218,19 +200,46 @@ public class StartProcessRest {
     PluginConfig pConfig = _plugins.get(name);
     if (null == pConfig || !nginx.equals(pConfig.nginx)) {
       newPlugin(name, nginx);
-      return new StringObject(("restart"));
-    }
+      pConfig = _plugins.get(name);
 
-    boolean alreadyRan = false;
-    for (String s : flags) {
-      if (s.equals(flag)) {
-        alreadyRan = true;
-        break;
+      String dir = this.dotDir;
+      String[] preCommand = {
+        this.configDir + "/nginx.conf.template",
+        dir, // dest_dir
+        Integer.toString(this.portBase), // port_base
+        this.installDir, // install_dir
+        Boolean.toString(this.useKerberos), //
+        this.nginxDir, // nginx_dir
+        this.staticDir + "/static", // static_dir
+        this.nginxExtraRules
+      };
+
+      Process preproc = Runtime.getRuntime().exec(preCommand);
+      StreamGobbler preErrorGobbler = new StreamGobbler(_OutputLogService, preproc.getErrorStream(), "pre2", "stderr", false, null);
+      preErrorGobbler.start();
+      StreamGobbler preStdoutGobbler = new StreamGobbler(_OutputLogService, preproc.getInputStream(), "pre2", "stdout", false, null);
+      preStdoutGobbler.start();
+      preproc.waitFor();
+
+      Process restartproc = Runtime.getRuntime().exec(this.installDir + "/restart_nginx");
+      StreamGobbler restartErrorGobbler = new StreamGobbler(_OutputLogService, restartproc.getErrorStream(), "pre3", "stderr", false, null);
+      restartErrorGobbler.start();
+      StreamGobbler restartStdoutGobbler = new StreamGobbler(_OutputLogService, restartproc.getInputStream(), "pre3", "stdout", false, null);
+      restartStdoutGobbler.start();
+      restartproc.waitFor();
+    } else {
+
+      boolean alreadyRan = false;
+      for (String s : flags) {
+        if (s.equals(flag)) {
+          alreadyRan = true;
+          break;
+        }
       }
-    }
-    if (alreadyRan) {
-      System.out.println("process was already started, not starting another one: " + command);
-      return new StringObject(("process was already started, not starting another one"));
+      if (alreadyRan) {
+        System.out.println("process was already started, not starting another one: " + command);
+        return new StringObject(("process was already started, not starting another one"));
+      }
     }
 
     int port;

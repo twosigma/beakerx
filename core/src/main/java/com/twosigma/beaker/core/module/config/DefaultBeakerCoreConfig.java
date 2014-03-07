@@ -32,7 +32,6 @@ import java.util.Map;
  */
 public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
 
-  private final String configDir;
   private final String pluginDir;
   private final String nginxPath;
   private final String nginxExtraRules;
@@ -50,9 +49,8 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
 
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
-    this.configDir = bkConfig.getInstallDirectory() + "/config";
     this.pluginDir = bkConfig.getInstallDirectory() + "/src/main/sh";
-    this.nginxPath = "";
+    this.nginxPath = bkConfig.getInstallDirectory() + "/nginx";
     this.nginxExtraRules = "";
 
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
@@ -95,11 +93,6 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
     PrintWriter out = new PrintWriter(to);
     out.print(readFile(from));
     out.close();
-  }
-
-  @Override
-  public String getConfigDirectory() {
-    return this.configDir;
   }
 
   @Override

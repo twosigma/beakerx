@@ -107,9 +107,9 @@ public class StartProcessRest {
     generateNginxConfig();
 
     String dir = this.dotDir;
-    String nginxCommand = !this.nginxDir.isEmpty() ? (this.nginxDir + "/sbin/nginx -p " + dir)
-            : ("nginx/nginx -p " + dir + " -c " + dir + "/conf/nginx.conf");
-
+    String nginxCommand = this.nginxDir + "/nginx";
+    nginxCommand += (" -p " + dir);
+    nginxCommand += (" -c " + dir + "/conf/nginx.conf");
     Process proc = Runtime.getRuntime().exec(nginxCommand);
     StreamGobbler errorGobbler = new StreamGobbler(outputLogService, proc.getErrorStream(), "nginx", "stderr", false, null);
     errorGobbler.start();

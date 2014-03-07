@@ -23,9 +23,8 @@ import java.util.Map;
  *
  */
 public interface BeakerCoreConfig {
-  public String getConfigDirectory();
-  public String getPluginDirectory();
-  public String getNginxPath();
+  public String getPluginDirectory(); // where to find plugin executables or starting scripts
+  public String getNginxPath(); // where to locate nginx executable
   public String getNginxExtraRules();
   public Integer getPortBase();
   public Boolean getUseKerberos();

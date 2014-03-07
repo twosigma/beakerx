@@ -313,6 +313,9 @@
       loadJS: function(url, success) {
         return bkUtils.loadJS(url, success);
       },
+      loadCSS: function(url) {
+        return bkUtils.loadCSS(url);
+      },
       loadList: function(url, success, failure) {
         return bkUtils.loadList(url, success, failure);
       },

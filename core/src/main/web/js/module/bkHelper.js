@@ -194,6 +194,9 @@
       loadJS: function(url, success) {
         return bkCoreManager.loadJS(url, success);
       },
+      loadCSS: function(url) {
+        return bkCoreManager.loadCSS(url);
+      },
       loadList: function(url, success, failure) {
         return bkCoreManager.loadList(url, success, failure);
       },

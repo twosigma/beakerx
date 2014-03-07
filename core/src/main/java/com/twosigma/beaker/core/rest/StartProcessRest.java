@@ -26,6 +26,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +38,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
 /**
  * The RESTful API for starting a process by running command
@@ -52,17 +53,14 @@ public class StartProcessRest {
   private Map<String, List<String>> _args = new HashMap<>();
   private Map<String, PluginConfig> _plugins = new HashMap<>();
   private List<String> flags = new ArrayList<>();
-  private ObjectMapper _mapper = new ObjectMapper();
 
   private final String installDir;
   private final String nginxDir;
   private final String nginxExtraRules;
   private final String staticDir;
-  private final String configDir;
   private final String dotDir;
   private final String pluginDir;
   private final Integer portBase;
-  private final Boolean useKerberos;
   private final Map<String, String[]> envps;
 
   @Inject
@@ -73,11 +71,9 @@ public class StartProcessRest {
     this.nginxDir = bkcConfig.getNginxPath();
     this.nginxExtraRules = bkcConfig.getNginxExtraRules();
     this.staticDir = bkConfig.getStaticDirectory();
-    this.configDir = bkcConfig.getConfigDirectory();
     this.dotDir = bkConfig.getDotDirectory();
     this.pluginDir = bkcConfig.getPluginDirectory();
     this.portBase = bkcConfig.getPortBase();
-    this.useKerberos = bkcConfig.getUseKerberos();
     this.envps = bkcConfig.getPluginEnvps();
 
     // Add shutdown hook
@@ -95,11 +91,6 @@ public class StartProcessRest {
       addArg(e.getKey(), e.getValue());
     }
 
-  }
-
-  private void writePluginConfig() throws IOException, FileNotFoundException {
-    File file = new File(this.dotDir + "/plugins");
-    _mapper.writerWithDefaultPrettyPrinter().writeValue(file, _plugins);
   }
 
   private Boolean portOffsetFree(int portOffset) {
@@ -131,7 +122,7 @@ public class StartProcessRest {
       }
       _plugins.put(command, new PluginConfig(i, nginx));
     }
-    writePluginConfig();
+
   }
 
   private void addArg(String plugin, String arg) {
@@ -156,23 +147,7 @@ public class StartProcessRest {
 
   private void startReverseProxy() throws InterruptedException, IOException {
     String dir = this.dotDir;
-    String[] preCommand = {
-      this.configDir + "/nginx.conf.template",
-      dir, // dest_dir
-      Integer.toString(this.portBase), // port_base
-      this.installDir, // install_dir
-      Boolean.toString(this.useKerberos), //
-      this.nginxDir, // nginx_dir
-      this.staticDir + "/static", // static_dir
-      this.nginxExtraRules
-    };
-
-    Process preproc = Runtime.getRuntime().exec(preCommand);
-    StreamGobbler preErrorGobbler = new StreamGobbler(_OutputLogService, preproc.getErrorStream(), "pre", "stderr", false, null);
-    preErrorGobbler.start();
-    StreamGobbler preStdoutGobbler = new StreamGobbler(_OutputLogService, preproc.getInputStream(), "pre", "stdout", false, null);
-    preStdoutGobbler.start();
-    preproc.waitFor();
+    generateNginxConfig();
 
     String nginxCommand = !this.nginxDir.isEmpty() ? (this.nginxDir + "/sbin/nginx -p " + dir)
             : ("nginx/nginx -p " + dir + " -c " + dir + "/conf/nginx.conf");
@@ -183,6 +158,126 @@ public class StartProcessRest {
     stdoutGobbler.start();
     plugins.add(proc);
   }
+
+  private void generateNginxConfig() throws IOException, InterruptedException {
+
+    File confDir = new File(this.dotDir, "conf");
+    File logDir = new File(this.dotDir, "logs");
+    File nginxClientTempDir = new File(this.dotDir, "nginx_client_temp");
+    File htmlDir = new File(this.dotDir, "html");
+
+    if (!confDir.exists()) {
+      confDir.mkdirs();
+    }
+    if (!logDir.exists()) {
+      logDir.mkdirs();
+    }
+    if (!nginxClientTempDir.exists()) {
+      nginxClientTempDir.mkdirs();
+    }
+    if (htmlDir.exists()) {
+      Files.delete(htmlDir.toPath());
+    }
+    Files.createSymbolicLink(
+        htmlDir.toPath(),
+        new File(this.staticDir + "/static").toPath());
+
+    String ngixConfig = NGINX_TEMPLATE;
+    StringBuilder pluginSection = new StringBuilder();
+    for (Map.Entry<String, PluginConfig> e : _plugins.entrySet()) {
+      Integer portOffset = e.getValue().getPortOffset();
+      String nginxRule = e.getValue().getNginx().replace("%(port)s", Integer.toString(this.portBase + portOffset));
+      pluginSection.append(nginxRule);
+    }
+    ngixConfig = ngixConfig.replace("%(plugin_section)s", pluginSection.toString());
+    ngixConfig = ngixConfig.replace("%(extra_rules)s", this.nginxExtraRules);
+    ngixConfig = ngixConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
+    ngixConfig = ngixConfig.replace("%(install_dir)s", this.installDir);
+    ngixConfig = ngixConfig.replace("%(dest_dir)s", this.dotDir);
+    ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
+    ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.portBase + 2));
+    ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.portBase + 1));
+    ngixConfig = ngixConfig.replace("%(client_temp_dir)s", this.dotDir + "/nginx_client_temp");
+
+    // write template to file
+    System.out.println("Regenerate conf/nginx.conf");
+    File targetFile = new File(this.dotDir, "conf/nginx.conf");
+    if (targetFile.exists()) {
+      Files.delete(targetFile.toPath());
+    }
+    PrintWriter out = new PrintWriter(targetFile);
+    out.print(ngixConfig);
+    out.close();
+  }
+
+  // TODO, load the template from a file
+  private static final String NGINX_TEMPLATE =
+"worker_processes  1;\n" +
+"daemon off;\n" +
+"\n" +
+"#debug level logging is quite voluminous\n" +
+"#error_log  stderr  debug;\n" +
+"error_log  stderr  error;\n" +
+"\n" +
+"pid nginx.pid;\n" +
+"\n" +
+"events {\n" +
+"    worker_connections  1024;\n" +
+"}\n" +
+"\n" +
+"http {\n" +
+"    default_type  application/octet-stream;\n" +
+"    types_hash_max_size 2048;\n" +
+"\n" +
+"\n" +
+"#    turn this on for debugging\n" +
+"#    access_log access.log;\n" +
+"    access_log off;\n" +
+"\n" +
+"    sendfile        on;\n" +
+"\n" +
+"    # i tried setting to 0 and removing the keepalive timer from the ipython client.\n" +
+"    # but it did not fix the problem.\n" +
+"    #keepalive_timeout  0;\n" +
+"    keepalive_timeout  1000;\n" +
+"    proxy_read_timeout 1000000;\n" +
+"\n" +
+"    server {\n" +
+"\n" +
+"# Exactly one of the two following sections should be active.\n" +
+"\n" +
+"# https\n" +
+"#        listen       %(port_main)s ssl;\n" +
+"#        server_name  localhost;\n" +
+"#        ssl_certificate %(host)s.cer;\n" +
+"#        ssl_certificate_key %(host)s.key;\n" +
+"         client_max_body_size 100M;\n" +
+"         client_body_temp_path %(client_temp_dir)s;\n" +
+"         proxy_temp_path %(client_temp_dir)s;\n" +
+"         fastcgi_temp_path %(client_temp_dir)s;\n" +
+"         uwsgi_temp_path %(client_temp_dir)s;\n" +
+"         scgi_temp_path %(client_temp_dir)s;\n" +
+"\n" +
+"\n" +
+"# kerberos\n" +
+"        listen       %(port_clear)s;\n" +
+"\n" +
+"        # redirect server error pages to the static page /50x.html\n" +
+"        #\n" +
+"        # html directory is missing now XXX\n" +
+"        # this is also a problem for favicon XXX\n" +
+"        error_page   500 502 503 504  /50x.html;\n" +
+"        location = /50x.html {\n" +
+"            root   html;\n" +
+"        }\n" +
+"\n" +
+"    location /beaker/ {\n" +
+"        proxy_pass http://127.0.0.1:%(port_beaker)s/;\n" +
+"        }\n" +
+"        %(plugin_section)s\n" +
+"        %(extra_rules)s\n" +
+"    }\n" +
+"}\n";
 
   @POST
   @Path("runCommand")
@@ -202,24 +297,7 @@ public class StartProcessRest {
       newPlugin(name, nginx);
       pConfig = _plugins.get(name);
 
-      String dir = this.dotDir;
-      String[] preCommand = {
-        this.configDir + "/nginx.conf.template",
-        dir, // dest_dir
-        Integer.toString(this.portBase), // port_base
-        this.installDir, // install_dir
-        Boolean.toString(this.useKerberos), //
-        this.nginxDir, // nginx_dir
-        this.staticDir + "/static", // static_dir
-        this.nginxExtraRules
-      };
-
-      Process preproc = Runtime.getRuntime().exec(preCommand);
-      StreamGobbler preErrorGobbler = new StreamGobbler(_OutputLogService, preproc.getErrorStream(), "pre2", "stderr", false, null);
-      preErrorGobbler.start();
-      StreamGobbler preStdoutGobbler = new StreamGobbler(_OutputLogService, preproc.getInputStream(), "pre2", "stdout", false, null);
-      preStdoutGobbler.start();
-      preproc.waitFor();
+      generateNginxConfig();
 
       Process restartproc = Runtime.getRuntime().exec(this.installDir + "/restart_nginx");
       StreamGobbler restartErrorGobbler = new StreamGobbler(_OutputLogService, restartproc.getErrorStream(), "pre3", "stderr", false, null);

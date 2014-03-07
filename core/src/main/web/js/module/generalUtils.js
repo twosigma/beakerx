@@ -50,7 +50,7 @@
         }
         document.head.appendChild(e);
       },
-      loadCss: function(url) {
+      loadCSS: function(url) {
         var link = document.createElement("link");
         link.type = "text/css";
         link.rel = "stylesheet";

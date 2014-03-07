@@ -42,6 +42,7 @@
           "Groovy": "./plugin/evaluator/groovy.js",
           "JavaScript": "./plugin/evaluator/javaScript.js",
           "Latex": "./plugin/evaluator/latex.js",
+          "Node": "./plugin/evaluator/node.js",
           "Html": "./plugin/evaluator/html.js"
         };
         var knownEvaluators = [
@@ -49,6 +50,7 @@
           {name: "Julia"},
           {name: "R"},
           {name: "Groovy"},
+          {name: "Node"},
           {name: "Html"},
           {name: "JavaScript"},
           {name: "Latex"}

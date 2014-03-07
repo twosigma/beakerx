@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.google.inject.Inject;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
@@ -25,7 +26,11 @@ import com.twosigma.beaker.jvm.updater.UpdateManager;
 public class SimpleEvaluationObjectSerializer
         extends JsonSerializer<SimpleEvaluationObject> {
 
-  public SimpleEvaluationObjectSerializer() {
+  private final UpdateManager um;
+
+  @Inject
+  public SimpleEvaluationObjectSerializer(UpdateManager um) {
+    this.um = um;
   }
 
   @Override
@@ -33,9 +38,8 @@ public class SimpleEvaluationObjectSerializer
           JsonGenerator jgen,
           SerializerProvider provider)
           throws IOException, JsonProcessingException {
-    UpdateManager um = UpdateManager.getInstance();
     synchronized (value) {
-      String id = um.register(value);
+      String id = this.um.register(value);
       jgen.writeStartObject();
       jgen.writeObjectField("update_id", id);
       jgen.writeObjectField("expression", value.getExpression());

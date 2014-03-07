@@ -20,34 +20,25 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.google.common.collect.HashBiMap;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.BayeuxServer.SubscriptionListener;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
 import org.cometd.bayeux.server.ServerSession;
 
-
-public class UpdateManager
-        implements SubscriptionListener {
+@Singleton
+public class UpdateManager implements SubscriptionListener {
 
   private static final Pattern PATTERN = Pattern.compile("^/object_update/((\\w|-)+)$");
-  private static final UpdateManager INSTANCE;
 
-  @Inject private BayeuxServer _bayeuxServer;
-
-  static {
-    INSTANCE = new UpdateManager();
-  }
   private final HashBiMap<String, Object> _idToObject;
   private final LocalSession _localSession;
 
-  public static UpdateManager getInstance() {
-    return INSTANCE;
-  }
-
-  private UpdateManager() {
-    _bayeuxServer.addListener(this);
-    _localSession = _bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
+  @Inject
+  private UpdateManager(BayeuxServer bayeuxServer) {
+    bayeuxServer.addListener(this);
+    _localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
     _localSession.handshake();
     _idToObject = HashBiMap.<String, Object>create();
   }

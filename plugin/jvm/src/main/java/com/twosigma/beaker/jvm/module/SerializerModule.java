@@ -28,6 +28,7 @@ import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.TableDisplaySerializer;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.ImageIconSerializer;
+import com.twosigma.beaker.jvm.updater.UpdateManager;
 import javax.swing.ImageIcon;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
@@ -43,6 +44,7 @@ public class SerializerModule
 
   @Override
   protected void configure() {
+    bind(UpdateManager.class).asEagerSingleton();
     bind(SimpleEvaluationObjectSerializer.class);
     bind(EvaluationResultSerializer.class);
     bind(TableDisplaySerializer.class);
@@ -57,7 +59,8 @@ public class SerializerModule
             new SimpleModule("MySerializer", new Version(1, 0, 0, null));
 
     module.addSerializer(StringObject.class, new StringObjectSerializer());
-    module.addSerializer(SimpleEvaluationObject.class, new SimpleEvaluationObjectSerializer());
+    SimpleEvaluationObjectSerializer seos = injector.getInstance(SimpleEvaluationObjectSerializer.class);
+    module.addSerializer(SimpleEvaluationObject.class, seos);
     module.addSerializer(EvaluationResult.class, new EvaluationResultSerializer());
     module.addSerializer(TableDisplay.class, new TableDisplaySerializer());
     module.addSerializer(ImageIcon.class, new ImageIconSerializer());

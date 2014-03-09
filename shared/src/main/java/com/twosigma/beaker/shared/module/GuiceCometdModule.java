@@ -33,8 +33,7 @@ import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.JacksonJSONContextServer;
 
 // Should load from cometd-contrib
-public class GuiceCometdModule
-        extends AbstractModule {
+public class GuiceCometdModule extends AbstractModule {
 
   @Override
   protected final void configure() {

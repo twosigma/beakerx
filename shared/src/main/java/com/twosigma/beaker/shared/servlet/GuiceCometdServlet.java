@@ -20,7 +20,6 @@ import javax.servlet.ServletException;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
 import org.cometd.annotation.AnnotationCometdServlet;
 import org.cometd.annotation.ServerAnnotationProcessor;
 import org.cometd.bayeux.server.BayeuxServer;

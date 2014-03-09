@@ -162,7 +162,6 @@ public class StartProcessRest {
     }
 
     boolean record = recordString != null && recordString.equals("true");
-    int port = this.portBase + pConfig.portOffset;
     command = this.pluginDir + "/" + command;
 
     List<String> extraArgs = pluginArgs.get(pluginName);
@@ -171,7 +170,7 @@ public class StartProcessRest {
         command += " " + s;
       }
     }
-    command += " " + Integer.toString(port);
+    command += " " + Integer.toString(pConfig.port);
 
     System.out.println("starting process " + command);
 
@@ -244,8 +243,7 @@ public class StartProcessRest {
     String ngixConfig = nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();
     for (PluginConfig pConfig : plugins.values()) {
-      Integer portOffset = pConfig.getPortOffset();
-      String nginxRule = pConfig.getNginxRules().replace("%(port)s", Integer.toString(this.portBase + portOffset));
+      String nginxRule = pConfig.getNginxRules().replace("%(port)s", Integer.toString(pConfig.getPort()));
       pluginSection.append(nginxRule);
     }
     ngixConfig = ngixConfig.replace("%(plugin_section)s", pluginSection.toString());
@@ -282,17 +280,17 @@ public class StartProcessRest {
 
   private static class PluginConfig {
 
-    private final int portOffset;
+    private final int port;
     private final String nginxRules;
     private Process proc;
 
-    PluginConfig(int portOffset, String nginxRules) {
-      this.portOffset = portOffset;
+    PluginConfig(int port, String nginxRules) {
+      this.port = port;
       this.nginxRules = nginxRules;
     }
 
-    int getPortOffset() {
-      return this.portOffset;
+    int getPort() {
+      return this.port;
     }
 
     String getNginxRules() {

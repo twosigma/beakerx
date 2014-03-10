@@ -263,6 +263,8 @@ public class StartProcessRest {
       return new StringObject(("done"));
     }
 
+    command = "python " + command;
+
     System.out.println("starting process " + command);
     Process proc = Runtime.getRuntime().exec(command, _env);
 

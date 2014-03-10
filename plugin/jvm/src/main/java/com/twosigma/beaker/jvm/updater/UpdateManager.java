@@ -35,8 +35,7 @@ public class UpdateManager implements SubscriptionListener {
   private final HashBiMap<String, Object> _idToObject;
   private final LocalSession _localSession;
 
-  @Inject
-  private UpdateManager(BayeuxServer bayeuxServer) {
+  public UpdateManager(BayeuxServer bayeuxServer) {
     bayeuxServer.addListener(this);
     _localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
     _localSession.handshake();

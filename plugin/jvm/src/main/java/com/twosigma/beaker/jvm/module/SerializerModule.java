@@ -35,6 +35,7 @@ import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
+import org.cometd.bayeux.server.BayeuxServer;
 
 /**
  * The Guice module as the registry of mapping from classes to serializers
@@ -44,10 +45,16 @@ public class SerializerModule
 
   @Override
   protected void configure() {
-    bind(UpdateManager.class).asEagerSingleton();
     bind(SimpleEvaluationObjectSerializer.class);
     bind(EvaluationResultSerializer.class);
     bind(TableDisplaySerializer.class);
+  }
+
+  @Provides
+  @Singleton
+  public UpdateManager getUpdateManager(Injector injector) {
+    BayeuxServer bayeuxServer = injector.getInstance(BayeuxServer.class);
+    return new UpdateManager(bayeuxServer);
   }
 
   @Provides

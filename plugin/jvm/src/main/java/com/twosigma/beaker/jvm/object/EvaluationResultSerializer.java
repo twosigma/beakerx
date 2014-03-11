@@ -22,13 +22,16 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-public class EvaluationResultSerializer
-        extends JsonSerializer<EvaluationResult> {
+public class EvaluationResultSerializer extends JsonSerializer<EvaluationResult> {
 
   @Override
-  public void serialize(EvaluationResult evalResult, JsonGenerator jgen, SerializerProvider sp)
-          throws IOException, JsonProcessingException {
+  public void serialize(
+      EvaluationResult evalResult,
+      JsonGenerator jgen,
+      SerializerProvider sp) throws IOException, JsonProcessingException {
+
     Object obj = evalResult.getValue();
     SerializeUtils.writeObject(obj, jgen);
+
   }
 }

@@ -36,7 +36,7 @@ public class ImageIconSerializer extends JsonSerializer<ImageIcon> {
 
   @Override
   public void serialize(ImageIcon value, JsonGenerator jgen, SerializerProvider provider)
-          throws IOException, JsonProcessingException {
+      throws IOException, JsonProcessingException {
 
     synchronized (value) {
 
@@ -53,6 +53,7 @@ public class ImageIconSerializer extends JsonSerializer<ImageIcon> {
       jgen.writeObjectField("type", value.getClass().getSimpleName());
       jgen.writeObjectField("imageData", dataToEncode);
       jgen.writeEndObject();
+      
     }
   }
 }

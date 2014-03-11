@@ -29,14 +29,15 @@ public class TableDisplaySerializer
 
   @Override
   public void serialize(TableDisplay value,
-          JsonGenerator jgen,
-          SerializerProvider provider)
-          throws IOException, JsonProcessingException {
+      JsonGenerator jgen,
+      SerializerProvider provider)
+      throws IOException, JsonProcessingException {
+
     jgen.writeStartObject();
     jgen.writeObjectField("type", "TableDisplay");
     jgen.writeObjectField("columnNames", value.columns);
     jgen.writeObjectField("values", value.values);
-    // there is an optional field timeStrings XXX
     jgen.writeEndObject();
+
   }
 }

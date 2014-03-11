@@ -24,14 +24,13 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-public class SimpleEvaluationObjectSerializer
-        extends JsonSerializer<SimpleEvaluationObject> {
+public class SimpleEvaluationObjectSerializer extends JsonSerializer<SimpleEvaluationObject> {
 
   private final Provider<UpdateManager> updateManagerProvider;
 
   @Inject
-  public SimpleEvaluationObjectSerializer(Provider<UpdateManager> um) {
-    this.updateManagerProvider = um;
+  public SimpleEvaluationObjectSerializer(Provider<UpdateManager> ump) {
+    this.updateManagerProvider = ump;
   }
 
   private UpdateManager getUpdateManager() {
@@ -40,9 +39,10 @@ public class SimpleEvaluationObjectSerializer
 
   @Override
   public void serialize(SimpleEvaluationObject value,
-          JsonGenerator jgen,
-          SerializerProvider provider)
-          throws IOException, JsonProcessingException {
+      JsonGenerator jgen,
+      SerializerProvider provider)
+      throws IOException, JsonProcessingException {
+
     synchronized (value) {
       String id = getUpdateManager().register(value);
       jgen.writeStartObject();
@@ -52,5 +52,6 @@ public class SimpleEvaluationObjectSerializer
       jgen.writeObjectField("result", value.getResult());
       jgen.writeEndObject();
     }
+
   }
 }

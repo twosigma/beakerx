@@ -22,55 +22,53 @@ import org.codehaus.jackson.annotate.JsonProperty;
 /**
  * Abstraction around an evaluation, for communication of the state over REST to the plugin.
  */
-public class SimpleEvaluationObject
-        extends Observable {
+public class SimpleEvaluationObject extends Observable {
 
-  private EvaluationStatus _status;
-  private EvaluationResult _result;
-  private final String _expression;
+  private EvaluationStatus status;
+  private EvaluationResult result;
+  private final String expression;
 
   public SimpleEvaluationObject(String expression) {
-    _expression = expression;
-    _status = EvaluationStatus.QUEUED;
+    this.expression = expression;
+    this.status = EvaluationStatus.QUEUED;
   }
 
   public synchronized void started() {
-    _status = EvaluationStatus.RUNNING;
+    this.status = EvaluationStatus.RUNNING;
     setChanged();
     notifyObservers();
   }
 
   public synchronized void finished(Object result) {
-    _status = EvaluationStatus.FINISHED;
-    _result = new EvaluationResult(result);
+    this.status = EvaluationStatus.FINISHED;
+    this.result = new EvaluationResult(result);
     setChanged();
     notifyObservers();
   }
 
   public synchronized void error(Object result) {
-    _status = EvaluationStatus.ERROR;
-    _result = new EvaluationResult(result);
+    this.status = EvaluationStatus.ERROR;
+    this.result = new EvaluationResult(result);
     setChanged();
     notifyObservers();
   }
 
   @JsonProperty("expression")
   public String getExpression() {
-    return _expression;
+    return this.expression;
   }
 
   @JsonProperty("status")
   public synchronized EvaluationStatus getStatus() {
-    return _status;
+    return this.status;
   }
 
   @JsonProperty("result")
   public synchronized EvaluationResult getResult() {
-    return _result;
+    return this.result;
   }
 
   public static enum EvaluationStatus {
-
     QUEUED, RUNNING, FINISHED, ERROR
   }
 }

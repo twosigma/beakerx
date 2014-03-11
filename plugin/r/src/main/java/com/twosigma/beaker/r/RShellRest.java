@@ -62,6 +62,7 @@ public class RShellRest {
   private static String endMagic = "**beaker_end_magic**";
   private final Map<String, RConnection> _shells = new HashMap<String, RConnection>();
   private ROutputHandler _rOutputHandler = null;
+    private RConnection _con = null;
 
   public RShellRest()
           throws IOException, RserveException {
@@ -250,6 +251,7 @@ public class RShellRest {
     RConnection con = getEvaluator(shellID);
     String dotDir = System.getProperty("user.home") + "/.beaker";
     String file = dotDir + "/rplot.svg";
+    file = "rplot.svg"; // XXX hack, something about the windows file path crashes R.
     try {
       java.nio.file.Path p = java.nio.file.Paths.get(file);
       java.nio.file.Files.deleteIfExists(p);
@@ -320,9 +322,14 @@ public class RShellRest {
   }
 
   private void newEvaluator(String id) {
+      if (_con != null) {
+	  _shells.put(id, _con);
+	  return;
+      }
     try {
       RConnection con = new RConnection();
       _shells.put(id, con);
+      _con = con;
     } catch (RserveException e) {
       System.out.println("RserveException");
     }

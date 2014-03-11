@@ -19,7 +19,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.google.common.collect.HashBiMap;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,25 +33,28 @@ public class UpdateManager implements SubscriptionListener {
 
   private static final Pattern PATTERN = Pattern.compile("^/object_update/((\\w|-)+)$");
 
-  private final HashBiMap<String, Object> _idToObject;
-  private final LocalSession _localSession;
-  private final List<Updater> _updaters;
+  private final HashBiMap<String, Object> idToObject;
+  private final LocalSession localSession;
+  private final List<Updater> updaters;
 
   public UpdateManager(BayeuxServer bayeuxServer) {
     bayeuxServer.addListener(this);
-    _localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
-    _localSession.handshake();
-    _idToObject = HashBiMap.<String, Object>create();
-    _updaters = new ArrayList<>();
-    _updaters.add(new ObservableUpdater());
+    this.localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
+    this.localSession.handshake();
+    this.idToObject = HashBiMap.<String, Object>create();
+    this.updaters = new ArrayList<>();
+  }
+
+  public void addUpdater(Updater updater) {
+    this.updaters.add(updater);
   }
 
   public String register(Object obj) {
-    if (_idToObject.containsValue(obj)) {
-      return _idToObject.inverse().get(obj);
+    if (idToObject.containsValue(obj)) {
+      return idToObject.inverse().get(obj);
     }
     String id = UUID.randomUUID().toString();
-    _idToObject.put(id, obj);
+    this.idToObject.put(id, obj);
     return id;
   }
 
@@ -70,9 +72,9 @@ public class UpdateManager implements SubscriptionListener {
     if (id == null) {
       return;
     }
-    if (_idToObject.containsKey(id)) {
-      Object obj = _idToObject.get(id);
-      Updater updater = getUpdater(session, _localSession, channel.getId(), obj);
+    if (this.idToObject.containsKey(id)) {
+      Object obj = this.idToObject.get(id);
+      Updater updater = getUpdater(session, this.localSession, channel.getId(), obj);
       updater.deliverUpdate(obj);
     } else {
       System.out.println("Client is trying to subscribe to nonexisting object " + id);
@@ -85,11 +87,11 @@ public class UpdateManager implements SubscriptionListener {
     if (id == null) {
       return;
     }
-    _idToObject.remove(id);
+    this.idToObject.remove(id);
   }
 
   private Updater getUpdater(ServerSession session, LocalSession localSession, String channelId, Object updatingObject) {
-    for (Updater u : _updaters) {
+    for (Updater u : this.updaters) {
       if (u.isApplicable(updatingObject)) {
         return u.getInstance(session, localSession, channelId, updatingObject);
       }

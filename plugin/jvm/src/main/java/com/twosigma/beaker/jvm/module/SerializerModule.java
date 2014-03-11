@@ -28,7 +28,11 @@ import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.TableDisplaySerializer;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.ImageIconSerializer;
+import com.twosigma.beaker.jvm.updater.ObservableUpdater;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
+import com.twosigma.beaker.jvm.updater.Updater;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.ImageIcon;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
@@ -54,7 +58,9 @@ public class SerializerModule
   @Singleton
   public UpdateManager getUpdateManager(Injector injector) {
     BayeuxServer bayeuxServer = injector.getInstance(BayeuxServer.class);
-    return new UpdateManager(bayeuxServer);
+    UpdateManager updateManager = new UpdateManager(bayeuxServer);
+    updateManager.addUpdater(new ObservableUpdater());
+    return updateManager;
   }
 
   @Provides

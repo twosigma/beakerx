@@ -15,9 +15,17 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.twosigma.beaker.jvm.updater.UpdateManager;
+import java.io.IOException;
 import java.util.Observable;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 
 /**
  * Abstraction around an evaluation, for communication of the state over REST to the plugin.
@@ -70,5 +78,37 @@ public class SimpleEvaluationObject extends Observable {
 
   public static enum EvaluationStatus {
     QUEUED, RUNNING, FINISHED, ERROR
+  }
+
+  public static class Serializer extends JsonSerializer<SimpleEvaluationObject> {
+
+    private final Provider<UpdateManager> updateManagerProvider;
+
+    @Inject
+    private Serializer(Provider<UpdateManager> ump) {
+      this.updateManagerProvider = ump;
+    }
+
+    private UpdateManager getUpdateManager() {
+      return this.updateManagerProvider.get();
+    }
+
+    @Override
+    public void serialize(SimpleEvaluationObject value,
+        JsonGenerator jgen,
+        SerializerProvider provider)
+        throws IOException, JsonProcessingException {
+
+      synchronized (value) {
+        String id = getUpdateManager().register(value);
+        jgen.writeStartObject();
+        jgen.writeObjectField("update_id", id);
+        jgen.writeObjectField("expression", value.getExpression());
+        jgen.writeObjectField("status", value.getStatus());
+        jgen.writeObjectField("result", value.getResult());
+        jgen.writeEndObject();
+      }
+
+    }
   }
 }

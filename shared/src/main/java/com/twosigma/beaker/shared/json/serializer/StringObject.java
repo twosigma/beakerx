@@ -15,18 +15,37 @@
  */
 package com.twosigma.beaker.shared.json.serializer;
 
+import java.io.IOException;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
+
 /**
  * A thin wrapper for java String for serializing a String as a JSON object
  */
 public class StringObject {
 
-  private final String _s;
+  private final String string;
 
   public StringObject(String s) {
-    _s = s;
+    this.string = s;
   }
 
   public String getText() {
-    return _s;
+    return this.string;
+  }
+
+  public class Serializer extends JsonSerializer<StringObject> {
+
+    @Override
+    public void serialize(StringObject value, JsonGenerator jgen, SerializerProvider provider)
+        throws IOException, JsonProcessingException {
+      synchronized (value) {
+        jgen.writeStartObject();
+        jgen.writeObjectField("value", value.getText());
+        jgen.writeEndObject();
+      }
+    }
   }
 }

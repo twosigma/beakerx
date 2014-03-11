@@ -15,6 +15,12 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import java.io.IOException;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
+
 public class EvaluationResult {
 
   private final Object value;
@@ -25,5 +31,19 @@ public class EvaluationResult {
 
   public Object getValue() {
     return this.value;
+  }
+
+  public static class Serializer extends JsonSerializer<EvaluationResult> {
+
+    @Override
+    public void serialize(
+        EvaluationResult evalResult,
+        JsonGenerator jgen,
+        SerializerProvider sp) throws IOException, JsonProcessingException {
+
+      Object obj = evalResult.getValue();
+      SerializeUtils.writeObject(obj, jgen);
+
+    }
   }
 }

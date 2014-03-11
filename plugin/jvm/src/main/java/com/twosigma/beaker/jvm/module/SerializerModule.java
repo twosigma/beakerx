@@ -20,12 +20,8 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
-import com.twosigma.beaker.shared.json.serializer.StringObjectSerializer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObjectSerializer;
-import com.twosigma.beaker.jvm.object.EvaluationResultSerializer;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
-import com.twosigma.beaker.jvm.object.TableDisplaySerializer;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.ImageIconSerializer;
 import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
@@ -46,7 +42,11 @@ public class SerializerModule
 
   @Override
   protected void configure() {
-    bind(SimpleEvaluationObjectSerializer.class);
+    bind(SimpleEvaluationObject.Serializer.class);
+    bind(EvaluationResult.Serializer.class);
+    bind(TableDisplay.Serializer.class);
+    bind(StringObject.Serializer.class);
+    bind(ImageIconSerializer.class);
   }
 
   @Provides
@@ -66,12 +66,11 @@ public class SerializerModule
     SimpleModule module =
             new SimpleModule("MySerializer", new Version(1, 0, 0, null));
 
-    module.addSerializer(StringObject.class, new StringObjectSerializer());
-    SimpleEvaluationObjectSerializer seos = injector.getInstance(SimpleEvaluationObjectSerializer.class);
-    module.addSerializer(SimpleEvaluationObject.class, seos);
-    module.addSerializer(EvaluationResult.class, new EvaluationResultSerializer());
-    module.addSerializer(TableDisplay.class, new TableDisplaySerializer());
-    module.addSerializer(ImageIcon.class, new ImageIconSerializer());
+    module.addSerializer(SimpleEvaluationObject.class, injector.getInstance(SimpleEvaluationObject.Serializer.class));
+    module.addSerializer(EvaluationResult.class, injector.getInstance(EvaluationResult.Serializer.class));
+    module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
+    module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
+    module.addSerializer(ImageIcon.class, injector.getInstance(ImageIconSerializer.class));
 
     mapper.registerModule(module);
 

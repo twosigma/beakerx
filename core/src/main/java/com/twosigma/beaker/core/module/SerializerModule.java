@@ -20,7 +20,6 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
-import com.twosigma.beaker.shared.json.serializer.StringObjectSerializer;
 import com.twosigma.beaker.core.rest.SessionBackupRest;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
@@ -36,6 +35,9 @@ public class SerializerModule
 
   @Override
   protected void configure() {
+    bind(StringObject.Serializer.class);
+    bind(SessionBackupRest.PluginSerializer.class);
+    bind(SessionBackupRest.SessionSerializer.class);
   }
 
   @Provides
@@ -46,14 +48,12 @@ public class SerializerModule
     SimpleModule module =
             new SimpleModule("MySerializer", new Version(1, 0, 0, null));
 
-    module.addSerializer(StringObject.class, new StringObjectSerializer());
-
-    module.addSerializer(
-            SessionBackupRest.Plugin.class,
-            new SessionBackupRest.PluginSerializer());
-    module.addSerializer(
-            SessionBackupRest.Session.class,
-            new SessionBackupRest.SessionSerializer());
+    module.addSerializer(StringObject.class,
+        injector.getInstance(StringObject.Serializer.class));
+    module.addSerializer(SessionBackupRest.Plugin.class,
+        injector.getInstance(SessionBackupRest.PluginSerializer.class));
+    module.addSerializer(SessionBackupRest.Session.class,
+        injector.getInstance(SessionBackupRest.SessionSerializer.class));
 
     mapper.registerModule(module);
 

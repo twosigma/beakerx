@@ -47,8 +47,6 @@ public class SerializerModule
   @Override
   protected void configure() {
     bind(SimpleEvaluationObjectSerializer.class);
-    bind(EvaluationResultSerializer.class);
-    bind(TableDisplaySerializer.class);
   }
 
   @Provides

@@ -29,8 +29,7 @@ import java.util.Map.Entry;
  */
 public class StartRPlugin {
 
-  public static void StartRserve(Injector injector)
-          throws IOException {
+  public static void StartRserve(Injector injector) throws IOException {
 
     String beakerCoreDir = injector.getInstance(BeakerConfig.class).getInstallDirectory();
 

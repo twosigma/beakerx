@@ -25,16 +25,16 @@ import java.io.InputStreamReader;
  */
 public class ErrorGobbler extends Thread {
 
-  private final InputStream _is;
+  private final InputStream inputStream;
 
   public ErrorGobbler(InputStream is) {
-    _is = is;
+    inputStream = is;
   }
 
   @Override
   public void run() {
     try {
-      InputStreamReader isr = new InputStreamReader(_is);
+      InputStreamReader isr = new InputStreamReader(inputStream);
       BufferedReader br = new BufferedReader(isr);
       String line = null;
       while ((line = br.readLine()) != null) {

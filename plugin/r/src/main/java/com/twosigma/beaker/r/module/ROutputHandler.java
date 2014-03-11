@@ -28,44 +28,44 @@ import java.io.InputStreamReader;
 
 public class ROutputHandler extends Thread {
 
-  private final InputStream _stream;
-  private String _captured;
-  private boolean _recording;
-  private SimpleEvaluationObject _dest;
-  private final String _beginMagic;
-  private final String _endMagic;
+  private final InputStream stream;
+  private String captured;
+  private boolean recording;
+  private SimpleEvaluationObject dest;
+  private final String beginMagic;
+  private final String endMagic;
 
   public ROutputHandler(InputStream stream, String beginMagic, String endMagic) {
-    _stream = stream;
-    _recording = false;
-    _captured = null;
-    _beginMagic = beginMagic;
-    _endMagic = endMagic;
+    this.stream = stream;
+    this.recording = false;
+    this.captured = null;
+    this.beginMagic = beginMagic;
+    this.endMagic = endMagic;
   }
 
   public void reset(SimpleEvaluationObject dest) {
-    _dest = dest;
+    this.dest = dest;
   }
 
   public void run() {
 
     try {
-      BufferedReader br = new BufferedReader(new InputStreamReader(_stream));
+      BufferedReader br = new BufferedReader(new InputStreamReader(this.stream));
 
       String line = null;
       while ((line = br.readLine()) != null) {
-        if (line.indexOf(_beginMagic) >= 0) {
-          _recording = true;
-        } else if (line.indexOf(_endMagic) >= 0) {
-          _dest.finished(_captured);
-          _dest = null;
-          _captured = null;
-          _recording = false;
-        } else if (_recording) {
-          if (null == _captured) {
-            _captured = line;
+        if (line.indexOf(this.beginMagic) >= 0) {
+          this.recording = true;
+        } else if (line.indexOf(this.endMagic) >= 0) {
+          this.dest.finished(this.captured);
+          this.dest = null;
+          this.captured = null;
+          this.recording = false;
+        } else if (this.recording) {
+          if (null == this.captured) {
+            this.captured = line;
           } else {
-            _captured = _captured + "\n" + line;
+            this.captured = this.captured + "\n" + line;
           }
         } else {
           System.out.println(line);

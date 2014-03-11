@@ -24,30 +24,23 @@ import org.cometd.server.JacksonJSONContextServer;
 /**
  * The module for configuring servlets, REST binding.
  */
-public class URLConfigModule
-        extends ServletModule {
+public class URLConfigModule extends ServletModule {
 
   @SuppressWarnings("serial")
   @Override
   protected void configureServlets() {
-    bind(GuiceContainer.class);
 
-    serve("/rest/*").with(GuiceContainer.class,
-            new HashMap<String, String>() {
+    bind(GuiceContainer.class);
+    serve("/rest/*").with(GuiceContainer.class, new HashMap<String, String>() {
       {
-        /**
-         * You can put in here config that is normally in web.xml
-         *
-         */
+        // put config that is normally in web.xml here
       }
     });
 
     bind(GuiceCometdServlet.class);
-    serve("/cometd/*").with(GuiceCometdServlet.class,
-            new HashMap<String, String>() {
+    serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
       {
-        put("jsonContext",
-                JacksonJSONContextServer.class.getCanonicalName());
+        put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
       }
     });
 

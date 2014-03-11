@@ -29,8 +29,8 @@ public class URLConfigModule extends ServletModule {
   @SuppressWarnings("serial")
   @Override
   protected void configureServlets() {
-    bind(GuiceContainer.class);
 
+    bind(GuiceContainer.class);
     serve("/rest/*").with(GuiceContainer.class, new HashMap<String, String>() {
       {
         // put config that is normally in web.xml here

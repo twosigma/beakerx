@@ -65,7 +65,6 @@ public class RShellRest {
 
   public RShellRest()
           throws IOException, RserveException {
-    newEvaluator("default");
   }
 
   public void setOutput(InputStream stream) {

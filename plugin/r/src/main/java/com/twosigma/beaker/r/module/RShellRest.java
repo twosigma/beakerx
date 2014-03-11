@@ -52,8 +52,8 @@ public class RShellRest {
 
   private static final String BEGIN_MAGIC = "**beaker_begin_magic**";
   private static final String END_MAGIC = "**beaker_end_magic**";
-  private final Map<String, RConnection> shells = new HashMap<String, RConnection>();
-  private ROutputHandler _rOutputHandler = null;
+  private final Map<String, RConnection> shells = new HashMap<>();
+  private ROutputHandler rOutputHandler = null;
 
   public RShellRest()
           throws IOException, RserveException {
@@ -61,8 +61,8 @@ public class RShellRest {
   }
 
   public void setOutput(InputStream stream) {
-    _rOutputHandler = new ROutputHandler(stream, BEGIN_MAGIC, END_MAGIC);
-    _rOutputHandler.start();
+    this.rOutputHandler = new ROutputHandler(stream, BEGIN_MAGIC, END_MAGIC);
+    this.rOutputHandler.start();
   }
 
   @POST
@@ -123,7 +123,7 @@ public class RShellRest {
       } else if (isDataFrame(result, obj)) {
         // nothing
       } else {
-        _rOutputHandler.reset(obj);
+        this.rOutputHandler.reset(obj);
         con.eval("print(\"" + BEGIN_MAGIC + "\")");
         con.eval("print(beaker_eval_)");
         con.eval("print(\"" + END_MAGIC + "\")");

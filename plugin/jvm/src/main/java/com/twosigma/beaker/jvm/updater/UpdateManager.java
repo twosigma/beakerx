@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 import com.google.common.collect.HashBiMap;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.BayeuxServer.SubscriptionListener;
 import org.cometd.bayeux.server.LocalSession;
@@ -34,12 +36,15 @@ public class UpdateManager implements SubscriptionListener {
 
   private final HashBiMap<String, Object> _idToObject;
   private final LocalSession _localSession;
+  private final List<Updater> _updaters;
 
   public UpdateManager(BayeuxServer bayeuxServer) {
     bayeuxServer.addListener(this);
     _localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
     _localSession.handshake();
     _idToObject = HashBiMap.<String, Object>create();
+    _updaters = new ArrayList<>();
+    _updaters.add(new ObservableUpdater());
   }
 
   public String register(Object obj) {
@@ -67,7 +72,7 @@ public class UpdateManager implements SubscriptionListener {
     }
     if (_idToObject.containsKey(id)) {
       Object obj = _idToObject.get(id);
-      Updater updater = UpdaterFactory.getUpdater(session, _localSession, channel.getId(), obj);
+      Updater updater = getUpdater(session, _localSession, channel.getId(), obj);
       updater.deliverUpdate(obj);
     } else {
       System.out.println("Client is trying to subscribe to nonexisting object " + id);
@@ -81,5 +86,14 @@ public class UpdateManager implements SubscriptionListener {
       return;
     }
     _idToObject.remove(id);
+  }
+
+  private Updater getUpdater(ServerSession session, LocalSession localSession, String channelId, Object updatingObject) {
+    for (Updater u : _updaters) {
+      if (u.isApplicable(updatingObject)) {
+        return u.getInstance(session, localSession, channelId, updatingObject);
+      }
+    }
+    return null;
   }
 }

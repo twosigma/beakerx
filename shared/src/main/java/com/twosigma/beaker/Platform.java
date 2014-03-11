@@ -81,7 +81,6 @@ public class Platform {
     String[] cmd = {"xdg-open", url};
     if (onMac) cmd[0] = "open";
     if (onWin) cmd[0] = "explorer";
-    System.err.println("subs=" + osName.substring(0, 7));
     try {
       Runtime.getRuntime().exec(cmd);
     } catch (Exception e) {

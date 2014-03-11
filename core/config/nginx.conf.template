@@ -22,10 +22,6 @@ import sys
 import time
 import shutil
 
-print "XXX nginx.conf.template"
-print sys.argv
-print "YYY"
-
 user = getpass.getuser()
 host = socket.gethostname()
 

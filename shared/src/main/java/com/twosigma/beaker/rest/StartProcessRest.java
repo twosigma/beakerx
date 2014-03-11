@@ -188,11 +188,7 @@ public class StartProcessRest {
     String[] preCommand = {"python", configDir + "/nginx.conf.template", dir,
       Integer.toString(portBase), installDir, Boolean.toString(useKerberos),
       "ignored", staticDir + "/static", _extraRules};
-    System.err.println("ZZZ preCommand:");
-    for (int i = 0; i < preCommand.length; i++) {
-	System.err.println(preCommand[i]);
-    }
-    System.err.println("ZZZ end");
+
     Process preproc = Runtime.getRuntime().exec(preCommand);
     StreamGobbler preErrorGobbler = new StreamGobbler(_OutputLogService, preproc.getErrorStream(), "pre", "stderr", false, null);
     preErrorGobbler.start();

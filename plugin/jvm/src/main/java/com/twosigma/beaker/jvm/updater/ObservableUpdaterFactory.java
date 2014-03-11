@@ -48,8 +48,8 @@ public class ObservableUpdaterFactory implements UpdaterFactory {
     extends AbstractUpdater
     implements Observer, Runnable {
 
-    private final ScheduledExecutorService _executor = Executors.newSingleThreadScheduledExecutor();
-    private Object _updateObject = null;
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private Object updateObject = null;
 
     ObservableUpdater(
         ServerSession session,
@@ -60,17 +60,17 @@ public class ObservableUpdaterFactory implements UpdaterFactory {
 
     @Override
     public synchronized void update(Observable o, Object arg) {
-      if (_updateObject == null) {
-        _updateObject = o;
-        _executor.schedule(this, 500, TimeUnit.MILLISECONDS);
+      if (this.updateObject == null) {
+        this.updateObject = o;
+        this.executor.schedule(this, 500, TimeUnit.MILLISECONDS);
       }
     }
 
     @Override
     public synchronized void run() {
-      if (_updateObject != null) {
-        deliverUpdate(_updateObject);
-        _updateObject = null;
+      if (this.updateObject != null) {
+        deliverUpdate(this.updateObject);
+        this.updateObject = null;
       }
     }
   }

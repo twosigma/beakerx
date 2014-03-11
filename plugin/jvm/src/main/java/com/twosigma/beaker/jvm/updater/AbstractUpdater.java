@@ -21,21 +21,21 @@ import org.cometd.bayeux.server.ServerSession;
 public abstract class AbstractUpdater
         implements Updater {
 
-  private final ServerSession _session;
-  private final LocalSession _localSession;
-  private final String _channelId;
+  private final ServerSession session;
+  private final LocalSession localSession;
+  private final String channelId;
 
   public AbstractUpdater(
       ServerSession session,
       LocalSession localSession,
       String channelId) {
-    _session = session;
-    _localSession = localSession;
-    _channelId = channelId;
+    this.session = session;
+    this.localSession = localSession;
+    this.channelId = channelId;
   }
 
   @Override
   public void deliverUpdate(Object update) {
-    _session.deliver(_localSession, _channelId, update, null);
+    this.session.deliver(this.localSession, this.channelId, update, null);
   }
 }

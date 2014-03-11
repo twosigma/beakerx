@@ -74,7 +74,7 @@ public class StartProcessRest {
     this.nginxDir = bkcConfig.getNginxPath();
     this.nginxExtraRules = bkcConfig.getNginxExtraRules();
     this.staticDir = bkConfig.getStaticDirectory();
-    this.dotDir = bkConfig.getDotDirectory();
+    this.dotDir = bkcConfig.getDotDirectory();
     this.pluginDir = bkcConfig.getPluginDirectory();
     this.portBase = bkcConfig.getPortBase();
     this.pluginEnvps = bkcConfig.getPluginEnvps();

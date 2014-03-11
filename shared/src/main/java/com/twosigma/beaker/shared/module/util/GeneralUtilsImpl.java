@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.shared.module.basicutils;
+package com.twosigma.beaker.shared.module.util;
 
 import java.io.IOException;
 
@@ -22,7 +22,7 @@ import java.io.IOException;
  * BasicUtilsImpl
  *
  */
-public class BasicUtilsImpl implements BasicUtils {
+public class GeneralUtilsImpl implements GeneralUtils {
 
   @Override
   public void openUrl(String url) {

@@ -148,7 +148,7 @@ public class UtilRest {
   }
 
   private void resetConfig() {
-    String dotDir = this.bkConfig.getDotDirectory();
+    String dotDir = this.bkCoreConfig.getDotDirectory();
     File configFile = new File(dotDir, "beaker.conf.json");
     if (!configFile.exists()) {
       try {
@@ -230,7 +230,7 @@ public class UtilRest {
       _isAllowAnonymousTracking = null;
     }
 
-    String dotDir = this.bkConfig.getDotDirectory();
+    String dotDir = this.bkCoreConfig.getDotDirectory();
     File configFile = new File(dotDir, "beaker.conf.json");
     try {
       ObjectMapper om = new ObjectMapper();

@@ -21,8 +21,6 @@ package com.twosigma.beaker.shared.module.config;
  *
  */
 public interface BeakerConfig {
-  public String getUsername();
   public String getInstallDirectory(); // a.k.a beaker core directory
   public String getStaticDirectory();
-  public String getDotDirectory();
 }

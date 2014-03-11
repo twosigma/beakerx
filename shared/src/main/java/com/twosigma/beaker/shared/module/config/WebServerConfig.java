@@ -13,13 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.shared.json.mixin;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
+package com.twosigma.beaker.shared.module.config;
 
 /**
- * Mix into class that you actually want to auto detect
+ * WebAppConfig
+ *
  */
-@JsonAutoDetect
-public interface AutoDetectMixin {
+public interface WebServerConfig {
+  public Integer getPort();
+  public String getUsername();
 }

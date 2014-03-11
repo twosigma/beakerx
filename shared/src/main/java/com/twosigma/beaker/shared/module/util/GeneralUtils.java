@@ -14,25 +14,12 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.shared.module.config;
-
-import com.google.inject.Inject;
+package com.twosigma.beaker.shared.module.util;
 
 /**
- * WebAppConfigImpl
+ * BasicUtils
  *
  */
-public class WebAppConfigImpl implements WebAppConfig {
-  private final Integer port;
-
-  @Inject
-  public WebAppConfigImpl(WebAppConfigPref pref) {
-    this.port = pref.getPort();
-  }
-
-  @Override
-  public Integer getPort() {
-    return this.port;
-  }
-
+public interface GeneralUtils {
+  public void openUrl(String url);
 }

@@ -24,10 +24,10 @@ import com.twosigma.beaker.core.module.WebServerModule;
 import com.twosigma.beaker.core.module.config.DefaultBeakerCoreConfigModule;
 import com.twosigma.beaker.core.module.config.BeakerCoreConfigPref;
 import com.twosigma.beaker.core.rest.StartProcessRest;
-import com.twosigma.beaker.shared.module.basicutils.BasicUtils;
-import com.twosigma.beaker.shared.module.basicutils.BasicUtilsModule;
+import com.twosigma.beaker.shared.module.util.GeneralUtils;
+import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultBeakerConfigModule;
-import com.twosigma.beaker.shared.module.config.WebAppConfigModule;
+import com.twosigma.beaker.shared.module.config.WebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -88,8 +88,8 @@ public class Main {
     Injector injector = Guice.createInjector(
         new DefaultBeakerConfigModule(),
         new DefaultBeakerCoreConfigModule(beakerCorePref),
-        new WebAppConfigModule(webAppPref),
-        new BasicUtilsModule(),
+        new WebServerConfigModule(webAppPref),
+        new GeneralUtilsModule(),
         new WebServerModule(),
         new URLConfigModule(),
         new SerializerModule(),
@@ -104,7 +104,7 @@ public class Main {
     // openBrower and show connection instruction message
     final String initUrl = getInitUrl(useHttps, portBase, useKerberos);
     if (openBrowser) {
-      injector.getInstance(BasicUtils.class).openUrl(initUrl);
+      injector.getInstance(GeneralUtils.class).openUrl(initUrl);
       System.out.println("\nConnecting to " + initUrl + "\n");
     } else {
       System.out.println("\nConnect to " + initUrl + "\n");

@@ -14,19 +14,25 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.shared.module.basicutils;
+package com.twosigma.beaker.shared.module.config;
 
 import com.google.inject.AbstractModule;
 
 /**
- * BasicUtilsModule
- *
+ * WebAppConfigModule
+ * creates bindings to WebAppConfig with the assistance of WebAppConfigPref
  */
-public class BasicUtilsModule extends AbstractModule {
+public class WebServerConfigModule extends AbstractModule {
+  private final WebAppConfigPref pref;
+
+  public WebServerConfigModule(WebAppConfigPref pref) {
+    this.pref = pref;
+  }
 
   @Override
   protected void configure() {
-    bind(BasicUtils.class).to(BasicUtilsImpl.class);
+    bind(WebAppConfigPref.class).toInstance(pref);
+    bind(WebServerConfig.class).to(DefaultWebServerConfig.class);
   }
 
 }

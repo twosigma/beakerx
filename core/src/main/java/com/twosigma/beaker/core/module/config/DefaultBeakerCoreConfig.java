@@ -33,6 +33,7 @@ import java.util.Map;
 public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
 
   private final String pluginDir;
+  private final String dotDir;
   private final String nginxPath;
   private final String nginxExtraRules;
   private final Boolean useKerberos;
@@ -50,11 +51,19 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
     this.pluginDir = bkConfig.getInstallDirectory() + "/src/main/sh";
+    this.dotDir = System.getProperty("user.home") + "/.beaker";
+    File dotFile = new File(dotDir);
+    if (!dotFile.exists()) {
+      if (!dotFile.mkdir()) {
+        System.out.println("failed to create " + dotDir);
+      }
+    }
     this.nginxPath = bkConfig.getInstallDirectory() + "/nginx";
     this.nginxExtraRules = "";
 
+
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
-    final String mainDefaultNotebookPath = bkConfig.getDotDirectory() + "/default.bkr";
+    final String mainDefaultNotebookPath = this.dotDir + "/default.bkr";
     final String defaultDefaultNotebookPath = bkConfig.getInstallDirectory() + "/config/default.bkr";
 
     if (prefDefaultNotebookUrl != null) {
@@ -98,6 +107,11 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
   @Override
   public String getPluginDirectory() {
     return this.pluginDir;
+  }
+
+  @Override
+  public String getDotDirectory() {
+    return this.dotDir;
   }
 
   @Override

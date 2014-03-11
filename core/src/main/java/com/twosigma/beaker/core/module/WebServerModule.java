@@ -22,7 +22,7 @@ import com.google.inject.Singleton;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.twosigma.beaker.shared.module.config.BeakerConfig;
-import com.twosigma.beaker.shared.module.config.WebAppConfig;
+import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -44,7 +44,7 @@ public class WebServerModule extends AbstractModule {
   @Singleton
   Connector getConnector(final Injector injector) {
     final Connector conn = new SelectChannelConnector();
-    WebAppConfig webAppConfig = injector.getInstance(WebAppConfig.class);
+    WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
     conn.setPort(webAppConfig.getPort());
     return conn;
   }

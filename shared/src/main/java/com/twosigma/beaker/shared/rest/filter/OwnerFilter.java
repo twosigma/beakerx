@@ -18,6 +18,7 @@ package com.twosigma.beaker.shared.rest.filter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.module.config.BeakerConfig;
+import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import java.io.IOException;
 import java.security.Principal;
 import javax.servlet.Filter;
@@ -38,8 +39,8 @@ public class OwnerFilter implements Filter {
   private final String user;
 
   @Inject
-  private OwnerFilter(BeakerConfig bkConfig) {
-    this.user = bkConfig.getUsername();
+  private OwnerFilter(WebServerConfig webServerConfig) {
+    this.user = webServerConfig.getUsername();
   }
 
   @Override

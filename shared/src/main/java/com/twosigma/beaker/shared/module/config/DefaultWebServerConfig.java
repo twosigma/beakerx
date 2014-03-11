@@ -16,10 +16,30 @@
 
 package com.twosigma.beaker.shared.module.config;
 
+import com.google.inject.Inject;
+
 /**
- * WebAppConfig
+ * WebAppConfigImpl
  *
  */
-public interface WebAppConfig {
-  public Integer getPort();
+public class DefaultWebServerConfig implements WebServerConfig {
+  private final Integer port;
+  private final String username;
+
+  @Inject
+  public DefaultWebServerConfig(WebAppConfigPref pref) {
+    this.port = pref.getPort();
+    this.username = System.getProperty("user.name");
+  }
+
+  @Override
+  public Integer getPort() {
+    return this.port;
+  }
+
+  @Override
+  public String getUsername() {
+    return this.username;
+  }
+
 }

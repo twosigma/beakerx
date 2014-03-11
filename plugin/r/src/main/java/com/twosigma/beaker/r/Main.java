@@ -23,9 +23,9 @@ import com.twosigma.beaker.shared.module.GuiceCometdModule;
 import com.twosigma.beaker.r.module.URLConfigModule;
 import com.twosigma.beaker.r.module.StartRPlugin;
 import com.twosigma.beaker.shared.module.config.DefaultBeakerConfigModule;
-import com.twosigma.beaker.shared.module.config.WebAppConfigModule;
+import com.twosigma.beaker.shared.module.config.WebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
-import com.twosigma.beaker.shared.module.config.WebAppConfigPrefImpl;
+import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -51,10 +51,10 @@ public class Main {
       System.out.println("usage: rPlugin <port>");
     }
     final int port = Integer.parseInt(args[0]);
-    WebAppConfigPref webAppPref = new WebAppConfigPrefImpl(port);
+    WebAppConfigPref webAppPref = new DefaultWebAppConfigPref(port);
     Injector injector = Guice.createInjector(
         new DefaultBeakerConfigModule(),
-        new WebAppConfigModule(webAppPref),
+        new WebServerConfigModule(webAppPref),
         new WebServerModule(),
         new URLConfigModule(),
         new SerializerModule(),

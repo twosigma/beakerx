@@ -71,12 +71,9 @@
       if (!shellID) {
         shellID = "";
       }
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: serverUrl + "rest/rsh/getShell",
-        data: {shellid: shellID}
-      }).done(cb).fail(function() {
+      bkHelper.httpPost(serverUrl + "rest/rsh/getShell", { shellid: shellID })
+          .success(cb)
+          .error(function() {
             console.log("failed to create shell", arguments);
           });
     },
@@ -181,10 +178,10 @@
           var RShell = function(settings, cb) {
             var self = this;
             var setShellIdCB = function(id) {
-              if (id.value !== settings.shellID) {
+              if (id !== settings.shellID) {
                 // console.log("A new R shell was created.");
               }
-              settings.shellID = id.value;
+              settings.shellID = id;
               self.settings = settings;
               cb();
             };

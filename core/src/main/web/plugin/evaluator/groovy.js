@@ -71,12 +71,9 @@
       if (!shellID) {
         shellID = "";
       }
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: serverUrl + "rest/groovysh/getShell",
-        data: {shellid: shellID}
-      }).done(cb).fail(function() {
+      bkHelper.httpPost(serverUrl + "rest/groovysh/getShell", { shellid: shellID })
+          .success(cb)
+          .error(function() {
             console.log("failed to create shell", arguments);
           });
     },
@@ -181,10 +178,10 @@
           var GroovyShell = function(settings, cb) {
             var self = this;
             var setShellIdCB = function(id) {
-              if (id.value !== settings.shellID) {
-                // console.log("A new R shell was created.");
+              if (id !== settings.shellID) {
+                // console.log("A new Groovy shell was created.");
               }
-              settings.shellID = id.value;
+              settings.shellID = id;
               self.settings = settings;
               cb();
             };

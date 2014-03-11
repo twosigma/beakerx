@@ -13,10 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.twosigma.beaker.jvm.updater;
 
-public interface Updater {
+import org.cometd.bayeux.server.LocalSession;
+import org.cometd.bayeux.server.ServerSession;
 
-  public void deliverUpdate(Object update);
-  
+/**
+ * UpdaterFactory
+ *
+ */
+public interface UpdaterFactory {
+
+  public boolean isApplicable(Object o);
+  public Updater createUpdater(
+      ServerSession session,
+      LocalSession localSession,
+      String channelId,
+      Object updatingObject);
+
 }

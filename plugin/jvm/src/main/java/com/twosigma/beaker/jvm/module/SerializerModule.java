@@ -28,7 +28,7 @@ import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.TableDisplaySerializer;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.ImageIconSerializer;
-import com.twosigma.beaker.jvm.updater.ObservableUpdater;
+import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import javax.swing.ImageIcon;
 import org.codehaus.jackson.Version;
@@ -56,7 +56,7 @@ public class SerializerModule
   public UpdateManager getUpdateManager(Injector injector) {
     BayeuxServer bayeuxServer = injector.getInstance(BayeuxServer.class);
     UpdateManager updateManager = new UpdateManager(bayeuxServer);
-    updateManager.addUpdater(new ObservableUpdater());
+    updateManager.addUpdaterFactory(new ObservableUpdaterFactory());
     return updateManager;
   }
 

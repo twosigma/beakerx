@@ -35,18 +35,18 @@ public class UpdateManager implements SubscriptionListener {
 
   private final HashBiMap<String, Object> idToObject;
   private final LocalSession localSession;
-  private final List<Updater> updaters;
+  private final List<UpdaterFactory> updaterFactories;
 
   public UpdateManager(BayeuxServer bayeuxServer) {
     bayeuxServer.addListener(this);
     this.localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
     this.localSession.handshake();
     this.idToObject = HashBiMap.<String, Object>create();
-    this.updaters = new ArrayList<>();
+    this.updaterFactories = new ArrayList<>();
   }
 
-  public void addUpdater(Updater updater) {
-    this.updaters.add(updater);
+  public void addUpdaterFactory(UpdaterFactory updaterFactory) {
+    this.updaterFactories.add(updaterFactory);
   }
 
   public String register(Object obj) {
@@ -91,9 +91,9 @@ public class UpdateManager implements SubscriptionListener {
   }
 
   private Updater getUpdater(ServerSession session, LocalSession localSession, String channelId, Object updatingObject) {
-    for (Updater u : this.updaters) {
-      if (u.isApplicable(updatingObject)) {
-        return u.getInstance(session, localSession, channelId, updatingObject);
+    for (UpdaterFactory uf : this.updaterFactories) {
+      if (uf.isApplicable(updatingObject)) {
+        return uf.createUpdater(session, localSession, channelId, updatingObject);
       }
     }
     return null;

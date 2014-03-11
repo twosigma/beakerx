@@ -15,8 +15,25 @@
  */
 package com.twosigma.beaker.jvm.updater;
 
-public interface Updater {
+import org.cometd.bayeux.server.LocalSession;
+import org.cometd.bayeux.server.ServerSession;
 
-  public void deliverUpdate(Object update);
-  
+public abstract class Updater {
+
+  private final ServerSession session;
+  private final LocalSession localSession;
+  private final String channelId;
+
+  public Updater(
+      ServerSession session,
+      LocalSession localSession,
+      String channelId) {
+    this.session = session;
+    this.localSession = localSession;
+    this.channelId = channelId;
+  }
+
+  final protected void deliverUpdate(Object update) {
+    this.session.deliver(this.localSession, this.channelId, update, null);
+  }
 }

@@ -44,8 +44,7 @@ public class ObservableUpdaterFactory implements UpdaterFactory {
     return result;
   }
 
-  private static class ObservableUpdater
-    extends AbstractUpdater
+  private static class ObservableUpdater extends Updater
     implements Observer, Runnable {
 
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();

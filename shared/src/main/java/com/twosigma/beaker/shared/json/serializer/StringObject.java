@@ -36,7 +36,7 @@ public class StringObject {
     return this.string;
   }
 
-  public class Serializer extends JsonSerializer<StringObject> {
+  public static class Serializer extends JsonSerializer<StringObject> {
 
     @Override
     public void serialize(StringObject value, JsonGenerator jgen, SerializerProvider provider)

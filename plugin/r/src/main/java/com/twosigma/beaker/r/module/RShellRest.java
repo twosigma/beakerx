@@ -20,8 +20,6 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,20 +28,14 @@ import java.util.Map;
 import java.util.UUID;
 import javax.swing.ImageIcon;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import javax.imageio.ImageIO;
-
 import com.google.inject.Singleton;
-import com.twosigma.beaker.shared.json.serializer.StringObject;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
-
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 import org.rosuda.REngine.REXPMismatchException;

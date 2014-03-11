@@ -75,8 +75,13 @@ public class Platform {
   }
 
   public static void openUrl(String url) {
-    boolean onMac = System.getProperty("os.name").equals("Mac OS X");
-    String[] cmd = {onMac ? "open" : "xdg-open", url};
+    String osName = System.getProperty("os.name");
+    boolean onMac = osName.equals("Mac OS X");
+    boolean onWin = osName.substring(0, 7).equals("Windows");
+    String[] cmd = {"xdg-open", url};
+    if (onMac) cmd[0] = "open";
+    if (onWin) cmd[0] = "explorer";
+    System.err.println("subs=" + osName.substring(0, 7));
     try {
       Runtime.getRuntime().exec(cmd);
     } catch (Exception e) {

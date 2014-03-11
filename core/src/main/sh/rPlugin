@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/python
 #
 # Copyright 2014 TWO SIGMA INVESTMENTS, LLC
 #
@@ -14,5 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cd ../plugin/r
-build/install/r/bin/r $1
+import os
+import sys
+
+port = sys.argv.pop()
+print("port=" + port)
+
+os.chdir("..\\plugin\\r")
+cmd = "build\\install\\r\\bin\\r.bat"
+os.execl(cmd, cmd, port)

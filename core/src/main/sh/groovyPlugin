@@ -21,7 +21,7 @@ port = sys.argv.pop()
 print("port=" + port)
 #skip for now
 #os.environ['GROOVY_OPTS'] = ' '.join(sys.argv)
-print("cwd=" + os.getcwd())
+
 os.chdir("..\\plugin\\groovy")
 cmd = "build\\install\\groovy\\bin\\groovy.bat"
 os.execl(cmd, cmd, port)

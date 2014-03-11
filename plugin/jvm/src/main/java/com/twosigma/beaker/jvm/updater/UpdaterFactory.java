@@ -30,6 +30,6 @@ public interface UpdaterFactory {
       ServerSession session,
       LocalSession localSession,
       String channelId,
-      Object updatingObject);
+      Object updateSource);
 
 }

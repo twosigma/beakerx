@@ -1,7 +1,7 @@
 build
 beaker/*
 node_modules
-#core/nginx/bin
+core/nginx/bin
 core/src/main/web/vendor/bower_components
 core/src/main/web/template/version.html
 *~

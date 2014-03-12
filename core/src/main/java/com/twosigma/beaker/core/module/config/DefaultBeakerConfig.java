@@ -44,12 +44,15 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Integer portBase;
   private final String configFileUrl;
   private final String defaultNotebookUrl;
+  private final String recentNotebooksFileUrl;
+  private final String sessionBackupDir;
   private final Map<String, String> pluginOptions;
   private final Map<String, String[]> pluginEnvps;
 
+
   @Inject
   public DefaultBeakerConfig(BeakerConfigPref pref) throws UnknownHostException {
-
+    
     this.installDir = System.getProperty("user.dir");
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
@@ -64,7 +67,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     String configDir = this.dotDir + "/config";
     ensureDirectoryExists(new File(configDir));
 
-    final String configFile = configDir + "beaker.conf.json";
+    final String configFile = configDir + "/beaker.conf.json";
     final String defaultConfigFile = this.installDir + "/config/beaker.conf.json";
     ensureFile(new File(configFile), new File(defaultConfigFile));
     this.configFileUrl = configFile;
@@ -78,7 +81,13 @@ public class DefaultBeakerConfig implements BeakerConfig {
       ensureFile(new File(mainDefaultNotebookPath), new File(defaultDefaultNotebookPath));
       this.defaultNotebookUrl = mainDefaultNotebookPath;
     }
-    
+
+    String varDir = this.dotDir + "/var";
+    ensureDirectoryExists(new File(varDir));
+    this.recentNotebooksFileUrl = varDir + "/recentNotebooks";
+    this.sessionBackupDir = varDir + "/sessionBackups";
+    ensureDirectoryExists(new File(this.sessionBackupDir));
+
     this.pluginOptions = pref.getPluginOptions();
     this.pluginEnvps = new HashMap<>();
   }
@@ -167,6 +176,16 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getDefaultNotebookUrl() {
     return this.defaultNotebookUrl;
+  }
+
+  @Override
+  public String getRecentNotebooksFileUrl() {
+    return this.recentNotebooksFileUrl;
+  }
+
+  @Override
+  public String getSessionBackupsDirectory() {
+    return this.sessionBackupDir;
   }
 
   static private String readFile(File file) {

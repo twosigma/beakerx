@@ -50,19 +50,11 @@ import org.codehaus.jackson.map.SerializerProvider;
 @Path("sessionbackup")
 public class SessionBackupRest {
 
-  private static final String BACKUP_DIRECTORY_NAME = "backups"; // TODO, move to beaker config
-  private static File backupDirectory;
+  private final File backupDirectory;
 
   @Inject
   public SessionBackupRest(BeakerConfig bkConfig) {
-    this.backupDirectory = new File(
-            bkConfig.getDotDirectory(),
-             "/" + BACKUP_DIRECTORY_NAME);
-
-    // TODO, move ensuring existence to beaker config module configure
-    if (!this.backupDirectory.exists()) {
-      this.backupDirectory.mkdirs();
-    }
+    this.backupDirectory = new File(bkConfig.getSessionBackupsDirectory());
   }
 
   public static class Session {

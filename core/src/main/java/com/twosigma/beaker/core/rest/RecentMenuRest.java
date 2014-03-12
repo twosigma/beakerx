@@ -46,33 +46,22 @@ import org.apache.commons.collections.list.UnmodifiableList;
 @SuppressWarnings("unchecked")
 public class RecentMenuRest {
 
-  private static final String CONFIGURATION_DIRECTORY_NAME = "conf"; // TODO, move to beaker config
-  private static final String RECENT_DOCUMENTS_FILE_NAME = "recentDocuments"; // TODO, move to beaker config
-  private static File recentDocumnetsDir;
-  private final File _recentDocumentsFile;
+  private final File recentDocumentsFile;
   private final List<String> recentDocuments;
   private final List<String> immutableRecentDocuments;
 
   @Inject
   public RecentMenuRest(BeakerConfig bkConfig) {
-    this.recentDocumnetsDir = new File(
-            bkConfig.getDotDirectory(),
-            "/" + CONFIGURATION_DIRECTORY_NAME);
-    
-    // TODO, move ensuring existence to beaker config module configure
-    this.recentDocumnetsDir.mkdir();
-    _recentDocumentsFile = new File(
-            this.recentDocumnetsDir,
-            RECENT_DOCUMENTS_FILE_NAME);
-    this.recentDocuments = new ArrayList<String>();
+    this.recentDocumentsFile = new File(bkConfig.getRecentNotebooksFileUrl());
+    this.recentDocuments = new ArrayList<>();
     this.immutableRecentDocuments = UnmodifiableList.decorate(this.recentDocuments);
 
     // read from file -> _recentDocuments
-    if (_recentDocumentsFile.exists()) {
+    if (this.recentDocumentsFile.exists()) {
       BufferedReader bufferedReader;
       try {
         bufferedReader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(_recentDocumentsFile)));
+                new FileInputStream(this.recentDocumentsFile)));
       } catch (FileNotFoundException ex) {
         return;
       }
@@ -103,10 +92,9 @@ public class RecentMenuRest {
     this.recentDocuments.add(0, transformUrl(docName));
   }
 
-  private void recordToFile()
-          throws IOException {
+  private void recordToFile() throws IOException {
     Writer writer = new OutputStreamWriter(
-            new FileOutputStream(_recentDocumentsFile));
+            new FileOutputStream(this.recentDocumentsFile));
     try {
       for (int i = this.recentDocuments.size() - 1; i >= 0; --i) {
         writer.write(this.recentDocuments.get(i));
@@ -135,8 +123,7 @@ public class RecentMenuRest {
 
   @POST
   @Path("addItem")
-  public void addItem(@FormParam("item") String item)
-          throws IOException {
+  public void addItem(@FormParam("item") String item) throws IOException {
     addRecentDocument(item);
     recordToFile();
   }

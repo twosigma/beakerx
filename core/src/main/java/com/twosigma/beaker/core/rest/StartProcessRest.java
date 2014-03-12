@@ -244,9 +244,7 @@ public class StartProcessRest {
     if (!nginxClientTempDir.exists()) {
       nginxClientTempDir.mkdirs();
     }
-    if (htmlDir.exists()) {
-      Files.delete(htmlDir.toPath());
-    }
+    Files.deleteIfExists(htmlDir.toPath());
     Files.createSymbolicLink(
         htmlDir.toPath(),
         new File(this.installDir + "/src/main/web/static").toPath());

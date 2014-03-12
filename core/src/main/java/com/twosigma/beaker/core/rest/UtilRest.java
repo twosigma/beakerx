@@ -215,8 +215,7 @@ public class UtilRest {
       this.isAllowAnonymousTracking = null;
     }
 
-    String dotDir = this.bkConfig.getDotDirectory();
-    File configFile = new File(dotDir, "beaker.conf.json");
+    File configFile = new File(this.bkConfig.getConfigFileUrl());
     try {
       ObjectMapper om = new ObjectMapper();
       TypeReference readType = new TypeReference<HashMap<String, Object>>() {

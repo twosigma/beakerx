@@ -34,6 +34,8 @@ public interface BeakerConfig {
   public Boolean getUseKerberos();
   public String getConfigFileUrl();
   public String getDefaultNotebookUrl();
+  public String getRecentNotebooksFileUrl();
+  public String getSessionBackupsDirectory();
   public Map<String, String> getPluginOptions();
   public Map<String, String[]> getPluginEnvps();
 }

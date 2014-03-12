@@ -75,4 +75,4 @@ task makeDist(type:Exec) {
 makeDist.dependsOn(":core:installApp")
 makeDist.dependsOn(":plugin:r:installApp")
 makeDist.dependsOn(":plugin:groovy:installApp")
-makeDist.dependsOn(":plugin:node:installApp")
+makeDist.dependsOn(":plugin:node:build")

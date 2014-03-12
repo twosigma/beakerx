@@ -36,6 +36,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.jvnet.winp.WinProcess;
 
 /**
  * The RESTful API for starting a process by running command
@@ -173,7 +174,9 @@ public class StartProcessRest {
   public void shutdownPlugins() {
     StreamGobbler.shuttingDown();
     for (Process p : plugins) {
-      p.destroy(); // send SIGTERM
+	WinProcess wp = new WinProcess(p);
+	wp.killRecursively();
+        // p.destroy(); // send SIGTERM
     }
   }
 

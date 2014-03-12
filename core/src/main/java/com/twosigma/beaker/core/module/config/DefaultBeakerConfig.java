@@ -26,8 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * BeakerCoreConfigImpl
- *
+ * DefaultBeakerConfig
+ * holds the default beaker configuration which used by DefaultBeakerConfigModule who binds it
+ * to BeakerConfig interface. The configuration is determined with both constant default
+ * values and the input of BeakerConfigPref
  */
 public class DefaultBeakerConfig implements BeakerConfig {
 
@@ -43,9 +45,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Map<String, String[]> pluginEnvps;
 
   @Inject
-  public DefaultBeakerConfig(
-      BeakerConfigPref pref)
-      throws UnknownHostException {
+  public DefaultBeakerConfig(BeakerConfigPref pref) throws UnknownHostException {
 
     this.installDir = System.getProperty("user.dir");
     this.useKerberos = pref.getUseKerberos();

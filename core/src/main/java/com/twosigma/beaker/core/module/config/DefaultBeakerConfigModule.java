@@ -19,8 +19,8 @@ package com.twosigma.beaker.core.module.config;
 import com.google.inject.AbstractModule;
 
 /**
- * BeakerCoreConfigModule
- *
+ * DefaultBeakerConfigModule
+ * provides the default beaker configuration settings for other modules used by the injector
  */
 public class DefaultBeakerConfigModule extends AbstractModule {
   private final BeakerConfigPref pref;

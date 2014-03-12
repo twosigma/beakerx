@@ -19,7 +19,7 @@ package com.twosigma.beaker.core.module.config;
 import java.util.Map;
 
 /**
- * BeakerCoreConfig
+ * BeakerConfig
  *
  */
 public interface BeakerConfig {

@@ -19,8 +19,11 @@ package com.twosigma.beaker.core.module.config;
 import java.util.Map;
 
 /**
- * BeakerCorePref
- *
+ * BeakerConfigPref
+ * keeps the user preferences that will be used to assist in creating configurations used
+ * by beaker. Note the default value of individual preference settings should be null. It's
+ * up to the BeakerConfig implementation (which take BeakerConfigPref as input) to provide
+ * the real default value upon getting null preferences.
  */
 public interface BeakerConfigPref {
   public Boolean getUseKerberos();

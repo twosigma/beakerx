@@ -108,9 +108,13 @@ public class StartProcessRest {
     nginxCommand += (" -p " + this.nginxServDir);
     nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
     Process proc = Runtime.getRuntime().exec(nginxCommand);
-    StreamGobbler errorGobbler = new StreamGobbler(outputLogService, proc.getErrorStream(), "nginx", "stderr", false, null);
+    StreamGobbler errorGobbler =
+        new StreamGobbler(outputLogService, proc.getErrorStream(), "nginx",
+        "stderr", false, null);
     errorGobbler.start();
-    StreamGobbler stdoutGobbler = new StreamGobbler(outputLogService, proc.getInputStream(), "nginx", "stdout", false, null);
+    StreamGobbler stdoutGobbler =
+        new StreamGobbler(outputLogService, proc.getInputStream(), "nginx",
+        "stdout", false, null);
     stdoutGobbler.start();
 
     this.nginxProc = proc;
@@ -200,10 +204,14 @@ public class StartProcessRest {
       }
     }
 
-    StreamGobbler errorGobbler = new StreamGobbler(outputLogService, proc.getErrorStream(), pluginName, "stderr", record, waitfor);
+    StreamGobbler errorGobbler =
+        new StreamGobbler(outputLogService, proc.getErrorStream(), pluginName,
+        "stderr", record, waitfor);
     errorGobbler.start();
 
-    StreamGobbler outputGobbler = new StreamGobbler(outputLogService, proc.getInputStream(), pluginName, "stdout", record, null);
+    StreamGobbler outputGobbler =
+        new StreamGobbler(outputLogService, proc.getInputStream(), pluginName,
+        "stdout", record, null);
     outputGobbler.start();
 
     pConfig.setProcess(proc);
@@ -246,7 +254,8 @@ public class StartProcessRest {
     String ngixConfig = this.nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();
     for (PluginConfig pConfig : plugins.values()) {
-      String nginxRule = pConfig.getNginxRules().replace("%(port)s", Integer.toString(pConfig.getPort()));
+      String nginxRule = pConfig.getNginxRules()
+          .replace("%(port)s", Integer.toString(pConfig.getPort()));
       pluginSection.append(nginxRule);
     }
     ngixConfig = ngixConfig.replace("%(plugin_section)s", pluginSection.toString());

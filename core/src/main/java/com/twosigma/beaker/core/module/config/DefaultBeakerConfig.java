@@ -36,7 +36,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String installDir;
   private final String pluginDir;
   private final String dotDir;
-  private final String nginxPath;
+  private final String nginxDir;
+  private final String nginxBinDir;
   private final String nginxExtraRules;
   private final Boolean useKerberos;
   private final Integer portBase;
@@ -58,7 +59,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
         System.out.println("failed to create " + dotDir);
       }
     }
-    this.nginxPath = this.installDir + "/nginx";
+    this.nginxDir = this.installDir + "/nginx";
+    this.nginxBinDir = this.installDir + "/nginx/bin";
     this.nginxExtraRules = "";
 
 
@@ -120,8 +122,13 @@ public class DefaultBeakerConfig implements BeakerConfig {
   }
 
   @Override
-  public String getNginxPath() {
-    return this.nginxPath;
+  public String getNginxDirectory() {
+    return this.nginxDir;
+  }
+
+  @Override
+  public String getNginxBinDirectory() {
+    return this.nginxBinDir;
   }
 
   @Override

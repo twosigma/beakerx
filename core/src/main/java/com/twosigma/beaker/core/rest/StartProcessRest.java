@@ -51,6 +51,7 @@ public class StartProcessRest {
 
   private final String installDir;
   private final String nginxDir;
+  private final String nginxBinDir;
   private final String nginxExtraRules;
   private final String dotDir;
   private final String pluginDir;
@@ -68,7 +69,8 @@ public class StartProcessRest {
       BeakerConfig bkConfig,
       OutputLogService outputLogService) throws IOException {
     this.installDir = bkConfig.getInstallDirectory();
-    this.nginxDir = bkConfig.getNginxPath();
+    this.nginxDir = bkConfig.getNginxDirectory();
+    this.nginxBinDir = bkConfig.getNginxBinDirectory();
     this.nginxExtraRules = bkConfig.getNginxExtraRules();
     this.dotDir = bkConfig.getDotDirectory();
     this.pluginDir = bkConfig.getPluginDirectory();
@@ -76,7 +78,7 @@ public class StartProcessRest {
     this.pluginEnvps = bkConfig.getPluginEnvps();
     this.pluginArgs = new HashMap<>();
     this.outputLogService = outputLogService;
-    this.nginxTemplate = readFile(this.installDir + "/config/nginx.conf.template");
+    this.nginxTemplate = readFile(this.nginxDir + "/nginx.conf.template");
 
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, String> e: bkConfig.getPluginOptions().entrySet()) {
@@ -103,7 +105,7 @@ public class StartProcessRest {
     generateNginxConfig();
 
     String dir = this.dotDir;
-    String nginxCommand = this.nginxDir + "/nginx";
+    String nginxCommand = this.nginxBinDir + "/nginx";
     nginxCommand += (" -p " + dir);
     nginxCommand += (" -c " + dir + "/conf/nginx.conf");
     Process proc = Runtime.getRuntime().exec(nginxCommand);
@@ -143,10 +145,14 @@ public class StartProcessRest {
 
       // restart nginx
       generateNginxConfig();
-      Process restartproc = Runtime.getRuntime().exec(this.installDir + "/restart_nginx");
-      StreamGobbler restartErrorGobbler = new StreamGobbler(outputLogService, restartproc.getErrorStream(), "pre3", "stderr", false, null);
+      Process restartproc = Runtime.getRuntime().exec(this.nginxDir + "/script/restart_nginx");
+      StreamGobbler restartErrorGobbler =
+          new StreamGobbler(outputLogService, restartproc.getErrorStream(), pluginName,
+          "stderr", false, null);
       restartErrorGobbler.start();
-      StreamGobbler restartStdoutGobbler = new StreamGobbler(outputLogService, restartproc.getInputStream(), "pre3", "stdout", false, null);
+      StreamGobbler restartStdoutGobbler =
+          new StreamGobbler(outputLogService, restartproc.getInputStream(), pluginName,
+          "stdout", false, null);
       restartStdoutGobbler.start();
       restartproc.waitFor();
 
@@ -238,7 +244,7 @@ public class StartProcessRest {
         htmlDir.toPath(),
         new File(this.installDir + "/src/main/web/static").toPath());
 
-    String ngixConfig = nginxTemplate;
+    String ngixConfig = this.nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();
     for (PluginConfig pConfig : plugins.values()) {
       String nginxRule = pConfig.getNginxRules().replace("%(port)s", Integer.toString(pConfig.getPort()));

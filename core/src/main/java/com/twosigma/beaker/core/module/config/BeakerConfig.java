@@ -24,10 +24,11 @@ import java.util.Map;
  */
 public interface BeakerConfig {
   public String getInstallDirectory(); // a.k.a beaker core directory
-  public String getPluginDirectory(); // where to find plugin executables or starting scripts
-  public String getDotDirectory();
-  public String getNginxDirectory();
+  public String getPluginDirectory(); // where to search for plugin executables and starting scripts
+  public String getDotDirectory(); // where temp directory and variable storage and cache go
+  public String getNginxDirectory(); // where to locate beaker specific nginx configs and scripts
   public String getNginxBinDirectory(); // where to locate nginx executable
+  public String getNginxServDirectory(); // the root of nginx server
   public String getNginxExtraRules();
   public Integer getPortBase();
   public Boolean getUseKerberos();

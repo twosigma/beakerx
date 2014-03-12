@@ -38,6 +38,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String dotDir;
   private final String nginxDir;
   private final String nginxBinDir;
+  private final String nginxServDir;
   private final String nginxExtraRules;
   private final Boolean useKerberos;
   private final Integer portBase;
@@ -61,6 +62,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     }
     this.nginxDir = this.installDir + "/nginx";
     this.nginxBinDir = this.installDir + "/nginx/bin";
+    this.nginxServDir = this.dotDir + "/nginx";
     this.nginxExtraRules = "";
 
 
@@ -129,6 +131,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getNginxBinDirectory() {
     return this.nginxBinDir;
+  }
+
+  @Override
+  public String getNginxServDirectory() {
+    return this.nginxServDir;
   }
 
   @Override

@@ -52,8 +52,8 @@ public class StartProcessRest {
   private final String installDir;
   private final String nginxDir;
   private final String nginxBinDir;
+  private final String nginxServDir;
   private final String nginxExtraRules;
-  private final String dotDir;
   private final String pluginDir;
   private final Integer portBase;
   private final Map<String, List<String>> pluginArgs;
@@ -71,8 +71,8 @@ public class StartProcessRest {
     this.installDir = bkConfig.getInstallDirectory();
     this.nginxDir = bkConfig.getNginxDirectory();
     this.nginxBinDir = bkConfig.getNginxBinDirectory();
+    this.nginxServDir = bkConfig.getNginxServDirectory();
     this.nginxExtraRules = bkConfig.getNginxExtraRules();
-    this.dotDir = bkConfig.getDotDirectory();
     this.pluginDir = bkConfig.getPluginDirectory();
     this.portBase = bkConfig.getPortBase();
     this.pluginEnvps = bkConfig.getPluginEnvps();
@@ -104,10 +104,9 @@ public class StartProcessRest {
 
     generateNginxConfig();
 
-    String dir = this.dotDir;
     String nginxCommand = this.nginxBinDir + "/nginx";
-    nginxCommand += (" -p " + dir);
-    nginxCommand += (" -c " + dir + "/conf/nginx.conf");
+    nginxCommand += (" -p " + this.nginxServDir);
+    nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
     Process proc = Runtime.getRuntime().exec(nginxCommand);
     StreamGobbler errorGobbler = new StreamGobbler(outputLogService, proc.getErrorStream(), "nginx", "stderr", false, null);
     errorGobbler.start();
@@ -223,10 +222,10 @@ public class StartProcessRest {
 
   private void generateNginxConfig() throws IOException, InterruptedException {
 
-    File confDir = new File(this.dotDir, "conf");
-    File logDir = new File(this.dotDir, "logs");
-    File nginxClientTempDir = new File(this.dotDir, "nginx_client_temp");
-    File htmlDir = new File(this.dotDir, "html");
+    File confDir = new File(this.nginxServDir, "conf");
+    File logDir = new File(this.nginxServDir, "logs");
+    File nginxClientTempDir = new File(this.nginxServDir, "client_temp");
+    File htmlDir = new File(this.nginxServDir, "html");
 
     if (!confDir.exists()) {
       confDir.mkdirs();
@@ -253,15 +252,13 @@ public class StartProcessRest {
     ngixConfig = ngixConfig.replace("%(plugin_section)s", pluginSection.toString());
     ngixConfig = ngixConfig.replace("%(extra_rules)s", this.nginxExtraRules);
     ngixConfig = ngixConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
-    ngixConfig = ngixConfig.replace("%(install_dir)s", this.installDir);
-    ngixConfig = ngixConfig.replace("%(dest_dir)s", this.dotDir);
     ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.portBase + 2));
     ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.portBase + 1));
-    ngixConfig = ngixConfig.replace("%(client_temp_dir)s", this.dotDir + "/nginx_client_temp");
+    ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.getPath());
 
     // write template to file
-    File targetFile = new File(this.dotDir, "conf/nginx.conf");
+    File targetFile = new File(this.nginxServDir, "conf/nginx.conf");
     if (targetFile.exists()) {
       Files.delete(targetFile.toPath());
     }

@@ -158,7 +158,9 @@ public class StartProcessRest {
     }
 
     boolean record = recordString != null && recordString.equals("true");
-    command = this.pluginDir + "/" + command;
+    if (!new File(command).exists()) {
+      command = this.pluginDir + "/" + command;
+    }
 
     List<String> extraArgs = pluginArgs.get(pluginName);
     if (extraArgs != null) {

@@ -17,7 +17,7 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.core.module.config.BeakerCoreConfig;
+import com.twosigma.beaker.core.module.config.BeakerConfig;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -53,12 +53,12 @@ import org.json.simple.parser.ParseException;
 @Path("util")
 public class UtilRest {
 
-  private final BeakerCoreConfig bkCoreConfig;
+  private final BeakerConfig bkConfig;
 
   @Inject
   public UtilRest(
-      BeakerCoreConfig bkCoreConfig) {
-    this.bkCoreConfig = bkCoreConfig;
+      BeakerConfig bkConfig) {
+    this.bkConfig = bkConfig;
     resetConfig();
   }
 
@@ -124,7 +124,7 @@ public class UtilRest {
   @GET
   @Path("default")
   public String defaultNotebook() {
-    String defaultNotebookUrl = this.bkCoreConfig.getDefaultNotebookUrl();
+    String defaultNotebookUrl = this.bkConfig.getDefaultNotebookUrl();
 
     // TODO, assume default notebook url is a file path for now.
     File defaultNotebookFile = new File(defaultNotebookUrl);
@@ -144,12 +144,12 @@ public class UtilRest {
   }
 
   private void resetConfig() {
-    String dotDir = this.bkCoreConfig.getDotDirectory();
+    String dotDir = this.bkConfig.getDotDirectory();
     File configFile = new File(dotDir, "beaker.conf.json");
     if (!configFile.exists()) {
       try {
         PrintWriter out = new PrintWriter(configFile);
-        out.print(readFile(new File(this.bkCoreConfig.getInstallDirectory(), "/config/beaker.conf.json")));
+        out.print(readFile(new File(this.bkConfig.getInstallDirectory(), "/config/beaker.conf.json")));
         out.close();
       } catch (FileNotFoundException e) {
         System.out.println("ERROR writing default default, " + e);
@@ -226,7 +226,7 @@ public class UtilRest {
       _isAllowAnonymousTracking = null;
     }
 
-    String dotDir = this.bkCoreConfig.getDotDirectory();
+    String dotDir = this.bkConfig.getDotDirectory();
     File configFile = new File(dotDir, "beaker.conf.json");
     try {
       ObjectMapper om = new ObjectMapper();

@@ -29,7 +29,7 @@ import java.util.Map;
  * BeakerCoreConfigImpl
  *
  */
-public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
+public class DefaultBeakerConfig implements BeakerConfig {
 
   private final String installDir;
   private final String pluginDir;
@@ -43,8 +43,8 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
   private final Map<String, String[]> pluginEnvps;
 
   @Inject
-  public DefaultBeakerCoreConfig(
-      BeakerCoreConfigPref pref)
+  public DefaultBeakerConfig(
+      BeakerConfigPref pref)
       throws UnknownHostException {
 
     this.installDir = System.getProperty("user.dir");

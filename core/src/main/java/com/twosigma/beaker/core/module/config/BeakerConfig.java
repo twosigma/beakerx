@@ -19,29 +19,18 @@ package com.twosigma.beaker.core.module.config;
 import java.util.Map;
 
 /**
- * DefaultBeakerCoreConfigPref
+ * BeakerCoreConfig
  *
  */
-public class DefaultBeakerCoreConfigPref implements BeakerCoreConfigPref {
-
-  @Override
-  public Boolean getUseKerberos() {
-    return null;
-  }
-
-  @Override
-  public Integer getPortBase() {
-    return null;
-  }
-
-  @Override
-  public String getDefaultNotebookUrl() {
-    return null;
-  }
-
-  @Override
-  public Map<String, String> getPluginOptions() {
-    return null;
-  }
-
+public interface BeakerConfig {
+  public String getInstallDirectory(); // a.k.a beaker core directory
+  public String getPluginDirectory(); // where to find plugin executables or starting scripts
+  public String getDotDirectory();
+  public String getNginxPath(); // where to locate nginx executable
+  public String getNginxExtraRules();
+  public Integer getPortBase();
+  public Boolean getUseKerberos();
+  public String getDefaultNotebookUrl();
+  public Map<String, String> getPluginOptions();
+  public Map<String, String[]> getPluginEnvps();
 }

@@ -19,12 +19,29 @@ package com.twosigma.beaker.core.module.config;
 import java.util.Map;
 
 /**
- * BeakerCorePref
+ * DefaultBeakerCoreConfigPref
  *
  */
-public interface BeakerCoreConfigPref {
-  public Boolean getUseKerberos();
-  public Integer getPortBase();
-  public String getDefaultNotebookUrl();
-  public Map<String, String> getPluginOptions();
+public class DefaultBeakerConfigPref implements BeakerConfigPref {
+
+  @Override
+  public Boolean getUseKerberos() {
+    return null;
+  }
+
+  @Override
+  public Integer getPortBase() {
+    return null;
+  }
+
+  @Override
+  public String getDefaultNotebookUrl() {
+    return null;
+  }
+
+  @Override
+  public Map<String, String> getPluginOptions() {
+    return null;
+  }
+
 }

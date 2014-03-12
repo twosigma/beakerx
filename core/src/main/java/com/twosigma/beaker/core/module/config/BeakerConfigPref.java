@@ -16,24 +16,15 @@
 
 package com.twosigma.beaker.core.module.config;
 
-import com.google.inject.AbstractModule;
+import java.util.Map;
 
 /**
- * BeakerCoreConfigModule
+ * BeakerCorePref
  *
  */
-public class DefaultBeakerCoreConfigModule extends AbstractModule {
-  private final BeakerCoreConfigPref pref;
-
-  public DefaultBeakerCoreConfigModule(BeakerCoreConfigPref pref) {
-    //this.pref = pref != null ? pref : new DefaultBeakerCoreConfigPref();
-    this.pref = pref;
-  }
-
-  @Override
-  protected void configure() {
-    bind(BeakerCoreConfigPref.class).toInstance(pref);
-    bind(BeakerCoreConfig.class).to(DefaultBeakerCoreConfig.class);
-  }
-
+public interface BeakerConfigPref {
+  public Boolean getUseKerberos();
+  public Integer getPortBase();
+  public String getDefaultNotebookUrl();
+  public Map<String, String> getPluginOptions();
 }

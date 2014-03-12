@@ -17,7 +17,7 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.core.module.config.BeakerCoreConfig;
+import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.cometd.OutputLogService;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 import java.io.BufferedReader;
@@ -65,21 +65,21 @@ public class StartProcessRest {
 
   @Inject
   private StartProcessRest(
-      BeakerCoreConfig bkcConfig,
+      BeakerConfig bkConfig,
       OutputLogService outputLogService) throws IOException {
-    this.installDir = bkcConfig.getInstallDirectory();
-    this.nginxDir = bkcConfig.getNginxPath();
-    this.nginxExtraRules = bkcConfig.getNginxExtraRules();
-    this.dotDir = bkcConfig.getDotDirectory();
-    this.pluginDir = bkcConfig.getPluginDirectory();
-    this.portBase = bkcConfig.getPortBase();
-    this.pluginEnvps = bkcConfig.getPluginEnvps();
+    this.installDir = bkConfig.getInstallDirectory();
+    this.nginxDir = bkConfig.getNginxPath();
+    this.nginxExtraRules = bkConfig.getNginxExtraRules();
+    this.dotDir = bkConfig.getDotDirectory();
+    this.pluginDir = bkConfig.getPluginDirectory();
+    this.portBase = bkConfig.getPortBase();
+    this.pluginEnvps = bkConfig.getPluginEnvps();
     this.pluginArgs = new HashMap<>();
     this.outputLogService = outputLogService;
     this.nginxTemplate = readFile(this.installDir + "/config/nginx.conf.template");
 
     // record plugin options from cli and to pass through to individual plugins
-    for (Map.Entry<String, String> e: bkcConfig.getPluginOptions().entrySet()) {
+    for (Map.Entry<String, String> e: bkConfig.getPluginOptions().entrySet()) {
       addPluginArgs(e.getKey(), e.getValue());
     }
 

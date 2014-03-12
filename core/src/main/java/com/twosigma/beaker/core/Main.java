@@ -21,8 +21,8 @@ import com.twosigma.beaker.shared.module.GuiceCometdModule;
 import com.twosigma.beaker.core.module.SerializerModule;
 import com.twosigma.beaker.core.module.URLConfigModule;
 import com.twosigma.beaker.core.module.WebServerModule;
-import com.twosigma.beaker.core.module.config.DefaultBeakerCoreConfigModule;
-import com.twosigma.beaker.core.module.config.BeakerCoreConfigPref;
+import com.twosigma.beaker.core.module.config.DefaultBeakerConfigModule;
+import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.core.rest.StartProcessRest;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
@@ -76,7 +76,7 @@ public class Main {
 
     // create preferences for beaker core from cli options and others
     // to be used by BeakerCoreConfigModule to initialize its config
-    BeakerCoreConfigPref beakerCorePref = createBeakerCoreConfigPref(
+    BeakerConfigPref beakerCorePref = createBeakerCoreConfigPref(
         useKerberos,
         portBase,
         cliOptions.getDefaultNotebookUrl(),
@@ -87,7 +87,7 @@ public class Main {
         System.getProperty("user.dir") + "/src/main/web");
 
     Injector injector = Guice.createInjector(
-        new DefaultBeakerCoreConfigModule(beakerCorePref),
+        new DefaultBeakerConfigModule(beakerCorePref),
         new WebServerConfigModule(webAppPref),
         new GeneralUtilsModule(),
         new WebServerModule(),
@@ -126,12 +126,12 @@ public class Main {
     return initUrl;
   }
 
-  private static BeakerCoreConfigPref createBeakerCoreConfigPref(
+  private static BeakerConfigPref createBeakerCoreConfigPref(
       final Boolean useKerberos,
       final Integer portBase,
       final String defaultNotebookUrl,
       final Map<String, String> pluginOptions) {
-    return new BeakerCoreConfigPref() {
+    return new BeakerConfigPref() {
 
       @Override
       public Boolean getUseKerberos() {

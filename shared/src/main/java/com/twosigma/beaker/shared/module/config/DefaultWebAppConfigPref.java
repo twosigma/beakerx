@@ -23,6 +23,7 @@ package com.twosigma.beaker.shared.module.config;
 public class DefaultWebAppConfigPref implements WebAppConfigPref {
 
   private final Integer port;
+
   public DefaultWebAppConfigPref(Integer port) {
     this.port = port;
   }
@@ -30,6 +31,11 @@ public class DefaultWebAppConfigPref implements WebAppConfigPref {
   @Override
   public Integer getPort() {
     return this.port;
+  }
+
+  @Override
+  public String getStaticDirectory() {
+    return null;
   }
 
 }

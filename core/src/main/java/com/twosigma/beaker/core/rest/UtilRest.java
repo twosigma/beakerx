@@ -18,7 +18,6 @@ package com.twosigma.beaker.core.rest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerCoreConfig;
-import com.twosigma.beaker.shared.module.config.BeakerConfig;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -54,14 +53,11 @@ import org.json.simple.parser.ParseException;
 @Path("util")
 public class UtilRest {
 
-  private final BeakerConfig bkConfig;
   private final BeakerCoreConfig bkCoreConfig;
 
   @Inject
   public UtilRest(
-      BeakerConfig bkConfig,
       BeakerCoreConfig bkCoreConfig) {
-    this.bkConfig = bkConfig;
     this.bkCoreConfig = bkCoreConfig;
     resetConfig();
   }
@@ -153,7 +149,7 @@ public class UtilRest {
     if (!configFile.exists()) {
       try {
         PrintWriter out = new PrintWriter(configFile);
-        out.print(readFile(new File(this.bkConfig.getInstallDirectory(), "/config/beaker.conf.json")));
+        out.print(readFile(new File(this.bkCoreConfig.getInstallDirectory(), "/config/beaker.conf.json")));
         out.close();
       } catch (FileNotFoundException e) {
         System.out.println("ERROR writing default default, " + e);

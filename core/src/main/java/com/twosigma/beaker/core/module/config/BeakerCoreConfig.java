@@ -23,6 +23,7 @@ import java.util.Map;
  *
  */
 public interface BeakerCoreConfig {
+  public String getInstallDirectory(); // a.k.a beaker core directory
   public String getPluginDirectory(); // where to find plugin executables or starting scripts
   public String getDotDirectory();
   public String getNginxPath(); // where to locate nginx executable

@@ -16,7 +16,6 @@
 package com.twosigma.beaker.core.module.config;
 
 import com.google.inject.Inject;
-import com.twosigma.beaker.shared.module.config.BeakerConfig;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,6 +31,7 @@ import java.util.Map;
  */
 public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
 
+  private final String installDir;
   private final String pluginDir;
   private final String dotDir;
   private final String nginxPath;
@@ -44,13 +44,13 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
 
   @Inject
   public DefaultBeakerCoreConfig(
-      BeakerConfig bkConfig,
       BeakerCoreConfigPref pref)
       throws UnknownHostException {
 
+    this.installDir = System.getProperty("user.dir");
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
-    this.pluginDir = bkConfig.getInstallDirectory() + "/src/main/sh";
+    this.pluginDir = this.installDir + "/src/main/sh";
     this.dotDir = System.getProperty("user.home") + "/.beaker";
     File dotFile = new File(dotDir);
     if (!dotFile.exists()) {
@@ -58,13 +58,13 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
         System.out.println("failed to create " + dotDir);
       }
     }
-    this.nginxPath = bkConfig.getInstallDirectory() + "/nginx";
+    this.nginxPath = this.installDir + "/nginx";
     this.nginxExtraRules = "";
 
 
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
     final String mainDefaultNotebookPath = this.dotDir + "/default.bkr";
-    final String defaultDefaultNotebookPath = bkConfig.getInstallDirectory() + "/config/default.bkr";
+    final String defaultDefaultNotebookPath = this.installDir + "/config/default.bkr";
 
     if (prefDefaultNotebookUrl != null) {
       this.defaultNotebookUrl = prefDefaultNotebookUrl;
@@ -102,6 +102,11 @@ public class DefaultBeakerCoreConfig implements BeakerCoreConfig {
     PrintWriter out = new PrintWriter(to);
     out.print(readFile(from));
     out.close();
+  }
+
+  @Override
+  public String getInstallDirectory() {
+    return this.installDir;
   }
 
   @Override

@@ -22,4 +22,5 @@ package com.twosigma.beaker.shared.module.config;
  */
 public interface WebAppConfigPref {
   public Integer getPort();
+  public String getStaticDirectory();
 }

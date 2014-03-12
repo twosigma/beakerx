@@ -16,7 +16,6 @@
 package com.twosigma.beaker.r.module;
 
 import com.google.inject.Injector;
-import com.twosigma.beaker.shared.module.config.BeakerConfig;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -31,11 +30,10 @@ public class StartRPlugin {
 
   public static void StartRserve(Injector injector) throws IOException {
 
-    String beakerCoreDir = injector.getInstance(BeakerConfig.class).getInstallDirectory();
-
+    String pluginInstallDir = System.getProperty("user.dir");
     String[] command = {
       "Rscript",
-      beakerCoreDir + "/src/main/r/Rserve"
+      pluginInstallDir + "/src/main/r/Rserve"
     };
 
     // Need to clear out some environment variables in order for a

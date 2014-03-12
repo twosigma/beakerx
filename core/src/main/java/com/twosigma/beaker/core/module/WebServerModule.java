@@ -21,7 +21,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.twosigma.beaker.shared.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import org.eclipse.jetty.server.Connector;
@@ -52,8 +51,8 @@ public class WebServerModule extends AbstractModule {
   @Provides
   @Singleton
   public Server getServer(final Injector injector, Connector connector) {
-    BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
-    String staticDir = bkConfig.getStaticDirectory();
+    WebServerConfig webServerConfig = injector.getInstance(WebServerConfig.class);
+    String staticDir = webServerConfig.getStaticDirectory();
     Server server = new Server();
     server.addConnector(connector);
     ServletContextHandler servletHandler = new ServletContextHandler();

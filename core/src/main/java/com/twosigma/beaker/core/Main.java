@@ -26,7 +26,6 @@ import com.twosigma.beaker.core.module.config.BeakerCoreConfigPref;
 import com.twosigma.beaker.core.rest.StartProcessRest;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
-import com.twosigma.beaker.shared.module.config.DefaultBeakerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import java.io.IOException;
@@ -83,10 +82,11 @@ public class Main {
         cliOptions.getDefaultNotebookUrl(),
         cliOptions.getPluginOptions());
 
-    WebAppConfigPref webAppPref = createWebAppConfigPref(portBase + BEAKER_SERVER_PORT_OFFSET);
+    WebAppConfigPref webAppPref = createWebAppConfigPref(
+        portBase + BEAKER_SERVER_PORT_OFFSET,
+        System.getProperty("user.dir") + "/src/main/web");
 
     Injector injector = Guice.createInjector(
-        new DefaultBeakerConfigModule(),
         new DefaultBeakerCoreConfigModule(beakerCorePref),
         new WebServerConfigModule(webAppPref),
         new GeneralUtilsModule(),
@@ -155,11 +155,16 @@ public class Main {
     };
   }
 
-  private static WebAppConfigPref createWebAppConfigPref(final Integer port) {
+  private static WebAppConfigPref createWebAppConfigPref(final Integer port, final String staticDir) {
     return new WebAppConfigPref() {
       @Override
       public Integer getPort() {
         return port;
+      }
+
+      @Override
+      public String getStaticDirectory() {
+        return staticDir;
       }
     };
   }

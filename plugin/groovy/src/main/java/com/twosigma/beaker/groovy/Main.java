@@ -21,7 +21,6 @@ import com.twosigma.beaker.groovy.module.URLConfigModule;
 import com.twosigma.beaker.jvm.module.SerializerModule;
 import com.twosigma.beaker.jvm.module.WebServerModule;
 import com.twosigma.beaker.shared.module.GuiceCometdModule;
-import com.twosigma.beaker.shared.module.config.DefaultBeakerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
@@ -52,7 +51,6 @@ public class Main {
     final int port = Integer.parseInt(args[0]);
     WebAppConfigPref webAppPref = new DefaultWebAppConfigPref(port);
     Injector injector = Guice.createInjector(
-        new DefaultBeakerConfigModule(),
         new WebServerConfigModule(webAppPref),
         new WebServerModule(),
         new URLConfigModule(),

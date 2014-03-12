@@ -25,11 +25,14 @@ import com.google.inject.Inject;
 public class DefaultWebServerConfig implements WebServerConfig {
   private final Integer port;
   private final String username;
+  private final String staticDir;
 
   @Inject
   public DefaultWebServerConfig(WebAppConfigPref pref) {
     this.port = pref.getPort();
     this.username = System.getProperty("user.name");
+    this.staticDir = pref.getStaticDirectory() != null ?
+        pref.getStaticDirectory() : System.getProperty("user.dir");
   }
 
   @Override
@@ -40,6 +43,11 @@ public class DefaultWebServerConfig implements WebServerConfig {
   @Override
   public String getUsername() {
     return this.username;
+  }
+
+  @Override
+  public String getStaticDirectory() {
+    return this.staticDir;
   }
 
 }

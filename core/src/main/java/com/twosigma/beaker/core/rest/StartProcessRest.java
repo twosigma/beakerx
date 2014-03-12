@@ -20,7 +20,6 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerCoreConfig;
 import com.twosigma.beaker.shared.cometd.OutputLogService;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
-import com.twosigma.beaker.shared.module.config.BeakerConfig;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -53,7 +52,6 @@ public class StartProcessRest {
   private final String installDir;
   private final String nginxDir;
   private final String nginxExtraRules;
-  private final String staticDir;
   private final String dotDir;
   private final String pluginDir;
   private final Integer portBase;
@@ -67,13 +65,11 @@ public class StartProcessRest {
 
   @Inject
   private StartProcessRest(
-      BeakerConfig bkConfig,
       BeakerCoreConfig bkcConfig,
       OutputLogService outputLogService) throws IOException {
-    this.installDir = bkConfig.getInstallDirectory();
+    this.installDir = bkcConfig.getInstallDirectory();
     this.nginxDir = bkcConfig.getNginxPath();
     this.nginxExtraRules = bkcConfig.getNginxExtraRules();
-    this.staticDir = bkConfig.getStaticDirectory();
     this.dotDir = bkcConfig.getDotDirectory();
     this.pluginDir = bkcConfig.getPluginDirectory();
     this.portBase = bkcConfig.getPortBase();
@@ -238,7 +234,7 @@ public class StartProcessRest {
     }
     Files.createSymbolicLink(
         htmlDir.toPath(),
-        new File(this.staticDir + "/static").toPath());
+        new File(this.installDir + "/src/main/web/static").toPath());
 
     String ngixConfig = nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();

@@ -87,41 +87,41 @@ public class OutputLogService {
   @JsonAutoDetect
   public static class OutputLine {
 
-    private String _evaluator;
-    private String _type; // stdout, or stderr
-    private String _line; // the business
+    private String evaluator;
+    private String type; // stdout, or stderr
+    private String line; // the business
 
     public String getEvaluator() {
-      return _evaluator;
+      return this.evaluator;
     }
 
     public String getType() {
-      return _type;
+      return this.type;
     }
 
     public String getLine() {
-      return _line;
+      return this.line;
     }
 
     public void setEvaluator(String s) {
-      _evaluator = s;
+      this.evaluator = s;
     }
 
     public void setType(String s) {
-      _type = s;
+      this.type = s;
     }
 
     public void setLine(String s) {
-      _line = s;
+      this.line = s;
     }
 
     public OutputLine() {
     }
 
     public OutputLine(String evaluator, String type, String line) {
-      _evaluator = evaluator;
-      _type = type;
-      _line = line;
+      this.evaluator = evaluator;
+      this.type = type;
+      this.line = line;
     }
   }
 }

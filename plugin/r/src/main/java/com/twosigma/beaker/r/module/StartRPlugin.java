@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.r.module;
 
+import com.twosigma.beaker.r.rest.RShellRest;
 import com.google.inject.Injector;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

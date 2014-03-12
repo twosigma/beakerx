@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.r.module;
+package com.twosigma.beaker.r.rest;
 
 import java.io.File;
 import java.io.InputStream;
@@ -36,6 +36,7 @@ import javax.imageio.ImageIO;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.r.module.ROutputHandler;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 import org.rosuda.REngine.REXPMismatchException;

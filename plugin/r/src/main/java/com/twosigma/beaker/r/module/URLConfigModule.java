@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.r.module;
 
+import com.twosigma.beaker.r.rest.RShellRest;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.groovy.module;
 
+import com.twosigma.beaker.groovy.rest.GroovyShellRest;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;

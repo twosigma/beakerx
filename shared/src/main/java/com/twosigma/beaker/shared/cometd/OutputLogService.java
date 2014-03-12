@@ -38,17 +38,17 @@ import org.cometd.bayeux.server.ServerSession;
 @Singleton
 public class OutputLogService {
 
-  private BayeuxServer _bayeux;
-  private LocalSession _localSession;
+  private BayeuxServer bayeux;
+  private LocalSession localSession;
   // Synchronized? XXX
-  public List<OutputLine> log = new ArrayList<>();
-  private ObjectMapper _mapper = new ObjectMapper();
+  private List<OutputLine> log = new ArrayList<>();
+  private ObjectMapper mapper = new ObjectMapper();
 
   @Inject
   public OutputLogService(BayeuxServer bayeuxServer) {
-    _bayeux = bayeuxServer;
-    _localSession = bayeuxServer.newLocalSession(getClass().getCanonicalName());
-    _localSession.handshake();
+    this.bayeux = bayeuxServer;
+    this.localSession = bayeuxServer.newLocalSession(getClass().getCanonicalName());
+    this.localSession.handshake();
   }
 
   @Listener("/service/outputlog/get")
@@ -60,10 +60,10 @@ public class OutputLogService {
   }
 
   public void serverPut(OutputLine line) {
-    log.add(line);
-    ServerChannel channel = _bayeux.getChannel("/outputlog");
+    this.log.add(line);
+    ServerChannel channel = this.bayeux.getChannel("/outputlog");
     if (channel != null) {
-      channel.publish(_localSession, line, null);
+      channel.publish(this.localSession, line, null);
     }
   }
 
@@ -71,8 +71,16 @@ public class OutputLogService {
   public void processPut(ServerSession session, ServerMessage msg)
           throws IOException {
     String line = String.valueOf(msg.getData());
-    OutputLine outputLine = _mapper.readValue(line, OutputLine.class);
+    OutputLine outputLine = this.mapper.readValue(line, OutputLine.class);
     serverPut(outputLine);
+  }
+
+  public List<OutputLine> getLog() {
+    return this.log;
+  }
+
+  public void clear() {
+    this.log = new ArrayList<OutputLogService.OutputLine>();
   }
 
   // Would be nice to record a timestamp too.

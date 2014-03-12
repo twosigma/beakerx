@@ -41,13 +41,13 @@ public class OutputLogRest {
   @Path("get")
   public List<OutputLogService.OutputLine> get(@QueryParam("linecount") String lineCount) {
     // lineCount ignored XXX
-    return _OutputLogService.log;
+    return _OutputLogService.getLog();
   }
 
   @GET
   @Path("clear")
   public String clear() {
-    _OutputLogService.log = new ArrayList<OutputLogService.OutputLine>();
+    _OutputLogService.clear();
     return "\"ok\"";
   }
 }

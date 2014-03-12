@@ -209,7 +209,7 @@ public class UtilRest {
     }
   }
 
-  private Boolean _isAllowAnonymousTracking = null;
+  private Boolean isAllowAnonymousTracking = null;
 
   @POST
   @Path("setAllowAnonymousTracking")
@@ -217,13 +217,13 @@ public class UtilRest {
           @FormParam("allow") String allow) {
 
     if (allow == null) {
-      _isAllowAnonymousTracking = null;
+      this.isAllowAnonymousTracking = null;
     } else if (allow.equals("true")) {
-      _isAllowAnonymousTracking = Boolean.TRUE;
+      this.isAllowAnonymousTracking = Boolean.TRUE;
     } else if (allow.equals("false")) {
-      _isAllowAnonymousTracking = Boolean.FALSE;
+      this.isAllowAnonymousTracking = Boolean.FALSE;
     } else {
-      _isAllowAnonymousTracking = null;
+      this.isAllowAnonymousTracking = null;
     }
 
     String dotDir = this.bkConfig.getDotDirectory();
@@ -235,9 +235,9 @@ public class UtilRest {
       Map<String, Object> configs = om.readValue(configFile, readType);
       Boolean oldValue = (Boolean) configs.get("allow-anonymous-usage-tracking");
       // If value changed, write it to the file too
-      if ((_isAllowAnonymousTracking == null && oldValue != null)
-              || (_isAllowAnonymousTracking != null && !(_isAllowAnonymousTracking.equals(oldValue)))) {
-        configs.put("allow-anonymous-usage-tracking", _isAllowAnonymousTracking);
+      if ((this.isAllowAnonymousTracking == null && oldValue != null)
+              || (this.isAllowAnonymousTracking != null && !(this.isAllowAnonymousTracking.equals(oldValue)))) {
+        configs.put("allow-anonymous-usage-tracking", this.isAllowAnonymousTracking);
         om.writerWithDefaultPrettyPrinter().writeValue(configFile, configs);
       }
     } catch (IOException e) {
@@ -248,66 +248,66 @@ public class UtilRest {
   @GET
   @Path("isAllowAnonymousTracking")
   public Boolean isAllowAnonymousTracking() {
-    return _isAllowAnonymousTracking;
+    return this.isAllowAnonymousTracking;
   }
 
   /* Init Plugins */
-  private final List<String> _initPlugins = new ArrayList<>();
+  private final List<String> initPlugins = new ArrayList<>();
 
   public void addInitPlugin(String p) {
-    _initPlugins.add(p);
+    this.initPlugins.add(p);
   }
 
   @GET
   @Path("initplugins")
   public List<String> initPlugins() {
-    return _initPlugins;
+    return this.initPlugins;
   }
 
   /* bkApp Menu Plugins */
-  private final Set<String> _menuPlugins = new LinkedHashSet<>();
+  private final Set<String> menuPlugins = new LinkedHashSet<>();
 
   @POST
   @Path("addMenuPlugin")
   public void addMenuPlugin(
           @FormParam("url") String urlAsString) {
-    _menuPlugins.add(urlAsString);
+    this.menuPlugins.add(urlAsString);
   }
 
   @GET
   @Path("menuplugins")
   public Set<String> menuPlugins() {
-    return _menuPlugins;
+    return this.menuPlugins;
   }
 
   /* bkControl Menu Plugins */
-  private final Set<String> _controlPanelMenuPlugins = new LinkedHashSet<>();
+  private final Set<String> controlPanelMenuPlugins = new LinkedHashSet<>();
 
   @POST
   @Path("addControlMenuPlugin")
   public void addControlPanelMenuPlugin(
           @FormParam("url") String urlAsString) {
-    _controlPanelMenuPlugins.add(urlAsString);
+    this.controlPanelMenuPlugins.add(urlAsString);
   }
 
   @GET
   @Path("controlpanelmenuplugins")
   public Set<String> controlPanelMenuPlugins() {
-    return _controlPanelMenuPlugins;
+    return this.controlPanelMenuPlugins;
   }
 
   /* bkCell Menu Plugins */
-  private final List<String> _cellMenuPlugins = new ArrayList<>();
+  private final List<String> cellMenuPlugins = new ArrayList<>();
 
   @POST
   @Path("addCellMenuPlugin")
   public void addCellMenuPlugin(String p) {
-    _cellMenuPlugins.add(p);
+    this.cellMenuPlugins.add(p);
   }
 
   @GET
   @Path("cellmenuplugins")
   public List<String> cellMenuPlugins() {
-    return _cellMenuPlugins;
+    return this.cellMenuPlugins;
   }
 }

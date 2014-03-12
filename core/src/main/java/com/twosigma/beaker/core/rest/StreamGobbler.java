@@ -35,17 +35,17 @@ public class StreamGobbler extends Thread {
   String plugin;
   boolean record;
   String waitfor;
-  OutputLogService _outputLogService;
+  OutputLogService outputLogService;
 
   public StreamGobbler(OutputLogService outputLogService,
-          InputStream is, String plugin, String type,
-          boolean record, String waitfor) {
-    _outputLogService = outputLogService;
+      InputStream is, String plugin, String type,
+      boolean record, String waitfor) {
     this.is = is;
     this.type = type;
     this.record = record;
     this.plugin = plugin;
     this.waitfor = waitfor;
+    this.outputLogService = outputLogService;
   }
 
   public static void shuttingDown() {
@@ -76,8 +76,8 @@ public class StreamGobbler extends Thread {
         if (record && null == waitfor) {
           OutputLogService.OutputLine outputLine =
                   new OutputLogService.OutputLine(plugin, type, line);
-          if (_outputLogService != null) {
-            _outputLogService.serverPut(outputLine);
+          if (this.outputLogService != null) {
+            this.outputLogService.serverPut(outputLine);
           }
         }
         if (waitfor != null && line.indexOf(waitfor) > 0) {

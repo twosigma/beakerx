@@ -48,17 +48,17 @@ import org.codehaus.jackson.map.SerializerProvider;
 @Path("sessionbackup")
 public class SessionBackupRest {
 
-  private static final String BEAKR_DIRECTORY_NAME = ".beaker";
+  private static final String BEAKR_DIRECTORY_NAME = ".beaker"; // TODO, get this from beakerConfig
   private static final String BACKUP_DIRECTORY_NAME = "backups";
-  private static File _backupDirectory;
+  private static File backupDirectory;
 
   public SessionBackupRest() {
     File homeDirectory = new File(System.getProperty("user.home"));
-    _backupDirectory = new File(
+    this.backupDirectory = new File(
             homeDirectory,
             BEAKR_DIRECTORY_NAME + "/" + BACKUP_DIRECTORY_NAME);
-    if (!_backupDirectory.exists()) {
-      _backupDirectory.mkdirs();
+    if (!this.backupDirectory.exists()) {
+      this.backupDirectory.mkdirs();
     }
   }
 
@@ -89,8 +89,8 @@ public class SessionBackupRest {
       pluginUrl = url;
     }
   }
-  private final Map<String, Session> _sessions = new HashMap<String, Session>();
-  private final List<Plugin> _plugins = new ArrayList<Plugin>();
+  private final Map<String, Session> sessions = new HashMap<String, Session>();
+  private final List<Plugin> plugins = new ArrayList<Plugin>();
 
   @POST
   @Path("backup")
@@ -100,14 +100,14 @@ public class SessionBackupRest {
           @FormParam("content") String contentAsString,
           @FormParam("caption") String caption,
           @FormParam("edited") boolean edited) {
-    Session previous = _sessions.get(sessionID);
+    Session previous = this.sessions.get(sessionID);
     long date;
     if (previous != null) {
       date = previous.openDate;
     } else {
       date = System.currentTimeMillis();
     }
-    _sessions.put(sessionID, new Session(notebookUrl, contentAsString, caption, date, edited));
+    this.sessions.put(sessionID, new Session(notebookUrl, contentAsString, caption, date, edited));
     try {
       recordToFile(sessionID, notebookUrl, contentAsString);
     } catch (IOException ex) {
@@ -123,7 +123,7 @@ public class SessionBackupRest {
       notebookUrl = "NewNotebook";
     }
     final String fileName = sessionID + "_" + URLEncoder.encode(notebookUrl, "ISO-8859-1") + ".bkr.backup";
-    final File file = new File(_backupDirectory, fileName);
+    final File file = new File(this.backupDirectory, fileName);
     Writer writer = new OutputStreamWriter(new FileOutputStream(file));
     try {
       writer.write(contentAsString);
@@ -141,20 +141,20 @@ public class SessionBackupRest {
   @Path("load")
   public Session load(
           @QueryParam("sessionid") String sessionID) {
-    return _sessions.get(sessionID);
+    return this.sessions.get(sessionID);
   }
 
   @POST
   @Path("close")
   public void close(
           @FormParam("sessionid") String sessionID) {
-    _sessions.remove(sessionID);
+    this.sessions.remove(sessionID);
   }
 
   @GET
   @Path("getExistingSessions")
   public Map<String, Session> getExistingSessions() {
-    return _sessions;
+    return this.sessions;
   }
 
   public static class SessionSerializer
@@ -182,8 +182,8 @@ public class SessionBackupRest {
           @FormParam("pluginname") String pluginName,
           @FormParam("pluginurl") String pluginUrl) {
     boolean existsAlready = false;
-    for (int i = 0; i < _plugins.size(); ++i) {
-      Plugin p = _plugins.get(i);
+    for (int i = 0; i < this.plugins.size(); ++i) {
+      Plugin p = this.plugins.get(i);
       if (p.pluginUrl.equals(pluginUrl)) {
         p.pluginName = pluginName;
         existsAlready = true;
@@ -191,14 +191,14 @@ public class SessionBackupRest {
       }
     }
     if (!existsAlready) {
-      _plugins.add(new Plugin(pluginName, pluginUrl));
+      this.plugins.add(new Plugin(pluginName, pluginUrl));
     }
   }
 
   @GET
   @Path("getExistingPlugins")
   public List<Plugin> getAllPlugins() {
-    return _plugins;
+    return this.plugins;
   }
 
   public static class ExistingPlugins {

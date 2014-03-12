@@ -44,25 +44,25 @@ import org.apache.commons.collections.list.UnmodifiableList;
 @SuppressWarnings("unchecked")
 public class RecentMenuRest {
 
-  private static final String BEAKR_DIRECTORY_NAME = ".beaker";
+  private static final String BEAKR_DIRECTORY_NAME = ".beaker"; // TODO, get this from beakerConfig
   private static final String CONFIGURATION_DIRECTORY_NAME = "conf";
   private static final String RECENT_DOCUMENTS_FILE_NAME = "recentDocuments";
-  private static File _recentDocumentsDirectory;
+  private static File recentDocumnetsDir;
   private final File _recentDocumentsFile;
-  private final List<String> _recentDocuments;
-  private final List<String> _immutableRecentDocuments;
+  private final List<String> recentDocuments;
+  private final List<String> immutableRecentDocuments;
 
   public RecentMenuRest() {
     File homeDirectory = new File(System.getProperty("user.home"));
-    _recentDocumentsDirectory = new File(
+    this.recentDocumnetsDir = new File(
             homeDirectory,
             BEAKR_DIRECTORY_NAME + "/" + CONFIGURATION_DIRECTORY_NAME);
-    _recentDocumentsDirectory.mkdir();
+    this.recentDocumnetsDir.mkdir();
     _recentDocumentsFile = new File(
-            _recentDocumentsDirectory,
+            this.recentDocumnetsDir,
             RECENT_DOCUMENTS_FILE_NAME);
-    _recentDocuments = new ArrayList<String>();
-    _immutableRecentDocuments = UnmodifiableList.decorate(_recentDocuments);
+    this.recentDocuments = new ArrayList<String>();
+    this.immutableRecentDocuments = UnmodifiableList.decorate(this.recentDocuments);
 
     // read from file -> _recentDocuments
     if (_recentDocumentsFile.exists()) {
@@ -90,14 +90,14 @@ public class RecentMenuRest {
   }
 
   private List<String> getRecentDocuments() {
-    return _immutableRecentDocuments;
+    return this.immutableRecentDocuments;
   }
 
   private void addRecentDocument(String docName) {
-    if (_recentDocuments.contains(docName)) {
-      _recentDocuments.remove(docName);
+    if (this.recentDocuments.contains(docName)) {
+      this.recentDocuments.remove(docName);
     }
-    _recentDocuments.add(0, transformUrl(docName));
+    this.recentDocuments.add(0, transformUrl(docName));
   }
 
   private void recordToFile()
@@ -105,8 +105,8 @@ public class RecentMenuRest {
     Writer writer = new OutputStreamWriter(
             new FileOutputStream(_recentDocumentsFile));
     try {
-      for (int i = _recentDocuments.size() - 1; i >= 0; --i) {
-        writer.write(_recentDocuments.get(i));
+      for (int i = this.recentDocuments.size() - 1; i >= 0; --i) {
+        writer.write(this.recentDocuments.get(i));
         writer.write("\n");
       }
     } finally {
@@ -142,7 +142,7 @@ public class RecentMenuRest {
   @Path("clear")
   public void clear()
           throws IOException {
-    _recentDocuments.clear();
+    this.recentDocuments.clear();
     recordToFile();
   }
 }

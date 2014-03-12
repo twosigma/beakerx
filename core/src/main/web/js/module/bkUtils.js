@@ -51,7 +51,7 @@
       },
       getDefaultNotebook: function() {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet("/beaker/rest/util/default").
+        angularUtils.httpGet("/beaker/rest/util/defaultNotebook").
             success(function(data) {
               deferred.resolve(data);
             }).

@@ -87,7 +87,7 @@
                 });
               }
             };
-            bkCoreManager.httpGet("/beaker/rest/fileio/getHomeDirectory").success(function(ret) {
+            bkCoreManager.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(ret) {
               var homeDir = ret.value;
               var fileChooserStrategy = { result: "" };
               fileChooserStrategy.close = function(ev, closeFunc) {
@@ -101,7 +101,7 @@
                   this.showSpinner = true;
                   $http({
                     method: 'GET',
-                    url: "/beaker/rest/fileio/getDecoratedChildren",
+                    url: "/beaker/rest/file-io/getDecoratedChildren",
                     params: { path: path }
                   }).success(function(list) {
                         self.showSpinner = false;

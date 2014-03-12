@@ -47,7 +47,7 @@ import org.codehaus.jackson.map.SerializerProvider;
  */
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
-@Path("sessionbackup")
+@Path("session-backup")
 public class SessionBackupRest {
 
   private final File backupDirectory;
@@ -105,9 +105,7 @@ public class SessionBackupRest {
     this.sessions.put(sessionID, new Session(notebookUrl, contentAsString, caption, date, edited));
     try {
       recordToFile(sessionID, notebookUrl, contentAsString);
-    } catch (IOException ex) {
-      Logger.getLogger(SessionBackupRest.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (InterruptedException ex) {
+    } catch (IOException | InterruptedException ex) {
       Logger.getLogger(SessionBackupRest.class.getName()).log(Level.SEVERE, null, ex);
     }
   }

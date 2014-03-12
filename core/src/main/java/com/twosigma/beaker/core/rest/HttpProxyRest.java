@@ -17,8 +17,10 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-import java.io.*;
 import java.net.URL;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -31,7 +33,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
-@Path("httpProxy")
+@Path("http-proxy")
 public class HttpProxyRest {
 
   @GET
@@ -44,11 +46,11 @@ public class HttpProxyRest {
             new InputStreamReader(url.openStream()));
 
     StringBuilder fullText = new StringBuilder();
-    String inputLine;
-    while ((inputLine = in.readLine()) != null) {
-      fullText.append(inputLine);
-      fullText.append("\n");
-    }
+      String inputLine;
+      while ((inputLine = in.readLine()) != null) {
+        fullText.append(inputLine);
+        fullText.append("\n");
+      }
     in.close();
     return new StringObject(fullText.toString());
   }

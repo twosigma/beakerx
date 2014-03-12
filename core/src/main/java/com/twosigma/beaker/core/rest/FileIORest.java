@@ -41,7 +41,7 @@ import org.apache.commons.io.IOUtils;
  */
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
-@Path("fileio")
+@Path("file-io")
 public class FileIORest {
 
   @GET
@@ -53,13 +53,13 @@ public class FileIORest {
   @POST
   @Path("save")
   public StringObject save(
-          @FormParam("path") String path,
-          @FormParam("content") String contentAsString) throws FileNotFoundException, IOException {
+      @FormParam("path") String path,
+      @FormParam("content") String contentAsString) throws FileNotFoundException, IOException {
     if (path.startsWith("file:")) {
       path = path.substring(5); // get rid of prefix "file:"
     }
     FileOutputStream fos = new FileOutputStream(path);
-    fos.write(contentAsString.getBytes());
+      fos.write(contentAsString.getBytes());
     fos.close();
     return new StringObject("done");
   }
@@ -67,7 +67,7 @@ public class FileIORest {
   @GET
   @Path("load")
   public StringObject load(
-          @QueryParam("path") String path) throws FileNotFoundException, IOException {
+      @QueryParam("path") String path) throws FileNotFoundException, IOException {
     if (path.startsWith("file:")) {
       path = path.substring(5); // get rid of prefix "file:"
     }
@@ -95,7 +95,7 @@ public class FileIORest {
   }
   private static final String BEAKER_NOTEBOOK_EXTENSION = ".bkr";
   private static final String BEAKER_NOTEBOOK_MIME_TYPE =
-          "application/prs.twosigma.beaker.notebook+json";
+      "application/prs.twosigma.beaker.notebook+json";
 
   public static String getMimeTypeForExtension(String extension) {
     if (MIME_MAP == null) {
@@ -127,13 +127,13 @@ public class FileIORest {
   @GET
   @Path("getDecoratedChildren")
   public List<Map<String, Object>> getDecoratedChildren(
-          @QueryParam("path") String path) {
+      @QueryParam("path") String path) {
     File f = new File(path);
     File[] children = f.listFiles();
-    List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>(children.length);
+    List<Map<String, Object>> ret = new ArrayList<>(children.length);
     for (File cf : children) {
       if (!cf.isHidden()) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uri", cf.getPath());
         map.put("type", cf.isDirectory() ? "directory" : getMimeTypeForFileName(cf.getPath()));
         ret.add(map);

@@ -121,7 +121,7 @@ public class UtilRest {
   }
 
   @GET
-  @Path("default")
+  @Path("defaultNotebook")
   public String defaultNotebook() {
     String defaultNotebookUrl = this.bkConfig.getDefaultNotebookUrl();
 
@@ -203,7 +203,7 @@ public class UtilRest {
   @POST
   @Path("setAllowAnonymousTracking")
   public void setAllowAnonymousTracking(
-          @FormParam("allow") String allow) {
+      @FormParam("allow") String allow) {
 
     if (allow == null) {
       this.isAllowAnonymousTracking = null;
@@ -263,7 +263,7 @@ public class UtilRest {
   }
 
   @GET
-  @Path("menuplugins")
+  @Path("menuPlugins")
   public Set<String> menuPlugins() {
     return this.menuPlugins;
   }
@@ -279,7 +279,7 @@ public class UtilRest {
   }
 
   @GET
-  @Path("controlpanelmenuplugins")
+  @Path("controlPanelMenuPlugins")
   public Set<String> controlPanelMenuPlugins() {
     return this.controlPanelMenuPlugins;
   }
@@ -294,7 +294,7 @@ public class UtilRest {
   }
 
   @GET
-  @Path("cellmenuplugins")
+  @Path("cellMenuPlugins")
   public List<String> cellMenuPlugins() {
     return this.cellMenuPlugins;
   }

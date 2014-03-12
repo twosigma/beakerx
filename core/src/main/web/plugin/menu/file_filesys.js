@@ -21,7 +21,7 @@
   'use strict';
   var loadFromFile = function(path) {
     var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/fileio/load", {path: path}).
+    bkHelper.httpGet("/beaker/rest/file-io/load", {path: path}).
         success(function(data) {
           deferred.resolve(data);
         }).
@@ -32,7 +32,7 @@
   };
   var loadFromHttp = function(url) {
     var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
+    bkHelper.httpGet("/beaker/rest/http-proxy/load", {url: url}).
         success(function(data) {
           deferred.resolve(data);
         }).
@@ -44,7 +44,7 @@
 
   var save = function(path, json) {
     var deferred = bkHelper.newDeferred();
-    bkHelper.httpPost("/beaker/rest/fileio/save", {path: path, content: json}).
+    bkHelper.httpPost("/beaker/rest/file-io/save", {path: path, content: json}).
         success(function(data) {
           bkHelper.setNotebookUrl(path);
           deferred.resolve(data);
@@ -85,7 +85,7 @@
     }
   });
 
-  bkHelper.httpGet("/beaker/rest/fileio/getHomeDirectory").success(function(ret) {
+  bkHelper.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(ret) {
     var homeDir = ret.value;
     var fileChooserStrategy = { result: "" };
     fileChooserStrategy.close = function(ev, closeFunc) {
@@ -99,7 +99,7 @@
         this.showSpinner = true;
         $http({
           method: 'GET',
-          url: "/beaker/rest/fileio/getDecoratedChildren",
+          url: "/beaker/rest/file-io/getDecoratedChildren",
           params: {
             path: path
           }

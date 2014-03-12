@@ -42,7 +42,7 @@ import org.apache.commons.collections.list.UnmodifiableList;
  */
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
-@Path("recent")
+@Path("recent-menu")
 @SuppressWarnings("unchecked")
 public class RecentMenuRest {
 
@@ -130,8 +130,7 @@ public class RecentMenuRest {
 
   @POST
   @Path("clear")
-  public void clear()
-          throws IOException {
+  public void clear() throws IOException {
     this.recentDocuments.clear();
     recordToFile();
   }

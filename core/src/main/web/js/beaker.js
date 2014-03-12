@@ -126,7 +126,7 @@
           var req = $.ajax({
             type: "POST",
             datatype: "json",
-            url: "/beaker/rest/recent/addItem",
+            url: "/beaker/rest/recent-menu/addItem",
             data: {item: doc}
           });
           req.done(callback);
@@ -138,7 +138,7 @@
           var req = $.ajax({
             type: "GET",
             datatype: "json",
-            url: "/beaker/rest/recent/getItems",
+            url: "/beaker/rest/recent-menu/getItems",
             data: {}
           });
           req.done(callback);
@@ -150,7 +150,7 @@
           var req = $.ajax({
             type: "POST",
             datatype: "json",
-            url: "/beaker/rest/recent/clear",
+            url: "/beaker/rest/recent-menu/clear",
             data: {}
           });
           req.done(callback);

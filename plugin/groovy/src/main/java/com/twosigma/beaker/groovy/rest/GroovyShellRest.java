@@ -42,7 +42,7 @@ public class GroovyShellRest {
   @POST
   @Path("getShell")
   public String getShell(
-          @FormParam("shellid") String shellId) throws InterruptedException {
+          @FormParam("shellId") String shellId) throws InterruptedException {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
@@ -55,12 +55,12 @@ public class GroovyShellRest {
   @POST
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
-      @FormParam("shellID") String shellID,
+      @FormParam("shellId") String shellId,
       @FormParam("code") String code) throws InterruptedException {
 
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
-    GroovyShell shell = getEvaluator(shellID);
+    GroovyShell shell = getEvaluator(shellId);
     Object result;
     try {
       result = shell.evaluate(code);
@@ -75,7 +75,7 @@ public class GroovyShellRest {
   @POST
   @Path("autocomplete")
   public List<String> autocomplete(
-      @FormParam("shellID") String shellID,
+      @FormParam("shellId") String shellId,
       @FormParam("code") String code,
       @FormParam("caretPosition") int caretPosition) throws InterruptedException {
     return null;
@@ -83,35 +83,35 @@ public class GroovyShellRest {
 
   @POST
   @Path("exit")
-  public void exit(@FormParam("shellID") String shellID) {
+  public void exit(@FormParam("shellId") String shellId) {
   }
 
   @POST
   @Path("cancelExecution")
-  public void cancelExecution(@FormParam("shellID") String shellID) {
+  public void cancelExecution(@FormParam("shellId") String shellId) {
   }
 
   @POST
   @Path("killAllThreads")
-  public void killAllThreads(@FormParam("shellID") String shellID) {
+  public void killAllThreads(@FormParam("shellId") String shellId) {
   }
 
   @POST
   @Path("resetEnvironment")
-  public void resetEnvironment(@FormParam("shellID") String shellID) {
+  public void resetEnvironment(@FormParam("shellId") String shellId) {
   }
 
   @POST
   @Path("setClassPath")
   public void setClassPath(
-      @FormParam("shellID") String shellID,
+      @FormParam("shellId") String shellId,
       @FormParam("classPath") String classPath) {
   }
 
   @POST
   @Path("setImports")
   public void setImports(
-      @FormParam("shellID") String shellID,
+      @FormParam("shellId") String shellId,
       @FormParam("imports") String classPathes) {
   }
 
@@ -119,7 +119,7 @@ public class GroovyShellRest {
     this.shells.put(id, new GroovyShell());
   }
 
-  private GroovyShell getEvaluator(String shellID) {
-    return this.shells.get(shellID);
+  private GroovyShell getEvaluator(String shellId) {
+    return this.shells.get(shellId);
   }
 }

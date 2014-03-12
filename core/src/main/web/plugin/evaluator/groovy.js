@@ -67,11 +67,11 @@
     pluginName: PLUGIN_NAME,
     cmMode: "groovy",
     background: "#E0FFE0",
-    newShell: function(shellID, cb) {
-      if (!shellID) {
-        shellID = "";
+    newShell: function(shellId, cb) {
+      if (!shellId) {
+        shellId = "";
       }
-      bkHelper.httpPost(serverUrl + "rest/groovysh/getShell", { shellid: shellID })
+      bkHelper.httpPost(serverUrl + "rest/groovysh/getShell", { shellId: shellId })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
@@ -93,7 +93,7 @@
         type: "POST",
         datatype: "json",
         url: serverUrl + "rest/groovysh/evaluate",
-        data: {shellID: self.settings.shellID, code: code}
+        data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
             var onUpdatableResultUpdate = function(update) {
               modelOutput.result = update;
@@ -137,7 +137,7 @@
         type: "POST",
         datatype: "json",
         url: serverUrl + "rest/groovysh/autocomplete",
-        data: {shellID: self.settings.shellID, code: code, caretPosition: cpos}
+        data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
             cb(x);
           });
@@ -148,7 +148,7 @@
         type: "POST",
         datatype: "json",
         url: serverUrl + "rest/groovysh/exit",
-        data: { shellID: self.settings.shellID }
+        data: { shellId: self.settings.shellID }
       }).done(cb);
     },
     spec: {

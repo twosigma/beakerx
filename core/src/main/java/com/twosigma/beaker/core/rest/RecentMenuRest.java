@@ -15,7 +15,9 @@
  */
 package com.twosigma.beaker.core.rest;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.core.module.config.BeakerConfig;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,19 +46,20 @@ import org.apache.commons.collections.list.UnmodifiableList;
 @SuppressWarnings("unchecked")
 public class RecentMenuRest {
 
-  private static final String BEAKR_DIRECTORY_NAME = ".beaker"; // TODO, get this from beakerConfig
-  private static final String CONFIGURATION_DIRECTORY_NAME = "conf";
-  private static final String RECENT_DOCUMENTS_FILE_NAME = "recentDocuments";
+  private static final String CONFIGURATION_DIRECTORY_NAME = "conf"; // TODO, move to beaker config
+  private static final String RECENT_DOCUMENTS_FILE_NAME = "recentDocuments"; // TODO, move to beaker config
   private static File recentDocumnetsDir;
   private final File _recentDocumentsFile;
   private final List<String> recentDocuments;
   private final List<String> immutableRecentDocuments;
 
-  public RecentMenuRest() {
-    File homeDirectory = new File(System.getProperty("user.home"));
+  @Inject
+  public RecentMenuRest(BeakerConfig bkConfig) {
     this.recentDocumnetsDir = new File(
-            homeDirectory,
-            BEAKR_DIRECTORY_NAME + "/" + CONFIGURATION_DIRECTORY_NAME);
+            bkConfig.getDotDirectory(),
+            "/" + CONFIGURATION_DIRECTORY_NAME);
+    
+    // TODO, move ensuring existence to beaker config module configure
     this.recentDocumnetsDir.mkdir();
     _recentDocumentsFile = new File(
             this.recentDocumnetsDir,

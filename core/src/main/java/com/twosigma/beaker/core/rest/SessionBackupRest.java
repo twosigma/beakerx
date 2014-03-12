@@ -15,7 +15,9 @@
  */
 package com.twosigma.beaker.core.rest;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.core.module.config.BeakerConfig;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,15 +50,16 @@ import org.codehaus.jackson.map.SerializerProvider;
 @Path("sessionbackup")
 public class SessionBackupRest {
 
-  private static final String BEAKR_DIRECTORY_NAME = ".beaker"; // TODO, get this from beakerConfig
-  private static final String BACKUP_DIRECTORY_NAME = "backups";
+  private static final String BACKUP_DIRECTORY_NAME = "backups"; // TODO, move to beaker config
   private static File backupDirectory;
 
-  public SessionBackupRest() {
-    File homeDirectory = new File(System.getProperty("user.home"));
+  @Inject
+  public SessionBackupRest(BeakerConfig bkConfig) {
     this.backupDirectory = new File(
-            homeDirectory,
-            BEAKR_DIRECTORY_NAME + "/" + BACKUP_DIRECTORY_NAME);
+            bkConfig.getDotDirectory(),
+             "/" + BACKUP_DIRECTORY_NAME);
+    
+    // TODO, move ensuring existence to beaker config module configure
     if (!this.backupDirectory.exists()) {
       this.backupDirectory.mkdirs();
     }

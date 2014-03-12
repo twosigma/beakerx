@@ -29,7 +29,7 @@
 
     var nodeProto = {
         pluginName: PLUGIN_NAME,
-        cmMode: "node",
+        cmMode: "javascript",
         background: "#80bd01",
         newShell: function (shellID, cb) {
             var self = this;

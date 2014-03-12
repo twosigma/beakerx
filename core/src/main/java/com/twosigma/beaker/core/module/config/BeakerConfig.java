@@ -31,6 +31,7 @@ public interface BeakerConfig {
   public String getNginxServDirectory(); // the root of nginx server
   public String getNginxExtraRules();
   public Integer getPortBase();
+  public Integer getReservedPortCount();
   public Boolean getUseKerberos();
   public String getConfigFileUrl();
   public String getDefaultNotebookUrl();

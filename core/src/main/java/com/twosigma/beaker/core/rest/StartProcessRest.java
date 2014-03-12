@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.nio.ByteBuffer;
@@ -56,6 +57,7 @@ public class StartProcessRest {
   private final String nginxExtraRules;
   private final String pluginDir;
   private final Integer portBase;
+  private final Integer reservedPortCount;
   private final Map<String, List<String>> pluginArgs;
   private final Map<String, String[]> pluginEnvps;
   private final OutputLogService outputLogService;
@@ -63,6 +65,7 @@ public class StartProcessRest {
   private final String nginxTemplate;
   private final Map<String, PluginConfig> plugins = new HashMap<>();
   private Process nginxProc;
+  private int portSearchStart;
 
   @Inject
   private StartProcessRest(
@@ -75,6 +78,7 @@ public class StartProcessRest {
     this.nginxExtraRules = bkConfig.getNginxExtraRules();
     this.pluginDir = bkConfig.getPluginDirectory();
     this.portBase = bkConfig.getPortBase();
+    this.reservedPortCount = bkConfig.getReservedPortCount();
     this.pluginEnvps = bkConfig.getPluginEnvps();
     this.pluginArgs = new HashMap<>();
     this.outputLogService = outputLogService;
@@ -94,6 +98,8 @@ public class StartProcessRest {
         System.out.println("done, exiting");
       }
     });
+
+    portSearchStart = this.portBase + this.reservedPortCount;
   }
 
   public void start() throws InterruptedException, IOException {
@@ -143,7 +149,8 @@ public class StartProcessRest {
 
     PluginConfig pConfig = plugins.get(pluginName);
     if (pConfig == null) {
-      pConfig = new PluginConfig(getNextAvailablePort(), nginxRules);
+      pConfig = new PluginConfig(getNextAvailablePort(portSearchStart), nginxRules);
+      portSearchStart = pConfig.port + 1;
       plugins.put(pluginName, pConfig);
 
       // restart nginx
@@ -230,24 +237,27 @@ public class StartProcessRest {
 
   private void generateNginxConfig() throws IOException, InterruptedException {
 
-    File confDir = new File(this.nginxServDir, "conf");
-    File logDir = new File(this.nginxServDir, "logs");
-    File nginxClientTempDir = new File(this.nginxServDir, "client_temp");
-    File htmlDir = new File(this.nginxServDir, "html");
+    java.nio.file.Path confDir = Paths.get(this.nginxServDir, "conf");
+    java.nio.file.Path logDir = Paths.get(this.nginxServDir, "logs");
+    java.nio.file.Path nginxClientTempDir = Paths.get(this.nginxServDir, "client_temp");
+    java.nio.file.Path htmlDir = Paths.get(this.nginxServDir, "html");
 
-    if (!confDir.exists()) {
-      confDir.mkdirs();
+    if (Files.notExists(confDir)) {
+      confDir.toFile().mkdirs();
     }
-    if (!logDir.exists()) {
-      logDir.mkdirs();
+    if (Files.notExists(logDir)) {
+      logDir.toFile().mkdirs();
     }
-    if (!nginxClientTempDir.exists()) {
-      nginxClientTempDir.mkdirs();
+    if (Files.notExists(nginxClientTempDir)) {
+      nginxClientTempDir.toFile().mkdirs();
     }
-    Files.deleteIfExists(htmlDir.toPath());
-    Files.createSymbolicLink(
-        htmlDir.toPath(),
-        new File(this.installDir + "/src/main/web/static").toPath());
+
+    java.nio.file.Path target = Paths.get(this.installDir + "/src/main/web/static");
+    if (Files.exists(htmlDir, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {// ||
+        //(Files.isSymbolicLink(htmlDir) && !Files.readSymbolicLink(htmlDir).equals(target))) {
+      Files.delete(htmlDir);
+    }
+    Files.createSymbolicLink(htmlDir, target);
 
     String ngixConfig = this.nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();
@@ -262,7 +272,7 @@ public class StartProcessRest {
     ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.portBase + 2));
     ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.portBase + 1));
-    ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.getPath());
+    ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
 
     // write template to file
     File targetFile = new File(this.nginxServDir, "conf/nginx.conf");
@@ -274,10 +284,9 @@ public class StartProcessRest {
     }
   }
 
-  private int getNextAvailablePort() {
-    final int RESERVED = 3;
+  private static int getNextAvailablePort(int start) {
     final int SEARCH_LIMIT = 100;
-    for (int p = this.portBase + RESERVED; p < this.portBase + SEARCH_LIMIT; ++p) {
+    for (int p = start; p < start + SEARCH_LIMIT; ++p) {
       if (isPortAvailable(p)) {
         return p;
       }
@@ -327,12 +336,18 @@ public class StartProcessRest {
   private static boolean isPortAvailable(int port) {
 
     ServerSocket ss = null;
+    DatagramSocket ds = null;
     try {
       ss = new ServerSocket(port);
       ss.setReuseAddress(true);
+      ds = new DatagramSocket(port);
+      ds.setReuseAddress(true);
       return true;
     } catch (IOException e) {
     } finally {
+      if (ds != null) {
+        ds.close();
+      }
       if (ss != null) {
         try {
           ss.close();
@@ -341,7 +356,6 @@ public class StartProcessRest {
         }
       }
     }
-
     return false;
   }
 }

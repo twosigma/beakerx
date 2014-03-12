@@ -20,8 +20,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String nginxExtraRules;
   private final Boolean useKerberos;
   private final Integer portBase;
+  private final Integer reservedPortCount;
   private final String configFileUrl;
   private final String defaultNotebookUrl;
   private final String recentNotebooksFileUrl;
@@ -52,10 +54,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
   @Inject
   public DefaultBeakerConfig(BeakerConfigPref pref) throws UnknownHostException {
-    
+
     this.installDir = System.getProperty("user.dir");
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
+    this.reservedPortCount = 3;
     this.pluginDir = this.installDir + "/src/main/sh";
     this.dotDir = System.getProperty("user.home") + "/.beaker";
     ensureDirectoryExists(new File(this.dotDir));
@@ -106,8 +109,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
       // try copying from the source.
       if (readFile(source) != null) {
         try {
-          copyFile(source, target);
-        } catch (FileNotFoundException e) {
+          Files.copy(source.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
           System.out.println("ERROR copying file to" + target.getPath() + ", " + e);
         }
       } else {
@@ -115,12 +118,6 @@ public class DefaultBeakerConfig implements BeakerConfig {
         System.out.println("Double bogey, the source (" + source.getPath() + " is empty.");
       }
     }
-  }
-
-  private static void copyFile(File from, File to) throws FileNotFoundException {
-    PrintWriter out = new PrintWriter(to);
-    out.print(readFile(from));
-    out.close();
   }
 
   @Override
@@ -164,6 +161,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   }
 
   @Override
+  public Integer getReservedPortCount() {
+    return this.reservedPortCount;
+  }
+
+  @Override
   public Boolean getUseKerberos() {
     return this.useKerberos;
   }
@@ -188,6 +190,16 @@ public class DefaultBeakerConfig implements BeakerConfig {
     return this.sessionBackupDir;
   }
 
+  @Override
+  public Map<String, String> getPluginOptions() {
+    return this.pluginOptions;
+  }
+
+  @Override
+  public Map<String, String[]> getPluginEnvps() {
+    return this.pluginEnvps;
+  }
+
   static private String readFile(File file) {
     try {
       FileInputStream fis = new FileInputStream(file);
@@ -201,16 +213,6 @@ public class DefaultBeakerConfig implements BeakerConfig {
       System.out.println("ERROR reading file" + file.getName() + ": " + e);
     }
     return null;
-  }
-
-  @Override
-  public Map<String, String> getPluginOptions() {
-    return this.pluginOptions;
-  }
-
-  @Override
-  public Map<String, String[]> getPluginEnvps() {
-    return this.pluginEnvps;
   }
 
 }

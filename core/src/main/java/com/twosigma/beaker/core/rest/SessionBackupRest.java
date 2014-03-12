@@ -58,7 +58,7 @@ public class SessionBackupRest {
     this.backupDirectory = new File(
             bkConfig.getDotDirectory(),
              "/" + BACKUP_DIRECTORY_NAME);
-    
+
     // TODO, move ensuring existence to beaker config module configure
     if (!this.backupDirectory.exists()) {
       this.backupDirectory.mkdirs();
@@ -92,8 +92,8 @@ public class SessionBackupRest {
       pluginUrl = url;
     }
   }
-  private final Map<String, Session> sessions = new HashMap<String, Session>();
-  private final List<Plugin> plugins = new ArrayList<Plugin>();
+  private final Map<String, Session> sessions = new HashMap<>();
+  private final List<Plugin> plugins = new ArrayList<>();
 
   @POST
   @Path("backup")

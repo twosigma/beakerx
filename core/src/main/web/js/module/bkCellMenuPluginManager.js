@@ -30,7 +30,7 @@
     return {
       reset: function() {
         var self = this;
-        $.get('/beaker/rest/util/cellMenuPlugins')
+        $.get('/beaker/rest/util/getCellMenuPlugins')
             .done(function(menuUrls) {
               menuUrls.forEach(self.loadPlugin);
             });

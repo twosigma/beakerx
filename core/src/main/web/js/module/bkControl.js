@@ -54,7 +54,7 @@
           return plugins;
         };
         menuPluginManager.clear();
-        $.get('/beaker/rest/util/controlPanelMenuPlugins')
+        $.get('/beaker/rest/util/getControlPanelMenuPlugins')
             .done(function(menus) {
               menus.forEach(function(menu) {
                 menuPluginManager.addControlMenu(menu);

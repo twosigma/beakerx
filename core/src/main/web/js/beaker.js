@@ -79,12 +79,12 @@
       }, failure);
     }
 
-    $.get('/beaker/rest/util/initplugins')
+    $.get('/beaker/rest/util/getInitPlugins')
         .done(function(list) {
           loadList(list, function() {
             deferred.resolve();
           }, function() {
-            console.log("error loading initplugins");
+            console.log("error loading init plugins");
           });
         });
     return deferred.promise;

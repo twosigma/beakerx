@@ -121,8 +121,8 @@ public class UtilRest {
   }
 
   @GET
-  @Path("defaultNotebook")
-  public String defaultNotebook() {
+  @Path("getDefaultNotebook")
+  public String getDefaultNotebook() {
     String defaultNotebookUrl = this.bkConfig.getDefaultNotebookUrl();
 
     // TODO, assume default notebook url is a file path for now.
@@ -247,8 +247,8 @@ public class UtilRest {
   }
 
   @GET
-  @Path("initplugins")
-  public List<String> initPlugins() {
+  @Path("getInitPlugins")
+  public List<String> getInitPlugins() {
     return this.initPlugins;
   }
 
@@ -263,8 +263,8 @@ public class UtilRest {
   }
 
   @GET
-  @Path("menuPlugins")
-  public Set<String> menuPlugins() {
+  @Path("getMenuPlugins")
+  public Set<String> getMenuPlugins() {
     return this.menuPlugins;
   }
 
@@ -279,8 +279,8 @@ public class UtilRest {
   }
 
   @GET
-  @Path("controlPanelMenuPlugins")
-  public Set<String> controlPanelMenuPlugins() {
+  @Path("getControlPanelMenuPlugins")
+  public Set<String> getControlPanelMenuPlugins() {
     return this.controlPanelMenuPlugins;
   }
 
@@ -294,8 +294,8 @@ public class UtilRest {
   }
 
   @GET
-  @Path("cellMenuPlugins")
-  public List<String> cellMenuPlugins() {
+  @Path("getCellMenuPlugins")
+  public List<String> getCellMenuPlugins() {
     return this.cellMenuPlugins;
   }
 }

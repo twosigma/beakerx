@@ -22,7 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -144,17 +143,7 @@ public class UtilRest {
   }
 
   private void resetConfig() {
-    String dotDir = this.bkConfig.getDotDirectory();
-    File configFile = new File(dotDir, "beaker.conf.json");
-    if (!configFile.exists()) {
-      try {
-        PrintWriter out = new PrintWriter(configFile);
-        out.print(readFile(new File(this.bkConfig.getInstallDirectory(), "/config/beaker.conf.json")));
-        out.close();
-      } catch (FileNotFoundException e) {
-        System.out.println("ERROR writing default default, " + e);
-      }
-    }
+    File configFile = new File(this.bkConfig.getConfigFileUrl());
     try {
       JSONParser parser = new JSONParser();
       Object obj = parser.parse(readFile(configFile));

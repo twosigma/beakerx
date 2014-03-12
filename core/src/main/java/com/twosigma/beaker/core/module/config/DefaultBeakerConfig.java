@@ -42,6 +42,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String nginxExtraRules;
   private final Boolean useKerberos;
   private final Integer portBase;
+  private final String configFileUrl;
   private final String defaultNotebookUrl;
   private final Map<String, String> pluginOptions;
   private final Map<String, String[]> pluginEnvps;
@@ -54,50 +55,55 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.portBase = pref.getPortBase();
     this.pluginDir = this.installDir + "/src/main/sh";
     this.dotDir = System.getProperty("user.home") + "/.beaker";
-    File dotFile = new File(dotDir);
-    if (!dotFile.exists()) {
-      if (!dotFile.mkdir()) {
-        System.out.println("failed to create " + dotDir);
-      }
-    }
+    ensureDirectoryExists(new File(this.dotDir));
     this.nginxDir = this.installDir + "/nginx";
     this.nginxBinDir = this.installDir + "/nginx/bin";
     this.nginxServDir = this.dotDir + "/nginx";
     this.nginxExtraRules = "";
 
+    String configDir = this.dotDir + "/config";
+    ensureDirectoryExists(new File(configDir));
+
+    final String configFile = configDir + "beaker.conf.json";
+    final String defaultConfigFile = this.installDir + "/config/beaker.conf.json";
+    ensureFile(new File(configFile), new File(defaultConfigFile));
+    this.configFileUrl = configFile;
 
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
-    final String mainDefaultNotebookPath = this.dotDir + "/default.bkr";
+    final String mainDefaultNotebookPath = this.dotDir + "/config/default.bkr";
     final String defaultDefaultNotebookPath = this.installDir + "/config/default.bkr";
-
     if (prefDefaultNotebookUrl != null) {
       this.defaultNotebookUrl = prefDefaultNotebookUrl;
     } else {
-      ensureMainDefaultNotebook(
-          new File(mainDefaultNotebookPath),
-          new File(defaultDefaultNotebookPath));
+      ensureFile(new File(mainDefaultNotebookPath), new File(defaultDefaultNotebookPath));
       this.defaultNotebookUrl = mainDefaultNotebookPath;
     }
+    
     this.pluginOptions = pref.getPluginOptions();
     this.pluginEnvps = new HashMap<>();
   }
-
-  private static void ensureMainDefaultNotebook(
-      File mainDefaultNotebook,
-      File defaultDefaultNotebook) {
-
-    if (readFile(mainDefaultNotebook) == null) {
-      // main default notebook has no content,
-      // try copying from the default defaultNotebook.
-      if (readFile(defaultDefaultNotebook) != null) {
+  private static void ensureDirectoryExists(File dir) {
+    if (!dir.exists()) {
+      if (!dir.mkdirs()) {
+        System.out.println("failed to create " + dir.getPath());
+      }
+    }
+  }
+  private static void ensureFile(
+      File target,
+      File source) {
+    if (readFile(target) == null) {
+      // target has no content,
+      // try copying from the source.
+      if (readFile(source) != null) {
         try {
-          copyFile(defaultDefaultNotebook, mainDefaultNotebook);
+          copyFile(source, target);
         } catch (FileNotFoundException e) {
-          System.out.println("ERROR writing main default notebook, " + e);
+          System.out.println("ERROR copying file to" + target.getPath() + ", " + e);
         }
       } else {
-        // the default defaultNotebook also has no content?!
-        System.out.println("Double bogey, default notebook is empty.");
+        // the source also has no content?!
+        System.out.println("Double bogey, the source (" + source.getPath() + " is empty.");
       }
     }
   }
@@ -151,6 +157,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public Boolean getUseKerberos() {
     return this.useKerberos;
+  }
+
+  @Override
+  public String getConfigFileUrl() {
+    return this.configFileUrl;
   }
 
   @Override

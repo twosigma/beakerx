@@ -257,7 +257,7 @@
             IPythonShell.prototype = IPythonProto;
             bkHelper.getLoadingPlugin(url).onReady(IPythonShell);
           }).error(function() {
-            console.log("process start failed", arguments);
+            console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
           });
     };
     var onFail = function() {

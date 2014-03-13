@@ -188,7 +188,7 @@
       RShell.prototype = R;
       bkHelper.getLoadingPlugin(url).onReady(RShell);
     }).error(function() {
-      console.log("process start failed", arguments);
+      console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
     });
   };
   init();

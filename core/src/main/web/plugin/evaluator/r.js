@@ -169,10 +169,6 @@
         recordOutput: "true"
       }
     }).done(function(ret) {
-      if (bkHelper.restartAlert(ret)) {
-        return;
-      }
-
       serverUrl = ret.value;
       cometdUtil.init();
       var RShell = function(settings, cb) {

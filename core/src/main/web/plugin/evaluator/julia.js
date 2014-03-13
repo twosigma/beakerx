@@ -234,9 +234,6 @@
           startedIndicatorStream: "stderr"
         }
       }).done(function(ret) {
-            if (bkHelper.restartAlert(ret)) {
-              return;
-            }
             serverUrl = ret.value;
             var JuliaShell = function(settings, cb) {
               var self = this;

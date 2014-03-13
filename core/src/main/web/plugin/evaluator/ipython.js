@@ -233,9 +233,6 @@
           startedIndicatorStream: "stderr"
         }
       }).done(function(ret) {
-            if (bkHelper.restartAlert(ret)) {
-              return;
-            }
             serverUrl = ret.value;
             var IPythonShell = function(settings, cb) {
               var self = this;

@@ -244,14 +244,6 @@
         return bkCoreManager.getCMKeyMapMode();
       },
 
-      restartAlert: function(ret) {
-        if (ret.value == "restart") {
-          alert("To complete first-time plugin loading, restart your Beaker server.");
-          return true;
-        }
-        return false;
-      },
-
       // bkShare
       share: bkShare
     };

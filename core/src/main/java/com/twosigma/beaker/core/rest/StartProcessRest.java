@@ -114,15 +114,7 @@ public class StartProcessRest {
     nginxCommand += (" -p " + this.nginxServDir);
     nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
     Process proc = Runtime.getRuntime().exec(nginxCommand);
-    StreamGobbler errorGobbler =
-        new StreamGobbler(outputLogService, proc.getErrorStream(), "nginx",
-        "stderr", false, null);
-    errorGobbler.start();
-    StreamGobbler stdoutGobbler =
-        new StreamGobbler(outputLogService, proc.getInputStream(), "nginx",
-        "stdout", false, null);
-    stdoutGobbler.start();
-
+    startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
   }
 
@@ -134,17 +126,16 @@ public class StartProcessRest {
     }
   }
 
-
   @POST
   @Path("runCommand")
   public StringObject runCommand(
+      @FormParam("flag") String pluginName,
       @FormParam("command") String command,
+      @FormParam("nginx") String nginxRules,
       @FormParam("started") String started,
       @FormParam("stream") String stream,
-      @FormParam("nginx") String nginxRules,
       @FormParam("waitfor") String waitfor,
-      @FormParam("record") String recordString,
-      @FormParam("flag") String pluginName)
+      @FormParam("record") String recordString)
       throws InterruptedException, IOException {
 
     PluginConfig pConfig = plugins.get(pluginName);
@@ -156,16 +147,8 @@ public class StartProcessRest {
       // restart nginx
       generateNginxConfig();
       Process restartproc = Runtime.getRuntime().exec(this.nginxDir + "/script/restart_nginx");
-      StreamGobbler restartErrorGobbler =
-          new StreamGobbler(outputLogService, restartproc.getErrorStream(), pluginName,
-          "stderr", false, null);
-      restartErrorGobbler.start();
-      StreamGobbler restartStdoutGobbler =
-          new StreamGobbler(outputLogService, restartproc.getInputStream(), pluginName,
-          "stdout", false, null);
-      restartStdoutGobbler.start();
+      startGobblers(restartproc, "restart-nginx-" + pluginName, null, null);
       restartproc.waitFor();
-
     } else {
       if (pConfig.isStarted()) {
         System.out.println("process was already started, not starting another one: " + command);
@@ -211,16 +194,7 @@ public class StartProcessRest {
       }
     }
 
-    StreamGobbler errorGobbler =
-        new StreamGobbler(outputLogService, proc.getErrorStream(), pluginName,
-        "stderr", record, waitfor);
-    errorGobbler.start();
-
-    StreamGobbler outputGobbler =
-        new StreamGobbler(outputLogService, proc.getInputStream(), pluginName,
-        "stdout", record, null);
-    outputGobbler.start();
-
+    startGobblers(proc, pluginName, record ? this.outputLogService : null, waitfor);
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginName);
     return new StringObject(("done"));
@@ -357,5 +331,21 @@ public class StartProcessRest {
       }
     }
     return false;
+  }
+
+  private static void startGobblers(
+      Process proc,
+      String name,
+      OutputLogService outputLogService,
+      String waitfor) {
+    StreamGobbler errorGobbler =
+        new StreamGobbler(proc.getErrorStream(), "stderr", name,
+        outputLogService, waitfor);
+    errorGobbler.start();
+
+    StreamGobbler outputGobbler =
+        new StreamGobbler(proc.getInputStream(), "stdout", name,
+        outputLogService);
+    outputGobbler.start();
   }
 }

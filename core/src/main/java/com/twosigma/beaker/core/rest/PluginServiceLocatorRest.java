@@ -19,7 +19,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.cometd.OutputLogService;
-import com.twosigma.beaker.shared.json.serializer.StringObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -49,8 +48,8 @@ import org.apache.commons.lang3.RandomStringUtils;
  */
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
-@Path("startProcess")
-public class StartProcessRest {
+@Path("plugin-service-locator")
+public class PluginServiceLocatorRest {
 
   private final String installDir;
   private final String nginxDir;
@@ -70,7 +69,7 @@ public class StartProcessRest {
   private int portSearchStart;
 
   @Inject
-  private StartProcessRest(
+  private PluginServiceLocatorRest(
       BeakerConfig bkConfig,
       OutputLogService outputLogService) throws IOException {
     this.installDir = bkConfig.getInstallDirectory();
@@ -129,6 +128,10 @@ public class StartProcessRest {
   }
 
   /**
+   * locatePluginService
+   * locate the service that matches the passed-in information about a service and return the
+   * base URL the client can use to connect to the target plugin service. If such service
+   * doesn't exist, this implementation will also start the service.
    *
    * @param pluginId
    * @param command name of the starting script
@@ -138,13 +141,13 @@ public class StartProcessRest {
    * @param recordOutput boolean, record out/err streams to output log service or not, null defaults
    * to false
    * @param waitfor if record output log service is used, string to wait for before logging starts
-   * @return
+   * @return the base url of the service
    * @throws InterruptedException
    * @throws IOException
    */
   @POST
-  @Path("startPlugin")
-  public String startPlugin(
+  @Path("locatePluginService")
+  public String locatePluginService(
       @FormParam("pluginId") String pluginId,
       @FormParam("command") String command,
       @FormParam("nginxRules") String nginxRules,

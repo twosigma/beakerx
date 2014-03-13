@@ -23,7 +23,7 @@ import com.twosigma.beaker.core.rest.HttpProxyRest;
 import com.twosigma.beaker.core.rest.OutputLogRest;
 import com.twosigma.beaker.core.rest.RecentMenuRest;
 import com.twosigma.beaker.core.rest.SessionBackupRest;
-import com.twosigma.beaker.core.rest.StartProcessRest;
+import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
 import com.twosigma.beaker.core.rest.UtilRest;
 import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class URLConfigModule extends ServletModule {
 
     // REST binding
     bind(UtilRest.class);
-    bind(StartProcessRest.class);
+    bind(PluginServiceLocatorRest.class);
     bind(FileIORest.class);
     bind(HttpProxyRest.class);
     bind(OutputLogRest.class);

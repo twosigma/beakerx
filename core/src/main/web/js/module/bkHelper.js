@@ -248,7 +248,8 @@
       share: bkShare,
 
       locatePluginService: function(locator) {
-        return bkCoreManager.httpPost("/beaker/rest/startProcess/startPlugin", locator);
+        return bkCoreManager.httpPost("/beaker/rest/plugin-service-locator/locatePluginService",
+            locator);
       }
     };
     window.bkHelper = bkHelper; // TODO, we want to revisit the decision of making this global

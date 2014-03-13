@@ -44,7 +44,8 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
- * The RESTful API for starting a process by running command
+ * This is the service that locates a plugin service. And a service will be started if the target
+ * service doesn't exist. See {@link locatePluginService} for details
  */
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)

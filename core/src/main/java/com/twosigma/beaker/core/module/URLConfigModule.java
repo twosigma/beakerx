@@ -17,7 +17,7 @@ package com.twosigma.beaker.core.module;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import com.twosigma.beaker.shared.cometd.OutputLogService;
+import com.twosigma.beaker.core.rest.OutputLogService;
 import com.twosigma.beaker.core.rest.FileIORest;
 import com.twosigma.beaker.core.rest.HttpProxyRest;
 import com.twosigma.beaker.core.rest.OutputLogRest;

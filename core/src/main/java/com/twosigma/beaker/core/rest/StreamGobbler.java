@@ -15,7 +15,6 @@
  */
 package com.twosigma.beaker.core.rest;
 
-import com.twosigma.beaker.shared.cometd.OutputLogService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

@@ -18,7 +18,6 @@ package com.twosigma.beaker.core.rest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
-import com.twosigma.beaker.shared.cometd.OutputLogService;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;

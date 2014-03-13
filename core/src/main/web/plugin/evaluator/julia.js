@@ -229,37 +229,37 @@
           startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
-            serverUrl = ret;
-            var JuliaShell = function(settings, cb) {
-              var self = this;
-              var setShellIdCB = function(shellID) {
-                settings.shellID = shellID;
-                // XXX these are not used by python, they are leftover from groovy
-                if (!settings.imports) {
-                  settings.imports = "";
-                }
-                if (!settings.supplementalClassPath) {
-                  settings.supplementalClassPath = "";
-                }
-                self.settings = settings;
-                if (cb) {
-                  cb();
-                }
-              };
-              if (!settings.shellID) {
-                settings.shellID = "";
-              }
-              this.newShell(settings.shellID, setShellIdCB);
-              this.perform = function(what) {
-                var action = this.spec[what].action;
-                this[action]();
-              };
-            };
-            JuliaShell.prototype = JuliaProto;
-            bkHelper.getLoadingPlugin(url).onReady(JuliaShell);
-          }).error(function() {
-            console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
-          });
+        serverUrl = ret;
+        var JuliaShell = function(settings, cb) {
+          var self = this;
+          var setShellIdCB = function(shellID) {
+            settings.shellID = shellID;
+            // XXX these are not used by python, they are leftover from groovy
+            if (!settings.imports) {
+              settings.imports = "";
+            }
+            if (!settings.supplementalClassPath) {
+              settings.supplementalClassPath = "";
+            }
+            self.settings = settings;
+            if (cb) {
+              cb();
+            }
+          };
+          if (!settings.shellID) {
+            settings.shellID = "";
+          }
+          this.newShell(settings.shellID, setShellIdCB);
+          this.perform = function(what) {
+            var action = this.spec[what].action;
+            this[action]();
+          };
+        };
+        JuliaShell.prototype = JuliaProto;
+        bkHelper.getLoadingPlugin(url).onReady(JuliaShell);
+      }).error(function() {
+        console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+      });
     };
     var onFail = function() {
       console.log("failed to load julia libs");

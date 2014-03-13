@@ -207,26 +207,29 @@
        disable it. http://code.google.com/p/chromium/issues/detail?id=123862
        this is safe because the URL has the kernel ID in it, and that's a 128-bit
        random number, only delivered via the secure channel. */
-      var nginx =
-          "location /ipython/kernels/ {proxy_pass http://127.0.0.1:%(port)s/kernels;}" +
-              "location ~ /ipython/kernels/[0-9a-f-]+/  {" +
-              "rewrite ^/ipython/(.*)$ /$1 break; " +
-              "proxy_pass http://127.0.0.1:%(port)s; " +
-              "proxy_http_version 1.1; " +
-              "proxy_set_header Upgrade $http_upgrade; " +
-              "proxy_set_header Connection \"upgrade\"; " +
-              "proxy_set_header Origin \"$scheme://$host\"; " +
-              "proxy_set_header Host $host;}";
+      var nginxRules =
+          "location /ipython/kernels/ {" +
+          "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
+          "}" +
+          "location ~ /ipython/kernels/[0-9a-f-]+/  {" +
+          "  rewrite ^/ipython/(.*)$ /$1 break; " +
+          "  proxy_pass http://127.0.0.1:%(port)s; " +
+          "  proxy_http_version 1.1; " +
+          "  proxy_set_header Upgrade $http_upgrade; " +
+          "  proxy_set_header Connection \"upgrade\"; " +
+          "  proxy_set_header Origin \"$scheme://$host\"; " +
+          "  proxy_set_header Host $host;" +
+          "}";
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: "/beaker/rest/startProcess/runCommand",
-        data: {flag: PLUGIN_NAME,
+        url: "/beaker/rest/startProcess/startPlugin",
+        data: {
+          pluginId: PLUGIN_NAME,
           command: COMMAND,
-          started: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-          nginx: nginx,
-          record: "false",
-          stream: "stderr"
+          nginxRules: nginxRules,
+          startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
+          startedIndicatorStream: "stderr"
         }
       }).done(function(ret) {
             if (bkHelper.restartAlert(ret)) {

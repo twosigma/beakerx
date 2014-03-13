@@ -160,16 +160,16 @@
     $.ajax({
       type: "POST",
       datatype: "json",
-      url: "/beaker/rest/startProcess/runCommand",  // note this is not based on serverUrl
+      url: "/beaker/rest/startProcess/startPlugin",  // note this is not based on serverUrl
       data: {
-        flag: PLUGIN_NAME,
+        pluginId: PLUGIN_NAME,
         command: COMMAND,
-        started: "Server started",
-        nginx: "location /groovysh/ {proxy_pass http://127.0.0.1:%(port)s/;}",
-        record: "true",
-        stream: "stdout"
+        nginxRules: "location /groovysh/ {proxy_pass http://127.0.0.1:%(port)s/;}",
+        startedIndicator: "Server started",
+        recordOutput: "true"
       }
     }).done(function(ret) {
+      console.log("TEST");
       if (bkHelper.restartAlert(ret)) {
         return;
       }

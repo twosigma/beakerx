@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -126,28 +127,42 @@ public class StartProcessRest {
     }
   }
 
+  /**
+   *
+   * @param pluginId
+   * @param command name of the starting script
+   * @param nginxRules rules to help setup nginx proxying
+   * @param startedIndicator string indicating that the plugin has started
+   * @param startedIndicatorStream stream to search for indicator, null defaults to stdout
+   * @param recordOutput boolean, record out/err streams to output log service or not, null defaults
+   * to false
+   * @param waitfor if record output log service is used, string to wait for before logging starts
+   * @return
+   * @throws InterruptedException
+   * @throws IOException
+   */
   @POST
-  @Path("runCommand")
-  public StringObject runCommand(
-      @FormParam("flag") String pluginName,
+  @Path("startPlugin")
+  public StringObject startPlugin(
+      @FormParam("pluginId") String pluginId,
       @FormParam("command") String command,
-      @FormParam("nginx") String nginxRules,
-      @FormParam("started") String started,
-      @FormParam("stream") String stream,
-      @FormParam("waitfor") String waitfor,
-      @FormParam("record") String recordString)
+      @FormParam("nginxRules") String nginxRules,
+      @FormParam("startedIndicator") String startedIndicator,
+      @FormParam("startedIndicatorStream") String startedIndicatorStream,
+      @FormParam("recordOutput") String recordOutput,
+      @FormParam("waitfor") String waitfor)
       throws InterruptedException, IOException {
 
-    PluginConfig pConfig = plugins.get(pluginName);
+    PluginConfig pConfig = plugins.get(pluginId);
     if (pConfig == null) {
       pConfig = new PluginConfig(getNextAvailablePort(portSearchStart), nginxRules);
       portSearchStart = pConfig.port + 1;
-      plugins.put(pluginName, pConfig);
+      plugins.put(pluginId, pConfig);
 
       // restart nginx
       generateNginxConfig();
       Process restartproc = Runtime.getRuntime().exec(this.nginxDir + "/script/restart_nginx");
-      startGobblers(restartproc, "restart-nginx-" + pluginName, null, null);
+      startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
     } else {
       if (pConfig.isStarted()) {
@@ -156,12 +171,12 @@ public class StartProcessRest {
       }
     }
 
-    boolean record = recordString != null && recordString.equals("true");
+    boolean record = recordOutput != null && recordOutput.equals("true");
     if (!new File(command).exists()) {
       command = this.pluginDir + "/" + command;
     }
 
-    List<String> extraArgs = pluginArgs.get(pluginName);
+    List<String> extraArgs = pluginArgs.get(pluginId);
     if (extraArgs != null) {
       for (String s : extraArgs) {
         command += " " + s;
@@ -171,32 +186,26 @@ public class StartProcessRest {
 
     System.out.println("starting process " + command);
 
-    String[] env = pluginEnvps.get(pluginName);
+    String[] env = pluginEnvps.get(pluginId);
     Process proc = Runtime.getRuntime().exec(command, env);
-
-    InputStreamReader ir;
-    if (null == stream) {
-      stream = "stdout";
-    }
-    if (stream.equals("stderr")) {
-      ir = new InputStreamReader(proc.getErrorStream());
-    } else {
-      ir = new InputStreamReader(proc.getInputStream());
-    }
-
-    BufferedReader br = new BufferedReader(ir);
-    String line = "";
-    while ((line = br.readLine()) != null) {
-      System.out.println("looking on " + stream + " found:" + line);
-      if (line.indexOf(started) >= 0) {
-        System.out.println("Acknowledge " + pluginName + " plugin started");
-        break;
+    if (startedIndicator != null && !startedIndicator.isEmpty()) {
+      InputStream is = startedIndicatorStream != null && startedIndicatorStream.equals("stderr") ?
+          proc.getErrorStream() : proc.getInputStream();
+      InputStreamReader ir = new InputStreamReader(is);
+      BufferedReader br = new BufferedReader(ir);
+      String line = "";
+      while ((line = br.readLine()) != null) {
+        System.out.println("looking on " + startedIndicatorStream + " found:" + line);
+        if (line.indexOf(startedIndicator) >= 0) {
+          System.out.println("Acknowledge " + pluginId + " plugin started");
+          break;
+        }
       }
     }
+    startGobblers(proc, pluginId, record ? this.outputLogService : null, waitfor);
 
-    startGobblers(proc, pluginName, record ? this.outputLogService : null, waitfor);
     pConfig.setProcess(proc);
-    System.out.println("Done starting " + pluginName);
+    System.out.println("Done starting " + pluginId);
     return new StringObject(("done"));
   }
 

@@ -221,13 +221,13 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: "/beaker/rest/startProcess/runCommand",
-        data: {flag: PLUGIN_NAME,
+        url: "/beaker/rest/startProcess/startPlugin",
+        data: {
+          pluginId: PLUGIN_NAME,
           command: COMMAND,
-          started: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-          nginx: nginx,
-          record: "false",
-          stream: "stderr"
+          nginxRules: nginxRules,
+          startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
+          startedIndicatorStream: "stderr"
         }
       }).done(function(ret) {
             if (bkHelper.restartAlert(ret)) {

@@ -222,19 +222,14 @@
               "  proxy_set_header Origin \"$scheme://$host\"; " +
               "  proxy_set_header Host $host;" +
               "}";
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: "/beaker/rest/startProcess/startPlugin",
-        data: {
+      bkHelper.locatePluginService({
           pluginId: PLUGIN_NAME,
           command: COMMAND,
           nginxRules: nginxRules,
           startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
           startedIndicatorStream: "stderr"
-        }
-      }).done(function(ret) {
-            serverUrl = ret.value;
+      }).success(function(ret) {
+            serverUrl = ret;
             var JuliaShell = function(settings, cb) {
               var self = this;
               var setShellIdCB = function(shellID) {
@@ -262,7 +257,7 @@
             };
             JuliaShell.prototype = JuliaProto;
             bkHelper.getLoadingPlugin(url).onReady(JuliaShell);
-          }).fail(function() {
+          }).error(function() {
             console.log("process start failed", arguments);
           });
     };

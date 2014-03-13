@@ -245,7 +245,11 @@
       },
 
       // bkShare
-      share: bkShare
+      share: bkShare,
+
+      locatePluginService: function(locator) {
+        return bkCoreManager.httpPost("/beaker/rest/startProcess/startPlugin", locator);
+      }
     };
     window.bkHelper = bkHelper; // TODO, we want to revisit the decision of making this global
     return bkHelper;

@@ -144,7 +144,7 @@ public class StartProcessRest {
    */
   @POST
   @Path("startPlugin")
-  public StringObject startPlugin(
+  public String startPlugin(
       @FormParam("pluginId") String pluginId,
       @FormParam("command") String command,
       @FormParam("nginxRules") String nginxRules,
@@ -170,7 +170,7 @@ public class StartProcessRest {
     } else {
       if (pConfig.isStarted()) {
         System.out.println("process was already started, not starting another one: " + command);
-        return new StringObject(pConfig.getBaseUrl());
+        return pConfig.getBaseUrl();
       }
     }
 
@@ -209,7 +209,7 @@ public class StartProcessRest {
 
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);
-    return new StringObject(pConfig.getBaseUrl());
+    return pConfig.getBaseUrl();
   }
 
   private void addPluginArgs(String plugin, String arg) {

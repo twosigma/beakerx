@@ -157,19 +157,14 @@
   };
 
   var init = function() {
-    $.ajax({
-      type: "POST",
-      datatype: "json",
-      url: "/beaker/rest/startProcess/startPlugin",  // note this is not based on serverUrl
-      data: {
+    bkHelper.locatePluginService({
         pluginId: PLUGIN_NAME,
         command: COMMAND,
         nginxRules: "location /%(base_url)s/ {proxy_pass http://127.0.0.1:%(port)s/;}",
         startedIndicator: "Server started",
         recordOutput: "true"
-      }
-    }).done(function(ret) {
-      serverUrl = ret.value;
+    }).success(function(ret) {
+      serverUrl = ret;
       cometdUtil.init();
       var GroovyShell = function(settings, cb) {
         var self = this;
@@ -192,7 +187,7 @@
       };
       GroovyShell.prototype = Groovy;
       bkHelper.getLoadingPlugin(url).onReady(GroovyShell);
-    }).fail(function() {
+    }).error(function() {
       console.log("process start failed", arguments);
     });
   };

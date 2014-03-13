@@ -288,7 +288,7 @@ public class PluginServiceLocatorRest {
 
   private static String generatePrefixedRandomString(String prefix, int randomPartLength) {
     // TODO
-    // note the toLowerCase is need because for unknown reason,
+    // note the toLowerCase is need because, for unknown reason,
     // nginx doesn't like location start with upper case
     return prefix.toLowerCase() + RandomStringUtils.random(randomPartLength, true, true);
   }

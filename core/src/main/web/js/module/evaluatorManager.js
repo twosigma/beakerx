@@ -83,7 +83,7 @@
         };
         var updateEvaluatorsAndLoadingPlugins = function() {
           var i, j;
-          evaluatorsAndLoadingPlugins = [];
+          evaluatorsAndLoadingPlugins.splice(0, evaluatorsAndLoadingPlugins.length);
           for (i in evaluators) {
             evaluators[i].loading = false;
             evaluatorsAndLoadingPlugins.push(evaluators[i]);
@@ -169,7 +169,7 @@
                 if (makeEvaluator) {
                   var newEvaluatorObj = {
                     name: pluginObj.name,
-                    plugin: pluginObj.name
+                    plugin: pluginObj.url
                   };
                   bkBaseSessionModel.getNotebookModel().evaluators.push(newEvaluatorObj);
                   newEvaluator(newEvaluatorObj, true);

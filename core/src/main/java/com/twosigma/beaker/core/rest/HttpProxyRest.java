@@ -42,16 +42,15 @@ public class HttpProxyRest {
           @QueryParam("url") String urlString) throws IOException {
     //urlString = "https://raw.github.com/ethanwhite/progbio/master/ipynbs/ipython-notebook.ipynb";
     URL url = new URL(urlString);
-    BufferedReader in = new BufferedReader(
-            new InputStreamReader(url.openStream()));
-
-    StringBuilder fullText = new StringBuilder();
+    StringBuilder fullText;
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
+      fullText = new StringBuilder();
       String inputLine;
       while ((inputLine = in.readLine()) != null) {
         fullText.append(inputLine);
         fullText.append("\n");
       }
-    in.close();
+    }
     return new StringObject(fullText.toString());
   }
 }

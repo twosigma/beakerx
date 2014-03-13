@@ -58,9 +58,9 @@ public class FileIORest {
     if (path.startsWith("file:")) {
       path = path.substring(5); // get rid of prefix "file:"
     }
-    FileOutputStream fos = new FileOutputStream(path);
+    try (FileOutputStream fos = new FileOutputStream(path)) {
       fos.write(contentAsString.getBytes());
-    fos.close();
+    }
     return new StringObject("done");
   }
 
@@ -71,9 +71,10 @@ public class FileIORest {
     if (path.startsWith("file:")) {
       path = path.substring(5); // get rid of prefix "file:"
     }
-    FileInputStream fin = new FileInputStream(path);
-    byte[] content = IOUtils.toByteArray(fin);
-    fin.close();
+    byte[] content;
+    try (FileInputStream fin = new FileInputStream(path)) {
+      content = IOUtils.toByteArray(fin);
+    }
     return new StringObject(new String(content));
   }
   private static MimeMap MIME_MAP = null;
@@ -93,6 +94,7 @@ public class FileIORest {
     }
     return getMimeTypeForExtension(extension);
   }
+
   private static final String BEAKER_NOTEBOOK_EXTENSION = ".bkr";
   private static final String BEAKER_NOTEBOOK_MIME_TYPE =
       "application/prs.twosigma.beaker.notebook+json";

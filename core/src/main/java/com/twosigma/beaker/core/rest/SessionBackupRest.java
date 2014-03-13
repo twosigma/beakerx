@@ -117,11 +117,8 @@ public class SessionBackupRest {
     }
     final String fileName = sessionID + "_" + URLEncoder.encode(notebookUrl, "ISO-8859-1") + ".bkr.backup";
     final File file = new File(this.backupDirectory, fileName);
-    Writer writer = new OutputStreamWriter(new FileOutputStream(file));
-    try {
+    try (Writer writer = new OutputStreamWriter(new FileOutputStream(file))) {
       writer.write(contentAsString);
-    } finally {
-      writer.close();
     }
 
     file.setReadable(false, false);

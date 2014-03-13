@@ -93,15 +93,11 @@ public class RecentMenuRest {
   }
 
   private void recordToFile() throws IOException {
-    Writer writer = new OutputStreamWriter(
-            new FileOutputStream(this.recentDocumentsFile));
-    try {
+    try (Writer writer = new OutputStreamWriter(new FileOutputStream(this.recentDocumentsFile))) {
       for (int i = this.recentDocuments.size() - 1; i >= 0; --i) {
         writer.write(this.recentDocuments.get(i));
         writer.write("\n");
       }
-    } finally {
-      writer.close();
     }
   }
 

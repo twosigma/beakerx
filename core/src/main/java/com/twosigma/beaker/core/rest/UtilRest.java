@@ -107,10 +107,11 @@ public class UtilRest {
 
   private String readFile(File file) {
     try {
-      FileInputStream fis = new FileInputStream(file);
-      byte[] data = new byte[(int) file.length()];
-      fis.read(data);
-      fis.close();
+      byte[] data;
+      try (FileInputStream fis = new FileInputStream(file)) {
+        data = new byte[(int) file.length()];
+        fis.read(data);
+      }
       return new String(data, "UTF-8");
     } catch (FileNotFoundException e) {
       System.out.println("ERROR reading file" + file.getName() + ": " + e);

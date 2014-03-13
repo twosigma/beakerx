@@ -171,34 +171,34 @@
         stream: "stdout"
       }
     }).done(function(ret) {
-          if (bkHelper.restartAlert(ret)) {
-            return;
+      if (bkHelper.restartAlert(ret)) {
+        return;
+      }
+      cometdUtil.init();
+      var RShell = function(settings, cb) {
+        var self = this;
+        var setShellIdCB = function(id) {
+          if (id !== settings.shellID) {
+            // console.log("A new R shell was created.");
           }
-          cometdUtil.init();
-          var RShell = function(settings, cb) {
-            var self = this;
-            var setShellIdCB = function(id) {
-              if (id !== settings.shellID) {
-                // console.log("A new R shell was created.");
-              }
-              settings.shellID = id;
-              self.settings = settings;
-              cb();
-            };
-            if (!settings.shellID) {
-              settings.shellID = "";
-            }
-            this.newShell(settings.shellID, setShellIdCB);
-            this.perform = function(what) {
-              var action = this.spec[what].action;
-              this[action]();
-            };
-          };
-          RShell.prototype = R;
-          bkHelper.getLoadingPlugin(url).onReady(RShell);
-        }).fail(function() {
-          console.log("process start failed", arguments);
-        });
+          settings.shellID = id;
+          self.settings = settings;
+          cb();
+        };
+        if (!settings.shellID) {
+          settings.shellID = "";
+        }
+        this.newShell(settings.shellID, setShellIdCB);
+        this.perform = function(what) {
+          var action = this.spec[what].action;
+          this[action]();
+        };
+      };
+      RShell.prototype = R;
+      bkHelper.getLoadingPlugin(url).onReady(RShell);
+    }).fail(function() {
+      console.log("process start failed", arguments);
+    });
   };
   init();
 })();

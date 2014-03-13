@@ -171,34 +171,34 @@
         stream: "stdout"
       }
     }).done(function(ret) {
-          if (bkHelper.restartAlert(ret)) {
-            return;
+      if (bkHelper.restartAlert(ret)) {
+        return;
+      }
+      cometdUtil.init();
+      var GroovyShell = function(settings, cb) {
+        var self = this;
+        var setShellIdCB = function(id) {
+          if (id !== settings.shellID) {
+            // console.log("A new Groovy shell was created.");
           }
-          cometdUtil.init();
-          var GroovyShell = function(settings, cb) {
-            var self = this;
-            var setShellIdCB = function(id) {
-              if (id !== settings.shellID) {
-                // console.log("A new Groovy shell was created.");
-              }
-              settings.shellID = id;
-              self.settings = settings;
-              cb();
-            };
-            if (!settings.shellID) {
-              settings.shellID = "";
-            }
-            this.newShell(settings.shellID, setShellIdCB);
-            this.perform = function(what) {
-              var action = this.spec[what].action;
-              this[action]();
-            };
-          };
-          GroovyShell.prototype = Groovy;
-          bkHelper.getLoadingPlugin(url).onReady(GroovyShell);
-        }).fail(function() {
-          console.log("process start failed", arguments);
-        });
+          settings.shellID = id;
+          self.settings = settings;
+          cb();
+        };
+        if (!settings.shellID) {
+          settings.shellID = "";
+        }
+        this.newShell(settings.shellID, setShellIdCB);
+        this.perform = function(what) {
+          var action = this.spec[what].action;
+          this[action]();
+        };
+      };
+      GroovyShell.prototype = Groovy;
+      bkHelper.getLoadingPlugin(url).onReady(GroovyShell);
+    }).fail(function() {
+      console.log("process start failed", arguments);
+    });
   };
   init();
 })();

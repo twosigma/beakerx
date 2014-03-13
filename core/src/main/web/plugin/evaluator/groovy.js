@@ -23,7 +23,7 @@
   var PLUGIN_NAME = "Groovy";
   var COMMAND = "groovyPlugin";
 
-  var serverUrl = "/groovysh/";
+  var serverUrl = null;
   var subscriptions = {};
 
   var cometd = new $.Cometd();
@@ -32,7 +32,7 @@
     init: function() {
       if (!initialized) {
         cometd.unregisterTransport("websocket");
-        cometd.init(serverUrl + "cometd");
+        cometd.init("/" + serverUrl + "/" + "cometd");
         initialized = true;
       }
     },
@@ -71,7 +71,7 @@
       if (!shellId) {
         shellId = "";
       }
-      bkHelper.httpPost(serverUrl + "rest/groovysh/getShell", { shellId: shellId })
+      bkHelper.httpPost("/" + serverUrl + "/" + "rest/groovysh/getShell", { shellId: shellId })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
@@ -92,7 +92,7 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serverUrl + "rest/groovysh/evaluate",
+        url: "/" + serverUrl + "/" + "rest/groovysh/evaluate",
         data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
             var onUpdatableResultUpdate = function(update) {
@@ -136,7 +136,7 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serverUrl + "rest/groovysh/autocomplete",
+        url: "/" + serverUrl + "/" + "rest/groovysh/autocomplete",
         data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
             cb(x);
@@ -147,7 +147,7 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serverUrl + "rest/groovysh/exit",
+        url: "/" + serverUrl + "/" + "rest/groovysh/exit",
         data: { shellId: self.settings.shellID }
       }).done(cb);
     },
@@ -164,15 +164,16 @@
       data: {
         pluginId: PLUGIN_NAME,
         command: COMMAND,
-        nginxRules: "location /groovysh/ {proxy_pass http://127.0.0.1:%(port)s/;}",
+        nginxRules: "location /%(base_url)s/ {proxy_pass http://127.0.0.1:%(port)s/;}",
         startedIndicator: "Server started",
         recordOutput: "true"
       }
     }).done(function(ret) {
-      console.log("TEST");
       if (bkHelper.restartAlert(ret)) {
         return;
       }
+
+      serverUrl = ret.value;
       cometdUtil.init();
       var GroovyShell = function(settings, cb) {
         var self = this;

@@ -42,6 +42,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  * The RESTful API for starting a process by running command
@@ -155,7 +156,9 @@ public class StartProcessRest {
 
     PluginConfig pConfig = plugins.get(pluginId);
     if (pConfig == null) {
-      pConfig = new PluginConfig(getNextAvailablePort(portSearchStart), nginxRules);
+      final int port = getNextAvailablePort(portSearchStart);
+      final String baseUrl = generatePrefixedRandomString(pluginId, 6);
+      pConfig = new PluginConfig(port, nginxRules, baseUrl);
       portSearchStart = pConfig.port + 1;
       plugins.put(pluginId, pConfig);
 
@@ -167,7 +170,7 @@ public class StartProcessRest {
     } else {
       if (pConfig.isStarted()) {
         System.out.println("process was already started, not starting another one: " + command);
-        return new StringObject(("process was already started, not starting another one"));
+        return new StringObject(pConfig.getBaseUrl());
       }
     }
 
@@ -206,7 +209,7 @@ public class StartProcessRest {
 
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);
-    return new StringObject(("done"));
+    return new StringObject(pConfig.getBaseUrl());
   }
 
   private void addPluginArgs(String plugin, String arg) {
@@ -246,7 +249,8 @@ public class StartProcessRest {
     StringBuilder pluginSection = new StringBuilder();
     for (PluginConfig pConfig : plugins.values()) {
       String nginxRule = pConfig.getNginxRules()
-          .replace("%(port)s", Integer.toString(pConfig.getPort()));
+          .replace("%(port)s", Integer.toString(pConfig.getPort()))
+          .replace("%(base_url)s", pConfig.getBaseUrl());
       pluginSection.append(nginxRule);
     }
     ngixConfig = ngixConfig.replace("%(plugin_section)s", pluginSection.toString());
@@ -278,19 +282,32 @@ public class StartProcessRest {
     throw new RuntimeException("out of ports error");
   }
 
+  private static String generatePrefixedRandomString(String prefix, int randomPartLength) {
+    // TODO
+    // note the toLowerCase is need because for unknown reason,
+    // nginx doesn't like location start with upper case
+    return prefix.toLowerCase() + RandomStringUtils.random(randomPartLength, true, true);
+  }
+
   private static class PluginConfig {
 
     private final int port;
     private final String nginxRules;
     private Process proc;
+    private final String baseUrl;
 
-    PluginConfig(int port, String nginxRules) {
+    PluginConfig(int port, String nginxRules, String baseUrl) {
       this.port = port;
       this.nginxRules = nginxRules;
+      this.baseUrl = baseUrl;
     }
 
     int getPort() {
       return this.port;
+    }
+
+    String getBaseUrl() {
+      return this.baseUrl;
     }
 
     String getNginxRules() {

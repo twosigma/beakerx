@@ -25,6 +25,7 @@
   var COMMAND = "ipythonPlugin";
   var kernels = {};
   var _theCancelFunction = null;
+  var serverUrl = null;
   var now = function() {
     return new Date().getTime();
   };
@@ -42,7 +43,7 @@
         shellID = IPython.utils.uuid();
       }
 
-      var kernel = new IPython.Kernel("/ipython/kernels/");
+      var kernel = new IPython.Kernel("/" + serverUrl + "/kernels/");
       kernels[shellID] = kernel;
       kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
       // keepalive for the websockets
@@ -208,11 +209,11 @@
        this is safe because the URL has the kernel ID in it, and that's a 128-bit
        random number, only delivered via the secure channel. */
       var nginxRules =
-          "location /ipython/kernels/ {" +
+          "location /%(base_url)s/kernels/ {" +
           "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
           "}" +
-          "location ~ /ipython/kernels/[0-9a-f-]+/  {" +
-          "  rewrite ^/ipython/(.*)$ /$1 break; " +
+          "location ~ /%(base_url)s/kernels/[0-9a-f-]+/  {" +
+          "  rewrite ^/%(base_url)s/(.*)$ /$1 break; " +
           "  proxy_pass http://127.0.0.1:%(port)s; " +
           "  proxy_http_version 1.1; " +
           "  proxy_set_header Upgrade $http_upgrade; " +
@@ -235,6 +236,7 @@
             if (bkHelper.restartAlert(ret)) {
               return;
             }
+            serverUrl = ret.value;
             var IPythonShell = function(settings, cb) {
               var self = this;
               var setShellIdCB = function(shellID) {

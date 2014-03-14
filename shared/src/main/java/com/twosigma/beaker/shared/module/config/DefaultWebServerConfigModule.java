@@ -22,10 +22,10 @@ import com.google.inject.AbstractModule;
  * WebAppConfigModule
  * creates bindings to WebAppConfig with the assistance of WebAppConfigPref
  */
-public class WebServerConfigModule extends AbstractModule {
+public class DefaultWebServerConfigModule extends AbstractModule {
   private final WebAppConfigPref pref;
 
-  public WebServerConfigModule(WebAppConfigPref pref) {
+  public DefaultWebServerConfigModule(WebAppConfigPref pref) {
     this.pref = pref;
   }
 

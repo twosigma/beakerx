@@ -26,7 +26,7 @@ import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
-import com.twosigma.beaker.shared.module.config.WebServerConfigModule;
+import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -88,7 +88,7 @@ public class Main {
 
     Injector injector = Guice.createInjector(
         new DefaultBeakerConfigModule(beakerCorePref),
-        new WebServerConfigModule(webAppPref),
+        new DefaultWebServerConfigModule(webAppPref),
         new GeneralUtilsModule(),
         new WebServerModule(),
         new URLConfigModule(),

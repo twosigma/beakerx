@@ -16,7 +16,6 @@
 package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Singleton;
-import com.twosigma.beaker.shared.json.serializer.StringObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

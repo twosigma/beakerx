@@ -66,10 +66,11 @@ public class FileIORest {
   }
 
   @GET
+  @Produces(MediaType.TEXT_PLAIN)
   @Path("load")
-  public StringObject load(@QueryParam("path") String path) throws IOException {
+  public String load(@QueryParam("path") String path) throws IOException {
     path = removePrefix(path);
-    return new StringObject(utils.readFile(path));
+    return utils.readFile(path);
   }
 
   private static final String FILE_PREFIX = "file:";

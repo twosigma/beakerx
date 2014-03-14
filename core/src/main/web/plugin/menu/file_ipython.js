@@ -171,8 +171,8 @@
   var loadFromFile = function(path) {
     var deferred = bkHelper.newDeferred();
     bkHelper.httpGet("/beaker/rest/file-io/load", {path: path}).
-        success(function(data) {
-          deferred.resolve(data);
+        success(function(content) {
+          deferred.resolve(content);
         }).
         error(function(data, status, header, config) {
           deferred.reject(data, status, header, config);
@@ -182,8 +182,8 @@
   var loadFromHttp = function(url) {
     var deferred = bkHelper.newDeferred();
     bkHelper.httpGet("/beaker/rest/http-proxy/load", {url: url}).
-        success(function(data) {
-          deferred.resolve(data);
+        success(function(content) {
+          deferred.resolve(content);
         }).
         error(function(data, status, header, config) {
           deferred.reject(data, status, header, config);
@@ -199,8 +199,8 @@
       }
       if (path) {
         var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-        load(path).then(function(ret) {
-          var ipyNbJson = ret.value;
+        load(path).then(function(content) {
+          var ipyNbJson = content;
           var ipyNb = JSON.parse(ipyNbJson);
           var bkrNb = notebookConverter.convert(ipyNb);
           bkHelper.loadNotebook(bkrNb, true);

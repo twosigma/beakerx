@@ -22,8 +22,8 @@
   var loadFromFile = function(path) {
     var deferred = bkHelper.newDeferred();
     bkHelper.httpGet("/beaker/rest/file-io/load", {path: path}).
-        success(function(data) {
-          deferred.resolve(data);
+        success(function(content) {
+          deferred.resolve(content);
         }).
         error(function(data, status, header, config) {
           deferred.reject(data, status, header, config);
@@ -33,8 +33,8 @@
   var loadFromHttp = function(url) {
     var deferred = bkHelper.newDeferred();
     bkHelper.httpGet("/beaker/rest/http-proxy/load", {url: url}).
-        success(function(data) {
-          deferred.resolve(data);
+        success(function(content) {
+          deferred.resolve(content);
         }).
         error(function(data, status, header, config) {
           deferred.reject(data, status, header, config);
@@ -69,8 +69,8 @@
       return;
     }
     var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-    load(path).then(function(ret) {
-      var notebookJson = ret.value;
+    load(path).then(function(content) {
+      var notebookJson = content;
       bkHelper.loadNotebook(notebookJson, true, path);
       bkHelper.setSaveFunction(function(notebookModel) {
         return save(path, bkHelper.toPrettyJson(notebookModel));

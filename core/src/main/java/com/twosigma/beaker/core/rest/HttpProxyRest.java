@@ -37,9 +37,9 @@ import javax.ws.rs.core.MediaType;
 public class HttpProxyRest {
 
   @GET
+  @Produces(MediaType.TEXT_PLAIN)
   @Path("load")
-  public StringObject load(
-          @QueryParam("url") String urlString) throws IOException {
+  public String load(@QueryParam("url") String urlString) throws IOException {
     //urlString = "https://raw.github.com/ethanwhite/progbio/master/ipynbs/ipython-notebook.ipynb";
     URL url = new URL(urlString);
     StringBuilder fullText;
@@ -51,6 +51,6 @@ public class HttpProxyRest {
         fullText.append("\n");
       }
     }
-    return new StringObject(fullText.toString());
+    return fullText.toString();
   }
 }

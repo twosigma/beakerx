@@ -25,7 +25,7 @@
     var PLUGIN_NAME = "Node";
     var COMMAND = "nodePlugin";
 
-    var serverUrl = "/node/";
+    var serverUrl = null;
 
     var nodeProto = {
         pluginName: PLUGIN_NAME,
@@ -42,7 +42,7 @@
                 $.ajax({
                     type: "GET",
                     datatype: "json",
-                    url: serverUrl + "pulse"
+                    url: "/" + serverUrl + "/" + "pulse"
                 }).fail(function(){
                     setTimeout(function () {
                         checkNodeServerRunning();
@@ -51,7 +51,7 @@
                     $.ajax({
                         type: "POST",
                         datatype: "json",
-                        url: serverUrl + "shell",
+                        url: "/" + serverUrl + "/" + "shell",
                         data: {shellid: shellID}
                     }).done(function(response){
                         shellID = response.shellID;
@@ -77,7 +77,7 @@
             $.ajax({
                 type: "POST",
                 datatype: "json",
-                url: serverUrl + "evaluate",
+                url: "/" + serverUrl + "/" + "evaluate",
                 data: {shellID: self.settings.shellID, code: code}
             }).done(function(ret) {
                 modelOutput.result = ret;
@@ -99,7 +99,7 @@
             $.ajax({
                 type: "POST",
                 datatype: "json",
-                url: serverUrl + "rest/node/exit",
+                url: "/" + serverUrl + "/" + "rest/node/exit",
                 data: { shellID: self.settings.shellID }
             }).done(cb);
         },
@@ -107,22 +107,13 @@
     };
 
     var init = function () {
-        $.ajax({
-            type: "POST",
-            datatype: "json",
-            url: "/beaker/rest/startProcess/runCommand",  // note this is not based on serverUrl
-            data: {
-                flag: PLUGIN_NAME,
-                command: COMMAND,
-                started: "Server Starting",
-                nginx: "location /node/ {proxy_pass http://127.0.0.1:%(port)s/;}",
-                record: "true",
-                stream: "stdout"
-            }
-        }).done(function (ret) {
-            if (bkHelper.restartAlert(ret)) {
-                return;
-            }
+      bkHelper.locatePluginService(PLUGIN_NAME, {
+        command: COMMAND,
+        nginxRules: "location /%(base_url)s/ {proxy_pass http://127.0.0.1:%(port)s/;}",
+        startedIndicator: "Server Starting",
+        recordOutput: "true"
+        }).success(function (ret) {
+            serverUrl = ret;
             var NodeShell = function (settings, cb) {
                 var self = this;
                 var setShellIdCB = function (id) {
@@ -144,7 +135,7 @@
             };
             NodeShell.prototype = nodeProto;
             bkHelper.getLoadingPlugin(url).onReady(NodeShell);
-        }).fail(function () {
+        }).error(function () {
             alert('fail');
             console.log("process start failed", arguments);
         });

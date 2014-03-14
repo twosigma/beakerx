@@ -51,8 +51,9 @@ public class FileIORest {
 
   @GET
   @Path("getHomeDirectory")
-  public StringObject getHomeDirector() {
-    return new StringObject(System.getProperty("user.home"));
+  @Produces(MediaType.TEXT_PLAIN)
+  public String getHomeDirector() {
+    return System.getProperty("user.home");
   }
 
   @POST

@@ -214,8 +214,7 @@
     }
   });
 
-  bkHelper.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(ret) {
-    var homeDir = ret.value;
+  bkHelper.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(homeDir) {
     var fileChooserStrategy = { result: "" };
     fileChooserStrategy.close = function(ev, closeFunc) {
       if (ev.which === 13) {

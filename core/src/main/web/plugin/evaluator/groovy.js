@@ -157,13 +157,13 @@
   };
 
   var init = function() {
-    bkHelper.locatePluginService({
-        pluginId: PLUGIN_NAME,
+    bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: "location /%(base_url)s/ {proxy_pass http://127.0.0.1:%(port)s/;}",
         startedIndicator: "Server started",
         recordOutput: "true"
     }).success(function(ret) {
+          console.log("%%%%%%%%% ret = ", ret);
       serverUrl = ret;
       cometdUtil.init();
       var GroovyShell = function(settings, cb) {

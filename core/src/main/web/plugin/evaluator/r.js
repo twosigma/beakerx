@@ -157,8 +157,7 @@
   };
 
   var init = function() {
-    bkHelper.locatePluginService({
-        pluginId: PLUGIN_NAME,
+    bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: "location /%(base_url)s/ {proxy_pass http://127.0.0.1:%(port)s/;}",
         startedIndicator: "Server started",

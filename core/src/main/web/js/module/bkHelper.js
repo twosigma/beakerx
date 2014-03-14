@@ -247,8 +247,8 @@
       // bkShare
       share: bkShare,
 
-      locatePluginService: function(locator) {
-        return bkCoreManager.httpPost("/beaker/rest/plugin-service-locator/locatePluginService",
+      locatePluginService: function(id, locator) {
+        return bkCoreManager.httpGet("/beaker/rest/plugin-services/" + id,
             locator);
       }
     };

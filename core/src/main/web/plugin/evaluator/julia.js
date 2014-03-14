@@ -222,8 +222,7 @@
               "  proxy_set_header Origin \"$scheme://$host\"; " +
               "  proxy_set_header Host $host;" +
               "}";
-      bkHelper.locatePluginService({
-          pluginId: PLUGIN_NAME,
+      bkHelper.locatePluginService(PLUGIN_NAME, {
           command: COMMAND,
           nginxRules: nginxRules,
           startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",

@@ -17,9 +17,9 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,20 +27,26 @@ import java.io.PrintWriter;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.URI;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This is the service that locates a plugin service. And a service will be started if the target
@@ -48,7 +54,7 @@ import org.apache.commons.lang3.RandomStringUtils;
  */
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
-@Path("plugin-service-locator")
+@Path("plugin-services")
 public class PluginServiceLocatorRest {
 
   private final String installDir;
@@ -145,57 +151,61 @@ public class PluginServiceLocatorRest {
    * @throws InterruptedException
    * @throws IOException
    */
-  @POST
-  @Path("locatePluginService")
-  public String locatePluginService(
-      @FormParam("pluginId") String pluginId,
-      @FormParam("command") String command,
-      @FormParam("nginxRules") String nginxRules,
-      @FormParam("startedIndicator") String startedIndicator,
-      @FormParam("startedIndicatorStream") String startedIndicatorStream,
-      @FormParam("recordOutput") String recordOutput,
-      @FormParam("waitfor") String waitfor)
+  @GET
+  @Produces(MediaType.TEXT_PLAIN)
+  @Path("/{plugin-id}")
+  public Response locatePluginService(
+      @PathParam("plugin-id") String pluginId,
+      @QueryParam("command") String command,
+      @QueryParam("nginxRules") String nginxRules,
+      @QueryParam("startedIndicator") String startedIndicator,
+      @QueryParam("startedIndicatorStream") @DefaultValue("stdout") String startedIndicatorStream,
+      @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
+      @QueryParam("waitfor") String waitfor)
       throws InterruptedException, IOException {
 
     PluginConfig pConfig = plugins.get(pluginId);
-    if (pConfig == null) {
-      final int port = getNextAvailablePort(portSearchStart);
-      final String baseUrl = generatePrefixedRandomString(pluginId, 6);
-      pConfig = new PluginConfig(port, nginxRules, baseUrl);
-      portSearchStart = pConfig.port + 1;
-      plugins.put(pluginId, pConfig);
-
-      // restart nginx
-      generateNginxConfig();
-      Process restartproc = Runtime.getRuntime().exec(this.nginxDir + "/script/restart_nginx");
-      startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
-      restartproc.waitFor();
-    } else {
-      if (pConfig.isStarted()) {
-        System.out.println("process was already started, not starting another one: " + command);
-        return pConfig.getBaseUrl();
-      }
+    if (pConfig != null && pConfig.isStarted()) {
+      System.out.println("plugin service (" + pluginId + ")"
+          + "already started at" + pConfig.getBaseUrl());
+      return buildResponse(pConfig.getBaseUrl(), false);
     }
 
-    boolean record = recordOutput != null && recordOutput.equals("true");
-    if (!new File(command).exists()) {
+    final int port = getNextAvailablePort(portSearchStart);
+    final String baseUrl = generatePrefixedRandomString(pluginId, 6);
+    pConfig = new PluginConfig(port, nginxRules, baseUrl);
+    portSearchStart = pConfig.port + 1;
+    plugins.put(pluginId, pConfig);
+
+    // restart nginx to reload new config
+    generateNginxConfig();
+    Process restartproc = Runtime.getRuntime().exec(this.nginxDir + "/script/restart_nginx");
+    startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
+    restartproc.waitFor();
+
+
+    if (Files.notExists(Paths.get(command))) {
       command = this.pluginDir + "/" + command;
+
+      if (Files.notExists(Paths.get(command))) {
+        throw new PluginServiceNotFoundException(
+            "plugin service: " + pluginId + "not found"
+            + "and fail to start it with: " + command);
+      }
     }
 
     List<String> extraArgs = pluginArgs.get(pluginId);
     if (extraArgs != null) {
-      for (String s : extraArgs) {
-        command += " " + s;
-      }
+      command += StringUtils.join(extraArgs, " ");
     }
     command += " " + Integer.toString(pConfig.port);
 
-    System.out.println("starting process " + command);
-
     String[] env = pluginEnvps.get(pluginId);
+    System.out.println("Running: " + command);
     Process proc = Runtime.getRuntime().exec(command, env);
+
     if (startedIndicator != null && !startedIndicator.isEmpty()) {
-      InputStream is = startedIndicatorStream != null && startedIndicatorStream.equals("stderr") ?
+      InputStream is = startedIndicatorStream.equals("stderr") ?
           proc.getErrorStream() : proc.getInputStream();
       InputStreamReader ir = new InputStreamReader(is);
       BufferedReader br = new BufferedReader(ir);
@@ -208,11 +218,26 @@ public class PluginServiceLocatorRest {
         }
       }
     }
-    startGobblers(proc, pluginId, record ? this.outputLogService : null, waitfor);
+    startGobblers(proc, pluginId, recordOutput ? this.outputLogService : null, waitfor);
 
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);
-    return pConfig.getBaseUrl();
+    return buildResponse(pConfig.getBaseUrl(), true);
+  }
+
+  private static Response buildResponse(String baseUrl, boolean created) {
+    return Response
+        .status(created ? Response.Status.CREATED : Response.Status.OK)
+        .entity(baseUrl)
+        .location(URI.create(baseUrl))
+        .build();
+  }
+
+  private static class PluginServiceNotFoundException extends WebApplicationException {
+    public PluginServiceNotFoundException(String message) {
+      super(Response.status(Responses.NOT_FOUND)
+          .entity(message).type("text/plain").build());
+    }
   }
 
   private void addPluginArgs(String plugin, String arg) {
@@ -242,8 +267,7 @@ public class PluginServiceLocatorRest {
     }
 
     java.nio.file.Path target = Paths.get(this.installDir + "/src/main/web/static");
-    if (Files.exists(htmlDir, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {// ||
-        //(Files.isSymbolicLink(htmlDir) && !Files.readSymbolicLink(htmlDir).equals(target))) {
+    if (Files.exists(htmlDir, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {
       Files.delete(htmlDir);
     }
     Files.createSymbolicLink(htmlDir, target);
@@ -265,11 +289,11 @@ public class PluginServiceLocatorRest {
     ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
 
     // write template to file
-    File targetFile = new File(this.nginxServDir, "conf/nginx.conf");
-    if (targetFile.exists()) {
-      Files.delete(targetFile.toPath());
+    java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
+    if (Files.exists(targetFile)) {
+      Files.delete(targetFile);
     }
-    try (PrintWriter out = new PrintWriter(targetFile)) {
+    try (PrintWriter out = new PrintWriter(targetFile.toFile())) {
       out.print(ngixConfig);
     }
   }
@@ -333,7 +357,7 @@ public class PluginServiceLocatorRest {
 
   private static String readFile(String path) throws IOException {
     byte[] encoded = Files.readAllBytes(Paths.get(path));
-    return Charset.defaultCharset().decode(ByteBuffer.wrap(encoded)).toString();
+    return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
   }
 
   private static boolean isPortAvailable(int port) {

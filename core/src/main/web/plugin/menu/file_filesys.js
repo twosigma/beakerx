@@ -45,9 +45,9 @@
   var save = function(path, json) {
     var deferred = bkHelper.newDeferred();
     bkHelper.httpPost("/beaker/rest/file-io/save", {path: path, content: json}).
-        success(function(data) {
+        success(function() {
           bkHelper.setNotebookUrl(path);
-          deferred.resolve(data);
+          deferred.resolve();
         }).
         error(function(data, status, header, config) {
           deferred.reject(data, status, header, config);

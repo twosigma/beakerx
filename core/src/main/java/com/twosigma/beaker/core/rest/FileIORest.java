@@ -35,7 +35,7 @@ import javax.ws.rs.core.MediaType;
 import jcifs.util.MimeMap;
 
 /**
- * RESTful API for file I/O (save and load)
+ * for file I/O (save and load)
  */
 @Singleton
 @Produces(MediaType.APPLICATION_JSON)
@@ -58,12 +58,11 @@ public class FileIORest {
 
   @POST
   @Path("save")
-  public StringObject save(
+  public void save(
       @FormParam("path") String path,
       @FormParam("content") String contentAsString) throws IOException {
     path = removePrefix(path);
     utils.saveFile(path, contentAsString);
-    return new StringObject("done");
   }
 
   @GET

@@ -163,7 +163,6 @@
         startedIndicator: "Server started",
         recordOutput: "true"
     }).success(function(ret) {
-          console.log("%%%%%%%%% ret = ", ret);
       serverUrl = ret;
       cometdUtil.init();
       var GroovyShell = function(settings, cb) {

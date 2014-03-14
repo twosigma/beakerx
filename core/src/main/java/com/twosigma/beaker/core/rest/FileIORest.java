@@ -36,9 +36,9 @@ import jcifs.util.MimeMap;
 /**
  * for file I/O (save and load)
  */
-@Singleton
-@Produces(MediaType.APPLICATION_JSON)
 @Path("file-io")
+@Produces(MediaType.APPLICATION_JSON)
+@Singleton
 public class FileIORest {
 
   private final GeneralUtils utils;
@@ -65,8 +65,8 @@ public class FileIORest {
   }
 
   @GET
-  @Produces(MediaType.TEXT_PLAIN)
   @Path("load")
+  @Produces(MediaType.TEXT_PLAIN)
   public String load(@QueryParam("path") String path) throws IOException {
     path = removePrefix(path);
     return utils.readFile(path);

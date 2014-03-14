@@ -46,9 +46,9 @@ import org.rosuda.REngine.RList;
 /**
  * Glue between the REST calls from the R plugin to the Rserve module that manages the R process.
  */
-@Singleton
-@Produces(MediaType.APPLICATION_JSON)
 @Path("rsh")
+@Produces(MediaType.APPLICATION_JSON)
+@Singleton
 public class RShellRest {
 
   private static final String BEGIN_MAGIC = "**beaker_begin_magic**";

@@ -51,9 +51,9 @@ import org.apache.commons.lang3.StringUtils;
  * This is the service that locates a plugin service. And a service will be started if the target
  * service doesn't exist. See {@link locatePluginService} for details
  */
-@Singleton
-@Produces(MediaType.APPLICATION_JSON)
 @Path("plugin-services")
+@Produces(MediaType.APPLICATION_JSON)
+@Singleton
 public class PluginServiceLocatorRest {
 
   private final String installDir;
@@ -155,8 +155,8 @@ public class PluginServiceLocatorRest {
    * @throws IOException
    */
   @GET
-  @Produces(MediaType.TEXT_PLAIN)
   @Path("/{plugin-id}")
+  @Produces(MediaType.TEXT_PLAIN)
   public Response locatePluginService(
       @PathParam("plugin-id") String pluginId,
       @QueryParam("command") String command,

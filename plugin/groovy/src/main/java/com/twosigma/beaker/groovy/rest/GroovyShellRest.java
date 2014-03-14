@@ -30,9 +30,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.codehaus.groovy.control.CompilationFailedException;
 
-@Singleton
-@Produces(MediaType.APPLICATION_JSON)
 @Path("groovysh")
+@Produces(MediaType.APPLICATION_JSON)
+@Singleton
 public class GroovyShellRest {
 
   private final Map<String, GroovyShell> shells = new HashMap<>();
@@ -40,8 +40,8 @@ public class GroovyShellRest {
   public GroovyShellRest() throws IOException {}
 
   @POST
-  @Produces(MediaType.TEXT_PLAIN)
   @Path("getShell")
+  @Produces(MediaType.TEXT_PLAIN)
   public String getShell(
           @FormParam("shellId") String shellId) throws InterruptedException {
     // if the shell doesnot already exist, create a new shell

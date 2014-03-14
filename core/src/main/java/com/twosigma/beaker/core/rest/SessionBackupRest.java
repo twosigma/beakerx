@@ -43,9 +43,9 @@ import org.codehaus.jackson.map.SerializerProvider;
 /**
  * The service that backs up session to file that offers a RESTful API
  */
-@Singleton
-@Produces(MediaType.APPLICATION_JSON)
 @Path("session-backup")
+@Produces(MediaType.APPLICATION_JSON)
+@Singleton
 public class SessionBackupRest {
 
   private final File backupDirectory;

@@ -30,14 +30,15 @@ import javax.ws.rs.core.MediaType;
 /**
  * RESTful API for http proxy
  */
-@Singleton
-@Produces(MediaType.APPLICATION_JSON)
+
 @Path("http-proxy")
+@Produces(MediaType.APPLICATION_JSON)
+@Singleton
 public class HttpProxyRest {
 
   @GET
-  @Produces(MediaType.TEXT_PLAIN)
   @Path("load")
+  @Produces(MediaType.TEXT_PLAIN)
   public String load(@QueryParam("url") String urlString) throws IOException {
     //urlString = "https://raw.github.com/ethanwhite/progbio/master/ipynbs/ipython-notebook.ipynb";
     URL url = new URL(urlString);

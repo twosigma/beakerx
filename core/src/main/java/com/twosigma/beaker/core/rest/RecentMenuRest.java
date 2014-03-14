@@ -39,9 +39,9 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Implementation of recent file manager that offers a RESTful API
  */
-@Singleton
-@Produces(MediaType.APPLICATION_JSON)
 @Path("recent-menu")
+@Produces(MediaType.APPLICATION_JSON)
+@Singleton
 @SuppressWarnings("unchecked")
 public class RecentMenuRest {
 

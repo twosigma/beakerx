@@ -20,7 +20,6 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,9 +46,9 @@ import org.json.simple.parser.ParseException;
 /**
  * RESTful API for general utilities
  */
-@Singleton
-@Produces(MediaType.APPLICATION_JSON)
 @Path("util")
+@Produces(MediaType.APPLICATION_JSON)
+@Singleton
 public class UtilRest {
 
   private final BeakerConfig bkConfig;

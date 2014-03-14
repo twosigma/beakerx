@@ -27,9 +27,9 @@ import javax.ws.rs.core.MediaType;
 /**
  * RESTful API for output log service (stdout and stderr from evaluator)
  */
-@Singleton
-@Produces(MediaType.APPLICATION_JSON)
 @Path("outputlog")
+@Produces(MediaType.APPLICATION_JSON)
+@Singleton
 public class OutputLogRest {
 
   @Inject
@@ -43,8 +43,8 @@ public class OutputLogRest {
   }
 
   @GET
-  @Produces(MediaType.TEXT_PLAIN)
   @Path("clear")
+  @Produces(MediaType.TEXT_PLAIN)
   public String clear() {
     _OutputLogService.clear();
     return "\"ok\"";

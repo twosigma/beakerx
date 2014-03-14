@@ -43,6 +43,7 @@ public class OutputLogRest {
   }
 
   @GET
+  @Produces(MediaType.TEXT_PLAIN)
   @Path("clear")
   public String clear() {
     _OutputLogService.clear();

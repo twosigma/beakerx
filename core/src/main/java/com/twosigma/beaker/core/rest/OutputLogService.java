@@ -80,7 +80,7 @@ public class OutputLogService {
   }
 
   public void clear() {
-    this.log = new ArrayList<OutputLogService.OutputLine>();
+    this.log = new ArrayList<>();
   }
 
   // Would be nice to record a timestamp too.

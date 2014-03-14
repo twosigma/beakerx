@@ -40,6 +40,7 @@ public class GroovyShellRest {
   public GroovyShellRest() throws IOException {}
 
   @POST
+  @Produces(MediaType.TEXT_PLAIN)
   @Path("getShell")
   public String getShell(
           @FormParam("shellId") String shellId) throws InterruptedException {

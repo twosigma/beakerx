@@ -64,6 +64,7 @@ public class UtilRest {
 
   @GET
   @Path("whoami")
+  @Produces(MediaType.TEXT_PLAIN)
   public String whoami(@Context HttpServletRequest request) {
     return "\"" + System.getProperty("user.name") + "\"";
   }
@@ -84,7 +85,7 @@ public class UtilRest {
     return out;
   }
 
-  private String clean(String js) {
+  private static String clean(String js) {
     // Remove slash-star comments. This regexp is not correct
     // since it removes comments that are in a string
     // constant. Should really parse. This is why we don't remove
@@ -108,17 +109,12 @@ public class UtilRest {
 
   @GET
   @Path("getDefaultNotebook")
+  @Produces(MediaType.TEXT_PLAIN)
   public String getDefaultNotebook() {
     final String defaultNotebookUrl = this.bkConfig.getDefaultNotebookUrl();
 
     // TODO, assume the url is a file path for now.
     java.nio.file.Path defaultNotebookFile = Paths.get(defaultNotebookUrl);
-
-    if (Files.notExists(defaultNotebookFile)) {
-      System.out.println("Warning, default notebook was not found");
-      return "";
-    }
-
     String content = this.utils.readFile(defaultNotebookFile);
     if (content == null) {
       System.out.println("Warning, default notebook is empty");

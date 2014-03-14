@@ -170,12 +170,12 @@ public class Main {
   }
 
   private static int findPortBase(Integer start) {
-    int width = 10; // currently we use 6
+    int width = 3;
     int tries = 0;
     int base = start.intValue();
     while (!portRangeAvailable(base, width)) {
       System.out.println("Port range " + base + "-" + (base + width - 1) + " taken, searching...");
-      base += width * (int) (1 + Math.random() * 100);
+      base += width;
       if (tries++ > 10) {
         System.err.println("can't find open port.");
         System.exit(1);

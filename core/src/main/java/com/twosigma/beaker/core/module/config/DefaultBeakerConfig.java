@@ -16,13 +16,9 @@
 package com.twosigma.beaker.core.module.config;
 
 import com.google.inject.Inject;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +49,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
 
   @Inject
-  public DefaultBeakerConfig(BeakerConfigPref pref) throws UnknownHostException {
+  public DefaultBeakerConfig(BeakerConfigPref pref, GeneralUtils utils)
+      throws UnknownHostException, IOException {
 
     this.installDir = System.getProperty("user.dir");
     this.useKerberos = pref.getUseKerberos();
@@ -61,18 +58,18 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.reservedPortCount = 3;
     this.pluginDir = this.installDir + "/src/main/sh";
     this.dotDir = System.getProperty("user.home") + "/.beaker";
-    ensureDirectoryExists(new File(this.dotDir));
+    utils.ensureDirectoryExists(this.dotDir);
     this.nginxDir = this.installDir + "/nginx";
     this.nginxBinDir = this.installDir + "/nginx/bin";
     this.nginxServDir = this.dotDir + "/nginx";
     this.nginxExtraRules = "";
 
     String configDir = this.dotDir + "/config";
-    ensureDirectoryExists(new File(configDir));
+    utils.ensureDirectoryExists(configDir);
 
     final String configFile = configDir + "/beaker.conf.json";
     final String defaultConfigFile = this.installDir + "/config/beaker.conf.json";
-    ensureFile(new File(configFile), new File(defaultConfigFile));
+    utils.ensureFileHasContent(configFile, defaultConfigFile);
     this.configFileUrl = configFile;
 
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
@@ -81,43 +78,18 @@ public class DefaultBeakerConfig implements BeakerConfig {
     if (prefDefaultNotebookUrl != null) {
       this.defaultNotebookUrl = prefDefaultNotebookUrl;
     } else {
-      ensureFile(new File(mainDefaultNotebookPath), new File(defaultDefaultNotebookPath));
+      utils.ensureFileHasContent(mainDefaultNotebookPath, defaultDefaultNotebookPath);
       this.defaultNotebookUrl = mainDefaultNotebookPath;
     }
 
     String varDir = this.dotDir + "/var";
-    ensureDirectoryExists(new File(varDir));
+    utils.ensureDirectoryExists(varDir);
     this.recentNotebooksFileUrl = varDir + "/recentNotebooks";
     this.sessionBackupDir = varDir + "/sessionBackups";
-    ensureDirectoryExists(new File(this.sessionBackupDir));
+    utils.ensureDirectoryExists(this.sessionBackupDir);
 
     this.pluginOptions = pref.getPluginOptions();
     this.pluginEnvps = new HashMap<>();
-  }
-  private static void ensureDirectoryExists(File dir) {
-    if (!dir.exists()) {
-      if (!dir.mkdirs()) {
-        System.out.println("failed to create " + dir.getPath());
-      }
-    }
-  }
-  private static void ensureFile(
-      File target,
-      File source) {
-    if (readFile(target) == null) {
-      // target has no content,
-      // try copying from the source.
-      if (readFile(source) != null) {
-        try {
-          Files.copy(source.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-          System.out.println("ERROR copying file to" + target.getPath() + ", " + e);
-        }
-      } else {
-        // the source also has no content?!
-        System.out.println("Double bogey, the source (" + source.getPath() + " is empty.");
-      }
-    }
   }
 
   @Override
@@ -198,21 +170,6 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public Map<String, String[]> getPluginEnvps() {
     return this.pluginEnvps;
-  }
-
-  static private String readFile(File file) {
-    try {
-      FileInputStream fis = new FileInputStream(file);
-      byte[] data = new byte[(int) file.length()];
-      fis.read(data);
-      fis.close();
-      return new String(data, "UTF-8");
-    } catch (FileNotFoundException e) {
-      System.out.println("ERROR reading file" + file.getName() + ": " + e);
-    } catch (IOException e) {
-      System.out.println("ERROR reading file" + file.getName() + ": " + e);
-    }
-    return null;
   }
 
 }

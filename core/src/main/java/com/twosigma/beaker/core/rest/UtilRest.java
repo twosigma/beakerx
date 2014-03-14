@@ -18,10 +18,10 @@ package com.twosigma.beaker.core.rest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,11 +53,12 @@ import org.json.simple.parser.ParseException;
 public class UtilRest {
 
   private final BeakerConfig bkConfig;
+  private final GeneralUtils utils;
 
   @Inject
-  public UtilRest(
-      BeakerConfig bkConfig) {
+  public UtilRest(BeakerConfig bkConfig, GeneralUtils generalUtils) {
     this.bkConfig = bkConfig;
+    this.utils = generalUtils;
     resetConfig();
   }
 
@@ -105,36 +106,20 @@ public class UtilRest {
     return js;
   }
 
-  private String readFile(File file) {
-    try {
-      byte[] data;
-      try (FileInputStream fis = new FileInputStream(file)) {
-        data = new byte[(int) file.length()];
-        fis.read(data);
-      }
-      return new String(data, "UTF-8");
-    } catch (FileNotFoundException e) {
-      System.out.println("ERROR reading file" + file.getName() + ": " + e);
-    } catch (IOException e) {
-      System.out.println("ERROR reading file" + file.getName() + ": " + e);
-    }
-    return null;
-  }
-
   @GET
   @Path("getDefaultNotebook")
   public String getDefaultNotebook() {
-    String defaultNotebookUrl = this.bkConfig.getDefaultNotebookUrl();
+    final String defaultNotebookUrl = this.bkConfig.getDefaultNotebookUrl();
 
-    // TODO, assume default notebook url is a file path for now.
-    File defaultNotebookFile = new File(defaultNotebookUrl);
+    // TODO, assume the url is a file path for now.
+    java.nio.file.Path defaultNotebookFile = Paths.get(defaultNotebookUrl);
 
-    if (!defaultNotebookFile.exists()) {
+    if (Files.notExists(defaultNotebookFile)) {
       System.out.println("Warning, default notebook was not found");
       return "";
     }
 
-    String content = readFile(defaultNotebookFile);
+    String content = this.utils.readFile(defaultNotebookFile);
     if (content == null) {
       System.out.println("Warning, default notebook is empty");
       return "";
@@ -144,10 +129,13 @@ public class UtilRest {
   }
 
   private void resetConfig() {
-    File configFile = new File(this.bkConfig.getConfigFileUrl());
+    final String configFileUrl = this.bkConfig.getConfigFileUrl();
+
+    // TODO, assume the url is a file path for now.
+    java.nio.file.Path configFile = Paths.get(configFileUrl);
     try {
       JSONParser parser = new JSONParser();
-      Object obj = parser.parse(readFile(configFile));
+      Object obj = parser.parse(this.utils.readFile(configFile));
 
       JSONObject jsonObject = (JSONObject) obj;
       {
@@ -215,19 +203,21 @@ public class UtilRest {
     } else {
       this.isAllowAnonymousTracking = null;
     }
+    final String configFileUrl = this.bkConfig.getConfigFileUrl();
 
-    File configFile = new File(this.bkConfig.getConfigFileUrl());
+    // TODO, assume the url is a file path for now.
+    java.nio.file.Path configFile = Paths.get(configFileUrl);
     try {
       ObjectMapper om = new ObjectMapper();
       TypeReference readType = new TypeReference<HashMap<String, Object>>() {
       };
-      Map<String, Object> configs = om.readValue(configFile, readType);
+      Map<String, Object> configs = om.readValue(configFile.toFile(), readType);
       Boolean oldValue = (Boolean) configs.get("allow-anonymous-usage-tracking");
       // If value changed, write it to the file too
       if ((this.isAllowAnonymousTracking == null && oldValue != null)
               || (this.isAllowAnonymousTracking != null && !(this.isAllowAnonymousTracking.equals(oldValue)))) {
         configs.put("allow-anonymous-usage-tracking", this.isAllowAnonymousTracking);
-        om.writerWithDefaultPrettyPrinter().writeValue(configFile, configs);
+        om.writerWithDefaultPrettyPrinter().writeValue(configFile.toFile(), configs);
       }
     } catch (IOException e) {
       e.printStackTrace();

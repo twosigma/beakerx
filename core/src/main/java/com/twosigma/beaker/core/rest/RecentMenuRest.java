@@ -18,17 +18,15 @@ package com.twosigma.beaker.core.rest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,6 +34,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.commons.collections.list.UnmodifiableList;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Implementation of recent file manager that offers a RESTful API
@@ -46,38 +45,30 @@ import org.apache.commons.collections.list.UnmodifiableList;
 @SuppressWarnings("unchecked")
 public class RecentMenuRest {
 
-  private final File recentDocumentsFile;
+  private final java.nio.file.Path recentDocumentsFile;
   private final List<String> recentDocuments;
   private final List<String> immutableRecentDocuments;
+  private final GeneralUtils utils;
 
   @Inject
-  public RecentMenuRest(BeakerConfig bkConfig) {
-    this.recentDocumentsFile = new File(bkConfig.getRecentNotebooksFileUrl());
+  public RecentMenuRest(BeakerConfig bkConfig, GeneralUtils utils) {
+    this.utils = utils;
+    this.recentDocumentsFile = Paths.get(bkConfig.getRecentNotebooksFileUrl());
     this.recentDocuments = new ArrayList<>();
     this.immutableRecentDocuments = UnmodifiableList.decorate(this.recentDocuments);
 
     // read from file -> _recentDocuments
-    if (this.recentDocumentsFile.exists()) {
-      BufferedReader bufferedReader;
+    List<String> lines = new ArrayList<>();
+    if (Files.exists(recentDocumentsFile)) {
       try {
-        bufferedReader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(this.recentDocumentsFile)));
-      } catch (FileNotFoundException ex) {
-        return;
-      }
-      try {
-        String line = bufferedReader.readLine();
-        while (line != null && !line.trim().equals("")) {
-          addRecentDocument(transformUrl(line.trim()));
-          line = bufferedReader.readLine();
-        }
+        lines = Files.readAllLines(recentDocumentsFile, StandardCharsets.UTF_8);
       } catch (IOException ex) {
-      } finally {
-        try {
-          bufferedReader.close();
-        } catch (IOException ex) {
-        }
+        Logger.getLogger(RecentMenuRest.class.getName()).log(Level.WARNING,
+            "Failed to get recent documents", ex);
       }
+    }
+    for (String line: lines) {
+       addRecentDocument(transformUrl(line.trim()));
     }
   }
 
@@ -93,12 +84,16 @@ public class RecentMenuRest {
   }
 
   private void recordToFile() throws IOException {
-    try (Writer writer = new OutputStreamWriter(new FileOutputStream(this.recentDocumentsFile))) {
-      for (int i = this.recentDocuments.size() - 1; i >= 0; --i) {
-        writer.write(this.recentDocuments.get(i));
-        writer.write("\n");
-      }
+    this.utils.saveFile(this.recentDocumentsFile,
+        StringUtils.join(reverseView(getRecentDocuments()), "\n"));
+  }
+
+  private static List<String> reverseView(List<String> input) {
+    List<String> ret = new ArrayList<>(input.size());
+    for (int i = input.size() - 1; i >= 0; i--) {
+        ret.add(input.get(i));
     }
+    return ret;
   }
 
   private static String transformUrl(String input) {

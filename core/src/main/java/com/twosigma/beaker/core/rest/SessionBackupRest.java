@@ -18,11 +18,9 @@ package com.twosigma.beaker.core.rest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
+import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,10 +49,12 @@ import org.codehaus.jackson.map.SerializerProvider;
 public class SessionBackupRest {
 
   private final File backupDirectory;
+  private final GeneralUtils utils;
 
   @Inject
-  public SessionBackupRest(BeakerConfig bkConfig) {
+  public SessionBackupRest(BeakerConfig bkConfig, GeneralUtils utils) {
     this.backupDirectory = new File(bkConfig.getSessionBackupsDirectory());
+    this.utils = utils;
   }
 
   public static class Session {
@@ -90,11 +90,11 @@ public class SessionBackupRest {
   @POST
   @Path("backup")
   public void backup(
-          @FormParam("sessionid") String sessionID,
-          @FormParam("notebookurl") String notebookUrl,
-          @FormParam("content") String contentAsString,
-          @FormParam("caption") String caption,
-          @FormParam("edited") boolean edited) {
+      @FormParam("sessionid") String sessionID,
+      @FormParam("notebookurl") String notebookUrl,
+      @FormParam("content") String contentAsString,
+      @FormParam("caption") String caption,
+      @FormParam("edited") boolean edited) {
     Session previous = this.sessions.get(sessionID);
     long date;
     if (previous != null) {
@@ -117,10 +117,7 @@ public class SessionBackupRest {
     }
     final String fileName = sessionID + "_" + URLEncoder.encode(notebookUrl, "ISO-8859-1") + ".bkr.backup";
     final File file = new File(this.backupDirectory, fileName);
-    try (Writer writer = new OutputStreamWriter(new FileOutputStream(file))) {
-      writer.write(contentAsString);
-    }
-
+    this.utils.saveFile(file, contentAsString);
     file.setReadable(false, false);
     file.setWritable(false, false);
     file.setReadable(true, true);
@@ -151,11 +148,8 @@ public class SessionBackupRest {
           extends JsonSerializer<Session> {
 
     @Override
-    public void serialize(
-            Session t,
-            JsonGenerator jgen,
-            SerializerProvider sp)
-            throws IOException, JsonProcessingException {
+    public void serialize(Session t, JsonGenerator jgen, SerializerProvider sp)
+        throws IOException, JsonProcessingException {
       jgen.writeStartObject();
       jgen.writeObjectField("notebookurl", t.notebookurl);
       jgen.writeObjectField("caption", t.caption);
@@ -169,8 +163,8 @@ public class SessionBackupRest {
   @POST
   @Path("addPlugin")
   public void addPlugin(
-          @FormParam("pluginname") String pluginName,
-          @FormParam("pluginurl") String pluginUrl) {
+      @FormParam("pluginname") String pluginName,
+      @FormParam("pluginurl") String pluginUrl) {
     boolean existsAlready = false;
     for (int i = 0; i < this.plugins.size(); ++i) {
       Plugin p = this.plugins.get(i);
@@ -204,15 +198,11 @@ public class SessionBackupRest {
     }
   }
 
-  public static class PluginSerializer
-          extends JsonSerializer<Plugin> {
+  public static class PluginSerializer extends JsonSerializer<Plugin> {
 
     @Override
-    public void serialize(
-            Plugin t,
-            JsonGenerator jgen,
-            SerializerProvider sp)
-            throws IOException, JsonProcessingException {
+    public void serialize(Plugin t, JsonGenerator jgen, SerializerProvider sp)
+        throws IOException, JsonProcessingException {
       jgen.writeStartObject();
       jgen.writeObjectField("name", t.pluginName);
       jgen.writeObjectField("url", t.pluginUrl);

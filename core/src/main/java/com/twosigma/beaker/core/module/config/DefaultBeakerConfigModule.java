@@ -26,7 +26,6 @@ public class DefaultBeakerConfigModule extends AbstractModule {
   private final BeakerConfigPref pref;
 
   public DefaultBeakerConfigModule(BeakerConfigPref pref) {
-    //this.pref = pref != null ? pref : new DefaultBeakerCoreConfigPref();
     this.pref = pref;
   }
 

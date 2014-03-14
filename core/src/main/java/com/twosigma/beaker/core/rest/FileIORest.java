@@ -15,12 +15,11 @@
  */
 package com.twosigma.beaker.core.rest;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import jcifs.util.MimeMap;
-import org.apache.commons.io.IOUtils;
 
 /**
  * RESTful API for file I/O (save and load)
@@ -43,6 +41,13 @@ import org.apache.commons.io.IOUtils;
 @Produces(MediaType.APPLICATION_JSON)
 @Path("file-io")
 public class FileIORest {
+
+  private final GeneralUtils utils;
+
+  @Inject
+  private FileIORest(GeneralUtils utils) {
+    this.utils = utils;
+  }
 
   @GET
   @Path("getHomeDirectory")
@@ -54,29 +59,27 @@ public class FileIORest {
   @Path("save")
   public StringObject save(
       @FormParam("path") String path,
-      @FormParam("content") String contentAsString) throws FileNotFoundException, IOException {
-    if (path.startsWith("file:")) {
-      path = path.substring(5); // get rid of prefix "file:"
-    }
-    try (FileOutputStream fos = new FileOutputStream(path)) {
-      fos.write(contentAsString.getBytes());
-    }
+      @FormParam("content") String contentAsString) throws IOException {
+    path = removePrefix(path);
+    utils.saveFile(path, contentAsString);
     return new StringObject("done");
   }
 
   @GET
   @Path("load")
-  public StringObject load(
-      @QueryParam("path") String path) throws FileNotFoundException, IOException {
-    if (path.startsWith("file:")) {
-      path = path.substring(5); // get rid of prefix "file:"
-    }
-    byte[] content;
-    try (FileInputStream fin = new FileInputStream(path)) {
-      content = IOUtils.toByteArray(fin);
-    }
-    return new StringObject(new String(content));
+  public StringObject load(@QueryParam("path") String path) throws IOException {
+    path = removePrefix(path);
+    return new StringObject(utils.readFile(path));
   }
+
+  private static final String FILE_PREFIX = "file:";
+  private static String removePrefix(String path) {
+    if (path.startsWith("file:")) {
+      path = path.substring(FILE_PREFIX.length()); // get rid of prefix "file:"
+    }
+    return path;
+  }
+
   private static MimeMap MIME_MAP = null;
 
   public static String getMimeTypeForFileName(String filename) {

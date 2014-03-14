@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
+import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -28,8 +29,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -77,7 +76,8 @@ public class PluginServiceLocatorRest {
   @Inject
   private PluginServiceLocatorRest(
       BeakerConfig bkConfig,
-      OutputLogService outputLogService) throws IOException {
+      OutputLogService outputLogService,
+      GeneralUtils utils) throws IOException {
     this.installDir = bkConfig.getInstallDirectory();
     this.nginxDir = bkConfig.getNginxDirectory();
     this.nginxBinDir = bkConfig.getNginxBinDirectory();
@@ -89,7 +89,10 @@ public class PluginServiceLocatorRest {
     this.pluginEnvps = bkConfig.getPluginEnvps();
     this.pluginArgs = new HashMap<>();
     this.outputLogService = outputLogService;
-    this.nginxTemplate = readFile(this.nginxDir + "/nginx.conf.template");
+    this.nginxTemplate = utils.readFile(this.nginxDir + "/nginx.conf.template");
+    if (nginxTemplate == null) {
+      throw new RuntimeException("Cannot get nginx template");
+    }
 
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, String> e: bkConfig.getPluginOptions().entrySet()) {
@@ -353,11 +356,6 @@ public class PluginServiceLocatorRest {
       this.proc.destroy(); // send SIGTERM
     }
 
-  }
-
-  private static String readFile(String path) throws IOException {
-    byte[] encoded = Files.readAllBytes(Paths.get(path));
-    return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
   }
 
   private static boolean isPortAvailable(int port) {

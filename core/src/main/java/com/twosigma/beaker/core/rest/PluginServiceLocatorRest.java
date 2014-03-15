@@ -160,7 +160,7 @@ public class PluginServiceLocatorRest {
   public Response locatePluginService(
       @PathParam("plugin-id") String pluginId,
       @QueryParam("command") String command,
-      @QueryParam("nginxRules") String nginxRules,
+      @QueryParam("nginxRules") @DefaultValue("location %(base_url)s/ {proxy_pass http://127.0.0.1:%(port)s/;}") String nginxRules,
       @QueryParam("startedIndicator") String startedIndicator,
       @QueryParam("startedIndicatorStream") @DefaultValue("stdout") String startedIndicatorStream,
       @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
@@ -175,7 +175,7 @@ public class PluginServiceLocatorRest {
     }
 
     final int port = getNextAvailablePort(portSearchStart);
-    final String baseUrl = generatePrefixedRandomString(pluginId, 6);
+    final String baseUrl = "/" + generatePrefixedRandomString(pluginId, 6);
     pConfig = new PluginConfig(port, nginxRules, baseUrl);
     portSearchStart = pConfig.port + 1;
     plugins.put(pluginId, pConfig);

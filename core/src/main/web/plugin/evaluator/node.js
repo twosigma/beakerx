@@ -25,7 +25,7 @@
     var PLUGIN_NAME = "Node";
     var COMMAND = "nodePlugin";
 
-    var serverUrl = null;
+    var serviceBase = null;
 
     var nodeProto = {
         pluginName: PLUGIN_NAME,
@@ -42,7 +42,7 @@
                 $.ajax({
                     type: "GET",
                     datatype: "json",
-                    url: "/" + serverUrl + "/" + "pulse"
+                    url: serviceBase + "/pulse"
                 }).fail(function(){
                     setTimeout(function () {
                         checkNodeServerRunning();
@@ -51,7 +51,7 @@
                     $.ajax({
                         type: "POST",
                         datatype: "json",
-                        url: "/" + serverUrl + "/" + "shell",
+                        url: serviceBase + "/shell",
                         data: {shellid: shellID}
                     }).done(function(response){
                         shellID = response.shellID;
@@ -77,7 +77,7 @@
             $.ajax({
                 type: "POST",
                 datatype: "json",
-                url: "/" + serverUrl + "/" + "evaluate",
+                url: serviceBase + "/evaluate",
                 data: {shellID: self.settings.shellID, code: code}
             }).done(function(ret) {
                 modelOutput.result = ret;
@@ -99,7 +99,7 @@
             $.ajax({
                 type: "POST",
                 datatype: "json",
-                url: "/" + serverUrl + "/" + "rest/node/exit",
+                url: serviceBase + "/rest/node/exit",
                 data: { shellID: self.settings.shellID }
             }).done(cb);
         },
@@ -109,11 +109,10 @@
     var init = function () {
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        nginxRules: "location /%(base_url)s/ {proxy_pass http://127.0.0.1:%(port)s/;}",
         startedIndicator: "Server Starting",
         recordOutput: "true"
         }).success(function (ret) {
-            serverUrl = ret;
+            serviceBase = ret;
             var NodeShell = function (settings, cb) {
                 var self = this;
                 var setShellIdCB = function (id) {

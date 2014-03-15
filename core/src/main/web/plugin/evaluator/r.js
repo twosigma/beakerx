@@ -23,7 +23,7 @@
   var PLUGIN_NAME = "R";
   var COMMAND = "rPlugin";
 
-  var serverUrl = null;
+  var serviceBase = null;
   var subscriptions = {};
 
   var cometd = new $.Cometd();
@@ -32,7 +32,7 @@
     init: function() {
       if (!initialized) {
         cometd.unregisterTransport("websocket");
-        cometd.init("/" + serverUrl + "/" + "cometd");
+        cometd.init(serviceBase + "/cometd");
         initialized = true;
       }
     },
@@ -71,7 +71,7 @@
       if (!shellID) {
         shellID = "";
       }
-      bkHelper.httpPost("/" + serverUrl + "/" + "rest/rsh/getShell", { shellid: shellID })
+      bkHelper.httpPost(serviceBase + "/rest/rsh/getShell", { shellid: shellID })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
@@ -92,7 +92,7 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: "/" + serverUrl + "/" + "rest/rsh/evaluate",
+        url: serviceBase + "/rest/rsh/evaluate",
         data: {shellID: self.settings.shellID, code: code}
       }).done(function(ret) {
             var onUpdatableResultUpdate = function(update) {
@@ -136,7 +136,7 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: "/" + serverUrl + "/" + "rest/rsh/autocomplete",
+        url: serviceBase + "/rest/rsh/autocomplete",
         data: {shellID: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
             cb(x);
@@ -147,7 +147,7 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: "/" + serverUrl + "/" + "rest/rsh/exit",
+        url: serviceBase + "/rest/rsh/exit",
         data: { shellID: self.settings.shellID }
       }).done(cb);
     },
@@ -159,11 +159,10 @@
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        nginxRules: "location /%(base_url)s/ {proxy_pass http://127.0.0.1:%(port)s/;}",
         startedIndicator: "Server started",
         recordOutput: "true"
     }).success(function(ret) {
-      serverUrl = ret;
+      serviceBase = ret;
       cometdUtil.init();
       var RShell = function(settings, cb) {
         var self = this;

@@ -62,6 +62,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
     } catch (IOException ex) {
       Logger.getLogger(GeneralUtilsImpl.class.getName())
           .log(Level.INFO, "ERROR reading file {0}", path);
+      return null;
     }
     return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
   }

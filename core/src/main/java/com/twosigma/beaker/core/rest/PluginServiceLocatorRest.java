@@ -353,7 +353,9 @@ public class PluginServiceLocatorRest {
     }
 
     void shutDown() {
-      this.proc.destroy(); // send SIGTERM
+      if (this.isStarted()) {
+        this.proc.destroy(); // send SIGTERM
+      }
     }
 
   }

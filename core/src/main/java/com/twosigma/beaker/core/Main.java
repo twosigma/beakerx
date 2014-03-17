@@ -59,7 +59,7 @@ public class Main {
   private static final Boolean OPEN_BROWSER_DEFAULT = Boolean.TRUE;
   private static final Boolean USE_HTTPS_DEFAULT = Boolean.FALSE;
   private static final Boolean USE_KERBEROS_DEFAULT = Boolean.FALSE;
-  private static final Integer CLEAR_PORT_OFFSE = 1;
+  private static final Integer CLEAR_PORT_OFFSET = 1;
   private static final Integer BEAKER_SERVER_PORT_OFFSET = 2;
 
   public static void main(String[] args) throws Exception {
@@ -121,7 +121,7 @@ public class Main {
       initUrl = "https://" + localhostname + ":" + portBase + "/beaker/";
     } else {
       initUrl = "http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
-              + localhostname + ":" + (portBase + CLEAR_PORT_OFFSE) + "/beaker/";
+              + localhostname + ":" + (portBase + CLEAR_PORT_OFFSET) + "/beaker/";
     }
     return initUrl;
   }

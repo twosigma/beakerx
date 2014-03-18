@@ -181,12 +181,12 @@ public class PluginServiceLocatorRest {
     plugins.put(pluginId, pConfig);
 
     // restart nginx to reload new config
-    generateNginxConfig();
-    Process restartproc = Runtime.getRuntime().exec(this.nginxDir + "/script/restart_nginx");
-    startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
-    restartproc.waitFor();
-
-
+    synchronized (this) {
+      generateNginxConfig();
+      Process restartproc = Runtime.getRuntime().exec(this.nginxDir + "/script/restart_nginx");
+      startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
+      restartproc.waitFor();
+    }
     if (Files.notExists(Paths.get(command))) {
       command = this.pluginDir + "/" + command;
 
@@ -197,13 +197,13 @@ public class PluginServiceLocatorRest {
       }
     }
 
-    List<String> extraArgs = pluginArgs.get(pluginId);
+    List<String> extraArgs = this.pluginArgs.get(pluginId);
     if (extraArgs != null) {
       command += StringUtils.join(extraArgs, " ");
     }
     command += " " + Integer.toString(pConfig.port);
 
-    String[] env = pluginEnvps.get(pluginId);
+    String[] env = this.pluginEnvps.get(pluginId);
     System.out.println("Running: " + command);
     Process proc = Runtime.getRuntime().exec(command, env);
 
@@ -277,7 +277,7 @@ public class PluginServiceLocatorRest {
 
     String ngixConfig = this.nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();
-    for (PluginConfig pConfig : plugins.values()) {
+    for (PluginConfig pConfig : this.plugins.values()) {
       String nginxRule = pConfig.getNginxRules()
           .replace("%(port)s", Integer.toString(pConfig.getPort()))
           .replace("%(base_url)s", pConfig.getBaseUrl());

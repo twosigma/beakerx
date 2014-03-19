@@ -33,20 +33,20 @@ import javax.ws.rs.core.MediaType;
 public class OutputLogRest {
 
   @Inject
-  private OutputLogService _OutputLogService;
+  private OutputLogService outputLogService;
 
   @GET
   @Path("get")
   public List<OutputLogService.OutputLine> get(@QueryParam("linecount") String lineCount) {
     // lineCount ignored XXX
-    return _OutputLogService.getLog();
+    return this.outputLogService.getLog();
   }
 
   @GET
   @Path("clear")
   @Produces(MediaType.TEXT_PLAIN)
   public String clear() {
-    _OutputLogService.clear();
+    this.outputLogService.clear();
     return "\"ok\"";
   }
 }

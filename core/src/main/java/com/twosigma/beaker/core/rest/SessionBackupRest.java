@@ -187,14 +187,14 @@ public class SessionBackupRest {
 
   public static class ExistingPlugins {
 
-    final private List<Plugin> _plugins;
+    final private List<Plugin> plugins;
 
     public ExistingPlugins(List<Plugin> plugins) {
-      _plugins = plugins;
+      this.plugins = plugins;
     }
 
     public List<Plugin> getPlugins() {
-      return _plugins;
+      return this.plugins;
     }
   }
 

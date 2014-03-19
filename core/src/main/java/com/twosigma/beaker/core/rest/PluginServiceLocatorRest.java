@@ -169,21 +169,21 @@ public class PluginServiceLocatorRest {
       @QueryParam("waitfor") String waitfor)
       throws InterruptedException, IOException {
 
-    PluginConfig pConfig = plugins.get(pluginId);
+    PluginConfig pConfig = this.plugins.get(pluginId);
     if (pConfig != null && pConfig.isStarted()) {
       System.out.println("plugin service (" + pluginId + ")"
           + "already started at" + pConfig.getBaseUrl());
       return buildResponse(pConfig.getBaseUrl(), false);
     }
 
-    final int port = getNextAvailablePort(portSearchStart);
-    final String baseUrl = "/" + generatePrefixedRandomString(pluginId, 6);
-    pConfig = new PluginConfig(port, nginxRules, baseUrl);
-    portSearchStart = pConfig.port + 1;
-    plugins.put(pluginId, pConfig);
-
-    // restart nginx to reload new config
     synchronized (this) {
+      final int port = getNextAvailablePort(this.portSearchStart);
+      final String baseUrl = "/" + generatePrefixedRandomString(pluginId, 6);
+      pConfig = new PluginConfig(port, nginxRules, baseUrl);
+      this.portSearchStart = pConfig.port + 1;
+      this.plugins.put(pluginId, pConfig);
+
+      // restart nginx to reload new config
       generateNginxConfig();
       Process restartproc = Runtime.getRuntime().exec(this.nginxDir + "/script/restart_nginx");
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
@@ -192,8 +192,8 @@ public class PluginServiceLocatorRest {
 
     String fullCommand = command;
     if (Files.notExists(Paths.get(fullCommand))) {
-      if (pluginLocations.containsKey(pluginId)) {
-        fullCommand = pluginLocations.get(pluginId) + "/" + command;
+      if (this.pluginLocations.containsKey(pluginId)) {
+        fullCommand = this.pluginLocations.get(pluginId) + "/" + command;
       }
       if (Files.notExists(Paths.get(fullCommand))) {
         fullCommand = this.pluginDir + "/" + command;

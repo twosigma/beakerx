@@ -73,11 +73,8 @@ public class StreamGobbler extends Thread {
 
   @Override
   public void run() {
-    try {
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
       PrintWriter pw = null;
-
-      InputStreamReader isr = new InputStreamReader(is);
-      BufferedReader br = new BufferedReader(isr);
       String line = null;
       while ((line = br.readLine()) != null) {
         if (pw != null) {

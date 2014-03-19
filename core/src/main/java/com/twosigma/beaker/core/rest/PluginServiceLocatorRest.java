@@ -64,6 +64,7 @@ public class PluginServiceLocatorRest {
   private final String pluginDir;
   private final Integer portBase;
   private final Integer reservedPortCount;
+  private final Map<String, String> pluginLocations;
   private final Map<String, List<String>> pluginArgs;
   private final Map<String, String[]> pluginEnvps;
   private final OutputLogService outputLogService;
@@ -86,6 +87,7 @@ public class PluginServiceLocatorRest {
     this.pluginDir = bkConfig.getPluginDirectory();
     this.portBase = bkConfig.getPortBase();
     this.reservedPortCount = bkConfig.getReservedPortCount();
+    this.pluginLocations = bkConfig.getPluginLocations();
     this.pluginEnvps = bkConfig.getPluginEnvps();
     this.pluginArgs = new HashMap<>();
     this.outputLogService = outputLogService;
@@ -187,25 +189,31 @@ public class PluginServiceLocatorRest {
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
     }
-    if (Files.notExists(Paths.get(command))) {
-      command = this.pluginDir + "/" + command;
 
-      if (Files.notExists(Paths.get(command))) {
-        throw new PluginServiceNotFoundException(
-            "plugin service: " + pluginId + "not found"
-            + "and fail to start it with: " + command);
+    String fullCommand = command;
+    if (Files.notExists(Paths.get(fullCommand))) {
+      if (pluginLocations.containsKey(pluginId)) {
+        fullCommand = pluginLocations.get(pluginId) + "/" + command;
+      }
+      if (Files.notExists(Paths.get(fullCommand))) {
+        fullCommand = this.pluginDir + "/" + command;
+        if (Files.notExists(Paths.get(fullCommand))) {
+          throw new PluginServiceNotFoundException(
+              "plugin service: " + pluginId + "not found"
+              + "and fail to start it with: " + command);
+        }
       }
     }
 
     List<String> extraArgs = this.pluginArgs.get(pluginId);
     if (extraArgs != null) {
-      command += StringUtils.join(extraArgs, " ");
+      fullCommand += StringUtils.join(extraArgs, " ");
     }
-    command += " " + Integer.toString(pConfig.port);
+    fullCommand += " " + Integer.toString(pConfig.port);
 
     String[] env = this.pluginEnvps.get(pluginId);
-    System.out.println("Running: " + command);
-    Process proc = Runtime.getRuntime().exec(command, env);
+    System.out.println("Running: " + fullCommand);
+    Process proc = Runtime.getRuntime().exec(fullCommand, env);
 
     if (startedIndicator != null && !startedIndicator.isEmpty()) {
       InputStream is = startedIndicatorStream.equals("stderr") ?

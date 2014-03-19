@@ -37,6 +37,7 @@ public interface BeakerConfig {
   public String getDefaultNotebookUrl();
   public String getRecentNotebooksFileUrl();
   public String getSessionBackupsDirectory();
+  public Map<String, String> getPluginLocations();
   public Map<String, String> getPluginOptions();
   public Map<String, String[]> getPluginEnvps();
 }

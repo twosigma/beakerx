@@ -44,6 +44,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String defaultNotebookUrl;
   private final String recentNotebooksFileUrl;
   private final String sessionBackupDir;
+  private final Map<String, String> pluginLocations;
   private final Map<String, String> pluginOptions;
   private final Map<String, String[]> pluginEnvps;
 
@@ -88,6 +89,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.sessionBackupDir = varDir + "/sessionBackups";
     utils.ensureDirectoryExists(this.sessionBackupDir);
 
+    this.pluginLocations = new HashMap<>();
     this.pluginOptions = pref.getPluginOptions();
     this.pluginEnvps = new HashMap<>();
   }
@@ -162,6 +164,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
     return this.sessionBackupDir;
   }
 
+  @Override
+  public Map<String, String> getPluginLocations() {
+    return this.pluginLocations;
+  }
+ 
   @Override
   public Map<String, String> getPluginOptions() {
     return this.pluginOptions;

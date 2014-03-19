@@ -18,10 +18,22 @@ package com.twosigma.beaker.shared.module.config;
 
 /**
  * WebAppConfig
- *
+ * stores run-time configurations of a web application.
  */
 public interface WebServerConfig {
+  /**
+   * gets the port number
+   * @return
+   */
   public Integer getPort();
+  /**
+   * gets the username
+   * @return
+   */
   public String getUsername();
+  /**
+   * gets the directory where static files are served from
+   * @return
+   */
   public String getStaticDirectory();
 }

@@ -20,24 +20,92 @@ import java.util.Map;
 
 /**
  * BeakerConfig
- *
+ * stores run-time configuration used by Beaker
  */
 public interface BeakerConfig {
-  public String getInstallDirectory(); // a.k.a beaker core directory
-  public String getPluginDirectory(); // where to search for plugin executables and starting scripts
-  public String getDotDirectory(); // where temp directory and variable storage and cache go
-  public String getNginxDirectory(); // where to locate beaker specific nginx configs and scripts
-  public String getNginxBinDirectory(); // where to locate nginx executable
-  public String getNginxServDirectory(); // the root of nginx server
+  /**
+   * The Beaker core directory
+   * @return
+   */
+  public String getInstallDirectory();
+  /**
+   * where to search for plugin executables and starting scripts
+   * @return
+   */
+  public String getPluginDirectory();
+  /**
+   * where temp directory and variable storage and cache go
+   * @return
+   */
+  public String getDotDirectory();
+  /**
+   * where to locate beaker specific nginx configs and scripts
+   * @return
+   */
+  public String getNginxDirectory();
+  /**
+   * where to locate nginx executable
+   * @return
+   */
+  public String getNginxBinDirectory();
+  /**
+   * the root of nginx server
+   * @return
+   */
+  public String getNginxServDirectory();
+  /**
+   * extra enginx rules to be appended to nginx.conf
+   * @return
+   */
   public String getNginxExtraRules();
+  /**
+   * gets the port base
+   * @return
+   */
   public Integer getPortBase();
+  /**
+   * gets how many consecutive ports (starting with portbase) were used
+   * @return
+   */
   public Integer getReservedPortCount();
+  /**
+   * whether to use kerberos or not
+   * @return
+   */
   public Boolean getUseKerberos();
+  /**
+   * where to find the config file
+   * @return
+   */
   public String getConfigFileUrl();
+  /**
+   * where to find the default notebook
+   * @return
+   */
   public String getDefaultNotebookUrl();
+  /**
+   * where to find the file that stores the list of recent files
+   * @return
+   */
   public String getRecentNotebooksFileUrl();
+  /**
+   * the directory where session-backup files go
+   * @return
+   */
   public String getSessionBackupsDirectory();
+  /**
+   * optional locations to look for plugin starting scripts
+   * @return
+   */
   public Map<String, String> getPluginLocations();
+  /**
+   * Additional options to use when starting a plugin
+   * @return
+   */
   public Map<String, String> getPluginOptions();
+  /**
+   * optional alternative environment variables a plugin should be started with
+   * @return
+   */
   public Map<String, String[]> getPluginEnvps();
 }

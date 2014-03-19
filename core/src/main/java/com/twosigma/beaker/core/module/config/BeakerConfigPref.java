@@ -26,8 +26,24 @@ import java.util.Map;
  * the real default value upon getting null preferences.
  */
 public interface BeakerConfigPref {
+  /**
+   * Gets whether to use Kerberos or not
+   * @return
+   */
   public Boolean getUseKerberos();
+  /**
+   * Gets the preferred port base
+   * @return
+   */
   public Integer getPortBase();
+  /**
+   * Gets the url of the default notebook
+   * @return
+   */
   public String getDefaultNotebookUrl();
+  /**
+   * Gets a map of plugin starting options
+   * @return
+   */
   public Map<String, String> getPluginOptions();
 }

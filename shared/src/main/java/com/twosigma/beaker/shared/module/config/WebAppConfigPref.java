@@ -18,9 +18,18 @@ package com.twosigma.beaker.shared.module.config;
 
 /**
  * WebAppConfigPref
- *
+ * stores preferences that can contribute to determining the run-time configurations
+ * of a web application.
  */
 public interface WebAppConfigPref {
+  /**
+   * Gets preferred port number. Can be <code>null</code>;
+   * @return
+   */
   public Integer getPort();
+  /**
+   * Gets preferred directory to serve static files from. Can be <code>null</code>;
+   * @return
+   */
   public String getStaticDirectory();
 }

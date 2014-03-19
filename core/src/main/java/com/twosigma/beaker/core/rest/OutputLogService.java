@@ -19,7 +19,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.annotation.Listener;
@@ -40,8 +43,7 @@ public class OutputLogService {
 
   private BayeuxServer bayeux;
   private LocalSession localSession;
-  // Synchronized? XXX
-  private List<OutputLine> log = new ArrayList<>();
+  private volatile Deque<OutputLine> log = new LinkedBlockingDeque<>();
   private ObjectMapper mapper = new ObjectMapper();
 
   @Inject
@@ -76,11 +78,11 @@ public class OutputLogService {
   }
 
   public List<OutputLine> getLog() {
-    return this.log;
+    return new ArrayList<>(this.log);
   }
 
   public void clear() {
-    this.log = new ArrayList<>();
+    this.log = new LinkedBlockingDeque<>();
   }
 
   // Would be nice to record a timestamp too.

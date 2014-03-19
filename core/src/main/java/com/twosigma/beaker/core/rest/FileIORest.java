@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -40,6 +42,17 @@ import jcifs.util.MimeMap;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class FileIORest {
+
+  private static final MimeMap MIME_MAP;
+  static {
+    MimeMap mimeMap = null;
+    try {
+      mimeMap = new MimeMap();
+    } catch (IOException ex) {
+      Logger.getLogger(FileIORest.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    MIME_MAP = mimeMap;
+  }
 
   private final GeneralUtils utils;
 
@@ -80,8 +93,6 @@ public class FileIORest {
     return path;
   }
 
-  private static MimeMap MIME_MAP = null;
-
   public static String getMimeTypeForFileName(String filename) {
     String extension = filename;
 
@@ -104,11 +115,7 @@ public class FileIORest {
 
   public static String getMimeTypeForExtension(String extension) {
     if (MIME_MAP == null) {
-      try {
-        MIME_MAP = new MimeMap();
-      } catch (IOException ex) {
-        return "";
-      }
+      return "";
     }
 
     String result;

@@ -282,19 +282,19 @@ public class Main {
       }
     }
 
-    public Boolean getDisableKerberos() {
+    Boolean getDisableKerberos() {
       return this.disableKerberosPref;
     }
 
-    public Boolean getOpenBrowser() {
+    Boolean getOpenBrowser() {
       return this.openBrowserPref;
     }
 
-    public Integer getPortBase() {
+    Integer getPortBase() {
       return this.portBase;
     }
 
-    public Boolean getUseHttps() {
+    Boolean getUseHttps() {
       return null;
     }
 

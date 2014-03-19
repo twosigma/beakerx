@@ -190,21 +190,20 @@ public class RShellRest {
   }
 
   private static boolean addSvgResults(String name, SimpleEvaluationObject obj) {
-    try {
-      File file = new File(name);
-      if (file.length() > 0) {
-        FileInputStream fis = new FileInputStream(file);
+    File file = new File(name);
+    if (file.length() > 0) {
+      try (FileInputStream fis = new FileInputStream(file)) {
         byte[] data = new byte[(int) file.length()];
         fis.read(data);
         fis.close();
         String contents = new String(data, "UTF-8");
         obj.finished(fixSvgResults(contents));
         return true;
+      } catch (FileNotFoundException e) {
+        System.out.println("ERROR reading SVG results: " + e);
+      } catch (IOException e) {
+        System.out.println("IO error on " + name + " " + e);
       }
-    } catch (FileNotFoundException e) {
-      System.out.println("ERROR reading SVG results: " + e);
-    } catch (IOException e) {
-      System.out.println("IO error on " + name + " " + e);
     }
     return false;
   }

@@ -42,12 +42,13 @@ public class TableDisplay {
         SerializerProvider provider)
         throws IOException, JsonProcessingException {
 
-      jgen.writeStartObject();
-      jgen.writeObjectField("type", "TableDisplay");
-      jgen.writeObjectField("columnNames", value.columns);
-      jgen.writeObjectField("values", value.values);
-      jgen.writeEndObject();
-
+      synchronized (value) {
+        jgen.writeStartObject();
+        jgen.writeObjectField("type", "TableDisplay");
+        jgen.writeObjectField("columnNames", value.columns);
+        jgen.writeObjectField("values", value.values);
+        jgen.writeEndObject();
+      }
     }
   }
 }

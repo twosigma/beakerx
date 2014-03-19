@@ -27,8 +27,8 @@ import java.io.PrintWriter;
  */
 public class StreamGobbler extends Thread {
 
-  private static volatile boolean shutdown_inprogress = false;
-  
+  private static volatile boolean shutdownInprogress = false;
+
   private final InputStream is;
   private final String type;
   private final String name;
@@ -68,7 +68,7 @@ public class StreamGobbler extends Thread {
   }
 
   public static void shuttingDown() {
-    shutdown_inprogress = true;
+    StreamGobbler.shutdownInprogress = true;
   }
 
   @Override
@@ -110,7 +110,7 @@ public class StreamGobbler extends Thread {
       }
 
     } catch (IOException ioe) {
-      if (!StreamGobbler.shutdown_inprogress) {
+      if (!StreamGobbler.shutdownInprogress) {
         ioe.printStackTrace();
       }
     }

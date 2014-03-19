@@ -41,11 +41,9 @@ public class StringObject {
     @Override
     public void serialize(StringObject value, JsonGenerator jgen, SerializerProvider provider)
         throws IOException, JsonProcessingException {
-      synchronized (value) {
-        jgen.writeStartObject();
-        jgen.writeObjectField("value", value.getText());
-        jgen.writeEndObject();
-      }
+      jgen.writeStartObject();
+      jgen.writeObjectField("value", value.getText());
+      jgen.writeEndObject();
     }
   }
 }

@@ -55,6 +55,7 @@ public class RShellRest {
   private static final String END_MAGIC = "**beaker_end_magic**";
   private final Map<String, RConnection> shells = new HashMap<>();
   private ROutputHandler rOutputHandler = null;
+  private int svgUniqueCounter = 0;
 
   public RShellRest()
           throws IOException, RserveException {
@@ -180,8 +181,8 @@ public class RShellRest {
   // R SVG has ids that need to be made globally unique.  Plus we
   // remove the xml version string, and any blank data attributes,
   // since these just cause errors on chrome's console.
-  private static String fixSvgResults(String xml) {
-    String unique = "b" + Long.toString(System.currentTimeMillis());
+  private String fixSvgResults(String xml) {
+    String unique = "b" + Integer.toString(svgUniqueCounter++);
     xml = xml.replace("id=\"glyph", "id=\"" + unique + "glyph");
     xml = xml.replace("xlink:href=\"#glyph", "xlink:href=\"#" + unique + "glyph");
     xml = xml.replace("d=\"\"", "");
@@ -189,7 +190,7 @@ public class RShellRest {
     return xml;
   }
 
-  private static boolean addSvgResults(String name, SimpleEvaluationObject obj) {
+  private boolean addSvgResults(String name, SimpleEvaluationObject obj) {
     File file = new File(name);
     if (file.length() > 0) {
       try (FileInputStream fis = new FileInputStream(file)) {

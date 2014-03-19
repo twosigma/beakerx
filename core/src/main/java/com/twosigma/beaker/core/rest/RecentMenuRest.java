@@ -24,7 +24,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.FormParam;
@@ -33,7 +36,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -46,18 +48,16 @@ import org.apache.commons.lang3.StringUtils;
 public class RecentMenuRest {
 
   private final java.nio.file.Path recentDocumentsFile;
-  private final List<String> recentDocuments;
-  private final List<String> immutableRecentDocuments;
+  private final Deque<String> recentDocuments;
   private final GeneralUtils utils;
 
   @Inject
   public RecentMenuRest(BeakerConfig bkConfig, GeneralUtils utils) {
     this.utils = utils;
     this.recentDocumentsFile = Paths.get(bkConfig.getRecentNotebooksFileUrl());
-    this.recentDocuments = new ArrayList<>();
-    this.immutableRecentDocuments = UnmodifiableList.decorate(this.recentDocuments);
+    this.recentDocuments = new LinkedBlockingDeque<>();
 
-    // read from file -> _recentDocuments
+    // read from file -> recentDocuments
     List<String> lines = new ArrayList<>();
     if (Files.exists(recentDocumentsFile)) {
       try {
@@ -73,25 +73,26 @@ public class RecentMenuRest {
   }
 
   private List<String> getRecentDocuments() {
-    return this.immutableRecentDocuments;
+    return new ArrayList<>(this.recentDocuments);
   }
 
   private void addRecentDocument(String docName) {
     if (this.recentDocuments.contains(docName)) {
       this.recentDocuments.remove(docName);
     }
-    this.recentDocuments.add(0, transformUrl(docName));
+    this.recentDocuments.addFirst(transformUrl(docName));
   }
 
   private void recordToFile() throws IOException {
     this.utils.saveFile(this.recentDocumentsFile,
-        StringUtils.join(reverseView(getRecentDocuments()), "\n"));
+        StringUtils.join(reverseView(this.recentDocuments), "\n"));
   }
 
-  private static List<String> reverseView(List<String> input) {
+  private static List<String> reverseView(Deque<String> input) {
     List<String> ret = new ArrayList<>(input.size());
-    for (int i = input.size() - 1; i >= 0; i--) {
-        ret.add(input.get(i));
+    Iterator<String> it = input.descendingIterator();
+    while (it.hasNext()) {
+      ret.add(it.next());
     }
     return ret;
   }

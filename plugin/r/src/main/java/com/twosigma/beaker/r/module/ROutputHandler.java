@@ -50,9 +50,7 @@ public class ROutputHandler extends Thread {
   @Override
   public void run() {
 
-    try {
-      BufferedReader br = new BufferedReader(new InputStreamReader(this.stream));
-
+    try (BufferedReader br = new BufferedReader(new InputStreamReader(this.stream))) {
       String line = null;
       while ((line = br.readLine()) != null) {
         if (line.indexOf(this.beginMagic) >= 0) {

@@ -237,7 +237,7 @@ public class RShellRest {
 
       for (int i = 0; i < cols; i++) {
         // XXX should identify numeric columns
-        classes.add("".getClass());
+        classes.add(String.class);
         array[i] = list.at(i).asStrings();
       }
       if (array.length < 1) {

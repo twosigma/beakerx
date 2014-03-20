@@ -13,28 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.twosigma.beaker.jvm.updater;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerSession;
 
-public class UpdaterFactory {
+/**
+ * UpdaterFactory
+ *
+ */
+public interface UpdaterFactory {
 
-  private static final List<Updater> _updaters;
+  public boolean isApplicable(Object o);
+  public Updater createUpdater(
+      ServerSession session,
+      LocalSession localSession,
+      String channelId,
+      Object updateSource);
 
-  static {
-    _updaters = new ArrayList<Updater>();
-    _updaters.add(new ObservableUpdater());
-  }
-
-  public static Updater getUpdater(ServerSession session, LocalSession localSession, String channelId, Object updatingObject) {
-    for (Updater u : _updaters) {
-      if (u.isApplicable(updatingObject)) {
-        return u.getInstance(session, localSession, channelId, updatingObject);
-      }
-    }
-    return null;
-  }
 }

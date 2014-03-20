@@ -32,7 +32,7 @@
       if (!sessionID) {
         return;
       }
-      bkUtils.httpPost("/beaker/rest/sessionbackup/backup", sessionData).
+      bkUtils.httpPost("/beaker/rest/session-backup/backup", sessionData).
           success(function(data) {
             console.log("backup ", sessionID);
           }).
@@ -42,7 +42,7 @@
     };
     var getSessions = function() {
       var deferred = $q.defer();
-      bkUtils.httpGet("/beaker/rest/sessionbackup/getExistingSessions").
+      bkUtils.httpGet("/beaker/rest/session-backup/getExistingSessions").
           success(function(sessions) {
             deferred.resolve(sessions);
           }).
@@ -53,7 +53,7 @@
     };
     var loadSession = function(sessionID) {
       var deferred = $q.defer();
-      bkUtils.httpGet("/beaker/rest/sessionbackup/load", {sessionid: sessionID}).
+      bkUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionID}).
           success(function(session, status) {
             deferred.resolve(session);
           }).
@@ -64,7 +64,7 @@
     };
     var closeSession = function(sessionID) {
       var deferred = $q.defer();
-      bkUtils.httpPost("/beaker/rest/sessionbackup/close", {sessionid: sessionID}).
+      bkUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionID}).
           success(function(ret) {
             deferred.resolve(sessionID);
           }).
@@ -75,7 +75,7 @@
     };
     var recordLoadedPlugin = function(pluginName, pluginUrl) {
       bkUtils.httpPost(
-          "/beaker/rest/sessionbackup/addPlugin",
+          "/beaker/rest/session-backup/addPlugin",
           {pluginname: pluginName, pluginurl: pluginUrl}).
           success(function(ret) {
             //console.log("recordLoadedPlugin");
@@ -86,7 +86,7 @@
     };
     var getPlugins = function() {
       var deferred = $q.defer();
-      bkUtils.httpGet("/beaker/rest/sessionbackup/getExistingPlugins", {}).
+      bkUtils.httpGet("/beaker/rest/session-backup/getExistingPlugins", {}).
           success(function(plugins) {
             deferred.resolve(plugins);
           }).

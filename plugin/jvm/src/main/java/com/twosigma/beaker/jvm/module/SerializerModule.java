@@ -19,21 +19,20 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.json.serializer.StringObject;
-import com.twosigma.beaker.json.serializer.StringObjectSerializer;
+import com.twosigma.beaker.shared.json.serializer.StringObject;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.jvm.object.SimpleEvaluationObjectSerializer;
-import com.twosigma.beaker.jvm.object.EvaluationResultSerializer;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
-import com.twosigma.beaker.jvm.object.TableDisplaySerializer;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.ImageIconSerializer;
+import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
+import com.twosigma.beaker.jvm.updater.UpdateManager;
 import javax.swing.ImageIcon;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
+import org.cometd.bayeux.server.BayeuxServer;
 
 /**
  * The Guice module as the registry of mapping from classes to serializers
@@ -43,9 +42,20 @@ public class SerializerModule
 
   @Override
   protected void configure() {
-    bind(SimpleEvaluationObjectSerializer.class);
-    bind(EvaluationResultSerializer.class);
-    bind(TableDisplaySerializer.class);
+    bind(SimpleEvaluationObject.Serializer.class);
+    bind(EvaluationResult.Serializer.class);
+    bind(TableDisplay.Serializer.class);
+    bind(StringObject.Serializer.class);
+    bind(ImageIconSerializer.class);
+  }
+
+  @Provides
+  @Singleton
+  public UpdateManager getUpdateManager(Injector injector) {
+    BayeuxServer bayeuxServer = injector.getInstance(BayeuxServer.class);
+    UpdateManager updateManager = new UpdateManager(bayeuxServer);
+    updateManager.addUpdaterFactory(new ObservableUpdaterFactory());
+    return updateManager;
   }
 
   @Provides
@@ -56,11 +66,11 @@ public class SerializerModule
     SimpleModule module =
             new SimpleModule("MySerializer", new Version(1, 0, 0, null));
 
-    module.addSerializer(StringObject.class, new StringObjectSerializer());
-    module.addSerializer(SimpleEvaluationObject.class, new SimpleEvaluationObjectSerializer());
-    module.addSerializer(EvaluationResult.class, new EvaluationResultSerializer());
-    module.addSerializer(TableDisplay.class, new TableDisplaySerializer());
-    module.addSerializer(ImageIcon.class, new ImageIconSerializer());
+    module.addSerializer(SimpleEvaluationObject.class, injector.getInstance(SimpleEvaluationObject.Serializer.class));
+    module.addSerializer(EvaluationResult.class, injector.getInstance(EvaluationResult.Serializer.class));
+    module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
+    module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
+    module.addSerializer(ImageIcon.class, injector.getInstance(ImageIconSerializer.class));
 
     mapper.registerModule(module);
 

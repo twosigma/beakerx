@@ -23,7 +23,7 @@
   var PLUGIN_NAME = "Groovy";
   var COMMAND = "groovyPlugin";
 
-  var serverUrl = "/groovysh/";
+  var serviceBase = null;
   var subscriptions = {};
 
   var cometd = new $.Cometd();
@@ -32,7 +32,7 @@
     init: function() {
       if (!initialized) {
         cometd.unregisterTransport("websocket");
-        cometd.init(serverUrl + "cometd");
+        cometd.init(serviceBase + "/cometd");
         initialized = true;
       }
     },
@@ -67,16 +67,13 @@
     pluginName: PLUGIN_NAME,
     cmMode: "groovy",
     background: "#E0FFE0",
-    newShell: function(shellID, cb) {
-      if (!shellID) {
-        shellID = "";
+    newShell: function(shellId, cb) {
+      if (!shellId) {
+        shellId = "";
       }
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: serverUrl + "rest/groovysh/getShell",
-        data: {shellid: shellID}
-      }).done(cb).fail(function() {
+      bkHelper.httpPost(serviceBase + "/rest/groovysh/getShell", { shellId: shellId })
+          .success(cb)
+          .error(function() {
             console.log("failed to create shell", arguments);
           });
     },
@@ -95,8 +92,8 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serverUrl + "rest/groovysh/evaluate",
-        data: {shellID: self.settings.shellID, code: code}
+        url: serviceBase + "/rest/groovysh/evaluate",
+        data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
             var onUpdatableResultUpdate = function(update) {
               modelOutput.result = update;
@@ -139,8 +136,8 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serverUrl + "rest/groovysh/autocomplete",
-        data: {shellID: self.settings.shellID, code: code, caretPosition: cpos}
+        url: serviceBase + "/rest/groovysh/autocomplete",
+        data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
             cb(x);
           });
@@ -150,8 +147,8 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serverUrl + "rest/groovysh/exit",
-        data: { shellID: self.settings.shellID }
+        url: serviceBase + "/rest/groovysh/exit",
+        data: { shellId: self.settings.shellID }
       }).done(cb);
     },
     spec: {
@@ -160,48 +157,37 @@
   };
 
   var init = function() {
-    $.ajax({
-      type: "POST",
-      datatype: "json",
-      url: "/beaker/rest/startProcess/runCommand",  // note this is not based on serverUrl
-      data: {
-        flag: PLUGIN_NAME,
+    bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        started: "Server started",
-        nginx: "location /groovysh/ {proxy_pass http://127.0.0.1:%(port)s/;}",
-        waitfor: "org.eclipse.jetty.server.AbstractConnector - Started SelectChannelConnector",
-        record: "true",
-        stream: "stdout"
-      }
-    }).done(function(ret) {
-          if (bkHelper.restartAlert(ret)) {
-            return;
+        startedIndicator: "Server started",
+        recordOutput: "true"
+    }).success(function(ret) {
+      serviceBase = ret;
+      cometdUtil.init();
+      var GroovyShell = function(settings, cb) {
+        var self = this;
+        var setShellIdCB = function(id) {
+          if (id !== settings.shellID) {
+            // console.log("A new Groovy shell was created.");
           }
-          cometdUtil.init();
-          var GroovyShell = function(settings, cb) {
-            var self = this;
-            var setShellIdCB = function(id) {
-              if (id.value !== settings.shellID) {
-                // console.log("A new R shell was created.");
-              }
-              settings.shellID = id.value;
-              self.settings = settings;
-              cb();
-            };
-            if (!settings.shellID) {
-              settings.shellID = "";
-            }
-            this.newShell(settings.shellID, setShellIdCB);
-            this.perform = function(what) {
-              var action = this.spec[what].action;
-              this[action]();
-            };
-          };
-          GroovyShell.prototype = Groovy;
-          bkHelper.getLoadingPlugin(url).onReady(GroovyShell);
-        }).fail(function() {
-          console.log("process start failed", arguments);
-        });
+          settings.shellID = id;
+          self.settings = settings;
+          cb();
+        };
+        if (!settings.shellID) {
+          settings.shellID = "";
+        }
+        this.newShell(settings.shellID, setShellIdCB);
+        this.perform = function(what) {
+          var action = this.spec[what].action;
+          this[action]();
+        };
+      };
+      GroovyShell.prototype = Groovy;
+      bkHelper.getLoadingPlugin(url).onReady(GroovyShell);
+    }).error(function() {
+      console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+    });
   };
   init();
 })();

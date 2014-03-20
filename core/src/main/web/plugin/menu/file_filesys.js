@@ -21,9 +21,9 @@
   'use strict';
   var loadFromFile = function(path) {
     var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/fileio/load", {path: path}).
-        success(function(data) {
-          deferred.resolve(data);
+    bkHelper.httpGet("/beaker/rest/file-io/load", {path: path}).
+        success(function(content) {
+          deferred.resolve(content);
         }).
         error(function(data, status, header, config) {
           deferred.reject(data, status, header, config);
@@ -32,9 +32,9 @@
   };
   var loadFromHttp = function(url) {
     var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
-        success(function(data) {
-          deferred.resolve(data);
+    bkHelper.httpGet("/beaker/rest/http-proxy/load", {url: url}).
+        success(function(content) {
+          deferred.resolve(content);
         }).
         error(function(data, status, header, config) {
           deferred.reject(data, status, header, config);
@@ -44,10 +44,10 @@
 
   var save = function(path, json) {
     var deferred = bkHelper.newDeferred();
-    bkHelper.httpPost("/beaker/rest/fileio/save", {path: path, content: json}).
-        success(function(data) {
+    bkHelper.httpPost("/beaker/rest/file-io/save", {path: path, content: json}).
+        success(function() {
           bkHelper.setNotebookUrl(path);
-          deferred.resolve(data);
+          deferred.resolve();
         }).
         error(function(data, status, header, config) {
           deferred.reject(data, status, header, config);
@@ -69,8 +69,8 @@
       return;
     }
     var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-    load(path).then(function(ret) {
-      var notebookJson = ret.value;
+    load(path).then(function(content) {
+      var notebookJson = content;
       bkHelper.loadNotebook(notebookJson, true, path);
       bkHelper.setSaveFunction(function(notebookModel) {
         return save(path, bkHelper.toPrettyJson(notebookModel));
@@ -85,8 +85,7 @@
     }
   });
 
-  bkHelper.httpGet("/beaker/rest/fileio/getHomeDirectory").success(function(ret) {
-    var homeDir = ret.value;
+  bkHelper.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(homeDir) {
     var fileChooserStrategy = { result: "" };
     fileChooserStrategy.close = function(ev, closeFunc) {
       if (ev.which === 13) {
@@ -99,7 +98,7 @@
         this.showSpinner = true;
         $http({
           method: 'GET',
-          url: "/beaker/rest/fileio/getDecoratedChildren",
+          url: "/beaker/rest/file-io/getDecoratedChildren",
           params: {
             path: path
           }

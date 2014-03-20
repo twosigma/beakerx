@@ -244,16 +244,13 @@
         return bkCoreManager.getCMKeyMapMode();
       },
 
-      restartAlert: function(ret) {
-        if (ret.value == "restart") {
-          alert("To complete first-time plugin loading, restart your Beaker server.");
-          return true;
-        }
-        return false;
-      },
-
       // bkShare
-      share: bkShare
+      share: bkShare,
+
+      locatePluginService: function(id, locator) {
+        return bkCoreManager.httpGet("/beaker/rest/plugin-services/" + id,
+            locator);
+      }
     };
     window.bkHelper = bkHelper; // TODO, we want to revisit the decision of making this global
     return bkHelper;

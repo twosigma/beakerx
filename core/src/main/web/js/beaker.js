@@ -79,12 +79,12 @@
       }, failure);
     }
 
-    $.get('/beaker/rest/util/initplugins')
+    $.get('/beaker/rest/util/getInitPlugins')
         .done(function(list) {
           loadList(list, function() {
             deferred.resolve();
           }, function() {
-            console.log("error loading initplugins");
+            console.log("error loading init plugins");
           });
         });
     return deferred.promise;
@@ -126,7 +126,7 @@
           var req = $.ajax({
             type: "POST",
             datatype: "json",
-            url: "/beaker/rest/recent/addItem",
+            url: "/beaker/rest/recent-menu/addItem",
             data: {item: doc}
           });
           req.done(callback);
@@ -138,7 +138,7 @@
           var req = $.ajax({
             type: "GET",
             datatype: "json",
-            url: "/beaker/rest/recent/getItems",
+            url: "/beaker/rest/recent-menu/getItems",
             data: {}
           });
           req.done(callback);
@@ -150,7 +150,7 @@
           var req = $.ajax({
             type: "POST",
             datatype: "json",
-            url: "/beaker/rest/recent/clear",
+            url: "/beaker/rest/recent-menu/clear",
             data: {}
           });
           req.done(callback);

@@ -23,7 +23,8 @@ import org.codehaus.jackson.JsonProcessingException;
 public class SerializeUtils {
 
   public static void writeObject(Object obj, JsonGenerator jgen)
-          throws IOException, JsonProcessingException {
+      throws IOException, JsonProcessingException {
+
     try {
       if (obj == null) {
         jgen.writeObject("null");
@@ -34,9 +35,10 @@ public class SerializeUtils {
       } else {
         jgen.writeObject(obj.toString());
       }
-    } catch (Exception e) {
+    } catch (IOException e) {
       System.err.println("Serialization error:");
       System.err.println(e);
     }
+    
   }
 }

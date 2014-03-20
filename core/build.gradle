@@ -1,5 +1,5 @@
 apply plugin:'application'
-mainClassName = 'com.twosigma.beaker.Main'
+mainClassName = 'com.twosigma.beaker.core.Main'
 
 task (installBower, type: Exec) {
   commandLine 'npm', 'install'
@@ -10,7 +10,7 @@ task (bowerInstall, type: Exec) {
 }
 
 task (copyNginx, type: Exec) {
-  commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx'.split()
+  commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx/bin'.split()
 }
 
 bowerInstall.dependsOn installBower

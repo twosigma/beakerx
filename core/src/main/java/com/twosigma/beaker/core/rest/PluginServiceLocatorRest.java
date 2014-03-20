@@ -178,7 +178,7 @@ public class PluginServiceLocatorRest {
 
     synchronized (this) {
       final int port = getNextAvailablePort(this.portSearchStart);
-      final String baseUrl = "/" + generatePrefixedRandomString(pluginId, 6);
+      final String baseUrl = "/" + generatePrefixedRandomString(pluginId, 6).replaceAll("[\\s.]", "");
       pConfig = new PluginConfig(port, nginxRules, baseUrl);
       this.portSearchStart = pConfig.port + 1;
       this.plugins.put(pluginId, pConfig);

@@ -16,6 +16,7 @@
 package com.twosigma.beaker.core.module.config;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import java.util.Map;
  * to BeakerConfig interface. The configuration is determined with both constant default
  * values and the input of BeakerConfigPref
  */
+@Singleton
 public class DefaultBeakerConfig implements BeakerConfig {
 
   private final String installDir;
@@ -63,8 +65,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     utils.ensureDirectoryExists(this.dotDir);
     this.nginxDir = this.installDir + "/nginx";
     this.nginxBinDir = this.installDir + "/nginx/bin";
-    this.nginxServDir = this.dotDir + "/nginx";
-    utils.ensureDirectoryExists(this.nginxServDir);
+    this.nginxServDir = utils.createTempDirectory(this.dotDir, "nginx");
     String nginxRestartScript = utils.readFile(this.nginxDir + "/script/restart_nginx");
     File nginxRestartScriptFile = new File(this.nginxServDir + "/restart_nginx");
     utils.saveFile(nginxRestartScriptFile, nginxRestartScript);

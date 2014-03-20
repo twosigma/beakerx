@@ -73,9 +73,36 @@ public interface GeneralUtils {
    * @param targetFile
    * @param srcFile
    * @throws IOException
+   * @throws RuntimeException when srcFile is also empty
    */
   public void ensureFileHasContent(Path targetFile, Path srcFile) throws IOException;
   public void ensureFileHasContent(File targetFile, File srcFile) throws IOException;
   public void ensureFileHasContent(String targetFile, String srcFile) throws IOException;
   public void ensureFileHasContent(URI targetFile, URI srcFile) throws IOException;
+
+  /**
+   * createTempDirectory
+   * creates a temp directory and add shutdown hook to delete the directory recursively
+   * when the VM shuts down.
+   * @param dir
+   * @param prefix
+   * @return the path to the created directory.
+   */
+  public String createTempDirectory(Path dir, String prefix) throws IOException;
+  public String createTempDirectory(File dir, String prefix) throws IOException;
+  public String createTempDirectory(String dir, String prefix) throws IOException;
+  public String createTempDirectory(URI dir, String prefix) throws IOException;
+
+  /**
+   * copyIfSrcExistAndTargetDoesnt
+   * copies if source exists and target doesn't exist
+   * @param srcFile
+   * @param targetFile
+   * @throws IOException
+   */
+  public void copyIfSrcExistAndTargetDoesnt(Path srcFile, Path targetFile) throws IOException;
+  public void copyIfSrcExistAndTargetDoesnt(File srcFile, File targetFile) throws IOException;
+  public void copyIfSrcExistAndTargetDoesnt(String srcFile, String targetFile) throws IOException;
+  public void copyIfSrcExistAndTargetDoesnt(URI srcFile, URI targetFile) throws IOException;
+
 }

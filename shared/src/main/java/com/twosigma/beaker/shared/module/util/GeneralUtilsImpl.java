@@ -18,16 +18,17 @@ package com.twosigma.beaker.shared.module.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -170,6 +171,51 @@ public class GeneralUtilsImpl implements GeneralUtils {
     ensureFileHasContent(castToPath(targetFile), castToPath(copyFromIfMissing));
   }
 
+
+  @Override
+  public String createTempDirectory(Path dir, String prefix) throws IOException {
+    Path tempDir = Files.createTempDirectory(dir, prefix);
+    recursiveDeleteOnShutdownHook(tempDir);
+    return tempDir.toString();
+  }
+
+  @Override
+  public String createTempDirectory(File dir, String prefix) throws IOException {
+    return this.createTempDirectory(castToPath(dir), prefix);
+  }
+
+  @Override
+  public String createTempDirectory(String dir, String prefix) throws IOException {
+    return this.createTempDirectory(castToPath(dir), prefix);
+  }
+
+  @Override
+  public String createTempDirectory(URI dir, String prefix) throws IOException {
+    return this.createTempDirectory(castToPath(dir), prefix);
+  }
+
+  @Override
+  public void copyIfSrcExistAndTargetDoesnt(Path srcFile, Path targetFile) throws IOException {
+    if (Files.exists(srcFile) && Files.notExists(targetFile)) {
+      Files.copy(srcFile, targetFile);
+    }
+  }
+
+  @Override
+  public void copyIfSrcExistAndTargetDoesnt(File srcFile, File targetFile) throws IOException {
+    this.copyIfSrcExistAndTargetDoesnt(castToPath(srcFile), castToPath(targetFile));
+  }
+
+  @Override
+  public void copyIfSrcExistAndTargetDoesnt(String srcFile, String targetFile) throws IOException {
+    this.copyIfSrcExistAndTargetDoesnt(castToPath(srcFile), castToPath(targetFile));
+  }
+
+  @Override
+  public void copyIfSrcExistAndTargetDoesnt(URI srcFile, URI targetFile) throws IOException {
+    this.copyIfSrcExistAndTargetDoesnt(castToPath(srcFile), castToPath(targetFile));
+  }
+
   private Path castToPath(Object locator) {
     final Path path;
     if (locator instanceof Path) {
@@ -191,4 +237,35 @@ public class GeneralUtilsImpl implements GeneralUtils {
     return content != null && !content.isEmpty();
   }
 
+    public static void recursiveDeleteOnShutdownHook(final Path path) {
+    Runtime.getRuntime().addShutdownHook(new Thread(
+        new Runnable() {
+      @Override
+      public void run() {
+        try {
+          Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file,
+                @SuppressWarnings("unused") BasicFileAttributes attrs)
+                throws IOException {
+              Files.delete(file);
+              return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException e)
+                throws IOException {
+              if (e == null) {
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+              }
+              throw e;
+            }
+          });
+        } catch (IOException e) {
+          throw new RuntimeException("Failed to delete " + path, e);
+        }
+      }
+    }));
+  }
 }

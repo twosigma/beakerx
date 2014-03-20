@@ -17,11 +17,13 @@
 package com.twosigma.beaker.shared.module.config;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * WebAppConfigImpl
  *
  */
+@Singleton
 public class DefaultWebServerConfig implements WebServerConfig {
   private final Integer port;
   private final String username;

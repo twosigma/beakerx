@@ -1,2 +1,2 @@
 #!/bin/sh
-kill -HUP $(cat ~/.beaker/nginx/nginx.pid)
+kill -HUP $(cat ${PWD}/nginx.pid)

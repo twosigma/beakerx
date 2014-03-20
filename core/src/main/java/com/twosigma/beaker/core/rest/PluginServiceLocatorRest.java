@@ -21,6 +21,7 @@ import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -185,7 +186,8 @@ public class PluginServiceLocatorRest {
 
       // restart nginx to reload new config
       generateNginxConfig();
-      Process restartproc = Runtime.getRuntime().exec(this.nginxDir + "/script/restart_nginx");
+      Process restartproc = Runtime.getRuntime().exec(this.nginxServDir + "/restart_nginx",
+          null, new File(this.nginxServDir));
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
     }

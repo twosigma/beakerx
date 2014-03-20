@@ -17,6 +17,7 @@ package com.twosigma.beaker.core.module.config;
 
 import com.google.inject.Inject;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
+import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -63,6 +64,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.nginxDir = this.installDir + "/nginx";
     this.nginxBinDir = this.installDir + "/nginx/bin";
     this.nginxServDir = this.dotDir + "/nginx";
+    utils.ensureDirectoryExists(this.nginxServDir);
+    String nginxRestartScript = utils.readFile(this.nginxDir + "/script/restart_nginx");
+    File nginxRestartScriptFile = new File(this.nginxServDir + "/restart_nginx");
+    utils.saveFile(nginxRestartScriptFile, nginxRestartScript);
+    nginxRestartScriptFile.setExecutable(true, true);
     this.nginxExtraRules = "";
 
     String configDir = this.dotDir + "/config";
@@ -168,7 +174,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   public Map<String, String> getPluginLocations() {
     return this.pluginLocations;
   }
- 
+
   @Override
   public Map<String, String> getPluginOptions() {
     return this.pluginOptions;

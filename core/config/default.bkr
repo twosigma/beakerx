@@ -34,6 +34,13 @@
             "name": "Groovy",
             "plugin": "Groovy",
             "shellID": "72177339-15f9-4cb8-a784-e601b041feea"
+        },
+        {
+            "name": "IRuby",
+            "plugin": "IRuby",
+            "shellID": "BD67DDF962194BD8A10A9D164DE9F36B",
+            "imports": "",
+            "supplementalClassPath": ""
         }
     ],
     "cells": [
@@ -50,6 +57,17 @@
             "evaluator": "IPython",
             "input": {
                 "body": "#Python - will turn light blue if plugin loads successfully"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "code001ruby",
+            "type": "code",
+            "evaluator": "IRuby",
+            "input": {
+                "body": "#Ruby - will turn light blue if plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"

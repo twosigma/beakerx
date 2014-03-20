@@ -1,7 +1,7 @@
 build
 beaker/*
 node_modules
-core/nginx
+core/nginx/bin
 core/src/main/web/vendor/bower_components
 core/src/main/web/template/version.html
 *~
@@ -15,3 +15,6 @@ nbproject/
 build.xml
 manifest.mf
 
+/shared/src/main/dist/
+/core/src/main/dist/
+/plugin/jvm/src/main/dist/

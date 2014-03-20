@@ -142,7 +142,7 @@
       reset: function() {
         this.clear();
         var self = this;
-        $.get('/beaker/rest/util/menuplugins')
+        $.get('/beaker/rest/util/getMenuPlugins')
             .done(function(menus) {
               menus.forEach(function(menu) {
                 _addMenu(menu);

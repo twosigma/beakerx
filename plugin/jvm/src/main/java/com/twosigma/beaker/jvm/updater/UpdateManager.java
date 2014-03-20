@@ -19,44 +19,42 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.google.common.collect.HashBiMap;
+import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.BayeuxServer.SubscriptionListener;
 import org.cometd.bayeux.server.LocalSession;
 import org.cometd.bayeux.server.ServerChannel;
 import org.cometd.bayeux.server.ServerSession;
 
-import com.twosigma.beaker.Platform;
-
-public class UpdateManager
-        implements SubscriptionListener {
+@Singleton
+public class UpdateManager implements SubscriptionListener {
 
   private static final Pattern PATTERN = Pattern.compile("^/object_update/((\\w|-)+)$");
-  private static final UpdateManager INSTANCE;
 
-  static {
-    INSTANCE = new UpdateManager();
-  }
-  private HashBiMap<String, Object> _idToObject;
-  private LocalSession _localSession;
+  private final HashBiMap<String, Object> idToObject;
+  private final LocalSession localSession;
+  private final List<UpdaterFactory> updaterFactories;
 
-  public static UpdateManager getInstance() {
-    return INSTANCE;
-  }
-
-  private UpdateManager() {
-    BayeuxServer bayeuxServer = Platform.getInjector().getInstance(BayeuxServer.class);
+  public UpdateManager(BayeuxServer bayeuxServer) {
     bayeuxServer.addListener(this);
-    _localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
-    _localSession.handshake();
-    _idToObject = HashBiMap.<String, Object>create();
+    this.localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
+    this.localSession.handshake();
+    this.idToObject = HashBiMap.<String, Object>create();
+    this.updaterFactories = new ArrayList<>();
+  }
+
+  public void addUpdaterFactory(UpdaterFactory updaterFactory) {
+    this.updaterFactories.add(updaterFactory);
   }
 
   public String register(Object obj) {
-    if (_idToObject.containsValue(obj)) {
-      return _idToObject.inverse().get(obj);
+    if (idToObject.containsValue(obj)) {
+      return idToObject.inverse().get(obj);
     }
     String id = UUID.randomUUID().toString();
-    _idToObject.put(id, obj);
+    this.idToObject.put(id, obj);
     return id;
   }
 
@@ -74,9 +72,9 @@ public class UpdateManager
     if (id == null) {
       return;
     }
-    if (_idToObject.containsKey(id)) {
-      Object obj = _idToObject.get(id);
-      Updater updater = UpdaterFactory.getUpdater(session, _localSession, channel.getId(), obj);
+    if (this.idToObject.containsKey(id)) {
+      Object obj = this.idToObject.get(id);
+      Updater updater = getUpdater(session, this.localSession, channel.getId(), obj);
       updater.deliverUpdate(obj);
     } else {
       System.out.println("Client is trying to subscribe to nonexisting object " + id);
@@ -89,6 +87,15 @@ public class UpdateManager
     if (id == null) {
       return;
     }
-    _idToObject.remove(id);
+    this.idToObject.remove(id);
+  }
+
+  private Updater getUpdater(ServerSession session, LocalSession localSession, String channelId, Object updatingObject) {
+    for (UpdaterFactory uf : this.updaterFactories) {
+      if (uf.isApplicable(updatingObject)) {
+        return uf.createUpdater(session, localSession, channelId, updatingObject);
+      }
+    }
+    return null;
   }
 }

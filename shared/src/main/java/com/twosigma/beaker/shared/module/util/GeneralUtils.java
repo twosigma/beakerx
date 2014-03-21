@@ -94,15 +94,15 @@ public interface GeneralUtils {
   public String createTempDirectory(URI dir, String prefix) throws IOException;
 
   /**
-   * copyIfSrcExistAndTargetDoesnt
+   * copyIfSrcExistsAndTargetDoesnt
    * copies if source exists and target doesn't exist
    * @param srcFile
    * @param targetFile
    * @throws IOException
    */
-  public void copyIfSrcExistAndTargetDoesnt(Path srcFile, Path targetFile) throws IOException;
-  public void copyIfSrcExistAndTargetDoesnt(File srcFile, File targetFile) throws IOException;
-  public void copyIfSrcExistAndTargetDoesnt(String srcFile, String targetFile) throws IOException;
-  public void copyIfSrcExistAndTargetDoesnt(URI srcFile, URI targetFile) throws IOException;
+  public void copyIfSrcExistsAndTargetDoesnt(Path srcFile, Path targetFile) throws IOException;
+  public void copyIfSrcExistsAndTargetDoesnt(File srcFile, File targetFile) throws IOException;
+  public void copyIfSrcExistsAndTargetDoesnt(String srcFile, String targetFile) throws IOException;
+  public void copyIfSrcExistsAndTargetDoesnt(URI srcFile, URI targetFile) throws IOException;
 
 }

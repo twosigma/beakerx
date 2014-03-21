@@ -195,25 +195,25 @@ public class GeneralUtilsImpl implements GeneralUtils {
   }
 
   @Override
-  public void copyIfSrcExistAndTargetDoesnt(Path srcFile, Path targetFile) throws IOException {
+  public void copyIfSrcExistsAndTargetDoesnt(Path srcFile, Path targetFile) throws IOException {
     if (Files.exists(srcFile) && Files.notExists(targetFile)) {
       Files.copy(srcFile, targetFile);
     }
   }
 
   @Override
-  public void copyIfSrcExistAndTargetDoesnt(File srcFile, File targetFile) throws IOException {
-    this.copyIfSrcExistAndTargetDoesnt(castToPath(srcFile), castToPath(targetFile));
+  public void copyIfSrcExistsAndTargetDoesnt(File srcFile, File targetFile) throws IOException {
+    this.copyIfSrcExistsAndTargetDoesnt(castToPath(srcFile), castToPath(targetFile));
   }
 
   @Override
-  public void copyIfSrcExistAndTargetDoesnt(String srcFile, String targetFile) throws IOException {
-    this.copyIfSrcExistAndTargetDoesnt(castToPath(srcFile), castToPath(targetFile));
+  public void copyIfSrcExistsAndTargetDoesnt(String srcFile, String targetFile) throws IOException {
+    this.copyIfSrcExistsAndTargetDoesnt(castToPath(srcFile), castToPath(targetFile));
   }
 
   @Override
-  public void copyIfSrcExistAndTargetDoesnt(URI srcFile, URI targetFile) throws IOException {
-    this.copyIfSrcExistAndTargetDoesnt(castToPath(srcFile), castToPath(targetFile));
+  public void copyIfSrcExistsAndTargetDoesnt(URI srcFile, URI targetFile) throws IOException {
+    this.copyIfSrcExistsAndTargetDoesnt(castToPath(srcFile), castToPath(targetFile));
   }
 
   private Path castToPath(Object locator) {

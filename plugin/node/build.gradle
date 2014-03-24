@@ -1,6 +1,19 @@
-task (installNodePackages, type: Exec) {
+def installDir = System.getProperty("user.home") + '/.beaker/v1/plugins/eval/' + project.name;
+
+task syncFiles (type: Sync) {
+  from 'src/dist'
+  into installDir
+}
+
+task installNodePackages (type: Exec) {
   description 'Install the NPM packages for the node plugin.'
+  workingDir installDir + "/app"
   commandLine 'npm', 'install'
 }
 
-build.dependsOn installNodePackages
+task installApp {
+
+}
+
+installNodePackages.dependsOn syncFiles
+installApp.dependsOn installNodePackages

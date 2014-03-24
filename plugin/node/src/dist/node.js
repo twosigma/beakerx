@@ -21,9 +21,9 @@
  */
 (function () {
     'use strict';
-    var url = "./plugin/evaluator/node.js";
+    var url = "./plugins/eval/node/node.js";
     var PLUGIN_NAME = "Node";
-    var COMMAND = "nodePlugin";
+    var COMMAND = "node/nodePlugin";
 
     var serviceBase = null;
 

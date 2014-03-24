@@ -19,9 +19,9 @@
  */
 (function() {
   'use strict';
-  var url = "./plugin/evaluator/r.js";
+  var url = "./plugins/eval/r/r.js";
   var PLUGIN_NAME = "R";
-  var COMMAND = "rPlugin";
+  var COMMAND = "r/rPlugin";
 
   var serviceBase = null;
   var subscriptions = {};

@@ -20,9 +20,9 @@
  */
 (function() {
   'use strict';
-  var url = "./plugin/evaluator/ipython.js";
+  var url = "./plugins/eval/ipython/ipython.js";
   var PLUGIN_NAME = "IPython";
-  var COMMAND = "ipythonPlugin";
+  var COMMAND = "ipython/ipythonPlugin";
   var kernels = {};
   var _theCancelFunction = null;
   var serviceBase = null;
@@ -262,10 +262,11 @@
     var onFail = function() {
       console.log("failed to load ipython libs");
     };
-    bkHelper.loadList(["./vendor/ipython/namespace.js",
-      "./vendor/ipython/utils.js",
-      "./vendor/ipython/kernel.js",
-      "./vendor/ipython/outputarea.js"],
+    bkHelper.loadList([
+      "./plugins/eval/ipython/vendor/ipython/namespace.js",
+      "./plugins/eval/ipython/vendor/ipython/utils.js",
+      "./plugins/eval/ipython/vendor/ipython/kernel.js",
+      "./plugins/eval/ipython/vendor/ipython/outputarea.js"],
         onSuccess, onFail);
   };
   init();

@@ -6,3 +6,7 @@ dependencies {
     compile project(':plugin:jvm')
     compile group: 'net.rforge', name: 'Rserve', version: '0.6-8.1'
 }
+
+if (hasProperty('evalPluginDir')) {
+  installApp.into evalPluginDir + '/r'
+}

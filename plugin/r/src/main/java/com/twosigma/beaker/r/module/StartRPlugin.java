@@ -34,7 +34,7 @@ public class StartRPlugin {
     String pluginInstallDir = System.getProperty("user.dir");
     String[] command = {
       "Rscript",
-      pluginInstallDir + "/src/main/r/Rserve"
+      pluginInstallDir + "/Rserve"
     };
 
     // Need to clear out some environment variables in order for a

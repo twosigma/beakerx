@@ -38,7 +38,6 @@ public class URLConfigModule extends ServletModule {
   @Override
   protected void configureServlets() {
     bind(GuiceContainer.class);
-
     serve("/rest/*").with(GuiceContainer.class, new HashMap<String, String>() {
       {
         // put config that is normally in web.xml here
@@ -49,6 +48,15 @@ public class URLConfigModule extends ServletModule {
     serve("/cometd/*").with(GuiceCometdServlet.class, new HashMap<String, String>() {
       {
         put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
+      }
+    });
+
+    final String pluginsWebDir = System.getProperty("user.home") + "/.beaker/v1/plugins";
+    serve("/plugins/*").with(new StaticResourceServlet(pluginsWebDir),
+        new HashMap<String, String>() {
+      {
+        put("cacheControl", "no-cache, max-age=0");
+        put("maxCacheSize", "0");
       }
     });
 

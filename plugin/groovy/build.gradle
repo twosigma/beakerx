@@ -8,3 +8,8 @@ dependencies {
   // http://stackoverflow.com/questions/11738732/exception-java-lang-incompatibleclasschangeerror-while-running-groovy-in-eclipse
   compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.2.1'
 }
+
+//$ gradle installApp -Dorg.gradle.project.evalPluginDir=/Users/alee/.beaker/v1/plugins/eval
+if (hasProperty('evalPluginDir')) {
+  installApp.into evalPluginDir + '/groovy'
+}

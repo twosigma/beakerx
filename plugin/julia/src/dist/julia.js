@@ -20,9 +20,9 @@
  */
 (function() {
   'use strict';
-  var url = "./plugin/evaluator/julia.js";
+  var url = "./plugins/eval/julia/julia.js";
   var PLUGIN_NAME = "Julia";
-  var COMMAND = "juliaPlugin";
+  var COMMAND = "julia/juliaPlugin";
   var kernels = {};
   var _theCancelFunction = null;
   var serviceBase = null;
@@ -223,50 +223,51 @@
               "  proxy_set_header Host $host;" +
               "}";
       bkHelper.locatePluginService(PLUGIN_NAME, {
-          command: COMMAND,
-          nginxRules: nginxRules,
-          startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-          startedIndicatorStream: "stderr"
+        command: COMMAND,
+        nginxRules: nginxRules,
+        startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
+        startedIndicatorStream: "stderr"
       }).success(function(ret) {
-        serviceBase = ret;
-        var JuliaShell = function(settings, cb) {
-          var self = this;
-          var setShellIdCB = function(shellID) {
-            settings.shellID = shellID;
-            // XXX these are not used by python, they are leftover from groovy
-            if (!settings.imports) {
-              settings.imports = "";
-            }
-            if (!settings.supplementalClassPath) {
-              settings.supplementalClassPath = "";
-            }
-            self.settings = settings;
-            if (cb) {
-              cb();
-            }
-          };
-          if (!settings.shellID) {
-            settings.shellID = "";
-          }
-          this.newShell(settings.shellID, setShellIdCB);
-          this.perform = function(what) {
-            var action = this.spec[what].action;
-            this[action]();
-          };
-        };
-        JuliaShell.prototype = JuliaProto;
-        bkHelper.getLoadingPlugin(url).onReady(JuliaShell);
-      }).error(function() {
-        console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
-      });
+            serviceBase = ret;
+            var JuliaShell = function(settings, cb) {
+              var self = this;
+              var setShellIdCB = function(shellID) {
+                settings.shellID = shellID;
+                // XXX these are not used by python, they are leftover from groovy
+                if (!settings.imports) {
+                  settings.imports = "";
+                }
+                if (!settings.supplementalClassPath) {
+                  settings.supplementalClassPath = "";
+                }
+                self.settings = settings;
+                if (cb) {
+                  cb();
+                }
+              };
+              if (!settings.shellID) {
+                settings.shellID = "";
+              }
+              this.newShell(settings.shellID, setShellIdCB);
+              this.perform = function(what) {
+                var action = this.spec[what].action;
+                this[action]();
+              };
+            };
+            JuliaShell.prototype = JuliaProto;
+            bkHelper.getLoadingPlugin(url).onReady(JuliaShell);
+          }).error(function() {
+            console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+          });
     };
     var onFail = function() {
       console.log("failed to load julia libs");
     };
-    bkHelper.loadList(["./vendor/ipython/namespace.js",
-      "./vendor/ipython/utils.js",
-      "./vendor/ipython/kernel.js",
-      "./vendor/ipython/outputarea.js"],
+    bkHelper.loadList([
+      "./plugins/eval/ipython/vendor/ipython/namespace.js",
+      "./plugins/eval/ipython/vendor/ipython/utils.js",
+      "./plugins/eval/ipython/vendor/ipython/kernel.js",
+      "./plugins/eval/ipython/vendor/ipython/outputarea.js"],
         onSuccess, onFail);
   };
   init();

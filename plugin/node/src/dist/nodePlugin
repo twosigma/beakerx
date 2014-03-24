@@ -14,9 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-opt=($*) # opt is array of command line parameters
-port=${opt[${#opt[@]}-1]} # port is the last one
-unset opt[${#opt[@]}-1]   # delete the last one from opt
-export GROOVY_OPTS="${opt[*]}"  # remaining prameters passed to JVM
-cd ../plugin/groovy
-build/install/groovy/bin/groovy $port
+echo port=$1
+cd $(dirname $0)
+exec node app.js $1 127.0.0.1
+echo "Server started"

@@ -1,0 +1,4 @@
+task installApp (type: Sync) {
+  from 'src/dist'
+  into System.getProperty("user.home") + '/.beaker/v1/plugins/eval/' + project.name
+}

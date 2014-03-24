@@ -180,7 +180,8 @@
       "HiddenOutputCell": ["Hidden"],
       "Warning": ["Warning"],
       "BeakerOutputContainerDisplay": ["OutputContainer", "Text"],
-      "OutputContainerCell": ["OutputContainer", "Text"]
+      "OutputContainerCell": ["OutputContainer", "Text"],
+      "OutputContainer": ["OutputContainer", "Text"]
     };
     var factory = {
       add: function(type, impl) {

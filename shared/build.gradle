@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile group: 'org.cometd.java', name: 'cometd-java-annotations', version: '2.7.0'
+  compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.13'
+  compile group: 'org.apache.cxf', name: 'cxf-bundle-jaxrs', version: '2.7.7'
+  compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.17.1'
+}
+
+compileJava {
+  options.compilerArgs << '-Xlint:deprecation'
+  options.compilerArgs << '-Xlint:unchecked'
+}

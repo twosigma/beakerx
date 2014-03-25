@@ -1,4 +1,4 @@
-def installDir = System.getProperty("user.home") + '/.beaker/v1/plugins/eval/' + project.name;
+def installDir = hasProperty('evalPluginDir') ? evalPluginDir + '/node' : project.buildDir
 
 task syncFiles (type: Sync) {
   from 'src/dist'

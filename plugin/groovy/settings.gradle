@@ -1,0 +1,3 @@
+include 'plugin:jvm', 'shared'
+project(':plugin:jvm').projectDir = new File(settingsDir, "../jvm")
+project(':shared').projectDir = new File(settingsDir, "../../shared")

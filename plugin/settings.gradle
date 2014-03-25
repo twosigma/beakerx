@@ -1,0 +1,9 @@
+include 'shared', 'plugin:jvm', 'plugin:groovy', 'plugin:ipython', 'plugin:iruby', 'plugin:julia', 'plugin:node', 'plugin:r'
+project(':shared').projectDir = file("../shared")
+project(':plugin:jvm').projectDir = file("./jvm")
+project(':plugin:groovy').projectDir = file("./groovy")
+project(':plugin:ipython').projectDir = file("./ipython")
+project(':plugin:iruby').projectDir = file("./iruby")
+project(':plugin:julia').projectDir = file("./julia")
+project(':plugin:node').projectDir = file("./node")
+project(':plugin:r').projectDir = file("./r")

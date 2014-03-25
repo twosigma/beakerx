@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
+import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -284,4 +285,5 @@ public class UtilRest {
   public List<String> getCellMenuPlugins() {
     return this.cellMenuPlugins;
   }
+
 }

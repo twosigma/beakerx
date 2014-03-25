@@ -56,12 +56,18 @@ public class RShellRest {
   private final Map<String, RConnection> shells = new HashMap<>();
   private ROutputHandler rOutputHandler = null;
   private int svgUniqueCounter = 0;
+  private int port = -1;
 
   public RShellRest()
           throws IOException, RserveException {
     newEvaluator("default");
   }
 
+  // set the port used for communication with the Rserve process
+  public void setPort(int port) {
+    this.port = port;
+  }
+  
   public void setOutput(InputStream stream) {
     this.rOutputHandler = new ROutputHandler(stream, BEGIN_MAGIC, END_MAGIC);
     this.rOutputHandler.start();
@@ -164,7 +170,7 @@ public class RShellRest {
 
   private void newEvaluator(String id) {
     try {
-      RConnection con = new RConnection();
+      RConnection con = new RConnection("127.0.0.1", port);
       this.shells.put(id, con);
     } catch (RserveException e) {
       System.out.println("RserveException");

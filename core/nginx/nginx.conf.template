@@ -1,0 +1,66 @@
+worker_processes  1;
+daemon off;
+
+#debug level logging is quite voluminous
+#error_log  stderr  debug;
+error_log  stderr  error;
+
+pid nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    default_type  application/octet-stream;
+    types_hash_max_size 2048;
+
+
+#    turn this on for debugging
+#    access_log access.log;
+    access_log off;
+
+    sendfile        on;
+
+    # i tried setting to 0 and removing the keepalive timer from the ipython client.
+    # but it did not fix the problem.
+    #keepalive_timeout  0;
+    keepalive_timeout  1000;
+    proxy_read_timeout 1000000;
+
+    server {
+
+# Exactly one of the two following sections should be active.
+
+# https
+#        listen       %(port_main)s ssl;
+#        server_name  localhost;
+#        ssl_certificate %(host)s.cer;
+#        ssl_certificate_key %(host)s.key;
+         client_max_body_size 100M;
+         client_body_temp_path "%(client_temp_dir)s";
+         proxy_temp_path "%(client_temp_dir)s";
+         fastcgi_temp_path "%(client_temp_dir)s";
+         uwsgi_temp_path "%(client_temp_dir)s";
+         scgi_temp_path "%(client_temp_dir)s";
+
+
+# kerberos
+        listen       %(port_clear)s;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        # html directory is missing now XXX
+        # this is also a problem for favicon XXX
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+
+        location /beaker/ {
+            proxy_pass http://127.0.0.1:%(port_beaker)s/;
+        }
+        %(plugin_section)s
+        %(extra_rules)s
+    }
+}

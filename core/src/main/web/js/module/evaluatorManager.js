@@ -37,18 +37,22 @@
           ) {
         var nameToUrl = {// for known plugins, so we can refer to the plugin with either its name or URL
           "IPython": "./plugin/evaluator/ipython.js",
+          "IRuby": "./plugin/evaluator/iruby.js",
           "Julia": "./plugin/evaluator/julia.js",
           "R": "./plugin/evaluator/r.js",
           "Groovy": "./plugin/evaluator/groovy.js",
           "JavaScript": "./plugin/evaluator/javaScript.js",
           "Latex": "./plugin/evaluator/latex.js",
+          "Node": "./plugin/evaluator/node.js",
           "Html": "./plugin/evaluator/html.js"
         };
         var knownEvaluators = [
           {name: "IPython"},
+          {name: "IRuby"},
           {name: "Julia"},
           {name: "R"},
           {name: "Groovy"},
+          {name: "Node"},
           {name: "Html"},
           {name: "JavaScript"},
           {name: "Latex"}
@@ -83,7 +87,7 @@
         };
         var updateEvaluatorsAndLoadingPlugins = function() {
           var i, j;
-          evaluatorsAndLoadingPlugins = [];
+          evaluatorsAndLoadingPlugins.splice(0, evaluatorsAndLoadingPlugins.length);
           for (i in evaluators) {
             evaluators[i].loading = false;
             evaluatorsAndLoadingPlugins.push(evaluators[i]);
@@ -169,7 +173,7 @@
                 if (makeEvaluator) {
                   var newEvaluatorObj = {
                     name: pluginObj.name,
-                    plugin: pluginObj.name
+                    plugin: pluginObj.url
                   };
                   bkBaseSessionModel.getNotebookModel().evaluators.push(newEvaluatorObj);
                   newEvaluator(newEvaluatorObj, true);

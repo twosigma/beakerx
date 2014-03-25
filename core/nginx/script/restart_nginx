@@ -1,0 +1,2 @@
+#!/bin/sh
+kill -HUP $(cat ${PWD}/nginx.pid)

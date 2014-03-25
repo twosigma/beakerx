@@ -17,9 +17,11 @@
 import os
 import sys
 
+coreport = sys.argv.pop()
 port = sys.argv.pop()
+print("coreport=" + coreport)
 print("port=" + port)
 
 os.chdir("..\\plugin\\r")
 cmd = "build\\install\\r\\bin\\r.bat"
-os.execl(cmd, cmd, port)
+os.execl(cmd, cmd, port, coreport)

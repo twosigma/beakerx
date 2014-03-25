@@ -23,7 +23,7 @@
   var PLUGIN_NAME = "R";
   var COMMAND = "rPlugin";
 
-  var serverUrl = "/rsh/";
+  var serviceBase = null;
   var subscriptions = {};
 
   var cometd = new $.Cometd();
@@ -32,7 +32,7 @@
     init: function() {
       if (!initialized) {
         cometd.unregisterTransport("websocket");
-        cometd.init(serverUrl + "cometd");
+        cometd.init(serviceBase + "/cometd");
         initialized = true;
       }
     },
@@ -71,12 +71,9 @@
       if (!shellID) {
         shellID = "";
       }
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: serverUrl + "rest/rsh/getShell",
-        data: {shellid: shellID}
-      }).done(cb).fail(function() {
+      bkHelper.httpPost(serviceBase + "/rest/rsh/getShell", { shellid: shellID })
+          .success(cb)
+          .error(function() {
             console.log("failed to create shell", arguments);
           });
     },
@@ -95,7 +92,7 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serverUrl + "rest/rsh/evaluate",
+        url: serviceBase + "/rest/rsh/evaluate",
         data: {shellID: self.settings.shellID, code: code}
       }).done(function(ret) {
             var onUpdatableResultUpdate = function(update) {
@@ -139,7 +136,7 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serverUrl + "rest/rsh/autocomplete",
+        url: serviceBase + "/rest/rsh/autocomplete",
         data: {shellID: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
             cb(x);
@@ -150,7 +147,7 @@
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serverUrl + "rest/rsh/exit",
+        url: serviceBase + "/rest/rsh/exit",
         data: { shellID: self.settings.shellID }
       }).done(cb);
     },
@@ -160,48 +157,37 @@
   };
 
   var init = function() {
-    $.ajax({
-      type: "POST",
-      datatype: "json",
-      url: "/beaker/rest/startProcess/runCommand",  // note this is not based on serverUrl
-      data: {
-        flag: PLUGIN_NAME,
+    bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        started: "Server started",
-        nginx: "location /rsh/ {proxy_pass http://127.0.0.1:%(port)s/;}",
-        waitfor: "org.eclipse.jetty.server.AbstractConnector - Started SelectChannelConnector",
-        record: "true",
-        stream: "stdout"
-      }
-    }).done(function(ret) {
-          if (bkHelper.restartAlert(ret)) {
-            return;
+        startedIndicator: "Server started",
+        recordOutput: "true"
+    }).success(function(ret) {
+      serviceBase = ret;
+      cometdUtil.init();
+      var RShell = function(settings, cb) {
+        var self = this;
+        var setShellIdCB = function(id) {
+          if (id !== settings.shellID) {
+            // console.log("A new R shell was created.");
           }
-          cometdUtil.init();
-          var RShell = function(settings, cb) {
-            var self = this;
-            var setShellIdCB = function(id) {
-              if (id.value !== settings.shellID) {
-                // console.log("A new R shell was created.");
-              }
-              settings.shellID = id.value;
-              self.settings = settings;
-              cb();
-            };
-            if (!settings.shellID) {
-              settings.shellID = "";
-            }
-            this.newShell(settings.shellID, setShellIdCB);
-            this.perform = function(what) {
-              var action = this.spec[what].action;
-              this[action]();
-            };
-          };
-          RShell.prototype = R;
-          bkHelper.getLoadingPlugin(url).onReady(RShell);
-        }).fail(function() {
-          console.log("process start failed", arguments);
-        });
+          settings.shellID = id;
+          self.settings = settings;
+          cb();
+        };
+        if (!settings.shellID) {
+          settings.shellID = "";
+        }
+        this.newShell(settings.shellID, setShellIdCB);
+        this.perform = function(what) {
+          var action = this.spec[what].action;
+          this[action]();
+        };
+      };
+      RShell.prototype = R;
+      bkHelper.getLoadingPlugin(url).onReady(RShell);
+    }).error(function() {
+      console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+    });
   };
   init();
 })();

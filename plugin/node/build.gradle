@@ -1,0 +1,6 @@
+task (installNodePackages, type: Exec) {
+  description 'Install the NPM packages for the node plugin.'
+  commandLine 'npm', 'install'
+}
+
+build.dependsOn installNodePackages

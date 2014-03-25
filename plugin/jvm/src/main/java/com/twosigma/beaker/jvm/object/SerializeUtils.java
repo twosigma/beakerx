@@ -23,20 +23,24 @@ import org.codehaus.jackson.JsonProcessingException;
 public class SerializeUtils {
 
   public static void writeObject(Object obj, JsonGenerator jgen)
-          throws IOException, JsonProcessingException {
+      throws IOException, JsonProcessingException {
+
     try {
       if (obj == null) {
         jgen.writeObject("null");
       } else if (obj instanceof TableDisplay) {
+        jgen.writeObject(obj);
+      } else if (obj instanceof OutputContainer) {
         jgen.writeObject(obj);
       } else if (obj instanceof ImageIcon) {
         jgen.writeObject(obj);
       } else {
         jgen.writeObject(obj.toString());
       }
-    } catch (Exception e) {
+    } catch (IOException e) {
       System.err.println("Serialization error:");
       System.err.println(e);
     }
+    
   }
 }

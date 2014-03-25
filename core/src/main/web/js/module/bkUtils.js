@@ -51,7 +51,7 @@
       },
       getDefaultNotebook: function() {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet("/beaker/rest/util/default").
+        angularUtils.httpGet("/beaker/rest/util/getDefaultNotebook").
             success(function(data) {
               deferred.resolve(data);
             }).
@@ -61,7 +61,10 @@
         return deferred.promise;
       },
       loadJS: function(url, success) {
-        generalUtils.loadJS(url, success);
+        return generalUtils.loadJS(url, success);
+      },
+      loadCSS: function(url) {
+        return generalUtils.loadCSS(url);
       },
       loadList: function(urls, success, failure) {
         generalUtils.loadList(urls, success, failure);

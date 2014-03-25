@@ -11,6 +11,7 @@
       "./plugin/menu/file.js",
       "./plugin/menu/file_filesys.js",
       "./plugin/menu/file_ipython.js",
+      "./plugin/menu/file_iruby.js",
       "./plugin/menu/notebook.js",
       "./plugin/menu/evaluators.js",
       "./plugin/menu/help.js"

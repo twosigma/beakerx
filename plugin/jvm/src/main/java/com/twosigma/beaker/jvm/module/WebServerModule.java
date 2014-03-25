@@ -21,8 +21,8 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.twosigma.beaker.Platform;
-import com.twosigma.beaker.rest.filter.OwnerFilter;
+import com.twosigma.beaker.shared.module.config.WebServerConfig;
+import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
@@ -32,14 +32,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 /**
  * The WebServer Module that sets up the server singleton to be started in Init
  */
-public class WebServerModule
-        extends AbstractModule {
-
-  private int _port;
-
-  public WebServerModule(int port) {
-    _port = port;
-  }
+public class WebServerModule extends AbstractModule {
 
   @Override
   protected void configure() {
@@ -48,16 +41,18 @@ public class WebServerModule
 
   @Provides
   @Singleton
-  Connector getConnector() {
+  Connector getConnector(final Injector injector) {
     final Connector conn = new SelectChannelConnector();
-    conn.setPort(_port);
+    WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
+    conn.setPort(webAppConfig.getPort());
     return conn;
   }
 
   @Provides
   @Singleton
   public Server getServer(final Injector injector, Connector connector) {
-    String staticDir = Platform.getStaticDir();
+    WebServerConfig webServerConfig = injector.getInstance(WebServerConfig.class);
+    String staticDir = webServerConfig.getStaticDirectory();
     Server server = new Server();
     server.addConnector(connector);
     ServletContextHandler servletHandler = new ServletContextHandler();

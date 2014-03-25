@@ -27,6 +27,7 @@ import sys
 #    esac
 #done
 
+coreport = sys.argv.pop()
 port = sys.argv.pop()
 print("port=" + port)
 

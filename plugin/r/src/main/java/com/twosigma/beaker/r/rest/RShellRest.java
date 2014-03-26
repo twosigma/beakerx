@@ -15,16 +15,21 @@
  */
 package com.twosigma.beaker.r.rest;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import javax.swing.ImageIcon;
 import javax.ws.rs.FormParam;
@@ -36,7 +41,10 @@ import javax.imageio.ImageIO;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.r.module.ErrorGobbler;
 import com.twosigma.beaker.r.module.ROutputHandler;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.ClientProtocolException;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 import org.rosuda.REngine.REXPMismatchException;
@@ -51,30 +59,90 @@ import org.rosuda.REngine.RList;
 @Singleton
 public class RShellRest {
 
+  private boolean useMultipleRservers = false;
+
   private static final String BEGIN_MAGIC = "**beaker_begin_magic**";
   private static final String END_MAGIC = "**beaker_end_magic**";
-  private final Map<String, RConnection> shells = new HashMap<>();
-  private ROutputHandler rOutputHandler = null;
+  private final Map<String, RServer> shells = new HashMap<>();
   private int svgUniqueCounter = 0;
-  private int port = -1;
+  private int corePort = -1;
+  private RServer rServer = null;
 
   public RShellRest() {
   }
 
-  // set the port used for communication with the Rserve process
-  public void setPort(int port) {
-    this.port = port;
-  }
-  
-  public void setOutput(InputStream stream) {
-    this.rOutputHandler = new ROutputHandler(stream, BEGIN_MAGIC, END_MAGIC);
-    this.rOutputHandler.start();
+  int getPortFromCore()
+    throws IOException, ClientProtocolException
+  {
+    String response = Request.Get("http://127.0.0.1:" + corePort + "/rest/plugin-services/getAvailablePort")
+      .execute().returnContent().asString();
+    return Integer.parseInt(response);
   }
 
+  String writeRserveScript(int port)
+    throws IOException
+  {
+    File temp = File.createTempFile("BeakerRserveScript", ".r");
+    String location = temp.getAbsolutePath();
+    BufferedWriter bw = new BufferedWriter(new FileWriter(location));
+    bw.write("library(Rserve)\n");
+    bw.write("run.Rserve(port=" + port + ")\n");
+    bw.close();
+    return location;
+  }
+
+  public RServer startRserve()
+    throws IOException, RserveException
+  {
+    int port = getPortFromCore();
+    String pluginInstallDir = System.getProperty("user.dir");
+    String[] command = {"Rscript", writeRserveScript(port)};
+
+    // Need to clear out some environment variables in order for a
+    // new Java process to work correctly.
+    // XXX not always necessary, use getPluginEnvps from BeakerConfig?
+    // or just delete?
+    List<String> environmentList = new ArrayList<>();
+    for (Entry<String, String> entry : System.getenv().entrySet()) {
+      if (!("CLASSPATH".equals(entry.getKey()))) {
+        environmentList.add(entry.getKey() + "=" + entry.getValue());
+      }
+    }
+    String[] environmentArray = new String[environmentList.size()];
+    environmentList.toArray(environmentArray);
+
+    Process rServe = Runtime.getRuntime().exec(command, environmentArray);
+    BufferedReader rServeOutput = new BufferedReader(new InputStreamReader(rServe.getInputStream()));
+    String line = null;
+    while ((line = rServeOutput.readLine()) != null) {
+      if (line.indexOf("(This session will block until Rserve is shut down)") >= 0) {
+        break;
+      } else {
+        // System.out.println("Rserve>" + line);
+      }
+    }
+    ErrorGobbler errorGobbler = new ErrorGobbler(rServe.getErrorStream());
+    errorGobbler.start();
+
+    ROutputHandler handler = new ROutputHandler(rServe.getInputStream(),
+                                                BEGIN_MAGIC, END_MAGIC);
+    handler.start();
+
+    return new RServer(new RConnection("127.0.0.1", port),
+                       handler, port);
+  }
+
+  // set the port used for communication with the Core server
+  public void setCorePort(int corePort) 
+    throws IOException
+  {
+    this.corePort = corePort;
+  }
+  
   @POST
   @Path("getShell")
-  public String getShell(
-      @FormParam("shellid") String shellId) throws InterruptedException, RserveException {
+  public String getShell(@FormParam("shellid") String shellId)
+                         throws InterruptedException, RserveException, IOException {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
@@ -94,7 +162,8 @@ public class RShellRest {
     // System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
-    RConnection con = getEvaluator(shellID);
+    RServer server = getEvaluator(shellID);
+    RConnection con = server.connection;
     String dotDir = System.getProperty("user.home") + "/.beaker";
     String file = dotDir + "/rplot.svg";
     try {
@@ -129,7 +198,7 @@ public class RShellRest {
       } else if (isDataFrame(result, obj)) {
         // nothing
       } else {
-        this.rOutputHandler.reset(obj);
+        server.outputHandler.reset(obj);
         con.eval("print(\"" + BEGIN_MAGIC + "\")");
         con.eval("print(beaker_eval_)");
         con.eval("print(\"" + END_MAGIC + "\")");
@@ -162,20 +231,27 @@ public class RShellRest {
           throws InterruptedException {
 
     List<String> completionStrings = new ArrayList<>(0);
-    //TODO
+    // XXX TODO
     return completionStrings;
   }
 
-  private void newEvaluator(String id) {
-    try {
-      RConnection con = new RConnection("127.0.0.1", port);
-      this.shells.put(id, con);
-    } catch (RserveException e) {
-      System.out.println("RserveException");
+  private void newEvaluator(String id)
+          throws RserveException, IOException
+  {
+    RServer newRs;
+    if (useMultipleRservers) {
+      newRs = startRserve();
+    } else {
+      if (null == rServer) {
+        rServer = startRserve();
+      }
+      newRs = new RServer(new RConnection("127.0.0.1", rServer.port),
+                          rServer.outputHandler, rServer.port);
     }
+    this.shells.put(id, newRs);
   }
 
-  private RConnection getEvaluator(String shellID) {
+  private RServer getEvaluator(String shellID) {
     if (shellID == null || shellID.isEmpty()) {
       shellID = "default";
     }
@@ -264,5 +340,16 @@ public class RShellRest {
     }
     obj.finished(table);
     return true;
+  }
+
+  private static class RServer {
+    RConnection connection;
+    ROutputHandler outputHandler;
+    int port;
+    public RServer(RConnection con, ROutputHandler handler, int port) {
+      this.connection = con;
+      this.outputHandler = handler;
+      this.port = port;
+    }
   }
 }

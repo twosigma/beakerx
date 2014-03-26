@@ -58,8 +58,7 @@ public class RShellRest {
   private int svgUniqueCounter = 0;
   private int port = -1;
 
-  public RShellRest()
-          throws IOException, RserveException {
+  public RShellRest() {
   }
 
   // set the port used for communication with the Rserve process

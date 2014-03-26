@@ -59,26 +59,27 @@ import org.rosuda.REngine.RList;
 @Singleton
 public class RShellRest {
 
+  private boolean useMultipleRservers = false;
+
   private static final String BEGIN_MAGIC = "**beaker_begin_magic**";
   private static final String END_MAGIC = "**beaker_end_magic**";
-  private final Map<String, RConnection> shells = new HashMap<>();
-  private ROutputHandler rOutputHandler = null;
+  private final Map<String, RServer> shells = new HashMap<>();
   private int svgUniqueCounter = 0;
-  private int port = -1;
   private int corePort = -1;
+  private RServer rServer = null;
 
   public RShellRest() {
   }
 
-  static int getPortFromCore(int portCore)
+  int getPortFromCore()
     throws IOException, ClientProtocolException
   {
-    String response = Request.Get("http://127.0.0.1:" + portCore + "/rest/plugin-services/getAvailablePort")
+    String response = Request.Get("http://127.0.0.1:" + corePort + "/rest/plugin-services/getAvailablePort")
       .execute().returnContent().asString();
     return Integer.parseInt(response);
   }
 
-  static String writeRserveScript(int port)
+  String writeRserveScript(int port)
     throws IOException
   {
     File temp = File.createTempFile("BeakerRserveScript", ".r");
@@ -90,19 +91,17 @@ public class RShellRest {
     return location;
   }
 
-  public void StartRserve(int portCore)
-    throws IOException
+  public RServer startRserve()
+    throws IOException, RserveException
   {
-    this.port = getPortFromCore(portCore);
+    int port = getPortFromCore();
     String pluginInstallDir = System.getProperty("user.dir");
-    String[] command = {
-      "Rscript",
-      writeRserveScript(this.port)
-    };
+    String[] command = {"Rscript", writeRserveScript(port)};
 
     // Need to clear out some environment variables in order for a
     // new Java process to work correctly.
     // XXX not always necessary, use getPluginEnvps from BeakerConfig?
+    // or just delete?
     List<String> environmentList = new ArrayList<>();
     for (Entry<String, String> entry : System.getenv().entrySet()) {
       if (!("CLASSPATH".equals(entry.getKey()))) {
@@ -119,13 +118,18 @@ public class RShellRest {
       if (line.indexOf("(This session will block until Rserve is shut down)") >= 0) {
         break;
       } else {
-        System.out.println("Rserve>" + line);
+        // System.out.println("Rserve>" + line);
       }
     }
     ErrorGobbler errorGobbler = new ErrorGobbler(rServe.getErrorStream());
     errorGobbler.start();
 
-    setOutput(rServe.getInputStream());
+    ROutputHandler handler = new ROutputHandler(rServe.getInputStream(),
+                                                BEGIN_MAGIC, END_MAGIC);
+    handler.start();
+
+    return new RServer(new RConnection("127.0.0.1", port),
+                       handler, port);
   }
 
   // set the port used for communication with the Core server
@@ -133,18 +137,12 @@ public class RShellRest {
     throws IOException
   {
     this.corePort = corePort;
-    StartRserve(corePort);
   }
   
-  public void setOutput(InputStream stream) {
-    this.rOutputHandler = new ROutputHandler(stream, BEGIN_MAGIC, END_MAGIC);
-    this.rOutputHandler.start();
-  }
-
   @POST
   @Path("getShell")
   public String getShell(@FormParam("shellid") String shellId)
-                         throws InterruptedException, RserveException {
+                         throws InterruptedException, RserveException, IOException {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
@@ -164,7 +162,8 @@ public class RShellRest {
     // System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
-    RConnection con = getEvaluator(shellID);
+    RServer server = getEvaluator(shellID);
+    RConnection con = server.connection;
     String dotDir = System.getProperty("user.home") + "/.beaker";
     String file = dotDir + "/rplot.svg";
     try {
@@ -199,7 +198,7 @@ public class RShellRest {
       } else if (isDataFrame(result, obj)) {
         // nothing
       } else {
-        this.rOutputHandler.reset(obj);
+        server.outputHandler.reset(obj);
         con.eval("print(\"" + BEGIN_MAGIC + "\")");
         con.eval("print(beaker_eval_)");
         con.eval("print(\"" + END_MAGIC + "\")");
@@ -237,13 +236,22 @@ public class RShellRest {
   }
 
   private void newEvaluator(String id)
-          throws RserveException
+          throws RserveException, IOException
   {
-    RConnection con = new RConnection("127.0.0.1", port);
-    this.shells.put(id, con);
+    RServer newRs;
+    if (useMultipleRservers) {
+      newRs = startRserve();
+    } else {
+      if (null == rServer) {
+        rServer = startRserve();
+      }
+      newRs = new RServer(new RConnection("127.0.0.1", rServer.port),
+                          rServer.outputHandler, rServer.port);
+    }
+    this.shells.put(id, newRs);
   }
 
-  private RConnection getEvaluator(String shellID) {
+  private RServer getEvaluator(String shellID) {
     if (shellID == null || shellID.isEmpty()) {
       shellID = "default";
     }
@@ -332,5 +340,16 @@ public class RShellRest {
     }
     obj.finished(table);
     return true;
+  }
+
+  private static class RServer {
+    RConnection connection;
+    ROutputHandler outputHandler;
+    int port;
+    public RServer(RConnection con, ROutputHandler handler, int port) {
+      this.connection = con;
+      this.outputHandler = handler;
+      this.port = port;
+    }
   }
 }

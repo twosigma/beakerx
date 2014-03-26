@@ -60,7 +60,6 @@ public class RShellRest {
 
   public RShellRest()
           throws IOException, RserveException {
-    newEvaluator("default");
   }
 
   // set the port used for communication with the Rserve process

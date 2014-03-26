@@ -40,8 +40,15 @@ public class GeneralUtilsImpl implements GeneralUtils {
 
   @Override
   public void openUrl(String url) {
-    boolean onMac = System.getProperty("os.name").equals("Mac OS X");
-    String[] cmd = {onMac ? "open" : "xdg-open", url};
+    String osName = System.getProperty("os.name");
+    boolean onMac = osName.equals("Mac OS X");
+    boolean onWin = osName.substring(0, 7).equals("Windows");
+    System.out.println("osName=" + osName);
+    System.out.println("onMac=" + onMac);
+    System.out.println("onWin=" + onWin);
+    String[] cmd = {"xdg-open", url};
+    if (onMac) cmd[0] = "open";
+    if (onWin) cmd[0] = "explorer";
     try {
       Runtime.getRuntime().exec(cmd);
     } catch (IOException e) {

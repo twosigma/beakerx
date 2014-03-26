@@ -43,9 +43,6 @@ public class GeneralUtilsImpl implements GeneralUtils {
     String osName = System.getProperty("os.name");
     boolean onMac = osName.equals("Mac OS X");
     boolean onWin = osName.substring(0, 7).equals("Windows");
-    System.out.println("osName=" + osName);
-    System.out.println("onMac=" + onMac);
-    System.out.println("onWin=" + onWin);
     String[] cmd = {"xdg-open", url};
     if (onMac) cmd[0] = "open";
     if (onWin) cmd[0] = "explorer";

@@ -292,11 +292,15 @@ public class PluginServiceLocatorRest {
       nginxClientTempDir.toFile().mkdirs();
     }
 
-    java.nio.file.Path target = Paths.get(this.installDir + "/src/main/web/static");
-    if (Files.exists(htmlDir, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {
-      Files.delete(htmlDir);
+    String targetDir = this.installDir + "/src/main/web/static";
+    java.nio.file.Path target = Paths.get(targetDir);
+    if (Files.notExists(htmlDir)) {
+      Files.createDirectory(htmlDir);
+      Files.copy(Paths.get(targetDir + "/50x.html"),
+                 Paths.get(htmlDir.toString() + "/50x.html"));
+      Files.copy(Paths.get(targetDir + "/favicon.ico"),
+                 Paths.get(htmlDir.toString() + "/favicon.ico"));
     }
-    Files.createSymbolicLink(htmlDir, target);
 
     String ngixConfig = this.nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();

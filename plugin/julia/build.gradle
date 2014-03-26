@@ -1,6 +1,0 @@
-def installDir = hasProperty('evalPluginDir') ? evalPluginDir + '/julia' : project.buildDir
-
-task installApp (type: Sync) {
-  from 'src/dist'
-  into installDir
-}

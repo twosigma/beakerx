@@ -38,11 +38,11 @@ http {
 #        ssl_certificate %(host)s.cer;
 #        ssl_certificate_key %(host)s.key;
          client_max_body_size 100M;
-         client_body_temp_path %(client_temp_dir)s;
-         proxy_temp_path %(client_temp_dir)s;
-         fastcgi_temp_path %(client_temp_dir)s;
-         uwsgi_temp_path %(client_temp_dir)s;
-         scgi_temp_path %(client_temp_dir)s;
+         client_body_temp_path "%(client_temp_dir)s";
+         proxy_temp_path "%(client_temp_dir)s";
+         fastcgi_temp_path "%(client_temp_dir)s";
+         uwsgi_temp_path "%(client_temp_dir)s";
+         scgi_temp_path "%(client_temp_dir)s";
 
 
 # kerberos

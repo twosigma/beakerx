@@ -160,6 +160,7 @@
     bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         startedIndicator: "Server started",
+        waitfor: "Started SelectChannelConnector",
         recordOutput: "true"
     }).success(function(ret) {
       serviceBase = ret;

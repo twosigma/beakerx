@@ -18,23 +18,50 @@ package com.twosigma.beaker.r.module;
 import com.twosigma.beaker.r.rest.RShellRest;
 import com.google.inject.Injector;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map.Entry;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.ClientProtocolException;
 
 /*
  * Find and Start the Rserver, and begin managing its IO.
  */
 public class StartRPlugin {
 
-  public static void StartRserve(Injector injector) throws IOException {
+  static int getPortFromCore(int portCore)
+    throws IOException, ClientProtocolException
+  {
+    String response = Request.Get("http://127.0.0.1:" + portCore + "/rest/plugin-services/getAvailablePort")
+      .execute().returnContent().asString();
+    return Integer.parseInt(response);
+  }
 
+  static String writeRserveScript(int port)
+    throws IOException
+  {
+    File temp = File.createTempFile("BeakerRserveScript", ".r");
+    String location = temp.getAbsolutePath();
+    BufferedWriter bw = new BufferedWriter(new FileWriter(location));
+    bw.write("library(Rserve)\n");
+    bw.write("run.Rserve(port=" + port + ")\n");
+    bw.close();
+    return location;
+  }
+
+  public static void StartRserve(Injector injector, int portCore)
+    throws IOException
+  {
+    int port = getPortFromCore(portCore);
     String pluginInstallDir = System.getProperty("user.dir");
     String[] command = {
       "Rscript",
-      pluginInstallDir + "/Rserve"
+      writeRserveScript(port)
     };
 
     // Need to clear out some environment variables in order for a
@@ -63,5 +90,6 @@ public class StartRPlugin {
 
     RShellRest rrest = injector.getInstance(RShellRest.class);
     rrest.setOutput(rServe.getInputStream());
+    rrest.setPort(port);
   }
 }

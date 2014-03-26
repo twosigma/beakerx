@@ -55,11 +55,15 @@
     };
 
     return {
-      template: "<div id='{{id}}'>MATH_JAX_INLINE_BEGIN{{model.getCellModel()}}MATH_JAX_INLINE_END</div>",
+      template: "<div id='{{id}}'></div>",
       controller: function($scope) {
         $scope.id = "latex_" + generalUtils.generateID(6);
-        $scope.$watch('model.getCellModel()', function() {
-          updateMathJax($scope.id);
+      },
+      link: function(scope, element, attrs) {
+        scope.$watch('model.getCellModel()', function(newValue) {
+          var div = element.find("#" + scope.id)
+              .html("MATH_JAX_INLINE_BEGIN" + newValue + "MATH_JAX_INLINE_END");
+          updateMathJax(scope.id);
         });
       }
     };

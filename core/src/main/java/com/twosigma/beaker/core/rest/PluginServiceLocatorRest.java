@@ -64,6 +64,7 @@ public class PluginServiceLocatorRest {
   private final String nginxExtraRules;
   private final String pluginDir;
   private final Integer portBase;
+  private final Integer corePort;
   private final Integer reservedPortCount;
   private final Map<String, String> pluginLocations;
   private final Map<String, List<String>> pluginArgs;
@@ -87,6 +88,7 @@ public class PluginServiceLocatorRest {
     this.nginxExtraRules = bkConfig.getNginxExtraRules();
     this.pluginDir = bkConfig.getPluginDirectory();
     this.portBase = bkConfig.getPortBase();
+    this.corePort = this.portBase + 2;
     this.reservedPortCount = bkConfig.getReservedPortCount();
     this.pluginLocations = bkConfig.getPluginLocations();
     this.pluginEnvps = bkConfig.getPluginEnvps();
@@ -212,6 +214,7 @@ public class PluginServiceLocatorRest {
       fullCommand += StringUtils.join(extraArgs, " ");
     }
     fullCommand += " " + Integer.toString(pConfig.port);
+    fullCommand += " " + Integer.toString(corePort);
 
     String[] env = this.pluginEnvps.get(pluginId);
     System.out.println("Running: " + fullCommand);
@@ -236,6 +239,16 @@ public class PluginServiceLocatorRest {
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);
     return buildResponse(pConfig.getBaseUrl(), true);
+  }
+
+  @GET
+  @Path("getAvailablePort")
+  public int getAvailablePort() {
+    int port;
+    synchronized (this) {
+      port = getNextAvailablePort(this.portSearchStart++);
+    }
+    return port;
   }
 
   private static Response buildResponse(String baseUrl, boolean created) {
@@ -279,11 +292,15 @@ public class PluginServiceLocatorRest {
       nginxClientTempDir.toFile().mkdirs();
     }
 
-    java.nio.file.Path target = Paths.get(this.installDir + "/src/main/web/static");
-    if (Files.exists(htmlDir, java.nio.file.LinkOption.NOFOLLOW_LINKS)) {
-      Files.delete(htmlDir);
+    String targetDir = this.installDir + "/src/main/web/static";
+    java.nio.file.Path target = Paths.get(targetDir);
+    if (Files.notExists(htmlDir)) {
+      Files.createDirectory(htmlDir);
+      Files.copy(Paths.get(targetDir + "/50x.html"),
+                 Paths.get(htmlDir.toString() + "/50x.html"));
+      Files.copy(Paths.get(targetDir + "/favicon.ico"),
+                 Paths.get(htmlDir.toString() + "/favicon.ico"));
     }
-    Files.createSymbolicLink(htmlDir, target);
 
     String ngixConfig = this.nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();
@@ -297,7 +314,7 @@ public class PluginServiceLocatorRest {
     ngixConfig = ngixConfig.replace("%(extra_rules)s", this.nginxExtraRules);
     ngixConfig = ngixConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
     ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
-    ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.portBase + 2));
+    ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.portBase + 1));
     ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
 

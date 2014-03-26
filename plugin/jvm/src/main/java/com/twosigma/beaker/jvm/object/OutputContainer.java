@@ -16,31 +16,34 @@
 package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
-import javax.swing.ImageIcon;
+import java.util.List;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 
-public class SerializeUtils {
+public class OutputContainer {
 
-  public static void writeObject(Object obj, JsonGenerator jgen)
-      throws IOException, JsonProcessingException {
+  private final List<Object> items;
 
-    try {
-      if (obj == null) {
-        jgen.writeObject("null");
-      } else if (obj instanceof TableDisplay) {
-        jgen.writeObject(obj);
-      } else if (obj instanceof OutputContainer) {
-        jgen.writeObject(obj);
-      } else if (obj instanceof ImageIcon) {
-        jgen.writeObject(obj);
-      } else {
-        jgen.writeObject(obj.toString());
+  public OutputContainer(List<Object> items) {
+    this.items = items;
+  }
+
+  public static class Serializer extends JsonSerializer<OutputContainer> {
+
+    @Override
+    public void serialize(OutputContainer value,
+        JsonGenerator jgen,
+        SerializerProvider provider)
+        throws IOException, JsonProcessingException {
+
+      synchronized (value) {
+        jgen.writeStartObject();
+        jgen.writeObjectField("type", "OutputContainer");
+        jgen.writeObjectField("items", value.items);
+        jgen.writeEndObject();
       }
-    } catch (IOException e) {
-      System.err.println("Serialization error:");
-      System.err.println(e);
     }
-    
   }
 }

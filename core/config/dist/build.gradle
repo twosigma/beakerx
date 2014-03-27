@@ -18,7 +18,6 @@ ext {
 
 task writeVersion << {
   file('../../src/main/web/template/version.html').write(versionHtml())
-  file('../../src/main/web/template/version.html').write(versionHtml())
 }
 
 task makeDist(type: Exec) {

@@ -37,7 +37,7 @@
       },
       loadPlugin: function(url) {
         return bkUtils.loadModule(url).then(function(ex) {
-          _cellMenuPlugins[ex.cellType] = ex.plugin;
+          _cellMenuPlugins[ex.cellType] = ex.plugin; // XXX should append not replace?
           return ex.plugin;
         });
       },

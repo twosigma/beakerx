@@ -2,20 +2,21 @@
   "conf-format": "1",
   "allow-anonymous-usage-tracking": null,
   "init": [
-      "./plugin/init/track.js"
+    "./plugin/init/track.js"
   ],
   "control-panel-menu-plugins": [
-      "./plugin/menu/forControlPanel.js"
+    "./plugin/menu/forControlPanel.js"
   ],
   "notebook-app-menu-plugins":[
-      "./plugin/menu/file.js",
-      "./plugin/menu/file_filesys.js",
-      "./plugin/menu/file_ipython.js",
-      "./plugin/menu/file_iruby.js",
-      "./plugin/menu/notebook.js",
-      "./plugin/menu/evaluators.js",
-      "./plugin/menu/help.js"
+    "./plugin/menu/file.js",
+    "./plugin/menu/file_filesys.js",
+    "./plugin/menu/file_ipython.js",
+    "./plugin/menu/file_iruby.js",
+    "./plugin/menu/notebook.js",
+    "./plugin/menu/evaluators.js",
+    "./plugin/menu/help.js"
   ],
   "notebook-cell-menu-plugins": [
+    "./plugin/menu/sharing_notebook.js"
   ]
 }

@@ -10,18 +10,18 @@ def versionHtml() {
   return "<div>build time: " + buildTime() + "<br>" + "git sha: " + gitSha() + "<br></div>"
 }
 
+def coreDir = file("../../../") // TODO, this can come from a property
 
 ext {
-  evalPluginDir = file("../../plugins/eval")
+  evalPluginDir = new File(coreDir, "config/plugins/eval")
 }
 
-
 task writeVersion << {
-  file('../../../src/main/web/template/version.html').write(versionHtml())
+  new File(coreDir, 'src/main/web/template/version.html').write(versionHtml())
 }
 
 task makeDist(type: Exec) {
-  workingDir file("../../../")
+  workingDir coreDir
   commandLine 'zip', '-r', 'beaker-notebook.zip', 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command'
 }
 

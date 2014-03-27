@@ -1,15 +1,17 @@
+def coreDir = file("../../../") // TODO, this can come from a property
+
 ext {
-  evalPluginDir = file("../../plugins/eval")
+  evalPluginDir = new File(coreDir, "config/plugins/eval")
 }
 
 task build
 task clean
 task run (type: Exec) {
-  workingDir file("../../../")
+  workingDir coreDir
   commandLine './beaker.command'
 }
 task runOnly (type: Exec) {
-  workingDir file("../../../")
+  workingDir coreDir
   commandLine './beaker.command'
 }
 

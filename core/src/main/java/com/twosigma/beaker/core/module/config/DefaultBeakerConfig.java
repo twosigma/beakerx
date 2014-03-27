@@ -61,7 +61,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.portBase = pref.getPortBase();
     this.reservedPortCount = 3;
     this.dotDir = System.getProperty("user.home") + "/.beaker/v1";
-    this.pluginDir = this.dotDir + "/plugins/eval";
+    this.pluginDir = this.installDir + "/config/plugins/eval";
     utils.ensureDirectoryExists(this.dotDir);
     this.nginxDir = this.installDir + "/nginx";
     this.nginxBinDir = this.installDir + "/nginx/bin";

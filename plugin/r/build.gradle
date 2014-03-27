@@ -17,5 +17,5 @@ compileJava {
 }
 
 if (hasProperty('evalPluginDir')) {
-  installApp.into evalPluginDir + '/r'
+  installApp.into new File(evalPluginDir, 'r')
 }

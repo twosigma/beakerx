@@ -4,8 +4,8 @@
 // 3. gradle project properties in cli -PevalPluginDir=FOO/BAR
 // 4. gradle project properties in gradle.properties
 
-
-def DEFAULT_EVAL_PLUGIN_DIR = System.properties["user.home"] + "/.beaker/v1/plugins/eval";
+def beakerInstallDir = hasProperty('beakerInstallDir') ? project.beakerInstallDir : new File("../core").absolutePath
+def DEFAULT_EVAL_PLUGIN_DIR = new File(beakerInstallDir, "config/plugins/eval")
 def evalPluginDir = DEFAULT_EVAL_PLUGIN_DIR;
 if (hasProperty('evalPluginDir')) {
   evalPluginDir = project.evalPluginDir;

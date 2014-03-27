@@ -51,7 +51,7 @@ public class URLConfigModule extends ServletModule {
       }
     });
 
-    final String pluginsWebDir = System.getProperty("user.home") + "/.beaker/v1/plugins";
+    final String pluginsWebDir = System.getProperty("user.dir") + "/config/plugins";
     serve("/plugins/*").with(new StaticResourceServlet(pluginsWebDir),
         new HashMap<String, String>() {
       {

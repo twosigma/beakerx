@@ -1,0 +1,42 @@
+def buildTime() {
+  return new Date().format("yyyy-MM-dd HH:mm z")
+}
+
+def gitSha() {
+  return "git rev-parse --short HEAD".execute().text.trim()
+}
+
+def versionHtml() {
+  return "<div>build time: " + buildTime() + "<br>" + "git sha: " + gitSha() + "<br></div>"
+}
+
+
+ext {
+  evalPluginDir = file("../plugins/eval")
+}
+
+
+task writeVersion << {
+  file('../../src/main/web/template/version.html').write(versionHtml())
+  file('../../src/main/web/template/version.html').write(versionHtml())
+}
+
+task makeDist(type: Exec) {
+  workingDir file("../../")
+  commandLine 'zip', '-r', 'beaker-notebook.zip', 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command'
+  //commandLine 'pwd'
+}
+
+task installPlugins {
+  def pluginProjects = project.subprojects.grep { it.project.path.startsWith(':plugin:') }
+  pluginProjects.each { installPlugins.dependsOn(it.project.path + ":installApp") }
+}
+
+makeDist.dependsOn(":writeVersion")
+makeDist.dependsOn(":core:installApp")
+makeDist.dependsOn(installPlugins)
+
+task hello << {
+  println "Hello"
+}
+

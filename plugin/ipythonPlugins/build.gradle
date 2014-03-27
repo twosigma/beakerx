@@ -1,4 +1,4 @@
-def installDir = hasProperty('evalPluginDir') ? evalPluginDir + '/ipythonPlugins' : project.buildDir
+def installDir = hasProperty('evalPluginDir') ? new File(evalPluginDir, 'ipythonPlugins') : project.buildDir
 
 task installApp (type: Sync) {
   from 'src/dist'

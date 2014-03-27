@@ -20,5 +20,5 @@ compileJava {
 }
 
 if (hasProperty('evalPluginDir')) {
-  installApp.into evalPluginDir + '/groovy'
+  installApp.into new File(evalPluginDir, 'groovy')
 }

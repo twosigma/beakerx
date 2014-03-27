@@ -6,6 +6,7 @@ core/src/main/web/vendor/bower_components
 core/src/main/web/template/version.html
 shared/src/main/dist/
 core/src/main/dist/
+core/config/plugins/
 plugin/jvm/src/main/dist/
 *~
 .gradle

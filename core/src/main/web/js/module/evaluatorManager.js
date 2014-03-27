@@ -36,9 +36,9 @@
           menuPluginManager // TODO, we need to get rid of this dependency
           ) {
         var nameToUrl = {// for known plugins, so we can refer to the plugin with either its name or URL
-          "IPython": "./plugins/eval/ipython/ipython.js",
-          "IRuby": "./plugins/eval/iruby/iruby.js",
-          "Julia": "./plugins/eval/julia/julia.js",
+          "IPython": "./plugins/eval/ipythonPlugins/ipython/ipython.js",
+          "IRuby": "./plugins/eval/ipythonPlugins/iruby/iruby.js",
+          "Julia": "./plugins/eval/ipythonPlugins/julia/julia.js",
           "R": "./plugins/eval/r/r.js",
           "Groovy": "./plugins/eval/groovy/groovy.js",
           "JavaScript": "./plugin/evaluator/javaScript.js",

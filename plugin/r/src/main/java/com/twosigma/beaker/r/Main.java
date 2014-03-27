@@ -21,7 +21,7 @@ import com.twosigma.beaker.jvm.module.SerializerModule;
 import com.twosigma.beaker.jvm.module.WebServerModule;
 import com.twosigma.beaker.shared.module.GuiceCometdModule;
 import com.twosigma.beaker.r.module.URLConfigModule;
-import com.twosigma.beaker.r.module.StartRPlugin;
+import com.twosigma.beaker.r.rest.RShellRest;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
@@ -43,14 +43,15 @@ public class Main {
   }
 
   public static void main(String[] args)
-          throws Exception {
+          throws Exception
+  {
     java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
 
     if (args.length != 2) {
       System.out.println("usage: rPlugin <portListen> <portCore>");
     }
     final int port = Integer.parseInt(args[0]);
-    final int portCore = Integer.parseInt(args[1]);
+    final int corePort = Integer.parseInt(args[1]);
     WebAppConfigPref webAppPref = new DefaultWebAppConfigPref(port);
     Injector injector = Guice.createInjector(
         new DefaultWebServerConfigModule(webAppPref),
@@ -59,7 +60,8 @@ public class Main {
         new SerializerModule(),
         new GuiceCometdModule());
 
-    StartRPlugin.StartRserve(injector, portCore);
+    RShellRest rrest = injector.getInstance(RShellRest.class);
+    rrest.setCorePort(corePort);
 
     Server server = injector.getInstance(Server.class);
     server.start();

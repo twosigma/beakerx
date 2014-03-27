@@ -1,20 +1,10 @@
-def buildTime() {
-  return new Date().format("yyyy-MM-dd HH:mm z")
-}
-
-def gitSha() {
-  return "git rev-parse --short HEAD".execute().text.trim()
-}
-
 def versionHtml() {
-  return "<div>build time: " + buildTime() + "<br>" + "git sha: " + gitSha() + "<br></div>"
+  def buildTime = new Date().format("yyyy-MM-dd HH:mm z")
+  def gitSha = "git rev-parse --short HEAD".execute().text.trim()
+  return "<div>build time: " + buildTime + "<br>" + "git sha: " + gitSha + "<br></div>"
 }
 
 def coreDir = file("../../../") // TODO, this can come from a property
-
-ext {
-  evalPluginDir = new File(coreDir, "config/plugins/eval")
-}
 
 task writeVersion << {
   new File(coreDir, 'src/main/web/template/version.html').write(versionHtml())
@@ -25,11 +15,5 @@ task makeDist(type: Exec) {
   commandLine 'zip', '-r', 'beaker-notebook.zip', 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command'
 }
 
-task installPlugins {
-  def pluginProjects = project.subprojects.grep { it.project.path.startsWith(':plugin:') }
-  pluginProjects.each { installPlugins.dependsOn(it.project.path + ":installApp") }
-}
-
 makeDist.dependsOn(":writeVersion")
-makeDist.dependsOn(":core:installApp")
-makeDist.dependsOn(installPlugins)
+makeDist.dependsOn(":dev:build")

@@ -49,6 +49,11 @@ public interface BeakerConfig {
    */
   public String getNginxBinDirectory();
   /**
+   * where the static files are for the nginx server
+   * @return
+   */
+  public String getNginxStaticDirectory();
+  /**
    * the root of nginx server
    * @return
    */

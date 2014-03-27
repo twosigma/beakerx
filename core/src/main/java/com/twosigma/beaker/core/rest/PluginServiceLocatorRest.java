@@ -195,19 +195,31 @@ public class PluginServiceLocatorRest {
     }
 
     String fullCommand = command;
-    if (Files.notExists(Paths.get(fullCommand))) {
+    String baseCommand;
+    String args;
+    int space = command.indexOf(' ');
+    if (space > 0) {
+      baseCommand = command.substring(0, space);
+      args = command.substring(space); // include space
+    } else {
+      baseCommand = command;
+      args = " ";
+    }
+    if (Files.notExists(Paths.get(baseCommand))) {
       if (this.pluginLocations.containsKey(pluginId)) {
-        fullCommand = this.pluginLocations.get(pluginId) + "/" + command;
+        fullCommand = this.pluginLocations.get(pluginId) + "/" + baseCommand;
       }
       if (Files.notExists(Paths.get(fullCommand))) {
-        fullCommand = this.pluginDir + "/" + command;
+        fullCommand = this.pluginDir + "/" + baseCommand;
         if (Files.notExists(Paths.get(fullCommand))) {
           throw new PluginServiceNotFoundException(
-              "plugin service: " + pluginId + "not found"
-              + "and fail to start it with: " + command);
+              "plugin service: " + pluginId + " not found"
+              + " and fail to start it with: " + command);
         }
       }
     }
+
+    fullCommand += args;
 
     List<String> extraArgs = this.pluginArgs.get(pluginId);
     if (extraArgs != null) {

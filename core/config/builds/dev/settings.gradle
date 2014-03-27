@@ -1,5 +1,5 @@
 include 'shared', 'core', 'plugin:jvm', 'plugin:groovy', 'plugin:ipythonPlugins', 'plugin:node', 'plugin:r'
-def root = new File(settingsDir, "../../../")
+def root = new File(settingsDir, "../../../../")
 project(':shared').projectDir = new File(root, "shared")
 project(':core').projectDir = new File(root, "core")
 project(':plugin:jvm').projectDir = new File(root, "/plugin/jvm")

@@ -12,18 +12,17 @@ def versionHtml() {
 
 
 ext {
-  evalPluginDir = file("../plugins/eval")
+  evalPluginDir = file("../../plugins/eval")
 }
 
 
 task writeVersion << {
-  file('../../src/main/web/template/version.html').write(versionHtml())
+  file('../../../src/main/web/template/version.html').write(versionHtml())
 }
 
 task makeDist(type: Exec) {
-  workingDir file("../../")
+  workingDir file("../../../")
   commandLine 'zip', '-r', 'beaker-notebook.zip', 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command'
-  //commandLine 'pwd'
 }
 
 task installPlugins {
@@ -34,8 +33,3 @@ task installPlugins {
 makeDist.dependsOn(":writeVersion")
 makeDist.dependsOn(":core:installApp")
 makeDist.dependsOn(installPlugins)
-
-task hello << {
-  println "Hello"
-}
-

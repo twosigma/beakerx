@@ -1,0 +1,31 @@
+ext {
+  evalPluginDir = file("../../plugins/eval")
+}
+
+task build
+task clean
+task run (type: Exec) {
+  workingDir file("../../../")
+  commandLine './beaker.command'
+}
+task runOnly (type: Exec) {
+  workingDir file("../../../")
+  commandLine './beaker.command'
+}
+
+task installPlugins {
+  def pluginProjects = project.subprojects.grep { it.project.path.startsWith(':plugin:') }
+  pluginProjects.each {
+    installPlugins.dependsOn(it.project.path + ":installApp")
+  }
+}
+
+task cleanPlugins (type: Exec) {
+  commandLine 'rm', '-rf', evalPluginDir.absolutePath
+}
+
+clean.dependsOn(":core:clean")
+clean.dependsOn(cleanPlugins)
+build.dependsOn(":core:installApp")
+build.dependsOn(installPlugins)
+run.dependsOn(build)

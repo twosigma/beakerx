@@ -14,14 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-opt=($*) # opt is array of command line parameters
-
-coreport=${opt[${#opt[@]}-1]} # coreport is the last one
-unset opt[${#opt[@]}-1]   # delete it
-
-plugport=${opt[${#opt[@]}-1]} # now port is the last one
-unset opt[${#opt[@]}-1]   # delete it
-
-export GROOVY_OPTS="${opt[*]}"  # remaining prameters passed to JVM
-cd ../plugin/groovy
-build/install/groovy/bin/groovy $plugport $coreport
+cd $(dirname $0)
+bin/r $1 $2

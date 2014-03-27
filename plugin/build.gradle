@@ -1,0 +1,19 @@
+// The code below allow evalPluginDir be set and take into account in the following order,
+// 1. system properties in gradle.properties (prefix with 'systemProp')
+// 2. system properties in cli -DevalPluginDir=ABC/XYZ
+// 3. gradle project properties in cli -PevalPluginDir=FOO/BAR
+// 4. gradle project properties in gradle.properties
+
+def beakerInstallDir = hasProperty('beakerInstallDir') ? project.beakerInstallDir : new File("../core").absolutePath
+def DEFAULT_EVAL_PLUGIN_DIR = new File(beakerInstallDir, "config/plugins/eval")
+def evalPluginDir = DEFAULT_EVAL_PLUGIN_DIR;
+if (hasProperty('evalPluginDir')) {
+  evalPluginDir = project.evalPluginDir;
+}
+if (System.properties['evalPluginDir']) {
+  evalPluginDir = System.properties['evalPluginDir'];
+}
+
+subprojects {
+  ext.evalPluginDir=evalPluginDir
+}

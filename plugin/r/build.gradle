@@ -1,9 +1,21 @@
 apply plugin:'application'
 mainClassName = 'com.twosigma.beaker.r.Main'
 
+repositories {
+  mavenCentral()
+}
+
 dependencies {
-    compile project(':shared')
-    compile project(':plugin:jvm')
-    compile group: 'net.rforge', name: 'Rserve', version: '0.6-8.1'
-    compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.3.3'
+  compile project(':plugin:jvm')
+  compile group: 'net.rforge', name: 'Rserve', version: '0.6-8.1'
+  compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.3.3'
+}
+
+compileJava {
+  options.compilerArgs << '-Xlint:deprecation'
+  options.compilerArgs << '-Xlint:unchecked'
+}
+
+if (hasProperty('evalPluginDir')) {
+  installApp.into new File(evalPluginDir, 'r')
 }

@@ -1,0 +1,11 @@
+build
+beaker/*
+node_modules
+src/main/dist/
+*~
+.gradle
+.idea
+src/main/main.iml
+nbproject/
+build.xml
+manifest.mf

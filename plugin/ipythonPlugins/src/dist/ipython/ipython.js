@@ -14,25 +14,25 @@
  *  limitations under the License.
  */
 /**
- * Julia eval plugin
- * For creating and config evaluators that uses a IJulia kernel for evaluating julia code and
- * updating code cell outputs.
+ * IPython eval plugin
+ * For creating and config evaluators that uses a IPython kernel for evaluating python code
+ * and updating code cell outputs.
  */
 (function() {
   'use strict';
-  var url = "./plugin/evaluator/julia.js";
-  var PLUGIN_NAME = "Julia";
-  var COMMAND = "juliaPlugin";
+  var url = "./plugins/eval/ipythonPlugins/ipython/ipython.js";
+  var PLUGIN_NAME = "IPython";
+  var COMMAND = "ipythonPlugins/ipython/ipythonPlugin";
   var kernels = {};
   var _theCancelFunction = null;
   var serviceBase = null;
   var now = function() {
     return new Date().getTime();
   };
-  var JuliaProto = {
+  var IPythonProto = {
     pluginName: PLUGIN_NAME,
-    cmMode: "julia",
-    background: "#EAFAEF",
+    cmMode: "python",
+    background: "#EAEAFF",
     newShell: function(shellID, cb) {
       // check in kernel table if shellID exists, then do nothing or still callback?
       if (kernels[shellID]) {
@@ -142,8 +142,7 @@
           modelOutput.outputArrived = true;
           if (type === "pyerr") {
             var trace = _.reduce(value.traceback, function(memo, line) {
-              return  memo + "<br>" +
-                  IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
+              return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
             }, value.evalue);
             modelOutput.result = {
               type: "BeakerDisplay",
@@ -151,7 +150,7 @@
               object: (value.ename === "KeyboardInterrupt") ? "Interrupted" : [value.evalue, trace]
             };
           } else if (type === "stream") {
-            var json = JSON.stringify({evaluator: "julia",
+            var json = JSON.stringify({evaluator: "ipython",
               type: (type === "stream" ? "text" : "html"),
               line: value.data});
             $.cometd.publish("/service/outputlog/put", json);
@@ -211,17 +210,17 @@
        random number, only delivered via the secure channel. */
       var nginxRules =
           "location %(base_url)s/kernels/ {" +
-              "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
-              "}" +
-              "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {" +
-              "  rewrite ^%(base_url)s/(.*)$ /$1 break; " +
-              "  proxy_pass http://127.0.0.1:%(port)s; " +
-              "  proxy_http_version 1.1; " +
-              "  proxy_set_header Upgrade $http_upgrade; " +
-              "  proxy_set_header Connection \"upgrade\"; " +
-              "  proxy_set_header Origin \"$scheme://$host\"; " +
-              "  proxy_set_header Host $host;" +
-              "}";
+          "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
+          "}" +
+          "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {" +
+          "  rewrite ^%(base_url)s/(.*)$ /$1 break; " +
+          "  proxy_pass http://127.0.0.1:%(port)s; " +
+          "  proxy_http_version 1.1; " +
+          "  proxy_set_header Upgrade $http_upgrade; " +
+          "  proxy_set_header Connection \"upgrade\"; " +
+          "  proxy_set_header Origin \"$scheme://$host\"; " +
+          "  proxy_set_header Host $host;" +
+          "}";
       bkHelper.locatePluginService(PLUGIN_NAME, {
           command: COMMAND,
           nginxRules: nginxRules,
@@ -229,7 +228,7 @@
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
-        var JuliaShell = function(settings, cb) {
+        var IPythonShell = function(settings, cb) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
@@ -254,19 +253,20 @@
             this[action]();
           };
         };
-        JuliaShell.prototype = JuliaProto;
-        bkHelper.getLoadingPlugin(url).onReady(JuliaShell);
+        IPythonShell.prototype = IPythonProto;
+        bkHelper.getLoadingPlugin(url).onReady(IPythonShell);
       }).error(function() {
         console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
       });
     };
     var onFail = function() {
-      console.log("failed to load julia libs");
+      console.log("failed to load ipython libs");
     };
-    bkHelper.loadList(["./vendor/ipython/namespace.js",
-      "./vendor/ipython/utils.js",
-      "./vendor/ipython/kernel.js",
-      "./vendor/ipython/outputarea.js"],
+    bkHelper.loadList([
+      "./plugins/eval/ipythonPlugins/vendor/ipython/namespace.js",
+      "./plugins/eval/ipythonPlugins/vendor/ipython/utils.js",
+      "./plugins/eval/ipythonPlugins/vendor/ipython/kernel.js",
+      "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js"],
         onSuccess, onFail);
   };
   init();

@@ -1,0 +1,9 @@
+include 'shared', 'core', 'plugin:jvm', 'plugin:groovy', 'plugin:ipythonPlugins', 'plugin:node', 'plugin:r'
+def root = new File(settingsDir, "../../../../")
+project(':shared').projectDir = new File(root, "shared")
+project(':core').projectDir = new File(root, "core")
+project(':plugin:jvm').projectDir = new File(root, "/plugin/jvm")
+project(':plugin:groovy').projectDir = new File(root, "/plugin/groovy")
+project(':plugin:ipythonPlugins').projectDir = new File(root, "/plugin/ipythonPlugins")
+project(':plugin:node').projectDir = new File(root, "/plugin/node")
+project(':plugin:r').projectDir = new File(root, "/plugin/r")

@@ -1,6 +1,16 @@
-task (installNodePackages, type: Exec) {
+def installDir = hasProperty('evalPluginDir') ? new File(evalPluginDir, 'node') : project.buildDir
+task syncFiles (type: Sync) {
+  from 'src/dist'
+  into installDir
+}
+
+task installNodePackages (type: Exec) {
   description 'Install the NPM packages for the node plugin.'
+  workingDir file(new File(installDir, "app"))
   commandLine 'npm', 'install'
 }
 
-build.dependsOn installNodePackages
+task installApp
+
+installNodePackages.dependsOn syncFiles
+installApp.dependsOn installNodePackages

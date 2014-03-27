@@ -1,0 +1,19 @@
+def versionHtml() {
+  def buildTime = new Date().format("yyyy-MM-dd HH:mm z")
+  def gitSha = "git rev-parse --short HEAD".execute().text.trim()
+  return "<div>build time: " + buildTime + "<br>" + "git sha: " + gitSha + "<br></div>"
+}
+
+def coreDir = file("../../../") // TODO, this can come from a property
+
+task writeVersion << {
+  new File(coreDir, 'src/main/web/template/version.html').write(versionHtml())
+}
+
+task makeDist(type: Exec) {
+  workingDir coreDir
+  commandLine 'zip', '-r', 'beaker-notebook.zip', 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command'
+}
+
+makeDist.dependsOn(":writeVersion")
+makeDist.dependsOn(":dev:build")

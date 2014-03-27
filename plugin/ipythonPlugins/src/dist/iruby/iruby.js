@@ -20,19 +20,18 @@
  */
 (function() {
   'use strict';
-  var url = "./plugin/evaluator/ipython.js";
-  var PLUGIN_NAME = "IPython";
-  var COMMAND = "ipythonPlugin";
+  var url = "./plugins/eval/ipythonPlugins/iruby/iruby.js";
+  var PLUGIN_NAME = "IRuby";
+  var COMMAND = "ipythonPlugins/iruby/irubyPlugin";
   var kernels = {};
   var _theCancelFunction = null;
-  var serviceBase = null;
   var now = function() {
     return new Date().getTime();
   };
-  var IPythonProto = {
+  var IRubyProto = {
     pluginName: PLUGIN_NAME,
-    cmMode: "python",
-    background: "#EAEAFF",
+    cmMode: "ruby",
+    background: "#CC342D",
     newShell: function(shellID, cb) {
       // check in kernel table if shellID exists, then do nothing or still callback?
       if (kernels[shellID]) {
@@ -43,7 +42,7 @@
         shellID = IPython.utils.uuid();
       }
 
-      var kernel = new IPython.Kernel(serviceBase + "/kernels/");
+      var kernel = new IPython.Kernel("/iruby/kernels/");
       kernels[shellID] = kernel;
       kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
       // keepalive for the websockets
@@ -68,7 +67,7 @@
         } else if (now() < timeout) {
           setTimeout(r, 100);
         } else {
-          console.error("TIMED OUT - waiting for ipython kernel to start");
+          console.error("TIMED OUT - waiting for iruby kernel to start");
         }
       };
       r();
@@ -150,7 +149,7 @@
               object: (value.ename === "KeyboardInterrupt") ? "Interrupted" : [value.evalue, trace]
             };
           } else if (type === "stream") {
-            var json = JSON.stringify({evaluator: "ipython",
+            var json = JSON.stringify({evaluator: "iruby",
               type: (type === "stream" ? "text" : "html"),
               line: value.data});
             $.cometd.publish("/service/outputlog/put", json);
@@ -208,64 +207,70 @@
        disable it. http://code.google.com/p/chromium/issues/detail?id=123862
        this is safe because the URL has the kernel ID in it, and that's a 128-bit
        random number, only delivered via the secure channel. */
-      var nginxRules =
-          "location %(base_url)s/kernels/ {" +
-          "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
-          "}" +
-          "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {" +
-          "  rewrite ^%(base_url)s/(.*)$ /$1 break; " +
-          "  proxy_pass http://127.0.0.1:%(port)s; " +
-          "  proxy_http_version 1.1; " +
-          "  proxy_set_header Upgrade $http_upgrade; " +
-          "  proxy_set_header Connection \"upgrade\"; " +
-          "  proxy_set_header Origin \"$scheme://$host\"; " +
-          "  proxy_set_header Host $host;" +
-          "}";
-      bkHelper.locatePluginService(PLUGIN_NAME, {
+      var nginx =
+          "location /iruby/kernels/ {proxy_pass http://127.0.0.1:%(port)s/kernels;}" +
+              "location ~ /iruby/kernels/[0-9a-f-]+/  {" +
+              "rewrite ^/iruby/(.*)$ /$1 break; " +
+              "proxy_pass http://127.0.0.1:%(port)s; " +
+              "proxy_http_version 1.1; " +
+              "proxy_set_header Upgrade $http_upgrade; " +
+              "proxy_set_header Connection \"upgrade\"; " +
+              "proxy_set_header Origin \"$scheme://$host\"; " +
+              "proxy_set_header Host $host;}";
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: "/beaker/rest/startProcess/runCommand",
+        data: {flag: PLUGIN_NAME,
           command: COMMAND,
-          nginxRules: nginxRules,
-          startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-          startedIndicatorStream: "stderr"
-      }).success(function(ret) {
-        serviceBase = ret;
-        var IPythonShell = function(settings, cb) {
-          var self = this;
-          var setShellIdCB = function(shellID) {
-            settings.shellID = shellID;
-            // XXX these are not used by python, they are leftover from groovy
-            if (!settings.imports) {
-              settings.imports = "";
+          started: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
+          nginx: nginx,
+          record: "false",
+          stream: "stderr"
+        }
+      }).done(function(ret) {
+            if (bkHelper.restartAlert(ret)) {
+              return;
             }
-            if (!settings.supplementalClassPath) {
-              settings.supplementalClassPath = "";
-            }
-            self.settings = settings;
-            if (cb) {
-              cb();
-            }
-          };
-          if (!settings.shellID) {
-            settings.shellID = "";
-          }
-          this.newShell(settings.shellID, setShellIdCB);
-          this.perform = function(what) {
-            var action = this.spec[what].action;
-            this[action]();
-          };
-        };
-        IPythonShell.prototype = IPythonProto;
-        bkHelper.getLoadingPlugin(url).onReady(IPythonShell);
-      }).error(function() {
-        console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
-      });
+            var IRubyShell = function(settings, cb) {
+              var self = this;
+              var setShellIdCB = function(shellID) {
+                settings.shellID = shellID;
+                // XXX these are not used by python, they are leftover from groovy
+                if (!settings.imports) {
+                  settings.imports = "";
+                }
+                if (!settings.supplementalClassPath) {
+                  settings.supplementalClassPath = "";
+                }
+                self.settings = settings;
+                if (cb) {
+                  cb();
+                }
+              };
+              if (!settings.shellID) {
+                settings.shellID = "";
+              }
+              this.newShell(settings.shellID, setShellIdCB);
+              this.perform = function(what) {
+                var action = this.spec[what].action;
+                this[action]();
+              };
+            };
+            IRubyShell.prototype = IRubyProto;
+            bkHelper.getLoadingPlugin(url).onReady(IRubyShell);
+          }).fail(function() {
+            console.log("process start failed", arguments);
+          });
     };
     var onFail = function() {
-      console.log("failed to load ipython libs");
+      console.log("failed to load iruby libs");
     };
-    bkHelper.loadList(["./vendor/ipython/namespace.js",
-      "./vendor/ipython/utils.js",
-      "./vendor/ipython/kernel.js",
-      "./vendor/ipython/outputarea.js"],
+    bkHelper.loadList([
+      "./plugins/eval/ipythonPlugins/vendor/ipython/namespace.js",
+      "./plugins/eval/ipythonPlugins/vendor/ipython/utils.js",
+      "./plugins/eval/ipythonPlugins/vendor/ipython/kernel.js",
+      "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js"],
         onSuccess, onFail);
   };
   init();

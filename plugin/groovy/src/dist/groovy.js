@@ -19,9 +19,9 @@
  */
 (function() {
   'use strict';
-  var url = "./plugin/evaluator/groovy.js";
+  var url = "./plugins/eval/groovy/groovy.js";
   var PLUGIN_NAME = "Groovy";
-  var COMMAND = "groovyPlugin";
+  var COMMAND = "groovy/groovyPlugin";
 
   var serviceBase = null;
   var subscriptions = {};

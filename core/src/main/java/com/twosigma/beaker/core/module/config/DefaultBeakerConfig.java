@@ -60,8 +60,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
     this.reservedPortCount = 3;
-    this.pluginDir = this.installDir + "/src/main/sh";
-    this.dotDir = System.getProperty("user.home") + "/.beaker";
+    this.dotDir = System.getProperty("user.home") + "/.beaker/v1";
+    this.pluginDir = this.installDir + "/config/plugins/eval";
     utils.ensureDirectoryExists(this.dotDir);
     this.nginxDir = this.installDir + "/nginx";
     this.nginxBinDir = this.installDir + "/nginx/bin";

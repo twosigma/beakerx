@@ -1,10 +1,24 @@
+apply plugin: 'java'
+
+repositories {
+  mavenCentral()
+}
+
 apply plugin:'application'
 mainClassName = 'com.twosigma.beaker.groovy.Main'
 
 dependencies {
-  compile project(':shared')
   compile project(':plugin:jvm')
   // would prefer "groovy" over "groovy-all" but that gives me this problem:
   // http://stackoverflow.com/questions/11738732/exception-java-lang-incompatibleclasschangeerror-while-running-groovy-in-eclipse
   compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.2.1'
+}
+
+compileJava {
+  options.compilerArgs << '-Xlint:deprecation'
+  options.compilerArgs << '-Xlint:unchecked'
+}
+
+if (hasProperty('evalPluginDir')) {
+  installApp.into new File(evalPluginDir, 'groovy')
 }

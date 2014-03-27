@@ -36,14 +36,14 @@
           menuPluginManager // TODO, we need to get rid of this dependency
           ) {
         var nameToUrl = {// for known plugins, so we can refer to the plugin with either its name or URL
-          "IPython": "./plugin/evaluator/ipython.js",
-          "IRuby": "./plugin/evaluator/iruby.js",
-          "Julia": "./plugin/evaluator/julia.js",
-          "R": "./plugin/evaluator/r.js",
-          "Groovy": "./plugin/evaluator/groovy.js",
+          "IPython": "./plugins/eval/ipythonPlugins/ipython/ipython.js",
+          "IRuby": "./plugins/eval/ipythonPlugins/iruby/iruby.js",
+          "Julia": "./plugins/eval/ipythonPlugins/julia/julia.js",
+          "R": "./plugins/eval/r/r.js",
+          "Groovy": "./plugins/eval/groovy/groovy.js",
           "JavaScript": "./plugin/evaluator/javaScript.js",
           "Latex": "./plugin/evaluator/latex.js",
-          "Node": "./plugin/evaluator/node.js",
+          "Node": "./plugins/eval/node/node.js",
           "Html": "./plugin/evaluator/html.js"
         };
         var knownEvaluators = [

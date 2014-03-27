@@ -14,24 +14,25 @@
  *  limitations under the License.
  */
 /**
- * IPython eval plugin
- * For creating and config evaluators that uses a IPython kernel for evaluating python code
- * and updating code cell outputs.
+ * Julia eval plugin
+ * For creating and config evaluators that uses a IJulia kernel for evaluating julia code and
+ * updating code cell outputs.
  */
 (function() {
   'use strict';
-  var url = "./plugin/evaluator/iruby.js";
-  var PLUGIN_NAME = "IRuby";
-  var COMMAND = "irubyPlugin";
+  var url = "./plugins/eval/ipythonPlugins/julia/julia.js";
+  var PLUGIN_NAME = "Julia";
+  var COMMAND = "ipythonPlugins/julia/juliaPlugin";
   var kernels = {};
   var _theCancelFunction = null;
+  var serviceBase = null;
   var now = function() {
     return new Date().getTime();
   };
-  var IRubyProto = {
+  var JuliaProto = {
     pluginName: PLUGIN_NAME,
-    cmMode: "ruby",
-    background: "#CC342D",
+    cmMode: "julia",
+    background: "#EAFAEF",
     newShell: function(shellID, cb) {
       // check in kernel table if shellID exists, then do nothing or still callback?
       if (kernels[shellID]) {
@@ -42,7 +43,7 @@
         shellID = IPython.utils.uuid();
       }
 
-      var kernel = new IPython.Kernel("/iruby/kernels/");
+      var kernel = new IPython.Kernel(serviceBase + "/kernels/");
       kernels[shellID] = kernel;
       kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
       // keepalive for the websockets
@@ -67,7 +68,7 @@
         } else if (now() < timeout) {
           setTimeout(r, 100);
         } else {
-          console.error("TIMED OUT - waiting for iruby kernel to start");
+          console.error("TIMED OUT - waiting for ipython kernel to start");
         }
       };
       r();
@@ -141,7 +142,8 @@
           modelOutput.outputArrived = true;
           if (type === "pyerr") {
             var trace = _.reduce(value.traceback, function(memo, line) {
-              return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
+              return  memo + "<br>" +
+                  IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
             }, value.evalue);
             modelOutput.result = {
               type: "BeakerDisplay",
@@ -149,7 +151,7 @@
               object: (value.ename === "KeyboardInterrupt") ? "Interrupted" : [value.evalue, trace]
             };
           } else if (type === "stream") {
-            var json = JSON.stringify({evaluator: "iruby",
+            var json = JSON.stringify({evaluator: "julia",
               type: (type === "stream" ? "text" : "html"),
               line: value.data});
             $.cometd.publish("/service/outputlog/put", json);
@@ -207,32 +209,27 @@
        disable it. http://code.google.com/p/chromium/issues/detail?id=123862
        this is safe because the URL has the kernel ID in it, and that's a 128-bit
        random number, only delivered via the secure channel. */
-      var nginx =
-          "location /iruby/kernels/ {proxy_pass http://127.0.0.1:%(port)s/kernels;}" +
-              "location ~ /iruby/kernels/[0-9a-f-]+/  {" +
-              "rewrite ^/iruby/(.*)$ /$1 break; " +
-              "proxy_pass http://127.0.0.1:%(port)s; " +
-              "proxy_http_version 1.1; " +
-              "proxy_set_header Upgrade $http_upgrade; " +
-              "proxy_set_header Connection \"upgrade\"; " +
-              "proxy_set_header Origin \"$scheme://$host\"; " +
-              "proxy_set_header Host $host;}";
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: "/beaker/rest/startProcess/runCommand",
-        data: {flag: PLUGIN_NAME,
-          command: COMMAND,
-          started: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-          nginx: nginx,
-          record: "false",
-          stream: "stderr"
-        }
-      }).done(function(ret) {
-            if (bkHelper.restartAlert(ret)) {
-              return;
-            }
-            var IRubyShell = function(settings, cb) {
+      var nginxRules =
+          "location %(base_url)s/kernels/ {" +
+              "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
+              "}" +
+              "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {" +
+              "  rewrite ^%(base_url)s/(.*)$ /$1 break; " +
+              "  proxy_pass http://127.0.0.1:%(port)s; " +
+              "  proxy_http_version 1.1; " +
+              "  proxy_set_header Upgrade $http_upgrade; " +
+              "  proxy_set_header Connection \"upgrade\"; " +
+              "  proxy_set_header Origin \"$scheme://$host\"; " +
+              "  proxy_set_header Host $host;" +
+              "}";
+      bkHelper.locatePluginService(PLUGIN_NAME, {
+        command: COMMAND,
+        nginxRules: nginxRules,
+        startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
+        startedIndicatorStream: "stderr"
+      }).success(function(ret) {
+            serviceBase = ret;
+            var JuliaShell = function(settings, cb) {
               var self = this;
               var setShellIdCB = function(shellID) {
                 settings.shellID = shellID;
@@ -257,19 +254,20 @@
                 this[action]();
               };
             };
-            IRubyShell.prototype = IRubyProto;
-            bkHelper.getLoadingPlugin(url).onReady(IRubyShell);
-          }).fail(function() {
-            console.log("process start failed", arguments);
+            JuliaShell.prototype = JuliaProto;
+            bkHelper.getLoadingPlugin(url).onReady(JuliaShell);
+          }).error(function() {
+            console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
           });
     };
     var onFail = function() {
-      console.log("failed to load iruby libs");
+      console.log("failed to load julia libs");
     };
-    bkHelper.loadList(["./vendor/ipython/namespace.js",
-      "./vendor/ipython/utils.js",
-      "./vendor/ipython/kernel.js",
-      "./vendor/ipython/outputarea.js"],
+    bkHelper.loadList([
+      "./plugins/eval/ipythonPlugins/vendor/ipython/namespace.js",
+      "./plugins/eval/ipythonPlugins/vendor/ipython/utils.js",
+      "./plugins/eval/ipythonPlugins/vendor/ipython/kernel.js",
+      "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js"],
         onSuccess, onFail);
   };
   init();

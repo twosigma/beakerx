@@ -38,6 +38,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String dotDir;
   private final String nginxDir;
   private final String nginxBinDir;
+  private final String nginxStaticDir;
   private final String nginxServDir;
   private final String nginxExtraRules;
   private final Boolean useKerberos;
@@ -66,6 +67,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.nginxDir = this.installDir + "/nginx";
     this.nginxBinDir = this.installDir + "/nginx/bin";
     this.nginxServDir = utils.createTempDirectory(this.dotDir, "nginx");
+    this.nginxStaticDir = this.installDir + "/src/main/web/static";
     String nginxRestartScript = utils.readFile(this.nginxDir + "/script/restart_nginx");
     File nginxRestartScriptFile = new File(this.nginxServDir + "/restart_nginx");
     utils.saveFile(nginxRestartScriptFile, nginxRestartScript);
@@ -124,6 +126,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getNginxBinDirectory() {
     return this.nginxBinDir;
+  }
+
+  @Override
+  public String getNginxStaticDirectory() {
+    return this.nginxStaticDir;
   }
 
   @Override

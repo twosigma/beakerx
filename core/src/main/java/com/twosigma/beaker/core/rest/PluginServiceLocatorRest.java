@@ -57,9 +57,9 @@ import org.apache.commons.lang3.StringUtils;
 @Singleton
 public class PluginServiceLocatorRest {
 
-  private final String installDir;
   private final String nginxDir;
   private final String nginxBinDir;
+  private final String nginxStaticDir;
   private final String nginxServDir;
   private final String nginxExtraRules;
   private final String pluginDir;
@@ -81,9 +81,9 @@ public class PluginServiceLocatorRest {
       BeakerConfig bkConfig,
       OutputLogService outputLogService,
       GeneralUtils utils) throws IOException {
-    this.installDir = bkConfig.getInstallDirectory();
     this.nginxDir = bkConfig.getNginxDirectory();
     this.nginxBinDir = bkConfig.getNginxBinDirectory();
+    this.nginxStaticDir = bkConfig.getNginxStaticDirectory();
     this.nginxServDir = bkConfig.getNginxServDirectory();
     this.nginxExtraRules = bkConfig.getNginxExtraRules();
     this.pluginDir = bkConfig.getPluginDirectory();
@@ -304,13 +304,11 @@ public class PluginServiceLocatorRest {
       nginxClientTempDir.toFile().mkdirs();
     }
 
-    String targetDir = this.installDir + "/src/main/web/static";
-    java.nio.file.Path target = Paths.get(targetDir);
     if (Files.notExists(htmlDir)) {
       Files.createDirectory(htmlDir);
-      Files.copy(Paths.get(targetDir + "/50x.html"),
+      Files.copy(Paths.get(this.nginxStaticDir + "/50x.html"),
                  Paths.get(htmlDir.toString() + "/50x.html"));
-      Files.copy(Paths.get(targetDir + "/favicon.ico"),
+      Files.copy(Paths.get(this.nginxStaticDir + "/favicon.ico"),
                  Paths.get(htmlDir.toString() + "/favicon.ico"));
     }
 

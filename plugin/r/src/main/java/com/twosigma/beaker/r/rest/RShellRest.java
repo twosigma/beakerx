@@ -90,7 +90,7 @@ public class RShellRest {
     return location;
   }
 
-  public RServer startRserve()
+  private RServer startRserve()
     throws IOException, RserveException
   {
     int port = getPortFromCore();

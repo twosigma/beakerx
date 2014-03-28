@@ -28,6 +28,7 @@ task cleanPlugins (type: Exec) {
 
 clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
+build.dependsOn(":core:build")
 build.dependsOn(":core:installApp")
 build.dependsOn(installPlugins)
 run.dependsOn(build)

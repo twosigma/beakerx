@@ -33,6 +33,7 @@ task (copyNginx, type: Exec) {
 
 bowerInstall.dependsOn npmInstall
 build.dependsOn bowerInstall
+build.dependsOn copyNginx
 run.dependsOn bowerInstall
 run.dependsOn jar
 run.dependsOn copyNginx

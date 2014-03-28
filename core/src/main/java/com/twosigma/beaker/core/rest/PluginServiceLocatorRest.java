@@ -174,8 +174,8 @@ public class PluginServiceLocatorRest {
 
     PluginConfig pConfig = this.plugins.get(pluginId);
     if (pConfig != null && pConfig.isStarted()) {
-      System.out.println("plugin service (" + pluginId + ")"
-          + "already started at" + pConfig.getBaseUrl());
+      System.out.println("plugin service " + pluginId + 
+          " already started at" + pConfig.getBaseUrl());
       return buildResponse(pConfig.getBaseUrl(), false);
     }
 

@@ -15,26 +15,9 @@
  */
 package com.twosigma.beaker.core.rest;
 
-
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.twosigma.beaker.core.module.config.BeakerConfig;
-import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -42,12 +25,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-import org.json.simple.JSONArray;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.entity.ContentType;
+import org.apache.http.HttpVersion;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.simple.JSONValue;
 
 /**
  * RESTful API for publishing to the web.
@@ -65,15 +48,16 @@ public class PublishRest {
   @Path("github")
   @Produces(MediaType.APPLICATION_JSON)
   public String notebook(@FormParam("json") String json, @FormParam("type") String type)
-    throws IOException
+    throws IOException, ClientProtocolException
   {
-    Process proc = Runtime.getRuntime().exec("jist");
-    PrintWriter printer = new PrintWriter(proc.getOutputStream());
-    printer.write(json);
-    printer.write("\n");
-    printer.close();
-    BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-    String line = br.readLine();
-    return line;
+    String files = "{\"Beaker Share\":{\"content\":\"" + JSONObject.escape(json) + "\"}}";
+    String body = "{\"description\":\"Beaker Share\",\"public\":true,\"files\":" + files + "}\n";
+    String response = Request.Post("https://api.github.com/gists")
+      .useExpectContinue()
+      .version(HttpVersion.HTTP_1_1)
+      .bodyString(body, ContentType.DEFAULT_TEXT)
+      .execute().returnContent().asString();
+    JSONObject parsed = (JSONObject) JSONValue.parse(response);
+    return (String) parsed.get("html_url");
   }
 }

@@ -280,6 +280,9 @@
               if (!pathType) {
                 pathType = path.substring(0, path.indexOf(':/')) || "file";
               }
+              if (/^https?/.exec(pathType)) { // TODO, this is a temp hack
+                pathType = "file";
+              }
               if (_pathOpeners[pathType]) {
                 _pathOpeners[pathType].open(path);
               } else {

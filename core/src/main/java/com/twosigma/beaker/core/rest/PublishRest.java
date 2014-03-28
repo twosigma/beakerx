@@ -62,14 +62,14 @@ public class PublishRest {
   }
 
   @POST
-  @Path("notebook")
+  @Path("github")
   @Produces(MediaType.APPLICATION_JSON)
-  public String notebook(@FormParam("notebook") String notebook) 
+  public String notebook(@FormParam("json") String json, @FormParam("type") String type)
     throws IOException
   {
     Process proc = Runtime.getRuntime().exec("jist");
     PrintWriter printer = new PrintWriter(proc.getOutputStream());
-    printer.write(notebook);
+    printer.write(json);
     printer.write("\n");
     printer.close();
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));

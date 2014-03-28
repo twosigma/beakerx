@@ -17,6 +17,8 @@
     "./plugin/menu/help.js"
   ],
   "notebook-cell-menu-plugins": [
-    "./plugin/menu/sharing_notebook.js"
+    "./plugin/menu/sharing_notebook.js",
+    "./plugin/menu/sharing_section.js",
+    "./plugin/menu/sharing_cell.js"
   ]
 }

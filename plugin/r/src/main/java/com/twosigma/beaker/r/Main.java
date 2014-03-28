@@ -33,17 +33,16 @@ import org.eclipse.jetty.server.Server;
 public class Main {
 
   private static final java.util.logging.Logger GuiceComponentProviderFactoryLogger =
-          java.util.logging.Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
+      java.util.logging.Logger.getLogger(com.sun.jersey.guice.spi.container.GuiceComponentProviderFactory.class.getName());
   private static final java.util.logging.Logger WebApplicationImplLogger =
-          java.util.logging.Logger.getLogger(com.sun.jersey.server.impl.application.WebApplicationImpl.class.getName());
+      java.util.logging.Logger.getLogger(com.sun.jersey.server.impl.application.WebApplicationImpl.class.getName());
 
   static {
     GuiceComponentProviderFactoryLogger.setLevel(java.util.logging.Level.WARNING);
     WebApplicationImplLogger.setLevel(java.util.logging.Level.WARNING);
   }
 
-  public static void main(String[] args)
-          throws Exception
+  public static void main(String[] args) throws Exception
   {
     java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
 

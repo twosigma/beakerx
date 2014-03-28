@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -133,12 +132,12 @@ public class RShellRest {
   }
 
   // set the port used for communication with the Core server
-  public void setCorePort(int corePort) 
+  public void setCorePort(int corePort)
     throws IOException
   {
     this.corePort = corePort;
   }
-  
+
   @POST
   @Path("getShell")
   public String getShell(@FormParam("shellid") String shellId)

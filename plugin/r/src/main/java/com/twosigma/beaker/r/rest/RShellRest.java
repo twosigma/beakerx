@@ -83,10 +83,10 @@ public class RShellRest {
   {
     File temp = File.createTempFile("BeakerRserveScript", ".r");
     String location = temp.getAbsolutePath();
-    BufferedWriter bw = new BufferedWriter(new FileWriter(location));
-    bw.write("library(Rserve)\n");
-    bw.write("run.Rserve(port=" + port + ")\n");
-    bw.close();
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(location))) {
+      bw.write("library(Rserve)\n");
+      bw.write("run.Rserve(port=" + port + ")\n");
+    }
     return location;
   }
 

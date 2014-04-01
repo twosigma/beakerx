@@ -14,15 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-BEAKER_IRUBY=iruby
+import os
+import sys
 
-while [ -n "$1" ]
-do
-    case "$1" in
-        --path*) BEAKER_IRUBY="${1#??????}"; shift;;
-        *) break;;
-    esac
-done
+#BEAKER_IRUBY=iruby
 
-exec $BEAKER_IRUBY notebook --pylab inline --IPKernelApp.pylab='inline'\
-    --NotebookApp.ip=127.0.0.1 --NotebookApp.port=$1 --NotebookApp.open_browser=False
+#while [ -n "$1" ]
+#do
+#    case "$1" in
+#        --path*) BEAKER_IRUBY="${1#??????}"; shift;;
+#        *) break;;
+#    esac
+#done
+
+coreport = sys.argv.pop()
+port = sys.argv.pop()
+
+os.execlp("iruby", "iruby", "notebook", "--pylab", "inline", "--NotebookApp.ip=127.0.0.1", "--NotebookApp.port=" + port, "--NotebookApp.open_browser=False")

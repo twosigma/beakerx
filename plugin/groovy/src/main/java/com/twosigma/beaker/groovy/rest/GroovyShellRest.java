@@ -65,7 +65,7 @@ public class GroovyShellRest {
     Object result;
     try {
       result = shell.evaluate(code);
-    } catch (CompilationFailedException e) {
+    } catch (Exception e) {
       obj.error(e);
       return obj;
     }

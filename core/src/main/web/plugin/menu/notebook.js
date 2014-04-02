@@ -22,6 +22,13 @@
   'use strict';
   var menuItems = [
     {
+      name: "Publish to web",
+      action: function () {
+        bkHelper.shareNotebook();
+      },
+      tooltip: "Share the notebook to a public web page"
+    },
+    {
       name: "Lock", action: function() {
       bkHelper.toggleNotebookLocked();
     },

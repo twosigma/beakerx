@@ -7,7 +7,7 @@ repositories {
 dependencies {
   compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '8.1.13.v20130916'
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
-  runtime group: 'org.slf4j', name: 'slf4j-nop', version: '1.7.6'
+  runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.6'
   compile group: 'org.samba.jcifs', name: 'jcifs', version: '1.3.3'
   compile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17.1'
   compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17.1'

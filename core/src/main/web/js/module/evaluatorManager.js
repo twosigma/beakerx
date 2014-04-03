@@ -112,9 +112,10 @@
             var widg = evaluator.spec[property];
             var item = widg.name ? widg.name : widg.action;
             if (widg.type === "action") {
-              actions.push({name: item, action: function() {
-                evaluator.perform(widg.action);
-              }});
+              actions.push({name: item, action: (function (w) {
+                return function() {
+                  evaluator.perform(w.action);
+                }}(widg))});
             }
           }
           if (actions.length > 0)

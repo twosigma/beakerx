@@ -58,6 +58,12 @@ public class PublishRest {
       .bodyString(body, ContentType.DEFAULT_TEXT)
       .execute().returnContent().asString();
     JSONObject parsed = (JSONObject) JSONValue.parse(response);
-    return (String) parsed.get("html_url");
+    String githubUrl = (String) parsed.get("html_url");
+    int slash = githubUrl.lastIndexOf("/");
+    if (slash < 0) {
+      System.err.println("no slash found in github url: " + githubUrl);
+      return githubUrl;
+    }
+    return "http://54.82.109.105:5000/gist/anonymous" + githubUrl.substring(slash);
   }
 }

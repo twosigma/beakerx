@@ -58,7 +58,7 @@ import org.rosuda.REngine.RList;
 @Singleton
 public class RShellRest {
 
-  private boolean useMultipleRservers = false;
+  private boolean useMultipleRservers = true;
 
   private static final String BEGIN_MAGIC = "**beaker_begin_magic**";
   private static final String END_MAGIC = "**beaker_end_magic**";
@@ -165,6 +165,7 @@ public class RShellRest {
     RConnection con = server.connection;
     String dotDir = System.getProperty("user.home") + "/.beaker";
     String file = dotDir + "/rplot.svg";
+    file = "rplot.svg"; // XXX hack, something about the windows file path crashes R.
     try {
       java.nio.file.Path p = java.nio.file.Paths.get(file);
       java.nio.file.Files.deleteIfExists(p);

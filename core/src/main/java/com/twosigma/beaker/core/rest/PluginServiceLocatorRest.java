@@ -47,6 +47,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jvnet.winp.WinProcess;
 
 /**
  * This is the service that locates a plugin service. And a service will be started if the target
@@ -125,9 +126,9 @@ public class PluginServiceLocatorRest {
 
     generateNginxConfig();
 
-    String nginxCommand = this.nginxBinDir + "/nginx";
-    nginxCommand += (" -p " + this.nginxServDir);
-    nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
+    String nginxCommand = "nginx";
+    nginxCommand += (" -p \"" + this.nginxServDir + "\"");
+    nginxCommand += (" -c \"" + this.nginxServDir + "/conf/nginx.conf\"");
     Process proc = Runtime.getRuntime().exec(nginxCommand);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
@@ -135,7 +136,7 @@ public class PluginServiceLocatorRest {
 
   private void shutdown() {
     StreamGobbler.shuttingDown();
-    this.nginxProc.destroy(); // send SIGTERM
+    new WinProcess(nginxProc).killRecursively();
     for (PluginConfig p : this.plugins.values()) {
       p.shutDown();
     }
@@ -174,8 +175,8 @@ public class PluginServiceLocatorRest {
 
     PluginConfig pConfig = this.plugins.get(pluginId);
     if (pConfig != null && pConfig.isStarted()) {
-      System.out.println("plugin service " + pluginId + 
-          " already started at" + pConfig.getBaseUrl());
+      System.out.println("plugin service (" + pluginId + ")"
+          + "already started at" + pConfig.getBaseUrl());
       return buildResponse(pConfig.getBaseUrl(), false);
     }
 
@@ -188,10 +189,16 @@ public class PluginServiceLocatorRest {
 
       // restart nginx to reload new config
       generateNginxConfig();
-      Process restartproc = Runtime.getRuntime().exec(this.nginxServDir + "/restart_nginx",
-          null, new File(this.nginxServDir));
+      //Process restartproc = Runtime.getRuntime().exec(this.nginxServDir + "/restart_nginx",
+      //  null, new File(this.nginxServDir));
+      String nginxCommand = "nginx";
+      nginxCommand += (" -p \"" + this.nginxServDir + "\"");
+      nginxCommand += (" -c \"" + this.nginxServDir + "/conf/nginx.conf\"");
+      nginxCommand += " -s reload";
+      Process restartproc = Runtime.getRuntime().exec(nginxCommand);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
+      Thread.sleep(2500); // see Issue #97
     }
 
     String fullCommand = command;
@@ -219,7 +226,7 @@ public class PluginServiceLocatorRest {
       }
     }
 
-    fullCommand += args;
+    fullCommand = "\"" + fullCommand + "\"";
 
     List<String> extraArgs = this.pluginArgs.get(pluginId);
     if (extraArgs != null) {
@@ -229,6 +236,7 @@ public class PluginServiceLocatorRest {
     fullCommand += " " + Integer.toString(corePort);
 
     String[] env = this.pluginEnvps.get(pluginId);
+    fullCommand = "python " + fullCommand;
     System.out.println("Running: " + fullCommand);
     Process proc = Runtime.getRuntime().exec(fullCommand, env);
 
@@ -326,7 +334,9 @@ public class PluginServiceLocatorRest {
     ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.portBase + 1));
-    ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
+    String tempDir = nginxClientTempDir.toFile().getPath();
+    // Nginx interprets strings in unix style so backslash confuses it.
+    ngixConfig = ngixConfig.replace("%(client_temp_dir)s", tempDir.replace("\\", "/"));
 
     // write template to file
     java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
@@ -391,7 +401,7 @@ public class PluginServiceLocatorRest {
 
     void shutDown() {
       if (this.isStarted()) {
-        this.proc.destroy(); // send SIGTERM
+	new WinProcess(proc).killRecursively();
       }
     }
 

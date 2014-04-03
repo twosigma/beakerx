@@ -7,7 +7,7 @@ task syncFiles (type: Sync) {
 task installNodePackages (type: Exec) {
   description 'Install the NPM packages for the node plugin.'
   workingDir file(new File(installDir, "app"))
-  commandLine 'npm', 'install'
+  commandLine 'cmd', '/c', 'npm', 'install'
 }
 
 task installApp

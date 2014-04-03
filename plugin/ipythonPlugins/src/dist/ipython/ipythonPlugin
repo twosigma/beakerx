@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/python
 #
 # Copyright 2014 TWO SIGMA INVESTMENTS, LLC
 #
@@ -14,14 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-BEAKER_IPYTHON=ipython
+import os
+import sys
 
-while [ -n "$1" ]
-do
-    case "$1" in
-        --path*) BEAKER_IPYTHON="${1#??????}"; shift;;
-        *) break;;
-    esac
-done
+#BEAKER_IPYTHON=ipython
 
-exec $BEAKER_IPYTHON notebook --pylab inline --IPKernelApp.pylab='inline' --NotebookApp.ip=127.0.0.1 --NotebookApp.port=$1 --NotebookApp.open_browser=False
+#while [ -n "$1" ]
+#do
+#    case "$1" in
+#        --path*) BEAKER_IPYTHON="${1#??????}"; shift;;
+#        *) break;;
+#    esac
+#done
+
+coreport = sys.argv.pop()
+port = sys.argv.pop()
+print("port=" + port)
+
+os.execlp("ipython", "ipython", "notebook", "--pylab", "inline", "--NotebookApp.ip=127.0.0.1", "--NotebookApp.port=" + port, "--NotebookApp.open_browser=False")
+

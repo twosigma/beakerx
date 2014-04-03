@@ -22,7 +22,7 @@ define(function(require, exports, module) {
   var publishToWeb = function(scope) {
 
     var future = bkHelper.httpPost("/beaker/rest/publish/github",
-                                   {type: "cell", json: angular.toJson(scope.getShareData())})
+                                   {type: "section", json: angular.toJson(scope.getShareData())})
       .then(function (reply) {
         window.open(reply.data);
       });

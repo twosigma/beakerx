@@ -187,7 +187,6 @@ public class PluginServiceLocatorRest {
       this.portSearchStart = pConfig.port + 1;
       this.plugins.put(pluginId, pConfig);
 
-      // restart nginx to reload new config
       generateNginxConfig();
       //Process restartproc = Runtime.getRuntime().exec(this.nginxServDir + "/restart_nginx",
       //  null, new File(this.nginxServDir));

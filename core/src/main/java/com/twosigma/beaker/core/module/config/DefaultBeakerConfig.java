@@ -65,7 +65,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.pluginDir = this.installDir + "/config/plugins/eval";
     utils.ensureDirectoryExists(this.dotDir);
     this.nginxDir = this.installDir + "/nginx";
-    this.nginxBinDir = this.installDir + "/nginx/bin";
+    this.nginxBinDir = "";
     this.nginxServDir = utils.createTempDirectory(this.dotDir, "nginx");
     this.nginxStaticDir = this.installDir + "/src/main/web/static";
     String nginxRestartScript = utils.readFile(this.nginxDir + "/script/restart_nginx");

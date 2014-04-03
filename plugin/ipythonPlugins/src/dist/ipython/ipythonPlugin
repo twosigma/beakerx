@@ -32,4 +32,3 @@ port = sys.argv.pop()
 print("port=" + port)
 
 os.execlp("ipython", "ipython", "notebook", "--pylab", "inline", "--NotebookApp.ip=127.0.0.1", "--NotebookApp.port=" + port, "--NotebookApp.open_browser=False")
-

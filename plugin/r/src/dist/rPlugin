@@ -22,6 +22,6 @@ port = sys.argv.pop()
 print("coreport=" + coreport)
 print("port=" + port)
 
-os.chdir("..\\plugin\\r")
-cmd = "build\\install\\r\\bin\\r.bat"
+os.chdir("config\\plugins\\eval\\r")
+cmd = "bin\\r.bat"
 os.execl(cmd, cmd, port, coreport)

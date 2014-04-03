@@ -8,11 +8,11 @@ task build
 task clean
 task run (type: Exec) {
   workingDir coreDir
-  commandLine './beaker.command'
+  commandLine 'cmd', '/c', 'beaker.command.bat'
 }
 task runOnly (type: Exec) {
   workingDir coreDir
-  commandLine './beaker.command'
+  commandLine 'cmd', '/c', 'beaker.command.bat'
 }
 
 task installPlugins {

@@ -65,7 +65,6 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.pluginDir = this.installDir + "/config/plugins/eval";
     utils.ensureDirectoryExists(this.dotDir);
     this.nginxDir = this.installDir + "/nginx";
-    System.out.println("System.getProperty(\"beaker.nginx.bin.dir\") = " + System.getProperty("beaker.nginx.bin.dir"));
     if (System.getProperty("beaker.nginx.bin.dir") != null) {      
       this.nginxBinDir = System.getProperty("beaker.nginx.bin.dir");
     } else {

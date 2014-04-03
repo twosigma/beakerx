@@ -125,7 +125,7 @@ public class PluginServiceLocatorRest {
 
     generateNginxConfig();
 
-    String nginxCommand = this.nginxBinDir + "/nginx";
+    String nginxCommand = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
     nginxCommand += (" -p " + this.nginxServDir);
     nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
     Process proc = Runtime.getRuntime().exec(nginxCommand);

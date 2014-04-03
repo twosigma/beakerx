@@ -34,10 +34,15 @@ task (copyNginx, type: Exec) {
 
 bowerInstall.dependsOn npmInstall
 build.dependsOn bowerInstall
-build.dependsOn copyNginx
 run.dependsOn bowerInstall
 run.dependsOn jar
-run.dependsOn copyNginx
+if (System.properties['os.name'].contains('Mac')) {
+  build.dependsOn copyNginx
+  run.dependsOn copyNginx
+  startScripts {
+    defaultJvmOpts=["-Dbeaker.nginx.bin.dir=" + file("./nginx/bin").absolutePath]
+  }
+}
 
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'

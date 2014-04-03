@@ -12,7 +12,7 @@ task writeVersion << {
 
 task makeDist(type: Exec) {
   workingDir coreDir
-  commandLine 'cmd', '/c', '7z', 'a', 'beaker-notebook.zip', 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command.bat', '-xr!.gradle'
+  commandLine 'cmd', '/c', '7za', 'a', 'beaker-notebook.zip', 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command.bat', '-xr!.gradle'
 }
 
 makeDist.dependsOn(":writeVersion")

@@ -41,6 +41,13 @@ task cleanPlugins (type: Exec) {
   commandLine 'rm', '-rf', evalPluginDir.absolutePath
 }
 
+run {
+  if ( project.hasProperty("appArgs") ) {
+    args Eval.me(appArgs)
+  }
+}
+
+
 clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
 build.dependsOn(":core:build")

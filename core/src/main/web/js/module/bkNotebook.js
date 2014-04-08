@@ -173,6 +173,29 @@
           $scope.outputLog = res;
           $scope.$apply();
         });
+        $.cometd.subscribe("/namespace", function(reply) {
+          var name = reply.data.name;
+          var value = reply.data.value;
+          var notebookModel = bkBaseSessionModel.getNotebookModel();
+          if (undefined === value) {
+            var namespace = notebookModel.namespace;
+            var reply = {name: name, defined: false};
+            if (undefined !== namespace) {
+              var value = notebookModel.namespace[name];
+              if (undefined !== value) {
+                reply.value = value;
+                reply.defined = true;
+              }
+            }
+            $.cometd.publish("/service/namespace/receive", JSON.stringify(reply));
+          } else {
+            var notebookModel = bkBaseSessionModel.getNotebookModel();
+            var namespace = notebookModel.namespace;
+            if (undefined === namespace)
+              notebookModel.namespace = {};
+            notebookModel.namespace[name] = value;
+          }
+        });
         $.cometd.subscribe("/outputlog", function(reply) {
           if (!_impl._viewModel.isShowingOutput()) {
             _impl._viewModel.toggleShowOutput();

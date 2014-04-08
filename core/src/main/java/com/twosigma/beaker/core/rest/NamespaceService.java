@@ -55,7 +55,7 @@ public class NamespaceService {
     this.localSession.handshake();
   }
 
-  public Object get(String name)
+  public NameValuePair get(String name)
     throws RuntimeException, InterruptedException
   {
     Map<String, Object> data = new HashMap<String, Object>(1);
@@ -65,7 +65,7 @@ public class NamespaceService {
     NameValuePair pair = handoff.take(); // blocks
     if (!pair.name.equals(name))
       throw new RuntimeException("name mismatch.  received " + pair.name + ", expected " + name);
-    return pair.value;
+    return pair;
   }
 
   public void set(String name, Object value) {
@@ -89,6 +89,7 @@ public class NamespaceService {
 
     private String name;
     private Object value;
+    private Boolean defined;
 
     public String getName() {
       return this.name;
@@ -96,17 +97,24 @@ public class NamespaceService {
     public Object getValue() {
       return this.value;
     }
+    public Boolean getDefined() {
+      return this.defined;
+    }
     public void setName(String s) {
       this.name = s;
     }
     public void setValue(Object o) {
       this.value = o;
     }
+    public void setDefined(Boolean b) {
+      this.defined = b;
+    }
     public NameValuePair() {
     }
-    public NameValuePair(String name, Object value) {
+    public NameValuePair(String name, Object value, Boolean defined) {
       this.name = name;
       this.value = value;
+      this.defined = defined;
     }
 
   }

@@ -19,8 +19,10 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
@@ -43,9 +45,10 @@ public class NamespaceRest {
     return this.namespaceService.get(name);
   }
 
-  @GET
+  @POST
   @Path("set")
-  public void set(@QueryParam("name") String name, @QueryParam("value") String value) {
+  public void set(@FormParam("name") String name, @FormParam("value") String value) {
+    // check name is well formed XXX
     this.namespaceService.set(name, value);
   }
 }

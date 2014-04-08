@@ -37,7 +37,9 @@ public class NamespaceRest {
 
   @GET
   @Path("get")
-  public Object get(@QueryParam("name") String name) {
+  public Object get(@QueryParam("name") String name) 
+    throws InterruptedException 
+  {
     return this.namespaceService.get(name);
   }
 

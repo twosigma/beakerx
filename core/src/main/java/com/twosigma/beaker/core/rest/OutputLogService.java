@@ -58,7 +58,8 @@ public class OutputLogService {
     // dump the whole log & subscribe to further updates?  unclear
     // how to avoid race conditions - maybe have clients complete
     // subscription before requesting the history, then removing
-    // dups
+    // dups.
+    // This does nothing, remove it. XXX
   }
 
   public void serverPut(OutputLine line) {

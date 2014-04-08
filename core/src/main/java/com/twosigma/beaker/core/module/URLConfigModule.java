@@ -18,9 +18,11 @@ package com.twosigma.beaker.core.module;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.core.rest.OutputLogService;
+import com.twosigma.beaker.core.rest.NamespaceService;
 import com.twosigma.beaker.core.rest.FileIORest;
 import com.twosigma.beaker.core.rest.HttpProxyRest;
 import com.twosigma.beaker.core.rest.OutputLogRest;
+import com.twosigma.beaker.core.rest.NamespaceRest;
 import com.twosigma.beaker.core.rest.RecentMenuRest;
 import com.twosigma.beaker.core.rest.SessionBackupRest;
 import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
@@ -62,6 +64,7 @@ public class URLConfigModule extends ServletModule {
     });
 
     bind(OutputLogService.class).asEagerSingleton();
+    bind(NamespaceService.class).asEagerSingleton();
 
     // REST binding
     bind(UtilRest.class);
@@ -70,6 +73,7 @@ public class URLConfigModule extends ServletModule {
     bind(FileIORest.class);
     bind(HttpProxyRest.class);
     bind(OutputLogRest.class);
+    bind(NamespaceRest.class);
     bind(SessionBackupRest.class);
     bind(RecentMenuRest.class);
   }

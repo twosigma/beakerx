@@ -34,7 +34,9 @@ import org.cometd.bayeux.server.ServerSession;
 /**
  * The NamespaceService is the service manager for the notebook
  * namespace.  For now, the namespace is kept in the notebook model in
- * the browser, and we hit the browser for all get/set actions.
+ * the browser, and we hit the browser for all get/set actions.  The
+ * key to this is get method, which requests the value with cometd and
+ * then blocks until the value is delivered by another thread.
  */
 @Service
 @Singleton

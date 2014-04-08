@@ -236,6 +236,16 @@
       require: function(nameOrUrl) {
         return bkCoreManager.require(nameOrUrl);
       },
+      loadFile: function(path) {
+        return bkCoreManager.loadFile(path);
+      },
+      loadHttp: function(url) {
+        return bkCoreManager.loadHttp(url);
+      },
+      saveFile: function(path, contentAsJson) {
+        return bkCoreManager.saveFile(path, contentAsJson);
+      },
+
       // input cell
       setInputCellKeyMapMode: function(keyMapMode) {
         return bkCoreManager.setCMKeyMapMode(keyMapMode);

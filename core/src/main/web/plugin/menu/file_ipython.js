@@ -168,29 +168,6 @@
     };
   })();
 
-  var loadFromFile = function(path) {
-    var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/file-io/load", {path: path}).
-        success(function(content) {
-          deferred.resolve(content);
-        }).
-        error(function(data, status, header, config) {
-          deferred.reject(data, status, header, config);
-        });
-    return deferred.promise;
-  };
-  var loadFromHttp = function(url) {
-    var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/http-proxy/load", {url: url}).
-        success(function(content) {
-          deferred.resolve(content);
-        }).
-        error(function(data, status, header, config) {
-          deferred.reject(data, status, header, config);
-        });
-    return deferred.promise;
-  };
-
   var IPYNB_PATH_PREFIX = "ipynb";
   bkHelper.setPathOpener(IPYNB_PATH_PREFIX, {
     open: function(path) {
@@ -198,7 +175,7 @@
         path = path.substring(IPYNB_PATH_PREFIX.length + 2);
       }
       if (path) {
-        var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
+        var load = /^https?:\/\//.exec(path) ? bkHelper.loadHttp : bkHelper.loadFile;
         load(path).then(function(content) {
           var ipyNbJson = content;
           var ipyNb = JSON.parse(ipyNbJson);

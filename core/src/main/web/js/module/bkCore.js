@@ -375,6 +375,15 @@
                 callback(result);
               }
             });
+      },
+      loadFile: function(path) {
+        return bkUtils.loadFile(path);
+      },
+      loadHttp: function(url) {
+        return bkUtils.loadHttp(url);
+      },
+      saveFile: function(path, contentAsJson) {
+        return bkUtils.saveFile(path, contentAsJson);
       }
     };
     return bkCoreManager;

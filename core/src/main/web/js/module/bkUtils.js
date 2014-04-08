@@ -117,6 +117,39 @@
       },
       isMiddleClick: function(event) {
         return generalUtils.isMiddleClick(event);
+      },
+      loadFile: function(path) {
+        var deferred = angularUtils.newDeferred();
+        angularUtils.httpGet("/beaker/rest/file-io/load", {path: path})
+            .success(function(content) {
+              deferred.resolve(content);
+            })
+            .error(function(data, status, header, config) {
+              deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
+      },
+      loadHttp: function(url) {
+        var deferred = angularUtils.newDeferred();
+        angularUtils.httpGet("/beaker/rest/http-proxy/load", {url: url})
+            .success(function(content) {
+              deferred.resolve(content);
+            })
+            .error(function(data, status, header, config) {
+              deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
+      },
+      saveFile: function(path, contentAsJson) {
+        var deferred = angularUtils.newDeferred();
+        angularUtils.httpPost("/beaker/rest/file-io/save", {path: path, content: contentAsJson}).
+            success(function() {
+              deferred.resolve();
+            }).
+            error(function(data, status, header, config) {
+              deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
       }
     };
     return bkUtils;

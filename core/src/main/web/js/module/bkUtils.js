@@ -150,6 +150,17 @@
               deferred.reject(data, status, header, config);
             });
         return deferred.promise;
+      },
+      getHomeDirectory: function() {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet("/beaker/rest/file-io/getHomeDirectory")
+            .success(function(homeDir) {
+              deferred.resolve(homeDir);
+            })
+            .error(function(data, status, header, config) {
+              deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
       }
     };
     return bkUtils;

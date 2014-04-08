@@ -421,6 +421,9 @@
       },
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();
+      },
+      getHomeDirectory: function() {
+        return bkUtils.getHomeDirectory();
       }
     };
     return bkCoreManager;

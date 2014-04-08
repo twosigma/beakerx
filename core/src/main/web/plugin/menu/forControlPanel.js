@@ -105,7 +105,7 @@
       tooltip: "Show keyboard shortcuts"
     }
   ];
-  bkHelper.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(homeDir) {
+  bkHelper.getHomeDirectory().then(function(homeDir) {
     var fileChooserStrategy = { result: "" };
     fileChooserStrategy.close = function(ev, closeFunc) {
       if (ev.which === 13) {

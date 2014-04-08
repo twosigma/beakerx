@@ -191,7 +191,7 @@
     }
   });
 
-  bkHelper.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(homeDir) {
+  bkHelper.getHomeDirectory().then(function(homeDir) {
     var toAdd = [
       {
         parent: "File",

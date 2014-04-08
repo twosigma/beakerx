@@ -248,6 +248,9 @@
       getFileSystemChooserStrategy: function() {
         return bkCoreManager.getFileSystemFileChooserStrategy();
       },
+      getHomeDirectory: function() {
+        return bkCoreManager.getHomeDirectory();
+      },
 
       // input cell
       setInputCellKeyMapMode: function(keyMapMode) {

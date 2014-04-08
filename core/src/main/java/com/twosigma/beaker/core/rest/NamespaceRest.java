@@ -25,9 +25,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 /**
- * RESTful API for output log service (stdout and stderr from evaluator)
+ * RESTful API for namespace service (in the notebook model)
  */
-@Path("outputlog")
+@Path("namespace")
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class NamespaceRest {
@@ -44,8 +44,8 @@ public class NamespaceRest {
   }
 
   @GET
-  @Path("put")
-  public void put(@QueryParam("name") String name, @QueryParam("value") String value) {
-    this.namespaceService.put(name, value);
+  @Path("set")
+  public void set(@QueryParam("name") String name, @QueryParam("value") String value) {
+    this.namespaceService.set(name, value);
   }
 }

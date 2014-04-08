@@ -32,9 +32,9 @@ import org.cometd.bayeux.server.ServerMessage;
 import org.cometd.bayeux.server.ServerSession;
 
 /**
- * The NamespaceService is the server manager for the notebook namespace.
- * The master values are kept in the notebook model in the browser.
- * For now, we hit the browser for all get/set actions.
+ * The NamespaceService is the service manager for the notebook
+ * namespace.  For now, the namespace is kept in the notebook model in
+ * the browser, and we hit the browser for all get/set actions.
  */
 @Service
 @Singleton
@@ -66,7 +66,7 @@ public class NamespaceService {
     return pair.value;
   }
 
-  public void put(String name, Object value) {
+  public void set(String name, Object value) {
     Map<String, Object> data = new HashMap<String, Object>(2);
     data.put("name", name);
     data.put("value", value);

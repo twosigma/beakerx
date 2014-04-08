@@ -51,37 +51,6 @@
   });
 
   bkHelper.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(homeDir) {
-    var fileChooserStrategy = { result: "" };
-    fileChooserStrategy.close = function(ev, closeFunc) {
-      if (ev.which === 13) {
-        closeFunc(this.result);
-      }
-    };
-    fileChooserStrategy.treeViewfs = { // file service
-      getChildren: function(path, callback) {
-        var self = this;
-        this.showSpinner = true;
-        $http({
-          method: 'GET',
-          url: "/beaker/rest/file-io/getDecoratedChildren",
-          params: {
-            path: path
-          }
-        }).success(function(list) {
-              self.showSpinner = false;
-              callback(list);
-            }).error(function() {
-              self.showSpinner = false;
-              console.log("Error loading children");
-            });
-      },
-      open: function(path) {
-        fileChooserStrategy.result = path;
-      },
-      showSpinner: false
-    };
-
-
     var toAdd = [
       {
         parent: "File",
@@ -107,7 +76,7 @@
                       '   <button ng-click="close()" class="btn">Cancel</button>' +
                       '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
                       '</div>', // template
-                  fileChooserStrategy// strategy
+                  bkHelper.getFileSystemChooserStrategy()
               );
             }
           }
@@ -151,7 +120,7 @@
                       '   <button ng-click="close()" class="btn">Cancel</button>' +
                       '   <button ng-click="close(getStrategy().result)" class="btn btn-primary" >Save</button>' +
                       '</div>', // template
-                  fileChooserStrategy // strategy
+                  bkHelper.getFileSystemChooserStrategy()
               );
             }
           }

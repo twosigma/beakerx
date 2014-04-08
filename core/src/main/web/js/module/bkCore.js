@@ -186,7 +186,41 @@
    *     instead
    */
   bkCore.factory('bkCoreManager', function(
-      $dialog, $location, bkUtils, bkSession, bkRecentMenu, fileChooserOp) {
+      $dialog, $location, $http, bkUtils, bkSession, bkRecentMenu, fileChooserOp) {
+
+    var FileSystemFileChooserStrategy = function (){
+      var newStrategy = this;
+      newStrategy.result = "";
+      newStrategy.close = function(ev, closeFunc) {
+        if (ev.which === 13) {
+          closeFunc(this.result);
+        }
+      };
+      newStrategy.treeViewfs = { // file service
+        getChildren: function(path, callback) {
+          var self = this;
+          this.showSpinner = true;
+          $http({
+            method: 'GET',
+            url: "/beaker/rest/file-io/getDecoratedChildren",
+            params: {
+              path: path
+            }
+          }).success(function(list) {
+            self.showSpinner = false;
+            callback(list);
+          }).error(function() {
+            self.showSpinner = false;
+            console.log("Error loading children");
+          });
+        },
+        open: function(path) {
+          newStrategy.result = path;
+        },
+        showSpinner: false
+      }
+    };
+
     var bkCoreManager = {
       _beakerRootOp: null,
       init: function(beakerRootOp) {
@@ -384,6 +418,9 @@
       },
       saveFile: function(path, contentAsJson) {
         return bkUtils.saveFile(path, contentAsJson);
+      },
+      getFileSystemFileChooserStrategy: function() {
+        return new FileSystemFileChooserStrategy();
       }
     };
     return bkCoreManager;

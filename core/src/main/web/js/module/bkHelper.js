@@ -245,6 +245,9 @@
       saveFile: function(path, contentAsJson) {
         return bkCoreManager.saveFile(path, contentAsJson);
       },
+      getFileSystemChooserStrategy: function() {
+        return bkCoreManager.getFileSystemFileChooserStrategy();
+      },
 
       // input cell
       setInputCellKeyMapMode: function(keyMapMode) {

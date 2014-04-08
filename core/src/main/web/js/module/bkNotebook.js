@@ -181,9 +181,9 @@
             var namespace = notebookModel.namespace;
             var reply = {name: name, defined: false};
             if (undefined !== namespace) {
-              var value = notebookModel.namespace[name];
-              if (undefined !== value) {
-                reply.value = value;
+              var readValue = notebookModel.namespace[name];
+              if (undefined !== readValue) {
+                reply.value = readValue;
                 reply.defined = true;
               }
             }

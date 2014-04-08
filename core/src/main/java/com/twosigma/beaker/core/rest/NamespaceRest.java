@@ -27,7 +27,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 /**
- * RESTful API for namespace service (in the notebook model)
+ * RESTful API for namespace service (in the notebook model).  This is
+ * broken because it does not specify the notebook.
+ *
+ * works like this:
+ * curl http://127.0.0.1:8802/rest/namespace/get?name=x
+ * curl -d 'name=x&value=99' http://127.0.0.1:8802/rest/namespace/set
  */
 @Path("namespace")
 @Produces(MediaType.APPLICATION_JSON)

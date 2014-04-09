@@ -186,7 +186,7 @@
    *     instead
    */
   bkCore.factory('bkCoreManager', function(
-      $dialog, $location, $http, bkUtils, bkSession, bkRecentMenu, fileChooserOp) {
+      $dialog, $location, $http, $q, bkUtils, bkSession, bkRecentMenu, fileChooserOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
@@ -233,11 +233,51 @@
         // panel, backup the session explicitly first, 'then' go to control panel.
         return this._beakerRootOp.gotoControlPanel();
       },
-      openURI: function(path) {
-        return this._beakerRootOp.openURI(path);
+      openURI: function(originalUri, formatPrefix, readOnly) {
+        if (!originalUri) {
+          return;
+        }
+        if (!formatPrefix) {
+          formatPrefix = "bkr";
+        }
+        if (readOnly === undefined) {
+          readOnly = (formatPrefix !== "bkr") ? true : undefined;
+        }
+        var enhancedUri = this.getEnhancedUri(originalUri, formatPrefix);
+        return this._beakerRootOp.openURI(enhancedUri, readOnly);
       },
       newSession: function() {
         return this._beakerRootOp.newSession();
+      },
+      SPLITTER: '://',
+      getEnhancedUri: function(originalUri, formatPrefix) {
+          var enhancedUri = originalUri;
+
+          // if it is a file on the file system, add prefix "file://"
+          if (!/^https?:\/\//.exec(enhancedUri)) {
+            enhancedUri = "file" + this.SPLITTER + enhancedUri;
+          }
+
+          // add format prefix
+          enhancedUri = formatPrefix + this.SPLITTER + enhancedUri;
+        return enhancedUri;
+      },
+      getFormat: function(enhancedUri) {
+        var splitter = this.SPLITTER;
+        var format = enhancedUri.substring(0, enhancedUri.indexOf(splitter));
+        return format;
+      },
+      getLocationType: function(enhancedUri) {
+        var splitter = this.SPLITTER;
+        var formatRemoved = enhancedUri.substring(enhancedUri.indexOf(splitter) + splitter.length);
+        var locationType = formatRemoved.substring(0, formatRemoved.indexOf(splitter));
+        return locationType;
+      },
+      getOriginalUrl: function (enhancedUri){
+        var splitter = "://";
+        var formatRemoved = enhancedUri.substring(enhancedUri.indexOf(splitter) + splitter.length);
+        var originalUrl = formatRemoved.substring(formatRemoved.indexOf(splitter) + splitter.length);
+        return originalUrl;
       },
 
       _bkAppImpl: null,
@@ -326,12 +366,57 @@
       },
 
       // notebook save functions
-      _saveFuncs: {},
-      registerSaveFunc: function(type, saveFunc) {
-        this._saveFuncs[type] = saveFunc;
+      _saveFuncs: {
+        file: function (path, notebookModel) {
+          var notebookJson = bkCoreManager.toPrettyJson(notebookModel);
+          return bkCoreManager.saveFile(path, notebookJson);
+        },
+        default: function (ignored, notebookModel) {
+          var deferred = $q.defer();
+          var saveAsPath = function (path) {
+            if (!path) {
+              return;
+            }
+            bkHelper.setSavePath(path);
+            document.title = path.replace(/^.*[\\\/]/, '');
+            return bkHelper.saveNotebook();
+          };
+          bkHelper.getHomeDirectory().then(function (homeDir) {
+            bkCoreManager.showFileChooser(
+                saveAsPath,
+                '<div class="modal-header">' +
+                  '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
+                  '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
+                  '</div>' +
+                  '<div class="modal-body">' +
+                  '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
+                  '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
+                  '  </tree-view>' +
+                  '</div>' +
+                  '<div class="modal-footer">' +
+                  '   <p><input id="saveAsFileInput"' +
+                  '             class="input-xxlarge"' +
+                  '             ng-model="getStrategy().result"' +
+                  '             ng-keypress="getStrategy().close($event, close)"' +
+                  '             focus-start /></p>' +
+                  '   <button ng-click="close()" class="btn">Cancel</button>' +
+                  '   <button ng-click="close(getStrategy().result)" class="btn btn-primary" >Save</button>' +
+                  '</div>', // template
+                bkHelper.getFileSystemChooserStrategy()
+            );
+            return deferred.promise;
+          });
+        }
       },
-      getSaveFunc: function(type) {
-        return this._saveFuncs[type];
+      registerSaveFunc: function(locationType, saveFunc) {
+        this._saveFuncs[locationType] = saveFunc;
+      },
+      getSaveFunc: function(locationType) {
+        if (this._saveFuncs.hasOwnProperty(locationType)) {
+          return this._saveFuncs[locationType];
+        } else {
+          return this._saveFuncs["default"];
+        }
       },
 
       // general

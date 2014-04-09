@@ -19,54 +19,18 @@
 (function() {
   'use strict';
 
-  var errorHandler = function(data, status, headers, config) {
-    bkHelper.showErrorModal(data);
-    bkHelper.refreshRootScope();
-  };
-
-  bkHelper.registerSaveFunc("file", function(path, notebookModel) {
-    var notebookJson = bkHelper.toPrettyJson(notebookModel);
-    return bkHelper.saveFile(path, notebookJson);
-  });
-  bkHelper.setPathOpener("file", {
-    open: function(path) {
-      if (!path) {
-        return;
-      }
-      var load = /^https?:\/\//.exec(path) ? bkHelper.loadHttp : bkHelper.loadFile;
-      load(path).then(function(content) {
-        var notebookJson = content;
-        bkHelper.loadNotebook(notebookJson, true, path);
-        bkHelper.setSaveFunction(function(notebookModel) {
-          return bkHelper.saveFile(path, bkHelper.toPrettyJson(notebookModel));
-        });
-        bkHelper.evaluate("initialization");
-        document.title = path.replace(/^.*[\\\/]/, '');
-      }, errorHandler);
-    }
-  });
   var IPYNB_PATH_PREFIX = "ipynb";
-  bkHelper.setPathOpener(IPYNB_PATH_PREFIX, {
-    open: function(path) {
-      if (path.indexOf(IPYNB_PATH_PREFIX + ":/") === 0) {
-        path = path.substring(IPYNB_PATH_PREFIX.length + 2);
-      }
-      if (path) {
-        var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-        load(path).then(function(content) {
-          var ipyNbJson = content;
-          var ipyNb = JSON.parse(ipyNbJson);
-          var bkrNb = notebookConverter.convert(ipyNb);
-          bkHelper.loadNotebook(bkrNb, true);
-          bkHelper.evaluate("initialization");
-          document.title = path.replace(/^.*[\\\/]/, '');
-        }, function(data, status, headers, config) {
-          bkHelper.showErrorModal(data);
-          bkHelper.refreshRootScope();
-        });
-      }
+  bkHelper.setImporter(IPYNB_PATH_PREFIX, {
+    open: function(fileContentAsString) {
+      var ipyNbJson = fileContentAsString;
+      var ipyNb = JSON.parse(ipyNbJson);
+
+      // TODO, this has been broken, notebookConverter is not defined
+      var bkrNb = notebookConverter.convert(ipyNb);
+      return bkrNb;
     }
   });
+
   var fileMenuItems = [
     {
       name: "New",
@@ -93,7 +57,7 @@
     {
       name: "Tutorial notebook",
       action: function() {
-        bkHelper.openURI("file:config/tutorial.bkr");
+        bkHelper.openURI("config/tutorial.bkr", undefined, true);
       },
       tooltip: "Open the tutorial notebook"
     },
@@ -105,36 +69,8 @@
       tooltip: "Show keyboard shortcuts"
     }
   ];
+
   bkHelper.getHomeDirectory().then(function(homeDir) {
-    var fileChooserStrategy = { result: "" };
-    fileChooserStrategy.close = function(ev, closeFunc) {
-      if (ev.which === 13) {
-        closeFunc(this.result);
-      }
-    };
-    fileChooserStrategy.treeViewfs = { // file service
-      getChildren: function(path, callback) {
-        var self = this;
-        this.showSpinner = true;
-        $http({
-          method: 'GET',
-          url: "/beaker/rest/file-io/getDecoratedChildren",
-          params: {
-            path: path
-          }
-        }).success(function(list) {
-              self.showSpinner = false;
-              callback(list);
-            }).error(function() {
-              self.showSpinner = false;
-              console.log("Error loading children");
-            });
-      },
-      open: function(path) {
-        fileChooserStrategy.result = path;
-      },
-      showSpinner: false
-    };
     var treeViewChooserTemplate = '<div class="modal-header">' +
         '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
         '</div>' +
@@ -155,13 +91,15 @@
         submenu: "Open",
         items: [
           {
-            name: "Open... (File)",
-            tooltip: "Open a file from file system",
+            name: "Open... (.bkr)",
+            tooltip: "Open a bkr notebook file",
             action: function() {
               bkHelper.showFileChooser(
-                  bkHelper.openURI,
+                  function(originalUrl) {
+                    bkHelper.openURI(originalUrl);
+                  },
                   treeViewChooserTemplate,
-                  fileChooserStrategy
+                  bkHelper.getFileSystemChooserStrategy()
               );
             }
           },
@@ -171,13 +109,11 @@
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
             action: function() {
               bkHelper.showFileChooser(
-                  function(path) {
-                    if (path) {
-                      bkHelper.openURI(IPYNB_PATH_PREFIX + ":/" + path);
-                    }
+                  function(originalUrl) {
+                    bkHelper.openURI(originalUrl, IPYNB_PATH_PREFIX);
                   },
                   treeViewChooserTemplate,
-                  fileChooserStrategy
+                  bkHelper.getFileSystemChooserStrategy()
               );
             }
           }

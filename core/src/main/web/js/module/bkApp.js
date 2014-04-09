@@ -70,85 +70,21 @@
               $scope.message = "";
             });
           };
-          var defaultSaveFunc = function(notebookModel) {
-            // by default pop up the file chooser for saving as 'file'
-            var deferred = $q.defer();
-            var saveAsFile = function(path) {
-              if (!path) {
-                deferred.reject("file save cancelled");
-              } else {
-                var saveFunc = bkCoreManager.getSaveFunc("file");
-                saveFunc(path, notebookModel).then(function() {
-                  bkHelper.setSaveFunction(function(notebookModel) {
-                    return saveFunc(path, notebookModel);
-                  });
-                  document.title = path.replace(/^.*[\\\/]/, '');
-                  deferred.resolve();
-                });
-              }
-            };
-            bkHelper.getHomeDirectory().then(function(homeDir) {
-              var fileChooserStrategy = { result: "" };
-              fileChooserStrategy.close = function(ev, closeFunc) {
-                if (ev.which === 13) {
-                  closeFunc(this.result);
-                }
-              };
-              fileChooserStrategy.treeViewfs = {
-                getChildren: function(path, callback) {
-                  var self = this;
-                  this.showSpinner = true;
-                  $http({
-                    method: 'GET',
-                    url: "/beaker/rest/file-io/getDecoratedChildren",
-                    params: { path: path }
-                  }).success(function(list) {
-                        self.showSpinner = false;
-                        callback(list);
-                      }).error(function() {
-                        self.showSpinner = false;
-                        console.log("Error loading children");
-                      });
-                },
-                open: function(path) {
-                  fileChooserStrategy.result = path;
-                },
-                showSpinner: false
-              };
-              bkCoreManager.showFileChooser(
-                  saveAsFile,
-                  '<div class="modal-header">' +
-                      '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
-                      '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
-                      '</div>' +
-                      '<div class="modal-body">' +
-                      '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-                      '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
-                      '  </tree-view>' +
-                      '</div>' +
-                      '<div class="modal-footer">' +
-                      '  <p><input id="saveAsFileInput"' +
-                      '            class="input-xxlarge"' +
-                      '            ng-model="getStrategy().result"' +
-                      '            ng-keypress="getStrategy().close($event, close)"' +
-                      '            focus-start /></p>' +
-                      '  <button ng-click="close()" class="btn">Cancel</button>' +
-                      '  <button ng-click="close(getStrategy().result)" class="btn btn-primary">' +
-                      '      Save' +
-                      '  </button>' +
-                      '</div>',
-                  fileChooserStrategy);
-            });
-            return deferred.promise;
+
+          var _savePath = undefined;
+          var BKR_FORMAT_PREFIX = "bkr";
+          var _importers = {};
+          _importers[BKR_FORMAT_PREFIX] = {
+            import: function(notebookJson) {
+              return angular.fromJson(notebookJson);
+            }
           };
-          var _saveFunc = defaultSaveFunc;
-          var _pathOpeners = {};
 
           return {
             loadNotebook: function(
                 notebookModel,
                 alwaysCreateNewEvaluators,
-                notebookUri,
+                enhancedNotebookUri,
                 sessionID) {
               if (angular.isString(notebookModel)) {
                 try {
@@ -156,7 +92,7 @@
                   // TODO, to be removed. Addressing loading a corrupted notebook.
                   if (angular.isString(notebookModel)) {
                     notebookModel = angular.fromJson(notebookModel);
-                    bkCoreManager.log("corrupted-notebook", { notebookUri: notebookUri });
+                    bkCoreManager.log("corrupted-notebook", { notebookUri: enhancedNotebookUri });
                   }
                 } catch (e) {
                   console.error(e);
@@ -186,8 +122,8 @@
                 }
               }
               bkBaseSessionModel.setNotebookModel(notebookModel);
-              bkBaseSessionModel.setNotebookUrl(notebookUri);
-              bkCoreManager.recordRecentDocument(notebookUri);
+              bkBaseSessionModel.setNotebookUrl(enhancedNotebookUri);
+              bkCoreManager.recordRecentDocument(enhancedNotebookUri);
               $scope.loading = false;
 
               // TODO, the following is a hacky solution to address the issue that
@@ -211,7 +147,7 @@
                 bkSession.closeSession(sessionID).then(function() {
                   evaluatorManager.exitAllEvaluators();
                   bkBaseSessionModel.clearSession();
-                  self.setSaveFunction(defaultSaveFunc);
+                  _impl.setSavePath(undefined);
                   $location.path("/control");
                   bkCoreManager.refreshRootScope();
                 });
@@ -239,16 +175,14 @@
               }
             },
             // Save
-            setSaveFunction: function(saveFunc) {
-              _saveFunc = saveFunc;
-            },
-            getSaveFunction: function() {
-              return _saveFunc ? _saveFunc : defaultSaveFunc;
+            setSavePath: function(savePath) {
+              _savePath = savePath;
             },
             saveNotebook: function() {
               var deferred = $q.defer();
               $scope.message = "Saving";
-              var saveFunc = this.getSaveFunction();
+              var locationType = bkCoreManager.getLocationType(_savePath);
+              var saveFunc = bkCoreManager.getSaveFunc(locationType);
               var notebookModel = bkBaseSessionModel.getNotebookModel();
               saveFunc(notebookModel).then(
                   function() {
@@ -262,37 +196,47 @@
                   });
               return deferred.promise;
             },
-            // Open
-            setPathOpener: function(pathType, opener) {
-              _pathOpeners[pathType] = opener;
+            setImporter: function(format, importer) {
+              _importers[format] = importer;
             },
-            openPath: function(path, pathType, retry, timeout) {
-              if (!path) {
+            openPath: function(
+                enhancedUri,
+                retry,
+                retryCountMax,
+                savePath) {
+              if (!enhancedUri) {
                 return;
               }
               $scope.loading = true;
-              if (timeout === undefined) {
-                timeout = 100;
+              if (retryCountMax === undefined) {
+                retryCountMax = 100;
               }
               var self = this;
-              // XXX BEAKER-516 pathtype should be saved
-              // explicitly so we don't have to deduce them.
-              if (!pathType) {
-                pathType = path.substring(0, path.indexOf(':/')) || "file";
-              }
-              if (/^https?/.exec(pathType)) { // TODO, this is a temp hack
-                pathType = "file";
-              }
-              if (_pathOpeners[pathType]) {
-                _pathOpeners[pathType].open(path);
+              var format = bkCoreManager.getFormat(enhancedUri);
+              if (_importers[format]) {
+                var locationType = bkCoreManager.getLocationType(enhancedUri);
+                var originalUrl = bkCoreManager.getOriginalUrl(enhancedUri);
+                var load = locationType.indexOf('http') === 0 ? bkHelper.loadHttp : bkHelper.loadFile;
+                load(originalUrl).then(function(fileContentAsString) {
+                  var beakerNotebook = _importers[format].import(fileContentAsString);
+                  if (savePath) {
+                    bkHelper.setSavePath(savePath);
+                  }
+                  _impl.loadNotebook(beakerNotebook, false, enhancedUri);
+                  document.title = originalUrl.replace(/^.*[\\\/]/, '');
+                  bkHelper.evaluate("initialization");
+                }, function(data, status, headers, config) {
+                  bkHelper.showErrorModal(data);
+                  bkHelper.refreshRootScope();
+                });
               } else {
                 if (retry) {
                   setTimeout(function() {
-                    self.openPath(path, pathType, retry, timeout - 1);
+                    self.openPath(enhancedUri, retry, retryCountMax - 1, savePath);
                   }, 100);
                 } else {
-                  alert("Failed to open " + path
-                      + " because path type " + pathType
+                  alert("Failed to open " + enhancedUri
+                      + " because format " + format
                       + " was not recognized.");
                 }
               }
@@ -456,12 +400,8 @@
             bkSession.loadSession(sessionID).then(function(ret) {
               var notebookJson = ret.content;
               var notebookUri = ret.notebookurl;
-              var notebookUriType = notebookUri ? notebookUri.substring(0, notebookUri.indexOf(':/')) || "file" : "file";
               _impl.loadNotebook(notebookJson, false, notebookUri, sessionID);
-              _impl.setSaveFunction(function(notebookModel) {
-                var saveFunc = bkCoreManager.getSaveFunc(notebookUriType);
-                return saveFunc(notebookUri, notebookModel);
-              });
+              _impl.setSavePath(notebookUri);
               if (!notebookUri) {
                 document.title = "New Notebook";
               } else {
@@ -470,10 +410,9 @@
               bkBaseSessionModel.setEdited(ret.edited);
             });
           }
-        } else {
-          var pathType = "";
-          var path = $routeParams.uri;
-          _impl.openPath(path, undefined, true);
+        } else { // open
+          var enhancedUri = $routeParams.uri;
+          _impl.openPath(enhancedUri, true, 100, $routeParams.readOnly);
         }
       }
     };

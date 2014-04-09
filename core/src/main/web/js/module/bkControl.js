@@ -31,14 +31,13 @@
       templateUrl: './template/bkControl.html',
       controller: function($scope) {
         document.title = "Beaker";
+        var _importers = {};
         var _impl = {
-          _pathOpeners: {},
-          // Open
-          setPathOpener: function(pathType, opener) {
-            this._pathOpeners[pathType] = opener;
-          },
           openPath: function(path, pathType, retry, timeout) {
             bkCoreManager.openURI(path);
+          },
+          setImporter: function(format, importer) {
+            _importers[format] = importer;
           }
         };
         bkCoreManager.setBkAppImpl(_impl);
@@ -47,7 +46,7 @@
           bkCoreManager.newSession();
         };
         $scope.openTutorial = function() {
-          bkHelper.openURI("file:config/tutorial.bkr");
+          bkHelper.openURI("config/tutorial.bkr", undefined, true);
         };
         var plugins = [];
         $scope.getPlugins = function() {

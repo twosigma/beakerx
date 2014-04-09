@@ -169,25 +169,12 @@
   })();
 
   var IPYNB_PATH_PREFIX = "ipynb";
-  bkHelper.setPathOpener(IPYNB_PATH_PREFIX, {
-    open: function(path) {
-      if (path.indexOf(IPYNB_PATH_PREFIX + ":/") === 0) {
-        path = path.substring(IPYNB_PATH_PREFIX.length + 2);
-      }
-      if (path) {
-        var load = /^https?:\/\//.exec(path) ? bkHelper.loadHttp : bkHelper.loadFile;
-        load(path).then(function(ret) {
-          var ipyNbJson = ret.value;
-          var ipyNb = JSON.parse(ipyNbJson);
-          var bkrNb = notebookConverter.convert(ipyNb);
-          bkHelper.loadNotebook(bkrNb, true);
-          bkHelper.evaluate("initialization");
-          document.title = path.replace(/^.*[\\\/]/, '');
-        }, function(data, status, headers, config) {
-          bkHelper.showErrorModal(data);
-          bkHelper.refreshRootScope();
-        });
-      }
+  bkHelper.setImporter(IPYNB_PATH_PREFIX, {
+    open: function(fileContentAsString) {
+      var ipyNbJson = fileContentAsString;
+      var ipyNb = JSON.parse(ipyNbJson);
+      var bkrNb = notebookConverter.convert(ipyNb);
+      return bkrNb;
     }
   });
 
@@ -203,10 +190,8 @@
             tooltip: "Open a IRuby notebook from file system and convert it to Beaker notebook",
             action: function() {
               bkHelper.showFileChooser(
-                  function(path) {
-                    if (path) {
-                      bkHelper.openURI(IPYNB_PATH_PREFIX + ":/" + path);
-                    }
+                  function(originalUrl) {
+                    bkHelper.openURI(originalUrl, IPYNB_PATH_PREFIX);
                   },
                   '<div class="modal-header">' +
                       '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +

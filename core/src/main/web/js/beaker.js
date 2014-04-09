@@ -181,10 +181,14 @@
         gotoControlPanel: function() {
           $location.path("/control");
         },
-        openURI: function(uri) {
-          if (!uri) return;
-          bkCoreManager.log("open", {uri: uri, user: user});
-          $location.path("/open").search({"uri": uri});
+        openURI: function(enhancedUri, readOnly) {
+          if (!enhancedUri) return;
+          bkCoreManager.log("open", {uri: enhancedUri, user: user});
+          var routeParams = {uri: enhancedUri};
+          if (readOnly) {
+            routeParams.readOnly = true;
+          }
+          $location.path("/open").search(routeParams);
         },
         newSession: function() {
           $location.path("/session/new");

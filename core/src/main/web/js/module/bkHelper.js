@@ -53,11 +53,23 @@
       gotoControlPanel: function() {
         return bkCoreManager.gotoControlPanel();
       },
-      openURI: function(path) {
-        return bkCoreManager.openURI(path);
+      openURI: function(originalUri, formatPrefix, readOnly) {
+        return bkCoreManager.openURI(originalUri, formatPrefix, readOnly);
       },
       newSession: function() {
         return bkCoreManager.newSession();
+      },
+      getEnhancedUri: function(originalUri) {
+        return bkCoreManager.getEnhancedUri(originalUri);
+      },
+      getFormat: function(enhancedUri) {
+        return bkCoreManager.getFormat(enhancedUri);
+      },
+      getLocationType: function(enhancedUri) {
+        return bkCoreManager.getLocationType(enhancedUri);
+      },
+      getOriginalUrl: function (enhancedUri){
+        return bkCoreManager.getOriginalUrl(enhancedUri);
       },
 
       // bk-app
@@ -71,11 +83,12 @@
       saveNotebook: function() {
         return bkCoreManager.getBkApp().saveNotebook();
       },
-      setSaveFunction: function(saveFunc) {
-        return bkCoreManager.getBkApp().setSaveFunction(saveFunc);
+      setSavePath: function(savePath) {
+        return bkCoreManager.getBkApp().setSavePath(savePath);
       },
-      setPathOpener: function(pathType, opener) {
-        return bkCoreManager.getBkApp().setPathOpener(pathType, opener);
+      setImporter: function(format, importer) {
+        // import must have a "import" method
+        return bkCoreManager.getBkApp().setImporter(format, importer);
       },
       evaluate: function(toEval) {
         return bkCoreManager.evaluate(toEval);

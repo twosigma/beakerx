@@ -24,16 +24,12 @@
         'M_generalUtils',
         'M_bkSession',
         'M_bkUtils',
-        'M_bkHelper', // This is only for ensuring that window.bkHelper is set, don't use bkHelper directly
-        'M_bkCore', // TODO, we need to get rid of this dependency
-        'M_menuPlugin' // TODO, we need to get rid of this dependency
+        'M_bkHelper' // This is only for ensuring that window.bkHelper is set, don't use bkHelper directly
       ])
       .factory('evaluatorManager', function(
           generalUtils,
           bkUtils,
-          bkSession,
-          bkBaseSessionModel, // TODO, we need to get rid of this dependency
-          menuPluginManager // TODO, we need to get rid of this dependency
+          bkSession
           ) {
         var nameToUrl = {// for known plugins, so we can refer to the plugin with either its name or URL
           "IPython": "./plugins/eval/ipythonPlugins/ipython/ipython.js",
@@ -82,7 +78,7 @@
               return it.name === pluginName;
             }).plugin);
           } else {
-            setupPlugin(pluginName, false, cb);
+            setupPlugin(pluginName, cb);
           }
         };
         var updateEvaluatorsAndLoadingPlugins = function() {
@@ -105,23 +101,8 @@
             evaluatorsAndLoadingPlugins.push({loading: true, url: p.url});
           }
         };
-        var updateEvaluatorsMenu = function(evaluator) {
-          var actions = [];
-          var name = evaluator.pluginName;
-          for (var property in evaluator.spec) {
-            var widg = evaluator.spec[property];
-            var item = widg.name ? widg.name : widg.action;
-            if (widg.type === "action") {
-              actions.push({name: item, action: (function (w) {
-                return function() {
-                  evaluator.perform(w.action);
-                }}(widg))});
-            }
-          }
-          if (actions.length > 0)
-            menuPluginManager.addItem("Evaluators", name, actions);
-        };
         var newEvaluator = function(settings, alwaysCreateNewEvaluator) {
+          var deferred = bkUtils.newDeferred();
           getPlugin(settings.plugin, function(Shell) {
             if (!Shell) {
               console.error("you need to setup plugin first");
@@ -136,13 +117,14 @@
               // then evaluator would not yet be
               // defined.
               evaluators.push({name: settings.name, evaluator: evaluator});
-              updateEvaluatorsMenu(evaluator);
               updateEvaluatorsAndLoadingPlugins();
               bkUtils.refreshRootScope();
             });
+            deferred.resolve(evaluator);
           });
+          return deferred.promise;
         };
-        var setupPlugin = function(nameOrUrl, makeEvaluator, cb) {
+        var setupPlugin = function(nameOrUrl, cb) {
           var url = nameToUrl[nameOrUrl] ? nameToUrl[nameOrUrl] : nameOrUrl;
           var pluginObj = _.find(plugins, function(it) {
             return it.url === url;
@@ -171,14 +153,6 @@
                   this.callbackOnReady[i](MyShell);
                 }
                 this.displayMessage = this.name + "(" + this.status + ")";
-                if (makeEvaluator) {
-                  var newEvaluatorObj = {
-                    name: pluginObj.name,
-                    plugin: pluginObj.url
-                  };
-                  bkBaseSessionModel.getNotebookModel().evaluators.push(newEvaluatorObj);
-                  newEvaluator(newEvaluatorObj, true);
-                }
                 bkUtils.refreshRootScope();
               },
               displayMessage: "loading from " + url
@@ -229,22 +203,18 @@
           getKnownEvaluators: function() {
             return knownEvaluators;
           },
-          removeAllEvaluators: function() {
-            menuPluginManager.clearItem("Evaluators");
-            evaluators.splice(0, evaluators.length);
-          },
           reset: function() {
             evaluatorsAndLoadingPlugins.splice(0, evaluatorsAndLoadingPlugins.length);
             plugins.splice(0, plugins.length);
-            this.removeAllEvaluators();
+            evaluators.splice(0, evaluators.length);
           },
-          exitAllEvaluators: function() {
+          exitAndRemoveAllEvaluators: function() {
             _.each(evaluators, function(ev) {
               if (ev.evaluator && ev.evaluator.exit) {
                 ev.evaluator.exit();
               }
             });
-            this.removeAllEvaluators();
+            evaluators.splice(0, evaluators.length);
           },
           getViewModel: function() {
             var ret = {};

@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "BD67DDF962194BD8A10A9D164DE9F36A",
+            "shellID": "",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,19 +28,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "35490d5b-d8aa-4484-86b4-7f10b63b87a1"
-        },
-        {
-            "name": "Groovy",
-            "plugin": "Groovy",
-            "shellID": "72177339-15f9-4cb8-a784-e601b041feea"
-        },
-        {
-            "name": "IRuby",
-            "plugin": "IRuby",
-            "shellID": "BD67DDF962194BD8A10A9D164DE9F36B",
-            "imports": "",
-            "supplementalClassPath": ""
+            "shellID": ""
         }
     ],
     "cells": [
@@ -63,33 +51,11 @@
             }
         },
         {
-            "id": "code001ruby",
-            "type": "code",
-            "evaluator": "IRuby",
-            "input": {
-                "body": "#Ruby - will turn light blue if plugin loads successfully"
-            },
-            "output": {
-                "selectedType": "Hidden"
-            }
-        },
-        {
             "id": "code2uVtKX",
             "type": "code",
             "evaluator": "R",
             "input": {
                 "body": "#R - will turn dark blue if plugin loads successfully"
-            },
-            "output": {
-                "selectedType": "Hidden"
-            }
-        },
-        {
-            "id": "codeD2ujjG",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": "//Groovy - will turn green if plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -105,6 +71,12 @@
             "output": {
                 "selectedType": "Hidden"
             }
+        },
+        {
+            "id": "markdownJ1aHv3",
+            "type": "markdown",
+            "body": "Beaker also supports Julia, Groovy, Ruby, and Node. To add another language to this notebook, select 'Notebook' -> 'Plugin manager'\n\nFor general help, see the tutorial notebook under 'Help' -> 'Tutorial notebook'",
+            "mode": "preview"
         }
     ]
 }

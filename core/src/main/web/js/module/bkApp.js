@@ -110,6 +110,8 @@
               }
 
               evaluatorManager.reset();
+              menuPluginManager.clearItem("Evaluators");
+              
               if (!sessionID) {
                 sessionID = bkUtils.generateID(6);
               }
@@ -117,8 +119,7 @@
               notebookModel = bkNotebookVersionManager.open(notebookModel);
               if (notebookModel && notebookModel.evaluators) {
                 for (var i = 0; i < notebookModel.evaluators.length; ++i) {
-                  evaluatorManager.newEvaluator(notebookModel.evaluators[i],
-                      alwaysCreateNewEvaluators);
+                  this.addEvaluator(notebookModel.evaluators[i], alwaysCreateNewEvaluators);
                 }
               }
               bkBaseSessionModel.setNotebookModel(notebookModel);
@@ -145,7 +146,8 @@
               var sessionID = bkBaseSessionModel.getSessionID();
               var closeSession = function() {
                 bkSession.closeSession(sessionID).then(function() {
-                  evaluatorManager.exitAllEvaluators();
+                  evaluatorManager.exitAndRemoveAllEvaluators();
+                  menuPluginManager.clearItem("Evaluators");
                   bkBaseSessionModel.clearSession();
                   _impl.setSavePath(undefined);
                   $location.path("/control");
@@ -286,6 +288,26 @@
                 input: { body: code },
                 output: {}
               });
+            },
+            addEvaluator: function(settings, alwaysCreateNewEvaluator) {
+              evaluatorManager.newEvaluator(settings, alwaysCreateNewEvaluator)
+                  .then(function(evaluator) {
+                    var actions = [];
+                    var name = evaluator.pluginName;
+                    for (var property in evaluator.spec) {
+                      var widg = evaluator.spec[property];
+                      var item = widg.name ? widg.name : widg.action;
+                      if (widg.type === "action") {
+                        actions.push({name: item, action: (function (w) {
+                          return function() {
+                            evaluator.perform(w.action);
+                          }}(widg))});
+                      }
+                    }
+                    if (actions.length > 0) {
+                      menuPluginManager.addItem("Evaluators", name, actions);
+                    }
+                  });
             }
           };
         })();

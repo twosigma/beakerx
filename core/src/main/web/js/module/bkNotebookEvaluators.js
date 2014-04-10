@@ -69,7 +69,7 @@
               plugin: pluginUrl
             };
             bkBaseSessionModel.getNotebookModel().evaluators.push(newEvaluatorObj);
-            evaluatorManager.newEvaluator(newEvaluatorObj, true);
+            bkCoreManager.addEvaluator(newEvaluatorObj, true);
           };
           evaluatorManager.setupPlugin(pluginUrl, makeEvaluator);
         };
@@ -127,7 +127,7 @@
   });
 
   bkNotebookEvaluators.directive('bkNotebookEvaluatorsAddEvaluatorPanel',
-      function(bkBaseSessionModel, evaluatorManager) {
+      function(bkBaseSessionModel, evaluatorManager, bkCoreManager) {
         return {
           restrict: 'E',
           templateUrl: './template/bkNotebook_addEvaluatorPanel.html',
@@ -144,7 +144,7 @@
               };
               $scope.newEvaluatorName = "";
               bkBaseSessionModel.getNotebookModel().evaluators.push(newEvaluator);
-              evaluatorManager.newEvaluator(newEvaluator, true);
+              bkCoreManager.addEvaluator(newEvaluator, true);
             };
           }
         };

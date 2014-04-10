@@ -219,6 +219,9 @@
       evaluateCode: function(evaluator, code) {
         return this._bkAppImpl.evaluateCode(evaluator, code);
       },
+      addEvaluator: function(settings, alwaysCreateNewEvaluator) {
+        return this._bkAppImpl.addEvaluator(settings, alwaysCreateNewEvaluator);
+      },
 
       _bkNotebookImpl: null,
       setBkNotebookImpl: function(bkNotebookImpl) {

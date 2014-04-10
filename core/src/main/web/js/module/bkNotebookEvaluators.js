@@ -26,7 +26,7 @@
   ]);
 
   bkNotebookEvaluators.directive('bkNotebookEvaluators', function(
-      evaluatorManager, bkCoreManager, menuPluginManager) {
+      evaluatorManager, bkCoreManager, bkBaseSessionModel, menuPluginManager) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkNotebook_evaluators.html",
@@ -62,7 +62,16 @@
           return evaluatorManager.getPlugins();
         };
         $scope.addPlugin = function() {
-          evaluatorManager.setupPlugin($scope.newPluginUrl, true);
+          var pluginUrl = $scope.newPluginUrl;
+          var makeEvaluator = function(Shell) {
+            var newEvaluatorObj = {
+              name: Shell.prototype.pluginName,
+              plugin: pluginUrl
+            };
+            bkBaseSessionModel.getNotebookModel().evaluators.push(newEvaluatorObj);
+            evaluatorManager.newEvaluator(newEvaluatorObj, true);
+          };
+          evaluatorManager.setupPlugin(pluginUrl, makeEvaluator);
         };
       }
     };

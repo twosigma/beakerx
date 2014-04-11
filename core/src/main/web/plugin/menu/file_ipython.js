@@ -251,7 +251,7 @@
         submenu: "Open",
         items: [
           {
-            name: "Open... (.ipynb)",
+            name: "Open... IPython (.ipynb)",
             reducedName: "Open...",
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
             action: function() {

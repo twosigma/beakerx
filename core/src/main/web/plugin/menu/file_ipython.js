@@ -200,8 +200,7 @@
       if (path) {
         var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
         load(path).then(function(content) {
-          var ipyNbJson = content;
-          var ipyNb = JSON.parse(ipyNbJson);
+          var ipyNb = content;
           var bkrNb = notebookConverter.convert(ipyNb);
           bkHelper.loadNotebook(bkrNb, true);
           bkHelper.evaluate("initialization");
@@ -251,7 +250,7 @@
         submenu: "Open",
         items: [
           {
-            name: "Open... (.ipynb)",
+            name: "Open... IPython (.ipynb)",
             reducedName: "Open...",
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
             action: function() {

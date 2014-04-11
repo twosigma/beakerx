@@ -181,7 +181,7 @@
   };
   var loadFromHttp = function(url) {
     var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
+    bkHelper.httpGet("/beaker/rest/http-proxy/load", {url: url}).
         success(function(data) {
           deferred.resolve(data);
         }).
@@ -191,17 +191,16 @@
     return deferred.promise;
   };
 
-  var IPYNB_PATH_PREFIX = "ipynb";
-  bkHelper.setPathOpener(IPYNB_PATH_PREFIX, {
+  var IRUBY_PATH_PREFIX = "iruby";
+  bkHelper.setPathOpener(IRUBY_PATH_PREFIX, {
     open: function(path) {
-      if (path.indexOf(IPYNB_PATH_PREFIX + ":/") === 0) {
-        path = path.substring(IPYNB_PATH_PREFIX.length + 2);
+      if (path.indexOf(IRUBY_PATH_PREFIX + ":/") === 0) {
+        path = path.substring(IRUBY_PATH_PREFIX.length + 2);
       }
       if (path) {
         var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-        load(path).then(function(ret) {
-          var ipyNbJson = ret.value;
-          var ipyNb = JSON.parse(ipyNbJson);
+        load(path).then(function(content) {
+          var ipyNb = content;
           var bkrNb = notebookConverter.convert(ipyNb);
           bkHelper.loadNotebook(bkrNb, true);
           bkHelper.evaluate("initialization");
@@ -252,14 +251,14 @@
         submenu: "Open",
         items: [
           {
-            name: "Open... (.ipynb)",
+            name: "Open... IRuby (.ipynb)",
             reducedName: "Open...",
             tooltip: "Open a IRuby notebook from file system and convert it to Beaker notebook",
             action: function() {
               bkHelper.showFileChooser(
                   function(path) {
                     if (path) {
-                      bkHelper.openURI(IPYNB_PATH_PREFIX + ":/" + path);
+                      bkHelper.openURI(IRUBY_PATH_PREFIX + ":/" + path);
                     }
                   },
                   '<div class="modal-header">' +

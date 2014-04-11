@@ -74,25 +74,28 @@
           });
         };
 
-        var _impl = (function() {
-          var _saveNotebook = function() {
-            showStatusMessage("Saving");
-            var deferred = bkCoreManager.newDeferred();
-            var saveData = bkSessionManager.getSaveData();
-            var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
-            fileSaver.save(saveData.notebookUri, saveData.notebookModelAsString).then(
-                function () {
-                  bkSessionManager.setNotebookModelEdited(false);
-                  showTransientStatusMessage("Saved");
-                  deferred.resolve(arguments);
-                },
-                function (msg) {
-                  showTransientStatusMessage("Cancelled");
-                  deferred.reject();
-                });
-            return deferred.promise;
-          };
+        var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
+          evaluatorManager.newEvaluator(settings, alwaysCreateNewEvaluator)
+              .then(function(evaluator) {
+                var actions = [];
+                var name = evaluator.pluginName;
+                for (var property in evaluator.spec) {
+                  var widg = evaluator.spec[property];
+                  var item = widg.name ? widg.name : widg.action;
+                  if (widg.type === "action") {
+                    actions.push({name: item, action: (function(w) {
+                      return function() {
+                        evaluator.perform(w.action);
+                      }}(widg))});
+                  }
+                }
+                if (actions.length > 0) {
+                  menuPluginManager.addItem("Evaluators", name, actions);
+                }
+              });
+        };
 
+        var loadNotebook = (function() {
           var addScrollingHack = function() {
             // TODO, the following is a hack to address the issue that
             // somehow the notebook is scrolled to the middle
@@ -108,28 +111,6 @@
             };
             window.addEventListener('scroll', listener, false);
           };
-
-          var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
-            evaluatorManager.newEvaluator(settings, alwaysCreateNewEvaluator)
-                .then(function(evaluator) {
-                  var actions = [];
-                  var name = evaluator.pluginName;
-                  for (var property in evaluator.spec) {
-                    var widg = evaluator.spec[property];
-                    var item = widg.name ? widg.name : widg.action;
-                    if (widg.type === "action") {
-                      actions.push({name: item, action: (function(w) {
-                        return function() {
-                          evaluator.perform(w.action);
-                        }}(widg))});
-                    }
-                  }
-                  if (actions.length > 0) {
-                    menuPluginManager.addItem("Evaluators", name, actions);
-                  }
-                });
-          };
-
           var loadNotebookModelAndResetSession = function(
               notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
             $scope.loading = true;
@@ -147,9 +128,8 @@
             menuPluginManager.clearItem("Evaluators");
             $scope.loading = false;
           };
-
           return {
-            openNotebook: function(notebookUri, uriType, readOnly, format, retry, retryCountMax) {
+            openUri: function(notebookUri, uriType, readOnly, format, retry, retryCountMax) {
               if (!notebookUri) {
                 alert("Failed to open notebook, notebookUri is empty");
                 return;
@@ -173,7 +153,7 @@
                   // retry, sometimes the importer came from a plugin that is being loaded
                   retryCountMax -= 1;
                   setTimeout(function() {
-                    self.openNotebook(notebookUri, uriType, readOnly, format, retry, retryCountMax);
+                    loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry, retryCountMax);
                   }, 100);
                 } else {
                   alert("Failed to open " + notebookUri
@@ -192,29 +172,50 @@
                 $scope.loading = false;
               });
             },
-            openSession: function(sessionId) {
-              var self = this;
-              bkSession.load(sessionId).then(function(session) {
-                var notebookUri = session.notebookUri;
-                var uriType = session.uriType;
-                var readOnly = session.readOnly;
-                var format = session.format;
-                var notebookModel = angular.fromJson(session.notebookModelJson);
-                var edited = session.edited;
-                loadNotebookModelAndResetSession(
-                    notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
-              });
-            },
-            openDefaultNotebook: function() {
-              bkUtils.getDefaultNotebook().then(function(notebookModel) {
-                var notebookUri = null;
-                var uriType = null;
-                var readOnly = true;
-                var format = null;
-                loadNotebookModelAndResetSession(
-                    notebookUri, uriType, readOnly, format, notebookModel);
-              });
-            },
+          fromSession: function(sessionId) {
+            bkSession.load(sessionId).then(function(session) {
+              var notebookUri = session.notebookUri;
+              var uriType = session.uriType;
+              var readOnly = session.readOnly;
+              var format = session.format;
+              var notebookModel = angular.fromJson(session.notebookModelJson);
+              var edited = session.edited;
+              loadNotebookModelAndResetSession(
+                  notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
+            });
+          },
+          defaultNotebook: function() {
+            bkUtils.getDefaultNotebook().then(function(notebookModel) {
+              var notebookUri = null;
+              var uriType = null;
+              var readOnly = true;
+              var format = null;
+              loadNotebookModelAndResetSession(
+                  notebookUri, uriType, readOnly, format, notebookModel);
+            });
+          }
+        };
+        })();
+
+        var _impl = (function() {
+          var _saveNotebook = function() {
+            showStatusMessage("Saving");
+            var deferred = bkCoreManager.newDeferred();
+            var saveData = bkSessionManager.getSaveData();
+            var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
+            fileSaver.save(saveData.notebookUri, saveData.notebookModelAsString).then(
+                function () {
+                  bkSessionManager.setNotebookModelEdited(false);
+                  showTransientStatusMessage("Saved");
+                  deferred.resolve(arguments);
+                },
+                function (msg) {
+                  showTransientStatusMessage("Cancelled");
+                  deferred.reject();
+                });
+            return deferred.promise;
+          };
+          return {
             saveNotebook: function() {
               var self = this;
               if (bkSessionManager.isSavable()) {
@@ -308,6 +309,7 @@
             }
           };
         })();
+        bkCoreManager.setBkAppImpl(_impl);
 
         $scope.isEdited = function() {
           return bkSessionManager.isNotebookModelEdited();
@@ -324,7 +326,6 @@
           }
         });
 
-        bkCoreManager.setBkAppImpl(_impl);
         var intervalID = null;
         var stopAutoBackup = function() {
           if (intervalID) {
@@ -411,11 +412,11 @@
         var sessionID = $routeParams.sessionID;
         if (sessionID) {
           if (sessionID === "new") {
-            _impl.openDefaultNotebook();
+            loadNotebook.defaultNotebook();
           } else if (sessionID === "none") {
             // do nothing
           } else {
-            _impl.openSession(sessionID);
+            loadNotebook.fromSession(sessionID);
           }
         } else { // open
           var notebookUri = $routeParams.uri;
@@ -423,7 +424,7 @@
           var readOnly = $routeParams.readOnly;
           var format = $routeParams.format;
           var retry = true;
-          _impl.openNotebook(notebookUri, uriType, readOnly, format, retry);
+          loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry);
         }
       }
     };

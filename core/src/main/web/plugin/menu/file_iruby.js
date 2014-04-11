@@ -199,9 +199,8 @@
       }
       if (path) {
         var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-        load(path).then(function(ret) {
-          var ipyNbJson = ret.value;
-          var ipyNb = JSON.parse(ipyNbJson);
+        load(path).then(function(content) {
+          var ipyNb = content;
           var bkrNb = notebookConverter.convert(ipyNb);
           bkHelper.loadNotebook(bkrNb, true);
           bkHelper.evaluate("initialization");

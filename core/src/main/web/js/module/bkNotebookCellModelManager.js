@@ -274,6 +274,15 @@
         recreateCellMap();
         return [cell].concat(descendants);
       },
+      deleteAllOutputCells: function() {
+        if (cells) {
+          _.each(cells, function(cell) {
+            if (cell.output) {
+              cell.output.result = undefined;
+            }
+          });
+        }
+      },
       shiftSegment: function(segBegin, segLength, offset) {
         if (offset === 0) {
           return;

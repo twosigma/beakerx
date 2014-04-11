@@ -91,6 +91,7 @@
   };
 
   var setupBeakerConfigAndRun = function() {
+
     var beaker = angular.module('beaker', [
       'ngRoute',
       'M_bkCore',
@@ -99,6 +100,7 @@
       'M_bkCloseSessionApp',
       'M_bkDebug'
     ]);
+
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
       $routeProvider.when('/session/:sessionID', {
@@ -181,12 +183,27 @@
         gotoControlPanel: function() {
           $location.path("/control");
         },
-        openURI: function(enhancedUri, readOnly) {
-          if (!enhancedUri) return;
-          bkCoreManager.log("open", {uri: enhancedUri, user: user});
-          var routeParams = {uri: enhancedUri};
+        openNotebook: function(notebookUri, uriType, readOnly, format) {
+          if (!notebookUri) {
+            return;
+          }
+
+          bkCoreManager.log("open", {
+            uri: notebookUri,
+            user: user
+          });
+
+          var routeParams = {
+            uri: notebookUri
+          };
+          if (uriType) {
+            routeParams.type = uriType;
+          }
           if (readOnly) {
             routeParams.readOnly = true;
+          }
+          if (format) {
+            routeParams.format = format;
           }
           $location.path("/open").search(routeParams);
         },

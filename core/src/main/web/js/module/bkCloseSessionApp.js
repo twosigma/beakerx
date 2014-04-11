@@ -35,9 +35,9 @@
       controller: function($scope) {
         var sessionID = $routeParams.sessionID;
         $scope.sessionID = sessionID;
-        bkSession.loadSession(sessionID).then(function(ret) {
+        bkSession.load(sessionID).then(function(ret) {
           var notebookModel = angular.fromJson(ret.content);
-          var notebookUri = ret.notebookurl;
+          var notebookUri = ret.notebookUri;
           if (notebookModel && notebookModel.evaluators) {
             for (var i = 0; i < notebookModel.evaluators.length; ++i) {
               evaluatorManager.createEvaluatorThenExit(notebookModel.evaluators[i]);
@@ -47,7 +47,7 @@
             $location.path("/control");
           };
           var closeSession = function() {
-            bkSession.closeSession(sessionID).then(goToControlPanel);
+            bkSession.close(sessionID).then(goToControlPanel);
           };
           var saveSession = function() {
             if (notebookUri) {

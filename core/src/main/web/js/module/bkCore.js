@@ -33,153 +33,6 @@
   ]);
 
   /**
-   * bkBaseSessionModel
-   * - manages run-time session properties + notebook model
-   * e.g. sessionID, notebook URL, ...
-   * - should be the gateway to interact with the overall notebook model
-   * - cellOps
-   * - insert/remove/move cells
-   * - currently assumes the default hierarchical layout
-   * - there is only one copy of the model, every changes should be reflected immediately
-   */
-  /**
-   * For some historical reason, tagMap is reserved for describing the hierarchical (single-tree)
-   * layout
-   * All other arbitrary tagging should go under tagMap2
-   */
-  bkCore.factory('bkBaseSessionModel', function(generalUtils, bkNotebookCellModelManager) {
-    var _notebookModel = {};
-    var _notebookUrl = "";
-    var _sessionID = null;
-    var _caption = "";
-    var _edited = false;
-
-    var bkBaseSessionModel = {
-      setNotebookModel: function(notebookModel) {
-        _notebookModel = notebookModel;
-        bkNotebookCellModelManager.reset(_notebookModel.cells);
-      },
-      getNotebookModel: function() {
-        return _notebookModel;
-      },
-      setNotebookUrl: function(notebookUrl) {
-        _notebookUrl = notebookUrl;
-      },
-      setCaption: function(caption) {
-        _caption = caption;
-      },
-      setSessionID: function(sessionID) {
-        _sessionID = sessionID;
-      },
-      getSessionID: function() {
-        return _sessionID;
-      },
-      getSessionData: function() {
-        return {
-          sessionid: _sessionID,
-          notebookurl: _notebookUrl,
-          content: angular.toJson(_notebookModel),
-          caption: _caption,
-          edited: _edited
-        };
-      },
-      clearSession: function() {
-        this.setNotebookModel({});
-        _notebookUrl = "";
-        _sessionID = null;
-        _caption = "";
-      },
-      toggleNotebookLocked: function() {
-        if (_notebookModel) {
-          if (_notebookModel.locked === undefined) {
-            _notebookModel.locked = true;
-          } else {
-            _notebookModel.locked = undefined;
-          }
-          _edited = true;
-        }
-      },
-      isNotebookLocked: function() {
-        return (_notebookModel && _notebookModel.locked) ? true : false;
-      },
-      isEdited: function() {
-        return _edited;
-      },
-      setEdited: function(edited) {
-        _edited = edited;
-      },
-      cellOp: bkNotebookCellModelManager,
-      newCodeCell: function(evaluator, id) {
-        if (!evaluator) {
-          evaluator = _notebookModel.evaluators[0].name;
-        }
-        if (!id) {
-          id = "code" + generalUtils.generateID(6);
-        }
-        return {
-          "id": id,
-          "type": "code",
-          "evaluator": evaluator,
-          "input": {
-            "body": ""
-          },
-          "output": {}
-        };
-      },
-      newSectionCell: function(level, title, id) {
-        if (!level && level !== 0) {
-          level = 1;
-        }
-        if (level <= 0) {
-          throw "creating section cell with level " + level + " is not allowed";
-        }
-        if (!title) {
-          title = "New Section H" + level
-        }
-
-        if (!id) {
-          id = "section" + generalUtils.generateID(6);
-        }
-        return {
-          "id": id,
-          "type": "section",
-          "title": title,
-          "level": level
-        };
-      },
-      newTextCell: function(id) {
-        if (!id) {
-          id = "text" + generalUtils.generateID(6);
-        }
-        return {
-          "id": id,
-          "type": "text",
-          "body": "New <b>text</b> cell"
-        };
-      },
-      newMarkdownCell: function(id) {
-        var tail = _notebookModel.cells.length - 1;
-        if (!id) {
-          id = "markdown" + generalUtils.generateID(6);
-        }
-        return {
-          "id": id,
-          "type": "markdown",
-          "body": ""
-        };
-      },
-      getInitializationCells: function() {
-        if (_notebookModel.initializeAll) {
-          return this.cellOp.getAllCodeCells("root");
-        } else {
-          return this.cellOp.getInitializationCells();
-        }
-      }
-    };
-
-    return bkBaseSessionModel;
-  });
-  /**
    * bkCoreManager
    * - this acts as the global space for all view managers to use it as the communication channel
    * - bkUtils should be consider 'private' to beaker, external code should depend on bkHelper
@@ -221,63 +74,151 @@
       }
     };
 
+    // importers are responsible for importing various formats into bkr
+    // importer impl must define an 'import' method
+    var _importers = {};
+    var FORMAT_BKR = "bkr";
+    _importers[FORMAT_BKR] = {
+      import: function(notebookJson) {
+        var notebookModel;
+        try {
+          notebookModel = angular.fromJson(notebookJson);
+          // TODO, to be removed. Addressing loading a corrupted notebook.
+          if (angular.isString(notebookModel)) {
+            notebookModel = angular.fromJson(notebookModel);
+            bkCoreManager.log("corrupted-notebook", { notebookUri: enhancedNotebookUri });
+          }
+        } catch (e) {
+          console.error(e);
+          console.error("This is not a valid Beaker notebook JSON");
+          console.error(notebookJson);
+          window.alert("Not a valid Beaker notebook");
+          return;
+        }
+        return notebookModel;
+      }
+    };
+
+    var LOCATION_FILESYS = "file";
+    var LOCATION_HTTP = "http";
+    
+    // fileLoaders are responsible for loading files and output the file content as string
+    // fileLoader impl must define an 'load' method which returns a then-able
+    var _fileLoaders = {};
+    _fileLoaders[LOCATION_FILESYS] = {
+      load: function(uri) {
+        return bkUtils.loadFile(uri);
+      }
+    };
+    _fileLoaders[LOCATION_HTTP] = {
+      load: function(uri) {
+        return bkUtils.loadHttp(uri);
+      }
+    };
+
+    // fileSavers are responsible for saving various formats into bkr
+    // fileLoader impl must define an 'load' method which returns a then-able
+    var _fileSavers = {
+      "default": function() {
+        // TODO
+      }
+    };
+
+    _fileSavers[LOCATION_FILESYS] = {
+      save: function(uri, contentAsString) {
+        return bkUtils.saveFile(uri, contentAsString);
+      }
+    };
+
+
     var bkCoreManager = {
+
+      setImporter: function(format, importer) {
+        _importers[format] = importer;
+      },
+      getImporter: function(format) {
+        return _importers[format];
+      },
+      setFileLoader: function(uriType, fileLoader) {
+        _fileLoaders[uriType] = fileLoader;
+      },
+      getFileLoader: function(uriType) {
+        return _fileLoaders[uriType];
+      },
+      setFileSaver: function(uriType, fileSaver) {
+        _fileSavers[uriType] = fileSaver;
+      },
+      getFileSaver: function(uriType) {
+        return _fileSavers[uriType];
+      },
+      guessUriType: function(notebookUri) {
+        // TODO, make smarter guess
+        return /^https?:\/\//.exec(notebookUri) ? LOCATION_HTTP : LOCATION_FILESYS;
+      },
+      guessFormat: function(notebookUri) {
+        // TODO, make smarter guess
+        return FORMAT_BKR;
+      },
+      openNotebook: function(notebookUri, uriType, readOnly, format) {
+        this._beakerRootOp.openNotebook(notebookUri, uriType, readOnly, format);
+      },
+      saveNotebook: function() {
+        if (this.getBkApp().saveNotebook) {
+          this.getBkApp().saveNotebook();
+        } else {
+          console.error("Current app doesn't support saveNotebook");
+        }
+      },
+      showDefaultSavingFileChooser: function() {
+        var self = this;
+        var deferred = bkUtils.newDeferred();
+        bkUtils.getHomeDirectory().then(function (homeDir) {
+          var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
+          var fileChooserTemplate = '<div class="modal-header">' +
+              '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
+              '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
+              '</div>' +
+              '<div class="modal-body">' +
+              '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
+              '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
+              '  </tree-view>' +
+              '</div>' +
+              '<div class="modal-footer">' +
+              '   <p><input id="saveAsFileInput"' +
+              '             class="input-xxlarge"' +
+              '             ng-model="getStrategy().result"' +
+              '             ng-keypress="getStrategy().close($event, close)"' +
+              '             focus-start /></p>' +
+              '   <button ng-click="close()" class="btn">Cancel</button>' +
+              '   <button ng-click="close(getStrategy().result)" class="btn btn-primary" >Save</button>' +
+              '</div>';
+          var fileChooserResultHandler = function (chosenFilePath) {
+            deferred.resolve({
+              uri: chosenFilePath,
+              uriType: LOCATION_FILESYS
+            });
+          };
+
+          bkCoreManager.showFileChooser(
+              fileChooserResultHandler,
+              fileChooserTemplate,
+              fileChooserStrategy);
+        });
+        return deferred.promise;
+      },
+
       _beakerRootOp: null,
       init: function(beakerRootOp) {
         this._beakerRootOp = beakerRootOp;
+        bkRecentMenu.init({
+          open: beakerRootOp.openNotebook
+        });
       },
       gotoControlPanel: function() {
-        // TODO. There is a synchronous problem now. Currently the session backup is
-        // not guaranteed to be done before the control panel loads.
-        // This should be refactored so that when we are going from bkApp to control
-        // panel, backup the session explicitly first, 'then' go to control panel.
         return this._beakerRootOp.gotoControlPanel();
-      },
-      openURI: function(originalUri, formatPrefix, readOnly) {
-        if (!originalUri) {
-          return;
-        }
-        if (!formatPrefix) {
-          formatPrefix = "bkr";
-        }
-        if (readOnly === undefined) {
-          readOnly = (formatPrefix !== "bkr") ? true : undefined;
-        }
-        var enhancedUri = this.getEnhancedUri(originalUri, formatPrefix);
-        return this._beakerRootOp.openURI(enhancedUri, readOnly);
       },
       newSession: function() {
         return this._beakerRootOp.newSession();
-      },
-      SPLITTER: '://',
-      getEnhancedUri: function(originalUri, formatPrefix) {
-          var enhancedUri = originalUri;
-
-          // if it is a file on the file system, add prefix "file://"
-          if (!/^https?:\/\//.exec(enhancedUri)) {
-            enhancedUri = "file" + this.SPLITTER + enhancedUri;
-          }
-
-          // add format prefix
-          enhancedUri = formatPrefix + this.SPLITTER + enhancedUri;
-        return enhancedUri;
-      },
-      getFormat: function(enhancedUri) {
-        var splitter = this.SPLITTER;
-        var format = enhancedUri.substring(0, enhancedUri.indexOf(splitter));
-        return format;
-      },
-      getLocationType: function(enhancedUri) {
-        var splitter = this.SPLITTER;
-        var formatRemoved = enhancedUri.substring(enhancedUri.indexOf(splitter) + splitter.length);
-        var locationType = formatRemoved.substring(0, formatRemoved.indexOf(splitter));
-        return locationType;
-      },
-      getOriginalUrl: function (enhancedUri){
-        var splitter = "://";
-        var formatRemoved = enhancedUri.substring(enhancedUri.indexOf(splitter) + splitter.length);
-        var originalUrl = formatRemoved.substring(formatRemoved.indexOf(splitter) + splitter.length);
-        return originalUrl;
       },
 
       _bkAppImpl: null,
@@ -305,34 +246,8 @@
         return this._bkNotebookImpl;
       },
 
-      recordRecentDocument: function(doc) {
-        return bkRecentMenu.recordRecentDocument(doc);
-
-      },
       getRecentMenuItems: function() {
         return bkRecentMenu.getMenuItems();
-      },
-      getCurrentOpenMenuItems: function() {
-        var deferred = Q.defer();
-        bkSession.getSessions().then(function(sessions) {
-          var menuItems = [];
-          _.keys(sessions).forEach(function(sessionID) {
-            var session = sessions[sessionID];
-            var url = session.notebookurl;
-            if (url && url[url.length - 1] === "/") {
-              url = url.substring(0, url.length - 1);
-            }
-            menuItems.push({
-              name: session.caption ? session.caption :
-                  (url ? url.replace(/^.*[\\\/]/, '') : "New Notebook"),
-              action: function() {
-                $location.path("session/" + sessionID);
-              }
-            });
-          });
-          deferred.resolve(menuItems);
-        });
-        return deferred.promise;
       },
       getLoadingPlugin: function(key) {
         return bkUtils.loadingPlugins.get(key);
@@ -368,69 +283,12 @@
         return this._cmKeyMapMode;
       },
 
-      // notebook save functions
-      _saveFuncs: {
-        file: function (path, notebookModel) {
-          var notebookJson = bkCoreManager.toPrettyJson(notebookModel);
-          return bkCoreManager.saveFile(path, notebookJson);
-        },
-        default: function (ignored, notebookModel) {
-          var deferred = $q.defer();
-          var saveAsPath = function (path) {
-            if (!path) {
-              return;
-            }
-            bkHelper.setSavePath(path);
-            document.title = path.replace(/^.*[\\\/]/, '');
-            return bkHelper.saveNotebook();
-          };
-          bkHelper.getHomeDirectory().then(function (homeDir) {
-            bkCoreManager.showFileChooser(
-                saveAsPath,
-                '<div class="modal-header">' +
-                  '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
-                  '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
-                  '</div>' +
-                  '<div class="modal-body">' +
-                  '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-                  '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
-                  '  </tree-view>' +
-                  '</div>' +
-                  '<div class="modal-footer">' +
-                  '   <p><input id="saveAsFileInput"' +
-                  '             class="input-xxlarge"' +
-                  '             ng-model="getStrategy().result"' +
-                  '             ng-keypress="getStrategy().close($event, close)"' +
-                  '             focus-start /></p>' +
-                  '   <button ng-click="close()" class="btn">Cancel</button>' +
-                  '   <button ng-click="close(getStrategy().result)" class="btn btn-primary" >Save</button>' +
-                  '</div>', // template
-                bkHelper.getFileSystemChooserStrategy()
-            );
-            return deferred.promise;
-          });
-        }
-      },
-      registerSaveFunc: function(locationType, saveFunc) {
-        this._saveFuncs[locationType] = saveFunc;
-      },
-      getSaveFunc: function(locationType) {
-        if (this._saveFuncs.hasOwnProperty(locationType)) {
-          return this._saveFuncs[locationType];
-        } else {
-          return this._saveFuncs["default"];
-        }
-      },
-
       // general
       log: function(event, obj) {
         return bkUtils.log(event, obj);
       },
       refreshRootScope: function() {
         return bkUtils.refreshRootScope();
-      },
-      getDefaultNotebook: function(cb) {
-        return bkUtils.getDefaultNotebook(cb);
       },
       loadJS: function(url, success) {
         return bkUtils.loadJS(url, success);

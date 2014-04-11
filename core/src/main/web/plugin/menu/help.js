@@ -30,7 +30,7 @@
     {
       name: "Tutorial notebook",
       action: function() {
-        bkHelper.openURI("config/tutorial.bkr", undefined, true);
+        bkHelper.openNotebook("config/tutorial.bkr", undefined, true);
       },
       tooltip: "Open the tutorial notebook"
     },

@@ -191,7 +191,7 @@
             action: function() {
               bkHelper.showFileChooser(
                   function(originalUrl) {
-                    bkHelper.openURI(originalUrl, IPYNB_PATH_PREFIX);
+                    bkHelper.openNotebook(originalUrl, IPYNB_PATH_PREFIX);
                   },
                   '<div class="modal-header">' +
                       '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
@@ -206,7 +206,7 @@
                       '   <button ng-click="close()" class="btn">Cancel</button>' +
                       '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
                       '</div>', // template
-                  bkHelper.getFileSystemChooserStrategy()
+                  bkHelper.getFileSystemFileChooserStrategy()
               );
             }
           }

@@ -37,7 +37,7 @@
   <div class="row">
     <div class="span12">
 
-      <div ng-show='sessions.length == 0'>
+      <div ng-show='isSessionsListEmpty()'>
           <h1>Beaker <small>The data scientist's laboratory</small></h1>
           <p>Click 'New Notebook' to get started writing code in Python, R, Julia, Groovy, JavaScript, and Ruby</p>
       </div>        
@@ -46,7 +46,7 @@
       <!--<button class='btn' ng-click="openTutorial()">Tutorial</button>-->
       <br/><br/>
 
-      <div ng-show='sessions.length > 0'>
+      <div ng-hide='isSessionsListEmpty()'>
         <h4>Open notebooks:</h4>
         <bk-control-item></bk-control-item>
       </div>

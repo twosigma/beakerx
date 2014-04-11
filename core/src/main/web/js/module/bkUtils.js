@@ -53,7 +53,7 @@
         var deferred = angularUtils.newDeferred();
         angularUtils.httpGet("/beaker/rest/util/getDefaultNotebook").
             success(function(data) {
-              deferred.resolve(data);
+              deferred.resolve(angular.fromJson(data));
             }).
             error(function(data, status, header, config) {
               deferred.reject(data, status, header, config);

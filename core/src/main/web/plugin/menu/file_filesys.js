@@ -31,7 +31,7 @@
             tooltip: "Open a bkr notebook file",
             action: function() {
               bkHelper.showFileChooser(
-                  bkHelper.openURI,
+                  bkHelper.openNotebook,
                   '<div class="modal-header">' +
                       '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
                       '</div>' +
@@ -45,7 +45,7 @@
                       '   <button ng-click="close()" class="btn">Cancel</button>' +
                       '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
                       '</div>', // template
-                  bkHelper.getFileSystemChooserStrategy()
+                  bkHelper.getFileSystemFileChooserStrategy()
               );
             }
           }

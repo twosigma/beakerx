@@ -24,21 +24,20 @@
   /**
    * bkSession
    * - talks to beaker server (/beaker/rest/session)
-   * - bkUtil should depend on it to update/backup bkBaseSessionModel
+   * - bkSessionManager should depend on it to update/backup the session model
    */
   module.factory('bkSession', function($http, $q, bkUtils) {
-    var backupSession = function(sessionData) {
-      var sessionID = sessionData.sessionid;
-      if (!sessionID) {
-        return;
-      }
-      bkUtils.httpPost("/beaker/rest/session-backup/backup", sessionData).
+    var backupSession = function(sessionId, sessionData) {
+      var deferred = bkUtils.newDeferred();
+      bkUtils.httpPost("/beaker/rest/session-backup/backup/" + sessionId, sessionData).
           success(function(data) {
-            console.log("backup ", sessionID);
+            deferred.resolve();
           }).
           error(function(data, status) {
-            console.error("Failed to backup session: " + sessionID + ", " + status);
+            console.error("Failed to backup session: " + sessionId + ", " + status);
+            deferred.reject("Failed to backup session: " + sessionId + ", " + status);
           });
+      return deferred.promise;
     };
     var getSessions = function() {
       var deferred = $q.defer();
@@ -97,9 +96,9 @@
     };
     return {
       getSessions: getSessions,
-      loadSession: loadSession,
-      backupSession: backupSession,
-      closeSession: closeSession,
+      load: loadSession,
+      backup: backupSession,
+      close: closeSession,
       recordLoadedPlugin: recordLoadedPlugin,
       getPlugins: getPlugins
     };

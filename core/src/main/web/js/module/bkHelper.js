@@ -22,6 +22,7 @@
   'use strict';
   var module = angular.module('M_bkHelper', [
     'M_bkCore',
+    'M_bkSessionManager',
     'M_bkShare'
   ]);
   /**
@@ -33,10 +34,10 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkBaseSessionModel, bkCoreManager, bkShare) {
+  module.factory('bkHelper', function(bkSessionManager, bkCoreManager, bkShare) {
     var bkHelper = {
       forDebugOnly: {
-        bkBaseSessionModel: bkBaseSessionModel,
+        bkSessionManager: bkSessionManager,
         bkCoreManager: bkCoreManager
       },
       getBkAppViewModel: function() {
@@ -53,23 +54,11 @@
       gotoControlPanel: function() {
         return bkCoreManager.gotoControlPanel();
       },
-      openURI: function(originalUri, formatPrefix, readOnly) {
-        return bkCoreManager.openURI(originalUri, formatPrefix, readOnly);
+      openNotebook: function(notebookUri, uriType, readOnly, format) {
+        return bkCoreManager.openNotebook(notebookUri, uriType, readOnly, format);
       },
       newSession: function() {
         return bkCoreManager.newSession();
-      },
-      getEnhancedUri: function(originalUri) {
-        return bkCoreManager.getEnhancedUri(originalUri);
-      },
-      getFormat: function(enhancedUri) {
-        return bkCoreManager.getFormat(enhancedUri);
-      },
-      getLocationType: function(enhancedUri) {
-        return bkCoreManager.getLocationType(enhancedUri);
-      },
-      getOriginalUrl: function (enhancedUri){
-        return bkCoreManager.getOriginalUrl(enhancedUri);
       },
 
       // bk-app
@@ -87,8 +76,7 @@
         return bkCoreManager.getBkApp().setSavePath(savePath);
       },
       setImporter: function(format, importer) {
-        // import must have a "import" method
-        return bkCoreManager.getBkApp().setImporter(format, importer);
+        return bkCoreManager.setImporter(format, importer);
       },
       evaluate: function(toEval) {
         return bkCoreManager.evaluate(toEval);
@@ -107,24 +95,17 @@
       },
 
       // session and notebook model
-      getNotebookModel: function() {
-        return bkBaseSessionModel.getNotebookModel();
-      },
+      // TODO, refactor this so bkHelper perform these through the bkNotebookApp
+      // the session manager should owned by the bkNotebookApp and bkHelper
+      // shouldn't directly depend on it
       getSessionID: function() {
-        return bkBaseSessionModel.getSessionID();
-      },
-      setNotebookUrl: function(notebookUrl) {
-        bkBaseSessionModel.setNotebookUrl(notebookUrl);
-        bkCoreManager.recordRecentDocument(notebookUrl);
-      },
-      getSessionData: function() {
-        return bkBaseSessionModel.getSessionData();
+        return bkSessionManager.getSessionId();
       },
       toggleNotebookLocked: function() {
-        return bkBaseSessionModel.toggleNotebookLocked();
+        return bkSessionManager.toggleNotebookLocked();
       },
       isNotebookLocked: function() {
-        return bkBaseSessionModel.isNotebookLocked();
+        return bkSessionManager.isNotebookLocked();
       },
 
       // notebook save functions
@@ -216,14 +197,8 @@
       findTable: function(elem) {
         return bkCoreManager.findTable(elem);
       },
-      getDefaultNotebook: function() {
-        return bkCoreManager.getDefaultNotebook();
-      },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
-      },
-      getCurrentOpenMenuItems: function() {
-        return bkCoreManager.getCurrentOpenMenuItems();
       },
       getLoadingPlugin: function(key) {
         return bkCoreManager.getLoadingPlugin(key);
@@ -258,7 +233,7 @@
       saveFile: function(path, contentAsJson) {
         return bkCoreManager.saveFile(path, contentAsJson);
       },
-      getFileSystemChooserStrategy: function() {
+      getFileSystemFileChooserStrategy: function() {
         return bkCoreManager.getFileSystemFileChooserStrategy();
       },
       getHomeDirectory: function() {

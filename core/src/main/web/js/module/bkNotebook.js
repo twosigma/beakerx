@@ -25,6 +25,7 @@
     'M_generalUtils',
     'M_bkShare',
     'M_bkCore',
+    'M_bkSessionManager',
     'M_bkNotebookEvaluators',
     'M_evaluatorManager',
     'M_bkCell',
@@ -42,12 +43,13 @@
    */
   bkNotebook.directive('bkNotebook', function(
       generalUtils, cometd, bkShare, evaluatorManager, bkCellPluginManager,
-      bkBaseSessionModel, bkCoreManager, bkOutputLog) {
+      bkSessionManager, bkCoreManager, bkOutputLog) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkNotebook.html",
       scope: {},
       controller: function($scope) {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var _impl = {
           _viewModel: {
             _hideEvaluators: true,
@@ -86,17 +88,7 @@
             shareMenu.items[0].action();
           },
           deleteAllOutputCells: function() {
-
-            // TODO - is this the right spot for this code???
-            var cells = bkBaseSessionModel.getNotebookModel().cells;
-            if (cells) {
-              _.each(cells, function(cell) {
-                if (cell.output) {
-                  cell.output.result = undefined;
-                }
-              });
-            }
-
+            bkSessionManager.getNotebookCellOp().deleteAllOutputCells();
           }
         };
         bkCoreManager.setBkNotebookImpl(_impl);
@@ -111,7 +103,7 @@
 
         $scope.showDebugTree = false;
         $scope.getNotebookModel = function() {
-          return bkBaseSessionModel.getNotebookModel();
+          return bkSessionManager.getRawNotebookModel();
         };
         $scope.clearOutput = function() {
           $.ajax({type: "GET",
@@ -189,7 +181,7 @@
 
         $scope.getChildren = function() {
           // this is the root
-          return bkBaseSessionModel.cellOp.getChildren("root");
+          return notebookCellOp.getChildren("root");
         };
 
 
@@ -201,7 +193,7 @@
         };
         $scope.getShareData = function() {
           return {
-            notebookModel: bkBaseSessionModel.getNotebookModel(),
+            notebookModel: bkSessionManager.getRawNotebookModel(),
             evViewModel: evaluatorManager.getViewModel()
           };
         };
@@ -215,7 +207,7 @@
           }
         });
         $scope.isInitializationCell = function() {
-          return bkBaseSessionModel.getNotebookModel().initializeAll;
+          return bkSessionManager.isRootCellInitialization();
         };
         $scope.menuItems = [
           {
@@ -233,12 +225,8 @@
               return $scope.isInitializationCell();
             },
             action: function() {
-              if ($scope.isInitializationCell()) {
-                bkBaseSessionModel.getNotebookModel().initializeAll = undefined;
-              } else {
-                bkBaseSessionModel.getNotebookModel().initializeAll = true;
-              }
-              bkBaseSessionModel.cellOp.reset();
+              bkSessionManager.setRootCellInitialization(!$scope.isInitializationCell());
+              notebookCellOp.reset();
             }
           },
           shareMenu

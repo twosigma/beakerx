@@ -57,7 +57,7 @@
     {
       name: "Tutorial notebook",
       action: function() {
-        bkHelper.openURI("config/tutorial.bkr", undefined, true);
+        bkHelper.openNotebook("config/tutorial.bkr", undefined, true);
       },
       tooltip: "Open the tutorial notebook"
     },
@@ -96,10 +96,10 @@
             action: function() {
               bkHelper.showFileChooser(
                   function(originalUrl) {
-                    bkHelper.openURI(originalUrl);
+                    bkHelper.openNotebook(originalUrl);
                   },
                   treeViewChooserTemplate,
-                  bkHelper.getFileSystemChooserStrategy()
+                  bkHelper.getFileSystemFileChooserStrategy()
               );
             }
           },
@@ -110,10 +110,10 @@
             action: function() {
               bkHelper.showFileChooser(
                   function(originalUrl) {
-                    bkHelper.openURI(originalUrl, IPYNB_PATH_PREFIX);
+                    bkHelper.openNotebook(originalUrl, IPYNB_PATH_PREFIX);
                   },
                   treeViewChooserTemplate,
-                  bkHelper.getFileSystemChooserStrategy()
+                  bkHelper.getFileSystemFileChooserStrategy()
               );
             }
           }

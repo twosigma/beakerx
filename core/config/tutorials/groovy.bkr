@@ -1,0 +1,87 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "./plugin/evaluator/html.js",
+            "shellID": null
+        },
+        {
+            "name": "Latex",
+            "plugin": "./plugin/evaluator/latex.js",
+            "shellID": null
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "shellID": "42F6AB4B2EB54597BAFFB4C7018BC70B",
+            "imports": "",
+            "supplementalClassPath": ""
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "shellID": null,
+            "jsSetting2": "",
+            "jsSetting1": ""
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "shellID": "3ae2bd97-6120-449b-9abe-c7913a911414"
+        },
+        {
+            "name": "Groovy",
+            "plugin": "./plugins/eval/groovy/groovy.js",
+            "shellID": "f32d3a9a-7542-4767-8003-f41ae13c7218"
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "Groovy basics",
+            "collapsed": false
+        },
+        {
+            "id": "markdownWEsxB3",
+            "type": "markdown",
+            "body": "This notebook is a brief introduction to Groovy. It assumes a general understanding of Java.",
+            "mode": "preview"
+        },
+        {
+            "id": "sectionhjMw2k",
+            "type": "section",
+            "title": "Differences from Java",
+            "level": 2,
+            "collapsed": false
+        },
+        {
+            "id": "code001",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "//semicolons are optional\ndef str = \"look, no semicolon!\""
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "look, no semicolon!",
+                "elapsedTime": 62
+            }
+        },
+        {
+            "id": "codeapvWRa",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "//parentheses are optional\nSystem.out.println \"hey!\"\nprintln \"no System.out either!\""
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "null",
+                "elapsedTime": 138
+            }
+        }
+    ]
+}

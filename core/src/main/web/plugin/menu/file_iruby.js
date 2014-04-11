@@ -168,8 +168,8 @@
     };
   })();
 
-  var IPYNB_PATH_PREFIX = "ipynb";
-  bkHelper.setImporter(IPYNB_PATH_PREFIX, {
+  var IRUBY_PATH_PREFIX = "iruby";
+  bkHelper.setImporter(IRUBY_PATH_PREFIX, {
     open: function(fileContentAsString) {
       var ipyNbJson = fileContentAsString;
       var ipyNb = JSON.parse(ipyNbJson);
@@ -185,13 +185,13 @@
         submenu: "Open",
         items: [
           {
-            name: "Open... (.ipynb)",
+            name: "Open... IRuby (.ipynb)",
             reducedName: "Open...",
             tooltip: "Open a IRuby notebook from file system and convert it to Beaker notebook",
             action: function() {
               bkHelper.showFileChooser(
                   function(originalUrl) {
-                    bkHelper.openNotebook(originalUrl, IPYNB_PATH_PREFIX);
+                    bkHelper.openNotebook(originalUrl, IRUBY_PATH_PREFIX);
                   },
                   '<div class="modal-header">' +
                       '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +

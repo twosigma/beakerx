@@ -152,11 +152,11 @@
       },
       saveFile: function(path, contentAsJson) {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpPost("/beaker/rest/file-io/save", {path: path, content: contentAsJson}).
-            success(function() {
+        angularUtils.httpPost("/beaker/rest/file-io/save", {path: path, content: contentAsJson})
+            .success(function() {
               deferred.resolve();
-            }).
-            error(function(data, status, header, config) {
+            })
+            .error(function(data, status, header, config) {
               deferred.reject(data, status, header, config);
             });
         return deferred.promise;

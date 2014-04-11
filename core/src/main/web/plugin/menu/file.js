@@ -20,15 +20,13 @@
  */
 (function() {
   'use strict';
-  var newNotebook = function() {
-    bkHelper.getDefaultNotebook().then(function(notebookJSON) {
-      bkHelper.loadNotebook(notebookJSON, true);
-    });
-  };
+
   var fileMenuItems = [
     {
       name: "New",
-      action: newNotebook,
+      action: function() {
+        bkHelper.newSession();
+      },
       tooltip: "Open a new notebook with default languages (Evaluators)"
     },
     {

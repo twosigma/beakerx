@@ -181,7 +181,7 @@
   };
   var loadFromHttp = function(url) {
     var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/httpProxy/load", {url: url}).
+    bkHelper.httpGet("/beaker/rest/http-proxy/load", {url: url}).
         success(function(data) {
           deferred.resolve(data);
         }).

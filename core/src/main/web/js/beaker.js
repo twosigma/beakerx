@@ -97,7 +97,6 @@
       'M_bkCore',
       'M_bkControl',
       'M_bkApp',
-      'M_bkCloseSessionApp',
       'M_bkDebug'
     ]);
 
@@ -111,8 +110,6 @@
             template: "<bk-app></bk-app>"
           }).when('/control', {
             template: "<bk-control></bk-control>"
-          }).when('/close/:sessionID', {
-            template: "<bk-close-session-app></bk-close-session-app>"
           }).otherwise({
             redirectTo: "/control"
           });

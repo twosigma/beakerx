@@ -67,13 +67,16 @@
             notebookModel, alwaysCreateNewEvaluators, notebookUri, sessionID);
       },
       closeNotebook: function() {
-        return bkCoreManager.getBkApp().closeNotebook();
+        return bkCoreManager.closeNotebook();
       },
       saveNotebook: function() {
-        return bkCoreManager.getBkApp().saveNotebook();
+        return bkCoreManager.saveNotebook();
       },
-      setSavePath: function(savePath) {
-        return bkCoreManager.getBkApp().setSavePath(savePath);
+      saveNotebookAs: function(notebookUri, uriType) {
+        return bkCoreManager.saveNotebookAs(notebookUri, uriType);
+      },
+      showDefaultSavingFileChooser: function() {
+        return bkCoreManager.showDefaultSavingFileChooser();
       },
       setImporter: function(format, importer) {
         return bkCoreManager.setImporter(format, importer);
@@ -106,14 +109,6 @@
       },
       isNotebookLocked: function() {
         return bkSessionManager.isNotebookLocked();
-      },
-
-      // notebook save functions
-      registerSaveFunc: function(type, saveFunc) {
-        return bkCoreManager.registerSaveFunc(type, saveFunc);
-      },
-      getSaveFunc: function(type) {
-        return bkCoreManager.getSaveFunc(type);
       },
 
       // utils

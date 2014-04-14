@@ -60,8 +60,9 @@
             reducedName: "Save as...",
             tooltip: "Save a file from file system",
             action: function() {
-              var popupFileChooserAndSave = bkHelper.getSaveFunc("default");
-              popupFileChooserAndSave();
+              bkHelper.showDefaultSavingFileChooser().then(function(ret) {
+                return bkHelper.saveNotebookAs(ret.uri, ret.uriType);
+              });
             }
           }
         ]

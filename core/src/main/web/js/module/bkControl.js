@@ -22,7 +22,7 @@
 (function() {
   'use strict';
   var bkControl = angular.module('M_bkControl',
-      ['M_bkCore', 'M_bkSession', 'M_menuPlugin']);
+      ['M_bkCore', 'M_bkSession', 'M_menuPlugin', 'M_evaluatorManager', 'M_bkRecentMenu']);
 
   bkControl.directive('bkControl', function(
       bkCoreManager, bkSession, menuPluginManager, trackingService) {
@@ -118,22 +118,12 @@
         // sessions list UI
         $scope.sessions = null;
         // get list of opened sessions
-        bkSession.getSessions().then(function(sessions) {
-          $scope.sessions = sessions;
-//          for (var sessionId in ret) {
-//            var url = ret[sessionId].notebookUri;
-//            if (url && url[url.length - 1] === "/") {
-//              url = url.substring(0, url.length - 1);
-//            }
-//            $scope.sessions.push({
-//              id: sessionId,
-//              caption: url ? url.replace(/^.*[\\\/]/, '') : "New Notebook",
-//              openedDate: ret[sessionId].openedDate,
-//              description: url,
-//              edited: ret[sessionId].edited
-//            });
-//          }
-        });
+        $scope.reloadSessionsList = function() {
+          bkSession.getSessions().then(function(sessions) {
+            $scope.sessions = sessions;
+          });
+        };
+        $scope.reloadSessionsList();
         $scope.isSessionsListEmpty = function() {
           return _.isEmpty($scope.sessions);
         }
@@ -141,7 +131,8 @@
     };
   });
 
-  bkControl.directive('bkControlItem', function(bkSession, $location) {
+  bkControl.directive('bkControlItem', function(
+      $location, bkSession, evaluatorManager, bkCoreManager, bkRecentMenu) {
     return {
       restrict: 'E',
       template: "<table class='table table-striped'>" +
@@ -154,15 +145,93 @@
           "<td>{{getDescription(session)}}</td>" +
           "<td>{{session.edited ? '*' : ''}}</td>" +
           "<td><div class='btn-group'><button class='btn' ng-click='open(sessionId)'>Go to</button>" +
-          "<button class='btn' ng-click='close(sessionId)'>Close</button></div></td>" +
+          "<button class='btn' ng-click='close(sessionId, session)'>Close</button></div></td>" +
           "</tr></tbody>" +
           "</table>",
       controller: function($scope) {
         $scope.open = function(sessionId) {
           $location.path("session/" + sessionId);
         };
-        $scope.close = function(sessionId) {
-          $location.path("close/" + sessionId);
+        $scope.close = function(sessionId, session) {
+          var notebookUri = session.notebookUri;
+          var uriType = session.uriType;
+          var readOnly = session.readOnly;
+          var format = session.format;
+          var notebookModel = angular.fromJson(session.notebookModelJson);
+          var edited = session.edited;
+          var closeSession = function() {
+            if (notebookModel && notebookModel.evaluators) {
+              for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+                evaluatorManager.createEvaluatorThenExit(notebookModel.evaluators[i]);
+              }
+            }
+            return bkSession.close(sessionId).then(function() {
+              $scope.reloadSessionsList();
+            });
+          };
+          if (!edited) {
+            // close session
+            closeSession();
+          } else {
+            // ask if user want to save first
+            bkHelper.showYesNoCancelModal(
+                "Do you want to save [" + $scope.getCaption(sessionId) + "]?",
+                "Confirm close",
+                function() { // yes
+                  // save session
+                  var saveSession = function() {
+                    var notebookModelAsString = bkCoreManager.toPrettyJson(notebookModel);
+                    if (!_.isEmpty(session.notebookUri)) {
+                      var fileSaver = bkCoreManager.getFileSaver(session.uriType);
+                      return fileSaver.save(session.notebookUri, notebookModelAsString);
+                    } else {
+                      var deferred = bkCoreManager.newDeferred();
+                      bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
+                        if (!pathInfo.uri) {
+                          deferred.reject({
+                            cause: "Save cancelled"
+                          });
+                        } else {
+                          var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
+                          fileSaver.save(pathInfo.uri, notebookModelAsString).then(function () {
+                            bkRecentMenu.recordRecentDocument(angular.toJson({
+                              uri: pathInfo.uri,
+                              type: pathInfo.uriType,
+                              readOnly: false,
+                              format: _.isEmpty(format) ? "" : format
+                            }));
+                            deferred.resolve();
+                          }, function (error) {
+                            deferred.reject({
+                              cause: "error saving to file",
+                              error: error
+                            });
+                          });
+                        }
+                      });
+                      return deferred.promise;
+                    }
+                  };
+                  var savingFailedHandler = function(info) {
+                    if (info.cause === "Save cancelled") {
+                      console.log("File saving cancelled");
+                    } else {
+                      bkHelper.showErrorModal(info.error, info.cause);
+                    }
+                  }
+                  saveSession().then(closeSession, savingFailedHandler);
+                },
+                function() { // no
+                  console.log("close without saving");
+                  closeSession();
+                },
+                function() { // cancel
+                  // no-op
+                },
+                "Save",
+                "Don't Save"
+            );
+          }
         };
 
         $scope.getCaption = function(session) {

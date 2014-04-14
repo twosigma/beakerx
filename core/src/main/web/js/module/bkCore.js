@@ -99,9 +99,10 @@
       }
     };
 
+    var LOCATION_DEFAULT = "default";
     var LOCATION_FILESYS = "file";
     var LOCATION_HTTP = "http";
-    
+
     // fileLoaders are responsible for loading files and output the file content as string
     // fileLoader impl must define an 'load' method which returns a then-able
     var _fileLoaders = {};
@@ -118,11 +119,7 @@
 
     // fileSavers are responsible for saving various formats into bkr
     // fileLoader impl must define an 'load' method which returns a then-able
-    var _fileSavers = {
-      "default": function() {
-        // TODO
-      }
-    };
+    var _fileSavers = {};
 
     _fileSavers[LOCATION_FILESYS] = {
       save: function(uri, contentAsString) {
@@ -130,6 +127,13 @@
       }
     };
 
+    _fileSavers[LOCATION_DEFAULT] = {
+      // the default filesaver is used when destination uri is unknown.
+      // the saver pops up an file chooser to solicit path
+      save: function (toBeIgnored, contentAsString) {
+        // TODO
+      }
+    };
 
     var bkCoreManager = {
 
@@ -162,11 +166,26 @@
       openNotebook: function(notebookUri, uriType, readOnly, format) {
         this._beakerRootOp.openNotebook(notebookUri, uriType, readOnly, format);
       },
+      closeNotebook: function() {
+        if (this.getBkApp().closeNotebook) {
+          this.getBkApp().closeNotebook();
+        } else {
+          console.error("Current app doesn't support closeNotebook");
+        }
+      },
+
       saveNotebook: function() {
         if (this.getBkApp().saveNotebook) {
           this.getBkApp().saveNotebook();
         } else {
           console.error("Current app doesn't support saveNotebook");
+        }
+      },
+      saveNotebookAs: function(notebookUri, uriType) {
+        if (this.getBkApp().saveNotebookAs) {
+          this.getBkApp().saveNotebookAs(notebookUri, uriType);
+        } else {
+          console.error("Current app doesn't support saveNotebookAs");
         }
       },
       showDefaultSavingFileChooser: function() {

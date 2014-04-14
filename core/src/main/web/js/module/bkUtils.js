@@ -53,7 +53,7 @@
         var deferred = angularUtils.newDeferred();
         angularUtils.httpGet("/beaker/rest/util/getDefaultNotebook").
             success(function(data) {
-              deferred.resolve(data);
+              deferred.resolve(angular.fromJson(data));
             }).
             error(function(data, status, header, config) {
               deferred.reject(data, status, header, config);
@@ -117,6 +117,60 @@
       },
       isMiddleClick: function(event) {
         return generalUtils.isMiddleClick(event);
+      },
+      loadFile: function(path) {
+        var deferred = angularUtils.newDeferred();
+        angularUtils.httpGet("/beaker/rest/file-io/load", {path: path})
+            .success(function(content) {
+              if (!_.isString(content)) {
+                // angular $http auto-detects JSON response and deserialize it using a JSON parser
+                // we don't want this behavior, this is a hack to reverse it
+                content = JSON.stringify(content);
+              }
+              deferred.resolve(content);
+            })
+            .error(function(data, status, header, config) {
+              deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
+      },
+      loadHttp: function(url) {
+        var deferred = angularUtils.newDeferred();
+        angularUtils.httpGet("/beaker/rest/http-proxy/load", {url: url})
+            .success(function(content) {
+              if (!_.isString(content)) {
+                // angular $http auto-detects JSON response and deserialize it using a JSON parser
+                // we don't want this behavior, this is a hack to reverse it
+                content = JSON.stringify(content);
+              }
+              deferred.resolve(content);
+            })
+            .error(function(data, status, header, config) {
+              deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
+      },
+      saveFile: function(path, contentAsJson) {
+        var deferred = angularUtils.newDeferred();
+        angularUtils.httpPost("/beaker/rest/file-io/save", {path: path, content: contentAsJson})
+            .success(function() {
+              deferred.resolve();
+            })
+            .error(function(data, status, header, config) {
+              deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
+      },
+      getHomeDirectory: function() {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet("/beaker/rest/file-io/getHomeDirectory")
+            .success(function(homeDir) {
+              deferred.resolve(homeDir);
+            })
+            .error(function(data, status, header, config) {
+              deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
       }
     };
     return bkUtils;

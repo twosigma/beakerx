@@ -168,83 +168,17 @@
     };
   })();
 
-  var loadFromFile = function(path) {
-    var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/file-io/load", {path: path}).
-        success(function(data) {
-          deferred.resolve(data);
-        }).
-        error(function(data, status, header, config) {
-          deferred.reject(data, status, header, config);
-        });
-    return deferred.promise;
-  };
-  var loadFromHttp = function(url) {
-    var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/http-proxy/load", {url: url}).
-        success(function(data) {
-          deferred.resolve(data);
-        }).
-        error(function(data, status, header, config) {
-          deferred.reject(data, status, header, config);
-        });
-    return deferred.promise;
-  };
-
   var IRUBY_PATH_PREFIX = "iruby";
-  bkHelper.setPathOpener(IRUBY_PATH_PREFIX, {
-    open: function(path) {
-      if (path.indexOf(IRUBY_PATH_PREFIX + ":/") === 0) {
-        path = path.substring(IRUBY_PATH_PREFIX.length + 2);
-      }
-      if (path) {
-        var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-        load(path).then(function(content) {
-          var ipyNb = content;
-          var bkrNb = notebookConverter.convert(ipyNb);
-          bkHelper.loadNotebook(bkrNb, true);
-          bkHelper.evaluate("initialization");
-          document.title = path.replace(/^.*[\\\/]/, '');
-        }, function(data, status, headers, config) {
-          bkHelper.showErrorModal(data);
-          bkHelper.refreshRootScope();
-        });
-      }
+  bkHelper.setImporter(IRUBY_PATH_PREFIX, {
+    open: function(fileContentAsString) {
+      var ipyNbJson = fileContentAsString;
+      var ipyNb = JSON.parse(ipyNbJson);
+      var bkrNb = notebookConverter.convert(ipyNb);
+      return bkrNb;
     }
   });
 
-  bkHelper.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(ret) {
-    var homeDir = ret.value;
-    var fileChooserStrategy = { result: "" };
-    fileChooserStrategy.close = function(ev, closeFunc) {
-      if (ev.which === 13) {
-        closeFunc(this.result);
-      }
-    };
-    fileChooserStrategy.treeViewfs = { // file service
-      getChildren: function(path, callback) {
-        var self = this;
-        this.showSpinner = true;
-        $http({
-          method: 'GET',
-          url: "/beaker/rest/file-io/getDecoratedChildren",
-          params: {
-            path: path
-          }
-        }).success(function(list) {
-              self.showSpinner = false;
-              callback(list);
-            }).error(function() {
-              self.showSpinner = false;
-              console.log("Error loading children");
-            });
-      },
-      open: function(path) {
-        fileChooserStrategy.result = path;
-      },
-      showSpinner: false
-    };
-
+  bkHelper.getHomeDirectory().then(function(homeDir) {
     var toAdd = [
       {
         parent: "File",
@@ -256,10 +190,8 @@
             tooltip: "Open a IRuby notebook from file system and convert it to Beaker notebook",
             action: function() {
               bkHelper.showFileChooser(
-                  function(path) {
-                    if (path) {
-                      bkHelper.openURI(IRUBY_PATH_PREFIX + ":/" + path);
-                    }
+                  function(originalUrl) {
+                    bkHelper.openNotebook(originalUrl, IRUBY_PATH_PREFIX);
                   },
                   '<div class="modal-header">' +
                       '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
@@ -274,7 +206,7 @@
                       '   <button ng-click="close()" class="btn">Cancel</button>' +
                       '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
                       '</div>', // template
-                  fileChooserStrategy// strategy
+                  bkHelper.getFileSystemFileChooserStrategy()
               );
             }
           }

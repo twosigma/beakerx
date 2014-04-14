@@ -20,7 +20,6 @@
  */
 (function() {
   'use strict';
-
   var fileMenuItems = [
     {
       name: "New",
@@ -63,13 +62,6 @@
       autoReduce: true,
       items: []
     }
-//        ,
-//        {
-//            name: "Current open",
-//            items: function() {
-//                return bkHelper.getCurrentOpenMenuItems();
-//            }
-//        }
   ];
   var toAdd = {items: fileMenuItems, parent: "File"};
   pluginObj.onReady(toAdd);

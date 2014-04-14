@@ -27,6 +27,7 @@
     'M_generalUtils',
     'M_bkShare',
     'M_bkCore',
+    'M_bkSessionManager',
     'M_evaluatorManager',
     'M_bkCellPluginManager',
     'M_bkCodeCell'
@@ -44,7 +45,7 @@
    * - TODO, this is currently strongly tied to the hierarchical notebook layout, we want to change
    * that
    */
-  M_bkCell.directive('bkCell', function(generalUtils, bkBaseSessionModel, bkCoreManager) {
+  M_bkCell.directive('bkCell', function(generalUtils, bkSessionManager, bkCoreManager) {
     return {
       restrict: 'E',
       template: '<div class="bkcell">' +
@@ -67,6 +68,7 @@
         var getBkBaseViewModel = function() {
           return bkCoreManager.getBkNotebook().getViewModel();
         };
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
         $scope.cellview = {
           showDebugInfo: false,
           menu: {
@@ -87,13 +89,13 @@
         };
         $scope.newCellMenuConfig = {
           isShow: function() {
-            if (bkBaseSessionModel.isNotebookLocked()) {
+            if (bkSessionManager.isNotebookLocked()) {
               return false;
             }
-            return !bkBaseSessionModel.cellOp.isContainer($scope.cellmodel.id);
+            return !notebookCellOp.isContainer($scope.cellmodel.id);
           },
           attachCell: function(newCell) {
-            bkBaseSessionModel.cellOp.insertAfter($scope.cellmodel.id, newCell);
+            notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
           }
         };
 
@@ -120,40 +122,40 @@
         $scope.cellview.menu.addItem({
           name: "Delete cell",
           action: function() {
-            bkBaseSessionModel.cellOp.delete($scope.cellmodel.id);
+            notebookCellOp.delete($scope.cellmodel.id);
           }
         });
         $scope.cellview.menu.addItem({
           name: "Move up",
           disabled: function() {
-            return !bkBaseSessionModel.cellOp.isPossibleToMoveSectionUp($scope.cellmodel.id);
+            return !notebookCellOp.isPossibleToMoveSectionUp($scope.cellmodel.id);
           },
           action: function() {
-            bkBaseSessionModel.cellOp.moveSectionUp($scope.cellmodel.id);
+            notebookCellOp.moveSectionUp($scope.cellmodel.id);
           }
         });
         $scope.cellview.menu.addItem({
           name: "Move down",
           disabled: function() {
-            return !bkBaseSessionModel.cellOp.isPossibleToMoveSectionDown($scope.cellmodel.id);
+            return !notebookCellOp.isPossibleToMoveSectionDown($scope.cellmodel.id);
           },
           action: function() {
-            bkBaseSessionModel.cellOp.moveSectionDown($scope.cellmodel.id);
+            notebookCellOp.moveSectionDown($scope.cellmodel.id);
           }
         });
         $scope.cellview.menu.addItem({
           name: "Cut",
           action: function() {
-            bkBaseSessionModel.cellOp.cut($scope.cellmodel.id);
+            notebookCellOp.cut($scope.cellmodel.id);
           }
         });
         $scope.cellview.menu.addItem({
           name: "Paste (append after)",
           disabled: function() {
-            return !bkBaseSessionModel.cellOp.clipboard;
+            return !notebookCellOp.clipboard;
           },
           action: function() {
-            bkBaseSessionModel.cellOp.paste($scope.cellmodel.id);
+            notebookCellOp.paste($scope.cellmodel.id);
           }
         });
         $scope.getTypeCellUrl = function() {
@@ -191,12 +193,14 @@
     };
   });
   M_bkCell.directive('newCellMenu', function(
-      generalUtils, bkBaseSessionModel, bkCoreManager, evaluatorManager) {
+      generalUtils, bkSessionManager, bkCoreManager, evaluatorManager) {
     return {
       restrict: 'E',
       templateUrl: "./template/newCellMenu.html",
       scope: { config: '=' },
       controller: function($scope) {
+        var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
+
         $scope.getEvaluators = function() {
           return evaluatorManager.getAllEvaluators();
         };
@@ -206,20 +210,20 @@
         };
 
         $scope.newCodeCell = function(evaluatorName) {
-          var newCell = bkBaseSessionModel.newCodeCell(evaluatorName);
+          var newCell = newCellFactory.newCodeCell(evaluatorName);
           $scope.config.attachCell(newCell);
         };
         $scope.newTextCell = function() {
-          var newCell = bkBaseSessionModel.newTextCell();
+          var newCell = newCellFactory.newTextCell();
           $scope.config.attachCell(newCell);
         };
         $scope.newMarkdownCell = function() {
-          var newCell = bkBaseSessionModel.newMarkdownCell();
+          var newCell = newCellFactory.newMarkdownCell();
           $scope.config.attachCell(newCell);
         };
 
         $scope.newSectionCell = function(level) {
-          var newCell = bkBaseSessionModel.newSectionCell(level);
+          var newCell = newCellFactory.newSectionCell(level);
           $scope.config.attachCell(newCell);
         };
       },
@@ -245,7 +249,7 @@
       generalUtils,
       bkShare,
       evaluatorManager,
-      bkBaseSessionModel,
+      bkSessionManager,
       bkCoreManager,
       bkCellPluginManager) {
     return {
@@ -253,6 +257,7 @@
       templateUrl: "./template/bkSectionCell.html",
       //scope: { cell: "=" },
       controller: function($scope) {
+        var notebookCellOp = bkSessionManager.getNotebookCellOp();
         $scope.toggleShowChildren = function() {
           if ($scope.cellmodel.collapsed === undefined) {
             $scope.cellmodel.collapsed = false;
@@ -266,7 +271,7 @@
           return !$scope.cellmodel.collapsed;
         };
         $scope.getChildren = function() {
-          return bkBaseSessionModel.cellOp.getChildren($scope.cellmodel.id);
+          return notebookCellOp.getChildren($scope.cellmodel.id);
         };
         $scope.resetTitle = function(newTitle) {
           $scope.cellmodel.title = newTitle;
@@ -274,18 +279,18 @@
         };
         $scope.$watch('cellmodel.title', function(newVal, oldVal) {
           if (newVal !== oldVal) {
-            bkBaseSessionModel.setEdited(true);
+            bkSessionManager.setNotebookModelEdited(true);
           }
         });
         $scope.$watch('cellmodel.initialization', function(newVal, oldVal) {
           if (newVal !== oldVal) {
-            bkBaseSessionModel.setEdited(true);
+            bkSessionManager.setNotebookModelEdited(true);
           }
         });
         $scope.cellview.menu.addItemToHead({
           name: "Delete section and all sub-sections",
           action: function() {
-            bkBaseSessionModel.cellOp.delete($scope.cellmodel.id);
+            notebookCellOp.delete($scope.cellmodel.id);
           }
         });
         $scope.cellview.menu.addItem({
@@ -295,34 +300,34 @@
               name: "H1",
               action: function() {
                 $scope.cellmodel.level = 1;
-                bkBaseSessionModel.cellOp.reset();
+                notebookCellOp.reset();
               }
             },
             {
               name: "H2",
               action: function() {
                 $scope.cellmodel.level = 2;
-                bkBaseSessionModel.cellOp.reset();
+                notebookCellOp.reset();
               }
             },
             {
               name: "H3",
               action: function() {
                 $scope.cellmodel.level = 3;
-                bkBaseSessionModel.cellOp.reset();
+                notebookCellOp.reset();
               }
             },
             {
               name: "H4",
               action: function() {
                 $scope.cellmodel.level = 4;
-                bkBaseSessionModel.cellOp.reset();
+                notebookCellOp.reset();
               }
             }
           ]
         });
         $scope.isContentEditable = function() {
-          return !bkBaseSessionModel.isNotebookLocked();
+          return !bkSessionManager.isNotebookLocked();
         };
 
         $scope.getShareData = function() {
@@ -331,7 +336,7 @@
             evViewModel: evaluatorManager.getViewModel(),
             notebookModel: {
               cells: [$scope.cellmodel]
-                  .concat(bkBaseSessionModel.cellOp.getAllDescendants($scope.cellmodel.id))
+                  .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id))
             }
           };
         };
@@ -375,18 +380,18 @@
             } else {
               $scope.cellmodel.initialization = true;
             }
-            bkBaseSessionModel.cellOp.reset();
+            notebookCellOp.reset();
           }
         });
         $scope.newCellMenuConfig = {
           isShow: function() {
-            if (bkBaseSessionModel.isNotebookLocked()) {
+            if (bkSessionManager.isNotebookLocked()) {
               return false;
             }
             return !$scope.cellmodel.hideTitle;
           },
           attachCell: function(newCell) {
-            bkBaseSessionModel.cellOp.insertAfter($scope.cellmodel.id, newCell);
+            notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
           }
         };
       },
@@ -416,7 +421,7 @@
     };
   });
 
-  M_bkCell.directive('textCell', function(bkBaseSessionModel) {
+  M_bkCell.directive('textCell', function(bkSessionManager) {
     return {
       restrict: 'E',
       template: "<div contenteditable='true'></div>",
@@ -432,14 +437,14 @@
         });
         scope.$watch('cellmodel.body', function(newVal, oldVal) {
           if (newVal !== oldVal) {
-            bkBaseSessionModel.setEdited(true);
+            bkSessionManager.setNotebookModelEdited(true);
           }
         });
       }
     };
   });
 
-  M_bkCell.directive('markdownCell', function(bkBaseSessionModel) {
+  M_bkCell.directive('markdownCell', function(bkSessionManager) {
     return {
       restrict: 'E',
       template: "<div></div>",
@@ -490,7 +495,7 @@
         }
         scope.$watch('cellmodel.body', function(newVal, oldVal) {
           if (newVal !== oldVal) {
-            bkBaseSessionModel.setEdited(true);
+            bkSessionManager.setNotebookModelEdited(true);
           }
         });
       }

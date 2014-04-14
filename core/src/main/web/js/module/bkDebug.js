@@ -24,6 +24,7 @@
     "M_bkApp",
     "M_bkCellPluginManager",
     "M_bkCore",
+    'M_bkSessionManager',
     "M_bkHelper",
     "M_bkOutputLog",
     "M_bkRecentMenu",
@@ -37,15 +38,15 @@
     "M_menuPlugin"
   ]);
   module.factory("bkDebug", function(
-      $injector, angularUtils, bkAppEvaluate, bkCellPluginManager, bkBaseSessionModel,
-      bkCoreManager, bkHelper, bkOutputLog, bkRecentMenu, bkSession, bkShare, trackingService,
-      bkUtils, cometd, evaluatorManager, generalUtils, menuPluginManager) {
+      $injector, angularUtils, bkAppEvaluate, bkCellPluginManager, bkSessionManager,
+      bkCoreManager, bkHelper, bkOutputLog, bkRecentMenu, bkSession, bkShare,
+      trackingService, bkUtils, cometd, evaluatorManager, generalUtils, menuPluginManager) {
     return {
       $injector: $injector,
       angularUtils: angularUtils,
       bkAppEvaluate: bkAppEvaluate,
       bkCellPluginManager: bkCellPluginManager,
-      bkBaseSessionModel: bkBaseSessionModel,
+      bkSessionManager: bkSessionManager,
       bkCoreManager: bkCoreManager,
       bkHelper: bkHelper,
       bkOutputLog: bkOutputLog,

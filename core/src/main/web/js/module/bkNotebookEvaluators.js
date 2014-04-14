@@ -22,11 +22,12 @@
   'use strict';
   var bkNotebookEvaluators = angular.module('M_bkNotebookEvaluators', [
     'M_bkCore',
+    'M_bkSessionManager',
     'M_evaluatorManager'
   ]);
 
   bkNotebookEvaluators.directive('bkNotebookEvaluators', function(
-      evaluatorManager, bkCoreManager, bkBaseSessionModel, menuPluginManager) {
+      evaluatorManager, bkCoreManager, bkSessionManager, menuPluginManager) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkNotebook_evaluators.html",
@@ -68,8 +69,8 @@
               name: Shell.prototype.pluginName,
               plugin: pluginUrl
             };
-            bkBaseSessionModel.getNotebookModel().evaluators.push(newEvaluatorObj);
-            bkCoreManager.addEvaluator(newEvaluatorObj, true);
+            bkSessionManager.getRawNotebookModel().evaluators.push(newEvaluatorObj);
+            bkCoreManager.addEvaluator(newEvaluatorObj);
           };
           evaluatorManager.setupPlugin(pluginUrl, makeEvaluator);
         };
@@ -92,7 +93,7 @@
   });
 
   bkNotebookEvaluators.directive('bkNotebookEvaluatorsEvaluatorSettings', function(
-      $compile, bkBaseSessionModel) {
+      $compile, bkSessionManager) {
     return {
       restrict: 'E',
       template: '<div ng-show="evaluator.loading"><accordion-group heading="Loading {{evaluator.url}}...">' +
@@ -102,7 +103,7 @@
       controller: function($scope) {
         $scope.set = function(val) {
           $scope.evaluator.evaluator.perform(val);
-          bkBaseSessionModel.setEdited(true);
+          bkSessionManager.setNotebookModelEdited(true);
         };
       },
       link: function(scope, element, attrs) {
@@ -127,7 +128,7 @@
   });
 
   bkNotebookEvaluators.directive('bkNotebookEvaluatorsAddEvaluatorPanel',
-      function(bkBaseSessionModel, evaluatorManager, bkCoreManager) {
+      function(bkSessionManager, evaluatorManager, bkCoreManager) {
         return {
           restrict: 'E',
           templateUrl: './template/bkNotebook_addEvaluatorPanel.html',
@@ -143,8 +144,8 @@
                 plugin: $scope.pluginForNewEvaluator
               };
               $scope.newEvaluatorName = "";
-              bkBaseSessionModel.getNotebookModel().evaluators.push(newEvaluator);
-              bkCoreManager.addEvaluator(newEvaluator, true);
+              bkSessionManager.notebookModelAddEvaluator(newEvaluator);
+              bkCoreManager.addEvaluator(newEvaluator);
             };
           }
         };

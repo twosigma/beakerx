@@ -31,6 +31,7 @@
     'M_TreeView',
     'M_bkCore',
     'M_bkSession',
+    'M_bkSessionManager',
     'M_bkNotebook',
     'M_evaluatorManager',
     'M_menuPlugin',
@@ -51,10 +52,10 @@
       cometd,
       bkUtils,
       bkSession,
+      bkSessionManager,
       evaluatorManager,
       menuPluginManager,
       bkCellPluginManager,
-      bkBaseSessionModel,
       bkCoreManager,
       bkAppEvaluate,
       bkNotebookVersionManager) {
@@ -63,169 +64,188 @@
       templateUrl: "./template/bkApp.html",
       scope: {},
       controller: function($scope) {
-        var _impl = (function() {
-          var showTransientMessage = function(message) {
-            $scope.message = message;
-            bkUtils.delay(500).then(function() {
-              $scope.message = "";
-            });
-          };
-          var defaultSaveFunc = function(notebookModel) {
-            // by default pop up the file chooser for saving as 'file'
-            var deferred = $q.defer();
-            var saveAsFile = function(path) {
-              if (!path) {
-                deferred.reject("file save cancelled");
-              } else {
-                var saveFunc = bkCoreManager.getSaveFunc("file");
-                saveFunc(path, notebookModel).then(function() {
-                  bkHelper.setSaveFunction(function(notebookModel) {
-                    return saveFunc(path, notebookModel);
-                  });
-                  document.title = path.replace(/^.*[\\\/]/, '');
-                  deferred.resolve();
-                });
-              }
-            };
-            bkCoreManager.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(homeDir) {
-              var fileChooserStrategy = { result: "" };
-              fileChooserStrategy.close = function(ev, closeFunc) {
-                if (ev.which === 13) {
-                  closeFunc(this.result);
+        var showStatusMessage = function(message) {
+          $scope.message = message;
+        };
+        var showTransientStatusMessage = function(message) {
+          showStatusMessage(message);
+          bkUtils.delay(500).then(function() {
+            showStatusMessage("");
+          });
+        };
+
+        var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
+          evaluatorManager.newEvaluator(settings, alwaysCreateNewEvaluator)
+              .then(function(evaluator) {
+                var actions = [];
+                var name = evaluator.pluginName;
+                for (var property in evaluator.spec) {
+                  var widg = evaluator.spec[property];
+                  var item = widg.name ? widg.name : widg.action;
+                  if (widg.type === "action") {
+                    actions.push({name: item, action: (function(w) {
+                      return function() {
+                        evaluator.perform(w.action);
+                      }}(widg))});
+                  }
                 }
-              };
-              fileChooserStrategy.treeViewfs = {
-                getChildren: function(path, callback) {
-                  var self = this;
-                  this.showSpinner = true;
-                  $http({
-                    method: 'GET',
-                    url: "/beaker/rest/file-io/getDecoratedChildren",
-                    params: { path: path }
-                  }).success(function(list) {
-                        self.showSpinner = false;
-                        callback(list);
-                      }).error(function() {
-                        self.showSpinner = false;
-                        console.log("Error loading children");
-                      });
-                },
-                open: function(path) {
-                  fileChooserStrategy.result = path;
-                },
-                showSpinner: false
-              };
-              bkCoreManager.showFileChooser(
-                  saveAsFile,
-                  '<div class="modal-header">' +
-                      '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
-                      '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
-                      '</div>' +
-                      '<div class="modal-body">' +
-                      '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-                      '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
-                      '  </tree-view>' +
-                      '</div>' +
-                      '<div class="modal-footer">' +
-                      '  <p><input id="saveAsFileInput"' +
-                      '            class="input-xxlarge"' +
-                      '            ng-model="getStrategy().result"' +
-                      '            ng-keypress="getStrategy().close($event, close)"' +
-                      '            focus-start /></p>' +
-                      '  <button ng-click="close()" class="btn">Cancel</button>' +
-                      '  <button ng-click="close(getStrategy().result)" class="btn btn-primary">' +
-                      '      Save' +
-                      '  </button>' +
-                      '</div>',
-                  fileChooserStrategy);
+                if (actions.length > 0) {
+                  menuPluginManager.addItem("Evaluators", name, actions);
+                }
+              });
+        };
+
+        var loadNotebook = (function() {
+          var addScrollingHack = function() {
+            // TODO, the following is a hack to address the issue that
+            // somehow the notebook is scrolled to the middle
+            // this hack listens to the 'scroll' event and scrolls it to the top
+            // A better solution is to do this when Angular stops firing and DOM updates finish.
+            // A even better solution would be to get rid of the unwanted scrolling in the first place.
+            // A even even better solution is the session actually remembers where the scrolling was
+            // and scroll to there and in the case of starting a new session (i.e. loading a notebook from file)
+            // scroll to top.
+            var listener = function(ev) {
+              window.scrollTo(0, 0);
+              window.removeEventListener('scroll', listener, false);
+            };
+            window.addEventListener('scroll', listener, false);
+          };
+          var loadNotebookModelAndResetSession = function(
+              notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
+            $scope.loading = true;
+            addScrollingHack();
+            bkSessionManager.reset(
+                notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
+            var isOpeningExistingSession = !!sessionId;
+            if (notebookModel && notebookModel.evaluators) {
+              for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+                addEvaluator(notebookModel.evaluators[i], !isOpeningExistingSession);
+              }
+            }
+            document.title = bkSessionManager.getNotebookTitle();
+            bkHelper.evaluate("initialization");
+            menuPluginManager.clearItem("Evaluators");
+            $scope.loading = false;
+          };
+          return {
+            openUri: function(notebookUri, uriType, readOnly, format, retry, retryCountMax) {
+              if (!notebookUri) {
+                alert("Failed to open notebook, notebookUri is empty");
+                return;
+              }
+              $scope.loading = true;
+              if (retryCountMax === undefined) {
+                retryCountMax = 100;
+              }
+              if (!uriType) {
+                uriType = bkCoreManager.guessUriType(notebookUri);
+              }
+              readOnly = !!readOnly;
+              if (!format) {
+                format = bkCoreManager.guessFormat(notebookUri);
+              }
+
+              var self = this;
+              var importer = bkCoreManager.getImporter(format);
+              if (!importer) {
+                if (retry) {
+                  // retry, sometimes the importer came from a plugin that is being loaded
+                  retryCountMax -= 1;
+                  setTimeout(function() {
+                    loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry, retryCountMax);
+                  }, 100);
+                } else {
+                  alert("Failed to open " + notebookUri
+                      + " because format " + format
+                      + " was not recognized.");
+                }
+              }
+              var fileLoader = bkCoreManager.getFileLoader(uriType);
+              fileLoader.load(notebookUri).then(function(fileContentAsString) {
+                var notebookModel = importer.import(fileContentAsString);
+                notebookModel = bkNotebookVersionManager.open(notebookModel);
+                loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel);
+              }).catch(function(data, status, headers, config) {
+                bkHelper.showErrorModal(data);
+              }).finally(function() {
+                $scope.loading = false;
+              });
+            },
+          fromSession: function(sessionId) {
+            bkSession.load(sessionId).then(function(session) {
+              var notebookUri = session.notebookUri;
+              var uriType = session.uriType;
+              var readOnly = session.readOnly;
+              var format = session.format;
+              var notebookModel = angular.fromJson(session.notebookModelJson);
+              var edited = session.edited;
+              loadNotebookModelAndResetSession(
+                  notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
             });
+          },
+          defaultNotebook: function() {
+            bkUtils.getDefaultNotebook().then(function(notebookModel) {
+              var notebookUri = null;
+              var uriType = null;
+              var readOnly = true;
+              var format = null;
+              loadNotebookModelAndResetSession(
+                  notebookUri, uriType, readOnly, format, notebookModel);
+            });
+          }
+        };
+        })();
+
+        var _impl = (function() {
+          var _saveNotebook = function() {
+            showStatusMessage("Saving");
+            var deferred = bkCoreManager.newDeferred();
+            var saveData = bkSessionManager.getSaveData();
+            var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
+            fileSaver.save(saveData.notebookUri, saveData.notebookModelAsString).then(
+                function () {
+                  bkSessionManager.setNotebookModelEdited(false);
+                  showTransientStatusMessage("Saved");
+                  deferred.resolve(arguments);
+                },
+                function (msg) {
+                  showTransientStatusMessage("Cancelled");
+                  deferred.reject();
+                });
             return deferred.promise;
           };
-          var _saveFunc = defaultSaveFunc;
-          var _pathOpeners = {};
-
           return {
-            loadNotebook: function(
-                notebookModel,
-                alwaysCreateNewEvaluators,
-                notebookUri,
-                sessionID) {
-              if (angular.isString(notebookModel)) {
-                try {
-                  notebookModel = angular.fromJson(notebookModel);
-                  // TODO, to be removed. Addressing loading a corrupted notebook.
-                  if (angular.isString(notebookModel)) {
-                    notebookModel = angular.fromJson(notebookModel);
-                    bkCoreManager.log("corrupted-notebook", { notebookUri: notebookUri });
-                  }
-                } catch (e) {
-                  console.error(e);
-                  console.error("This is not a valid Beaker notebook JSON");
-                  console.error(notebookModel);
-                  window.alert("Not a valid Beaker notebook");
-                  return;
-                }
+            saveNotebook: function() {
+              var self = this;
+              if (bkSessionManager.isSavable()) {
+                return _saveNotebook();
+              } else {
+                // pop up the file chooser and then proceed as save-as
+                return bkCoreManager.showDefaultSavingFileChooser().then(function(ret) {
+                  return self.saveNotebookAs(ret.uri, ret.uriType);
+                });
               }
-
-              // Backup current session if it's not empty.
-              if (bkBaseSessionModel.getSessionID() &&
-                  !_.isEmpty(bkBaseSessionModel.getNotebookModel())) {
-                bkSession.backupSession(bkBaseSessionModel.getSessionData());
-              }
-
-              evaluatorManager.reset();
-              menuPluginManager.clearItem("Evaluators");
-              
-              if (!sessionID) {
-                sessionID = bkUtils.generateID(6);
-              }
-              bkBaseSessionModel.setSessionID(sessionID);
-              notebookModel = bkNotebookVersionManager.open(notebookModel);
-              if (notebookModel && notebookModel.evaluators) {
-                for (var i = 0; i < notebookModel.evaluators.length; ++i) {
-                  this.addEvaluator(notebookModel.evaluators[i], alwaysCreateNewEvaluators);
-                }
-              }
-              bkBaseSessionModel.setNotebookModel(notebookModel);
-              bkBaseSessionModel.setNotebookUrl(notebookUri);
-              bkCoreManager.recordRecentDocument(notebookUri);
-              $scope.loading = false;
-
-              // TODO, the following is a hacky solution to address the issue that
-              // somehow the notebook is scrolled to the middle
-              // this hack listens to the 'scroll' event and scrolls it to the top
-              // A better solution is to do this when Angular stops firing and DOM updates finish.
-              // A even better solution would be to get rid of the unwanted scrolling in the first place.
-              // A even even better solution is the session actually remembers where the scrolling was
-              // and scroll to there and in the case of starting a new session (i.e. loading a notebook from file)
-              // scroll to top.
-              var listener = function(ev) {
-                window.scrollTo(0, 0);
-                window.removeEventListener('scroll', listener, false);
-              };
-              window.addEventListener('scroll', listener, false);
             },
+            saveNotebookAs: function(notebookUri, uriType) {
+              bkSessionManager.updateNotebookUri(notebookUri, uriType, false);
+              document.title = bkSessionManager.getNotebookTitle();
+              return _saveNotebook();
+            },
+
             closeNotebook: function() {
               var self = this;
-              var sessionID = bkBaseSessionModel.getSessionID();
               var closeSession = function() {
-                bkSession.closeSession(sessionID).then(function() {
-                  evaluatorManager.exitAndRemoveAllEvaluators();
-                  menuPluginManager.clearItem("Evaluators");
-                  bkBaseSessionModel.clearSession();
-                  self.setSaveFunction(defaultSaveFunc);
+                bkSessionManager.close().then(function() {
                   $location.path("/control");
-                  bkCoreManager.refreshRootScope();
                 });
               };
-              if (bkBaseSessionModel.isEdited() === false) {
+              if (bkSessionManager.isNotebookModelEdited() === false) {
                 closeSession();
               } else {
-                var notebookUri = bkBaseSessionModel.getSessionData().notebookurl;
-                var notebookName =
-                    notebookUri ? notebookUri.replace(/^.*[\\\/]/, '') : "[New Notebook]";
+                var notebookTitle = bkSessionManager.getNotebookTitle();
                 bkHelper.showYesNoCancelModal(
-                    "Do you want to save " + notebookName + "?",
+                    "Do you want to save " + notebookTitle + "?",
                     "Confirm close",
                     function() {
                       self.saveNotebook().then(closeSession);
@@ -234,73 +254,12 @@
                       console.log("close without saving");
                       closeSession();
                     },
-                    null,
-                    "Save",
-                    "Don't save"
+                    null, "Save", "Don't save"
                 );
               }
             },
-            // Save
-            setSaveFunction: function(saveFunc) {
-              _saveFunc = saveFunc;
-            },
-            getSaveFunction: function() {
-              return _saveFunc ? _saveFunc : defaultSaveFunc;
-            },
-            saveNotebook: function() {
-              var deferred = $q.defer();
-              $scope.message = "Saving";
-              var saveFunc = this.getSaveFunction();
-              var notebookModel = bkBaseSessionModel.getNotebookModel();
-              saveFunc(notebookModel).then(
-                  function() {
-                    bkBaseSessionModel.setEdited(false);
-                    showTransientMessage("Saved");
-                    deferred.resolve(arguments);
-                  },
-                  function(msg) {
-                    showTransientMessage("Cancelled");
-                    deferred.reject();
-                  });
-              return deferred.promise;
-            },
-            // Open
-            setPathOpener: function(pathType, opener) {
-              _pathOpeners[pathType] = opener;
-            },
-            openPath: function(path, pathType, retry, timeout) {
-              if (!path) {
-                return;
-              }
-              $scope.loading = true;
-              if (timeout === undefined) {
-                timeout = 100;
-              }
-              var self = this;
-              // XXX BEAKER-516 pathtype should be saved
-              // explicitly so we don't have to deduce them.
-              if (!pathType) {
-                pathType = path.substring(0, path.indexOf(':/')) || "file";
-              }
-              if (/^https?/.exec(pathType)) { // TODO, this is a temp hack
-                pathType = "file";
-              }
-              if (_pathOpeners[pathType]) {
-                _pathOpeners[pathType].open(path);
-              } else {
-                if (retry) {
-                  setTimeout(function() {
-                    self.openPath(path, pathType, retry, timeout - 1);
-                  }, 100);
-                } else {
-                  alert("Failed to open " + path
-                      + " because path type " + pathType
-                      + " was not recognized.");
-                }
-              }
-            },
             evaluate: function(toEval) {
-              var cellOp = bkBaseSessionModel.cellOp;
+              var cellOp = bkSessionManager.getNotebookCellOp();
               // toEval can be a tagName (string), which is for now either "initialization" or the
               // name of an evaluator, user defined tags is not supported yet.
               // or a cellID (string)
@@ -321,7 +280,7 @@
                   // not a cellID
                   if (toEval === "initialization") {
                     // in this case toEval is going to be an array of cellModels
-                    toEval = bkBaseSessionModel.getInitializationCells(toEval);
+                    toEval = bkSessionManager.notebookModelGetInitializationCells();
                   } else {
                     console.log(toEval);
                     // assume it is a evaluator name,
@@ -345,30 +304,15 @@
                 output: {}
               });
             },
-            addEvaluator: function(settings, alwaysCreateNewEvaluator) {
-              evaluatorManager.newEvaluator(settings, alwaysCreateNewEvaluator)
-                  .then(function(evaluator) {
-                    var actions = [];
-                    var name = evaluator.pluginName;
-                    for (var property in evaluator.spec) {
-                      var widg = evaluator.spec[property];
-                      var item = widg.name ? widg.name : widg.action;
-                      if (widg.type === "action") {
-                        actions.push({name: item, action: (function (w) {
-                          return function() {
-                            evaluator.perform(w.action);
-                          }}(widg))});
-                      }
-                    }
-                    if (actions.length > 0) {
-                      menuPluginManager.addItem("Evaluators", name, actions);
-                    }
-                  });
+            addEvaluator: function(settings) {
+              addEvaluator(settings);
             }
           };
         })();
+        bkCoreManager.setBkAppImpl(_impl);
+
         $scope.isEdited = function() {
-          return bkBaseSessionModel.isEdited();
+          return bkSessionManager.isNotebookModelEdited();
         };
         $scope.$watch('isEdited()', function(edited, oldValue) {
           if (edited) {
@@ -382,7 +326,6 @@
           }
         });
 
-        bkCoreManager.setBkAppImpl(_impl);
         var intervalID = null;
         var stopAutoBackup = function() {
           if (intervalID) {
@@ -392,9 +335,7 @@
         };
         var startAutoBackup = function() {
           stopAutoBackup();
-          intervalID = setInterval(function() {
-            bkSession.backupSession(bkBaseSessionModel.getSessionData());
-          }, 60 * 1000);
+          intervalID = setInterval(bkSessionManager.backup, 60 * 1000);
         };
         $scope.getMenus = function() {
           return menuPluginManager.getMenus();
@@ -408,11 +349,12 @@
         };
         $(document).bind('keydown', keydownHandler);
         var onDestroy = function() {
-          bkSession.backupSession(bkBaseSessionModel.getSessionData());
+          bkSessionManager.backup();
           stopAutoBackup();
           bkCoreManager.setBkAppImpl(null);
           $(document).unbind('keydown', keydownHandler);
         };
+
         // TODO, when use setLocation and leave from bkApp (e.g. to control panel),
         // we should warn and cancel evals
         /*var onLeave = function() {
@@ -426,6 +368,7 @@
          );
          }
          };*/
+
         $scope.$on("$destroy", onDestroy);
         window.onbeforeunload = function(e) {
           // TODO, we should warn users, but I can't find a way to properly perform cancel after
@@ -441,13 +384,13 @@
         startAutoBackup();
         $scope.gotoControlPanel = function(event) {
           if (bkCoreManager.isMiddleClick(event)) {
-            bkSession.backupSession(bkBaseSessionModel.getSessionData());
             window.open("./");
           } else {
-            bkCoreManager.gotoControlPanel();
+            bkSessionManager.backup().then(function() {
+              bkCoreManager.gotoControlPanel();
+            });
           }
         };
-
 
         cometd.addStatusListener(function(msg) {
           if (msg.successful !== !$scope.disconnected) {
@@ -455,47 +398,33 @@
             $scope.$apply();
           }
         });
-        $scope.message = "";
+
+        showStatusMessage("");
+        $scope.loading = true;
+
+        // ensure an existing session is cleared so that the empty notebook model
+        // makes the UI is blank immediately (instead of showing leftover from a previous session)
+        bkSessionManager.clear();
 
         menuPluginManager.reset();
         bkCellPluginManager.reset();
 
-        $scope.loading = true;
-        // set the notebook model to empty so the UI is blank instead of leftover from the
-        // previous model
-        bkBaseSessionModel.setNotebookModel({});
-        bkBaseSessionModel.setEdited(false);
         var sessionID = $routeParams.sessionID;
         if (sessionID) {
           if (sessionID === "new") {
-            bkCoreManager.getDefaultNotebook().then(function(notebookJSON) {
-              _impl.loadNotebook(notebookJSON, true);
-              document.title = "New Notebook";
-            });
+            loadNotebook.defaultNotebook();
           } else if (sessionID === "none") {
             // do nothing
           } else {
-            bkSession.loadSession(sessionID).then(function(ret) {
-              var notebookJson = ret.content;
-              var notebookUri = ret.notebookurl;
-              var notebookUriType = notebookUri ? notebookUri.substring(0, notebookUri.indexOf(':/')) || "file" : "file";
-              _impl.loadNotebook(notebookJson, false, notebookUri, sessionID);
-              _impl.setSaveFunction(function(notebookModel) {
-                var saveFunc = bkCoreManager.getSaveFunc(notebookUriType);
-                return saveFunc(notebookUri, notebookModel);
-              });
-              if (!notebookUri) {
-                document.title = "New Notebook";
-              } else {
-                document.title = notebookUri.replace(/^.*[\\\/]/, '');
-              }
-              bkBaseSessionModel.setEdited(ret.edited);
-            });
+            loadNotebook.fromSession(sessionID);
           }
-        } else {
-          var pathType = "";
-          var path = $routeParams.uri;
-          _impl.openPath(path, undefined, true);
+        } else { // open
+          var notebookUri = $routeParams.uri;
+          var uriType = $routeParams.type;
+          var readOnly = $routeParams.readOnly;
+          var format = $routeParams.format;
+          var retry = true;
+          loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry);
         }
       }
     };

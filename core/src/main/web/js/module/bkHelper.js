@@ -22,6 +22,7 @@
   'use strict';
   var module = angular.module('M_bkHelper', [
     'M_bkCore',
+    'M_bkSessionManager',
     'M_bkShare'
   ]);
   /**
@@ -33,10 +34,10 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkBaseSessionModel, bkCoreManager, bkShare) {
+  module.factory('bkHelper', function(bkSessionManager, bkCoreManager, bkShare) {
     var bkHelper = {
       forDebugOnly: {
-        bkBaseSessionModel: bkBaseSessionModel,
+        bkSessionManager: bkSessionManager,
         bkCoreManager: bkCoreManager
       },
       getBkAppViewModel: function() {
@@ -53,8 +54,8 @@
       gotoControlPanel: function() {
         return bkCoreManager.gotoControlPanel();
       },
-      openURI: function(path) {
-        return bkCoreManager.openURI(path);
+      openNotebook: function(notebookUri, uriType, readOnly, format) {
+        return bkCoreManager.openNotebook(notebookUri, uriType, readOnly, format);
       },
       newSession: function() {
         return bkCoreManager.newSession();
@@ -66,16 +67,19 @@
             notebookModel, alwaysCreateNewEvaluators, notebookUri, sessionID);
       },
       closeNotebook: function() {
-        return bkCoreManager.getBkApp().closeNotebook();
+        return bkCoreManager.closeNotebook();
       },
       saveNotebook: function() {
-        return bkCoreManager.getBkApp().saveNotebook();
+        return bkCoreManager.saveNotebook();
       },
-      setSaveFunction: function(saveFunc) {
-        return bkCoreManager.getBkApp().setSaveFunction(saveFunc);
+      saveNotebookAs: function(notebookUri, uriType) {
+        return bkCoreManager.saveNotebookAs(notebookUri, uriType);
       },
-      setPathOpener: function(pathType, opener) {
-        return bkCoreManager.getBkApp().setPathOpener(pathType, opener);
+      showDefaultSavingFileChooser: function() {
+        return bkCoreManager.showDefaultSavingFileChooser();
+      },
+      setImporter: function(format, importer) {
+        return bkCoreManager.setImporter(format, importer);
       },
       evaluate: function(toEval) {
         return bkCoreManager.evaluate(toEval);
@@ -94,32 +98,17 @@
       },
 
       // session and notebook model
-      getNotebookModel: function() {
-        return bkBaseSessionModel.getNotebookModel();
-      },
+      // TODO, refactor this so bkHelper perform these through the bkNotebookApp
+      // the session manager should owned by the bkNotebookApp and bkHelper
+      // shouldn't directly depend on it
       getSessionID: function() {
-        return bkBaseSessionModel.getSessionID();
-      },
-      setNotebookUrl: function(notebookUrl) {
-        bkBaseSessionModel.setNotebookUrl(notebookUrl);
-        bkCoreManager.recordRecentDocument(notebookUrl);
-      },
-      getSessionData: function() {
-        return bkBaseSessionModel.getSessionData();
+        return bkSessionManager.getSessionId();
       },
       toggleNotebookLocked: function() {
-        return bkBaseSessionModel.toggleNotebookLocked();
+        return bkSessionManager.toggleNotebookLocked();
       },
       isNotebookLocked: function() {
-        return bkBaseSessionModel.isNotebookLocked();
-      },
-
-      // notebook save functions
-      registerSaveFunc: function(type, saveFunc) {
-        return bkCoreManager.registerSaveFunc(type, saveFunc);
-      },
-      getSaveFunc: function(type) {
-        return bkCoreManager.getSaveFunc(type);
+        return bkSessionManager.isNotebookLocked();
       },
 
       // utils
@@ -203,14 +192,8 @@
       findTable: function(elem) {
         return bkCoreManager.findTable(elem);
       },
-      getDefaultNotebook: function() {
-        return bkCoreManager.getDefaultNotebook();
-      },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
-      },
-      getCurrentOpenMenuItems: function() {
-        return bkCoreManager.getCurrentOpenMenuItems();
       },
       getLoadingPlugin: function(key) {
         return bkCoreManager.getLoadingPlugin(key);
@@ -236,6 +219,22 @@
       require: function(nameOrUrl) {
         return bkCoreManager.require(nameOrUrl);
       },
+      loadFile: function(path) {
+        return bkCoreManager.loadFile(path);
+      },
+      loadHttp: function(url) {
+        return bkCoreManager.loadHttp(url);
+      },
+      saveFile: function(path, contentAsJson) {
+        return bkCoreManager.saveFile(path, contentAsJson);
+      },
+      getFileSystemFileChooserStrategy: function() {
+        return bkCoreManager.getFileSystemFileChooserStrategy();
+      },
+      getHomeDirectory: function() {
+        return bkCoreManager.getHomeDirectory();
+      },
+
       // input cell
       setInputCellKeyMapMode: function(keyMapMode) {
         return bkCoreManager.setCMKeyMapMode(keyMapMode);

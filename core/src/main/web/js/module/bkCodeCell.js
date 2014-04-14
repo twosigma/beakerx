@@ -22,6 +22,7 @@
   'use strict';
   var M_bkCodeCell = angular.module('M_bkCodeCell', [
     'M_bkCore',
+    'M_bkSessionManager',
     'M_evaluatorManager',
     'M_bkCellPluginManager',
     'M_bkCodeCellOutput',
@@ -31,7 +32,8 @@
   ]);
   M_bkCodeCell.directive('codeCell', function(
       $rootScope, generalUtils, bkShare, evaluatorManager,
-      bkCellPluginManager, bkBaseSessionModel, bkCoreManager) {
+      bkCellPluginManager, bkSessionManager, bkCoreManager) {
+    var notebookCellOp = bkSessionManager.getNotebookCellOp();
     return {
       restrict: 'E',
       templateUrl: "./template/bkCodeCell.html",
@@ -42,7 +44,7 @@
           displays: []
         };
         var isLocked = function() {
-          return bkBaseSessionModel.isNotebookLocked();
+          return bkSessionManager.isNotebookLocked();
         };
 
         $scope.isShowInput = function() {
@@ -81,7 +83,7 @@
         };
         var editedListener = function(newValue, oldValue) {
           if (newValue !== oldValue) {
-            bkBaseSessionModel.setEdited(true);
+            bkSessionManager.setNotebookModelEdited(true);
           }
         };
         $scope.$watch('cellmodel.id', editedListener);
@@ -131,8 +133,8 @@
             // if no evaluator specified, use the current evaluator
             evaluatorName = $scope.cellmodel.evaluator;
           }
-          var newCell = bkBaseSessionModel.newCodeCell(evaluatorName);
-          bkBaseSessionModel.cellOp.appendAfter(thisCellID, newCell);
+          var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluatorName);
+          notebookCellOp.appendAfter(thisCellID, newCell);
           $rootScope.$$phase || $rootScope.$apply();
 
         };
@@ -195,7 +197,7 @@
             } else {
               $scope.cellmodel.initialization = true;
             }
-            bkBaseSessionModel.cellOp.reset();
+            notebookCellOp.reset();
           }
         });
         $scope.$on("$destroy", function() {
@@ -237,26 +239,26 @@
         var moveFocusDown = function() {
           // move focus to next code cell
           var thisCellID = scope.cellmodel.id;
-          var nextCell = bkBaseSessionModel.cellOp.getNext(thisCellID);
+          var nextCell = notebookCellOp.getNext(thisCellID);
           while (nextCell) {
             if (bkCoreManager.getFocusable(nextCell.id)) {
               bkCoreManager.getFocusable(nextCell.id).focus();
               break;
             } else {
-              nextCell = bkBaseSessionModel.cellOp.getNext(nextCell.id);
+              nextCell = notebookCellOp.getNext(nextCell.id);
             }
           }
         };
         var moveFocusUp = function() {
           // move focus to prev code cell
           var thisCellID = scope.cellmodel.id;
-          var prevCell = bkBaseSessionModel.cellOp.getPrev(thisCellID);
+          var prevCell = notebookCellOp.getPrev(thisCellID);
           while (prevCell) {
             if (bkCoreManager.getFocusable(prevCell.id)) {
               bkCoreManager.getFocusable(prevCell.id).focus();
               break;
             } else {
-              prevCell = bkBaseSessionModel.cellOp.getPrev(prevCell.id);
+              prevCell = notebookCellOp.getPrev(prevCell.id);
             }
           }
         };

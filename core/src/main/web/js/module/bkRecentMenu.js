@@ -59,16 +59,30 @@
             _recentMenu.splice(0, _recentMenu.length);
             for (i = 0; i < items.length && i < HISTORY_LENGTH; ++i) {
               (function() {
-                var item = items[i];
-                _recentMenu.push({
-                  name: getShortName(item),
-                  action: function() {
-                    // TODO, this is a hack
-                    // this should ideally be going through beakerRoot.openURI()
-                    $location.path("/open/" + encodeURIComponent(item));
-                  },
-                  tooltip: item
-                });
+                try {
+                  var item = angular.fromJson(items[i]);
+                  _recentMenu.push({
+                    name: getShortName(item.uri),
+                    action: function() {
+                      var notebookUri = item.uri;
+                      var uriType = item.type;
+                      var readOnly = item.readOnly;
+                      var format = item.format;
+                      _pathOpener.open(item.uri, item.type, item.readOnly, item.format);
+                    },
+                    tooltip: item.uri
+                  });
+                } catch(e) {
+                  // this exists only for backward compatibility
+                  var item = items[i];
+                  _recentMenu.push({
+                    name: getShortName(item),
+                    action: function() {
+                      $location.path("/open/" + encodeURIComponent(item));
+                    },
+                    tooltip: item
+                  });
+                }
               })();
             }
           }
@@ -80,14 +94,18 @@
         _server.clear(refreshMenu);
       };
 
+      var _pathOpener;
       refreshMenu(); // initialize
       return {
+        init: function(pathOpener) {
+          _pathOpener = pathOpener;
+        },
         getMenuItems: function() {
           return _recentMenu;
         },
-        recordRecentDocument: function(doc) {
+        recordRecentDocument: function(item) {
           if (_server) {
-            _server.addItem(doc, refreshMenu);
+            _server.addItem(item, refreshMenu);
           }
         }
       };

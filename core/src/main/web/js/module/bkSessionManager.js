@@ -142,9 +142,10 @@
         _edited = false;
       },
       close: function() {
+        var self = this;
         var close = function() {
           evaluatorManager.exitAndRemoveAllEvaluators();
-          this.clear();
+          self.clear();
         };
         if (_sessionId) {
           return bkSession.close(_sessionId).then(close);

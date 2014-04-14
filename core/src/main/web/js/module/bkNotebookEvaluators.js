@@ -126,28 +126,4 @@
       }
     };
   });
-
-  bkNotebookEvaluators.directive('bkNotebookEvaluatorsAddEvaluatorPanel',
-      function(bkSessionManager, evaluatorManager, bkCoreManager) {
-        return {
-          restrict: 'E',
-          templateUrl: './template/bkNotebook_addEvaluatorPanel.html',
-          controller: function($scope) {
-            $scope.pluginForNewEvaluator = "";
-            $scope.newEvaluatorName = "";
-            $scope.getPlugins = function() {
-              return evaluatorManager.getPlugins();
-            };
-            $scope.addEvaluator = function() {
-              var newEvaluator = {
-                name: $scope.newEvaluatorName,
-                plugin: $scope.pluginForNewEvaluator
-              };
-              $scope.newEvaluatorName = "";
-              bkSessionManager.notebookModelAddEvaluator(newEvaluator);
-              bkCoreManager.addEvaluator(newEvaluator);
-            };
-          }
-        };
-      });
 })();

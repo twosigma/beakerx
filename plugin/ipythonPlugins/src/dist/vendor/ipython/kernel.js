@@ -167,8 +167,7 @@ var IPython = (function (IPython) {
         var that = this;
         this.stop_channels();
         var ws_host_url = this.ws_host + this.kernel_url;
-      /*
-        XXX original code here
+      
         console.log("Starting WebSockets:", ws_host_url);
         this.shell_channel = new this.WebSocket(
             this.ws_host + utils.url_join_encode(this.kernel_url, "shell")
@@ -179,17 +178,6 @@ var IPython = (function (IPython) {
         this.iopub_channel = new this.WebSocket(
             this.ws_host + utils.url_join_encode(this.kernel_url, "iopub")
         );
-        */
-        var ws_base = this.kernel_url.replace('http', 'ws');
-        console.log("My Starting WebSockets:", ws_base);
-
-        this.shell_channel = new this.WebSocket(ws_base + "/shell");
-        this.stdin_channel = new this.WebSocket(ws_base + "/stdin");
-        this.iopub_channel = new this.WebSocket(ws_base + "/iopub");
-
-      console.log("xxxx");
-      console.log(this);
-      console.log("this.shell_channel=" + this.shell_channel);
         
         var already_called_onclose = false; // only alert once
         var ws_closed_early = function(evt){

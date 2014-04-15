@@ -73,8 +73,7 @@
           console.log("started. kernel.running = " + self.kernel.running);
         }
       };
-      // var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/'); XXX
-      var url = serviceBase + '/api/sessions';
+      var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
       console.log("sending ajax to: " + url);
       $.ajax(url, ajaxsettings);
 
@@ -277,10 +276,6 @@
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
-        console.log("serviceBase = " + serviceBase);
-        // this only works if you use a browser with CORS checking
-        // disabled AND disable CORS checking in the ipython source.
-        serviceBase = "http://127.0.0.1:8803";
         console.log("serviceBase = " + serviceBase);
         var IPythonShell = function(settings, cb) {
           var self = this;

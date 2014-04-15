@@ -47,14 +47,13 @@
         shellID = IPython.utils.uuid();
       }
 
-      console.log("about to create session");
+      // Required by ipython backend, but not used.
       var model = {
         notebook : {
-          name : "name99",
-          path : "/some/path"
+          name : "fakename" + shellID,
+          path : "/some/path" + shellID
         }
       };
-      console.log(JSON.stringify(model));
       var ajaxsettings = {
         processData : false,
         cache : false,

@@ -22,7 +22,7 @@
 (function() {
   'use strict';
   var bkControl = angular.module('M_bkControl',
-      ['M_bkCore', 'M_bkSession', 'M_menuPlugin', 'M_evaluatorManager', 'M_bkRecentMenu']);
+      ['M_bkCore', 'M_bkSession', 'M_menuPlugin', 'M_bkRecentMenu', 'M_bkEvaluatePluginManager']);
 
   bkControl.directive('bkControl', function(
       bkCoreManager, bkSession, menuPluginManager, trackingService) {
@@ -132,7 +132,7 @@
   });
 
   bkControl.directive('bkControlItem', function(
-      $location, bkSession, evaluatorManager, bkCoreManager, bkRecentMenu) {
+      $location, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
     return {
       restrict: 'E',
       template: "<table class='table table-striped'>" +
@@ -162,7 +162,7 @@
           var closeSession = function() {
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
-                evaluatorManager.createEvaluatorThenExit(notebookModel.evaluators[i]);
+                bkEvaluatePluginManager.createEvaluatorThenExit(notebookModel.evaluators[i]);
               }
             }
             return bkSession.close(sessionId).then(function() {

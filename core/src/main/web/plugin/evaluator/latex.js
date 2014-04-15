@@ -17,9 +17,8 @@
  * LaTex eval plugin
  * For creating and config evaluators that evaluate LaTex code and update code cell results.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugin/evaluator/latex.js";
   var Latex = {
     pluginName: "Latex",
     cmMode: "stex",
@@ -37,11 +36,17 @@
     spec: {
     }
   };
-  var Latex0 = function(settings, cb) {
+  var Latex0 = function(settings) {
     this.settings = settings;
-    window.setTimeout(cb, 0);
   };
   Latex0.prototype = Latex;
 
-  bkHelper.getLoadingPlugin(url).onReady(Latex0);
-})();
+  exports.getEvaluatorFactory = function() {
+    return bkHelper.newPromise({
+      create: function(settings) {
+        return new Latex0(settings);
+      }
+    });
+  };
+  exports.name = "Latex";
+});

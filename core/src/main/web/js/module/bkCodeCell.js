@@ -23,15 +23,15 @@
   var M_bkCodeCell = angular.module('M_bkCodeCell', [
     'M_bkCore',
     'M_bkSessionManager',
-    'M_evaluatorManager',
     'M_bkCellPluginManager',
     'M_bkCodeCellOutput',
     'M_commonUI',
     'M_generalUtils',
-    'M_bkShare'
+    'M_bkShare',
+    'M_bkEvaluatorManager'
   ]);
   M_bkCodeCell.directive('codeCell', function(
-      $rootScope, generalUtils, bkShare, evaluatorManager,
+      $rootScope, generalUtils, bkShare, bkEvaluatorManager,
       bkCellPluginManager, bkSessionManager, bkCoreManager) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     return {
@@ -93,31 +93,31 @@
         $scope.$watch('cellmodel.output.result', editedListener);
 
         $scope.autocomplete = function(cpos, onResults) {
-          var evaluator = evaluatorManager.getEvaluator($scope.cellmodel.evaluator);
+          var evaluator = bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
           if (!evaluator) {
             return;
           }
-          if (evaluator.evaluator.autocomplete) {
-            evaluator.evaluator.autocomplete(
+          if (evaluator.autocomplete) {
+            evaluator.autocomplete(
                 $scope.cellmodel.input.body,
                 cpos, onResults);
-          } else if (evaluator.evaluator.autocomplete2) {
-            evaluator.evaluator.autocomplete2(
+          } else if (evaluator.autocomplete2) {
+            evaluator.autocomplete2(
                 $scope.cm, null, onResults);
           }
         };
 
         $scope.getEvaluators = function() {
-          return evaluatorManager.getAllEvaluators();
+          return bkEvaluatorManager.getAllEvaluators();
         };
 
         $scope.getEvaluator = function() {
-          return evaluatorManager.getEvaluator($scope.cellmodel.evaluator);
+          return bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
         };
         $scope.updateUI = function(evaluator) {
           if ($scope.cm && evaluator) {
-            $scope.cm.setOption("mode", evaluator.evaluator.cmMode);
-            var bg = evaluator.evaluator.background ? evaluator.evaluator.background : "white";
+            $scope.cm.setOption("mode", evaluator.cmMode);
+            var bg = evaluator.background ? evaluator.background : "white";
             $($scope.cm.getWrapperElement()).css("background", bg);
           }
         };
@@ -433,12 +433,12 @@
           }
           return result.join(" ");
         };
-        $scope.getShowEvalIcon = function(evaluator) {
-          return $scope.cellmodel.evaluator === evaluator.name;
+        $scope.getShowEvalIcon = function(evaluatorName) {
+          return $scope.cellmodel.evaluator === evaluatorName;
         };
-        $scope.setEvaluator = function(evaluator) {
+        $scope.setEvaluator = function(evaluatorName) {
           var cellID = $scope.cellmodel.id;
-          $scope.cellmodel.evaluator = evaluator.name;
+          $scope.cellmodel.evaluator = evaluatorName;
           bkCoreManager.getFocusable(cellID).focus();
         };
         $scope.run = function() {

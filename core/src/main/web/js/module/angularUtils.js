@@ -49,9 +49,14 @@
       newDeferred: function() {
         return $q.defer();
       },
-      newPromise: function() {
+      newPromise: function(value) {
         var deferred = $q.defer();
-        deferred.resolve();
+        deferred.resolve(value);
+        return deferred.promise;
+      },
+      fcall: function(func) {
+        var deferred = $q.defer();
+        deferred.resolve(func());
         return deferred.promise;
       },
       delay: function(ms) {

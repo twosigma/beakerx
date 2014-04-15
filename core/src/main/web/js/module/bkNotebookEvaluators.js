@@ -22,12 +22,11 @@
   'use strict';
   var bkNotebookEvaluators = angular.module('M_bkNotebookEvaluators', [
     'M_bkCore',
-    'M_bkSessionManager',
-    'M_evaluatorManager'
+    'M_bkSessionManager'
   ]);
 
   bkNotebookEvaluators.directive('bkNotebookEvaluators', function(
-      evaluatorManager, bkCoreManager, bkSessionManager, menuPluginManager) {
+      bkCoreManager, bkSessionManager, menuPluginManager) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkNotebook_evaluators.html",
@@ -40,16 +39,16 @@
         };
         $scope.newEvaluatorName = "";
         $scope.getEvaluators = function() {
-          return evaluatorManager.getAllEvaluators();
+          //return evaluatorManager.getAllEvaluators();
         };
         $scope.getEvaluatorsAndLoadingPlugins = function() {
-          return evaluatorManager.getEvaluatorsAndLoadingPlugins();
+          //return evaluatorManager.getEvaluatorsAndLoadingPlugins();
         };
         $scope.getKnownEvaluators = function() {
-          return evaluatorManager.getKnownEvaluators();
+          //return evaluatorManager.getKnownEvaluators();
         };
         $scope.addKnownEvaluator = function(name) {
-          $scope.newPluginUrl = evaluatorManager.nameToUrl[name];
+          //$scope.newPluginUrl = evaluatorManager.nameToUrl[name];
         };
         $scope.newMenuPluginUrl = "./plugin/menu/debug.js";
         $scope.addMenuPlugin = function() {
@@ -59,9 +58,6 @@
           return menuPluginManager.getMenuPlugins();
         };
         $scope.newPluginUrl = "";
-        $scope.getPlugins = function() {
-          return evaluatorManager.getPlugins();
-        };
         $scope.addPlugin = function() {
           var pluginUrl = $scope.newPluginUrl;
           var makeEvaluator = function(Shell) {
@@ -72,7 +68,7 @@
             bkSessionManager.getRawNotebookModel().evaluators.push(newEvaluatorObj);
             bkCoreManager.addEvaluator(newEvaluatorObj);
           };
-          evaluatorManager.setupPlugin(pluginUrl, makeEvaluator);
+          //evaluatorManager.setupPlugin(pluginUrl, makeEvaluator);
         };
       }
     };

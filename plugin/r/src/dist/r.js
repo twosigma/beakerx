@@ -19,7 +19,6 @@
  */
 (function() {
   'use strict';
-  var url = "./plugins/eval/r/r.js";
   var PLUGIN_NAME = "R";
   var COMMAND = "r/rPlugin";
 
@@ -155,7 +154,7 @@
     },
     cometdUtil: cometdUtil
   };
-
+  var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
@@ -165,7 +164,7 @@
     }).success(function(ret) {
       serviceBase = ret;
       cometdUtil.init();
-      var RShell = function(settings, cb) {
+      var RShell = function(settings) {
         var self = this;
         var setShellIdCB = function(id) {
           if (id !== settings.shellID) {
@@ -173,7 +172,6 @@
           }
           settings.shellID = id;
           self.settings = settings;
-          cb();
         };
         if (!settings.shellID) {
           settings.shellID = "";
@@ -185,10 +183,26 @@
         };
       };
       RShell.prototype = R;
-      bkHelper.getLoadingPlugin(url).onReady(RShell);
+      shellReadyDeferred.resolve(RShell);
     }).error(function() {
       console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
     });
   };
   init();
+
+  exports.getEvaluatorFactory = function(settings) {
+    var deferred = bkHelper.newDeferred();
+    shellReadyDeferred.promise.then(function(Shell) {
+      deferred.resolve({
+        create: function(settings) {
+          var deferred2 = bkHelper.newDeferred();
+          deferred2.resolve(new Shell(settings));
+          return deferred2.promise;
+        }
+      });
+    });
+    return deferred.promise;
+  };
+
+  exports.name = PLUGIN_NAME;
 })();

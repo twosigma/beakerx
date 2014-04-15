@@ -213,6 +213,12 @@
       newDeferred: function() {
         return bkCoreManager.newDeferred();
       },
+      newPromise: function(value) {
+        return bkCoreManager.newPromise(value);
+      },
+      fcall: function(func) {
+        return bkCoreManager.fcall(func);
+      },
       loadModule: function(url, name) {
         return bkCoreManager.loadModule(url, name);
       },

@@ -28,7 +28,7 @@
     'M_bkShare',
     'M_bkCore',
     'M_bkSessionManager',
-    'M_evaluatorManager',
+    'M_bkEvaluatorManager',
     'M_bkCellPluginManager',
     'M_bkCodeCell'
   ]);
@@ -193,7 +193,7 @@
     };
   });
   M_bkCell.directive('newCellMenu', function(
-      generalUtils, bkSessionManager, bkCoreManager, evaluatorManager) {
+      generalUtils, bkSessionManager, bkCoreManager, bkEvaluatorManager) {
     return {
       restrict: 'E',
       templateUrl: "./template/newCellMenu.html",
@@ -202,7 +202,7 @@
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
 
         $scope.getEvaluators = function() {
-          return evaluatorManager.getAllEvaluators();
+          return bkEvaluatorManager.getAllEvaluators();
         };
         var levels = [1, 2, 3, 4];
         $scope.getLevels = function() {
@@ -248,7 +248,7 @@
   M_bkCell.directive('sectionCell', function(
       generalUtils,
       bkShare,
-      evaluatorManager,
+      //bkEvaluatorManager,
       bkSessionManager,
       bkCoreManager,
       bkCellPluginManager) {
@@ -333,7 +333,7 @@
         $scope.getShareData = function() {
           return {
             cellModel: $scope.cellmodel,
-            evViewModel: evaluatorManager.getViewModel(),
+            evViewModel: bkEvaluatorManager.getViewModel(),
             notebookModel: {
               cells: [$scope.cellmodel]
                   .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id))

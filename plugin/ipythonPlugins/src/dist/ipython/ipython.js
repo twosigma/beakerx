@@ -18,7 +18,7 @@
  * For creating and config evaluators that uses a IPython kernel for evaluating python code
  * and updating code cell outputs.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var url = "./plugins/eval/ipythonPlugins/ipython/ipython.js";
   var PLUGIN_NAME = "IPython";
@@ -202,6 +202,7 @@
     }
   };
 
+  var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
       /* chrome has a bug where websockets don't support authentication so we
@@ -228,7 +229,7 @@
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
-        var IPythonShell = function(settings, cb) {
+        var IPythonShell = function(settings) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
@@ -240,9 +241,6 @@
               settings.supplementalClassPath = "";
             }
             self.settings = settings;
-            if (cb) {
-              cb();
-            }
           };
           if (!settings.shellID) {
             settings.shellID = "";
@@ -254,7 +252,7 @@
           };
         };
         IPythonShell.prototype = IPythonProto;
-        bkHelper.getLoadingPlugin(url).onReady(IPythonShell);
+        shellReadyDeferred.resolve(IPythonShell);
       }).error(function() {
         console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
       });
@@ -270,4 +268,21 @@
         onSuccess, onFail);
   };
   init();
-})();
+
+  exports.getEvaluatorFactory = function(settings) {
+    var deferred = bkHelper.newDeferred();
+    shellReadyDeferred.promise.then(function(Shell) {
+      deferred.resolve({
+        create: function(settings) {
+          console.log("Creating new ipython shell settings = ", settings);
+          var deferred2 = bkHelper.newDeferred();
+          deferred2.resolve(new Shell(settings));
+          return deferred2.promise;
+        }
+      });
+    });
+    return deferred.promise;
+  };
+
+  exports.name = PLUGIN_NAME;
+});

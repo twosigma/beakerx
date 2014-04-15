@@ -27,7 +27,9 @@
   ]);
 
   module.directive('bkCodeCellOutput', function(
-      generalUtils, outputDisplayFactory, evaluatorManager) {
+      generalUtils, outputDisplayFactory//,
+      //bkEvaluatorManager
+      ) {
     return {
       restrict: "E",
       template: '<div class="bkcell"><bk-output-display ' +
@@ -68,7 +70,7 @@
           },
           getCometdUtil: function() {
             if ($scope.evaluatorId) {
-              var evaluator = evaluatorManager.getEvaluator($scope.evaluatorId);
+              var evaluator = bkEvaluatorManager.getEvaluator($scope.evaluatorId);
               if (evaluator) {
                 return evaluator.evaluator.cometdUtil;
               }

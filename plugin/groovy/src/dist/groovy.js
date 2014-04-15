@@ -17,9 +17,8 @@
  * Groovy eval plugin
  * For creating and config evaluators that evaluate Groovy code and update code cell results.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugins/eval/groovy/groovy.js";
   var PLUGIN_NAME = "Groovy";
   var COMMAND = "groovy/groovyPlugin";
 
@@ -95,40 +94,40 @@
         url: serviceBase + "/rest/groovysh/evaluate",
         data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
-            var onUpdatableResultUpdate = function(update) {
-              modelOutput.result = update;
-              bkHelper.refreshRootScope();
-            };
-            var onEvalStatusUpdate = function(evaluation) {
-              modelOutput.result.status = evaluation.status;
-              if (evaluation.status === "FINISHED") {
-                cometdUtil.unsubscribe(evaluation.update_id);
-                modelOutput.result = evaluation.result;
-                if (evaluation.result.update_id) {
-                  cometdUtil.subscribe(evaluation.result.update_id, onUpdatableResultUpdate);
-                }
-                modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
-                deferred.resolve();
-              } else if (evaluation.status === "ERROR") {
-                cometdUtil.unsubscribe(evaluation.update_id);
-                modelOutput.result = {
-                  type: "BeakerDisplay",
-                  innertype: "Error",
-                  object: evaluation.result
-                };
-                modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
-                deferred.resolve();
-              } else if (evaluation.status === "RUNNING") {
-                progressObj.object.message = "evaluating ...";
-                modelOutput.result = progressObj;
-              }
-              bkHelper.refreshRootScope();
-            };
-            onEvalStatusUpdate(ret);
-            if (ret.update_id) {
-              cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
+        var onUpdatableResultUpdate = function(update) {
+          modelOutput.result = update;
+          bkHelper.refreshRootScope();
+        };
+        var onEvalStatusUpdate = function(evaluation) {
+          modelOutput.result.status = evaluation.status;
+          if (evaluation.status === "FINISHED") {
+            cometdUtil.unsubscribe(evaluation.update_id);
+            modelOutput.result = evaluation.result;
+            if (evaluation.result.update_id) {
+              cometdUtil.subscribe(evaluation.result.update_id, onUpdatableResultUpdate);
             }
-          });
+            modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
+            deferred.resolve();
+          } else if (evaluation.status === "ERROR") {
+            cometdUtil.unsubscribe(evaluation.update_id);
+            modelOutput.result = {
+              type: "BeakerDisplay",
+              innertype: "Error",
+              object: evaluation.result
+            };
+            modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
+            deferred.resolve();
+          } else if (evaluation.status === "RUNNING") {
+            progressObj.object.message = "evaluating ...";
+            modelOutput.result = progressObj;
+          }
+          bkHelper.refreshRootScope();
+        };
+        onEvalStatusUpdate(ret);
+        if (ret.update_id) {
+          cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
+        }
+      });
       return deferred.promise;
     },
     autocomplete: function(code, cpos, cb) {
@@ -139,8 +138,8 @@
         url: serviceBase + "/rest/groovysh/autocomplete",
         data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
-            cb(x);
-          });
+        cb(x);
+      });
     },
     exit: function(cb) {
       var self = this;
@@ -156,16 +155,17 @@
     cometdUtil: cometdUtil
   };
 
+  var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
-        command: COMMAND,
-        startedIndicator: "Server started",
-        waitfor: "Started SelectChannelConnector",
-        recordOutput: "true"
+      command: COMMAND,
+      startedIndicator: "Server started",
+      waitfor: "Started SelectChannelConnector",
+      recordOutput: "true"
     }).success(function(ret) {
       serviceBase = ret;
       cometdUtil.init();
-      var GroovyShell = function(settings, cb) {
+      var GroovyShell = function(settings) {
         var self = this;
         var setShellIdCB = function(id) {
           if (id !== settings.shellID) {
@@ -173,7 +173,6 @@
           }
           settings.shellID = id;
           self.settings = settings;
-          cb();
         };
         if (!settings.shellID) {
           settings.shellID = "";
@@ -185,10 +184,26 @@
         };
       };
       GroovyShell.prototype = Groovy;
-      bkHelper.getLoadingPlugin(url).onReady(GroovyShell);
+      shellReadyDeferred.resolve(GroovyShell);
     }).error(function() {
       console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
     });
   };
   init();
-})();
+
+  exports.getEvaluatorFactory = function(settings) {
+    var deferred = bkHelper.newDeferred();
+    shellReadyDeferred.promise.then(function(Shell) {
+      deferred.resolve({
+        create: function(settings) {
+          var deferred2 = bkHelper.newDeferred();
+          deferred2.resolve(new Shell(settings));
+          return deferred2.promise;
+        }
+      });
+    });
+    return deferred.promise;
+  };
+
+  exports.name = PLUGIN_NAME;
+});

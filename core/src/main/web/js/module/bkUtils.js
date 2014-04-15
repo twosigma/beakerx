@@ -87,8 +87,11 @@
       newDeferred: function() {
         return angularUtils.newDeferred();
       },
-      newPromise: function() {
-        return angularUtils.newPromise();
+      newPromise: function(value) {
+        return angularUtils.newPromise(value);
+      },
+      fcall: function(func) {
+        return angularUtils.fcall(func);
       },
       delay: function() {
         return angularUtils.delay();

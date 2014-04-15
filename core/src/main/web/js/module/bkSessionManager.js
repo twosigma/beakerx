@@ -23,11 +23,15 @@
     'M_bkSession',
     'M_bkNotebookCellModelManager',
     'M_bkRecentMenu',
-    'M_evaluatorManager'
+    'M_bkEvaluatorManager'
   ]);
 
   module.factory('bkSessionManager', function(
-      bkUtils, bkSession, bkNotebookCellModelManager, bkRecentMenu, evaluatorManager) {
+      bkUtils,
+      bkSession,
+      bkNotebookCellModelManager,
+      bkEvaluatorManager,
+      bkRecentMenu) {
 
     var _notebookUri = (function() {
       var DEFAULT_VALUE = null;
@@ -115,7 +119,7 @@
           bkSession.backup(_sessionId, generateBackupData());
         }
 
-        evaluatorManager.reset();
+        bkEvaluatorManager.reset();
 
         // check inputs
         if (!sessionId) {
@@ -132,7 +136,7 @@
         _sessionId = sessionId;
       },
       clear: function() {
-        evaluatorManager.reset();
+        bkEvaluatorManager.reset();
         _notebookUri.reset();
         _uriType = null;
         _readOnly = null;
@@ -144,7 +148,7 @@
       close: function() {
         var self = this;
         var close = function() {
-          evaluatorManager.exitAndRemoveAllEvaluators();
+          bkEvaluatorManager.exitAndRemoveAllEvaluators();
           self.clear();
         };
         if (_sessionId) {

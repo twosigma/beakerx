@@ -185,13 +185,13 @@
             console.log(value);
             modelOutput.outputArrived = true;
             if (value.msg_type === "pyerr") {
-              var trace = _.reduce(value.traceback, function(memo, line) {
+              var trace = _.reduce(value.content.traceback, function(memo, line) {
                 return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
               }, value.evalue);
               modelOutput.result = {
                 type: "BeakerDisplay",
                 innertype: "Error",
-                object: (value.ename === "KeyboardInterrupt") ? "Interrupted" : [value.evalue, trace]
+                object: (value.ename === "KeyboardInterrupt") ? "Interrupted" : [value.content.evalue, trace]
               };
             } else if (value.msg_type === "stream") {
               var json = JSON.stringify({evaluator: "ipython",
@@ -318,7 +318,9 @@
       "./plugins/eval/ipythonPlugins/vendor/ipython/kernel.js",
       "./plugins/eval/ipythonPlugins/vendor/ipython/session.js",
       "./plugins/eval/ipythonPlugins/vendor/ipython/comm.js",
-      "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js"],
+      "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js",
+      // "./plugins/eval/ipythonPlugins/vendor/ipython/main.js"
+    ],
         onSuccess, onFail);
   };
   init();

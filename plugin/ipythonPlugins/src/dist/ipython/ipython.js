@@ -318,8 +318,7 @@
       "./plugins/eval/ipythonPlugins/vendor/ipython/kernel.js",
       "./plugins/eval/ipythonPlugins/vendor/ipython/session.js",
       "./plugins/eval/ipythonPlugins/vendor/ipython/comm.js",
-      "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js",
-      // "./plugins/eval/ipythonPlugins/vendor/ipython/main.js"
+      "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js"
     ],
         onSuccess, onFail);
   };

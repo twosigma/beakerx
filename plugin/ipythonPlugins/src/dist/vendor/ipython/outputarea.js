@@ -523,7 +523,7 @@ var IPython = (function (IPython) {
     var append_html = function (html, md, element) {
         var type = 'text/html';
         var toinsert = this.create_output_subarea(md, "output_html rendered_html", type);
-        IPython.keyboard_manager.register_events(toinsert);
+        // IPython.keyboard_manager.register_events(toinsert); // Beaker removed XXX
         toinsert.append(html);
         element.append(toinsert);
         return toinsert;

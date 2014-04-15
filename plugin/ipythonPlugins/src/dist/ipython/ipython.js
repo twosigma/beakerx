@@ -195,8 +195,8 @@
               };
             } else if (value.msg_type === "stream") {
               var json = JSON.stringify({evaluator: "ipython",
-                                         type: (type === "stream" ? "text" : "html"),
-                                         line: value.data});
+                                         type: value.content.name,
+                                         line: value.content.data});
               $.cometd.publish("/service/outputlog/put", json);
               appendToResult("");
             } else {

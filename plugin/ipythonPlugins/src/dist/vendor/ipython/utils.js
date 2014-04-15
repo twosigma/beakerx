@@ -11,6 +11,35 @@
 IPython.namespace('IPython.utils');
 
 IPython.utils = (function (IPython) {
+    "use strict";
+    
+    IPython.load_extensions = function () {
+        // load one or more IPython notebook extensions with requirejs
+        
+        var extensions = [];
+        var extension_names = arguments;
+        for (var i = 0; i < extension_names.length; i++) {
+            extensions.push("nbextensions/" + arguments[i]);
+        }
+        
+        require(extensions,
+            function () {
+                for (var i = 0; i < arguments.length; i++) {
+                    var ext = arguments[i];
+                    var ext_name = extension_names[i];
+                    // success callback
+                    console.log("Loaded extension: " + ext_name);
+                    if (ext && ext.load_ipython_extension !== undefined) {
+                        ext.load_ipython_extension();
+                    }
+                }
+            },
+            function (err) {
+                // failure callback
+                console.log("Failed to load extension(s):", err.requireModules, err);
+            }
+        );
+    };
 
     //============================================================================
     // Cross-browser RegEx Split
@@ -321,41 +350,6 @@ IPython.utils = (function (IPython) {
             "$1<a target=\"_blank\" href=\"$2$3\">$2$3</a>");
     }
 
-    // some keycodes that seem to be platform/browser independent
-    var keycodes = {
-                BACKSPACE:  8,
-                TAB      :  9,
-                ENTER    : 13,
-                SHIFT    : 16,
-                CTRL     : 17,
-                CONTROL  : 17,
-                ALT      : 18,
-                CAPS_LOCK: 20,
-                ESC      : 27,
-                SPACE    : 32,
-                PGUP     : 33,
-                PGDOWN   : 34,
-                END      : 35,
-                HOME     : 36,
-                LEFT_ARROW: 37,
-                LEFTARROW: 37,
-                LEFT     : 37,
-                UP_ARROW : 38,
-                UPARROW  : 38,
-                UP       : 38,
-                RIGHT_ARROW:39,
-                RIGHTARROW:39,
-                RIGHT    : 39,
-                DOWN_ARROW: 40,
-                DOWNARROW: 40,
-                DOWN     : 40,
-                // all three of these keys may be COMMAND on OS X:
-                LEFT_SUPER : 91,
-                RIGHT_SUPER : 92,
-                COMMAND  : 93,
-    };
-
-
     var points_to_pixels = function (points) {
         // A reasonably good way of converting between points and pixels.
         var test = $('<div style="display: none; width: 10000pt; padding:0; border:0;"></div>');
@@ -364,9 +358,95 @@ IPython.utils = (function (IPython) {
         test.remove();
         return Math.floor(points*pixel_per_point);
     };
+    
+    var always_new = function (constructor) {
+        // wrapper around contructor to avoid requiring `var a = new constructor()`
+        // useful for passing constructors as callbacks,
+        // not for programmer laziness.
+        // from http://programmers.stackexchange.com/questions/118798
+        return function () {
+            var obj = Object.create(constructor.prototype);
+            constructor.apply(obj, arguments);
+            return obj;
+        };
+    };
+
+    var url_path_join = function () {
+        // join a sequence of url components with '/'
+        var url = '';
+        for (var i = 0; i < arguments.length; i++) {
+            if (arguments[i] === '') {
+                continue;
+            }
+            if (url.length > 0 && url[url.length-1] != '/') {
+                url = url + '/' + arguments[i];
+            } else {
+                url = url + arguments[i];
+            }
+        }
+        url = url.replace(/\/\/+/, '/');
+        return url;
+    };
+    
+    var parse_url = function (url) {
+        // an `a` element with an href allows attr-access to the parsed segments of a URL
+        // a = parse_url("http://localhost:8888/path/name#hash")
+        // a.protocol = "http:"
+        // a.host     = "localhost:8888"
+        // a.hostname = "localhost"
+        // a.port     = 8888
+        // a.pathname = "/path/name"
+        // a.hash     = "#hash"
+        var a = document.createElement("a");
+        a.href = url;
+        return a;
+    };
+    
+    var encode_uri_components = function (uri) {
+        // encode just the components of a multi-segment uri,
+        // leaving '/' separators
+        return uri.split('/').map(encodeURIComponent).join('/');
+    };
+    
+    var url_join_encode = function () {
+        // join a sequence of url components with '/',
+        // encoding each component with encodeURIComponent
+        return encode_uri_components(url_path_join.apply(null, arguments));
+    };
+
+
+    var splitext = function (filename) {
+        // mimic Python os.path.splitext
+        // Returns ['base', '.ext']
+        var idx = filename.lastIndexOf('.');
+        if (idx > 0) {
+            return [filename.slice(0, idx), filename.slice(idx)];
+        } else {
+            return [filename, ''];
+        }
+    };
+
+
+    var escape_html = function (text) {
+        // escape text to HTML
+        return $("<div/>").text(text).html();
+    }
+
+
+    var get_body_data = function(key) {
+        // get a url-encoded item from body.data and decode it
+        // we should never have any encoded URLs anywhere else in code
+        // until we are building an actual request
+        return decodeURIComponent($('body').data(key));
+    };
+
 
     // http://stackoverflow.com/questions/2400935/browser-detection-in-javascript
-    browser = (function() {
+    var browser = (function() {
+        if (typeof navigator === 'undefined') {
+            // navigator undefined in node
+            return 'None';
+        }
         var N= navigator.appName, ua= navigator.userAgent, tem;
         var M= ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
         if (M && (tem= ua.match(/version\/([\.\d]+)/i))!= null) M[2]= tem[1];
@@ -374,16 +454,59 @@ IPython.utils = (function (IPython) {
         return M;
     })();
 
+    // http://stackoverflow.com/questions/11219582/how-to-detect-my-browser-version-and-operating-system-using-javascript
+    var platform = (function () {
+        if (typeof navigator === 'undefined') {
+            // navigator undefined in node
+            return 'None';
+        }
+        var OSName="None";
+        if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
+        if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+        if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
+        if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
+        return OSName
+    })();
+
+    var is_or_has = function (a, b) {
+        // Is b a child of a or a itself?
+        return a.has(b).length !==0 || a.is(b);
+    }
+
+    var is_focused = function (e) {
+        // Is element e, or one of its children focused?
+        e = $(e);
+        var target = $(document.activeElement);
+        if (target.length > 0) {
+            if (is_or_has(e, target)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 
     return {
         regex_split : regex_split,
         uuid : uuid,
         fixConsole : fixConsole,
-        keycodes : keycodes,
         fixCarriageReturn : fixCarriageReturn,
         autoLinkUrls : autoLinkUrls,
         points_to_pixels : points_to_pixels,
-        browser : browser    
+        get_body_data : get_body_data,
+        parse_url : parse_url,
+        url_path_join : url_path_join,
+        url_join_encode : url_join_encode,
+        encode_uri_components : encode_uri_components,
+        splitext : splitext,
+        escape_html : escape_html,
+        always_new : always_new,
+        browser : browser,
+        platform: platform,
+        is_or_has : is_or_has,
+        is_focused : is_focused
     };
 
 }(IPython));

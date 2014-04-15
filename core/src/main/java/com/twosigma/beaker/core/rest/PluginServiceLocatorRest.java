@@ -128,6 +128,7 @@ public class PluginServiceLocatorRest {
     String nginxCommand = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
     nginxCommand += (" -p " + this.nginxServDir);
     nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
+    System.out.println("running nginx: " + nginxCommand);
     Process proc = Runtime.getRuntime().exec(nginxCommand);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;

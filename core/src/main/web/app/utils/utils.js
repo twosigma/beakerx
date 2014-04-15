@@ -124,9 +124,18 @@
             .error(deferred.reject);
         return deferred.promise;
       },
-      loadHttp: function(url) {
+      loadHttp: function(logicalUrl) {
+        if (new URL(logicalUrl).hostname == window.location.hostname) {
+          var loadingUrl = logicalUrl;
+          var queryParams = {}
+        }
+        else {
+          var loadingUrl = "../beaker/rest/http-proxy/load";
+          var queryParams = {url: logicalUrl}
+        }
+
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet("../beaker/rest/http-proxy/load", {url: url})
+        angularUtils.httpGet(loadingUrl, queryParams)
             .success(function(content) {
               if (!_.isString(content)) {
                 // angular $http auto-detects JSON response and deserialize it using a JSON parser

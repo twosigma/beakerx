@@ -48,7 +48,7 @@
   ];
   var helpMenuItems = [
     {
-      name: "About Beaker...",
+      name: "About Beaker",
       action: function() {
         bkHelper.showFileChooser(undefined, "template/about.html");
       },
@@ -62,12 +62,26 @@
       tooltip: "Open the tutorial notebook"
     },
     {
-      name: "Keyboard Shortcuts...",
+      name: "Keyboard Shortcuts",
       action: function() {
         window.open("./keyboardShortcuts.html");
       },
       tooltip: "Show keyboard shortcuts"
-    }
+    },
+    {
+      name: "Report a bug or feature request",
+      action: function() {
+        window.open("https://github.com/twosigma/beaker-notebook/issues/new");
+      },
+      tooltip: "Log an issue in GitHub"
+    },
+    {
+      name: "Privacy policy",
+      action: function() {
+        window.open("http://beakernotebook.com/privacy");
+      },
+      tooltip: "Privacy policy on beakernotebook.com"
+    }    
   ];
 
   bkHelper.getHomeDirectory().then(function(homeDir) {

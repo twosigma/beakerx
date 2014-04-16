@@ -26,7 +26,6 @@ var IPython = (function (IPython) {
      * @Class Kernel
      */
     var Kernel = function (kernel_service_url) {
-      console.log("initializing kernel");
         this.kernel_id = null;
         this.shell_channel = null;
         this.iopub_channel = null;
@@ -36,8 +35,6 @@ var IPython = (function (IPython) {
         this.username = "username";
         this.session_id = utils.uuid();
         this._msg_callbacks = {};
-
-      console.log("XXX this.kernel_service_url = " + this.kernel_service_url);
 
         if (typeof(WebSocket) !== 'undefined') {
             this.WebSocket = WebSocket;
@@ -126,30 +123,16 @@ var IPython = (function (IPython) {
 
     Kernel.prototype._kernel_started = function (json) {
         console.log("Kernel started: ", json.id);
-        console.log(this);
         this.running = true;
         this.kernel_id = json.id;
         // trailing 's' in https will become wss for secure web sockets
         this.ws_host = location.protocol.replace('http', 'ws') + "//" + location.host;
-      
-        // Beaker addition begin
-        // The URL from the server does not account for the remapping done by nginx.
-        // XXX this is not right yet ws_host is not defined.
-        // console.log('rewriting ws_host from ' + json.ws_host);
-        // json.ws_host = ((window.location.protocol == "https:") ? "wss://" : "ws://") + window.location.host;
-        // console.log('rewriting ws_host to ' + json.ws_host);
-        // console.log('this.kernel_service_url' + this.kernel_service_url);
-        // Beaker addition end
-        console.log("XXXY this.kernel_service_url = " + this.kernel_service_url);
-        // this.kernel_url = utils.url_path_join(this.kernel_service_url, this.kernel_id);
-        this.kernel_url = this.kernel_service_url + '/' + this.kernel_id;
-        console.log('this.kernel_url = ' + this.kernel_url);
+        this.kernel_url = utils.url_path_join(this.kernel_service_url, this.kernel_id);
         this.start_channels();
     };
 
 
     Kernel.prototype._websocket_closed = function(ws_url, early) {
-      console.log("websocket closed");
         this.stop_channels();
         $([IPython.events]).trigger('websocket_closed.Kernel',
             {ws_url: ws_url, kernel: this, early: early}
@@ -163,7 +146,6 @@ var IPython = (function (IPython) {
      * @method start_channels
      */
     Kernel.prototype.start_channels = function () {
-        console.log(this);
         var that = this;
         this.stop_channels();
         var ws_host_url = this.ws_host + this.kernel_url;
@@ -181,7 +163,6 @@ var IPython = (function (IPython) {
         
         var already_called_onclose = false; // only alert once
         var ws_closed_early = function(evt){
-          console.log("ws_closed_early");
             if (already_called_onclose){
                 return;
             }
@@ -224,7 +205,6 @@ var IPython = (function (IPython) {
      * @method _ws_opened
      */
     Kernel.prototype._ws_opened = function (evt) {
-      console.log("ws opened");
         // send the session id so the Session object Python-side
         // has the same identity
         evt.target.send(this.session_id + ':' + document.cookie);
@@ -243,7 +223,6 @@ var IPython = (function (IPython) {
      * @method stop_channels
      */
     Kernel.prototype.stop_channels = function () {
-      console.log("stop_channels");
         var channels = [this.shell_channel, this.iopub_channel, this.stdin_channel];
         for (var i=0; i < channels.length; i++) {
             if ( channels[i] !== null ) {

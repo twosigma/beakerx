@@ -61,19 +61,13 @@
         data: JSON.stringify(model),
         dataType : "json",
         success : function (data, status, xhr) {
-          console.log("session returns:");
-          console.log(data);
-          console.log("about to create kernel: " + serviceBase + "/api/kernels");
           self.kernel = new IPython.Kernel(serviceBase + "/api/kernels");
           kernels[shellID] = self.kernel;
-          console.log("and now starting kernel");
           // the data.id is the session id but it is not used yet
           self.kernel._kernel_started({id: data.kernel.id});
-          console.log("started. kernel.running = " + self.kernel.running);
         }
       };
       var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
-      console.log("sending ajax to: " + url);
       $.ajax(url, ajaxsettings);
 
       // keepalive for the websockets
@@ -93,7 +87,6 @@
       // Also, do not cb until making sure kernel is running.
       var timeout = now() + 10 * 1000; // time out 10 sec
       var r = function() {
-        console.log("in r(), shellID=" + shellID);
         if (self.kernel !== undefined && self.kernel.running) {
           cb(shellID);
         } else if (now() < timeout) {
@@ -138,12 +131,6 @@
       var self = this;
       var startTime = new Date().getTime();
       var kernel = kernels[self.settings.shellID];
-      console.log("kernels=");
-      console.log(kernels);
-      console.log("self.settings.shellID=");
-      console.log(self.settings.shellID);
-      console.log("kernel=");
-      console.log(kernel);
       var progressObj = {
         type: "BeakerDisplay",
         innertype: "Progress",
@@ -163,8 +150,6 @@
       var callbacks = {
         shell: {
           reply: function execute_reply(msg) {
-            console.log("execute_reply");
-            console.log(msg);
             var result = _(msg.payload).map(function(payload) {
               return IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(payload.text));
             }).join("");
@@ -176,21 +161,18 @@
             modelOutput.elapsedTime = now() - startTime;
             deferred.resolve();
             bkHelper.refreshRootScope();
-            console.log("done execute_reply");
           }},
         iopub: {
           output: function output(value) {
-            console.log("output");
-            console.log(value);
             modelOutput.outputArrived = true;
             if (value.msg_type === "pyerr") {
               var trace = _.reduce(value.content.traceback, function(memo, line) {
                 return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
-              }, value.evalue);
+              }, value.content.evalue);
               modelOutput.result = {
                 type: "BeakerDisplay",
                 innertype: "Error",
-                object: (value.ename === "KeyboardInterrupt") ? "Interrupted" : [value.content.evalue, trace]
+                object: (value.content.ename === "KeyboardInterrupt") ? "Interrupted" : [value.content.evalue, trace]
               };
             } else if (value.msg_type === "stream") {
               var json = JSON.stringify({evaluator: "ipython",
@@ -275,7 +257,6 @@
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
-        console.log("serviceBase = " + serviceBase);
         var IPythonShell = function(settings, cb) {
           var self = this;
           var setShellIdCB = function(shellID) {

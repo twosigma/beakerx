@@ -42,9 +42,8 @@
    * stuffs like evaluator panel
    */
   bkNotebook.directive('bkNotebook', function(
-      generalUtils, cometd, bkShare, //bkEvaluatorManager,
-      bkCellPluginManager,
-      bkSessionManager, bkCoreManager, bkOutputLog) {
+      generalUtils, cometd, bkShare, bkEvaluatorManager,
+      bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkNotebook.html",

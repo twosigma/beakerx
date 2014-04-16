@@ -48,28 +48,34 @@
         shellID = IPython.utils.uuid();
       }
 
-      // Required by ipython backend, but not used.
-      var model = {
-        notebook : {
-          name : "fakename" + shellID,
-          path : "/some/path" + shellID
-        }
-      };
-      var ajaxsettings = {
-        processData : false,
-        cache : false,
-        type : "POST",
-        data: JSON.stringify(model),
-        dataType : "json",
-        success : function (data, status, xhr) {
-          self.kernel = new IPython.Kernel(serviceBase + "/api/kernels");
-          kernels[shellID] = self.kernel;
-          // the data.id is the session id but it is not used yet
-          self.kernel._kernel_started({id: data.kernel.id});
-        }
-      };
-      var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
-      $.ajax(url, ajaxsettings);
+      if (ipyVersion1) {
+        kernel = new IPython.Kernel(serviceBase + "/kernels/");
+        kernels[shellID] = kernel;
+        kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
+      } else {
+        // Required by ipython backend, but not used.
+        var model = {
+          notebook : {
+            name : "fakename" + shellID,
+            path : "/some/path" + shellID
+          }
+        };
+        var ajaxsettings = {
+          processData : false,
+          cache : false,
+          type : "POST",
+          data: JSON.stringify(model),
+          dataType : "json",
+          success : function (data, status, xhr) {
+            self.kernel = new IPython.Kernel(serviceBase + "/api/kernels");
+            kernels[shellID] = self.kernel;
+            // the data.id is the session id but it is not used yet
+            self.kernel._kernel_started({id: data.kernel.id});
+          }
+        };
+        var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
+        $.ajax(url, ajaxsettings);
+      }
 
       // keepalive for the websockets
       var nil = function() {
@@ -87,16 +93,18 @@
       // cb cannot be called synchronously, see evaluatorManager.js, new Shell
       // Also, do not cb until making sure kernel is running.
       var timeout = now() + 10 * 1000; // time out 10 sec
-      var r = function() {
+      var spin = function() {
+        console.log("spinning");
+        console.log(self.kernel);
         if (self.kernel !== undefined && self.kernel.running) {
           cb(shellID);
         } else if (now() < timeout) {
-          setTimeout(r, 100);
+          setTimeout(spin, 100);
         } else {
           console.error("TIMED OUT - waiting for ipython kernel to start");
         }
       };
-      setTimeout(r, 0);
+      setTimeout(spin, 0);
     },
     evaluate: function(code, modelOutput) {
       if (_theCancelFunction) {
@@ -148,61 +156,67 @@
         deferred.reject("cancelled by user");
         modelOutput.result = "canceling ...";
       };
-      var callbacks = {
-        shell: {
-          reply: function execute_reply(msg) {
-            var result = _(msg.payload).map(function(payload) {
-              return IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(payload.text));
-            }).join("");
-            if (!_.isEmpty(result)) {
-              setOutputResult("<pre>" + result + "</pre>");
-            } else if (!modelOutput.outputArrived) {
-            emptyOutputResult();
-            }
-            modelOutput.elapsedTime = now() - startTime;
-            deferred.resolve();
-            bkHelper.refreshRootScope();
-          }},
-        iopub: {
-          output: function output(value) {
-            modelOutput.outputArrived = true;
-            if (value.msg_type === "pyerr") {
-              var trace = _.reduce(value.content.traceback, function(memo, line) {
-                return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
-              }, value.content.evalue);
-              modelOutput.result = {
-                type: "BeakerDisplay",
-                innertype: "Error",
-                object: (value.content.ename === "KeyboardInterrupt") ? "Interrupted" : [value.content.evalue, trace]
-              };
-            } else if (value.msg_type === "stream") {
-              var json = JSON.stringify({evaluator: "ipython",
-                                         type: value.content.name,
-                                         line: value.content.data});
-              $.cometd.publish("/service/outputlog/put", json);
-              appendToResult("");
-            } else {
-              var elem = $(document.createElement("div"));
-              var oa = new IPython.OutputArea(elem);
-              // twiddle the mime types? XXX
-              oa.append_mime_type(value.content.data, elem);
-              var table = bkHelper.findTable(elem[0]);
-              if (table) {
-                modelOutput.result = table;
-              } else {
-                appendToResult(elem.html());
-              }
-            }
-            modelOutput.elapsedTime = now() - startTime;
-            deferred.resolve();
-            bkHelper.refreshRootScope();
-          },
-        clear_output: function(msg) {
-          console.log("clear_output: " + msg);
-        },
-        set_next_input: function(msg) {
-          console.log("set_next_input: " + msg);
-        }}
+      var execute_reply = function(msg) {
+        var result = _(msg.payload).map(function(payload) {
+          return IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(payload.text));
+        }).join("");
+        if (!_.isEmpty(result)) {
+          setOutputResult("<pre>" + result + "</pre>");
+        } else if (!modelOutput.outputArrived) {
+          emptyOutputResult();
+        }
+        modelOutput.elapsedTime = now() - startTime;
+        deferred.resolve();
+        bkHelper.refreshRootScope();
+      }
+      var output = function output(a0, a1) {
+        var type;
+        var content;
+        if (ipyVersion1) {
+          type = a0;
+          content = a1;
+        } else {
+          type = a0.msg_type;
+          content = a0.content;
+        }
+        modelOutput.outputArrived = true;
+        if (type === "pyerr") {
+          var trace = _.reduce(content.traceback, function(memo, line) {
+            return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
+          }, content.evalue);
+          modelOutput.result = {
+            type: "BeakerDisplay",
+            innertype: "Error",
+            object: (content.ename === "KeyboardInterrupt") ? "Interrupted" : [content.evalue, trace]
+          };
+        } else if (type === "stream") {
+          var json = JSON.stringify({evaluator: "ipython",
+                                     type: content.name,
+                                     line: content.data});
+          $.cometd.publish("/service/outputlog/put", json);
+          appendToResult("");
+        } else {
+          var elem = $(document.createElement("div"));
+          var oa = new IPython.OutputArea(elem);
+          // twiddle the mime types? XXX
+          oa.append_mime_type(content.data, elem);
+          var table = bkHelper.findTable(elem[0]);
+          if (table) {
+            modelOutput.result = table;
+          } else {
+            appendToResult(elem.html());
+          }
+        }
+        modelOutput.elapsedTime = now() - startTime;
+        deferred.resolve();
+        bkHelper.refreshRootScope();
+      };
+      var callbacks = ipyVersion1 ? {
+        execute_reply: execute_reply,
+        output: output
+      } : {
+        shell: {reply: execute_reply},
+        iopub: {output: output}
       };
       kernel.execute(code, callbacks, {silent: false});
       deferred.promise.finally(function() {
@@ -238,21 +252,25 @@
        this is safe because the URL has the kernel ID in it, and that's a 128-bit
        random number, only delivered via the secure channel. */
       var nginxRules =
-          "location %(base_url)s/api/kernels/ {" +
+        (ipyVersion1 ? ("location %(base_url)s/kernels/ {" +
+                        "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
+                        "}" +
+                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") : 
+         ("location %(base_url)s/api/kernels/ {" +
           "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;" +
           "}" +
           "location %(base_url)s/api/sessions/ {" +
           "  proxy_pass http://127.0.0.1:%(port)s/api/sessions;" +
           "}" +
-          "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/  {" +
-          "  rewrite ^%(base_url)s/(.*)$ /$1 break; " +
-          "  proxy_pass http://127.0.0.1:%(port)s; " +
-          "  proxy_http_version 1.1; " +
-          "  proxy_set_header Upgrade $http_upgrade; " +
-          "  proxy_set_header Connection \"upgrade\"; " +
-          "  proxy_set_header Origin \"$scheme://$host\"; " +
-          "  proxy_set_header Host $host;" +
-          "}";
+          "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/  {")) +
+        "  rewrite ^%(base_url)s/(.*)$ /$1 break; " +
+        "  proxy_pass http://127.0.0.1:%(port)s; " +
+        "  proxy_http_version 1.1; " +
+        "  proxy_set_header Upgrade $http_upgrade; " +
+        "  proxy_set_header Connection \"upgrade\"; " +
+        "  proxy_set_header Origin \"$scheme://$host\"; " +
+        "  proxy_set_header Host $host;" +
+        "}";
       bkHelper.locatePluginService(PLUGIN_NAME, {
           command: COMMAND,
           nginxRules: nginxRules,
@@ -298,13 +316,11 @@
 
     bkHelper.httpGet("/beaker/rest/plugin-services/getIPythonVersion")
       .success(function(result) {
-        console.log("getIPythonVersion:");
         var backendVersion = result;
-
         if (backendVersion[0] == "1") {
           ipyVersion1 = true;
         }
-        console.log("using ipython 1.x compatibility mode: " + ipyVersion1);
+        console.log("Using ipython 1.x compatibility mode: " + ipyVersion1);
         if (ipyVersion1) {
           bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython/namespace.js",
                              "./plugins/eval/ipythonPlugins/vendor/ipython/utils.js",

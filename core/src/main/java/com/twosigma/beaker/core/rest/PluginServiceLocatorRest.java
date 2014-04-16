@@ -357,6 +357,18 @@ public class PluginServiceLocatorRest {
     return prefix.toLowerCase() + RandomStringUtils.random(randomPartLength, true, true);
   }
 
+  @GET
+  @Path("getIPythonVersion")
+  @Produces(MediaType.APPLICATION_JSON)
+  public String getIPythonVersion()
+      throws IOException
+  {
+    Process proc = Runtime.getRuntime().exec("ipython --version");
+    BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+    String line = br.readLine();
+    return line;
+  }
+
   private static class PluginConfig {
 
     private final int port;

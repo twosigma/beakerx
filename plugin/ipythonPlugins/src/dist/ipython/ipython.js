@@ -26,6 +26,7 @@
   var kernels = {};
   var _theCancelFunction = null;
   var serviceBase = null;
+  var ipyVersion1 = false;
   var now = function() {
     return new Date().getTime();
   };
@@ -229,6 +230,8 @@
   };
 
   var init = function() {
+
+    
     var onSuccess = function() {
       /* chrome has a bug where websockets don't support authentication so we
        disable it. http://code.google.com/p/chromium/issues/detail?id=123862
@@ -292,15 +295,32 @@
     var onFail = function() {
       console.log("failed to load ipython libs");
     };
-    bkHelper.loadList([
-      "./plugins/eval/ipythonPlugins/vendor/ipython/namespace.js",
-      "./plugins/eval/ipythonPlugins/vendor/ipython/utils.js",
-      "./plugins/eval/ipythonPlugins/vendor/ipython/kernel.js",
-      "./plugins/eval/ipythonPlugins/vendor/ipython/session.js",
-      "./plugins/eval/ipythonPlugins/vendor/ipython/comm.js",
-      "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js"
-    ],
-        onSuccess, onFail);
+
+    bkHelper.httpGet("/beaker/rest/plugin-services/getIPythonVersion")
+      .success(function(result) {
+        console.log("getIPythonVersion:");
+        var backendVersion = result;
+
+        if (backendVersion[0] == "1") {
+          ipyVersion1 = true;
+        }
+        console.log("using ipython 1.x compatibility mode: " + ipyVersion1);
+        if (ipyVersion1) {
+          bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython/namespace.js",
+                             "./plugins/eval/ipythonPlugins/vendor/ipython/utils.js",
+                             "./plugins/eval/ipythonPlugins/vendor/ipython/kernel.js",
+                             "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js"
+                            ], onSuccess, onFail);
+        } else {
+          bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython2/namespace.js",
+                             "./plugins/eval/ipythonPlugins/vendor/ipython2/utils.js",
+                             "./plugins/eval/ipythonPlugins/vendor/ipython2/kernel.js",
+                             "./plugins/eval/ipythonPlugins/vendor/ipython2/session.js",
+                             "./plugins/eval/ipythonPlugins/vendor/ipython2/comm.js",
+                             "./plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js"
+                            ], onSuccess, onFail);
+        }
+      });
   };
   init();
 })();

@@ -21,25 +21,26 @@
     <tabs>
       <pane heading="Evaluators">
         <div>
-          <button ng-repeat="(pluginName, pluginUrl) in getKnownEvaluatePlugins()" ng-click="setNewPluginNameOrUrl(pluginName)">{{pluginName}}
+          <button ng-repeat="(pluginName, pluginUrl) in evalTabOp.getKnownEvaluatePlugins()"
+                  ng-click="evalTabOp.setNewPluginNameOrUrl(pluginName)">{{pluginName}}
           </button>
         </div>
         <div class="input-append addeval">
-          <input type="text" ng-enter='addPlugin()' ng-model="newPluginNameOrUrl"></input>
-          <button class="btn" ng-click='addPlugin()'>Add Plugin from URL</button>
+          <input type="text" ng-enter='evalTabOp.addPlugin()' ng-model="evalTabOp.newPluginNameOrUrl"></input>
+          <button class="btn" ng-click='evalTabOp.addPlugin()'>Add Plugin from URL</button>
         </div>
         <accordion>
-          <bk-notebook-evaluators-evaluator-settings ng-repeat="(evaluatorName, evaluator) in getAllEvaluators()">
+          <bk-notebook-evaluators-evaluator-settings ng-repeat="(evaluatorName, evaluator) in evalTabOp.getAllEvaluators()">
           </bk-notebook-evaluators-evaluator-settings>
-          <div ng-repeat="evaluator in getLoadingEvaluators()"><accordion-group heading="Loading {{evaluator.plugin}}..."></accordion-group></div>
+          <div ng-repeat="evaluator in evalTabOp.getLoadingEvaluators()"><accordion-group heading="Loading {{evaluator.plugin}}..."></accordion-group></div>
         </accordion>
       </pane>
       <pane heading="Menus">
         <div class="input-append">
-          <input type="text" ng-model="$parent.$parent.newMenuPluginUrl"></input>
-          <button class="btn" ng-click='addMenuPlugin()'>Add Plugin from URL</button>
+          <input type="text" ng-model="menuTabOp.newMenuPluginUrl"></input>
+          <button class="btn" ng-click='menuTabOp.addMenuPlugin()'>Add Plugin from URL</button>
         </div>
-        <div ng-repeat="plugin in getMenuPlugins()">
+        <div ng-repeat="plugin in menuTabOp.getMenuPlugins()">
           {{plugin.url}}
         </div>
       </pane>

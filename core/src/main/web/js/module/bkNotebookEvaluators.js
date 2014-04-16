@@ -39,34 +39,47 @@
         $scope.hideEvaluators = function() {
           return bkCoreManager.getBkNotebook().getViewModel().hideEvaluators();
         };
-        $scope.newEvaluatorName = "";
-        $scope.getAllEvaluators = function() {
-          return bkEvaluatorManager.getAllEvaluators();
+
+        $scope.evalTabOp = {
+          newPluginNameOrUrl: "",
+          getAllEvaluators: function() {
+            return bkEvaluatorManager.getAllEvaluators();
+          },
+          getLoadingEvaluators: function() {
+            return bkEvaluatorManager.getLoadingEvaluators();
+          },
+          getKnownEvaluatePlugins: function(name) {
+            return bkEvaluatePluginManager.getKnownEvaluatorPlugins();
+          },
+          setNewPluginNameOrUrl: function(pluginNameOrUrl) {
+            this.newPluginNameOrUrl = pluginNameOrUrl;
+          },
+          addPlugin: function() {
+            var plugin = this.newPluginNameOrUrl;
+            var newEvaluatorObj = {
+              name: "",
+              plugin: plugin
+            };
+            bkSessionManager.getRawNotebookModel().evaluators.push(newEvaluatorObj);
+            bkCoreManager.addEvaluator(newEvaluatorObj);
+          }
         };
-        $scope.getLoadingEvaluators = function() {
-          return bkEvaluatorManager.getLoadingEvaluators();
+
+        $scope.menuTabOp = {
+          newMenuPluginUrl: "./plugin/menu/debug.js",
+          addMenuPlugin: function () {
+            menuPluginManager.addMenu($scope.newMenuPluginUrl);
+          }, getMenuPlugins: function () {
+            return menuPluginManager.getMenuPlugins();
+          }
         };
-        $scope.getKnownEvaluatePlugins = function(name) {
-          return bkEvaluatePluginManager.getKnownEvaluatorPlugins();
-        };
-        $scope.setNewPluginNameOrUrl = function(pluginNameOrUrl) {
-          $scope.newPluginNameOrUrl = pluginNameOrUrl;
-        };
+
         $scope.newMenuPluginUrl = "./plugin/menu/debug.js";
         $scope.addMenuPlugin = function() {
           menuPluginManager.addMenu($scope.newMenuPluginUrl);
         };
         $scope.getMenuPlugins = function() {
           return menuPluginManager.getMenuPlugins();
-        };
-        $scope.newPluginNameOrUrl = "";
-        $scope.addPlugin = function() {
-          var newEvaluatorObj = {
-            name: "",
-            plugin: $scope.newPluginNameOrUrl
-          };
-          bkSessionManager.getRawNotebookModel().evaluators.push(newEvaluatorObj);
-          bkCoreManager.addEvaluator(newEvaluatorObj);
         };
       }
     };
@@ -105,11 +118,11 @@
             var name = evaluator.spec[property].hasOwnProperty('name') ? evaluator.spec[property].name : property;
             if (evaluator.spec[property].type === "settableString") {
               element.find('.bbody').append($compile(
-                  "<div>" + name + ":<br><textarea ng-model='evaluator.evaluator.settings." + property +
+                  "<div>" + name + ":<br><textarea ng-model='evaluator.settings." + property +
                       "'></textarea><button ng-click='set(\"" + property +
                       "\")'>set</button></div>")(scope));
             } else if (evaluator.spec[property].type === "action") {
-              element.find('.bbody').append($compile("<div><button ng-click='evaluator.evaluator.perform(\"" + property +
+              element.find('.bbody').append($compile("<div><button ng-click='evaluator.perform(\"" + property +
                   "\")'>" + name + "</button></div>")(scope));
             }
           }

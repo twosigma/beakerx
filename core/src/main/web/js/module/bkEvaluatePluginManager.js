@@ -20,18 +20,15 @@
   'use strict';
   var module = angular.module('M_bkEvaluatePluginManager', ['M_bkUtils'])
   module.factory('bkEvaluatePluginManager', function(bkUtils) {
-      var nameToUrl = {};
+      var nameToUrlMap = {};
       var plugins = {};
       var loadingInProgressPlugins = [];
       return {
-        _getPlugins: function() {
-          return plugins;
-        },
-        _getNameToUrl: function() {
-          return nameToUrl;
+        getKnownEvaluatorPlugins: function() {
+          return nameToUrlMap;
         },
         addNameToUrlEntry: function(name, url) {
-          nameToUrl[name] = url;
+          nameToUrlMap[name] = url;
         },
         getEvaluatorFactory: function(nameOrUrl) {
           if (plugins[nameOrUrl]) {
@@ -43,9 +40,9 @@
           } else {
             var deferred = bkUtils.newDeferred();
             var name, url;
-            if (nameToUrl[nameOrUrl]) {
+            if (nameToUrlMap[nameOrUrl]) {
               name = nameOrUrl;
-              url = nameToUrl[nameOrUrl];
+              url = nameToUrlMap[nameOrUrl];
             } else {
               name = "";
               url = nameOrUrl;
@@ -64,7 +61,8 @@
               ex.getEvaluatorFactory().then(function(shellCreator) {
                 deferred.resolve(shellCreator);
               });
-            }, function() {
+            }, function(err) {
+              console.error(err);
               if (_.isEmpty(name)) {
                 deferred.reject("failed to load plugin: " + url);
               } else {

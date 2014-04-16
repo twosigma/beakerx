@@ -21,16 +21,17 @@
     <tabs>
       <pane heading="Evaluators">
         <div>
-          <button ng-repeat="eval in getKnownEvaluators()" ng-click="addKnownEvaluator(eval.name)">{{eval.name}}
+          <button ng-repeat="(pluginName, pluginUrl) in getKnownEvaluatePlugins()" ng-click="setNewPluginNameOrUrl(pluginName)">{{pluginName}}
           </button>
         </div>
         <div class="input-append addeval">
-          <input type="text" ng-enter='addPlugin()' ng-model="$parent.$parent.newPluginUrl"></input>
+          <input type="text" ng-enter='addPlugin()' ng-model="newPluginNameOrUrl"></input>
           <button class="btn" ng-click='addPlugin()'>Add Plugin from URL</button>
         </div>
         <accordion>
-          <bk-notebook-evaluators-evaluator-settings ng-repeat="evaluator in getEvaluatorsAndLoadingPlugins()">
+          <bk-notebook-evaluators-evaluator-settings ng-repeat="(evaluatorName, evaluator) in getAllEvaluators()">
           </bk-notebook-evaluators-evaluator-settings>
+          <div ng-repeat="evaluator in getLoadingEvaluators()"><accordion-group heading="Loading {{evaluator.plugin}}..."></accordion-group></div>
         </accordion>
       </pane>
       <pane heading="Menus">

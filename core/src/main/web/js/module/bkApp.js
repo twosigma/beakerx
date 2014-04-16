@@ -403,6 +403,13 @@
             $scope.$apply();
           }
         });
+        $scope.$watch('disconnected', function(disconnected) {
+          if (disconnected) {
+            stopAutoBackup();
+          } else {
+            startAutoBackup();
+          }
+        });
 
         showStatusMessage("");
         $scope.loading = true;

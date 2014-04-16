@@ -19,9 +19,9 @@
  */
 define(function(require, exports, module) {
   'use strict';
-  //var bkHelper = require("bkHelper");
+  var PLUGIN_NAME = "Html";
   var Html = {
-    //pluginName: "Html",
+    pluginName: PLUGIN_NAME,
     cmMode: "htmlmixed",
     evaluate: function(code, modelOutput) {
       var startTime = new Date().getTime();
@@ -49,6 +49,6 @@ define(function(require, exports, module) {
       }
     });
   };
-  exports.name = "Html";
+  exports.name = PLUGIN_NAME;
 });
 

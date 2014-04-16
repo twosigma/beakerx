@@ -274,7 +274,6 @@ define(function(require, exports, module) {
     shellReadyDeferred.promise.then(function(Shell) {
       deferred.resolve({
         create: function(settings) {
-          console.log("Creating new ipython shell settings = ", settings);
           var deferred2 = bkHelper.newDeferred();
           deferred2.resolve(new Shell(settings));
           return deferred2.promise;

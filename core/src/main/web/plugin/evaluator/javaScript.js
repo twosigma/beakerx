@@ -19,7 +19,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
-
+  var PLUGIN_NAME = "JavaScript";
   var stringProps = ("charAt charCodeAt indexOf lastIndexOf substring substr slice trim trimLeft trimRight " +
       "toUpperCase toLowerCase split concat match replace search").split(" ");
   var arrayProps = ("length concat join splice push pop shift unshift slice reverse sort indexOf " +
@@ -151,7 +151,7 @@ define(function(require, exports, module) {
 
 
   var JavaScript_0 = {
-    pluginName: "JavaScript",
+    pluginName: PLUGIN_NAME,
     cmMode: "javascript",
     background: "#FFE0F0",
     evaluate: function(code, modelOutput) {
@@ -212,5 +212,5 @@ define(function(require, exports, module) {
       }
     });
   };
-  exports.name = "JavaScript";
+  exports.name = PLUGIN_NAME;
 });

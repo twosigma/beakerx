@@ -22,11 +22,13 @@
   'use strict';
   var bkNotebookEvaluators = angular.module('M_bkNotebookEvaluators', [
     'M_bkCore',
-    'M_bkSessionManager'
+    'M_bkSessionManager',
+    'M_bkEvaluatePluginManager'
   ]);
 
   bkNotebookEvaluators.directive('bkNotebookEvaluators', function(
-      bkCoreManager, bkSessionManager, menuPluginManager) {
+      bkCoreManager, bkSessionManager, menuPluginManager, bkEvaluatePluginManager,
+      bkEvaluatorManager) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkNotebook_evaluators.html",
@@ -38,17 +40,20 @@
           return bkCoreManager.getBkNotebook().getViewModel().hideEvaluators();
         };
         $scope.newEvaluatorName = "";
-        $scope.getEvaluators = function() {
-          //return evaluatorManager.getAllEvaluators();
+        $scope.getAllEvaluators = function() {
+          return bkEvaluatorManager.getAllEvaluators();
         };
-        $scope.getEvaluatorsAndLoadingPlugins = function() {
-          //return evaluatorManager.getEvaluatorsAndLoadingPlugins();
+        $scope.getLoadingEvaluators = function() {
+          return bkEvaluatorManager.getLoadingEvaluators();
         };
         $scope.getKnownEvaluators = function() {
           //return evaluatorManager.getKnownEvaluators();
         };
-        $scope.addKnownEvaluator = function(name) {
-          //$scope.newPluginUrl = evaluatorManager.nameToUrl[name];
+        $scope.getKnownEvaluatePlugins = function(name) {
+          return bkEvaluatePluginManager.getKnownEvaluatorPlugins();
+        };
+        $scope.setNewPluginNameOrUrl = function(pluginNameOrUrl) {
+          $scope.newPluginNameOrUrl = pluginNameOrUrl;
         };
         $scope.newMenuPluginUrl = "./plugin/menu/debug.js";
         $scope.addMenuPlugin = function() {
@@ -57,18 +62,14 @@
         $scope.getMenuPlugins = function() {
           return menuPluginManager.getMenuPlugins();
         };
-        $scope.newPluginUrl = "";
+        $scope.newPluginNameOrUrl = "";
         $scope.addPlugin = function() {
-          var pluginUrl = $scope.newPluginUrl;
-          var makeEvaluator = function(Shell) {
-            var newEvaluatorObj = {
-              name: Shell.prototype.pluginName,
-              plugin: pluginUrl
-            };
-            bkSessionManager.getRawNotebookModel().evaluators.push(newEvaluatorObj);
-            bkCoreManager.addEvaluator(newEvaluatorObj);
+          var newEvaluatorObj = {
+            name: "",
+            plugin: $scope.newPluginNameOrUrl
           };
-          //evaluatorManager.setupPlugin(pluginUrl, makeEvaluator);
+          bkSessionManager.getRawNotebookModel().evaluators.push(newEvaluatorObj);
+          bkCoreManager.addEvaluator(newEvaluatorObj);
         };
       }
     };
@@ -92,19 +93,16 @@
       $compile, bkSessionManager) {
     return {
       restrict: 'E',
-      template: '<div ng-show="evaluator.loading"><accordion-group heading="Loading {{evaluator.url}}...">' +
-          '</accordion-group></div>' +
-          '<div ng-hide="evaluator.loading"><accordion-group heading="{{evaluator.name}} (plugin: {{evaluator.evaluator.settings.plugin}})">' +
+      template: '<div><accordion-group heading="{{evaluatorName}} (plugin: {{evaluator.settings.plugin}})">' +
           '<div class="bbody"></div></accordion-group></div>',
       controller: function($scope) {
         $scope.set = function(val) {
-          $scope.evaluator.evaluator.perform(val);
+          $scope.evaluator.perform(val);
           bkSessionManager.setNotebookModelEdited(true);
         };
       },
       link: function(scope, element, attrs) {
-        if (scope.evaluator.loading) return;
-        var evaluator = scope.evaluator.evaluator;
+        var evaluator = scope.evaluator;
         for (var property in evaluator.spec) {
           if (evaluator.spec.hasOwnProperty(property)) {
             var name = evaluator.spec[property].hasOwnProperty('name') ? evaluator.spec[property].name : property;
@@ -122,4 +120,5 @@
       }
     };
   });
+
 })();

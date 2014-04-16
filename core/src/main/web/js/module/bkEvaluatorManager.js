@@ -25,18 +25,31 @@
 
   module.factory('bkEvaluatorManager', function (bkUtils, bkEvaluatePluginManager) {
     var evaluators = {};
+    var loadingInProgressEvaluators = [];
     return {
       reset: function() {
         evaluators = {};
       },
-      newEvaluator: function(settings) {
-        return bkEvaluatePluginManager.getEvaluatorFactory(settings.plugin)
+      newEvaluator: function(evaluatorSettings) {
+        loadingInProgressEvaluators.push(evaluatorSettings);
+        return bkEvaluatePluginManager.getEvaluatorFactory(evaluatorSettings.plugin)
             .then(function(facotry) {
-              return facotry.create(settings);
+              return facotry.create(evaluatorSettings);
             })
             .then(function(evaluator) {
-              evaluators[settings.name] = evaluator;
+              if (_.isEmpty(evaluatorSettings.name)) {
+                if (!evaluators[evaluator.pluginName]) {
+                  evaluatorSettings.name = evaluator.pluginName;
+                } else {
+                  evaluatorSettings.name = evaluator.pluginName + "_" + bkUtils.generateID(6);
+                }
+              }
+              evaluators[evaluatorSettings.name] = evaluator;
               return evaluator;
+            })
+            .finally(function() {
+              var index = loadingInProgressEvaluators.indexOf(evaluatorSettings);
+              loadingInProgressEvaluators.splice(index, 1);
             });
       },
       getEvaluator: function(evaluatorId) {
@@ -44,6 +57,9 @@
       },
       getAllEvaluators: function() {
         return evaluators
+      },
+      getLoadingEvaluators: function() {
+        return loadingInProgressEvaluators;
       },
       getViewModel: function() {
         var ret = {};

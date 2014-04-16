@@ -103,12 +103,18 @@
         var that = this;
         if (_.isString(url)) {
           var deferred = this.newDeferred();
-          window.require([url], function(ret) {
+          window.require([url], function (ret) {
             if (!_.isEmpty(name)) {
               that.moduleMap[name] = url;
             }
             deferred.resolve(ret);
+          }, function(err) {
+            deferred.reject({
+              message: "module failed to load",
+              error: err
+            });
           });
+
           return deferred.promise;
         } else {
           throw "illegal arg" + url;

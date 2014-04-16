@@ -19,8 +19,9 @@
  */
 define(function(require, exports, module) {
   'use strict';
+  var PLUGIN_NAME = "Latex";
   var Latex = {
-    pluginName: "Latex",
+    pluginName: PLUGIN_NAME,
     cmMode: "stex",
     evaluate: function(code, modelOutput) {
       var startTime = new Date().getTime();
@@ -48,5 +49,5 @@ define(function(require, exports, module) {
       }
     });
   };
-  exports.name = "Latex";
+  exports.name = PLUGIN_NAME;
 });

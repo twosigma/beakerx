@@ -19,9 +19,8 @@
  * For creating and configuring evaluators that evaluate Javascript code on
  *   a remote node server and update code cell results.
  */
-(function () {
+define(function(require, exports, module) {
     'use strict';
-    var url = "./plugins/eval/node/node.js";
     var PLUGIN_NAME = "Node";
     var COMMAND = "node/nodePlugin";
 
@@ -106,6 +105,7 @@
         spec: {}
     };
 
+    var shellReadyDeferred = bkHelper.newDeferred();
     var init = function () {
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
@@ -113,7 +113,7 @@
         recordOutput: "true"
         }).success(function (ret) {
             serviceBase = ret;
-            var NodeShell = function (settings, cb) {
+            var NodeShell = function (settings) {
                 var self = this;
                 var setShellIdCB = function (id) {
                     if (id !== settings.shellID) {
@@ -121,7 +121,6 @@
                     }
                     settings.shellID = id;
                     self.settings = settings;
-                    cb();
                 };
                 if (!settings.shellID) {
                     settings.shellID = "";
@@ -133,11 +132,27 @@
                 };
             };
             NodeShell.prototype = nodeProto;
-            bkHelper.getLoadingPlugin(url).onReady(NodeShell);
+            shellReadyDeferred.resolve(NodeShell);
         }).error(function () {
             alert('fail');
             console.log("process start failed", arguments);
         });
     };
     init();
-})();
+
+  exports.getEvaluatorFactory = function(settings) {
+    var deferred = bkHelper.newDeferred();
+    shellReadyDeferred.promise.then(function(Shell) {
+      deferred.resolve({
+        create: function(settings) {
+          var deferred2 = bkHelper.newDeferred();
+          deferred2.resolve(new Shell(settings));
+          return deferred2.promise;
+        }
+      });
+    });
+    return deferred.promise;
+  };
+
+    exports.name = PLUGIN_NAME;
+});

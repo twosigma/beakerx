@@ -265,6 +265,11 @@
     });
   };
   var bootstrapBkApp = function() {
+    // make sure requirejs reports error
+    requirejs.config({
+      enforceDefine: true
+    });
+
     angular.element(document).ready(function() {
       angular.bootstrap(document, ["beaker"]);
     });

@@ -17,7 +17,7 @@
  * R eval plugin
  * For creating and config evaluators that evaluate R code and update code cell results.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var PLUGIN_NAME = "R";
   var COMMAND = "r/rPlugin";
@@ -205,4 +205,4 @@
   };
 
   exports.name = PLUGIN_NAME;
-})();
+});

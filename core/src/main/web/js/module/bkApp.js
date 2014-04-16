@@ -528,6 +528,9 @@
             return _theEvaluator.evaluate(cell.input.body, cell.output);
           });
           evalP.catch(function(ret) {
+            if (ret === "cancelled by user") {
+              _promise = bkUtils.newPromise();
+            }
             if (cell.output && cell.output.result === "pending") {
               cell.output.result = "";
             }
@@ -562,7 +565,6 @@
         if (_theEvaluator) {
           if (_theEvaluator.cancelExecution) {
             _theEvaluator.cancelExecution();
-            _promise = bkUtils.newPromise();
           } else {
             throw "cancel is not supported for the current evaluator";
           }

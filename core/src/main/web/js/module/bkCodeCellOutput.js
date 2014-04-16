@@ -23,13 +23,12 @@
   'use strict';
   var module = angular.module('M_bkCodeCellOutput', [
     'M_generalUtils',
-    'M_bkOutputDisplay'
+    'M_bkOutputDisplay',
+    'M_bkEvaluatorManager'
   ]);
 
   module.directive('bkCodeCellOutput', function(
-      generalUtils, outputDisplayFactory//,
-      //bkEvaluatorManager
-      ) {
+      generalUtils, outputDisplayFactory, bkEvaluatorManager) {
     return {
       restrict: "E",
       template: '<div class="bkcell"><bk-output-display ' +

@@ -23,7 +23,8 @@
   var bkNotebookEvaluators = angular.module('M_bkNotebookEvaluators', [
     'M_bkCore',
     'M_bkSessionManager',
-    'M_bkEvaluatePluginManager'
+    'M_bkEvaluatePluginManager',
+    'M_bkEvaluatorManager'
   ]);
 
   bkNotebookEvaluators.directive('bkNotebookEvaluators', function(

@@ -27,7 +27,7 @@
     'M_bkCore',
     'M_bkSessionManager',
     'M_bkNotebookEvaluators',
-    //'M_bkEvaluatorManager',
+    'M_bkEvaluatorManager',
     'M_bkCell',
     'M_cometd',
     'M_bkOutputLog'

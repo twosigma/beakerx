@@ -68,18 +68,11 @@
         $scope.menuTabOp = {
           newMenuPluginUrl: "./plugin/menu/debug.js",
           addMenuPlugin: function () {
-            menuPluginManager.addMenu($scope.newMenuPluginUrl);
-          }, getMenuPlugins: function () {
+            menuPluginManager.addMenu(this.newMenuPluginUrl);
+          },
+          getMenuPlugins: function () {
             return menuPluginManager.getMenuPlugins();
           }
-        };
-
-        $scope.newMenuPluginUrl = "./plugin/menu/debug.js";
-        $scope.addMenuPlugin = function() {
-          menuPluginManager.addMenu($scope.newMenuPluginUrl);
-        };
-        $scope.getMenuPlugins = function() {
-          return menuPluginManager.getMenuPlugins();
         };
       }
     };

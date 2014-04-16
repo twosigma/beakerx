@@ -18,9 +18,9 @@
  * For creating and config evaluators that uses a IJulia kernel for evaluating julia code and
  * updating code cell outputs.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugins/eval/ipythonPlugins/julia/julia.js";
+
   var PLUGIN_NAME = "Julia";
   var COMMAND = "ipythonPlugins/julia/juliaPlugin";
   var kernels = {};
@@ -203,6 +203,7 @@
     }
   };
 
+  var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
       /* chrome has a bug where websockets don't support authentication so we
@@ -255,7 +256,7 @@
               };
             };
             JuliaShell.prototype = JuliaProto;
-            bkHelper.getLoadingPlugin(url).onReady(JuliaShell);
+            shellReadyDeferred.resolve(JuliaShell);
           }).error(function() {
             console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
           });
@@ -271,4 +272,20 @@
         onSuccess, onFail);
   };
   init();
+
+  exports.getEvaluatorFactory = function(settings) {
+    var deferred = bkHelper.newDeferred();
+    shellReadyDeferred.promise.then(function(Shell) {
+      deferred.resolve({
+        create: function(settings) {
+          var deferred2 = bkHelper.newDeferred();
+          deferred2.resolve(new Shell(settings));
+          return deferred2.promise;
+        }
+      });
+    });
+    return deferred.promise;
+  };
+
+  exports.name = PLUGIN_NAME;
 })();

@@ -20,7 +20,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
-  var url = "./plugins/eval/ipythonPlugins/ipython/ipython.js";
+
   var PLUGIN_NAME = "IPython";
   var COMMAND = "ipythonPlugins/ipython/ipythonPlugin";
   var kernels = {};

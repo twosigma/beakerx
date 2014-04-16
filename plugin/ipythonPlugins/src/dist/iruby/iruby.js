@@ -18,9 +18,9 @@
  * For creating and config evaluators that uses a IPython kernel for evaluating python code
  * and updating code cell outputs.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugins/eval/ipythonPlugins/iruby/iruby.js";
+
   var PLUGIN_NAME = "IRuby";
   var COMMAND = "ipythonPlugins/iruby/irubyPlugin";
   var kernels = {};
@@ -202,6 +202,7 @@
     }
   };
 
+  var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
       /* chrome has a bug where websockets don't support authentication so we
@@ -255,7 +256,7 @@
           };
         };
         IRubyShell.prototype = IRubyProto;
-        bkHelper.getLoadingPlugin(url).onReady(IRubyShell);
+        shellReadyDeferred.resolve(IRubyShell);
       }).error(function() {
         console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
       });
@@ -271,4 +272,20 @@
                       onSuccess, onFail);
   };
   init();
-})();
+
+  exports.getEvaluatorFactory = function(settings) {
+    var deferred = bkHelper.newDeferred();
+    shellReadyDeferred.promise.then(function(Shell) {
+      deferred.resolve({
+        create: function(settings) {
+          var deferred2 = bkHelper.newDeferred();
+          deferred2.resolve(new Shell(settings));
+          return deferred2.promise;
+        }
+      });
+    });
+    return deferred.promise;
+  };
+
+  exports.name = PLUGIN_NAME;
+});

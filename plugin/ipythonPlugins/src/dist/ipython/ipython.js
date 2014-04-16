@@ -179,6 +179,7 @@ define(function(require, exports, module) {
       };
       kernel.execute(code, callbacks, {silent: false});
       deferred.promise.finally(function() {
+        console.log("reset cancel function");
         _theCancelFunction = null;
       });
       return deferred.promise;

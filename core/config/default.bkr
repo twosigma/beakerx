@@ -44,7 +44,7 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "#Python - will turn light blue if plugin loads successfully"
+                "body": "#Python - will turn light blue when plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -55,7 +55,7 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#R - will turn dark blue if plugin loads successfully"
+                "body": "#R - will turn dark blue when plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -66,17 +66,16 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "//JavaScript - will turn pink if plugin loads successfully"
+                "body": "//JavaScript - will turn pink when plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"
             }
         },
         {
-            "id": "markdownJ1aHv3",
-            "type": "markdown",
-            "body": "Beaker also supports Julia, Groovy, Ruby, and Node. To add another language to this notebook, select 'Notebook' -> 'Plugin manager'\n\nFor general help, see the tutorial notebook under 'Help' -> 'Tutorial notebook'",
-            "mode": "preview"
+            "id": "text97Oipt",
+            "type": "text",
+            "body": "<p style=\"margin-bottom: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 13px; line-height: 20.799999237060547px;\">Beaker also supports Julia, Groovy, Ruby, and Node. To add another language to this notebook, select 'Notebook' -&gt; 'Plugin manager' from the menu on top of the screen.</p><p style=\"margin-top: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 13px; line-height: 20.799999237060547px; margin-bottom: 0px !important;\">For general help, see the tutorial notebook under 'Help' -&gt; 'Tutorial notebook'</p>"
         }
     ]
 }

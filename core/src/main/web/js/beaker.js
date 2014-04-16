@@ -237,7 +237,6 @@
 
     beaker.run(function(bkEvaluatePluginManager) {
       if (window.bkInit && window.bkInit.getEvaluators) {
-        console.log("BEAKER.JS - init eval plugins 1.1");
         var evaluatorsUrlMap = window.bkInit.getEvaluators();
         _.chain(evaluatorsUrlMap).keys().each(function(key) {
           var value = evaluatorsUrlMap[key];

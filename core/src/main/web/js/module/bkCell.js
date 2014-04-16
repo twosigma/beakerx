@@ -248,7 +248,7 @@
   M_bkCell.directive('sectionCell', function(
       generalUtils,
       bkShare,
-      //bkEvaluatorManager,
+      bkEvaluatorManager,
       bkSessionManager,
       bkCoreManager,
       bkCellPluginManager) {

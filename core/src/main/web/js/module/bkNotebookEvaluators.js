@@ -46,9 +46,6 @@
         $scope.getLoadingEvaluators = function() {
           return bkEvaluatorManager.getLoadingEvaluators();
         };
-        $scope.getKnownEvaluators = function() {
-          //return evaluatorManager.getKnownEvaluators();
-        };
         $scope.getKnownEvaluatePlugins = function(name) {
           return bkEvaluatePluginManager.getKnownEvaluatorPlugins();
         };

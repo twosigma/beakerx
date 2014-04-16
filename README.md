@@ -14,14 +14,13 @@
     limitations under the License.
 -->
  
-#Notices
 
-* As long as this repo is 'private', do not share code or builds with anybody outside of Two Sigma
-* Two Sigma employees must complete the appropriate authorization forms in Bonita before contributing to any open source project, including Beaker
 
 #Beaker - the data scientist's laboratory
 
 Beaker is a polyglot code notebook that allows data scientists to analyze and visualize data and document their process using multiple programming languages. Users can seamlessly switch between their favorite languages and tools within a single document.
+
+![sadf](http://twosigma.github.io/beaker-notebook/images/bk1.png)
 
 ##Language support
 

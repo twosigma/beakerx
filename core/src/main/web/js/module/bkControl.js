@@ -39,6 +39,9 @@
           },
           openPath: function(path, pathType, retry, timeout) {
             bkCoreManager.openURI(path);
+          },
+          showAnonymousTrackingDialog: function() {
+            $scope.isAllowAnonymousTracking = null;
           }
         };
         bkCoreManager.setBkAppImpl(_impl);

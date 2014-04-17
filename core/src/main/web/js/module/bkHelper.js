@@ -60,6 +60,10 @@
         return bkCoreManager.newSession();
       },
 
+      // bk-control only
+      showAnonymousTrackingDialog: function() {
+        bkCoreManager.getBkApp().showAnonymousTrackingDialog();
+      },
       // bk-app
       loadNotebook: function(notebookModel, alwaysCreateNewEvaluators, notebookUri, sessionID) {
         return bkCoreManager.getBkApp().loadNotebook(

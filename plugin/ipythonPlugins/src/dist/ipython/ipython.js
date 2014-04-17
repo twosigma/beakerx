@@ -95,8 +95,6 @@
       // Also, do not cb until making sure kernel is running.
       var timeout = now() + 10 * 1000; // time out 10 sec
       var spin = function() {
-        console.log("spinning");
-        console.log(self.kernel);
         if (self.kernel !== undefined && self.kernel.running) {
           cb(shellID);
         } else if (now() < timeout) {
@@ -158,6 +156,9 @@
         modelOutput.result = "canceling ...";
       };
       var execute_reply = function(msg) {
+        if (!ipyVersion1) {
+          msg = msg.content;
+        }
         var result = _(msg.payload).map(function(payload) {
           return IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(payload.text));
         }).join("");
@@ -225,7 +226,6 @@
       };
       kernel.execute(code, callbacks, {silent: false});
       deferred.promise.finally(function() {
-        console.log("reset cancel function");
         _theCancelFunction = null;
       });
       return deferred.promise;

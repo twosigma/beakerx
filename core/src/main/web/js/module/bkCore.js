@@ -336,6 +336,12 @@
       newDeferred: function() {
         return bkUtils.newDeferred();
       },
+      newPromise: function(value) {
+        return bkUtils.newPromise(value);
+      },
+      fcall: function(func) {
+        return bkUtils.fcall(func);
+      },
       loadModule: function(url, name) {
         return bkUtils.loadModule(url, name);
       },

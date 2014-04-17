@@ -17,12 +17,9 @@
  * JavaScript eval plugin
  * For creating and config evaluators that evaluate JavaScript code and update code cell results.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugin/evaluator/javaScript.js";
-//    var init = function() { };
-//    init();
-
+  var PLUGIN_NAME = "JavaScript";
   var stringProps = ("charAt charCodeAt indexOf lastIndexOf substring substr slice trim trimLeft trimRight " +
       "toUpperCase toLowerCase split concat match replace search").split(" ");
   var arrayProps = ("length concat join splice push pop shift unshift slice reverse sort indexOf " +
@@ -154,7 +151,7 @@
 
 
   var JavaScript_0 = {
-    pluginName: "JavaScript",
+    pluginName: PLUGIN_NAME,
     cmMode: "javascript",
     background: "#FFE0F0",
     evaluate: function(code, modelOutput) {
@@ -192,7 +189,7 @@
     spec: {
     }
   };
-  var JavaScript0 = function(settings, cb) {
+  var JavaScript0 = function(settings) {
     if (!settings.jsSetting2) {
       settings.jsSetting2 = "";
     }
@@ -205,10 +202,11 @@
       var action = this.spec[what].action;
       this[action]();
     };
-    window.setTimeout(cb, 0);
   };
   JavaScript0.prototype = JavaScript_0;
-  //MyShell = JavaScript0;
 
-  bkHelper.getLoadingPlugin(url).onReady(JavaScript0);
-})();
+  exports.getEvaluatorFactory = function() {
+    return bkHelper.getEvaluatorFactory(bkHelper.newPromise(JavaScript0));
+  };
+  exports.name = PLUGIN_NAME;
+});

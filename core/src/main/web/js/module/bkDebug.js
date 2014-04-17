@@ -33,14 +33,17 @@
     "M_bkTrack",
     "M_bkUtils",
     "M_cometd",
-    "M_evaluatorManager",
     "M_generalUtils",
-    "M_menuPlugin"
+    "M_menuPlugin",
+    "M_bkEvaluatePluginManager",
+    "M_bkEvaluatorManager"
+//    "M_bkEvaluateManager"
   ]);
   module.factory("bkDebug", function(
       $injector, angularUtils, bkAppEvaluate, bkCellPluginManager, bkSessionManager,
       bkCoreManager, bkHelper, bkOutputLog, bkRecentMenu, bkSession, bkShare,
-      trackingService, bkUtils, cometd, evaluatorManager, generalUtils, menuPluginManager) {
+      trackingService, bkUtils, cometd, generalUtils, menuPluginManager, bkEvaluatePluginManager,
+      bkEvaluatorManager) {
     return {
       $injector: $injector,
       angularUtils: angularUtils,
@@ -56,9 +59,10 @@
       trackingService: trackingService,
       bkUtils: bkUtils,
       cometd: cometd,
-      evaluatorManager: evaluatorManager,
       generalUtils: generalUtils,
-      menuPluginManager: menuPluginManager
+      menuPluginManager: menuPluginManager,
+      bkEvaluatePluginManager: bkEvaluatePluginManager,
+      bkEvaluatorManager: bkEvaluatorManager
     };
   });
 })();

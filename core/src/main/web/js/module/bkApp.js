@@ -33,10 +33,10 @@
     'M_bkSession',
     'M_bkSessionManager',
     'M_bkNotebook',
-    'M_evaluatorManager',
     'M_menuPlugin',
     'M_bkCellPluginManager',
-    'M_bkNotebookVersionManager'
+    'M_bkNotebookVersionManager',
+    'M_bkEvaluatorManager'
   ]);
 
   /**
@@ -53,12 +53,12 @@
       bkUtils,
       bkSession,
       bkSessionManager,
-      evaluatorManager,
       menuPluginManager,
       bkCellPluginManager,
       bkCoreManager,
       bkAppEvaluate,
-      bkNotebookVersionManager) {
+      bkNotebookVersionManager,
+      bkEvaluatorManager) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkApp.html",
@@ -75,7 +75,12 @@
         };
 
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
-          evaluatorManager.newEvaluator(settings, alwaysCreateNewEvaluator)
+          // set shell id to null, so it won't try to find an existing shell with the id
+          if (alwaysCreateNewEvaluator) {
+            settings.shellID = null;
+          }
+
+          bkEvaluatorManager.newEvaluator(settings)
               .then(function(evaluator) {
                 var actions = [];
                 var name = evaluator.pluginName;
@@ -305,7 +310,7 @@
               });
             },
             addEvaluator: function(settings) {
-              addEvaluator(settings);
+              addEvaluator(settings, true);
             }
           };
         })();
@@ -398,6 +403,13 @@
             $scope.$apply();
           }
         });
+        $scope.$watch('disconnected', function(disconnected) {
+          if (disconnected) {
+            stopAutoBackup();
+          } else {
+            startAutoBackup();
+          }
+        });
 
         showStatusMessage("");
         $scope.loading = true;
@@ -430,8 +442,7 @@
     };
   });
 
-  module.factory('bkAppEvaluate', function(bkUtils, evaluatorManager) {
-
+  module.factory('bkAppEvaluate', function(bkUtils, bkEvaluatorManager) {
     var setOutputCellText = function(cell, text) {
       if (!cell.output) {
         cell.output = {};
@@ -447,12 +458,12 @@
       var lastPromise = _promise;
       setOutputCellText(cell, "pending");
       var evaluateCell = function() {
-        var evaluator = evaluatorManager.getEvaluator(cell.evaluator);
+        var evaluator = bkEvaluatorManager.getEvaluator(cell.evaluator);
         if (evaluator) {
           var evalP = lastPromise.then(function() {
-            _theEvaluator = evaluator.evaluator;
+            _theEvaluator = evaluator;
             bkUtils.log("evaluate", {
-              plugin: evaluator.evaluator.pluginName,
+              plugin: evaluator.pluginName,
               length: cell.input.body.length});
             return _theEvaluator.evaluate(cell.input.body, cell.output);
           });

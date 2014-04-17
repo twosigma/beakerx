@@ -97,7 +97,8 @@
       'M_bkCore',
       'M_bkControl',
       'M_bkApp',
-      'M_bkDebug'
+      'M_bkDebug',
+      'M_bkEvaluatePluginManager'
     ]);
 
     // setup routing. the template is going to replace ng-view
@@ -234,13 +235,40 @@
       window.bkDebug = bkDebug;
     });
 
-    beaker.run(function(evaluatorManager) {
+    beaker.run(function(bkEvaluatePluginManager) {
       if (window.bkInit && window.bkInit.getEvaluators) {
-        evaluatorManager.setEvaluators(window.bkInit.getEvaluators());
+        var evaluatorsUrlMap = window.bkInit.getEvaluators();
+        _.chain(evaluatorsUrlMap).keys().each(function(key) {
+          var value = evaluatorsUrlMap[key];
+          bkEvaluatePluginManager.addNameToUrlEntry(key, value);
+        });
       }
+
+      var moreEvaluatorUrlMap = {// for known plugins, so we can refer to the plugin with either its name or URL
+        "IPython": "./plugins/eval/ipythonPlugins/ipython/ipython.js",
+        "IRuby": "./plugins/eval/ipythonPlugins/iruby/iruby.js",
+        "Julia": "./plugins/eval/ipythonPlugins/julia/julia.js",
+        "Groovy": "./plugins/eval/groovy/groovy.js",
+        "R": "./plugins/eval/r/r.js",
+        "Node": "./plugins/eval/node/node.js",
+
+        "Html": "./plugin/evaluator/html.js",
+        "Latex": "./plugin/evaluator/latex.js",
+        "JavaScript": "./plugin/evaluator/javaScript.js"
+      };
+
+      _.chain(moreEvaluatorUrlMap).keys().each(function(key) {
+        var value = moreEvaluatorUrlMap[key];
+        bkEvaluatePluginManager.addNameToUrlEntry(key, value);
+      });
     });
   };
   var bootstrapBkApp = function() {
+    // make sure requirejs reports error
+    requirejs.config({
+      enforceDefine: true
+    });
+
     angular.element(document).ready(function() {
       angular.bootstrap(document, ["beaker"]);
     });

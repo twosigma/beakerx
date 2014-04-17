@@ -27,7 +27,7 @@
     'M_bkCore',
     'M_bkSessionManager',
     'M_bkNotebookEvaluators',
-    'M_evaluatorManager',
+    'M_bkEvaluatorManager',
     'M_bkCell',
     'M_cometd',
     'M_bkOutputLog'
@@ -42,8 +42,8 @@
    * stuffs like evaluator panel
    */
   bkNotebook.directive('bkNotebook', function(
-      generalUtils, cometd, bkShare, evaluatorManager, bkCellPluginManager,
-      bkSessionManager, bkCoreManager, bkOutputLog) {
+      generalUtils, cometd, bkShare, bkEvaluatorManager,
+      bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkNotebook.html",
@@ -194,7 +194,7 @@
         $scope.getShareData = function() {
           return {
             notebookModel: bkSessionManager.getRawNotebookModel(),
-            evViewModel: evaluatorManager.getViewModel()
+            evViewModel: bkEvaluatorManager.getViewModel()
           };
         };
         var shareMenu = {

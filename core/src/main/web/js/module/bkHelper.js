@@ -213,6 +213,12 @@
       newDeferred: function() {
         return bkCoreManager.newDeferred();
       },
+      newPromise: function(value) {
+        return bkCoreManager.newPromise(value);
+      },
+      fcall: function(func) {
+        return bkCoreManager.fcall(func);
+      },
       loadModule: function(url, name) {
         return bkCoreManager.loadModule(url, name);
       },
@@ -249,6 +255,15 @@
       locatePluginService: function(id, locator) {
         return bkCoreManager.httpGet("/beaker/rest/plugin-services/" + id,
             locator);
+      },
+      getEvaluatorFactory: function(shellConstructorPromise) {
+        return shellConstructorPromise.then(function(Shell) {
+          return {
+            create: function(settings) {
+              return bkHelper.newPromise(new Shell(settings));
+            }
+          };
+        });
       }
     };
     window.bkHelper = bkHelper; // TODO, we want to revisit the decision of making this global

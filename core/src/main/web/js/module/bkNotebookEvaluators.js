@@ -48,7 +48,7 @@
           return evaluatorManager.getKnownEvaluators();
         };
         $scope.addKnownEvaluator = function(name) {
-          $scope.newPluginUrl = evaluatorManager.nameToUrl[name];
+          $scope.newPluginNameOrUrl = name;
         };
         $scope.newMenuPluginUrl = "./plugin/menu/debug.js";
         $scope.addMenuPlugin = function() {
@@ -57,21 +57,21 @@
         $scope.getMenuPlugins = function() {
           return menuPluginManager.getMenuPlugins();
         };
-        $scope.newPluginUrl = "";
+        $scope.newPluginNameOrUrl = "";
         $scope.getPlugins = function() {
           return evaluatorManager.getPlugins();
         };
         $scope.addPlugin = function() {
-          var pluginUrl = $scope.newPluginUrl;
+          var pluginNameOrUrl = $scope.newPluginNameOrUrl;
           var makeEvaluator = function(Shell) {
             var newEvaluatorObj = {
               name: Shell.prototype.pluginName,
-              plugin: pluginUrl
+              plugin: pluginNameOrUrl
             };
             bkBaseSessionModel.getNotebookModel().evaluators.push(newEvaluatorObj);
             bkCoreManager.addEvaluator(newEvaluatorObj, true);
           };
-          evaluatorManager.setupPlugin(pluginUrl, makeEvaluator);
+          evaluatorManager.setupPlugin(pluginNameOrUrl, makeEvaluator);
         };
       }
     };

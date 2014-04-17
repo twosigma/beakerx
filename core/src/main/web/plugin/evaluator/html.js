@@ -43,11 +43,7 @@ define(function(require, exports, module) {
   Html0.prototype = Html;
 
   exports.getEvaluatorFactory = function() {
-    return bkHelper.newPromise({
-      create: function(settings) {
-        return new Html0(settings);
-      }
-    });
+    return bkHelper.getEvaluatorFactory(bkHelper.newPromise(Html0));
   };
   exports.name = PLUGIN_NAME;
 });

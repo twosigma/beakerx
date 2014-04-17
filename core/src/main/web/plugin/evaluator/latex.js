@@ -43,11 +43,7 @@ define(function(require, exports, module) {
   Latex0.prototype = Latex;
 
   exports.getEvaluatorFactory = function() {
-    return bkHelper.newPromise({
-      create: function(settings) {
-        return new Latex0(settings);
-      }
-    });
+    return bkHelper.getEvaluatorFactory(bkHelper.newPromise(Latex0));
   };
   exports.name = PLUGIN_NAME;
 });

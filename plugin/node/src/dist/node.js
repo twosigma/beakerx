@@ -141,13 +141,7 @@ define(function(require, exports, module) {
     init();
 
   exports.getEvaluatorFactory = function(settings) {
-    return shellReadyDeferred.promise.then(function(Shell) {
-      return {
-        create: function(settings) {
-          return bkHelper.newPromise(new Shell(settings));
-        }
-      };
-    });
+    return bkHelper.getEvaluatorFactory(shellReadyDeferred.promise, settings);
   };
 
     exports.name = PLUGIN_NAME;

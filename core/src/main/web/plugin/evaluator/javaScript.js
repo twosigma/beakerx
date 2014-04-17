@@ -206,11 +206,7 @@ define(function(require, exports, module) {
   JavaScript0.prototype = JavaScript_0;
 
   exports.getEvaluatorFactory = function() {
-    return bkHelper.newPromise({
-      create: function(settings) {
-        return new JavaScript0(settings);
-      }
-    });
+    return bkHelper.getEvaluatorFactory(bkHelper.newPromise(JavaScript0));
   };
   exports.name = PLUGIN_NAME;
 });

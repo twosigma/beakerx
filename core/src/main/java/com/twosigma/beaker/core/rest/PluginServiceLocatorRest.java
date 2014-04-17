@@ -128,6 +128,7 @@ public class PluginServiceLocatorRest {
     String nginxCommand = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
     nginxCommand += (" -p " + this.nginxServDir);
     nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
+    System.out.println("running nginx: " + nginxCommand);
     Process proc = Runtime.getRuntime().exec(nginxCommand);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
@@ -354,6 +355,18 @@ public class PluginServiceLocatorRest {
     // note the toLowerCase is need because, for unknown reason,
     // nginx doesn't like location start with upper case
     return prefix.toLowerCase() + RandomStringUtils.random(randomPartLength, true, true);
+  }
+
+  @GET
+  @Path("getIPythonVersion")
+  @Produces(MediaType.APPLICATION_JSON)
+  public String getIPythonVersion()
+      throws IOException
+  {
+    Process proc = Runtime.getRuntime().exec("ipython --version");
+    BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+    String line = br.readLine();
+    return line;
   }
 
   private static class PluginConfig {

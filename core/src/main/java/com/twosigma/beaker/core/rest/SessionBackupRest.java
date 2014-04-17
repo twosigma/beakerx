@@ -165,6 +165,7 @@ public class SessionBackupRest {
   public void addPlugin(
       @FormParam("pluginname") String pluginName,
       @FormParam("pluginurl") String pluginUrl) {
+    // can NPE if arguments are null XXX
     boolean existsAlready = false;
     for (int i = 0; i < this.plugins.size(); ++i) {
       Plugin p = this.plugins.get(i);

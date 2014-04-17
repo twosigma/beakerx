@@ -33,7 +33,7 @@
   var IRubyProto = {
     pluginName: PLUGIN_NAME,
     cmMode: "ruby",
-    background: "#CC342D",
+    background: "#F29F9B",
     newShell: function(shellID, cb) {
 
       var kernel = null;

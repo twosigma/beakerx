@@ -49,9 +49,9 @@
       }
 
       if (ipyVersion1) {
-        kernel = new IPython.Kernel(serviceBase + "/kernels/");
-        kernels[shellID] = kernel;
-        kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
+        self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
+        kernels[shellID] = self.kernel;
+        self.kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
       } else {
         // Required by ipython backend, but not used.
         var model = {

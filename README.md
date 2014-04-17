@@ -18,9 +18,9 @@
 
 #Beaker - the data scientist's laboratory
 
-Beaker is a polyglot code notebook that allows data scientists to analyze and visualize data and document their process using multiple programming languages. Users can seamlessly switch between their favorite languages and tools within a single document.
+Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.
 
-![sadf](http://twosigma.github.io/beaker-notebook/images/bk1.png)
+![screenshots](http://twosigma.github.io/beaker-notebook/images/bk1.png)
 
 ##Language support
 

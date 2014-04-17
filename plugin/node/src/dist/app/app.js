@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var http = require('http');
 var uuid = require('node-uuid');
@@ -35,7 +37,6 @@ app.post('/evaluate', function(request, response){
 });
 
 function processCode(code) {
-    'use strict';
     var returnValue;
     var result;
     try {

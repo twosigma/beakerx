@@ -3,12 +3,12 @@
     "evaluators": [
         {
             "name": "Html",
-            "plugin": "./plugin/evaluator/html.js",
+            "plugin": "Html",
             "shellID": null
         },
         {
             "name": "Latex",
-            "plugin": "./plugin/evaluator/latex.js",
+            "plugin": "Latex",
             "shellID": null
         },
         {
@@ -32,7 +32,7 @@
         },
         {
             "name": "Groovy",
-            "plugin": "./plugins/eval/groovy/groovy.js",
+            "plugin": "Groovy",
             "shellID": "71fd2f16-8a33-40c9-80ff-8496dc46da43"
         }
     ],

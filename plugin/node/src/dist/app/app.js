@@ -19,15 +19,15 @@ app.get('/pulse', function(request, response){
 });
 
 app.post('/shell', function(request, response){
-    returnObject = {'shellID':uuid.v4()};
+    var returnObject = {'shellID':uuid.v4()};
     response.setHeader('Content-Type', 'application/json');
     response.send(JSON.stringify(returnObject));
 });
 
 app.post('/evaluate', function(request, response){
-    shellID = request.body.shellID;
-    code =  decodeURIComponent(request.body.code);
-    evaluationResult = processCode(code);
+    var shellID = request.body.shellID;
+    var code =  decodeURIComponent(request.body.code);
+    var evaluationResult = processCode(code);
     if (evaluationResult.processed){
         response.statusCode = 200;
     } else {

@@ -81,6 +81,7 @@
       var nil = function() {
       };
       window.setInterval(function() {
+        // XXX this is wrong (ipy1 layout) maybe it doesn't matter??
         var ignore = {
           execute_reply: nil,
           output: nil,
@@ -199,7 +200,11 @@
           var elem = $(document.createElement("div"));
           var oa = new IPython.OutputArea(elem);
           // twiddle the mime types? XXX
-          oa.append_mime_type(content.data, elem);
+          if (ipyVersion1) {
+            oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
+          } else {
+            oa.append_mime_type(content.data, elem);
+          }
           var table = bkHelper.findTable(elem[0]);
           if (table) {
             modelOutput.result = table;

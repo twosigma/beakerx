@@ -52,6 +52,12 @@
             _trackingService.enable();
           }
         },
+        disable: function() {
+          // some tracking service will need to be enabled before being used
+          if (_trackingService.disable && _.isFunction(_trackingService.disable)) {
+            _trackingService.disable();
+          }
+        },
         isNeedPermission: function() {
           return _trackingService.isNeedPermission
               && _.isFunction(_trackingService.isNeedPermission)

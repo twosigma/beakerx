@@ -100,14 +100,13 @@
         $scope.isAllowAnonymousTracking = false;
         $scope.$watch("isAllowAnonymousTracking", function(newValue, oldValue) {
           if (newValue !== oldValue) {
-            if (newValue) {
-              trackingService.enable();
-            }
             var allow = null;
             if (newValue) {
               allow = "true";
+              trackingService.enable();
             } else if (newValue === false) {
               allow = "false";
+              trackingService.disable();
             }
             bkCoreManager.httpPost("./rest/util/setAllowAnonymousTracking", {allow: allow});
           }

@@ -64,6 +64,6 @@ public class PublishRest {
       System.err.println("no slash found in github url: " + githubUrl);
       return githubUrl;
     }
-    return "http://sharing.beakernotebook.com:5000/gist/anonymous" + githubUrl.substring(slash);
+    return "http://sharing.beakernotebook.com/gist/anonymous" + githubUrl.substring(slash);
   }
 }

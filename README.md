@@ -60,14 +60,20 @@ Plugins are written in JavaScript and have the option to start a process on the 
 Plugin specifications:
 
 [Evaluator plugins](https://github.com/twosigma/beaker-notebook/wiki/Eval-plugin-spec)
+
 [Menu plugins](https://github.com/twosigma/beaker-notebook/wiki/Menu-plugin-spec)
+
 [Output display plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
 
 ##Open source
 Beaker's full source code and documentation is available under the Apache 2.0 license.
 
  
-#Running Beaker
+#Build and run instructions
+
+Users should download beaker from [beakernotebook.com](http://beakernotebook.com)
+
+Developers, see below for how to build from source.
 
 [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run)
 

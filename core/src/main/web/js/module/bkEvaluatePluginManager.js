@@ -78,7 +78,6 @@
           }
         },
         createEvaluatorThenExit: function(settings) {
-          console.log("createEvaluatorThenExit", settings.plugin);
           var theShell;
           return this.getEvaluatorFactory(settings.plugin)
               .then(function(factory) {

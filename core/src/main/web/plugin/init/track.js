@@ -11,6 +11,9 @@
           }
         }
       },
+      disable: function() {
+        _enabled = false;
+      },
       log: function(event, obj) {
         if (!_enabled) {
           return;

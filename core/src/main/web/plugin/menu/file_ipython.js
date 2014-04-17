@@ -41,7 +41,7 @@
         }
       };
       if (ipyCodeCell.input && ipyCodeCell.input.length > 0) {
-        bkrCodeCell.input.body = ipyCodeCell.input.join('\n');
+        bkrCodeCell.input.body = ipyCodeCell.input.join('');
       }
       if (ipyCodeCell.outputs && ipyCodeCell.outputs.length > 0) {
         var ipyOutput = ipyCodeCell.outputs[0];
@@ -70,7 +70,7 @@
         "mode": "preview"
       };
       if (ipyMDCell.source && ipyMDCell.source.length > 0) {
-        bkrMDCell.body = ipyMDCell.source.join("\n");
+        bkrMDCell.body = ipyMDCell.source.join("");
       }
 
       return bkrMDCell;
@@ -83,7 +83,7 @@
         "body": ""
       };
       if (ipyRawCell.source && ipyRawCell.source.length > 0) {
-        bkrTextCell.body = ipyRawCell.source.join("\n");
+        bkrTextCell.body = ipyRawCell.source.join(" ");
       }
       return bkrTextCell;
     };

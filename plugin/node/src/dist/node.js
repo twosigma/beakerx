@@ -141,17 +141,13 @@ define(function(require, exports, module) {
     init();
 
   exports.getEvaluatorFactory = function(settings) {
-    var deferred = bkHelper.newDeferred();
-    shellReadyDeferred.promise.then(function(Shell) {
-      deferred.resolve({
+    return shellReadyDeferred.promise.then(function(Shell) {
+      return {
         create: function(settings) {
-          var deferred2 = bkHelper.newDeferred();
-          deferred2.resolve(new Shell(settings));
-          return deferred2.promise;
+          return bkHelper.newPromise(new Shell(settings));
         }
-      });
+      };
     });
-    return deferred.promise;
   };
 
     exports.name = PLUGIN_NAME;

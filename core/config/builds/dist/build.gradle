@@ -13,10 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
+def gitDescribe() {
+  return "git describe".execute().text.trim()
+}
+
 def versionHtml() {
   def buildTime = new Date().format("yyyy-MM-dd HH:mm z")
-  def gitDescribe = "git describe".execute().text.trim()
-  return "<div>build time: " + buildTime + "<br>" + "version: " + gitDescribe + "<br></div>\n"
+  return "<div>build time: " + buildTime + "<br>" + "version: " + gitDescribe() + "<br></div>\n"
 }
 
 def coreDir = file("../../../") // TODO, this can come from a property
@@ -27,7 +31,16 @@ task writeVersion << {
 
 task makeDist(type: Exec) {
   workingDir coreDir
-  commandLine 'zip', '-r', 'beaker-notebook.zip', 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command', 'LICENSE'
+  def osName = System.properties['os.name']
+  def platform = '' // windows is in the git tag
+  if (osName.startsWith('Mac')) {
+    platform = '-mac'
+  }
+  if (osName.startsWith('Linux')) {
+    platform = '-ubuntu'
+  }
+  def zipName = 'beaker-notebook-' + gitDescribe() + platform + '.zip'
+  commandLine 'zip', '-r', zipName, 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command', 'LICENSE'
 }
 
 makeDist.dependsOn(":writeVersion")

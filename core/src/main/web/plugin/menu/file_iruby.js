@@ -108,11 +108,11 @@
         "evaluators": [
           {
             "name": "Html",
-            "plugin": "./plugin/evaluator/html.js"
+            "plugin": "Html"
           },
           {
             "name": "Latex",
-            "plugin": "./plugin/evaluator/latex.js"
+            "plugin": "Latex"
           },
           {
             "name": "IRuby",

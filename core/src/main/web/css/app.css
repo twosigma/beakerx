@@ -26,12 +26,6 @@ body {
     padding-top: 60px;
 }
 
-@media (max-width: 979px) {
-    body {
-        padding-top: 0px;
-    }
-}
-
 .bkcell {
     padding-right: 8px;
     padding-top: 5px;

@@ -97,7 +97,7 @@
       restrict: 'E',
       template: '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">' +
           '<li ng-repeat="item in menuItems" ng-class="getItemClass(item)">' +
-          '<a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item)" eat-click>' +
+          '<a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item)" title="{{item.tooltip}}" eat-click>' +
           '<i class="icon-ok" ng-show="isMenuItemChecked(item)"> </i> ' +
           '{{getName(item)}}' +
           '</a>' +

@@ -32,6 +32,9 @@
       controller: function($scope) {
         document.title = "Beaker";
         var _impl = {
+          showAnonymousTrackingDialog: function() {
+            $scope.isAllowAnonymousTracking = null;
+          }
         };
 
         bkCoreManager.setBkAppImpl(_impl);
@@ -85,14 +88,13 @@
         }
         $scope.$watch("isAllowAnonymousTracking", function(newValue, oldValue) {
           if (newValue !== oldValue) {
-            if (newValue) {
-              trackingService.enable();
-            }
             var allow = null;
             if (newValue) {
               allow = "true";
+              trackingService.enable();
             } else if (newValue === false) {
               allow = "false";
+              trackingService.disable();
             }
             bkCoreManager.httpPost("./rest/util/setAllowAnonymousTracking", { allow: allow });
           }

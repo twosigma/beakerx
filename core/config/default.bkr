@@ -75,7 +75,7 @@
         {
             "id": "text97Oipt",
             "type": "text",
-            "body": "<p style=\"margin-bottom: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 13px; line-height: 20.799999237060547px;\">Beaker also supports Julia, Groovy, Ruby, and Node. To add another language to this notebook, select 'Notebook' -&gt; 'Plugin manager' from the menu on top of the screen.</p><p style=\"margin-top: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 13px; line-height: 20.799999237060547px; margin-bottom: 0px !important;\">For general help, see the tutorial notebook under 'Help' -&gt; 'Tutorial notebook'</p>"
+            "body": "<p style=\"margin-bottom: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 20px;\">Beaker also supports <b>Julia</b>, <b>Groovy</b>, <b>Ruby</b>, and <b>Node</b>. To add another language to this notebook, select <b>Notebook</b> &#9654; <b>Plugin manager</b> from the menu on top of the screen.</p><p style=\"margin-top: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 20px; margin-bottom: 0px !important;\">For general help, see the tutorial notebook under <b>Help</b> &#9654; <b>Tutorial notebook</b></p>"
         }
     ]
 }

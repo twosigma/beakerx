@@ -62,7 +62,7 @@
       tooltip: "Open the tutorial notebook"
     },
     {
-      name: "Keyboard Shortcuts",
+      name: "Keyboard shortcuts",
       action: function() {
         window.open("./keyboardShortcuts.html");
       },
@@ -132,6 +132,16 @@
             }
           }
         ]
+      },
+      {
+        parent: "Settings",
+        items: [{
+          name: "Set anonymous tracking permission",
+          action: function() {
+            bkHelper.showAnonymousTrackingDialog();
+          },
+          tooltip: "Show the dialog for setting anonymous tracking permission"
+        }]
       },
       { parent: "Help", items: helpMenuItems }
     ];

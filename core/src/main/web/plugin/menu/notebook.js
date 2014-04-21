@@ -26,7 +26,7 @@
       action: function () {
         bkHelper.shareNotebook();
       },
-      tooltip: "Share the notebook to a public web page"
+      tooltip: "Share the notebook to a public web page using an anonymous github gist"
     },
     {
       name: "Lock", action: function() {

@@ -31,6 +31,7 @@ define(function(require, exports, module) {
     return [
       {
         name: "public web...",
+        tooltip: "using an anonymous github gist",
         action: function() {
           publishToWeb(scope);
         }

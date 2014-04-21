@@ -256,6 +256,13 @@
       addEvaluator: function(settings, alwaysCreateNewEvaluator) {
         return this._bkAppImpl.addEvaluator(settings, alwaysCreateNewEvaluator);
       },
+      showAnonymousTrackingDialog: function() {
+        if (this._bkAppImpl.showAnonymousTrackingDialog) {
+          return this._bkAppImpl.showAnonymousTrackingDialog();
+        } else {
+          console.error("Action 'showAnonymousTrackingDialog' is not supported by current app");
+        }
+      },
 
       _bkNotebookImpl: null,
       setBkNotebookImpl: function(bkNotebookImpl) {

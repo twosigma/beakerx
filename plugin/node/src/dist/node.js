@@ -29,7 +29,7 @@ define(function(require, exports, module) {
     var nodeProto = {
         pluginName: PLUGIN_NAME,
         cmMode: "javascript",
-        background: "#80bd01",
+        background: "#dbecb5",
         newShell: function (shellID, cb) {
             var self = this;
 

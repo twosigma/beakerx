@@ -232,9 +232,15 @@
     },
     autocomplete: function(code, cpos, cb) {
       var kernel = kernels[this.settings.shellID];
-      kernel.complete(code, cpos, function(reply) {
-        cb(reply.content.matches, reply.matched_text);
-      });
+      if (ipyVersion1) {
+	kernel.complete(code, cpos, {'complete_reply': function(reply) {
+	    cb(reply.matches, reply.matched_text);
+	}});
+      } else {
+        kernel.complete(code, cpos, function(reply) {
+            cb(reply.content.matches, reply.matched_text);
+	});
+      }
     },
     interrupt: function() {
       this.cancelExecution();

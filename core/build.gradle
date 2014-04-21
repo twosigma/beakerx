@@ -55,7 +55,7 @@ if (System.properties['os.name'].contains('Mac')) {
   build.dependsOn copyNginx
   run.dependsOn copyNginx
   startScripts {
-    defaultJvmOpts=["-Dbeaker.nginx.bin.dir=" + file("./nginx/bin").absolutePath]
+    defaultJvmOpts=["-Dbeaker.nginx.bin.dir=" + "./nginx/bin"]
   }
 }
 

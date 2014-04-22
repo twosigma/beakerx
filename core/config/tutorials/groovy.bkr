@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "C43149EB612841DB8E795D0A56A1DB4B",
+            "shellID": "5B33CA48BB144009B7D85113F6193C52",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,12 +28,12 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "b87f9441-8aa2-40ad-ab53-f4cc3d7613f6"
+            "shellID": "5ce9b0fe-c0b1-49e1-87d3-455cd4c9d143"
         },
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "shellID": "71fd2f16-8a33-40c9-80ff-8496dc46da43"
+            "shellID": "83b49d86-4f0b-4a4d-bdaf-19654cc6c0e1"
         }
     ],
     "cells": [
@@ -58,8 +58,7 @@
                 "body": "//semicolons are optional\ndef str = \"look, no semicolon!\""
             },
             "output": {
-                "selectedType": "Text",
-                "result": "look, no semicolon!",
+                "selectedType": "Hidden",
                 "elapsedTime": 62
             }
         },
@@ -71,8 +70,7 @@
                 "body": "//parentheses are optional\nSystem.out.println \"hey!\"\nprintln \"no System.out either!\""
             },
             "output": {
-                "selectedType": "Text",
-                "result": "null",
+                "selectedType": "Hidden",
                 "elapsedTime": 138
             }
         },
@@ -84,12 +82,7 @@
                 "body": "//exception handling is optional\n\n//this wouldn't compile in Java\ndef r = new FileReader(\"\")"
             },
             "output": {
-                "selectedType": "BeakerDisplay",
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Error",
-                    "object": "java.io.FileNotFoundException:  (No such file or directory)"
-                },
+                "selectedType": "Hidden",
                 "elapsedTime": 46
             }
         },
@@ -101,8 +94,7 @@
                 "body": "//== is .equals()\n\n//don't do this in Java!\n\"A\" == \"ABC\".substring(0,1)"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "true",
+                "selectedType": "Hidden",
                 "elapsedTime": 66
             }
         },
@@ -114,8 +106,7 @@
                 "body": "//decimals are big\n\n1.0.getClass()"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "class java.math.BigDecimal",
+                "selectedType": "Hidden",
                 "elapsedTime": 82
             }
         },
@@ -127,8 +118,7 @@
                 "body": "1 && true //nonzero is true"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "true",
+                "selectedType": "Hidden",
                 "elapsedTime": 73
             }
         },
@@ -140,8 +130,7 @@
                 "body": "0 && true //0 is false"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "false",
+                "selectedType": "Hidden",
                 "elapsedTime": 67
             }
         },
@@ -153,8 +142,7 @@
                 "body": "\"\" && true //empyt string is false"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "false",
+                "selectedType": "Hidden",
                 "elapsedTime": 75
             }
         },
@@ -166,8 +154,7 @@
                 "body": "null && true //null is false"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "false",
+                "selectedType": "Hidden",
                 "elapsedTime": 62
             }
         },
@@ -179,8 +166,7 @@
                 "body": "//Quotes\n\n\"Mixing 'single' and double quotes\"\n'backward \"mixing\" quotes'\n\n\"\"\"Multiline\nquotes\n\"\"\""
             },
             "output": {
-                "selectedType": "Text",
-                "result": "Multiline\nquotes\n",
+                "selectedType": "Hidden",
                 "elapsedTime": 80
             }
         },
@@ -192,8 +178,7 @@
                 "body": "//lists\n\nl = [1,2] //initialization\nl << 3 //adding elements\nl -= 2 //remove\nl += [5,7] //concat\nl[2] //access\nl[-1] //negative indeces"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "7",
+                "selectedType": "Hidden",
                 "elapsedTime": 86
             }
         },
@@ -205,8 +190,7 @@
                 "body": "//maps\n\nm = [a:1, b:2] //initialize\nm.c = 3 //add\nm['d'] = 4 //add\nm.a //access\nm['c'] //access"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "3",
+                "selectedType": "Hidden",
                 "elapsedTime": 97
             }
         },
@@ -218,8 +202,7 @@
                 "body": "//closures\n\nc = {a, b ->\n  a + b //return statement optional\n}\n\nc(3,5)"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "8",
+                "selectedType": "Hidden",
                 "elapsedTime": 112
             }
         },
@@ -231,8 +214,7 @@
                 "body": "c = {\n it + 1 //first arg automatically named it \n}\n\nc(2)"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "3",
+                "selectedType": "Hidden",
                 "elapsedTime": 82
             }
         },
@@ -244,8 +226,7 @@
                 "body": "//iterating collections and closures as arguments\n\ns = ''\n[1,2,3].each {\n   s += it + ' '\n}\ns"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "1 2 3 ",
+                "selectedType": "Hidden",
                 "elapsedTime": 86
             }
         },
@@ -257,8 +238,7 @@
                 "body": "//collect\n\n[1,2,3].collect {\n\tit + 1 \n}"
             },
             "output": {
-                "selectedType": "Text",
-                "result": "[2, 3, 4]",
+                "selectedType": "Hidden",
                 "elapsedTime": 88
             }
         }

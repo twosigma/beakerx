@@ -17,8 +17,9 @@
  * File menu plugin
  * This adds file system specific menu items to the File menu.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
+  var menuItemsDeferred = bkHelper.newDeferred();
   bkHelper.getHomeDirectory().then(function(homeDir) {
     var toAdd = [
       {
@@ -68,6 +69,10 @@
         ]
       }
     ];
-    pluginObj.onReady(toAdd);
+    menuItemsDeferred.resolve(toAdd);
   });
-})();
+
+  exports.getMenuItems = function() {
+    return menuItemsDeferred.promise;
+  };
+});

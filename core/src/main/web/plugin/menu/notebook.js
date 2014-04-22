@@ -18,7 +18,7 @@
  * This creates the 'Notebook' menu which contains menu items for user interaction with the content
  * of the loading notebook.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
@@ -113,8 +113,10 @@
         }
       ],
       tooltip: "Evaluate cells"
-    },
+    }
   ];
-  var toAdd = {items: menuItems, parent: "Notebook"};
-  pluginObj.onReady(toAdd);
-})();
+  var menuItemPromise = bkHelper.newPromise({items: menuItems, parent: "Notebook"});
+  exports.getMenuItems = function() {
+    return menuItemPromise;
+  };
+});

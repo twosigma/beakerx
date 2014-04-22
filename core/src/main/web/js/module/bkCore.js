@@ -263,6 +263,13 @@
           console.error("Action 'showAnonymousTrackingDialog' is not supported by current app");
         }
       },
+      getEvaluatorMenuItems: function() {
+        if (this._bkAppImpl.getEvaluatorMenuItems) {
+          return this._bkAppImpl.getEvaluatorMenuItems();
+        } else {
+          console.error("Action 'getEvaluatorMenuItems' is not supported by current app");
+        }
+      },
 
       _bkNotebookImpl: null,
       setBkNotebookImpl: function(bkNotebookImpl) {

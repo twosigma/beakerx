@@ -18,7 +18,7 @@
  * This adds a menu items to the File menu: open...(IRuby), that loads IRuby notebook and
  * convert it to a Beaker noteboook
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var notebookConverter = (function() {
     var generateID = function(length) {
@@ -178,6 +178,7 @@
     }
   });
 
+  var menuItemsDeferred = bkHelper.newDeferred();
   bkHelper.getHomeDirectory().then(function(homeDir) {
     var toAdd = [
       {
@@ -213,6 +214,10 @@
         ]
       }
     ];
-    pluginObj.onReady(toAdd);
+    menuItemsDeferred.resolve(toAdd);
   });
-})();
+
+  exports.getMenuItems = function() {
+    return menuItemsDeferred.promise;
+  };
+});

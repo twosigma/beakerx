@@ -22,6 +22,7 @@
   var module = angular.module('M_bkUtils', [
     'M_generalUtils',
     'M_angularUtils',
+    'M_cometd',
     'M_bkTrack'
   ]);
   /**
@@ -30,7 +31,7 @@
    * - it also serves the purpose of hiding underneath utils: generalUtils/angularUtils/...
    *    from other parts of beaker
    */
-  module.factory('bkUtils', function(generalUtils, angularUtils, trackingService) {
+  module.factory('bkUtils', function(generalUtils, angularUtils, trackingService, cometd) {
 
     var bkUtils = {
       loadingPlugins: {
@@ -180,6 +181,9 @@
               deferred.reject(data, status, header, config);
             });
         return deferred.promise;
+      },
+      addConnectedStatusListener: function(cb) {
+        cometd.addConnectedStatusListener(cb);
       }
     };
     return bkUtils;

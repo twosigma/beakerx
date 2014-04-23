@@ -46,7 +46,6 @@
    */
   module.directive('bkApp', function(
       $routeParams,
-      cometd,
       bkUtils,
       bkSession,
       bkSessionManager,
@@ -400,10 +399,9 @@
           }
         };
 
-        cometd.addStatusListener(function(msg) {
+        bkUtils.addConnectedStatusListener(function(msg) {
           if (msg.successful !== !$scope.disconnected) {
             $scope.disconnected = !msg.successful;
-            $scope.$apply();
           }
         });
         $scope.$watch('disconnected', function(disconnected) {

@@ -26,37 +26,17 @@
         $.cometd.init("cometd");
         var _statusListener;
         return {
-          subscribe: function(update_id, callback) {
-            if (!update_id) {
-              return;
-            }
-            if (subscriptions[update_id]) {
-              $.cometd.unsubscribe(subscriptions[update_id]);
-              subscriptions[update_id] = null;
-            }
-            var cb = function(ret) {
-              callback(ret.data);
-            };
-            var s = $.cometd.subscribe('/object_update/' + update_id, cb);
-            subscriptions[update_id] = s;
-          },
-          unsubscribe: function(update_id) {
-            if (!update_id) {
-              return;
-            }
-            if (subscriptions[update_id]) {
-              $.cometd.unsubscribe(subscriptions[update_id]);
-              subscriptions[update_id] = null;
-            }
-          },
-          addStatusListener: function(cb) {
+          addConnectedStatusListener: function(cb) {
             if (_statusListener) {
-              this.removeStatusListener();
+              this.removeConnectedStatusListener();
             }
             _statusListener = $.cometd.addListener("/meta/connect", cb);
           },
-          removeStatusListener: function() {
+          removeConnectedStatusListener: function() {
             $.cometd.removeListener(_statusListener);
+          },
+          addOutputlogUpdateListener: function(cb) {
+            $.cometd.subscribe("/outputlog", cb);
           }
         };
       });

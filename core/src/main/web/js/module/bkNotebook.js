@@ -42,7 +42,7 @@
    * stuffs like evaluator panel
    */
   bkNotebook.directive('bkNotebook', function(
-      generalUtils, cometd, bkShare, bkEvaluatorManager,
+      generalUtils, bkShare, bkEvaluatorManager,
       bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
     return {
       restrict: 'E',
@@ -165,7 +165,7 @@
           $scope.outputLog = res;
           $scope.$apply();
         });
-        $.cometd.subscribe("/outputlog", function(reply) {
+        bkOutputLog.subscribe(function(reply) {
           if (!_impl._viewModel.isShowingOutput()) {
             _impl._viewModel.toggleShowOutput();
           }

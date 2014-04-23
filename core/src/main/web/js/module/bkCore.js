@@ -39,7 +39,7 @@
    *     instead
    */
   bkCore.factory('bkCoreManager', function(
-      $dialog, bkUtils, bkSession, bkRecentMenu, fileChooserOp) {
+      $dialog, bkUtils, bkRecentMenu, fileChooserOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;

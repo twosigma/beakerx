@@ -31,7 +31,7 @@
     'M_bkEvaluatorManager'
   ]);
   M_bkCodeCell.directive('codeCell', function(
-      $rootScope, generalUtils, bkShare, bkEvaluatorManager,
+      generalUtils, bkShare, bkEvaluatorManager,
       bkCellPluginManager, bkSessionManager, bkCoreManager) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     return {

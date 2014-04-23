@@ -135,8 +135,7 @@
           }
           var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluatorName);
           notebookCellOp.appendAfter(thisCellID, newCell);
-          $rootScope.$$phase || $rootScope.$apply();
-
+          bkCoreManager.refreshRootScope();
         };
         $scope.getShareMenuPlugin = function() {
           // the following cellType needs to match

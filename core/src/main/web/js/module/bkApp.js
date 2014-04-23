@@ -46,7 +46,6 @@
    */
   module.directive('bkApp', function(
       $routeParams,
-      $location,
       cometd,
       bkUtils,
       bkSession,
@@ -243,7 +242,7 @@
               var self = this;
               var closeSession = function() {
                 bkSessionManager.close().then(function() {
-                  $location.path("/control");
+                  bkCoreManager.gotoControlPanel();
                 });
               };
               if (bkSessionManager.isNotebookModelEdited() === false) {

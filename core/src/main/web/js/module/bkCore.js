@@ -39,7 +39,7 @@
    *     instead
    */
   bkCore.factory('bkCoreManager', function(
-      $dialog, $location, bkUtils, bkSession, bkRecentMenu, fileChooserOp) {
+      $dialog, bkUtils, bkSession, bkRecentMenu, fileChooserOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
@@ -234,6 +234,9 @@
       },
       newSession: function() {
         return this._beakerRootOp.newSession();
+      },
+      openSession: function(sessionId) {
+        return this._beakerRootOp.openSession(sessionId);
       },
 
       _bkAppImpl: null,

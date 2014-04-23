@@ -138,7 +138,7 @@
   });
 
   bkControl.directive('bkControlItem', function(
-      $location, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
+      bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
     return {
       restrict: 'E',
       template: "<table class='table table-striped'>" +
@@ -156,7 +156,7 @@
           "</table>",
       controller: function($scope) {
         $scope.open = function(sessionId) {
-          $location.path("session/" + sessionId);
+          bkCoreManager.openSession(sessionId);
         };
         $scope.close = function(sessionId, session) {
           var notebookUri = session.notebookUri;

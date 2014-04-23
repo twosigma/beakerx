@@ -96,7 +96,7 @@
     return {
       restrict: 'E',
       template: '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">' +
-          '<li ng-repeat="item in menuItems" ng-class="getItemClass(item)">' +
+          '<li ng-repeat="item in getMenuItems()" ng-class="getItemClass(item)">' +
           '<a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item)" title="{{item.tooltip}}" eat-click>' +
           '<i class="icon-ok" ng-show="isMenuItemChecked(item)"> </i> ' +
           '{{getName(item)}}' +
@@ -127,7 +127,15 @@
             return item.disabled();
           }
           return item.disabled;
-        }
+        };
+        
+        $scope.getMenuItems = function() {
+          if (_.isFunction($scope.menuItems)) {
+            return $scope.menuItems();
+          } else {
+            return $scope.menuItems;
+          }
+        };
 
         $scope.getAClass = function(item) {
           var result = [];

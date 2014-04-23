@@ -33,7 +33,7 @@
     'M_bkSession',
     'M_bkSessionManager',
     'M_bkNotebook',
-    'M_menuPlugin',
+    'M_bkMenuPluginManager',
     'M_bkCellPluginManager',
     'M_bkNotebookVersionManager',
     'M_bkEvaluatorManager'
@@ -53,7 +53,7 @@
       bkUtils,
       bkSession,
       bkSessionManager,
-      menuPluginManager,
+      bkMenuPluginManager,
       bkCellPluginManager,
       bkCoreManager,
       bkAppEvaluate,
@@ -73,6 +73,7 @@
             showStatusMessage("");
           });
         };
+        var evaluatorMenuItems = [];
 
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
           // set shell id to null, so it won't try to find an existing shell with the id
@@ -82,20 +83,22 @@
 
           bkEvaluatorManager.newEvaluator(settings)
               .then(function(evaluator) {
-                var actions = [];
-                var name = evaluator.pluginName;
-                for (var property in evaluator.spec) {
-                  var widg = evaluator.spec[property];
-                  var item = widg.name ? widg.name : widg.action;
-                  if (widg.type === "action") {
-                    actions.push({name: item, action: (function(w) {
-                      return function() {
-                        evaluator.perform(w.action);
-                      }}(widg))});
-                  }
-                }
-                if (actions.length > 0) {
-                  menuPluginManager.addItem("Evaluators", name, actions);
+                if (!_.isEmpty(evaluator.spec)) {
+                  var actionItems = [];
+                  _(evaluator.spec).each(function(value, key) {
+                    if (value.type === "action") {
+                      actionItems.push({
+                        name: value.name ? value.name : value.action,
+                        action: function() {
+                          evaluator.perform(key);
+                        }
+                      });
+                    }
+                  });
+                  evaluatorMenuItems.push({
+                    name: evaluator.pluginName,//TODO, this should be evaluator.settings.name
+                    items: actionItems
+                  });
                 }
               });
         };
@@ -123,6 +126,7 @@
             bkSessionManager.reset(
                 notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
             var isOpeningExistingSession = !!sessionId;
+            evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
                 addEvaluator(notebookModel.evaluators[i], !isOpeningExistingSession);
@@ -130,7 +134,6 @@
             }
             document.title = bkSessionManager.getNotebookTitle();
             bkHelper.evaluate("initialization");
-            menuPluginManager.clearItem("Evaluators");
             $scope.loading = false;
           };
           return {
@@ -311,6 +314,9 @@
             },
             addEvaluator: function(settings) {
               addEvaluator(settings, true);
+            },
+            getEvaluatorMenuItems: function() {
+              return evaluatorMenuItems;
             }
           };
         })();
@@ -343,7 +349,7 @@
           intervalID = setInterval(bkSessionManager.backup, 60 * 1000);
         };
         $scope.getMenus = function() {
-          return menuPluginManager.getMenus();
+          return bkMenuPluginManager.getMenus();
         };
         var keydownHandler = function(e) {
           if (e.ctrlKey && (e.which === 83)) {
@@ -418,7 +424,13 @@
         // makes the UI is blank immediately (instead of showing leftover from a previous session)
         bkSessionManager.clear();
 
-        menuPluginManager.reset();
+        bkMenuPluginManager.clear();
+        bkCoreManager.httpGet('/beaker/rest/util/getMenuPlugins')
+            .success(function(menuUrls) {
+              menuUrls.forEach(function(url) {
+                bkMenuPluginManager.loadMenuPlugin(url);
+              });
+            });
         bkCellPluginManager.reset();
 
         var sessionID = $routeParams.sessionID;

@@ -19,7 +19,7 @@
  * core available
  * through UI.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {name: "Debug",
@@ -37,6 +37,11 @@
       },
       tooltip: "Recompute view from model" }
   ];
-  var toAdd = {items: menuItems, parent: "Debug"};
-  pluginObj.onReady(toAdd);
+  var menuItemPromise = bkHelper.newPromise({
+    parent: "Debug",
+    items: menuItems
+  });
+  exports.getMenuItems = function() {
+    return menuItemPromise;
+  };
 })();

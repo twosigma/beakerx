@@ -43,6 +43,9 @@
         <div ng-repeat="plugin in menuTabOp.getMenuPlugins()">
           {{plugin.url}}
         </div>
+        <div ng-repeat="plugin in menuTabOp.getLoadingPlugins()">
+          Loading {{plugin.getUrl()}}
+        </div>
       </pane>
     </tabs>
   </div>

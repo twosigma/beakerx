@@ -28,7 +28,7 @@
   ]);
 
   bkNotebookEvaluators.directive('bkNotebookEvaluators', function(
-      bkCoreManager, bkSessionManager, menuPluginManager, bkEvaluatePluginManager,
+      bkCoreManager, bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
       bkEvaluatorManager) {
     return {
       restrict: 'E',
@@ -69,10 +69,13 @@
         $scope.menuTabOp = {
           newMenuPluginUrl: "./plugin/menu/debug.js",
           addMenuPlugin: function () {
-            menuPluginManager.addMenu(this.newMenuPluginUrl);
+            bkMenuPluginManager.loadMenuPlugin(this.newMenuPluginUrl);
           },
           getMenuPlugins: function () {
-            return menuPluginManager.getMenuPlugins();
+            return bkMenuPluginManager.getMenuPlugins();
+          },
+          getLoadingPlugins: function() {
+            return bkMenuPluginManager.getLoadingPlugins();
           }
         };
       }

@@ -18,7 +18,7 @@
  * This plugs in the 'File' menu that is the container of menu items like New, Open, Save,
  * Close for notebooks
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var fileMenuItems = [
     {
@@ -63,6 +63,13 @@
       items: []
     }
   ];
-  var toAdd = {items: fileMenuItems, parent: "File"};
-  pluginObj.onReady(toAdd);
-})();
+
+  var menuItemPromise = bkHelper.newPromise({
+    parent: "File",
+    items: fileMenuItems
+  });
+
+  exports.getMenuItems = function() {
+    return menuItemPromise;
+  };
+});

@@ -21,11 +21,15 @@
  */
 (function() {
   'use strict';
-  var bkControl = angular.module('M_bkControl',
-      ['M_bkCore', 'M_bkSession', 'M_menuPlugin', 'M_bkRecentMenu', 'M_bkEvaluatePluginManager']);
+  var bkControl = angular.module('M_bkControl', [
+    'M_bkCore',
+    'M_bkSession',
+    'M_bkMenuPluginManager',
+    'M_bkRecentMenu',
+    'M_bkEvaluatePluginManager']);
 
   bkControl.directive('bkControl', function(
-      bkCoreManager, bkSession, menuPluginManager, trackingService) {
+      bkCoreManager, bkSession, bkMenuPluginManager, trackingService) {
     return {
       restrict: 'E',
       templateUrl: './template/bkControl.html',
@@ -48,15 +52,15 @@
         };
 
         // setup menus
-        menuPluginManager.clear();
-        $.get('/beaker/rest/util/getControlPanelMenuPlugins')
-            .done(function(menus) {
-              menus.forEach(function(menu) {
-                menuPluginManager.addControlMenu(menu);
+        bkMenuPluginManager.clear();
+        bkCoreManager.httpGet('/beaker/rest/util/getControlPanelMenuPlugins')
+            .success(function(menuUrls) {
+              menuUrls.forEach(function(url) {
+                bkMenuPluginManager.loadMenuPlugin(url);
               });
             });
         $scope.getMenus = function() {
-          return menuPluginManager.getMenus();
+          return bkMenuPluginManager.getMenus();
         };
 
 

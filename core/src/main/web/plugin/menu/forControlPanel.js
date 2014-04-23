@@ -16,7 +16,7 @@
 /**
  * This plugins menu items for the control panel
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
 
   var IPYNB_PATH_PREFIX = "ipynb";
@@ -84,6 +84,7 @@
     }    
   ];
 
+  var menuItemsDeferred = bkHelper.newDeferred();
   bkHelper.getHomeDirectory().then(function(homeDir) {
     var treeViewChooserTemplate = '<div class="modal-header">' +
         '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
@@ -145,6 +146,10 @@
       },
       { parent: "Help", items: helpMenuItems }
     ];
-    pluginObj.onReady(toAdd);
+    menuItemsDeferred.resolve(toAdd);
   });
-})();
+
+  exports.getMenuItems = function() {
+    return menuItemsDeferred.promise;
+  };
+});

@@ -17,7 +17,7 @@
  * 'Help' menu plugin
  * This creates the 'Help' menu.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
@@ -56,6 +56,11 @@
       tooltip: "Privacy policy on beakernotebook.com"
     }    
   ];
-  var toAdd = {items: menuItems, parent: "Help"};
-  pluginObj.onReady(toAdd);
-})();
+  var menuItemPromise = bkHelper.newPromise({
+    parent: "Help",
+    items: menuItems
+  });
+  exports.getMenuItems = function() {
+    return menuItemPromise;
+  };
+});

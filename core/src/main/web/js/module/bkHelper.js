@@ -268,6 +268,9 @@
             }
           };
         });
+      },
+      getEvaluatorMenuItems: function() {
+        return bkCoreManager.getEvaluatorMenuItems();
       }
     };
     window.bkHelper = bkHelper; // TODO, we want to revisit the decision of making this global

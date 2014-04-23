@@ -167,9 +167,9 @@
       },
       updateNotebookUri: function(notebookUri, uriType, readOnly) {
         // to be used by save-as
-        _notebookUri.set(notebookUri);
         _uriType = uriType;
         _readOnly = readOnly;
+        _notebookUri.set(notebookUri);
       },
       getNotebookTitle: function() {
         if (_notebookUri.get()) {

@@ -99,12 +99,12 @@ describe("M_bkNotebookVersionManager", function() {
     "evaluators": [
       {
         "name": "Html",
-        "plugin": "./plugin/evaluator/html.js",
+        "plugin": "Html",
         "shellID": null
       },
       {
         "name": "Latex",
-        "plugin": "./plugin/evaluator/latex.js",
+        "plugin": "Latex",
         "shellID": null
       },
       {

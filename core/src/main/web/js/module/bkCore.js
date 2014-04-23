@@ -39,7 +39,7 @@
    *     instead
    */
   bkCore.factory('bkCoreManager', function(
-      $dialog, $location, $http, $q, bkUtils, bkSession, bkRecentMenu, fileChooserOp) {
+      $dialog, $location, bkUtils, bkSession, bkRecentMenu, fileChooserOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
@@ -53,25 +53,21 @@
         getChildren: function(path, callback) {
           var self = this;
           this.showSpinner = true;
-          $http({
-            method: 'GET',
-            url: "/beaker/rest/file-io/getDecoratedChildren",
-            params: {
-              path: path
-            }
-          }).success(function(list) {
-            self.showSpinner = false;
-            callback(list);
-          }).error(function() {
-            self.showSpinner = false;
-            console.log("Error loading children");
-          });
+          bkUtils.httpGet("/beaker/rest/file-io/getDecoratedChildren", {path: path})
+              .success(function (list) {
+                self.showSpinner = false;
+                callback(list);
+              })
+              .error(function () {
+                self.showSpinner = false;
+                console.log("Error loading children");
+              });
         },
         open: function(path) {
           newStrategy.result = path;
         },
         showSpinner: false
-      }
+      };
     };
 
     // importers are responsible for importing various formats into bkr

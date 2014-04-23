@@ -47,8 +47,6 @@
   module.directive('bkApp', function(
       $routeParams,
       $location,
-      $q,
-      $http,
       cometd,
       bkUtils,
       bkSession,

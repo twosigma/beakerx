@@ -26,7 +26,7 @@
    * - talks to beaker server (/beaker/rest/session)
    * - bkSessionManager should depend on it to update/backup the session model
    */
-  module.factory('bkSession', function($http, $q, bkUtils) {
+  module.factory('bkSession', function(bkUtils) {
     var backupSession = function(sessionId, sessionData) {
       var deferred = bkUtils.newDeferred();
       bkUtils.httpPost("/beaker/rest/session-backup/backup/" + sessionId, sessionData).
@@ -40,7 +40,7 @@
       return deferred.promise;
     };
     var getSessions = function() {
-      var deferred = $q.defer();
+      var deferred = bkUtils.newDeferred();
       bkUtils.httpGet("/beaker/rest/session-backup/getExistingSessions").
           success(function(sessions) {
             deferred.resolve(sessions);
@@ -51,7 +51,7 @@
       return deferred.promise;
     };
     var loadSession = function(sessionID) {
-      var deferred = $q.defer();
+      var deferred = bkUtils.newDeferred();
       bkUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionID}).
           success(function(session, status) {
             deferred.resolve(session);
@@ -62,7 +62,7 @@
       return deferred.promise;
     };
     var closeSession = function(sessionID) {
-      var deferred = $q.defer();
+      var deferred = bkUtils.newDeferred();
       bkUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionID}).
           success(function(ret) {
             deferred.resolve(sessionID);
@@ -84,7 +84,7 @@
           });
     };
     var getPlugins = function() {
-      var deferred = $q.defer();
+      var deferred = bkUtils.newDeferred();
       bkUtils.httpGet("/beaker/rest/session-backup/getExistingPlugins", {}).
           success(function(plugins) {
             deferred.resolve(plugins);

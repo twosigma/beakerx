@@ -26,10 +26,10 @@
    * - talks to beaker server (/beaker/rest/session)
    * - bkSessionManager should depend on it to update/backup the session model
    */
-  module.factory('bkSession', function(bkUtils) {
+  module.factory('bkSession', function(angularUtils) {
     var backupSession = function(sessionId, sessionData) {
-      var deferred = bkUtils.newDeferred();
-      bkUtils.httpPost("/beaker/rest/session-backup/backup/" + sessionId, sessionData).
+      var deferred = angularUtils.newDeferred();
+      angularUtils.httpPost("/beaker/rest/session-backup/backup/" + sessionId, sessionData).
           success(function(data) {
             deferred.resolve();
           }).
@@ -40,8 +40,8 @@
       return deferred.promise;
     };
     var getSessions = function() {
-      var deferred = bkUtils.newDeferred();
-      bkUtils.httpGet("/beaker/rest/session-backup/getExistingSessions").
+      var deferred = angularUtils.newDeferred();
+      angularUtils.httpGet("/beaker/rest/session-backup/getExistingSessions").
           success(function(sessions) {
             deferred.resolve(sessions);
           }).
@@ -51,8 +51,8 @@
       return deferred.promise;
     };
     var loadSession = function(sessionID) {
-      var deferred = bkUtils.newDeferred();
-      bkUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionID}).
+      var deferred = angularUtils.newDeferred();
+      angularUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionID}).
           success(function(session, status) {
             deferred.resolve(session);
           }).
@@ -62,8 +62,8 @@
       return deferred.promise;
     };
     var closeSession = function(sessionID) {
-      var deferred = bkUtils.newDeferred();
-      bkUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionID}).
+      var deferred = angularUtils.newDeferred();
+      angularUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionID}).
           success(function(ret) {
             deferred.resolve(sessionID);
           }).
@@ -73,7 +73,7 @@
       return deferred.promise;
     };
     var recordLoadedPlugin = function(pluginName, pluginUrl) {
-      bkUtils.httpPost(
+      angularUtils.httpPost(
           "/beaker/rest/session-backup/addPlugin",
           {pluginname: pluginName, pluginurl: pluginUrl}).
           success(function(ret) {
@@ -84,8 +84,8 @@
           });
     };
     var getPlugins = function() {
-      var deferred = bkUtils.newDeferred();
-      bkUtils.httpGet("/beaker/rest/session-backup/getExistingPlugins", {}).
+      var deferred = angularUtils.newDeferred();
+      angularUtils.httpGet("/beaker/rest/session-backup/getExistingPlugins", {}).
           success(function(plugins) {
             deferred.resolve(plugins);
           }).

@@ -22,34 +22,26 @@
   var module = angular.module('M_bkUtils', [
     'M_generalUtils',
     'M_angularUtils',
-    'M_cometd',
-    'M_bkTrack'
+    'M_bkTrack',
+    'M_cometd'
   ]);
   /**
    * bkUtils
-   * - holds any general utilities that are beaker specific that has no effect to DOM directly
+   * - holds general/low0level utilities that are beaker specific that has no effect to DOM directly
    * - it also serves the purpose of hiding underneath utils: generalUtils/angularUtils/...
    *    from other parts of beaker
    */
   module.factory('bkUtils', function(generalUtils, angularUtils, trackingService, cometd) {
 
     var bkUtils = {
+      // wrap trackingService
       log: function(event, obj) {
         trackingService.log(event, obj);
       },
-      refreshRootScope: function() {
-        angularUtils.refreshRootScope();
-      },
-      getDefaultNotebook: function() {
-        var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet("/beaker/rest/util/getDefaultNotebook").
-            success(function(data) {
-              deferred.resolve(angular.fromJson(data));
-            }).
-            error(function(data, status, header, config) {
-              deferred.reject(data, status, header, config);
-            });
-        return deferred.promise;
+
+      // wrap generalUtils
+      generateId: function() {
+        return generalUtils.generateId(6);
       },
       loadJS: function(url, success) {
         return generalUtils.loadJS(url, success);
@@ -58,7 +50,13 @@
         return generalUtils.loadCSS(url);
       },
       loadList: function(urls, success, failure) {
-        generalUtils.loadList(urls, success, failure);
+        return generalUtils.loadList(urls, success, failure);
+      },
+      formatTimeString: function(millis) {
+        return generalUtils.formatTimeString(millis);
+      },
+      isMiddleClick: function(event) {
+        return generalUtils.isMiddleClick(event);
       },
       getEventOffsetX: function(elem, event) {
         return generalUtils.getEventOffsetX(elem, event);
@@ -66,11 +64,10 @@
       findTable: function(elem) {
         return generalUtils.findTable(elem);
       },
-      formatTimeString: function(millis) {
-        return generalUtils.formatTimeString(millis);
-      },
-      generateId: function() {
-        return generalUtils.generateId(6);
+
+      // wrap angularUtils
+      refreshRootScope: function() {
+        angularUtils.refreshRootScope();
       },
       toPrettyJson: function(jsObj) {
         return angularUtils.toPrettyJson(jsObj);
@@ -93,36 +90,29 @@
       delay: function() {
         return angularUtils.delay();
       },
-      // wrapper around requireJS
-      moduleMap: {},
-      loadModule: function(url, name) {
-        // name is optional, if provided, it can be used to retrieve the loaded module later.
-        var that = this;
-        if (_.isString(url)) {
-          var deferred = this.newDeferred();
-          window.require([url], function (ret) {
-            if (!_.isEmpty(name)) {
-              that.moduleMap[name] = url;
-            }
-            deferred.resolve(ret);
-          }, function(err) {
-            deferred.reject({
-              message: "module failed to load",
-              error: err
-            });
-          });
 
-          return deferred.promise;
-        } else {
-          throw "illegal arg" + url;
-        }
+      // beaker server involved utils
+      getHomeDirectory: function() {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet("/beaker/rest/file-io/getHomeDirectory")
+            .success(function(homeDir) {
+              deferred.resolve(homeDir);
+            })
+            .error(function(data, status, header, config) {
+              deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
       },
-      require: function(nameOrUrl) {
-        var url = this.moduleMap.hasOwnProperty(nameOrUrl) ? this.moduleMap[nameOrUrl] : nameOrUrl;
-        return window.require(url);
-      },
-      isMiddleClick: function(event) {
-        return generalUtils.isMiddleClick(event);
+      getDefaultNotebook: function() {
+        var deferred = angularUtils.newDeferred();
+        angularUtils.httpGet("/beaker/rest/util/getDefaultNotebook").
+            success(function(data) {
+              deferred.resolve(angular.fromJson(data));
+            }).
+            error(function(data, status, header, config) {
+              deferred.reject(data, status, header, config);
+            });
+        return deferred.promise;
       },
       loadFile: function(path) {
         var deferred = angularUtils.newDeferred();
@@ -167,19 +157,37 @@
             });
         return deferred.promise;
       },
-      getHomeDirectory: function() {
-        var deferred = angularUtils.newDeferred();
-        this.httpGet("/beaker/rest/file-io/getHomeDirectory")
-            .success(function(homeDir) {
-              deferred.resolve(homeDir);
-            })
-            .error(function(data, status, header, config) {
-              deferred.reject(data, status, header, config);
-            });
-        return deferred.promise;
-      },
       addConnectedStatusListener: function(cb) {
         cometd.addConnectedStatusListener(cb);
+      },
+
+      // wrapper around requireJS
+      moduleMap: {},
+      loadModule: function(url, name) {
+        // name is optional, if provided, it can be used to retrieve the loaded module later.
+        var that = this;
+        if (_.isString(url)) {
+          var deferred = this.newDeferred();
+          window.require([url], function (ret) {
+            if (!_.isEmpty(name)) {
+              that.moduleMap[name] = url;
+            }
+            deferred.resolve(ret);
+          }, function(err) {
+            deferred.reject({
+              message: "module failed to load",
+              error: err
+            });
+          });
+
+          return deferred.promise;
+        } else {
+          throw "illegal arg" + url;
+        }
+      },
+      require: function(nameOrUrl) {
+        var url = this.moduleMap.hasOwnProperty(nameOrUrl) ? this.moduleMap[nameOrUrl] : nameOrUrl;
+        return window.require(url);
       }
     };
     return bkUtils;

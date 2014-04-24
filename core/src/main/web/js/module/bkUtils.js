@@ -70,8 +70,14 @@
       loadList: function(urls, success, failure) {
         generalUtils.loadList(urls, success, failure);
       },
+      getEventOffsetX: function(elem, event) {
+        return generalUtils.eventOffsetX(elem, event);
+      },
       findTable: function(elem) {
         return generalUtils.findTable(elem);
+      },
+      formatTimeString: function(millis) {
+        return generalUtils.formatTimeString(millis);
       },
       generateID: function() {
         return generalUtils.generateID(6);

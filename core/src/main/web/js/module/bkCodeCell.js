@@ -21,6 +21,7 @@
 (function() {
   'use strict';
   var M_bkCodeCell = angular.module('M_bkCodeCell', [
+    'M_bkUtils',
     'M_bkCore',
     'M_bkSessionManager',
     'M_bkCellPluginManager',
@@ -31,7 +32,7 @@
     'M_bkEvaluatorManager'
   ]);
   M_bkCodeCell.directive('codeCell', function(
-      generalUtils, bkShare, bkEvaluatorManager,
+      bkUtils, bkShare, bkEvaluatorManager,
       bkCellPluginManager, bkSessionManager, bkCoreManager) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     return {
@@ -59,7 +60,7 @@
         // ensure cm refreshes when 'unhide'
         $scope.$watch("isShowInput()", function(newValue, oldValue) {
           if ($scope.cm && newValue === true && newValue !== oldValue) {
-            Q.fcall(function() {
+            bkUtils.fcall(function() {
               $scope.cm.refresh();
             });
           }
@@ -135,7 +136,7 @@
           }
           var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluatorName);
           notebookCellOp.appendAfter(thisCellID, newCell);
-          bkCoreManager.refreshRootScope();
+          bkUtils.refreshRootScope();
         };
         $scope.getShareMenuPlugin = function() {
           // the following cellType needs to match
@@ -371,7 +372,7 @@
         // cellmodel.body <-- CodeMirror
         scope.cm.on("change", function(cm, e) {
           scope.cellmodel.input.body = cm.getValue();
-          bkCoreManager.refreshRootScope();
+          bkUtils.refreshRootScope();
         });
 
         var inputMenuDiv = element.find(".bkcell").first();
@@ -383,13 +384,13 @@
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
         inputMenuDiv.click(function(event) {
-          if (generalUtils.eventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
+          if (bkUtils.eventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
             scope.popupMenu(event);
             event.stopPropagation();
           }
         });
         inputMenuDiv.mousemove(function(event) {
-          if (generalUtils.eventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
+          if (bkUtils.eventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
             inputMenuDiv.css('cursor', 'pointer');
           } else {
             inputMenuDiv.css('cursor', 'default');

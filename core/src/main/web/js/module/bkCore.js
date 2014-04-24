@@ -24,8 +24,6 @@
   var bkCore = angular.module('M_bkCore', [
     'ui.bootstrap',
     'ui.keypress',
-    'M_generalUtils',
-    'M_angularUtils',
     'M_commonUI',
     'M_bkUtils',
     'M_bkRecentMenu',
@@ -82,7 +80,7 @@
           // TODO, to be removed. Addressing loading a corrupted notebook.
           if (angular.isString(notebookModel)) {
             notebookModel = angular.fromJson(notebookModel);
-            bkCoreManager.log("corrupted-notebook", { notebookUri: enhancedNotebookUri });
+            bkUtils.log("corrupted-notebook", { notebookUri: enhancedNotebookUri });
           }
         } catch (e) {
           console.error(e);
@@ -316,54 +314,6 @@
       },
 
       // general
-      log: function(event, obj) {
-        return bkUtils.log(event, obj);
-      },
-      refreshRootScope: function() {
-        return bkUtils.refreshRootScope();
-      },
-      loadJS: function(url, success) {
-        return bkUtils.loadJS(url, success);
-      },
-      loadCSS: function(url) {
-        return bkUtils.loadCSS(url);
-      },
-      loadList: function(url, success, failure) {
-        return bkUtils.loadList(url, success, failure);
-      },
-      findTable: function(elem) {
-        return bkUtils.findTable(elem);
-      },
-      generateID: function() {
-        return bkUtils.generateID(6);
-      },
-      toPrettyJson: function(jsObj) {
-        return bkUtils.toPrettyJson(jsObj);
-      },
-      httpGet: function(url, data) {
-        return bkUtils.httpGet(url, data);
-      },
-      httpPost: function(url, data) {
-        return bkUtils.httpPost(url, data);
-      },
-      newDeferred: function() {
-        return bkUtils.newDeferred();
-      },
-      newPromise: function(value) {
-        return bkUtils.newPromise(value);
-      },
-      fcall: function(func) {
-        return bkUtils.fcall(func);
-      },
-      loadModule: function(url, name) {
-        return bkUtils.loadModule(url, name);
-      },
-      require: function(nameOrUrl) {
-        return bkUtils.require(nameOrUrl);
-      },
-      isMiddleClick: function(event) {
-        return bkUtils.isMiddleClick(event);
-      },
       showFileChooser: function(callback, template, strategy) {
         if (!template) {
           // use default template
@@ -394,20 +344,8 @@
               }
             });
       },
-      loadFile: function(path) {
-        return bkUtils.loadFile(path);
-      },
-      loadHttp: function(url) {
-        return bkUtils.loadHttp(url);
-      },
-      saveFile: function(path, contentAsJson) {
-        return bkUtils.saveFile(path, contentAsJson);
-      },
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();
-      },
-      getHomeDirectory: function() {
-        return bkUtils.getHomeDirectory();
       }
     };
     return bkCoreManager;

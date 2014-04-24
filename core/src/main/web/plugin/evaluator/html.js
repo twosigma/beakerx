@@ -25,13 +25,12 @@ define(function(require, exports, module) {
     cmMode: "htmlmixed",
     evaluate: function(code, modelOutput) {
       var startTime = new Date().getTime();
-      return Q.fcall(function() {
+      return bkHelper.fcall(function() {
         modelOutput.result = {
           type: "BeakerDisplay",
           innertype: "Html",
           object: code};
         modelOutput.elapsedTime = new Date().getTime() - startTime;
-        bkHelper.refreshRootScope();
       });
     },
     spec: {

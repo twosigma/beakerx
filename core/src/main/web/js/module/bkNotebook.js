@@ -22,7 +22,7 @@
   'use strict';
   var bkNotebook = angular.module('M_bkNotebook', [
     'M_commonUI',
-    'M_generalUtils',
+    'M_bkUtils',
     'M_bkShare',
     'M_bkCore',
     'M_bkSessionManager',
@@ -42,7 +42,7 @@
    * stuffs like evaluator panel
    */
   bkNotebook.directive('bkNotebook', function(
-      generalUtils, bkShare, bkEvaluatorManager,
+      bkUtils, bkShare, bkEvaluatorManager,
       bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
     return {
       restrict: 'E',
@@ -236,7 +236,7 @@
         var div = element.find(".bkcell").first();
         div.click(function(event) {
           //click in the border or padding should trigger menu
-          if (generalUtils.eventOffsetX(div, event) >= div.width()) {
+          if (bkUtils.eventOffsetX(div, event) >= div.width()) {
             var menu = div.find('.bkcellmenu').last();
             menu.css("top", event.clientY);
             menu.css("left", event.clientX - 150);

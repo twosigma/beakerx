@@ -174,7 +174,7 @@
       }
     });
 
-    beaker.run(function($location, $document, bkCoreManager, generalUtils, bkDebug) {
+    beaker.run(function($location, $document, bkUtils, bkCoreManager, bkDebug) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
@@ -186,7 +186,7 @@
             return;
           }
 
-          bkCoreManager.log("open", {
+          bkUtils.log("open", {
             uri: notebookUri,
             user: user
           });
@@ -216,7 +216,7 @@
       Q.delay(1000).then(function() {
         $.get("/beaker/rest/util/whoami", {}, function(data) {
           user = data;
-          bkCoreManager.log("start", {user: data});
+          bkUtils.log("start", {user: data});
         }, "json");
       });
       var noteAction = function() {
@@ -227,7 +227,7 @@
       window.setInterval(function() {
         var now = new Date();
         if ((now - lastAction) < 60 * 1000) {
-          bkCoreManager.log("tick", {user: user});
+          bkUtils.log("tick", {user: user});
         }
       }, 60 * 1000);
       $document.bind('keydown', function(e) {

@@ -21,6 +21,7 @@
 (function() {
   'use strict';
   var module = angular.module('M_bkHelper', [
+    'M_bkUtils',
     'M_bkCore',
     'M_bkSessionManager',
     'M_bkShare'
@@ -34,7 +35,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkSessionManager, bkCoreManager, bkShare) {
+  module.factory('bkHelper', function(bkUtils, bkSessionManager, bkCoreManager, bkShare) {
     var bkHelper = {
       forDebugOnly: {
         bkSessionManager: bkSessionManager,
@@ -182,19 +183,19 @@
         return this.showFileChooser(close, template);
       },
       refreshRootScope: function() {
-        return bkCoreManager.refreshRootScope();
+        return bkUtils.refreshRootScope();
       },
       loadJS: function(url, success) {
-        return bkCoreManager.loadJS(url, success);
+        return bkUtils.loadJS(url, success);
       },
       loadCSS: function(url) {
-        return bkCoreManager.loadCSS(url);
+        return bkUtils.loadCSS(url);
       },
       loadList: function(url, success, failure) {
-        return bkCoreManager.loadList(url, success, failure);
+        return bkUtils.loadList(url, success, failure);
       },
       findTable: function(elem) {
-        return bkCoreManager.findTable(elem);
+        return bkUtils.findTable(elem);
       },
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
@@ -203,46 +204,28 @@
         return bkCoreManager.getLoadingPlugin(key);
       },
       generateID: function() {
-        return bkCoreManager.generateID();
-      },
-      toPrettyJson: function(jsObj) {
-        return bkCoreManager.toPrettyJson(jsObj);
+        return bkUtils.generateID();
       },
       httpGet: function(url, data) {
-        return bkCoreManager.httpGet(url, data);
+        return bkUtils.httpGet(url, data);
       },
       httpPost: function(url, data) {
-        return bkCoreManager.httpPost(url, data);
+        return bkUtils.httpPost(url, data);
       },
       newDeferred: function() {
-        return bkCoreManager.newDeferred();
+        return bkUtils.newDeferred();
       },
       newPromise: function(value) {
-        return bkCoreManager.newPromise(value);
+        return bkUtils.newPromise(value);
       },
       fcall: function(func) {
-        return bkCoreManager.fcall(func);
+        return bkUtils.fcall(func);
       },
-      loadModule: function(url, name) {
-        return bkCoreManager.loadModule(url, name);
-      },
-      require: function(nameOrUrl) {
-        return bkCoreManager.require(nameOrUrl);
-      },
-      loadFile: function(path) {
-        return bkCoreManager.loadFile(path);
-      },
-      loadHttp: function(url) {
-        return bkCoreManager.loadHttp(url);
-      },
-      saveFile: function(path, contentAsJson) {
-        return bkCoreManager.saveFile(path, contentAsJson);
+      getHomeDirectory: function() {
+        return bkUtils.getHomeDirectory();
       },
       getFileSystemFileChooserStrategy: function() {
         return bkCoreManager.getFileSystemFileChooserStrategy();
-      },
-      getHomeDirectory: function() {
-        return bkCoreManager.getHomeDirectory();
       },
 
       // input cell
@@ -257,14 +240,14 @@
       share: bkShare,
 
       locatePluginService: function(id, locator) {
-        return bkCoreManager.httpGet("/beaker/rest/plugin-services/" + id,
+        return bkUtils.httpGet("/beaker/rest/plugin-services/" + id,
             locator);
       },
       getEvaluatorFactory: function(shellConstructorPromise) {
         return shellConstructorPromise.then(function(Shell) {
           return {
             create: function(settings) {
-              return bkHelper.newPromise(new Shell(settings));
+              return bkUtils.newPromise(new Shell(settings));
             }
           };
         });

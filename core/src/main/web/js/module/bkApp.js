@@ -204,7 +204,7 @@
         var _impl = (function() {
           var _saveNotebook = function() {
             showStatusMessage("Saving");
-            var deferred = bkCoreManager.newDeferred();
+            var deferred = bkUtils.newDeferred();
             var saveData = bkSessionManager.getSaveData();
             var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
             fileSaver.save(saveData.notebookUri, saveData.notebookModelAsString).then(
@@ -390,7 +390,7 @@
         };
         startAutoBackup();
         $scope.gotoControlPanel = function(event) {
-          if (bkCoreManager.isMiddleClick(event)) {
+          if (bkUtils.isMiddleClick(event)) {
             window.open("./");
           } else {
             bkSessionManager.backup().then(function() {
@@ -420,7 +420,7 @@
         bkSessionManager.clear();
 
         bkMenuPluginManager.clear();
-        bkCoreManager.httpGet('/beaker/rest/util/getMenuPlugins')
+        bkUtils.httpGet('/beaker/rest/util/getMenuPlugins')
             .success(function(menuUrls) {
               menuUrls.forEach(function(url) {
                 bkMenuPluginManager.loadMenuPlugin(url);

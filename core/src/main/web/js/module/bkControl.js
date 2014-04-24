@@ -22,6 +22,7 @@
 (function() {
   'use strict';
   var bkControl = angular.module('M_bkControl', [
+    'M_bkUtils',
     'M_bkCore',
     'M_bkSession',
     'M_bkMenuPluginManager',
@@ -29,7 +30,7 @@
     'M_bkEvaluatePluginManager']);
 
   bkControl.directive('bkControl', function(
-      bkCoreManager, bkSession, bkMenuPluginManager, trackingService) {
+      bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, trackingService) {
     return {
       restrict: 'E',
       templateUrl: './template/bkControl.html',
@@ -44,7 +45,7 @@
         bkCoreManager.setBkAppImpl(_impl);
 
         $scope.gotoControlPanel = function(event) {
-          if (bkCoreManager.isMiddleClick(event)) {
+          if (bkUtils.isMiddleClick(event)) {
             window.open("./");
           } else {
             location.reload();
@@ -53,7 +54,7 @@
 
         // setup menus
         bkMenuPluginManager.clear();
-        bkCoreManager.httpGet('/beaker/rest/util/getControlPanelMenuPlugins')
+        bkUtils.httpGet('/beaker/rest/util/getControlPanelMenuPlugins')
             .success(function(menuUrls) {
               menuUrls.forEach(function(url) {
                 bkMenuPluginManager.loadMenuPlugin(url);
@@ -75,7 +76,7 @@
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
         if (trackingService.isNeedPermission()) {
-          bkCoreManager.httpGet("./rest/util/isAllowAnonymousTracking").then(function(allow) {
+          bkUtils.httpGet("./rest/util/isAllowAnonymousTracking").then(function(allow) {
             switch (allow.data) {
               case "true":
                 $scope.isAllowAnonymousTracking = true;
@@ -100,7 +101,7 @@
               allow = "false";
               trackingService.disable();
             }
-            bkCoreManager.httpPost("./rest/util/setAllowAnonymousTracking", { allow: allow });
+            bkUtils.httpPost("./rest/util/setAllowAnonymousTracking", { allow: allow });
           }
         });
         $scope.showWhatWeLog = function() {
@@ -138,7 +139,7 @@
   });
 
   bkControl.directive('bkControlItem', function(
-      bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
+      bkUtils, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
     return {
       restrict: 'E',
       template: "<table class='table table-striped'>" +
@@ -186,12 +187,12 @@
                 function() { // yes
                   // save session
                   var saveSession = function() {
-                    var notebookModelAsString = bkCoreManager.toPrettyJson(notebookModel);
+                    var notebookModelAsString = bkUtils.toPrettyJson(notebookModel);
                     if (!_.isEmpty(session.notebookUri)) {
                       var fileSaver = bkCoreManager.getFileSaver(session.uriType);
                       return fileSaver.save(session.notebookUri, notebookModelAsString);
                     } else {
-                      var deferred = bkCoreManager.newDeferred();
+                      var deferred = bkUtils.newDeferred();
                       bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
                         if (!pathInfo.uri) {
                           deferred.reject({

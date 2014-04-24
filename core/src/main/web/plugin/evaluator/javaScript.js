@@ -155,7 +155,7 @@ define(function(require, exports, module) {
     cmMode: "javascript",
     background: "#FFE0F0",
     evaluate: function(code, modelOutput) {
-      return Q.fcall(function() {
+      return bkHelper.fcall(function() {
         try {
           modelOutput.result = "" + eval(code);
         } catch (err) {
@@ -165,7 +165,6 @@ define(function(require, exports, module) {
             object: "" + err
           };
         }
-        bkHelper.refreshRootScope();
       });
     },
     autocomplete2: function(editor, options, cb) {

@@ -21,17 +21,9 @@
 define(function(require, exports, module) {
   'use strict';
   var notebookConverter = (function() {
-    var generateID = function(length) {
-      var text = "";
-      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (var i = 0; i < length; ++i) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      }
-      return text;
-    };
     var convertCodeCell = function(ipyCodeCell) {
       var bkrCodeCell = {
-        "id": "code" + generateID(6),
+        "id": "code" + bkHelper.generateId(6),
         "evaluator": "IRuby",
         "class": ["code"],
         "input": {
@@ -64,7 +56,7 @@ define(function(require, exports, module) {
 
     var convertMarkDownCell = function(ipyMDCell) {
       var bkrMDCell = {
-        "id": "markdown" + generateID(6),
+        "id": "markdown" + bkHelper.generateId(6),
         "class": ["markdown"],
         "body": "",
         "mode": "preview"
@@ -78,7 +70,7 @@ define(function(require, exports, module) {
 
     var convertRawCell = function(ipyRawCell) {
       var bkrTextCell = {
-        "id": "text" + generateID(6),
+        "id": "text" + bkHelper.generateId(6),
         "class": ["text"],
         "body": ""
       };
@@ -90,7 +82,7 @@ define(function(require, exports, module) {
 
     var convertHeadingCell = function(ipyHeadingCell) {
       var bkrTextCell = {
-        "id": "text" + generateID(6),
+        "id": "text" + bkHelper.generateId(6),
         "class": ["text"],
         "body": ""
       };

@@ -200,9 +200,6 @@
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
       },
-      getLoadingPlugin: function(key) {
-        return bkCoreManager.getLoadingPlugin(key);
-      },
       generateId: function() {
         return bkUtils.generateId();
       },

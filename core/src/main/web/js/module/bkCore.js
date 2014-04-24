@@ -279,9 +279,6 @@
       getRecentMenuItems: function() {
         return bkRecentMenu.getMenuItems();
       },
-      getLoadingPlugin: function(key) {
-        return bkUtils.loadingPlugins.get(key);
-      },
 
       _focusables: {}, // map of focusable(e.g. code mirror instances) with cell id being keys
       registerFocusable: function(cellID, focusable) {

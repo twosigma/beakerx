@@ -34,16 +34,6 @@
   module.factory('bkUtils', function(generalUtils, angularUtils, trackingService, cometd) {
 
     var bkUtils = {
-      loadingPlugins: {
-        // for keeping track of loading plugin
-        _loadingPlugins: {},
-        add: function(key, value) {
-          this._loadingPlugins[key] = value;
-        },
-        get: function(key) {
-          return this._loadingPlugins[key];
-        }
-      },
       log: function(event, obj) {
         trackingService.log(event, obj);
       },

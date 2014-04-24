@@ -71,7 +71,7 @@
         generalUtils.loadList(urls, success, failure);
       },
       getEventOffsetX: function(elem, event) {
-        return generalUtils.eventOffsetX(elem, event);
+        return generalUtils.getEventOffsetX(elem, event);
       },
       findTable: function(elem) {
         return generalUtils.findTable(elem);

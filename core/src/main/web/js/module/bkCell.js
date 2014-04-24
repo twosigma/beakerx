@@ -167,7 +167,7 @@
         var div = element.find(".bkcell").first();
         div.click(function(event) {
           //click in the border or padding should trigger menu
-          if (bkUtils.eventOffsetX(div, event) >= div.width()) {
+          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
             var menu = div.find('.bkcellmenu').last();
             menu.css("top", event.clientY);
             menu.css("left", event.clientX - 150);
@@ -176,7 +176,7 @@
           }
         });
         div.mousemove(function(event) {
-          if (bkUtils.eventOffsetX(div, event) >= div.width()) {
+          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
             div.css('cursor', 'pointer');
           } else {
             div.css('cursor', 'default');
@@ -239,7 +239,7 @@
         });
         scope.moveMenu = function(event) {
           var menu = element.find('.dropdown-menu').first();
-          menu.css("left", bkUtils.eventOffsetX(hr, event));
+          menu.css("left", bkUtils.getEventOffsetX(hr, event));
         };
       }
     };

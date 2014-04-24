@@ -183,7 +183,7 @@
         var outputMenuDiv = element.parent('.bkcell');
         outputMenuDiv.click(function(event) {
           //click in the border or padding should trigger menu
-          if (bkUtils.eventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
+          if (bkUtils.getEventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
             var menu = outputMenuDiv.find('.dropdown').last();
             menu.css("top", event.clientY);
             menu.css("left", event.clientX - 150);
@@ -192,7 +192,7 @@
           }
         });
         outputMenuDiv.mousemove(function(event) {
-          if (bkUtils.eventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
+          if (bkUtils.getEventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
             outputMenuDiv.css('cursor', 'pointer');
           } else {
             outputMenuDiv.css('cursor', 'default');

@@ -235,7 +235,7 @@
         var div = element.find(".bkcell").first();
         div.click(function(event) {
           //click in the border or padding should trigger menu
-          if (bkUtils.eventOffsetX(div, event) >= div.width()) {
+          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
             var menu = div.find('.bkcellmenu').last();
             menu.css("top", event.clientY);
             menu.css("left", event.clientX - 150);

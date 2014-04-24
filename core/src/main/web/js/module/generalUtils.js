@@ -58,7 +58,7 @@
         document.getElementsByTagName("head")[0].appendChild(link);
       },
       // offsetX is not defined in firefox
-      eventOffsetX: function(elem, event) {
+      getEventOffsetX: function(elem, event) {
         var x = event.offsetX;
         if (typeof x == 'undefined')
           x = event.pageX - elem.offset().left;

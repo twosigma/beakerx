@@ -384,13 +384,13 @@
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
         inputMenuDiv.click(function(event) {
-          if (bkUtils.eventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
+          if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
             scope.popupMenu(event);
             event.stopPropagation();
           }
         });
         inputMenuDiv.mousemove(function(event) {
-          if (bkUtils.eventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
+          if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
             inputMenuDiv.css('cursor', 'pointer');
           } else {
             inputMenuDiv.css('cursor', 'default');

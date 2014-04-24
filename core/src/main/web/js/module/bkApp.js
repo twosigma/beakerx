@@ -26,7 +26,6 @@
     'ui.bootstrap',
     'M_angularUtils',
     'M_bkUtils',
-    'M_cometd',
     'M_commonUI',
     'M_TreeView',
     'M_bkCore',

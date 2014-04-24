@@ -163,7 +163,6 @@
         };
         bkOutputLog.getLog(function(res) {
           $scope.outputLog = res;
-          $scope.$apply();
         });
         bkOutputLog.subscribe(function(reply) {
           if (!_impl._viewModel.isShowingOutput()) {

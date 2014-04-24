@@ -161,7 +161,7 @@ define(function(require, exports, module) {
   })();
 
   var IRUBY_PATH_PREFIX = "iruby";
-  bkHelper.setImporter(IRUBY_PATH_PREFIX, {
+  bkHelper.setNotebookImporter(IRUBY_PATH_PREFIX, {
     open: function(fileContentAsString) {
       var ipyNbJson = fileContentAsString;
       var ipyNb = JSON.parse(ipyNbJson);

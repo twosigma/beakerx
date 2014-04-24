@@ -150,7 +150,7 @@
               }
 
               var self = this;
-              var importer = bkCoreManager.getImporter(format);
+              var importer = bkCoreManager.getNotebookImporter(format);
               if (!importer) {
                 if (retry) {
                   // retry, sometimes the importer came from a plugin that is being loaded

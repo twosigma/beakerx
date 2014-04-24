@@ -131,10 +131,10 @@
 
     var bkCoreManager = {
 
-      setImporter: function(format, importer) {
+      setNotebookImporter: function(format, importer) {
         _importers[format] = importer;
       },
-      getImporter: function(format) {
+      getNotebookImporter: function(format) {
         return _importers[format];
       },
       setFileLoader: function(uriType, fileLoader) {

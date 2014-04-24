@@ -83,8 +83,8 @@
       showDefaultSavingFileChooser: function() {
         return bkCoreManager.showDefaultSavingFileChooser();
       },
-      setImporter: function(format, importer) {
-        return bkCoreManager.setImporter(format, importer);
+      setNotebookImporter: function(format, importer) {
+        return bkCoreManager.setNotebookImporter(format, importer);
       },
       evaluate: function(toEval) {
         return bkCoreManager.evaluate(toEval);

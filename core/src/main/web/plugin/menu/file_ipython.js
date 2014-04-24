@@ -161,7 +161,7 @@ define(function(require, exports, module) {
   })();
 
   var IPYNB_PATH_PREFIX = "ipynb";
-  bkHelper.setImporter(IPYNB_PATH_PREFIX, {
+  bkHelper.setNotebookImporter(IPYNB_PATH_PREFIX, {
     import: function(fileContentAsString) {
       var ipyNbJson = fileContentAsString;
       var ipyNb = JSON.parse(ipyNbJson);

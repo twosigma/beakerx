@@ -79,8 +79,8 @@
       formatTimeString: function(millis) {
         return generalUtils.formatTimeString(millis);
       },
-      generateID: function() {
-        return generalUtils.generateID(6);
+      generateId: function() {
+        return generalUtils.generateId(6);
       },
       toPrettyJson: function(jsObj) {
         return angularUtils.toPrettyJson(jsObj);

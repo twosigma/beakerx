@@ -24,7 +24,7 @@
   var module = angular.module('M_generalUtils', []);
   module.factory('generalUtils', function() {
     return {
-      generateID: function(length) {
+      generateId: function(length) {
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 

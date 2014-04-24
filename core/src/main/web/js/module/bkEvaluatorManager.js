@@ -41,7 +41,7 @@
                 if (!evaluators[evaluator.pluginName]) {
                   evaluatorSettings.name = evaluator.pluginName;
                 } else {
-                  evaluatorSettings.name = evaluator.pluginName + "_" + bkUtils.generateID(6);
+                  evaluatorSettings.name = evaluator.pluginName + "_" + bkUtils.generateId(6);
                 }
               }
               evaluators[evaluatorSettings.name] = evaluator;

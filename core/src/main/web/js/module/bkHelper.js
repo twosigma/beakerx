@@ -67,9 +67,9 @@
         bkCoreManager.getBkApp().showAnonymousTrackingDialog();
       },
       // bk-app
-      loadNotebook: function(notebookModel, alwaysCreateNewEvaluators, notebookUri, sessionID) {
+      loadNotebook: function(notebookModel, alwaysCreateNewEvaluators, notebookUri, sessionId) {
         return bkCoreManager.getBkApp().loadNotebook(
-            notebookModel, alwaysCreateNewEvaluators, notebookUri, sessionID);
+            notebookModel, alwaysCreateNewEvaluators, notebookUri, sessionId);
       },
       closeNotebook: function() {
         return bkCoreManager.closeNotebook();
@@ -203,8 +203,8 @@
       getLoadingPlugin: function(key) {
         return bkCoreManager.getLoadingPlugin(key);
       },
-      generateID: function() {
-        return bkUtils.generateID();
+      generateId: function() {
+        return bkUtils.generateId();
       },
       httpGet: function(url, data) {
         return bkUtils.httpGet(url, data);

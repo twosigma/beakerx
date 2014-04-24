@@ -57,7 +57,7 @@
     return {
       template: "<div id='{{id}}'></div>",
       controller: function($scope) {
-        $scope.id = "latex_" + generalUtils.generateID(6);
+        $scope.id = "latex_" + generalUtils.generateId(6);
       },
       link: function(scope, element, attrs) {
         scope.$watch('model.getCellModel()', function(newValue) {

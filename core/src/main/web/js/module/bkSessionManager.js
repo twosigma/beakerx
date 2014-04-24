@@ -123,7 +123,7 @@
 
         // check inputs
         if (!sessionId) {
-          sessionId = bkUtils.generateID(6);
+          sessionId = bkUtils.generateId(6);
         }
 
         // reset
@@ -224,7 +224,7 @@
               evaluator = _notebookModel.get().evaluators[0].name;
             }
             if (!id) {
-              id = "code" + bkUtils.generateID(6);
+              id = "code" + bkUtils.generateId(6);
             }
             return {
               "id": id,
@@ -248,7 +248,7 @@
             }
 
             if (!id) {
-              id = "section" + bkUtils.generateID(6);
+              id = "section" + bkUtils.generateId(6);
             }
             return {
               "id": id,
@@ -259,7 +259,7 @@
           },
           newTextCell: function(id) {
             if (!id) {
-              id = "text" + bkUtils.generateID(6);
+              id = "text" + bkUtils.generateId(6);
             }
             return {
               "id": id,
@@ -270,7 +270,7 @@
           newMarkdownCell: function(id) {
             var tail = _notebookModel.get().cells.length - 1;
             if (!id) {
-              id = "markdown" + bkUtils.generateID(6);
+              id = "markdown" + bkUtils.generateId(6);
             }
             return {
               "id": id,

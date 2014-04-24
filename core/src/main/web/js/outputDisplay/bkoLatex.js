@@ -19,7 +19,7 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective('Latex', ["generalUtils", function(generalUtils) {
+  beaker.bkoDirective('Latex', ["bkUtils", function(bkUtils) {
 
     var deferred = Q.defer();
 
@@ -57,7 +57,7 @@
     return {
       template: "<div id='{{id}}'></div>",
       controller: function($scope) {
-        $scope.id = "latex_" + generalUtils.generateId(6);
+        $scope.id = "latex_" + bkUtils.generateId(6);
       },
       link: function(scope, element, attrs) {
         scope.$watch('model.getCellModel()', function(newValue) {

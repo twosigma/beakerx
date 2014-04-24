@@ -120,7 +120,7 @@
             }
           };
         }]);
-  beaker.bkoFactory('flotr2ViewUtils', ["generalUtils", function(generalUtils) {
+  beaker.bkoFactory('flotr2ViewUtils', ["bkUtils", function(bkUtils) {
     return {
       argbToRgb: function(color) {
         if (typeof color === "string" && color.length === 9) {

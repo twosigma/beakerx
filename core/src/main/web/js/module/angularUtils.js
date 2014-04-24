@@ -56,7 +56,9 @@
       },
       fcall: function(func) {
         var deferred = $q.defer();
-        deferred.resolve(func());
+        Q.fcall(function() {
+          deferred.resolve(func());
+        });
         return deferred.promise;
       },
       delay: function(ms) {

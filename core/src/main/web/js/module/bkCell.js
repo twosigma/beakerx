@@ -285,7 +285,7 @@
         $scope.cellview.menu.addItemToHead({
           name: "Delete section and all sub-sections",
           action: function() {
-            bkBaseSessionModel.cellOp.delete($scope.cellmodel.id);
+            bkBaseSessionModel.cellOp.deleteSection($scope.cellmodel.id);
           }
         });
         $scope.cellview.menu.addItem({

@@ -18,7 +18,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkEvaluatePluginManager', ['M_bkUtils'])
+  var module = angular.module('M_bkEvaluatePluginManager', ['M_bkUtils']);
   module.factory('bkEvaluatePluginManager', function(bkUtils) {
       var nameToUrlMap = {};
       var plugins = {};
@@ -88,7 +88,8 @@
                 if (evaluator.exit) {
                   evaluator.exit();
                 }
-              }).then(function() {
+              })
+              .then(function() {
                 _(plugins).filter(function(aShell) {
                   return aShell !== theShell;
                 });

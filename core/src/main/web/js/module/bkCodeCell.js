@@ -28,7 +28,6 @@
     'M_bkCodeCellOutput',
     'M_commonUI',
     'M_generalUtils',
-    'M_bkShare',
     'M_bkEvaluatorManager'
   ]);
   M_bkCodeCell.directive('codeCell', function(
@@ -37,7 +36,7 @@
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
-    } ;
+    };
     return {
       restrict: 'E',
       templateUrl: "./template/bkCodeCell.html",

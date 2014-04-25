@@ -65,7 +65,7 @@
         "id": cell.id,
         "type": "text",
         "body": cell.body
-      }
+      };
     };
     var convertMarkdownCell = function(cell) {
       return {
@@ -73,7 +73,7 @@
         "type": "markdown",
         "body": cell.body,
         "mode": cell.mode
-      }
+      };
     };
     var convertCell = function(cell, tagMap, tagMap2) {
       var retCell;

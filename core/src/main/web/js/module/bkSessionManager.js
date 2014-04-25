@@ -49,7 +49,7 @@
             bkRecentMenu.recordRecentDocument(generateRecentDocumentItem());
           }
         }
-      }
+      };
     })();
 
     var _uriType = null;
@@ -80,7 +80,7 @@
         toPrettyJson: function() {
           return bkUtils.toPrettyJson(_v);
         }
-      }
+      };
     })();
 
     var generateBackupData = function() {
@@ -91,7 +91,7 @@
         format: _format,
         notebookModelJson: _notebookModel.toJson(),
         edited: _edited
-      }
+      };
     };
     var generateRecentDocumentItem = function () {
       var data = {
@@ -244,7 +244,7 @@
               throw "creating section cell with level " + level + " is not allowed";
             }
             if (!title) {
-              title = "New Section H" + level
+              title = "New Section H" + level;
             }
 
             if (!id) {
@@ -278,7 +278,7 @@
               "body": ""
             };
           }
-        }
+        };
       },
       isRootCellInitialization: function() {
         return _notebookModel.get().initializeAll;

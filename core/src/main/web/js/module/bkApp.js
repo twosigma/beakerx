@@ -24,18 +24,16 @@
   var module = angular.module('M_bkApp', [
     'ngRoute',
     'ui.bootstrap',
-    'M_angularUtils',
     'M_bkUtils',
     'M_commonUI',
-    'M_TreeView',
     'M_bkCore',
     'M_bkSession',
     'M_bkSessionManager',
-    'M_bkNotebook',
     'M_bkMenuPluginManager',
     'M_bkCellPluginManager',
     'M_bkNotebookVersionManager',
-    'M_bkEvaluatorManager'
+    'M_bkEvaluatorManager',
+    'M_bkNotebook'
   ]);
 
   /**
@@ -46,14 +44,14 @@
   module.directive('bkApp', function(
       $routeParams,
       bkUtils,
+      bkCoreManager,
       bkSession,
       bkSessionManager,
       bkMenuPluginManager,
       bkCellPluginManager,
-      bkCoreManager,
-      bkAppEvaluate,
       bkNotebookVersionManager,
-      bkEvaluatorManager) {
+      bkEvaluatorManager,
+      bkAppEvaluate) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkApp.html",
@@ -149,7 +147,6 @@
                 format = bkCoreManager.guessFormat(notebookUri);
               }
 
-              var self = this;
               var importer = bkCoreManager.getNotebookImporter(format);
               if (!importer) {
                 if (retry) {
@@ -200,6 +197,11 @@
         };
         })();
 
+        var bkNotebookWidget;
+        $scope.setBkNotebook = function(bkNotebook) {
+          bkNotebookWidget = bkNotebook;
+        };
+
         var _impl = (function() {
           var _saveNotebook = function() {
             showStatusMessage("Saving");
@@ -219,6 +221,10 @@
             return deferred.promise;
           };
           return {
+            name: "bkNotebookApp",
+            getSessionId: function() {
+              return bkSessionManager.getSessionId();
+            },
             saveNotebook: function() {
               var self = this;
               if (bkSessionManager.isSavable()) {
@@ -312,6 +318,15 @@
             },
             getEvaluatorMenuItems: function() {
               return evaluatorMenuItems;
+            },
+            getBkNotebookWidget: function() {
+              return bkNotebookWidget;
+            },
+            toggleNotebookLocked: function() {
+              return bkSessionManager.toggleNotebookLocked();
+            },
+            isNotebookLocked: function() {
+              return bkSessionManager.isNotebookLocked();
             }
           };
         })();

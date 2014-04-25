@@ -42,12 +42,14 @@
    * stuffs like evaluator panel
    */
   bkNotebook.directive('bkNotebook', function(
-      bkUtils, bkShare, bkEvaluatorManager,
+      bkUtils, bkEvaluatorManager,
       bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkNotebook.html",
-      scope: {},
+      scope: {
+        setBkNotebook: "&"
+      },
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var _impl = {
@@ -89,9 +91,37 @@
           },
           deleteAllOutputCells: function() {
             bkSessionManager.getNotebookCellOp().deleteAllOutputCells();
+          },
+          _focusables: {}, // map of focusable(e.g. code mirror instances) with cell id being keys
+          registerFocusable: function(cellID, focusable) {
+            this._focusables[cellID] = focusable;
+          },
+          unregisterFocusable: function(cellID) {
+            delete this._focusables[cellID];
+          },
+          getFocusable: function(cellID) {
+            return this._focusables[cellID];
+          },
+          _codeMirrors: {},
+          registerCM: function(cellID, cm) {
+            this._codeMirrors[cellID] = cm;
+            cm.setOption("keyMap", this._cmKeyMapMode);
+          },
+          unregisterCM: function(cellID) {
+            delete this._codeMirrors[cellID];
+          },
+          _cmKeyMapMode: "default",
+          setCMKeyMapMode: function(keyMapMode) {
+            this._cmKeyMapMode = keyMapMode;
+            _.each(this._codeMirrors, function(cm) {
+              cm.setOption("keyMap", keyMapMode);
+            });
+          },
+          getCMKeyMapMode: function() {
+            return this._cmKeyMapMode;
           }
         };
-        bkCoreManager.setBkNotebookImpl(_impl);
+        $scope.setBkNotebook({bkNotebook: _impl});
 
         $scope.isDebugging = function() {
           return _impl._viewModel.isDebugging();
@@ -99,7 +129,6 @@
         $scope.isShowingOutput = function() {
           return _impl._viewModel.isShowingOutput();
         };
-
 
         $scope.showDebugTree = false;
         $scope.getNotebookModel = function() {

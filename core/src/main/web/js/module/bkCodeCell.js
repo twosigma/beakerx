@@ -32,9 +32,12 @@
     'M_bkEvaluatorManager'
   ]);
   M_bkCodeCell.directive('codeCell', function(
-      bkUtils, bkShare, bkEvaluatorManager,
+      bkUtils, bkEvaluatorManager,
       bkCellPluginManager, bkSessionManager, bkCoreManager) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
+    var getBkNotebookWidget = function() {
+      return bkCoreManager.getBkApp().getBkNotebookWidget();
+    } ;
     return {
       restrict: 'E',
       templateUrl: "./template/bkCodeCell.html",
@@ -57,6 +60,8 @@
           }
           return true;
         };
+
+        $scope.bkNotebook = getBkNotebookWidget();
         // ensure cm refreshes when 'unhide'
         $scope.$watch("isShowInput()", function(newValue, oldValue) {
           if ($scope.cm && newValue === true && newValue !== oldValue) {
@@ -201,8 +206,8 @@
           }
         });
         $scope.$on("$destroy", function() {
-          bkCoreManager.unregisterFocusable($scope.cellmodel.id);
-          bkCoreManager.unregisterCM($scope.cellmodel.id);
+          $scope.bkNotebook.unregisterFocusable($scope.cellmodel.id);
+          $scope.bkNotebook.unregisterCM($scope.cellmodel.id);
         });
       },
       link: function(scope, element, attrs) {
@@ -241,8 +246,8 @@
           var thisCellID = scope.cellmodel.id;
           var nextCell = notebookCellOp.getNext(thisCellID);
           while (nextCell) {
-            if (bkCoreManager.getFocusable(nextCell.id)) {
-              bkCoreManager.getFocusable(nextCell.id).focus();
+            if (scope.bkNotebook.getFocusable(nextCell.id)) {
+              scope.bkNotebook.getFocusable(nextCell.id).focus();
               break;
             } else {
               nextCell = notebookCellOp.getNext(nextCell.id);
@@ -254,8 +259,8 @@
           var thisCellID = scope.cellmodel.id;
           var prevCell = notebookCellOp.getPrev(thisCellID);
           while (prevCell) {
-            if (bkCoreManager.getFocusable(prevCell.id)) {
-              bkCoreManager.getFocusable(prevCell.id).focus();
+            if (scope.bkNotebook.getFocusable(prevCell.id)) {
+              scope.bkNotebook.getFocusable(prevCell.id).focus();
               break;
             } else {
               prevCell = notebookCellOp.getPrev(prevCell.id);
@@ -357,8 +362,8 @@
 
         scope.cm.focus();
         scope.updateUI(scope.getEvaluator());
-        bkCoreManager.registerFocusable(scope.cellmodel.id, scope.cm);
-        bkCoreManager.registerCM(scope.cellmodel.id, scope.cm);
+        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope.cm);
+        scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 
         // cellmodel.body --> CodeMirror
         scope.$watch('cellmodel.input.body', function(newVal, oldVal) {
@@ -415,6 +420,9 @@
     };
   });
   M_bkCodeCell.directive('inputMenu', function(bkCoreManager) {
+    var getBkNotebookWidget = function() {
+      return bkCoreManager.getBkApp().getBkNotebookWidget();
+    } ;
     return {
       restrict: 'E',
       templateUrl: "./template/bkCodeCellInputMenu.html",
@@ -439,7 +447,7 @@
         $scope.setEvaluator = function(evaluatorName) {
           var cellID = $scope.cellmodel.id;
           $scope.cellmodel.evaluator = evaluatorName;
-          bkCoreManager.getFocusable(cellID).focus();
+          getBkNotebookWidget().getFocusable(cellID).focus();
         };
         $scope.run = function() {
           $scope.evaluate();

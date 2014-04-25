@@ -157,30 +157,25 @@
         // TODO, make smarter guess
         return FORMAT_BKR;
       },
+
+      _beakerRootOp: null,
+      init: function(beakerRootOp) {
+        this._beakerRootOp = beakerRootOp;
+        bkRecentMenu.init({
+          open: beakerRootOp.openNotebook
+        });
+      },
+      gotoControlPanel: function() {
+        return this._beakerRootOp.gotoControlPanel();
+      },
+      newSession: function() {
+        return this._beakerRootOp.newSession();
+      },
+      openSession: function(sessionId) {
+        return this._beakerRootOp.openSession(sessionId);
+      },
       openNotebook: function(notebookUri, uriType, readOnly, format) {
         this._beakerRootOp.openNotebook(notebookUri, uriType, readOnly, format);
-      },
-      closeNotebook: function() {
-        if (this.getBkApp().closeNotebook) {
-          this.getBkApp().closeNotebook();
-        } else {
-          console.error("Current app doesn't support closeNotebook");
-        }
-      },
-
-      saveNotebook: function() {
-        if (this.getBkApp().saveNotebook) {
-          this.getBkApp().saveNotebook();
-        } else {
-          console.error("Current app doesn't support saveNotebook");
-        }
-      },
-      saveNotebookAs: function(notebookUri, uriType) {
-        if (this.getBkApp().saveNotebookAs) {
-          this.getBkApp().saveNotebookAs(notebookUri, uriType);
-        } else {
-          console.error("Current app doesn't support saveNotebookAs");
-        }
       },
       showDefaultSavingFileChooser: function() {
         var self = this;
@@ -220,23 +215,6 @@
         return deferred.promise;
       },
 
-      _beakerRootOp: null,
-      init: function(beakerRootOp) {
-        this._beakerRootOp = beakerRootOp;
-        bkRecentMenu.init({
-          open: beakerRootOp.openNotebook
-        });
-      },
-      gotoControlPanel: function() {
-        return this._beakerRootOp.gotoControlPanel();
-      },
-      newSession: function() {
-        return this._beakerRootOp.newSession();
-      },
-      openSession: function(sessionId) {
-        return this._beakerRootOp.openSession(sessionId);
-      },
-
       _bkAppImpl: null,
       setBkAppImpl: function(bkAppOp) {
         this._bkAppImpl = bkAppOp;
@@ -244,70 +222,9 @@
       getBkApp: function() {
         return this._bkAppImpl;
       },
-      evaluate: function(cellModel) {
-        return this._bkAppImpl.evaluate(cellModel);
-      },
-      evaluateCode: function(evaluator, code) {
-        return this._bkAppImpl.evaluateCode(evaluator, code);
-      },
-      addEvaluator: function(settings, alwaysCreateNewEvaluator) {
-        return this._bkAppImpl.addEvaluator(settings, alwaysCreateNewEvaluator);
-      },
-      showAnonymousTrackingDialog: function() {
-        if (this._bkAppImpl.showAnonymousTrackingDialog) {
-          return this._bkAppImpl.showAnonymousTrackingDialog();
-        } else {
-          console.error("Action 'showAnonymousTrackingDialog' is not supported by current app");
-        }
-      },
-      getEvaluatorMenuItems: function() {
-        if (this._bkAppImpl.getEvaluatorMenuItems) {
-          return this._bkAppImpl.getEvaluatorMenuItems();
-        } else {
-          console.error("Action 'getEvaluatorMenuItems' is not supported by current app");
-        }
-      },
-
-      _bkNotebookImpl: null,
-      setBkNotebookImpl: function(bkNotebookImpl) {
-        this._bkNotebookImpl = bkNotebookImpl;
-      },
-      getBkNotebook: function() {
-        return this._bkNotebookImpl;
-      },
 
       getRecentMenuItems: function() {
         return bkRecentMenu.getMenuItems();
-      },
-
-      _focusables: {}, // map of focusable(e.g. code mirror instances) with cell id being keys
-      registerFocusable: function(cellID, focusable) {
-        this._focusables[cellID] = focusable;
-      },
-      unregisterFocusable: function(cellID) {
-        delete this._focusables[cellID];
-      },
-      getFocusable: function(cellID) {
-        return this._focusables[cellID];
-      },
-
-      _codeMirrors: {},
-      _cmKeyMapMode: "default",
-      registerCM: function(cellID, cm) {
-        this._codeMirrors[cellID] = cm;
-        cm.setOption("keyMap", this._cmKeyMapMode);
-      },
-      unregisterCM: function(cellID) {
-        delete this._codeMirrors[cellID];
-      },
-      setCMKeyMapMode: function(keyMapMode) {
-        this._cmKeyMapMode = keyMapMode;
-        _.each(this._codeMirrors, function(cm) {
-          cm.setOption("keyMap", keyMapMode);
-        });
-      },
-      getCMKeyMapMode: function() {
-        return this._cmKeyMapMode;
       },
 
       // general
@@ -340,6 +257,68 @@
                 callback(result);
               }
             });
+      },
+      showErrorModal: function(msgBody, msgHeader, callback) {
+        if (!msgHeader) {
+          msgHeader = "Oops...";
+        }
+        var template = "<div class='modal-header'>" +
+            "<button class='close' ng-click='close()'>Close</button>" +
+            "<h3>" + msgHeader + "</h3>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p></div>";
+        return this.showFileChooser(callback, template);
+      },
+      showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt) {
+        if (!msgHeader) {
+          msgHeader = "Question...";
+        }
+        var close = function(result) {
+          if (result === "OK") {
+            okCB ? okCB() : null;
+          } else { // cancel
+            cancelCB ? cancelCB() : null;
+          }
+        };
+        okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
+        cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+        var template = "<div class='modal-header'>" +
+            "<h3>" + msgHeader + "</h3>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+            '<div class="modal-footer">' +
+            "   <button class='Yes' ng-click='close(\"OK\")' class='btn'>" + okBtnTxt + "</button>" +
+            "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
+            '</div>'
+        return this.showFileChooser(close, template);
+      },
+      showYesNoCancelModal: function(
+          msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt) {
+        if (!msgHeader) {
+          msgHeader = "Question...";
+        }
+        var close = function(result) {
+          if (result === "Yes") {
+            yesCB ? yesCB() : null;
+          } else if (result === "No") {
+            noCB ? noCB() : null;
+          } else { // cancel
+            cancelCB ? cancelCB() : null;
+          }
+        };
+        yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
+        noBtnTxt = noBtnTxt ? noBtnTxt : "No";
+        cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+        var template = "<div class='modal-header'>" +
+            "<h3>" + msgHeader + "</h3>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+            '<div class="modal-footer">' +
+            "   <button class='Yes' ng-click='close(\"Yes\")' class='btn'>" + yesBtnTxt + "</button>" +
+            "   <button class='No' ng-click='close(\"No\")' class='btn'>" + noBtnTxt + "</button>" +
+            "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
+            '</div>'
+        return this.showFileChooser(close, template);
       },
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();

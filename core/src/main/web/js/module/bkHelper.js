@@ -36,20 +36,18 @@
    * - it mostly should just be a subset of bkUtil
    */
   module.factory('bkHelper', function(bkUtils, bkSessionManager, bkCoreManager, bkShare) {
+    var getCurrentApp = function() {
+      return bkCoreManager.getBkApp();
+    };
+    var getBkNotebookWidget = function() {
+      if (getCurrentApp().getBkNotebookWidget) {
+        return getCurrentApp().getBkNotebookWidget();
+      } else {
+        console.error("Current app doesn't support getBkNotebookWidget");
+      }
+    };
+
     var bkHelper = {
-      forDebugOnly: {
-        bkSessionManager: bkSessionManager,
-        bkCoreManager: bkCoreManager
-      },
-      getBkAppViewModel: function() {
-        return bkCoreManager.getBkApp().getViewModel();
-      },
-      getBkNotebookViewModel: function() {
-        var bkNotebook = bkCoreManager.getBkNotebook();
-        if (bkNotebook) {
-          return bkNotebook.getViewModel();
-        }
-      },
 
       // beaker (root)
       gotoControlPanel: function() {
@@ -62,126 +60,117 @@
         return bkCoreManager.newSession();
       },
 
-      // bk-control only
-      showAnonymousTrackingDialog: function() {
-        bkCoreManager.getBkApp().showAnonymousTrackingDialog();
+      // current app
+      getCurrentAppName: function() {
+        if (!_.isEmpty(getCurrentApp().name)) {
+          return getCurrentApp().name;
+        }
+        return "Unknown App";
       },
-      // bk-app
-      loadNotebook: function(notebookModel, alwaysCreateNewEvaluators, notebookUri, sessionId) {
-        return bkCoreManager.getBkApp().loadNotebook(
-            notebookModel, alwaysCreateNewEvaluators, notebookUri, sessionId);
+      getSessionID: function() {
+        if (getCurrentApp().getSessionId) {
+          return getCurrentApp().getSessionId();
+        } else {
+          console.error("Current app doesn't support getSessionId");
+        }
       },
       closeNotebook: function() {
-        return bkCoreManager.closeNotebook();
+        if (getCurrentApp().closeNotebook) {
+          return getCurrentApp().closeNotebook();
+        } else {
+          console.error("Current app doesn't support closeNotebook");
+        }
       },
       saveNotebook: function() {
-        return bkCoreManager.saveNotebook();
+        if (getCurrentApp().saveNotebook) {
+          return getCurrentApp().saveNotebook();
+        } else {
+          console.error("Current app doesn't support saveNotebook");
+        }
       },
       saveNotebookAs: function(notebookUri, uriType) {
-        return bkCoreManager.saveNotebookAs(notebookUri, uriType);
-      },
-      showDefaultSavingFileChooser: function() {
-        return bkCoreManager.showDefaultSavingFileChooser();
-      },
-      setNotebookImporter: function(format, importer) {
-        return bkCoreManager.setNotebookImporter(format, importer);
+        if (getCurrentApp().saveNotebookAs) {
+          return getCurrentApp().saveNotebookAs(notebookUri, uriType);
+        } else {
+          console.error("Current app doesn't support saveNotebookAs");
+        }
       },
       evaluate: function(toEval) {
-        return bkCoreManager.evaluate(toEval);
+        if (getCurrentApp().evaluate) {
+          return getCurrentApp().evaluate(toEval);
+        } else {
+          console.error("Current app doesn't support evaluate");
+        }
       },
       evaluateCode: function(evaluator, code) {
-        return bkCoreManager.evaluateCode(evaluator, code);
+        if (getCurrentApp().evaluateCode) {
+          return getCurrentApp().evaluateCode(evaluator, code);
+        } else {
+          console.error("Current app doesn't support evaluateCode");
+        }
+      },
+      getEvaluatorMenuItems: function() {
+        if (getCurrentApp().getEvaluatorMenuItems) {
+          return getCurrentApp().getEvaluatorMenuItems();
+        } else {
+          console.error("Current app doesn't support getEvaluatorMenuItems");
+        }
+      },
+      toggleNotebookLocked: function() {
+        if (getCurrentApp().toggleNotebookLocked) {
+          return getCurrentApp().toggleNotebookLocked();
+        } else {
+          console.error("Current app doesn't support toggleNotebookLocked");
+        }
+      },
+      isNotebookLocked: function() {
+        if (getCurrentApp().isNotebookLocked) {
+          return getCurrentApp().isNotebookLocked();
+        } else {
+          console.error("Current app doesn't support isNotebookLocked");
+        }
+      },
+      showAnonymousTrackingDialog: function() {
+        if (getCurrentApp().showAnonymousTrackingDialog) {
+          return getCurrentApp().showAnonymousTrackingDialog();
+        } else {
+          console.error("Current app doesn't support showAnonymousTrackingDialog");
+        }
       },
 
       // bk-notebook
       shareNotebook: function() {
-        return bkCoreManager.getBkNotebook().shareAndOpenPublished();
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.shareAndOpenPublished();
+        }
       },
-
       deleteAllOutputCells: function() {
-        return bkCoreManager.getBkNotebook().deleteAllOutputCells();
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.deleteAllOutputCells();
+        }
+      },
+      getBkNotebookViewModel: function() {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.getViewModel();
+        }
+      },
+      setInputCellKeyMapMode: function(keyMapMode) {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.setCMKeyMapMode(keyMapMode);
+        }
+      },
+      getInputCellKeyMapMode: function() {
+        var bkNotebook = getBkNotebookWidget();
+        if (bkNotebook) {
+          return bkNotebook.getCMKeyMapMode();
+        }
       },
 
-      // session and notebook model
-      // TODO, refactor this so bkHelper perform these through the bkNotebookApp
-      // the session manager should owned by the bkNotebookApp and bkHelper
-      // shouldn't directly depend on it
-      getSessionID: function() {
-        return bkSessionManager.getSessionId();
-      },
-      toggleNotebookLocked: function() {
-        return bkSessionManager.toggleNotebookLocked();
-      },
-      isNotebookLocked: function() {
-        return bkSessionManager.isNotebookLocked();
-      },
-
-      // utils
-      showFileChooser: function(callback, template, strategy) {
-        return bkCoreManager.showFileChooser(callback, template, strategy);
-      },
-      showErrorModal: function(msgBody, msgHeader, callback) {
-        if (!msgHeader) {
-          msgHeader = "Oops...";
-        }
-        var template = "<div class='modal-header'>" +
-            "<button class='close' ng-click='close()'>Close</button>" +
-            "<h3>" + msgHeader + "</h3>" +
-            "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>";
-        return this.showFileChooser(callback, template);
-      },
-      showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt) {
-        if (!msgHeader) {
-          msgHeader = "Question...";
-        }
-        var close = function(result) {
-          if (result === "OK") {
-            okCB ? okCB() : null;
-          } else { // cancel
-            cancelCB ? cancelCB() : null;
-          }
-        };
-        okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
-        cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
-        var template = "<div class='modal-header'>" +
-            "<h3>" + msgHeader + "</h3>" +
-            "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
-            '<div class="modal-footer">' +
-            "   <button class='Yes' ng-click='close(\"OK\")' class='btn'>" + okBtnTxt + "</button>" +
-            "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
-            '</div>'
-        return this.showFileChooser(close, template);
-      },
-      showYesNoCancelModal: function(
-          msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt) {
-        if (!msgHeader) {
-          msgHeader = "Question...";
-        }
-        var close = function(result) {
-          if (result === "Yes") {
-            yesCB ? yesCB() : null;
-          } else if (result === "No") {
-            noCB ? noCB() : null;
-          } else { // cancel
-            cancelCB ? cancelCB() : null;
-          }
-        };
-        yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
-        noBtnTxt = noBtnTxt ? noBtnTxt : "No";
-        cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
-        var template = "<div class='modal-header'>" +
-            "<h3>" + msgHeader + "</h3>" +
-            "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
-            '<div class="modal-footer">' +
-            "   <button class='Yes' ng-click='close(\"Yes\")' class='btn'>" + yesBtnTxt + "</button>" +
-            "   <button class='No' ng-click='close(\"No\")' class='btn'>" + noBtnTxt + "</button>" +
-            "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
-            '</div>'
-        return this.showFileChooser(close, template);
-      },
+      // low level utils (bkUtils)
       refreshRootScope: function() {
         return bkUtils.refreshRootScope();
       },
@@ -196,9 +185,6 @@
       },
       findTable: function(elem) {
         return bkUtils.findTable(elem);
-      },
-      getRecentMenuItems: function() {
-        return bkCoreManager.getRecentMenuItems();
       },
       generateId: function() {
         return bkUtils.generateId();
@@ -221,21 +207,37 @@
       getHomeDirectory: function() {
         return bkUtils.getHomeDirectory();
       },
+
+      // utils (bkCore)
+      setNotebookImporter: function(format, importer) {
+        return bkCoreManager.setNotebookImporter(format, importer);
+      },
+      showDefaultSavingFileChooser: function() {
+        return bkCoreManager.showDefaultSavingFileChooser();
+      },
+      getRecentMenuItems: function() {
+        return bkCoreManager.getRecentMenuItems();
+      },
+      showFileChooser: function(callback, template, strategy) {
+        return bkCoreManager.showFileChooser(callback, template, strategy);
+      },
+      showErrorModal: function(msgBody, msgHeader, callback) {
+        return bkCoreManager.showErrorModal(msgBody, msgHeader, callback);
+      },
+      showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt) {
+        return bkCoreManager.showOkCancelModal(
+            msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt);
+      },
+      showYesNoCancelModal: function(
+          msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt) {
+        return bkCoreManager.showYesNoCancelModal(
+            msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt);
+      },
       getFileSystemFileChooserStrategy: function() {
         return bkCoreManager.getFileSystemFileChooserStrategy();
       },
 
-      // input cell
-      setInputCellKeyMapMode: function(keyMapMode) {
-        return bkCoreManager.setCMKeyMapMode(keyMapMode);
-      },
-      getInputCellKeyMapMode: function() {
-        return bkCoreManager.getCMKeyMapMode();
-      },
-
-      // bkShare
-      share: bkShare,
-
+      // eval utils
       locatePluginService: function(id, locator) {
         return bkUtils.httpGet("/beaker/rest/plugin-services/" + id,
             locator);
@@ -249,9 +251,8 @@
           };
         });
       },
-      getEvaluatorMenuItems: function() {
-        return bkCoreManager.getEvaluatorMenuItems();
-      }
+      // bkShare
+      share: bkShare
     };
     window.bkHelper = bkHelper; // TODO, we want to revisit the decision of making this global
     return bkHelper;

@@ -37,6 +37,7 @@
       controller: function($scope) {
         document.title = "Beaker";
         var _impl = {
+          name: "bkControlApp",
           showAnonymousTrackingDialog: function() {
             $scope.isAllowAnonymousTracking = null;
           }

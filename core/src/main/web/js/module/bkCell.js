@@ -66,7 +66,7 @@
       },
       controller: function($scope) {
         var getBkBaseViewModel = function() {
-          return bkCoreManager.getBkNotebook().getViewModel();
+          return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel();
         };
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         $scope.cellview = {
@@ -193,7 +193,7 @@
     };
   });
   M_bkCell.directive('newCellMenu', function(
-      bkUtils, bkSessionManager, bkCoreManager, bkEvaluatorManager) {
+      bkUtils, bkSessionManager, bkEvaluatorManager) {
     return {
       restrict: 'E',
       templateUrl: "./template/newCellMenu.html",
@@ -247,7 +247,6 @@
 
   M_bkCell.directive('sectionCell', function(
       bkUtils,
-      bkShare,
       bkEvaluatorManager,
       bkSessionManager,
       bkCoreManager,

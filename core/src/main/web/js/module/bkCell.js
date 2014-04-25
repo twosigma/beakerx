@@ -25,7 +25,6 @@
   var M_bkCell = angular.module('M_bkCell', [
     'M_commonUI',
     'M_bkUtils',
-    'M_bkShare',
     'M_bkCore',
     'M_bkSessionManager',
     'M_bkEvaluatorManager',

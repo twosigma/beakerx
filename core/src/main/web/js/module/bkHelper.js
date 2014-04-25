@@ -23,7 +23,6 @@
   var module = angular.module('M_bkHelper', [
     'M_bkUtils',
     'M_bkCore',
-    'M_bkSessionManager',
     'M_bkShare'
   ]);
   /**
@@ -35,7 +34,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkSessionManager, bkCoreManager, bkShare) {
+  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };

@@ -22,7 +22,7 @@ define(function(require, exports, module) {
   var meunItemPromise = bkHelper.newPromise({
     parent: "Evaluators",
     items: bkHelper.getEvaluatorMenuItems
-  })
+  });
   exports.getMenuItems = function() {
     return meunItemPromise;
   };

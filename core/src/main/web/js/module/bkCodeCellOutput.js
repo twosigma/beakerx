@@ -123,7 +123,6 @@
               return $scope.model.selectedType;
             },
             setSelectedDisplay: function(display) {
-              console.log("setSelectedDisplay", display, $scope.model);
               $scope.model.selectedType = display;
             },
             getAdditionalMenuItems: function() {

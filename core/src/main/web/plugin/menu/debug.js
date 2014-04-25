@@ -22,7 +22,8 @@
 define(function(require, exports, module) {
   'use strict';
   var menuItems = [
-    {name: "Debug",
+    {
+      name: "Debug",
       action: function() {
         bkHelper.getBkNotebookViewModel().toggleDebugging();
       },
@@ -31,11 +32,13 @@ define(function(require, exports, module) {
         return bkHelper.getBkNotebookViewModel().isDebugging();
       }
     },
-    {name: "Force Refresh",
+    {
+      name: "Force Refresh",
       action: function() {
         bkHelper.refreshRootScope();
       },
-      tooltip: "Recompute view from model" }
+      tooltip: "Recompute view from model"
+    }
   ];
   var menuItemPromise = bkHelper.newPromise({
     parent: "Debug",

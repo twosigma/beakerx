@@ -29,11 +29,11 @@
   module.factory('bkSession', function(angularUtils) {
     var backupSession = function(sessionId, sessionData) {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpPost("/beaker/rest/session-backup/backup/" + sessionId, sessionData).
-          success(function(data) {
+      angularUtils.httpPost("/beaker/rest/session-backup/backup/" + sessionId, sessionData)
+          .success(function(data) {
             deferred.resolve();
-          }).
-          error(function(data, status) {
+          })
+          .error(function(data, status) {
             console.error("Failed to backup session: " + sessionId + ", " + status);
             deferred.reject("Failed to backup session: " + sessionId + ", " + status);
           });
@@ -41,33 +41,33 @@
     };
     var getSessions = function() {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpGet("/beaker/rest/session-backup/getExistingSessions").
-          success(function(sessions) {
+      angularUtils.httpGet("/beaker/rest/session-backup/getExistingSessions")
+          .success(function(sessions) {
             deferred.resolve(sessions);
-          }).
-          error(function(data, status, headers, config) {
+          })
+          .error(function(data, status, headers, config) {
             deferred.reject("Failed to get existing sessions " + status);
           });
       return deferred.promise;
     };
     var loadSession = function(sessionID) {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionID}).
-          success(function(session, status) {
+      angularUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionID})
+          .success(function(session, status) {
             deferred.resolve(session);
-          }).
-          error(function(data, status, headers, config) {
+          })
+          .error(function(data, status, headers, config) {
             deferred.reject("Failed to load session: " + sessionID + ", " + status);
           });
       return deferred.promise;
     };
     var closeSession = function(sessionID) {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionID}).
-          success(function(ret) {
+      angularUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionID})
+          .success(function(ret) {
             deferred.resolve(sessionID);
-          }).
-          error(function(data, status, headers, config) {
+          })
+          .error(function(data, status, headers, config) {
             deferred.reject("Failed to close session: " + sessionID + ", " + status);
           });
       return deferred.promise;
@@ -75,21 +75,21 @@
     var recordLoadedPlugin = function(pluginName, pluginUrl) {
       angularUtils.httpPost(
           "/beaker/rest/session-backup/addPlugin",
-          {pluginname: pluginName, pluginurl: pluginUrl}).
-          success(function(ret) {
+          {pluginname: pluginName, pluginurl: pluginUrl})
+          .success(function(ret) {
             //console.log("recordLoadedPlugin");
-          }).
-          error(function(data, status, headers, config) {
+          })
+          .error(function(data, status, headers, config) {
             console.error("Failed to add plugin, " + pluginName + ", " + pluginUrl + ", " + status);
           });
     };
     var getPlugins = function() {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpGet("/beaker/rest/session-backup/getExistingPlugins", {}).
-          success(function(plugins) {
+      angularUtils.httpGet("/beaker/rest/session-backup/getExistingPlugins", {})
+          .success(function(plugins) {
             deferred.resolve(plugins);
-          }).
-          error(function(data, status, headers, config) {
+          })
+          .error(function(data, status, headers, config) {
             deferred.reject("Failed to get existing plugins, " + status);
           });
       return deferred.promise;

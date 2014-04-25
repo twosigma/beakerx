@@ -30,7 +30,7 @@
       },
       toPrettyJson: function(angularBoundJsObj) {
         function cleanup(key, value) {
-          if (key == '$$hashKey') return undefined;
+          if (key === '$$hashKey') return undefined;
           return value;
         };
         return JSON.stringify(angularBoundJsObj, cleanup, 4) + "\n";

@@ -117,10 +117,10 @@
               "<p>We will never log any of the code you run, the names of your notebooks, your IP address, or any other personal or sensitive information.</p>" +
               "</div>" +
               '<div class="modal-footer">' +
-              "   <button class='btn' ng-click='close()' class='btn'>Got it</button>"
-          '</div>';
+              "   <button class='btn' ng-click='close()' class='btn'>Got it</button>" +
+              "</div>";
           return bkCoreManager.showFileChooser(function() {}, template);
-        }
+        };
 
 
         // sessions list UI
@@ -134,7 +134,7 @@
         $scope.reloadSessionsList();
         $scope.isSessionsListEmpty = function() {
           return _.isEmpty($scope.sessions);
-        }
+        };
       }
     };
   });
@@ -161,9 +161,6 @@
           bkCoreManager.openSession(sessionId);
         };
         $scope.close = function(sessionId, session) {
-          var notebookUri = session.notebookUri;
-          var uriType = session.uriType;
-          var readOnly = session.readOnly;
           var format = session.format;
           var notebookModel = angular.fromJson(session.notebookModelJson);
           var edited = session.edited;
@@ -226,7 +223,7 @@
                     } else {
                       bkHelper.showErrorModal(info.error, info.cause);
                     }
-                  }
+                  };
                   saveSession().then(closeSession, savingFailedHandler);
                 },
                 function() { // no

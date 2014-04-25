@@ -18,8 +18,8 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective("Progress", ["$interval", "bkAppEvaluate", "bkUtils", function(
-      $interval, bkAppEvaluate, bkUtils) {
+  beaker.bkoDirective("Progress", ["$interval", "bkEvaluateJobManager", "bkUtils", function(
+      $interval, bkEvaluateJobManager, bkUtils) {
     return {
       template: "<div ng-if='elapsed > 200'> <i class='fa fa-cog fa-spin fa-lg'></i> " +
           "<span> Elapsed: {{getElapsedTime()}} </span>" +
@@ -44,10 +44,10 @@
           return bkUtils.formatTimeString(scope.elapsed);
         };
         scope.cancel = function() {
-          bkAppEvaluate.cancel();
+          bkEvaluateJobManager.cancel();
         };
         scope.isCancellable = function() {
-          return bkAppEvaluate.isCancellable();
+          return bkEvaluateJobManager.isCancellable();
         };
         scope.$on("$destroy", function() {
           $interval.cancel(intervalPromise);

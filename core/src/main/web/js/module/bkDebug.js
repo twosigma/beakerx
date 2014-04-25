@@ -36,18 +36,18 @@
     "M_generalUtils",
     "M_bkMenuPluginManager",
     "M_bkEvaluatePluginManager",
-    "M_bkEvaluatorManager"
-//    "M_bkEvaluateManager"
+    "M_bkEvaluatorManager",
+    "M_bkEvaluateJobManager"
   ]);
   module.factory("bkDebug", function(
-      $injector, angularUtils, bkAppEvaluate, bkCellPluginManager, bkSessionManager,
+      $injector, angularUtils, bkEvaluateJobManager, bkCellPluginManager, bkSessionManager,
       bkCoreManager, bkHelper, bkOutputLog, bkRecentMenu, bkSession, bkShare,
       trackingService, bkUtils, cometd, generalUtils, bkMenuPluginManager, bkEvaluatePluginManager,
       bkEvaluatorManager) {
     return {
       $injector: $injector,
       angularUtils: angularUtils,
-      bkAppEvaluate: bkAppEvaluate,
+      bkEvaluateJobManager: bkEvaluateJobManager,
       bkCellPluginManager: bkCellPluginManager,
       bkSessionManager: bkSessionManager,
       bkCoreManager: bkCoreManager,

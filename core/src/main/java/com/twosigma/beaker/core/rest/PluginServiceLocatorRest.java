@@ -58,8 +58,8 @@ import org.apache.http.client.fluent.Request;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class PluginServiceLocatorRest {
-  private static final int RESTART_ENSURE_RETRY_MAX_COUNT = 60;
-  private static final int RESTART_ENSURE_RETRY_INTERVAL = 500; //ms
+  private static final int RESTART_ENSURE_RETRY_MAX_COUNT = 600;
+  private static final int RESTART_ENSURE_RETRY_INTERVAL = 50; //ms
 
   private final String nginxDir;
   private final String nginxBinDir;
@@ -350,6 +350,8 @@ public class PluginServiceLocatorRest {
       Files.createDirectory(htmlDir);
       Files.copy(Paths.get(this.nginxStaticDir + "/50x.html"),
                  Paths.get(htmlDir.toString() + "/50x.html"));
+      Files.copy(Paths.get(this.nginxStaticDir + "/present.html"),
+                 Paths.get(htmlDir.toString() + "/present.html"));
       //Files.copy(Paths.get(this.nginxStaticDir + "/favicon.ico"),
       //           Paths.get(htmlDir.toString() + "/favicon.ico"));
     }

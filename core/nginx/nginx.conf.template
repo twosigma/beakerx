@@ -62,7 +62,7 @@ http {
         }
 
         location = /restart%(restart_id)s {
-            alias   html/50x.html;
+            alias   html/present.html;
         }
 
         %(plugin_section)s

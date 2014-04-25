@@ -14,7 +14,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "5B1ED9E6ED064851BC765BEA21B808BC",
+            "shellID": "BE2DE700F40B45BF8F43A313B9D43058",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,12 +28,12 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "e7658997-25a1-45c5-baf9-ebb7b66e4359"
+            "shellID": "b9e639d8-8ce9-4c05-8d72-bebcd38e08c3"
         },
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "shellID": "b653d0b7-efce-4139-9a08-0321bc3625c3"
+            "shellID": "9b017772-310a-451b-8825-9f6e325bc32c"
         }
     ],
     "cells": [
@@ -53,12 +53,7 @@
                 "hidden": true
             },
             "output": {
-                "selectedType": "BeakerDisplay",
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://beakernotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, Latex, plain text</p>\n\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, Groovy</p>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>"
-                },
+                "selectedType": "Hidden",
                 "elapsedTime": 0
             }
         },
@@ -438,12 +433,12 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "#Load some data into a DataFrame\n\nimport pandas as pd\ndf = pd.DataFrame([[1, 2], [1, 3], [4, 6]], columns=['A', 'B'])\ndf"
+                "body": "#Load some data into a DataFrame\n\nimport pandas as pd\ndf = pd.DataFrame([[1, 9], [1, 8], [4, 6]], columns=['A', 'B'])\ndf"
             },
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": true,
-                "elapsedTime": 293
+                "elapsedTime": 189
             }
         },
         {
@@ -451,11 +446,11 @@
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<!--\nCreate an element for our chart and define some styles\n-->\n\n<div id=\"barchart1\" class=\"chart\">The d3 bar chart will appear here</div>\n\n<style>\n.chart div {\n  background-color: #AACCFF;\n  text-align: right;\n  padding: 3px;\n  margin: 1px;\n}\n</style>"
+                "body": "<div id=\"barchart1\">After running JS, chart will appear here</div>"
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 277
+                "elapsedTime": 47
             }
         },
         {
@@ -463,7 +458,7 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "//Currently accessing Python values from JavaScript requires constructing a full cell object\n//The \"body\" is Python code that will be evaluated, in this case, simply returning the DataFrame created above\nvar cell = { evaluator: \"IPython\", input: { body: \"df\" }, output: {} };\n\n//Use the bkHelper API to evaluate the cell\nbkHelper.evaluate(cell).then(function(){\n  \n  \t//After the evaluation we are reading one column of the data into an array\n\tvar data = cell.output.result.values;\n\tvar col = [];\n  \t_.each(data, function(a){col.push(a[2])})\n    \n    //Here is the D3 part\n\td3.select(\"#barchart1\")\n  \t\t.selectAll(\"div\")\n    \t.data(col)\n  \t\t.enter().append(\"div\")\n    \t.style(\"width\", function(d) { return d * 10 + \"px\"; })\n    \t.text(function(d) { return d; });\n})"
+                "body": "//Currently accessing Python values from JavaScript requires constructing a full cell object\n//The \"body\" is Python code that will be evaluated, in this case, simply returning the DataFrame created above\nvar cell = { evaluator: \"IPython\", input: { body: \"df\" }, output: {} };\n\n//Use the bkHelper API to evaluate the cell\nbkHelper.evaluate(cell).then(function(){\n  \n  \t//After the evaluation we are reading one column of the data into an array\n\tvar data = cell.output.result.values;\n\tvar col = [];\n  \t_.each(data, function(a){col.push(a[2])})\n        \n    //Here is the D3 part\n\td3.select(\"#barchart1\")\n  \t\t.selectAll(\"div\")\n    \t.data(col)\n  \t\t.enter().append(\"div\")\n    \t.style(\"width\", function(d) { return d * 10 + \"px\"; })\n    \t.style(\"background-color\", function(d) { return \"#\" + \"00\" + \"00\" + d.trim() + \"0\" })\n    \t.style(\"color\", \"#FFFFFF\")\n    \t.style(\"text-align\", \"right\")\n    \t.style(\"padding\", \"3px\")    \n    \t.style(\"margin\", \"1px\")        \n    \t.text(function(d) { return d; });\n})"
             },
             "output": {
                 "selectedType": "Hidden"

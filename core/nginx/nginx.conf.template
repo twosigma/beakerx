@@ -60,6 +60,11 @@ http {
         location /beaker/ {
             proxy_pass http://127.0.0.1:%(port_beaker)s/;
         }
+
+        location = /restart%(restart_id)s {
+            alias   html/present.html;
+        }
+
         %(plugin_section)s
         %(extra_rules)s
     }

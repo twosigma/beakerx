@@ -50,7 +50,7 @@
       restrict: 'E',
       template: '<div class="bkcell">' +
           '<div ng-if="isDebugging()">' +
-          '[Debug]: cell ID = {{cellmodel.id}}, parent = {{getParentID()}}, level = {{cellmodel.level}} ' +
+          '[Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}} ' +
           '<a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>' +
           '<a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()">show less</a>' +
           '<div collapse="!isShowDebugInfo()">' +
@@ -116,7 +116,7 @@
           var parent = $scope.$parent.$parent;
           return parent.getNestedLevel ? parent.getNestedLevel() + 1 : 1;
         };
-        $scope.getParentID = function() {
+        $scope.getParentId = function() {
           return $scope.$parent.$parent.cellmodel ? $scope.$parent.$parent.cellmodel.id : 'root';
         };
         $scope.cellview.menu.addItem({

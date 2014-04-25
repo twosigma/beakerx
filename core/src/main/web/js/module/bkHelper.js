@@ -67,7 +67,7 @@
         }
         return "Unknown App";
       },
-      getSessionID: function() {
+      getSessionId: function() {
         if (getCurrentApp().getSessionId) {
           return getCurrentApp().getSessionId();
         } else {

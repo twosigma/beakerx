@@ -442,23 +442,26 @@
             });
         bkCellPluginManager.reset();
 
-        var sessionID = $routeParams.sessionID;
-        if (sessionID) {
-          if (sessionID === "new") {
-            loadNotebook.defaultNotebook();
-          } else if (sessionID === "none") {
-            // do nothing
-          } else {
-            loadNotebook.fromSession(sessionID);
+        (function() {
+          var sessionId = $routeParams.sessionId;
+          if (sessionId) {
+            if (sessionId === "new") {
+              loadNotebook.defaultNotebook();
+            } else if (sessionId === "none") {
+              // do nothing
+            } else {
+              loadNotebook.fromSession(sessionId);
+            }
+          } else { // open
+            var notebookUri = $routeParams.uri;
+            var uriType = $routeParams.type;
+            var readOnly = $routeParams.readOnly;
+            var format = $routeParams.format;
+            var retry = true;
+            loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry);
           }
-        } else { // open
-          var notebookUri = $routeParams.uri;
-          var uriType = $routeParams.type;
-          var readOnly = $routeParams.readOnly;
-          var format = $routeParams.format;
-          var retry = true;
-          loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry);
-        }
+        })();
+
       }
     };
   });

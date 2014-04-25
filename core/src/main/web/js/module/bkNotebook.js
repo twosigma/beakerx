@@ -93,22 +93,22 @@
             bkSessionManager.getNotebookCellOp().deleteAllOutputCells();
           },
           _focusables: {}, // map of focusable(e.g. code mirror instances) with cell id being keys
-          registerFocusable: function(cellID, focusable) {
-            this._focusables[cellID] = focusable;
+          registerFocusable: function(cellId, focusable) {
+            this._focusables[cellId] = focusable;
           },
-          unregisterFocusable: function(cellID) {
-            delete this._focusables[cellID];
+          unregisterFocusable: function(cellId) {
+            delete this._focusables[cellId];
           },
-          getFocusable: function(cellID) {
-            return this._focusables[cellID];
+          getFocusable: function(cellId) {
+            return this._focusables[cellId];
           },
           _codeMirrors: {},
-          registerCM: function(cellID, cm) {
-            this._codeMirrors[cellID] = cm;
+          registerCM: function(cellId, cm) {
+            this._codeMirrors[cellId] = cm;
             cm.setOption("keyMap", this._cmKeyMapMode);
           },
-          unregisterCM: function(cellID) {
-            delete this._codeMirrors[cellID];
+          unregisterCM: function(cellId) {
+            delete this._codeMirrors[cellId];
           },
           _cmKeyMapMode: "default",
           setCMKeyMapMode: function(keyMapMode) {

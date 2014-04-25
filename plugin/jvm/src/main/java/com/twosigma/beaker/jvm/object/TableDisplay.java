@@ -47,6 +47,7 @@ public class TableDisplay {
         jgen.writeObjectField("type", "TableDisplay");
         jgen.writeObjectField("columnNames", value.columns);
         jgen.writeObjectField("values", value.values);
+        // jgen.writeObjectField("timeZone", "UTC");
         jgen.writeEndObject();
       }
     }

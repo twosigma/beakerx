@@ -80,14 +80,12 @@
                 var nano = value % 1000;
                 var micro = (value / 1000) % 1000;
                 var milli = value / 1000 / 1000;
-                var d = new Date(milli);
-                var doubleDigit = function(integer) {
-                  if (integer < 10) {
-                    return "0" + integer;
-                  }
-                  return integer.toString();
-                };
-                var trippleDigit = function(integer) {
+                var time = moment(milli);
+                var tz = $scope.model.getCellModel().timeZone;
+                if (tz)
+                  time.tz(tz);
+                var result = time.format("YYYYMMDD HH:mm:ss.SSS");
+                var tripleDigit = function(integer) {
                   if (integer < 10) {
                     return "00" + integer;
                   } else if (integer < 100) {
@@ -95,14 +93,8 @@
                   }
                   return integer.toString();
                 };
-                var result = "";
-                result += d.getFullYear() + doubleDigit(d.getMonth() + 1) + doubleDigit(d.getDate());
-                result += " ";
-                result += doubleDigit(d.getHours()) + ":" + doubleDigit(d.getMinutes()) + ":" + doubleDigit(d.getSeconds());
-                result += ".";
-                result += trippleDigit(d.getMilliseconds());
-                result += " " + trippleDigit(micro);
-                result += " " + trippleDigit(nano);
+                result += " " + tripleDigit(micro);
+                result += " " + tripleDigit(nano);
                 return result;
               };
             }

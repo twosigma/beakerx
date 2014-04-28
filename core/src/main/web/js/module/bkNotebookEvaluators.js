@@ -35,12 +35,11 @@
       templateUrl: "./template/bkNotebook_evaluators.html",
       controller: function($scope) {
         $scope.isHideEvaluators = function() {
-          return bkCoreManager.getBkNotebook().getViewModel().isHideEvaluators();
+          return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel().isHideEvaluators();
         };
         $scope.hideEvaluators = function() {
-          return bkCoreManager.getBkNotebook().getViewModel().hideEvaluators();
+          return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel().hideEvaluators();
         };
-
         $scope.evalTabOp = {
           newPluginNameOrUrl: "",
           getAllEvaluators: function() {
@@ -62,7 +61,7 @@
               plugin: plugin
             };
             bkSessionManager.getRawNotebookModel().evaluators.push(newEvaluatorObj);
-            bkCoreManager.addEvaluator(newEvaluatorObj);
+            bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
           }
         };
 

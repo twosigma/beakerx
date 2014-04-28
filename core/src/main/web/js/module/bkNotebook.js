@@ -22,7 +22,7 @@
   'use strict';
   var bkNotebook = angular.module('M_bkNotebook', [
     'M_commonUI',
-    'M_generalUtils',
+    'M_bkUtils',
     'M_bkShare',
     'M_bkCore',
     'M_bkSessionManager',
@@ -42,12 +42,14 @@
    * stuffs like evaluator panel
    */
   bkNotebook.directive('bkNotebook', function(
-      generalUtils, cometd, bkShare, bkEvaluatorManager,
+      bkUtils, bkEvaluatorManager,
       bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkNotebook.html",
-      scope: {},
+      scope: {
+        setBkNotebook: "&"
+      },
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var _impl = {
@@ -89,9 +91,37 @@
           },
           deleteAllOutputCells: function() {
             bkSessionManager.getNotebookCellOp().deleteAllOutputCells();
+          },
+          _focusables: {}, // map of focusable(e.g. code mirror instances) with cell id being keys
+          registerFocusable: function(cellID, focusable) {
+            this._focusables[cellID] = focusable;
+          },
+          unregisterFocusable: function(cellID) {
+            delete this._focusables[cellID];
+          },
+          getFocusable: function(cellID) {
+            return this._focusables[cellID];
+          },
+          _codeMirrors: {},
+          registerCM: function(cellID, cm) {
+            this._codeMirrors[cellID] = cm;
+            cm.setOption("keyMap", this._cmKeyMapMode);
+          },
+          unregisterCM: function(cellID) {
+            delete this._codeMirrors[cellID];
+          },
+          _cmKeyMapMode: "default",
+          setCMKeyMapMode: function(keyMapMode) {
+            this._cmKeyMapMode = keyMapMode;
+            _.each(this._codeMirrors, function(cm) {
+              cm.setOption("keyMap", keyMapMode);
+            });
+          },
+          getCMKeyMapMode: function() {
+            return this._cmKeyMapMode;
           }
         };
-        bkCoreManager.setBkNotebookImpl(_impl);
+        $scope.setBkNotebook({bkNotebook: _impl});
 
         $scope.isDebugging = function() {
           return _impl._viewModel.isDebugging();
@@ -99,7 +129,6 @@
         $scope.isShowingOutput = function() {
           return _impl._viewModel.isShowingOutput();
         };
-
 
         $scope.showDebugTree = false;
         $scope.getNotebookModel = function() {
@@ -163,9 +192,8 @@
         };
         bkOutputLog.getLog(function(res) {
           $scope.outputLog = res;
-          $scope.$apply();
         });
-        $.cometd.subscribe("/outputlog", function(reply) {
+        bkOutputLog.subscribe(function(reply) {
           if (!_impl._viewModel.isShowingOutput()) {
             _impl._viewModel.toggleShowOutput();
           }
@@ -236,7 +264,7 @@
         var div = element.find(".bkcell").first();
         div.click(function(event) {
           //click in the border or padding should trigger menu
-          if (generalUtils.eventOffsetX(div, event) >= div.width()) {
+          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
             var menu = div.find('.bkcellmenu').last();
             menu.css("top", event.clientY);
             menu.css("left", event.clientX - 150);

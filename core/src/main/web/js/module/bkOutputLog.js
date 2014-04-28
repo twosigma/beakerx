@@ -19,20 +19,19 @@
  */
 (function() {
   'use strict';
-  angular.module('M_bkOutputLog', [])
-      .factory('bkOutputLog', function() {
-        var getLog = function(cb) {
-          var req = $.ajax({
-            type: "GET",
-            datatype: "json",
-            url: "/beaker/rest/outputlog/get",
-            data: {}
-          });
-          req.done(cb);
-          req.error(function() {
-            console.log("failed to get output log");
-          });
+  angular.module('M_bkOutputLog', ['M_cometd', 'M_angularUtils'])
+      .factory('bkOutputLog', function(angularUtils, cometd) {
+        return {
+          getLog: function(cb) {
+            angularUtils.httpGet("/beaker/rest/outputlog/get", {})
+                .success(cb)
+                .error(function () {
+                  console.log("failed to get output log");
+                });
+          },
+          subscribe: function(cb) {
+            cometd.addOutputlogUpdateListener(cb);
+          }
         };
-        return {getLog: getLog};
       });
 })();

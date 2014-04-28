@@ -22,13 +22,13 @@
 (function() {
   'use strict';
   var module = angular.module('M_bkCodeCellOutput', [
-    'M_generalUtils',
+    'M_bkUtils',
     'M_bkOutputDisplay',
     'M_bkEvaluatorManager'
   ]);
 
   module.directive('bkCodeCellOutput', function(
-      generalUtils, outputDisplayFactory, bkEvaluatorManager) {
+      bkUtils, outputDisplayFactory, bkEvaluatorManager) {
     return {
       restrict: "E",
       template: '<div class="bkcell"><bk-output-display ' +
@@ -90,7 +90,7 @@
         var getElapsedTimeString = function() {
           if ($scope.model.elapsedTime || $scope.model.elapsedTime === 0) {
             var elapsedTime = $scope.model.elapsedTime;
-            return "Elapsed time: " + generalUtils.formatTimeString(elapsedTime);
+            return "Elapsed time: " + bkUtils.formatTimeString(elapsedTime);
           }
           return "";
         };
@@ -123,7 +123,6 @@
               return $scope.model.selectedType;
             },
             setSelectedDisplay: function(display) {
-              console.log("setSelectedDisplay", display, $scope.model);
               $scope.model.selectedType = display;
             },
             getAdditionalMenuItems: function() {
@@ -135,7 +134,7 @@
     };
   });
 
-  module.directive('bkCodeCellOutputMenu', function(generalUtils) {
+  module.directive('bkCodeCellOutputMenu', function(bkUtils) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkCodeCellOutputMenu.html",
@@ -183,7 +182,7 @@
         var outputMenuDiv = element.parent('.bkcell');
         outputMenuDiv.click(function(event) {
           //click in the border or padding should trigger menu
-          if (generalUtils.eventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
+          if (bkUtils.getEventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
             var menu = outputMenuDiv.find('.dropdown').last();
             menu.css("top", event.clientY);
             menu.css("left", event.clientX - 150);
@@ -192,7 +191,7 @@
           }
         });
         outputMenuDiv.mousemove(function(event) {
-          if (generalUtils.eventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
+          if (bkUtils.getEventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
             outputMenuDiv.css('cursor', 'pointer');
           } else {
             outputMenuDiv.css('cursor', 'default');

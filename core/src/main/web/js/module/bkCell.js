@@ -24,8 +24,7 @@
   'use strict';
   var M_bkCell = angular.module('M_bkCell', [
     'M_commonUI',
-    'M_generalUtils',
-    'M_bkShare',
+    'M_bkUtils',
     'M_bkCore',
     'M_bkSessionManager',
     'M_bkEvaluatorManager',
@@ -45,7 +44,7 @@
    * - TODO, this is currently strongly tied to the hierarchical notebook layout, we want to change
    * that
    */
-  M_bkCell.directive('bkCell', function(generalUtils, bkSessionManager, bkCoreManager) {
+  M_bkCell.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager) {
     return {
       restrict: 'E',
       template: '<div class="bkcell">' +
@@ -66,7 +65,7 @@
       },
       controller: function($scope) {
         var getBkBaseViewModel = function() {
-          return bkCoreManager.getBkNotebook().getViewModel();
+          return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel();
         };
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         $scope.cellview = {
@@ -167,7 +166,7 @@
         var div = element.find(".bkcell").first();
         div.click(function(event) {
           //click in the border or padding should trigger menu
-          if (generalUtils.eventOffsetX(div, event) >= div.width()) {
+          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
             var menu = div.find('.bkcellmenu').last();
             menu.css("top", event.clientY);
             menu.css("left", event.clientX - 150);
@@ -176,7 +175,7 @@
           }
         });
         div.mousemove(function(event) {
-          if (generalUtils.eventOffsetX(div, event) >= div.width()) {
+          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
             div.css('cursor', 'pointer');
           } else {
             div.css('cursor', 'default');
@@ -193,7 +192,7 @@
     };
   });
   M_bkCell.directive('newCellMenu', function(
-      generalUtils, bkSessionManager, bkCoreManager, bkEvaluatorManager) {
+      bkUtils, bkSessionManager, bkEvaluatorManager) {
     return {
       restrict: 'E',
       templateUrl: "./template/newCellMenu.html",
@@ -239,15 +238,14 @@
         });
         scope.moveMenu = function(event) {
           var menu = element.find('.dropdown-menu').first();
-          menu.css("left", generalUtils.eventOffsetX(hr, event));
+          menu.css("left", bkUtils.getEventOffsetX(hr, event));
         };
       }
     };
   });
 
   M_bkCell.directive('sectionCell', function(
-      generalUtils,
-      bkShare,
+      bkUtils,
       bkEvaluatorManager,
       bkSessionManager,
       bkCoreManager,
@@ -275,7 +273,7 @@
         };
         $scope.resetTitle = function(newTitle) {
           $scope.cellmodel.title = newTitle;
-          bkCoreManager.refreshRootScope();
+          bkUtils.refreshRootScope();
         };
         $scope.$watch('cellmodel.title', function(newVal, oldVal) {
           if (newVal !== oldVal) {

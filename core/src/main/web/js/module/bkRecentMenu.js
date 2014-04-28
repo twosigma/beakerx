@@ -26,7 +26,7 @@
     this.configServer = function(server) {
       _server = server;
     };
-    this.$get = function($location, bkUtils) {
+    this.$get = function(bkUtils) {
       var opItems = {
         EMPTY: {name: "(Empty)", disabled: true},
         DIVIDER: {type: "divider"},
@@ -78,7 +78,7 @@
                   _recentMenu.push({
                     name: getShortName(item),
                     action: function() {
-                      $location.path("/open/" + encodeURIComponent(item));
+                      _pathOpener.open(items[i]);
                     },
                     tooltip: item
                   });

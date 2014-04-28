@@ -45,7 +45,7 @@
         parent: null,
         children: [],
         allDescendants: []
-      }
+      };
     });
 
     var stack = [decoratedCells.root];

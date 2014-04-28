@@ -41,7 +41,7 @@
                 if (!evaluators[evaluator.pluginName]) {
                   evaluatorSettings.name = evaluator.pluginName;
                 } else {
-                  evaluatorSettings.name = evaluator.pluginName + "_" + bkUtils.generateID(6);
+                  evaluatorSettings.name = evaluator.pluginName + "_" + bkUtils.generateId(6);
                 }
               }
               evaluators[evaluatorSettings.name] = evaluator;
@@ -56,7 +56,7 @@
         return evaluators[evaluatorId];
       },
       getAllEvaluators: function() {
-        return evaluators
+        return evaluators;
       },
       getLoadingEvaluators: function() {
         return loadingInProgressEvaluators;
@@ -67,8 +67,8 @@
           var value = evaluators[key];
           ret[key] = {
             cm: {
-              "background": value.background,
-              "mode": value.cmMode
+              background: value.background,
+              mode: value.cmMode
             }
           };
         });

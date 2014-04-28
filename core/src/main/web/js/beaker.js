@@ -174,19 +174,19 @@
       }
     });
 
-    beaker.run(function($location, $document, bkCoreManager, generalUtils, bkDebug) {
+    beaker.run(function($location, $document, bkUtils, bkCoreManager, bkDebug) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
         gotoControlPanel: function() {
-          $location.path("/control");
+          return $location.path("/control");
         },
         openNotebook: function(notebookUri, uriType, readOnly, format) {
           if (!notebookUri) {
             return;
           }
 
-          bkCoreManager.log("open", {
+          bkUtils.log("open", {
             uri: notebookUri,
             user: user
           });
@@ -203,17 +203,20 @@
           if (format) {
             routeParams.format = format;
           }
-          $location.path("/open").search(routeParams);
+          return $location.path("/open").search(routeParams);
         },
         newSession: function() {
-          $location.path("/session/new");
+          return $location.path("/session/new");
+        },
+        openSession: function(sessionId) {
+          return $location.path("session/" + sessionId);
         }
       };
       bkCoreManager.init(beakerRootOp);
       Q.delay(1000).then(function() {
         $.get("/beaker/rest/util/whoami", {}, function(data) {
           user = data;
-          bkCoreManager.log("start", {user: data});
+          bkUtils.log("start", {user: data});
         }, "json");
       });
       var noteAction = function() {
@@ -224,7 +227,7 @@
       window.setInterval(function() {
         var now = new Date();
         if ((now - lastAction) < 60 * 1000) {
-          bkCoreManager.log("tick", {user: user});
+          bkUtils.log("tick", {user: user});
         }
       }, 60 * 1000);
       $document.bind('keydown', function(e) {

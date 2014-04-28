@@ -21,17 +21,9 @@
 define(function(require, exports, module) {
   'use strict';
   var notebookConverter = (function() {
-    var generateID = function(length) {
-      var text = "";
-      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (var i = 0; i < length; ++i) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      }
-      return text;
-    };
     var convertCodeCell = function(ipyCodeCell) {
       var bkrCodeCell = {
-        "id": "code" + generateID(6),
+        "id": "code" + bkHelper.generateId(6),
         "evaluator": "IPython",
         "class": ["code"],
         "input": {
@@ -47,13 +39,13 @@ define(function(require, exports, module) {
         var ipyOutput = ipyCodeCell.outputs[0];
         if (ipyOutput.output_type === "pyout" && ipyOutput.text) {
           bkrCodeCell.output.selectedType = "Text";
-          bkrCodeCell.output.result = ipyOutput.text[0]
+          bkrCodeCell.output.result = ipyOutput.text[0];
         } else if (ipyOutput.output_type === "display_data" && ipyOutput.png) {
           bkrCodeCell.output.selectedType = "Image";
           bkrCodeCell.output.result = {
             "type": "ImageIcon",
             "imageData": ipyOutput.png
-          }
+          };
         }
       } else {
         bkrCodeCell.output.result = "";
@@ -64,7 +56,7 @@ define(function(require, exports, module) {
 
     var convertMarkDownCell = function(ipyMDCell) {
       var bkrMDCell = {
-        "id": "markdown" + generateID(6),
+        "id": "markdown" + bkHelper.generateId(6),
         "class": ["markdown"],
         "body": "",
         "mode": "preview"
@@ -78,7 +70,7 @@ define(function(require, exports, module) {
 
     var convertRawCell = function(ipyRawCell) {
       var bkrTextCell = {
-        "id": "text" + generateID(6),
+        "id": "text" + bkHelper.generateId(6),
         "class": ["text"],
         "body": ""
       };
@@ -90,7 +82,7 @@ define(function(require, exports, module) {
 
     var convertHeadingCell = function(ipyHeadingCell) {
       var bkrTextCell = {
-        "id": "text" + generateID(6),
+        "id": "text" + bkHelper.generateId(6),
         "class": ["text"],
         "body": ""
       };
@@ -147,7 +139,7 @@ define(function(require, exports, module) {
         ipyNb.worksheets[0].cells.forEach(function(cell) {
           var bkrCell;
           if (cell.cell_type === "code") {
-            bkrCell = convertCodeCell(cell)
+            bkrCell = convertCodeCell(cell);
           } else if (cell.cell_type === "markdown") {
             bkrCell = convertMarkDownCell(cell);
           } else if (cell.cell_type === "raw") {
@@ -169,7 +161,7 @@ define(function(require, exports, module) {
   })();
 
   var IPYNB_PATH_PREFIX = "ipynb";
-  bkHelper.setImporter(IPYNB_PATH_PREFIX, {
+  bkHelper.setNotebookImporter(IPYNB_PATH_PREFIX, {
     import: function(fileContentAsString) {
       var ipyNbJson = fileContentAsString;
       var ipyNb = JSON.parse(ipyNbJson);
@@ -192,7 +184,7 @@ define(function(require, exports, module) {
             action: function() {
               bkHelper.showFileChooser(
                   function(originalUrl) {
-                    bkHelper.openNotebook(originalUrl, IPYNB_PATH_PREFIX);
+                    bkHelper.openNotebook(originalUrl, null, false, IPYNB_PATH_PREFIX);
                   },
                   '<div class="modal-header">' +
                       '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +

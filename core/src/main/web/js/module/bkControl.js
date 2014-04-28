@@ -22,6 +22,7 @@
 (function() {
   'use strict';
   var bkControl = angular.module('M_bkControl', [
+    'M_bkUtils',
     'M_bkCore',
     'M_bkSession',
     'M_bkMenuPluginManager',
@@ -29,13 +30,14 @@
     'M_bkEvaluatePluginManager']);
 
   bkControl.directive('bkControl', function(
-      bkCoreManager, bkSession, bkMenuPluginManager, trackingService) {
+      bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, trackingService) {
     return {
       restrict: 'E',
       templateUrl: './template/bkControl.html',
       controller: function($scope) {
         document.title = "Beaker";
         var _impl = {
+          name: "bkControlApp",
           showAnonymousTrackingDialog: function() {
             $scope.isAllowAnonymousTracking = null;
           }
@@ -44,7 +46,7 @@
         bkCoreManager.setBkAppImpl(_impl);
 
         $scope.gotoControlPanel = function(event) {
-          if (bkCoreManager.isMiddleClick(event)) {
+          if (bkUtils.isMiddleClick(event)) {
             window.open("./");
           } else {
             location.reload();
@@ -53,7 +55,7 @@
 
         // setup menus
         bkMenuPluginManager.clear();
-        bkCoreManager.httpGet('/beaker/rest/util/getControlPanelMenuPlugins')
+        bkUtils.httpGet('/beaker/rest/util/getControlPanelMenuPlugins')
             .success(function(menuUrls) {
               menuUrls.forEach(function(url) {
                 bkMenuPluginManager.loadMenuPlugin(url);
@@ -75,7 +77,7 @@
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
         if (trackingService.isNeedPermission()) {
-          bkCoreManager.httpGet("./rest/util/isAllowAnonymousTracking").then(function(allow) {
+          bkUtils.httpGet("./rest/util/isAllowAnonymousTracking").then(function(allow) {
             switch (allow.data) {
               case "true":
                 $scope.isAllowAnonymousTracking = true;
@@ -100,7 +102,7 @@
               allow = "false";
               trackingService.disable();
             }
-            bkCoreManager.httpPost("./rest/util/setAllowAnonymousTracking", { allow: allow });
+            bkUtils.httpPost("./rest/util/setAllowAnonymousTracking", { allow: allow });
           }
         });
         $scope.showWhatWeLog = function() {
@@ -115,10 +117,10 @@
               "<p>We will never log any of the code you run, the names of your notebooks, your IP address, or any other personal or sensitive information.</p>" +
               "</div>" +
               '<div class="modal-footer">' +
-              "   <button class='btn' ng-click='close()' class='btn'>Got it</button>"
-          '</div>';
+              "   <button class='btn' ng-click='close()' class='btn'>Got it</button>" +
+              "</div>";
           return bkCoreManager.showFileChooser(function() {}, template);
-        }
+        };
 
 
         // sessions list UI
@@ -132,13 +134,13 @@
         $scope.reloadSessionsList();
         $scope.isSessionsListEmpty = function() {
           return _.isEmpty($scope.sessions);
-        }
+        };
       }
     };
   });
 
   bkControl.directive('bkControlItem', function(
-      $location, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
+      bkUtils, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
     return {
       restrict: 'E',
       template: "<table class='table table-striped'>" +
@@ -156,12 +158,9 @@
           "</table>",
       controller: function($scope) {
         $scope.open = function(sessionId) {
-          $location.path("session/" + sessionId);
+          bkCoreManager.openSession(sessionId);
         };
         $scope.close = function(sessionId, session) {
-          var notebookUri = session.notebookUri;
-          var uriType = session.uriType;
-          var readOnly = session.readOnly;
           var format = session.format;
           var notebookModel = angular.fromJson(session.notebookModelJson);
           var edited = session.edited;
@@ -186,12 +185,12 @@
                 function() { // yes
                   // save session
                   var saveSession = function() {
-                    var notebookModelAsString = bkCoreManager.toPrettyJson(notebookModel);
+                    var notebookModelAsString = bkUtils.toPrettyJson(notebookModel);
                     if (!_.isEmpty(session.notebookUri)) {
                       var fileSaver = bkCoreManager.getFileSaver(session.uriType);
                       return fileSaver.save(session.notebookUri, notebookModelAsString);
                     } else {
-                      var deferred = bkCoreManager.newDeferred();
+                      var deferred = bkUtils.newDeferred();
                       bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
                         if (!pathInfo.uri) {
                           deferred.reject({
@@ -224,7 +223,7 @@
                     } else {
                       bkHelper.showErrorModal(info.error, info.cause);
                     }
-                  }
+                  };
                   saveSession().then(closeSession, savingFailedHandler);
                 },
                 function() { // no

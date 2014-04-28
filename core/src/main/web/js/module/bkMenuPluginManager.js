@@ -35,7 +35,7 @@
         newItem.priority = newItem.priority ? newItem.priority : DEFAULT_PRIORITY;
         if (existingItem.priority <= newItem.priority) {
           // replace in place
-          itemsList.splice(itemsList.indexOf(existingItem), 1, newItem)
+          itemsList.splice(itemsList.indexOf(existingItem), 1, newItem);
         } else {
           // ignore and warn
           console.warn("ignoring menu item " + newItem.name + "because priority="
@@ -147,7 +147,7 @@
           if (_.isArray(plugin)) {
             _(plugin).each(function (item, i) {
               addPlugin(item, index.toString() + i);
-            })
+            });
           } else {
             addPlugin(plugin, index);
           }

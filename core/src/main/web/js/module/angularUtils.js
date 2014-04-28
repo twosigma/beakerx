@@ -30,7 +30,7 @@
       },
       toPrettyJson: function(angularBoundJsObj) {
         function cleanup(key, value) {
-          if (key == '$$hashKey') return undefined;
+          if (key === '$$hashKey') return undefined;
           return value;
         };
         return JSON.stringify(angularBoundJsObj, cleanup, 4) + "\n";
@@ -56,7 +56,9 @@
       },
       fcall: function(func) {
         var deferred = $q.defer();
-        deferred.resolve(func());
+        Q.fcall(function() {
+          deferred.resolve(func());
+        });
         return deferred.promise;
       },
       delay: function(ms) {

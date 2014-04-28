@@ -18,8 +18,8 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective("Progress", ["$interval", "bkAppEvaluate", "generalUtils", function(
-      $interval, bkAppEvaluate, generalUtils) {
+  beaker.bkoDirective("Progress", ["$interval", "bkAppEvaluate", "bkUtils", function(
+      $interval, bkAppEvaluate, bkUtils) {
     return {
       template: "<div ng-if='elapsed > 200'> <i class='fa fa-cog fa-spin fa-lg'></i> " +
           "<span> Elapsed: {{getElapsedTime()}} </span>" +
@@ -41,7 +41,7 @@
           }
         }, 100);
         scope.getElapsedTime = function() {
-          return generalUtils.formatTimeString(scope.elapsed);
+          return bkUtils.formatTimeString(scope.elapsed);
         };
         scope.cancel = function() {
           bkAppEvaluate.cancel();

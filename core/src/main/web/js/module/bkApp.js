@@ -24,19 +24,16 @@
   var module = angular.module('M_bkApp', [
     'ngRoute',
     'ui.bootstrap',
-    'M_angularUtils',
     'M_bkUtils',
-    'M_cometd',
     'M_commonUI',
-    'M_TreeView',
     'M_bkCore',
     'M_bkSession',
     'M_bkSessionManager',
-    'M_bkNotebook',
     'M_bkMenuPluginManager',
     'M_bkCellPluginManager',
     'M_bkNotebookVersionManager',
-    'M_bkEvaluatorManager'
+    'M_bkEvaluatorManager',
+    'M_bkNotebook'
   ]);
 
   /**
@@ -46,19 +43,15 @@
    */
   module.directive('bkApp', function(
       $routeParams,
-      $location,
-      $q,
-      $http,
-      cometd,
       bkUtils,
+      bkCoreManager,
       bkSession,
       bkSessionManager,
       bkMenuPluginManager,
       bkCellPluginManager,
-      bkCoreManager,
-      bkAppEvaluate,
       bkNotebookVersionManager,
-      bkEvaluatorManager) {
+      bkEvaluatorManager,
+      bkAppEvaluate) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkApp.html",
@@ -154,8 +147,7 @@
                 format = bkCoreManager.guessFormat(notebookUri);
               }
 
-              var self = this;
-              var importer = bkCoreManager.getImporter(format);
+              var importer = bkCoreManager.getNotebookImporter(format);
               if (!importer) {
                 if (retry) {
                   // retry, sometimes the importer came from a plugin that is being loaded
@@ -205,10 +197,15 @@
         };
         })();
 
+        var bkNotebookWidget;
+        $scope.setBkNotebook = function(bkNotebook) {
+          bkNotebookWidget = bkNotebook;
+        };
+
         var _impl = (function() {
           var _saveNotebook = function() {
             showStatusMessage("Saving");
-            var deferred = bkCoreManager.newDeferred();
+            var deferred = bkUtils.newDeferred();
             var saveData = bkSessionManager.getSaveData();
             var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
             fileSaver.save(saveData.notebookUri, saveData.notebookModelAsString).then(
@@ -224,6 +221,10 @@
             return deferred.promise;
           };
           return {
+            name: "bkNotebookApp",
+            getSessionId: function() {
+              return bkSessionManager.getSessionId();
+            },
             saveNotebook: function() {
               var self = this;
               if (bkSessionManager.isSavable()) {
@@ -245,7 +246,7 @@
               var self = this;
               var closeSession = function() {
                 bkSessionManager.close().then(function() {
-                  $location.path("/control");
+                  bkCoreManager.gotoControlPanel();
                 });
               };
               if (bkSessionManager.isNotebookModelEdited() === false) {
@@ -317,6 +318,15 @@
             },
             getEvaluatorMenuItems: function() {
               return evaluatorMenuItems;
+            },
+            getBkNotebookWidget: function() {
+              return bkNotebookWidget;
+            },
+            toggleNotebookLocked: function() {
+              return bkSessionManager.toggleNotebookLocked();
+            },
+            isNotebookLocked: function() {
+              return bkSessionManager.isNotebookLocked();
             }
           };
         })();
@@ -394,7 +404,7 @@
         };
         startAutoBackup();
         $scope.gotoControlPanel = function(event) {
-          if (bkCoreManager.isMiddleClick(event)) {
+          if (bkUtils.isMiddleClick(event)) {
             window.open("./");
           } else {
             bkSessionManager.backup().then(function() {
@@ -403,10 +413,9 @@
           }
         };
 
-        cometd.addStatusListener(function(msg) {
+        bkUtils.addConnectedStatusListener(function(msg) {
           if (msg.successful !== !$scope.disconnected) {
             $scope.disconnected = !msg.successful;
-            $scope.$apply();
           }
         });
         $scope.$watch('disconnected', function(disconnected) {
@@ -425,7 +434,7 @@
         bkSessionManager.clear();
 
         bkMenuPluginManager.clear();
-        bkCoreManager.httpGet('/beaker/rest/util/getMenuPlugins')
+        bkUtils.httpGet('/beaker/rest/util/getMenuPlugins')
             .success(function(menuUrls) {
               menuUrls.forEach(function(url) {
                 bkMenuPluginManager.loadMenuPlugin(url);

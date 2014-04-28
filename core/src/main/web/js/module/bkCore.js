@@ -24,8 +24,6 @@
   var bkCore = angular.module('M_bkCore', [
     'ui.bootstrap',
     'ui.keypress',
-    'M_generalUtils',
-    'M_angularUtils',
     'M_commonUI',
     'M_bkUtils',
     'M_bkRecentMenu',
@@ -39,7 +37,7 @@
    *     instead
    */
   bkCore.factory('bkCoreManager', function(
-      $dialog, $location, $http, $q, bkUtils, bkSession, bkRecentMenu, fileChooserOp) {
+      $dialog, bkUtils, bkRecentMenu, fileChooserOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
@@ -53,25 +51,21 @@
         getChildren: function(path, callback) {
           var self = this;
           this.showSpinner = true;
-          $http({
-            method: 'GET',
-            url: "/beaker/rest/file-io/getDecoratedChildren",
-            params: {
-              path: path
-            }
-          }).success(function(list) {
-            self.showSpinner = false;
-            callback(list);
-          }).error(function() {
-            self.showSpinner = false;
-            console.log("Error loading children");
-          });
+          bkUtils.httpGet("/beaker/rest/file-io/getDecoratedChildren", {path: path})
+              .success(function (list) {
+                self.showSpinner = false;
+                callback(list);
+              })
+              .error(function () {
+                self.showSpinner = false;
+                console.log("Error loading children");
+              });
         },
         open: function(path) {
           newStrategy.result = path;
         },
         showSpinner: false
-      }
+      };
     };
 
     // importers are responsible for importing various formats into bkr
@@ -86,7 +80,7 @@
           // TODO, to be removed. Addressing loading a corrupted notebook.
           if (angular.isString(notebookModel)) {
             notebookModel = angular.fromJson(notebookModel);
-            bkCoreManager.log("corrupted-notebook", { notebookUri: enhancedNotebookUri });
+            bkUtils.log("corrupted-notebook", { notebookUri: enhancedNotebookUri });
           }
         } catch (e) {
           console.error(e);
@@ -137,10 +131,10 @@
 
     var bkCoreManager = {
 
-      setImporter: function(format, importer) {
+      setNotebookImporter: function(format, importer) {
         _importers[format] = importer;
       },
-      getImporter: function(format) {
+      getNotebookImporter: function(format) {
         return _importers[format];
       },
       setFileLoader: function(uriType, fileLoader) {
@@ -163,30 +157,25 @@
         // TODO, make smarter guess
         return FORMAT_BKR;
       },
+
+      _beakerRootOp: null,
+      init: function(beakerRootOp) {
+        this._beakerRootOp = beakerRootOp;
+        bkRecentMenu.init({
+          open: beakerRootOp.openNotebook
+        });
+      },
+      gotoControlPanel: function() {
+        return this._beakerRootOp.gotoControlPanel();
+      },
+      newSession: function() {
+        return this._beakerRootOp.newSession();
+      },
+      openSession: function(sessionId) {
+        return this._beakerRootOp.openSession(sessionId);
+      },
       openNotebook: function(notebookUri, uriType, readOnly, format) {
         this._beakerRootOp.openNotebook(notebookUri, uriType, readOnly, format);
-      },
-      closeNotebook: function() {
-        if (this.getBkApp().closeNotebook) {
-          this.getBkApp().closeNotebook();
-        } else {
-          console.error("Current app doesn't support closeNotebook");
-        }
-      },
-
-      saveNotebook: function() {
-        if (this.getBkApp().saveNotebook) {
-          this.getBkApp().saveNotebook();
-        } else {
-          console.error("Current app doesn't support saveNotebook");
-        }
-      },
-      saveNotebookAs: function(notebookUri, uriType) {
-        if (this.getBkApp().saveNotebookAs) {
-          this.getBkApp().saveNotebookAs(notebookUri, uriType);
-        } else {
-          console.error("Current app doesn't support saveNotebookAs");
-        }
       },
       showDefaultSavingFileChooser: function() {
         var self = this;
@@ -226,20 +215,6 @@
         return deferred.promise;
       },
 
-      _beakerRootOp: null,
-      init: function(beakerRootOp) {
-        this._beakerRootOp = beakerRootOp;
-        bkRecentMenu.init({
-          open: beakerRootOp.openNotebook
-        });
-      },
-      gotoControlPanel: function() {
-        return this._beakerRootOp.gotoControlPanel();
-      },
-      newSession: function() {
-        return this._beakerRootOp.newSession();
-      },
-
       _bkAppImpl: null,
       setBkAppImpl: function(bkAppOp) {
         this._bkAppImpl = bkAppOp;
@@ -247,124 +222,12 @@
       getBkApp: function() {
         return this._bkAppImpl;
       },
-      evaluate: function(cellModel) {
-        return this._bkAppImpl.evaluate(cellModel);
-      },
-      evaluateCode: function(evaluator, code) {
-        return this._bkAppImpl.evaluateCode(evaluator, code);
-      },
-      addEvaluator: function(settings, alwaysCreateNewEvaluator) {
-        return this._bkAppImpl.addEvaluator(settings, alwaysCreateNewEvaluator);
-      },
-      showAnonymousTrackingDialog: function() {
-        if (this._bkAppImpl.showAnonymousTrackingDialog) {
-          return this._bkAppImpl.showAnonymousTrackingDialog();
-        } else {
-          console.error("Action 'showAnonymousTrackingDialog' is not supported by current app");
-        }
-      },
-      getEvaluatorMenuItems: function() {
-        if (this._bkAppImpl.getEvaluatorMenuItems) {
-          return this._bkAppImpl.getEvaluatorMenuItems();
-        } else {
-          console.error("Action 'getEvaluatorMenuItems' is not supported by current app");
-        }
-      },
-
-      _bkNotebookImpl: null,
-      setBkNotebookImpl: function(bkNotebookImpl) {
-        this._bkNotebookImpl = bkNotebookImpl;
-      },
-      getBkNotebook: function() {
-        return this._bkNotebookImpl;
-      },
 
       getRecentMenuItems: function() {
         return bkRecentMenu.getMenuItems();
       },
-      getLoadingPlugin: function(key) {
-        return bkUtils.loadingPlugins.get(key);
-      },
-
-      _focusables: {}, // map of focusable(e.g. code mirror instances) with cell id being keys
-      registerFocusable: function(cellID, focusable) {
-        this._focusables[cellID] = focusable;
-      },
-      unregisterFocusable: function(cellID) {
-        delete this._focusables[cellID];
-      },
-      getFocusable: function(cellID) {
-        return this._focusables[cellID];
-      },
-
-      _codeMirrors: {},
-      _cmKeyMapMode: "default",
-      registerCM: function(cellID, cm) {
-        this._codeMirrors[cellID] = cm;
-        cm.setOption("keyMap", this._cmKeyMapMode);
-      },
-      unregisterCM: function(cellID) {
-        delete this._codeMirrors[cellID];
-      },
-      setCMKeyMapMode: function(keyMapMode) {
-        this._cmKeyMapMode = keyMapMode;
-        _.each(this._codeMirrors, function(cm) {
-          cm.setOption("keyMap", keyMapMode);
-        });
-      },
-      getCMKeyMapMode: function() {
-        return this._cmKeyMapMode;
-      },
 
       // general
-      log: function(event, obj) {
-        return bkUtils.log(event, obj);
-      },
-      refreshRootScope: function() {
-        return bkUtils.refreshRootScope();
-      },
-      loadJS: function(url, success) {
-        return bkUtils.loadJS(url, success);
-      },
-      loadCSS: function(url) {
-        return bkUtils.loadCSS(url);
-      },
-      loadList: function(url, success, failure) {
-        return bkUtils.loadList(url, success, failure);
-      },
-      findTable: function(elem) {
-        return bkUtils.findTable(elem);
-      },
-      generateID: function() {
-        return bkUtils.generateID(6);
-      },
-      toPrettyJson: function(jsObj) {
-        return bkUtils.toPrettyJson(jsObj);
-      },
-      httpGet: function(url, data) {
-        return bkUtils.httpGet(url, data);
-      },
-      httpPost: function(url, data) {
-        return bkUtils.httpPost(url, data);
-      },
-      newDeferred: function() {
-        return bkUtils.newDeferred();
-      },
-      newPromise: function(value) {
-        return bkUtils.newPromise(value);
-      },
-      fcall: function(func) {
-        return bkUtils.fcall(func);
-      },
-      loadModule: function(url, name) {
-        return bkUtils.loadModule(url, name);
-      },
-      require: function(nameOrUrl) {
-        return bkUtils.require(nameOrUrl);
-      },
-      isMiddleClick: function(event) {
-        return bkUtils.isMiddleClick(event);
-      },
       showFileChooser: function(callback, template, strategy) {
         if (!template) {
           // use default template
@@ -395,20 +258,70 @@
               }
             });
       },
-      loadFile: function(path) {
-        return bkUtils.loadFile(path);
+      showErrorModal: function(msgBody, msgHeader, callback) {
+        if (!msgHeader) {
+          msgHeader = "Oops...";
+        }
+        var template = "<div class='modal-header'>" +
+            "<button class='close' ng-click='close()'>Close</button>" +
+            "<h3>" + msgHeader + "</h3>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p></div>";
+        return this.showFileChooser(callback, template);
       },
-      loadHttp: function(url) {
-        return bkUtils.loadHttp(url);
+      showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt) {
+        if (!msgHeader) {
+          msgHeader = "Question...";
+        }
+        var close = function(result) {
+          if (result === "OK") {
+            okCB ? okCB() : null;
+          } else { // cancel
+            cancelCB ? cancelCB() : null;
+          }
+        };
+        okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
+        cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+        var template = "<div class='modal-header'>" +
+            "<h3>" + msgHeader + "</h3>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+            '<div class="modal-footer">' +
+            "   <button class='Yes' ng-click='close(\"OK\")' class='btn'>" + okBtnTxt + "</button>" +
+            "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
+            "</div>";
+        return this.showFileChooser(close, template);
       },
-      saveFile: function(path, contentAsJson) {
-        return bkUtils.saveFile(path, contentAsJson);
+      showYesNoCancelModal: function(
+          msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt) {
+        if (!msgHeader) {
+          msgHeader = "Question...";
+        }
+        var close = function(result) {
+          if (result === "Yes") {
+            yesCB ? yesCB() : null;
+          } else if (result === "No") {
+            noCB ? noCB() : null;
+          } else { // cancel
+            cancelCB ? cancelCB() : null;
+          }
+        };
+        yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
+        noBtnTxt = noBtnTxt ? noBtnTxt : "No";
+        cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+        var template = "<div class='modal-header'>" +
+            "<h3>" + msgHeader + "</h3>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+            '<div class="modal-footer">' +
+            "   <button class='Yes' ng-click='close(\"Yes\")' class='btn'>" + yesBtnTxt + "</button>" +
+            "   <button class='No' ng-click='close(\"No\")' class='btn'>" + noBtnTxt + "</button>" +
+            "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
+            "</div>";
+        return this.showFileChooser(close, template);
       },
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();
-      },
-      getHomeDirectory: function() {
-        return bkUtils.getHomeDirectory();
       }
     };
     return bkCoreManager;

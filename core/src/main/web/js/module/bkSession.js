@@ -26,70 +26,70 @@
    * - talks to beaker server (/beaker/rest/session)
    * - bkSessionManager should depend on it to update/backup the session model
    */
-  module.factory('bkSession', function($http, $q, bkUtils) {
+  module.factory('bkSession', function(angularUtils) {
     var backupSession = function(sessionId, sessionData) {
-      var deferred = bkUtils.newDeferred();
-      bkUtils.httpPost("/beaker/rest/session-backup/backup/" + sessionId, sessionData).
-          success(function(data) {
+      var deferred = angularUtils.newDeferred();
+      angularUtils.httpPost("/beaker/rest/session-backup/backup/" + sessionId, sessionData)
+          .success(function(data) {
             deferred.resolve();
-          }).
-          error(function(data, status) {
+          })
+          .error(function(data, status) {
             console.error("Failed to backup session: " + sessionId + ", " + status);
             deferred.reject("Failed to backup session: " + sessionId + ", " + status);
           });
       return deferred.promise;
     };
     var getSessions = function() {
-      var deferred = $q.defer();
-      bkUtils.httpGet("/beaker/rest/session-backup/getExistingSessions").
-          success(function(sessions) {
+      var deferred = angularUtils.newDeferred();
+      angularUtils.httpGet("/beaker/rest/session-backup/getExistingSessions")
+          .success(function(sessions) {
             deferred.resolve(sessions);
-          }).
-          error(function(data, status, headers, config) {
+          })
+          .error(function(data, status, headers, config) {
             deferred.reject("Failed to get existing sessions " + status);
           });
       return deferred.promise;
     };
     var loadSession = function(sessionID) {
-      var deferred = $q.defer();
-      bkUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionID}).
-          success(function(session, status) {
+      var deferred = angularUtils.newDeferred();
+      angularUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionID})
+          .success(function(session, status) {
             deferred.resolve(session);
-          }).
-          error(function(data, status, headers, config) {
+          })
+          .error(function(data, status, headers, config) {
             deferred.reject("Failed to load session: " + sessionID + ", " + status);
           });
       return deferred.promise;
     };
     var closeSession = function(sessionID) {
-      var deferred = $q.defer();
-      bkUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionID}).
-          success(function(ret) {
+      var deferred = angularUtils.newDeferred();
+      angularUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionID})
+          .success(function(ret) {
             deferred.resolve(sessionID);
-          }).
-          error(function(data, status, headers, config) {
+          })
+          .error(function(data, status, headers, config) {
             deferred.reject("Failed to close session: " + sessionID + ", " + status);
           });
       return deferred.promise;
     };
     var recordLoadedPlugin = function(pluginName, pluginUrl) {
-      bkUtils.httpPost(
+      angularUtils.httpPost(
           "/beaker/rest/session-backup/addPlugin",
-          {pluginname: pluginName, pluginurl: pluginUrl}).
-          success(function(ret) {
+          {pluginname: pluginName, pluginurl: pluginUrl})
+          .success(function(ret) {
             //console.log("recordLoadedPlugin");
-          }).
-          error(function(data, status, headers, config) {
+          })
+          .error(function(data, status, headers, config) {
             console.error("Failed to add plugin, " + pluginName + ", " + pluginUrl + ", " + status);
           });
     };
     var getPlugins = function() {
-      var deferred = $q.defer();
-      bkUtils.httpGet("/beaker/rest/session-backup/getExistingPlugins", {}).
-          success(function(plugins) {
+      var deferred = angularUtils.newDeferred();
+      angularUtils.httpGet("/beaker/rest/session-backup/getExistingPlugins", {})
+          .success(function(plugins) {
             deferred.resolve(plugins);
-          }).
-          error(function(data, status, headers, config) {
+          })
+          .error(function(data, status, headers, config) {
             deferred.reject("Failed to get existing plugins, " + status);
           });
       return deferred.promise;

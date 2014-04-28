@@ -128,7 +128,7 @@
           }
           return item.disabled;
         };
-        
+
         $scope.getMenuItems = function() {
           if (_.isFunction($scope.menuItems)) {
             return $scope.menuItems();
@@ -177,7 +177,7 @@
         };
 
         $scope.runAction = function(item) {
-          if (item.items && item.items.length == 1 && item.autoReduce) {
+          if (item.items && item.items.length === 1 && item.autoReduce) {
             item.items[0].action();
           } else {
             item.action();
@@ -186,7 +186,7 @@
 
         $scope.getName = function(item) {
           var name = "";
-          if (item.items && item.items.length == 1 && item.autoReduce) {
+          if (item.items && item.items.length === 1 && item.autoReduce) {
             if (item.items[0].reducedName) {
               name = item.items[0].reducedName;
             } else {

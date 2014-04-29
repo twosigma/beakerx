@@ -23,11 +23,10 @@
 (function() {
   'use strict';
   var M_bkCell = angular.module('M_bkCell', [
-    'M_commonUI',
-    'M_generalUtils',
-    'M_bkShare',
+    'M_bkUtils',
     'M_bkCore',
-    'M_evaluatorManager',
+    'M_bkSessionManager',
+    'M_bkEvaluatorManager',
     'M_bkCellPluginManager',
     'M_bkCodeCell'
   ]);

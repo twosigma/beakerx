@@ -103,7 +103,7 @@
 
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
-      $routeProvider.when('/session/:sessionID', {
+      $routeProvider.when('/session/:sessionId', {
         template: "<bk-app></bk-app>"
       }).when('/open', {
             template: "<bk-app></bk-app>"

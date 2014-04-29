@@ -405,9 +405,9 @@
         this.clipboard = this.getCell(id);
         this.delete(id);
       },
-      paste: function(destinationID) {
+      paste: function(destinationId) {
         if (this.clipboard) {
-          this.appendAfter(destinationID, this.clipboard);
+          this.appendAfter(destinationId, this.clipboard);
           this.clipboard = null;
         }
       }

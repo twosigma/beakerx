@@ -133,13 +133,13 @@
           $scope.updateUI(newValue);
         });
         $scope.appendCodeCell = function(evaluatorName) {
-          var thisCellID = $scope.cellmodel.id;
+          var thisCellId = $scope.cellmodel.id;
           if (!evaluatorName) {
             // if no evaluator specified, use the current evaluator
             evaluatorName = $scope.cellmodel.evaluator;
           }
           var newCell = bkSessionManager.getNotebookNewCellFactory().newCodeCell(evaluatorName);
-          notebookCellOp.appendAfter(thisCellID, newCell);
+          notebookCellOp.appendAfter(thisCellId, newCell);
           bkUtils.refreshRootScope();
         };
         $scope.getShareMenuPlugin = function() {
@@ -242,8 +242,8 @@
         });
         var moveFocusDown = function() {
           // move focus to next code cell
-          var thisCellID = scope.cellmodel.id;
-          var nextCell = notebookCellOp.getNext(thisCellID);
+          var thisCellId = scope.cellmodel.id;
+          var nextCell = notebookCellOp.getNext(thisCellId);
           while (nextCell) {
             if (scope.bkNotebook.getFocusable(nextCell.id)) {
               scope.bkNotebook.getFocusable(nextCell.id).focus();
@@ -444,9 +444,9 @@
           return $scope.cellmodel.evaluator === evaluatorName;
         };
         $scope.setEvaluator = function(evaluatorName) {
-          var cellID = $scope.cellmodel.id;
+          var cellId = $scope.cellmodel.id;
           $scope.cellmodel.evaluator = evaluatorName;
-          getBkNotebookWidget().getFocusable(cellID).focus();
+          getBkNotebookWidget().getFocusable(cellId).focus();
         };
         $scope.run = function() {
           $scope.evaluate();

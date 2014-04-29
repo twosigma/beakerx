@@ -50,25 +50,25 @@
           });
       return deferred.promise;
     };
-    var loadSession = function(sessionID) {
+    var loadSession = function(sessionId) {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionID})
+      angularUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionId})
           .success(function(session, status) {
             deferred.resolve(session);
           })
           .error(function(data, status, headers, config) {
-            deferred.reject("Failed to load session: " + sessionID + ", " + status);
+            deferred.reject("Failed to load session: " + sessionId + ", " + status);
           });
       return deferred.promise;
     };
-    var closeSession = function(sessionID) {
+    var closeSession = function(sessionId) {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionID})
+      angularUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionId})
           .success(function(ret) {
             deferred.resolve(sessionID);
           })
           .error(function(data, status, headers, config) {
-            deferred.reject("Failed to close session: " + sessionID + ", " + status);
+            deferred.reject("Failed to close session: " + sessionId + ", " + status);
           });
       return deferred.promise;
     };

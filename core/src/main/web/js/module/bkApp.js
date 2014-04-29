@@ -23,7 +23,6 @@
   'use strict';
   var module = angular.module('M_bkApp', [
     'ngRoute',
-    'ui.bootstrap',
     'M_bkUtils',
     'M_commonUI',
     'M_bkCore',
@@ -33,6 +32,7 @@
     'M_bkCellPluginManager',
     'M_bkNotebookVersionManager',
     'M_bkEvaluatorManager',
+    'M_bkEvaluateJobManager',
     'M_bkNotebook'
   ]);
 
@@ -51,7 +51,7 @@
       bkCellPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
-      bkAppEvaluate) {
+      bkEvaluateJobManager) {
     return {
       restrict: 'E',
       templateUrl: "./template/bkApp.html",
@@ -300,14 +300,14 @@
                 }
               }
               if (!_.isArray(toEval)) {
-                return bkAppEvaluate.evaluate(toEval);
+                return bkEvaluateJobManager.evaluate(toEval);
               } else {
-                return bkAppEvaluate.evaluateAll(toEval);
+                return bkEvaluateJobManager.evaluateAll(toEval);
               }
             },
             evaluateCode: function(evaluator, code) {
               // TODO, this isn't able to give back the evaluate result right now.
-              return bkAppEvaluate.evaluate({
+              return bkEvaluateJobManager.evaluate({
                 evaluator: evaluator,
                 input: { body: code },
                 output: {}
@@ -379,12 +379,12 @@
         // TODO, when use setLocation and leave from bkApp (e.g. to control panel),
         // we should warn and cancel evals
         /*var onLeave = function() {
-         if (bkAppEvaluate.isAnyInProgress()) {
+         if (bkEvaluateJobManager.isAnyInProgress()) {
          bkHelper.showOkCancelModal(
          "All in-progress and pending eval will be cancelled.",
          "Warning!",
          function() {
-         bkAppEvaluate.cancel();
+         bkEvaluateJobManager.cancel();
          }
          );
          }
@@ -394,11 +394,11 @@
         window.onbeforeunload = function(e) {
           // TODO, we should warn users, but I can't find a way to properly perform cancel after
           // warning
-          bkAppEvaluate.cancel();
+          bkEvaluateJobManager.cancel();
 
           onDestroy();
 
-//        if (bkAppEvaluate.isAnyInProgress()) {
+//        if (bkEvaluateJobManager.isAnyInProgress()) {
 //          return "Are you sure? All in-progress and pending evaluation will be cancelled";
 //        }
         };
@@ -442,99 +442,27 @@
             });
         bkCellPluginManager.reset();
 
-        var sessionID = $routeParams.sessionID;
-        if (sessionID) {
-          if (sessionID === "new") {
-            loadNotebook.defaultNotebook();
-          } else if (sessionID === "none") {
-            // do nothing
-          } else {
-            loadNotebook.fromSession(sessionID);
+        (function() {
+          var sessionId = $routeParams.sessionId;
+          if (sessionId) {
+            if (sessionId === "new") {
+              loadNotebook.defaultNotebook();
+            } else if (sessionId === "none") {
+              // do nothing
+            } else {
+              loadNotebook.fromSession(sessionId);
+            }
+          } else { // open
+            var notebookUri = $routeParams.uri;
+            var uriType = $routeParams.type;
+            var readOnly = $routeParams.readOnly;
+            var format = $routeParams.format;
+            var retry = true;
+            loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry);
           }
-        } else { // open
-          var notebookUri = $routeParams.uri;
-          var uriType = $routeParams.type;
-          var readOnly = $routeParams.readOnly;
-          var format = $routeParams.format;
-          var retry = true;
-          loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry);
-        }
+        })();
       }
     };
   });
 
-  module.factory('bkAppEvaluate', function(bkUtils, bkEvaluatorManager) {
-    var setOutputCellText = function(cell, text) {
-      if (!cell.output) {
-        cell.output = {};
-      }
-      cell.output.result = text;
-    };
-    var _promise = bkUtils.newPromise();
-    var _theEvaluator = null;
-    var _evaluate = function(cell) {
-      if (!cell.evaluator) {
-        return;
-      }
-      var lastPromise = _promise;
-      setOutputCellText(cell, "pending");
-      var evaluateCell = function() {
-        var evaluator = bkEvaluatorManager.getEvaluator(cell.evaluator);
-        if (evaluator) {
-          var evalP = lastPromise.then(function() {
-            _theEvaluator = evaluator;
-            bkUtils.log("evaluate", {
-              plugin: evaluator.pluginName,
-              length: cell.input.body.length});
-            return _theEvaluator.evaluate(cell.input.body, cell.output);
-          });
-          evalP.catch(function(ret) {
-            if (ret === "cancelled by user") {
-              _promise = bkUtils.newPromise();
-            }
-            if (cell.output && cell.output.result === "pending") {
-              cell.output.result = "";
-            }
-          });
-          evalP.finally(function() {
-            _theEvaluator = null;
-          });
-          return evalP;
-        } else {
-          setOutputCellText(cell, "waiting for evaluator initialization ...");
-          return bkUtils.delay(500).then(function() {
-            return evaluateCell();
-          });
-        }
-      };
-      _promise = evaluateCell();
-      return _promise;
-    };
-
-    return {
-      evaluate: function(cell) {
-        return _evaluate(cell);
-      },
-      evaluateAll: function(cells) {
-        _(cells).each(_evaluate);
-        return _promise;
-      },
-      isCancellable: function() {
-        return !!(_theEvaluator && _theEvaluator.cancelExecution);
-      },
-      cancel: function() {
-        if (_theEvaluator) {
-          if (_theEvaluator.cancelExecution) {
-            _theEvaluator.cancelExecution();
-          } else {
-            throw "cancel is not supported for the current evaluator";
-          }
-        }
-      },
-      isAnyInProgress: function() {
-        //return _promise.isPending();
-        return !!_theEvaluator;
-      }
-    };
-  });
 })();

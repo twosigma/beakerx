@@ -51,7 +51,7 @@ define(function(require, exports, module) {
       if (ipyVersion1) {
         self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
         kernels[shellID] = self.kernel;
-        self.kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
+        self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
       } else {
         // Required by ipython backend, but not used.
         var model = {

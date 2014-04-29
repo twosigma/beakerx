@@ -35,11 +35,6 @@
           }
         });
 
-        var onDestroy = function() {
-          //$scope.dt.fnDestroy();
-          delete $scope.grid;
-        };
-        $scope.$on("$destroy", onDestroy);
         $scope.getColumns = function() {
           var columns = _.map($scope.model.getCellModel().columnNames, function(col) {
             return {id: col, name: col, field: col, sortable: true};
@@ -85,14 +80,12 @@
                 var nano = value % 1000;
                 var micro = (value / 1000) % 1000;
                 var milli = value / 1000 / 1000;
-                var d = new Date(milli);
-                var doubleDigit = function(integer) {
-                  if (integer < 10) {
-                    return "0" + integer;
-                  }
-                  return integer.toString();
-                };
-                var trippleDigit = function(integer) {
+                var time = moment(milli);
+                var tz = $scope.model.getCellModel().timeZone;
+                if (tz)
+                  time.tz(tz);
+                var result = time.format("YYYYMMDD HH:mm:ss.SSS");
+                var tripleDigit = function(integer) {
                   if (integer < 10) {
                     return "00" + integer;
                   } else if (integer < 100) {
@@ -100,42 +93,30 @@
                   }
                   return integer.toString();
                 };
-                var result = "";
-                result += d.getFullYear() + doubleDigit(d.getMonth() + 1) + doubleDigit(d.getDate());
-                result += " ";
-                result += doubleDigit(d.getHours()) + ":" + doubleDigit(d.getMinutes()) + ":" + doubleDigit(d.getSeconds());
-                result += ".";
-                result += trippleDigit(d.getMilliseconds());
-                result += " " + trippleDigit(micro);
-                result += " " + trippleDigit(nano);
+                result += " " + tripleDigit(micro);
+                result += " " + tripleDigit(nano);
                 return result;
               };
             }
           }
           return columns;
         };
-        $scope.getOptions = function() {
-          var options = {
-            enableCellNavigation: true,
-            enableColumnReorder: true,
-            multiColumnSort: true,
-            selectedCellCssClass: 'bk-table-cell-selected'
-            //forceFitColumns: true
-          };
-          return options;
-        };
-        $scope.getData = function() {
-          var data = _.map($scope.model.getCellModel().values, function(row) {
-            return _.object($scope.model.getCellModel().columnNames, row);
-          });
-          return data;
-        };
       },
       link: function(scope, element, attrs) {
-        var data = scope.getData();
         var div = element.find('div');
-        scope.grid = new Slick.Grid(div, data, scope.getColumns(), scope.getOptions());
-        scope.grid.onSort.subscribe(function(e, args) {
+        var data = _.map(scope.model.getCellModel().values, function(row) {
+          return _.object(scope.model.getCellModel().columnNames, row);
+        });
+        var columns = scope.getColumns();
+        var options = {
+          enableCellNavigation: true,
+          enableColumnReorder: true,
+          multiColumnSort: true,
+          selectedCellCssClass: 'bk-table-cell-selected'
+          //forceFitColumns: true
+        };
+        var grid = new Slick.Grid(div, data, columns, options);
+        grid.onSort.subscribe(function(e, args) {
           var cols = args.sortCols;
           data.sort(function(dataRow1, dataRow2) {
             for (var i = 0, l = cols.length; i < l; i++) {
@@ -149,8 +130,8 @@
             }
             return 0;
           });
-          scope.grid.invalidate();
-          scope.grid.render();
+          grid.invalidate();
+          grid.render();
         });
 
         // Use the plugin to allow copy/paste from other spreadsheets.
@@ -160,8 +141,16 @@
           copiedCellStyle: 'bk-table-copied-cell'
         };
         // Selection is pre-req of copying.
-        scope.grid.setSelectionModel(new Slick.CellSelectionModel());
-        scope.grid.registerPlugin(new Slick.CellExternalCopyManager(externalCopyManagerOpts));
+        var gridCellSelectionModel = new Slick.CellSelectionModel();
+        var gridCellExternalCopyManager = new Slick.CellExternalCopyManager(externalCopyManagerOpts);
+        grid.setSelectionModel(gridCellSelectionModel);
+        grid.registerPlugin(gridCellExternalCopyManager);
+
+        scope.$on("$destroy", function() {
+          gridCellSelectionModel.destroy();
+          grid.destroy();
+          gridCellExternalCopyManager.destroy();
+        });
 
         //table needs to be redrawn to get column sizes correct
         setTimeout(function() {
@@ -174,7 +163,7 @@
           h += hasHorizontalScroll() ? 20 : 4;
           if (h < 500) {
             div.height(h);
-            scope.grid.resizeCanvas();
+            grid.resizeCanvas();
           }
         }, 5);
       }

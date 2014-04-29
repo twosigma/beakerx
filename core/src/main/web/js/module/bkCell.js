@@ -24,10 +24,10 @@
   'use strict';
   var M_bkCell = angular.module('M_bkCell', [
     'M_commonUI',
-    'M_bkUtils',
+    'M_generalUtils',
+    'M_bkShare',
     'M_bkCore',
-    'M_bkSessionManager',
-    'M_bkEvaluatorManager',
+    'M_evaluatorManager',
     'M_bkCellPluginManager',
     'M_bkCodeCell'
   ]);
@@ -288,7 +288,7 @@
         $scope.cellview.menu.addItemToHead({
           name: "Delete section and all sub-sections",
           action: function() {
-            notebookCellOp.delete($scope.cellmodel.id);
+            notebookCellOp.deleteSection($scope.cellmodel.id);
           }
         });
         $scope.cellview.menu.addItem({

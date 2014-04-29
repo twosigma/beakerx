@@ -35,8 +35,8 @@
         };
         return JSON.stringify(angularBoundJsObj, cleanup, 4) + "\n";
       },
-      httpGet: function(url, data) {
-        return $http({method: "GET", url: url, params: data});
+      httpGet: function(url, data, headers) {
+        return $http({method: "GET", url: url, params: data, headers: headers});
       },
       httpPost: function(url, data) {
         return $http({

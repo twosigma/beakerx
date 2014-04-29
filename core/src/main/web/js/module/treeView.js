@@ -120,7 +120,7 @@
           }
           var name = $scope.data.uri;
           if (name.length > 0 && name[name.length - 1] === '/') {
-            name = name.substring(0, name.length - 1)
+            name = name.substring(0, name.length - 1);
           }
           return name.replace(/^.*[\\\/]/, '');
         };

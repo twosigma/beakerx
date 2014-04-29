@@ -56,7 +56,7 @@
         return evaluators[evaluatorId];
       },
       getAllEvaluators: function() {
-        return evaluators
+        return evaluators;
       },
       getLoadingEvaluators: function() {
         return loadingInProgressEvaluators;
@@ -67,8 +67,8 @@
           var value = evaluators[key];
           ret[key] = {
             cm: {
-              "background": value.background,
-              "mode": value.cmMode
+              background: value.background,
+              mode: value.cmMode
             }
           };
         });

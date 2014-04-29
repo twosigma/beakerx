@@ -35,8 +35,6 @@
       },
       // duplicated in beaker.js
       loadJS: function(url, success, failure) {
-        // use http://requirejs.org ? XXX
-        // note: http://stackoverflow.com/questions/8315088/prevent-requirejs-from-caching-required-scripts
         var e = document.createElement('script');
         e.type = "text/javascript";
         // Add the time to the URL to avoid caching.
@@ -60,12 +58,13 @@
       // offsetX is not defined in firefox
       getEventOffsetX: function(elem, event) {
         var x = event.offsetX;
-        if (typeof x == 'undefined')
+        if (_.isUndefined(x)) {
           x = event.pageX - elem.offset().left;
+        }
         return x;
       },
       loadList: function(urls, success, failure) {
-        if (urls.length == 0) {
+        if (urls.length === 0) {
           if (success)
             return success();
           return;
@@ -121,7 +120,7 @@
           // check if this is a table with multiple rows
           // currently the table displays can't handle multiple rows of header (BEAKER-416)
           var headerRows = $(elem).find('thead').find('tr');
-          if (headerRows.length == 2) {
+          if (headerRows.length === 2) {
             //if there are two rows, allow tabledisplay as long as no column has values in both rows
             //this is because pandas renders dataframes with the index col header on a second row
             var row0 = headerRows.eq(0).find('th');
@@ -184,7 +183,7 @@
       isMiddleClick: function(event) {
         return event.button === 1 // middle click
             || (event.button === 0 // left click
-            && (navigator.appVersion.indexOf("Mac") != -1 ? event.metaKey : event.ctrlKey));
+            && (navigator.appVersion.indexOf("Mac") !== -1 ? event.metaKey : event.ctrlKey));
       }
     };
   });

@@ -289,7 +289,7 @@
             '<div class="modal-footer">' +
             "   <button class='Yes' ng-click='close(\"OK\")' class='btn'>" + okBtnTxt + "</button>" +
             "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
-            '</div>'
+            "</div>";
         return this.showFileChooser(close, template);
       },
       showYesNoCancelModal: function(
@@ -317,7 +317,7 @@
             "   <button class='Yes' ng-click='close(\"Yes\")' class='btn'>" + yesBtnTxt + "</button>" +
             "   <button class='No' ng-click='close(\"No\")' class='btn'>" + noBtnTxt + "</button>" +
             "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
-            '</div>'
+            "</div>";
         return this.showFileChooser(close, template);
       },
       getFileSystemFileChooserStrategy: function() {

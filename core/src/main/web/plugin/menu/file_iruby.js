@@ -39,13 +39,13 @@ define(function(require, exports, module) {
         var ipyOutput = ipyCodeCell.outputs[0];
         if (ipyOutput.output_type === "pyout" && ipyOutput.text) {
           bkrCodeCell.output.selectedType = "Text";
-          bkrCodeCell.output.result = ipyOutput.text[0]
+          bkrCodeCell.output.result = ipyOutput.text[0];
         } else if (ipyOutput.output_type === "display_data" && ipyOutput.png) {
           bkrCodeCell.output.selectedType = "Image";
           bkrCodeCell.output.result = {
             "type": "ImageIcon",
             "imageData": ipyOutput.png
-          }
+          };
         }
       } else {
         bkrCodeCell.output.result = "";
@@ -139,7 +139,7 @@ define(function(require, exports, module) {
         ipyNb.worksheets[0].cells.forEach(function(cell) {
           var bkrCell;
           if (cell.cell_type === "code") {
-            bkrCell = convertCodeCell(cell)
+            bkrCell = convertCodeCell(cell);
           } else if (cell.cell_type === "markdown") {
             bkrCell = convertMarkDownCell(cell);
           } else if (cell.cell_type === "raw") {

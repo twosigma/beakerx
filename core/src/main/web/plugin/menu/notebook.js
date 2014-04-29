@@ -34,7 +34,7 @@ define(function(require, exports, module) {
     },
       tooltip: "Lock notebook from further editing",
       isChecked: function() {
-        return bkHelper.isNotebookLocked()
+        return bkHelper.isNotebookLocked();
       }
     },
     {

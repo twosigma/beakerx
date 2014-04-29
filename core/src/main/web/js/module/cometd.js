@@ -21,7 +21,6 @@
   'use strict';
   angular.module('M_cometd', [])
       .factory('cometd', function() {
-        var subscriptions = {};
         $.cometd.unregisterTransport("websocket");
         $.cometd.init("cometd");
         var _statusListener;

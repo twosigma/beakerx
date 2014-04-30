@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 /**
- * bkCellPluginManager
- * bkCellPluginManager load and manages loaded cell menu plugins.
+ * bkCellMenuPluginManager
+ * bkCellMenuPluginManager load and manages loaded cell menu plugins.
  */
 (function() {
   'use strict';
@@ -23,7 +23,7 @@
     'bk.utils',
     'bk.helper'  // This is only for ensuring that window.bkHelper is set, don't use bkHelper directly
   ]);
-  module.factory('bkCellPluginManager', function(bkUtils) {
+  module.factory('bkCellMenuPluginManager', function(bkUtils) {
     // loaded plugins
     var _cellMenuPlugins = {};
     return {

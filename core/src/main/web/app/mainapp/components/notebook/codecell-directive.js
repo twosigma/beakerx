@@ -21,7 +21,7 @@
   module.directive('codeCell', function(
       bkUtils,
       bkEvaluatorManager,
-      bkCellPluginManager,
+      bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager) {
 
@@ -138,7 +138,7 @@
           // the following cellType needs to match
           //plugin.cellType = "codeCell"; in dynamically loaded cellmenu/codeCell.js
           var cellType = "codeCell";
-          return bkCellPluginManager.getPlugin(cellType);
+          return bkCellMenuPluginManager.getPlugin(cellType);
         };
         var shareMenu = {
           name: "Share",

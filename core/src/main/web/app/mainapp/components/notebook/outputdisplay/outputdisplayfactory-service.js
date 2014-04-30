@@ -62,12 +62,12 @@
       },
       "Html": {
         template: "<div></div>",
-        controller: function($scope, bkCellPluginManager) {
+        controller: function($scope, bkCellMenuPluginManager) {
           $scope.getShareMenuPlugin = function() {
             // the following cellType needs to match
             //plugin.cellType = "outputDisplayHtml"; in dynamically loaded outputDisplay_bkTableDisplay.js
             var cellType = "outputDisplayHtml";
-            return bkCellPluginManager.getPlugin(cellType);
+            return bkCellMenuPluginManager.getPlugin(cellType);
           };
           $scope.$watch("getShareMenuPlugin()", function(getShareMenu) {
             if (getShareMenu && $scope.model.resetShareMenuItems) {

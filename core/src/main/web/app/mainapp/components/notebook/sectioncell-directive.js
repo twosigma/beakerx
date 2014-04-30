@@ -23,7 +23,7 @@
       bkEvaluatorManager,
       bkSessionManager,
       bkCoreManager,
-      bkCellPluginManager) {
+      bkCellMenuPluginManager) {
     return {
       restrict: 'E',
       templateUrl: "./app/mainapp/components/notebook/sectioncell.html",
@@ -117,7 +117,7 @@
           // the following cellType needs to match
           //plugin.cellType = "sectionCell"; in dynamically loaded cellmenu/sectionCell.js
           var cellType = "sectionCell";
-          return bkCellPluginManager.getPlugin(cellType);
+          return bkCellMenuPluginManager.getPlugin(cellType);
         };
         $scope.cellview.menu.addItem({
           name: "Run all",

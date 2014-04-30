@@ -22,8 +22,8 @@
   beaker.bkoDirective("Chart",
       ["flotr2ViewUtils",
         "outputDisplayService",
-        "bkCellPluginManager",
-        function(flotr2ViewUtils, outputDisplayService, bkCellPluginManager) {
+        "bkCellMenuPluginManager",
+        function(flotr2ViewUtils, outputDisplayService, bkCellMenuPluginManager) {
           return {
             template: "<div class='tschartcontainer'></div>",
             controller: function($scope) {
@@ -90,7 +90,7 @@
                 // the following cellType needs to match
                 //plugin.cellType = "bkChart"; in dynamically loaded outputDisplay_bkChart.js
                 var cellType = "bkChart";
-                return bkCellPluginManager.getPlugin(cellType);
+                return bkCellMenuPluginManager.getPlugin(cellType);
               };
               $scope.$watch("getShareMenuPlugin()", function(getShareMenu) {
                 if (getShareMenu && $scope.model.resetShareMenuItems) {

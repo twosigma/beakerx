@@ -27,7 +27,13 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkNotebook', function (bkUtils, bkEvaluatorManager, bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
+  module.directive('bkNotebook', function (
+      bkUtils,
+      bkEvaluatorManager,
+      bkCellMenuPluginManager,
+      bkSessionManager,
+      bkCoreManager,
+      bkOutputLog) {
     return {
       restrict: 'E',
       templateUrl: "./app/mainapp/components/notebook/notebook.html",
@@ -201,7 +207,7 @@
           // the following cellType needs to match
           //plugin.cellType = "bkNotebook"; in dynamically loaded cellmenu/bkNotebook.js
           var cellType = "bkNotebook";
-          return bkCellPluginManager.getPlugin(cellType);
+          return bkCellMenuPluginManager.getPlugin(cellType);
         };
         $scope.getShareData = function () {
           return {

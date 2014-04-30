@@ -22,7 +22,7 @@
   var module = angular.module("bk.debug", [
     "bk.angularUtils",
     "bk.mainApp",
-    "bk.cellMenuPluginManager",
+    'bk.cellMenuPluginManager',
     "bk.core",
     'bk.sessionManager',
     "bk.helper",
@@ -40,7 +40,7 @@
     "bk.evaluateJobManager"
   ]);
   module.factory("bkDebug", function(
-      $injector, angularUtils, bkEvaluateJobManager, bkCellPluginManager, bkSessionManager,
+      $injector, angularUtils, bkEvaluateJobManager, bkCellMenuPluginManager, bkSessionManager,
       bkCoreManager, bkHelper, bkOutputLog, bkRecentMenu, bkSession, bkShare,
       trackingService, bkUtils, cometdUtils, commonUtils, bkMenuPluginManager, bkEvaluatePluginManager,
       bkEvaluatorManager) {
@@ -48,7 +48,7 @@
       $injector: $injector,
       angularUtils: angularUtils,
       bkEvaluateJobManager: bkEvaluateJobManager,
-      bkCellPluginManager: bkCellPluginManager,
+      bkCellMenuPluginManager: bkCellMenuPluginManager,
       bkSessionManager: bkSessionManager,
       bkCoreManager: bkCoreManager,
       bkHelper: bkHelper,

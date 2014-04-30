@@ -49,7 +49,7 @@
       bkSession,
       bkSessionManager,
       bkMenuPluginManager,
-      bkCellPluginManager,
+      bkCellMenuPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
       bkEvaluateJobManager) {
@@ -441,7 +441,7 @@
                 bkMenuPluginManager.loadMenuPlugin(url);
               });
             });
-        bkCellPluginManager.reset();
+        bkCellMenuPluginManager.reset();
 
         (function() {
           var sessionId = $routeParams.sessionId;

@@ -110,7 +110,7 @@
           }).when('/open/:uri', {
             template: "<bk-app></bk-app>"
           }).when('/control', {
-            template: "<bk-control></bk-control>"
+            template: "<bk-control-panel></bk-control-panel>"
           }).otherwise({
             redirectTo: "/control"
           });

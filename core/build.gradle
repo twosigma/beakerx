@@ -15,6 +15,16 @@
  */
 apply plugin:'java'
 
+apply plugin:'application'
+mainClassName = 'com.twosigma.beaker.core.Main'
+
+def windows() {
+  return System.getProperty('os.name').contains('Windows')
+}
+def mac() {
+  return System.getProperty('os.name').contains('Mac')
+}
+
 repositories {
   mavenCentral()
 }
@@ -29,18 +39,24 @@ dependencies {
   compile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
   compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.3.1'
+  compile group: 'org.jvnet.winp', name: 'winp', version: '1.18'
   compile project(':shared')
 }
 
-apply plugin:'application'
-mainClassName = 'com.twosigma.beaker.core.Main'
-
 task (npmInstall, type: Exec) {
-  commandLine 'npm', 'install'
+  if (windows()) {
+     commandLine 'cmd', '/c', 'npm', 'install'
+  } else {
+     commandLine 'npm', 'install'
+  }
 }
 
 task (bowerInstall, type: Exec) {
-  commandLine './node_modules/bower/bin/bower', 'install'
+  if (windows()) {
+    commandLine 'cmd', '/c', 'bower', 'install'
+  } else {
+    commandLine './node_modules/bower/bin/bower', 'install'
+  }
 }
 
 task (copyNginx, type: Exec) {
@@ -51,7 +67,7 @@ bowerInstall.dependsOn npmInstall
 build.dependsOn bowerInstall
 run.dependsOn bowerInstall
 run.dependsOn jar
-if (System.properties['os.name'].contains('Mac')) {
+if (mac()) {
   build.dependsOn copyNginx
   run.dependsOn copyNginx
   startScripts {

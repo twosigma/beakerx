@@ -49,6 +49,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
+import org.jvnet.winp.WinProcess;
 
 /**
  * This is the service that locates a plugin service. And a service will be started if the target
@@ -123,6 +124,10 @@ public class PluginServiceLocatorRest {
     portSearchStart = this.portBase + this.reservedPortCount;
   }
 
+  private boolean windows() {
+    return System.getProperty("os.name").contains("Windows");
+  }
+
   public void start() throws InterruptedException, IOException {
     startReverseProxy();
   }
@@ -142,7 +147,12 @@ public class PluginServiceLocatorRest {
 
   private void shutdown() {
     StreamGobbler.shuttingDown();
-    this.nginxProc.destroy(); // send SIGTERM
+
+    if (windows()) {
+      new WinProcess(this.nginxProc).killRecursively();
+    } else {
+      this.nginxProc.destroy(); // send SIGTERM
+    }
     for (PluginConfig p : this.plugins.values()) {
       p.shutDown();
     }

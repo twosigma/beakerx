@@ -17,10 +17,12 @@
 import os
 import sys
 
+coreport = sys.argv.pop()
+port = sys.argv.pop()
 self_path = sys.argv.pop(0)
 
 os.chdir(os.path.dirname(self_path))
 
-args = ["bin/groovy"] + sys.argv
+os.environ["GROOVY_OPTS"] = " ".join(sys.argv)
 
-os.execvp("bin/groovy", args)
+os.execlp("bin/groovy", "bin/groovy", port, coreport)

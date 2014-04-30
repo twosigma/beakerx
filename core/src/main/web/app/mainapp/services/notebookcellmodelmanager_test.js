@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-describe("M_bkNotebookCellModelManager", function() {
+describe("bk.notebookCellModelManager", function() {
   function CodeCell(id) {
     this.type = "code";
     this.id = id;
@@ -46,7 +46,7 @@ describe("M_bkNotebookCellModelManager", function() {
 
 
   var bkNotebookCellModelManager;
-  beforeEach(module("M_bkNotebookCellModelManager"));
+  beforeEach(module("bk.notebookCellModelManager"));
   beforeEach(inject(function(_bkNotebookCellModelManager_) {
     bkNotebookCellModelManager = _bkNotebookCellModelManager_;
   }));

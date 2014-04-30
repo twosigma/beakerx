@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-describe("M_bkNotebookVersionManager", function() {
+describe("bk.notebookVersionManager", function() {
   var bkNotebookVersionManager;
-  beforeEach(module("M_bkNotebookVersionManager"));
+  beforeEach(module("bk.notebookVersionManager"));
   beforeEach(inject(function(_bkNotebookVersionManager_) {
     bkNotebookVersionManager = _bkNotebookVersionManager_;
   }));

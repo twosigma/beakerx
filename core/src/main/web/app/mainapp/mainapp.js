@@ -33,7 +33,8 @@
     'bk.notebookVersionManager',
     'bk.evaluatorManager',
     'bk.evaluateJobManager',
-    'bk.notebook'
+    'bk.notebook',
+    'bk.pluginManager'
   ]);
 
   /**

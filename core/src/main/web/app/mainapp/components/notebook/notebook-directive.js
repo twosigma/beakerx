@@ -14,138 +14,124 @@
  *  limitations under the License.
  */
 /**
- * Module bk.notebook
- * This is the 'notebook view' part of {@link bkApp}. What is the root cell holding the nested
- * {@link bkCell}s.
+ * bkNotebook
+ * - the controller that responsible for directly changing the view
+ * - root cell + evaluators + other stuffs specific to one (the loaded) notebook
+ * - root cell is just a special case of a section cell
+ * - TODO, we are mixing the concept of a notebook and a root section here
+ * we want to separate out the layout specific stuffs(idea of a section) from other
+ * stuffs like evaluator panel
  */
-(function() {
+
+(function () {
   'use strict';
-  var module = angular.module('bk.notebook', [
-    'bk.commonUi',
-    'bk.utils',
-    'bk.outputLog',
-    'bk.core',
-    'bk.sessionManager',
-    'bk.pluginManager',
-    'bk.evaluatorManager',
-    'bk.cell'
-  ]);
-  /**
-   * bkNotebook
-   * - the controller that responsible for directly changing the view
-   * - root cell + evaluators + other stuffs specific to one (the loaded) notebook
-   * - root cell is just a special case of a section cell
-   * - TODO, we are mixing the concept of a notebook and a root section here
-   * we want to separate out the layout specific stuffs(idea of a section) from other
-   * stuffs like evaluator panel
-   */
-  module.directive('bkNotebook', function(
-      bkUtils, bkEvaluatorManager,
-      bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
+  var module = angular.module('bk.notebook');
+
+  module.directive('bkNotebook', function (bkUtils, bkEvaluatorManager, bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook.html",
+      templateUrl: "./app/mainapp/components/notebook/notebook.html",
       scope: {
         setBkNotebook: "&"
       },
-      controller: function($scope) {
+      controller: function ($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var _impl = {
           _viewModel: {
             _hideEvaluators: true,
             _debugging: false,
             _showOutput: false,
-            showEvaluators: function() {
+            showEvaluators: function () {
               this._hideEvaluators = false;
             },
-            toggleShowOutput: function() {
+            toggleShowOutput: function () {
               this._showOutput = !this._showOutput;
             },
-            hideOutput: function() {
+            hideOutput: function () {
               this._showOutput = false;
             },
-            isShowingOutput: function() {
+            isShowingOutput: function () {
               return this._showOutput;
             },
-            isHideEvaluators: function() {
+            isHideEvaluators: function () {
               return this._hideEvaluators;
             },
-            hideEvaluators: function() {
+            hideEvaluators: function () {
               this._hideEvaluators = true;
             },
-            toggleDebugging: function() {
+            toggleDebugging: function () {
               this._debugging = !this._debugging;
             },
-            isDebugging: function() {
+            isDebugging: function () {
               return this._debugging;
             }
           },
-          getViewModel: function() {
+          getViewModel: function () {
             return this._viewModel;
           },
-          shareAndOpenPublished: function() {
+          shareAndOpenPublished: function () {
             // TODO, this is an ugly hack. Need refactoring.
             shareMenu.items[0].action();
           },
-          deleteAllOutputCells: function() {
+          deleteAllOutputCells: function () {
             bkSessionManager.getNotebookCellOp().deleteAllOutputCells();
           },
           _focusables: {}, // map of focusable(e.g. code mirror instances) with cell id being keys
-          registerFocusable: function(cellId, focusable) {
+          registerFocusable: function (cellId, focusable) {
             this._focusables[cellId] = focusable;
           },
-          unregisterFocusable: function(cellId) {
+          unregisterFocusable: function (cellId) {
             delete this._focusables[cellId];
           },
-          getFocusable: function(cellId) {
+          getFocusable: function (cellId) {
             return this._focusables[cellId];
           },
           _codeMirrors: {},
-          registerCM: function(cellId, cm) {
+          registerCM: function (cellId, cm) {
             this._codeMirrors[cellId] = cm;
             cm.setOption("keyMap", this._cmKeyMapMode);
           },
-          unregisterCM: function(cellId) {
+          unregisterCM: function (cellId) {
             delete this._codeMirrors[cellId];
           },
           _cmKeyMapMode: "default",
-          setCMKeyMapMode: function(keyMapMode) {
+          setCMKeyMapMode: function (keyMapMode) {
             this._cmKeyMapMode = keyMapMode;
-            _.each(this._codeMirrors, function(cm) {
+            _.each(this._codeMirrors, function (cm) {
               cm.setOption("keyMap", keyMapMode);
             });
           },
-          getCMKeyMapMode: function() {
+          getCMKeyMapMode: function () {
             return this._cmKeyMapMode;
           }
         };
         $scope.setBkNotebook({bkNotebook: _impl});
 
-        $scope.isDebugging = function() {
+        $scope.isDebugging = function () {
           return _impl._viewModel.isDebugging();
         };
-        $scope.isShowingOutput = function() {
+        $scope.isShowingOutput = function () {
           return _impl._viewModel.isShowingOutput();
         };
 
         $scope.showDebugTree = false;
-        $scope.getNotebookModel = function() {
+        $scope.getNotebookModel = function () {
           return bkSessionManager.getRawNotebookModel();
         };
-        $scope.clearOutput = function() {
+        $scope.clearOutput = function () {
           $.ajax({type: "GET",
             datatype: "json",
             url: "/beaker/rest/outputlog/clear",
             data: {}});
           $scope.outputLog = [];
         };
-        $scope.hideOutput = function() {
+        $scope.hideOutput = function () {
           _impl._viewModel.hideOutput();
         };
         var margin = $(".outputlogstdout").position().top;
         var outputLogHeight = 300;
         var dragHeight;
-        var fixOutputLogPosition = function() {
+        var fixOutputLogPosition = function () {
           $(".outputlogcontainer").css("top", window.innerHeight - outputLogHeight);
           $(".outputlogcontainer").css("height", outputLogHeight);
           $(".outputlogbox").css("height", outputLogHeight - margin - 5);
@@ -167,10 +153,10 @@
           $(".outputlogerr").css("width", width);
         };
         $(window).resize(fixOutputLogPosition);
-        $(".outputloghandle").drag("start", function() {
+        $(".outputloghandle").drag("start", function () {
           dragHeight = outputLogHeight;
         });
-        $(".outputloghandle").drag(function(ev, dd) {
+        $(".outputloghandle").drag(function (ev, dd) {
           outputLogHeight = dragHeight - dd.deltaY;
           if (outputLogHeight < 20) outputLogHeight = 20;
           if (outputLogHeight > window.innerHeight - 50) outputLogHeight = window.innerHeight - 50;
@@ -180,18 +166,18 @@
         $scope.showStdErr = true;
         fixOutputLogPosition();
 
-        $scope.toggleStdOut = function() {
+        $scope.toggleStdOut = function () {
           $scope.showStdOut = !$scope.showStdOut;
           fixOutputLogPosition();
         };
-        $scope.toggleStdErr = function() {
+        $scope.toggleStdErr = function () {
           $scope.showStdErr = !$scope.showStdErr;
           fixOutputLogPosition();
         };
-        bkOutputLog.getLog(function(res) {
+        bkOutputLog.getLog(function (res) {
           $scope.outputLog = res;
         });
-        bkOutputLog.subscribe(function(reply) {
+        bkOutputLog.subscribe(function (reply) {
           if (!_impl._viewModel.isShowingOutput()) {
             _impl._viewModel.toggleShowOutput();
           }
@@ -199,25 +185,25 @@
           $scope.$apply();
           // Scroll to bottom so this output is visible.
           $.each($('.outputlogbox'),
-              function(i, v) {
+              function (i, v) {
                 $(v).scrollTop(v.scrollHeight);
               });
         });
 
 
-        $scope.getChildren = function() {
+        $scope.getChildren = function () {
           // this is the root
           return notebookCellOp.getChildren("root");
         };
 
 
-        $scope.getShareMenuPlugin = function() {
+        $scope.getShareMenuPlugin = function () {
           // the following cellType needs to match
           //plugin.cellType = "bkNotebook"; in dynamically loaded cellmenu/bkNotebook.js
           var cellType = "bkNotebook";
           return bkCellPluginManager.getPlugin(cellType);
         };
-        $scope.getShareData = function() {
+        $scope.getShareData = function () {
           return {
             notebookModel: bkSessionManager.getRawNotebookModel(),
             evViewModel: bkEvaluatorManager.getViewModel()
@@ -227,30 +213,30 @@
           name: "Share",
           items: []
         };
-        $scope.$watch("getShareMenuPlugin()", function(getShareMenu) {
+        $scope.$watch("getShareMenuPlugin()", function (getShareMenu) {
           if (getShareMenu) {
             shareMenu.items = getShareMenu($scope);
           }
         });
-        $scope.isInitializationCell = function() {
+        $scope.isInitializationCell = function () {
           return bkSessionManager.isRootCellInitialization();
         };
         $scope.menuItems = [
           {
             name: "Run all",
-            action: function() {
+            action: function () {
               bkCoreManager.getBkApp().evaluate("root").
-                  catch(function(data) {
+                  catch(function (data) {
                     console.error(data);
                   });
             }
           },
           {
             name: "Initialization Cell",
-            isChecked: function() {
+            isChecked: function () {
               return $scope.isInitializationCell();
             },
-            action: function() {
+            action: function () {
               bkSessionManager.setRootCellInitialization(!$scope.isInitializationCell());
               notebookCellOp.reset();
             }
@@ -258,9 +244,9 @@
           shareMenu
         ];
       },
-      link: function(scope, element, attrs) {
+      link: function (scope, element, attrs) {
         var div = element.find(".bkcell").first();
-        div.click(function(event) {
+        div.click(function (event) {
           //click in the border or padding should trigger menu
           if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
             var menu = div.find('.bkcellmenu').last();
@@ -275,7 +261,7 @@
         } else {
           div.removeClass("initcell");
         }
-        scope.$watch('isInitializationCell()', function(newValue, oldValue) {
+        scope.$watch('isInitializationCell()', function (newValue, oldValue) {
           if (newValue !== oldValue) {
             if (newValue) {
               div.addClass("initcell");

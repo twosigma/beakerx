@@ -13,31 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 /**
- * Module bk.codeCellOutput
  * This module is the abstract container for types of output displays. While we plan to make the output display loading
  * mechanism more pluggable, right now, this module serves as the registration output display types and holds the logic
  * for switch between applicable output display through UI.
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.codeCellOutput', [
-    'bk.utils',
-    'bk.outputDisplay',
-    'bk.evaluatorManager'
-  ]);
+  var module = angular.module('bk.notebook');
 
   module.directive('bkCodeCellOutput', function(
       bkUtils, outputDisplayFactory, bkEvaluatorManager) {
     return {
       restrict: "E",
-      template: '<div class="bkcell"><bk-output-display ' +
-          '   model="outputDisplayModel" ' +
-          '   type="{{ getOutputDisplayType() }}" >' +
-          '</bk-output-display>' +
-          "<bk-code-cell-output-menu" +
-          '   model="outputCellMenuModel" ' +
-          "</bk-code-cell-output-menu></div>",
+      templateUrl: "./app/mainapp/components/notebook/codecelloutput.html",
       scope: {
         model: "=",
         evaluatorId: "@"
@@ -134,70 +124,4 @@
     };
   });
 
-  module.directive('bkCodeCellOutputMenu', function(bkUtils) {
-    return {
-      restrict: 'E',
-      templateUrl: "./app/mainapp/components/codecelloutputmenu.html",
-      scope: {
-        model: '='
-      },
-      controller: function($scope) {
-        $scope.getItemName = function(item) {
-          if (_.isFunction(item.name)) {
-            return item.name();
-          } else {
-            return item.name;
-          }
-        };
-        $scope.getItemClass = function(item) {
-          var result = [];
-          if (item.items) {
-            var subItems = $scope.getSubItems(item);
-            if (subItems.length > 0) {
-              result.push("dropdown-submenu");
-              result.push("pull-left");
-            } else {
-              result.push("display-none");
-            }
-          } else if ($scope.getItemName(item) === "") {
-            result.push("display-none");
-          }
-          return result.join(" ");
-        };
-        $scope.getSubmenuItemClass = function(item) {
-          var result = [];
-          if (item.disabled) {
-            result.push("disabled-link");
-          }
-          return result.join(" ");
-        };
-        $scope.getSubItems = function(parentItem) {
-          if (_.isFunction(parentItem.items)) {
-            return parentItem.items();
-          }
-          return parentItem.items;
-        };
-      },
-      link: function(scope, element, attrs) {
-        var outputMenuDiv = element.parent('.bkcell');
-        outputMenuDiv.click(function(event) {
-          //click in the border or padding should trigger menu
-          if (bkUtils.getEventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
-            var menu = outputMenuDiv.find('.dropdown').last();
-            menu.css("top", event.clientY);
-            menu.css("left", event.clientX - 150);
-            menu.find('.dropdown-toggle').first().dropdown('toggle');
-            event.stopPropagation();
-          }
-        });
-        outputMenuDiv.mousemove(function(event) {
-          if (bkUtils.getEventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
-            outputMenuDiv.css('cursor', 'pointer');
-          } else {
-            outputMenuDiv.css('cursor', 'default');
-          }
-        });
-      }
-    };
-  });
 })();

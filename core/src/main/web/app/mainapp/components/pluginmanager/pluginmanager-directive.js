@@ -13,26 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 /**
- * Module bk.pluginManager
  * This is the module for the UI that shows the list of evaluators and their corresponding
  * settings panel.
  */
 (function() {
   'use strict';
-  var bkNotebookEvaluators = angular.module('bk.pluginManager', [
-    'bk.core',
-    'bk.sessionManager',
-    'bk.evaluatePluginManager',
-    'bk.evaluatorManager'
-  ]);
+  var module = angular.module('bk.pluginManager');
 
-  bkNotebookEvaluators.directive('bkNotebookEvaluators', function(
+  module.directive('bkPluginManager', function(
       bkCoreManager, bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
       bkEvaluatorManager) {
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/pluginmanager.html",
+      templateUrl: "./app/mainapp/components/pluginmanager/pluginmanager.html",
       controller: function($scope) {
         $scope.isHideEvaluators = function() {
           return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel().isHideEvaluators();
@@ -77,52 +72,6 @@
             return bkMenuPluginManager.getLoadingPlugins();
           }
         };
-      }
-    };
-  });
-
-  // TODO, we should not prefix our directives with 'ng' ever. This needs to be corrected.
-  bkNotebookEvaluators.directive('ngEnter', function() {
-    return function(scope, element, attrs) {
-      element.bind("keydown keypress", function(event) {
-        if (event.which === 13) {
-          scope.$apply(function() {
-            scope.$eval(attrs.ngEnter);
-          });
-          event.preventDefault();
-        }
-      });
-    };
-  });
-
-  bkNotebookEvaluators.directive('bkNotebookEvaluatorsEvaluatorSettings', function(
-      $compile, bkSessionManager) {
-    return {
-      restrict: 'E',
-      template: '<div><accordion-group heading="{{evaluatorName}} (plugin: {{evaluator.settings.plugin}})">' +
-          '<div class="bbody"></div></accordion-group></div>',
-      controller: function($scope) {
-        $scope.set = function(val) {
-          $scope.evaluator.perform(val);
-          bkSessionManager.setNotebookModelEdited(true);
-        };
-      },
-      link: function(scope, element, attrs) {
-        var evaluator = scope.evaluator;
-        for (var property in evaluator.spec) {
-          if (evaluator.spec.hasOwnProperty(property)) {
-            var name = evaluator.spec[property].hasOwnProperty('name') ? evaluator.spec[property].name : property;
-            if (evaluator.spec[property].type === "settableString") {
-              element.find('.bbody').append($compile(
-                  "<div>" + name + ":<br><textarea ng-model='evaluator.settings." + property +
-                      "'></textarea><button ng-click='set(\"" + property +
-                      "\")'>set</button></div>")(scope));
-            } else if (evaluator.spec[property].type === "action") {
-              element.find('.bbody').append($compile("<div><button ng-click='evaluator.perform(\"" + property +
-                  "\")'>" + name + "</button></div>")(scope));
-            }
-          }
-        }
       }
     };
   });

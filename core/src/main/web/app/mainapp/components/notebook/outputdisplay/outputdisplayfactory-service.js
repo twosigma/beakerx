@@ -14,7 +14,6 @@
  *  limitations under the License.
  */
 /**
- * Module bk.outputDisplay
  * This module is the central control of all output displays. It fulfills actual angular directives
  * lazily when user load output display plugins.
  */
@@ -22,55 +21,7 @@
   "use strict";
   var MAX_CAPACITY = 100;
 
-  var module = angular.module('bk.outputDisplay', []);
-
-  module.factory("outputDisplayService", function($injector) {
-    var services = {};
-    var factory = {
-      getServices: function() {
-        return services;
-      },
-      addService: function(key, impl) {
-        if (typeof impl === "function") {
-          services[key] = impl($injector);
-        } else if (Object.prototype.toString.call(impl) === '[object Array]') {
-          var args = [];
-          for (var j = 0; j < impl.length; ++j) {
-            var it = impl[j];
-            if (typeof it === "string") {
-              if (services.hasOwnProperty(it)) {
-                args.push(services[it]);
-              } else if ($injector.has(it)) {
-                args.push($injector.get(it));
-              }
-              continue;
-            }
-            if (typeof it === "function") {
-              services[key] = it.apply(this, args);
-              break;
-            }
-          }
-          ;
-        } else {
-          services[key] = impl;
-        }
-      },
-      has: function(key) {
-        return services.hasOwnProperty(key);
-      },
-      get: function(key) {
-        return services[key];
-      }
-    };
-
-    for (var key in beaker.toBeAddedToOutputDisplayService) {
-      var impl = beaker.toBeAddedToOutputDisplayService[key];
-      factory.addService(key, impl);
-    }
-    beaker.toBeAddedToOutputDisplayService = null;
-    beaker.outputDisplayService = factory;
-    return factory;
-  });
+  var module = angular.module('bk.outputDisplay');
 
   module.factory("outputDisplayFactory", function($rootScope) {
 
@@ -278,6 +229,7 @@
 
     return factory;
   });
+
   for (var i = 0; i < MAX_CAPACITY; ++i) {
     (function() {
       var ii = i;
@@ -310,35 +262,5 @@
       });
     })();
   }
-  module.directive('bkOutputDisplay', function($compile, $rootScope, outputDisplayFactory) {
-    return {
-      restrict: "E",
-      template: "<div>OUTPUT</div>",
-      scope: {
-        type: "@",
-        model: "=" // assume ref to model doesn't change after directive is created
-      },
-      link: function(scope, element, attrs) {
-        var childScope = null;
-        var refresh = function(type) {
-          if (childScope) {
-            childScope.$destroy();
-          }
-          childScope = $rootScope.$new();
-          childScope.model = scope.model;
-          var directiveName = outputDisplayFactory.getDirectiveName(type);
-          element.html("<div " + directiveName + " model='model'></div>");
-          $compile(element.contents())(childScope);
-        };
-        scope.$watch("type", function(newType, oldType) {
-          refresh(newType);
-        });
-        scope.$on("outputDisplayFactoryUpdated", function(event, what) {
-          if (what === "all" || what === scope.type) {
-            refresh(scope.type);
-          }
-        });
-      }
-    };
-  });
+
 })();

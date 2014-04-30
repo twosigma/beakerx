@@ -26,12 +26,12 @@
           </button>
         </div>
         <div class="input-append addeval">
-          <input type="text" ng-enter='evalTabOp.addPlugin()' ng-model="evalTabOp.newPluginNameOrUrl"></input>
+          <input type="text" bk-enter='evalTabOp.addPlugin()' ng-model="evalTabOp.newPluginNameOrUrl"></input>
           <button class="btn" ng-click='evalTabOp.addPlugin()'>Add Plugin from URL</button>
         </div>
         <accordion>
-          <bk-notebook-evaluators-evaluator-settings ng-repeat="(evaluatorName, evaluator) in evalTabOp.getAllEvaluators()">
-          </bk-notebook-evaluators-evaluator-settings>
+          <bk-plugin-manager-evaluator-settings ng-repeat="(evaluatorName, evaluator) in evalTabOp.getAllEvaluators()">
+          </bk-plugin-manager-evaluator-settings>
           <div ng-repeat="evaluator in evalTabOp.getLoadingEvaluators()"><accordion-group heading="Loading {{evaluator.plugin}}..."></accordion-group></div>
         </accordion>
       </pane>

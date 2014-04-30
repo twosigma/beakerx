@@ -13,32 +13,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * Module bk.codeCell
- * This module holds the logic for code cell, which is a typed {@link bkCell}.
- * The code cell contains an input cell an output cell ({@link bkCodeCellOutput}) and cell menus.
- */
+
 (function() {
   'use strict';
-  var module = angular.module('bk.codeCell', [
-    'bk.commonUi',
-    'bk.utils',
-    'bk.core',
-    'bk.sessionManager',
-    'bk.cellMenuPluginManager',
-    'bk.evaluatorManager',
-    'bk.codeCellOutput'
-  ]);
+  var module = angular.module('bk.notebook');
+
   module.directive('codeCell', function(
-      bkUtils, bkEvaluatorManager,
-      bkCellPluginManager, bkSessionManager, bkCoreManager) {
+      bkUtils,
+      bkEvaluatorManager,
+      bkCellPluginManager,
+      bkSessionManager,
+      bkCoreManager) {
+
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
     };
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/codecell.html",
+      templateUrl: "./app/mainapp/components/notebook/codecell.html",
       scope: { cellmodel: "=", cellmenu: "="},
       controller: function($scope) {
         $scope.cellview = {
@@ -417,40 +410,5 @@
       }
     };
   });
-  module.directive('inputMenu', function(bkCoreManager) {
-    var getBkNotebookWidget = function() {
-      return bkCoreManager.getBkApp().getBkNotebookWidget();
-    } ;
-    return {
-      restrict: 'E',
-      templateUrl: "./app/mainapp/components/codecellinputmenu.html",
-      controller: function($scope) {
-        $scope.getItemClass = function(item) {
-          var result = [];
-          if (item.items) {
-            result.push("dropdown-submenu");
-          }
-          return result.join(" ");
-        };
-        $scope.getSubmenuItemClass = function(item) {
-          var result = [];
-          if (item.disabled) {
-            result.push("disabled-link");
-          }
-          return result.join(" ");
-        };
-        $scope.getShowEvalIcon = function(evaluatorName) {
-          return $scope.cellmodel.evaluator === evaluatorName;
-        };
-        $scope.setEvaluator = function(evaluatorName) {
-          var cellId = $scope.cellmodel.id;
-          $scope.cellmodel.evaluator = evaluatorName;
-          getBkNotebookWidget().getFocusable(cellId).focus();
-        };
-        $scope.run = function() {
-          $scope.evaluate();
-        };
-      }
-    };
-  });
+
 })();

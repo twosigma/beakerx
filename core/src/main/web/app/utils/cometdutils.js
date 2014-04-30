@@ -20,7 +20,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.cometdUtils', []);
-  module.factory('cometd', function () {
+  module.factory('cometdUtils', function () {
     $.cometd.unregisterTransport("websocket");
     $.cometd.init("cometd");
     var _statusListener;

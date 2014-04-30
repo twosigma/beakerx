@@ -31,7 +31,7 @@
    * - it also serves the purpose of hiding underneath utils: commonUtils/angularUtils/...
    *    from other parts of beaker
    */
-  module.factory('bkUtils', function(commonUtils, angularUtils, trackingService, cometd) {
+  module.factory('bkUtils', function(commonUtils, angularUtils, trackingService, cometdUtils) {
 
     var bkUtils = {
       // wrap trackingService
@@ -158,7 +158,7 @@
         return deferred.promise;
       },
       addConnectedStatusListener: function(cb) {
-        cometd.addConnectedStatusListener(cb);
+        cometdUtils.addConnectedStatusListener(cb);
       },
 
       // wrapper around requireJS

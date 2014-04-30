@@ -20,7 +20,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.outputLog', ['bk.angularUtils', 'bk.cometdUtils']);
-  module.factory('bkOutputLog', function (angularUtils, cometd) {
+  module.factory('bkOutputLog', function (angularUtils, cometdUtils) {
     return {
       getLog: function (cb) {
         angularUtils.httpGet("/beaker/rest/outputlog/get", {})
@@ -30,7 +30,7 @@
             });
       },
       subscribe: function (cb) {
-        cometd.addOutputlogUpdateListener(cb);
+        cometdUtils.addOutputlogUpdateListener(cb);
       }
     };
   });

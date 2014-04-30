@@ -42,7 +42,7 @@
   module.factory("bkDebug", function(
       $injector, angularUtils, bkEvaluateJobManager, bkCellPluginManager, bkSessionManager,
       bkCoreManager, bkHelper, bkOutputLog, bkRecentMenu, bkSession, bkShare,
-      trackingService, bkUtils, cometd, commonUtils, bkMenuPluginManager, bkEvaluatePluginManager,
+      trackingService, bkUtils, cometdUtils, commonUtils, bkMenuPluginManager, bkEvaluatePluginManager,
       bkEvaluatorManager) {
     return {
       $injector: $injector,
@@ -58,7 +58,7 @@
       bkShare: bkShare,
       trackingService: trackingService,
       bkUtils: bkUtils,
-      cometd: cometd,
+      cometdUtils: cometdUtils,
       commonUtils: commonUtils,
       bkMenuPluginManager: bkMenuPluginManager,
       bkEvaluatePluginManager: bkEvaluatePluginManager,

@@ -19,7 +19,7 @@
   var module = angular.module('bk.controlPanel');
 
   module.directive('bkControlPanel', function(
-      bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, trackingService) {
+      bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack) {
     return {
       restrict: 'E',
       templateUrl: './app/controlpanel/controlpanel.html',
@@ -65,7 +65,7 @@
 
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
-        if (trackingService.isNeedPermission()) {
+        if (bkTrack.isNeedPermission()) {
           bkUtils.httpGet("./rest/util/isAllowAnonymousTracking").then(function(allow) {
             switch (allow.data) {
               case "true":
@@ -86,10 +86,10 @@
             var allow = null;
             if (newValue) {
               allow = "true";
-              trackingService.enable();
+              bkTrack.enable();
             } else if (newValue === false) {
               allow = "false";
-              trackingService.disable();
+              bkTrack.disable();
             }
             bkUtils.httpPost("./rest/util/setAllowAnonymousTracking", { allow: allow });
           }

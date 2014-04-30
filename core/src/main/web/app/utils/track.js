@@ -22,7 +22,7 @@
   'use strict';
   var module = angular.module('bk.track', []);
 
-  module.provider('trackingService', function() {
+  module.provider('bkTrack', function() {
     var _trackingService = null;
     this.config = function(trackingService) {
       if (_.isFunction(trackingService)) {

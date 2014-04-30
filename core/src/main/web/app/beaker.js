@@ -168,9 +168,9 @@
       }
     });
 
-    beaker.config(function(trackingServiceProvider) {
+    beaker.config(function(bkTrackProvider) {
       if (window.bkInit && window.bkInit.trackingService) {
-        trackingServiceProvider.config(window.bkInit.trackingService);
+        bkTrackProvider.config(window.bkInit.trackingService);
       }
     });
 

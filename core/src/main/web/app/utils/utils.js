@@ -31,12 +31,12 @@
    * - it also serves the purpose of hiding underneath utils: commonUtils/angularUtils/...
    *    from other parts of beaker
    */
-  module.factory('bkUtils', function(commonUtils, angularUtils, trackingService, cometdUtils) {
+  module.factory('bkUtils', function(commonUtils, angularUtils, bkTrack, cometdUtils) {
 
     var bkUtils = {
       // wrap trackingService
       log: function(event, obj) {
-        trackingService.log(event, obj);
+        bkTrack.log(event, obj);
       },
 
       // wrap commonUtils

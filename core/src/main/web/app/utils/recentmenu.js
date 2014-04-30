@@ -19,14 +19,14 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkRecentMenu', ['M_bkUtils']);
+  var module = angular.module('M_bkRecentMenu', ['M_angularUtils']);
 
   module.provider("bkRecentMenu", function() {
     var _server = null;
     this.configServer = function(server) {
       _server = server;
     };
-    this.$get = function(bkUtils) {
+    this.$get = function(angularUtils) {
       var opItems = {
         EMPTY: {name: "(Empty)", disabled: true},
         DIVIDER: {type: "divider"},
@@ -86,7 +86,7 @@
               })();
             }
           }
-          bkUtils.refreshRootScope();
+          angularUtils.refreshRootScope();
         });
       };
       var clearMenu = function() {

@@ -46,7 +46,7 @@
       bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
     return {
       restrict: 'E',
-      templateUrl: "./template/bkNotebook.html",
+      templateUrl: "./app/mainapp/components/notebook.html",
       scope: {
         setBkNotebook: "&"
       },

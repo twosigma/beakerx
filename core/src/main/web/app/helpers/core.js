@@ -27,7 +27,8 @@
     'M_commonUI',
     'M_bkUtils',
     'M_bkRecentMenu',
-    'M_bkNotebookCellModelManager'
+    'M_bkNotebookCellModelManager',
+    'M_TreeView'
   ]);
 
   /**
@@ -231,7 +232,7 @@
       showFileChooser: function(callback, template, strategy) {
         if (!template) {
           // use default template
-          template = 'template/openMenuModal.html';
+          template = "./app/template/openmenumodal.html";
         }
 
         var options = {
@@ -354,7 +355,7 @@
   bkCore.directive('fileActionDialog', function() {
     return {
       scope: { actionName: '@', inputId: '@', close: '=' },
-      templateUrl: 'template/fileActionDialog.html',
+      templateUrl: "./app/template/fileactiondialog.html",
       link: function(scope, element, attrs) {
         element.find('input').focus();
       }

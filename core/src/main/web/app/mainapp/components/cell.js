@@ -186,7 +186,7 @@
   M_bkCell.directive('bkCellMenu', function() {
     return {
       restrict: 'E',
-      templateUrl: "./template/bkCellMenu.html",
+      templateUrl: "./app/mainapp/components/cellmenu.html",
       scope: { items: '=' }
     };
   });
@@ -194,7 +194,7 @@
       bkUtils, bkSessionManager, bkEvaluatorManager) {
     return {
       restrict: 'E',
-      templateUrl: "./template/newCellMenu.html",
+      templateUrl: "./app/mainapp/components/newcellmenu.html",
       scope: { config: '=' },
       controller: function($scope) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
@@ -251,7 +251,7 @@
       bkCellPluginManager) {
     return {
       restrict: 'E',
-      templateUrl: "./template/bkSectionCell.html",
+      templateUrl: "./app/mainapp/components/sectioncell.html",
       //scope: { cell: "=" },
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();

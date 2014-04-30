@@ -20,7 +20,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkSession', ['M_bkUtils']);
+  var module = angular.module('M_bkSession', ['M_angularUtils']);
   /**
    * bkSession
    * - talks to beaker server (/beaker/rest/session)

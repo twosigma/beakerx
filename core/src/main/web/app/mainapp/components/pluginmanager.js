@@ -32,7 +32,7 @@
       bkEvaluatorManager) {
     return {
       restrict: 'E',
-      templateUrl: "./template/bkNotebook_evaluators.html",
+      templateUrl: "./app/mainapp/components/pluginmanager.html",
       controller: function($scope) {
         $scope.isHideEvaluators = function() {
           return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel().isHideEvaluators();

@@ -39,7 +39,7 @@
     };
     return {
       restrict: 'E',
-      templateUrl: "./template/bkCodeCell.html",
+      templateUrl: "./app/mainapp/components/codecell.html",
       scope: { cellmodel: "=", cellmenu: "="},
       controller: function($scope) {
         $scope.cellview = {
@@ -424,7 +424,7 @@
     } ;
     return {
       restrict: 'E',
-      templateUrl: "./template/bkCodeCellInputMenu.html",
+      templateUrl: "./app/mainapp/components/codecellinputmenu.html",
       controller: function($scope) {
         $scope.getItemClass = function(item) {
           var result = [];

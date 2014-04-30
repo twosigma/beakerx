@@ -137,7 +137,7 @@
   module.directive('bkCodeCellOutputMenu', function(bkUtils) {
     return {
       restrict: 'E',
-      templateUrl: "./template/bkCodeCellOutputMenu.html",
+      templateUrl: "./app/mainapp/components/codecelloutputmenu.html",
       scope: {
         model: '='
       },

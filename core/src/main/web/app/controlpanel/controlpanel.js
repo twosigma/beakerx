@@ -33,7 +33,7 @@
       bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, trackingService) {
     return {
       restrict: 'E',
-      templateUrl: './template/bkControl.html',
+      templateUrl: './app/controlpanel/controlpanel.html',
       controller: function($scope) {
         document.title = "Beaker";
         var _impl = {

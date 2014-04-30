@@ -341,7 +341,7 @@ public class RShellRest {
     return true;
   }
 
-  private boolean windows() {
+  private static boolean windows() {
     return System.getProperty("os.name").contains("Windows");
   }
 

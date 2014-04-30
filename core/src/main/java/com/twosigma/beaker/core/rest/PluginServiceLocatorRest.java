@@ -128,6 +128,10 @@ public class PluginServiceLocatorRest {
     return System.getProperty("os.name").contains("Windows");
   }
 
+  private static boolean windowsStatic() {
+    return System.getProperty("os.name").contains("Windows");
+  }
+
   public void start() throws InterruptedException, IOException {
     startReverseProxy();
   }
@@ -438,11 +442,12 @@ public class PluginServiceLocatorRest {
   public String getIPythonVersion()
       throws IOException
   {
+    Process proc;
     if (windows()) {
       String cmd = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
-      Process proc = Runtime.getRuntime().exec(cmd);
+      proc = Runtime.getRuntime().exec(cmd);
     } else {
-      Process proc = Runtime.getRuntime().exec("ipython --version");
+      proc = Runtime.getRuntime().exec("ipython --version");
     }
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     String line = br.readLine();
@@ -484,7 +489,7 @@ public class PluginServiceLocatorRest {
 
     void shutDown() {
       if (this.isStarted()) {
-        if (windows()) {
+        if (windowsStatic()) {
           new WinProcess(this.proc).killRecursively();
         } else {
           this.proc.destroy(); // send SIGTERM

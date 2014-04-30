@@ -18,7 +18,7 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('sectionCell', function(
+  module.directive('bkSectionCell', function(
       bkUtils,
       bkEvaluatorManager,
       bkSessionManager,

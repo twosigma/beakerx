@@ -43,7 +43,7 @@
           '</div>' +
           '<div ng-include="getTypeCellUrl()"></div>' +
           '<bk-cell-menu items="cellview.menu.items"></bk-cell-menu>' +
-          '<new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></new-cell-menu>' +
+          '<bk-new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>' +
           '</div>',
       scope: {
         cellmodel: "="
@@ -144,7 +144,7 @@
         });
         $scope.getTypeCellUrl = function() {
           var type = $scope.cellmodel.type;
-          return type + "Cell.html";
+          return type + "-cell.html";
         };
       },
       link: function(scope, element, attrs) {

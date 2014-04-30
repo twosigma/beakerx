@@ -22,7 +22,7 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('inputMenu', function(bkCoreManager) {
+  module.directive('bkCodeCellInputMenu', function(bkCoreManager) {
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
     } ;

@@ -18,7 +18,7 @@
   <i class='fa fa-minus-square-o bksectiontoggleminus' ng-click='toggleShowChildren()' ng-show='isShowChildren()'></i>
   <span class='section{{cellmodel.level}} bk-section-title' contenteditable="true">{{cellmodel.title}}</span>
 </div>
-<new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></new-cell-menu>
+<bk-new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
 <div bk-show="isShowChildren()">
   <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell"></bk-cell>
 </div>

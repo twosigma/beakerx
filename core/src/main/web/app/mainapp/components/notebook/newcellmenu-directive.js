@@ -18,7 +18,7 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('newCellMenu', function(
+  module.directive('bkNewCellMenu', function(
       bkUtils, bkSessionManager, bkEvaluatorManager) {
     return {
       restrict: 'E',

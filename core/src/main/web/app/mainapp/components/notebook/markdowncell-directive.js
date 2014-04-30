@@ -18,7 +18,7 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('markdownCell', function(bkSessionManager) {
+  module.directive('bkMarkdownCell', function(bkSessionManager) {
     return {
       restrict: 'E',
       template: "<div></div>",

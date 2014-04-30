@@ -18,7 +18,7 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('textCell', function(bkSessionManager) {
+  module.directive('bkTextCell', function(bkSessionManager) {
     return {
       restrict: 'E',
       template: "<div contenteditable='true'></div>",

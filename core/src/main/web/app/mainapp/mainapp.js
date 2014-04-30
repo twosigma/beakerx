@@ -42,7 +42,7 @@
    * - This is the beaker App
    * - menus + plugins + notebook(notebook model + evaluator)
    */
-  module.directive('bkApp', function(
+  module.directive('bkMainApp', function(
       $routeParams,
       bkUtils,
       bkCoreManager,

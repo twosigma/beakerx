@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="vendor/bower_components/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="vendor/slickgrid/slick.grid.css">
   <link rel="stylesheet" href="vendor/jquery-ui/css/smoothness/jquery-ui.custom.min.css">
-  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="app/app.css">
 
   <script src="vendor/flotr2/flotr2.js"></script>
   <script src="vendor/bower_components/jquery/jquery.min.js"></script>
@@ -83,46 +83,65 @@
   <script src="vendor/moment/moment.min.js"></script>
   <script src="vendor/moment/moment-timezone.js"></script>
   <script src="vendor/moment/moment-timezone-data.js"></script>
+  <script src="vendor/bower_components/requirejs/require.js" data-main="app/main.js"></script>
 
-  <script src="vendor/bower_components/requirejs/require.js" data-main="js/main.js"></script>
-  <script src="js/module/generalUtils.js"></script>
-  <script src="js/module/commonUI.js"></script>
-  <script src="js/module/cometd.js"></script>
-  <script src="js/module/angularUtils.js"></script>
-  <script src="js/module/treeView.js"></script>
-  <script src="js/module/bkApp.js"></script>
-  <script src="js/module/bkCell.js"></script>
-  <script src="js/module/bkCellMenuPluginManager.js"></script>
-  <script src="js/module/bkCodeCell.js"></script>
-  <script src="js/module/bkCodeCellOutput.js"></script>
-  <script src="js/module/bkControl.js"></script>
-  <script src="js/module/bkCore.js"></script>
-  <script src="js/module/bkDebug.js"></script>
-  <script src="js/module/bkEvaluateJobManager.js"></script>
-  <script src="js/module/bkEvaluatePluginManager.js"></script>
-  <script src="js/module/bkEvaluatorManager.js"></script>
-  <script src="js/module/bkHelper.js"></script>
-  <script src="js/module/bkMenuPluginManager.js"></script>
-  <script src="js/module/bkNotebook.js"></script>
-  <script src="js/module/bkNotebookCellModelManager.js"></script>
-  <script src="js/module/bkNotebookEvaluators.js"></script>
-  <script src="js/module/bkNotebookVersionManager.js"></script>
-  <script src="js/module/bkOutputDisplay.js"></script>
-  <script src="js/module/bkOutputLog.js"></script>
-  <script src="js/module/bkRecentMenu.js"></script>
-  <script src="js/module/bkSession.js"></script>
-  <script src="js/module/bkSessionManager.js"></script>
-  <script src="js/module/bkShare.js"></script>
-  <script src="js/module/bkTrack.js"></script>
-  <script src="js/module/bkUtils.js"></script>
-  <script src="js/beaker.js"></script>
+  <script src="app/controlpanel/controlpanel.js"></script>
+  <script src="app/controlpanel/controlpanel-directive.js"></script>
+  <script src="app/controlpanel/controlpanelsessionitem-directive.js"></script>
 
-  <script src="js/outputDisplay/bkoChart.js"></script>
-  <script src="js/outputDisplay/bkoTableDisplay.js"></script>
-  <script src="js/outputDisplay/bkoImage.js"></script>
-  <script src="js/outputDisplay/bkoLatex.js"></script>
-  <script src="js/outputDisplay/bkoProgress.js"></script>
-  <script src="js/outputDisplay/bkoVega.js"></script>
+  <script src="app/helpers/cellmenupluginmanager.js"></script>
+  <script src="app/helpers/core.js"></script>
+  <script src="app/helpers/debug.js"></script>
+  <script src="app/helpers/evaluatepluginmanager.js"></script>
+  <script src="app/helpers/helper.js"></script>
+  <script src="app/helpers/menupluginmanager.js"></script>
+
+  <script src="app/mainapp/mainapp.js"></script>
+  <script src="app/mainapp/services/evaluatejobmanager.js"></script>
+  <script src="app/mainapp/services/evaluatormanager.js"></script>
+  <script src="app/mainapp/services/notebookcellmodelmanager.js"></script>
+  <script src="app/mainapp/services/sessionmanager.js"></script>
+  <script src="app/mainapp/components/notebook/notebook.js"></script>
+  <script src="app/mainapp/components/notebook/cell-directive.js"></script>
+  <script src="app/mainapp/components/notebook/cellmenu-directive.js"></script>
+  <script src="app/mainapp/components/notebook/codecell-directive.js"></script>
+  <script src="app/mainapp/components/notebook/codecellinputmenu-directive.js"></script>
+  <script src="app/mainapp/components/notebook/codecelloutput-directive.js"></script>
+  <script src="app/mainapp/components/notebook/codecelloutputmenu-directive.js"></script>
+  <script src="app/mainapp/components/notebook/markdowncell-directive.js"></script>
+  <script src="app/mainapp/components/notebook/newcellmenu-directive.js"></script>
+  <script src="app/mainapp/components/notebook/notebook-directive.js"></script>
+  <script src="app/mainapp/components/notebook/sectioncell-directive.js"></script>
+  <script src="app/mainapp/components/notebook/textcell-directive.js"></script>
+  <script src="app/mainapp/components/notebook/outputdisplay/outputdisplay.js"></script>
+  <script src="app/mainapp/components/notebook/outputdisplay/outputdisplay-directive.js"></script>
+  <script src="app/mainapp/components/notebook/outputdisplay/outputdisplayfactory-service.js"></script>
+  <script src="app/mainapp/components/notebook/outputdisplay/outputdisplayservicemanager-service.js"></script>
+  <script src="app/mainapp/components/pluginmanager/pluginmanager.js"></script>
+  <script src="app/mainapp/components/pluginmanager/pluginmanager-directive.js"></script>
+  <script src="app/mainapp/components/pluginmanager/pluginmanagerevaluatorsettings-directive.js"></script>
+
+  <script src="app/utils/basic/commonutils.js"></script>
+  <script src="app/utils/basic/commonui.js"></script>
+  <script src="app/utils/basic/angularutils.js"></script>
+  <script src="app/utils/basic/treeview.js"></script>
+  <script src="app/utils/cometdutils.js"></script>
+  <script src="app/utils/notebookversionmanager.js"></script>
+  <script src="app/utils/outputlog.js"></script>
+  <script src="app/utils/recentmenu.js"></script>
+  <script src="app/utils/session.js"></script>
+  <script src="app/utils/share.js"></script>
+  <script src="app/utils/track.js"></script>
+  <script src="app/utils/utils.js"></script>
+
+  <script src="app/beaker.js"></script>
+
+  <script src="outputdisplay/bko-chart.js"></script>
+  <script src="outputdisplay/bko-tableDisplay.js"></script>
+  <script src="outputdisplay/bko-image.js"></script>
+  <script src="outputdisplay/bko-latex.js"></script>
+  <script src="outputdisplay/bko-progress.js"></script>
+  <script src="outputdisplay/bko-vega.js"></script>
 </head>
 <body>
   <ng-view></ng-view>

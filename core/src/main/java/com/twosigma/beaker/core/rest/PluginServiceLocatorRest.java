@@ -137,8 +137,13 @@ public class PluginServiceLocatorRest {
     generateNginxConfig();
 
     String nginxCommand = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
-    nginxCommand += (" -p " + this.nginxServDir);
-    nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
+    if (windows()) {
+      nginxCommand += (" -p \"" + this.nginxServDir + "\"");
+      nginxCommand += (" -c \"" + this.nginxServDir + "/conf/nginx.conf\"");
+    } else {
+      nginxCommand += (" -p " + this.nginxServDir);
+      nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
+    }
     System.out.println("running nginx: " + nginxCommand);
     Process proc = Runtime.getRuntime().exec(nginxCommand);
     startGobblers(proc, "nginx", null, null);
@@ -247,7 +252,11 @@ public class PluginServiceLocatorRest {
       }
     }
 
-    fullCommand += args;
+    if (windows()) {
+      fullCommand = "\"" + fullCommand + "\"";
+    } else {
+      fullCommand += args; // XXX should be in windows too?
+    }
 
     List<String> extraArgs = this.pluginArgs.get(pluginId);
     if (extraArgs != null) {
@@ -257,6 +266,9 @@ public class PluginServiceLocatorRest {
     fullCommand += " " + Integer.toString(corePort);
 
     String[] env = this.pluginEnvps.get(pluginId);
+    if (windows()) {
+      fullCommand = "python " + fullCommand;
+    }
     System.out.println("Running: " + fullCommand);
     Process proc = Runtime.getRuntime().exec(fullCommand, env);
 
@@ -381,7 +393,13 @@ public class PluginServiceLocatorRest {
     ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
-    ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
+    if (windows()) {
+      String tempDir = nginxClientTempDir.toFile().getPath();
+      // Nginx interprets strings in unix style so backslash confuses it.
+      ngixConfig = ngixConfig.replace("%(client_temp_dir)s", tempDir.replace("\\", "/"));
+    } else {
+      ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
+    }
     ngixConfig = ngixConfig.replace("%(restart_id)s", restartId);
 
     // write template to file
@@ -420,7 +438,12 @@ public class PluginServiceLocatorRest {
   public String getIPythonVersion()
       throws IOException
   {
-    Process proc = Runtime.getRuntime().exec("ipython --version");
+    if (windows()) {
+      String cmd = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
+      Process proc = Runtime.getRuntime().exec(cmd);
+    } else {
+      Process proc = Runtime.getRuntime().exec("ipython --version");
+    }
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     String line = br.readLine();
     return line;
@@ -461,7 +484,11 @@ public class PluginServiceLocatorRest {
 
     void shutDown() {
       if (this.isStarted()) {
-        this.proc.destroy(); // send SIGTERM
+        if (windows()) {
+          new WinProcess(this.proc).killRecursively();
+        } else {
+          this.proc.destroy(); // send SIGTERM
+        }
       }
     }
 

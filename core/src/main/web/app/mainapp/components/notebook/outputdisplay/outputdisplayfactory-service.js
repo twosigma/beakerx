@@ -23,7 +23,7 @@
 
   var module = angular.module('bk.outputDisplay');
 
-  module.factory("outputDisplayFactory", function($rootScope) {
+  module.factory("bkOutputDisplayFactory", function($rootScope) {
 
     var impls = {
       "Text": {
@@ -110,7 +110,7 @@
       if (!scope) {
         scope = $rootScope;
       }
-      scope.$broadcast("outputDisplayFactory", what);
+      scope.$broadcast("bkOutputDisplayFactory", what);
       scope.$$phase || scope.$apply();
     };
     var setImpl = function(index, type, impl) {
@@ -233,17 +233,17 @@
   for (var i = 0; i < MAX_CAPACITY; ++i) {
     (function() {
       var ii = i;
-      module.directive("bko" + ii, function(outputDisplayFactory, outputDisplayService, $injector) {
-        var impl = outputDisplayFactory.get(ii);
+      module.directive("bko" + ii, function(bkOutputDisplayFactory, bkOutputDisplayServiceManager, $injector) {
+        var impl = bkOutputDisplayFactory.get(ii);
         if (typeof impl === "function") {
-          return impl(outputDisplayService, $injector);
+          return impl(bkOutputDisplayServiceManager, $injector);
         } else if (Object.prototype.toString.call(impl) === '[object Array]') {
           var args = [];
           for (var j = 0; j < impl.length; ++j) {
             var it = impl[j];
             if (typeof it === "string") {
-              if (outputDisplayService.has(it)) {
-                args.push(outputDisplayService.get(it));
+              if (bkOutputDisplayServiceManager.has(it)) {
+                args.push(bkOutputDisplayServiceManager.get(it));
               } else if ($injector.has(it)) {
                 args.push($injector.get(it));
               } else {

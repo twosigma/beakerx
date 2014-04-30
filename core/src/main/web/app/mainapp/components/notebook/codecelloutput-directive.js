@@ -24,7 +24,7 @@
   var module = angular.module('bk.notebook');
 
   module.directive('bkCodeCellOutput', function(
-      bkUtils, outputDisplayFactory, bkEvaluatorManager) {
+      bkUtils, bkOutputDisplayFactory, bkEvaluatorManager) {
     return {
       restrict: "E",
       templateUrl: "./app/mainapp/components/notebook/codecelloutput.html",
@@ -40,7 +40,7 @@
         };
         $scope.applicableDisplays = [];
         $scope.$watch('getOutputResult()', function(result) {
-          $scope.applicableDisplays = outputDisplayFactory.getApplicableDisplays(result);
+          $scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(result);
           $scope.model.selectedType = $scope.applicableDisplays[0];
         });
 

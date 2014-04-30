@@ -21,9 +21,8 @@
   'use strict';
   beaker.bkoDirective("Chart",
       ["flotr2ViewUtils",
-        "outputDisplayService",
         "bkCellMenuPluginManager",
-        function(flotr2ViewUtils, outputDisplayService, bkCellMenuPluginManager) {
+        function(flotr2ViewUtils, bkCellMenuPluginManager) {
           return {
             template: "<div class='tschartcontainer'></div>",
             controller: function($scope) {

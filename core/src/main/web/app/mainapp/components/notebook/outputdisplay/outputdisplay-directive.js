@@ -16,7 +16,7 @@
 (function() {
   "use strict";
   var module = angular.module('bk.outputDisplay');
-  module.directive('bkOutputDisplay', function($compile, $rootScope, outputDisplayFactory) {
+  module.directive('bkOutputDisplay', function($compile, $rootScope, bkOutputDisplayFactory) {
     return {
       restrict: "E",
       template: "<div>OUTPUT</div>",
@@ -32,7 +32,7 @@
           }
           childScope = $rootScope.$new();
           childScope.model = scope.model;
-          var directiveName = outputDisplayFactory.getDirectiveName(type);
+          var directiveName = bkOutputDisplayFactory.getDirectiveName(type);
           element.html("<div " + directiveName + " model='model'></div>");
           $compile(element.contents())(childScope);
         };

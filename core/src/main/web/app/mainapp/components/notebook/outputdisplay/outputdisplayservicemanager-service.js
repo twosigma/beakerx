@@ -21,7 +21,7 @@
   "use strict";
 
   var module = angular.module('bk.outputDisplay');
-  module.factory("outputDisplayService", function($injector) {
+  module.factory("bkOutputDisplayServiceManager", function($injector) {
     var services = {};
     var factory = {
       getServices: function() {

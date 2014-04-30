@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 /**
- * M_bkCell
+ * Module bk.cell
  * This module contains directives for cells. The bkCell directive is the base untyped cell
  * container which can include a typed cell. Most of the typed cell directive, except for the
  * code cell, goes into this module too. The module also holds the directive for cell UI behavior,
@@ -22,13 +22,13 @@
  */
 (function() {
   'use strict';
-  var M_bkCell = angular.module('M_bkCell', [
-    'M_bkUtils',
-    'M_bkCore',
-    'M_bkSessionManager',
-    'M_bkEvaluatorManager',
-    'M_bkCellPluginManager',
-    'M_bkCodeCell'
+  var module = angular.module('bk.cell', [
+    'bk.utils',
+    'bk.core',
+    'bk.sessionManager',
+    'bk.evaluatorManager',
+    'bk.cellMenuPluginManager',
+    'bk.codeCell'
   ]);
   /**
    * bkCell
@@ -43,7 +43,7 @@
    * - TODO, this is currently strongly tied to the hierarchical notebook layout, we want to change
    * that
    */
-  M_bkCell.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager) {
+  module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager) {
     return {
       restrict: 'E',
       template: '<div class="bkcell">' +
@@ -183,14 +183,14 @@
       }
     };
   });
-  M_bkCell.directive('bkCellMenu', function() {
+  module.directive('bkCellMenu', function() {
     return {
       restrict: 'E',
       templateUrl: "./app/mainapp/components/cellmenu.html",
       scope: { items: '=' }
     };
   });
-  M_bkCell.directive('newCellMenu', function(
+  module.directive('newCellMenu', function(
       bkUtils, bkSessionManager, bkEvaluatorManager) {
     return {
       restrict: 'E',
@@ -243,7 +243,7 @@
     };
   });
 
-  M_bkCell.directive('sectionCell', function(
+  module.directive('sectionCell', function(
       bkUtils,
       bkEvaluatorManager,
       bkSessionManager,
@@ -418,7 +418,7 @@
     };
   });
 
-  M_bkCell.directive('textCell', function(bkSessionManager) {
+  module.directive('textCell', function(bkSessionManager) {
     return {
       restrict: 'E',
       template: "<div contenteditable='true'></div>",
@@ -441,7 +441,7 @@
     };
   });
 
-  M_bkCell.directive('markdownCell', function(bkSessionManager) {
+  module.directive('markdownCell', function(bkSessionManager) {
     return {
       restrict: 'E',
       template: "<div></div>",

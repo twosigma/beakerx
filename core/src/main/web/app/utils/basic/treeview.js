@@ -18,7 +18,7 @@
  */
 (function() {
   'use strict';
-  var treeView = angular.module('M_TreeView', ['ngAnimate']);
+  var treeView = angular.module('bk.treeView', ['ngAnimate']);
 
   treeView.factory('fileService', function() {
     var _provider = {};

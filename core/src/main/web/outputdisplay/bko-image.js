@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 /**
- * M_bkoImage
+ * bkoImage
  * This is the output display component for displaying images transferred in byte arrays.
  */
 (function() {

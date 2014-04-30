@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 /**
- * M_bkNotebookEvaluators
+ * Module bk.pluginManager
  * This is the module for the UI that shows the list of evaluators and their corresponding
  * settings panel.
  */
 (function() {
   'use strict';
-  var bkNotebookEvaluators = angular.module('M_bkNotebookEvaluators', [
-    'M_bkCore',
-    'M_bkSessionManager',
-    'M_bkEvaluatePluginManager',
-    'M_bkEvaluatorManager'
+  var bkNotebookEvaluators = angular.module('bk.pluginManager', [
+    'bk.core',
+    'bk.sessionManager',
+    'bk.evaluatePluginManager',
+    'bk.evaluatorManager'
   ]);
 
   bkNotebookEvaluators.directive('bkNotebookEvaluators', function(

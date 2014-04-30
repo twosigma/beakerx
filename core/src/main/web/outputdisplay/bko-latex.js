@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 /**
- * M_bkoLatex
+ * bkoLatex
  * This is the output display component for displaying results of LaTex code.
  */
 (function() {

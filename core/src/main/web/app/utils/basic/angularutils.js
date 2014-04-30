@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 /**
- * M_angularUtils
+ * Module bk.angularUtils
  * This module provides AngularJS specific utilities that are shared across the whole application.
  */
 (function() {
   'use strict';
-  var module = angular.module('M_angularUtils', []);
+  var module = angular.module('bk.angularUtils', []);
   module.factory('angularUtils', function($rootScope, $location, $http, $q, $timeout) {
     return {
       setLocation: function(newLocation) {

@@ -94,11 +94,11 @@
 
     var beaker = angular.module('beaker', [
       'ngRoute',
-      'M_bkCore',
-      'M_bkControl',
-      'M_bkApp',
-      'M_bkDebug',
-      'M_bkEvaluatePluginManager'
+      'bk.core',
+      'bk.evaluatePluginManager',
+      'bk.controlPanel',
+      'bk.mainApp',
+      'bk.debug'
     ]);
 
     // setup routing. the template is going to replace ng-view
@@ -276,5 +276,10 @@
       angular.bootstrap(document, ["beaker"]);
     });
   };
-  Q.fcall(initPlugins).then(setupBeakerConfigAndRun).then(bootstrapBkApp);
+  Q.fcall(initPlugins)
+      .then(setupBeakerConfigAndRun)
+      .then(bootstrapBkApp)
+      .catch(function (err) {
+        console.error(err.stack);
+      });
 })();

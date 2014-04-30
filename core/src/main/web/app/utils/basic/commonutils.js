@@ -14,14 +14,14 @@
  *  limitations under the License.
  */
 /**
- * M_generalUtils
+ * Module bk.commonUtils
  * - this should be the most general utilities, the utilities that could have been found in a
  * 3rd-party library
  * and we just happen to write our own.
  */
 (function() {
   'use strict';
-  var module = angular.module('M_generalUtils', []);
+  var module = angular.module('bk.commonUtils', []);
   module.factory('generalUtils', function() {
     return {
       generateId: function(length) {

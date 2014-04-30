@@ -14,22 +14,22 @@
  *  limitations under the License.
  */
 /**
- * M_bkControl
+ * bk.ControlPanel
  * - This is the module for the 'control panel' section of beaker
  * - In the control panel, users get a list of opened sessions and is able to
  * (re)open one in bkApp.
  */
 (function() {
   'use strict';
-  var bkControl = angular.module('M_bkControl', [
-    'M_bkUtils',
-    'M_bkCore',
-    'M_bkSession',
-    'M_bkMenuPluginManager',
-    'M_bkRecentMenu',
-    'M_bkEvaluatePluginManager']);
+  var module = angular.module('bk.controlPanel', [
+    'bk.utils',
+    'bk.core',
+    'bk.session',
+    'bk.menuPluginManager',
+    'bk.recentMenu',
+    'bk.evaluatePluginManager']);
 
-  bkControl.directive('bkControl', function(
+  module.directive('bkControl', function(
       bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, trackingService) {
     return {
       restrict: 'E',
@@ -139,7 +139,7 @@
     };
   });
 
-  bkControl.directive('bkControlItem', function(
+  module.directive('bkControlItem', function(
       bkUtils, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
     return {
       restrict: 'E',

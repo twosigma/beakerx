@@ -14,12 +14,13 @@
  *  limitations under the License.
  */
 /**
- * M_bkNotebookCellModelManager
+ * Module bk.notebookCellModelManager
  * Notebook Cell Model doesn't own the notebook model.
  */
 (function() {
   'use strict';
-
+  var module = angular.module("bk.notebookCellModelManager", []);
+  
   // utilities
   var generateCellMap = function(cells) {
     var decoratedCells = {
@@ -121,7 +122,6 @@
     };
   };
 
-  var module = angular.module("M_bkNotebookCellModelManager", []);
   module.factory("bkNotebookCellModelManager", function() {
     var cells = [];
     var cellMap = {};

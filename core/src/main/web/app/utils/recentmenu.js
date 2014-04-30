@@ -14,12 +14,12 @@
  *  limitations under the License.
  */
 /**
- *  M_bkRecentMenu
+ *  Module bk.recentMenu
  *  This module owns the service of retrieving recent menu items and updating the recent menu.
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkRecentMenu', ['M_angularUtils']);
+  var module = angular.module('bk.recentMenu', ['bk.angularUtils']);
 
   module.provider("bkRecentMenu", function() {
     var _server = null;

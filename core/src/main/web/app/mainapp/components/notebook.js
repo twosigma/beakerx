@@ -14,23 +14,21 @@
  *  limitations under the License.
  */
 /**
- * M_bkNotebook
+ * Module bk.notebook
  * This is the 'notebook view' part of {@link bkApp}. What is the root cell holding the nested
  * {@link bkCell}s.
  */
 (function() {
   'use strict';
-  var bkNotebook = angular.module('M_bkNotebook', [
-    'M_commonUI',
-    'M_bkUtils',
-    'M_bkShare',
-    'M_bkCore',
-    'M_bkSessionManager',
-    'M_bkNotebookEvaluators',
-    'M_bkEvaluatorManager',
-    'M_bkCell',
-    'M_cometd',
-    'M_bkOutputLog'
+  var module = angular.module('bk.notebook', [
+    'bk.commonUi',
+    'bk.utils',
+    'bk.outputLog',
+    'bk.core',
+    'bk.sessionManager',
+    'bk.pluginManager',
+    'bk.evaluatorManager',
+    'bk.cell'
   ]);
   /**
    * bkNotebook
@@ -41,7 +39,7 @@
    * we want to separate out the layout specific stuffs(idea of a section) from other
    * stuffs like evaluator panel
    */
-  bkNotebook.directive('bkNotebook', function(
+  module.directive('bkNotebook', function(
       bkUtils, bkEvaluatorManager,
       bkCellPluginManager, bkSessionManager, bkCoreManager, bkOutputLog) {
     return {

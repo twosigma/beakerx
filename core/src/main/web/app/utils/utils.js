@@ -14,16 +14,16 @@
  *  limitations under the License.
  */
 /**
- * M_bkUtils
+ * Module bk.utils
  * This module contains the low level utilities used by Beaker
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkUtils', [
-    'M_generalUtils',
-    'M_angularUtils',
-    'M_bkTrack',
-    'M_cometd'
+  var module = angular.module('bk.utils', [
+    'bk.commonUtils',
+    'bk.angularUtils',
+    'bk.cometdUtils',
+    'bk.track'
   ]);
   /**
    * bkUtils

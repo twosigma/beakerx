@@ -14,17 +14,13 @@
  *  limitations under the License.
  */
 /**
- * M_bkHelper
- * The bkHelper should be a subset of bkCore({@link M_bkCore}) utilities that are exposed for
+ * Module bk.helper
+ * The bkHelper should be a subset of bkCore utilities that are exposed for
  * usages external to Beaker.
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkHelper', [
-    'M_bkUtils',
-    'M_bkCore',
-    'M_bkShare'
-  ]);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than

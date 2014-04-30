@@ -14,29 +14,29 @@
  *  limitations under the License.
  */
 /**
- * M_cometd
+ * Module bk.cometdUtils
  * This module offers the cometd service that is used to receive 'pushes' from the server.
  */
 (function() {
   'use strict';
-  angular.module('M_cometd', [])
-      .factory('cometd', function() {
-        $.cometd.unregisterTransport("websocket");
-        $.cometd.init("cometd");
-        var _statusListener;
-        return {
-          addConnectedStatusListener: function(cb) {
-            if (_statusListener) {
-              this.removeConnectedStatusListener();
-            }
-            _statusListener = $.cometd.addListener("/meta/connect", cb);
-          },
-          removeConnectedStatusListener: function() {
-            $.cometd.removeListener(_statusListener);
-          },
-          addOutputlogUpdateListener: function(cb) {
-            $.cometd.subscribe("/outputlog", cb);
-          }
-        };
-      });
+  var module = angular.module('bk.cometdUtils', []);
+  module.factory('cometd', function () {
+    $.cometd.unregisterTransport("websocket");
+    $.cometd.init("cometd");
+    var _statusListener;
+    return {
+      addConnectedStatusListener: function (cb) {
+        if (_statusListener) {
+          this.removeConnectedStatusListener();
+        }
+        _statusListener = $.cometd.addListener("/meta/connect", cb);
+      },
+      removeConnectedStatusListener: function () {
+        $.cometd.removeListener(_statusListener);
+      },
+      addOutputlogUpdateListener: function (cb) {
+        $.cometd.subscribe("/outputlog", cb);
+      }
+    };
+  });
 })();

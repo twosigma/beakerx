@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 /**
- * M_commonUI
+ * Module bk.commonUi
  * This module is the general store of low level UI directives, which should be separated out or
  * potentially found equivalent in 3rd party libraries.
  */
 
 (function() {
   'use strict';
-  var commonUI = angular.module('M_commonUI', []);
-  commonUI.directive('onCtrlEnter', function() {
+  var module = angular.module('bk.commonUi', []);
+  module.directive('onCtrlEnter', function() {
     return {
       link: function(scope, element, attrs) {
         element.bind("keyup", function(event) {
@@ -33,14 +33,14 @@
       }
     };
   });
-  commonUI.directive('eatClick', function() {
+  module.directive('eatClick', function() {
     return function(scope, element, attrs) {
       element.click(function(event) {
         event.preventDefault();
       });
     };
   });
-  commonUI.directive('focusStart', function() {
+  module.directive('focusStart', function() {
     return {
       link: function(scope, element, attrs) {
         Q.fcall(function() {
@@ -49,7 +49,7 @@
       }
     };
   });
-  commonUI.directive('bkcell', function() {
+  module.directive('bkcell', function() {
     return {
       restrict: 'C',
       link: function(scope, element, attrs) {
@@ -64,7 +64,7 @@
       }
     };
   });
-  commonUI.directive('bkShow', function() { // like ngShow, but animated
+  module.directive('bkShow', function() { // like ngShow, but animated
     return {
       link: function(scope, element, attrs) {
         var expression = attrs.bkShow;
@@ -78,7 +78,7 @@
       }
     };
   });
-  commonUI.directive('bkHide', function() { // like ngShow, but animated
+  module.directive('bkHide', function() { // like ngShow, but animated
     return {
       link: function(scope, element, attrs) {
         var expression = attrs.bkHide;
@@ -92,7 +92,7 @@
       }
     };
   });
-  commonUI.directive('bkDropdownMenu', function() {
+  module.directive('bkDropdownMenu', function() {
     return {
       restrict: 'E',
       template: '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">' +

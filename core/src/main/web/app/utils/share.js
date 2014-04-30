@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 /**
- * M_bkShare
+ * Module bk.share
  * This module owns the bkShare service which communicate with the backend to create sharable
  * content as well as to return URL of the shard content.
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkShare', []);
+  var module = angular.module('bk.share', []);
 
   module.provider("bkShare", function() {
     var _sharingService = null;

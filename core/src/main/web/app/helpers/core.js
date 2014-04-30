@@ -14,21 +14,21 @@
  *  limitations under the License.
  */
 /**
- * M_bkCore
+ * Module bk.core
  * Holds the core of beaker utilities. It wraps of lower level utilities that come from other
  * modules.
  * The user facing directives also use the core as a communication/exchange layer.
  */
 (function() {
   'use strict';
-  var bkCore = angular.module('M_bkCore', [
+  var module = angular.module('bk.core', [
     'ui.bootstrap',
     'ui.keypress',
-    'M_commonUI',
-    'M_bkUtils',
-    'M_bkRecentMenu',
-    'M_bkNotebookCellModelManager',
-    'M_TreeView'
+    'bk.commonUi',
+    'bk.utils',
+    'bk.recentMenu',
+    'bk.notebookCellModelManager',
+    'bk.treeView'
   ]);
 
   /**
@@ -37,7 +37,7 @@
    * - bkUtils should be consider 'private' to beaker, external code should depend on bkHelper
    *     instead
    */
-  bkCore.factory('bkCoreManager', function(
+  module.factory('bkCoreManager', function(
       $dialog, bkUtils, bkRecentMenu, fileChooserOp) {
 
     var FileSystemFileChooserStrategy = function (){
@@ -328,7 +328,7 @@
     return bkCoreManager;
   });
 
-  bkCore.factory('fileChooserOp', function() {
+  module.factory('fileChooserOp', function() {
     var _strategy = {};
     return {
       setStrategy: function(strategy) {
@@ -340,7 +340,7 @@
     };
   });
 
-  bkCore.controller('fileChooserController', function($scope, dialog, fileChooserOp) {
+  module.controller('fileChooserController', function($scope, dialog, fileChooserOp) {
     $scope.getStrategy = function() {
       return fileChooserOp.getStrategy();
     };
@@ -352,7 +352,7 @@
   /**
    * Directive to show a modal dialog that does filename input.
    */
-  bkCore.directive('fileActionDialog', function() {
+  module.directive('fileActionDialog', function() {
     return {
       scope: { actionName: '@', inputId: '@', close: '=' },
       templateUrl: "./app/template/fileactiondialog.html",

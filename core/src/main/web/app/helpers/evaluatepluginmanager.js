@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 /**
- * M_bkEvaluatePluginManager
+ * Module bk.evaluatePluginManager
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkEvaluatePluginManager', ['M_bkUtils']);
+  var module = angular.module('bk.evaluatePluginManager', ['bk.utils']);
   module.factory('bkEvaluatePluginManager', function(bkUtils) {
       var nameToUrlMap = {};
       var plugins = {};

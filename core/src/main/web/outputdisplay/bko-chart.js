@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 /**
- * M_bkoChart
+ * bkoChart
  * This is the output display component for displaying charts.
  */
 (function() {

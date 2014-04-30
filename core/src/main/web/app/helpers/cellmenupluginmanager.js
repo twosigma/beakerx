@@ -19,11 +19,11 @@
  */
 (function() {
   'use strict';
-  var M_bkCellPluginManager = angular.module('M_bkCellPluginManager', [
-    'M_bkUtils',
-    'M_bkHelper'  // This is only for ensuring that window.bkHelper is set, don't use bkHelper directly
+  var module = angular.module('bk.cellMenuPluginManager', [
+    'bk.utils',
+    'bk.helper'  // This is only for ensuring that window.bkHelper is set, don't use bkHelper directly
   ]);
-  M_bkCellPluginManager.factory('bkCellPluginManager', function(bkUtils) {
+  module.factory('bkCellPluginManager', function(bkUtils) {
     // loaded plugins
     var _cellMenuPlugins = {};
     return {

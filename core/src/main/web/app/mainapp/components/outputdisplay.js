@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 /**
- * M_bkOutputDisplay
+ * Module bk.outputDisplay
  * This module is the central control of all output displays. It fulfills actual angular directives
  * lazily when user load output display plugins.
  */
@@ -22,9 +22,8 @@
   "use strict";
   var MAX_CAPACITY = 100;
 
-  var module = angular.module('M_bkOutputDisplay', [
+  var module = angular.module('bk.outputDisplay', []);
 
-  ]);
   module.factory("outputDisplayService", function($injector) {
     var services = {};
     var factory = {

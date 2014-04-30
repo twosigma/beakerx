@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 /**
- * M_bkoTableDisplay
+ * bkoTableDisplay
  * This is the output display component for displaying tables.
  */
 (function() {

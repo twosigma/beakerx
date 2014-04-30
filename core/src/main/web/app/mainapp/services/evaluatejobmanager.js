@@ -16,10 +16,7 @@
 
 (function() {
   'use strict';
-  var module = angular.module('M_bkEvaluateJobManager', [
-    'M_bkUtils',
-    'M_bkEvaluatorManager'
-  ]);
+  var module = angular.module('bk.evaluateJobManager', ['bk.utils', 'bk.evaluatorManager']);
   module.factory('bkEvaluateJobManager', function(bkUtils, bkEvaluatorManager) {
     var setOutputCellText = function(cell, text) {
       if (!cell.output) {

@@ -14,30 +14,30 @@
  *  limitations under the License.
  */
 /**
- * M_bkDebug
+ * Module bk.debug
  * This module is for debug only and should never be used in code
  */
 (function() {
   'use strict';
-  var module = angular.module("M_bkDebug", [
-    "M_angularUtils",
-    "M_bkApp",
-    "M_bkCellPluginManager",
-    "M_bkCore",
-    'M_bkSessionManager',
-    "M_bkHelper",
-    "M_bkOutputLog",
-    "M_bkRecentMenu",
-    "M_bkSession",
-    "M_bkShare",
-    "M_bkTrack",
-    "M_bkUtils",
-    "M_cometd",
-    "M_generalUtils",
-    "M_bkMenuPluginManager",
-    "M_bkEvaluatePluginManager",
-    "M_bkEvaluatorManager",
-    "M_bkEvaluateJobManager"
+  var module = angular.module("bk.debug", [
+    "bk.angularUtils",
+    "bk.mainApp",
+    "bk.cellMenuPluginManager",
+    "bk.core",
+    'bk.sessionManager',
+    "bk.helper",
+    "bk.outputLog",
+    "bk.recentMenu",
+    "bk.session",
+    "bk.share",
+    "bk.track",
+    "bk.utils",
+    "bk.cometdUtils",
+    "bk.commonUtils",
+    "bk.menuPluginManager",
+    "bk.evaluatePluginManager",
+    "bk.evaluatorManager",
+    "bk.evaluateJobManager"
   ]);
   module.factory("bkDebug", function(
       $injector, angularUtils, bkEvaluateJobManager, bkCellPluginManager, bkSessionManager,

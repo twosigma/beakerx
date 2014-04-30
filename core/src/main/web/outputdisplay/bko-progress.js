@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 /**
- * M_bkoProgress
+ * bkoProgress
  */
 (function() {
   'use strict';

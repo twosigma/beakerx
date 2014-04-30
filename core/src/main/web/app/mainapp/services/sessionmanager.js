@@ -14,16 +14,16 @@
  *  limitations under the License.
  */
 /**
- * M_bkSessionManager
+ * Module bk.sessionManager
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkSessionManager',[
-    'M_bkUtils',
-    'M_bkSession',
-    'M_bkNotebookCellModelManager',
-    'M_bkRecentMenu',
-    'M_bkEvaluatorManager'
+  var module = angular.module('bk.sessionManager',[
+    'bk.utils',
+    'bk.session',
+    'bk.notebookCellModelManager',
+    'bk.recentMenu',
+    'bk.evaluatorManager'
   ]);
 
   module.factory('bkSessionManager', function(

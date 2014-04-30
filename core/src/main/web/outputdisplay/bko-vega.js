@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 /**
- * M_bkoVega
+ * bkoVega
  * This is the output display component for displaying vega JSON (http://trifacta.github.io/vega/).
  */
 (function() {

@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 /**
- * M_bkTrack
+ * Module bk.track
  * This module owns the service that can be configured to 3rd party provided usage metric
  * logging services.
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkTrack', []);
+  var module = angular.module('bk.track', []);
 
   module.provider('trackingService', function() {
     var _trackingService = null;

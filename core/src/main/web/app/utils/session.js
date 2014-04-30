@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 /**
- * M_bkSession
+ * Module bk.session
  * This module owns the services of communicating to the session backup end point to load and
  * upload(backup) a session.
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkSession', ['M_angularUtils']);
+  var module = angular.module('bk.session', ['bk.angularUtils']);
   /**
    * bkSession
    * - talks to beaker server (/beaker/rest/session)

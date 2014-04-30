@@ -14,17 +14,17 @@
  *  limitations under the License.
  */
 /**
- * M_bkCodeCellOutput
+ * Module bk.codeCellOutput
  * This module is the abstract container for types of output displays. While we plan to make the output display loading
  * mechanism more pluggable, right now, this module serves as the registration output display types and holds the logic
  * for switch between applicable output display through UI.
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkCodeCellOutput', [
-    'M_bkUtils',
-    'M_bkOutputDisplay',
-    'M_bkEvaluatorManager'
+  var module = angular.module('bk.codeCellOutput', [
+    'bk.utils',
+    'bk.outputDisplay',
+    'bk.evaluatorManager'
   ]);
 
   module.directive('bkCodeCellOutput', function(

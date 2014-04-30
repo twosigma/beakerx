@@ -14,23 +14,22 @@
  *  limitations under the License.
  */
 /**
- * M_bkCodeCell
+ * Module bk.codeCell
  * This module holds the logic for code cell, which is a typed {@link bkCell}.
  * The code cell contains an input cell an output cell ({@link bkCodeCellOutput}) and cell menus.
  */
 (function() {
   'use strict';
-  var M_bkCodeCell = angular.module('M_bkCodeCell', [
-    'M_bkUtils',
-    'M_bkCore',
-    'M_bkSessionManager',
-    'M_bkCellPluginManager',
-    'M_bkCodeCellOutput',
-    'M_commonUI',
-    'M_generalUtils',
-    'M_bkEvaluatorManager'
+  var module = angular.module('bk.codeCell', [
+    'bk.commonUi',
+    'bk.utils',
+    'bk.core',
+    'bk.sessionManager',
+    'bk.cellMenuPluginManager',
+    'bk.evaluatorManager',
+    'bk.codeCellOutput'
   ]);
-  M_bkCodeCell.directive('codeCell', function(
+  module.directive('codeCell', function(
       bkUtils, bkEvaluatorManager,
       bkCellPluginManager, bkSessionManager, bkCoreManager) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
@@ -418,7 +417,7 @@
       }
     };
   });
-  M_bkCodeCell.directive('inputMenu', function(bkCoreManager) {
+  module.directive('inputMenu', function(bkCoreManager) {
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
     } ;

@@ -14,24 +14,24 @@
  *  limitations under the License.
  */
 /**
- * M_bkOutputLog
+ * Module bk.outputLog
  * This module owns the service of get output log from the server.
  */
 (function() {
   'use strict';
-  angular.module('M_bkOutputLog', ['M_cometd', 'M_angularUtils'])
-      .factory('bkOutputLog', function(angularUtils, cometd) {
-        return {
-          getLog: function(cb) {
-            angularUtils.httpGet("/beaker/rest/outputlog/get", {})
-                .success(cb)
-                .error(function () {
-                  console.log("failed to get output log");
-                });
-          },
-          subscribe: function(cb) {
-            cometd.addOutputlogUpdateListener(cb);
-          }
-        };
-      });
+  var module = angular.module('bk.outputLog', ['bk.angularUtils', 'bk.cometdUtils']);
+  module.factory('bkOutputLog', function (angularUtils, cometd) {
+    return {
+      getLog: function (cb) {
+        angularUtils.httpGet("/beaker/rest/outputlog/get", {})
+            .success(cb)
+            .error(function () {
+              console.log("failed to get output log");
+            });
+      },
+      subscribe: function (cb) {
+        cometd.addOutputlogUpdateListener(cb);
+      }
+    };
+  });
 })();

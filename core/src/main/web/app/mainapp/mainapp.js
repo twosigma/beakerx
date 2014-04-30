@@ -14,26 +14,26 @@
  *  limitations under the License.
  */
 /**
- * M_bkApp
+ * Module bk.mainApp
  * This is the main module for the beaker notebook application. The module has a directive that
  * holds the menu bar as well as the notebook view.
  * The module also owns the centralized cell evaluation logic.
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkApp', [
+  var module = angular.module('bk.mainApp', [
     'ngRoute',
-    'M_bkUtils',
-    'M_commonUI',
-    'M_bkCore',
-    'M_bkSession',
-    'M_bkSessionManager',
-    'M_bkMenuPluginManager',
-    'M_bkCellPluginManager',
-    'M_bkNotebookVersionManager',
-    'M_bkEvaluatorManager',
-    'M_bkEvaluateJobManager',
-    'M_bkNotebook'
+    'bk.utils',
+    'bk.commonUi',
+    'bk.core',
+    'bk.session',
+    'bk.sessionManager',
+    'bk.menuPluginManager',
+    'bk.cellMenuPluginManager',
+    'bk.notebookVersionManager',
+    'bk.evaluatorManager',
+    'bk.evaluateJobManager',
+    'bk.notebook'
   ]);
 
   /**

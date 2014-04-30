@@ -16,9 +16,7 @@
 
 (function() {
   'use strict';
-  var module = angular.module('M_bkMenuPluginManager', [
-    'M_bkUtils'
-  ]);
+  var module = angular.module('bk.menuPluginManager', ['bk.utils']);
 
   var utils = (function() {
     var DEFAULT_PRIORITY = 0;

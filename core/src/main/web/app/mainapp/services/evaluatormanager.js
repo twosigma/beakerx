@@ -14,14 +14,11 @@
  *  limitations under the License.
  */
 /**
- * M_bkEvaluatorPluginManager
+ * Module bk.evaluatorPluginManager
  */
 (function() {
   'use strict';
-  var module = angular.module('M_bkEvaluatorManager', [
-    'M_bkUtils',
-    'M_bkEvaluatePluginManager'
-  ]);
+  var module = angular.module('bk.evaluatorManager', ['bk.utils', 'bk.evaluatePluginManager']);
 
   module.factory('bkEvaluatorManager', function (bkUtils, bkEvaluatePluginManager) {
     var evaluators = {};

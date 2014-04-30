@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/python
 #
 # Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 #
@@ -14,5 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cd $(dirname $0)
-bin/r $1 $2
+import os
+import sys
+
+coreport = sys.argv.pop()
+port = sys.argv.pop()
+self_path = sys.argv.pop()
+
+os.chdir(os.path.dirname(self_path))
+
+os.execlp("bin/r", "bin/r", port, coreport)

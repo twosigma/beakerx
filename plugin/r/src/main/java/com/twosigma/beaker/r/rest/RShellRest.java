@@ -58,7 +58,7 @@ import org.rosuda.REngine.RList;
 @Singleton
 public class RShellRest {
 
-  private boolean useMultipleRservers = false;
+  private boolean useMultipleRservers = windows();
 
   private static final String BEGIN_MAGIC = "**beaker_begin_magic**";
   private static final String END_MAGIC = "**beaker_end_magic**";
@@ -339,6 +339,10 @@ public class RShellRest {
     }
     obj.finished(table);
     return true;
+  }
+
+  private boolean windows() {
+    return System.getProperty("os.name").contains("Windows");
   }
 
   private static class RServer {

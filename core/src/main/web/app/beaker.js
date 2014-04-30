@@ -53,7 +53,7 @@
   var initPlugins = function() {
     var deferred = Q.defer();
     var plugins;
-    // duplicated in generalUtils.js
+    // duplicated in commonUtils.js
     function loadJS(url, success, failure) {
       var e = document.createElement('script');
       e.type = "text/javascript";

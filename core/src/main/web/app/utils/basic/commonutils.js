@@ -22,7 +22,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.commonUtils', []);
-  module.factory('generalUtils', function() {
+  module.factory('commonUtils', function() {
     return {
       generateId: function(length) {
         var text = "";
@@ -33,7 +33,6 @@
         }
         return text;
       },
-      // duplicated in beaker.js
       loadJS: function(url, success, failure) {
         var e = document.createElement('script');
         e.type = "text/javascript";
@@ -55,8 +54,7 @@
         link.href = url;
         document.getElementsByTagName("head")[0].appendChild(link);
       },
-      // offsetX is not defined in firefox
-      getEventOffsetX: function(elem, event) {
+      getEventOffsetX: function(elem, event) { // offsetX is not defined in firefox
         var x = event.offsetX;
         if (_.isUndefined(x)) {
           x = event.pageX - elem.offset().left;

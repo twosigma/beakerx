@@ -28,10 +28,10 @@
   /**
    * bkUtils
    * - holds general/low0level utilities that are beaker specific that has no effect to DOM directly
-   * - it also serves the purpose of hiding underneath utils: generalUtils/angularUtils/...
+   * - it also serves the purpose of hiding underneath utils: commonUtils/angularUtils/...
    *    from other parts of beaker
    */
-  module.factory('bkUtils', function(generalUtils, angularUtils, trackingService, cometd) {
+  module.factory('bkUtils', function(commonUtils, angularUtils, trackingService, cometd) {
 
     var bkUtils = {
       // wrap trackingService
@@ -39,30 +39,30 @@
         trackingService.log(event, obj);
       },
 
-      // wrap generalUtils
+      // wrap commonUtils
       generateId: function() {
-        return generalUtils.generateId(6);
+        return commonUtils.generateId(6);
       },
       loadJS: function(url, success) {
-        return generalUtils.loadJS(url, success);
+        return commonUtils.loadJS(url, success);
       },
       loadCSS: function(url) {
-        return generalUtils.loadCSS(url);
+        return commonUtils.loadCSS(url);
       },
       loadList: function(urls, success, failure) {
-        return generalUtils.loadList(urls, success, failure);
+        return commonUtils.loadList(urls, success, failure);
       },
       formatTimeString: function(millis) {
-        return generalUtils.formatTimeString(millis);
+        return commonUtils.formatTimeString(millis);
       },
       isMiddleClick: function(event) {
-        return generalUtils.isMiddleClick(event);
+        return commonUtils.isMiddleClick(event);
       },
       getEventOffsetX: function(elem, event) {
-        return generalUtils.getEventOffsetX(elem, event);
+        return commonUtils.getEventOffsetX(elem, event);
       },
       findTable: function(elem) {
-        return generalUtils.findTable(elem);
+        return commonUtils.findTable(elem);
       },
 
       // wrap angularUtils

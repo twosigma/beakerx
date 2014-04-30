@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/python
 #
 # Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 #
@@ -14,14 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-opt=($*) # opt is array of command line parameters
+import os
+import sys
 
-coreport=${opt[${#opt[@]}-1]} # coreport is the last one
-unset opt[${#opt[@]}-1]   # delete it
+coreport = sys.argv.pop()
+port = sys.argv.pop()
+self_path = sys.argv.pop(0)
 
-plugport=${opt[${#opt[@]}-1]} # now port is the last one
-unset opt[${#opt[@]}-1]   # delete it
+os.chdir(os.path.dirname(self_path))
 
-export GROOVY_OPTS="${opt[*]}"  # remaining prameters passed to JVM
-cd $(dirname $0)
-bin/groovy $plugport $coreport
+args = ["bin/groovy"] + sys.argv + [port, coreport]
+
+os.execvp("bin/groovy", args)

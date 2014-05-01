@@ -78,7 +78,7 @@
                   _recentMenu.push({
                     name: getShortName(item),
                     action: function() {
-                      _pathOpener.open(items[i]);
+                      _pathOpener.open(item);
                     },
                     tooltip: item
                   });

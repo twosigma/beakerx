@@ -66,7 +66,7 @@
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
         if (bkTrack.isNeedPermission()) {
-          bkUtils.httpGet("./rest/util/isAllowAnonymousTracking").then(function(allow) {
+          bkUtils.httpGet("../beaker/rest/util/isAllowAnonymousTracking").then(function(allow) {
             switch (allow.data) {
               case "true":
                 $scope.isAllowAnonymousTracking = true;
@@ -91,7 +91,7 @@
               allow = "false";
               bkTrack.disable();
             }
-            bkUtils.httpPost("./rest/util/setAllowAnonymousTracking", { allow: allow });
+            bkUtils.httpPost("../beaker/rest/util/setAllowAnonymousTracking", { allow: allow });
           }
         });
         $scope.showWhatWeLog = function() {

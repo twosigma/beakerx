@@ -53,11 +53,7 @@
         return $q.when(value);
       },
       fcall: function(func) {
-        var deferred = $q.defer();
-        Q.fcall(function() {
-          deferred.resolve(func());
-        });
-        return deferred.promise;
+        return $q.when(Q.fcall(func));
       },
       delay: function(ms) {
         var deferred = $q.defer();

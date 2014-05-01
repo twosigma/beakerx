@@ -95,12 +95,8 @@
       getHomeDirectory: function() {
         var deferred = angularUtils.newDeferred();
         this.httpGet("/beaker/rest/file-io/getHomeDirectory")
-            .success(function(homeDir) {
-              deferred.resolve(homeDir);
-            })
-            .error(function(data, status, header, config) {
-              deferred.reject(data, status, header, config);
-            });
+            .success(deferred.resolve)
+            .error(deferred.reject);
         return deferred.promise;
       },
       getDefaultNotebook: function() {
@@ -125,9 +121,7 @@
               }
               deferred.resolve(content);
             })
-            .error(function(data, status, header, config) {
-              deferred.reject(data, status, header, config);
-            });
+            .error(deferred.reject);
         return deferred.promise;
       },
       loadHttp: function(url) {
@@ -141,20 +135,14 @@
               }
               deferred.resolve(content);
             })
-            .error(function(data, status, header, config) {
-              deferred.reject(data, status, header, config);
-            });
+            .error(deferred.reject);
         return deferred.promise;
       },
       saveFile: function(path, contentAsJson) {
         var deferred = angularUtils.newDeferred();
         angularUtils.httpPost("/beaker/rest/file-io/save", {path: path, content: contentAsJson})
-            .success(function() {
-              deferred.resolve();
-            })
-            .error(function(data, status, header, config) {
-              deferred.reject(data, status, header, config);
-            });
+            .success(deferred.resolve)
+            .error(deferred.reject);
         return deferred.promise;
       },
       addConnectedStatusListener: function(cb) {

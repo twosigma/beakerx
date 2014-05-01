@@ -151,6 +151,10 @@ public class RShellRest {
     return shellId;
   }
 
+  private boolean windows() {
+    return System.getProperty("os.name").contains("Windows");
+  }
+
   @POST
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
@@ -164,7 +168,8 @@ public class RShellRest {
     RServer server = getEvaluator(shellID);
     RConnection con = server.connection;
     String dotDir = System.getProperty("user.home") + "/.beaker";
-    String file = dotDir + "/rplot.svg";
+    // XXX should use better location on windows.
+    String file = windows() ? "rplot.svg" : (dotDir + "/rplot.svg"); 
     try {
       java.nio.file.Path p = java.nio.file.Paths.get(file);
       java.nio.file.Files.deleteIfExists(p);
@@ -339,10 +344,6 @@ public class RShellRest {
     }
     obj.finished(table);
     return true;
-  }
-
-  private static boolean windows() {
-    return System.getProperty("os.name").contains("Windows");
   }
 
   private static class RServer {

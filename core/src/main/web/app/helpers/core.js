@@ -244,7 +244,7 @@
         };
 
         // XXX - template is sometimes a url now.
-        if (template.indexOf('template/') === 0) {
+        if (template.indexOf('app/template/') === 0) {
           options.templateUrl = template;
         } else {
           options.template = template;

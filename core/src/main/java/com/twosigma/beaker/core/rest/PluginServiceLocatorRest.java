@@ -49,6 +49,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
+import org.jvnet.winp.WinProcess;
 
 /**
  * This is the service that locates a plugin service. And a service will be started if the target
@@ -67,6 +68,7 @@ public class PluginServiceLocatorRest {
   private final String nginxServDir;
   private final String nginxExtraRules;
   private final String pluginDir;
+  private final String nginxCommand;
   private final Integer portBase;
   private final Integer servPort;
   private final Integer corePort;
@@ -104,6 +106,15 @@ public class PluginServiceLocatorRest {
     if (nginxTemplate == null) {
       throw new RuntimeException("Cannot get nginx template");
     }
+    String cmd = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
+    if (windows()) {
+      cmd += (" -p \"" + this.nginxServDir + "\"");
+      cmd += (" -c \"" + this.nginxServDir + "/conf/nginx.conf\"");
+    } else {
+      cmd += (" -p " + this.nginxServDir);
+      cmd += (" -c " + this.nginxServDir + "/conf/nginx.conf");
+    }
+    this.nginxCommand = cmd;
 
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, String> e: bkConfig.getPluginOptions().entrySet()) {
@@ -123,26 +134,34 @@ public class PluginServiceLocatorRest {
     portSearchStart = this.portBase + this.reservedPortCount;
   }
 
+  private boolean windows() {
+    return System.getProperty("os.name").contains("Windows");
+  }
+
+  private static boolean windowsStatic() {
+    return System.getProperty("os.name").contains("Windows");
+  }
+
   public void start() throws InterruptedException, IOException {
     startReverseProxy();
   }
 
   private void startReverseProxy() throws InterruptedException, IOException {
-
     generateNginxConfig();
-
-    String nginxCommand = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
-    nginxCommand += (" -p " + this.nginxServDir);
-    nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
-    System.out.println("running nginx: " + nginxCommand);
-    Process proc = Runtime.getRuntime().exec(nginxCommand);
+    System.out.println("running nginx: " + this.nginxCommand);
+    Process proc = Runtime.getRuntime().exec(this.nginxCommand);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
   }
 
   private void shutdown() {
     StreamGobbler.shuttingDown();
-    this.nginxProc.destroy(); // send SIGTERM
+
+    if (windows()) {
+      new WinProcess(this.nginxProc).killRecursively();
+    } else {
+      this.nginxProc.destroy(); // send SIGTERM
+    }
     for (PluginConfig p : this.plugins.values()) {
       p.shutDown();
     }
@@ -195,8 +214,10 @@ public class PluginServiceLocatorRest {
 
       // restart nginx to reload new config
       String restartId = generateNginxConfig();
-      Process restartproc = Runtime.getRuntime().exec(this.nginxServDir + "/restart_nginx",
-          null, new File(this.nginxServDir));
+      String restartPath = "\"" + this.nginxServDir + "/restart_nginx\"";
+      String restartCommand = this.nginxCommand + " -s reload";
+      System.err.println("restartCommand=" + restartCommand);
+      Process restartproc = Runtime.getRuntime().exec(restartCommand);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
 
@@ -237,7 +258,11 @@ public class PluginServiceLocatorRest {
       }
     }
 
-    fullCommand += args;
+    if (windows()) {
+      fullCommand = "\"" + fullCommand + "\"";
+    } else {
+      fullCommand += args; // XXX should be in windows too?
+    }
 
     List<String> extraArgs = this.pluginArgs.get(pluginId);
     if (extraArgs != null) {
@@ -247,6 +272,9 @@ public class PluginServiceLocatorRest {
     fullCommand += " " + Integer.toString(corePort);
 
     String[] env = this.pluginEnvps.get(pluginId);
+    if (windows()) {
+      fullCommand = "python " + fullCommand;
+    }
     System.out.println("Running: " + fullCommand);
     Process proc = Runtime.getRuntime().exec(fullCommand, env);
 
@@ -371,7 +399,13 @@ public class PluginServiceLocatorRest {
     ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
-    ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
+    if (windows()) {
+      String tempDir = nginxClientTempDir.toFile().getPath();
+      // Nginx interprets strings in unix style so backslash confuses it.
+      ngixConfig = ngixConfig.replace("%(client_temp_dir)s", tempDir.replace("\\", "/"));
+    } else {
+      ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
+    }
     ngixConfig = ngixConfig.replace("%(restart_id)s", restartId);
 
     // write template to file
@@ -410,7 +444,13 @@ public class PluginServiceLocatorRest {
   public String getIPythonVersion()
       throws IOException
   {
-    Process proc = Runtime.getRuntime().exec("ipython --version");
+    Process proc;
+    if (windows()) {
+      String cmd = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
+      proc = Runtime.getRuntime().exec(cmd);
+    } else {
+      proc = Runtime.getRuntime().exec("ipython --version");
+    }
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     String line = br.readLine();
     return line;
@@ -451,7 +491,11 @@ public class PluginServiceLocatorRest {
 
     void shutDown() {
       if (this.isStarted()) {
-        this.proc.destroy(); // send SIGTERM
+        if (windowsStatic()) {
+          new WinProcess(this.proc).killRecursively();
+        } else {
+          this.proc.destroy(); // send SIGTERM
+        }
       }
     }
 

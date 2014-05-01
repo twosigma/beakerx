@@ -58,7 +58,7 @@ import org.rosuda.REngine.RList;
 @Singleton
 public class RShellRest {
 
-  private boolean useMultipleRservers = false;
+  private boolean useMultipleRservers = windows();
 
   private static final String BEGIN_MAGIC = "**beaker_begin_magic**";
   private static final String END_MAGIC = "**beaker_end_magic**";
@@ -151,6 +151,10 @@ public class RShellRest {
     return shellId;
   }
 
+  private boolean windows() {
+    return System.getProperty("os.name").contains("Windows");
+  }
+
   @POST
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
@@ -164,7 +168,8 @@ public class RShellRest {
     RServer server = getEvaluator(shellID);
     RConnection con = server.connection;
     String dotDir = System.getProperty("user.home") + "/.beaker";
-    String file = dotDir + "/rplot.svg";
+    // XXX should use better location on windows.
+    String file = windows() ? "rplot.svg" : (dotDir + "/rplot.svg"); 
     try {
       java.nio.file.Path p = java.nio.file.Paths.get(file);
       java.nio.file.Files.deleteIfExists(p);

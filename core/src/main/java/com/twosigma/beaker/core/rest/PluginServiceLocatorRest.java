@@ -68,6 +68,7 @@ public class PluginServiceLocatorRest {
   private final String nginxServDir;
   private final String nginxExtraRules;
   private final String pluginDir;
+  private final String nginxCommand;
   private final Integer portBase;
   private final Integer servPort;
   private final Integer corePort;
@@ -105,6 +106,15 @@ public class PluginServiceLocatorRest {
     if (nginxTemplate == null) {
       throw new RuntimeException("Cannot get nginx template");
     }
+    String cmd = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
+    if (windows()) {
+      cmd += (" -p \"" + this.nginxServDir + "\"");
+      cmd += (" -c \"" + this.nginxServDir + "/conf/nginx.conf\"");
+    } else {
+      cmd += (" -p " + this.nginxServDir);
+      cmd += (" -c " + this.nginxServDir + "/conf/nginx.conf");
+    }
+    this.nginxCommand = cmd;
 
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, String> e: bkConfig.getPluginOptions().entrySet()) {
@@ -137,19 +147,9 @@ public class PluginServiceLocatorRest {
   }
 
   private void startReverseProxy() throws InterruptedException, IOException {
-
     generateNginxConfig();
-
-    String nginxCommand = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
-    if (windows()) {
-      nginxCommand += (" -p \"" + this.nginxServDir + "\"");
-      nginxCommand += (" -c \"" + this.nginxServDir + "/conf/nginx.conf\"");
-    } else {
-      nginxCommand += (" -p " + this.nginxServDir);
-      nginxCommand += (" -c " + this.nginxServDir + "/conf/nginx.conf");
-    }
-    System.out.println("running nginx: " + nginxCommand);
-    Process proc = Runtime.getRuntime().exec(nginxCommand);
+    System.out.println("running nginx: " + this.nginxCommand);
+    Process proc = Runtime.getRuntime().exec(this.nginxCommand);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
   }
@@ -214,8 +214,10 @@ public class PluginServiceLocatorRest {
 
       // restart nginx to reload new config
       String restartId = generateNginxConfig();
-      Process restartproc = Runtime.getRuntime().exec(this.nginxServDir + "/restart_nginx",
-          null, new File(this.nginxServDir));
+      String restartPath = "\"" + this.nginxServDir + "/restart_nginx\"";
+      String restartCommand = this.nginxCommand + " -s reload";
+      System.err.println("restartCommand=" + restartCommand);
+      Process restartproc = Runtime.getRuntime().exec(restartCommand);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
 

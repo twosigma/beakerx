@@ -130,11 +130,7 @@
         };
 
         $scope.getMenuItems = function() {
-          if (_.isFunction($scope.menuItems)) {
-            return $scope.menuItems();
-          } else {
-            return $scope.menuItems;
-          }
+          return _.result($scope, 'menuItems');
         };
 
         $scope.getAClass = function(item) {

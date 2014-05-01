@@ -117,8 +117,7 @@
               notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
             $scope.loading = true;
             addScrollingHack();
-            bkSessionManager.reset(
-                notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
+            bkSessionManager.reset.apply(this, arguments);
             var isOpeningExistingSession = !!sessionId;
             evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
             if (notebookModel && notebookModel.evaluators) {

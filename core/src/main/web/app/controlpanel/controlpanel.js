@@ -29,5 +29,4 @@
     'bk.menuPluginManager',
     'bk.recentMenu',
     'bk.evaluatePluginManager']);
-
 })();

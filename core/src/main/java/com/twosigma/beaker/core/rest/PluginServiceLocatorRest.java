@@ -59,8 +59,10 @@ import org.jvnet.winp.WinProcess;
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class PluginServiceLocatorRest {
-  private static final int RESTART_ENSURE_RETRY_MAX_COUNT = 600;
-  private static final int RESTART_ENSURE_RETRY_INTERVAL = 50; //ms
+  // these 3 times are in millis
+  private static final int RESTART_ENSURE_RETRY_MAX_WAIT = 30*1000;
+  private static final int RESTART_ENSURE_RETRY_INTERVAL = 10;
+  private static final int RESTART_ENSURE_RETRY_MAX_INTERVAL = 2500;
 
   private final String nginxDir;
   private final String nginxBinDir;
@@ -207,7 +209,7 @@ public class PluginServiceLocatorRest {
 
     synchronized (this) {
       final int port = getNextAvailablePort(this.portSearchStart);
-      final String baseUrl = "/" + generatePrefixedRandomString(pluginId, 6).replaceAll("[\\s.]", "");
+      final String baseUrl = "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
       pConfig = new PluginConfig(port, nginxRules, baseUrl);
       this.portSearchStart = pConfig.port + 1;
       this.plugins.put(pluginId, pConfig);
@@ -222,9 +224,9 @@ public class PluginServiceLocatorRest {
       restartproc.waitFor();
 
       // spin until restart is done
-      String url = "http://127.0.0.1:" + servPort + "/restart" + restartId;
+      String url = "http://127.0.0.1:" + servPort + "/restart." + restartId + "/present.html";
       try {
-        spinCheck(url, RESTART_ENSURE_RETRY_MAX_COUNT, RESTART_ENSURE_RETRY_INTERVAL);
+        spinCheck(url);
       } catch (Throwable t) {
         System.err.println("Nginx restart time out plugin =" + pluginId);
         throw new NginxRestartFailedException("nginx restart failed.\n"
@@ -317,10 +319,14 @@ public class PluginServiceLocatorRest {
         .build();
   }
 
-  private static boolean spinCheck(String url, int countdown, int intervalMillis)
-      throws IOException, InterruptedException {
+  private static boolean spinCheck(String url)
+      throws IOException, InterruptedException
+  {
 
-    while (countdown > 0) {
+    int interval = RESTART_ENSURE_RETRY_INTERVAL;
+    int totalTime = 0;
+
+    while (totalTime < RESTART_ENSURE_RETRY_MAX_WAIT) {
       if (Request.Get(url)
           .execute()
           .returnResponse()
@@ -328,8 +334,11 @@ public class PluginServiceLocatorRest {
           .getStatusCode() == HttpStatus.SC_OK) {
         return true;
       }
-      --countdown;
-      Thread.sleep(intervalMillis);
+      Thread.sleep(interval);
+      totalTime += interval;
+      interval *= 1.5;
+      if (interval > RESTART_ENSURE_RETRY_MAX_INTERVAL)
+        interval = RESTART_ENSURE_RETRY_MAX_INTERVAL;
     }
     throw new RuntimeException("Spin check timed out");
   }
@@ -384,7 +393,7 @@ public class PluginServiceLocatorRest {
       //           Paths.get(htmlDir.toString() + "/favicon.ico"));
     }
 
-    String restartId = RandomStringUtils.random(10, true, true);
+    String restartId = RandomStringUtils.random(12, false, true);
     String ngixConfig = this.nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();
     for (PluginConfig pConfig : this.plugins.values()) {
@@ -432,10 +441,9 @@ public class PluginServiceLocatorRest {
   }
 
   private static String generatePrefixedRandomString(String prefix, int randomPartLength) {
-    // TODO
-    // note the toLowerCase is need because, for unknown reason,
-    // nginx doesn't like location start with upper case
-    return prefix.toLowerCase() + RandomStringUtils.random(randomPartLength, true, true);
+    // Use lower case due to nginx bug handling mixed case locations
+    // (fixed in 1.5.6 but why depend on it).
+    return prefix.toLowerCase() + "." + RandomStringUtils.random(randomPartLength, false, true);
   }
 
   @GET

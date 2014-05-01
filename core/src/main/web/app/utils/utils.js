@@ -87,8 +87,8 @@
       fcall: function(func) {
         return angularUtils.fcall(func);
       },
-      delay: function() {
-        return angularUtils.delay();
+      delay: function(ms) {
+        return angularUtils.delay(ms);
       },
 
       // beaker server involved utils

@@ -50,9 +50,7 @@
         return $q.defer();
       },
       newPromise: function(value) {
-        var deferred = $q.defer();
-        deferred.resolve(value);
-        return deferred.promise;
+        return $q.when(value);
       },
       fcall: function(func) {
         var deferred = $q.defer();

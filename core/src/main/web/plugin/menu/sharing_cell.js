@@ -20,7 +20,7 @@
 define(function(require, exports, module) {
   "use strict";
   var publishToWeb = function(scope) {
-    var ev = scope.getEvaluator().evaluator;
+    var ev = scope.getEvaluator();
     var display = undefined;
     if (scope.cellmodel.output && scope.cellmodel.output.layoutToDisplay) {
       display = scope.cellmodel.output.layoutToDisplay.normal;

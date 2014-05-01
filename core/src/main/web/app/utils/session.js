@@ -65,7 +65,7 @@
       var deferred = angularUtils.newDeferred();
       angularUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionId})
           .success(function(ret) {
-            deferred.resolve(sessionID);
+            deferred.resolve(sessionId);
           })
           .error(function(data, status, headers, config) {
             deferred.reject("Failed to close session: " + sessionId + ", " + status);

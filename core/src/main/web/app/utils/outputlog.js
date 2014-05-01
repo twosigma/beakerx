@@ -23,7 +23,7 @@
   module.factory('bkOutputLog', function (angularUtils, cometdUtils) {
     return {
       getLog: function (cb) {
-        angularUtils.httpGet("/beaker/rest/outputlog/get", {})
+        angularUtils.httpGet("../beaker/rest/outputlog/get", {})
             .success(cb)
             .error(function () {
               console.log("failed to get output log");

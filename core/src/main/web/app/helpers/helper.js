@@ -234,7 +234,7 @@
 
       // eval utils
       locatePluginService: function(id, locator) {
-        return bkUtils.httpGet("/beaker/rest/plugin-services/" + id,
+        return bkUtils.httpGet("../beaker/rest/plugin-services/" + id,
             locator);
       },
       getEvaluatorFactory: function(shellConstructorPromise) {

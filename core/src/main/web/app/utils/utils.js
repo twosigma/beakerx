@@ -94,14 +94,14 @@
       // beaker server involved utils
       getHomeDirectory: function() {
         var deferred = angularUtils.newDeferred();
-        this.httpGet("/beaker/rest/file-io/getHomeDirectory")
+        this.httpGet("../beaker/rest/file-io/getHomeDirectory")
             .success(deferred.resolve)
             .error(deferred.reject);
         return deferred.promise;
       },
       getDefaultNotebook: function() {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet("/beaker/rest/util/getDefaultNotebook").
+        angularUtils.httpGet("../beaker/rest/util/getDefaultNotebook").
             success(function(data) {
               deferred.resolve(angular.fromJson(data));
             }).
@@ -112,7 +112,7 @@
       },
       loadFile: function(path) {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet("/beaker/rest/file-io/load", {path: path})
+        angularUtils.httpGet("../beaker/rest/file-io/load", {path: path})
             .success(function(content) {
               if (!_.isString(content)) {
                 // angular $http auto-detects JSON response and deserialize it using a JSON parser
@@ -126,7 +126,7 @@
       },
       loadHttp: function(url) {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet("/beaker/rest/http-proxy/load", {url: url})
+        angularUtils.httpGet("../beaker/rest/http-proxy/load", {url: url})
             .success(function(content) {
               if (!_.isString(content)) {
                 // angular $http auto-detects JSON response and deserialize it using a JSON parser
@@ -140,7 +140,7 @@
       },
       saveFile: function(path, contentAsJson) {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpPost("/beaker/rest/file-io/save", {path: path, content: contentAsJson})
+        angularUtils.httpPost("../beaker/rest/file-io/save", {path: path, content: contentAsJson})
             .success(deferred.resolve)
             .error(deferred.reject);
         return deferred.promise;

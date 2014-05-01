@@ -29,7 +29,7 @@
     return {
       reset: function() {
         var self = this;
-        bkUtils.httpGet('/beaker/rest/util/getCellMenuPlugins')
+        bkUtils.httpGet('../beaker/rest/util/getCellMenuPlugins')
             .success(function(menuUrls) {
               menuUrls.forEach(self.loadPlugin);
             });

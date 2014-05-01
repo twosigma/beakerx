@@ -52,7 +52,7 @@
         getChildren: function(path, callback) {
           var self = this;
           this.showSpinner = true;
-          bkUtils.httpGet("/beaker/rest/file-io/getDecoratedChildren", {path: path})
+          bkUtils.httpGet("../beaker/rest/file-io/getDecoratedChildren", {path: path})
               .success(function (list) {
                 self.showSpinner = false;
                 callback(list);

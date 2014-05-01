@@ -23,7 +23,7 @@ define(function(require, exports, module) {
     {
       name: "About Beaker",
       action: function() {
-        bkHelper.showFileChooser(undefined, "app/template/about.html");
+        bkHelper.showModalDialog(undefined, "app/template/about.html");
       },
       tooltip: "Basic information about this application"
     },

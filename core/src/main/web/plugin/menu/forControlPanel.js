@@ -50,7 +50,7 @@ define(function(require, exports, module) {
     {
       name: "About Beaker",
       action: function() {
-        bkHelper.showFileChooser(undefined, "app/template/about.html");
+        bkHelper.showModalDialog(undefined, "app/template/about.html");
       },
       tooltip: "Basic information about this application"
     },
@@ -109,7 +109,7 @@ define(function(require, exports, module) {
             name: "Open... (.bkr)",
             tooltip: "Open a bkr notebook file",
             action: function() {
-              bkHelper.showFileChooser(
+              bkHelper.showModalDialog(
                   function(originalUrl) {
                     bkHelper.openNotebook(originalUrl);
                   },
@@ -123,7 +123,7 @@ define(function(require, exports, module) {
             reducedName: "Open...",
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
             action: function() {
-              bkHelper.showFileChooser(
+              bkHelper.showModalDialog(
                   function(originalUrl) {
                     bkHelper.openNotebook(originalUrl, IPYNB_PATH_PREFIX);
                   },

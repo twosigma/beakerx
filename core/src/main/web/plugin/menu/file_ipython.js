@@ -182,7 +182,7 @@ define(function(require, exports, module) {
             reducedName: "Open...",
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
             action: function() {
-              bkHelper.showFileChooser(
+              bkHelper.showModalDialog(
                   function(originalUrl) {
                     bkHelper.openNotebook(originalUrl, null, false, IPYNB_PATH_PREFIX);
                   },

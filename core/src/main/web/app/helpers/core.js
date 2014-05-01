@@ -38,7 +38,7 @@
    *     instead
    */
   module.factory('bkCoreManager', function(
-      $dialog, bkUtils, bkRecentMenu, fileChooserOp) {
+      $dialog, bkUtils, bkRecentMenu, modalDialogOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
@@ -208,7 +208,7 @@
             });
           };
 
-          bkCoreManager.showFileChooser(
+          bkCoreManager.showModalDialog(
               fileChooserResultHandler,
               fileChooserTemplate,
               fileChooserStrategy);
@@ -229,7 +229,7 @@
       },
 
       // general
-      showFileChooser: function(callback, template, strategy) {
+      showModalDialog: function(callback, template, strategy) {
         if (!template) {
           // use default template
           template = "./app/template/openmenumodal.html";
@@ -239,7 +239,7 @@
           backdrop: true,
           keyboard: true,
           backdropClick: true,
-          controller: 'fileChooserController'
+          controller: 'modalDialogCtrl'
           //templateUrl: template,
         };
 
@@ -250,7 +250,7 @@
           options.template = template;
         }
 
-        fileChooserOp.setStrategy(strategy);
+        modalDialogOp.setStrategy(strategy);
         $dialog.dialog(options)
             .open()
             .then(function(result) {
@@ -268,7 +268,7 @@
             "<h3>" + msgHeader + "</h3>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>";
-        return this.showFileChooser(callback, template);
+        return this.showModalDialog(callback, template);
       },
       showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt) {
         if (!msgHeader) {
@@ -291,7 +291,7 @@
             "   <button class='Yes' ng-click='close(\"OK\")' class='btn'>" + okBtnTxt + "</button>" +
             "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
             "</div>";
-        return this.showFileChooser(close, template);
+        return this.showModalDialog(close, template);
       },
       showYesNoCancelModal: function(
           msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt) {
@@ -319,7 +319,7 @@
             "   <button class='No' ng-click='close(\"No\")' class='btn'>" + noBtnTxt + "</button>" +
             "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
             "</div>";
-        return this.showFileChooser(close, template);
+        return this.showModalDialog(close, template);
       },
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();
@@ -328,7 +328,7 @@
     return bkCoreManager;
   });
 
-  module.factory('fileChooserOp', function() {
+  module.factory('modalDialogOp', function() {
     var _strategy = {};
     return {
       setStrategy: function(strategy) {
@@ -340,9 +340,9 @@
     };
   });
 
-  module.controller('fileChooserController', function($scope, dialog, fileChooserOp) {
+  module.controller('modalDialogCtrl', function($scope, dialog, modalDialogOp) {
     $scope.getStrategy = function() {
-      return fileChooserOp.getStrategy();
+      return modalDialogOp.getStrategy();
     };
     $scope.close = function(result) {
       dialog.close(result);

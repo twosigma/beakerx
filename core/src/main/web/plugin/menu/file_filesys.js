@@ -31,7 +31,7 @@ define(function(require, exports, module) {
             reducedName: "Open...",
             tooltip: "Open a bkr notebook file",
             action: function() {
-              bkHelper.showFileChooser(
+              bkHelper.showModalDialog(
                   bkHelper.openNotebook,
                   '<div class="modal-header">' +
                       '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +

@@ -213,8 +213,8 @@
       getRecentMenuItems: function() {
         return bkCoreManager.getRecentMenuItems();
       },
-      showFileChooser: function(callback, template, strategy) {
-        return bkCoreManager.showFileChooser(callback, template, strategy);
+      showModalDialog: function(callback, template, strategy) {
+        return bkCoreManager.showModalDialog(callback, template, strategy);
       },
       showErrorModal: function(msgBody, msgHeader, callback) {
         return bkCoreManager.showErrorModal(msgBody, msgHeader, callback);

@@ -108,7 +108,7 @@
               '<div class="modal-footer">' +
               "   <button class='btn' ng-click='close()' class='btn'>Got it</button>" +
               "</div>";
-          return bkCoreManager.showFileChooser(function() {}, template);
+          return bkCoreManager.showModalDialog(function() {}, template);
         };
 
 

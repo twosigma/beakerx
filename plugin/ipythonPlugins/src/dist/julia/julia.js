@@ -319,7 +319,7 @@ define(function(require, exports, module) {
       console.log("failed to load julia libs");
     };
 
-    bkHelper.httpGet("/beaker/rest/plugin-services/getIPythonVersion")
+    bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonVersion")
       .success(function(result) {
         var backendVersion = result;
         if (backendVersion[0] == "1") {

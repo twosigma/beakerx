@@ -434,7 +434,7 @@
         bkSessionManager.clear();
 
         bkMenuPluginManager.clear();
-        bkUtils.httpGet('/beaker/rest/util/getMenuPlugins')
+        bkUtils.httpGet('../beaker/rest/util/getMenuPlugins')
             .success(function(menuUrls) {
               menuUrls.forEach(function(url) {
                 bkMenuPluginManager.loadMenuPlugin(url);

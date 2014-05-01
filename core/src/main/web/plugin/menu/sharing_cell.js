@@ -35,7 +35,7 @@ define(function(require, exports, module) {
         display: display
       }
     };
-    var future = bkHelper.httpPost("/beaker/rest/publish/github",
+    var future = bkHelper.httpPost("../beaker/rest/publish/github",
                                    {type: "cell", json: angular.toJson(cellData)})
       .then(function (reply) {
         window.open(reply.data);

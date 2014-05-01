@@ -79,7 +79,7 @@
       }, failure);
     }
 
-    $.get('/beaker/rest/util/getInitPlugins')
+    $.get('../beaker/rest/util/getInitPlugins')
         .done(function(list) {
           loadList(list, function() {
             deferred.resolve();
@@ -126,7 +126,7 @@
           var req = $.ajax({
             type: "POST",
             datatype: "json",
-            url: "/beaker/rest/recent-menu/addItem",
+            url: "../beaker/rest/recent-menu/addItem",
             data: {item: doc}
           });
           req.done(callback);
@@ -138,7 +138,7 @@
           var req = $.ajax({
             type: "GET",
             datatype: "json",
-            url: "/beaker/rest/recent-menu/getItems",
+            url: "../beaker/rest/recent-menu/getItems",
             data: {}
           });
           req.done(callback);
@@ -150,7 +150,7 @@
           var req = $.ajax({
             type: "POST",
             datatype: "json",
-            url: "/beaker/rest/recent-menu/clear",
+            url: "../beaker/rest/recent-menu/clear",
             data: {}
           });
           req.done(callback);
@@ -214,7 +214,7 @@
       };
       bkCoreManager.init(beakerRootOp);
       Q.delay(1000).then(function() {
-        $.get("/beaker/rest/util/whoami", {}, function(data) {
+        $.get("../beaker/rest/util/whoami", {}, function(data) {
           user = data;
           bkUtils.log("start", {user: data});
         }, "json");

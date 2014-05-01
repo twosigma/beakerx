@@ -29,7 +29,7 @@
   module.factory('bkSession', function(angularUtils) {
     var backupSession = function(sessionId, sessionData) {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpPost("/beaker/rest/session-backup/backup/" + sessionId, sessionData)
+      angularUtils.httpPost("../beaker/rest/session-backup/backup/" + sessionId, sessionData)
           .success(function(data) {
             deferred.resolve();
           })
@@ -41,7 +41,7 @@
     };
     var getSessions = function() {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpGet("/beaker/rest/session-backup/getExistingSessions")
+      angularUtils.httpGet("../beaker/rest/session-backup/getExistingSessions")
           .success(function(sessions) {
             deferred.resolve(sessions);
           })
@@ -52,7 +52,7 @@
     };
     var loadSession = function(sessionId) {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpGet("/beaker/rest/session-backup/load", {sessionid: sessionId})
+      angularUtils.httpGet("../beaker/rest/session-backup/load", {sessionid: sessionId})
           .success(function(session, status) {
             deferred.resolve(session);
           })
@@ -63,7 +63,7 @@
     };
     var closeSession = function(sessionId) {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpPost("/beaker/rest/session-backup/close", {sessionid: sessionId})
+      angularUtils.httpPost("../beaker/rest/session-backup/close", {sessionid: sessionId})
           .success(function(ret) {
             deferred.resolve(sessionId);
           })
@@ -74,7 +74,7 @@
     };
     var recordLoadedPlugin = function(pluginName, pluginUrl) {
       angularUtils.httpPost(
-          "/beaker/rest/session-backup/addPlugin",
+          "../beaker/rest/session-backup/addPlugin",
           {pluginname: pluginName, pluginurl: pluginUrl})
           .success(function(ret) {
             //console.log("recordLoadedPlugin");
@@ -85,7 +85,7 @@
     };
     var getPlugins = function() {
       var deferred = angularUtils.newDeferred();
-      angularUtils.httpGet("/beaker/rest/session-backup/getExistingPlugins", {})
+      angularUtils.httpGet("../beaker/rest/session-backup/getExistingPlugins", {})
           .success(function(plugins) {
             deferred.resolve(plugins);
           })

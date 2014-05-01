@@ -44,7 +44,7 @@
 
         // setup menus
         bkMenuPluginManager.clear();
-        bkUtils.httpGet('/beaker/rest/util/getControlPanelMenuPlugins')
+        bkUtils.httpGet('../beaker/rest/util/getControlPanelMenuPlugins')
             .success(function(menuUrls) {
               menuUrls.forEach(function(url) {
                 bkMenuPluginManager.loadMenuPlugin(url);

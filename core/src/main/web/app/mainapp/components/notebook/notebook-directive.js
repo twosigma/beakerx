@@ -127,7 +127,7 @@
         $scope.clearOutput = function () {
           $.ajax({type: "GET",
             datatype: "json",
-            url: "/beaker/rest/outputlog/clear",
+            url: "../beaker/rest/outputlog/clear",
             data: {}});
           $scope.outputLog = [];
         };

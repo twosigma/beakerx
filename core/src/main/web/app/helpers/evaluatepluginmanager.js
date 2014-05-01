@@ -81,7 +81,7 @@
           var theShell;
           return this.getEvaluatorFactory(settings.plugin)
               .then(function(factory) {
-                var evaluator = factory.create();
+                var evaluator = factory.create(settings);
                 return evaluator;
               })
               .then(function(evaluator) {

@@ -74,6 +74,9 @@
         isEmpty: function() {
           return _.isEmpty(_v);
         },
+        isLocked: function() {
+          return !this.isEmpty() && !!_v.locked;
+        },
         toJson: function() {
           return angular.toJson(_v);
         },
@@ -202,11 +205,11 @@
         return _edited;
       },
       isNotebookLocked: function() {
-        return !_notebookModel.isEmpty() && _notebookModel.locked;
+        return _notebookModel.isLocked();
       },
       toggleNotebookLocked: function() {
         if (!_notebookModel.isEmpty()) {
-          if (_notebookModel.get().locked === undefined) {
+          if (!_notebookModel.isLocked()) {
             _notebookModel.get().locked = true;
           } else {
             _notebookModel.get().locked = undefined;

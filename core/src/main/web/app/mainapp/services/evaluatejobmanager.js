@@ -86,7 +86,6 @@
         }
       },
       isAnyInProgress: function() {
-        //return _promise.isPending();
         return !!_theEvaluator;
       }
     };

@@ -119,21 +119,17 @@
       };
     };
     var loadPlugin = function(job) {
-      var deferred = bkUtils.newDeferred();
-      bkUtils.loadModule(job.getUrl()).then(function(menuPlugin) {
+      return bkUtils.loadModule(job.getUrl()).then(function(menuPlugin) {
         if (job.isCancelled()) {
-          deferred.reject("cancelled");
-          return;
+          throw "cancelled";
         }
-        menuPlugin.getMenuItems().then(function(menuItems) {
+        return menuPlugin.getMenuItems().then(function(menuItems) {
           if (job.isCancelled()) {
-            deferred.reject("cancelled");
-            return;
+            throw "cancelled";
           }
-          deferred.resolve(menuItems);
+          return menuItems;
         });
       });
-      return deferred.promise;
     };
 
     return {

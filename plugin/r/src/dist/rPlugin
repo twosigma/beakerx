@@ -23,4 +23,9 @@ self_path = sys.argv.pop()
 
 os.chdir(os.path.dirname(self_path))
 
-os.execlp("bin/r", "bin/r", port, coreport)
+if os.name == 'nt':
+    bin = "bin\\r"
+else:
+    bin ="bin/r"
+
+os.execlp(bin, bin, port, coreport)

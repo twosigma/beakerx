@@ -25,4 +25,9 @@ os.chdir(os.path.dirname(self_path))
 
 os.environ["GROOVY_OPTS"] = " ".join(sys.argv)
 
-os.execlp("bin/groovy", "bin/groovy", port, coreport)
+if os.name == 'nt':
+    bin = "bin\\groovy"
+else:
+    bin = "bin/groovy"
+
+os.execlp(bin, bin, port, coreport)

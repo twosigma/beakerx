@@ -63,7 +63,7 @@
     var loadingInProgressPluginJobs = [];
     var pluginIndex = 0;
 
-    var addPlugin = function(plugin, pluginIndex) {
+    var addPlugin = function(plugin, pluginIndex, secondaryIndex) {
       if (!plugin) {
         return;
       }
@@ -75,9 +75,18 @@
       if (!parentMenu) {
         parentMenu = {
           name: plugin.parent,
-          items: []
+          items: [],
+          index: pluginIndex,
+          secondaryIndex: secondaryIndex
         };
-        menus[pluginIndex + parentMenu.name] = parentMenu;
+        menus[pluginIndex + '_' + secondaryIndex + '_' + parentMenu.name] = parentMenu;
+      } else {
+        if (pluginIndex < parentMenu.index
+            || (pluginIndex === parentMenu.index && secondaryIndex < parentMenu.secondaryIndex)) {
+          delete menus[parentMenu.index + '_' + parentMenu.secondaryIndex + '_' + parentMenu.name];
+          menus[pluginIndex + '_' + secondaryIndex + '_' + parentMenu.name] = parentMenu;
+          parentMenu.index = pluginIndex;
+        }
       }
 
       if (!plugin.submenu) {
@@ -140,10 +149,10 @@
           loadedPlugins.push({url: job.getUrl()});
           if (_.isArray(plugin)) {
             _(plugin).each(function (item, i) {
-              addPlugin(item, index.toString() + i);
+              addPlugin(item, index, i);
             });
           } else {
-            addPlugin(plugin, index);
+            addPlugin(plugin, index, 0);
           }
         }, function(rejection) {
           console.error(rejection);

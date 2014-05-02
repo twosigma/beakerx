@@ -62,7 +62,9 @@ define(function(require, exports, module) {
             tooltip: "Save a file from file system",
             action: function() {
               bkHelper.showDefaultSavingFileChooser().then(function(ret) {
-                return bkHelper.saveNotebookAs(ret.uri, ret.uriType);
+                if (ret.uri) {
+                  return bkHelper.saveNotebookAs(ret.uri, ret.uriType);
+                }
               });
             }
           }

@@ -232,11 +232,17 @@
               } else {
                 // pop up the file chooser and then proceed as save-as
                 return bkCoreManager.showDefaultSavingFileChooser().then(function(ret) {
-                  return self.saveNotebookAs(ret.uri, ret.uriType);
+                  if (ret.uri) {
+                    return self.saveNotebookAs(ret.uri, ret.uriType);
+                  }
                 });
               }
             },
             saveNotebookAs: function(notebookUri, uriType) {
+              if (_.isEmpty(notebookUri)) {
+                console.error("cannot save notebook, notebookUri is empty");
+                return;
+              }
               bkSessionManager.updateNotebookUri(notebookUri, uriType, false);
               document.title = bkSessionManager.getNotebookTitle();
               return _saveNotebook();

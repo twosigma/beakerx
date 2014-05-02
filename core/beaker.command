@@ -16,5 +16,5 @@
 
 
 cd "$(dirname "$0")"
-export DYLD_LIBRARY_PATH=./nginx
+export DYLD_LIBRARY_PATH=./nginx/bin
 exec ./build/install/core/bin/core $*

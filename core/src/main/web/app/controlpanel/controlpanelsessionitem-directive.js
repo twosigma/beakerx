@@ -30,21 +30,21 @@
       template: "<table class='table table-striped'>" +
           "<tbody>" +
           "<tr><th>ID</th><th>Open Date</th><th>Name</th><th>Path</th><th>Edited</th><th>Operation</th></tr>" +
-          "<tr ng-repeat='(sessionId, session) in sessions | orderBy:\"openDate\":true'>" +
-          "<td>{{sessionId}}</td>" +
+          "<tr ng-repeat='session in sessions | orderBy:\"openedDate\":true'>" +
+          "<td>{{session.id}}</td>" +
           "<td>{{session.openedDate | date:'medium'}}</td>" +
           "<td><span class='caption' contenteditable='false'>{{getCaption(session)}}</span></td>" +
           "<td>{{getDescription(session)}}</td>" +
           "<td>{{session.edited ? '*' : ''}}</td>" +
-          "<td><div class='btn-group'><button class='btn' ng-click='open(sessionId)'>Go to</button>" +
-          "<button class='btn' ng-click='close(sessionId, session)'>Close</button></div></td>" +
+          "<td><div class='btn-group'><button class='btn' ng-click='open(session)'>Go to</button>" +
+          "<button class='btn' ng-click='close(session)'>Close</button></div></td>" +
           "</tr></tbody>" +
           "</table>",
       controller: function($scope) {
-        $scope.open = function(sessionId) {
-          bkCoreManager.openSession(sessionId);
+        $scope.open = function(session) {
+          bkCoreManager.openSession(session.id);
         };
-        $scope.close = function(sessionId, session) {
+        $scope.close = function(session) {
           var format = session.format;
           var notebookModel = angular.fromJson(session.notebookModelJson);
           var edited = session.edited;
@@ -54,7 +54,7 @@
                 bkEvaluatePluginManager.createEvaluatorThenExit(notebookModel.evaluators[i]);
               }
             }
-            return bkSession.close(sessionId).then(function() {
+            return bkSession.close(session.id).then(function() {
               $scope.reloadSessionsList();
             });
           };
@@ -64,7 +64,7 @@
           } else {
             // ask if user want to save first
             bkHelper.showYesNoCancelModal(
-                "Do you want to save [" + $scope.getCaption(sessionId) + "]?",
+                "Do you want to save [" + $scope.getCaption(session.id) + "]?",
                 "Confirm close",
                 function() { // yes
                   // save session

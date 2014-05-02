@@ -40,7 +40,16 @@ task makeDist(type: Exec) {
     platform = '-ubuntu'
   }
   def zipName = 'beaker-notebook-' + gitDescribe() + platform + '.zip'
-  commandLine 'zip', '-r', zipName, 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command', 'LICENSE'
+  if (platform == '') {
+    commandLine 'cmd', '/c', '7za', 'a', 
+                zipName, 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
+                'beaker.command.bat', '-xr!.~', '-xr!.gradle'
+  } else {
+    commandLine 'zip', '-r', 
+                zipName, 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
+                'beaker.command', '--exclude', '*~', '*.gradle'
+                
+  }
 }
 
 makeDist.dependsOn(":writeVersion")

@@ -84,18 +84,7 @@
                 var tz = $scope.model.getCellModel().timeZone;
                 if (tz)
                   time.tz(tz);
-                var result = time.format("YYYYMMDD HH:mm:ss.SSS");
-                var tripleDigit = function(integer) {
-                  if (integer < 10) {
-                    return "00" + integer;
-                  } else if (integer < 100) {
-                    return "0" + integer;
-                  }
-                  return integer.toString();
-                };
-                result += " " + tripleDigit(micro);
-                result += " " + tripleDigit(nano);
-                return result;
+                return time.format("YYYYMMDD HH:mm:ss.SSS");
               };
             }
           }

@@ -49,9 +49,6 @@ http {
         listen       %(port_clear)s;
 
         # redirect server error pages to the static page /50x.html
-        #
-        # html directory is missing now XXX
-        # this is also a problem for favicon XXX
         error_page   500 502 503 504  /50x.html;
         location = /50x.html {
             root   html;
@@ -61,8 +58,8 @@ http {
             proxy_pass http://127.0.0.1:%(port_beaker)s/;
         }
 
-        location = /restart%(restart_id)s {
-            alias   html/present.html;
+        location = /restart.%(restart_id)s/present.html {
+            alias html/present.html;
         }
 
         %(plugin_section)s

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+# Copyright 2014 TWO SIGMA INVESTMENTS, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,19 +15,4 @@
 # limitations under the License.
 
 import os
-import sys
-
-coreport = sys.argv.pop()
-port = sys.argv.pop()
-self_path = sys.argv.pop(0)
-
-os.chdir(os.path.dirname(self_path))
-
-os.environ["GROOVY_OPTS"] = " ".join(sys.argv)
-
-if os.name == 'nt':
-    bin = "bin\\groovy"
-else:
-    bin = "bin/groovy"
-
-os.execlp(bin, bin, port, coreport)
+os.execlp("ipython", "ipython", "--version")

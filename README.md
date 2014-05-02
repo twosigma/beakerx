@@ -20,7 +20,7 @@
 
 Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.
 
-This page is for developers.  If you want to use or learn more about Beaker, see the [home page](http://beakernotebook.com) or [download it](http://beakernotebook.com/download).
+This page is for developers.  If you want to use or learn more about Beaker, see the [home page](http://beakernotebook.com).
 
 ![screenshots](http://twosigma.github.io/beaker-notebook/images/bk1.png)
 
@@ -68,7 +68,7 @@ Plugin specifications:
 [Output display plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
 
 ##Open source
-Beaker's full source code and documentation is available under the Apache 2.0 license.
+Beaker's full source code and documentation is available under the Apache 2.0 license.  Beaker's sharing feature uses a server with its own [repository](https://github.com/twosigma/beaker-sharing-server).
 
  
 #Build and run instructions

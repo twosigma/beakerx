@@ -64,7 +64,7 @@
           } else {
             // ask if user want to save first
             bkHelper.showYesNoCancelModal(
-                "Do you want to save [" + $scope.getCaption(session.id) + "]?",
+                "Do you want to save [" + $scope.getCaption(session) + "]?",
                 "Confirm close",
                 function() { // yes
                   // save session

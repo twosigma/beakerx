@@ -31,7 +31,7 @@
       if (existingItem) {
         existingItem.priority = existingItem.priority ? existingItem.priority : DEFAULT_PRIORITY;
         newItem.priority = newItem.priority ? newItem.priority : DEFAULT_PRIORITY;
-        if (existingItem.priority <= newItem.priority) {
+        if (newItem.priority > existingItem.priority) {
           // replace in place
           itemsList.splice(itemsList.indexOf(existingItem), 1, newItem);
         } else {

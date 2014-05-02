@@ -19,18 +19,6 @@
 define(function(require, exports, module) {
   'use strict';
 
-  var IPYNB_PATH_PREFIX = "ipynb";
-  bkHelper.setNotebookImporter(IPYNB_PATH_PREFIX, {
-    open: function(fileContentAsString) {
-      var ipyNbJson = fileContentAsString;
-      var ipyNb = JSON.parse(ipyNbJson);
-
-      // TODO, this has been broken, notebookConverter is not defined
-      var bkrNb = notebookConverter.convert(ipyNb);
-      return bkrNb;
-    }
-  });
-
   var fileMenuItems = [
     {
       name: "New",
@@ -112,20 +100,6 @@ define(function(require, exports, module) {
               bkHelper.showModalDialog(
                   function(originalUrl) {
                     bkHelper.openNotebook(originalUrl);
-                  },
-                  treeViewChooserTemplate,
-                  bkHelper.getFileSystemFileChooserStrategy()
-              );
-            }
-          },
-          {
-            name: "Open... (.ipynb)",
-            reducedName: "Open...",
-            tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
-            action: function() {
-              bkHelper.showModalDialog(
-                  function(originalUrl) {
-                    bkHelper.openNotebook(originalUrl, IPYNB_PATH_PREFIX);
                   },
                   treeViewChooserTemplate,
                   bkHelper.getFileSystemFileChooserStrategy()

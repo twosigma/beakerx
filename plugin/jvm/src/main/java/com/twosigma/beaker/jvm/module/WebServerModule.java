@@ -45,6 +45,7 @@ public class WebServerModule extends AbstractModule {
     final Connector conn = new SelectChannelConnector();
     WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
     conn.setPort(webAppConfig.getPort());
+    conn.setHost("127.0.0.1");
     return conn;
   }
 

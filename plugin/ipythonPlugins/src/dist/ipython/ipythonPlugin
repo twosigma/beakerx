@@ -23,6 +23,7 @@ port = sys.argv.pop()
 # default is to search PATH
 ipython_path = "ipython"
 
+# XXX use a real options processor lib
 for arg in sys.argv[1:]:
     if arg.startswith("--path"):
         ipython_path = arg[6:]

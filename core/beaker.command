@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/python
 #
 # Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 #
@@ -14,7 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import sys
 
-cd "$(dirname "$0")"
-export DYLD_LIBRARY_PATH=./nginx/bin
-exec ./build/install/core/bin/core $*
+self_path = sys.argv.pop(0)
+os.chdir(os.path.dirname(self_path))
+os.environ["DYLD_LIBRARY_PATH"] = "./nginx/bin"
+bin = "./build/install/core/bin/core"
+args = [bin] + sys.argv
+os.execvp(bin, args)

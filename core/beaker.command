@@ -17,9 +17,18 @@
 import os
 import sys
 
+def handle_java_home():
+    if os.name == 'mac':
+        jvms = os.listdir('/Library/Java/JavaVirtualMachines/')
+        if len(jvms) == 0:
+            os.environ['JAVA_HOME'] = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home'
+        return
+    return
+
 self_path = sys.argv.pop(0)
 os.chdir(os.path.dirname(self_path))
-os.environ["DYLD_LIBRARY_PATH"] = "./nginx/bin"
-bin = "./build/install/core/bin/core"
+os.environ["DYLD_LIBRARY_PATH"] = './nginx/bin'
+handle_java_home()
+bin = './build/install/core/bin/core'
 args = [bin] + sys.argv
 os.execvp(bin, args)

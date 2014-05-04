@@ -18,7 +18,7 @@ import os
 import sys
 
 def handle_java_home():
-    if os.name == 'mac':
+    if sys.platform == 'darwin':
         jvms = os.listdir('/Library/Java/JavaVirtualMachines/')
         if len(jvms) == 0:
             os.environ['JAVA_HOME'] = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home'

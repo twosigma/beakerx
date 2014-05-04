@@ -17,8 +17,9 @@
 import os
 import sys
 
-def handle_java_home():
+def setup_env():
     if sys.platform == 'darwin':
+        os.environ["DYLD_LIBRARY_PATH"] = './nginx/bin'
         jvms = os.listdir('/Library/Java/JavaVirtualMachines/')
         if len(jvms) == 0:
             os.environ['JAVA_HOME'] = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home'
@@ -27,8 +28,7 @@ def handle_java_home():
 
 self_path = sys.argv.pop(0)
 os.chdir(os.path.dirname(self_path))
-os.environ["DYLD_LIBRARY_PATH"] = './nginx/bin'
-handle_java_home()
+setup_env()
 bin = './build/install/core/bin/core'
 args = [bin] + sys.argv
 os.execvp(bin, args)

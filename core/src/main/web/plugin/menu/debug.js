@@ -19,10 +19,11 @@
  * core available
  * through UI.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var menuItems = [
-    {name: "Debug",
+    {
+      name: "Debug",
       action: function() {
         bkHelper.getBkNotebookViewModel().toggleDebugging();
       },
@@ -31,12 +32,19 @@
         return bkHelper.getBkNotebookViewModel().isDebugging();
       }
     },
-    {name: "Force Refresh",
+    {
+      name: "Force Refresh",
       action: function() {
         bkHelper.refreshRootScope();
       },
-      tooltip: "Recompute view from model" }
+      tooltip: "Recompute view from model"
+    }
   ];
-  var toAdd = {items: menuItems, parent: "Debug"};
-  pluginObj.onReady(toAdd);
+  var menuItemPromise = bkHelper.newPromise({
+    parent: "Debug",
+    items: menuItems
+  });
+  exports.getMenuItems = function() {
+    return menuItemPromise;
+  };
 })();

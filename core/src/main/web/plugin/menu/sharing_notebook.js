@@ -21,7 +21,7 @@ define(function(require, exports, module) {
   "use strict";
   var publishToWeb = function(scope) {
 
-    var future = bkHelper.httpPost("/beaker/rest/publish/github",
+    var future = bkHelper.httpPost("../beaker/rest/publish/github",
                                    {type: "notebook", json: angular.toJson(scope.getShareData())})
       .then(function (reply) {
         window.open(reply.data);

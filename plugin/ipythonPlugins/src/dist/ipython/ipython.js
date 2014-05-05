@@ -18,9 +18,9 @@
  * For creating and config evaluators that uses a IPython kernel for evaluating python code
  * and updating code cell outputs.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugins/eval/ipythonPlugins/ipython/ipython.js";
+
   var PLUGIN_NAME = "IPython";
   var COMMAND = "ipythonPlugins/ipython/ipythonPlugin";
   var kernels = {};
@@ -51,7 +51,7 @@
       if (ipyVersion1) {
         self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
         kernels[shellID] = self.kernel;
-        self.kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
+        self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
       } else {
         // Required by ipython backend, but not used.
         var model = {
@@ -255,6 +255,7 @@
     }
   };
 
+  var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
 
     
@@ -290,7 +291,7 @@
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
-        var IPythonShell = function(settings, cb) {
+        var IPythonShell = function(settings, doneCB) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
@@ -303,8 +304,8 @@
               settings.supplementalClassPath = "";
             }
             self.settings = settings;
-            if (cb) {
-              cb();
+            if (doneCB) {
+              doneCB(self);
             }
           };
           if (!settings.shellID) {
@@ -317,7 +318,7 @@
           };
         };
         IPythonShell.prototype = IPythonProto;
-        bkHelper.getLoadingPlugin(url).onReady(IPythonShell);
+        shellReadyDeferred.resolve(IPythonShell);
       }).error(function() {
         console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
       });
@@ -326,7 +327,7 @@
       console.log("failed to load ipython libs");
     };
 
-    bkHelper.httpGet("/beaker/rest/plugin-services/getIPythonVersion")
+    bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonVersion")
       .success(function(result) {
         var backendVersion = result;
         if (backendVersion[0] == "1") {
@@ -351,4 +352,20 @@
       });
   };
   init();
-})();
+
+  exports.getEvaluatorFactory = function() {
+    return shellReadyDeferred.promise.then(function(Shell) {
+      return {
+        create: function(settings) {
+          var deferred = bkHelper.newDeferred();
+          new Shell(settings, function(shell) {
+            deferred.resolve(shell);
+          });
+          return deferred.promise;
+        }
+      };
+    });
+  };
+
+  exports.name = PLUGIN_NAME;
+});

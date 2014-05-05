@@ -15,12 +15,12 @@
  */
 /**
  * Julia eval plugin
- * For creating and config evaluators that uses a IPython kernel for evaluating julia code
- * and updating code cell outputs.
+ * For creating and config evaluators that uses a IJulia kernel for evaluating julia code and
+ * updating code cell outputs.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugins/eval/ipythonPlugins/julia/julia.js";
+
   var PLUGIN_NAME = "Julia";
   var COMMAND = "ipythonPlugins/julia/juliaPlugin";
   var kernels = {};
@@ -51,7 +51,7 @@
       if (ipyVersion1) {
         self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
         kernels[shellID] = self.kernel;
-        self.kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
+        self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
       } else {
         // Required by ipython backend, but not used.
         var model = {
@@ -249,9 +249,8 @@
     }
   };
 
+  var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
-
-    
     var onSuccess = function() {
       /* chrome has a bug where websockets don't support authentication so we
        disable it. http://code.google.com/p/chromium/issues/detail?id=123862
@@ -284,7 +283,7 @@
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
-        var JuliaShell = function(settings, cb) {
+        var JuliaShell = function(settings, doneCB) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
@@ -297,8 +296,8 @@
               settings.supplementalClassPath = "";
             }
             self.settings = settings;
-            if (cb) {
-              cb();
+            if (doneCB) {
+              doneCB(self);
             }
           };
           if (!settings.shellID) {
@@ -311,16 +310,16 @@
           };
         };
         JuliaShell.prototype = JuliaProto;
-        bkHelper.getLoadingPlugin(url).onReady(JuliaShell);
+        shellReadyDeferred.resolve(JuliaShell);
       }).error(function() {
         console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
       });
     };
     var onFail = function() {
-      console.log("failed to load ipython libs");
+      console.log("failed to load julia libs");
     };
 
-    bkHelper.httpGet("/beaker/rest/plugin-services/getIPythonVersion")
+    bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonVersion")
       .success(function(result) {
         var backendVersion = result;
         if (backendVersion[0] == "1") {
@@ -345,4 +344,10 @@
       });
   };
   init();
+
+  exports.getEvaluatorFactory = function() {
+    return bkHelper.getEvaluatorFactory(shellReadyDeferred.promise);
+  };
+
+  exports.name = PLUGIN_NAME;
 })();

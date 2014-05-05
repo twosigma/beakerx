@@ -17,9 +17,13 @@
  * evaluator menu plugin
  * Add an item to the evaluators menu that is a placeholder to show available evaluators.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var evaluatorsMenuItems = [];
-  var toAdd = {items: evaluatorsMenuItems, parent: "Evaluators"};
-  pluginObj.onReady(toAdd);
-})();
+  var meunItemPromise = bkHelper.newPromise({
+    parent: "Evaluators",
+    items: bkHelper.getEvaluatorMenuItems
+  });
+  exports.getMenuItems = function() {
+    return meunItemPromise;
+  };
+});

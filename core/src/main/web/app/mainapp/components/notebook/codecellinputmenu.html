@@ -1,0 +1,30 @@
+<!--
+    Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<div class="dropdown" style="position: fixed; z-index: 99">
+  <a class="dropdown-toggle" data-toggle="dropdown"></a>
+  <ul class="dropdown-menu inputcellmenu" role="menu" aria-labelledby="dLabel">
+    <li ng-repeat="(evaluatorName, evaluator) in getEvaluators()">
+      <a tabindex="-1" href="#" ng-click="setEvaluator(evaluatorName)" eat-click>
+        <i class="icon-ok" ng-show="getShowEvalIcon(evaluatorName)"></i>
+        {{evaluatorName}}
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a tabindex="-1" href="#" ng-click="run()" eat-click>Run</a>
+    </li>
+  </ul>
+</div>

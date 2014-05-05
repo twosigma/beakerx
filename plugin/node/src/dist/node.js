@@ -113,7 +113,7 @@ define(function(require, exports, module) {
         recordOutput: "true"
         }).success(function (ret) {
             serviceBase = ret;
-            var NodeShell = function (settings) {
+            var NodeShell = function (settings, doneCB) {
                 var self = this;
                 var setShellIdCB = function (id) {
                     if (id !== settings.shellID) {
@@ -121,6 +121,9 @@ define(function(require, exports, module) {
                     }
                     settings.shellID = id;
                     self.settings = settings;
+                    if (doneCB) {
+                      doneCB(self);
+                    }
                 };
                 if (!settings.shellID) {
                     settings.shellID = "";
@@ -140,8 +143,18 @@ define(function(require, exports, module) {
     };
     init();
 
-  exports.getEvaluatorFactory = function(settings) {
-    return bkHelper.getEvaluatorFactory(shellReadyDeferred.promise, settings);
+  exports.getEvaluatorFactory = function() {
+    return shellReadyDeferred.promise.then(function(Shell) {
+      return {
+        create: function(settings) {
+          var deferred = bkHelper.newDeferred();
+          new Shell(settings, function(shell) {
+            deferred.resolve(shell);
+          });
+          return deferred.promise;
+        }
+      };
+    });
   };
 
     exports.name = PLUGIN_NAME;

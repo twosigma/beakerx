@@ -285,7 +285,7 @@ define(function(require, exports, module) {
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
-        var IRubyShell = function(settings, cb) {
+        var IRubyShell = function(settings, doneCB) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
@@ -298,8 +298,8 @@ define(function(require, exports, module) {
               settings.supplementalClassPath = "";
             }
             self.settings = settings;
-            if (cb) {
-              cb();
+            if (doneCB) {
+              doneCB(self);
             }
           };
           if (!settings.shellID) {

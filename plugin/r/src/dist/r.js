@@ -142,6 +142,7 @@ define(function(require, exports, module) {
           });
     },
     exit: function(cb) {
+
       var self = this;
       $.ajax({
         type: "POST",
@@ -164,7 +165,7 @@ define(function(require, exports, module) {
     }).success(function(ret) {
       serviceBase = ret;
       cometdUtil.init();
-      var RShell = function(settings) {
+      var RShell = function(settings, doneCB) {
         var self = this;
         var setShellIdCB = function(id) {
           if (id !== settings.shellID) {
@@ -172,6 +173,9 @@ define(function(require, exports, module) {
           }
           settings.shellID = id;
           self.settings = settings;
+          if (doneCB) {
+            doneCB(self);
+          }
         };
         if (!settings.shellID) {
           settings.shellID = "";
@@ -191,7 +195,17 @@ define(function(require, exports, module) {
   init();
 
   exports.getEvaluatorFactory = function() {
-    return bkHelper.getEvaluatorFactory(shellReadyDeferred.promise);
+    return shellReadyDeferred.promise.then(function(Shell) {
+      return {
+        create: function(settings) {
+          var deferred = bkHelper.newDeferred();
+          new Shell(settings, function(shell) {
+            deferred.resolve(shell);
+          });
+          return deferred.promise;
+        }
+      };
+    });
   };
 
   exports.name = PLUGIN_NAME;

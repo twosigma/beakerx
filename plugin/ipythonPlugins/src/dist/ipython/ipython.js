@@ -291,7 +291,7 @@ define(function(require, exports, module) {
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
-        var IPythonShell = function(settings) {
+        var IPythonShell = function(settings, doneCB) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
@@ -304,6 +304,9 @@ define(function(require, exports, module) {
               settings.supplementalClassPath = "";
             }
             self.settings = settings;
+            if (doneCB) {
+              doneCB(self);
+            }
           };
           if (!settings.shellID) {
             settings.shellID = "";
@@ -351,7 +354,17 @@ define(function(require, exports, module) {
   init();
 
   exports.getEvaluatorFactory = function() {
-    return bkHelper.getEvaluatorFactory(shellReadyDeferred.promise);
+    return shellReadyDeferred.promise.then(function(Shell) {
+      return {
+        create: function(settings) {
+          var deferred = bkHelper.newDeferred();
+          new Shell(settings, function(shell) {
+            deferred.resolve(shell);
+          });
+          return deferred.promise;
+        }
+      };
+    });
   };
 
   exports.name = PLUGIN_NAME;

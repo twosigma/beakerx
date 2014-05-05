@@ -239,6 +239,11 @@ public class RShellRest {
     return completionStrings;
   }
 
+  @POST
+  @Path("exit")
+  public void exit(@FormParam("shellId") String shellId) {
+  }
+
   private void newEvaluator(String id)
           throws RserveException, IOException
   {

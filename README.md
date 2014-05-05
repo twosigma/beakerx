@@ -73,7 +73,7 @@ Beaker's full source code and documentation is available under the Apache 2.0 li
  
 #Build and run instructions
 
-Users should download beaker from [beakernotebook.com](http://beakernotebook.com)
+Users should download beaker from [BeakerNotebook.com](http://beakernotebook.com)
 
 Developers, see below for how to build from source.
 

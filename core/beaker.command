@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/python
 #
 # Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 #
@@ -14,7 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import sys
 
-cd "$(dirname "$0")"
-export DYLD_LIBRARY_PATH=./nginx/bin
-exec ./build/install/core/bin/core $*
+def setup_env():
+    if sys.platform == 'darwin':
+        os.environ["DYLD_LIBRARY_PATH"] = './nginx/bin'
+        jvms = os.listdir('/Library/Java/JavaVirtualMachines/')
+        if len(jvms) == 0:
+            os.environ['JAVA_HOME'] = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home'
+        return
+    return
+
+self_path = sys.argv.pop(0)
+os.chdir(os.path.dirname(self_path))
+setup_env()
+bin = './build/install/core/bin/core'
+args = [bin] + sys.argv
+os.execvp(bin, args)

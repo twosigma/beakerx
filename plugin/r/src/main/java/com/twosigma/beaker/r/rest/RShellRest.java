@@ -241,7 +241,7 @@ public class RShellRest {
 
   @POST
   @Path("exit")
-  public void exit(@FormParam("shellId") String shellId) {
+  public void exit(@FormParam("shellID") String shellID) {
   }
 
   private void newEvaluator(String id)

@@ -422,6 +422,7 @@
         bkUtils.addConnectedStatusListener(function(msg) {
           if (msg.successful !== !$scope.disconnected) {
             $scope.disconnected = !msg.successful;
+            $scope.$digest();
           }
         });
         $scope.$watch('disconnected', function(disconnected) {

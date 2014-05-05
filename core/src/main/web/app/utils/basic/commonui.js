@@ -176,7 +176,9 @@
           if (item.items && item.items.length === 1 && item.autoReduce) {
             item.items[0].action();
           } else {
-            item.action();
+            if (_.isFunction(item.action)) {
+              item.action();
+            }
           }
         };
 

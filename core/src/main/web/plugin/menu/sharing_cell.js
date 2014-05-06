@@ -20,7 +20,7 @@
 define(function(require, exports, module) {
   "use strict";
   var publishToWeb = function(scope) {
-    var ev = scope.getEvaluator().evaluator;
+    var ev = scope.getEvaluator();
     var display = undefined;
     if (scope.cellmodel.output && scope.cellmodel.output.layoutToDisplay) {
       display = scope.cellmodel.output.layoutToDisplay.normal;
@@ -35,7 +35,7 @@ define(function(require, exports, module) {
         display: display
       }
     };
-    var future = bkHelper.httpPost("/beaker/rest/publish/github",
+    var future = bkHelper.httpPost("../beaker/rest/publish/github",
                                    {type: "cell", json: angular.toJson(cellData)})
       .then(function (reply) {
         window.open(reply.data);

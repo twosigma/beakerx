@@ -5,7 +5,9 @@
     "./plugin/init/track.js"
   ],
   "control-panel-menu-plugins": [
-    "./plugin/menu/forControlPanel.js"
+    "./plugin/menu/forControlPanel.js",
+    "./plugin/menu/file_ipython.js",
+    "./plugin/menu/file_iruby.js"
   ],
   "notebook-app-menu-plugins":[
     "./plugin/menu/file.js",

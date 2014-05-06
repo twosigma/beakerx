@@ -17,20 +17,20 @@
  * 'Help' menu plugin
  * This creates the 'Help' menu.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
       name: "About Beaker",
       action: function() {
-        bkHelper.showFileChooser(undefined, "template/about.html");
+        bkHelper.showModalDialog(undefined, "app/template/about.html");
       },
       tooltip: "Basic information about this application"
     },
     {
       name: "Tutorial notebook",
       action: function() {
-        bkHelper.openURI("file:config/tutorial.bkr");
+        bkHelper.openNotebook("config/tutorial.bkr", undefined, true);
       },
       tooltip: "Open the tutorial notebook"
     },
@@ -56,6 +56,11 @@
       tooltip: "Privacy policy on beakernotebook.com"
     }    
   ];
-  var toAdd = {items: menuItems, parent: "Help"};
-  pluginObj.onReady(toAdd);
-})();
+  var menuItemPromise = bkHelper.newPromise({
+    parent: "Help",
+    items: menuItems
+  });
+  exports.getMenuItems = function() {
+    return menuItemPromise;
+  };
+});

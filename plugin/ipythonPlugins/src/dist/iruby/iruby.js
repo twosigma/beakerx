@@ -18,9 +18,9 @@
  * For creating and config evaluators that uses a IPython kernel for evaluating python code
  * and updating code cell outputs.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugins/eval/ipythonPlugins/iruby/iruby.js";
+
   var PLUGIN_NAME = "IRuby";
   var COMMAND = "ipythonPlugins/iruby/irubyPlugin";
   var kernels = {};
@@ -51,7 +51,7 @@
       if (ipyVersion1) {
         self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
         kernels[shellID] = self.kernel;
-        self.kernel.start("kernel." + bkHelper.getSessionID() + "." + shellID);
+        self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
       } else {
         // Required by ipython backend, but not used.
         var model = {
@@ -249,6 +249,7 @@
     }
   };
 
+  var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
 
     
@@ -284,7 +285,7 @@
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
-        var IRubyShell = function(settings, cb) {
+        var IRubyShell = function(settings, doneCB) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
@@ -297,8 +298,8 @@
               settings.supplementalClassPath = "";
             }
             self.settings = settings;
-            if (cb) {
-              cb();
+            if (doneCB) {
+              doneCB(self);
             }
           };
           if (!settings.shellID) {
@@ -311,7 +312,7 @@
           };
         };
         IRubyShell.prototype = IRubyProto;
-        bkHelper.getLoadingPlugin(url).onReady(IRubyShell);
+        shellReadyDeferred.resolve(IRubyShell);
       }).error(function() {
         console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
       });
@@ -320,7 +321,7 @@
       console.log("failed to load ipython libs");
     };
 
-    bkHelper.httpGet("/beaker/rest/plugin-services/getIPythonVersion")
+    bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonVersion")
       .success(function(result) {
         var backendVersion = result;
         if (backendVersion[0] == "1") {
@@ -345,4 +346,10 @@
       });
   };
   init();
-})();
+
+  exports.getEvaluatorFactory = function() {
+    return bkHelper.getEvaluatorFactory(shellReadyDeferred.promise);
+  };
+
+  exports.name = PLUGIN_NAME;
+});

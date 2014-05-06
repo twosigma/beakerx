@@ -17,31 +17,32 @@
  * HTML eval plugin
  * For creating and config evaluators that evaluate HTML code and update code cell results.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugin/evaluator/html.js";
+  var PLUGIN_NAME = "Html";
   var Html = {
-    pluginName: "Html",
+    pluginName: PLUGIN_NAME,
     cmMode: "htmlmixed",
     evaluate: function(code, modelOutput) {
       var startTime = new Date().getTime();
-      return Q.fcall(function() {
+      return bkHelper.fcall(function() {
         modelOutput.result = {
           type: "BeakerDisplay",
           innertype: "Html",
           object: code};
         modelOutput.elapsedTime = new Date().getTime() - startTime;
-        bkHelper.refreshRootScope();
       });
     },
     spec: {
     }
   };
-  var Html0 = function(settings, cb) {
+  var Html0 = function(settings) {
     this.settings = settings;
-    window.setTimeout(cb, 0);
   };
   Html0.prototype = Html;
 
-  bkHelper.getLoadingPlugin(url).onReady(Html0);
-})();
+  exports.getEvaluatorFactory = function() {
+    return bkHelper.getEvaluatorFactory(bkHelper.newPromise(Html0));
+  };
+  exports.name = PLUGIN_NAME;
+});

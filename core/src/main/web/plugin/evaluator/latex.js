@@ -17,31 +17,32 @@
  * LaTex eval plugin
  * For creating and config evaluators that evaluate LaTex code and update code cell results.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugin/evaluator/latex.js";
+  var PLUGIN_NAME = "Latex";
   var Latex = {
-    pluginName: "Latex",
+    pluginName: PLUGIN_NAME,
     cmMode: "stex",
     evaluate: function(code, modelOutput) {
       var startTime = new Date().getTime();
-      return Q.fcall(function() {
+      return bkHelper.fcall(function() {
         modelOutput.result = {
           type: "BeakerDisplay",
           innertype: "Latex",
           object: code};
         modelOutput.elapsedTime = new Date().getTime() - startTime;
-        bkHelper.refreshRootScope();
       });
     },
     spec: {
     }
   };
-  var Latex0 = function(settings, cb) {
+  var Latex0 = function(settings) {
     this.settings = settings;
-    window.setTimeout(cb, 0);
   };
   Latex0.prototype = Latex;
 
-  bkHelper.getLoadingPlugin(url).onReady(Latex0);
-})();
+  exports.getEvaluatorFactory = function() {
+    return bkHelper.getEvaluatorFactory(bkHelper.newPromise(Latex0));
+  };
+  exports.name = PLUGIN_NAME;
+});

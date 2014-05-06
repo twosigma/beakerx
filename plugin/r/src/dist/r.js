@@ -17,9 +17,8 @@
  * R eval plugin
  * For creating and config evaluators that evaluate R code and update code cell results.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugins/eval/r/r.js";
   var PLUGIN_NAME = "R";
   var COMMAND = "r/rPlugin";
 
@@ -143,6 +142,7 @@
           });
     },
     exit: function(cb) {
+
       var self = this;
       $.ajax({
         type: "POST",
@@ -155,7 +155,7 @@
     },
     cometdUtil: cometdUtil
   };
-
+  var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
@@ -165,7 +165,7 @@
     }).success(function(ret) {
       serviceBase = ret;
       cometdUtil.init();
-      var RShell = function(settings, cb) {
+      var RShell = function(settings, doneCB) {
         var self = this;
         var setShellIdCB = function(id) {
           if (id !== settings.shellID) {
@@ -173,7 +173,9 @@
           }
           settings.shellID = id;
           self.settings = settings;
-          cb();
+          if (doneCB) {
+            doneCB(self);
+          }
         };
         if (!settings.shellID) {
           settings.shellID = "";
@@ -185,10 +187,26 @@
         };
       };
       RShell.prototype = R;
-      bkHelper.getLoadingPlugin(url).onReady(RShell);
+      shellReadyDeferred.resolve(RShell);
     }).error(function() {
       console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
     });
   };
   init();
-})();
+
+  exports.getEvaluatorFactory = function() {
+    return shellReadyDeferred.promise.then(function(Shell) {
+      return {
+        create: function(settings) {
+          var deferred = bkHelper.newDeferred();
+          new Shell(settings, function(shell) {
+            deferred.resolve(shell);
+          });
+          return deferred.promise;
+        }
+      };
+    });
+  };
+
+  exports.name = PLUGIN_NAME;
+});

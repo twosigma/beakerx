@@ -40,8 +40,8 @@
       },
 
       // wrap commonUtils
-      generateId: function() {
-        return commonUtils.generateId(6);
+      generateId: function(length) {
+        return commonUtils.generateId(length);
       },
       loadJS: function(url, success) {
         return commonUtils.loadJS(url, success);

@@ -181,8 +181,8 @@
       findTable: function(elem) {
         return bkUtils.findTable(elem);
       },
-      generateId: function() {
-        return bkUtils.generateId();
+      generateId: function(length) {
+        return bkUtils.generateId(length);
       },
       httpGet: function(url, data) {
         return bkUtils.httpGet(url, data);

@@ -29,26 +29,23 @@ task writeVersion << {
   new File(coreDir, 'src/main/web/template/version.html').write(versionHtml())
 }
 
+  // XXX move all of this into makeDist python script
 task makeDist(type: Exec) {
-  workingDir coreDir
   def osName = System.properties['os.name']
-  def platform = '' // windows is in the git tag
+  def platform = 'windows'
   if (osName.startsWith('Mac')) {
-    platform = '-mac'
+    platform = 'mac'
   }
   if (osName.startsWith('Linux')) {
-    platform = '-ubuntu'
+    platform = 'ubuntu'
   }
-  def zipName = 'beaker-notebook-' + gitDescribe() + platform + '.zip'
-  if (platform == '') {
+  def zipName = 'beaker-notebook-' + gitDescribe() + '-' + platform
+  if (platform == 'windows') {
     commandLine 'cmd', '/c', '7za', 'a', 
                 zipName, 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
                 'beaker.command.bat', '-xr!.~', '-xr!.gradle'
   } else {
-    commandLine 'zip', '-r', 
-                zipName, 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
-                'beaker.command', '--exclude', '*~', '*.gradle'
-                
+    commandLine './makeDist', zipName
   }
 }
 

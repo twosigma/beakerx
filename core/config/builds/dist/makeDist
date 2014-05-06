@@ -22,6 +22,8 @@ zip_name = sys.argv[1]
 os.chdir('../../..')
 if os.path.exists(zip_name):
     shutil.rmtree(zip_name)
+if os.path.exists(zip_name + '.zip'):
+    shutil.rmtree(zip_name + '.zip')
 os.mkdir(zip_name)
 if sys.platform == 'darwin' or sys.platform == 'linux2':
     contents = ['config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE', 'beaker.command']
@@ -33,4 +35,5 @@ if sys.platform == 'darwin' or sys.platform == 'linux2':
         for i in path:
             link = '../' + link
         os.symlink(link, zip_name + '/' + f)
-    os.execlp('zip', 'zip', '-r', zip_name + '.zip', zip_name, '--exclude', '*~', '*.gradle')
+    os.system('zip -r ' + zip_name + '.zip ' + zip_name + ' --exclude *~ *.gradle')
+shutil.rmtree(zip_name)

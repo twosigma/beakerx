@@ -23,6 +23,13 @@ import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.security.Credential;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
@@ -33,6 +40,8 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
  * The WebServer Module that sets up the server singleton to be started in Init
  */
 public class WebServerModule extends AbstractModule {
+
+  private String REALM = "SecureRealm";
 
   @Override
   protected void configure() {
@@ -49,6 +58,24 @@ public class WebServerModule extends AbstractModule {
     return conn;
   }
 
+  private SecurityHandler makeSecurityHandler() {
+    Constraint constraint = new Constraint(Constraint.__BASIC_AUTH,"user");
+    constraint.setAuthenticate(true);
+    constraint.setRoles(new String[]{"user"});
+    ConstraintMapping cm = new ConstraintMapping();
+    cm.setConstraint(constraint);
+    cm.setPathSpec("/*");
+    ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
+    csh.setAuthenticator(new BasicAuthenticator());
+    csh.setRealmName(REALM);
+    csh.addConstraintMapping(cm);
+    HashLoginService loginService = new HashLoginService();
+    String password = System.getenv("beaker_plugin_password");
+    loginService.putUser("beaker", Credential.getCredential(password), new String[]{"user"});
+    csh.setLoginService(loginService);
+    return csh;
+  }
+
   @Provides
   @Singleton
   public Server getServer(final Injector injector, Connector connector) {
@@ -63,7 +90,7 @@ public class WebServerModule extends AbstractModule {
         return injector;
       }
     });
-
+    servletHandler.setSecurityHandler(makeSecurityHandler());
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
     servletHandler.addServlet(DefaultServlet.class, "/*");
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);

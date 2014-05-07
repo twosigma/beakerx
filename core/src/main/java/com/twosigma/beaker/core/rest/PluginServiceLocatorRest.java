@@ -32,10 +32,13 @@ import java.net.ServerSocket;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -45,11 +48,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.jvnet.winp.WinProcess;
+
 
 /**
  * This is the service that locates a plugin service. And a service will be started if the target
@@ -79,6 +84,7 @@ public class PluginServiceLocatorRest {
   private final Map<String, List<String>> pluginArgs;
   private final Map<String, String[]> pluginEnvps;
   private final OutputLogService outputLogService;
+  private final Base64 encoder;
 
   private final String nginxTemplate;
   private final Map<String, PluginConfig> plugins = new HashMap<>();
@@ -104,6 +110,7 @@ public class PluginServiceLocatorRest {
     this.pluginEnvps = bkConfig.getPluginEnvps();
     this.pluginArgs = new HashMap<>();
     this.outputLogService = outputLogService;
+    this.encoder = new Base64();
     this.nginxTemplate = utils.readFile(this.nginxDir + "/nginx.conf.template");
     if (nginxTemplate == null) {
       throw new RuntimeException("Cannot get nginx template");
@@ -193,7 +200,7 @@ public class PluginServiceLocatorRest {
   public Response locatePluginService(
       @PathParam("plugin-id") String pluginId,
       @QueryParam("command") String command,
-      @QueryParam("nginxRules") @DefaultValue("location %(base_url)s/ {proxy_pass http://127.0.0.1:%(port)s/;}") String nginxRules,
+      @QueryParam("nginxRules") @DefaultValue("location %(base_url)s/ {proxy_pass http://127.0.0.1:%(port)s/; proxy_set_header Authorization \"Basic %(auth)s\"; }") String nginxRules,
       @QueryParam("startedIndicator") String startedIndicator,
       @QueryParam("startedIndicatorStream") @DefaultValue("stdout") String startedIndicatorStream,
       @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
@@ -207,10 +214,11 @@ public class PluginServiceLocatorRest {
       return buildResponse(pConfig.getBaseUrl(), false);
     }
 
+    String password = RandomStringUtils.random(40, true, true);
     synchronized (this) {
       final int port = getNextAvailablePort(this.portSearchStart);
       final String baseUrl = "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
-      pConfig = new PluginConfig(port, nginxRules, baseUrl);
+      pConfig = new PluginConfig(port, nginxRules, baseUrl, password);
       this.portSearchStart = pConfig.port + 1;
       this.plugins.put(pluginId, pConfig);
 
@@ -274,6 +282,18 @@ public class PluginServiceLocatorRest {
     fullCommand += " " + Integer.toString(corePort);
 
     String[] env = this.pluginEnvps.get(pluginId);
+    if (env != null) {
+      System.out.println("XXX unsupported");
+    } else {
+      List<String> envList = new ArrayList<>();
+      for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
+        if (!("beaker_plugin_password".equals(entry.getKey())))
+          envList.add(entry.getKey() + "=" + entry.getValue());
+      }
+      envList.add("beaker_plugin_password=" + password);
+      env = new String[envList.size()];
+      envList.toArray(env);
+    }
     if (windows()) {
       fullCommand = "python " + fullCommand;
     }
@@ -397,8 +417,10 @@ public class PluginServiceLocatorRest {
     String ngixConfig = this.nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();
     for (PluginConfig pConfig : this.plugins.values()) {
+      String auth = encoder.encodeBase64String(("beaker:" + pConfig.getPassword()).getBytes());
       String nginxRule = pConfig.getNginxRules()
           .replace("%(port)s", Integer.toString(pConfig.getPort()))
+          .replace("%(auth)s", auth)
           .replace("%(base_url)s", pConfig.getBaseUrl());
       pluginSection.append(nginxRule + "\n\n");
     }
@@ -422,6 +444,14 @@ public class PluginServiceLocatorRest {
     if (Files.exists(targetFile)) {
       Files.delete(targetFile);
     }
+    try (PrintWriter out = new PrintWriter(targetFile.toFile())) {
+      out.print("");
+    }
+    Set<PosixFilePermission> perms = new HashSet<PosixFilePermission>();
+    perms.add(PosixFilePermission.OWNER_READ);
+    perms.add(PosixFilePermission.OWNER_WRITE);
+    Files.setPosixFilePermissions(targetFile, perms);
+    // XXX why is this in a try block?
     try (PrintWriter out = new PrintWriter(targetFile.toFile())) {
       out.print(ngixConfig);
     }
@@ -470,11 +500,13 @@ public class PluginServiceLocatorRest {
     private final String nginxRules;
     private Process proc;
     private final String baseUrl;
+    private final String password;
 
-    PluginConfig(int port, String nginxRules, String baseUrl) {
+    PluginConfig(int port, String nginxRules, String baseUrl, String password) {
       this.port = port;
       this.nginxRules = nginxRules;
       this.baseUrl = baseUrl;
+      this.password = password;
     }
 
     int getPort() {
@@ -487,6 +519,10 @@ public class PluginServiceLocatorRest {
 
     String getNginxRules() {
       return this.nginxRules;
+    }
+
+    String getPassword() {
+      return this.password;
     }
 
     void setProcess(Process proc) {

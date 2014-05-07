@@ -70,6 +70,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     } else {
       this.nginxBinDir = ""; // assuming nginx is available in PATH
     }
+    // XXX should be mode 700
     this.nginxServDir = utils.createTempDirectory(this.dotDir, "nginx");
     this.nginxStaticDir = this.installDir + "/src/main/web/static";
     this.nginxExtraRules = "";

@@ -60,12 +60,12 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.installDir = System.getProperty("user.dir");
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
-    this.reservedPortCount = 3;
+    this.reservedPortCount = 4;
     this.dotDir = System.getProperty("user.home") + "/.beaker/v1";
     this.pluginDir = this.installDir + "/config/plugins/eval";
     utils.ensureDirectoryExists(this.dotDir);
     this.nginxDir = this.installDir + "/nginx";
-    if (System.getProperty("beaker.nginx.bin.dir") != null) {      
+    if (System.getProperty("beaker.nginx.bin.dir") != null) {
       this.nginxBinDir = System.getProperty("beaker.nginx.bin.dir");
     } else {
       this.nginxBinDir = ""; // assuming nginx is available in PATH

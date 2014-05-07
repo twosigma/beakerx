@@ -171,7 +171,7 @@ public class Main {
   }
 
   private static int findPortBase(Integer start) {
-    int width = 3;
+    int width = 4;
     int tries = 0;
     int base = start.intValue();
     while (!portRangeAvailable(base, width)) {

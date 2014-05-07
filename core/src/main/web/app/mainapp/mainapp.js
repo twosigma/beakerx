@@ -190,6 +190,7 @@
               var uriType = null;
               var readOnly = true;
               var format = null;
+              notebookModel = bkNotebookVersionManager.open(notebookModel);
               loadNotebookModelAndResetSession(
                   notebookUri, uriType, readOnly, format, notebookModel);
             });

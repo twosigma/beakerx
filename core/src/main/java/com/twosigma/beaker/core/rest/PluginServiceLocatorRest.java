@@ -74,6 +74,7 @@ public class PluginServiceLocatorRest {
   private final Integer portBase;
   private final Integer servPort;
   private final Integer corePort;
+  private final Integer restartPort;
   private final Integer reservedPortCount;
   private final Map<String, String> pluginLocations;
   private final Map<String, List<String>> pluginArgs;
@@ -99,6 +100,7 @@ public class PluginServiceLocatorRest {
     this.portBase = bkConfig.getPortBase();
     this.servPort = this.portBase + 1;
     this.corePort = this.portBase + 2;
+    this.restartPort = this.portBase + 3;
     this.reservedPortCount = bkConfig.getReservedPortCount();
     this.pluginLocations = bkConfig.getPluginLocations();
     this.pluginEnvps = bkConfig.getPluginEnvps();
@@ -224,7 +226,8 @@ public class PluginServiceLocatorRest {
       restartproc.waitFor();
 
       // spin until restart is done
-      String url = "http://127.0.0.1:" + servPort + "/restart." + restartId + "/present.html";
+      String url = "http://127.0.0.1:" + this.restartPort
+          + "/restart." + restartId + "/present.html";
       try {
         spinCheck(url);
       } catch (Throwable t) {
@@ -409,6 +412,7 @@ public class PluginServiceLocatorRest {
     ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
+    ngixConfig = ngixConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     if (windows()) {
       String tempDir = nginxClientTempDir.toFile().getPath();
       // Nginx interprets strings in unix style so backslash confuses it.

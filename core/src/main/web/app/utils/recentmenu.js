@@ -64,10 +64,6 @@
                   _recentMenu.push({
                     name: getShortName(item.uri),
                     action: function() {
-                      var notebookUri = item.uri;
-                      var uriType = item.type;
-                      var readOnly = item.readOnly;
-                      var format = item.format;
                       _pathOpener.open(item.uri, item.type, item.readOnly, item.format);
                     },
                     tooltip: item.uri

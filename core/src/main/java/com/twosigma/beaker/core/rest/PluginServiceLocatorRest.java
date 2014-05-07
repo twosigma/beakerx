@@ -400,7 +400,8 @@ public class PluginServiceLocatorRest {
       String nginxRule = pConfig.getNginxRules()
           .replace("%(port)s", Integer.toString(pConfig.getPort()))
           .replace("%(base_url)s", pConfig.getBaseUrl());
-      pluginSection.append(nginxRule + "\n\n");
+      pluginSection.append(nginxRule);
+      pluginSection.append("\n\n");
     }
     ngixConfig = ngixConfig.replace("%(plugin_section)s", pluginSection.toString());
     ngixConfig = ngixConfig.replace("%(extra_rules)s", this.nginxExtraRules);

@@ -80,14 +80,16 @@ compileJava {
   options.compilerArgs << '-Xlint:unchecked'
 }
 
-/* for testing
-run {
-  args '--disable-kerberos', '--default-notebook', 'config/default-test.bkr'
+if (hasProperty('inTesting')) {
+  run {
+    args '--disable-kerberos', '--default-notebook', 'config/default-test.bkr'
+  }
 }
-*/
 
-// need to remove META-INF/*.SF to use this.
-//build.dependsOn jar
-//jar {
-//  from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-//}
+if (hasProperty('includeDepsInJar')) {
+  build.dependsOn jar
+  jar {
+    // need to remove META-INF/*.SF to use this.
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+}

@@ -207,6 +207,12 @@
       setNotebookImporter: function(format, importer) {
         return bkCoreManager.setNotebookImporter(format, importer);
       },
+      setFileLoader: function(uriType, fileLoader) {
+        return bkCoreManager.setFileLoader(uriType, fileLoader);
+      },
+      setFileSaver: function(uriType, fileSaver) {
+        return bkCoreManager.setFileSaver(uriType, fileSaver);
+      },
       showDefaultSavingFileChooser: function() {
         return bkCoreManager.showDefaultSavingFileChooser();
       },

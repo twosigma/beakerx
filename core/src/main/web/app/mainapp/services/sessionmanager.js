@@ -130,10 +130,10 @@
         }
 
         // reset
-        _notebookUri.set(notebookUri);
         _uriType = uriType;
         _readOnly = readOnly;
         _format = format;
+        _notebookUri.set(notebookUri);
         _notebookModel.set(notebookModel);
         _edited = !!edited;
         _sessionId = sessionId;

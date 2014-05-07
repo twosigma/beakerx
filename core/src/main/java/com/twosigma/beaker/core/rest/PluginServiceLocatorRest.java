@@ -397,7 +397,7 @@ public class PluginServiceLocatorRest {
     }
 
     String restartId = RandomStringUtils.random(12, false, true);
-    String ngixConfig = this.nginxTemplate;
+    String nginxConfig = this.nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();
     for (PluginConfig pConfig : this.plugins.values()) {
       String nginxRule = pConfig.getNginxRules()
@@ -406,21 +406,21 @@ public class PluginServiceLocatorRest {
       pluginSection.append(nginxRule);
       pluginSection.append("\n\n");
     }
-    ngixConfig = ngixConfig.replace("%(plugin_section)s", pluginSection.toString());
-    ngixConfig = ngixConfig.replace("%(extra_rules)s", this.nginxExtraRules);
-    ngixConfig = ngixConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
-    ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
-    ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
-    ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
-    ngixConfig = ngixConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
+    nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
+    nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
+    nginxConfig = nginxConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
+    nginxConfig = nginxConfig.replace("%(port_main)s", Integer.toString(this.portBase));
+    nginxConfig = nginxConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
+    nginxConfig = nginxConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
+    nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     if (windows()) {
       String tempDir = nginxClientTempDir.toFile().getPath();
       // Nginx interprets strings in unix style so backslash confuses it.
-      ngixConfig = ngixConfig.replace("%(client_temp_dir)s", tempDir.replace("\\", "/"));
+      nginxConfig = nginxConfig.replace("%(client_temp_dir)s", tempDir.replace("\\", "/"));
     } else {
-      ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
+      nginxConfig = nginxConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
     }
-    ngixConfig = ngixConfig.replace("%(restart_id)s", restartId);
+    nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
 
     // write template to file
     java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
@@ -428,7 +428,7 @@ public class PluginServiceLocatorRest {
       Files.delete(targetFile);
     }
     try (PrintWriter out = new PrintWriter(targetFile.toFile())) {
-      out.print(ngixConfig);
+      out.print(nginxConfig);
     }
 
     return restartId;

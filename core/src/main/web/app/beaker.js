@@ -239,14 +239,6 @@
     });
 
     beaker.run(function(bkEvaluatePluginManager) {
-      if (window.bkInit && window.bkInit.getEvaluators) {
-        var evaluatorsUrlMap = window.bkInit.getEvaluators();
-        _.chain(evaluatorsUrlMap).keys().each(function(key) {
-          var value = evaluatorsUrlMap[key];
-          bkEvaluatePluginManager.addNameToUrlEntry(key, value);
-        });
-      }
-
       var moreEvaluatorUrlMap = {// for known plugins, so we can refer to the plugin with either its name or URL
         "IPython": "./plugins/eval/ipythonPlugins/ipython/ipython.js",
         "IRuby": "./plugins/eval/ipythonPlugins/iruby/iruby.js",
@@ -264,6 +256,14 @@
         var value = moreEvaluatorUrlMap[key];
         bkEvaluatePluginManager.addNameToUrlEntry(key, value);
       });
+
+      if (window.bkInit && window.bkInit.getEvaluators) {
+        var evaluatorsUrlMap = window.bkInit.getEvaluators();
+        _.chain(evaluatorsUrlMap).keys().each(function(key) {
+          var value = evaluatorsUrlMap[key];
+          bkEvaluatePluginManager.addNameToUrlEntry(key, value);
+        });
+      }
     });
   };
   var bootstrapBkApp = function() {

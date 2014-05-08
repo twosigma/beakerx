@@ -64,8 +64,6 @@ task (copyNginx, type: Exec) {
 }
 
 bowerInstall.dependsOn npmInstall
-build.dependsOn bowerInstall
-run.dependsOn bowerInstall
 run.dependsOn jar
 if (mac()) {
   build.dependsOn copyNginx

@@ -115,8 +115,7 @@ public class Main {
   private static String getInitUrl(Boolean useHttps, Integer portBase, Boolean useKerberos) throws UnknownHostException {
     String initUrl;
 
-    //TODO fix this, temporarily hardcoding
-    final String localhostname = "127.0.0.1";//InetAddress.getLocalHost().getHostName();
+    final String localhostname = InetAddress.getLocalHost().getHostName();
 
     if (useHttps) {
       initUrl = "https://" + localhostname + ":" + portBase + "/beaker/";

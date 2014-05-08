@@ -21,7 +21,8 @@
   'use strict';
   var module = angular.module('bk.cellMenuPluginManager', [
     'bk.utils',
-    'bk.helper'  // This is only for ensuring that window.bkHelper is set, don't use bkHelper directly
+    'bk.helper',  // This is only for ensuring that window.bkHelper is set, don't use bkHelper directly
+    'bk.bunsen'
   ]);
   module.factory('bkCellMenuPluginManager', function(bkUtils) {
     // loaded plugins

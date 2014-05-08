@@ -2,10 +2,11 @@
   "conf-format": "1",
   "allow-anonymous-usage-tracking": null,
   "init": [
-    "./plugin/init/track.js"
+    "./plugin/init/track.js",
+    "./plugin/init/addevalplugins.js"
   ],
   "control-panel-menu-plugins": [
-    "./plugin/menu/forControlPanel.js",
+    "./plugin/menu/controlpanel.js",
     "./plugin/menu/file_ipython.js",
     "./plugin/menu/file_iruby.js"
   ],

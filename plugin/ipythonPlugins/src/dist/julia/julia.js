@@ -41,6 +41,9 @@ define(function(require, exports, module) {
 
       // check in kernel table if shellID exists, then do nothing or still callback?
       if (kernels[shellID]) {
+        bkHelper.fcall(function() {
+          cb(shellID);
+        });
         return;
       }
 
@@ -103,7 +106,7 @@ define(function(require, exports, module) {
           console.error("TIMED OUT - waiting for ipython kernel to start");
         }
       };
-      setTimeout(spin, 0);
+      bkHelper.fcall(spin);
     },
     evaluate: function(code, modelOutput) {
       if (_theCancelFunction) {

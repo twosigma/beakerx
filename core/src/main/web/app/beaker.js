@@ -174,7 +174,7 @@
       }
     });
 
-    beaker.run(function($location, $document, bkUtils, bkCoreManager, bkDebug) {
+    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkDebug) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
@@ -206,7 +206,11 @@
           return $location.path("/open").search(routeParams);
         },
         newSession: function() {
-          return $location.path("/session/new");
+          if ($location.$$path === "/session/new") {
+            return $route.reload();
+          } else {
+            return $location.path("/session/new");
+          }
         },
         openSession: function(sessionId) {
           return $location.path("session/" + sessionId);

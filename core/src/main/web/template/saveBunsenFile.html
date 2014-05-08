@@ -1,5 +1,5 @@
 <!--
-    Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+    Copyright 2014 TWO SIGMA INVESTMENTS, LLC
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,13 +13,4 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="modal-header">
-  <h1>{{actionName}}</h1>
-</div>
-<div class="modal-body">
-  <p>File Name: <input id="{{inputId}}" name="{{inputId}}" ng-model="result"/></p>
-</div>
-<div class="modal-footer">
-  <button ng-click="close()" class="btn" id="{{inputId}}-cancel">Cancel</button>
-  <button ng-click="close(result)" class="btn btn-primary">{{actionName}}</button>
-</div>
+<span file-action-dialog action-name="Save" input-id="saveAsFileInput" close="close"></span>

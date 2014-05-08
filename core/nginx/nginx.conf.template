@@ -54,8 +54,12 @@ http {
             root   html;
         }
 
+        # nginx should probably serve the static content instead of
+        # passing it on to jetty. XXX
+
         location /beaker/ {
             proxy_pass http://127.0.0.1:%(port_beaker)s/;
+            proxy_set_header Authorization "Basic %(auth)s";
         }
 
         location = /restart.%(restart_id)s/present.html {

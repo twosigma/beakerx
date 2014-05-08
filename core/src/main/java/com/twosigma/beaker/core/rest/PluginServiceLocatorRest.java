@@ -85,6 +85,7 @@ public class PluginServiceLocatorRest {
   private final Map<String, String[]> pluginEnvps;
   private final OutputLogService outputLogService;
   private final Base64 encoder;
+  private final String corePassword = "xyzzy";
 
   private final String nginxTemplate;
   private final Map<String, PluginConfig> plugins = new HashMap<>();
@@ -287,10 +288,12 @@ public class PluginServiceLocatorRest {
     } else {
       List<String> envList = new ArrayList<>();
       for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
-        if (!("beaker_plugin_password".equals(entry.getKey())))
+        if (!("beaker_plugin_password".equals(entry.getKey())) &&
+            !("beaker_core_password".equals(entry.getKey())))
           envList.add(entry.getKey() + "=" + entry.getValue());
       }
       envList.add("beaker_plugin_password=" + password);
+      envList.add("beaker_core_password=" + this.corePassword);
       env = new String[envList.size()];
       envList.toArray(env);
     }
@@ -424,12 +427,14 @@ public class PluginServiceLocatorRest {
           .replace("%(base_url)s", pConfig.getBaseUrl());
       pluginSection.append(nginxRule + "\n\n");
     }
+    String auth = encoder.encodeBase64String(("beaker:" + this.corePassword).getBytes());
     ngixConfig = ngixConfig.replace("%(plugin_section)s", pluginSection.toString());
     ngixConfig = ngixConfig.replace("%(extra_rules)s", this.nginxExtraRules);
     ngixConfig = ngixConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
     ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
+    ngixConfig = ngixConfig.replace("%(auth)s", auth);
     if (windows()) {
       String tempDir = nginxClientTempDir.toFile().getPath();
       // Nginx interprets strings in unix style so backslash confuses it.

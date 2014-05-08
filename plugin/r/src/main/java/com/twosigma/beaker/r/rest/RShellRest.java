@@ -42,6 +42,7 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.r.module.ErrorGobbler;
 import com.twosigma.beaker.r.module.ROutputHandler;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.ClientProtocolException;
 import org.rosuda.REngine.Rserve.RConnection;
@@ -66,14 +67,18 @@ public class RShellRest {
   private int svgUniqueCounter = 0;
   private int corePort = -1;
   private RServer rServer = null;
+  private final Base64 encoder;
 
   public RShellRest() {
+    this.encoder = new Base64();
   }
 
   int getPortFromCore()
     throws IOException, ClientProtocolException
   {
+    String auth = encoder.encodeBase64String(("beaker:" + System.getenv("beaker_core_password")).getBytes());
     String response = Request.Get("http://127.0.0.1:" + corePort + "/rest/plugin-services/getAvailablePort")
+      .addHeader("Authorization", "Basic " + auth)
       .execute().returnContent().asString();
     return Integer.parseInt(response);
   }

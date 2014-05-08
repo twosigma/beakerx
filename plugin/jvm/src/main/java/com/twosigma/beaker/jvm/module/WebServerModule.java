@@ -41,8 +41,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
  */
 public class WebServerModule extends AbstractModule {
 
-  private String REALM = "SecureRealm";
-
   @Override
   protected void configure() {
     bind(OwnerFilter.class);
@@ -59,7 +57,7 @@ public class WebServerModule extends AbstractModule {
   }
 
   private SecurityHandler makeSecurityHandler() {
-    Constraint constraint = new Constraint(Constraint.__BASIC_AUTH,"user");
+    Constraint constraint = new Constraint(Constraint.__BASIC_AUTH, "user");
     constraint.setAuthenticate(true);
     constraint.setRoles(new String[]{"user"});
     ConstraintMapping cm = new ConstraintMapping();
@@ -67,7 +65,7 @@ public class WebServerModule extends AbstractModule {
     cm.setPathSpec("/*");
     ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
     csh.setAuthenticator(new BasicAuthenticator());
-    csh.setRealmName(REALM);
+    csh.setRealmName("SecureRealm");
     csh.addConstraintMapping(cm);
     HashLoginService loginService = new HashLoginService();
     String password = System.getenv("beaker_plugin_password");

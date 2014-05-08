@@ -243,26 +243,18 @@
     });
 
     beaker.run(function(bkEvaluatePluginManager) {
-      var moreEvaluatorUrlMap = {// for known plugins, so we can refer to the plugin with either its name or URL
-        "IPython": "./plugins/eval/ipythonPlugins/ipython/ipython.js",
-        "IRuby": "./plugins/eval/ipythonPlugins/iruby/iruby.js",
-        "Julia": "./plugins/eval/ipythonPlugins/julia/julia.js",
-        "Groovy": "./plugins/eval/groovy/groovy.js",
-        "R": "./plugins/eval/r/r.js",
-        "Node": "./plugins/eval/node/node.js",
-
+      var defaultEvaluatorUrlMap = {// for known plugins, so we can refer to the plugin with either its name or URL
         "Html": "./plugin/evaluator/html.js",
         "Latex": "./plugin/evaluator/latex.js",
         "JavaScript": "./plugin/evaluator/javaScript.js"
       };
 
-      _.chain(moreEvaluatorUrlMap).keys().each(function(key) {
-        var value = moreEvaluatorUrlMap[key];
+      _.chain(defaultEvaluatorUrlMap).each(function(value, key) {
         bkEvaluatePluginManager.addNameToUrlEntry(key, value);
       });
 
-      if (window.bkInit && window.bkInit.getEvaluators) {
-        var evaluatorsUrlMap = window.bkInit.getEvaluators();
+      if (window.bkInit && window.bkInit.getEvaluatorUrlMap) {
+        var evaluatorsUrlMap = window.bkInit.getEvaluatorUrlMap();
         _.chain(evaluatorsUrlMap).keys().each(function(key) {
           var value = evaluatorsUrlMap[key];
           bkEvaluatePluginManager.addNameToUrlEntry(key, value);

@@ -36,7 +36,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -455,9 +455,8 @@ public class PluginServiceLocatorRest {
     try (PrintWriter out = new PrintWriter(targetFile.toFile())) {
       out.print("");
     }
-    Set<PosixFilePermission> perms = new HashSet<PosixFilePermission>();
-    perms.add(PosixFilePermission.OWNER_READ);
-    perms.add(PosixFilePermission.OWNER_WRITE);
+    Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ,
+                                                PosixFilePermission.OWNER_WRITE);
     Files.setPosixFilePermissions(targetFile, perms);
     // XXX why is this in a try block?
     try (PrintWriter out = new PrintWriter(targetFile.toFile())) {

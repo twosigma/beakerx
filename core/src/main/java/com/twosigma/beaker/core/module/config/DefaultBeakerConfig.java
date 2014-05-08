@@ -21,6 +21,7 @@ import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,7 +71,6 @@ public class DefaultBeakerConfig implements BeakerConfig {
     } else {
       this.nginxBinDir = ""; // assuming nginx is available in PATH
     }
-    // XXX should be mode 700
     this.nginxServDir = utils.createTempDirectory(this.dotDir, "nginx");
     this.nginxStaticDir = this.installDir + "/src/main/web/static";
     this.nginxExtraRules = "";

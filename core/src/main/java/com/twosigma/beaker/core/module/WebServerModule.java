@@ -56,7 +56,7 @@ public class WebServerModule extends AbstractModule {
     return conn;
   }
 
-  private SecurityHandler makeSecurityHandler() {
+  private SecurityHandler makeSecurityHandler(String password) {
     Constraint constraint = new Constraint(Constraint.__BASIC_AUTH, "user");
     constraint.setAuthenticate(true);
     constraint.setRoles(new String[]{"user"});
@@ -68,8 +68,8 @@ public class WebServerModule extends AbstractModule {
     csh.setRealmName("SecureRealm");
     csh.addConstraintMapping(cm);
     HashLoginService loginService = new HashLoginService();
-    String password = "xyzzy";
-    loginService.putUser("beaker", Credential.getCredential(password), new String[]{"user"});
+    loginService.putUser("beaker", Credential.getCredential(password),
+                         new String[]{"user"});
     csh.setLoginService(loginService);
     return csh;
   }
@@ -89,7 +89,7 @@ public class WebServerModule extends AbstractModule {
       }
     });
 
-    servletHandler.setSecurityHandler(makeSecurityHandler());
+    servletHandler.setSecurityHandler(makeSecurityHandler(webServerConfig.getPassword()));
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
     servletHandler.addServlet(DefaultServlet.class, "/*");
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);

@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
+import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.BufferedReader;
 import java.io.File;
@@ -85,7 +86,7 @@ public class PluginServiceLocatorRest {
   private final Map<String, String[]> pluginEnvps;
   private final OutputLogService outputLogService;
   private final Base64 encoder;
-  private final String corePassword = "xyzzy";
+  private final String corePassword;
 
   private final String nginxTemplate;
   private final Map<String, PluginConfig> plugins = new HashMap<>();
@@ -95,6 +96,7 @@ public class PluginServiceLocatorRest {
   @Inject
   private PluginServiceLocatorRest(
       BeakerConfig bkConfig,
+      WebServerConfig webServerConfig,
       OutputLogService outputLogService,
       GeneralUtils utils) throws IOException {
     this.nginxDir = bkConfig.getNginxDirectory();
@@ -125,6 +127,7 @@ public class PluginServiceLocatorRest {
       cmd += (" -c " + this.nginxServDir + "/conf/nginx.conf");
     }
     this.nginxCommand = cmd;
+    this.corePassword = webServerConfig.getPassword();
 
     // record plugin options from cli and to pass through to individual plugins
     for (Map.Entry<String, String> e: bkConfig.getPluginOptions().entrySet()) {

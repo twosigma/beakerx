@@ -195,9 +195,9 @@ define(function(require, exports, module) {
                       '</div>' +
                       '<div class="modal-footer">' +
                       "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
-                      '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
+                      '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
                       '   <button ng-click="close()" class="btn">Cancel</button>' +
-                      '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
+                      '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary">Open</button>' +
                       '</div>', // template
                   bkHelper.getFileSystemFileChooserStrategy()
               );

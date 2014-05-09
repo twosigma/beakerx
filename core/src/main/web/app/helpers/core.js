@@ -40,22 +40,11 @@
   module.factory('bkCoreManager', function(
       $dialog, bkUtils, bkRecentMenu, modalDialogOp) {
 
-    var FileSystemFileChooserStrategy = function (homeDir){
+    var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
-      newStrategy.homeDir = homeDir;
       newStrategy.input = "";
       newStrategy.getResult = function() {
-        if (_.isEmpty(newStrategy.input)) {
-          return "";
-        }
-        var result = newStrategy.input;
-        if (!_.string.startsWith(result, '/')) {
-          result = homeDir + "/" + result;
-        }
-        if (!_.string.endsWith(result, '.bkr')) {
-          result = result + ".bkr";
-        }
-        return result;
+        return newStrategy.input;
       };
       newStrategy.close = function(ev, closeFunc) {
         if (ev.which === 13) {
@@ -197,13 +186,27 @@
         var deferred = bkUtils.newDeferred();
         bkUtils.getHomeDirectory().then(function (homeDir) {
           var fileChooserStrategy = self.getFileSystemFileChooserStrategy(homeDir);
+          fileChooserStrategy.getResult = function() {
+            if (_.isEmpty(this.input)) {
+              return "";
+            }
+            var result = this.input;
+            if (!_.string.startsWith(result, '/')) {
+              result = homeDir + "/" + result;
+            }
+            if (!_.string.endsWith(result, '.bkr')
+                && !_.string.endsWith(result, '/')) {
+              result = result + ".bkr";
+            }
+            return result;
+          };
           var fileChooserTemplate = '<div class="modal-header">' +
               '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
               '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
               '</div>' +
               '<div class="modal-body">' +
               '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-              '  <tree-view rooturi="{{getStrategy().homeDir}}" fs="getStrategy().treeViewfs">' +
+              '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
               '  </tree-view>' +
               '</div>' +
               '<div class="modal-footer">' +
@@ -336,8 +339,8 @@
             "</div>";
         return this.showModalDialog(close, template);
       },
-      getFileSystemFileChooserStrategy: function(homeDir) {
-        return new FileSystemFileChooserStrategy(homeDir);
+      getFileSystemFileChooserStrategy: function() {
+        return new FileSystemFileChooserStrategy();
       }
     };
     return bkCoreManager;

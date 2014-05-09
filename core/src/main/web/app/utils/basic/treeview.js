@@ -65,7 +65,11 @@
       controller: function($scope) {
         $scope.click = function() {
           if ($scope.data.type === 'directory') {
-            $scope.fs.open($scope.data.uri);
+            var uri = $scope.data.uri;
+            if (!_.string.endsWith('/')) {
+              uri = uri + '/';
+            }
+            $scope.fs.open(uri);
             // toggle
             if ($scope.data.children.length) {
               $scope.data.children.splice(0, $scope.data.children.length);

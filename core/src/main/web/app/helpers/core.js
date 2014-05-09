@@ -45,11 +45,17 @@
       newStrategy.homeDir = homeDir;
       newStrategy.input = "";
       newStrategy.getResult = function() {
-        if (_.string.startsWith(newStrategy.input, '/')) {
-          return newStrategy.input;
-        } else {
-          return homeDir + "/" + newStrategy.input;
+        if (_.isEmpty(newStrategy.input)) {
+          return "";
         }
+        var result = newStrategy.input;
+        if (!_.string.startsWith(result, '/')) {
+          result = homeDir + "/" + result;
+        }
+        if (!_.string.endsWith(result, '.bkr')) {
+          result = result + ".bkr";
+        }
+        return result;
       };
       newStrategy.close = function(ev, closeFunc) {
         if (ev.which === 13) {
@@ -71,7 +77,7 @@
               });
         },
         open: function(path) {
-          newStrategy.result = path;
+          newStrategy.input = path;
         },
         showSpinner: false
       };

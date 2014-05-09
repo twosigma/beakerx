@@ -42,7 +42,7 @@
       scope: {rooturi: "@", fs: "="},
       controller: function($scope) {
         if (!$templateCache.get('treeNodeChildren.html')) {
-          $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children' data='d' fs='fs'></tree-node>");
+          $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children | fileFilter:fs.filter' data='d' fs='fs'></tree-node>");
         }
 
         $scope.root = {
@@ -53,6 +53,12 @@
       }
     };
   });
+
+  treeView.filter("fileFilter", function() {
+    return function(children, filter) {
+      return _.isFunction(filter) ? _(children).filter(filter) : children;
+    };
+  })
 
   treeView.directive("treeNode", function() {
     return {

@@ -68,7 +68,19 @@
         open: function(path) {
           newStrategy.input = path;
         },
-        showSpinner: false
+        showSpinner: false,
+        applyExtFilter: true,
+        extFilter: ['bkr'],
+        filter: function(child) {
+          var fs = newStrategy.treeViewfs;
+          if (!fs.applyExtFilter || _.isEmpty(fs.extFilter) || child.type === "directory") {
+            return true;
+          } else {
+            return _(fs.extFilter).any(function(ext) {
+              return _.string.endsWith(child.uri, ext);
+            });
+          }
+        }
       };
     };
 
@@ -185,7 +197,7 @@
         var self = this;
         var deferred = bkUtils.newDeferred();
         bkUtils.getHomeDirectory().then(function (homeDir) {
-          var fileChooserStrategy = self.getFileSystemFileChooserStrategy(homeDir);
+          var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
           fileChooserStrategy.getResult = function() {
             if (_.isEmpty(this.input)) {
               return "";
@@ -200,6 +212,7 @@
             }
             return result;
           };
+          fileChooserStrategy.treeViewfs.applyExtFilter = false;
           var fileChooserTemplate = '<div class="modal-header">' +
               '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
               '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +

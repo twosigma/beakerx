@@ -40,12 +40,20 @@
   module.factory('bkCoreManager', function(
       $dialog, bkUtils, bkRecentMenu, modalDialogOp) {
 
-    var FileSystemFileChooserStrategy = function (){
+    var FileSystemFileChooserStrategy = function (homeDir){
       var newStrategy = this;
-      newStrategy.result = "";
+      newStrategy.homeDir = homeDir;
+      newStrategy.input = "";
+      newStrategy.getResult = function() {
+        if (_.string.startsWith(newStrategy.input, '/')) {
+          return newStrategy.input;
+        } else {
+          return homeDir + "/" + newStrategy.input;
+        }
+      };
       newStrategy.close = function(ev, closeFunc) {
         if (ev.which === 13) {
-          closeFunc(this.result);
+          closeFunc(this.getResult());
         }
       };
       newStrategy.treeViewfs = { // file service
@@ -182,24 +190,25 @@
         var self = this;
         var deferred = bkUtils.newDeferred();
         bkUtils.getHomeDirectory().then(function (homeDir) {
-          var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
+          var fileChooserStrategy = self.getFileSystemFileChooserStrategy(homeDir);
           var fileChooserTemplate = '<div class="modal-header">' +
               '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
               '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
               '</div>' +
               '<div class="modal-body">' +
               '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-              '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
+              '  <tree-view rooturi="{{getStrategy().homeDir}}" fs="getStrategy().treeViewfs">' +
               '  </tree-view>' +
               '</div>' +
               '<div class="modal-footer">' +
               '   <p><input id="saveAsFileInput"' +
               '             class="input-xxlarge"' +
-              '             ng-model="getStrategy().result"' +
+              '             ng-model="getStrategy().input"' +
               '             ng-keypress="getStrategy().close($event, close)"' +
               '             focus-start /></p>' +
+              '   <span style="float:left;">{{getStrategy().getResult()}}</span>' +
               '   <button ng-click="close()" class="btn">Cancel</button>' +
-              '   <button ng-click="close(getStrategy().result)" class="btn btn-primary" >Save</button>' +
+              '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary" >Save</button>' +
               '</div>';
           var fileChooserResultHandler = function (chosenFilePath) {
             deferred.resolve({
@@ -321,8 +330,8 @@
             "</div>";
         return this.showModalDialog(close, template);
       },
-      getFileSystemFileChooserStrategy: function() {
-        return new FileSystemFileChooserStrategy();
+      getFileSystemFileChooserStrategy: function(homeDir) {
+        return new FileSystemFileChooserStrategy(homeDir);
       }
     };
     return bkCoreManager;

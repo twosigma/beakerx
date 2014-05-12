@@ -17,9 +17,12 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -32,7 +35,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import jcifs.util.MimeMap;
 
 /**
@@ -74,6 +79,18 @@ public class FileIORest {
       @FormParam("path") String path,
       @FormParam("content") String contentAsString) throws IOException {
     path = removePrefix(path);
+    utils.saveFile(path, contentAsString);
+  }
+
+  @POST
+  @Path("saveIfNotExists")
+  public void saveIfNotExists(
+      @FormParam("path") String path,
+      @FormParam("content") String contentAsString) throws IOException {
+    path = removePrefix(path);
+    if (Files.exists(Paths.get(path))) {
+      throw new FileAlreadyExistsException(path + " already exists");
+    }
     utils.saveFile(path, contentAsString);
   }
 
@@ -152,5 +169,12 @@ public class FileIORest {
       }
     }
     return ret;
+  }
+
+  private static class FileAlreadyExistsException extends WebApplicationException {
+    public FileAlreadyExistsException(String message) {
+      super(Response.status(Responses.CONFLICT)
+          .entity(message).type("text/plain").build());
+    }
   }
 }

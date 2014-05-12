@@ -206,23 +206,125 @@
         };
 
         var _impl = (function() {
-          var _saveNotebook = function() {
-            showStatusMessage("Saving");
+
+          var step1_UserChooseUri = function(startUri) {
             var deferred = bkUtils.newDeferred();
-            var saveData = bkSessionManager.getSaveData();
-            var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
-            fileSaver.save(saveData.notebookUri, saveData.notebookModelAsString).then(
-                function () {
-                  bkSessionManager.setNotebookModelEdited(false);
-                  showTransientStatusMessage("Saved");
-                  deferred.resolve(arguments);
-                },
-                function (msg) {
-                  showTransientStatusMessage("Cancelled");
-                  deferred.reject();
-                });
+            bkCoreManager.showDefaultSavingFileChooser(startUri).then(function(ret) {
+              if (_.isEmpty(ret.uri)) {
+                deferred.reject("cancelled");
+              } else {
+                deferred.resolve(ret);
+              }
+            });
             return deferred.promise;
           };
+
+          var step2_Save_DoNotOverwrite = function(uri, uriType) {
+            var deferred = bkUtils.newDeferred();
+            var fileSaver = bkCoreManager.getFileSaver(uriType);
+            console.log(uriType, fileSaver);
+            var content = bkSessionManager.getSaveData().notebookModelAsString;
+            var successCB = function() {
+              return deferred.resolve("succeed");
+            };
+            var failedCB = function(reason) {
+              console.log("failedCB", reason);
+              if (reason === "exists") {
+                console.log("test 1234321");
+                deferred.reject("exists")
+              } else {
+                deferred.reject("failed");
+              }
+            };
+            fileSaver.save(uri, content).then(successCB, failedCB);
+            return deferred.promise;
+          };
+          
+          var step3_AskIfOverwrite = function(uri) {
+            var deferred = bkUtils.newDeferred();
+            bkCoreManager.showOkCancelModal(
+                "File " + uri + " exists. Overwrite?",
+                "File exists",
+                function() {
+                  deferred.resolve();
+                },
+                function() {
+                  deferred.reject();
+                }, "Yes", "No");
+            return deferred.promise;
+          };
+          
+          var step4_Save_AlwaysOverwrite = function(uri, uriType) {
+            var deferred = bkUtils.newDeferred();
+            var fileSaver = bkCoreManager.getFileSaver(uriType);
+            var content = bkSessionManager.getSaveData().notebookModelAsString;
+            var successCB = function() {
+              deferred.resolve({uri: uri, uriType: uriType});
+            };
+            var failedCB = function(reason) {
+              deferred.reject("failed");
+            };
+            fileSaver.save(uri, content, true).then(successCB, failedCB);
+            return deferred.promise;
+          };
+
+          var _save = function(deferred, uri, uriType) {
+            step2_Save_DoNotOverwrite(uri, uriType).then(function() {
+              deferred.resolve({uri: uri, uriType: uriType}); // file save succeed
+            }, function (reason) {
+              console.log(reason);
+              if (reason !== "exists") {
+                deferred.reject(reason); // file save failed
+              } else {
+                step3_AskIfOverwrite(uri).then(function () {
+                  step4_Save_AlwaysOverwrite(uri, uriType).then(function() {
+                    deferred.resolve({uri: uri, uriType: uriType}); // file save succeed
+                  }, function(reasone) {
+                    deferred.reject(reasone); // file save failed
+                  });
+                }, function() {
+                  _promptAndSave(deferred, uri);
+                })
+              }
+            });
+          };
+          var _promptAndSave = function(deferred, startUri) {
+            step1_UserChooseUri(startUri).then(function(ret) {
+              _save(deferred, ret.uri, ret.uriType)
+            }, function() {
+              deferred.reject("cancelled"); // file save cancelled
+            });
+          };
+
+          var promptAndSave = function() {
+            console.log("promptAndSave");
+            var deferred = bkUtils.newDeferred();
+            _promptAndSave(deferred);
+            return deferred.promise;
+          };
+          
+          var save = function(uri, uriType) {
+            var deferred = bkUtils.newDeferred();
+            _save(deferred, uri, uriType);
+            return deferred.promise;
+          };
+
+          var saveStart = function() {
+            showStatusMessage("Saving");
+          };
+          var saveDone = function(ret) {
+            bkSessionManager.setNotebookModelEdited(false);
+            bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false);
+            document.title = bkSessionManager.getNotebookTitle();
+            showTransientStatusMessage("Saved");
+          };
+          var saveCancelled = function() {
+            showTransientStatusMessage("Cancelled");
+          };
+          var saveFailed = function(msg) {
+            bkCoreManager.showErrorModal(msg, "Save Failed");
+          };
+
           return {
             name: "bkNotebookApp",
             getSessionId: function() {
@@ -230,25 +332,55 @@
             },
             saveNotebook: function() {
               var self = this;
+              var deferred = bkUtils.newDeferred();
+              saveStart();
               if (bkSessionManager.isSavable()) {
-                return _saveNotebook();
+                var saveData = bkSessionManager.getSaveData();
+                step4_Save_AlwaysOverwrite(saveData.notebookUri, saveData.uriType)
+                    .then(function(ret) {
+                      saveDone(ret);
+                      deferred.resolve(ret);
+                    }, function(msg) {
+                      saveFailed(msg);
+                      deferred.reject(msg);
+                    });
+
               } else {
-                // pop up the file chooser and then proceed as save-as
-                return bkCoreManager.showDefaultSavingFileChooser().then(function(ret) {
-                  if (ret.uri) {
-                    return self.saveNotebookAs(ret.uri, ret.uriType);
+                promptAndSave().then(function(ret) {
+                  console.log(ret);
+                  saveDone(ret);
+                  deferred.resolve(ret);
+                }, function(msg) {
+                  if (msg === "cancelled") {
+                    saveCancelled();
+                  } else {
+                    saveFailed(msg);
                   }
+                  deferred.reject(msg);
                 });
               }
+              return deferred.promise;
             },
             saveNotebookAs: function(notebookUri, uriType) {
               if (_.isEmpty(notebookUri)) {
                 console.error("cannot save notebook, notebookUri is empty");
                 return;
               }
-              bkSessionManager.updateNotebookUri(notebookUri, uriType, false);
-              document.title = bkSessionManager.getNotebookTitle();
-              return _saveNotebook();
+              var deferred = bkUtils.newDeferred();
+              saveStart();
+              var saveData = bkSessionManager.getSaveData();
+              save(notebookUri, uriType).then(function(ret) {
+                saveDone(ret);
+                deferred.resolve(ret);
+              }, function(msg) {
+                if (msg === "cancelled") {
+                  saveCancelled();
+                } else {
+                  saveFailed(msg);
+                }
+                deferred.reject(msg);
+              })
+              return deferred.promise;
             },
 
             closeNotebook: function() {

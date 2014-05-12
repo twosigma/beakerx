@@ -102,8 +102,7 @@
           console.error(e);
           console.error("This is not a valid Beaker notebook JSON");
           console.error(notebookJson);
-          window.alert("Not a valid Beaker notebook");
-          return;
+          throw "Not a valid Beaker notebook";
         }
         return notebookModel;
       }
@@ -132,8 +131,8 @@
     var _fileSavers = {};
 
     _fileSavers[LOCATION_FILESYS] = {
-      save: function(uri, contentAsString) {
-        return bkUtils.saveFile(uri, contentAsString);
+      save: function(uri, contentAsString, overwrite) {
+        return bkUtils.saveFile(uri, contentAsString, overwrite);
       }
     };
 
@@ -193,11 +192,12 @@
       openNotebook: function(notebookUri, uriType, readOnly, format) {
         this._beakerRootOp.openNotebook(notebookUri, uriType, readOnly, format);
       },
-      showDefaultSavingFileChooser: function() {
+      showDefaultSavingFileChooser: function(startPath) {
         var self = this;
         var deferred = bkUtils.newDeferred();
         bkUtils.getHomeDirectory().then(function (homeDir) {
           var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
+          fileChooserStrategy.input = startPath;
           fileChooserStrategy.getResult = function() {
             if (_.isEmpty(this.input)) {
               return "";

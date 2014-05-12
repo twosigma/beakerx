@@ -39,6 +39,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import jcifs.util.MimeMap;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * for file I/O (save and load)
@@ -79,7 +80,11 @@ public class FileIORest {
       @FormParam("path") String path,
       @FormParam("content") String contentAsString) throws IOException {
     path = removePrefix(path);
-    utils.saveFile(path, contentAsString);
+    try {
+      utils.saveFile(path, contentAsString);
+    } catch (Throwable t) {
+      throw new FileSaveException(ExceptionUtils.getStackTrace(t));
+    }
   }
 
   @POST
@@ -91,7 +96,11 @@ public class FileIORest {
     if (Files.exists(Paths.get(path))) {
       throw new FileAlreadyExistsException(path + " already exists");
     }
-    utils.saveFile(path, contentAsString);
+    try {
+      utils.saveFile(path, contentAsString);
+    } catch (Throwable t) {
+      throw new FileSaveException(ExceptionUtils.getStackTrace(t));
+    }
   }
 
   @GET
@@ -99,7 +108,14 @@ public class FileIORest {
   @Produces(MediaType.TEXT_PLAIN)
   public String load(@QueryParam("path") String path) throws IOException {
     path = removePrefix(path);
-    return utils.readFile(path);
+    if (!Files.exists(Paths.get(path))) {
+      throw new FileDoesntExistException(path + " was not found");
+    }
+    try {
+      return utils.readFile(path);
+    } catch (Throwable t) {
+      throw new FileOpenException(ExceptionUtils.getStackTrace(t));
+    }
   }
 
   private static final String FILE_PREFIX = "file:";
@@ -170,6 +186,23 @@ public class FileIORest {
     }
     return ret;
   }
+  private static class FileSaveException extends WebApplicationException {
+    public FileSaveException(String stackTrace) {
+      super(Response.status(Responses.PRECONDITION_FAILED)
+          .entity("<h1>Save failed</h1><pre>" + stackTrace + "</pre>")
+          .type("text/plain")
+          .build());
+    }
+  }
+
+  private static class FileOpenException extends WebApplicationException {
+    public FileOpenException(String stackTrace) {
+      super(Response.status(Responses.PRECONDITION_FAILED)
+          .entity("<h1>Open failed</h1><pre>" + stackTrace + "</pre>")
+          .type("text/plain")
+          .build());
+    }
+  }
 
   private static class FileAlreadyExistsException extends WebApplicationException {
     public FileAlreadyExistsException(String message) {
@@ -177,4 +210,12 @@ public class FileIORest {
           .entity(message).type("text/plain").build());
     }
   }
+
+  private static class FileDoesntExistException extends WebApplicationException {
+    public FileDoesntExistException(String message) {
+      super(Response.status(Responses.NOT_FOUND)
+          .entity(message).type("text/plain").build());
+    }
+  }
+
 }

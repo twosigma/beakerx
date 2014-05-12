@@ -126,7 +126,9 @@
               }
             }
             document.title = bkSessionManager.getNotebookTitle();
-            bkHelper.evaluate("initialization");
+            if (!isOpeningExistingSession) {
+              bkHelper.evaluate("initialization");
+            }
             $scope.loading = false;
           };
           return {

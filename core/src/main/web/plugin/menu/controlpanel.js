@@ -34,43 +34,6 @@ define(function(require, exports, module) {
       }
     }
   ];
-  var helpMenuItems = [
-    {
-      name: "About Beaker",
-      action: function() {
-        bkHelper.showModalDialog(undefined, "app/template/about.html");
-      },
-      tooltip: "Basic information about this application"
-    },
-    {
-      name: "Tutorial notebook",
-      action: function() {
-        bkHelper.openNotebook("config/tutorial.bkr", undefined, true);
-      },
-      tooltip: "Open the tutorial notebook"
-    },
-    {
-      name: "Keyboard shortcuts",
-      action: function() {
-        window.open("./keyboardShortcuts.html");
-      },
-      tooltip: "Show keyboard shortcuts"
-    },
-    {
-      name: "Report a bug or feature request",
-      action: function() {
-        window.open("https://github.com/twosigma/beaker-notebook/issues/new");
-      },
-      tooltip: "Log an issue in GitHub"
-    },
-    {
-      name: "Privacy policy",
-      action: function() {
-        window.open("http://beakernotebook.com/privacy");
-      },
-      tooltip: "Privacy policy on beakernotebook.com"
-    }    
-  ];
 
   var menuItemsDeferred = bkHelper.newDeferred();
   bkHelper.getHomeDirectory().then(function(homeDir) {
@@ -109,16 +72,22 @@ define(function(require, exports, module) {
         ]
       },
       {
-        parent: "Settings",
+        parent: "Help",
         items: [{
-          name: "Set anonymous tracking permission",
+          name: "About Beaker",
           action: function() {
-            bkHelper.showAnonymousTrackingDialog();
+            bkHelper.showModalDialog(undefined, "app/template/about.html");
           },
-          tooltip: "Show the dialog for setting anonymous tracking permission"
+          tooltip: "Basic information about this application"
+        },
+        {
+          name: "Keyboard shortcuts",
+          action: function() {
+            window.open("./keyboardShortcuts.html");
+          },
+          tooltip: "Show keyboard shortcuts"
         }]
-      },
-      { parent: "Help", items: helpMenuItems }
+      }
     ];
     menuItemsDeferred.resolve(toAdd);
   });

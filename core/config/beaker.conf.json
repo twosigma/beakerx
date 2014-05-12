@@ -7,6 +7,7 @@
   ],
   "control-panel-menu-plugins": [
     "./plugin/menu/controlpanel.js",
+    "./plugin/menu/controlpanel_addition.js",
     "./plugin/menu/file_ipython.js",
     "./plugin/menu/file_iruby.js"
   ],

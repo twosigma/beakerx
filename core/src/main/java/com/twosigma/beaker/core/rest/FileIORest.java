@@ -74,6 +74,13 @@ public class FileIORest {
     return System.getProperty("user.home");
   }
 
+  @GET
+  @Path("getStartUpDirectory")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String getStartUpDirectory() {
+    return System.getProperty("user.dir");
+  }
+
   @POST
   @Path("save")
   public void save(

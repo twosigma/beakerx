@@ -99,6 +99,13 @@
             .error(deferred.reject);
         return deferred.promise;
       },
+      getStartUpDirectory: function() {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet("../beaker/rest/file-io/getStartUpDirectory")
+            .success(deferred.resolve)
+            .error(deferred.reject);
+        return deferred.promise;
+      },
       getDefaultNotebook: function() {
         var deferred = angularUtils.newDeferred();
         angularUtils.httpGet("../beaker/rest/util/getDefaultNotebook").

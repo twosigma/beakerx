@@ -134,7 +134,7 @@
           return {
             openUri: function(notebookUri, uriType, readOnly, format, retry, retryCountMax) {
               if (!notebookUri) {
-                alert("Failed to open notebook, notebookUri is empty");
+                bkCoreManager.showErrorModal("Failed to open notebook, notebookUri is empty");
                 return;
               }
               $scope.loading = true;
@@ -158,7 +158,7 @@
                     loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry, retryCountMax);
                   }, 100);
                 } else {
-                  alert("Failed to open " + notebookUri
+                  bkCoreManager.showErrorModal("Failed to open " + notebookUri
                       + " because format " + format
                       + " was not recognized.");
                 }

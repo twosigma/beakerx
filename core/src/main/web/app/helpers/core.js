@@ -213,6 +213,9 @@
               }
               return result;
             };
+            fileChooserStrategy.getSaveBtnDisabled = function() {
+              return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
+            };
             fileChooserStrategy.treeViewfs.applyExtFilter = false;
             var fileChooserTemplate = '<div class="modal-header">' +
                 '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
@@ -232,7 +235,8 @@
                 '             focus-start /></p>' +
                 '   <span style="float:left;">{{getStrategy().getResult()}}</span>' +
                 '   <button ng-click="close()" class="btn">Cancel</button>' +
-                '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary" >Save</button>' +
+                '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary"' +
+                '           ng-disabled="getStrategy().getSaveBtnDisabled()" >Save</button>' +
                 '</div>';
             var fileChooserResultHandler = function (chosenFilePath) {
               deferred.resolve({

@@ -207,9 +207,9 @@
 
         var _impl = (function() {
 
-          var step1_UserChooseUri = function(startUri) {
+          var promptUriChooser = function(initUri) {
             var deferred = bkUtils.newDeferred();
-            bkCoreManager.showDefaultSavingFileChooser(startUri).then(function(ret) {
+            bkCoreManager.showDefaultSavingFileChooser(initUri).then(function(ret) {
               if (_.isEmpty(ret.uri)) {
                 deferred.reject("cancelled");
               } else {
@@ -219,28 +219,23 @@
             return deferred.promise;
           };
 
-          var step2_Save_DoNotOverwrite = function(uri, uriType) {
+          var saveDoNotOverwrite = function(uri, uriType) {
             var deferred = bkUtils.newDeferred();
             var fileSaver = bkCoreManager.getFileSaver(uriType);
-            console.log(uriType, fileSaver);
             var content = bkSessionManager.getSaveData().notebookModelAsString;
-            var successCB = function() {
+            fileSaver.save(uri, content).then(function() {
               return deferred.resolve("succeed");
-            };
-            var failedCB = function(reason) {
-              console.log("failedCB", reason);
+            }, function(reason) {
               if (reason === "exists") {
-                console.log("test 1234321");
                 deferred.reject("exists")
               } else {
                 deferred.reject("failed");
               }
-            };
-            fileSaver.save(uri, content).then(successCB, failedCB);
+            });
             return deferred.promise;
           };
           
-          var step3_AskIfOverwrite = function(uri) {
+          var promptIfOverwrite = function(uri) {
             var deferred = bkUtils.newDeferred();
             bkCoreManager.showOkCancelModal(
                 "File " + uri + " exists. Overwrite?",
@@ -254,58 +249,54 @@
             return deferred.promise;
           };
           
-          var step4_Save_AlwaysOverwrite = function(uri, uriType) {
+          var saveAlwaysOverwrite = function(uri, uriType) {
             var deferred = bkUtils.newDeferred();
             var fileSaver = bkCoreManager.getFileSaver(uriType);
             var content = bkSessionManager.getSaveData().notebookModelAsString;
-            var successCB = function() {
+            fileSaver.save(uri, content, true).then(function() {
               deferred.resolve({uri: uri, uriType: uriType});
-            };
-            var failedCB = function(reason) {
-              deferred.reject("failed");
-            };
-            fileSaver.save(uri, content, true).then(successCB, failedCB);
+            }, function(reason) {
+              deferred.reject(reason);
+            });
             return deferred.promise;
           };
 
-          var _save = function(deferred, uri, uriType) {
-            step2_Save_DoNotOverwrite(uri, uriType).then(function() {
+          var _savePromptIfOverwrite = function(deferred, uri, uriType) {
+            saveDoNotOverwrite(uri, uriType).then(function() {
               deferred.resolve({uri: uri, uriType: uriType}); // file save succeed
             }, function (reason) {
-              console.log(reason);
               if (reason !== "exists") {
                 deferred.reject(reason); // file save failed
               } else {
-                step3_AskIfOverwrite(uri).then(function () {
-                  step4_Save_AlwaysOverwrite(uri, uriType).then(function() {
-                    deferred.resolve({uri: uri, uriType: uriType}); // file save succeed
-                  }, function(reasone) {
-                    deferred.reject(reasone); // file save failed
+                promptIfOverwrite(uri).then(function () {
+                  saveAlwaysOverwrite(uri, uriType).then(function(ret) {
+                    deferred.resolve(ret); // file save succeed
+                  }, function(reason) {
+                    deferred.reject(reason); // file save failed
                   });
                 }, function() {
-                  _promptAndSave(deferred, uri);
+                  _savePromptUriChooser(deferred, uri);
                 })
               }
             });
           };
-          var _promptAndSave = function(deferred, startUri) {
-            step1_UserChooseUri(startUri).then(function(ret) {
-              _save(deferred, ret.uri, ret.uriType)
+          var _savePromptUriChooser = function(deferred, initUri) {
+            promptUriChooser(initUri).then(function(ret) {
+              _savePromptIfOverwrite(deferred, ret.uri, ret.uriType)
             }, function() {
               deferred.reject("cancelled"); // file save cancelled
             });
           };
 
-          var promptAndSave = function() {
-            console.log("promptAndSave");
+          var savePromptChooseUri = function() {
             var deferred = bkUtils.newDeferred();
-            _promptAndSave(deferred);
+            _savePromptUriChooser(deferred);
             return deferred.promise;
           };
-          
-          var save = function(uri, uriType) {
+
+          var savePromptIfOverwrite = function(uri, uriType) {
             var deferred = bkUtils.newDeferred();
-            _save(deferred, uri, uriType);
+            _savePromptIfOverwrite(deferred, uri, uriType);
             return deferred.promise;
           };
 
@@ -318,11 +309,13 @@
             document.title = bkSessionManager.getNotebookTitle();
             showTransientStatusMessage("Saved");
           };
-          var saveCancelled = function() {
-            showTransientStatusMessage("Cancelled");
-          };
-          var saveFailed = function(msg) {
-            bkCoreManager.showErrorModal(msg, "Save Failed");
+
+          var saveFailed = function (msg) {
+            if (msg === "cancelled") {
+              showTransientStatusMessage("Cancelled");
+            } else {
+              bkCoreManager.showErrorModal(msg, "Save Failed");
+            }
           };
 
           return {
@@ -331,58 +324,24 @@
               return bkSessionManager.getSessionId();
             },
             saveNotebook: function() {
-              var self = this;
-              var deferred = bkUtils.newDeferred();
               saveStart();
+              var thenable;
               if (bkSessionManager.isSavable()) {
                 var saveData = bkSessionManager.getSaveData();
-                step4_Save_AlwaysOverwrite(saveData.notebookUri, saveData.uriType)
-                    .then(function(ret) {
-                      saveDone(ret);
-                      deferred.resolve(ret);
-                    }, function(msg) {
-                      saveFailed(msg);
-                      deferred.reject(msg);
-                    });
-
+                thenable = saveAlwaysOverwrite(saveData.notebookUri, saveData.uriType);
               } else {
-                promptAndSave().then(function(ret) {
-                  console.log(ret);
-                  saveDone(ret);
-                  deferred.resolve(ret);
-                }, function(msg) {
-                  if (msg === "cancelled") {
-                    saveCancelled();
-                  } else {
-                    saveFailed(msg);
-                  }
-                  deferred.reject(msg);
-                });
+                thenable = savePromptChooseUri();
               }
-              return deferred.promise;
+              return thenable.then(saveDone, saveFailed);
             },
             saveNotebookAs: function(notebookUri, uriType) {
               if (_.isEmpty(notebookUri)) {
                 console.error("cannot save notebook, notebookUri is empty");
                 return;
               }
-              var deferred = bkUtils.newDeferred();
               saveStart();
-              var saveData = bkSessionManager.getSaveData();
-              save(notebookUri, uriType).then(function(ret) {
-                saveDone(ret);
-                deferred.resolve(ret);
-              }, function(msg) {
-                if (msg === "cancelled") {
-                  saveCancelled();
-                } else {
-                  saveFailed(msg);
-                }
-                deferred.reject(msg);
-              })
-              return deferred.promise;
+              return savePromptIfOverwrite(notebookUri, uriType).then(saveDone, saveFailed);
             },
-
             closeNotebook: function() {
               var self = this;
               var closeSession = function() {

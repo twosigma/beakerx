@@ -192,12 +192,12 @@
       openNotebook: function(notebookUri, uriType, readOnly, format) {
         this._beakerRootOp.openNotebook(notebookUri, uriType, readOnly, format);
       },
-      showDefaultSavingFileChooser: function(startPath) {
+      showDefaultSavingFileChooser: function(initPath) {
         var self = this;
         var deferred = bkUtils.newDeferred();
         bkUtils.getHomeDirectory().then(function (homeDir) {
           var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
-          fileChooserStrategy.input = startPath;
+          fileChooserStrategy.input = initPath;
           fileChooserStrategy.getResult = function() {
             if (_.isEmpty(this.input)) {
               return "";

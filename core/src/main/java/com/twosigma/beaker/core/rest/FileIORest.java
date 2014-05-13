@@ -21,6 +21,8 @@ import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -119,7 +121,8 @@ public class FileIORest {
       throw new FileDoesntExistException(path + " was not found");
     }
     try {
-      return utils.readFile(path);
+      byte[] encoded = Files.readAllBytes(Paths.get(path));
+      return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
     } catch (Throwable t) {
       throw new FileOpenException(ExceptionUtils.getStackTrace(t));
     }

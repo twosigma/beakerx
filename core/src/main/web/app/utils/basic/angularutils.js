@@ -52,6 +52,9 @@
       newPromise: function(value) {
         return $q.when(value);
       },
+      all: function() {
+        return $q.all.apply($q, arguments);
+      },
       fcall: function(func) {
         return $q.when(Q.fcall(func));
       },

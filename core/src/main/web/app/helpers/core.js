@@ -195,65 +195,66 @@
       showDefaultSavingFileChooser: function(initPath) {
         var self = this;
         var deferred = bkUtils.newDeferred();
-        bkUtils.getHomeDirectory().then(function (homeDir) {
-          bkUtils.getStartUpDirectory().then(function (pwd) {
-            var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
-            fileChooserStrategy.input = initPath;
-            fileChooserStrategy.getResult = function () {
-              if (_.isEmpty(this.input)) {
-                return "";
-              }
-              var result = this.input;
-              if (result === '~') {
-                result = homeDir + "/"
-              } else if (_.string.startsWith(result, '~/')) {
-                result = result.replace('~', homeDir);
-              } else if (!_.string.startsWith(result, '/')) {
-                result = pwd + "/" + result;
-              }
-              if (!_.string.endsWith(result, '.bkr')
-                  && !_.string.endsWith(result, '/')) {
-                result = result + ".bkr";
-              }
-              return result;
-            };
-            fileChooserStrategy.getSaveBtnDisabled = function() {
-              return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
-            };
-            fileChooserStrategy.treeViewfs.applyExtFilter = false;
-            var fileChooserTemplate = '<div class="modal-header">' +
-                '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
-                '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
-                '</div>' +
-                '<div class="modal-body">' +
-                '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-                '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
-                '  </tree-view>' +
-                (pwd === homeDir ? '' : ('  <tree-view rooturi="' + pwd + '" fs="getStrategy().treeViewfs"></tree-view>')) +
-                '</div>' +
-                '<div class="modal-footer">' +
-                '   <p><input id="saveAsFileInput"' +
-                '             class="input-xxlarge"' +
-                '             ng-model="getStrategy().input"' +
-                '             ng-keypress="getStrategy().close($event, close)"' +
-                '             focus-start /></p>' +
-                '   <span style="float:left;">{{getStrategy().getResult()}}</span>' +
-                '   <button ng-click="close()" class="btn">Cancel</button>' +
-                '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary"' +
-                '           ng-disabled="getStrategy().getSaveBtnDisabled()" >Save</button>' +
-                '</div>';
-            var fileChooserResultHandler = function (chosenFilePath) {
-              deferred.resolve({
-                uri: chosenFilePath,
-                uriType: LOCATION_FILESYS
-              });
-            };
+        bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory()])
+            .then(function(values) {
+          var homeDir = values[0];
+          var pwd = values[1];
+          var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
+          fileChooserStrategy.input = initPath;
+          fileChooserStrategy.getResult = function () {
+            if (_.isEmpty(this.input)) {
+              return "";
+            }
+            var result = this.input;
+            if (result === '~') {
+              result = homeDir + "/"
+            } else if (_.string.startsWith(result, '~/')) {
+              result = result.replace('~', homeDir);
+            } else if (!_.string.startsWith(result, '/')) {
+              result = pwd + "/" + result;
+            }
+            if (!_.string.endsWith(result, '.bkr')
+                && !_.string.endsWith(result, '/')) {
+              result = result + ".bkr";
+            }
+            return result;
+          };
+          fileChooserStrategy.getSaveBtnDisabled = function() {
+            return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
+          };
+          fileChooserStrategy.treeViewfs.applyExtFilter = false;
+          var fileChooserTemplate = '<div class="modal-header">' +
+              '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
+              '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
+              '</div>' +
+              '<div class="modal-body">' +
+              '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
+              '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
+              '  </tree-view>' +
+              (pwd === homeDir ? '' : ('  <tree-view rooturi="' + pwd + '" fs="getStrategy().treeViewfs"></tree-view>')) +
+              '</div>' +
+              '<div class="modal-footer">' +
+              '   <p><input id="saveAsFileInput"' +
+              '             class="input-xxlarge"' +
+              '             ng-model="getStrategy().input"' +
+              '             ng-keypress="getStrategy().close($event, close)"' +
+              '             focus-start /></p>' +
+              '   <span style="float:left;">{{getStrategy().getResult()}}</span>' +
+              '   <button ng-click="close()" class="btn">Cancel</button>' +
+              '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary"' +
+              '           ng-disabled="getStrategy().getSaveBtnDisabled()" >Save</button>' +
+              '</div>';
+          var fileChooserResultHandler = function (chosenFilePath) {
+            deferred.resolve({
+              uri: chosenFilePath,
+              uriType: LOCATION_FILESYS
+            });
+          };
 
-            bkCoreManager.showModalDialog(
-                fileChooserResultHandler,
-                fileChooserTemplate,
-                fileChooserStrategy);
-          });
+          bkCoreManager.showModalDialog(
+              fileChooserResultHandler,
+              fileChooserTemplate,
+              fileChooserStrategy);
         });
         return deferred.promise;
       },

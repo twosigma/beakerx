@@ -84,6 +84,9 @@
       newPromise: function(value) {
         return angularUtils.newPromise(value);
       },
+      all: function() {
+        return angularUtils.all.apply(angularUtils, arguments);
+      },
       fcall: function(func) {
         return angularUtils.fcall(func);
       },

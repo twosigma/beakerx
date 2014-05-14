@@ -186,7 +186,7 @@ define(function(require, exports, module) {
             action: function() {
               bkHelper.showModalDialog(
                   function(originalUrl) {
-                    bkHelper.openNotebook(originalUrl, null, false, IRUBY_PATH_PREFIX);
+                    bkHelper.openNotebook(originalUrl, null, true, IRUBY_PATH_PREFIX);
                   },
                   '<div class="modal-header">' +
                       '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +

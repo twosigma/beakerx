@@ -220,21 +220,9 @@
           };
 
           var saveDoNotOverwrite = function(uri, uriType) {
-            var deferred = bkUtils.newDeferred();
             var fileSaver = bkCoreManager.getFileSaver(uriType);
             var content = bkSessionManager.getSaveData().notebookModelAsString;
-            fileSaver.save(uri, content).then(function() {
-              return deferred.resolve("succeed");
-            }, function(reason) {
-              if (reason === "exists") {
-                deferred.reject("exists");
-              } else if (reason === "isDirectory") {
-                deferred.reject("isDirectory");
-              } else {
-                deferred.reject("failed");
-              }
-            });
-            return deferred.promise;
+            return fileSaver.save(uri, content);
           };
 
           var promptIfOverwrite = function(uri) {

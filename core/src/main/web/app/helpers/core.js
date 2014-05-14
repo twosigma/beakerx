@@ -204,7 +204,11 @@
                 return "";
               }
               var result = this.input;
-              if (!_.string.startsWith(result, '/')) {
+              if (result === '~') {
+                result = homeDir + "/"
+              } else if (_.string.startsWith(result, '~/')) {
+                result = result.replace('~', homeDir);
+              } else if (!_.string.startsWith(result, '/')) {
                 result = pwd + "/" + result;
               }
               if (!_.string.endsWith(result, '.bkr')

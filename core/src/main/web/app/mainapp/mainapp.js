@@ -236,7 +236,7 @@
             });
             return deferred.promise;
           };
-          
+
           var promptIfOverwrite = function(uri) {
             var deferred = bkUtils.newDeferred();
             bkCoreManager.showOkCancelModal(
@@ -250,7 +250,7 @@
                 }, "Overwrite", "Cancel");
             return deferred.promise;
           };
-          
+
           var saveAlwaysOverwrite = function(uri, uriType) {
             var deferred = bkUtils.newDeferred();
             var fileSaver = bkCoreManager.getFileSaver(uriType);
@@ -276,7 +276,7 @@
                   });
                 }, function() {
                   _savePromptUriChooser(deferred, uri);
-                })
+                });
               } else if (reason === "isDirectory") {
                 bkCoreManager.showErrorModal(
                     uri + " is a directory. Please choose a different location",
@@ -291,7 +291,7 @@
           };
           var _savePromptUriChooser = function(deferred, initUri) {
             promptUriChooser(initUri).then(function(ret) {
-              _savePromptIfOverwrite(deferred, ret.uri, ret.uriType)
+              _savePromptIfOverwrite(deferred, ret.uri, ret.uriType);
             }, function() {
               deferred.reject("cancelled"); // file save cancelled
             });

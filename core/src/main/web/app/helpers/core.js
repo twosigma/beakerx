@@ -355,7 +355,7 @@
   module.directive('fileActionDialog', function() {
     return {
       scope: { actionName: '@', inputId: '@', close: '=' },
-      templateUrl: "./app/template/fileactiondialog.html",
+      templateUrl: "./app/template/fileActionDialog.html",
       link: function(scope, element, attrs) {
         element.find('input').focus();
       }

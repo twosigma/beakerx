@@ -155,9 +155,10 @@
           angularUtils.httpPost("../beaker/rest/file-io/saveIfNotExists", {path: path, content: contentAsJson})
               .success(deferred.resolve)
               .error(function(data, status, header, config) {
-                console.log(data, status, header, config);
                 if (status === 409) {
                   deferred.reject("exists");
+                } else if (data === "isDirectory") {
+                  deferred.reject(data);
                 } else {
                   deferred.reject(data, status, header, config);
                 }

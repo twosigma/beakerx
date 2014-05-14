@@ -227,7 +227,9 @@
               return deferred.resolve("succeed");
             }, function(reason) {
               if (reason === "exists") {
-                deferred.reject("exists")
+                deferred.reject("exists");
+              } else if (reason === "isDirectory") {
+                deferred.reject("isDirectory");
               } else {
                 deferred.reject("failed");
               }
@@ -265,9 +267,7 @@
             saveDoNotOverwrite(uri, uriType).then(function() {
               deferred.resolve({uri: uri, uriType: uriType}); // file save succeed
             }, function (reason) {
-              if (reason !== "exists") {
-                deferred.reject(reason); // file save failed
-              } else {
+              if (reason === "exists") {
                 promptIfOverwrite(uri).then(function () {
                   saveAlwaysOverwrite(uri, uriType).then(function(ret) {
                     deferred.resolve(ret); // file save succeed
@@ -277,6 +277,15 @@
                 }, function() {
                   _savePromptUriChooser(deferred, uri);
                 })
+              } else if (reason === "isDirectory") {
+                bkCoreManager.showErrorModal(
+                    uri + " is a directory. Please choose a different location",
+                    "Save Failed",
+                    function () {
+                      _savePromptUriChooser(deferred, uri);
+                    });
+              } else {
+                  deferred.reject(reason); // file save failed
               }
             });
           };

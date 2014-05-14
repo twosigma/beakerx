@@ -103,7 +103,10 @@ public class FileIORest {
       @FormParam("content") String contentAsString) throws IOException {
     path = removePrefix(path);
     if (Files.exists(Paths.get(path))) {
-      throw new FileAlreadyExistsException(path + " already exists");
+      if (new File(path).isDirectory()) {
+        throw new FileAlreadyExistsAndIsDirectoryException();
+      }
+      throw new FileAlreadyExistsException();
     }
     try {
       utils.saveFile(path, contentAsString);
@@ -214,10 +217,17 @@ public class FileIORest {
     }
   }
 
+  private static class FileAlreadyExistsAndIsDirectoryException extends WebApplicationException {
+    public FileAlreadyExistsAndIsDirectoryException() {
+      super(Response.status(Responses.PRECONDITION_FAILED)
+          .entity("isDirectory").type("text/plain").build());
+    }
+  }
+
   private static class FileAlreadyExistsException extends WebApplicationException {
-    public FileAlreadyExistsException(String message) {
+    public FileAlreadyExistsException() {
       super(Response.status(Responses.CONFLICT)
-          .entity(message).type("text/plain").build());
+          .entity("exists").type("text/plain").build());
     }
   }
 

@@ -245,7 +245,7 @@
                 },
                 function() {
                   deferred.reject();
-                }, "Yes", "No");
+                }, "Overwrite", "Cancel");
             return deferred.promise;
           };
           

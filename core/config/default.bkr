@@ -24,11 +24,6 @@
             "shellID": null,
             "jsSetting2": "",
             "jsSetting1": ""
-        },
-        {
-            "name": "R",
-            "plugin": "R",
-            "shellID": ""
         }
     ],
     "cells": [
@@ -45,17 +40,6 @@
             "evaluator": "IPython",
             "input": {
                 "body": "#Python - will turn light blue when plugin loads successfully"
-            },
-            "output": {
-                "selectedType": "Hidden"
-            }
-        },
-        {
-            "id": "code2uVtKX",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": "#R - will turn dark blue when plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"

@@ -326,8 +326,8 @@
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='Yes' ng-click='close(\"OK\")' class='btn'>" + okBtnTxt + "</button>" +
-            "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
+            "   <button class='Yes btn' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
+            "   <button class='Cancel btn' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },
@@ -353,9 +353,9 @@
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='Yes' ng-click='close(\"Yes\")' class='btn'>" + yesBtnTxt + "</button>" +
-            "   <button class='No' ng-click='close(\"No\")' class='btn'>" + noBtnTxt + "</button>" +
-            "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
+            "   <button class='Yes btn' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
+            "   <button class='No btn' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
+            "   <button class='Cancel btn' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },

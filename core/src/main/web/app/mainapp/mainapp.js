@@ -235,7 +235,7 @@
                 },
                 function() {
                   deferred.reject();
-                }, "Overwrite", "Cancel");
+                }, "Overwrite", "Cancel", "btn-danger");
             return deferred.promise;
           };
 

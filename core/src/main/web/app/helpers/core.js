@@ -313,7 +313,8 @@
             "<div class='modal-body'><p>" + msgBody + "</p></div>";
         return this.showModalDialog(callback, template);
       },
-      showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt) {
+      showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt,
+                                  okBtnClass, cancelBtnClass) {
         if (!msgHeader) {
           msgHeader = "Question...";
         }
@@ -326,13 +327,15 @@
         };
         okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
         cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+        okBtnClass = okBtnClass ? _.isArray(okBtnClass) ? okBtnClass.join(' ') : okBtnClass : '';
+        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : '';
         var template = "<div class='modal-header'>" +
             "<h3>" + msgHeader + "</h3>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='Yes btn' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
-            "   <button class='Cancel btn' ng-click='close()'>" + cancelBtnTxt + "</button>" +
+            "   <button class='Yes btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
+            "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },

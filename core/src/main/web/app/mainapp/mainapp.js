@@ -302,7 +302,7 @@
           };
           var saveDone = function(ret) {
             bkSessionManager.setNotebookModelEdited(false);
-            bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false);
+            bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
             document.title = bkSessionManager.getNotebookTitle();
             showTransientStatusMessage("Saved");
           };

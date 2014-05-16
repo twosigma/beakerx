@@ -211,9 +211,16 @@
 
         var _impl = (function() {
 
-          var promptUriChooser = function(initUri) {
+          var promptUriChooser = function(uriType, initUri) {
+            if (!uriType) {
+              uriType = "file";
+            }
             var deferred = bkUtils.newDeferred();
-            bkCoreManager.showDefaultSavingFileChooser(initUri).then(function(ret) {
+            var fileSaver = bkCoreManager.getFileSaver(uriType);
+            if (!fileSaver || !fileSaver.showFileChooser) {
+              fileSaver = bkCoreManager.getFileSaver("file");
+            }
+            fileSaver.showFileChooser(initUri).then(function(ret) {
               if (_.isEmpty(ret.uri)) {
                 deferred.reject("cancelled");
               } else {
@@ -267,22 +274,22 @@
                     deferred.reject(reason); // file save failed
                   });
                 }, function() {
-                  _savePromptUriChooser(deferred, uri);
+                  _savePromptUriChooser(deferred, uriType, uri);
                 });
               } else if (reason === "isDirectory") {
                 bkCoreManager.show1ButtonModal(
                     uri + " is a directory. Please choose a different location",
                     "Save Failed",
                     function () {
-                      _savePromptUriChooser(deferred, uri);
+                      _savePromptUriChooser(deferred, uriType, uri);
                     });
               } else {
                   deferred.reject(reason); // file save failed
               }
             });
           };
-          var _savePromptUriChooser = function(deferred, initUri) {
-            promptUriChooser(initUri).then(function(ret) {
+          var _savePromptUriChooser = function(deferred, uriType, initUri) {
+            promptUriChooser(uriType, initUri).then(function(ret) {
               _savePromptIfOverwrite(deferred, ret.uri, ret.uriType);
             }, function() {
               deferred.reject("cancelled"); // file save cancelled

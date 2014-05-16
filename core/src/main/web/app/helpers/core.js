@@ -108,7 +108,6 @@
       }
     };
 
-    var LOCATION_DEFAULT = "default";
     var LOCATION_FILESYS = "file";
     var LOCATION_HTTP = "http";
 
@@ -133,14 +132,9 @@
     _fileSavers[LOCATION_FILESYS] = {
       save: function(uri, contentAsString, overwrite) {
         return bkUtils.saveFile(uri, contentAsString, overwrite);
-      }
-    };
-
-    _fileSavers[LOCATION_DEFAULT] = {
-      // the default filesaver is used when destination uri is unknown.
-      // the saver pops up an file chooser to solicit path
-      save: function (toBeIgnored, contentAsString) {
-        // TODO
+      },
+      showFileChooser: function(initUri) {
+        return bkCoreManager.showDefaultSavingFileChooser(initUri);
       }
     };
 
@@ -251,7 +245,7 @@
             });
           };
 
-          bkCoreManager.showModalDialog(
+          self.showModalDialog(
               fileChooserResultHandler,
               fileChooserTemplate,
               fileChooserStrategy);

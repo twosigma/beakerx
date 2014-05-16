@@ -222,16 +222,16 @@
       showModalDialog: function(callback, template, strategy) {
         return bkCoreManager.showModalDialog(callback, template, strategy);
       },
-      showErrorModal: function(msgBody, msgHeader, callback) {
-        return bkCoreManager.showErrorModal(msgBody, msgHeader, callback);
+      show1ButtonModal: function(msgBody, msgHeader, callback) {
+        return bkCoreManager.show1ButtonModal(msgBody, msgHeader, callback);
       },
-      showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt) {
-        return bkCoreManager.showOkCancelModal(
+      show2ButtonModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt) {
+        return bkCoreManager.show2ButtonModal(
             msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt);
       },
-      showYesNoCancelModal: function(
+      show3ButtonModal: function(
           msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt) {
-        return bkCoreManager.showYesNoCancelModal(
+        return bkCoreManager.show3ButtonModal(
             msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt);
       },
       getFileSystemFileChooserStrategy: function() {

@@ -63,7 +63,7 @@
             closeSession();
           } else {
             // ask if user want to save first
-            bkHelper.showYesNoCancelModal(
+            bkHelper.show3ButtonModal(
                 "Do you want to save [" + $scope.getCaption(session) + "]?",
                 "Confirm close",
                 function() { // yes
@@ -105,7 +105,7 @@
                     if (info.cause === "Save cancelled") {
                       console.log("File saving cancelled");
                     } else {
-                      bkHelper.showErrorModal(info.error, info.cause);
+                      bkHelper.show1ButtonModal(info.error, info.cause);
                     }
                   };
                   saveSession().then(closeSession, savingFailedHandler);

@@ -160,7 +160,9 @@
                 } else {
                   bkCoreManager.showErrorModal("Failed to open " + notebookUri
                       + " because format " + format
-                      + " was not recognized.", "Open Failed");
+                      + " was not recognized.", "Open Failed", function() {
+                        bkCoreManager.gotoControlPanel();
+                      });
                 }
               }
               var fileLoader = bkCoreManager.getFileLoader(uriType);
@@ -169,7 +171,9 @@
                 notebookModel = bkNotebookVersionManager.open(notebookModel);
                 loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel);
               }).catch(function(data, status, headers, config) {
-                bkHelper.showErrorModal(data);
+                bkHelper.showErrorModal(data, "Open Failed", function() {
+                  bkCoreManager.gotoControlPanel();
+                });
               }).finally(function() {
                 $scope.loading = false;
               });

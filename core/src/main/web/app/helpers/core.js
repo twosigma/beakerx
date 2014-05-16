@@ -288,13 +288,13 @@
         }
 
         modalDialogOp.setStrategy(strategy);
-        $dialog.dialog(options)
-            .open()
-            .then(function(result) {
-              if (callback) {
-                callback(result);
-              }
-            });
+        var dd = $dialog.dialog(options);
+        dd.open().then(function(result) {
+          dd.$scope.$destroy();
+          if (callback) {
+            callback(result);
+          }
+        });
       },
       show1ButtonModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
         if (!msgHeader) {

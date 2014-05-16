@@ -311,7 +311,7 @@
             if (msg === "cancelled") {
               showTransientStatusMessage("Cancelled");
             } else {
-              bkCoreManager.showErrorModal(msg, "Save Failed");
+              bkCoreManager.showErrorModal(msg, "Save Failed", null, "Close", "btn-primary");
             }
           };
 

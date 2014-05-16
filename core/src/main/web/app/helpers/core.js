@@ -302,15 +302,20 @@
               }
             });
       },
-      showErrorModal: function(msgBody, msgHeader, callback) {
+      showErrorModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
         if (!msgHeader) {
           msgHeader = "Oops...";
         }
+        btnText = btnText ? btnText : "OK";
+        btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : '';
         var template = "<div class='modal-header'>" +
             "<button class='close' ng-click='close()'>Close</button>" +
             "<h3>" + msgHeader + "</h3>" +
             "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>";
+            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+            '<div class="modal-footer">' +
+            "   <button class='btn " + btnClass +"' ng-click='close(\"OK\")'>" + btnText + "</button>" +
+            "</div>";
         return this.showModalDialog(callback, template);
       },
       showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt,

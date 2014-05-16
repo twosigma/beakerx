@@ -134,7 +134,7 @@
           return {
             openUri: function(notebookUri, uriType, readOnly, format, retry, retryCountMax) {
               if (!notebookUri) {
-                bkCoreManager.showErrorModal("Failed to open notebook, notebookUri is empty");
+                bkCoreManager.show1ButtonModal("Failed to open notebook, notebookUri is empty");
                 return;
               }
               $scope.loading = true;
@@ -158,7 +158,7 @@
                     loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry, retryCountMax);
                   }, 100);
                 } else {
-                  bkCoreManager.showErrorModal("Failed to open " + notebookUri
+                  bkCoreManager.show1ButtonModal("Failed to open " + notebookUri
                       + " because format " + format
                       + " was not recognized.", "Open Failed", function() {
                         bkCoreManager.gotoControlPanel();
@@ -171,7 +171,7 @@
                 notebookModel = bkNotebookVersionManager.open(notebookModel);
                 loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel);
               }).catch(function(data, status, headers, config) {
-                bkHelper.showErrorModal(data, "Open Failed", function() {
+                bkHelper.show1ButtonModal(data, "Open Failed", function() {
                   bkCoreManager.gotoControlPanel();
                 });
               }).finally(function() {
@@ -231,7 +231,7 @@
 
           var promptIfOverwrite = function(uri) {
             var deferred = bkUtils.newDeferred();
-            bkCoreManager.showOkCancelModal(
+            bkCoreManager.show2ButtonModal(
                 "File " + uri + " exists. Overwrite?",
                 "File exists",
                 function() {
@@ -270,7 +270,7 @@
                   _savePromptUriChooser(deferred, uri);
                 });
               } else if (reason === "isDirectory") {
-                bkCoreManager.showErrorModal(
+                bkCoreManager.show1ButtonModal(
                     uri + " is a directory. Please choose a different location",
                     "Save Failed",
                     function () {
@@ -315,7 +315,7 @@
             if (msg === "cancelled") {
               showTransientStatusMessage("Cancelled");
             } else {
-              bkCoreManager.showErrorModal(msg, "Save Failed");
+              bkCoreManager.show1ButtonModal(msg, "Save Failed");
             }
           };
 
@@ -354,7 +354,7 @@
                 closeSession();
               } else {
                 var notebookTitle = bkSessionManager.getNotebookTitle();
-                bkHelper.showYesNoCancelModal(
+                bkHelper.show3ButtonModal(
                     "Do you want to save " + notebookTitle + "?",
                     "Confirm close",
                     function() {
@@ -481,7 +481,7 @@
         // we should warn and cancel evals
         /*var onLeave = function() {
          if (bkEvaluateJobManager.isAnyInProgress()) {
-         bkHelper.showOkCancelModal(
+         bkHelper.show2ButtonModal(
          "All in-progress and pending eval will be cancelled.",
          "Warning!",
          function() {

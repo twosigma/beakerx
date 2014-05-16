@@ -302,7 +302,7 @@
               }
             });
       },
-      showErrorModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
+      show1ButtonModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
         if (!msgHeader) {
           msgHeader = "Oops...";
         }
@@ -318,8 +318,12 @@
             "</div>";
         return this.showModalDialog(callback, template);
       },
-      showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt,
-                                  okBtnClass, cancelBtnClass) {
+      show2ButtonModal: function(
+          msgBody,
+          msgHeader,
+          okCB, cancelCB,
+          okBtnTxt, cancelBtnTxt,
+          okBtnClass, cancelBtnClass) {
         if (!msgHeader) {
           msgHeader = "Question...";
         }
@@ -344,8 +348,11 @@
             "</div>";
         return this.showModalDialog(close, template);
       },
-      showYesNoCancelModal: function(
-          msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt) {
+      show3ButtonModal: function(
+          msgBody, msgHeader,
+          yesCB, noCB, cancelCB,
+          yesBtnTxt, noBtnTxt, cancelBtnTxt,
+          yesBtnClass, noBtnClass, cancelBtnClass) {
         if (!msgHeader) {
           msgHeader = "Question...";
         }
@@ -361,14 +368,17 @@
         yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
         noBtnTxt = noBtnTxt ? noBtnTxt : "No";
         cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+        yesBtnClass = yesBtnClass ? _.isArray(yesBtnClass) ? okBtnClass.join(' ') : yesBtnClass : '';
+        noBtnClass = noBtnClass ? _.isArray(noBtnClass) ? noBtnClass.join(' ') : noBtnClass : '';
+        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : '';
         var template = "<div class='modal-header'>" +
             "<h3>" + msgHeader + "</h3>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='Yes btn' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
-            "   <button class='No btn' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
-            "   <button class='Cancel btn' ng-click='close()'>" + cancelBtnTxt + "</button>" +
+            "   <button class='Yes btn " + yesBtnClass +"' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
+            "   <button class='No btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
+            "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },

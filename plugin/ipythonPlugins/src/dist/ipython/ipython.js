@@ -78,12 +78,8 @@ define(function(require, exports, module) {
         var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
         bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
           .success(function(result) {
-            console.log("password = " + result);
             bkHelper.httpPost(serviceBase + "/login?next=%2Fbeaker", {password: result})
               .then(function(result) {
-                // this is never called because the login is returning a redirect no nowhere.
-                // we got the cookie, redirect is best ignored or set it up to go somewhere harmless.
-                console.log("success!");
                 $.ajax(url, ajaxsettings);
               });
           });

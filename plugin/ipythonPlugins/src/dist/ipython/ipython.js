@@ -48,6 +48,8 @@ define(function(require, exports, module) {
         shellID = IPython.utils.uuid();
       }
 
+      
+
       if (ipyVersion1) {
         self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
         kernels[shellID] = self.kernel;
@@ -74,7 +76,17 @@ define(function(require, exports, module) {
           }
         };
         var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
-        $.ajax(url, ajaxsettings);
+        bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
+          .success(function(result) {
+            console.log("password = " + result);
+            bkHelper.httpPost(serviceBase + "/login?next=%2Fbeaker", {password: result})
+              .then(function(result) {
+                // this is never called because the login is returning a redirect no nowhere.
+                // we got the cookie, redirect is best ignored or set it up to go somewhere harmless.
+                console.log("success!");
+                $.ajax(url, ajaxsettings);
+              });
+          });
       }
 
       // keepalive for the websockets
@@ -264,26 +276,7 @@ define(function(require, exports, module) {
        disable it. http://code.google.com/p/chromium/issues/detail?id=123862
        this is safe because the URL has the kernel ID in it, and that's a 128-bit
        random number, only delivered via the secure channel. */
-      var nginxRules =
-        (ipyVersion1 ? ("location %(base_url)s/kernels/ {" +
-                        "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
-                        "}" +
-                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") : 
-         ("location %(base_url)s/api/kernels/ {" +
-          "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;" +
-          "}" +
-          "location %(base_url)s/api/sessions/ {" +
-          "  proxy_pass http://127.0.0.1:%(port)s/api/sessions;" +
-          "}" +
-          "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/  {")) +
-        "  rewrite ^%(base_url)s/(.*)$ /$1 break; " +
-        "  proxy_pass http://127.0.0.1:%(port)s; " +
-        "  proxy_http_version 1.1; " +
-        "  proxy_set_header Upgrade $http_upgrade; " +
-        "  proxy_set_header Connection \"upgrade\"; " +
-        "  proxy_set_header Origin \"$scheme://$host\"; " +
-        "  proxy_set_header Host $host;" +
-        "}";
+      var nginxRules = ipyVersion1 ? "ipython1" : "ipython2";
       bkHelper.locatePluginService(PLUGIN_NAME, {
           command: COMMAND,
           nginxRules: nginxRules,

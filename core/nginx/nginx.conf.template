@@ -2,8 +2,8 @@ worker_processes  1;
 daemon off;
 
 #debug level logging is quite voluminous
-#error_log  /tmp/nginx.log  debug;
-error_log  stderr  error;
+error_log  /tmp/nginx.log  debug;
+#error_log  stderr  error;
 
 pid nginx.pid;
 

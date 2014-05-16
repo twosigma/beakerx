@@ -231,11 +231,11 @@
                 "File " + uri + " exists. Overwrite?",
                 "File exists",
                 function() {
-                  deferred.resolve();
+                  deferred.reject();
                 },
                 function() {
-                  deferred.reject();
-                }, "Overwrite", "Cancel", "btn-danger");
+                  deferred.resolve();
+                }, "Cancel", "Overwrite", "", "btn-danger");
             return deferred.promise;
           };
 

@@ -306,8 +306,8 @@
         if (!msgHeader) {
           msgHeader = "Oops...";
         }
-        btnText = btnText ? btnText : "OK";
-        btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : '';
+        btnText = btnText ? btnText : "Close";
+        btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
         var template = "<div class='modal-header'>" +
             "<button class='close' ng-click='close()'>Close</button>" +
             "<h3>" + msgHeader + "</h3>" +

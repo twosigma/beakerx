@@ -160,7 +160,7 @@
                 } else {
                   bkCoreManager.showErrorModal("Failed to open " + notebookUri
                       + " because format " + format
-                      + " was not recognized.");
+                      + " was not recognized.", "Open Failed");
                 }
               }
               var fileLoader = bkCoreManager.getFileLoader(uriType);
@@ -311,7 +311,7 @@
             if (msg === "cancelled") {
               showTransientStatusMessage("Cancelled");
             } else {
-              bkCoreManager.showErrorModal(msg, "Save Failed", null, "Close", "btn-primary");
+              bkCoreManager.showErrorModal(msg, "Save Failed");
             }
           };
 

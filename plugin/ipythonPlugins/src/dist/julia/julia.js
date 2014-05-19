@@ -263,7 +263,7 @@ define(function(require, exports, module) {
         (ipyVersion1 ? ("location %(base_url)s/kernels/ {" +
                         "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
                         "}" +
-                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") : 
+                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") :
          ("location %(base_url)s/api/kernels/ {" +
           "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;" +
           "}" +
@@ -288,9 +288,19 @@ define(function(require, exports, module) {
         serviceBase = ret;
         var JuliaShell = function(settings, doneCB) {
           var self = this;
+
+          if (!settings.view) {
+            settings.view = {};
+          }
+          if (!settings.view.cm) {
+            settings.view.cm = {};
+          }
+          settings.view.cm.mode = JuliaProto.cmMode;
+          settings.view.cm.background = JuliaProto.background;
+
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
-            
+
             // XXX these are not used by python, they are leftover from groovy
             if (!settings.imports) {
               settings.imports = "";

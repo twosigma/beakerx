@@ -167,6 +167,16 @@ define(function(require, exports, module) {
       cometdUtil.init();
       var RShell = function(settings, doneCB) {
         var self = this;
+
+        if (!settings.view) {
+          settings.view = {};
+        }
+        if (!settings.view.cm) {
+          settings.view.cm = {};
+        }
+        settings.view.cm.mode = R.cmMode;
+        settings.view.cm.background = R.background;
+
         var setShellIdCB = function(id) {
           if (id !== settings.shellID) {
             // console.log("A new R shell was created.");

@@ -260,7 +260,7 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
 
-    
+
     var onSuccess = function() {
       /* chrome has a bug where websockets don't support authentication so we
        disable it. http://code.google.com/p/chromium/issues/detail?id=123862
@@ -270,7 +270,7 @@ define(function(require, exports, module) {
         (ipyVersion1 ? ("location %(base_url)s/kernels/ {" +
                         "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
                         "}" +
-                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") : 
+                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") :
          ("location %(base_url)s/api/kernels/ {" +
           "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;" +
           "}" +
@@ -295,9 +295,19 @@ define(function(require, exports, module) {
         serviceBase = ret;
         var IPythonShell = function(settings, doneCB) {
           var self = this;
+
+          if (!settings.view) {
+            settings.view = {};
+          }
+          if (!settings.view.cm) {
+            settings.view.cm = {};
+          }
+          settings.view.cm.mode = IPythonProto.cmMode;
+          settings.view.cm.background = IPythonProto.background;
+
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
-            
+
             // XXX these are not used by python, they are leftover from groovy
             if (!settings.imports) {
               settings.imports = "";

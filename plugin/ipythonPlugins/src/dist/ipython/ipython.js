@@ -79,7 +79,7 @@ define(function(require, exports, module) {
         bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
           .success(function(result) {
             bkHelper.httpPost(serviceBase + "/login?next=%2Fbeaker", {password: result})
-              .then(function(result) {
+              .success(function(result) {
                 $.ajax(url, ajaxsettings);
               });
           });

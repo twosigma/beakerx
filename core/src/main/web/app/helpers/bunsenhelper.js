@@ -55,7 +55,7 @@
         var saveData = bkSessionManager.getSaveData();
         var serializedNotebook = {
           data: saveData.notebookModelAsString,
-          name: $routeParams.notebookName
+          id: $routeParams.notebookId
         };
         bunsenSave(serializedNotebook, 'update');
       },

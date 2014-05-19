@@ -103,14 +103,23 @@
         };
 
         $scope.getShareData = function() {
-          return {
-            cellModel: $scope.cellmodel,
-            evViewModel: bkEvaluatorManager.getViewModel(),
-            notebookModel: {
-              cells: [$scope.cellmodel]
-                  .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id))
-            }
-          };
+          var cells = [$scope.cellmodel]
+              .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
+          var usedEvaluatorsNames = _(cells).chain()
+              .filter(function(cell) {
+                return cell.type === "code";
+              })
+              .map(function (cell) {
+                return cell.evaluator;
+              })
+              .unique().value();
+          var evaluators = bkSessionManager.getRawNotebookModel().evaluators
+              .filter(function (evaluator) {
+                return _.any(usedEvaluatorsNames, function (ev) {
+                  return evaluator.name = ev;
+                });
+              });
+          return bkUtils.generateNotebook(evaluators, cells);
         };
 
         $scope.getShareMenuPlugin = function() {

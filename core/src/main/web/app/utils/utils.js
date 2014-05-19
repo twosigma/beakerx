@@ -120,6 +120,13 @@
             });
         return deferred.promise;
       },
+      generateNotebook: function(evaluators, cells) {
+        return {
+          beaker: "2",
+          evaluators: evaluators,
+          cells: cells
+        };
+      },
       loadFile: function(path) {
         var deferred = angularUtils.newDeferred();
         angularUtils.httpGet("../beaker/rest/file-io/load", {path: path})

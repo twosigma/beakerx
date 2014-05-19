@@ -407,6 +407,15 @@
             }
           }
         });
+
+        scope.getShareData = function() {
+          var evaluators = [bkSessionManager.getRawNotebookModel().evaluators
+              .find(function (evaluator) {
+                return evaluator.name = scope.getEvaluator();
+              })];
+          var cells = [scope.cellmodel];
+          return bkUtils.generateNotebook(evaluators, cells);
+        };
       }
     };
   });

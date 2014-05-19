@@ -58,19 +58,6 @@
       getLoadingEvaluators: function() {
         return loadingInProgressEvaluators;
       },
-      getViewModel: function() {
-        var ret = {};
-        _.chain(evaluators).keys().each(function(key) {
-          var value = evaluators[key];
-          ret[key] = {
-            cm: {
-              background: value.background,
-              mode: value.cmMode
-            }
-          };
-        });
-        return ret;
-      },
       exitAndRemoveAllEvaluators: function() {
         console.log(evaluators);
         _.each(evaluators, function(ev) {

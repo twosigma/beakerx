@@ -210,10 +210,7 @@
           return bkCellMenuPluginManager.getPlugin(cellType);
         };
         $scope.getShareData = function () {
-          return {
-            notebookModel: bkSessionManager.getRawNotebookModel(),
-            evViewModel: bkEvaluatorManager.getViewModel()
-          };
+          return bkSessionManager.getRawNotebookModel();
         };
         var shareMenu = {
           name: "Share",

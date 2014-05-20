@@ -1,0 +1,9 @@
+{
+  "name": "beaker-tests",
+  "scripts": {
+    "start": "dill --require steps --require widgets -f pretty"
+  },
+  "dependencies": {
+    "dill": "^0.1.1"
+  }
+}

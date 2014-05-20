@@ -27,13 +27,11 @@
     // loaded plugins
     var _cellMenuPlugins = {};
 
-    var addPlugin = function(cellType, items) {
+    var addPlugin = function(cellType, itemGetter) {
       if (!_cellMenuPlugins[cellType]) {
         _cellMenuPlugins[cellType] = [];
       }
-      _(items).each(function(it) {
-        _cellMenuPlugins[cellType].push(it);
-      });
+      _cellMenuPlugins[cellType].push(itemGetter);
     };
 
     return {
@@ -63,7 +61,10 @@
         var menuItemGetters = _cellMenuPlugins[cellType];
         var newItems = [];
         _(menuItemGetters).each(function(getter) {
-          newItems.push(getter(scope));
+          var items = getter(scope);
+          _(items).each(function(it) {
+            newItems.push(it);
+          });
         });
         return newItems;
       }

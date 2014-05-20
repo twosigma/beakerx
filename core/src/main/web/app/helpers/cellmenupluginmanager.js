@@ -42,9 +42,6 @@
       },
       getPlugin: function(cellType) {
         return _cellMenuPlugins[cellType];
-      },
-      getMenu: function(cellType, model) {
-        return _cellMenuPlugins[cellType](model);
       }
     };
   });

@@ -117,7 +117,7 @@
           var evaluators = bkSessionManager.getRawNotebookModel().evaluators
               .filter(function (evaluator) {
                 return _.any(usedEvaluatorsNames, function (ev) {
-                  return evaluator.name = ev;
+                  return evaluator.name === ev;
                 });
               });
           return bkUtils.generateNotebook(evaluators, cells);

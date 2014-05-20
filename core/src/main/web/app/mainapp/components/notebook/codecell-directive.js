@@ -405,12 +405,12 @@
         });
 
         scope.getShareData = function() {
-          var evaluators = [bkSessionManager.getRawNotebookModel().evaluators
+          var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
               .find(function (evaluator) {
-                return evaluator.name = scope.getEvaluator();
-              })];
+                return evaluator.name === scope.cellmodel.evaluator;
+              });
           var cells = [scope.cellmodel];
-          return bkUtils.generateNotebook(evaluators, cells);
+          return bkUtils.generateNotebook([evaluator], cells);
         };
       }
     };

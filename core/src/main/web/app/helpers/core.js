@@ -42,10 +42,13 @@
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
-      newStrategy.result = "";
+      newStrategy.input = "";
+      newStrategy.getResult = function() {
+        return newStrategy.input;
+      };
       newStrategy.close = function(ev, closeFunc) {
         if (ev.which === 13) {
-          closeFunc(this.result);
+          closeFunc(this.getResult());
         }
       };
       newStrategy.treeViewfs = { // file service
@@ -63,9 +66,21 @@
               });
         },
         open: function(path) {
-          newStrategy.result = path;
+          newStrategy.input = path;
         },
-        showSpinner: false
+        showSpinner: false,
+        applyExtFilter: true,
+        extFilter: ['bkr'],
+        filter: function(child) {
+          var fs = newStrategy.treeViewfs;
+          if (!fs.applyExtFilter || _.isEmpty(fs.extFilter) || child.type === "directory") {
+            return true;
+          } else {
+            return _(fs.extFilter).any(function(ext) {
+              return _.string.endsWith(child.uri, ext);
+            });
+          }
+        }
       };
     };
 
@@ -87,14 +102,12 @@
           console.error(e);
           console.error("This is not a valid Beaker notebook JSON");
           console.error(notebookJson);
-          window.alert("Not a valid Beaker notebook");
-          return;
+          throw "Not a valid Beaker notebook";
         }
         return notebookModel;
       }
     };
 
-    var LOCATION_DEFAULT = "default";
     var LOCATION_FILESYS = "file";
     var LOCATION_HTTP = "http";
 
@@ -117,16 +130,11 @@
     var _fileSavers = {};
 
     _fileSavers[LOCATION_FILESYS] = {
-      save: function(uri, contentAsString) {
-        return bkUtils.saveFile(uri, contentAsString);
-      }
-    };
-
-    _fileSavers[LOCATION_DEFAULT] = {
-      // the default filesaver is used when destination uri is unknown.
-      // the saver pops up an file chooser to solicit path
-      save: function (toBeIgnored, contentAsString) {
-        // TODO
+      save: function(uri, contentAsString, overwrite) {
+        return bkUtils.saveFile(uri, contentAsString, overwrite);
+      },
+      showFileChooser: function(initUri) {
+        return bkCoreManager.showDefaultSavingFileChooser(initUri);
       }
     };
 
@@ -178,11 +186,37 @@
       openNotebook: function(notebookUri, uriType, readOnly, format) {
         this._beakerRootOp.openNotebook(notebookUri, uriType, readOnly, format);
       },
-      showDefaultSavingFileChooser: function() {
+      showDefaultSavingFileChooser: function(initPath) {
         var self = this;
         var deferred = bkUtils.newDeferred();
-        bkUtils.getHomeDirectory().then(function (homeDir) {
+        bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory()])
+            .then(function(values) {
+          var homeDir = values[0];
+          var pwd = values[1];
           var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
+          fileChooserStrategy.input = initPath;
+          fileChooserStrategy.getResult = function () {
+            if (_.isEmpty(this.input)) {
+              return "";
+            }
+            var result = this.input;
+            if (result === '~') {
+              result = homeDir + "/"
+            } else if (_.string.startsWith(result, '~/')) {
+              result = result.replace('~', homeDir);
+            } else if (!_.string.startsWith(result, '/')) {
+              result = pwd + "/" + result;
+            }
+            if (!_.string.endsWith(result, '.bkr')
+                && !_.string.endsWith(result, '/')) {
+              result = result + ".bkr";
+            }
+            return result;
+          };
+          fileChooserStrategy.getSaveBtnDisabled = function() {
+            return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
+          };
+          fileChooserStrategy.treeViewfs.applyExtFilter = false;
           var fileChooserTemplate = '<div class="modal-header">' +
               '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
               '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
@@ -191,15 +225,18 @@
               '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
               '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
               '  </tree-view>' +
+              (pwd === homeDir ? '' : ('  <tree-view rooturi="' + pwd + '" fs="getStrategy().treeViewfs"></tree-view>')) +
               '</div>' +
               '<div class="modal-footer">' +
               '   <p><input id="saveAsFileInput"' +
               '             class="input-xxlarge"' +
-              '             ng-model="getStrategy().result"' +
+              '             ng-model="getStrategy().input"' +
               '             ng-keypress="getStrategy().close($event, close)"' +
               '             focus-start /></p>' +
+              '   <span style="float:left;">{{getStrategy().getResult()}}</span>' +
               '   <button ng-click="close()" class="btn">Cancel</button>' +
-              '   <button ng-click="close(getStrategy().result)" class="btn btn-primary" >Save</button>' +
+              '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary"' +
+              '           ng-disabled="getStrategy().getSaveBtnDisabled()" >Save</button>' +
               '</div>';
           var fileChooserResultHandler = function (chosenFilePath) {
             deferred.resolve({
@@ -208,7 +245,7 @@
             });
           };
 
-          bkCoreManager.showModalDialog(
+          self.showModalDialog(
               fileChooserResultHandler,
               fileChooserTemplate,
               fileChooserStrategy);
@@ -251,26 +288,36 @@
         }
 
         modalDialogOp.setStrategy(strategy);
-        $dialog.dialog(options)
-            .open()
-            .then(function(result) {
-              if (callback) {
-                callback(result);
-              }
-            });
+        var dd = $dialog.dialog(options);
+        dd.open().then(function(result) {
+          dd.$scope.$destroy();
+          if (callback) {
+            callback(result);
+          }
+        });
       },
-      showErrorModal: function(msgBody, msgHeader, callback) {
+      show1ButtonModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
         if (!msgHeader) {
           msgHeader = "Oops...";
         }
+        btnText = btnText ? btnText : "Close";
+        btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
         var template = "<div class='modal-header'>" +
             "<button class='close' ng-click='close()'>Close</button>" +
             "<h3>" + msgHeader + "</h3>" +
             "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>";
+            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+            '<div class="modal-footer">' +
+            "   <button class='btn " + btnClass +"' ng-click='close(\"OK\")'>" + btnText + "</button>" +
+            "</div>";
         return this.showModalDialog(callback, template);
       },
-      showOkCancelModal: function(msgBody, msgHeader, okCB, cancelCB, okBtnTxt, cancelBtnTxt) {
+      show2ButtonModal: function(
+          msgBody,
+          msgHeader,
+          okCB, cancelCB,
+          okBtnTxt, cancelBtnTxt,
+          okBtnClass, cancelBtnClass) {
         if (!msgHeader) {
           msgHeader = "Question...";
         }
@@ -283,18 +330,23 @@
         };
         okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
         cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+        okBtnClass = okBtnClass ? _.isArray(okBtnClass) ? okBtnClass.join(' ') : okBtnClass : '';
+        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : '';
         var template = "<div class='modal-header'>" +
             "<h3>" + msgHeader + "</h3>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='Yes' ng-click='close(\"OK\")' class='btn'>" + okBtnTxt + "</button>" +
-            "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
+            "   <button class='Yes btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
+            "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },
-      showYesNoCancelModal: function(
-          msgBody, msgHeader, yesCB, noCB, cancelCB, yesBtnTxt, noBtnTxt, cancelBtnTxt) {
+      show3ButtonModal: function(
+          msgBody, msgHeader,
+          yesCB, noCB, cancelCB,
+          yesBtnTxt, noBtnTxt, cancelBtnTxt,
+          yesBtnClass, noBtnClass, cancelBtnClass) {
         if (!msgHeader) {
           msgHeader = "Question...";
         }
@@ -310,14 +362,17 @@
         yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
         noBtnTxt = noBtnTxt ? noBtnTxt : "No";
         cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+        yesBtnClass = yesBtnClass ? _.isArray(yesBtnClass) ? okBtnClass.join(' ') : yesBtnClass : '';
+        noBtnClass = noBtnClass ? _.isArray(noBtnClass) ? noBtnClass.join(' ') : noBtnClass : '';
+        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : '';
         var template = "<div class='modal-header'>" +
             "<h3>" + msgHeader + "</h3>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='Yes' ng-click='close(\"Yes\")' class='btn'>" + yesBtnTxt + "</button>" +
-            "   <button class='No' ng-click='close(\"No\")' class='btn'>" + noBtnTxt + "</button>" +
-            "   <button class='Cancel' ng-click='close()' class='btn'>" + cancelBtnTxt + "</button>" +
+            "   <button class='Yes btn " + yesBtnClass +"' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
+            "   <button class='No btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
+            "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },

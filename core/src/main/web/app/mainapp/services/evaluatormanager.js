@@ -70,6 +70,15 @@
           };
         });
         return ret;
+      },
+      exitAndRemoveAllEvaluators: function() {
+        console.log(evaluators);
+        _.each(evaluators, function(ev) {
+          if (ev && _.isFinite(ev.exit)) {
+            ev.exit();
+          }
+        });
+        evaluators = {};
       }
     };
   });

@@ -92,11 +92,18 @@
       }
     };
   });
+  module.filter('isHidden', function() {
+    return function(input) {
+      return _(input).filter(function(it) {
+        return !it.hidden;
+      });
+    }
+  });
   module.directive('bkDropdownMenu', function() {
     return {
       restrict: 'E',
       template: '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">' +
-          '<li ng-repeat="item in getMenuItems()" ng-class="getItemClass(item)">' +
+          '<li ng-repeat="item in getMenuItems() | isHidden" ng-class="getItemClass(item)">' +
           '<a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item)" title="{{item.tooltip}}" eat-click>' +
           '<i class="icon-ok" ng-show="isMenuItemChecked(item)"> </i> ' +
           '{{getName(item)}}' +
@@ -104,7 +111,7 @@
         // XXX - the submenu needs to be hacked to be as wide as the parent
         // otherwise there is a gap and you can't hit the submenu. BEAKER-433
           '<ul class="dropdown-menu">' +
-          '<li ng-repeat="subitem in getSubItems(item)" ng-class="getItemClass(subitem)">' +
+          '<li ng-repeat="subitem in getSubItems(item) | isHidden" ng-class="getItemClass(subitem)">' +
           '<a href="#"  tabindex="-1" ng-click="runAction(subitem)" ng-class="getAClass(subitem)" title="{{subitem.tooltip}}" eat-click>' +
           '<i class="icon-ok" ng-show="isMenuItemChecked(subitem)"> </i> ' +
           '{{getName(subitem)}}' +

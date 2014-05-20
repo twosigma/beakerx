@@ -130,10 +130,10 @@
         }
 
         // reset
-        _notebookUri.set(notebookUri);
         _uriType = uriType;
         _readOnly = readOnly;
         _format = format;
+        _notebookUri.set(notebookUri);
         _notebookModel.set(notebookModel);
         _edited = !!edited;
         _sessionId = sessionId;
@@ -168,10 +168,11 @@
           return bkUtils.newPromise();
         }
       },
-      updateNotebookUri: function(notebookUri, uriType, readOnly) {
+      updateNotebookUri: function(notebookUri, uriType, readOnly, format) {
         // to be used by save-as
         _uriType = uriType;
         _readOnly = readOnly;
+        _format = format;
         _notebookUri.set(notebookUri);
       },
       getNotebookTitle: function() {

@@ -40,8 +40,8 @@
       },
 
       // wrap commonUtils
-      generateId: function() {
-        return commonUtils.generateId(6);
+      generateId: function(length) {
+        return commonUtils.generateId(length);
       },
       loadJS: function(url, success) {
         return commonUtils.loadJS(url, success);
@@ -84,6 +84,9 @@
       newPromise: function(value) {
         return angularUtils.newPromise(value);
       },
+      all: function() {
+        return angularUtils.all.apply(angularUtils, arguments);
+      },
       fcall: function(func) {
         return angularUtils.fcall(func);
       },
@@ -95,6 +98,13 @@
       getHomeDirectory: function() {
         var deferred = angularUtils.newDeferred();
         this.httpGet("../beaker/rest/file-io/getHomeDirectory")
+            .success(deferred.resolve)
+            .error(deferred.reject);
+        return deferred.promise;
+      },
+      getStartUpDirectory: function() {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet("../beaker/rest/file-io/getStartUpDirectory")
             .success(deferred.resolve)
             .error(deferred.reject);
         return deferred.promise;
@@ -138,11 +148,26 @@
             .error(deferred.reject);
         return deferred.promise;
       },
-      saveFile: function(path, contentAsJson) {
+      saveFile: function(path, contentAsJson, overwrite) {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpPost("../beaker/rest/file-io/save", {path: path, content: contentAsJson})
-            .success(deferred.resolve)
-            .error(deferred.reject);
+        if (overwrite) {
+          angularUtils.httpPost("../beaker/rest/file-io/save", {path: path, content: contentAsJson})
+              .success(deferred.resolve)
+              .error(deferred.reject);
+        } else {
+          angularUtils.httpPost("../beaker/rest/file-io/saveIfNotExists", {path: path, content: contentAsJson})
+              .success(deferred.resolve)
+              .error(function(data, status, header, config) {
+                if (status === 409) {
+                  deferred.reject("exists");
+                } else if (data === "isDirectory") {
+                  deferred.reject(data);
+                } else {
+                  deferred.reject(data, status, header, config);
+                }
+              });
+        }
+
         return deferred.promise;
       },
       addConnectedStatusListener: function(cb) {

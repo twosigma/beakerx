@@ -17,9 +17,14 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -32,8 +37,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import jcifs.util.MimeMap;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * for file I/O (save and load)
@@ -68,13 +76,43 @@ public class FileIORest {
     return System.getProperty("user.home");
   }
 
+  @GET
+  @Path("getStartUpDirectory")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String getStartUpDirectory() {
+    return System.getProperty("user.dir");
+  }
+
   @POST
   @Path("save")
   public void save(
       @FormParam("path") String path,
       @FormParam("content") String contentAsString) throws IOException {
     path = removePrefix(path);
-    utils.saveFile(path, contentAsString);
+    try {
+      utils.saveFile(path, contentAsString);
+    } catch (Throwable t) {
+      throw new FileSaveException(ExceptionUtils.getStackTrace(t));
+    }
+  }
+
+  @POST
+  @Path("saveIfNotExists")
+  public void saveIfNotExists(
+      @FormParam("path") String path,
+      @FormParam("content") String contentAsString) throws IOException {
+    path = removePrefix(path);
+    if (Files.exists(Paths.get(path))) {
+      if (new File(path).isDirectory()) {
+        throw new FileAlreadyExistsAndIsDirectoryException();
+      }
+      throw new FileAlreadyExistsException();
+    }
+    try {
+      utils.saveFile(path, contentAsString);
+    } catch (Throwable t) {
+      throw new FileSaveException(ExceptionUtils.getStackTrace(t));
+    }
   }
 
   @GET
@@ -82,7 +120,15 @@ public class FileIORest {
   @Produces(MediaType.TEXT_PLAIN)
   public String load(@QueryParam("path") String path) throws IOException {
     path = removePrefix(path);
-    return utils.readFile(path);
+    if (!Files.exists(Paths.get(path))) {
+      throw new FileDoesntExistException(path + " was not found");
+    }
+    try {
+      byte[] encoded = Files.readAllBytes(Paths.get(path));
+      return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
+    } catch (Throwable t) {
+      throw new FileOpenException(ExceptionUtils.getStackTrace(t));
+    }
   }
 
   private static final String FILE_PREFIX = "file:";
@@ -153,4 +199,43 @@ public class FileIORest {
     }
     return ret;
   }
+  private static class FileSaveException extends WebApplicationException {
+    public FileSaveException(String stackTrace) {
+      super(Response.status(Responses.PRECONDITION_FAILED)
+          .entity("<h1>Save failed</h1><pre>" + stackTrace + "</pre>")
+          .type("text/plain")
+          .build());
+    }
+  }
+
+  private static class FileOpenException extends WebApplicationException {
+    public FileOpenException(String stackTrace) {
+      super(Response.status(Responses.PRECONDITION_FAILED)
+          .entity("<h1>Open failed</h1><pre>" + stackTrace + "</pre>")
+          .type("text/plain")
+          .build());
+    }
+  }
+
+  private static class FileAlreadyExistsAndIsDirectoryException extends WebApplicationException {
+    public FileAlreadyExistsAndIsDirectoryException() {
+      super(Response.status(Responses.PRECONDITION_FAILED)
+          .entity("isDirectory").type("text/plain").build());
+    }
+  }
+
+  private static class FileAlreadyExistsException extends WebApplicationException {
+    public FileAlreadyExistsException() {
+      super(Response.status(Responses.CONFLICT)
+          .entity("exists").type("text/plain").build());
+    }
+  }
+
+  private static class FileDoesntExistException extends WebApplicationException {
+    public FileDoesntExistException(String message) {
+      super(Response.status(Responses.NOT_FOUND)
+          .entity(message).type("text/plain").build());
+    }
+  }
+
 }

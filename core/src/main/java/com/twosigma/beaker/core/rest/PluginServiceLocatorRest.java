@@ -115,6 +115,7 @@ public class PluginServiceLocatorRest {
   private final Integer portBase;
   private final Integer servPort;
   private final Integer corePort;
+  private final Integer restartPort;
   private final Integer reservedPortCount;
   private final Map<String, String> pluginLocations;
   private final Map<String, List<String>> pluginArgs;
@@ -144,6 +145,7 @@ public class PluginServiceLocatorRest {
     this.portBase = bkConfig.getPortBase();
     this.servPort = this.portBase + 1;
     this.corePort = this.portBase + 2;
+    this.restartPort = this.portBase + 3;
     this.reservedPortCount = bkConfig.getReservedPortCount();
     this.pluginLocations = bkConfig.getPluginLocations();
     this.pluginEnvps = bkConfig.getPluginEnvps();
@@ -281,7 +283,8 @@ public class PluginServiceLocatorRest {
       restartproc.waitFor();
 
       // spin until restart is done
-      String url = "http://127.0.0.1:" + servPort + "/restart." + restartId + "/present.html";
+      String url = "http://127.0.0.1:" + this.restartPort
+          + "/restart." + restartId + "/present.html";
       try {
         spinCheck(url);
       } catch (Throwable t) {
@@ -514,7 +517,7 @@ public class PluginServiceLocatorRest {
     }
 
     String restartId = RandomStringUtils.random(12, false, true);
-    String ngixConfig = this.nginxTemplate;
+    String nginxConfig = this.nginxTemplate;
     StringBuilder pluginSection = new StringBuilder();
     for (PluginConfig pConfig : this.plugins.values()) {
       String auth = encoder.encodeBase64String(("beaker:" + pConfig.getPassword()).getBytes());
@@ -534,23 +537,17 @@ public class PluginServiceLocatorRest {
       pluginSection.append(nginxRule + "\n\n");
     }
     String auth = encoder.encodeBase64String(("beaker:" + this.corePassword).getBytes());
-    ngixConfig = ngixConfig.replace("%(plugin_section)s", pluginSection.toString());
-    ngixConfig = ngixConfig.replace("%(extra_rules)s", this.nginxExtraRules);
-    ngixConfig = ngixConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
-    ngixConfig = ngixConfig.replace("%(port_main)s", Integer.toString(this.portBase));
-    ngixConfig = ngixConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
-    ngixConfig = ngixConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
-    ngixConfig = ngixConfig.replace("%(auth)s", auth);
-    if (windows()) {
-      String tempDir = nginxClientTempDir.toFile().getPath();
-      // Nginx interprets strings in unix style so backslash confuses it.
-      ngixConfig = ngixConfig.replace("%(client_temp_dir)s", tempDir.replace("\\", "/"));
-    } else {
-      ngixConfig = ngixConfig.replace("%(client_temp_dir)s", nginxClientTempDir.toFile().getPath());
-    }
-    ngixConfig = ngixConfig.replace("%(restart_id)s", restartId);
+    nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
+    nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
+    nginxConfig = nginxConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
+    nginxConfig = nginxConfig.replace("%(port_main)s", Integer.toString(this.portBase));
+    nginxConfig = nginxConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
+    nginxConfig = nginxConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
+    nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
+    nginxConfig = nginxConfig.replace("%(auth)s", auth);
+    nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
     java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
-    writePrivateFile(targetFile, ngixConfig);
+    writePrivateFile(targetFile, nginxConfig);
     return restartId;
   }
 

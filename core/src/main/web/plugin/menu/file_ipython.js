@@ -172,6 +172,8 @@ define(function(require, exports, module) {
 
   var menuItemsDeferred = bkHelper.newDeferred();
   bkHelper.getHomeDirectory().then(function(homeDir) {
+    var strategy = bkHelper.getFileSystemFileChooserStrategy();
+    strategy.treeViewfs.extFilter = ['ipynb'];
     var toAdd = [
       {
         parent: "File",
@@ -184,7 +186,7 @@ define(function(require, exports, module) {
             action: function() {
               bkHelper.showModalDialog(
                   function(originalUrl) {
-                    bkHelper.openNotebook(originalUrl, null, false, IPYNB_PATH_PREFIX);
+                    bkHelper.openNotebook(originalUrl, null, true, IPYNB_PATH_PREFIX);
                   },
                   '<div class="modal-header">' +
                       '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
@@ -195,11 +197,15 @@ define(function(require, exports, module) {
                       '</div>' +
                       '<div class="modal-footer">' +
                       "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
-                      '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
+                      '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
+                      '   <span style="float:left;">' +
+                      '     <input type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">' +
+                      '     <span ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .ipynb files only</span>' +
+                      '   </span>' +
                       '   <button ng-click="close()" class="btn">Cancel</button>' +
-                      '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
+                      '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary">Open</button>' +
                       '</div>', // template
-                  bkHelper.getFileSystemFileChooserStrategy()
+                  strategy
               );
             }
           }

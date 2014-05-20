@@ -13,6 +13,8 @@ Enclosed are a set of integration tests powered off of https://github.com/mojote
 * Start the beaker server.
 * In a new window run `$ npm start`
 
+> you can override beakers root location by setting an `env` var of BASE_PATH
+
 ### Implementing new tests
 * Create a new feature file in features/ folder
 * Run the tests and follow the instructions to implement the new step definitions.

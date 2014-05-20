@@ -4,7 +4,6 @@ module.exports = function() {
   });
 
   this.Then(/^I should see a new notebook$/, function() {
-    return new this.Widgets.Notebook().isPresent()
-    .should.eventually.equal(true);
+    return new this.Widgets.Notebook().getPluginManager()
   });
 }

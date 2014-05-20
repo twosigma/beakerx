@@ -24,6 +24,7 @@
       bkSessionManager,
       bkCoreManager,
       bkCellMenuPluginManager) {
+    var CELL_TYPE = "section";
     return {
       restrict: 'E',
       templateUrl: "./app/mainapp/components/notebook/sectioncell.html",
@@ -123,10 +124,7 @@
         };
 
         $scope.getShareMenuPlugin = function() {
-          // the following cellType needs to match
-          //plugin.cellType = "sectionCell"; in dynamically loaded cellmenu/sectionCell.js
-          var cellType = "sectionCell";
-          return bkCellMenuPluginManager.getPlugin(cellType);
+          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
         $scope.cellview.menu.addItem({
           name: "Run all",
@@ -142,10 +140,8 @@
           items: []
         };
         $scope.cellview.menu.addItem(shareMenu);
-        $scope.$watch("getShareMenuPlugin()", function(getShareMenu) {
-          if (getShareMenu) {
-            shareMenu.items = getShareMenu($scope);
-          }
+        $scope.$watch("getShareMenuPlugin()", function() {
+          shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
         });
         $scope.isInitializationCell = function() {
           return $scope.cellmodel.initialization;

@@ -58,6 +58,14 @@
       },
       getPlugin: function(cellType) {
         return _cellMenuPlugins[cellType];
+      },
+      getMenuItems: function(cellType, scope) {
+        var menuItemGetters = _cellMenuPlugins[cellType];
+        var newItems = [];
+        _(menuItemGetters).each(function(getter) {
+          newItems.push(getter(scope));
+        });
+        return newItems;
       }
     };
   });

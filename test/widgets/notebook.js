@@ -22,6 +22,10 @@ module.exports = function() {
       return this.find('bk-plugin-manager');
     },
 
+    getCells: function() {
+      return this.find('bk-cell')
+    },
+
     setHeadline: function(text) {
       var _this   = this;
       var elm     = _this.find(".bk-section-title");

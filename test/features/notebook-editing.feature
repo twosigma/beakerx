@@ -20,7 +20,19 @@ As a researcher I should be able to edit the content of my notebook so that I ca
     Given I am viewing beaker
     Then I see the the user dashboard
     And I create a notebook
+    Then I should see a new notebook
+    Then I should see notebook cells
 
   Scenario: Setting a headline
     When I set the headline to "Another brick in the Wall"
     Then I should see the headline "Another brick in the Wall"
+
+  Scenario: Evaluating javascript
+    Given The "JavaScript" editor is ready
+    And I evaluate "JavaScript" with "1+1"
+    Then I should see the "JavaScript" editor with the result "2"
+
+  Scenario: Evaluating python
+    Given The "IPython" editor is ready
+    And I evaluate "IPython" with "1+1"
+    Then I should see the "IPython" editor with the result "2"

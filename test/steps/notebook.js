@@ -15,27 +15,11 @@
  */
 
 module.exports = function() {
-  this.Widgets.Notebook = this.Widget.extend({
-    root: 'bk-notebook',
+  this.When(/^I set the headline to "([^"]*)"$/, function(title) {
+    return new this.Widgets.Notebook().setHeadline(title);
+  });
 
-    getPluginManager: function() {
-      return this.find('bk-plugin-manager');
-    },
-
-    setHeadline: function(text) {
-      var _this   = this;
-      var elm     = _this.find(".bk-section-title");
-
-      return elm.click()
-      .then(function() {
-        return elm.sendKeys(text);
-      }).then(function() {
-        return _this.click();
-      })
-    },
-
-    readHeadline: function() {
-      return this.read(".bk-section-title");
-    }
+  this.Then(/^I should see the headline "([^"]*)"$/, function(expectedTitle) {
+    return new this.Widgets.Notebook().readHeadline().should.eventually.contain(expectedTitle);
   });
 }

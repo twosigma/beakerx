@@ -51,8 +51,9 @@ define(function(require, exports, module) {
         shellID = IPython.utils.uuid();
       }
 
+      var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
       if (ipyVersion1) {
-        self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
+        self.kernel = new IPython.Kernel(base + "/kernels/");
         kernels[shellID] = self.kernel;
         self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
       } else {
@@ -70,7 +71,7 @@ define(function(require, exports, module) {
           data: JSON.stringify(model),
           dataType : "json",
           success : function (data, status, xhr) {
-            self.kernel = new IPython.Kernel(serviceBase + "/api/kernels");
+            self.kernel = new IPython.Kernel(base + "/api/kernels");
             kernels[shellID] = self.kernel;
             // the data.id is the session id but it is not used yet
             self.kernel._kernel_started({id: data.kernel.id});
@@ -263,7 +264,7 @@ define(function(require, exports, module) {
         (ipyVersion1 ? ("location %(base_url)s/kernels/ {" +
                         "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
                         "}" +
-                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") : 
+                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") :
          ("location %(base_url)s/api/kernels/ {" +
           "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;" +
           "}" +
@@ -290,7 +291,7 @@ define(function(require, exports, module) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
-            
+
             // XXX these are not used by python, they are leftover from groovy
             if (!settings.imports) {
               settings.imports = "";

@@ -14,11 +14,6 @@
     limitations under the License.
 -->
  
-#Notices
-
-* As long as this repo is 'private', do not share code or builds with anybody outside of Two Sigma
-* Two Sigma employees must complete the appropriate authorization forms in Bonita before contributing to any open source project, including Beaker
-
 #Beaker notebook
 ##Overview
 
@@ -41,7 +36,7 @@ Beaker changes all of that. With its polyglot nature, hierarchical section forma
 
 ##Open Source Software
 
-Beaker was built as an internal Two Sigma project but is now being released to the public under the Apache 2.0 license. Is currently available to contributors via a private GitHub repo and will be made public in the near future.
+Beaker was built as an internal Two Sigma project and is now released to the public under the Apache 2.0 license.
  
 #Running Beaker
 

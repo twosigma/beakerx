@@ -14,12 +14,11 @@
  *  limitations under the License.
  */
 
-module.exports = function() {
-  this.Widgets.Notebook = this.Widget.extend({
-    root: 'bk-notebook',
+function gotoDashboard() {
+  return this.driver.get(this.Routes.Dashboard);
+}
 
-    getPluginManager: function() {
-      return this.find('bk-plugin-manager');
-    }
-  });
+module.exports = function() {
+  this.When(/^I visit the user dashboard$/, gotoDashboard);
+  this.Given(/^I am viewing beaker$/, gotoDashboard);
 }

@@ -72,7 +72,7 @@
         $scope.click = function() {
           if ($scope.data.type === 'directory') {
             var uri = $scope.data.uri;
-            if (!_.string.endsWith('/')) {
+            if (!_.string.endsWith(uri, '/')) {
               uri = uri + '/';
             }
             $scope.fs.open(uri);

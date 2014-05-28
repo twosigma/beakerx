@@ -23,12 +23,16 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import javax.swing.ImageIcon;
 import javax.ws.rs.FormParam;
@@ -84,20 +88,29 @@ public class RShellRest {
     return Integer.parseInt(response);
   }
 
+  private String makeTemp(String base, String suffix)
+    throws IOException
+  {
+    File dir = new File(System.getenv("beaker_tmp_dir"));
+    File tmp = File.createTempFile(base, suffix, dir);
+    
+    Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ,
+                                                PosixFilePermission.OWNER_WRITE);
+    Files.setPosixFilePermissions(tmp.toPath(), perms);
+    return tmp.getAbsolutePath();
+  }
+
+
   String writeRserveScript(int port, String password)
     throws IOException
   {
-    // put these tempfiles in ~/.beaker/.../tmpXXXXX XXX so they get deleted
-    File pwtemp = File.createTempFile("BeakerRserve", ".pwd");
-    String pwlocation = pwtemp.getAbsolutePath();
+    String pwlocation = makeTemp("BeakerRserve", ".pwd");
     try (BufferedWriter bw = new BufferedWriter(new FileWriter(pwlocation))) {
       bw.write("beaker " + password + "\n");
       bw.close();
     }
 
-    // XXX and this one
-    File temp = File.createTempFile("BeakerRserveScript", ".r");
-    String location = temp.getAbsolutePath();
+    String location = makeTemp("BeakerRserveScript", ".r");
     try (BufferedWriter bw = new BufferedWriter(new FileWriter(location))) {
       bw.write("library(Rserve)\n");
       bw.write("run.Rserve(auth=\"required\", plaintext=\"enable\", port=" +
@@ -178,7 +191,7 @@ public class RShellRest {
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
       @FormParam("shellID") String shellID,
-      @FormParam("code") String code) throws InterruptedException, REXPMismatchException {
+      @FormParam("code") String code) throws InterruptedException, REXPMismatchException, IOException {
 
     boolean gotMismatch = false;
     // System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
@@ -186,10 +199,8 @@ public class RShellRest {
     obj.started();
     RServer server = getEvaluator(shellID);
     RConnection con = server.connection;
-    // XXX should go in tmpXXXXX dir so multiple instances don't interfere.
-    String dotDir = System.getProperty("user.home") + "/.beaker";
-    // XXX should use better location on windows.
-    String file = windows() ? "rplot.svg" : (dotDir + "/rplot.svg"); 
+
+    String file = windows() ? "rplot.svg" : makeTemp("rplot", ".svg");
     try {
       java.nio.file.Path p = java.nio.file.Paths.get(file);
       java.nio.file.Files.deleteIfExists(p);

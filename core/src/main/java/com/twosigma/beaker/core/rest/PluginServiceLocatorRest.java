@@ -223,6 +223,16 @@ public class PluginServiceLocatorRest {
     }
   }
 
+  private boolean internalEnvar(String var) {
+    String [] vars = {"beaker_plugin_password",
+                      "beaker_tmp_dir",
+                      "beaker_core_password"};
+    for (int i = 0; i < vars.length; i++)
+      if (var.startsWith(vars[0] + "="))
+        return true;
+    return false;
+  }
+
   /**
    * locatePluginService
    * locate the service that matches the passed-in information about a service and return the
@@ -334,22 +344,24 @@ public class PluginServiceLocatorRest {
     fullCommand += " " + Integer.toString(corePort);
 
     String[] env = this.pluginEnvps.get(pluginId);
+    List<String> envList = new ArrayList<>();
     if (env != null) {
-      System.out.println("XXX unsupported");
+      for (int i = 0; i < env.length; i++) {
+        if (!internalEnvar(env[i]))
+          envList.add(env[i]);
+      }
     } else {
-      List<String> envList = new ArrayList<>();
       for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
-        if (!("beaker_plugin_password".equals(entry.getKey())) &&
-            !("beaker_ipython_dir".equals(entry.getKey())) &&
-            !("beaker_core_password".equals(entry.getKey())))
+        if (!internalEnvar(entry.getKey() + "="))
           envList.add(entry.getKey() + "=" + entry.getValue());
       }
-      envList.add("beaker_plugin_password=" + password);
-      envList.add("beaker_core_password=" + this.corePassword); // only needed by rest plugins XXX
-      envList.add("beaker_ipython_dir=" + this.nginxServDir); // only needed for ipy plugins XXX
-      env = new String[envList.size()];
-      envList.toArray(env);
     }
+    envList.add("beaker_plugin_password=" + password);
+    envList.add("beaker_core_password=" + this.corePassword); // only needed by rest plugins XXX
+    envList.add("beaker_tmp_dir=" + this.nginxServDir); // only needed for ipy plugins XXX
+    env = new String[envList.size()];
+    envList.toArray(env);
+
     if (windows()) {
       fullCommand = "python " + fullCommand;
     }

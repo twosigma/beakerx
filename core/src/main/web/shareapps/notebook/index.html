@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html ng-app="bk.notebook.share">
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Sharing</title>
+  <link rel="stylesheet" href="../../vendor/bower_components/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="../../vendor/bower_components/codemirror/addon/hint/show-hint.css">
+  <link rel="stylesheet" href="../../vendor/bower_components/bootstrap/docs/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="../../vendor/bower_components/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="../../vendor/slickgrid/slick.grid.css">
+  <link rel="stylesheet" href="../../vendor/jquery-ui/css/smoothness/jquery-ui.custom.min.css">
+  <link rel="stylesheet" href="app.css">
+
+  <script src="../../vendor/flotr2/flotr2.js"></script>
+  <script src="../../vendor/bower_components/jquery/jquery.min.js"></script>
+  <script src="../../vendor/bower_components/angular/angular.js"></script>
+  <script src="../../vendor/bower_components/angular-route/angular-route.js"></script>
+  <script src="../../vendor/bower_components/angular-animate/angular-animate.js"></script>
+  <script src="../../vendor/bower_components/d3/d3.js"></script>
+  <script src="../../vendor/bower_components/codemirror/lib/codemirror.js"></script>
+  <script src="../../vendor/bower_components/codemirror/addon/hint/show-hint.js"></script>
+  <script src="../../vendor/bower_components/codemirror/addon/hint/javascript-hint.js"></script>
+  <script src="../../vendor/bower_components/codemirror/addon/edit/matchbrackets.js"></script>
+  <script src="../../vendor/bower_components/codemirror/addon/dialog/dialog.js"></script>
+  <script src="../../vendor/bower_components/codemirror/addon/search/searchcursor.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/r/r.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/ruby/ruby.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/javascript/javascript.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/python/python.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/julia/julia.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/groovy/groovy.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/stex/stex.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/xml/xml.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/css/css.js"></script>
+  <script src="../../vendor/bower_components/codemirror/mode/clike/clike.js"></script>
+  <script src="../../vendor/bower_components/codemirror/keymap/vim.js"></script>
+  <script src="../../vendor/bower_components/codemirror/keymap/emacs.js"></script>
+  <script src="../../vendor/bower_components/q/q.js"></script>
+  <script src="../../vendor/epiceditor/js/epiceditor.js"></script>
+  <script src="../../vendor/bower_components/underscore/underscore-min.js"></script>
+  <script src="../../vendor/bower_components/underscore.string/dist/underscore.string.min.js"></script>
+  <script src="../../vendor/angular-ui/ui-utils.min.js"></script>
+  <script src="../../vendor/cometd/cometd.js"></script>
+  <script src="../../vendor/cometd/jquery/jquery.cometd.js"></script>
+  <script src="../../vendor/jquery.event.drag/jquery.event.drag.js"></script>
+  <script src="../../vendor/jquery-ui/js/jquery-ui.custom.min.js"></script>
+  <script src="../../vendor/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+  <script src="../../vendor/bower_components/bootstrap/docs/assets/js/bootstrap.min.js"></script>
+  <script src="../../vendor/slickgrid/slick.core.js"></script>
+  <script src="../../vendor/slickgrid/slick.grid.js"></script>
+  <script src="../../vendor/slickgrid/plugins/slick.cellrangedecorator.js"></script>
+  <script src="../../vendor/slickgrid/plugins/slick.cellrangeselector.js"></script>
+  <script src="../../vendor/slickgrid/plugins/slick.cellexternalcopymanager.js"></script>
+  <script src="../../vendor/slickgrid/plugins/slick.cellselectionmodel.js"></script>
+  <script src="../../vendor/vega/vega.js"></script>
+  <script src="../../vendor/vega/d3.geo.projection.min.js"></script>
+  <script src="../../vendor/vega/d3.layout.cloud.js"></script>
+  <script src="../../vendor/moment/moment.min.js"></script>
+  <script src="../../vendor/moment/moment-timezone.js"></script>
+  <script src="../../vendor/moment/moment-timezone-data.js"></script>
+
+  <!-- templates for typed cells -->
+  <script type="text/ng-template" id="section-cell.html">
+    <bk-section-cell></bk-section-cell>
+  </script>
+  <script type="text/ng-template" id="text-cell.html">
+    <bk-text-cell></bk-text-cell>
+  </script>
+  <script type="text/ng-template" id="markdown-cell.html">
+    <bk-markdown-cell></bk-markdown-cell>
+  </script>
+  <script type="text/ng-template" id="code-cell.html">
+    <bk-code-cell cellmodel="cellmodel" cellmenu="cellview.menu"></bk-code-cell>
+  </script>
+
+  <!-- outputDisplayTemplates -->
+  <script type="text/ng-template" id="bkoHidden.html">
+    <div></div>
+  </script>
+  <script type="text/ng-template" id="bkoText.html">
+    <bko-text></bko-text>
+  </script>
+  <script type="text/ng-template" id="bkoWarning.html">
+    <bko-warning></bko-warning>
+  </script>
+  <script type="text/ng-template" id="bkoError.html">
+    <bko-error></bko-error>
+  </script>
+  <script type="text/ng-template" id="bkoHtml.html">
+    <bko-html></bko-html>
+  </script>
+  <script type="text/ng-template" id="bkoTable.html">
+    <bko-table-display></bko-table-display>
+  </script>
+  <script type="text/ng-template" id="bkoChart.html">
+    <bko-chart></bko-chart>
+  </script>
+  <script type="text/ng-template" id="bkoImage.html">
+    <bko-image></bko-image>
+  </script>
+  <script type="text/ng-template" id="bkoJSON.html">
+    <bko-json></bko-json>
+  </script>
+  <script type="text/ng-template" id="bkoLatex.html">
+    <bko-latex></bko-latex>
+  </script>
+  <script type="text/ng-template" id="bkoVega.html">
+    <bko-vega></bko-vega>
+  </script>
+  <script type="text/ng-template" id="bkoDcatJobBatch.html">
+    <bko-job-batch></bko-job-batch>
+  </script>
+  <script type="text/ng-template" id="bkoFunctionContext.html">
+    <bko-function-context></bko-function-context>
+  </script>
+  <script type="text/ng-template" id="bkoOutputContainer.html">
+    <bko-output-container></bko-output-container>
+  </script>
+
+  <script>
+    window.notebookModel = {
+      "beaker": "2",
+      "evaluators": [
+        {
+          "name": "IPython",
+          "plugin": "IPython",
+          "shellID": "D8877B6DFB4249058197174809A34C73",
+          "imports": "",
+          "supplementalClassPath": "",
+          "view": {
+            "cm": {
+              "mode": "python",
+              "background": "#EAEAFF"
+            }
+          }
+        }
+      ],
+      "cells": [
+        {
+          "id": "Section8EWbZ9",
+          "type": "section",
+          "level": 1,
+          "title": "Running code",
+          "collapsed": false
+        },
+        {
+          "id": "markdownEmlByI",
+          "type": "markdown",
+          "body": "Here's some IPython code. To run it, move your cursor into the cell and press CTRL-ENTER.",
+          "mode": "preview"
+        },
+        {
+          "id": "codeh1TYII",
+          "type": "code",
+          "evaluator": "IPython",
+          "input": {
+            "body": "a = 1\na"
+          },
+          "output": {
+            "selectedType": "BeakerDisplay",
+            "outputArrived": true,
+            "elapsedTime": 116,
+            "result": {
+              "type": "BeakerDisplay",
+              "innertype": "Html",
+              "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>1</pre></div>"
+            }
+          }
+        },
+        {
+          "id": "markdownCInWzc",
+          "type": "markdown",
+          "body": "And here's a basic histogram from matplotlib.",
+          "mode": "preview"
+        },
+        {
+          "id": "code3E0zXv",
+          "type": "code",
+          "evaluator": "IPython",
+          "input": {
+            "body": "hist([1,2,2])"
+          },
+          "output": {
+            "selectedType": "BeakerDisplay",
+            "outputArrived": true,
+            "elapsedTime": 280,
+            "result": {
+              "type": "BeakerDisplay",
+              "innertype": "Html",
+              "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>(array([ 1.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  2.]),\n array([ 1. ,  1.1,  1.2,  1.3,  1.4,  1.5,  1.6,  1.7,  1.8,  1.9,  2. ]),\n &lt;a list of 10 Patch objects&gt;)</pre></div><div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_png\"><img src=\"data:image/png;base64,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\n\"></div>"
+            }
+          }
+        }
+      ]
+    };
+  </script>
+  <script src="app.js"></script>
+  <script src="notebookcellmodelmanager.js"></script>
+</head>
+<body>
+  <div class="container" style="width: 100%;">
+    <div class="row-fluid">
+      <container>
+          <a href="">Download</a>
+          <bk-notebook></bk-notebook>
+      </container>
+    </div>
+  </div>
+</body>
+</html>

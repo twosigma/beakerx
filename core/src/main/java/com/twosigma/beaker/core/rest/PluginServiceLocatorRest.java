@@ -83,7 +83,7 @@ public class PluginServiceLocatorRest {
     "  proxy_http_version 1.1;\n" +
     "  proxy_set_header Upgrade $http_upgrade;\n" +
     "  proxy_set_header Connection \"upgrade\";\n" +
-    "  proxy_set_header Host $host:%(port)s;\n" +
+    "  proxy_set_header Host 127.0.0.1:%(port)s;\n" +
     "  proxy_set_header Origin \"$scheme://$host:%(port)s\";\n" +
     "}\n" +
     "location %(base_url)s/login {\n" +

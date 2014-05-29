@@ -79,7 +79,7 @@ define(function(require, exports, module) {
                     self.kernel._kernel_started({id: data.kernel.id});
                   }
                 };
-                var url = IPython.utils.url_join_encode(base, 'api/sessions/');
+                var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
                 $.ajax(url, ajaxsettings);
               }
             });

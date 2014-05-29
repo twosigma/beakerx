@@ -264,17 +264,14 @@ define(function(require, exports, module) {
 
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
-
-    
     var onSuccess = function() {
       /* chrome has a bug where websockets don't support authentication so we
        disable it. http://code.google.com/p/chromium/issues/detail?id=123862
        this is safe because the URL has the kernel ID in it, and that's a 128-bit
        random number, only delivered via the secure channel. */
-      var nginxRules = ipyVersion1 ? "ipython1" : "ipython2";
       bkHelper.locatePluginService(PLUGIN_NAME, {
           command: COMMAND,
-          nginxRules: nginxRules,
+          nginxRules: ipyVersion1 ? "ipython1" : "ipython2",
           startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
           startedIndicatorStream: "stderr"
       }).success(function(ret) {

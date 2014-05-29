@@ -45,47 +45,44 @@ define(function(require, exports, module) {
         });
         return;
       }
-
       if (_.isEmpty(shellID)) {
         shellID = IPython.utils.uuid();
       }
 
-      
-
-      if (ipyVersion1) {
-        self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
-        kernels[shellID] = self.kernel;
-        self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
-      } else {
-        // Required by ipython backend, but not used.
-        var model = {
-          notebook : {
-            name : "fakename" + shellID,
-            path : "/some/path" + shellID
-          }
-        };
-        var ajaxsettings = {
-          processData : false,
-          cache : false,
-          type : "POST",
-          data: JSON.stringify(model),
-          dataType : "json",
-          success : function (data, status, xhr) {
-            self.kernel = new IPython.Kernel(serviceBase + "/api/kernels");
-            kernels[shellID] = self.kernel;
-            // the data.id is the session id but it is not used yet
-            self.kernel._kernel_started({id: data.kernel.id});
-          }
-        };
-        var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
-        bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
-          .success(function(result) {
-            bkHelper.httpPost(serviceBase + "/login?next=%2Fbeaker", {password: result})
-              .success(function(result) {
+      bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
+        .success(function(result) {
+          bkHelper.httpPost(serviceBase + "/login?next=%2Fbeaker", {password: result})
+            .success(function(result) {
+              if (ipyVersion1) {
+                self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
+                kernels[shellID] = self.kernel;
+                self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
+              } else {
+                // Required by ipython backend, but not used.
+                var model = {
+                  notebook : {
+                    name : "fakename" + shellID,
+                    path : "/some/path" + shellID
+                  }
+                };
+                var ajaxsettings = {
+                  processData : false,
+                  cache : false,
+                  type : "POST",
+                  data: JSON.stringify(model),
+                  dataType : "json",
+                  success : function (data, status, xhr) {
+                    self.kernel = new IPython.Kernel(serviceBase + "/api/kernels");
+                    kernels[shellID] = self.kernel;
+                    // the data.id is the session id but it is not used yet
+                    self.kernel._kernel_started({id: data.kernel.id});
+                  }
+                };
+                var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
                 $.ajax(url, ajaxsettings);
-              });
-          });
-      }
+              }
+            });
+        });
 
       // keepalive for the websockets
       var nil = function() {

@@ -30,6 +30,9 @@ for arg in sys.argv[1:]:
     else:
         sys.stderr.write("ignoring unrecognized option: " + arg + "\n")
 
-os.execlp(ipython_path, ipython_path, "notebook", "--pylab", "inline",
-          "--NotebookApp.ip=127.0.0.1", "--NotebookApp.port=" + port,
-          "--NotebookApp.open_browser=False")
+ipython_dir = os.environ["beaker_tmp_dir"]
+
+os.execlp(ipython_path, ipython_path, "notebook",
+          "--ipython-dir=" + ipython_dir, "--profile", "beaker_backend",
+          "--pylab", "inline")
+

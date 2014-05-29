@@ -357,8 +357,8 @@ public class PluginServiceLocatorRest {
       }
     }
     envList.add("beaker_plugin_password=" + password);
-    envList.add("beaker_core_password=" + this.corePassword); // only needed by rest plugins XXX
-    envList.add("beaker_tmp_dir=" + this.nginxServDir); // only needed for ipy plugins XXX
+    envList.add("beaker_core_password=" + this.corePassword);
+    envList.add("beaker_tmp_dir=" + this.nginxServDir);
     env = new String[envList.size()];
     envList.toArray(env);
 

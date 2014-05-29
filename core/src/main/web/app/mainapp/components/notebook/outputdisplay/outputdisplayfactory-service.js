@@ -230,18 +230,17 @@
     return factory;
   });
 
-  for (var i = 0; i < MAX_CAPACITY; ++i) {
-    (function() {
-      var ii = i;
-      module.directive("bko" + ii, function(bkOutputDisplayFactory, bkOutputDisplayServiceManager, $injector) {
-        var impl = bkOutputDisplayFactory.get(ii);
-        if (typeof impl === "function") {
-          return impl(bkOutputDisplayServiceManager, $injector);
-        } else if (Object.prototype.toString.call(impl) === '[object Array]') {
-          var args = [];
+  _(_.range(MAX_CAPACITY)).each(function(i) {
+    module.directive("bko" + i,
+        function(bkOutputDisplayFactory, bkOutputDisplayServiceManager, $injector) {
+      var impl = bkOutputDisplayFactory.get(i);
+      if (_.isFunction(impl)) {
+        return impl(bkOutputDisplayServiceManager, $injector);
+      } else if (_.isArray(impl)) {
+        var args = [];
           for (var j = 0; j < impl.length; ++j) {
             var it = impl[j];
-            if (typeof it === "string") {
+            if (_.isString(it)) {
               if (bkOutputDisplayServiceManager.has(it)) {
                 args.push(bkOutputDisplayServiceManager.get(it));
               } else if ($injector.has(it)) {
@@ -249,18 +248,13 @@
               } else {
                 throw "beaker could not find provider for bkoFactory " + it;
               }
-              continue;
-            }
-            if (typeof it === "function") {
+            } else if (_.isFunction(it)) {
               return it.apply(this, args);
             }
           }
-          ;
-        } else {
-          return impl;
-        }
-      });
-    })();
-  }
-
+      } else {
+        return impl;
+      }
+    });
+  })
 })();

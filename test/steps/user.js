@@ -1,10 +1,22 @@
-module.exports = function() {
-  this.Then(/^I see the first notebook prompt$/, function() {
-    return new this.Widgets.EmptyNotebooks().isPresent()
-    .should.eventually.equal(true);
-  });
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
-  this.Given(/^I am viewing beaker$/, function() {
-    return this.driver.get("http://127.0.0.1:8801/beaker/#/control");
+module.exports = function() {
+  this.Then(/^I see the the user dashboard$/, function() {
+    return new this.Widgets.Dashboard().isPresent()
+    .should.eventually.equal(true);
   });
 }

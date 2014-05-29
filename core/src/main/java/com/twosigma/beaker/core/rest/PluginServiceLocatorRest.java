@@ -400,6 +400,7 @@ public class PluginServiceLocatorRest {
   }
 
   private static Response buildResponse(String baseUrl, boolean created) {
+    baseUrl = ".." + baseUrl;
     return Response
         .status(created ? Response.Status.CREATED : Response.Status.OK)
         .entity(baseUrl)

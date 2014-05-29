@@ -49,12 +49,13 @@ define(function(require, exports, module) {
         shellID = IPython.utils.uuid();
       }
 
+      var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
       bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
         .success(function(result) {
-          bkHelper.httpPost(serviceBase + "/login?next=%2Fbeaker", {password: result})
+          bkHelper.httpPost(base + "/login?next=%2Fbeaker", {password: result})
             .success(function(result) {
               if (ipyVersion1) {
-                self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
+                self.kernel = new IPython.Kernel(base + "/kernels/");
                 kernels[shellID] = self.kernel;
                 self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
               } else {
@@ -72,7 +73,7 @@ define(function(require, exports, module) {
                   data: JSON.stringify(model),
                   dataType : "json",
                   success : function (data, status, xhr) {
-                    self.kernel = new IPython.Kernel(serviceBase + "/api/kernels");
+                    self.kernel = new IPython.Kernel(base + "/api/kernels");
                     kernels[shellID] = self.kernel;
                     // the data.id is the session id but it is not used yet
                     self.kernel._kernel_started({id: data.kernel.id});
@@ -269,6 +270,29 @@ define(function(require, exports, module) {
        disable it. http://code.google.com/p/chromium/issues/detail?id=123862
        this is safe because the URL has the kernel ID in it, and that's a 128-bit
        random number, only delivered via the secure channel. */
+<<<<<<< HEAD
+=======
+      var nginxRules =
+        (ipyVersion1 ? ("location %(base_url)s/kernels/ {" +
+                        "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
+                        "}" +
+                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") :
+         ("location %(base_url)s/api/kernels/ {" +
+          "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;" +
+          "}" +
+          "location %(base_url)s/api/sessions/ {" +
+          "  proxy_pass http://127.0.0.1:%(port)s/api/sessions;" +
+          "}" +
+          "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/  {")) +
+        "  rewrite ^%(base_url)s/(.*)$ /$1 break; " +
+        "  proxy_pass http://127.0.0.1:%(port)s; " +
+        "  proxy_http_version 1.1; " +
+        "  proxy_set_header Upgrade $http_upgrade; " +
+        "  proxy_set_header Connection \"upgrade\"; " +
+        "  proxy_set_header Origin \"$scheme://$host\"; " +
+        "  proxy_set_header Host $host;" +
+        "}";
+>>>>>>> a2c8e9a11ba87a592137212606764e509d687ccb
       bkHelper.locatePluginService(PLUGIN_NAME, {
           command: COMMAND,
           nginxRules: ipyVersion1 ? "ipython1" : "ipython2",
@@ -280,7 +304,7 @@ define(function(require, exports, module) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
-            
+
             // XXX these are not used by python, they are leftover from groovy
             if (!settings.imports) {
               settings.imports = "";

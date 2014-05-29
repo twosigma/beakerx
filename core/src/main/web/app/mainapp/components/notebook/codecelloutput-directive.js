@@ -61,7 +61,7 @@
             if ($scope.evaluatorId) {
               var evaluator = bkEvaluatorManager.getEvaluator($scope.evaluatorId);
               if (evaluator) {
-                return evaluator.evaluator.cometdUtil;
+                return evaluator.cometdUtil;
               }
             }
           }

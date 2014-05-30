@@ -338,7 +338,7 @@ public class PluginServiceLocatorRest {
 
     List<String> extraArgs = this.pluginArgs.get(pluginId);
     if (extraArgs != null) {
-      fullCommand += StringUtils.join(extraArgs, " ");
+      fullCommand += " " + StringUtils.join(extraArgs, " ");
     }
     fullCommand += " " + Integer.toString(pConfig.port);
     fullCommand += " " + Integer.toString(corePort);

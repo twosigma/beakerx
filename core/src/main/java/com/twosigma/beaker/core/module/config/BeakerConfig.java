@@ -64,6 +64,11 @@ public interface BeakerConfig {
    */
   public String getNginxExtraRules();
   /**
+   * optional/extra/override nginx plugin rules
+   * @return
+   */
+  public Map<String, String> getNginxPluginRules();
+  /**
    * gets the port base
    * @return
    */

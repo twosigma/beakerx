@@ -289,7 +289,6 @@ public class PluginServiceLocatorRest {
       String restartId = generateNginxConfig();
       String restartPath = "\"" + this.nginxServDir + "/restart_nginx\"";
       String restartCommand = this.nginxCommand + " -s reload";
-      System.err.println("restartCommand=" + restartCommand);
       Process restartproc = Runtime.getRuntime().exec(restartCommand);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
@@ -475,10 +474,10 @@ public class PluginServiceLocatorRest {
     }
   }
 
-  private String hashIPythonPassword(String password)
+  private String hashIPythonPassword(String cmdBase, String password)
     throws IOException
   {
-    Process proc = Runtime.getRuntime().exec("python");
+    Process proc = Runtime.getRuntime().exec(cmdBase + " --hash");
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
     bw.write("from IPython.lib import passwd\n");
@@ -491,11 +490,16 @@ public class PluginServiceLocatorRest {
   private void generateIPythonConfig(int port, String password)
     throws IOException, InterruptedException
   {
-    // we can probably determine exactly what is needed and then just
+    // Can probably determine exactly what is needed and then just
     // make the files ourselves but this is a safe way to get started.
-    String command = "ipython profile create beaker_backend --ipython-dir=" + this.nginxServDir;
-    Runtime.getRuntime().exec(command).waitFor();
-    String hash = hashIPythonPassword(password);
+    // Should pass pluginArgs too XXX.
+    String cmdBase = (this.pluginLocations.containsKey("IPython") ?
+                      this.pluginLocations.get("IPython") : this.pluginDir)
+      + "/ipythonPlugins/ipython/ipythonPlugin";
+    String cmd = cmdBase + " --profile " + this.nginxServDir;
+        
+    Runtime.getRuntime().exec(cmd).waitFor();
+    String hash = hashIPythonPassword(cmdBase, password);
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));
     config = config.replace("%(hash)s", hash);

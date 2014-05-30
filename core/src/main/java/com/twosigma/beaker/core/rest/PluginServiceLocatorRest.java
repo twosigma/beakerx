@@ -535,14 +535,18 @@ public class PluginServiceLocatorRest {
     for (PluginConfig pConfig : this.plugins.values()) {
       String auth = encoder.encodeBase64String(("beaker:" + pConfig.getPassword()).getBytes());
       String nginxRule = pConfig.getNginxRules();
-      if (nginxRule.equals("rest"))
-        nginxRule = REST_RULES;
-      else if (nginxRule.equals("ipython1"))
-        nginxRule = IPYTHON1_RULES;
-      else if (nginxRule.equals("ipython2"))
-        nginxRule = IPYTHON2_RULES;
-      else {
-        throw new RuntimeException("unrecognized nginx rule: " + nginxRule);
+      if (bkConfig.getNginxPluginRules().containsKey(nginxRule)) {
+        nginxRule = bkConfig.getNginxPluginRules().get(nginxRule);
+      } else {
+        if (nginxRule.equals("rest"))
+          nginxRule = REST_RULES;
+        else if (nginxRule.equals("ipython1"))
+          nginxRule = IPYTHON1_RULES;
+        else if (nginxRule.equals("ipython2"))
+          nginxRule = IPYTHON2_RULES;
+        else {
+          throw new RuntimeException("unrecognized nginx rule: " + nginxRule);
+        }
       }
       nginxRule = nginxRule.replace("%(port)s", Integer.toString(pConfig.getPort()))
         .replace("%(auth)s", auth)

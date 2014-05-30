@@ -110,6 +110,7 @@ public class PluginServiceLocatorRest {
   private final String nginxStaticDir;
   private final String nginxServDir;
   private final String nginxExtraRules;
+  private final Map<String, String> nginxPluginRules;
   private final String pluginDir;
   private final String nginxCommand;
   private final Integer portBase;
@@ -141,6 +142,7 @@ public class PluginServiceLocatorRest {
     this.nginxStaticDir = bkConfig.getNginxStaticDirectory();
     this.nginxServDir = bkConfig.getNginxServDirectory();
     this.nginxExtraRules = bkConfig.getNginxExtraRules();
+    this.nginxPluginRules = bkConfig.getNginxPluginRules();
     this.pluginDir = bkConfig.getPluginDirectory();
     this.portBase = bkConfig.getPortBase();
     this.servPort = this.portBase + 1;
@@ -287,7 +289,6 @@ public class PluginServiceLocatorRest {
       String restartId = generateNginxConfig();
       String restartPath = "\"" + this.nginxServDir + "/restart_nginx\"";
       String restartCommand = this.nginxCommand + " -s reload";
-      System.err.println("restartCommand=" + restartCommand);
       Process restartproc = Runtime.getRuntime().exec(restartCommand);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
@@ -338,7 +339,7 @@ public class PluginServiceLocatorRest {
 
     List<String> extraArgs = this.pluginArgs.get(pluginId);
     if (extraArgs != null) {
-      fullCommand += StringUtils.join(extraArgs, " ");
+      fullCommand += " " + StringUtils.join(extraArgs, " ");
     }
     fullCommand += " " + Integer.toString(pConfig.port);
     fullCommand += " " + Integer.toString(corePort);
@@ -473,10 +474,10 @@ public class PluginServiceLocatorRest {
     }
   }
 
-  private String hashIPythonPassword(String password)
+  private String hashIPythonPassword(String cmdBase, String password)
     throws IOException
   {
-    Process proc = Runtime.getRuntime().exec("python");
+    Process proc = Runtime.getRuntime().exec(cmdBase + " --hash");
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
     bw.write("from IPython.lib import passwd\n");
@@ -489,11 +490,16 @@ public class PluginServiceLocatorRest {
   private void generateIPythonConfig(int port, String password)
     throws IOException, InterruptedException
   {
-    // we can probably determine exactly what is needed and then just
+    // Can probably determine exactly what is needed and then just
     // make the files ourselves but this is a safe way to get started.
-    String command = "ipython profile create beaker_backend --ipython-dir=" + this.nginxServDir;
-    Runtime.getRuntime().exec(command).waitFor();
-    String hash = hashIPythonPassword(password);
+    // Should pass pluginArgs too XXX.
+    String cmdBase = (this.pluginLocations.containsKey("IPython") ?
+                      this.pluginLocations.get("IPython") : (this.pluginDir + "/ipythonPlugins/ipython"))
+      + "/ipythonPlugin";
+    String cmd = cmdBase + " --profile " + this.nginxServDir;
+        
+    Runtime.getRuntime().exec(cmd).waitFor();
+    String hash = hashIPythonPassword(cmdBase, password);
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));
     config = config.replace("%(hash)s", hash);
@@ -535,14 +541,18 @@ public class PluginServiceLocatorRest {
     for (PluginConfig pConfig : this.plugins.values()) {
       String auth = encoder.encodeBase64String(("beaker:" + pConfig.getPassword()).getBytes());
       String nginxRule = pConfig.getNginxRules();
-      if (nginxRule.equals("rest"))
-        nginxRule = REST_RULES;
-      else if (nginxRule.equals("ipython1"))
-        nginxRule = IPYTHON1_RULES;
-      else if (nginxRule.equals("ipython2"))
-        nginxRule = IPYTHON2_RULES;
-      else {
-        throw new RuntimeException("unrecognized nginx rule: " + nginxRule);
+      if (this.nginxPluginRules.containsKey(nginxRule)) {
+        nginxRule = this.nginxPluginRules.get(nginxRule);
+      } else {
+        if (nginxRule.equals("rest"))
+          nginxRule = REST_RULES;
+        else if (nginxRule.equals("ipython1"))
+          nginxRule = IPYTHON1_RULES;
+        else if (nginxRule.equals("ipython2"))
+          nginxRule = IPYTHON2_RULES;
+        else {
+          throw new RuntimeException("unrecognized nginx rule: " + nginxRule);
+        }
       }
       nginxRule = nginxRule.replace("%(port)s", Integer.toString(pConfig.getPort()))
         .replace("%(auth)s", auth)
@@ -589,6 +599,7 @@ public class PluginServiceLocatorRest {
   {
     Process proc;
     if (windows()) {
+      // XXX use ipythonPlugin --version, like generateIPythonConfig does
       String cmd = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
       proc = Runtime.getRuntime().exec(cmd);
     } else {

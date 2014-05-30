@@ -110,6 +110,7 @@ public class PluginServiceLocatorRest {
   private final String nginxStaticDir;
   private final String nginxServDir;
   private final String nginxExtraRules;
+  private final Map<String, String> nginxPluginRules;
   private final String pluginDir;
   private final String nginxCommand;
   private final Integer portBase;
@@ -141,6 +142,7 @@ public class PluginServiceLocatorRest {
     this.nginxStaticDir = bkConfig.getNginxStaticDirectory();
     this.nginxServDir = bkConfig.getNginxServDirectory();
     this.nginxExtraRules = bkConfig.getNginxExtraRules();
+    this.nginxPluginRules = bkConfig.getNginxPluginRules();
     this.pluginDir = bkConfig.getPluginDirectory();
     this.portBase = bkConfig.getPortBase();
     this.servPort = this.portBase + 1;
@@ -535,8 +537,8 @@ public class PluginServiceLocatorRest {
     for (PluginConfig pConfig : this.plugins.values()) {
       String auth = encoder.encodeBase64String(("beaker:" + pConfig.getPassword()).getBytes());
       String nginxRule = pConfig.getNginxRules();
-      if (bkConfig.getNginxPluginRules().containsKey(nginxRule)) {
-        nginxRule = bkConfig.getNginxPluginRules().get(nginxRule);
+      if (this.nginxPluginRules.containsKey(nginxRule)) {
+        nginxRule = this.nginxPluginRules.get(nginxRule);
       } else {
         if (nginxRule.equals("rest"))
           nginxRule = REST_RULES;

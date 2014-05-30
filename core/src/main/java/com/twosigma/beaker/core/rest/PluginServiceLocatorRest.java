@@ -494,8 +494,8 @@ public class PluginServiceLocatorRest {
     // make the files ourselves but this is a safe way to get started.
     // Should pass pluginArgs too XXX.
     String cmdBase = (this.pluginLocations.containsKey("IPython") ?
-                      this.pluginLocations.get("IPython") : this.pluginDir)
-      + "/ipythonPlugins/ipython/ipythonPlugin";
+                      this.pluginLocations.get("IPython") : (this.pluginDir + "/ipythonPlugins/ipython"))
+      + "/ipythonPlugin";
     String cmd = cmdBase + " --profile " + this.nginxServDir;
         
     Runtime.getRuntime().exec(cmd).waitFor();
@@ -599,6 +599,7 @@ public class PluginServiceLocatorRest {
   {
     Process proc;
     if (windows()) {
+      // XXX use ipythonPlugin --version, like generateIPythonConfig does
       String cmd = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
       proc = Runtime.getRuntime().exec(cmd);
     } else {

@@ -42,7 +42,6 @@ module.exports = function() {
 
   this.Widgets.OpenNotebooks = this.Widget.List.extend({
     root: '.open-notebooks table',
-    itemSelector: ".session",
     itemClass: this.Widgets.NotebookSessionRow,
     toHash: function() {
       return $.map(this.items(), function(item) {

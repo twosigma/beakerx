@@ -4,6 +4,6 @@
     "start": "dill --require util --require steps --require widgets -f pretty"
   },
   "dependencies": {
-    "dill": "^0.1.1"
+    "dill": "^0.2.0"
   }
 }

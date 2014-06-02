@@ -64,6 +64,8 @@ public class Main {
   private static final Integer PORT_BASE_START_DEFAULT = 8800;
   private static final Boolean OPEN_BROWSER_DEFAULT = Boolean.TRUE;
   private static final Boolean USE_HTTPS_DEFAULT = Boolean.FALSE;
+  private static final Boolean PUBLIC_SERVER_DEFAULT = Boolean.FALSE;
+  private static final Boolean NO_PASSWORD_DEFAULT = Boolean.FALSE;
   private static final Boolean USE_KERBEROS_DEFAULT = Boolean.FALSE;
   private static final Integer CLEAR_PORT_OFFSET = 1;
   private static final Integer BEAKER_SERVER_PORT_OFFSET = 2;
@@ -79,6 +81,9 @@ public class Main {
     opts.addOption(null, "port-base", true, "main port number to use, other ports are allocated starting here");
     opts.addOption(null, "default-notebook", true, "file name to find default notebook");
     opts.addOption(null, "plugin-option", true, "pass option on to plugin");
+    opts.addOption(null, "public-server", false, "allow connections from external computers");
+    opts.addOption(null, "no-password", false, "do not require a password from external connections " +
+                   "(warning: for advanced users only!)");
     CommandLine line = parser.parse(opts, args);
     if (line.hasOption("help")) {
       new HelpFormatter().printHelp("beaker.command", opts);
@@ -129,11 +134,15 @@ public class Main {
       parseBoolean(options.getOptionValue("open-browser")) : OPEN_BROWSER_DEFAULT;
     final Boolean useHttps = options.hasOption("use-https") ?
       parseBoolean(options.getOptionValue("use-https")) : USE_HTTPS_DEFAULT;
+    final Boolean publicServer = options.hasOption("public-server");
+    final Boolean noPasswordAllowed = options.hasOption("no-password");
 
     // create preferences for beaker core from cli options and others
     // to be used by BeakerCoreConfigModule to initialize its config
     BeakerConfigPref beakerCorePref = createBeakerCoreConfigPref(
         useKerberos,
+        publicServer,
+        noPasswordAllowed,
         portBase,
         options.getOptionValue("default-notebook"),
         getPluginOptions(options));
@@ -185,6 +194,8 @@ public class Main {
 
   private static BeakerConfigPref createBeakerCoreConfigPref(
       final Boolean useKerberos,
+      final Boolean publicServer,
+      final Boolean noPasswordAllowed,
       final Integer portBase,
       final String defaultNotebookUrl,
       final Map<String, String> pluginOptions) {
@@ -198,6 +209,16 @@ public class Main {
       @Override
       public Integer getPortBase() {
         return portBase;
+      }
+
+      @Override
+      public Boolean getPublicServer() {
+        return publicServer;
+      }
+
+      @Override
+      public Boolean getNoPasswordAllowed() {
+        return noPasswordAllowed;
       }
 
       @Override

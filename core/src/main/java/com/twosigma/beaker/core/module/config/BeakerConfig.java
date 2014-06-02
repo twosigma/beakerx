@@ -69,6 +69,16 @@ public interface BeakerConfig {
    */
   public Map<String, String> getNginxPluginRules();
   /**
+   * Public Server
+   * @return
+   */
+  public Boolean getPublicServer();
+  /**
+   * No Password allowed
+   * @return
+   */
+  public Boolean getNoPasswordAllowed();
+  /**
    * gets the port base
    * @return
    */

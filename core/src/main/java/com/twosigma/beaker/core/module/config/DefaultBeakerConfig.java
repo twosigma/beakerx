@@ -44,6 +44,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String nginxExtraRules;
   private final Map<String, String> nginxPluginRules;
   private final Boolean useKerberos;
+  private final Boolean publicServer;
+  private final Boolean noPasswordAllowed;
   private final Integer portBase;
   private final Integer reservedPortCount;
   private final String configFileUrl;
@@ -104,6 +106,9 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.pluginLocations = new HashMap<>();
     this.pluginOptions = pref.getPluginOptions();
     this.pluginEnvps = new HashMap<>();
+
+    this.publicServer = pref.getPublicServer();
+    this.noPasswordAllowed = pref.getNoPasswordAllowed();
   }
 
   @Override
@@ -149,6 +154,16 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public Map<String, String> getNginxPluginRules() {
     return this.nginxPluginRules;
+  }
+
+  @Override
+  public Boolean getPublicServer() {
+    return this.publicServer;
+  }
+
+  @Override
+  public Boolean getNoPasswordAllowed() {
+    return this.noPasswordAllowed;
   }
 
   @Override

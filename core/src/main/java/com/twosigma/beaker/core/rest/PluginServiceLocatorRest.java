@@ -113,6 +113,7 @@ public class PluginServiceLocatorRest {
   private final Map<String, String> nginxPluginRules;
   private final String pluginDir;
   private final String nginxCommand;
+  private final Boolean publicServer;
   private final Integer portBase;
   private final Integer servPort;
   private final Integer corePort;
@@ -144,6 +145,7 @@ public class PluginServiceLocatorRest {
     this.nginxExtraRules = bkConfig.getNginxExtraRules();
     this.nginxPluginRules = bkConfig.getNginxPluginRules();
     this.pluginDir = bkConfig.getPluginDirectory();
+    this.publicServer = bkConfig.getPublicServer();
     this.portBase = bkConfig.getPortBase();
     this.servPort = this.portBase + 1;
     this.corePort = this.portBase + 2;
@@ -566,6 +568,7 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     nginxConfig = nginxConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     nginxConfig = nginxConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
+    nginxConfig = nginxConfig.replace("%(listen_on)s", this.publicServer ? "*" : "127.0.0.1");
     nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);

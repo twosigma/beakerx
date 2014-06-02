@@ -27,10 +27,80 @@ body {
 }
 
 .bkcell {
-    padding-right: 8px;
-    padding-top: 5px;
-    margin-bottom: 10px;
-    border-right: 1px solid #999999;
+    padding:        20px;
+    margin-bottom:  10px;
+}
+
+.bkcell bk-code-cell-input-menu .dropdown {
+    z-index:        99;
+    position:       relative;
+    padding-bottom: 20px;
+}
+
+.bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
+    margin-top: -20px;
+}
+
+bk-code-cell .evaluator{
+    border: solid 1px #CCC;
+}
+
+bk-code-cell .code-cell-output {
+    border-top: solid 1px #CCC;
+}
+
+bk-code-cell .bkcell.cell-bracket-selected {
+    border-right: 0;
+    box-shadow: none;
+}
+
+bk-code-cell-output .bkcell {
+    padding: 0px 20px;
+}
+
+ul.cell-output-labels {
+    list-style: none;
+}
+.output_subarea pre {
+    border:     none;
+    background: transparent;
+}
+
+.cell-output-labels li {
+    display:    inline-block;
+    padding:    15px 15px 5px 0;
+    font-size:  13px;
+}
+
+.cell-output-labels .no-output {
+    color: #9E9E9E
+}
+
+.output_subarea {
+    background: transparent;
+    border: none;
+}
+
+.bkcell a.evaluate-script {
+    color:      #FFF;
+    display:    inline-block;
+    padding:    7px 26px;
+    font-size:  13px;
+    background: #949494;
+    margin-top: 20px;
+}
+
+.bkcell a.evaluate-script:hover {
+    text-decoration: none;
+}
+
+.CodeMirror-linenumber {
+    text-align: left;
+}
+
+.CodeMirror-gutters {
+    border:             none;
+    background-color:   transparent;
 }
 
 .cell-bracket-initialization {
@@ -107,7 +177,6 @@ body {
 
 .CodeMirror {
     height: auto;
-    border: 1px solid grey;
 }
 
 .tschartcontainer {

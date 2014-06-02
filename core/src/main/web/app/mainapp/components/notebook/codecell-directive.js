@@ -371,9 +371,6 @@
         var inputMenuDiv = element.find(".bkcell").first();
         scope.popupMenu = function(event) {
           var menu = inputMenuDiv.find('.dropdown').first();
-          var clicked = event && event.hasOwnProperty("clientY");
-          menu.css("top", clicked ? event.clientY : "");
-          menu.css("left", clicked ? event.clientX - 150 : "");
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
         inputMenuDiv.click(function(event) {

@@ -52,9 +52,6 @@
           $scope.cellmodel.evaluator = evaluatorName;
           getBkNotebookWidget().getFocusable(cellId).focus();
         };
-        $scope.run = function() {
-          $scope.evaluate();
-        };
       }
     };
   });

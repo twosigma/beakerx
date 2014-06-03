@@ -371,21 +371,6 @@
           var menu = inputMenuDiv.find('.dropdown').first();
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
-        var inputClickHandler = function(event) {
-          if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
-            scope.popupMenu(event);
-            event.stopPropagation();
-          }
-        };
-        inputMenuDiv.click(inputClickHandler);
-        var inputMousemoveHandler = function(event) {
-          if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
-            inputMenuDiv.css('cursor', 'pointer');
-          } else {
-            inputMenuDiv.css('cursor', 'default');
-          }
-        };
-        inputMenuDiv.mousemove(inputMousemoveHandler);
 
         if (scope.isInitializationCell()) {
           element.closest(".bkcell").addClass("initcell");

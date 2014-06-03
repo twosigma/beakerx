@@ -17,6 +17,15 @@
 import os
 import sys
 
+if len(sys.argv) > 1:
+    arg1 = sys.argv[1]
+    if arg1 == "--version":
+        os.execlp("ipython", "ipython", "--version")
+    elif arg1 == "--hash":
+        os.execlp("python", "python")
+    elif arg1 == "--profile":
+        os.execlp("ipython", "ipython", "profile", "create", "beaker_backend", "--ipython-dir=" + sys.argv[2])
+
 coreport = sys.argv.pop()
 port = sys.argv.pop()
 
@@ -30,6 +39,8 @@ for arg in sys.argv[1:]:
     else:
         sys.stderr.write("ignoring unrecognized option: " + arg + "\n")
 
-os.execlp(ipython_path, ipython_path, "notebook", "--pylab", "inline",
-          "--NotebookApp.ip=127.0.0.1", "--NotebookApp.port=" + port,
-          "--NotebookApp.open_browser=False")
+ipython_dir = os.environ["beaker_tmp_dir"]
+
+os.execlp(ipython_path, ipython_path, "notebook",
+          "--ipython-dir=" + ipython_dir, "--profile", "beaker_backend",
+          "--pylab", "inline")

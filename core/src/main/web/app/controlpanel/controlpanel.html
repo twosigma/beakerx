@@ -36,18 +36,18 @@
   <div class="row">
     <div class="span12">
 
-      <div ng-show='isSessionsListEmpty()'>
+      <div ng-if='isSessionsListEmpty()' class="empty-session-prompt">
           <h1>Beaker <small>The data scientist's laboratory</small></h1>
           <p>Click <strong>New Notebook</strong> to get started coding in Python, R, Julia, Groovy, JavaScript, and Ruby. For help, check out <strong>Help &#8594; Tutorial notebook</strong>.</p>
-      </div>        
-        
-      <button class='btn' ng-click="newNotebook()">New Notebook</button>
+      </div>
+
+      <button class='btn new-notebook' ng-click="newNotebook()">New Notebook</button>
       <!--<button class='btn' ng-click="openTutorial()">Tutorial</button>-->
       <br/><br/>
 
       <div ng-hide='isSessionsListEmpty()'>
         <h4>Open notebooks:</h4>
-        <bk-control-panel-session-item></bk-control-panel-session-item>
+        <bk-control-panel-session-item class="open-notebooks"></bk-control-panel-session-item>
       </div>
     </div>
   </div>
@@ -58,7 +58,7 @@
       </p>
 
       <p>
-        We would like to collect anonymous usage info to help improve our product. We may share this information 
+        We would like to collect anonymous usage info to help improve our product. We may share this information
         with other parties, including, in the spirit of open software, by making it publicly accessible<br>
       </p>
 

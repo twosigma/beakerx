@@ -13,6 +13,8 @@ console.log('Server Starting')
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
+app.use(express.basicAuth('beaker', process.env.beaker_plugin_password));
+
 // route for testing service is alive
 app.get('/pulse', function(request, response){
     response.send('node server is running');

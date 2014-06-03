@@ -13,21 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-apply plugin: 'java'
 
-repositories {
-  mavenCentral()
-}
+module.exports = function() {
+  this.When(/^I close all the open notebooks$/, function() {
+    return $.map(new this.Widgets.OpenNotebooks().items(), function(item) {
+      return item.close();
+    });
+  });
 
-dependencies {
-  compile group: 'org.cometd.java', name: 'cometd-java-annotations', version: '2.7.0'
-  compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.13'
-  compile group: 'org.apache.cxf', name: 'cxf-bundle-jaxrs', version: '2.7.7'
-  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
-  compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.17.1'
-}
-
-compileJava {
-  options.compilerArgs << '-Xlint:deprecation'
-  options.compilerArgs << '-Xlint:unchecked'
+  this.Then(/^I should see the following notebooks:$/, function(table) {
+    return (new this.Widgets.OpenNotebooks().toHash())
+    .should.eventually.eql(table.hashes())
+  });
 }

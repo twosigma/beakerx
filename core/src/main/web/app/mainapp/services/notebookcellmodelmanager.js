@@ -20,7 +20,7 @@
 (function() {
   'use strict';
   var module = angular.module("bk.notebookCellModelManager", []);
-  
+
   // utilities
   var generateCellMap = function(cells) {
     var decoratedCells = {
@@ -120,6 +120,11 @@
       initialization: initializationCells,
       evaluator: evaluatorMap
     };
+  };
+
+  var replaceWholeArray = function(oldArray, newArray) {
+    var args = _.flatten([0, oldArray.length, newArray]);
+    oldArray.splice.apply(oldArray, args);
   };
 
   module.factory("bkNotebookCellModelManager", function() {
@@ -304,7 +309,7 @@
           toBeMoved = slice1.splice(slice1.length + offset, -offset);
           slice3 = toBeMoved.concat(slice3);
         }
-        cells = _.flatten([slice1, slice2, slice3]);
+        replaceWholeArray(cells, _.flatten([slice1, slice2, slice3]));
         recreateCellMap();
       },
       getPrevSibling: function(id) {

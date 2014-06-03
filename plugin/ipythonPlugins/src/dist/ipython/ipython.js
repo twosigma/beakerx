@@ -45,39 +45,45 @@ define(function(require, exports, module) {
         });
         return;
       }
-
       if (_.isEmpty(shellID)) {
         shellID = IPython.utils.uuid();
       }
 
-      if (ipyVersion1) {
-        self.kernel = new IPython.Kernel(serviceBase + "/kernels/");
-        kernels[shellID] = self.kernel;
-        self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
-      } else {
-        // Required by ipython backend, but not used.
-        var model = {
-          notebook : {
-            name : "fakename" + shellID,
-            path : "/some/path" + shellID
-          }
-        };
-        var ajaxsettings = {
-          processData : false,
-          cache : false,
-          type : "POST",
-          data: JSON.stringify(model),
-          dataType : "json",
-          success : function (data, status, xhr) {
-            self.kernel = new IPython.Kernel(serviceBase + "/api/kernels");
-            kernels[shellID] = self.kernel;
-            // the data.id is the session id but it is not used yet
-            self.kernel._kernel_started({id: data.kernel.id});
-          }
-        };
-        var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
-        $.ajax(url, ajaxsettings);
-      }
+      var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
+      bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
+        .success(function(result) {
+          bkHelper.httpPost(base + "/login?next=%2Fbeaker", {password: result})
+            .success(function(result) {
+              if (ipyVersion1) {
+                self.kernel = new IPython.Kernel(base + "/kernels/");
+                kernels[shellID] = self.kernel;
+                self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
+              } else {
+                // Required by ipython backend, but not used.
+                var model = {
+                  notebook : {
+                    name : "fakename" + shellID,
+                    path : "/some/path" + shellID
+                  }
+                };
+                var ajaxsettings = {
+                  processData : false,
+                  cache : false,
+                  type : "POST",
+                  data: JSON.stringify(model),
+                  dataType : "json",
+                  success : function (data, status, xhr) {
+                    self.kernel = new IPython.Kernel(base + "/api/kernels");
+                    kernels[shellID] = self.kernel;
+                    // the data.id is the session id but it is not used yet
+                    self.kernel._kernel_started({id: data.kernel.id});
+                  }
+                };
+                var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
+                $.ajax(url, ajaxsettings);
+              }
+            });
+        });
 
       // keepalive for the websockets
       var nil = function() {
@@ -259,36 +265,10 @@ define(function(require, exports, module) {
 
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
-
-
     var onSuccess = function() {
-      /* chrome has a bug where websockets don't support authentication so we
-       disable it. http://code.google.com/p/chromium/issues/detail?id=123862
-       this is safe because the URL has the kernel ID in it, and that's a 128-bit
-       random number, only delivered via the secure channel. */
-      var nginxRules =
-        (ipyVersion1 ? ("location %(base_url)s/kernels/ {" +
-                        "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
-                        "}" +
-                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") :
-         ("location %(base_url)s/api/kernels/ {" +
-          "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;" +
-          "}" +
-          "location %(base_url)s/api/sessions/ {" +
-          "  proxy_pass http://127.0.0.1:%(port)s/api/sessions;" +
-          "}" +
-          "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/  {")) +
-        "  rewrite ^%(base_url)s/(.*)$ /$1 break; " +
-        "  proxy_pass http://127.0.0.1:%(port)s; " +
-        "  proxy_http_version 1.1; " +
-        "  proxy_set_header Upgrade $http_upgrade; " +
-        "  proxy_set_header Connection \"upgrade\"; " +
-        "  proxy_set_header Origin \"$scheme://$host\"; " +
-        "  proxy_set_header Host $host;" +
-        "}";
       bkHelper.locatePluginService(PLUGIN_NAME, {
           command: COMMAND,
-          nginxRules: nginxRules,
+          nginxRules: ipyVersion1 ? "ipython1" : "ipython2",
           startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
           startedIndicatorStream: "stderr"
       }).success(function(ret) {

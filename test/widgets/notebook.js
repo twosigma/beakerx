@@ -13,21 +13,33 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-apply plugin: 'java'
 
-repositories {
-  mavenCentral()
-}
+module.exports = function() {
+  this.Widgets.Notebook = this.Widget.extend({
+    root: 'bk-notebook',
 
-dependencies {
-  compile group: 'org.cometd.java', name: 'cometd-java-annotations', version: '2.7.0'
-  compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.13'
-  compile group: 'org.apache.cxf', name: 'cxf-bundle-jaxrs', version: '2.7.7'
-  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
-  compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.17.1'
-}
+    getPluginManager: function() {
+      return this.find('bk-plugin-manager');
+    },
 
-compileJava {
-  options.compilerArgs << '-Xlint:deprecation'
-  options.compilerArgs << '-Xlint:unchecked'
+    getCells: function() {
+      return this.find('bk-cell')
+    },
+
+    setHeadline: function(text) {
+      var _this   = this;
+      var elm     = _this.find(".bk-section-title");
+
+      return elm.click()
+      .then(function() {
+        return elm.sendKeys(text);
+      }).then(function() {
+        return _this.click();
+      })
+    },
+
+    readHeadline: function() {
+      return this.read(".bk-section-title");
+    }
+  });
 }

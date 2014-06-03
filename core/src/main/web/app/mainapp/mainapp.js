@@ -323,6 +323,7 @@
               showTransientStatusMessage("Cancelled");
             } else {
               bkCoreManager.show1ButtonModal(msg, "Save Failed");
+              showTransientStatusMessage("Save Failed");
             }
           };
 

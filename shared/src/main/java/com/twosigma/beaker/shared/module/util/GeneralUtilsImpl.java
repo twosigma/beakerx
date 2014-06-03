@@ -29,8 +29,12 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * BasicUtilsImpl
@@ -175,10 +179,13 @@ public class GeneralUtilsImpl implements GeneralUtils {
     ensureFileHasContent(castToPath(targetFile), castToPath(copyFromIfMissing));
   }
 
-
+  
   @Override
   public String createTempDirectory(Path dir, String prefix) throws IOException {
-    Path tempDir = Files.createTempDirectory(dir, prefix);
+    Set<PosixFilePermission> userOnly = EnumSet.of(PosixFilePermission.OWNER_READ,
+                                                   PosixFilePermission.OWNER_WRITE,
+                                                   PosixFilePermission.OWNER_EXECUTE);
+    Path tempDir = Files.createTempDirectory(dir, prefix, PosixFilePermissions.asFileAttribute(userOnly));
     recursiveDeleteOnShutdownHook(tempDir);
     return tempDir.toString();
   }

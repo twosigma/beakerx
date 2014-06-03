@@ -27,6 +27,11 @@ public interface WebServerConfig {
    */
   public Integer getPort();
   /**
+   * gets the password that protects the server
+   * @return
+   */
+  public String getPassword();
+  /**
    * gets the username
    * @return
    */

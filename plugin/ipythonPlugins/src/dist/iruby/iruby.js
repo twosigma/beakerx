@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 /**
- * IPython eval plugin
- * For creating and config evaluators that uses a IPython kernel for evaluating python code
+ * IRuby eval plugin
+ * For creating and config evaluators that uses a IRuby kernel for evaluating ruby code
  * and updating code cell outputs.
  */
 define(function(require, exports, module) {
@@ -39,47 +39,51 @@ define(function(require, exports, module) {
       var kernel = null;
       var self = this;
 
-      // check in kernel table if shellID exists, then do nothing or still callback?
       if (kernels[shellID]) {
         bkHelper.fcall(function() {
           cb(shellID);
         });
         return;
       }
-
       if (_.isEmpty(shellID)) {
         shellID = IPython.utils.uuid();
       }
 
       var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
-      if (ipyVersion1) {
-        self.kernel = new IPython.Kernel(base + "/kernels/");
-        kernels[shellID] = self.kernel;
-        self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
-      } else {
-        // Required by ipython backend, but not used.
-        var model = {
-          notebook : {
-            name : "fakename" + shellID,
-            path : "/some/path" + shellID
-          }
-        };
-        var ajaxsettings = {
-          processData : false,
-          cache : false,
-          type : "POST",
-          data: JSON.stringify(model),
-          dataType : "json",
-          success : function (data, status, xhr) {
-            self.kernel = new IPython.Kernel(base + "/api/kernels");
-            kernels[shellID] = self.kernel;
-            // the data.id is the session id but it is not used yet
-            self.kernel._kernel_started({id: data.kernel.id});
-          }
-        };
-        var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
-        $.ajax(url, ajaxsettings);
-      }
+      bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
+        .success(function(result) {
+          bkHelper.httpPost(base + "/login?next=%2Fbeaker", {password: result})
+            .success(function(result) {
+              if (ipyVersion1) {
+                self.kernel = new IPython.Kernel(base + "/kernels/");
+                kernels[shellID] = self.kernel;
+                self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
+              } else {
+                // Required by ipython backend, but not used.
+                var model = {
+                  notebook : {
+                    name : "fakename" + shellID,
+                    path : "/some/path" + shellID
+                  }
+                };
+                var ajaxsettings = {
+                  processData : false,
+                  cache : false,
+                  type : "POST",
+                  data: JSON.stringify(model),
+                  dataType : "json",
+                  success : function (data, status, xhr) {
+                    self.kernel = new IPython.Kernel(base + "/api/kernels");
+                    kernels[shellID] = self.kernel;
+                    // the data.id is the session id but it is not used yet
+                    self.kernel._kernel_started({id: data.kernel.id});
+                  }
+                };
+                var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
+                $.ajax(url, ajaxsettings);
+              }
+            });
+        });
 
       // keepalive for the websockets
       var nil = function() {
@@ -236,9 +240,15 @@ define(function(require, exports, module) {
     },
     autocomplete: function(code, cpos, cb) {
       var kernel = kernels[this.settings.shellID];
-      kernel.complete(code, cpos, {'complete_reply': function(reply) {
-        cb(reply.matches, reply.matched_text);
-      }});
+      if (ipyVersion1) {
+	kernel.complete(code, cpos, {'complete_reply': function(reply) {
+	    cb(reply.matches, reply.matched_text);
+	}});
+      } else {
+        kernel.complete(code, cpos, function(reply) {
+            cb(reply.content.matches, reply.matched_text);
+	});
+      }
     },
     interrupt: function() {
       this.cancelExecution();
@@ -255,36 +265,10 @@ define(function(require, exports, module) {
 
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
-
-
     var onSuccess = function() {
-      /* chrome has a bug where websockets don't support authentication so we
-       disable it. http://code.google.com/p/chromium/issues/detail?id=123862
-       this is safe because the URL has the kernel ID in it, and that's a 128-bit
-       random number, only delivered via the secure channel. */
-      var nginxRules =
-        (ipyVersion1 ? ("location %(base_url)s/kernels/ {" +
-                        "  proxy_pass http://127.0.0.1:%(port)s/kernels;" +
-                        "}" +
-                        "location ~ %(base_url)s/kernels/[0-9a-f-]+/  {") :
-         ("location %(base_url)s/api/kernels/ {" +
-          "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;" +
-          "}" +
-          "location %(base_url)s/api/sessions/ {" +
-          "  proxy_pass http://127.0.0.1:%(port)s/api/sessions;" +
-          "}" +
-          "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/  {")) +
-        "  rewrite ^%(base_url)s/(.*)$ /$1 break; " +
-        "  proxy_pass http://127.0.0.1:%(port)s; " +
-        "  proxy_http_version 1.1; " +
-        "  proxy_set_header Upgrade $http_upgrade; " +
-        "  proxy_set_header Connection \"upgrade\"; " +
-        "  proxy_set_header Origin \"$scheme://$host\"; " +
-        "  proxy_set_header Host $host;" +
-        "}";
       bkHelper.locatePluginService(PLUGIN_NAME, {
           command: COMMAND,
-          nginxRules: nginxRules,
+          nginxRules: ipyVersion1 ? "ipython1" : "ipython2",
           startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
@@ -352,7 +336,17 @@ define(function(require, exports, module) {
   init();
 
   exports.getEvaluatorFactory = function() {
-    return bkHelper.getEvaluatorFactory(shellReadyDeferred.promise);
+    return shellReadyDeferred.promise.then(function(Shell) {
+      return {
+        create: function(settings) {
+          var deferred = bkHelper.newDeferred();
+          new Shell(settings, function(shell) {
+            deferred.resolve(shell);
+          });
+          return deferred.promise;
+        }
+      };
+    });
   };
 
   exports.name = PLUGIN_NAME;

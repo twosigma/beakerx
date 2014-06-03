@@ -21,6 +21,7 @@ import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +42,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String nginxStaticDir;
   private final String nginxServDir;
   private final String nginxExtraRules;
+  private final Map<String, String> nginxPluginRules;
   private final Boolean useKerberos;
   private final Integer portBase;
   private final Integer reservedPortCount;
@@ -73,6 +75,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.nginxServDir = utils.createTempDirectory(this.dotDir, "nginx");
     this.nginxStaticDir = this.installDir + "/src/main/web/static";
     this.nginxExtraRules = "";
+    this.nginxPluginRules = new HashMap<>();
 
     String configDir = this.dotDir + "/config";
     utils.ensureDirectoryExists(configDir);
@@ -141,6 +144,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getNginxExtraRules() {
     return this.nginxExtraRules;
+  }
+
+  @Override
+  public Map<String, String> getNginxPluginRules() {
+    return this.nginxPluginRules;
   }
 
   @Override

@@ -24,6 +24,7 @@ import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  * DefaultBeakerConfig
@@ -46,6 +47,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Boolean useKerberos;
   private final Boolean publicServer;
   private final Boolean noPasswordAllowed;
+  private final String authCookie;
   private final Integer portBase;
   private final Integer reservedPortCount;
   private final String configFileUrl;
@@ -109,6 +111,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
     this.publicServer = pref.getPublicServer();
     this.noPasswordAllowed = pref.getNoPasswordAllowed();
+    this.authCookie = RandomStringUtils.random(40, true, true);
   }
 
   @Override

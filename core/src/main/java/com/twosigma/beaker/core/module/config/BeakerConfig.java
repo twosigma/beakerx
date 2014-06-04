@@ -79,6 +79,11 @@ public interface BeakerConfig {
    */
   public Boolean getNoPasswordAllowed();
   /**
+   * Auth cookie
+   * @return
+   */
+  public String getAuthCookie();
+  /**
    * gets the port base
    * @return
    */

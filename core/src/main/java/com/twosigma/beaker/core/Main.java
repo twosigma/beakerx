@@ -184,10 +184,10 @@ public class Main {
     final String localhostname = "127.0.0.1";//InetAddress.getLocalHost().getHostName();
 
     if (useHttps) {
-      initUrl = "https://" + localhostname + ":" + portBase + "/beaker/";
+      initUrl = "https://" + localhostname + ":" + portBase + "/";
     } else {
       initUrl = "http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
-              + localhostname + ":" + (portBase + CLEAR_PORT_OFFSET) + "/beaker/";
+              + localhostname + ":" + (portBase + CLEAR_PORT_OFFSET) + "/";
     }
     return initUrl;
   }

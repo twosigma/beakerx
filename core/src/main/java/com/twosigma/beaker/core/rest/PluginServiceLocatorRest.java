@@ -531,6 +531,8 @@ public class PluginServiceLocatorRest {
       Files.createDirectory(htmlDir);
       Files.copy(Paths.get(this.nginxStaticDir + "/50x.html"),
                  Paths.get(htmlDir.toString() + "/50x.html"));
+      Files.copy(Paths.get(this.nginxStaticDir + "/login.html"),
+                 Paths.get(htmlDir.toString() + "/login.html"));
       Files.copy(Paths.get(this.nginxStaticDir + "/present.html"),
                  Paths.get(htmlDir.toString() + "/present.html"));
       //Files.copy(Paths.get(this.nginxStaticDir + "/favicon.ico"),

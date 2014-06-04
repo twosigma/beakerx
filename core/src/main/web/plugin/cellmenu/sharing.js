@@ -20,23 +20,9 @@
 define(function(require, exports, module) {
   "use strict";
   var publishToWeb = function(scope) {
-    var ev = scope.getEvaluator();
-    var display = undefined;
-    if (scope.cellmodel.output && scope.cellmodel.output.layoutToDisplay) {
-      display = scope.cellmodel.output.layoutToDisplay.normal;
-    }
-    var cellData = {
-      cellModel: scope.cellmodel,
-      viewModel: {
-        cm: {
-          background: ev.background ? ev.background : "white",
-          mode: ev.cmMode
-        },
-        display: display
-      }
-    };
+
     var future = bkHelper.httpPost("../beaker/rest/publish/github",
-                                   {type: "cell", json: angular.toJson(cellData)})
+                                   {type: "notebook", json: angular.toJson(scope.getShareData())})
       .then(function (reply) {
         window.open(reply.data);
       });
@@ -51,6 +37,6 @@ define(function(require, exports, module) {
         }
       }];
   };
-  exports.cellType = "codeCell";
+  exports.cellType = ["notebook", "section", "code"];
   exports.plugin = plugin;
 });

@@ -37,6 +37,13 @@ define(function(require, exports, module) {
     }
   };
   var Html0 = function(settings) {
+    if (!settings.view) {
+      settings.view = {};
+    }
+    if (!settings.view.cm) {
+      settings.view.cm = {};
+    }
+    settings.view.cm.mode = Html.cmMode;
     this.settings = settings;
   };
   Html0.prototype = Html;

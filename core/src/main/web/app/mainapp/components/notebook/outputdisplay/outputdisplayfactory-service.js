@@ -64,15 +64,11 @@
         template: "<div></div>",
         controller: function($scope, bkCellMenuPluginManager) {
           $scope.getShareMenuPlugin = function() {
-            // the following cellType needs to match
-            //plugin.cellType = "outputDisplayHtml"; in dynamically loaded outputDisplay_bkTableDisplay.js
-            var cellType = "outputDisplayHtml";
-            return bkCellMenuPluginManager.getPlugin(cellType);
+            return bkCellMenuPluginManager.getPlugin("bko-html");
           };
-          $scope.$watch("getShareMenuPlugin()", function(getShareMenu) {
-            if (getShareMenu && $scope.model.resetShareMenuItems) {
-              $scope.model.resetShareMenuItems(getShareMenu($scope));
-            }
+          $scope.$watch("getShareMenuPlugin()", function() {
+            var newItems = bkCellMenuPluginManager.getMenuItems("bko-html", $scope);
+            $scope.model.resetShareMenuItems(newItems);
           });
         },
         link: function(scope, element, attrs) {

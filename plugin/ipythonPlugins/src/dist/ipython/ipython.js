@@ -275,16 +275,6 @@ define(function(require, exports, module) {
         serviceBase = ret;
         var IPythonShell = function(settings, doneCB) {
           var self = this;
-
-          if (!settings.view) {
-            settings.view = {};
-          }
-          if (!settings.view.cm) {
-            settings.view.cm = {};
-          }
-          settings.view.cm.mode = IPythonProto.cmMode;
-          settings.view.cm.background = IPythonProto.background;
-
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
 

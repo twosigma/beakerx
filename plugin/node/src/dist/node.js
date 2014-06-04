@@ -115,16 +115,6 @@ define(function(require, exports, module) {
             serviceBase = ret;
             var NodeShell = function (settings, doneCB) {
                 var self = this;
-
-              if (!settings.view) {
-                settings.view = {};
-              }
-              if (!settings.view.cm) {
-                settings.view.cm = {};
-              }
-              settings.view.cm.mode = nodeProto.cmMode;
-              settings.view.cm.background = nodeProto.background;
-
                 var setShellIdCB = function (id) {
                     if (id !== settings.shellID) {
                         console.log("A new Node shell was created.");

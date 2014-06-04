@@ -167,16 +167,6 @@ define(function(require, exports, module) {
       cometdUtil.init();
       var GroovyShell = function(settings, doneCB) {
         var self = this;
-
-        if (!settings.view) {
-          settings.view = {};
-        }
-        if (!settings.view.cm) {
-          settings.view.cm = {};
-        }
-        settings.view.cm.mode = Groovy.cmMode;
-        settings.view.cm.background = Groovy.background;
-
         var setShellIdCB = function(id) {
           if (id !== settings.shellID) {
             // console.log("A new Groovy shell was created.");

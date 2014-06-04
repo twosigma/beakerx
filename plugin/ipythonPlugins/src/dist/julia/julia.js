@@ -275,16 +275,6 @@ define(function(require, exports, module) {
         serviceBase = ret;
         var JuliaShell = function(settings, doneCB) {
           var self = this;
-
-          if (!settings.view) {
-            settings.view = {};
-          }
-          if (!settings.view.cm) {
-            settings.view.cm = {};
-          }
-          settings.view.cm.mode = JuliaProto.cmMode;
-          settings.view.cm.background = JuliaProto.background;
-
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
 

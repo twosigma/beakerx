@@ -47,11 +47,12 @@ public class LoginRest {
   {
     int port = config.getPortBase() + 1;
     String url = "http://127.0.0.1:" + port; // XXX should get this config not the port
-    String cookie = "dingdong"; // get this from config too, should be generated randomly at startup, included into nginx.conf
+    String cookie = config.getAuthCookie();
     if (password != null && password.equals("magic")) {
-      return Response.seeOther(URI.create(url + "/beaker"))
+      return Response.seeOther(URI.create(url + "/beaker/"))
         // XXX cookie should be secure
-        .cookie(new NewCookie("BeakerAuth", cookie)).build();
+        .cookie(new NewCookie("BeakerAuth", cookie, "/", null, null,
+                              NewCookie.DEFAULT_MAX_AGE, false)).build(); 
     }
     // bad password, try again
     return Response.seeOther(URI.create(url + "/login/login.html")).build();

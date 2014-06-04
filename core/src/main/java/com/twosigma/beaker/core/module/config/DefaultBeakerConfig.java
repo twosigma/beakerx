@@ -219,4 +219,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
     return this.pluginEnvps;
   }
 
+  @Override
+  public String getAuthCookie() {
+    return this.authCookie;
+  }
 }

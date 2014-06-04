@@ -119,6 +119,7 @@ public class PluginServiceLocatorRest {
   private final Integer corePort;
   private final Integer restartPort;
   private final Integer reservedPortCount;
+  private final String authCookie;
   private final Map<String, String> pluginLocations;
   private final Map<String, List<String>> pluginArgs;
   private final Map<String, String[]> pluginEnvps;
@@ -151,6 +152,7 @@ public class PluginServiceLocatorRest {
     this.corePort = this.portBase + 2;
     this.restartPort = this.portBase + 3;
     this.reservedPortCount = bkConfig.getReservedPortCount();
+    this.authCookie = bkConfig.getAuthCookie();
     this.pluginLocations = bkConfig.getPluginLocations();
     this.pluginEnvps = bkConfig.getPluginEnvps();
     this.pluginArgs = new HashMap<>();
@@ -571,6 +573,7 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     nginxConfig = nginxConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
     nginxConfig = nginxConfig.replace("%(listen_on)s", this.publicServer ? "*" : "127.0.0.1");
+    nginxConfig = nginxConfig.replace("%(auth_cookie)s", this.authCookie);
     nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);

@@ -27,42 +27,67 @@ body {
 }
 
 .bkcell {
-    padding:        20px;
     margin-bottom:  10px;
 }
 
+.bkcell.code-cell-area, .text-cell {
+    padding: 20px;
+    border: solid 1px #CCC;
+}
+
 .bkcell bk-code-cell-input-menu .dropdown {
+    float:          left;
     z-index:        99;
     position:       relative;
     padding-bottom: 20px;
+}
+
+.code-cell-hidden {
+    padding-top: 20px;
+}
+
+.toggle-menu {
+    top:        20px;
+    right:      20px;
+    color:      transparent;
+    cursor:     pointer;
+    height:     24px;
+    padding:    0 20px;
+    position:   absolute;
+    background: url(/beaker/app/images/menu-dots-dark.png) no-repeat center;
+}
+
+.toggle-menu:hover {
+    background-color: #F5F5F5;
+}
+
+bk-section-cell, bk-text-cell {
+    padding: 20px;
 }
 
 .bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
     margin-top: -20px;
 }
 
-bk-code-cell .evaluator{
-    border: solid 1px #CCC;
+bk-cell > .bkcell {
+    position:   relative;
 }
 
 bk-code-cell .code-cell-output {
+    margin:     20px -20px 0;
+    padding:    0 20px;
     border-top: solid 1px #CCC;
-}
-
-bk-code-cell .bkcell.cell-bracket-selected {
-    border-right: 0;
-    box-shadow: none;
-}
-
-bk-code-cell-output .bkcell {
-    padding: 0px 20px;
 }
 
 ul.cell-output-labels {
     list-style: none;
+    margin: 0;
 }
-.output_subarea pre {
+
+bk-output-display pre {
     border:     none;
+    margin:     0;
+    padding:    0;
     background: transparent;
 }
 
@@ -94,6 +119,10 @@ ul.cell-output-labels {
     text-decoration: none;
 }
 
+.bkcell .CodeMirror {
+    clear: both;
+}
+
 .CodeMirror-linenumber {
     text-align: left;
 }
@@ -101,19 +130,6 @@ ul.cell-output-labels {
 .CodeMirror-gutters {
     border:             none;
     background-color:   transparent;
-}
-
-.cell-bracket-initialization {
-    border-right: 2px solid #00FF00;
-}
-
-.cell-bracket-selected {
-    border-right: 2px solid #009AA6;
-    box-shadow: 5px 0 10px -5px #009AA6;
-}
-
-.initcell {
-    border-right: 2px solid #009AA6;
 }
 
 .bk-hr {

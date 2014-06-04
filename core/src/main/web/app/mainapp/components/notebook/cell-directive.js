@@ -33,6 +33,7 @@
     return {
       restrict: 'E',
       template: '<div class="bkcell">' +
+          '<div ng-click="toggleCellMenu($event)" class="toggle-menu"></div>'+
           '<div ng-if="isDebugging()">' +
           '[Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}} ' +
           '<a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>' +
@@ -48,11 +49,12 @@
       scope: {
         cellmodel: "="
       },
-      controller: function($scope) {
+      controller: function($scope, $element) {
         var getBkBaseViewModel = function() {
           return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel();
         };
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
+
         $scope.cellview = {
           showDebugInfo: false,
           menu: {
@@ -71,6 +73,7 @@
             }
           }
         };
+
         $scope.newCellMenuConfig = {
           isShow: function() {
             if (bkSessionManager.isNotebookLocked()) {
@@ -146,26 +149,20 @@
           var type = $scope.cellmodel.type;
           return type + "-cell.html";
         };
-      },
-      link: function(scope, element, attrs) {
-        var div = element.find(".bkcell").first();
-        div.click(function(event) {
-          //click in the border or padding should trigger menu
-          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
-            var menu = div.find('.bkcellmenu').last();
-            menu.css("top", event.clientY);
-            menu.css("left", event.clientX - 150);
-            menu.find('.dropdown-toggle').first().dropdown('toggle');
-            event.stopPropagation();
-          }
-        });
-        div.mousemove(function(event) {
-          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
-            div.css('cursor', 'pointer');
-          } else {
-            div.css('cursor', 'default');
-          }
-        });
+
+        $scope.toggleCellMenu = function(event) {
+          $element
+          .find(".bkcell").first()
+          .find('.bkcellmenu').last()
+           .css({
+            top: event.clientY + "px",
+            left: event.clientX - 250 + "px"
+          })
+          .find('.dropdown-toggle').first()
+          .dropdown('toggle');
+
+          event.stopPropagation()
+        };
       }
     };
   });

@@ -26,6 +26,14 @@
   module.factory('bkCellMenuPluginManager', function(bkUtils) {
     // loaded plugins
     var _cellMenuPlugins = {};
+
+    var addPlugin = function(cellType, itemGetter) {
+      if (!_cellMenuPlugins[cellType]) {
+        _cellMenuPlugins[cellType] = [];
+      }
+      _cellMenuPlugins[cellType].push(itemGetter);
+    };
+
     return {
       reset: function() {
         var self = this;
@@ -36,15 +44,29 @@
       },
       loadPlugin: function(url) {
         return bkUtils.loadModule(url).then(function(ex) {
-          _cellMenuPlugins[ex.cellType] = ex.plugin; // XXX should append not replace?
+          if (_.isArray(ex.cellType)) {
+            _(ex.cellType).each(function(cType) {
+              addPlugin(cType, ex.plugin);
+            });
+          } else {
+            addPlugin(ex.cellType, ex.plugin);
+          }
           return ex.plugin;
         });
       },
       getPlugin: function(cellType) {
         return _cellMenuPlugins[cellType];
       },
-      getMenu: function(cellType, model) {
-        return _cellMenuPlugins[cellType](model);
+      getMenuItems: function(cellType, scope) {
+        var menuItemGetters = _cellMenuPlugins[cellType];
+        var newItems = [];
+        _(menuItemGetters).each(function(getter) {
+          var items = getter(scope);
+          _(items).each(function(it) {
+            newItems.push(it);
+          });
+        });
+        return newItems;
       }
     };
   });

@@ -20,19 +20,16 @@
 (function() {
   'use strict';
   beaker.bkoDirective('Table', ["bkCellMenuPluginManager", function(bkCellMenuPluginManager) {
+    var CELL_TYPE = "bko-tabledisplay";
     return {
       template: '<div class="slickgrid" style="height:500px;"></div>',
       controller: function($scope) {
         $scope.getShareMenuPlugin = function() {
-          // the following cellType needs to match
-          //plugin.cellType = "bkTableDisplay"; in dynamically loaded outputDisplay_bkTableDisplay.js
-          var cellType = "bkTableDisplay";
-          return bkCellMenuPluginManager.getPlugin(cellType);
+          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
-        $scope.$watch("getShareMenuPlugin()", function(getShareMenu) {
-          if (getShareMenu && $scope.model.resetShareMenuItems) {
-            $scope.model.resetShareMenuItems(getShareMenu($scope));
-          }
+        $scope.$watch("getShareMenuPlugin()", function() {
+          var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
+          $scope.model.resetShareMenuItems(newItems);
         });
 
         $scope.getColumns = function() {

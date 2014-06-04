@@ -37,6 +37,14 @@ define(function(require, exports, module) {
     }
   };
   var Latex0 = function(settings) {
+    if (!settings.view) {
+      settings.view = {};
+    }
+    if (!settings.view.cm) {
+      settings.view.cm = {};
+    }
+    settings.view.cm.mode = Latex.cmMode;
+    settings.view.cm.background = Latex.background;
     this.settings = settings;
   };
   Latex0.prototype = Latex;

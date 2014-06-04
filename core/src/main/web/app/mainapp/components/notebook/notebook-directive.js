@@ -34,6 +34,7 @@
       bkSessionManager,
       bkCoreManager,
       bkOutputLog) {
+    var CELL_TYPE = "notebook";
     return {
       restrict: 'E',
       templateUrl: "./app/mainapp/components/notebook/notebook.html",
@@ -204,25 +205,17 @@
 
 
         $scope.getShareMenuPlugin = function () {
-          // the following cellType needs to match
-          //plugin.cellType = "bkNotebook"; in dynamically loaded cellmenu/bkNotebook.js
-          var cellType = "bkNotebook";
-          return bkCellMenuPluginManager.getPlugin(cellType);
+          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
         $scope.getShareData = function () {
-          return {
-            notebookModel: bkSessionManager.getRawNotebookModel(),
-            evViewModel: bkEvaluatorManager.getViewModel()
-          };
+          return bkSessionManager.getRawNotebookModel();
         };
         var shareMenu = {
           name: "Share",
           items: []
         };
-        $scope.$watch("getShareMenuPlugin()", function (getShareMenu) {
-          if (getShareMenu) {
-            shareMenu.items = getShareMenu($scope);
-          }
+        $scope.$watch("getShareMenuPlugin()", function() {
+          shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
         });
         $scope.isInitializationCell = function () {
           return bkSessionManager.isRootCellInitialization();

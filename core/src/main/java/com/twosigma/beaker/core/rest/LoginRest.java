@@ -26,6 +26,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * Allow users to login by setting a cookie.
@@ -39,6 +40,10 @@ public class LoginRest {
   private LoginRest(BeakerConfig bkConfig) {
     this.config = bkConfig;
   }
+
+  private String hash(String password) {
+    return DigestUtils.shaHex(password + config.getPasswordSalt());
+  }
   
   @POST
   @Path("login")
@@ -48,7 +53,7 @@ public class LoginRest {
     int port = config.getPortBase() + 1;
     String url = "http://127.0.0.1:" + port; // XXX should get this config not the port
     String cookie = config.getAuthCookie();
-    if (password != null && password.equals("magic")) {
+    if (password != null && hash(password).equals(config.getPasswordHash())) {
       return Response.seeOther(URI.create(url + "/beaker/"))
         // XXX cookie should be secure
         .cookie(new NewCookie("BeakerAuth", cookie, "/", null, null,

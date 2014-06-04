@@ -24,6 +24,7 @@ import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 /**
@@ -48,6 +49,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Boolean publicServer;
   private final Boolean noPasswordAllowed;
   private final String authCookie;
+  private final String passwordHash;
+  private final String password;
   private final Integer portBase;
   private final Integer reservedPortCount;
   private final String configFileUrl;
@@ -58,6 +61,9 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Map<String, String> pluginOptions;
   private final Map<String, String[]> pluginEnvps;
 
+  private String hash(String password) {
+    return DigestUtils.shaHex(password + getPasswordSalt());
+  }
 
   @Inject
   public DefaultBeakerConfig(BeakerConfigPref pref, GeneralUtils utils)
@@ -112,6 +118,10 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.publicServer = pref.getPublicServer();
     this.noPasswordAllowed = pref.getNoPasswordAllowed();
     this.authCookie = RandomStringUtils.random(40, true, true);
+    // XXX user might provide their own hash in beaker.config.json
+    String password = RandomStringUtils.random(15, true, true);
+    this.passwordHash = hash(password);
+    this.password = password;
   }
 
   @Override
@@ -222,5 +232,20 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getAuthCookie() {
     return this.authCookie;
+  }
+
+  @Override
+  public String getPasswordSalt() {
+    return ".beaker.N0tebook";
+  }
+
+  @Override
+  public String getPasswordHash() {
+    return this.passwordHash;
+  }
+
+  @Override
+  public String getPassword() {
+    return this.password;
   }
 }

@@ -22,6 +22,7 @@ import com.twosigma.beaker.core.module.SerializerModule;
 import com.twosigma.beaker.core.module.URLConfigModule;
 import com.twosigma.beaker.core.module.WebServerModule;
 import com.twosigma.beaker.core.module.config.DefaultBeakerConfigModule;
+import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
@@ -163,6 +164,8 @@ public class Main {
     PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
     processStarter.start();
 
+    BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
+
     Server server = injector.getInstance(Server.class);
     server.start();
 
@@ -170,11 +173,12 @@ public class Main {
     final String initUrl = getInitUrl(useHttps, portBase, useKerberos);
     if (openBrowser) {
       injector.getInstance(GeneralUtils.class).openUrl(initUrl);
-      System.out.println("\nConnecting to " + initUrl + "\n");
+      System.out.println("\nConnecting to " + initUrl);
     } else {
-      System.out.println("\nConnect to " + initUrl + "\n");
+      System.out.println("\nConnect to " + initUrl);
     }
-
+    System.out.println("Submit this password: " + bkConfig.getPassword());
+    System.out.println("");
   }
 
   private static String getInitUrl(Boolean useHttps, Integer portBase, Boolean useKerberos) throws UnknownHostException {

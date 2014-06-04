@@ -84,6 +84,21 @@ public interface BeakerConfig {
    */
   public String getAuthCookie();
   /**
+   * Password Hash
+   * @return
+   */
+  public String getPasswordHash();
+  /**
+   * Password
+   * @return
+   */
+  public String getPassword();
+  /**
+   * Password Salt
+   * @return
+   */
+  public String getPasswordSalt();
+  /**
    * gets the port base
    * @return
    */

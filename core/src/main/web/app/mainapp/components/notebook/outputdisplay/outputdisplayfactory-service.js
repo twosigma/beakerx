@@ -127,6 +127,7 @@
       "BeakerDisplay": ["BeakerDisplay", "Text"],
       "Plot": ["Chart", "Text"],
       "TimePlot": ["Chart", "Text"],
+      "LinePlot": ["LinePlot"], 
       "HiddenOutputCell": ["Hidden"],
       "Warning": ["Warning"],
       "BeakerOutputContainerDisplay": ["OutputContainer", "Text"],

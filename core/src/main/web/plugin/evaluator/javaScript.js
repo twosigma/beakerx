@@ -149,7 +149,6 @@ define(function(require, exports, module) {
     return getCompletions(token, context, keywords, options);
   }
 
-
   var JavaScript_0 = {
     pluginName: PLUGIN_NAME,
     cmMode: "javascript",
@@ -157,7 +156,22 @@ define(function(require, exports, module) {
     evaluate: function(code, modelOutput) {
       return bkHelper.fcall(function() {
         try {
-          modelOutput.result = "" + eval(code);
+          //modelOutput.result = "" + eval(code);
+          modelOutput.result = {
+              "type": "LinePlot", // TimePlot
+              "plotTitle": "Dummy Line Plot",
+              "data": testdata // automated testdata
+              /*
+              [
+                {
+                  "legend_title": "DummyLine",
+                  "x": [1200000000000, 1300000000000, 1400000000000, 1500000000000],
+                  "y": [100,200,350, 444],
+                  "color": "#FFC050"
+                }
+              ]
+              */
+           };
         } catch (err) {
           modelOutput.result = {
             type: "BeakerDisplay",

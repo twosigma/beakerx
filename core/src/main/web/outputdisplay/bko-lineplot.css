@@ -1,0 +1,76 @@
+.renderdiv {
+    background-color: #FEFEFE;
+    border: 1px solid #000000;
+    -webkit-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
+    -moz-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
+    width: 1200px;
+    height: 350px;
+}
+
+.lineplot-line {
+    stroke-width: 2;
+    opacity: 0.75;
+    pointer-events: none;
+}
+
+.lineplot-coord {
+    stroke: #111111;
+    stroke-dasharray: 1, 1;
+    stroke-width: 1;
+    opacity: .5;
+    pointer-events: none;
+}
+
+.lineplot-coord-base {
+    stroke: #333333;
+    stroke-width: 2;
+    opacity: .75;
+    pointer-events: none;
+}
+
+.lineplot-label {
+    font-family: verdana, helvetica, arial, sans-serif;
+    font-size: 0.75em;
+}
+
+.lineplot-locatebox {
+    fill: #003366;
+    opacity: 0.2;
+}
+
+.lineplot-truncatebox { 
+    fill: #FEFEFE;
+}
+
+.lineplot-title {
+    text-align: center;
+    width: 1200px;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.lineplot-legendbox {
+    
+}
+
+.lineplot-legendcontainer{
+    stroke: gray;
+    fill: #FEFEFE;
+}
+
+.lineplot-dot {
+    fill: white;
+    stroke-width: 2;
+}
+.lineplot-tooltip{
+    font-size: 0.9em;
+    font-weight: bold;
+    position: absolute;
+    width: auto;
+    height: auto;
+    border: 2px solid;
+    background-color: white;
+    -webkit-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
+    -moz-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
+    padding: 1em;
+}

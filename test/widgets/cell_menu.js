@@ -15,23 +15,13 @@
  */
 
 module.exports = function() {
-  this.When(/^I click the '(\d+)' cell menu$/, function(index) {
-    return new this.Widgets.Cell({
-      root: 'bk-section-cell bk-cell:nth-child('+index+')'
-    }).toggleMenu();
-  });
-
-  this.Then(/^I should see a open cell menu$/, function() {
-    return new this.Widgets.CellMenu().find();
-  });
-
-  this.When(/^I toggle the cells input display$/, function() {
-    return new this.Widgets.CellMenu().toggleInputCell();
-  });
-
-  this.Then(/^I should not see cell '(\d+)' input$/, function(index) {
-    return new this.Widgets.CodeCell({
-      root: 'bk-section-cell bk-cell:nth-child('+index+')'
-    }).findInput().should.eventually.eql(0);
-  });
+  this.Widgets.CellMenu = this.Widget.extend({
+    root: '.dropdown.bkcellmenu.open',
+    toggleInputCell: function() {
+      return this.driver.executeScript("return $('"+this.root+" li:contains(\"Show input cell\")')[0]")
+      .then(function(elm) {
+        return elm.click();
+      });
+    }
+  })
 }

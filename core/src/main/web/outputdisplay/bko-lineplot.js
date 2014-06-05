@@ -45,6 +45,7 @@
                 handles: "e, s, se",
                 resize: function(event, ui){
                     scope.width = ui.size.width; scope.height = ui.size.height;
+                    scope.calcMapping();
                     scope.update();
                   }
               });
@@ -109,22 +110,20 @@
                 //console.log(xs,xt,ys,yt);
                 scope.xCoords = [];
                 scope.yCoords = [];
-                for(var i=xs; i<=xt; i+=xintv) {
-                  scope.xCoords.push(i);
-                }
-                for(var i=ys; i<=yt; i+=yintv) {
-                  scope.yCoords.push(i.toFixed(deci));
-                }
+                for(var i=xs; i<=xt; i+=xintv)  scope.xCoords.push(i);
+                for(var i=ys; i<=yt; i+=yintv)  scope.yCoords.push(i.toFixed(deci));
                 scope.xintv = xintv;
                 scope.yintv = yintv;
               }
-              
               scope.filterData = function(){
                 var focus = scope.focus, data = scope.data, numLines = data.length;
                 scope.fdata = [];
                 var fdata = scope.fdata;
                 for(var i=0; i<numLines; i++){
                   var points = data[i].points;
+                  //fdata[i] = {"leftIndex":0, "rightIndex":points.length-1};
+                  //continue;
+                  
                   var l = lineplotUtils.upper_bound(points, "x", focus.xl);
                   var r = lineplotUtils.upper_bound(points, "x", focus.xr)+1; // truncate out-of-sight segment on x-axis
                   l = Math.max(l, 0);
@@ -134,6 +133,8 @@
               }
               scope.renderLines = function(){
                 var data = scope.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
+                var mapX = scope.data2scrX, mapY = scope.data2scrY;
+                
                 for(var i=0; i<numLines; i++){
                   var points = data[i].points;
                   var prevDrawn;
@@ -142,28 +143,33 @@
                     if (data[i].interpolation==="none") {
                       p2.y = p1.y;
                     }
-                    var line = lineplotUtils.data2scrLine(scope, p1, p2);
+                    //var line = lineplotUtils.data2scrLine(scope, p1, p2);
+                    var line = [mapX(p1.x), mapY(p1.y), mapX(p2.x), mapY(p2.y)];
+                    /*
                     if (line==null) {
                       prevDrawn = 0; continue;
                     }
-                    var y1 = line.p1.y, y2 = line.p2.y;
+                    */
+                    var y1 = line[1], y2 = line[3];
                     if (Math.min(y1,y2)>=scope.jqsvg.height()-scope.layout.bottomTextHeight-1E-6) {
                       prevDrawn = 0; continue;
                     }
-                    var seg = lineplotUtils.generateLine(line, points[j], data[i]);
+                    var seg = lineplotUtils.generateLine(line, "line_"+points[j].uniqid, data[i]);
                     scope.rpipeLines.push(seg);
                     
                     if (data[i].interpolation==="none" && prevDrawn==0 && j>0) {
                       var p3 = _.omit(points[j-1]);
                       p3.x = p1.x;
-                      var line = lineplotUtils.data2scrLine(scope, p3, p1);
-                      var seg = lineplotUtils.generateLine(line, points[j-1], data[i]);
+                      //var line = lineplotUtils.data2scrLine(scope, p3, p1);
+                      var line = [mapX(p1.x), mapY(p1.y), mapX(p3.x), mapY(p3.y)];
+                      var seg = lineplotUtils.generateLine(line, "line_v_"+points[j-1].uniqid, data[i]);
                       scope.rpipeLines.push(seg);
                     }
                     if (data[i].interpolation==="none") {
                       var p3 = _.omit(points[j+1]);
-                      var line = lineplotUtils.data2scrLine(scope, p2, p3);
-                      var seg = lineplotUtils.generateLine(line, points[j], data[i]);
+                      //var line = lineplotUtils.data2scrLine(scope, p2, p3);
+                      var line = [mapX(p2.x), mapY(p2.y), mapX(p3.x), mapY(p3.y)];
+                      var seg = lineplotUtils.generateLine(line, "line_v_"+points[j].uniqid, data[i]);
                       scope.rpipeLines.push(seg);
                     }
                     prevDrawn = 1;
@@ -172,11 +178,13 @@
               }
               scope.renderPoints = function(){
                 var data = scope.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
+                var mapX = scope.data2scrX, mapY = scope.data2scrY;
                 for (var i=0; i<numLines; i++) {
                   var points = data[i].points;
                   for(var j=fdata[i].leftIndex; j<fdata[i].rightIndex; j++){
-                    var p = lineplotUtils.data2scrPoint(scope, points[j]);
-                    if (p==null) continue;
+                    //var p = lineplotUtils.data2scrPoint(scope, points[j]);
+                    var p = {"x": mapX(points[j].x), "y": mapY(points[j].y)};
+                    if (lineplotUtils.outsideScr(scope, p)) continue;
                     var id = "dot_"+points[j].uniqid;
                     var value = points[j];
                     var txt = "";
@@ -238,8 +246,10 @@
               }
               scope.renderTips = function(){
                 _.each(scope.tips, function(d){
-                  var p = lineplotUtils.data2scrPoint(scope, d.point);
-                  if (p==null) return;
+                  //var p = lineplotUtils.data2scrPoint(scope, d.point);
+                  var p = {"x": scope.data2scrX(d.point.x), "y": scope.data2scrY(d.point.y)};
+                  if (lineplotUtils.outsideScr(scope, p)) return;
+                  //if (p==null) return;
                   d.cx = p.x + scope.fonts.tooltipWidth;
                   d.cy = p.y;
                   var tip = scope.tips[d.id];
@@ -264,9 +274,9 @@
                       stop: function(event, ui) {
                         tip.cx = ui.position.left - scope.fonts.tooltipWidth;
                         tip.cy = ui.position.top;
-                        var p = lineplotUtils.scr2dataPoint(scope, {"x":tip.cx, "y":tip.cy } );
-                        tip.point.x = p.x;
-                        tip.point.y = p.y;
+                        //var p = lineplotUtils.scr2dataPoint(scope, {"x":tip.cx, "y":tip.cy } );
+                        tip.point.x = scope.scr2dataX(tip.cx);
+                        tip.point.y = scope.scr2dataY(tip.cy);
                       }
                       
                     });
@@ -275,50 +285,45 @@
                       .css("left", d.cx+"px")
                       .css("top", d.cy+"px");
                   }
-                    /*
-                  }
-                  scope.svg.selectAll("#tip_"+d.id).data([d]).enter().append("text")
-                    .attr("id", "tip_"+d.id)
-                    .attr("class", "lineplot-tooltip")
-                    .attr("x", p.x + scope.fonts.tooltipWidth)
-                    .attr("y", p.y)
-                    .text(d.value);
-                    */
                 })
               }
               scope.renderCoords = function(){
+                var focus = scope.focus;
+                var mapX = scope.data2scrX, mapY = scope.data2scrY;
                 for(var i=0; i<scope.xCoords.length; i++){
                   var x = scope.xCoords[i];
-                  var line = lineplotUtils.data2scrLine(scope, {"x":x, "y":scope.focus.yl}, {"x":x, "y":scope.focus.yr});
+                  //var line = lineplotUtils.data2scrLine(scope, {"x":x, "y":scope.focus.yl}, {"x":x, "y":scope.focus.yr});
                   scope.rpipeLines.push({
                     "id": "coord_x_"+i, "class": "lineplot-coord",
-                    "x1": line.p1.x, "y1": line.p1.y, "x2": line.p2.x, "y2": line.p2.y
+                    "x1": mapX(x), "y1": mapY(focus.yl), "x2": mapX(x), "y2": mapY(focus.yr)
                   })
                 }
                 for(var i=0; i<scope.yCoords.length; i++){
                   var y = scope.yCoords[i];
-                  var line = lineplotUtils.data2scrLine(scope, {"x":scope.focus.xl, "y":y}, {"x":scope.focus.xr, "y":y});
+                  //var line = lineplotUtils.data2scrLine(scope, {"x":scope.focus.xl, "y":y}, {"x":scope.focus.xr, "y":y});
                   scope.rpipeLines.push({
                     "id": "coord_y_"+i, "class": "lineplot-coord",
-                    "x1": line.p1.x, "y1": line.p1.y, "x2": line.p2.x, "y2": line.p2.y
+                    "x1": mapX(focus.xl), "y1": mapY(y), "x2": mapX(focus.xr), "y2": mapY(y)
                   })
                 }
-                var line = lineplotUtils.data2scrLine(scope, {"x":scope.focus.xl, "y":scope.focus.yl}, {"x":scope.focus.xr, "y":scope.focus.yl});
+                //var line = lineplotUtils.data2scrLine(scope, {"x":scope.focus.xl, "y":scope.focus.yl}, {"x":scope.focus.xr, "y":scope.focus.yl});
                 scope.rpipeLines.push({
                     "id": "coord_x_base", "class": "lineplot-coord-base",
-                    "x1": line.p1.x, "y1": line.p1.y, "x2": line.p2.x, "y2": line.p2.y
-                  })
-                var line = lineplotUtils.data2scrLine(scope, {"x":scope.focus.xl, "y":scope.focus.yl}, {"x":scope.focus.xl, "y":scope.focus.yr});
+                    "x1": mapX(focus.xl), "y1": mapY(focus.yl), "x2": mapX(focus.xr), "y2": mapY(focus.yl)
+                  });
+                //var line = lineplotUtils.data2scrLine(scope, {"x":scope.focus.xl, "y":scope.focus.yl}, {"x":scope.focus.xl, "y":scope.focus.yr});
                 scope.rpipeLines.push({
                     "id": "coord_y_base", "class": "lineplot-coord-base",
-                    "x1": line.p1.x, "y1": line.p1.y, "x2": line.p2.x, "y2": line.p2.y
-                  })
+                    "x1": mapX(focus.xl), "y1": mapY(focus.yl), "x2": mapX(focus.xl), "y2": mapY(focus.yr)
+                  });
               }
               
               scope.renderLabels = function(){
+                var mapX = scope.data2scrX, mapY = scope.data2scrY;
                 for(var i=0; i<scope.xCoords.length; i++){
                   var x = scope.xCoords[i];
-                  var p = lineplotUtils.data2scrLabel(scope, {"x":x, "y":scope.focus.yl}, {x:0, y:scope.labelPadding.y});
+                  var p = {"x":mapX(x), "y":mapY(scope.focus.yl)+scope.labelPadding.y};
+                  //var p = lineplotUtils.data2scrLabel(scope, {"x":x, "y":scope.focus.yl}, {x:0, y:scope.labelPadding.y});
                   scope.rpipeTexts.push({
                     "id": "label_x_"+i, "class": "lineplot-label",
                     "text": lineplotUtils.formatDate(scope.xintv, x),
@@ -327,11 +332,12 @@
                 }
                 for(var i=0; i<scope.yCoords.length; i++){
                   var y = scope.yCoords[i];
-                  var p = lineplotUtils.data2scrLabel(scope, {"x":scope.focus.xl, "y":y}, {x:scope.labelPadding.x, y:0});
+                  var p = {"x":mapX(scope.focus.xl)+scope.labelPadding.x, "y":mapY(y)};
+                  //var p = lineplotUtils.data2scrLabel(scope, {"x":scope.focus.xl, "y":y}, {x:scope.labelPadding.x, y:0});
                    scope.rpipeTexts.push({
                     "id": "label_y_"+i, "class": "lineplot-label",
                     "text": y,
-                    "x": p.x, "y": p.y, "text-anchor": "end", "dominant-baseline": "center"
+                    "x": p.x, "y": p.y, "text-anchor": "end", "dominant-baseline": "central"
                   });
                 }
               }
@@ -341,13 +347,13 @@
                 var legendLen = 0;
                 for (var i=0; i<numLines; i++) legendLen = Math.max(legendLen, data[i].legend.length);
                 var boxsz = scope.layout.legendBoxSize;
-                scope.rpipeRects.push({
+                lineplotUtils.replotSingleRect(scope, {
                   "id": "legendcontainer", "class": "lineplot-legendcontainer",
                   "x": scope.jqsvg.width()-legendLen*scope.fonts.labelWidth - margin*2 - boxsz*1.5,
                   "y": 0,
                   "width": legendLen*scope.fonts.labelWidth + margin*2 + boxsz*1.5,
                   "height": scope.fonts.labelHeight*1.2*numLines + margin*2 
-                })
+                });
                 for (var i=0; i<numLines; i++) {
                   scope.rpipeTexts.push({
                     "id": "legend_"+i, "class": "lineplot-label",
@@ -355,28 +361,27 @@
                     "x": scope.jqsvg.width()-legendLen*scope.fonts.labelWidth-margin, "y": margin+scope.fonts.labelHeight*1.2*i,
                     "dominant-baseline": "hanging"
                   });
-                  scope.rpipeRects.push({
+                  lineplotUtils.replotSingleRect(scope, {
                     "id": "legendbox_"+i, "class": "lineplot-legendbox",
                     "x": scope.jqsvg.width()-legendLen*scope.fonts.labelWidth-margin-boxsz*1.5, "y": margin+scope.fonts.labelHeight*1.2*i,
                     "width": boxsz, "height": boxsz, "fill": data[i].color
                   });
                 }
               }
-              
-             
-              
+              scope.renderCoverBox = function(){
+                lineplotUtils.replotSingleRect(scope, {
+                  "id": "coverboxX", "class": "lineplot-coverbox",
+                  "x":0, "y":0, "width":scope.layout.leftTextWidth, "height":scope.jqsvg.height()
+                });
+                lineplotUtils.replotSingleRect(scope, {
+                  "id": "coverboxY", "class": "lineplot-coverbox",
+                  "x":0, "y":scope.jqsvg.height()-scope.layout.bottomTextHeight, "width":scope.jqsvg.width(), "height":scope.layout.bottomTextHeight
+                });
+              }
               scope.renderLocateBox = function(){
                 scope.svg.selectAll("#locatebox").remove();
                 if (scope.locateBox!=null) {
                   var box = scope.locateBox;
-                  
-                  /*
-                  // cannot use rpipeRects because batch rendering only accepts enter() situation
-                  scope.rpipeRects.push({
-                    "id": "locatebox", "class": "lineplot-locatebox",
-                    "x": box.x, "y": box.y, "width": box.w, "height": box.h
-                  })
-                  */
                   scope.svg.selectAll("#locatebox").data([{}]).enter().append("rect")
                     .attr("id", "locatebox")
                     .attr("class", "lineplot-locatebox")
@@ -443,19 +448,22 @@
                     var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
                     if (my <= scope.jqsvg.height()-scope.layout.bottomTextHeight) {
                       // scale x
-                      var ym = focus.yl + lineplotUtils.scr2dataPercent(scope, {"x":0, "y":my}).y*focus.yspan;
+                      //var ym = focus.yl + lineplotUtils.scr2dataPercent(scope, {"x":0, "y":my}).y*focus.yspan;
+                      var ym = focus.yl + scope.scr2dataYp(my)*focus.yspan;
                       focus.yl = ym - ds*(ym-focus.yl);
                       focus.yr = ym + ds*(focus.yr-ym);
                       focus.yspan = focus.yr-focus.yl;
                     }
                     if (mx >= scope.layout.leftTextWidth) {
                       // scale y
-                      var xm = focus.xl + lineplotUtils.scr2dataPercent(scope, {"x":mx, "y":0}).x*focus.xspan;
+                      //var xm = focus.xl + lineplotUtils.scr2dataPercent(scope, {"x":mx, "y":0}).x*focus.xspan;
+                      var xm = focus.xl + scope.scr2dataXp(mx)*focus.xspan;
                       focus.xl = xm - ds*(xm-focus.xl);
                       focus.xr = xm + ds*(focus.xr-xm);
                       focus.xspan = focus.xr-focus.xl;
                     }
                   }
+                  scope.calcMapping();
                   scope.update();
                 }else if (scope.interactMode==="locate") {
                   // right click zoom
@@ -470,7 +478,7 @@
                 scope.zoomObj.scale(1.0);
                 scope.zoomObj.translate([0,0]);
                 if (scope.interactMode==="locate") {
-                  scope.updateFocus();
+                  scope.locateFocus();
                   scope.locateBox = null;
                   scope.update();
                   scope.interactMode = "zoom";
@@ -488,35 +496,38 @@
                 }else{
                  _.extend(scope.focus, scope.range);
                 }
+                scope.calcMapping();
                 scope.update();
               }
-              scope.updateFocus = function(){
+              scope.locateFocus = function(){
                 var box = scope.locateBox;
                 if (box==null) return;
-                var p1 = lineplotUtils.scr2dataPercent(scope, {"x": box.x, "y": box.y});
-                var p2 = lineplotUtils.scr2dataPercent(scope, {"x": box.x+box.w, "y": box.y+box.h});
+                //var p1 = lineplotUtils.scr2dataPercent(scope, {"x": box.x, "y": box.y});
+                //var p2 = lineplotUtils.scr2dataPercent(scope, {"x": box.x+box.w, "y": box.y+box.h});
                 //console.log(p1, p2);
+                var p1 = {"x": scope.scr2dataXp(box.x      ), "y": scope.scr2dataYp(box.y      )};
+                var p2 = {"x": scope.scr2dataXp(box.x+box.w), "y": scope.scr2dataYp(box.y+box.h)};
                 p1.x = lineplotUtils.fixPercent(p1.x);
                 p1.y = lineplotUtils.fixPercent(p1.y);
                 p2.x = lineplotUtils.fixPercent(p2.x);
                 p2.y = lineplotUtils.fixPercent(p2.y);
-                
                 var focus = scope.focus, ofocus = {};
                 _.extend(ofocus, scope.focus);
                 focus.xl = ofocus.xl + ofocus.xspan * p1.x;
                 focus.xr = ofocus.xl + ofocus.xspan * p2.x;
-                focus.yr = ofocus.yl + ofocus.yspan * (1.0-p1.y);
-                focus.yl = ofocus.yl + ofocus.yspan * (1.0-p2.y); // y should be reversed
+                focus.yl = ofocus.yl + ofocus.yspan * p2.y;
+                focus.yr = ofocus.yl + ofocus.yspan * p1.y; 
                 focus.xspan = focus.xr - focus.xl;
                 focus.yspan = focus.yr - focus.yl;
-                //console.log(focus);
+                console.log(focus)
+                scope.calcMapping();
               }
               scope.resetSvg = function(){
                 var svg = d3.select(element[0]).select("#lineplotContainer svg");
-                svg.selectAll("rect").remove();
-                svg.selectAll("line").remove();
-                svg.selectAll("text").remove();
-                svg.selectAll("circle").remove();
+                //svg.selectAll("rect").remove();
+                //svg.selectAll("line").remove();
+                //svg.selectAll("text").remove();
+                //svg.selectAll("circle").remove();
                 scope.svg = svg;
                 //scope.svg = d3.select(element[0]).select("#lineplotContainer").append("svg");
                 scope.jqsvg = element.find("svg");
@@ -556,6 +567,20 @@
                   }
                 }
               }
+              scope.calcMapping = function(){
+                var focus = scope.focus;
+                var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
+                var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+                scope.data2scrX = d3.scale.linear().domain([focus.xl, focus.xr]).range([lMargin,W]);
+                scope.data2scrY = d3.scale.linear().domain([focus.yl, focus.yr]).range([H-bMargin,0]);
+                scope.data2scrXp = d3.scale.linear().domain([focus.xl, focus.xr]).range([0,1]);
+                scope.data2scrYp = d3.scale.linear().domain([focus.yl, focus.yr]).range([1,0]);
+                
+                scope.scr2dataX = d3.scale.linear().domain([lMargin,W]).range([focus.xl, focus.xr]);
+                scope.scr2dataY = d3.scale.linear().domain([0,H-bMargin]).range([focus.yr, focus.yl]);
+                scope.scr2dataXp = d3.scale.linear().domain([lMargin,W]).range([0,1]);
+                scope.scr2dataYp = d3.scale.linear().domain([0,H-bMargin]).range([1,0]);
+              }
               scope.init = function(){
                 scope.resetSvg();
                 scope.zoomObj = d3.behavior.zoom();   // set zoom object
@@ -566,10 +591,11 @@
                 scope.enableZoom();
                 scope.standardizeData();
                 scope.initRange();
+                scope.calcMapping();
                 scope.update();
               }
               
-              scope.update = function(){
+              scope.update = function(first){
                 scope.resetSvg();
                 scope.filterData();
                 scope.calcCoords();
@@ -578,13 +604,14 @@
                 scope.renderPoints();
                 scope.renderLabels();
                 scope.renderLocateBox();
-                scope.renderLegends();
                 lineplotUtils.plotLines(scope);
                 lineplotUtils.plotCircles(scope);
                 scope.renderTips();
                 lineplotUtils.plotRects(scope);
-                lineplotUtils.plotTexts(scope);
-               
+                scope.renderLegends();    // redraw
+                scope.renderCoverBox();   // redraw
+                lineplotUtils.plotTexts(scope); // redraw
+                
                 scope.prepareInteraction();
               }
               

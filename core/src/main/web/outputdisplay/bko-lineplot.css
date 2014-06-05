@@ -1,8 +1,10 @@
 .renderdiv {
     background-color: #FEFEFE;
     border: 1px solid #000000;
+    /*
     -webkit-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
     -moz-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
+    */
     width: 1200px;
     height: 350px;
 }
@@ -57,7 +59,9 @@
     stroke: gray;
     fill: #FEFEFE;
 }
-
+.lineplot-coverbox {
+    fill: #FEFEFE;
+}
 .lineplot-dot {
     fill: white;
     stroke-width: 2;
@@ -70,7 +74,9 @@
     height: auto;
     border: 2px solid;
     background-color: white;
+    /*
     -webkit-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
     -moz-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
+    */
     padding: 1em;
 }

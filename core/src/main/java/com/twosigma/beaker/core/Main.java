@@ -30,9 +30,7 @@ import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -170,30 +168,17 @@ public class Main {
     server.start();
 
     // openBrower and show connection instruction message
-    final String initUrl = getInitUrl(useHttps, portBase, useKerberos);
+    final String initUrl = bkConfig.getBaseURL();
     if (openBrowser) {
       injector.getInstance(GeneralUtils.class).openUrl(initUrl);
       System.out.println("\nConnecting to " + initUrl);
     } else {
       System.out.println("\nConnect to " + initUrl);
     }
-    System.out.println("Submit this password: " + bkConfig.getPassword());
-    System.out.println("");
-  }
-
-  private static String getInitUrl(Boolean useHttps, Integer portBase, Boolean useKerberos) throws UnknownHostException {
-    String initUrl;
-
-    //TODO fix this, temporarily hardcoding
-    final String localhostname = "127.0.0.1";//InetAddress.getLocalHost().getHostName();
-
-    if (useHttps) {
-      initUrl = "https://" + localhostname + ":" + portBase + "/";
-    } else {
-      initUrl = "http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
-              + localhostname + ":" + (portBase + CLEAR_PORT_OFFSET) + "/";
+    if (publicServer) {
+      System.out.println("Submit this password: " + bkConfig.getPassword());
     }
-    return initUrl;
+    System.out.println("");
   }
 
   private static BeakerConfigPref createBeakerCoreConfigPref(

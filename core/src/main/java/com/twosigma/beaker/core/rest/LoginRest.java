@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import java.io.IOException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import javax.ws.rs.Path;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
@@ -49,9 +50,9 @@ public class LoginRest {
   @Path("login")
   @Produces(MediaType.TEXT_HTML)
   public Response login(@FormParam("password") String password)
+                        throws UnknownHostException
   {
-    int port = config.getPortBase() + 1;
-    String url = "http://127.0.0.1:" + port; // XXX should get this config not the port
+    String url = config.getBaseURL();
     String cookie = config.getAuthCookie();
     if (password != null && hash(password).equals(config.getPasswordHash())) {
       return Response.seeOther(URI.create(url + "/beaker/"))

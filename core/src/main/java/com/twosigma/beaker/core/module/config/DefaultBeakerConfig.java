@@ -21,6 +21,7 @@ import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.net.InetAddress;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
@@ -247,5 +248,23 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getPassword() {
     return this.password;
+  }
+
+  @Override
+  public String getBaseURL()
+    throws UnknownHostException
+  {
+    String initUrl;
+    String hostname = this.publicServer ? InetAddress.getLocalHost().getHostName() : "127.0.0.1";
+
+    boolean useHttps = false; // this.publicServer; // XXX should be independently setable
+
+    if (useHttps) {
+      initUrl = "https://" + hostname + ":" + this.portBase + "/";
+    } else {
+      initUrl = "http://" + (this.useKerberos ? (System.getProperty("user.name") + ".") : "")
+              + hostname + ":" + (portBase + 1) + "/";
+    }
+    return initUrl;
   }
 }

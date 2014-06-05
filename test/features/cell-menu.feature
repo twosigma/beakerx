@@ -28,3 +28,7 @@ Scenario: Toggling the a cell menu
   When I click the '1' cell menu
   Then I should see a open cell menu
 
+Scenario: Toggling the a cells input
+  When I click the '1' cell menu
+  And I toggle the cells input display
+  Then I should not see cell '1' input

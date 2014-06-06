@@ -18,7 +18,7 @@ module.exports = function() {
   this.Widgets.Cell = this.Widget.extend({
     root: 'bk-cell',
     toggleMenu: function() {
-      return this.click(".toggle-menu");
+      return this.click(".toggle-menu .cell-dropdown");
     }
   })
 }

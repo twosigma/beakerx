@@ -33,7 +33,12 @@
     return {
       restrict: 'E',
       template: '<div class="bkcell">' +
-          '<div ng-click="toggleCellMenu($event)" class="toggle-menu"></div>'+
+          '<div class="toggle-menu">' +
+          '<div class="cell-menu-item cell-dropdown" ng-click="toggleCellMenu($event)"></div>'+
+          '<div class="cell-menu-item move-cell-down" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && \'disabled\'"></div>'+
+          '<div class="cell-menu-item move-cell-up" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && \'disabled\'"></div>'+
+          '<div class="cell-menu-item delete-cell" ng-click="deleteCell()"></div>'+
+          '</div>'+
           '<div ng-if="isDebugging()">' +
           '[Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}} ' +
           '<a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>' +
@@ -106,36 +111,46 @@
         $scope.getParentId = function() {
           return $scope.$parent.$parent.cellmodel ? $scope.$parent.$parent.cellmodel.id : 'root';
         };
+
+        $scope.deleteCell = function() {
+          notebookCellOp.delete($scope.cellmodel.id);
+        }
+
+        $scope.moveCellUp = function() {
+          notebookCellOp.moveSectionUp($scope.cellmodel.id);
+        }
+
+        $scope.moveCellDown = function() {
+          notebookCellOp.moveSectionDown($scope.cellmodel.id);
+        }
+
+        $scope.moveCellUpDisabled   = function(){return !notebookCellOp.isPossibleToMoveSectionUp($scope.cellmodel.id)};
+        $scope.moveCellDownDisabled = function(){return !notebookCellOp.isPossibleToMoveSectionDown($scope.cellmodel.id)};
+
         $scope.cellview.menu.addItem({
           name: "Delete cell",
-          action: function() {
-            notebookCellOp.delete($scope.cellmodel.id);
-          }
+          action: $scope.deleteCell
         });
+
         $scope.cellview.menu.addItem({
           name: "Move up",
-          disabled: function() {
-            return !notebookCellOp.isPossibleToMoveSectionUp($scope.cellmodel.id);
-          },
-          action: function() {
-            notebookCellOp.moveSectionUp($scope.cellmodel.id);
-          }
+          action: $scope.moveCellUp,
+          disabled: $scope.moveCellUpDisabled
         });
+
         $scope.cellview.menu.addItem({
           name: "Move down",
-          disabled: function() {
-            return !notebookCellOp.isPossibleToMoveSectionDown($scope.cellmodel.id);
-          },
-          action: function() {
-            notebookCellOp.moveSectionDown($scope.cellmodel.id);
-          }
+          action: $scope.moveCellDown,
+          disabled: $scope.moveCellDownDisabled
         });
+
         $scope.cellview.menu.addItem({
           name: "Cut",
           action: function() {
             notebookCellOp.cut($scope.cellmodel.id);
           }
         });
+
         $scope.cellview.menu.addItem({
           name: "Paste (append after)",
           disabled: function() {

@@ -49,16 +49,43 @@ body {
 .toggle-menu {
     top:        20px;
     right:      20px;
-    color:      transparent;
-    cursor:     pointer;
-    height:     24px;
-    padding:    0 20px;
     position:   absolute;
-    background: url(/beaker/app/images/menu-dots-dark.png) no-repeat center;
 }
 
-.toggle-menu:hover {
+.cell-menu-item {
+    float:      right;
+    cursor:     pointer;
+    height:     24px;
+    padding:    0 15px;
+}
+
+.cell-menu-item.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.cell-menu-item:hover {
     background-color: #F5F5F5;
+}
+
+.delete-cell {
+    background: url(/beaker/app/images/trash@2x.png) no-repeat center;
+    background-size: 9px;
+}
+
+.move-cell-up {
+    background: url(/beaker/app/images/up@2x.png) no-repeat center;
+    background-size: 8px;
+}
+
+.move-cell-down {
+    background: url(/beaker/app/images/down@2x.png) no-repeat center;
+    background-size: 8px;
+}
+
+.cell-dropdown {
+    background: url(/beaker/app/images/menu@2x.png) no-repeat center;
+    background-size: 3px;
 }
 
 bk-section-cell, bk-text-cell {
@@ -70,11 +97,11 @@ bk-section-cell, bk-text-cell {
 }
 
 bk-cell > .bkcell {
-    position:   relative;
+    position: relative;
 }
 
 bk-code-cell .code-cell-output {
-    margin:     20px -20px 0;
+    margin:     20px -20px -10px;
     padding:    0 20px;
     border-top: solid 1px #CCC;
 }

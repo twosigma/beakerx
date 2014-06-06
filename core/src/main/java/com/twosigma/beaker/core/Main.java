@@ -134,14 +134,13 @@ public class Main {
     final Boolean useHttps = options.hasOption("use-https") ?
       parseBoolean(options.getOptionValue("use-https")) : USE_HTTPS_DEFAULT;
     final Boolean publicServer = options.hasOption("public-server");
-    final Boolean noPasswordAllowed = options.hasOption("no-password");
 
     // create preferences for beaker core from cli options and others
     // to be used by BeakerCoreConfigModule to initialize its config
     BeakerConfigPref beakerCorePref = createBeakerCoreConfigPref(
         useKerberos,
         publicServer,
-        noPasswordAllowed,
+        false,
         portBase,
         options.getOptionValue("default-notebook"),
         getPluginOptions(options));

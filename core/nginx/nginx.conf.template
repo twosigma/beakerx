@@ -30,23 +30,14 @@ http {
 
   server {
 
-    # Exactly one of the two following sections should be active.
+    %(listen_section)s
 
-    # https
-    #listen %(port_main)s ssl;
-    #server_name  localhost;
-    #ssl_certificate %(host)s.cer;
-    #ssl_certificate_key %(host)s.key;
     client_max_body_size 100M;
     client_body_temp_path "client_temp";
     proxy_temp_path "client_temp";
     fastcgi_temp_path "client_temp";
     uwsgi_temp_path "client_temp";
     scgi_temp_path "client_temp";
-
-
-    # kerberos
-    listen %(listen_on)s:%(port_clear)s;
 
     # redirect server error pages to the static page /50x.html
     error_page   500 502 503 504  /50x.html;

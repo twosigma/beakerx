@@ -20,6 +20,7 @@ import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.core.rest.OutputLogService;
 import com.twosigma.beaker.core.rest.FileIORest;
 import com.twosigma.beaker.core.rest.HttpProxyRest;
+import com.twosigma.beaker.core.rest.LoginRest;
 import com.twosigma.beaker.core.rest.OutputLogRest;
 import com.twosigma.beaker.core.rest.RecentMenuRest;
 import com.twosigma.beaker.core.rest.SessionBackupRest;
@@ -72,5 +73,6 @@ public class URLConfigModule extends ServletModule {
     bind(OutputLogRest.class);
     bind(SessionBackupRest.class);
     bind(RecentMenuRest.class);
+    bind(LoginRest.class);
   }
 }

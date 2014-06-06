@@ -22,6 +22,7 @@ import com.twosigma.beaker.core.module.SerializerModule;
 import com.twosigma.beaker.core.module.URLConfigModule;
 import com.twosigma.beaker.core.module.WebServerModule;
 import com.twosigma.beaker.core.module.config.DefaultBeakerConfigModule;
+import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
@@ -29,9 +30,7 @@ import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -135,14 +134,13 @@ public class Main {
     final Boolean useHttps = options.hasOption("use-https") ?
       parseBoolean(options.getOptionValue("use-https")) : USE_HTTPS_DEFAULT;
     final Boolean publicServer = options.hasOption("public-server");
-    final Boolean noPasswordAllowed = options.hasOption("no-password");
 
     // create preferences for beaker core from cli options and others
     // to be used by BeakerCoreConfigModule to initialize its config
     BeakerConfigPref beakerCorePref = createBeakerCoreConfigPref(
         useKerberos,
         publicServer,
-        noPasswordAllowed,
+        false,
         portBase,
         options.getOptionValue("default-notebook"),
         getPluginOptions(options));
@@ -163,33 +161,23 @@ public class Main {
     PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
     processStarter.start();
 
+    BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
+
     Server server = injector.getInstance(Server.class);
     server.start();
 
     // openBrower and show connection instruction message
-    final String initUrl = getInitUrl(useHttps, portBase, useKerberos);
+    final String initUrl = bkConfig.getBaseURL();
     if (openBrowser) {
       injector.getInstance(GeneralUtils.class).openUrl(initUrl);
-      System.out.println("\nConnecting to " + initUrl + "\n");
+      System.out.println("\nConnecting to " + initUrl);
     } else {
-      System.out.println("\nConnect to " + initUrl + "\n");
+      System.out.println("\nConnect to " + initUrl);
     }
-
-  }
-
-  private static String getInitUrl(Boolean useHttps, Integer portBase, Boolean useKerberos) throws UnknownHostException {
-    String initUrl;
-
-    //TODO fix this, temporarily hardcoding
-    final String localhostname = "127.0.0.1";//InetAddress.getLocalHost().getHostName();
-
-    if (useHttps) {
-      initUrl = "https://" + localhostname + ":" + portBase + "/beaker/";
-    } else {
-      initUrl = "http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
-              + localhostname + ":" + (portBase + CLEAR_PORT_OFFSET) + "/beaker/";
+    if (publicServer) {
+      System.out.println("Submit this password: " + bkConfig.getPassword());
     }
-    return initUrl;
+    System.out.println("");
   }
 
   private static BeakerConfigPref createBeakerCoreConfigPref(

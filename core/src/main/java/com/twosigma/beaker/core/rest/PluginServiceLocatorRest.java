@@ -84,7 +84,7 @@ public class PluginServiceLocatorRest {
     "  proxy_set_header Upgrade $http_upgrade;\n" +
     "  proxy_set_header Connection \"upgrade\";\n" +
     "  proxy_set_header Host 127.0.0.1:%(port)s;\n" +
-    "  proxy_set_header Origin \"$scheme://$host:%(port)s\";\n" +
+    "  proxy_set_header Origin \"$scheme://127.0.0.1:%(port)s\";\n" +
     "}\n" +
     "location %(base_url)s/login {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/login;\n" +
@@ -119,6 +119,7 @@ public class PluginServiceLocatorRest {
   private final Integer corePort;
   private final Integer restartPort;
   private final Integer reservedPortCount;
+  private final String authCookie;
   private final Map<String, String> pluginLocations;
   private final Map<String, List<String>> pluginArgs;
   private final Map<String, String[]> pluginEnvps;
@@ -151,6 +152,7 @@ public class PluginServiceLocatorRest {
     this.corePort = this.portBase + 2;
     this.restartPort = this.portBase + 3;
     this.reservedPortCount = bkConfig.getReservedPortCount();
+    this.authCookie = bkConfig.getAuthCookie();
     this.pluginLocations = bkConfig.getPluginLocations();
     this.pluginEnvps = bkConfig.getPluginEnvps();
     this.pluginArgs = new HashMap<>();
@@ -533,6 +535,8 @@ public class PluginServiceLocatorRest {
       Files.createDirectory(htmlDir);
       Files.copy(Paths.get(this.nginxStaticDir + "/50x.html"),
                  Paths.get(htmlDir.toString() + "/50x.html"));
+      Files.copy(Paths.get(this.nginxStaticDir + "/login.html"),
+                 Paths.get(htmlDir.toString() + "/login.html"));
       Files.copy(Paths.get(this.nginxStaticDir + "/present.html"),
                  Paths.get(htmlDir.toString() + "/present.html"));
       //Files.copy(Paths.get(this.nginxStaticDir + "/favicon.ico"),
@@ -564,6 +568,22 @@ public class PluginServiceLocatorRest {
       pluginSection.append(nginxRule + "\n\n");
     }
     String auth = encoder.encodeBase64String(("beaker:" + this.corePassword).getBytes());
+    String listenSection;
+    String authCookieRule;
+    String startPage;
+    if (this.publicServer) {
+      listenSection = "listen " + this.portBase + " ssl;\n";
+      // XXX should allow name to be set by user in bkConfig
+      listenSection += "server_name " + InetAddress.getLocalHost().getHostName() + ";\n";
+      listenSection += "ssl_certificate " + this.nginxServDir + "/ssl_cert.pem;\n";
+      listenSection += "ssl_certificate_key " + this.nginxServDir + "/ssl_cert.pem;\n";
+      authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
+      startPage = "login/login.html";
+    } else {
+      listenSection = "listen 127.0.0.1:" + this.servPort + ";\n";
+      authCookieRule = "";
+      startPage = "beaker/";
+    }
     nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
     nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
     nginxConfig = nginxConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
@@ -571,6 +591,9 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     nginxConfig = nginxConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
     nginxConfig = nginxConfig.replace("%(listen_on)s", this.publicServer ? "*" : "127.0.0.1");
+    nginxConfig = nginxConfig.replace("%(listen_section)s", listenSection);
+    nginxConfig = nginxConfig.replace("%(auth_cookie_rule)s", authCookieRule);
+    nginxConfig = nginxConfig.replace("%(start_page)s", startPage);
     nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);

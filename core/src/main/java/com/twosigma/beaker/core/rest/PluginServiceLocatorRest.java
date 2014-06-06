@@ -567,17 +567,21 @@ public class PluginServiceLocatorRest {
     }
     String auth = encoder.encodeBase64String(("beaker:" + this.corePassword).getBytes());
     String listenSection;
-
+    String authCookieRule;
+    String startPage;
     if (this.publicServer) {
       listenSection = "listen " + this.portBase + " ssl;\n";
       // XXX should allow name to be set by user in bkConfig
       listenSection += "server_name " + InetAddress.getLocalHost().getHostName() + ";\n";
       listenSection += "ssl_certificate " + this.nginxServDir + "/ssl_cert.pem;\n";
       listenSection += "ssl_certificate_key " + this.nginxServDir + "/ssl_cert.pem;\n";
+      authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
+      startPage = "login/login.html";
     } else {
       listenSection = "listen 127.0.0.1:" + this.servPort + ";\n";
+      authCookieRule = "";
+      startPage = "beaker/";
     }
-                            
     nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
     nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
     nginxConfig = nginxConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
@@ -586,8 +590,8 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
     nginxConfig = nginxConfig.replace("%(listen_on)s", this.publicServer ? "*" : "127.0.0.1");
     nginxConfig = nginxConfig.replace("%(listen_section)s", listenSection);
-                                      
-    nginxConfig = nginxConfig.replace("%(auth_cookie)s", this.authCookie);
+    nginxConfig = nginxConfig.replace("%(auth_cookie_rule)s", authCookieRule);
+    nginxConfig = nginxConfig.replace("%(start_page)s", startPage);
     nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);

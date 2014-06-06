@@ -56,9 +56,8 @@ public class LoginRest {
     String cookie = config.getAuthCookie();
     if (password != null && hash(password).equals(config.getPasswordHash())) {
       return Response.seeOther(URI.create(url + "beaker/"))
-        // XXX cookie should be secure
         .cookie(new NewCookie("BeakerAuth", cookie, "/", null, null,
-                              NewCookie.DEFAULT_MAX_AGE, false)).build();
+                              NewCookie.DEFAULT_MAX_AGE, true)).build();
     }
     // bad password, try again
     return Response.seeOther(URI.create(url + "login/login.html")).build();

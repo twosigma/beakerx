@@ -22,7 +22,7 @@ if len(sys.argv) > 1:
     if arg1 == "--version":
         os.execlp("ipython", "ipython", "--version")
     elif arg1 == "--hash":
-        os.execlp("ipython", "ipython")
+        os.execlp("python", "python")
     elif arg1 == "--profile":
         os.execlp("ipython", "ipython", "profile", "create", "beaker_backend", "--ipython-dir=" + sys.argv[2])
 

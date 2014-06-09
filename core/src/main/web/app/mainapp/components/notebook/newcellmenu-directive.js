@@ -54,18 +54,9 @@
         };
       },
       link: function(scope, element, attrs) {
-        var hr = element.find('hr');
-        hr.mouseover(function(event) {
-          hr.animate({ opacity: 1.0 }, 100);
-          event.stopPropagation();
-        });
-        hr.mouseout(function(event) {
-          hr.animate({ opacity: 0.0 }, 200);
-          event.stopPropagation();
-        });
         scope.moveMenu = function(event) {
           var menu = element.find('.dropdown-menu').first();
-          menu.css("left", bkUtils.getEventOffsetX(hr, event));
+          menu.css("left", bkUtils.getEventOffsetX(0, event));
         };
       }
     };

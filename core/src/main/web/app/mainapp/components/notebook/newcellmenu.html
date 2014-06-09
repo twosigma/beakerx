@@ -13,9 +13,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="dropdown">
+<div class="dropdown new-cell-menu" ng-mouseover="mouseOver=true" ng-mouseleave="mouseOver=false">
   <a class="dropdown-toggle">
-    <hr class="bk-hr" ng-click="moveMenu($event)"/>
+    <div ng-click="moveMenu($event)" class="insert-cell-indicator" ng-class="mouseOver && 'expanded'">+ Insert Cell
+    </div>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li class="dropdown-submenu">

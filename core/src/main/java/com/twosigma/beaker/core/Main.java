@@ -30,6 +30,7 @@ import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.Map;
@@ -254,7 +255,8 @@ public class Main {
 
     ServerSocket ss = null;
     try {
-      ss = new ServerSocket(port);
+      InetAddress address = InetAddress.getByName("127.0.0.1");
+      ss = new ServerSocket(port, 1, address);
       ss.setReuseAddress(true);
       return true;
     } catch (IOException e) {

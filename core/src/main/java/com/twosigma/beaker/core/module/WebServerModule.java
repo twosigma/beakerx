@@ -90,14 +90,12 @@ public class WebServerModule extends AbstractModule {
       }
     });
 
-    ServletHolder holder = new ServletHolder(DefaultServlet.class);
-    holder.setInitParameter("maxCacheSize", "0");
-    holder.setInitParameter("cacheControl", "no-cache, max-age=0");
-
     servletHandler.setSecurityHandler(makeSecurityHandler(webServerConfig.getPassword()));
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
-    servletHandler.addServlet(holder, "/*");
+    servletHandler.addServlet(DefaultServlet.class, "/*");
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);
+    servletHandler.setInitParameter("maxCacheSize", "0");
+    servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
 
     server.setHandler(servletHandler);
 

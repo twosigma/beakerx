@@ -19,6 +19,10 @@ module.exports = function() {
     root: 'bk-cell',
     toggleMenu: function() {
       return this.click(".toggle-menu .cell-dropdown");
+    },
+
+    toggleInsetCellMenu: function() {
+      return this.click(".new-cell-menu .dropdown-toggle");
     }
   })
 }

@@ -160,6 +160,8 @@ define(function(require, exports, module) {
           modelOutput.result = {
               "type": "LinePlot", // TimePlot
               "plotTitle": "Dummy Line Plot",
+              "xLabel": "X Label",
+              "yLabel": "Y Label",
               "data": testdata // automated testdata
               /*
               [

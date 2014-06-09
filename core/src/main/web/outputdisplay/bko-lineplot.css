@@ -10,9 +10,9 @@
 }
 
 .lineplot-line {
-    stroke-width: 2;
     opacity: 0.75;
     pointer-events: none;
+    fill: none;
 }
 
 .lineplot-coord {
@@ -34,7 +34,11 @@
     font-family: verdana, helvetica, arial, sans-serif;
     font-size: 0.75em;
 }
-
+.lineplot-xylabel {
+    font-family: verdana, helvetica, arial, sans-serif;
+    font-size: 0.9em;
+    text-anchor: middle;
+}
 .lineplot-locatebox {
     fill: #003366;
     opacity: 0.2;
@@ -48,9 +52,9 @@
     text-align: center;
     width: 1200px;
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1.2em;
+    margin: 5px;
 }
-
 .lineplot-legendbox {
     
 }

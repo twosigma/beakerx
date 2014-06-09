@@ -35,6 +35,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 /**
  * The WebServer Module that sets up the server singleton to be started in Init
@@ -89,12 +90,14 @@ public class WebServerModule extends AbstractModule {
       }
     });
 
+    ServletHolder holder = new ServletHolder(DefaultServlet.class);
+    holder.setInitParameter("maxCacheSize", "0");
+    holder.setInitParameter("cacheControl", "no-cache, max-age=0");
+
     servletHandler.setSecurityHandler(makeSecurityHandler(webServerConfig.getPassword()));
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
-    servletHandler.addServlet(DefaultServlet.class, "/*");
+    servletHandler.addServlet(holder, "/*");
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);
-    servletHandler.setInitParameter("maxCacheSize", "0");
-    servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
 
     server.setHandler(servletHandler);
 

@@ -26,6 +26,27 @@ body {
     padding-top: 60px;
 }
 
+.dropdown.new-cell-menu {
+    margin:  10px 0;
+    display: inline-block;
+}
+
+.insert-cell-indicator {
+    color:       #FFF;
+    width:       7px;
+    cursor:      pointer;
+    display:     inline-block;
+    padding:     2px 5px;
+    font-size:   13px;
+    background:  #2FA6E0;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.insert-cell-indicator.expanded {
+    width: auto;
+}
+
 .bkcell {
     margin-bottom:  10px;
 }
@@ -157,27 +178,6 @@ bk-output-display pre {
 .CodeMirror-gutters {
     border:             none;
     background-color:   transparent;
-}
-
-.bk-hr {
-    border: 0;
-    height: 10px;
-    color: #009AA6;
-    background-color: #009AA6;
-    opacity: 0.0;
-    box-shadow: inset 0 0 3px 3px #FFF;
-    margin: 0px;
-    text-align: center;
-}
-
-.bk-hr:after {
-    content: "insert cell";
-    display: inline-block;
-    position: relative;
-    top: -0.5em;
-    font-size: 1.0em;
-    padding: 0 0.25em 0 0.25em;
-    background: rgba(255, 255, 255, 0.8);
 }
 
 .section0 {

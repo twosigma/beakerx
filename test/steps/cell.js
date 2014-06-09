@@ -34,4 +34,20 @@ module.exports = function() {
       root: 'bk-section-cell bk-cell:nth-child('+index+')'
     }).findInput().should.eventually.eql(0);
   });
+
+  this.Then(/^I click the '(\d+)' insert cell menu toggle$/, function(index) {
+    return new this.Widgets.Cell({
+      root: 'bk-section-cell bk-cell:nth-child('+index+')'
+    }).toggleInsetCellMenu();
+  });
+
+  this.Then(/^I should see a open insert cell menu on cell '(\d+)'$/, function(index) {
+    return new this.Widgets.Cell({
+      root: 'bk-section-cell bk-cell:nth-child('+index+')'
+    })
+    .find('.new-cell-menu .dropdown-menu')
+    .then(function(elm) {
+      return elm.isDisplayed();
+    })
+  });
 }

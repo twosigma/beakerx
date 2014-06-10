@@ -10,6 +10,10 @@
     "node-sass": "^0.9.2"
   },
   "scripts": {
-    "compile-css": "node compile-css.js"
+    "compile-css": "node compile-css.js",
+    "watch-css": "node watch-sass.js"
+  },
+  "devDependencies": {
+    "chokidar": "^0.8.2"
   }
 }

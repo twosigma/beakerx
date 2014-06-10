@@ -26,7 +26,7 @@
           return {
             template: "<div id='plotitle' class='lineplot-title'></div>"+
                       "<div id='lineplotContainer' class='renderdiv' >"+ //oncontextmenu='return false;'
-                      "<svg><g id='maing'></g><g id='coordg'></g></svg>"+
+                      "<svg><g id='maing'></g><g id='coordg'></g><g id='labelg'></g></svg>"+
                       "</div>",
             controller: function($scope) {
               var model = $scope.model.getCellModel();
@@ -63,6 +63,7 @@
               scope.jqcontainer = element.find("#lineplotContainer");
               scope.maing = d3.select(element[0]).select("#maing");
               scope.coordg = d3.select(element[0]).select("#coordg");
+              scope.labelg = d3.select(element[0]).select("#labelg");
               
               scope.initRange = function(){
                 var data = scope.data;
@@ -76,6 +77,14 @@
                     xr = Math.max(xr, points[j].x);
                     yl = Math.min(yl, points[j].y);
                     yr = Math.max(yr, points[j].y);
+                    if (data[i].type==="river" && (data[i].height!=null || points[j].y2!=null)) {
+                      var y2 = points[j].y2!=null? points[j].y2 : points[j].y+data[i].height;
+                      yr = Math.max(yr, y2);
+                    }
+                    if (data[i].type==="stem" && (data[i].height!=null || points[j].y2!=null)) {
+                      var y2 = points[j].y2!=null? points[j].y2 : points[j].y+data[i].height;
+                      yr = Math.max(yr, y2);
+                    }
                   }
                 }
                 scope.range = {"xl": xl, "xr": xr, "yl": yl, "yr": yr, "xspan": xr-xl, "yspan": yr-yl};
@@ -113,10 +122,6 @@
                     xt = Math.floor(focus.xr/xintv)*xintv,
                     ys = Math.ceil(focus.yl/yintv)*yintv,
                     yt = Math.floor(focus.yr/yintv)*yintv;
-                    
-                //console.log(xbase, ybase, xspan/xintv, yspan/yintv);
-
-                //console.log(xs,xt,ys,yt);
                 scope.xCoords = [];
                 scope.yCoords = [];
                 for(var i=xs; i<=xt; i+=xintv)  scope.xCoords.push(i);
@@ -171,9 +176,73 @@
                 var mapX = scope.data2scrX, mapY = scope.data2scrY;
                 for(var i=0; i<numLines; i++){
                   var points = data[i].points;
-                  if (data[i].style==="bar") {
-                    
-                  }else{
+                  if (data[i].type==="bar") {
+                    var w = data[i].width;
+                    var sw;
+                    var H = scope.jqsvg.height()-scope.layout.bottomTextHeight;
+                    var rpoints = [];
+                    for(var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
+                      var p = points[j];
+                      var x1 = mapX(p.x-w/2), x2 = mapX(p.x+w/2), y = mapY(p.y);
+                      sw = x2-x1;
+                      if(H-y<0) continue; // prevent negative height
+                      rpoints.push({
+                        "id": "bar_"+i+"_"+j,
+                        "x": x1, "y": y, "height": H-y
+                      });
+                    }
+                    scope.rpipeBars.push({
+                      "id": "bar_"+i, "class": "lineplot-bar",
+                      "width": sw,
+                      "fill": data[i].color,
+                      "points": rpoints
+                    });
+                  }else if (data[i].type==="river") {
+                    var pstr = "";
+                    for(var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
+                      var p = points[j];
+                      pstr += mapX(p.x)+","+mapY(p.y)+" ";
+                    }
+                    for(var j=fdata[i].rightIndex; j>=fdata[i].leftIndex; j--){
+                      var p = points[j];
+                      var y2 = p.y2;
+                      if (y2==null) y2 = focus.yl;
+                      pstr += mapX(p.x)+","+mapY(y2)+" ";
+                    }
+                    scope.rpipeRivers.push({
+                      "id": "river_"+i, "class": "lineplot-river",
+                      "fill": data[i].color,
+                      "points": pstr
+                      })
+                  }else if(data[i].type==="stem"){
+                    var rpoints = [];
+                    for(var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
+                      var p = points[j];
+                      var y2 = p.y2;
+                      if (y2==null) y2 = focus.yl;
+                      rpoints.push({"id": "stem_"+i+"_"+j, "x1": mapX(p.x), "y1": mapY(p.y), "x2": mapX(p.x), "y2": mapY(y2),
+                                    "stroke-width": data[i].width
+                                   });
+                      if (data[i].style.search("bottom")!=-1) {
+                        var y = Math.min(p.y, y2);
+                        rpoints.push({"id": "stem_b_"+i+"_"+j, "x1": mapX(p.x)-5, "y1": mapY(y), "x2": mapX(p.x)+5, "y2": mapY(y),
+                                    "stroke-width": data[i].width
+                                   });
+                      }
+                       if (data[i].style.search("top")!=-1) {
+                        var y = Math.max(p.y, y2);
+                        rpoints.push({"id": "stem_t_"+i+"_"+j, "x1": mapX(p.x)-5, "y1": mapY(y), "x2": mapX(p.x)+5, "y2": mapY(y),
+                                    "stroke-width": data[i].width
+                                   });
+                      }
+                      
+                    }
+                    scope.rpipeStems.push({
+                      "id": "stem_"+i, "class": "lineplot-stem",
+                      "stroke": data[i].color,
+                      "points": rpoints
+                    });
+                  }else{ // polyline: solid, dash or dot
                     var pstr = "";
                     for(var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
                       var p = points[j];
@@ -184,12 +253,12 @@
                       }
                     }
                     var prop = lineplotUtils.standardizeLineProp("line_"+i, data[i]);
-                    _.extend(prop, {"pathstr": pstr});
+                    _.extend(prop, {"points": pstr});
                     scope.rpipeLines.push(prop);
                   }
                 }
               }
-              scope.renderPoints = function(){
+              scope.renderLineDots = function(){
                 var data = scope.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
                 var mapX = scope.data2scrX, mapY = scope.data2scrY;
                 for (var i=0; i<numLines; i++) {
@@ -408,8 +477,6 @@
                 var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x), yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
                 scope.locateBox = {"x":xl, "y":yl, "w":xr-xl, "h":yr-yl};
               }
-  
-              
               scope.mouseDown = function(){
                 if (d3.event.target.nodeName!="svg") {
                   scope.interactMode = "other";
@@ -456,9 +523,8 @@
                     focus.yl += ty;
                     focus.yr += ty;
                     scope.jqsvg.css("cursor", "move");
-                    
                    // scope.translateX += dx * scope.scaleX;
-                  //  scope.translateY += dy * scope.scaleY;
+                   //  scope.translateY += dy * scope.scaleY;
                   }else{  // scale only
                     // scale x only
                     var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
@@ -474,8 +540,6 @@
                         focus.yr = nyr;
                         focus.yspan = nyspan;
                       }
-                      
-                      
                       //scope.translateY = scope.translateY*ds + (1-ds)*my;
                       //scope.scaleY *= ds;
                     }
@@ -491,8 +555,6 @@
                         focus.xr = nxr;
                         focus.xspan = nxspan;
                       }
-                      
-                      
                      // scope.translateX = scope.translateX*ds + (1-ds)*mx;
                      // scope.scaleX *= ds;
                     }
@@ -579,6 +641,9 @@
                 scope.rpipeTexts = [];
                 scope.rpipeRects = [];
                 scope.rpipeCircles = [];
+                scope.rpipeBars = [];
+                scope.rpipeRivers = [];
+                scope.rpipeStems = [];
               }
               scope.enableZoom = function(){
                 scope.container
@@ -603,7 +668,10 @@
                 for(var i=0; i<numLines; i++){
                   var data = scope.data[i];
                   if (data.interpolation==null) data.interpolation = "linear";
-                  if (data.style==null) data.style = "solid";
+                  if (data.type==null) data.type = "line";
+                  if (data.type=="line") {
+                    if (data.style==null) data.style = "solid";
+                  }
                   var numPoints = data.points.length;
                   for(var j=0; j<numPoints; j++){
                     data.points[j].uniqid = i+"_"+j;
@@ -614,6 +682,13 @@
                       txt += "<div>" + prs[k][0] + ": "+ val + "</div>";
                     }
                     data.points[j].value = txt;
+                    
+                    if (data.type==="river" && data.points[j].y2==null && data.height!=null) {
+                      data.points[j].y2 = data.points[j].y+data.height;
+                    }
+                    if (data.type==="stem" && data.points[j].y2==null && data.height!=null) {
+                      data.points[j].y2 = data.points[j].y+data.height;
+                    }
                   }
                 }
               }
@@ -657,9 +732,12 @@
                 scope.calcCoords();
                 scope.renderCoords();
                 scope.renderLines();
-                scope.renderPoints();
+                scope.renderLineDots();
                 scope.renderLabels();
                 lineplotUtils.plotCoords(scope);
+                lineplotUtils.plotRivers(scope);
+                lineplotUtils.plotBars(scope);
+                lineplotUtils.plotStems(scope);
                 lineplotUtils.plotLines(scope);
                 lineplotUtils.plotCircles(scope);
                 scope.renderTips();

@@ -162,6 +162,8 @@ define(function(require, exports, module) {
               "plotTitle": "Dummy Line Plot",
               "xLabel": "X Label",
               "yLabel": "Y Label",
+              "xCursor": true,
+              "yCursor": "solid ",
               "data": testdata // automated testdata
               /*
               [

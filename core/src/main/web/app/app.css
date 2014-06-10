@@ -26,6 +26,48 @@ body {
     padding-top: 60px;
 }
 
+html .navbar .container {
+    width: 100%;
+}
+
+.navbar .navbar-inner:after {
+    display: none;
+}
+
+.sub-nav {
+    display: block;
+    clear: both;
+    background: #eff2f8;
+    margin: 0;
+    position: relative;
+    left: -10px;
+    width: 100%;
+    padding: 10px;
+    box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
+    -webkit-box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
+}
+
+.sub-nav > li {
+    margin-right: 30px;
+    display: inline-block;
+}
+
+html .navbar a.brand, html .navbar .nav > li > a {
+    color: #FFF;
+    text-shadow: none;
+}
+
+.dropdown-toggle {
+    color:      #3f5264;
+    font-size:  13px
+}
+
+.navbar-fixed-top .navbar-inner{
+    background:         #3f5264;
+    box-shadow:         none;
+    -webkit-box-shadow: none;
+}
+
 .dropdown-menu {
     border-radius: 0;
     -webkit-border-radius: 0;
@@ -147,6 +189,22 @@ bk-code-cell .code-cell-output {
 ul.cell-output-labels {
     list-style: none;
     margin: 0;
+}
+
+.notebook-container {
+    margin-top: 10px;
+}
+
+.navbar .nav > li > a:hover {
+    color: #FFF;
+}
+
+.navbar .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle {
+    background: transparent;
+}
+
+.navbar .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle {
+    color: #FFF;
 }
 
 bk-output-display pre {

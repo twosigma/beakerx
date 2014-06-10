@@ -24,28 +24,27 @@
         <img src="static/icon48.png" width="24px" height="24px"></img>
         Beaker
       </a>
-      <ul class="nav">
+      <span class="brand" ng-if="loading"><i class='fa fa-refresh fa-spin'></i></span>
+      <ul class="sub-nav">
         <li class="dropdown" ng-repeat="m in getMenus()">
-          <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}<b
-              class="caret"></b></a>
+          <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
           <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
         </li>
-        <li class="pull-right" style="padding: 10px 15px 10px; cursor: default;">
+        <li class="pull-right" style="padding: 0 15px 10px; cursor: default;">
           <span><font color="#009AA6">{{message}}{{(message !== "" && isEdited()) ? "|" : "" }}{{isEdited() ? "edited" :
             ""}}</font></span>
         </li>
-        <li class="pull-right" style="padding: 10px 15px 10px; cursor: default;">
+        <li class="pull-right" style="padding: 0 15px 10px; cursor: default;">
           <span ng-show="disconnected"><font color="red">offline</font></span>
         </li>
       </ul>
-      <span class="brand" ng-if="loading"><i class='fa fa-refresh fa-spin'></i></span>
     </div>
   </div>
 </div>
 
 <!-- Set the outer container to 100% so the fluid rows fill it.
      I think this is not needed if we update to bootstrap v3. -->
-<div class="container" style="width: 100%;">
+<div class="container notebook-container" style="width: 100%;">
   <div class="row-fluid">
     <div class="span12">
       <bk-notebook set-bk-notebook="setBkNotebook(bkNotebook)"></bk-notebook>

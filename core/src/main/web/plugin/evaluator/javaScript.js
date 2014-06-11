@@ -160,10 +160,11 @@ define(function(require, exports, module) {
           modelOutput.result = {
               "type": "LinePlot", // TimePlot
               "plotTitle": "Dummy Line Plot",
+              //"showLegend": true, 
               "xLabel": "X Label",
               "yLabel": "Y Label",
-              "xCursor": true,
-              "yCursor": "solid ",
+              "xCursor": { style: "solid", color: "#003366", width: 3},
+              "yCursor": { style: "dash", color: "#003366", width: 2 },
               "data": testdata // automated testdata
               /*
               [

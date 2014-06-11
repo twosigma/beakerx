@@ -55,6 +55,19 @@
     font-size: 0.9em;
     text-anchor: middle;
 }
+.lineplot-cursorlabel {
+    font-family: verdana, helvetica, arial, sans-serif;
+    font-size: 0.75em;
+    font-weight: bold;
+    color: white;
+    padding: 1px 5px;
+    pointer-events: none;
+    position: absolute;
+    width: auto;
+    height: auto;
+    border-radius: 5px;
+}
+
 .lineplot-locatebox {
     fill: #003366;
     opacity: 0.2;
@@ -62,6 +75,10 @@
 
 .lineplot-truncatebox { 
     fill: #FEFEFE;
+}
+.lineplot-cursor{
+    pointer-events: none;
+    stroke-width: 2.0;
 }
 
 .lineplot-title {
@@ -72,12 +89,25 @@
     margin: 5px;
 }
 .lineplot-legendbox {
-    
+    width: 12px;
+    height: 12px;
+    margin: 0px 5px;
+    display: inline-block;
+}
+.lineplot-legendcheckbox {
+    margin: 0px !important;
+    margin-right: 5px;
 }
 
 .lineplot-legendcontainer{
     stroke: gray;
     fill: #FEFEFE;
+    position: absolute;
+    padding-left: 10px;
+    width: 150px;
+    height: auto;
+    border: 1px solid black;
+    background-color: white;
 }
 .lineplot-coverbox {
     fill: #FEFEFE;

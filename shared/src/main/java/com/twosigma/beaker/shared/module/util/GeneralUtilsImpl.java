@@ -42,6 +42,10 @@ import java.util.Set;
  */
 public class GeneralUtilsImpl implements GeneralUtils {
 
+  private boolean windows() {
+    return System.getProperty("os.name").contains("Windows");
+  }  
+
   @Override
   public void openUrl(String url) {
     String osName = System.getProperty("os.name");
@@ -182,10 +186,15 @@ public class GeneralUtilsImpl implements GeneralUtils {
   
   @Override
   public String createTempDirectory(Path dir, String prefix) throws IOException {
-    Set<PosixFilePermission> userOnly = EnumSet.of(PosixFilePermission.OWNER_READ,
-                                                   PosixFilePermission.OWNER_WRITE,
-                                                   PosixFilePermission.OWNER_EXECUTE);
-    Path tempDir = Files.createTempDirectory(dir, prefix, PosixFilePermissions.asFileAttribute(userOnly));
+    Path tempDir;
+    if (windows()) {
+	tempDir = Files.createTempDirectory(dir, prefix);
+    } else {
+	Set<PosixFilePermission> userOnly = EnumSet.of(PosixFilePermission.OWNER_READ,
+						       PosixFilePermission.OWNER_WRITE,
+						       PosixFilePermission.OWNER_EXECUTE);
+	tempDir = Files.createTempDirectory(dir, prefix, PosixFilePermissions.asFileAttribute(userOnly));
+    }
     recursiveDeleteOnShutdownHook(tempDir);
     return tempDir.toString();
   }

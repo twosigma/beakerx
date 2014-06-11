@@ -17,3 +17,4 @@ nbproject/
 build.xml
 manifest.mf
 /core/src/main/web/app/app.css
+npm-debug.log

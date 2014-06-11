@@ -465,7 +465,7 @@ public class PluginServiceLocatorRest {
       throws IOException, InterruptedException
   {
       if (windows()) {
-	  String p = path.toString();
+          String p = path.toString();
 	  Thread.sleep(1000); // XXX unknown race condition
 	  try (PrintWriter out = new PrintWriter(p)) {
 		  out.print(contents);

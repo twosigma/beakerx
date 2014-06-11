@@ -302,6 +302,7 @@ public class PluginServiceLocatorRest {
           + "/restart." + restartId + "/present.html";
       try {
         spinCheck(url);
+        if (windows()) Thread.sleep(1000); // XXX unknown race condition
       } catch (Throwable t) {
         System.err.println("Nginx restart time out plugin =" + pluginId);
         throw new NginxRestartFailedException("nginx restart failed.\n"
@@ -461,8 +462,16 @@ public class PluginServiceLocatorRest {
   }
 
   private void writePrivateFile(java.nio.file.Path path, String contents)
-    throws IOException
+      throws IOException, InterruptedException
   {
+    if (windows()) {
+      String p = path.toString();
+      Thread.sleep(1000); // XXX unknown race condition
+      try (PrintWriter out = new PrintWriter(p)) {
+        out.print(contents);
+      }
+      return;
+    }
     if (Files.exists(path)) {
       Files.delete(path);
     }
@@ -502,15 +511,17 @@ public class PluginServiceLocatorRest {
     String cmdBase = (this.pluginLocations.containsKey("IPython") ?
                       this.pluginLocations.get("IPython") : (this.pluginDir + "/ipythonPlugins/ipython"))
       + "/ipythonPlugin";
+    if (windows()) {
+      cmdBase = "python " + cmdBase;
+    }
     String cmd = cmdBase + " --profile " + this.nginxServDir;
-        
     Runtime.getRuntime().exec(cmd).waitFor();
     String hash = hashIPythonPassword(cmdBase, password);
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));
     config = config.replace("%(hash)s", hash);
-    java.nio.file.Path targetFile = Paths.get(this.nginxServDir,
-                                              "profile_beaker_backend/ipython_notebook_config.py");
+    java.nio.file.Path targetFile = Paths.get(this.nginxServDir + "/profile_beaker_backend",
+                                              "ipython_notebook_config.py");
     writePrivateFile(targetFile, config);
   }
 

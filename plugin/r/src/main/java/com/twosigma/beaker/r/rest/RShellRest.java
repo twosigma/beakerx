@@ -93,10 +93,11 @@ public class RShellRest {
   {
     File dir = new File(System.getenv("beaker_tmp_dir"));
     File tmp = File.createTempFile(base, suffix, dir);
-    
-    Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ,
-                                                PosixFilePermission.OWNER_WRITE);
-    Files.setPosixFilePermissions(tmp.toPath(), perms);
+    if (!windows()) {
+      Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ,
+                                                  PosixFilePermission.OWNER_WRITE);
+      Files.setPosixFilePermissions(tmp.toPath(), perms);
+    }
     return tmp.getAbsolutePath();
   }
 
@@ -109,7 +110,10 @@ public class RShellRest {
       bw.write("beaker " + password + "\n");
       bw.close();
     }
-
+    if (windows()) {
+	// R chokes on backslash in windows path, need to quote them
+	pwlocation = pwlocation.replace("\\", "\\\\");
+    }
     String location = makeTemp("BeakerRserveScript", ".r");
     try (BufferedWriter bw = new BufferedWriter(new FileWriter(location))) {
       bw.write("library(Rserve)\n");

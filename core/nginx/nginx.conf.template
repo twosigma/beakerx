@@ -28,16 +28,16 @@ http {
   keepalive_timeout  1000;
   proxy_read_timeout 1000000;
 
+  client_max_body_size 100M;
+  client_body_temp_path "client_temp";
+  proxy_temp_path "client_temp";
+  fastcgi_temp_path "client_temp";
+  uwsgi_temp_path "client_temp";
+  scgi_temp_path "client_temp";
+
   server {
 
     %(listen_section)s
-
-    client_max_body_size 100M;
-    client_body_temp_path "client_temp";
-    proxy_temp_path "client_temp";
-    fastcgi_temp_path "client_temp";
-    uwsgi_temp_path "client_temp";
-    scgi_temp_path "client_temp";
 
     # redirect server error pages to the static page /50x.html
     error_page   500 502 503 504  /50x.html;
@@ -57,7 +57,7 @@ http {
       alias html/;
     }
 
-    location / {
+    location = / {
       return 301 %(start_page)s;
     }
 

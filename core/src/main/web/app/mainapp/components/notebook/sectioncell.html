@@ -19,6 +19,6 @@
   <span class='section{{cellmodel.level}} bk-section-title' contenteditable="true">{{cellmodel.title}}</span>
 </div>
 <bk-new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
-<div bk-show="isShowChildren()">
+<div bk-show="isShowChildren()" class="section-children">
   <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell"></bk-cell>
 </div>

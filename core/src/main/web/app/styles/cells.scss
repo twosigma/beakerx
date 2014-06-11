@@ -1,0 +1,79 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+@import "cell-menus";
+
+.bkcell {
+    margin-bottom:  10px;
+}
+
+.bkcell.code-cell-area, .text-cell {
+    padding: 20px;
+    border: solid 1px #CCC;
+}
+
+.bkcell bk-code-cell-input-menu .dropdown {
+    float:          left;
+    z-index:        99;
+    position:       relative;
+    padding-bottom: 20px;
+}
+
+bk-cell > .bkcell {
+    position: relative;
+}
+
+bk-section-cell, bk-text-cell {
+    padding: 20px;
+}
+
+.bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
+    margin-top: -20px;
+}
+
+bk-code-cell .code-cell-output {
+    margin:     20px -20px -10px;
+    padding:    0 20px;
+    border-top: solid 1px #CCC;
+}
+
+bk-output-display pre {
+    border:     none;
+    margin:     0;
+    padding:    0;
+    background: transparent;
+}
+
+.insert-cell-indicator {
+    color:       #FFF;
+    width:       7px;
+    cursor:      pointer;
+    display:     inline-block;
+    padding:     2px 5px;
+    font-size:   13px;
+    background:  #2FA6E0;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.insert-cell-indicator.expanded {
+    width: auto;
+}
+
+.code-cell-hidden {
+    padding-top: 20px;
+}
+

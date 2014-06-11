@@ -62,22 +62,30 @@ public class GeneralUtilsImpl implements GeneralUtils {
     }
   }
 
-  @Override
-  public String readFile(Path path) {
+  private String readFile(Path path, boolean isSuppressLogging) {
     if (path == null) {
-      Logger.getLogger(GeneralUtilsImpl.class.getName())
-          .log(Level.INFO, "ERROR locating file {0}", path);
+      if (isSuppressLogging) {
+        Logger.getLogger(GeneralUtilsImpl.class.getName())
+            .log(Level.INFO, "ERROR locating file {0}", path);
+      }
       return null;
     }
     byte[] encoded = null;
     try {
       encoded = Files.readAllBytes(path);
     } catch (IOException ex) {
-      Logger.getLogger(GeneralUtilsImpl.class.getName())
-          .log(Level.INFO, "ERROR reading file {0}", path);
+      if (isSuppressLogging) {
+        Logger.getLogger(GeneralUtilsImpl.class.getName())
+            .log(Level.INFO, "ERROR reading file {0}", path);
+      }
       return null;
     }
     return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
+  }
+
+  @Override
+  public String readFile(Path path) {
+    return this.readFile(path, false);
   }
 
   @Override
@@ -183,7 +191,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
     ensureFileHasContent(castToPath(targetFile), castToPath(copyFromIfMissing));
   }
 
-  
+
   @Override
   public String createTempDirectory(Path dir, String prefix) throws IOException {
     Path tempDir;
@@ -253,7 +261,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
   }
 
   private boolean isFileValid(Object file) {
-    String content = readFile(castToPath(file));
+    String content = this.readFile(castToPath(file), true);
     return content != null && !content.isEmpty();
   }
 

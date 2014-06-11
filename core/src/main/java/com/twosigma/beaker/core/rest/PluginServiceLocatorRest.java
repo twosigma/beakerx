@@ -302,7 +302,7 @@ public class PluginServiceLocatorRest {
           + "/restart." + restartId + "/present.html";
       try {
         spinCheck(url);
-	if (windows()) Thread.sleep(1000); // XXX unknown race condition
+        if (windows()) Thread.sleep(1000); // XXX unknown race condition
       } catch (Throwable t) {
         System.err.println("Nginx restart time out plugin =" + pluginId);
         throw new NginxRestartFailedException("nginx restart failed.\n"
@@ -464,24 +464,23 @@ public class PluginServiceLocatorRest {
   private void writePrivateFile(java.nio.file.Path path, String contents)
       throws IOException, InterruptedException
   {
-      if (windows()) {
-          String p = path.toString();
-	  Thread.sleep(1000); // XXX unknown race condition
-	  try (PrintWriter out = new PrintWriter(p)) {
-		  out.print(contents);
-	      }
-	  return;
+    if (windows()) {
+      String p = path.toString();
+      Thread.sleep(1000); // XXX unknown race condition
+      try (PrintWriter out = new PrintWriter(p)) {
+        out.print(contents);
       }
-	  
+      return;
+    }
     if (Files.exists(path)) {
       Files.delete(path);
     }
-	try (PrintWriter out = new PrintWriter(path.toFile())) {
-	  out.print("");
-	}
-	Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ,
-						    PosixFilePermission.OWNER_WRITE);
-	Files.setPosixFilePermissions(path, perms);
+    try (PrintWriter out = new PrintWriter(path.toFile())) {
+      out.print("");
+    }
+    Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ,
+                                                PosixFilePermission.OWNER_WRITE);
+    Files.setPosixFilePermissions(path, perms);
     // XXX why is this in a try block?
     try (PrintWriter out = new PrintWriter(path.toFile())) {
       out.print(contents);
@@ -513,7 +512,7 @@ public class PluginServiceLocatorRest {
                       this.pluginLocations.get("IPython") : (this.pluginDir + "/ipythonPlugins/ipython"))
       + "/ipythonPlugin";
     if (windows()) {
-	cmdBase = "python " + cmdBase;
+      cmdBase = "python " + cmdBase;
     }
     String cmd = cmdBase + " --profile " + this.nginxServDir;
     Runtime.getRuntime().exec(cmd).waitFor();

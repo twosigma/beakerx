@@ -42,7 +42,7 @@ import java.util.Set;
  */
 public class GeneralUtilsImpl implements GeneralUtils {
 
-  private boolean windows() {
+  private boolean isWindows() {
     return System.getProperty("os.name").contains("Windows");
   }  
 
@@ -195,7 +195,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
   @Override
   public String createTempDirectory(Path dir, String prefix) throws IOException {
     Path tempDir;
-    if (windows()) {
+    if (isWindows()) {
 	tempDir = Files.createTempDirectory(dir, prefix);
     } else {
 	Set<PosixFilePermission> userOnly = EnumSet.of(PosixFilePermission.OWNER_READ,

@@ -14,176 +14,17 @@
  *  limitations under the License.
  */
 
+@import "styles/header";
+@import "styles/dropdowns";
+@import "styles/cells";
+
 root {
     display: block;
 }
 
 body {
     margin: 10px;
-}
-
-body {
     padding-top: 60px;
-}
-
-html .navbar .container {
-    width: 100%;
-}
-
-.navbar .navbar-inner:after {
-    display: none;
-}
-
-.sub-nav {
-    display: block;
-    clear: both;
-    background: #eff2f8;
-    margin: 0;
-    position: relative;
-    left: -10px;
-    width: 100%;
-    padding: 10px;
-    box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
-    -webkit-box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
-}
-
-.sub-nav > li {
-    margin-right: 30px;
-    display: inline-block;
-}
-
-html .navbar a.brand, html .navbar .nav > li > a {
-    color: #FFF;
-    text-shadow: none;
-}
-
-.dropdown-toggle {
-    color:      #3f5264;
-    font-size:  13px
-}
-
-.navbar-fixed-top .navbar-inner{
-    background:         #3f5264;
-    box-shadow:         none;
-    -webkit-box-shadow: none;
-}
-
-.dropdown-menu {
-    border-radius: 0;
-    -webkit-border-radius: 0;
-    box-shadow: 0 0 4px rgba(0,0,0,0.2);
-    -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.2);
-    border: none;
-}
-
-.dropdown-submenu > .dropdown-menu {
-    border-radius: 0;
-    -webkit-border-radius: 0;
-}
-
-html .dropdown-menu li a:hover,  html .dropdown-submenu:hover > a{
-    background: #2FA6E0;
-}
-
-.dropdown.new-cell-menu {
-    margin:  10px 0;
-    display: inline-block;
-}
-
-.insert-cell-indicator {
-    color:       #FFF;
-    width:       7px;
-    cursor:      pointer;
-    display:     inline-block;
-    padding:     2px 5px;
-    font-size:   13px;
-    background:  #2FA6E0;
-    font-weight: bold;
-    white-space: nowrap;
-}
-
-.insert-cell-indicator.expanded {
-    width: auto;
-}
-
-.bkcell {
-    margin-bottom:  10px;
-}
-
-.bkcell.code-cell-area, .text-cell {
-    padding: 20px;
-    border: solid 1px #CCC;
-}
-
-.bkcell bk-code-cell-input-menu .dropdown {
-    float:          left;
-    z-index:        99;
-    position:       relative;
-    padding-bottom: 20px;
-}
-
-.code-cell-hidden {
-    padding-top: 20px;
-}
-
-.toggle-menu {
-    top:        20px;
-    right:      20px;
-    position:   absolute;
-}
-
-.cell-menu-item {
-    float:      right;
-    cursor:     pointer;
-    height:     24px;
-    padding:    0 15px;
-}
-
-.cell-menu-item.disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
-.cell-menu-item:hover {
-    background-color: #F5F5F5;
-}
-
-.delete-cell {
-    background: url(/beaker/app/images/trash@2x.png) no-repeat center;
-    background-size: 9px;
-}
-
-.move-cell-up {
-    background: url(/beaker/app/images/up@2x.png) no-repeat center;
-    background-size: 8px;
-}
-
-.move-cell-down {
-    background: url(/beaker/app/images/down@2x.png) no-repeat center;
-    background-size: 8px;
-}
-
-.cell-dropdown {
-    background: url(/beaker/app/images/menu@2x.png) no-repeat center;
-    background-size: 3px;
-}
-
-bk-section-cell, bk-text-cell {
-    padding: 20px;
-}
-
-.bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
-    margin-top: -20px;
-}
-
-bk-cell > .bkcell {
-    position: relative;
-}
-
-bk-code-cell .code-cell-output {
-    margin:     20px -20px -10px;
-    padding:    0 20px;
-    border-top: solid 1px #CCC;
 }
 
 ul.cell-output-labels {
@@ -193,25 +34,6 @@ ul.cell-output-labels {
 
 .notebook-container {
     margin-top: 10px;
-}
-
-.navbar .nav > li > a:hover {
-    color: #FFF;
-}
-
-.navbar .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle {
-    background: transparent;
-}
-
-.navbar .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle {
-    color: #FFF;
-}
-
-bk-output-display pre {
-    border:     none;
-    margin:     0;
-    padding:    0;
-    background: transparent;
 }
 
 .cell-output-labels li {

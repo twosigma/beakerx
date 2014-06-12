@@ -14,8 +14,6 @@
     limitations under the License.
 -->
  
-
-
 #Beaker - the data scientist's laboratory
 
 Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.
@@ -70,9 +68,10 @@ Plugin specifications:
 
 ##Open source
 Beaker's full source code and documentation is available under the Apache 2.0 license.  Beaker's sharing feature uses a server with its own [repository](https://github.com/twosigma/beaker-sharing-server).
-
  
 #Build and run instructions
+
+[![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
 
 Users should download beaker from [BeakerNotebook.com](http://beakernotebook.com)
 

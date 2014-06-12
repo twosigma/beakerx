@@ -40,3 +40,8 @@ task run (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['run']
 }
+
+task assemble (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['assemble']
+}

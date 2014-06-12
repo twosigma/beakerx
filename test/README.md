@@ -5,7 +5,7 @@ Enclosed are a set of integration tests powered off of https://github.com/mojote
 ### Installing
 
 * Install node via http://nodejs.org/
-* Install chromedriver via https://code.google.com/p/selenium/wiki/ChromeDriver
+* Download chromedriver via https://code.google.com/p/selenium/wiki/ChromeDriver, put it in your PATH
 * Run `$ npm install`
 
 ### Running the tests

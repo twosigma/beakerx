@@ -3,7 +3,7 @@ beaker/*
 node_modules
 core/nginx/bin
 core/src/main/web/vendor/bower_components
-core/src/main/web/template/version.html
+core/src/main/web/app/template/version.html
 shared/src/main/dist/
 core/src/main/dist/
 core/config/plugins/

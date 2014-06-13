@@ -65,6 +65,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Map<String, String> pluginLocations;
   private final Map<String, String> pluginOptions;
   private final Map<String, String[]> pluginEnvps;
+  private final String version;
+  private final String buildTime;
 
   private String hash(String password) {
     return DigestUtils.shaHex(password + getPasswordSalt());
@@ -146,6 +148,9 @@ public class DefaultBeakerConfig implements BeakerConfig {
       Process proc = Runtime.getRuntime().exec(cmd);
       proc.waitFor();
     }
+
+    this.version = utils.readFile(this.installDir + "/config/version");
+    this.buildTime = utils.readFile(this.installDir + "/config/build_time");
   }
 
   @Override
@@ -289,5 +294,15 @@ public class DefaultBeakerConfig implements BeakerConfig {
               + hostname + ":" + (portBase + 1) + "/";
     }
     return initUrl;
+  }
+
+  @Override
+  public String getVersion() {
+    return this.version;
+  }
+
+  @Override
+  public String getBuildTime() {
+    return this.buildTime;
   }
 }

@@ -45,13 +45,9 @@ def gitDescribe() {
   return "git describe".execute().text.trim()
 }
 
-def versionHtml() {
-  def buildTime = new Date().format("yyyy-MM-dd HH:mm z")
-  return "<div>build time: " + buildTime + "<br>" + "version: " + gitDescribe() + "<br></div>\n"
-}
-
 task writeVersion << {
-  new File(coreDir, 'src/main/web/app/template/version.html').write(versionHtml())
+  new File(coreDir, 'config/version').write(gitDescribe());
+  new File(coreDir, 'config/build_time').write(new Date().format("yyyy-MM-dd HH:mm z"));
 }
 
 clean.dependsOn(":core:clean")

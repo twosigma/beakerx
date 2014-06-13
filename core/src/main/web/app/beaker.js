@@ -261,6 +261,19 @@
         });
       }
     });
+
+    beaker.run(function(bkUtils, $rootScope) {
+      bkUtils.getVersionInfo().then(function(versionInfo) {
+        window.beaker.version = versionInfo.version;
+        window.beaker.buildTime = versionInfo.buildTime;
+        $rootScope.getVersion = function() {
+          return window.beaker.version;
+        };
+        $rootScope.getBuildTime = function() {
+          return window.beaker.buildTime;
+        };
+      });
+    });
   };
   var bootstrapBkApp = function() {
     // make sure requirejs reports error

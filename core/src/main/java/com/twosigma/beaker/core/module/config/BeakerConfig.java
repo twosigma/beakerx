@@ -154,4 +154,14 @@ public interface BeakerConfig {
    * @return
    */
   public String getBaseURL() throws UnknownHostException;
+  /**
+   * version
+   * @return
+   */
+  public String getVersion();
+  /**
+   * build time
+   * @return
+   */
+  public String getBuildTime();
 }

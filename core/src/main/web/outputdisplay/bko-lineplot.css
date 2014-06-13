@@ -1,4 +1,4 @@
-.renderdiv {
+.lineplot-renderdiv {
     background-color: #FEFEFE;
     border: 1px solid #000000;
     /*
@@ -8,7 +8,6 @@
     width: 1200px;
     height: 350px;
 }
-
 .lineplot-line {
     opacity: 0.75;
     pointer-events: none;
@@ -66,6 +65,13 @@
     width: auto;
     height: auto;
     border-radius: 5px;
+}
+
+.lineplot-pointrect{
+    
+}
+.lineplot-pointcircle{
+    
 }
 
 .lineplot-locatebox {

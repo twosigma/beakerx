@@ -157,8 +157,11 @@ define(function(require, exports, module) {
       return bkHelper.fcall(function() {
         try {
           //modelOutput.result = "" + eval(code);
+          
+          modelOutput.result = combplotTest;
+          /*
           modelOutput.result = {
-              "type": "LinePlot", // TimePlot
+              "type": "LinePlot",
               "plotTitle": "Dummy Line Plot",
               //"showLegend": true, 
               "xLabel": "X Label",
@@ -166,17 +169,8 @@ define(function(require, exports, module) {
               "xCursor": { style: "solid", color: "#003366", width: 3},
               "yCursor": { style: "dash", color: "#003366", width: 2 },
               "data": testdata // automated testdata
-              /*
-              [
-                {
-                  "legend_title": "DummyLine",
-                  "x": [1200000000000, 1300000000000, 1400000000000, 1500000000000],
-                  "y": [100,200,350, 444],
-                  "color": "#FFC050"
-                }
-              ]
-              */
            };
+           */
         } catch (err) {
           modelOutput.result = {
             type: "BeakerDisplay",

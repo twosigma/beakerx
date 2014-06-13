@@ -1,1 +1,2 @@
 includeFlat 'shared'
+includeFlat 'test'

@@ -264,8 +264,14 @@
 
     beaker.run(function(bkUtils, $rootScope) {
       bkUtils.getVersionInfo().then(function(versionInfo) {
-        $rootScope.version = versionInfo.version;
-        $rootScope.buildTime = versionInfo.buildTime;
+        window.beaker.version = versionInfo.version;
+        window.beaker.buildTime = versionInfo.buildTime;
+        $rootScope.getVersion = function() {
+          return window.beaker.version;
+        };
+        $rootScope.getBuildTime = function() {
+          return window.beaker.buildTime;
+        };
       });
     });
   };

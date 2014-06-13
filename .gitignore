@@ -3,10 +3,11 @@ beaker/*
 node_modules
 core/nginx/bin
 core/src/main/web/vendor/bower_components
-core/src/main/web/app/template/version.html
 shared/src/main/dist/
 core/src/main/dist/
 core/config/plugins/
+core/config/version
+core/config/build_time
 plugin/jvm/src/main/dist/
 *~
 .gradle

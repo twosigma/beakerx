@@ -69,6 +69,14 @@ public class UtilRest {
   }
 
   @GET
+  @Path("getVersionInfo")
+  @Produces(MediaType.APPLICATION_JSON)
+  public String getVersionInfo(@Context HttpServletRequest request) {
+    return "{\"buildTime\": \"" + this.bkConfig.getBuildTime() + "\","
+        + " \"version\":\"" + this.bkConfig.getVersion() + "\"}";
+  }
+
+  @GET
   @Path("allStackTraces")
   public List<Map<String, Object>> getAllStackTraces() {
     List<Map<String, Object>> out = new ArrayList<>();

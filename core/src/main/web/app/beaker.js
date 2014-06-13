@@ -261,6 +261,13 @@
         });
       }
     });
+
+    beaker.run(function(bkUtils, $rootScope) {
+      bkUtils.getVersionInfo().then(function(versionInfo) {
+        $rootScope.version = versionInfo.version;
+        $rootScope.buildTime = versionInfo.buildTime;
+      });
+    });
   };
   var bootstrapBkApp = function() {
     // make sure requirejs reports error

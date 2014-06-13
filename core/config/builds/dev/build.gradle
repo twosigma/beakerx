@@ -41,9 +41,23 @@ task cleanPlugins (type: Exec) {
   commandLine 'rm', '-rf', evalPluginDir.absolutePath
 }
 
+def gitDescribe() {
+  return "git describe".execute().text.trim()
+}
+
+def versionHtml() {
+  def buildTime = new Date().format("yyyy-MM-dd HH:mm z")
+  return "<div>build time: " + buildTime + "<br>" + "version: " + gitDescribe() + "<br></div>\n"
+}
+
+task writeVersion << {
+  new File(coreDir, 'src/main/web/app/template/version.html').write(versionHtml())
+}
+
 clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
 build.dependsOn(":core:build")
 build.dependsOn(":core:installApp")
+build.dependsOn(writeVersion)
 build.dependsOn(installPlugins)
 run.dependsOn(build)

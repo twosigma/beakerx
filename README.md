@@ -58,9 +58,7 @@ Beaker was designed from the beginning with flexibility in mind. All of the core
 
 Plugins are written in JavaScript and have the option to start a process on the back end server. For anything that uses only JavaScript, you can simply provide your users with the URL for the plugin, which they can load directly from the UI.
 
-Plugin specifications:
-
-[Evaluator plugins](https://github.com/twosigma/beaker-notebook/wiki/Eval-plugin-spec), [Menu plugins](https://github.com/twosigma/beaker-notebook/wiki/Menu-plugin-spec), [Output display plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
+Plugin specifications: [Evaluator plugins](https://github.com/twosigma/beaker-notebook/wiki/Eval-plugin-spec), [Menu plugins](https://github.com/twosigma/beaker-notebook/wiki/Menu-plugin-spec), [Output display plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
 
 ##Open source
 Beaker's full source code and documentation is available under the Apache 2.0 license.  Beaker's sharing feature uses a server with its own [repository](https://github.com/twosigma/beaker-sharing-server).

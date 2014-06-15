@@ -35,7 +35,7 @@ The notebook format is based on blocks of code called cells. Cells can be added 
 
 ##Visualizations
 
-Visualizations create with libraries like ggplot2 and matplotlib will appear directly in the notebook along with your code.
+Visualizations created with libraries like ggplot2 and matplotlib will appear directly in the notebook along with your code.
 
 ##Inline documentation
 

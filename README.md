@@ -60,11 +60,7 @@ Plugins are written in JavaScript and have the option to start a process on the 
 
 Plugin specifications:
 
-[Evaluator plugins](https://github.com/twosigma/beaker-notebook/wiki/Eval-plugin-spec)
-
-[Menu plugins](https://github.com/twosigma/beaker-notebook/wiki/Menu-plugin-spec)
-
-[Output display plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
+[Evaluator plugins](https://github.com/twosigma/beaker-notebook/wiki/Eval-plugin-spec), [Menu plugins](https://github.com/twosigma/beaker-notebook/wiki/Menu-plugin-spec), [Output display plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
 
 ##Open source
 Beaker's full source code and documentation is available under the Apache 2.0 license.  Beaker's sharing feature uses a server with its own [repository](https://github.com/twosigma/beaker-sharing-server).
@@ -75,10 +71,4 @@ Beaker's full source code and documentation is available under the Apache 2.0 li
 
 Users should download beaker from [BeakerNotebook.com](http://beakernotebook.com)
 
-Developers, see below for how to build from source.
-
-[Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run)
-
-[Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run)
-
-[Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run)
+Developers, see the page for your platform for how to build from source: [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run), [Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run), [Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run)

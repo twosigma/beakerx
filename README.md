@@ -27,7 +27,7 @@ Beaker is currently in early beta release and is not yet production quality. We 
 
 We currently provide support for Python, R, Julia, Groovy, Ruby, JavaScript, HTML, Markdown, and Latex.
 
-Beaker is built with a plugin-based architecture, so additional languages are easily added.
+Beaker has a plugin-based architecture, so additional languages are easily added.
 
 ##Iterative exploration
 

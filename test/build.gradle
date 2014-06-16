@@ -15,11 +15,5 @@
  */
 
 task check (type: Exec) {
-  commandLine 'npm', 'start'
+  commandLine './runner'
 }
-
-task (npmInstall, type: Exec) {
-  commandLine 'npm', 'install'
-}
-
-check.dependsOn npmInstall

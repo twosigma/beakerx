@@ -4,3 +4,4 @@ jdk:
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
+  - "java -jar test/server/selenium-server-standalone-2.42.2.jar &"

@@ -38,6 +38,7 @@
           '<div class="cell-menu-item move-cell-down" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && \'disabled\'"></div>'+
           '<div class="cell-menu-item move-cell-up" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && \'disabled\'"></div>'+
           '<div class="cell-menu-item delete-cell" ng-click="deleteCell()"></div>'+
+          '<div class="cell-menu-item loading-state" ng-if="cellmodel.type==\'code\' && !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}} <div class="loading-spinner rotating"></div></div>'+
           '</div>'+
           '<div ng-if="isDebugging()">' +
           '[Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}} ' +
@@ -55,6 +56,8 @@
         cellmodel: "="
       },
       controller: function($scope, $element) {
+        $scope.cellmodel.evaluatorReader = false;
+
         var getBkBaseViewModel = function() {
           return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel();
         };

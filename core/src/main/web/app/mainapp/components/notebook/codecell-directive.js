@@ -115,9 +115,7 @@
         $scope.updateUI = function(evaluator) {
           if ($scope.cm && evaluator) {
             $scope.cm.setOption("mode", evaluator.cmMode);
-            var bg = evaluator.background ? evaluator.background : "white";
-            $($scope.cm.getWrapperElement()).css("background", bg);
-            $scope.evaluatorReader = true;
+            $scope.cellmodel.evaluatorReader = true;
           }
         };
         $scope.$watch("getEvaluator()", function(newValue, oldValue) {

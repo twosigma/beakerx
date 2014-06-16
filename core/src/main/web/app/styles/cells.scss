@@ -20,6 +20,23 @@
     margin-bottom:  10px;
 }
 
+.loading-state {
+    color: #7E7E7E;
+    font-size: 11px;
+    line-height: 25px;
+}
+
+.loading-spinner {
+    top: 3px;
+    width: 15px;
+    margin: 0 -10px 0 10px;
+    height: 15px;
+    display: inline-block;
+    position: relative;
+    background: url(/beaker/app/images/loading@2x.png);
+    background-size: cover;
+}
+
 .bkcell.code-cell-area, .text-cell {
     padding: 20px;
     border: solid 1px #CCC;

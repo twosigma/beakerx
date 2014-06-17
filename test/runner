@@ -15,12 +15,14 @@
 # limitations under the License.
 
 import os
+import sys
 
 # XXX should wait until servers finish initialization
 os.system("../core/beaker.command &")
 os.system("java -jar server/selenium-server-standalone-2.42.2.jar &")
 
 os.system("npm install")
-os.system("npm start")
+result = os.system("npm start")
 
 os.system("killall java")
+sys.exit(result)

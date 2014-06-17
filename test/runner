@@ -22,3 +22,5 @@ os.system("java -jar server/selenium-server-standalone-2.42.2.jar &")
 
 os.system("npm install")
 os.system("npm start")
+
+os.system("killall java")

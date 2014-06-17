@@ -82,4 +82,3 @@ Developers, see below for how to build from source.
 [Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run)
 
 [Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run)
-

@@ -6,15 +6,14 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 before_script:
   - sudo add-apt-repository --yes ppa:nginx/stable
+  - sudo add-apt-repository --yes ppa:chris-lea/zeromq
+  - sudo add-apt-repository --yes ppa:marutter/rrutter
   - sudo apt-get update -q
   - sudo apt-get install nginx
-  - sudo add-apt-repository --yes ppa:chris-lea/zeromq
-  - sudo apt-get update
   - sudo apt-get install libzmq3-dbg libzmq3-dev libzmq3
   - sudo apt-get install python-pip python-dev
   - sudo pip install ipython jinja2 tornado
   - sudo pip install pyzmq
   - sudo apt-get install python-matplotlib python-scipy python-pandas
-  - sudo add-apt-repository --yes ppa:marutter/rrutter
-  - sudo apt-get update
   - sudo apt-get install r-base r-base-dev
+  - Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"

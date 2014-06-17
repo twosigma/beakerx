@@ -25,4 +25,6 @@ os.system("npm install")
 result = os.system("npm start")
 
 os.system("killall java")
+
+print("XXX calling sys.exit() with " + str(result) + ", type=" + str(type(result)))
 sys.exit(result)

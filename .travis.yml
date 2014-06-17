@@ -16,4 +16,4 @@ before_script:
   - sudo pip install pyzmq
   - sudo apt-get install python-matplotlib python-scipy python-pandas
   - sudo apt-get install r-base r-base-dev
-  - Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"
+  - sudo Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"

@@ -5,6 +5,6 @@ before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 before_script:
-  - sudo add-apt-repository ppa:nginx/stable
+  - sudo add-apt-repository --yes ppa:nginx/stable
   - sudo apt-get update -q
   - sudo apt-get install nginx

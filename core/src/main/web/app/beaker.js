@@ -97,18 +97,18 @@
       'bk.core',
       'bk.evaluatePluginManager',
       'bk.controlPanel',
-      'bk.mainApp',
+      'bk.embedApp',
       'bk.debug'
     ]);
 
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
       $routeProvider.when('/session/:sessionId', {
-        template: "<bk-main-app></bk-main-app>"
+        template: "<bk-embed-app></bk-embed-app>"
       }).when('/open', {
-            template: "<bk-main-app></bk-main-app>"
+            template: "<bk-embed-app></bk-embed-app>"
           }).when('/open/:uri', {
-            template: "<bk-main-app></bk-main-app>"
+            template: "<bk-embed-app></bk-embed-app>"
           }).when('/control', {
             template: "<bk-control-panel></bk-control-panel>"
           }).otherwise({

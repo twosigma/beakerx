@@ -93,25 +93,11 @@
   var setupBeakerConfigAndRun = function() {
 
     var beaker = angular.module('beaker', [
-      'ngRoute',
       'bk.core',
       'bk.evaluatePluginManager',
       'bk.embedApp',
       'bk.debug'
     ]);
-
-    // setup routing. the template is going to replace ng-view
-    beaker.config(function($routeProvider) {
-      $routeProvider.when('/session/:sessionId', {
-        template: "<bk-embed-app></bk-embed-app>"
-      }).when('/open', {
-            template: "<bk-embed-app></bk-embed-app>"
-          }).when('/open/:uri', {
-            template: "<bk-embed-app></bk-embed-app>"
-          }).otherwise({
-            redirectTo: "/control"
-          });
-    });
 
     beaker.config(function(bkRecentMenuProvider) {
       var recentMenuServer = {

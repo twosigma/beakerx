@@ -57,15 +57,6 @@
       templateUrl: "./app/embedapp/embedapp.html",
       scope: {},
       controller: function($scope) {
-        var showStatusMessage = function(message) {
-          $scope.message = message;
-        };
-        var showTransientStatusMessage = function(message) {
-          showStatusMessage(message);
-          bkUtils.delay(500).then(function() {
-            showStatusMessage("");
-          });
-        };
         var evaluatorMenuItems = [];
 
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
@@ -114,7 +105,6 @@
           };
           var loadNotebookModelAndResetSession = function(
               notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
-            $scope.loading = true;
             addScrollingHack();
             bkSessionManager.reset.apply(this, arguments);
             var isOpeningExistingSession = !!sessionId;
@@ -128,7 +118,6 @@
             if (!isOpeningExistingSession) {
               bkHelper.evaluate("initialization");
             }
-            $scope.loading = false;
           };
           return {
             openUri: function(notebookUri, uriType, readOnly, format, retry, retryCountMax) {
@@ -136,7 +125,6 @@
                 bkCoreManager.show1ButtonModal("Failed to open notebook, notebookUri is empty");
                 return;
               }
-              $scope.loading = true;
               if (retryCountMax === undefined) {
                 retryCountMax = 100;
               }
@@ -174,21 +162,8 @@
                   bkCoreManager.gotoControlPanel();
                 });
               }).finally(function() {
-                $scope.loading = false;
               });
             },
-          fromSession: function(sessionId) {
-            bkSession.load(sessionId).then(function(session) {
-              var notebookUri = session.notebookUri;
-              var uriType = session.uriType;
-              var readOnly = session.readOnly;
-              var format = session.format;
-              var notebookModel = angular.fromJson(session.notebookModelJson);
-              var edited = session.edited;
-              loadNotebookModelAndResetSession(
-                  notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
-            });
-          },
           defaultNotebook: function() {
             bkUtils.getDefaultNotebook().then(function(notebookModel) {
               var notebookUri = null;
@@ -308,21 +283,17 @@
           };
 
           var saveStart = function() {
-            showStatusMessage("Saving");
           };
           var saveDone = function(ret) {
             bkSessionManager.setNotebookModelEdited(false);
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
             document.title = bkSessionManager.getNotebookTitle();
-            showTransientStatusMessage("Saved");
           };
 
           var saveFailed = function (msg) {
             if (msg === "cancelled") {
-              showTransientStatusMessage("Cancelled");
             } else {
               bkCoreManager.show1ButtonModal(msg, "Save Failed");
-              showTransientStatusMessage("Save Failed");
             }
           };
 

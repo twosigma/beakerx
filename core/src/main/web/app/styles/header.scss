@@ -14,12 +14,18 @@
  *  limitations under the License.
  */
 
-html .navbar .container {
-    width: 100%;
-}
+html .navbar {
+    .container {
+        width: 100%;
+    }
 
-.navbar .navbar-inner:after {
-    display: none;
+    .navbar-inner:after {
+        display: none;
+    }
+
+    .brand {
+        padding-bottom: 7px;
+    }
 }
 
 .sub-nav {
@@ -30,7 +36,7 @@ html .navbar .container {
     position: relative;
     left: -10px;
     width: 100%;
-    padding: 10px;
+    padding: 10px 10px 8px;
     box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
     -webkit-box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
 }

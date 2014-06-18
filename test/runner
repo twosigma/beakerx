@@ -16,15 +16,20 @@
 
 import os
 import sys
+import subprocess
 
 # XXX should wait until servers finish initialization
-os.system("../core/beaker.command &")
-os.system("java -jar server/selenium-server-standalone-2.42.2.jar &")
+
+beaker = subprocess.Popen(["../core/beaker.command"])
+
+selenium = subprocess.Popen(["java", "-jar",
+                             "server/selenium-server-standalone-2.42.2.jar"])
 
 os.system("npm install")
 result = os.system("npm start")
 
-os.system("killall java")
+beaker.terminate()
+selenium.terminate()
 
-print("XXX calling sys.exit() with " + str(result) + ", type=" + str(type(result)))
-sys.exit(result)
+if result:
+    sys.exit(1)

@@ -25,7 +25,6 @@
     'bk.utils',
     'bk.commonUi',
     'bk.core',
-    'bk.session',
     'bk.sessionManager',
     'bk.cellMenuPluginManager',
     'bk.notebookVersionManager',
@@ -43,7 +42,6 @@
   module.directive('bkEmbedApp', function(
       bkUtils,
       bkCoreManager,
-      bkSession,
       bkSessionManager,
       bkCellMenuPluginManager,
       bkNotebookVersionManager,

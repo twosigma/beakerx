@@ -28,7 +28,6 @@
     'bk.core',
     'bk.session',
     'bk.sessionManager',
-    'bk.menuPluginManager',
     'bk.cellMenuPluginManager',
     'bk.notebookVersionManager',
     'bk.evaluatorManager',
@@ -47,7 +46,6 @@
       bkCoreManager,
       bkSession,
       bkSessionManager,
-      bkMenuPluginManager,
       bkCellMenuPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
@@ -439,9 +437,6 @@
           stopAutoBackup();
           intervalID = setInterval(bkSessionManager.backup, 60 * 1000);
         };
-        $scope.getMenus = function() {
-          return bkMenuPluginManager.getMenus();
-        };
         var keydownHandler = function(e) {
           if (e.ctrlKey && (e.which === 83)) {
             e.preventDefault();
@@ -511,14 +506,6 @@
         // ensure an existing session is cleared so that the empty notebook model
         // makes the UI is blank immediately (instead of showing leftover from a previous session)
         bkSessionManager.clear();
-
-        bkMenuPluginManager.clear();
-        bkUtils.httpGet('../beaker/rest/util/getMenuPlugins')
-            .success(function(menuUrls) {
-              menuUrls.forEach(function(url) {
-                bkMenuPluginManager.loadMenuPlugin(url);
-              });
-            });
         bkCellMenuPluginManager.reset();
 
         (function() {

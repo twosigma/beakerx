@@ -174,46 +174,17 @@
       }
     });
 
-    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkDebug) {
+    beaker.run(function($document, bkUtils, bkCoreManager, bkDebug) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
         gotoControlPanel: function() {
-          return $location.path("/control");
         },
         openNotebook: function(notebookUri, uriType, readOnly, format) {
-          if (!notebookUri) {
-            return;
-          }
-
-          bkUtils.log("open", {
-            uri: notebookUri,
-            user: user
-          });
-
-          var routeParams = {
-            uri: notebookUri
-          };
-          if (uriType) {
-            routeParams.type = uriType;
-          }
-          if (readOnly) {
-            routeParams.readOnly = true;
-          }
-          if (format) {
-            routeParams.format = format;
-          }
-          return $location.path("/open").search(routeParams);
         },
         newSession: function() {
-          if ($location.$$path === "/session/new") {
-            return $route.reload();
-          } else {
-            return $location.path("/session/new");
-          }
         },
         openSession: function(sessionId) {
-          return $location.path("session/" + sessionId);
         }
       };
       bkCoreManager.init(beakerRootOp);

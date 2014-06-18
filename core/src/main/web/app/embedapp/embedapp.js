@@ -43,7 +43,6 @@
    * - menus + plugins + notebook(notebook model + evaluator)
    */
   module.directive('bkEmbedApp', function(
-      $routeParams,
       bkUtils,
       bkCoreManager,
       bkSession,
@@ -553,23 +552,12 @@
         bkCellMenuPluginManager.reset();
 
         (function() {
-          var sessionId = $routeParams.sessionId;
-          if (sessionId) {
-            if (sessionId === "new") {
-              loadNotebook.defaultNotebook();
-            } else if (sessionId === "none") {
-              // do nothing
-            } else {
-              loadNotebook.fromSession(sessionId);
-            }
-          } else { // open
-            var notebookUri = $routeParams.uri;
-            var uriType = $routeParams.type;
-            var readOnly = $routeParams.readOnly;
-            var format = $routeParams.format;
+            var notebookUri = "/Users/alee/abcd.bkr";
+            var uriType = "file";
+            var readOnly = false;
+            var format = "bkr";
             var retry = true;
             loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry);
-          }
         })();
       }
     };

@@ -22,7 +22,6 @@
 (function() {
   'use strict';
   var module = angular.module('bk.embedApp', [
-    'ngRoute',
     'bk.utils',
     'bk.commonUi',
     'bk.core',

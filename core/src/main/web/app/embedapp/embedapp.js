@@ -55,7 +55,9 @@
     return {
       restrict: 'E',
       templateUrl: "./app/embedapp/embedapp.html",
-      scope: {},
+      scope: {
+        notebookUri: "@"
+      },
       controller: function($scope) {
         var evaluatorMenuItems = [];
 
@@ -520,7 +522,7 @@
         bkCellMenuPluginManager.reset();
 
         (function() {
-            var notebookUri = "/Users/alee/abcd.bkr";
+            var notebookUri = $scope.notebookUri;
             var uriType = "file";
             var readOnly = false;
             var format = "bkr";

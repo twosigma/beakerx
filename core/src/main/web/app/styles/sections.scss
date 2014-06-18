@@ -18,3 +18,40 @@
   border-left:  solid 1px #CCC;
   padding-left: 20px;
 }
+
+.section0, .section1, .section2, .section3, .section4, .section5 {
+  color:        #47474A;
+  font-family:  $font-family-primary-bold;
+}
+
+.section-toggle {
+  color: $highlight-blue;
+  cursor: pointer;
+
+  font-size: 22px;
+  font-family: $font-family-primary-bold;
+}
+
+.section0 {
+  font-size: 30px;
+}
+
+.section1 {
+  font-size: 26px;
+}
+
+.section2 {
+  font-size: 24px;
+}
+
+.section3 {
+  font-size: 22px;
+}
+
+.section4 {
+  font-size: 20px;
+}
+
+.section5 {
+  font-size: 18px;
+}

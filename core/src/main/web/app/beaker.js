@@ -96,7 +96,6 @@
       'ngRoute',
       'bk.core',
       'bk.evaluatePluginManager',
-      'bk.controlPanel',
       'bk.embedApp',
       'bk.debug'
     ]);
@@ -109,8 +108,6 @@
             template: "<bk-embed-app></bk-embed-app>"
           }).when('/open/:uri', {
             template: "<bk-embed-app></bk-embed-app>"
-          }).when('/control', {
-            template: "<bk-control-panel></bk-control-panel>"
           }).otherwise({
             redirectTo: "/control"
           });

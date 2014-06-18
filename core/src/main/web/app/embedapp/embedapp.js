@@ -111,7 +111,7 @@
                 addEvaluator(notebookModel.evaluators[i], !isOpeningExistingSession);
               }
             }
-            document.title = bkSessionManager.getNotebookTitle();
+            //document.title = bkSessionManager.getNotebookTitle();
             if (!isOpeningExistingSession) {
               bkHelper.evaluate("initialization");
             }
@@ -284,7 +284,7 @@
           var saveDone = function(ret) {
             bkSessionManager.setNotebookModelEdited(false);
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
-            document.title = bkSessionManager.getNotebookTitle();
+            //document.title = bkSessionManager.getNotebookTitle();
           };
 
           var saveFailed = function (msg) {
@@ -412,15 +412,15 @@
           return bkSessionManager.isNotebookModelEdited();
         };
         $scope.$watch('isEdited()', function(edited, oldValue) {
-          if (edited) {
-            if (document.title[0] !== '*') {
-              document.title = "*" + document.title;
-            }
-          } else {
-            if (document.title[0] === '*') {
-              document.title = document.title.substring(1, document.title.length - 1);
-            }
-          }
+//          if (edited) {
+//            if (document.title[0] !== '*') {
+//              document.title = "*" + document.title;
+//            }
+//          } else {
+//            if (document.title[0] === '*') {
+//              document.title = document.title.substring(1, document.title.length - 1);
+//            }
+//          }
         });
 
         var intervalID = null;

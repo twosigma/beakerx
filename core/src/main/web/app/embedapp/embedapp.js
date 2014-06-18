@@ -476,15 +476,6 @@
 //        }
         };
         startAutoBackup();
-        $scope.gotoControlPanel = function(event) {
-          if (bkUtils.isMiddleClick(event)) {
-            window.open("./");
-          } else {
-            bkSessionManager.backup().then(function() {
-              bkCoreManager.gotoControlPanel();
-            });
-          }
-        };
 
         bkUtils.addConnectedStatusListener(function(msg) {
           if (msg.successful !== !$scope.disconnected) {

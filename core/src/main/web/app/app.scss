@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+@import "styles/variables";
+@import "styles/fonts";
 @import "styles/header";
 @import "styles/dropdowns";
 @import "styles/cells";
@@ -24,9 +26,10 @@ root {
     display: block;
 }
 
-body {
+html body {
     margin: 10px;
     padding-top: 60px;
+    font-family: $font-family-primary;
 }
 
 ul.cell-output-labels {

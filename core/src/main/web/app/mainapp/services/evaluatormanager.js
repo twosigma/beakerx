@@ -49,7 +49,6 @@
                 evaluatorSettings.view.cm = {};
               }
               evaluatorSettings.view.cm.mode = evaluator.cmMode;
-              evaluatorSettings.view.cm.background = evaluator.background;
 
               evaluators[evaluatorSettings.name] = evaluator;
               return evaluator;

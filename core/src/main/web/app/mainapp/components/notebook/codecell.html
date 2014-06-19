@@ -13,15 +13,23 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div evaluator-type="{{ cellmodel.evaluator }}" ng-class="evaluatorReader && 'evaluator-ready'">
-  <div class="bkcell" ng-show="isShowInput()">
-    <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
-    <bk-code-cell-input-menu></bk-code-cell-input-menu>
+<div class='evaluator' evaluator-type="{{ cellmodel.evaluator }}" ng-class="evaluatorReader && 'evaluator-ready'">
+  <div class="bkcell code-cell-area">
+    <div class="code-cell-hidden" ng-if="!isShowInput()"></div>
+    <div class="code-cell-input" ng-show="isShowInput()">
+        <bk-code-cell-input-menu></bk-code-cell-input-menu>
+        <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
+        <a href="#" class="evaluate-script" ng-click="evaluate()" eat-click>Run</a>
+    </div>
+    <div class="code-cell-output">
+        <ul class="cell-output-labels">
+          <li><b>Cell Output</b></li>
+          <li ng-show="!isShowOutput()" class="no-output">No output</li>
+        </ul>
+        <bk-code-cell-output ng-show="isShowOutput()"
+            model="cellmodel.output"
+            evaluator-id="{{ cellmodel.evaluator }}">
+        </bk-code-cell-output>
+    </div>
   </div>
-  <span ng-show="isShowOutput()">
-    <bk-code-cell-output
-        model="cellmodel.output"
-        evaluator-id="{{ cellmodel.evaluator }}">
-    </bk-code-cell-output>
-  </span>
 </div>

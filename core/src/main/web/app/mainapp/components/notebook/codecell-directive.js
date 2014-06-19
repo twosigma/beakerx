@@ -115,9 +115,7 @@
         $scope.updateUI = function(evaluator) {
           if ($scope.cm && evaluator) {
             $scope.cm.setOption("mode", evaluator.cmMode);
-            var bg = evaluator.background ? evaluator.background : "white";
-            $($scope.cm.getWrapperElement()).css("background", bg);
-            $scope.evaluatorReader = true;
+            $scope.cellmodel.evaluatorReader = true;
           }
         };
         $scope.$watch("getEvaluator()", function(newValue, oldValue) {
@@ -371,24 +369,8 @@
         var inputMenuDiv = element.find(".bkcell").first();
         scope.popupMenu = function(event) {
           var menu = inputMenuDiv.find('.dropdown').first();
-          var clicked = event && event.hasOwnProperty("clientY");
-          menu.css("top", clicked ? event.clientY : "");
-          menu.css("left", clicked ? event.clientX - 150 : "");
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
-        inputMenuDiv.click(function(event) {
-          if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
-            scope.popupMenu(event);
-            event.stopPropagation();
-          }
-        });
-        inputMenuDiv.mousemove(function(event) {
-          if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
-            inputMenuDiv.css('cursor', 'pointer');
-          } else {
-            inputMenuDiv.css('cursor', 'default');
-          }
-        });
 
         if (scope.isInitializationCell()) {
           element.closest(".bkcell").addClass("initcell");

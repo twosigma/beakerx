@@ -29,6 +29,10 @@ module.exports = function() {
       });
     },
 
+    findInput: function() {
+      return this.driver.executeScript("return $('"+this.root+" .code-cell-input:visible').length")
+    },
+
     getResult: function() {
       return this.find('bk-output-display').then(function(elm) {
         return elm.getText();

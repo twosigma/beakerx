@@ -14,100 +14,76 @@
  *  limitations under the License.
  */
 
+@import "styles/variables";
+@import "styles/fonts";
+@import "styles/header";
+@import "styles/dropdowns";
+@import "styles/cells";
+@import "styles/sections";
+@import "styles/animations";
+
 root {
     display: block;
 }
 
-body {
+html body {
     margin: 10px;
-}
-
-body {
     padding-top: 60px;
+    font-family: $font-family-primary;
 }
 
-.bkcell {
-    padding-right: 8px;
-    padding-top: 5px;
-    margin-bottom: 10px;
-    border-right: 1px solid #999999;
+ul.cell-output-labels {
+    list-style: none;
+    margin: 0;
 }
 
-.cell-bracket-initialization {
-    border-right: 2px solid #00FF00;
+.notebook-container {
+    margin-top: 10px;
 }
 
-.cell-bracket-selected {
-    border-right: 2px solid #009AA6;
-    box-shadow: 5px 0 10px -5px #009AA6;
+.cell-output-labels li {
+    display:    inline-block;
+    padding:    15px 15px 5px 0;
+    font-size:  13px;
 }
 
-.initcell {
-    border-right: 2px solid #009AA6;
+.cell-output-labels .no-output {
+    color: #9E9E9E
 }
 
-.bk-hr {
-    border: 0;
-    height: 10px;
-    color: #009AA6;
-    background-color: #009AA6;
-    opacity: 0.0;
-    box-shadow: inset 0 0 3px 3px #FFF;
-    margin: 0px;
-    text-align: center;
+.output_subarea {
+    background: transparent;
+    border: none;
 }
 
-.bk-hr:after {
-    content: "insert cell";
-    display: inline-block;
-    position: relative;
-    top: -0.5em;
-    font-size: 1.0em;
-    padding: 0 0.25em 0 0.25em;
-    background: rgba(255, 255, 255, 0.8);
+.bkcell a.evaluate-script {
+    color:      #FFF;
+    display:    inline-block;
+    padding:    7px 26px;
+    font-size:  13px;
+    background: #949494;
+    margin-top: 20px;
 }
 
-.section0 {
-    font-size: 28pt;
-    font-weight: bold;
-    color: #365F91;
+.bkcell a.evaluate-script:hover {
+    text-decoration: none;
 }
 
-.section1 {
-    font-size: 24pt;
-    font-weight: bold;
-    color: #4F81BD;
+.bkcell .CodeMirror {
+    clear: both;
 }
 
-.section2 {
-    font-size: 20pt;
-    font-weight: normal;
-    text-decoration: underline;
-    color: #4F81BD;
+.CodeMirror-linenumber {
+    text-align: left;
 }
 
-.section3 {
-    font-size: 16pt;
-    font-weight: normal;
-    font-style: italic;
-    color: #4F81BD;
-}
-
-.section4 {
-    font-size: 14pt;
-    font-weight: normal;
-    color: #4F81BD;
-}
-
-.section5 {
-    font-size: 12pt;
-    font-weight: normal;
-    color: #4F81BD;
+.CodeMirror-gutters {
+    border:             none;
+    background-color:   transparent;
 }
 
 .CodeMirror {
     height: auto;
-    border: 1px solid grey;
 }
 
 .tschartcontainer {

@@ -60,13 +60,21 @@ task (bowerInstall, type: Exec) {
   }
 }
 
+task (compileCss, type: Exec) {
+  commandLine 'npm', 'run-script', 'compile-css'
+}
+
 task (copyNginx, type: Exec) {
   commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx/bin'.split()
 }
 
 bowerInstall.dependsOn npmInstall
+compileCss.dependsOn npmInstall
+
 build.dependsOn bowerInstall
+build.dependsOn compileCss
 run.dependsOn bowerInstall
+
 run.dependsOn jar
 if (mac()) {
   build.dependsOn copyNginx

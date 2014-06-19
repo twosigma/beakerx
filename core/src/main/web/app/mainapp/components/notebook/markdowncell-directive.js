@@ -22,8 +22,6 @@
     return {
       restrict: 'E',
       template: "<div></div>",
-      controller: function($scope) {
-      },
       link: function(scope, element, attrs) {
         var div = element.find("div").first().get()[0];
         var options = {
@@ -32,16 +30,12 @@
           file: {
             defaultContent: scope.cellmodel.body
           },
+          button: false,
           clientSideStorage: false,
           autogrow: {
             minHeight: 50,
             maxHeight: false,
             scroll: true
-          },
-          string: {
-            togglePreview: 'Toggle Preview Mode(Alt+p)',
-            toggleEdit: 'Toggle Edit Mode(Alt+p)',
-            toggleFullscreen: 'Enter Fullscreen(Alt+f)'
           }
         };
         var editor = new EpicEditor(options).load();
@@ -52,10 +46,6 @@
           scope.cellmodel.mode = "edit";
         });
         editor.editorIframeDocument.addEventListener('keyup', function(e) {
-//                    if (e.ctrlKey && e.shiftKey && e.keyCode === 65) {
-//                        scope.newMarkdownCell();
-//                        return;
-//                    }
           scope.cellmodel.body = editor.getText();
           scope.$apply();
         });

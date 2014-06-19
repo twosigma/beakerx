@@ -55,3 +55,18 @@
     background: url(/beaker/app/images/menu@2x.png) no-repeat center;
     background-size: 3px;
 }
+
+.cell-evaluator-menu {
+    color:              $green;
+    cursor:             pointer;
+    display:            inline-block;
+    font-size:          12px;
+    background:         url(/beaker/app/images/down@2x.png) no-repeat center right;
+    padding-right:      13px;
+    background-size:    8px;
+
+    &:hover {
+        color: darken($green, 5%);
+    }
+}
+

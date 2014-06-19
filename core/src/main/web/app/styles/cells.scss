@@ -20,6 +20,15 @@
     margin-bottom:  10px;
 }
 
+bk-markdown-cell > div {
+    border:      solid 1px $cell-border;
+    padding-top: 20px;
+
+    &.focused, &:hover {
+        border: solid 1px $highlight-blue;
+    }
+}
+
 .loading-state {
     color: #7E7E7E;
     font-size: 11px;
@@ -39,7 +48,7 @@
 
 .bkcell.code-cell-area, .text-cell {
     padding: 20px;
-    border: solid 1px #CCC;
+    border: solid 1px $cell-border;
 }
 
 .bkcell bk-code-cell-input-menu .dropdown {

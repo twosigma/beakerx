@@ -1021,6 +1021,14 @@
       });
     }
 
+    self.previewerIframeDocument.addEventListener('click', function(e) {
+      self.emit('preview-clicked');
+    });
+
+    self.editor.addEventListener('click', function (e) {
+      self.emit('editor-clicked');
+    });
+
     self.editor.addEventListener('focus', function (e) {
       self.emit('focus');
     });

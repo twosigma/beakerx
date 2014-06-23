@@ -655,6 +655,8 @@ public class PluginServiceLocatorRest {
   public String getIPythonPassword(@QueryParam("pluginId") String pluginId)
   {
     PluginConfig pConfig = this.plugins.get(pluginId);
+    if (null == pConfig)
+      return "";
     return pConfig.password;
   }
 

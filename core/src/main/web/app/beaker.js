@@ -93,28 +93,11 @@
   var setupBeakerConfigAndRun = function() {
 
     var beaker = angular.module('beaker', [
-      'ngRoute',
       'bk.core',
       'bk.evaluatePluginManager',
-      'bk.controlPanel',
-      'bk.mainApp',
+      'bk.embedApp',
       'bk.debug'
     ]);
-
-    // setup routing. the template is going to replace ng-view
-    beaker.config(function($routeProvider) {
-      $routeProvider.when('/session/:sessionId', {
-        template: "<bk-main-app></bk-main-app>"
-      }).when('/open', {
-            template: "<bk-main-app></bk-main-app>"
-          }).when('/open/:uri', {
-            template: "<bk-main-app></bk-main-app>"
-          }).when('/control', {
-            template: "<bk-control-panel></bk-control-panel>"
-          }).otherwise({
-            redirectTo: "/control"
-          });
-    });
 
     beaker.config(function(bkRecentMenuProvider) {
       var recentMenuServer = {
@@ -174,46 +157,17 @@
       }
     });
 
-    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkDebug) {
+    beaker.run(function($document, bkUtils, bkCoreManager, bkDebug) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
         gotoControlPanel: function() {
-          return $location.path("/control");
         },
         openNotebook: function(notebookUri, uriType, readOnly, format) {
-          if (!notebookUri) {
-            return;
-          }
-
-          bkUtils.log("open", {
-            uri: notebookUri,
-            user: user
-          });
-
-          var routeParams = {
-            uri: notebookUri
-          };
-          if (uriType) {
-            routeParams.type = uriType;
-          }
-          if (readOnly) {
-            routeParams.readOnly = true;
-          }
-          if (format) {
-            routeParams.format = format;
-          }
-          return $location.path("/open").search(routeParams);
         },
         newSession: function() {
-          if ($location.$$path === "/session/new") {
-            return $route.reload();
-          } else {
-            return $location.path("/session/new");
-          }
         },
         openSession: function(sessionId) {
-          return $location.path("session/" + sessionId);
         }
       };
       bkCoreManager.init(beakerRootOp);

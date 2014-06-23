@@ -21,7 +21,7 @@
   'use strict';
   var module = angular.module("bk.debug", [
     "bk.angularUtils",
-    "bk.mainApp",
+    "bk.embedApp",
     'bk.cellMenuPluginManager',
     "bk.core",
     'bk.sessionManager',

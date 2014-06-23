@@ -1,0 +1,42 @@
+<!--
+    Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!-- Set the outer container to 100% so the fluid rows fill it.
+     I think this is not needed if we update to bootstrap v3. -->
+<div class="container" style="width: 100%;">
+  <div class="row-fluid">
+    <div class="span12">
+      <bk-notebook set-bk-notebook="setBkNotebook(bkNotebook)"></bk-notebook>
+    </div>
+  </div>
+
+  <!-- add a bunch of whitespace at the end to allow menus to show up -->
+  <div style="height: 300px"></div>
+
+</div>
+
+<!-- templates for typed cells -->
+<script type="text/ng-template" id="section-cell.html">
+  <bk-section-cell></bk-section-cell>
+</script>
+<script type="text/ng-template" id="text-cell.html">
+  <bk-text-cell></bk-text-cell>
+</script>
+<script type="text/ng-template" id="markdown-cell.html">
+  <bk-markdown-cell></bk-markdown-cell>
+</script>
+<script type="text/ng-template" id="code-cell.html">
+  <bk-code-cell cellmodel="cellmodel" cellmenu="cellview.menu"></bk-code-cell>
+</script>

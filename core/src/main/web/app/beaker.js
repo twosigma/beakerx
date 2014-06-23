@@ -179,7 +179,7 @@
       var lastAction = new Date();
       var beakerRootOp = {
         gotoControlPanel: function() {
-          return $location.path("/control");
+          return $location.path("/control").search({});
         },
         openNotebook: function(notebookUri, uriType, readOnly, format) {
           if (!notebookUri) {
@@ -209,11 +209,11 @@
           if ($location.$$path === "/session/new") {
             return $route.reload();
           } else {
-            return $location.path("/session/new");
+            return $location.path("/session/new").search({});
           }
         },
         openSession: function(sessionId) {
-          return $location.path("session/" + sessionId);
+          return $location.path("session/" + sessionId).search({});
         }
       };
       bkCoreManager.init(beakerRootOp);

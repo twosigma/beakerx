@@ -52,7 +52,7 @@
               "metric2": 1 // evaluation count
             });
           } else if (event === "tick") {
-            ga("send", "event", "tick", {
+            ga("send", "event", "tick", "tickAction", {
               "metric4": 1 // tick
             });
           }

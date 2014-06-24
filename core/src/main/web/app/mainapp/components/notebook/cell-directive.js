@@ -38,6 +38,7 @@
           '<div class="cell-menu-item move-cell-down" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && \'disabled\'"></div>'+
           '<div class="cell-menu-item move-cell-up" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && \'disabled\'"></div>'+
           '<div class="cell-menu-item delete-cell" ng-click="deleteCell()"></div>'+
+          '<div class="cell-menu-item expand-contract" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden && \'collapsed\'"></div>'+
           '<div class="cell-menu-item loading-state" ng-if="cellmodel.type==\'code\' && !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}} <div class="loading-spinner rotating"></div></div>'+
           '</div>'+
           '<div ng-if="isDebugging()">' +
@@ -113,6 +114,14 @@
         };
         $scope.getParentId = function() {
           return $scope.$parent.$parent.cellmodel ? $scope.$parent.$parent.cellmodel.id : 'root';
+        };
+
+        $scope.toggleCellInput = function() {
+          if ($scope.cellmodel.input.hidden) {
+            delete $scope.cellmodel.input.hidden;
+          } else {
+            $scope.cellmodel.input.hidden = true;
+          }
         };
 
         $scope.deleteCell = function() {

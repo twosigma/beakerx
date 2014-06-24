@@ -33,7 +33,7 @@
 }
 
 .cell-menu-item:hover {
-    background-color: #F5F5F5;
+    background-color: $highlight-blue;
 }
 
 .delete-cell {
@@ -50,6 +50,19 @@
     background: url(/beaker/app/images/down@2x.png) no-repeat center;
     background-size: 8px;
 }
+
+.expand-contract {
+    background: url(/beaker/app/images/collapse@2x.png) no-repeat center {
+        size: 11px;
+    }
+
+    &.collapsed {
+        background: url(/beaker/app/images/expand@2x.png) no-repeat center {
+            size: 11px;
+        }
+    }
+}
+
 
 .cell-dropdown {
     background: url(/beaker/app/images/menu@2x.png) no-repeat center;

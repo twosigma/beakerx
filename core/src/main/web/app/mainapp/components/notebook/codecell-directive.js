@@ -359,9 +359,11 @@
         });
         // cellmodel.body <-- CodeMirror
         var changeHandler = function(cm, e) {
+          scope.cellmodel.lineCount = cm.lineCount();
           scope.cellmodel.input.body = cm.getValue();
           bkUtils.refreshRootScope();
         };
+
         scope.cm.on("change", changeHandler);
 
         var inputMenuDiv = element.find(".bkcell").first();

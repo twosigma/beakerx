@@ -29,8 +29,15 @@ bk-markdown-cell > div {
     }
 }
 
+.mini-cell-stats {
+    top: 22px;
+    left: 20px;
+    color: $font-grey;
+    position: absolute;
+    font-size: 12px;
+}
 .loading-state {
-    color: #7E7E7E;
+    color: $font-grey;
     font-size: 11px;
     line-height: 25px;
 }

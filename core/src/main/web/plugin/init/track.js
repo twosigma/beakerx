@@ -38,18 +38,24 @@
         if (!_enabled) {
           return;
         }
-        if (ga && event === "open") {
-          var notebookType = obj.uri ? obj.uri.substring(0, obj.uri.indexOf(':/')) || "file" : "file";
-          ga("send", "event", "file", "open", notebookType, {
-            "dimension1": notebookType, // notebookType
-            "metric1": 1 // file open
-          });
-        } else if (ga && event === "evaluate") {
-          var pluginName = obj.plugin;
-          ga("send", "event", "notebook", "evaluate", pluginName, {
-            "dimension2": pluginName, // pluginName
-            "metric2": 1 // evaluation count
-          });
+        if (ga) {
+          if (event === "open") {
+            var notebookType = obj.uri ? obj.uri.substring(0, obj.uri.indexOf(':/')) || "file" : "file";
+            ga("send", "event", "file", "open", notebookType, {
+              "dimension1": notebookType, // notebookType
+              "metric1": 1 // file open
+            });
+          } else if (event === "evaluate") {
+            var pluginName = obj.plugin;
+            ga("send", "event", "notebook", "evaluate", pluginName, {
+              "dimension2": pluginName, // pluginName
+              "metric2": 1 // evaluation count
+            });
+          } else if (event === "tick") {
+            ga("send", "event", "tick", "tickAction", {
+              "metric4": 1 // tick
+            });
+          }
         }
       },
       isNeedPermission: function() {

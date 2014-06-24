@@ -33,7 +33,36 @@
 }
 
 .cell-menu-item:hover {
+    color: #FFF;
     background-color: $highlight-blue;
+
+    &.delete-cell {
+        background-image: url(/beaker/app/images/trash_white@2x.png);
+    }
+
+    &.move-cell-up {
+        background-image: url(/beaker/app/images/up_white@2x.png);
+    }
+
+    &.move-cell-down {
+        background-image: url(/beaker/app/images/down_white@2x.png);
+    }
+
+    &.expand-contract {
+        background-image: url(/beaker/app/images/collapse_white@2x.png);
+        &.collapsed {
+            background-image: url(/beaker/app/images/expand_white@2x.png);
+        }
+    }
+
+    &.cell-dropdown {
+        background-image: url(/beaker/app/images/menu_white@2x.png);
+    }
+
+
+    &.loading-state .loading-spinner {
+        background-image: url(/beaker/app/images/loading_white@2x.png);
+    }
 }
 
 .delete-cell {
@@ -57,12 +86,20 @@
     }
 
     &.collapsed {
-        background: url(/beaker/app/images/expand@2x.png) no-repeat center {
-            size: 11px;
-        }
+        background-image: url(/beaker/app/images/expand@2x.png);
     }
 }
 
+.loading-spinner {
+    top: 4px;
+    width: 15px;
+    margin: 0 -10px 0 10px;
+    height: 15px;
+    display: inline-block;
+    position: relative;
+    background-image: url(/beaker/app/images/loading@2x.png);
+    background-size: cover;
+}
 
 .cell-dropdown {
     background: url(/beaker/app/images/menu@2x.png) no-repeat center;

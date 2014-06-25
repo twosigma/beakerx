@@ -103,13 +103,40 @@
 
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
-      $routeProvider.when('/session/:sessionId', {
-        template: "<bk-main-app></bk-main-app>"
-      }).when('/open', {
-            template: "<bk-main-app></bk-main-app>"
-          }).when('/open/:uri', {
-            template: "<bk-main-app></bk-main-app>"
-          }).when('/control', {
+      var sessionRouteResolve = {};
+      var generateId = function() {
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        return _(_.range(6)).map(function() {
+          return possible.charAt(Math.floor(Math.random() * possible.length));
+        }).join('');
+      };
+      $routeProvider
+          .when('/session/new', {
+            redirectTo: function() {
+              var newSessionId = generateId();
+              sessionRouteResolve.isNewSession = function() {
+                return true;
+              };
+              return '/session/' + newSessionId;
+            }
+          })
+          .when('/session/:sessionId', {
+            template: "<bk-main-app></bk-main-app>",
+            resolve: sessionRouteResolve
+          })
+          .when('/open', {
+            redirectTo: function(routeParams, path, search) {
+              var newSessionId = generateId();
+              sessionRouteResolve.isOpen = function() {
+                return true;
+              };
+              sessionRouteResolve.target = function() {
+                return search;
+              };
+              return '/session/' + newSessionId;
+            }
+          })
+          .when('/control', {
             template: "<bk-control-panel></bk-control-panel>"
           }).otherwise({
             redirectTo: "/control"
@@ -179,7 +206,7 @@
       var lastAction = new Date();
       var beakerRootOp = {
         gotoControlPanel: function() {
-          return $location.path("/control");
+          return $location.path("/control").search({});
         },
         openNotebook: function(notebookUri, uriType, readOnly, format) {
           if (!notebookUri) {
@@ -209,11 +236,11 @@
           if ($location.$$path === "/session/new") {
             return $route.reload();
           } else {
-            return $location.path("/session/new");
+            return $location.path("/session/new").search({});
           }
         },
         openSession: function(sessionId) {
-          return $location.path("session/" + sessionId);
+          return $location.path("session/" + sessionId).search({});
         }
       };
       bkCoreManager.init(beakerRootOp);

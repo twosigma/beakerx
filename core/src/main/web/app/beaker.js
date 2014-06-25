@@ -101,28 +101,19 @@
       'bk.debug'
     ]);
 
-
-    var generateId = function(length) {
-      var text = "";
-      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-      if (_.isUndefined(length)) {
-        length = 6;
-      }
-      for (var i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      }
-      return text;
-    };
-
-
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
       var sessionRouteResolve = {};
+      var generateId = function() {
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        return _(_.range(6)).map(function() {
+          return possible.charAt(Math.floor(Math.random() * possible.length));
+        }).join('');
+      };
       $routeProvider
           .when('/session/new', {
             redirectTo: function() {
-              var newSessionId = generateId(6);
+              var newSessionId = generateId();
               sessionRouteResolve.isNewSession = function() {
                 return true;
               };
@@ -135,7 +126,7 @@
           })
           .when('/open', {
             redirectTo: function(routeParams, path, search) {
-              var newSessionId = generateId(6);
+              var newSessionId = generateId();
               sessionRouteResolve.isOpen = function() {
                 return true;
               };

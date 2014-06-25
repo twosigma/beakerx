@@ -43,6 +43,7 @@
    * - menus + plugins + notebook(notebook model + evaluator)
    */
   module.directive('bkMainApp', function(
+      $route,
       $routeParams,
       bkUtils,
       bkCoreManager,
@@ -114,26 +115,28 @@
             window.addEventListener('scroll', listener, false);
           };
           var loadNotebookModelAndResetSession = function(
-              notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
+              notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
+              isExistingSession) {
             $scope.loading = true;
             addScrollingHack();
-            bkSessionManager.reset.apply(this, arguments);
-            var isOpeningExistingSession = !!sessionId;
+            bkSessionManager.reset(
+                notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
+            isExistingSession = !!isExistingSession;
             evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
-                addEvaluator(notebookModel.evaluators[i], !isOpeningExistingSession);
+                addEvaluator(notebookModel.evaluators[i], !isExistingSession);
               }
             }
             document.title = bkSessionManager.getNotebookTitle();
-            if (!isOpeningExistingSession) {
+            if (!isExistingSession) {
               bkHelper.evaluate("initialization");
             }
             $scope.loading = false;
           };
           return {
-            openUri: function(notebookUri, uriType, readOnly, format, retry, retryCountMax) {
-              if (!notebookUri) {
+            openUri: function(target, sessionId, retry, retryCountMax) {
+              if (!target.uri) {
                 bkCoreManager.show1ButtonModal("Failed to open notebook, notebookUri is empty");
                 return;
               }
@@ -141,35 +144,40 @@
               if (retryCountMax === undefined) {
                 retryCountMax = 100;
               }
-              if (!uriType) {
-                uriType = bkCoreManager.guessUriType(notebookUri);
+              if (!target.uriType) {
+                target.uriType = bkCoreManager.guessUriType(target.uri);
               }
-              readOnly = !!readOnly;
-              if (!format) {
-                format = bkCoreManager.guessFormat(notebookUri);
+              target.readOnly = !!target.readOnly;
+              if (!target.format) {
+                target.format = bkCoreManager.guessFormat(target.uri);
               }
 
-              var importer = bkCoreManager.getNotebookImporter(format);
+              var importer = bkCoreManager.getNotebookImporter(target.format);
               if (!importer) {
                 if (retry) {
                   // retry, sometimes the importer came from a plugin that is being loaded
                   retryCountMax -= 1;
                   setTimeout(function() {
-                    loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry, retryCountMax);
+                    loadNotebook.openUri(target, retry, retryCountMax);
                   }, 100);
                 } else {
-                  bkCoreManager.show1ButtonModal("Failed to open " + notebookUri
-                      + " because format " + format
+                  bkCoreManager.show1ButtonModal("Failed to open " + target.uri
+                      + " because format " + target.format
                       + " was not recognized.", "Open Failed", function() {
                         bkCoreManager.gotoControlPanel();
                       });
                 }
               }
-              var fileLoader = bkCoreManager.getFileLoader(uriType);
-              fileLoader.load(notebookUri).then(function(fileContentAsString) {
+              var fileLoader = bkCoreManager.getFileLoader(target.uriType);
+              fileLoader.load(target.uri).then(function(fileContentAsString) {
                 var notebookModel = importer.import(fileContentAsString);
                 notebookModel = bkNotebookVersionManager.open(notebookModel);
-                loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel);
+                loadNotebookModelAndResetSession(
+                    target.uri,
+                    target.uriType,
+                    target.readOnly,
+                    target.format,
+                    notebookModel, false, sessionId, false);
               }).catch(function(data, status, headers, config) {
                 bkHelper.show1ButtonModal(data, "Open Failed", function() {
                   bkCoreManager.gotoControlPanel();
@@ -190,7 +198,7 @@
                   notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
             });
           },
-          defaultNotebook: function() {
+          defaultNotebook: function(sessionId) {
             bkUtils.getDefaultNotebook().then(function(notebookModel) {
               var notebookUri = null;
               var uriType = null;
@@ -198,7 +206,7 @@
               var format = null;
               notebookModel = bkNotebookVersionManager.open(notebookModel);
               loadNotebookModelAndResetSession(
-                  notebookUri, uriType, readOnly, format, notebookModel);
+                  notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
             });
           }
         };
@@ -554,21 +562,19 @@
 
         (function() {
           var sessionId = $routeParams.sessionId;
-          if (sessionId) {
-            if (sessionId === "new") {
-              loadNotebook.defaultNotebook();
-            } else if (sessionId === "none") {
-              // do nothing
-            } else {
-              loadNotebook.fromSession(sessionId);
-            }
-          } else { // open
-            var notebookUri = $routeParams.uri;
-            var uriType = $routeParams.type;
-            var readOnly = $routeParams.readOnly;
-            var format = $routeParams.format;
+          var sessionRouteResolve = $route.current.$$route.resolve;
+          console.log("isNewSession?", $route.current.$$route.resolve);
+          if ($route.current.locals.isNewSession) {
+            delete sessionRouteResolve.isNewSession;
+            loadNotebook.defaultNotebook(sessionId);
+          } else if ($route.current.locals.isOpen) {
+            delete sessionRouteResolve.isOpen;
+            delete sessionRouteResolve.target;
+            var target = $route.current.locals.target;
             var retry = true;
-            loadNotebook.openUri(notebookUri, uriType, readOnly, format, retry);
+            loadNotebook.openUri(target, sessionId, retry);
+          } else {
+            loadNotebook.fromSession(sessionId);
           }
         })();
       }

@@ -101,15 +101,51 @@
       'bk.debug'
     ]);
 
+
+    var generateId = function(length) {
+      var text = "";
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+      if (_.isUndefined(length)) {
+        length = 6;
+      }
+      for (var i = 0; i < length; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return text;
+    };
+
+
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
-      $routeProvider.when('/session/:sessionId', {
-        template: "<bk-main-app></bk-main-app>"
-      }).when('/open', {
-            template: "<bk-main-app></bk-main-app>"
-          }).when('/open/:uri', {
-            template: "<bk-main-app></bk-main-app>"
-          }).when('/control', {
+      var sessionRouteResolve = {};
+      $routeProvider
+          .when('/session/new', {
+            redirectTo: function() {
+              var newSessionId = generateId(6);
+              sessionRouteResolve.isNewSession = function() {
+                return true;
+              };
+              return '/session/' + newSessionId;
+            }
+          })
+          .when('/session/:sessionId', {
+            template: "<bk-main-app></bk-main-app>",
+            resolve: sessionRouteResolve
+          })
+          .when('/open', {
+            redirectTo: function(routeParams, path, search) {
+              var newSessionId = generateId(6);
+              sessionRouteResolve.isOpen = function() {
+                return true;
+              };
+              sessionRouteResolve.target = function() {
+                return search;
+              };
+              return '/session/' + newSessionId;
+            }
+          })
+          .when('/control', {
             template: "<bk-control-panel></bk-control-panel>"
           }).otherwise({
             redirectTo: "/control"

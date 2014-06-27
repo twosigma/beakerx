@@ -550,8 +550,8 @@ public class PluginServiceLocatorRest {
                  Paths.get(htmlDir.toString() + "/login.html"));
       Files.copy(Paths.get(this.nginxStaticDir + "/present.html"),
                  Paths.get(htmlDir.toString() + "/present.html"));
-      //Files.copy(Paths.get(this.nginxStaticDir + "/favicon.ico"),
-      //           Paths.get(htmlDir.toString() + "/favicon.ico"));
+      Files.copy(Paths.get(this.nginxStaticDir + "/favicon.ico"),
+                 Paths.get(htmlDir.toString() + "/favicon.ico"));
     }
 
     String restartId = RandomStringUtils.random(12, false, true);

@@ -1,4 +1,7 @@
-A native XCode app that runs the java server.
+## A native XCode app that runs the java server.
+
 To build, needs two directories:  dist and jre1.7.0_60.jre.
-dist is created by makeDist target, unzipped.
-jre1.7.0_60.jre is from Oracle, untarred.
+  * dist is created by makeDist target, unzipped.
+  * jre1.7.0_60.jre is from Oracle, untarred.
+
+The XCode project has a custom build script that copies these directories into the Resource fork of the app bundle.

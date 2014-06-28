@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>AD57ADD3-53A6-47EE-814F-19B9B70E1A7A</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Beaker</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>0892FD02-43BC-47B5-8149-0360CC8EDD68</key>
+		<string>https://github.com/twosigma/beaker-notebook.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>launcher/Beaker/Beaker.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>0892FD02-43BC-47B5-8149-0360CC8EDD68</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/twosigma/beaker-notebook.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>0892FD02-43BC-47B5-8149-0360CC8EDD68</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>0892FD02-43BC-47B5-8149-0360CC8EDD68</string>
+			<key>IDESourceControlWCCName</key>
+			<string>beaker-notebook</string>
+		</dict>
+	</array>
+</dict>
+</plist>

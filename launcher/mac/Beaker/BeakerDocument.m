@@ -14,7 +14,15 @@
 {
     self = [super init];
     if (self) {
-        // Add your subclass-specific initialization here.
+        NSLog( @"Beaker start JVM and launch browser XXX");
+        NSBundle* mainBundle = [NSBundle mainBundle];
+        NSString* resourcePath = [mainBundle resourcePath];
+        NSString* fullPath = [NSString stringWithFormat:@"%@/dist/beaker.command", resourcePath];
+        NSTask *task = [[NSTask alloc] init];
+        [task setLaunchPath:fullPath];
+        [task launch];
+        
+        // XXX need to kill task on app quit or menu item
     }
     return self;
 }

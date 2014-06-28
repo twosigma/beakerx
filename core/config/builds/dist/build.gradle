@@ -16,6 +16,10 @@
 
 def coreDir = file("../../../") // TODO, this can come from a property
 
+def gitDescribe() {
+  return "git describe".execute().text.trim()
+}
+
 // XXX move all of this into makeDist python script
 task makeDist(type: Exec) {
   def osName = System.properties['os.name']

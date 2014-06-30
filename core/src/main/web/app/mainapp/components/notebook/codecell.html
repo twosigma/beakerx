@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class='evaluator' evaluator-type="{{ cellmodel.evaluator }}" ng-class="evaluatorReader && 'evaluator-ready'">
+<div class='evaluator' evaluator-type="{{ cellmodel.evaluator }}" ng-class="cellmodel.evaluatorReader && 'evaluator-ready'">
   <div class="bkcell code-cell-area">
     <div class="code-cell-hidden" ng-if="!isShowInput()"></div>
     <div class="code-cell-input" ng-show="isShowInput()">

@@ -35,4 +35,9 @@
     [self.serverTask interrupt];
 }
 
+- (BOOL) applicationShouldOpenUntitledFile:(NSApplication *)sender
+{
+    return NO;
+}
+
 @end

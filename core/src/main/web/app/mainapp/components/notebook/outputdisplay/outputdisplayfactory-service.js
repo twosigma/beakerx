@@ -40,11 +40,9 @@
       },
       "Error": {
         template: "<pre class='out_error' ng-hide='expanded'>" +
-            "<i class='fa fa-plus-square-o' ng-click='expanded=!expanded' ng-show='model.getCellModel()[1]'></i> " +
             "<span></span>" + // first span
             "</pre>" +
             "<pre class='out_error' ng-show='expanded'>" +
-            "<i class='fa fa-minus-square-o' ng-click='expanded=!expanded'></i> " +
             "<span></span>" + // last span
             "</pre>",
         controller: function($scope, $element) {

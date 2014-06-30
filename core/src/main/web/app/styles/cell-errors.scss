@@ -1,0 +1,17 @@
+@mixin error_state($color) {
+  color:    $color;
+  padding:  10px;
+  border:   solid 1px $color {
+    radius: 0;
+  }
+}
+
+pre {
+    &.out_warning {
+      @include error_state($warning_yellow);
+    }
+
+    &.out_error {
+      @include error_state($error_red);
+    }
+}

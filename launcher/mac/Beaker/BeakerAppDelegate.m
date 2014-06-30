@@ -18,7 +18,21 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // Insert code here to initialize your application
+    NSLog( @"Beaker App start JVM and launch browser");
+    NSBundle* mainBundle = [NSBundle mainBundle];
+    NSString* resourcePath = [mainBundle resourcePath];
+    NSString* fullPath = [NSString stringWithFormat:@"%@/dist/beaker.command", resourcePath];
+    NSString* javaPath = [NSString stringWithFormat:@"%@/jre1.7.0_60.jre/Contents/Home", resourcePath];
+    setenv("JAVA_HOME", [javaPath UTF8String], TRUE);
+    self.serverTask = [[NSTask alloc] init];
+    [self.serverTask setLaunchPath:fullPath];
+    [self.serverTask launch];
+}
+
+- (void) applicationWillTerminate:(NSNotification *)aNotification
+{
+    NSLog( @"Beaker App quit");
+    [self.serverTask interrupt];
 }
 
 @end

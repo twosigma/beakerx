@@ -40,7 +40,7 @@
         }
         if (ga) {
           if (event === "open") {
-            var notebookType = obj.uri ? obj.uri.substring(0, obj.uri.indexOf(':/')) || "file" : "file";
+            var notebookType = obj.format;
             ga("send", "event", "file", "open", notebookType, {
               "dimension1": notebookType, // notebookType
               "metric1": 1 // file open

@@ -113,6 +113,7 @@ public class PluginServiceLocatorRest {
   private final Map<String, String> nginxPluginRules;
   private final String pluginDir;
   private final String nginxCommand;
+  private String[] nginxEnv = null;
   private final Boolean publicServer;
   private final Integer portBase;
   private final Integer servPort;
@@ -194,6 +195,16 @@ public class PluginServiceLocatorRest {
     });
 
     portSearchStart = this.portBase + this.reservedPortCount;
+
+    if (macosx()) {
+      List<String> envList = new ArrayList<>();
+      for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
+        envList.add(entry.getKey() + "=" + entry.getValue());
+      }
+      envList.add("DYLD_LIBRARY_PATH=./nginx/bin");
+      this.nginxEnv = new String[envList.size()];
+      envList.toArray(this.nginxEnv);
+    }
   }
 
   private boolean macosx() {
@@ -215,17 +226,8 @@ public class PluginServiceLocatorRest {
   private void startReverseProxy() throws InterruptedException, IOException {
     generateNginxConfig();
     System.out.println("running nginx: " + this.nginxCommand);
-    String[] env = null;
-    if (macosx()) {
-      List<String> envList = new ArrayList<>();
-      for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
-        envList.add(entry.getKey() + "=" + entry.getValue());
-      }
-      envList.add("DYLD_LIBRARY_PATH=./nginx/bin");
-      env = new String[envList.size()];
-      envList.toArray(env);
-    }
-    Process proc = Runtime.getRuntime().exec(this.nginxCommand, env);
+
+    Process proc = Runtime.getRuntime().exec(this.nginxCommand, this.nginxEnv);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
   }
@@ -307,7 +309,7 @@ public class PluginServiceLocatorRest {
       String restartId = generateNginxConfig();
       String restartPath = "\"" + this.nginxServDir + "/restart_nginx\"";
       String restartCommand = this.nginxCommand + " -s reload";
-      Process restartproc = Runtime.getRuntime().exec(restartCommand);
+      Process restartproc = Runtime.getRuntime().exec(restartCommand, this.nginxEnv);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
 

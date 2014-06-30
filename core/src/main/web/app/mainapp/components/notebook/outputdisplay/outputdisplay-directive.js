@@ -16,7 +16,17 @@
 (function() {
   "use strict";
   var module = angular.module('bk.outputDisplay');
-  module.directive('bkOutputDisplay', function($compile, $rootScope, bkOutputDisplayFactory) {
+  module.directive('bkOutputDisplay', function(
+      $compile, $rootScope, bkOutputDisplayFactory, bkUtils) {
+    var getResultType = function(model) {
+      if (model && model.getCellModel()) {
+        if (_.isString(model.getCellModel())) {
+          return "String";
+        } else {
+          return model.getCellModel().type;
+        }
+      }
+    };
     return {
       restrict: "E",
       template: "<div>OUTPUT</div>",
@@ -32,6 +42,10 @@
           }
           childScope = $rootScope.$new();
           childScope.model = scope.model;
+          bkUtils.log("outputDisplay", {
+            resultType: getResultType(scope.model),
+            displayType: type
+          });
           var directiveName = bkOutputDisplayFactory.getDirectiveName(type);
           element.html("<div " + directiveName + " model='model'></div>");
           $compile(element.contents())(childScope);

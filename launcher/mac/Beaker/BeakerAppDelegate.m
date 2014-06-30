@@ -12,8 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#import <Cocoa/Cocoa.h>
+#import "BeakerAppDelegate.h"
 
-@interface BeakerDocument : NSDocument
+@implementation BeakerAppDelegate
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+    // Insert code here to initialize your application
+}
 
 @end

@@ -14,6 +14,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface BeakerDocument : NSDocument
+@interface BeakerAppDelegate : NSObject <NSApplicationDelegate>
+
+@property (assign) IBOutlet NSWindow *window;
 
 @end

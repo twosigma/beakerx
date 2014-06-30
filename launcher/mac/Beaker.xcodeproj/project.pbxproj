@@ -17,6 +17,7 @@
 		427559EB195B401F0054E850 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 427559EA195B401F0054E850 /* Images.xcassets */; };
 		427559F2195B40200054E850 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 427559F1195B40200054E850 /* XCTest.framework */; };
 		427559F3195B40200054E850 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 427559CF195B401F0054E850 /* Cocoa.framework */; };
+		4DBC5FC01960EE3C0017B91B /* BeakerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBC5FBF1960EE3C0017B91B /* BeakerAppDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -4282,6 +4283,8 @@
 		427559EA195B401F0054E850 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		427559F0195B40200054E850 /* BeakerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BeakerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		427559F1195B40200054E850 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		4DBC5FBE1960EE3C0017B91B /* BeakerAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeakerAppDelegate.h; sourceTree = "<group>"; };
+		4DBC5FBF1960EE3C0017B91B /* BeakerAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeakerAppDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -17727,6 +17730,8 @@
 			children = (
 				427559E1195B401F0054E850 /* BeakerDocument.h */,
 				427559E2195B401F0054E850 /* BeakerDocument.m */,
+				4DBC5FBE1960EE3C0017B91B /* BeakerAppDelegate.h */,
+				4DBC5FBF1960EE3C0017B91B /* BeakerAppDelegate.m */,
 				427559E4195B401F0054E850 /* BeakerDocument.xib */,
 				427559E7195B401F0054E850 /* MainMenu.xib */,
 				427559EA195B401F0054E850 /* Images.xcassets */,
@@ -17865,6 +17870,7 @@
 			files = (
 				427559E3195B401F0054E850 /* BeakerDocument.m in Sources */,
 				427559DC195B401F0054E850 /* main.m in Sources */,
+				4DBC5FC01960EE3C0017B91B /* BeakerAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

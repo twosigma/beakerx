@@ -130,6 +130,15 @@
             }
             document.title = bkSessionManager.getNotebookTitle();
             if (!isExistingSession) {
+              bkUtils.log("open", {
+                uri: notebookUri,
+                uriType: uriType,
+                format: format,
+                maxCellLevel: _(notebookModel.cells).max(function(cell) {
+                  return cell.level;
+                }).level,
+                cellCount: notebookModel.cells.length
+              });
               bkHelper.evaluate("initialization");
             }
             $scope.loading = false;

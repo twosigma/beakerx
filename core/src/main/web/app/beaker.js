@@ -213,11 +213,6 @@
             return;
           }
 
-          bkUtils.log("open", {
-            uri: notebookUri,
-            user: user
-          });
-
           var routeParams = {
             uri: notebookUri
           };

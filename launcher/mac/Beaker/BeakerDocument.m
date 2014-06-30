@@ -24,6 +24,8 @@
         NSBundle* mainBundle = [NSBundle mainBundle];
         NSString* resourcePath = [mainBundle resourcePath];
         NSString* fullPath = [NSString stringWithFormat:@"%@/dist/beaker.command", resourcePath];
+        NSString* javaPath = [NSString stringWithFormat:@"%@/jre1.7.0_60.jre/Contents/Home", resourcePath];
+        setenv("JAVA_HOME", [javaPath UTF8String], TRUE);
         NSTask *task = [[NSTask alloc] init];
         [task setLaunchPath:fullPath];
         [task launch];

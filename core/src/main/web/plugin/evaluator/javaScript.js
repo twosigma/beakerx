@@ -158,7 +158,7 @@ define(function(require, exports, module) {
         try {
           //modelOutput.result = "" + eval(code);
           
-          modelOutput.result = combplotTest;
+          modelOutput.result = lineplotTest;
           /*
           modelOutput.result = {
               "type": "LinePlot",

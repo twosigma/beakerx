@@ -13,6 +13,10 @@
     pointer-events: none;
     fill: none;
 }
+.lineplot-const {
+    opacity: 0.75;
+    pointer-events: none;
+}
 .lineplot-bar{
     stroke: black;
     stroke-width: 1;
@@ -49,12 +53,28 @@
     font-family: verdana, helvetica, arial, sans-serif;
     font-size: 0.75em;
 }
+.lineplot-text {
+    font-family: verdana, helvetica, arial, sans-serif;
+    font-size: 0.9em;
+}
 .lineplot-xylabel {
     font-family: verdana, helvetica, arial, sans-serif;
     font-size: 0.9em;
     text-anchor: middle;
 }
 .lineplot-cursorlabel {
+    font-family: verdana, helvetica, arial, sans-serif;
+    font-size: 0.75em;
+    font-weight: bold;
+    color: white;
+    padding: 1px 5px;
+    pointer-events: none;
+    position: absolute;
+    width: auto;
+    height: auto;
+    border-radius: 5px;
+}
+.lineplot-constlabel {
     font-family: verdana, helvetica, arial, sans-serif;
     font-size: 0.75em;
     font-weight: bold;

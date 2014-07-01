@@ -7,86 +7,11 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
       months: ["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"],
       days: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
       
-      
       fixPercent: function(val){
         val = Math.max(val, 0);
         val = Math.min(val, 1);
         return val;
       },
-      /*
-        pointOnLine: function(a,b,c,x,y){
-         var p = {};
-         if (x==null) {
-           p.x = (-c-b*y)/a; p.y = y;
-           return p;
-         }else if (y==null) {
-           p.x = x; p.y = (-c-a*x)/b;
-           return p;
-         }
-         console.error("pointOnLine called with invalid parameters");
-         return null; // error
-       },
-       truncateLine: function(x1, y1, x2, y2){
-         if (p1.x > p2.x) { // should not reach here for normal time series plot
-           var p3 = {}; _.extend(p3, p1); p1 = p2;  p2 = p3;
-         }
-         var a = p2.y-p1.y, b = p1.x-p2.x, c = p2.x*p1.y-p1.x*p2.y;
-         if (p1.x<0) _.extend(p1, this.pointOnLine(a,b,c,0,null));
-         if (p2.x>1) _.extend(p2, this.pointOnLine(a,b,c,1,null));
-         if (p1.y > p2.y) { 
-           var p3 = {}; _.extend(p3, p1); p1 = p2;  p2 = p3;
-         }
-         if (p1.y<0) _.extend(p1, this.pointOnLine(a,b,c,null,0));
-         if (p2.y>1) _.extend(p2, this.pointOnLine(a,b,c,null,1));
-       },
-       scr2dataPercent: function(scope, p){
-         var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
-         var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
-         return {"x": (p.x-lMargin)/W, "y": p.y/H};
-       },
-       scr2dataPoint: function(scope, p){
-         var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
-         var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
-         var focus = scope.focus
-         var tp = this.scr2dataPercent(scope, p);
-         tp.y = 1.0 - tp.y;
-         return {"x": focus.xl+tp.x*focus.xspan, "y": focus.yl+tp.y*focus.yspan};
-       },
-       data2scrPercent: function(scope, p){
-         var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
-         var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
-         var xspan = scope.focus.xspan, yspan = scope.focus.yspan;
-         var xl = scope.focus.xl, yl = scope.focus.yl;
-         return {"x": (p.x-xl)/xspan, "y": (p.y-yl)/yspan};
-       },
-       data2scrPoint: function(scope, p){
-         var tp = this.data2scrPercent(scope, p);
-         if (tp.x<0 || tp.y<0 || tp.x>1 || tp.y>1) return null;
-         var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
-         var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
-         return { "x":tp.x*W+lMargin, "y":H*(1-tp.y) };
-       },
-       data2scrLine: function(scope, p1, p2){
-         var tp1 = this.data2scrPercent(scope, p1),
-             tp2 = this.data2scrPercent(scope, p2);
-         var y1 = tp1.y, y2 = tp2.y;
-         if (Math.max(y1,y2)<0-1E-6 || Math.min(y1,y2)>1+1E-6) return null;
-         //this.truncateLine(tp1, tp2);
-         var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
-         var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
-         return { p1: {"x":tp1.x*W+lMargin, "y":H*(1-tp1.y)},
-                  p2: {"x":tp2.x*W+lMargin, "y":H*(1-tp2.y)} };
-       },
-       data2scrLabel: function(scope, p, shifts){
-         var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
-         var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
-         var xspan = scope.focus.xspan, yspan = scope.focus.yspan;
-         var xl = scope.focus.xl, yl = scope.focus.yl;
-         var shift = shifts;
-         return { "x": lMargin+(p.x-xl)/xspan*W+shift.x,
-                  "y": H-(p.y-yl)/yspan*H+shift.y };
-       },
-       */
       outsideScr: function(scope, p){
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
         return p.x < 0 || p.x > W || p.y < 0 || p.y > H;
@@ -165,6 +90,52 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
           .attr("y1", function(d) { return d.y1; })
           .attr("y2", function(d) { return d.y2; });
           */
+      },
+      plotSegs: function(scope){
+        var pipe = scope.rpipeSegs;
+        scope.segg.selectAll("g").data(pipe, function(d){return d.id;}).exit().remove();
+        scope.segg.selectAll("g").data(pipe, function(d){return d.id;}).enter().append("g")
+            .attr("id", function(d){ return d.id; })
+            .attr("stroke", function(d){ return d.stroke; })
+            .attr("stroke-width", function(d){ return d["stroke-width"]; })
+            .attr("class", function(d){ return d.class; });
+        for(var i=0; i<pipe.length; i++){
+            scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].points, function(d){return d.id;}).exit().remove();
+            scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].points, function(d){return d.id;}).enter().append("line")
+                .attr("id", function(d) { return d.id; })
+                .attr("x1", function(d) { return d.x1; })
+                .attr("x2", function(d) { return d.x2; })
+                .attr("y1", function(d) { return d.y1; })
+                .attr("y2", function(d) { return d.y2; });
+            scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].points, function(d){return d.id;})
+                .attr("x1", function(d) { return d.x1; })
+                .attr("x2", function(d) { return d.x2; })
+                .attr("y1", function(d) { return d.y1; })
+                .attr("y2", function(d) { return d.y2; });
+        }
+      },
+      plotRects: function(scope){
+        var pipe = scope.rpipeRects;
+        scope.rectg.selectAll("g").data(pipe, function(d){return d.id;}).exit().remove();
+        scope.rectg.selectAll("g").data(pipe, function(d){return d.id;}).enter().append("g")
+          .attr("id", function(d){ return d.id; })
+          .attr("class", function(d){ return d.class; })
+          .attr("fill", function(d){ return d.fill; });
+        for(var i=0; i<pipe.length; i++){
+            scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){ return d.id; }).exit().remove();
+            scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){ return d.id; }).enter().append("rect")
+                .attr("x", function(d){ return d.x; })
+                .attr("y", function(d){ return d.y; })
+                .attr("width", function(d){ return d.width; })
+                .attr("height", function(d){ return d.height; })
+                .attr("opacity", function(d){ return d.opacity; });
+            scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){ return d.id; })
+                .attr("x", function(d){ return d.x; })
+                .attr("y", function(d){ return d.y; })
+                .attr("width", function(d){ return d.width; })
+                .attr("height", function(d){ return d.height; })
+                .attr("opacity", function(d){return d.opacity; });
+        }
       },
       plotCircles: function(scope){
         var pipe = scope.rpipeCircles;
@@ -319,22 +290,7 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
         //  .attr("y", function(d){ return d.y; });
       },
       
-      plotRects: function(scope){
-        scope.labelg.selectAll("rect").data(scope.rpipeRects, function(d){ return d.id; }).exit().remove();
-        scope.labelg.selectAll("rect").data(scope.rpipeRects, function(d){ return d.id; }).enter().append("rect")
-          .attr("id", function(d){ return d.id; })
-          .attr("class", function(d){ return d.class; })
-          .attr("x", function(d){ return d.x; })
-          .attr("y", function(d){ return d.y; })
-          .attr("width", function(d){ return d.width; })
-          .attr("height", function(d){ return d.height; })
-          .attr("fill", function(d){ return d.fill; });
-        scope.labelg.selectAll("rect").data(scope.rpipeRects, function(d){ return d.id; })
-          .attr("x", function(d){ return d.x; })
-          .attr("y", function(d){ return d.y; })
-          .attr("width", function(d){ return d.width; })
-          .attr("height", function(d){ return d.height; });
-      },
+      
      
       replotSingleCircle: function(scope, d){
         scope.svg.selectAll("#"+d.id).remove();

@@ -43,6 +43,7 @@
               $scope.locateBox = null;
               $scope.tips = {};
               $scope.cursor = { x: -1, y: -1 };
+              $scope.showAllLines = true;
               if (model.xLabel!=null) {
                 $scope.layout.bottomTextHeight += $scope.fonts.labelHeight*2;
               }
@@ -57,7 +58,7 @@
                 $scope.focus.xl = newFocus.xl;
                 $scope.focus.xr = newFocus.xr;
                 $scope.focus.xspan = newFocus.xr-newFocus.xl;
-                $scope.calcMapping(false); // TODO make clear the logic of focus update & redraw
+                $scope.calcMapping(false); 
                 $scope.update();
               });
               $scope.$watch("model.getWidth()", function(newWidth){
@@ -109,7 +110,10 @@
                 var data = scope.data, model = scope.model.getCellModel();
                 var numLines= data.length;
                 var xl = 1E20, xr = 0, yl = 1E20, yr = 0; // get the x,y ranges
+                var vcnt = 0;
                 for(var i=0; i<numLines; i++){
+                  if (data[i].shown==false) continue;
+                  vcnt ++;
                   var numPoints = data[i].elements.length;
                   var eles = data[i].elements;
                   for(var j=0; j<numPoints; j++){
@@ -169,6 +173,10 @@
                   scope.vrange.xspan = scope.vrange.xr - scope.vrange.xl;
                   scope.vrange.yspan = scope.vrange.yr - scope.vrange.yl;
                   _.extend(scope.focus, scope.vrange);
+                }
+                if (vcnt==0) {
+                  _.extend(scope.vrange, scope.range);
+                  _.extend(scope.focus, scope.range);
                 }
                 scope.fixFocus();
               }
@@ -679,13 +687,28 @@
                   .css({"left": scope.jqcontainer.width()+10+"px", "top": "0px"});
                 legend.draggable();
                 
+                var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
+                $("<input type='checkbox'></input>").appendTo(unit)
+                  .attr("id", "legendcheck_all")
+                  .attr("class", "lineplot-legendcheckbox")
+                  .prop("checked", true)
+                  .click( function(e){ return scope.toggleLine(e); });
+                $("<span></span>").appendTo(unit)
+                  .attr("id", "legendbox_all")
+                  .attr("class", "lineplot-legendbox")
+                  .css("background-color", "none");
+                $("<span></span>").appendTo(unit)
+                  .attr("id", "legendtext_all")
+                  .attr("class", "lineplot-label")
+                  .text("All");
+                
                 var content = "";
                 for(var i=0; i<numLines; i++){
                   var unit = $("<div></div>").appendTo(legend).attr("id", "legend_"+i);
                   $("<input type='checkbox'></input>").appendTo(unit)
                     .attr("id", "legendcheck_"+i)
                     .attr("class", "lineplot-legendcheckbox")
-                    .attr("checked", data[i].shown==true)
+                    .prop("checked", data[i].shown)
                     .click( function(e){ return scope.toggleLine(e); } );
                   $("<span></span>").appendTo(unit)
                     .attr("id", "legendbox_"+i)
@@ -699,8 +722,20 @@
               }
               scope.toggleLine = function(e){
                 var id = e.target.id.split("_")[1];  // id in the format "legendcheck_i"
+                if (id=="all") {
+                  scope.showAllLines = !scope.showAllLines;
+                  var data = scope.data;
+                  for (var i=0;i<data.length;i++) {
+                    data[i].shown = scope.showAllLines;
+                    scope.jqcontainer.find("#legendcheck_"+i).prop("checked", data[i].shown);
+                  }
+                  scope.update();
+                  return;
+                }
                 var data = scope.data;
                 data[id].shown = !data[id].shown;
+                //scope.initRange();  
+                //scope.calcMapping();
                 scope.update();
               }
               scope.renderCoverBox = function(){
@@ -847,6 +882,8 @@
                 focus.yspan = focus.yr - focus.yl;
               }
               scope.resetFocus = function(){
+                scope.initRange();
+                scope.calcMapping();
                 var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
                 var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
                 var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -907,8 +944,8 @@
                     .on("zoomstart", function(d){ return scope.zoomStart(d); } )
                     .on("zoom", function(d){ return scope.zooming(d); } )
                     .on("zoomend", function(d){ return scope.zoomEnd(d); } )
-                  )
-                  .on("dblclick.zoom", function(){ return scope.resetFocus(); });
+                  );
+                scope.svg.on("dblclick.zoom", function(){ return scope.resetFocus(); });
               }
               scope.disableZoom = function(){
                 scope.container
@@ -959,7 +996,6 @@
                 var focus = scope.focus, range = scope.range;
                 var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
                 var W = scope.jqsvg.width(), H = scope.jqsvg.height();
-                // TODO make clear the logic of focus update
                 if (emitFocusUpdate==true && scope.model.updateFocus!=null) {
                   scope.model.updateFocus({"xl": focus.xl, "xr": focus.xr});
                 }

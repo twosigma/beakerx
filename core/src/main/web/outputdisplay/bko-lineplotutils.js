@@ -46,9 +46,9 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
             .attr("stroke", function(d){ return d.stroke; })
             .attr("stroke-dasharray", function(d){ return d["stroke-dasharray"]; });
         for(var i=0; i<pipe.length; i++){
-            scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].points, function(d){ return d.id; }).exit().remove();
-            scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].points, function(d){ return d.id; }).enter().append("line");
-            scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].points, function(d){ return d.id; })
+            scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){ return d.id; }).exit().remove();
+            scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){ return d.id; }).enter().append("line");
+            scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){ return d.id; })
                 .attr("x1", function(d){ return d.x1; })
                 .attr("x2", function(d){ return d.x2; })
                 .attr("y1", function(d){ return d.y1; })
@@ -69,7 +69,7 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
         for(var i=0; i<pipe.length; i++){
             scope.lineg.select("#"+pipe[i].id).selectAll("polyline").data([{}]).enter().append("polyline");
             scope.lineg.select("#"+pipe[i].id+" polyline")
-                .attr("points", pipe[i].points);
+                .attr("points", pipe[i].elements);
         }
         return;
     /*
@@ -100,14 +100,14 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
             .attr("stroke-width", function(d){ return d["stroke-width"]; })
             .attr("class", function(d){ return d.class; });
         for(var i=0; i<pipe.length; i++){
-            scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].points, function(d){return d.id;}).exit().remove();
-            scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].points, function(d){return d.id;}).enter().append("line")
+            scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
+            scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){return d.id;}).enter().append("line")
                 .attr("id", function(d) { return d.id; })
                 .attr("x1", function(d) { return d.x1; })
                 .attr("x2", function(d) { return d.x2; })
                 .attr("y1", function(d) { return d.y1; })
                 .attr("y2", function(d) { return d.y2; });
-            scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].points, function(d){return d.id;})
+            scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){return d.id;})
                 .attr("x1", function(d) { return d.x1; })
                 .attr("x2", function(d) { return d.x2; })
                 .attr("y1", function(d) { return d.y1; })
@@ -122,14 +122,14 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
           .attr("class", function(d){ return d.class; })
           .attr("fill", function(d){ return d.fill; });
         for(var i=0; i<pipe.length; i++){
-            scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){ return d.id; }).exit().remove();
-            scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){ return d.id; }).enter().append("rect")
+            scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){ return d.id; }).exit().remove();
+            scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){ return d.id; }).enter().append("rect")
                 .attr("x", function(d){ return d.x; })
                 .attr("y", function(d){ return d.y; })
                 .attr("width", function(d){ return d.width; })
                 .attr("height", function(d){ return d.height; })
                 .attr("opacity", function(d){ return d.opacity; });
-            scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){ return d.id; })
+            scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){ return d.id; })
                 .attr("x", function(d){ return d.x; })
                 .attr("y", function(d){ return d.y; })
                 .attr("width", function(d){ return d.width; })
@@ -146,15 +146,15 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
             .attr("stroke", function(d){ return d.stroke; })
             .attr("fill", function(d){ return d.color; });
         for(var i=0; i<pipe.length; i++){
-            scope.circleg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].points, function(d){return d.id;}).exit().remove();
-            scope.circleg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].points, function(d){return d.id;}).enter().append("circle")
+            scope.circleg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
+            scope.circleg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;}).enter().append("circle")
                 .attr("id", function(d){ return d.id; })
                 .attr("cx", function(d){ return d.cx; })
                 .attr("cy", function(d){ return d.cy; })
                 .attr("fill", function(d){ return d.fill; })
                 .attr("opacity", function(d){ return d.opacity; })
                 .attr("r", function(d){ return d.r; });
-            scope.circleg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].points, function(d){return d.id;})
+            scope.circleg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;})
                 .attr("cx", function(d){ return d.cx; })
                 .attr("cy", function(d){ return d.cy; })
                 .attr("opacity", function(d){ return d.opacity; });
@@ -186,13 +186,13 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
             .attr("class", function(d){ return d.class; })
             .attr("fill", function(d){ return d.fill; })
         for(var i=0; i<pipe.length; i++){
-            svg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].points, function(d){ return d.id; }).exit().remove();
-            svg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].points, function(d){ return d.id; }).enter().append("circle")
+            svg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){ return d.id; }).exit().remove();
+            svg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){ return d.id; }).enter().append("circle")
                 .attr("id", function(d){ return d.id; })
                 .attr("cx", function(d){ return d.cx; })
                 .attr("cy", function(d){ return d.cy; })
                 .attr("r", function(d){ return d.r; });
-            svg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].points, function(d){return d.id;})
+            svg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;})
                 .attr("cx", function(d){ return d.cx; })
                 .attr("cy", function(d){ return d.cy; });
         }
@@ -206,14 +206,14 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
             .attr("class", function(d){ return d.class; })
             .attr("fill", function(d){ return d.fill; })
         for (var i=0; i<pipe.length; i++) {
-            svg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){return d.id;}).exit().remove();
-            svg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){return d.id;}).enter().append("rect")
+            svg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
+            svg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){return d.id;}).enter().append("rect")
                 .attr("id", function(d){ return d.id; })
                 .attr("x", function(d){ return d.x; })
                 .attr("y", function(d){ return d.y; })
                 .attr("width", function(d){ return d.width; })
                 .attr("height", function(d){ return d.height; })
-            svg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){return d.id;})
+            svg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){return d.id;})
                 .attr("x", function(d){ return d.x; })
                 .attr("y", function(d){ return d.y; });
         }
@@ -226,15 +226,15 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
             .attr("class", function(d){ return d.class; })
             .attr("fill", function(d){ return d.fill; })
         for (var i=0; i<pipe.length; i++) {
-            scope.barg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){return d.id;}).exit().remove();
-            scope.barg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){return d.id;}).enter().append("rect")
+            scope.barg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
+            scope.barg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){return d.id;}).enter().append("rect")
                 .attr("id", function(d){ return d.id; })
                 .attr("x", function(d){ return d.x; })
                 .attr("y", function(d){ return d.y; })
                 .attr("width", pipe[i].width)
                 .attr("height", function(d){ return d.height; })
                 .attr("fill", function(d){ return d.fill; });
-            scope.barg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].points, function(d){return d.id;})
+            scope.barg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){return d.id;})
                 .attr("x", function(d){ return d.x; })
                 .attr("y", function(d){ return d.y; })
                 .attr("width", pipe[i].width)
@@ -251,7 +251,7 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
         for(var i=0; i<pipe.length; i++){
             scope.riverg.select("#"+pipe[i].id).selectAll("polygon").data([{}]).enter().append("polygon");
             scope.riverg.select("#"+pipe[i].id+" polygon")
-                .attr("points", pipe[i].points);
+                .attr("points", pipe[i].elements);
         }
         return;
       },

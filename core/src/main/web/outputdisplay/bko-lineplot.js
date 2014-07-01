@@ -110,42 +110,42 @@
                 var numLines= data.length;
                 var xl = 1E20, xr = 0, yl = 1E20, yr = 0; // get the x,y ranges
                 for(var i=0; i<numLines; i++){
-                  var numPoints = data[i].points.length;
-                  var points = data[i].points;
+                  var numPoints = data[i].elements.length;
+                  var eles = data[i].elements;
                   for(var j=0; j<numPoints; j++){
-                    if (data[i].type==="river" && (data[i].height!=null || points[j].y2!=null)) {
-                      var y2 = points[j].y2!=null? points[j].y2 : points[j].y+data[i].height;
+                    if (data[i].type==="river" && (data[i].height!=null || eles[j].y2!=null)) {
+                      var y2 = eles[j].y2!=null? eles[j].y2 : eles[j].y+data[i].height;
                       yr = Math.max(yr, y2);
                     }
-                    else if (data[i].type==="stem" && (data[i].height!=null || points[j].y2!=null)) {
-                      var y2 = points[j].y2!=null? points[j].y2 : points[j].y+data[i].height;
+                    else if (data[i].type==="stem" && (data[i].height!=null || eles[j].y2!=null)) {
+                      var y2 = eles[j].y2!=null? eles[j].y2 : eles[j].y+data[i].height;
                       yr = Math.max(yr, y2);
                     }
                     else if (data[i].type==="constline") {
-                      if (points[j].type==="x") {
-                        xl = Math.min(xl, points[j].v);
-                        xr = Math.max(xr, points[j].v);
-                      }else if (points[j].type==="y") {
-                        yl = Math.min(yl, points[j].v);
-                        yr = Math.max(yr, points[j].v);
+                      if (eles[j].type==="x") {
+                        xl = Math.min(xl, eles[j].v);
+                        xr = Math.max(xr, eles[j].v);
+                      }else if (eles[j].type==="y") {
+                        yl = Math.min(yl, eles[j].v);
+                        yr = Math.max(yr, eles[j].v);
                       }
                     }else if (data[i].type==="constband") {
-                      if (points[j].type==="x") {
-                        xl = Math.min(xl, points[j].v1);
-                        xl = Math.min(xl, points[j].v1);
-                        xr = Math.max(xr, points[j].v2);
-                        xr = Math.max(xr, points[j].v2);
-                      }else if (points[j].type==="y") {
-                        yl = Math.min(yl, points[j].v1);
-                        yl = Math.min(yl, points[j].v1);
-                        yr = Math.max(yr, points[j].v2);
-                        yr = Math.max(yr, points[j].v2);
+                      if (eles[j].type==="x") {
+                        xl = Math.min(xl, eles[j].v1);
+                        xl = Math.min(xl, eles[j].v1);
+                        xr = Math.max(xr, eles[j].v2);
+                        xr = Math.max(xr, eles[j].v2);
+                      }else if (eles[j].type==="y") {
+                        yl = Math.min(yl, eles[j].v1);
+                        yl = Math.min(yl, eles[j].v1);
+                        yr = Math.max(yr, eles[j].v2);
+                        yr = Math.max(yr, eles[j].v2);
                       }
                     }else{
-                      xl = Math.min(xl, points[j].x);
-                      xr = Math.max(xr, points[j].x);
-                      yl = Math.min(yl, points[j].y);
-                      yr = Math.max(yr, points[j].y);
+                      xl = Math.min(xl, eles[j].x);
+                      xr = Math.max(xr, eles[j].x);
+                      yl = Math.min(yl, eles[j].y);
+                      yr = Math.max(yr, eles[j].y);
                     }
                   }
                 }
@@ -243,16 +243,16 @@
                 scope.fdata = [];
                 var fdata = scope.fdata;
                 for(var i=0; i<numLines; i++){
-                  var points = data[i].points;
+                  var eles = data[i].elements;
                   if (data[i].type==="constline" || data[i].type==="constband" || data[i].type==="text") {
-                    fdata[i] = {"leftIndex":0, "rightIndex":points.length-1};
+                    fdata[i] = {"leftIndex":0, "rightIndex":eles.length-1};
                     continue;
                   }
                   
-                  var l = lineplotUtils.upper_bound(points, "x", focus.xl);
-                  var r = lineplotUtils.upper_bound(points, "x", focus.xr)+1; // truncate out-of-sight segment on x-axis
+                  var l = lineplotUtils.upper_bound(eles, "x", focus.xl);
+                  var r = lineplotUtils.upper_bound(eles, "x", focus.xr)+1; // truncate out-of-sight segment on x-axis
                   l = Math.max(l, 0);
-                  r = Math.min(r, points.length-1);
+                  r = Math.min(r, eles.length-1);
                   fdata[i] = {"leftIndex":l, "rightIndex":r};
                 }
               }
@@ -262,14 +262,14 @@
                 
                 for(var i=0; i<numLines; i++){
                   if (data[i].shown==false) continue;
-                  var points = data[i].points;
+                  var eles = data[i].elements;
                   if (data[i].type==="bar") {
                     var w = data[i].width;
                     var sw;
                     var H = scope.jqsvg.height()-scope.layout.bottomTextHeight;
-                    var rpoints = [];
+                    var reles = [];
                     for(var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
-                      var p = points[j];
+                      var p = eles[j];
                       var x1 = mapX(p.x-w/2), x2 = mapX(p.x+w/2), y = mapY(p.y);
                       sw = x2-x1;
                       if(H-y<0) continue; // prevent negative height
@@ -278,22 +278,22 @@
                         "x": x1, "y": y, "height": H-y
                       };
                       if (p.color!=null) bar.fill = p.color;
-                      rpoints.push(bar);
+                      reles.push(bar);
                     }
                     scope.rpipeBars.push({
                       "id": "bar_"+i, "class": "lineplot-bar",
                       "width": sw,
                       "fill": data[i].color,
-                      "points": rpoints
+                      "elements": reles
                     });
                   }else if (data[i].type==="river") {
                     var pstr = "";
                     for(var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
-                      var p = points[j];
+                      var p = eles[j];
                       pstr += mapX(p.x)+","+mapY(p.y)+" ";
                     }
                     for(var j=fdata[i].rightIndex; j>=fdata[i].leftIndex; j--){
-                      var p = points[j];
+                      var p = eles[j];
                       var y2 = p.y2;
                       if (y2==null) y2 = focus.yl;
                       pstr += mapX(p.x)+","+mapY(y2)+" ";
@@ -301,26 +301,26 @@
                     scope.rpipeRivers.push({
                       "id": "river_"+i, "class": "lineplot-river",
                       "fill": data[i].color,
-                      "points": pstr
+                      "elements": pstr
                       })
                   }else if(data[i].type==="stem"){
-                    var rpoints = [];
+                    var reles = [];
                     for(var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
-                      var p = points[j];
+                      var p = eles[j];
                       var y2 = p.y2;
                       if (y2==null) y2 = focus.yl;
-                      rpoints.push({"id": "stem_"+i+"_"+j, "x1": mapX(p.x), "y1": mapY(p.y), "x2": mapX(p.x), "y2": mapY(y2),
+                      reles.push({"id": "stem_"+i+"_"+j, "x1": mapX(p.x), "y1": mapY(p.y), "x2": mapX(p.x), "y2": mapY(y2),
                                     "stroke-width": data[i].width
                                    });
                       if (data[i].style.search("bottom")!=-1) {
                         var y = Math.min(p.y, y2);
-                        rpoints.push({"id": "stem_b_"+i+"_"+j, "x1": mapX(p.x)-5, "y1": mapY(y), "x2": mapX(p.x)+5, "y2": mapY(y),
+                        reles.push({"id": "stem_b_"+i+"_"+j, "x1": mapX(p.x)-5, "y1": mapY(y), "x2": mapX(p.x)+5, "y2": mapY(y),
                                     "stroke-width": data[i].width
                                    });
                       }
                        if (data[i].style.search("top")!=-1) {
                         var y = Math.max(p.y, y2);
-                        rpoints.push({"id": "stem_t_"+i+"_"+j, "x1": mapX(p.x)-5, "y1": mapY(y), "x2": mapX(p.x)+5, "y2": mapY(y),
+                        reles.push({"id": "stem_t_"+i+"_"+j, "x1": mapX(p.x)-5, "y1": mapY(y), "x2": mapX(p.x)+5, "y2": mapY(y),
                                     "stroke-width": data[i].width
                                    });
                       }
@@ -328,46 +328,46 @@
                     scope.rpipeStems.push({
                       "id": "stem_"+i, "class": "lineplot-stem",
                       "stroke": data[i].color,
-                      "points": rpoints
+                      "elements": reles
                     });
                   }else if(data[i].type==="point"){
-                    var rpoints = [];
+                    var reles = [];
                     for(var j = fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
-                      var p = points[j];
+                      var p = eles[j];
                       if (data[i].style==="circle") {
                         var r = data[i].radius==null? 5:data[i].radius;
-                        rpoints.push({"id": "point_"+i+"_"+j, "cx": mapX(p.x), "cy": mapY(p.y), "r": r});
+                        reles.push({"id": "point_"+i+"_"+j, "cx": mapX(p.x), "cy": mapY(p.y), "r": r});
                       }else{
                         var s = data[i].size==null? 10:data[i].size;
-                        rpoints.push({"id": "point_"+i+"_"+j, "x": mapX(p.x)-s/2, "y": mapY(p.y)-s/2, "width":s, "height": s});
+                        reles.push({"id": "point_"+i+"_"+j, "x": mapX(p.x)-s/2, "y": mapY(p.y)-s/2, "width":s, "height": s});
                       }
                     }
                     if (data[i].style==="rect") {
                       scope.rpipePointRects.push({
                         "id": "pointrect_"+i, "class": "lineplot-pointrect",
                         "fill": data[i].color,
-                        "points": rpoints
+                        "elements": reles
                       });
                     }else{
                       scope.rpipePointCircles.push({
                         "id": "pointcircle_"+i, "class": "lineplot-pointcircle",
                         "fill": data[i].color,
-                        "points": rpoints
+                        "elements": reles
                       });
                     }
                   }else if(data[i].type==="constline"){
                     var W = scope.jqsvg.width(), H = scope.jqsvg.height();
                     var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
-                    var rpoints = [];
+                    var reles = [];
                     for(var j = fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
-                      var p = points[j], id = "constlabel_"+i+"_"+j;
+                      var p = eles[j], id = "constlabel_"+i+"_"+j;
                       if (p.type==="x") {
                         var x = mapX(p.v);
                         if(p.v<focus.xl || p.v>focus.xr) {
                           scope.jqcontainer.find("#"+id).remove();
                           continue;
                         }
-                        rpoints.push({"id": "const_"+i+"_"+j, "x1": x, "x2": x, "y1": mapY(focus.yl), "y2": mapY(focus.yr)});
+                        reles.push({"id": "const_"+i+"_"+j, "x1": x, "x2": x, "y1": mapY(focus.yl), "y2": mapY(focus.yr)});
                         
                         scope.jqcontainer.find("#"+id).remove();
                         var label = $("<div id="+id+" class='lineplot-constlabel'></div>").appendTo(scope.jqcontainer)
@@ -382,7 +382,7 @@
                           scope.jqcontainer.find("#constlabel_"+i+"_"+j).remove();
                           continue;
                         }
-                        rpoints.push({"id": "const_"+i+"_"+j, "x1": mapX(focus.xl), "x2": mapX(focus.xr), "y1": y, "y2": y});
+                        reles.push({"id": "const_"+i+"_"+j, "x1": mapX(focus.xl), "x2": mapX(focus.xr), "y1": y, "y2": y});
                         scope.jqcontainer.find("#"+id).remove();
                         var label = $("<div id="+id+" class='lineplot-constlabel'></div>").appendTo(scope.jqcontainer)
                           .text(p.v.toFixed(0));
@@ -396,33 +396,33 @@
                       "id": "const_"+i, "class": "lineplot-const",
                       "stroke": data[i].color,
                       "stroke-width": data[i].width,
-                      "points": rpoints
+                      "elements": reles
                     });
                   }else if (data[i].type==="constband") {
                     var W = scope.jqsvg.width(), H = scope.jqsvg.height();
                     var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
-                    var rpoints = [];
+                    var reles = [];
                     for (var j = fdata[i].leftIndex; j<=fdata[i].rightIndex; j++) {
-                      var p = points[j];
+                      var p = eles[j];
                       if (p.type==="x") {
                         var x1 = mapX(p.v1), x2 = mapX(p.v2);
-                        rpoints.push({"id": "const_"+i+"_"+j, "x":x1, "width":x2-x1, "y":0, "height":H-bMargin,
+                        reles.push({"id": "const_"+i+"_"+j, "x":x1, "width":x2-x1, "y":0, "height":H-bMargin,
                                      "opacity": p.opacity});
                       }else if (p.type==="y") {
                         var y2 = mapY(p.v1), y1 = mapY(p.v2); // after mapping, v1,v2 are reversed
-                        rpoints.push({"id": "const_"+i+"_"+j, "x":lMargin, "width":W-lMargin, "y":y1, "height":y2-y1,
+                        reles.push({"id": "const_"+i+"_"+j, "x":lMargin, "width":W-lMargin, "y":y1, "height":y2-y1,
                                      "opacity": p.opacity});
                       }
                     }
                     scope.rpipeRects.push({
                       "id": "const_"+i, "class": "lineplot-const",
                       "fill": data[i].color,
-                      "points": rpoints
+                      "elements": reles
                     })
                   }else if(data[i].type==="text"){
                     var H = scope.jqsvg.height();
                     for (var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++) {
-                      var p = points[j];
+                      var p = eles[j];
                       var x = mapX(p.x), y = mapY(p.y);
                       var tf = "";
                       if (p.rotate!=null) {
@@ -435,15 +435,15 @@
                   }else { // polyline: solid, dash or dot
                     var pstr = "";
                     for(var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
-                      var p = points[j];
+                      var p = eles[j];
                       pstr += mapX(p.x)+","+mapY(p.y)+" ";
                       if (data[i].interpolation==="none" && j<fdata[i].rightIndex) {
-                        var p2 = points[j+1];
+                        var p2 = eles[j+1];
                         pstr += mapX(p.x)+","+mapY(p.y)+" "+mapX(p2.x)+","+mapY(p.y)+" ";
                       }
                     }
                     var prop = lineplotUtils.standardizeLineProp("line_"+i, data[i]);
-                    _.extend(prop, {"points": pstr});
+                    _.extend(prop, {"elements": pstr});
                     scope.rpipeLines.push(prop);
                   }
                 }
@@ -454,22 +454,22 @@
                 for (var i=0; i<numLines; i++) {
                   if (data[i].shown==false) continue;
                   if (data[i].type==="point" || data[i].type==="constline" || data[i].type==="constband") continue;
-                  var points = data[i].points;
-                  var rpoints = [];
+                  var eles = data[i].elements;
+                  var reles = [];
                   for(var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
-                    //var p = lineplotUtils.data2scrPoint(scope, points[j]);
-                    var p = {"x": mapX(points[j].x), "y": mapY(points[j].y)};
+                    //var p = lineplotUtils.data2scrPoint(scope, eles[j]);
+                    var p = {"x": mapX(eles[j].x), "y": mapY(eles[j].y)};
                     if (lineplotUtils.outsideScr(scope, p)) continue;
-                    var id = "dot_"+points[j].uniqid;
-                    rpoints.push({
+                    var id = "dot_"+eles[j].uniqid;
+                    reles.push({
                       "id": id, "lineid": i,
                       "cx": p.x, "cy": p.y, "r": 4, "opacity": scope.tips[id]==null?0:1,
-                      "point": _.omit(points[j], "uniqid"),
+                      "point": _.omit(eles[j], "uniqid"),
                       //"color": data[i].color,
-                      "value": points[j].value
+                      "value": eles[j].value
                     });
                   }
-                  var wrapper = {"id":"linedots_"+i, "class": "lineplot-dot", "stroke": data[i].color, "fill": "white", "points": rpoints};
+                  var wrapper = {"id":"linedots_"+i, "class": "lineplot-dot", "stroke": data[i].color, "fill": "white", "elements": reles};
                   scope.rpipeCircles.push(wrapper);
                 }
               }
@@ -929,10 +929,10 @@
                     if (data.style==null) data.style = "solid";
                   }
                   data.shown = true;
-                  var numPoints = data.points.length;
+                  var numPoints = data.elements.length;
                   for(var j=0; j<numPoints; j++){
-                    data.points[j].uniqid = i+"_"+j;
-                    var txt = "", prs = _.pairs(_.omit(data.points[j], "value"));
+                    data.elements[j].uniqid = i+"_"+j;
+                    var txt = "", prs = _.pairs(_.omit(data.elements[j], "value"));
                     for (var k=0; k<prs.length; k++) {
                       var val = prs[k][1];
                       if (prs[k][0]==="x")  {
@@ -940,13 +940,13 @@
                       }
                       txt += "<div>" + prs[k][0] + ": "+ val + "</div>";
                     }
-                    data.points[j].value = txt;
+                    data.elements[j].value = txt;
                     
-                    if (data.type==="river" && data.points[j].y2==null && data.height!=null) {
-                      data.points[j].y2 = data.points[j].y+data.height;
+                    if (data.type==="river" && data.elements[j].y2==null && data.height!=null) {
+                      data.elements[j].y2 = data.elements[j].y+data.height;
                     }
-                    if (data.type==="stem" && data.points[j].y2==null && data.height!=null) {
-                      data.points[j].y2 = data.points[j].y+data.height;
+                    if (data.type==="stem" && data.elements[j].y2==null && data.height!=null) {
+                      data.elements[j].y2 = data.elements[j].y+data.height;
                     }
                   }
                 }

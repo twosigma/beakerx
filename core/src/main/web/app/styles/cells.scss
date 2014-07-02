@@ -70,6 +70,7 @@ bk-section-cell, bk-text-cell {
 bk-code-cell .code-cell-output {
     margin:     20px -20px -10px;
     padding:    0 20px;
+    position:   relative;
     border-top: solid 1px #CCC;
 }
 

@@ -125,7 +125,7 @@
       "html": ["Html"],
       "ImageIcon": ["Image", "Text"],
       "BeakerDisplay": ["BeakerDisplay", "Text"],
-      "Plot": ["Chart", "Text"],
+      "Plot": ["LinePlot", "Chart", "Text"],
       "TimePlot": ["Chart", "Text"],
       "LinePlot": ["LinePlot"],
       "CombinedPlot": ["CombinedPlot"],

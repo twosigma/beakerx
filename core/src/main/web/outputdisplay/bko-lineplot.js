@@ -21,8 +21,9 @@
   'use strict';
   beaker.bkoDirective("LinePlot",
       ["lineplotUtils",
+       "lineplotConverter",
        "bkCellMenuPluginManager",
-        function(lineplotUtils, bkCellMenuPluginManager) {
+        function(lineplotUtils, lineplotConverter, bkCellMenuPluginManager) {
           return {
             template: "<div id='plotitle' class='lineplot-title'></div>"+
                       "<div id='lineplotContainer' class='lineplot-renderdiv' >"+ //oncontextmenu='return false;'
@@ -34,41 +35,7 @@
                       "</svg>"+
                       "</div>",
             controller: function($scope) {
-              var model = $scope.model.getCellModel();
-              $scope.range = null;
-              $scope.layout = { bottomTextHeight: 30, leftTextWidth: 80, legendMargin: 10, legendBoxSize: 10 };
-              $scope.fonts = { labelWidth: 6, labelHeight: 12, tooltipWidth: 10 };
-              $scope.numIntervals = { x: 12, y: 8 };
-              $scope.labelPadding = { x: 10, y: 10 };
-              $scope.locateBox = null;
-              $scope.tips = {};
-              $scope.cursor = { x: -1, y: -1 };
-              $scope.showAllLines = true;
-              if (model.xLabel!=null) {
-                $scope.layout.bottomTextHeight += $scope.fonts.labelHeight*2;
-              }
-              if (model.yLabel!=null) {
-                $scope.layout.leftTextWidth += $scope.fonts.labelHeight;
-              }
-              if (model.xCoords==false) {
-                $scope.layout.bottomTextHeight = 0;
-              }
-              $scope.$watch("model.getFocus()", function(newFocus){
-                if (newFocus==null) return;
-                $scope.focus.xl = newFocus.xl;
-                $scope.focus.xr = newFocus.xr;
-                $scope.focus.xspan = newFocus.xr-newFocus.xl;
-                $scope.calcMapping(false); 
-                $scope.update();
-              });
-              $scope.$watch("model.getWidth()", function(newWidth){
-                if ($scope.width==newWidth) return;
-                $scope.width = newWidth;
-                $scope.jqcontainer.css("width", newWidth+"px");
-                $scope.calcMapping(false);
-                $scope.legendDone = false;
-                $scope.update();
-              });
+              
             },
             link: function(scope, element, attrs) {
               // rendering code
@@ -83,31 +50,69 @@
                     scope.update();
                   }
               });
-              var model = scope.model.getCellModel();
-              element.find("#plotitle").text(model.plotTitle);
-              element.find(".ui-icon-gripsmall-diagonal-se").removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
-              scope.container = d3.select(element[0]).select("#lineplotContainer"); // hook container to use jquery interaction
-              scope.jqcontainer = element.find("#lineplotContainer");
-              if (model.width!=null) scope.jqcontainer.css("width", model.width+"px");
-              if (model.height!=null) scope.jqcontainer.css("height", model.height+"px");
-              scope.maing = d3.select(element[0]).select("#maing");
-              scope.coordg = d3.select(element[0]).select("#coordg");
-              scope.labelg = d3.select(element[0]).select("#labelg");
-              scope.lineg = scope.maing.select("#lineg");
-              scope.barg = scope.maing.select("#barg");
-              scope.riverg = scope.maing.select("#riverg");
-              scope.stemg = scope.maing.select("#stemg");
-              scope.circleg = scope.maing.select("#circleg");
-              scope.pointrectg = scope.maing.select("#pointrectg");
-              scope.pointcircleg = scope.maing.select("#pointcircleg");
-              scope.segg = scope.maing.select("#segg");
-              scope.rectg = scope.maing.select("#rectg");
+              scope.initLayout = function(){
+                var model = scope.stdmodel;
+                element.find("#plotitle").text(model.title);
+                element.find(".ui-icon-gripsmall-diagonal-se").removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
+                scope.container = d3.select(element[0]).select("#lineplotContainer"); // hook container to use jquery interaction
+                scope.jqcontainer = element.find("#lineplotContainer");
+                if (model.width!=null) scope.jqcontainer.css("width", model.width+"px");
+                if (model.height!=null) scope.jqcontainer.css("height", model.height+"px");
+                scope.maing = d3.select(element[0]).select("#maing");
+                scope.coordg = d3.select(element[0]).select("#coordg");
+                scope.labelg = d3.select(element[0]).select("#labelg");
+                scope.lineg = scope.maing.select("#lineg");
+                scope.barg = scope.maing.select("#barg");
+                scope.riverg = scope.maing.select("#riverg");
+                scope.stemg = scope.maing.select("#stemg");
+                scope.circleg = scope.maing.select("#circleg");
+                scope.pointrectg = scope.maing.select("#pointrectg");
+                scope.pointcircleg = scope.maing.select("#pointcircleg");
+                scope.segg = scope.maing.select("#segg");
+                scope.rectg = scope.maing.select("#rectg");
+                
+                scope.range = null;
+                scope.layout = { bottomTextHeight: 30, leftTextWidth: 80, legendMargin: 10, legendBoxSize: 10 };
+                scope.fonts = { labelWidth: 6, labelHeight: 12, tooltipWidth: 10 };
+                scope.numIntervals = { x: 12, y: 8 };
+                scope.labelPadding = { x: 10, y: 10 };
+                scope.locateBox = null;
+                scope.tips = {};
+                scope.cursor = { x: -1, y: -1 };
+                scope.showAllLines = true;
+                if (model.xLabel!=null) {
+                  scope.layout.bottomTextHeight += scope.fonts.labelHeight*2;
+                }
+                if (model.yLabel!=null) {
+                  scope.layout.leftTextWidth += scope.fonts.labelHeight;
+                }
+                if (model.xCoords==false) {
+                  scope.layout.bottomTextHeight = 0;
+                }
+                scope.$watch("model.getFocus()", function(newFocus){
+                  if (newFocus==null) return;
+                  $scope.focus.xl = newFocus.xl;
+                  $scope.focus.xr = newFocus.xr;
+                  $scope.focus.xspan = newFocus.xr-newFocus.xl;
+                  $scope.calcMapping(false); 
+                  $scope.update();
+                });
+                scope.$watch("model.getWidth()", function(newWidth){
+                  if (scope.width==newWidth) return;
+                  scope.width = newWidth;
+                  scope.jqcontainer.css("width", newWidth+"px");
+                  scope.calcMapping(false);
+                  scope.legendDone = false;
+                  scope.update();
+                });
+              }
+              
               
               scope.emitSizeChange = function(){
                 scope.model.updateWidth(scope.width);
               }
               scope.initRange = function(){
-                var data = scope.data, model = scope.model.getCellModel();
+                var data = scope.data, model = scope.stdmodel;
                 var numLines= data.length;
                 var xl = 1E20, xr = 0, yl = 1E20, yr = 0; // get the x,y ranges
                 var vcnt = 0;
@@ -154,6 +159,7 @@
                   }
                 }
                 scope.range = {"xl": xl, "xr": xr, "yl": yl, "yr": yr, "xspan": xr-xl, "yspan": yr-yl};
+                console.log(scope.range);
                 scope.focus = {};
                 scope.vrange = {}; // visible range
                 _.extend(scope.focus, scope.range); // by default focus = range
@@ -181,12 +187,19 @@
                 scope.fixFocus();
               }
               
-              var dateIntervals = [1,5,10,15,30,60,300,600,1800,3600,10800,21600,43200,86400,604800,2592000,7776000,15552000,31104000];
-              var valIntervals = [0.001,0.005,0.01,0.05,0.1,0.5,1,5,10,50,100,500,1000,5000,10000,50000,100000];
+              
+              
               scope.calcCoords = function(){
                 // prepare the coordinates
-                var focus = scope.focus;
-                var model = scope.model.getCellModel();
+                var focus = scope.focus, model = scope.stdmodel;
+                
+                var dateIntervals = [1,5,10,15,30,60,300,600,1800,3600,10800,21600,43200,86400,604800,2592000,7776000,15552000,31104000];
+                var valIntervals = [0.001,0.005,0.01,0.05,0.1,0.5,1,5,10,50,100,500,1000,5000,10000,50000,100000];
+                var ys = model.yScale;
+                if (ys.type=="log") {
+                  var valIntervalsLog = [];
+                  for(var j=1;j<=100;j++) valIntervalsLog.push(j);
+                }
 
                 var xspan = focus.xr-focus.xl, yspan = focus.yr-focus.yl;
                 var xbase, ybase, deci=0, intervals;
@@ -195,8 +208,9 @@
                   xbase = intervals[i]*1000;
                   if (xspan/xbase>=scope.numIntervals.x) break;
                 }
-                for(var i=valIntervals.length-1; i>=0; i--){
-                  ybase = valIntervals[i];
+                intervals = ys.type=="log"? valIntervalsLog: valIntervals;
+                for(var i=intervals.length-1; i>=0; i--){
+                  ybase = intervals[i];
                   if (yspan/ybase>=scope.numIntervals.y) break;
                 }
                 while (xspan/xbase > scope.numIntervals.x*1.1) {
@@ -272,18 +286,23 @@
                   if (data[i].shown==false) continue;
                   var eles = data[i].elements;
                   if (data[i].type==="bar") {
-                    var w = data[i].width;
+                    var w = data[i].width==null? 1 : data[i].width;
                     var sw;
                     var H = scope.jqsvg.height()-scope.layout.bottomTextHeight;
                     var reles = [];
                     for(var j=fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
                       var p = eles[j];
-                      var x1 = mapX(p.x-w/2), x2 = mapX(p.x+w/2), y = mapY(p.y);
+                      var x1 = mapX(p.x-w/2), x2 = mapX(p.x+w/2);
+                      if(p.y2==null){
+                        y = mapY(p.y), y2 = H;
+                      }else{
+                        y = mapY(p.y2), y2 = mapY(p.y); // reverse y, y2
+                      }
                       sw = x2-x1;
-                      if(H-y<0) continue; // prevent negative height
+                      if(y2<y) continue; // prevent negative height
                       var bar = {
                         "id": "bar_"+i+"_"+j,
-                        "x": x1, "y": y, "height": H-y
+                        "x": x1, "y": y, "height": y2-y
                       };
                       if (p.color!=null) bar.fill = p.color;
                       reles.push(bar);
@@ -343,7 +362,7 @@
                     for(var j = fdata[i].leftIndex; j<=fdata[i].rightIndex; j++){
                       var p = eles[j];
                       if (data[i].style==="circle") {
-                        var r = data[i].radius==null? 5:data[i].radius;
+                        var r = data[i].size==null? 5:data[i].size;
                         reles.push({"id": "point_"+i+"_"+j, "cx": mapX(p.x), "cy": mapY(p.y), "r": r});
                       }else{
                         var s = data[i].size==null? 10:data[i].size;
@@ -482,6 +501,8 @@
                 }
               }
               scope.prepareInteraction = function(id){
+                var model = scope.model.getCellModel();
+                if (model.use_tool_tip!=true) return;
                 var sel;
                 if (id==null) {
                   sel = scope.svg.selectAll(".lineplot-dot circle");
@@ -514,13 +535,8 @@
                 }
               }
               scope.tooltip = function(d){
-                //scope.svg.selectAll("#"+d.id)
-                //  .attr("opacity", 1);
                 d.opacity = 1;
                 scope.svg.select("#"+d.id).attr("opacity", 1);
-                //lineplotUtils.replotSingleCircle(scope, d);
-                //scope.prepareInteraction(d.id);
-                
                 scope.jqcontainer.find("#tip_mouse").remove();
                 if (scope.tips[d.id]!=null) {
                   return;
@@ -585,12 +601,11 @@
               
               scope.renderLabels = function(){
                 var mapX = scope.data2scrX, mapY = scope.data2scrY;
-                var model = scope.model.getCellModel();
+                var model = scope.stdmodel, ys = model.yScale;
                 if (model.xCoords!=false) {
                   for(var i=0; i<scope.xCoords.length; i++){
                     var x = scope.xCoords[i];
                     var p = {"x":mapX(x), "y":mapY(scope.focus.yl)+scope.labelPadding.y};
-                    //var p = lineplotUtils.data2scrLabel(scope, {"x":x, "y":scope.focus.yl}, {x:0, y:scope.labelPadding.y});
                     scope.rpipeTexts.push({
                       "id": "label_x_"+i, "class": "lineplot-label",
                       "text": model.xType=="time"? lineplotUtils.formatDate(scope.xintv, x) : x,
@@ -601,14 +616,12 @@
                 for(var i=0; i<scope.yCoords.length; i++){
                   var y = scope.yCoords[i];
                   var p = {"x":mapX(scope.focus.xl)-scope.labelPadding.x, "y":mapY(y)};
-                  //var p = lineplotUtils.data2scrLabel(scope, {"x":scope.focus.xl, "y":y}, {x:scope.labelPadding.x, y:0});
                    scope.rpipeTexts.push({
                     "id": "label_y_"+i, "class": "lineplot-label",
-                    "text": y,
+                    "text": ys.type=="log"? parseFloat(Math.pow(ys.base, y)).toFixed(2) : y,
                     "x": p.x, "y": p.y, "text-anchor": "end", "dominant-baseline": "central"
                   });
                 }
-                var model = scope.model.getCellModel();
                 var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
                 if (model.xLabel!=null) {
                   scope.rpipeTexts.push({
@@ -674,7 +687,7 @@
                 }
               }
               scope.renderLegends = function(){
-                if (scope.model.getCellModel().showLegend==false || scope.legendDone==true) return; // legend redraw is controlled by legendDone
+                if (scope.model.getCellModel().show_legend==false || scope.legendDone==true) return; // legend redraw is controlled by legendDone
                 var data = scope.data, numLines = data.length;
                 var margin = scope.layout.legendMargin;
                 
@@ -832,6 +845,7 @@
                     }
                     if (mx >= scope.layout.leftTextWidth) {
                       // scale x
+                      console.log(scope.scr2dataXp(mx), mx);
                       var xm = focus.xl + scope.scr2dataXp(mx)*focus.xspan;
                       var nxl = xm - ds*(xm-focus.xl),
                           nxr = xm + ds*(focus.xr-xm),
@@ -939,7 +953,7 @@
                 scope.rpipeSegs = [];
               }
               scope.enableZoom = function(){
-                scope.container
+                scope.svg
                   .call(scope.zoomObj
                     .on("zoomstart", function(d){ return scope.zoomStart(d); } )
                     .on("zoom", function(d){ return scope.zooming(d); } )
@@ -948,46 +962,14 @@
                 scope.svg.on("dblclick.zoom", function(){ return scope.resetFocus(); });
               }
               scope.disableZoom = function(){
-                scope.container
+                scope.svg
                   .call(scope.zoomObj
                     .on("zoomstart", null )
                     .on("zoom", null )
                     .on("zoomend", null )
                   );
               }
-              scope.standardizeData = function(){
-                var model = scope.model.getCellModel(), mdata = model.data, numLines = mdata.length;
-                scope.data = _.without(mdata);
-                for(var i=0; i<numLines; i++){
-                  var data = scope.data[i];
-                  if (data.interpolation==null) data.interpolation = "linear";
-                  if (data.type==null) data.type = "line";
-                  if (data.type=="line") {
-                    if (data.style==null) data.style = "solid";
-                  }
-                  data.shown = true;
-                  var numPoints = data.elements.length;
-                  for(var j=0; j<numPoints; j++){
-                    data.elements[j].uniqid = i+"_"+j;
-                    var txt = "", prs = _.pairs(_.omit(data.elements[j], "value"));
-                    for (var k=0; k<prs.length; k++) {
-                      var val = prs[k][1];
-                      if (prs[k][0]==="x")  {
-                        val = model.xType=="time"? new Date(val).toLocaleString() : val;
-                      }
-                      txt += "<div>" + prs[k][0] + ": "+ val + "</div>";
-                    }
-                    data.elements[j].value = txt;
-                    
-                    if (data.type==="river" && data.elements[j].y2==null && data.height!=null) {
-                      data.elements[j].y2 = data.elements[j].y+data.height;
-                    }
-                    if (data.type==="stem" && data.elements[j].y2==null && data.height!=null) {
-                      data.elements[j].y2 = data.elements[j].y+data.height;
-                    }
-                  }
-                }
-              }
+              
               scope.mouseleaveClear = function(){
                 scope.svg.selectAll(".lineplot-cursor").remove();
                 scope.jqcontainer.find(".lineplot-cursorlabel").remove();
@@ -995,22 +977,32 @@
               scope.calcMapping = function(emitFocusUpdate){ // called every time after the focus is changed
                 var focus = scope.focus, range = scope.range;
                 var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
+                var model = scope.stdmodel;
                 var W = scope.jqsvg.width(), H = scope.jqsvg.height();
                 if (emitFocusUpdate==true && scope.model.updateFocus!=null) {
                   scope.model.updateFocus({"xl": focus.xl, "xr": focus.xr});
                 }
                 
-                scope.data2scrX = d3.scale.linear().domain([focus.xl, focus.xr]).range([lMargin,W]);
-                scope.data2scrY = d3.scale.linear().domain([focus.yl, focus.yr]).range([H-bMargin,0]);
-                scope.data2scrXp = d3.scale.linear().domain([focus.xl, focus.xr]).range([0,1]);
-                scope.data2scrYp = d3.scale.linear().domain([focus.yl, focus.yr]).range([1,0]);
                 
-                scope.scr2dataX = d3.scale.linear().domain([lMargin,W]).range([focus.xl, focus.xr]);
+                scope.data2scrY = d3.scale.linear().domain([focus.yl, focus.yr]).range([H-bMargin,0]);
+                scope.data2scrYp = d3.scale.linear().domain([focus.yl, focus.yr]).range([1,0]);
                 scope.scr2dataY = d3.scale.linear().domain([0,H-bMargin]).range([focus.yr, focus.yl]);
-                scope.scr2dataXp = d3.scale.linear().domain([lMargin,W]).range([0,1]);
                 scope.scr2dataYp = d3.scale.linear().domain([0,H-bMargin]).range([1,0]);
+                scope.data2scrX = d3.scale.linear().domain([focus.xl, focus.xr]).range([lMargin,W]);
+                scope.data2scrXp = d3.scale.linear().domain([focus.xl, focus.xr]).range([0,1]);
+                scope.scr2dataX = d3.scale.linear().domain([lMargin,W]).range([focus.xl, focus.xr]);
+                scope.scr2dataXp = d3.scale.linear().domain([lMargin,W]).range([0,1]);
+                
+              }
+              scope.standardizeData = function(){
+                var model = scope.model.getCellModel();
+                scope.stdmodel = lineplotConverter.standardizeModel(model);
+                scope.data = scope.stdmodel.data;
               }
               scope.init = function(){
+                scope.standardizeData();  // first standardize
+                scope.initLayout();
+                
                 scope.resetSvg();
                 scope.zoomObj = d3.behavior.zoom();   // set zoom object
                 scope.container
@@ -1021,7 +1013,6 @@
                   .mouseleave( function(e){ return scope.mouseleaveClear() });
                 
                 scope.enableZoom();
-                scope.standardizeData();
                 scope.initRange();
                 scope.calcMapping();
                 scope.update();

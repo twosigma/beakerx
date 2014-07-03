@@ -113,6 +113,7 @@ public class PluginServiceLocatorRest {
   private final Map<String, String> nginxPluginRules;
   private final String pluginDir;
   private final String nginxCommand;
+  private String[] nginxEnv = null;
   private final Boolean publicServer;
   private final Integer portBase;
   private final Integer servPort;
@@ -129,6 +130,7 @@ public class PluginServiceLocatorRest {
 
   private final String nginxTemplate;
   private final String ipythonTemplate;
+  private final String ipythonCmdBase;
   private final Map<String, PluginConfig> plugins = new HashMap<>();
   private Process nginxProc;
   private int portSearchStart;
@@ -194,6 +196,29 @@ public class PluginServiceLocatorRest {
     });
 
     portSearchStart = this.portBase + this.reservedPortCount;
+
+    if (macosx()) {
+      List<String> envList = new ArrayList<>();
+      for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
+        envList.add(entry.getKey() + "=" + entry.getValue());
+      }
+      envList.add("DYLD_LIBRARY_PATH=./nginx/bin");
+      this.nginxEnv = new String[envList.size()];
+      envList.toArray(this.nginxEnv);
+    }
+
+    // Should pass pluginArgs too XXX.
+    String cmdBase = (this.pluginLocations.containsKey("IPython") ?
+                      this.pluginLocations.get("IPython") : (this.pluginDir + "/ipythonPlugins/ipython"))
+      + "/ipythonPlugin";
+    if (windows()) {
+      cmdBase = "python " + cmdBase;
+    }
+    this.ipythonCmdBase = cmdBase;
+  }
+
+  private boolean macosx() {
+    return System.getProperty("os.name").contains("Mac");
   }
 
   private boolean windows() {
@@ -211,7 +236,8 @@ public class PluginServiceLocatorRest {
   private void startReverseProxy() throws InterruptedException, IOException {
     generateNginxConfig();
     System.out.println("running nginx: " + this.nginxCommand);
-    Process proc = Runtime.getRuntime().exec(this.nginxCommand);
+
+    Process proc = Runtime.getRuntime().exec(this.nginxCommand, this.nginxEnv);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
   }
@@ -293,7 +319,7 @@ public class PluginServiceLocatorRest {
       String restartId = generateNginxConfig();
       String restartPath = "\"" + this.nginxServDir + "/restart_nginx\"";
       String restartCommand = this.nginxCommand + " -s reload";
-      Process restartproc = Runtime.getRuntime().exec(restartCommand);
+      Process restartproc = Runtime.getRuntime().exec(restartCommand, this.nginxEnv);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
 
@@ -487,10 +513,10 @@ public class PluginServiceLocatorRest {
     }
   }
 
-  private String hashIPythonPassword(String cmdBase, String password)
+  private String hashIPythonPassword(String password)
     throws IOException
   {
-    Process proc = Runtime.getRuntime().exec(cmdBase + " --hash");
+    Process proc = Runtime.getRuntime().exec(this.ipythonCmdBase + " --hash");
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
     bw.write("from IPython.lib import passwd\n");
@@ -507,16 +533,9 @@ public class PluginServiceLocatorRest {
   {
     // Can probably determine exactly what is needed and then just
     // make the files ourselves but this is a safe way to get started.
-    // Should pass pluginArgs too XXX.
-    String cmdBase = (this.pluginLocations.containsKey("IPython") ?
-                      this.pluginLocations.get("IPython") : (this.pluginDir + "/ipythonPlugins/ipython"))
-      + "/ipythonPlugin";
-    if (windows()) {
-      cmdBase = "python " + cmdBase;
-    }
-    String cmd = cmdBase + " --profile " + this.nginxServDir;
+    String cmd = this.ipythonCmdBase + " --profile " + this.nginxServDir;
     Runtime.getRuntime().exec(cmd).waitFor();
-    String hash = hashIPythonPassword(cmdBase, password);
+    String hash = hashIPythonPassword(password);
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));
     config = config.replace("%(hash)s", hash);
@@ -642,7 +661,7 @@ public class PluginServiceLocatorRest {
       String cmd = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
       proc = Runtime.getRuntime().exec(cmd);
     } else {
-      proc = Runtime.getRuntime().exec("ipython --version");
+      proc = Runtime.getRuntime().exec(this.ipythonCmdBase + " --version");
     }
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     String line = br.readLine();

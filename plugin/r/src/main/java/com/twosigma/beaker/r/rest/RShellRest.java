@@ -23,12 +23,16 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import javax.swing.ImageIcon;
 import javax.ws.rs.FormParam;
@@ -42,6 +46,8 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.r.module.ErrorGobbler;
 import com.twosigma.beaker.r.module.ROutputHandler;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.ClientProtocolException;
 import org.rosuda.REngine.Rserve.RConnection;
@@ -66,26 +72,54 @@ public class RShellRest {
   private int svgUniqueCounter = 0;
   private int corePort = -1;
   private RServer rServer = null;
+  private final Base64 encoder;
 
   public RShellRest() {
+    this.encoder = new Base64();
   }
 
   int getPortFromCore()
     throws IOException, ClientProtocolException
   {
+    String auth = encoder.encodeBase64String(("beaker:" + System.getenv("beaker_core_password")).getBytes());
     String response = Request.Get("http://127.0.0.1:" + corePort + "/rest/plugin-services/getAvailablePort")
+      .addHeader("Authorization", "Basic " + auth)
       .execute().returnContent().asString();
     return Integer.parseInt(response);
   }
 
-  String writeRserveScript(int port)
+  private String makeTemp(String base, String suffix)
     throws IOException
   {
-    File temp = File.createTempFile("BeakerRserveScript", ".r");
-    String location = temp.getAbsolutePath();
+    File dir = new File(System.getenv("beaker_tmp_dir"));
+    File tmp = File.createTempFile(base, suffix, dir);
+    if (!windows()) {
+      Set<PosixFilePermission> perms = EnumSet.of(PosixFilePermission.OWNER_READ,
+                                                  PosixFilePermission.OWNER_WRITE);
+      Files.setPosixFilePermissions(tmp.toPath(), perms);
+    }
+    return tmp.getAbsolutePath();
+  }
+
+
+  String writeRserveScript(int port, String password)
+    throws IOException
+  {
+    String pwlocation = makeTemp("BeakerRserve", ".pwd");
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(pwlocation))) {
+      bw.write("beaker " + password + "\n");
+      bw.close();
+    }
+    if (windows()) {
+	// R chokes on backslash in windows path, need to quote them
+	pwlocation = pwlocation.replace("\\", "\\\\");
+    }
+    String location = makeTemp("BeakerRserveScript", ".r");
     try (BufferedWriter bw = new BufferedWriter(new FileWriter(location))) {
       bw.write("library(Rserve)\n");
-      bw.write("run.Rserve(port=" + port + ")\n");
+      bw.write("run.Rserve(auth=\"required\", plaintext=\"enable\", port=" +
+               port + ", pwdfile=\"" + pwlocation + "\")\n");
+      bw.close();
     }
     return location;
   }
@@ -95,7 +129,8 @@ public class RShellRest {
   {
     int port = getPortFromCore();
     String pluginInstallDir = System.getProperty("user.dir");
-    String[] command = {"Rscript", writeRserveScript(port)};
+    String password = RandomStringUtils.random(40, true, true);
+    String[] command = {"Rscript", writeRserveScript(port, password)};
 
     // Need to clear out some environment variables in order for a
     // new Java process to work correctly.
@@ -127,8 +162,9 @@ public class RShellRest {
                                                 BEGIN_MAGIC, END_MAGIC);
     handler.start();
 
-    return new RServer(new RConnection("127.0.0.1", port),
-                       handler, port);
+    RConnection rconn = new RConnection("127.0.0.1", port);
+    rconn.login("beaker", password);
+    return new RServer(rconn, handler, port, password);
   }
 
   // set the port used for communication with the Core server
@@ -159,7 +195,7 @@ public class RShellRest {
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
       @FormParam("shellID") String shellID,
-      @FormParam("code") String code) throws InterruptedException, REXPMismatchException {
+      @FormParam("code") String code) throws InterruptedException, REXPMismatchException, IOException {
 
     boolean gotMismatch = false;
     // System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
@@ -167,9 +203,8 @@ public class RShellRest {
     obj.started();
     RServer server = getEvaluator(shellID);
     RConnection con = server.connection;
-    String dotDir = System.getProperty("user.home") + "/.beaker";
-    // XXX should use better location on windows.
-    String file = windows() ? "rplot.svg" : (dotDir + "/rplot.svg"); 
+
+    String file = windows() ? "rplot.svg" : makeTemp("rplot", ".svg");
     try {
       java.nio.file.Path p = java.nio.file.Paths.get(file);
       java.nio.file.Files.deleteIfExists(p);
@@ -254,8 +289,9 @@ public class RShellRest {
       if (null == rServer) {
         rServer = startRserve();
       }
-      newRs = new RServer(new RConnection("127.0.0.1", rServer.port),
-                          rServer.outputHandler, rServer.port);
+      RConnection rconn = new RConnection("127.0.0.1", rServer.port);
+      rconn.login("beaker", rServer.password);
+      newRs = new RServer(rconn, rServer.outputHandler, rServer.port, rServer.password);
     }
     this.shells.put(id, newRs);
   }
@@ -355,10 +391,12 @@ public class RShellRest {
     RConnection connection;
     ROutputHandler outputHandler;
     int port;
-    public RServer(RConnection con, ROutputHandler handler, int port) {
+    String password;
+    public RServer(RConnection con, ROutputHandler handler, int port, String password) {
       this.connection = con;
       this.outputHandler = handler;
       this.port = port;
+      this.password = password;
     }
   }
 }

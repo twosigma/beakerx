@@ -20,6 +20,26 @@ module.exports = function() {
 
     getPluginManager: function() {
       return this.find('bk-plugin-manager');
+    },
+
+    getCells: function() {
+      return this.find('bk-cell')
+    },
+
+    setHeadline: function(text) {
+      var _this   = this;
+      var elm     = _this.find(".bk-section-title");
+
+      return elm.click()
+      .then(function() {
+        return elm.sendKeys(text);
+      }).then(function() {
+        return _this.click();
+      })
+    },
+
+    readHeadline: function() {
+      return this.read(".bk-section-title");
     }
   });
 }

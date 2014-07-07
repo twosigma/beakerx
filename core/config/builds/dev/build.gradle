@@ -21,6 +21,7 @@ ext {
 
 task build
 task clean
+task check
 task run (type: Exec) {
   workingDir coreDir
   commandLine './beaker.command'
@@ -41,9 +42,24 @@ task cleanPlugins (type: Exec) {
   commandLine 'rm', '-rf', evalPluginDir.absolutePath
 }
 
+def gitDescribe() {
+  return "git describe".execute().text.trim()
+}
+
+task writeVersion << {
+  new File(coreDir, 'config/version').write(gitDescribe());
+  new File(coreDir, 'config/build_time').write(new Date().format("yyyy-MM-dd HH:mm z"));
+}
+
 clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
 build.dependsOn(":core:build")
 build.dependsOn(":core:installApp")
+build.dependsOn(writeVersion)
 build.dependsOn(installPlugins)
 run.dependsOn(build)
+check.dependsOn(":core:build")
+check.dependsOn(installPlugins)
+check.dependsOn(":core:installApp")
+check.dependsOn(":test:check")
+

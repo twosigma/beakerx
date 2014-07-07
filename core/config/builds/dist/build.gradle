@@ -14,22 +14,13 @@
  *  limitations under the License.
  */
 
+def coreDir = file("../../../") // TODO, this can come from a property
+
 def gitDescribe() {
   return "git describe".execute().text.trim()
 }
 
-def versionHtml() {
-  def buildTime = new Date().format("yyyy-MM-dd HH:mm z")
-  return "<div>build time: " + buildTime + "<br>" + "version: " + gitDescribe() + "<br></div>\n"
-}
-
-def coreDir = file("../../../") // TODO, this can come from a property
-
-task writeVersion << {
-  new File(coreDir, 'src/main/web/template/version.html').write(versionHtml())
-}
-
-  // XXX move all of this into makeDist python script
+// XXX move all of this into makeDist python script
 task makeDist(type: Exec) {
   def osName = System.properties['os.name']
   def platform = 'windows'
@@ -41,7 +32,7 @@ task makeDist(type: Exec) {
   }
   def zipName = 'beaker-notebook-' + gitDescribe() + '-' + platform
   if (platform == 'windows') {
-    commandLine 'cmd', '/c', '7za', 'a', 
+    commandLine 'cmd', '/c', '7za', 'a',
                 zipName, 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
                 'beaker.command.bat', '-xr!.~', '-xr!.gradle'
   } else {
@@ -49,5 +40,5 @@ task makeDist(type: Exec) {
   }
 }
 
-makeDist.dependsOn(":writeVersion")
+
 makeDist.dependsOn(":dev:build")

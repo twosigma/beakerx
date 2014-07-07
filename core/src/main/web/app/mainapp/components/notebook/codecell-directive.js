@@ -29,6 +29,7 @@
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
     };
+    var CELL_TYPE = "code";
     return {
       restrict: 'E',
       templateUrl: "./app/mainapp/components/notebook/codecell.html",
@@ -116,6 +117,7 @@
             $scope.cm.setOption("mode", evaluator.cmMode);
             var bg = evaluator.background ? evaluator.background : "white";
             $($scope.cm.getWrapperElement()).css("background", bg);
+            $scope.evaluatorReader = true;
           }
         };
         $scope.$watch("getEvaluator()", function(newValue, oldValue) {
@@ -135,20 +137,15 @@
           bkUtils.refreshRootScope();
         };
         $scope.getShareMenuPlugin = function() {
-          // the following cellType needs to match
-          //plugin.cellType = "codeCell"; in dynamically loaded cellmenu/codeCell.js
-          var cellType = "codeCell";
-          return bkCellMenuPluginManager.getPlugin(cellType);
+          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
         var shareMenu = {
           name: "Share",
           items: []
         };
         $scope.cellmenu.addItem(shareMenu);
-        $scope.$watch("getShareMenuPlugin()", function(getShareMenu) {
-          if (getShareMenu) {
-            shareMenu.items = getShareMenu($scope);
-          }
+        $scope.$watch("getShareMenuPlugin()", function() {
+          shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
         });
 
         $scope.cellmenu.addItem({
@@ -407,6 +404,15 @@
             }
           }
         });
+
+        scope.getShareData = function() {
+          var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
+              .find(function (evaluator) {
+                return evaluator.name === scope.cellmodel.evaluator;
+              });
+          var cells = [scope.cellmodel];
+          return bkUtils.generateNotebook([evaluator], cells);
+        };
       }
     };
   });

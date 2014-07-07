@@ -18,6 +18,7 @@ package com.twosigma.beaker.shared.module.config;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.apache.commons.lang3.RandomStringUtils;
 
 /**
  * WebAppConfigImpl
@@ -28,6 +29,7 @@ public class DefaultWebServerConfig implements WebServerConfig {
   private final Integer port;
   private final String username;
   private final String staticDir;
+  private final String password;
 
   @Inject
   public DefaultWebServerConfig(WebAppConfigPref pref) {
@@ -35,11 +37,17 @@ public class DefaultWebServerConfig implements WebServerConfig {
     this.username = System.getProperty("user.name");
     this.staticDir = pref.getStaticDirectory() != null ?
         pref.getStaticDirectory() : System.getProperty("user.dir");
+    this.password = RandomStringUtils.random(40, true, true);
   }
 
   @Override
   public Integer getPort() {
     return this.port;
+  }
+
+  @Override
+  public String getPassword() {
+    return this.password;
   }
 
   @Override

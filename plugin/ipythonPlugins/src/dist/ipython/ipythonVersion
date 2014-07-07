@@ -14,5 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# XXX the location of this is not controlled by BeakerConfig.getPluginLocations()
+# its functionality should just be folded into ipythonPlugin
+
 import os
 os.execlp("ipython", "ipython", "--version")

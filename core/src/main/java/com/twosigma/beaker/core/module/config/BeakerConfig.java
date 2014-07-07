@@ -17,6 +17,7 @@
 package com.twosigma.beaker.core.module.config;
 
 import java.util.Map;
+import java.net.UnknownHostException;
 
 /**
  * BeakerConfig
@@ -63,6 +64,41 @@ public interface BeakerConfig {
    * @return
    */
   public String getNginxExtraRules();
+  /**
+   * optional/extra/override nginx plugin rules
+   * @return
+   */
+  public Map<String, String> getNginxPluginRules();
+  /**
+   * Public Server
+   * @return
+   */
+  public Boolean getPublicServer();
+  /**
+   * No Password allowed
+   * @return
+   */
+  public Boolean getNoPasswordAllowed();
+  /**
+   * Auth cookie
+   * @return
+   */
+  public String getAuthCookie();
+  /**
+   * Password Hash
+   * @return
+   */
+  public String getPasswordHash();
+  /**
+   * Password
+   * @return
+   */
+  public String getPassword();
+  /**
+   * Password Salt
+   * @return
+   */
+  public String getPasswordSalt();
   /**
    * gets the port base
    * @return
@@ -113,4 +149,19 @@ public interface BeakerConfig {
    * @return
    */
   public Map<String, String[]> getPluginEnvps();
+  /**
+   * base URL from which whole application is served
+   * @return
+   */
+  public String getBaseURL() throws UnknownHostException;
+  /**
+   * version
+   * @return
+   */
+  public String getVersion();
+  /**
+   * build time
+   * @return
+   */
+  public String getBuildTime();
 }

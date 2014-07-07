@@ -13,11 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
- 
+
 #Beaker notebook
 ##Overview
 
-Beaker is a polyglot code notebook that allows data scientists to analyze data and document their process using multiple programming languages. Users can seamlessly switch between their favorite languages and tools within a single document. Current language support includes Python, Groovy, R, Scala, Matlab, HTML, Markdown, and Latex. Results can be rendered as interactive visualizations that can easily be shared with colleagues or the public.
+Beaker is a polyglot code notebook that allows data scientists to analyze data and document their process using multiple programming languages. Users can seamlessly switch between their favorite languages and tools within a single document. Current language support includes Python, Groovy, R, Scala, Matlab, HTML, Markdown, and LaTeX. Results can be rendered as interactive visualizations that can easily be shared with colleagues or the public.
 
 ##Polyglot literate programming
 
@@ -37,7 +37,7 @@ Beaker changes all of that. With its polyglot nature, hierarchical section forma
 ##Open Source Software
 
 Beaker was built as an internal Two Sigma project and is now released to the public under the Apache 2.0 license.
- 
+
 #Running Beaker
 
 [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run)

@@ -36,6 +36,8 @@ public interface BeakerConfigPref {
    * @return
    */
   public Integer getPortBase();
+  public Boolean getPublicServer();
+  public Boolean getNoPasswordAllowed();
   /**
    * Gets the url of the default notebook
    * @return

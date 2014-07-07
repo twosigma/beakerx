@@ -23,6 +23,7 @@
       ["flotr2ViewUtils",
         "bkCellMenuPluginManager",
         function(flotr2ViewUtils, bkCellMenuPluginManager) {
+          var CELL_TYPE = "bko-chart";
           return {
             template: "<div class='tschartcontainer'></div>",
             controller: function($scope) {
@@ -86,15 +87,11 @@
               });
 
               $scope.getShareMenuPlugin = function() {
-                // the following cellType needs to match
-                //plugin.cellType = "bkChart"; in dynamically loaded outputDisplay_bkChart.js
-                var cellType = "bkChart";
-                return bkCellMenuPluginManager.getPlugin(cellType);
+                return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
               };
-              $scope.$watch("getShareMenuPlugin()", function(getShareMenu) {
-                if (getShareMenu && $scope.model.resetShareMenuItems) {
-                  $scope.model.resetShareMenuItems(getShareMenu($scope));
-                }
+              $scope.$watch("getShareMenuPlugin()", function() {
+                var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
+                $scope.model.resetShareMenuItems(newItems);
               });
             },
             link: function(scope, element, attrs) {

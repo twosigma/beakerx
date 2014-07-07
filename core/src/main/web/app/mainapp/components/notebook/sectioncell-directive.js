@@ -24,6 +24,7 @@
       bkSessionManager,
       bkCoreManager,
       bkCellMenuPluginManager) {
+    var CELL_TYPE = "section";
     return {
       restrict: 'E',
       templateUrl: "./app/mainapp/components/notebook/sectioncell.html",
@@ -103,21 +104,27 @@
         };
 
         $scope.getShareData = function() {
-          return {
-            cellModel: $scope.cellmodel,
-            evViewModel: bkEvaluatorManager.getViewModel(),
-            notebookModel: {
-              cells: [$scope.cellmodel]
-                  .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id))
-            }
-          };
+          var cells = [$scope.cellmodel]
+              .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
+          var usedEvaluatorsNames = _(cells).chain()
+              .filter(function(cell) {
+                return cell.type === "code";
+              })
+              .map(function (cell) {
+                return cell.evaluator;
+              })
+              .unique().value();
+          var evaluators = bkSessionManager.getRawNotebookModel().evaluators
+              .filter(function (evaluator) {
+                return _.any(usedEvaluatorsNames, function (ev) {
+                  return evaluator.name === ev;
+                });
+              });
+          return bkUtils.generateNotebook(evaluators, cells);
         };
 
         $scope.getShareMenuPlugin = function() {
-          // the following cellType needs to match
-          //plugin.cellType = "sectionCell"; in dynamically loaded cellmenu/sectionCell.js
-          var cellType = "sectionCell";
-          return bkCellMenuPluginManager.getPlugin(cellType);
+          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
         $scope.cellview.menu.addItem({
           name: "Run all",
@@ -133,10 +140,8 @@
           items: []
         };
         $scope.cellview.menu.addItem(shareMenu);
-        $scope.$watch("getShareMenuPlugin()", function(getShareMenu) {
-          if (getShareMenu) {
-            shareMenu.items = getShareMenu($scope);
-          }
+        $scope.$watch("getShareMenuPlugin()", function() {
+          shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
         });
         $scope.isInitializationCell = function() {
           return $scope.cellmodel.initialization;

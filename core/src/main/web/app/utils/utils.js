@@ -102,6 +102,13 @@
             .error(deferred.reject);
         return deferred.promise;
       },
+      getVersionInfo: function() {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet("../beaker/rest/util/getVersionInfo")
+            .success(deferred.resolve)
+            .error(deferred.reject);
+        return deferred.promise;
+      },
       getStartUpDirectory: function() {
         var deferred = angularUtils.newDeferred();
         this.httpGet("../beaker/rest/file-io/getStartUpDirectory")
@@ -119,6 +126,13 @@
               deferred.reject(data, status, header, config);
             });
         return deferred.promise;
+      },
+      generateNotebook: function(evaluators, cells) {
+        return {
+          beaker: "2",
+          evaluators: evaluators,
+          cells: cells
+        };
       },
       loadFile: function(path) {
         var deferred = angularUtils.newDeferred();

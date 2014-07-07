@@ -66,6 +66,12 @@
             hideEvaluators: function () {
               this._hideEvaluators = true;
             },
+            toggleAdvancedMode: function() {
+              this._advancedMode = !this._advancedMode;
+            },
+            isAdvancedMode: function() {
+              return !!(this._advancedMode);
+            },
             toggleDebugging: function () {
               this._debugging = !this._debugging;
             },
@@ -137,6 +143,11 @@
         $scope.hideOutput = function () {
           _impl._viewModel.hideOutput();
         };
+
+        $scope.isAdvancedMode = function () {
+          return _impl._viewModel.isAdvancedMode();
+        };
+
         var margin = $(".outputlogstdout").position().top;
         var outputLogHeight = 300;
         var dragHeight;

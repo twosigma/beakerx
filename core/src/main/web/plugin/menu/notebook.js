@@ -49,6 +49,17 @@ define(function(require, exports, module) {
         }
       }
     },
+    {
+      name: 'Toggle Advanced Mode',
+      isChecked: function() {
+        var notebookViewModel = bkHelper.getBkNotebookViewModel();
+        return notebookViewModel.isAdvancedMode();
+      },
+      action: function() {
+        var notebookViewModel = bkHelper.getBkNotebookViewModel();
+        notebookViewModel.toggleAdvancedMode();
+      }
+    },
     // BEAKER-324 - delete all output button.
     {
       name: 'Delete all output cells',

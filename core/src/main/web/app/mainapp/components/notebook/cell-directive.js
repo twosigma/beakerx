@@ -33,17 +33,17 @@
     return {
       restrict: 'E',
       template: '<div class="bkcell">' +
-          '<div ng-if="cellmodel.input.hidden && cellmodel.type==\'code\'" class="mini-cell-stats">'+
+          '<div ng-if="cellmodel.input.hidden && cellmodel.type==\'code\'" class="mini-cell-stats advanced-hide">'+
           '{{cellmodel.evaluator}} &nbsp;'+
           '({{cellmodel.lineCount}} lines)'+
           '</div>' +
           '<div class="toggle-menu">' +
           '<div class="cell-menu-item cell-dropdown" ng-click="toggleCellMenu($event)"></div>'+
-          '<div class="cell-menu-item move-cell-down" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && \'disabled\'"></div>'+
-          '<div class="cell-menu-item move-cell-up" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && \'disabled\'"></div>'+
-          '<div class="cell-menu-item delete-cell" ng-click="deleteCell()"></div>'+
-          '<div class="cell-menu-item expand-contract" ng-if="cellmodel.type==\'code\'" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden && \'collapsed\'"></div>'+
-          '<div class="cell-menu-item loading-state" ng-if="cellmodel.type==\'code\' && !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}} <div class="loading-spinner rotating"></div></div>'+
+          '<div class="cell-menu-item move-cell-down advanced-hide" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && \'disabled\'"></div>'+
+          '<div class="cell-menu-item move-cell-up advanced-hide" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && \'disabled\'"></div>'+
+          '<div class="cell-menu-item delete-cell advanced-hide" ng-click="deleteCell()"></div>'+
+          '<div class="cell-menu-item expand-contract advanced-hide" ng-if="cellmodel.type==\'code\'" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden && \'collapsed\'"></div>'+
+          '<div class="cell-menu-item loading-state advanced-hide" ng-if="cellmodel.type==\'code\' && !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}} <div class="loading-spinner rotating"></div></div>'+
           '</div>'+
           '<div ng-if="isDebugging()">' +
           '[Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}} ' +

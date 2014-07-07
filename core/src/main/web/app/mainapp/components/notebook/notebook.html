@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div>
+<div ng-class="isAdvancedMode() && 'advanced-mode'">
   <div class="bkcell">
     <bk-plugin-manager></bk-plugin-manager>
     <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell"></bk-cell>

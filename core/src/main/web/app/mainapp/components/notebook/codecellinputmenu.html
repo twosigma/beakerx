@@ -14,10 +14,10 @@
     limitations under the License.
 -->
 <div class="dropdown">
-  <a class="dropdown-toggle cell-evaluator-menu" data-toggle="dropdown">
+  <a class="dropdown-toggle cell-evaluator-menu advanced-hide" data-toggle="dropdown">
     <b>{{cellmodel.evaluator}}</b>
   </a>
-  <ul class="dropdown-menu inputcellmenu" role="menu" aria-labelledby="dLabel">
+  <ul class="dropdown-menu inputcellmenu advanced-hide" role="menu" aria-labelledby="dLabel">
     <li ng-repeat="(evaluatorName, evaluator) in getEvaluators()">
       <a tabindex="-1" href="#" ng-click="setEvaluator(evaluatorName)" eat-click>
         <i class="icon-ok" ng-show="getShowEvalIcon(evaluatorName)"></i>

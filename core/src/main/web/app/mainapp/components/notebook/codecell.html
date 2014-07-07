@@ -19,10 +19,10 @@
     <div class="code-cell-input" ng-show="isShowInput()">
         <bk-code-cell-input-menu></bk-code-cell-input-menu>
         <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
-        <a href="#" class="evaluate-script" ng-click="evaluate()" eat-click>Run</a>
+        <a href="#" class="evaluate-script advanced-hide" ng-click="evaluate()" eat-click>Run</a>
     </div>
     <div class="code-cell-output">
-        <ul class="cell-output-labels">
+        <ul class="cell-output-labels advanced-hide">
           <li><b>Cell Output</b></li>
           <li ng-show="!isShowOutput()" class="no-output">No output</li>
         </ul>

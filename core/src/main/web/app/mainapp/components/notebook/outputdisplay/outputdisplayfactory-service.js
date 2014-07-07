@@ -126,7 +126,7 @@
       "ImageIcon": ["Image", "Text"],
       "BeakerDisplay": ["BeakerDisplay", "Text"],
       "Plot": ["LinePlot", "Chart", "Text"],
-      "TimePlot": ["Chart", "Text"],
+      "TimePlot": ["LinePlot", "Chart", "Text"],
       "LinePlot": ["LinePlot"],
       "CombinedPlot": ["CombinedPlot"],
       "HiddenOutputCell": ["Hidden"],

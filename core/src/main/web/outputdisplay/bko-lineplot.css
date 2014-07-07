@@ -1,10 +1,9 @@
 .lineplot-renderdiv {
     background-color: #FEFEFE;
-    border: 1px solid #000000;
-    /*
-    -webkit-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
-    -moz-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
-    */
+    border: 1px solid #EEEEEE;
+    
+    -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset? */
+    -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
     width: 1200px;
     height: 350px;
 }
@@ -132,7 +131,9 @@
     padding-left: 10px;
     width: 150px;
     height: auto;
-    border: 1px solid black;
+    /*border: 1px solid #EEEEEE; */
+   -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset? */
+    -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
     background-color: white;
 }
 .lineplot-coverbox {

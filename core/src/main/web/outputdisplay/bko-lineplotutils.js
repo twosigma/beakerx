@@ -238,7 +238,8 @@ beaker.bkoFactory('lineplotUtils', ["bkUtils", function(bkUtils) {
                 .attr("x", function(d){ return d.x; })
                 .attr("y", function(d){ return d.y; })
                 .attr("width", pipe[i].width)
-                .attr("height", function(d){ return d.height; });
+                .attr("height", function(d){ return d.height; })
+                .attr("fill", function(d){ return d.fill; });
         }
       },
       plotRivers: function(scope){

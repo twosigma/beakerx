@@ -10,14 +10,25 @@
 					yLabel : model.y_label ? model.y_label : model.yLabel, // ? range_axis_label ?
 					xType : model.xType ? model.xType : "ordinal",
 					yType : model.yType ? model.yType : "ordinal",
-					margin: model.margin? model.margin: null, // TODO
-					range: model.range? model.range: null, // TODO
-					show_legend : model.show_legend,
+					margin: model.margin? model.margin: null,
+					range: model.range? model.range: null,
+					focus: model.focus? model.focus: {},
+					show_legend : model.show_legend!=null && model.show_legend==false? false : true,
 					use_tool_tip : model.use_tool_tip,
 					xCursor : model.xCursor,
 					yCursor : model.yCursor,
+					initSize: {"width": model.initWidth? model.initWidth+"px": 1200+"px", 
+										"height": model.initHeight? model.initHeight+"px": 350+"px"},
 					data : []
 				};
+				var onzeroY = false;
+				
+				if(model.x_lower_bound) newmodel.focus.xl = model.x_lower_bound;
+				if(model.x_upper_bound) newmodel.focus.xr = model.x_upper_bound;
+				if(model.rangeAxes && model.rangeAxes[0].lower_bound) newmodel.focus.yl = model.rangeAxes[0].lower_bound;
+				if(model.rangeAxes && model.rangeAxes[0].upper_bound) newmodel.focus.yr = model.rangeAxes[0].upper_bound;
+				if(model.rangeAxes && model.rangeAxes[0].auto_range_include_zero) onzeroY = true;
+				
 				if (model.type === "TimePlot") {
 					newmodel.xType = "time";
 				}
@@ -53,6 +64,8 @@
 						if (data.type === "line") {
 							if (data.style == null)
 								data.style = "solid";
+						}
+						if(data.type === "river" || data.type === "line"){
 							if (data.interpolation == null)
 								data.interpolation = "linear";
 						}
@@ -78,7 +91,6 @@
 						newmodel.data.push(data);
 					}
 				} else {
-					var onzeroY = false;
 					var list = model.graphics_list;
 					var numLines = list.length;
 					for (var i = 0; i < numLines; i++) {
@@ -87,7 +99,7 @@
 						data.legend = data.display_name;
 						delete data.display_name;
 						data.shown = true;
-						data.color = "#" + data.color.substr(3);
+						if(data.color!=null && !(data.color instanceof Array)) data.color = "#" + data.color.substr(3);
 
 						if (data.type == null || data.type === "Line") {
 							data.type = "line";
@@ -107,21 +119,39 @@
 							else if(data.interpolation == 2)
 								data.interpolation = "curve";
 								
-						} else if (data.type === "Stem") {
+						} else if (data.type === "Stems") {
 							data.type = "stem";
+							if (data.style == null)
+								data.style = "solid";
+							else if(data.style === "DOT")
+								data.style = "dot";
+							else if(data.style === "DASH")
+								data.style = "dash";
+								
 						} else if (data.type === "Bars") {
 							data.type = "bar";
+							if(data.width == null) data.width = 1;
 						} else if (data.type === "Area") {
+							
 							data.type = "river";
+							if (data.interpolation == null)
+								data.interpolation = "linear";
+							else if(data.interpolation == 0)
+								data.interpolation = "none";
+							else if(data.interpolation == 1)
+								data.interpolation = "linear";
+							else if(data.interpolation == 2)
+								data.interpolation = "curve";
+								
 						} else if (data.type === "Text") {
 							data.type = "text";
 						} else if (data.type === "Points") {
 							data.type = "point";
 							
-							if(data.style === "CIRCLE")
-								data.style = "circle";
-							else if(data.style === "SQUARE") // ?? TODO check name
+							if(data.shape == null)
 								data.style = "rect";
+							else if(data.shape === "CIRCLE") // ?? TODO check name
+								data.style = "circle";
 						}
 						if(data.outlineColor){
 							data.stroke = data.outlineColor;
@@ -139,6 +169,7 @@
 							};
 							ele.x = data.x[j];
 							ele.y = data.y[j];
+							if(data.color && data.color instanceof Array) ele.color = "#" + data.color[j].substr(3);
 
 							/*
 							 var txt = "", prs = _.pairs(_.omit(data.elements[j], "value"));
@@ -152,13 +183,16 @@
 							 data.elements[j].value = txt;
 							 */
 
-							if (data.type === "river" || data.type === "bar") {
+							if (data.type === "river" || data.type === "bar" || data.type === "stem") {
 								if (data.y2 == null) {
 									if (data.height != null) {
-										ele.y2 = ele.y + data.height;
+										ele.y2 = ele.y - data.height;
 									} else if (data.base != null) {
-										ele.y2 = ele.y;
-										ele.y = data.base;
+										if(data.base instanceof Array){
+											ele.y2 = data.base[j];
+										}else{
+											ele.y2 = data.base;
+										}
 									} else {
 										ele.y2 = null;
 									}
@@ -166,10 +200,6 @@
 									ele.y2 = data.y2[j];
 								}
 							}
-							if (data.type === "stem" && data.y2[j].y2 == null && data.height != null) {
-								ele.y2 = data.y2[j].y + data.height;
-							}
-
 							if (data.type === "point" && data.sizes != null) {
 								ele.size = data.sizes[j];
 							}
@@ -203,6 +233,8 @@
 						delete data.x;
 						delete data.y;
 						data.elements = elements;
+						if(data.color && data.color instanceof Array) delete data.color;
+						if(data.base && data.base instanceof Array) delete data.base;
 						newmodel.data.push(data);
 					}
 
@@ -215,6 +247,7 @@
 						};
 					}
 				}
+				newmodel.onzeroY = onzeroY;
 				console.log(newmodel);
 				return newmodel;
 			}

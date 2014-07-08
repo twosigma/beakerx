@@ -20,8 +20,16 @@
 ( function() {'use strict';
 	var retfunc = function(lineplotUtils, lineplotConverter, bkCellMenuPluginManager) {
 		return {
-			template : "<div id='plotitle' class='lineplot-title'></div>" + "<div id='lineplotContainer' class='lineplot-renderdiv' >" + //oncontextmenu='return false;'
-			"<svg>" + "<g id='maing'> <g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" + "<g id='stemg'></g> <g id='pointrectg'></g> <g id='pointcircleg'></g> " + "<g id='segg'></g> <g id='coordg'></g> <g id='rectg'></g> " + "<g id='labelg'></g>" + "</svg>" + "</div>",
+			template : "<div id='plotitle' class='lineplot-title'></div>" 
+							 + "<div id='lineplotContainer' class='lineplot-renderdiv'>"  //oncontextmenu='return false;'
+							 + "<svg>" 
+							 + "<g id='maing'>"
+							 + "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" 
+							 + "<g id='stemg'></g> <g id='pointrectg'></g> <g id='pointcircleg'></g> " 
+							 + "<g id='segg'></g> <g id='coordg'></g> <g id='rectg'></g> <g id='labelg'></g>" 
+							 + "</g>"
+							 + "</svg>"
+							 + "</div>",
 			controller : function($scope) {
 			},
 			link : function(scope, element, attrs) {
@@ -46,6 +54,7 @@
 					scope.container = d3.select(element[0]).select("#lineplotContainer");
 					// hook container to use jquery interaction
 					scope.jqcontainer = element.find("#lineplotContainer");
+					scope.jqcontainer.css(model.initSize);
 					if (model.width != null)
 						scope.jqcontainer.css("width", model.width + "px");
 					if (model.height != null)
@@ -163,6 +172,12 @@
 									yr = Math.max(yr, eles[j].v2);
 									yr = Math.max(yr, eles[j].v2);
 								}
+							} else if (data[i].type === "bar") {
+								var w = data[i].width;
+								xl = Math.min(xl, eles[j].x - w/2);
+								xr = Math.max(xr, eles[j].x + w/2);
+								yl = Math.min(yl, eles[j].y);
+								yr = Math.max(yr, eles[j].y);
 							} else {
 								xl = Math.min(xl, eles[j].x);
 								xr = Math.max(xr, eles[j].x);
@@ -179,42 +194,43 @@
 						"xspan" : xr - xl,
 						"yspan" : yr - yl
 					};
-					console.log(scope.range);
-					scope.focus = {};
+					
 					scope.vrange = {};
 					// visible range
-					_.extend(scope.focus, scope.range);
 					// by default focus = range
 					_.extend(scope.vrange, _.omit(scope.range, "xspan", "yspan"));
-
-					if (model.range != null) {
+					
+					
+					if (model.range != null) {	// TODO, can server pass range?
 						scope.vrange.xl = model.range.left;
 						scope.vrange.xr = model.range.right;
 						scope.vrange.yl = model.range.bottom;
 						scope.vrange.yr = model.range.top;
+						
+						if(model.onzeroY) scope.vrange.yl = 0;
 					} else {
 						var margin = model.margin;
 						scope.vrange.xl -= scope.range.xspan * (margin == null || margin.left == null ? 0.1 : margin.left / 100.0);
 						scope.vrange.xr += scope.range.xspan * (margin == null || margin.right == null ? 0.1 : margin.right / 100.0);
 						scope.vrange.yl -= scope.range.yspan * (margin == null || margin.bottom == null ? 0.1 : margin.bottom / 100.0);
 						scope.vrange.yr += scope.range.yspan * (margin == null || margin.top == null ? 0.1 : margin.top / 100.0);
-						scope.vrange.xspan = scope.vrange.xr - scope.vrange.xl;
-						scope.vrange.yspan = scope.vrange.yr - scope.vrange.yl;
-						_.extend(scope.focus, scope.vrange);
+						
+						if(model.onzeroY) scope.vrange.yl = 0;
 					}
+					scope.vrange.xspan = scope.vrange.xr - scope.vrange.xl;
+					scope.vrange.yspan = scope.vrange.yr - scope.vrange.yl;
+					scope.focus = {};
+					_.extend(scope.focus, scope.vrange);
+					
+					
 					if (vcnt == 0) {
 						_.extend(scope.vrange, scope.range);
 						_.extend(scope.focus, scope.range);
 					}
-					if(model.focus){
-						scope.focus = {
-							"xl": model.focus.left,
-							"xr": model.focus.right,
-							"yl": model.focus.bottom,
-							"yr": model.focus.top
-						};
-						delete model.focus;
-					}
+					if(model.focus.xl) scope.focus.xl = model.focus.xl;
+					if(model.focus.xr) scope.focus.xr = model.focus.xr;
+					if(model.focus.yl) scope.focus.yl = model.focus.yl;
+					if(model.focus.yr) scope.focus.yr = model.focus.yr;
 					scope.fixFocus();
 				};
 
@@ -222,8 +238,14 @@
 					// prepare the coordinates
 					var focus = scope.focus, model = scope.stdmodel;
 
-					var dateIntervals = [1, 5, 10, 15, 30, 60, 300, 600, 1800, 3600, 10800, 21600, 43200, 86400, 604800, 2592000, 7776000, 15552000, 31104000];
-					var valIntervals = [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 50, 100, 500, 1000, 5000, 10000, 50000, 100000];
+					var dateIntervals = [
+						1, 5, 10, 15, 30, 60, 300, 600, 1800, 3600, 10800, 21600, 43200, 
+						86400, 604800, 2592000, 7776000, 15552000, 31104000
+					];
+					var valIntervals = [
+						0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 50, 100, 500, 1000, 
+						5000, 10000, 50000, 100000
+					];
 					var ys = model.yScale;
 					if (ys.type == "log") {
 						var valIntervalsLog = [];
@@ -258,7 +280,8 @@
 					else if (ybase <= 0.5)
 						deci = 1;
 					var xintv = xbase, yintv = ybase;
-					var xs = Math.ceil(focus.xl / xintv) * xintv, xt = Math.floor(focus.xr / xintv) * xintv, ys = Math.ceil(focus.yl / yintv) * yintv, yt = Math.floor(focus.yr / yintv) * yintv;
+					var xs = Math.ceil(focus.xl / xintv) * xintv, xt = Math.floor(focus.xr / xintv) * xintv, 
+							ys = Math.ceil(focus.yl / yintv) * yintv, yt = Math.floor(focus.yr / yintv) * yintv;
 					scope.xCoords = [];
 					scope.yCoords = [];
 					for (var i = xs; i <= xt; i += xintv)
@@ -344,21 +367,17 @@
 							continue;
 						var eles = data[i].elements;
 						if (data[i].type === "bar") {
-							var w = data[i].width == null ? 1 : data[i].width;
-							var sw;
+							var w = data[i].width, sw;
 							var H = scope.jqsvg.height() - scope.layout.bottomTextHeight;
 							var reles = [];
 							for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
 								var p = eles[j];
 								var x1 = mapX(p.x - w / 2), x2 = mapX(p.x + w / 2);
-								if (p.y2 == null) {
-									y = mapY(p.y), y2 = H;
-								} else {
-									y = mapY(p.y2), y2 = mapY(p.y);
-									// reverse y, y2
-								}
+								var y = p.y, y2 = p.y2;
+								if(y2==null) y2 = focus.yl;
+								y = mapY(y); y2 = mapY(y2);
 								sw = x2 - x1;
-								if (y2 < y)
+								if (y > y2)
 									continue;
 								// prevent negative height
 								var bar = {
@@ -367,8 +386,9 @@
 									"y" : y,
 									"height" : y2 - y
 								};
-								if (p.color != null)
+								if (p.color != null){
 									bar.fill = p.color;
+								}
 								reles.push(bar);
 							}
 							scope.rpipeBars.push({
@@ -382,14 +402,24 @@
 							var pstr = "";
 							for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
 								var p = eles[j];
-								pstr += mapX(p.x) + "," + mapY(p.y) + " ";
+								if(data[i].interpolation === "linear"){
+									pstr += mapX(p.x) + "," + mapY(p.y) + " ";
+								}else if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
+									var p2 = eles[j + 1];
+									pstr += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
+								}
 							}
 							for (var j = fdata[i].rightIndex; j >= fdata[i].leftIndex; j--) {
 								var p = eles[j];
 								var y2 = p.y2;
-								if (y2 == null)
-									y2 = focus.yl;
-								pstr += mapX(p.x) + "," + mapY(y2) + " ";
+								if(y2==null) y2 = focus.yl;
+								
+								if (data[i].interpolation === "linear") {
+									pstr += mapX(p.x) + "," + mapY(y2) + " ";
+								} else if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
+									var p2 = eles[j + 1];
+									pstr += mapX(p2.x) + "," + mapY(y2) + " " + mapX(p.x) + "," + mapY(y2) + " ";
+								}
 							}
 							scope.rpipeRivers.push({
 								"id" : "river_" + i,
@@ -500,7 +530,9 @@
 									});
 
 									scope.jqcontainer.find("#" + id).remove();
-									var label = $("<div id=" + id + " class='lineplot-constlabel'></div>").appendTo(scope.jqcontainer).text(scope.model.xType == "time" ? lineplotUtils.formatDate(scope.xintv, p.v) : parseInt(p.v));
+									var label = $("<div id=" + id + " class='lineplot-constlabel'></div>")
+										.appendTo(scope.jqcontainer)
+										.text(scope.model.xType == "time" ? lineplotUtils.formatDate(scope.xintv, p.v) : parseInt(p.v));
 									var w = label.outerWidth(), h = label.outerHeight();
 									var p = {
 										"x" : x - w / 2,
@@ -525,7 +557,8 @@
 										"y2" : y
 									});
 									scope.jqcontainer.find("#" + id).remove();
-									var label = $("<div id=" + id + " class='lineplot-constlabel'></div>").appendTo(scope.jqcontainer).text(p.v.toFixed(0));
+									var label = $("<div id=" + id + " class='lineplot-constlabel'></div>")
+										.appendTo(scope.jqcontainer).text(p.v.toFixed(0));
 									var w = label.outerWidth(), h = label.outerHeight();
 									var p = {
 										"x" : lMargin + scope.labelPadding.x,
@@ -660,7 +693,7 @@
 					}
 				};
 				scope.prepareInteraction = function(id) {
-					var model = scope.model.getCellModel();
+					var model = scope.stdmodel;
 					if (model.use_tool_tip != true)
 						return;
 					var sel;
@@ -702,7 +735,12 @@
 					if (scope.tips[d.id] != null) {
 						return;
 					}
-					$("<div></div>").appendTo(scope.jqcontainer).attr("id", "tip_mouse").attr("class", "lineplot-tooltip").css("left", d.cx + scope.fonts.tooltipWidth + "px").css("top", d.cy + "px").css("border-color", scope.data[d.lineid].color).append("<div>" + d.value + "</div>");
+					$("<div></div>").appendTo(scope.jqcontainer).attr("id", "tip_mouse")
+						.attr("class", "lineplot-tooltip")
+						.css("left", d.cx + scope.fonts.tooltipWidth + "px")
+						.css("top", d.cy + "px")
+						.css("border-color", scope.data[d.lineid].color)
+						.append("<div>" + d.value + "</div>");
 				};
 				scope.untooltip = function(d) {
 					var opaq = scope.tips[d.id] == null ? 0 : 1;
@@ -725,7 +763,12 @@
 						var tip = scope.tips[d.id];
 						var tipdiv = scope.jqcontainer.find("#tip_" + d.id);
 						if (tipdiv.length == 0) {
-							tipdiv = $("<div></div>").appendTo(scope.jqcontainer).attr("id", "tip_" + d.id).attr("class", "lineplot-tooltip").css("left", d.cx + "px").css("top", d.cy + "px").css("border-color", scope.data[d.lineid].color).append(d.value).mousedown(function(e) {
+							tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
+							.attr("id", "tip_" + d.id)
+							.attr("class", "lineplot-tooltip")
+							.css("left", d.cx + "px").css("top", d.cy + "px")
+							.css("border-color", scope.data[d.lineid].color)
+							.append(d.value).mousedown(function(e) {
 								if (e.which == 3) {
 									scope.svg.selectAll("#" + d.id).attr("opacity", 0);
 									delete scope.tips[d.id];
@@ -813,15 +856,21 @@
 						scope.jqcontainer.find(".lineplot-cursorlabel").remove();
 						return;
 					}
-					var model = scope.model.getCellModel();
+					var model = scope.stdmodel;
 					var mapX = scope.scr2dataX, mapY = scope.scr2dataY;
 					if (model.xCursor != null) {
 						var opt = model.xCursor;
-						scope.svg.selectAll("#cursor_x").data([{}]).enter().append("line").attr("id", "cursor_x").attr("class", "lineplot-cursor").attr("stroke", opt.color != null ? opt.color : "black");
-						scope.svg.select("#cursor_x").attr("x1", x).attr("y1", 0).attr("x2", x).attr("y2", H - bMargin);
+						scope.svg.selectAll("#cursor_x").data([{}]).enter().append("line")
+							.attr("id", "cursor_x")
+							.attr("class", "lineplot-cursor")
+							.attr("stroke", opt.color != null ? opt.color : "black");
+						scope.svg.select("#cursor_x")
+							.attr("x1", x).attr("y1", 0).attr("x2", x).attr("y2", H - bMargin);
 
 						scope.jqcontainer.find("#cursor_xlabel").remove();
-						var label = $("<div id='cursor_xlabel' class='lineplot-cursorlabel'></div>").appendTo(scope.jqcontainer).text(scope.model.xType == "time" ? lineplotUtils.formatDate(scope.xintv, mapX(x)) : parseInt(mapX(x)));
+						var label = $("<div id='cursor_xlabel' class='lineplot-cursorlabel'></div>")
+							.appendTo(scope.jqcontainer)
+							.text(scope.model.xType == "time" ? lineplotUtils.formatDate(scope.xintv, mapX(x)) : parseInt(mapX(x)));
 						var w = label.outerWidth(), h = label.outerHeight();
 						var p = {
 							"x" : x - w / 2,
@@ -835,11 +884,19 @@
 					}
 					if (model.yCursor != null) {
 						var opt = model.yCursor;
-						scope.svg.selectAll("#cursor_y").data([{}]).enter().append("line").attr("id", "cursor_y").attr("class", "lineplot-cursor").attr("stroke", opt.color != null ? opt.color : "black");
-						scope.svg.select("#cursor_y").attr("x1", lMargin).attr("y1", y).attr("x2", W).attr("y2", y);
+						scope.svg.selectAll("#cursor_y").data([{}]).enter().append("line")
+							.attr("id", "cursor_y")
+							.attr("class", "lineplot-cursor")
+							.attr("stroke", opt.color != null ? opt.color : "black");
+						scope.svg.select("#cursor_y")
+							.attr("x1", lMargin)
+							.attr("y1", y)
+							.attr("x2", W)
+							.attr("y2", y);
 
 						scope.jqcontainer.find("#cursor_ylabel").remove();
-						var label = $("<div id='cursor_ylabel' class='lineplot-cursorlabel'></div>").appendTo(scope.jqcontainer).text(mapY(y).toFixed(0));
+						var label = $("<div id='cursor_ylabel' class='lineplot-cursorlabel'></div>")
+							.appendTo(scope.jqcontainer).text(mapY(y).toFixed(0));
 						var w = label.outerWidth(), h = label.outerHeight();
 						var p = {
 							"x" : lMargin + scope.labelPadding.x,
@@ -853,7 +910,7 @@
 					}
 				};
 				scope.renderLegends = function() {
-					if (scope.model.getCellModel().show_legend == false || scope.legendDone == true)
+					if (scope.stdmodel.show_legend == false || scope.legendDone == true)
 						return;
 					// legend redraw is controlled by legendDone
 					var data = scope.data, numLines = data.length;
@@ -862,27 +919,50 @@
 					scope.jqcontainer.find("#legends").remove();
 
 					scope.legendDone = true;
-					var legend = $("<div></div>").appendTo(scope.jqcontainer).attr("id", "legends").attr("class", "lineplot-legendcontainer").css({
-						"left" : scope.jqcontainer.width() + 10 + "px",
-						"top" : "0px"
-					});
+					var legend = $("<div></div>").appendTo(scope.jqcontainer)
+						.attr("id", "legends")
+						.attr("class", "lineplot-legendcontainer")
+						.css({
+							"left" : scope.jqcontainer.width() + 10 + "px",
+							"top" : "0px"
+						});
 					legend.draggable();
 
 					var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
-					$("<input type='checkbox'></input>").appendTo(unit).attr("id", "legendcheck_all").attr("class", "lineplot-legendcheckbox").prop("checked", true).click(function(e) {
-						return scope.toggleLine(e);
-					});
-					$("<span></span>").appendTo(unit).attr("id", "legendbox_all").attr("class", "lineplot-legendbox").css("background-color", "none");
-					$("<span></span>").appendTo(unit).attr("id", "legendtext_all").attr("class", "lineplot-label").text("All");
+					$("<input type='checkbox'></input>").appendTo(unit)
+						.attr("id", "legendcheck_all")
+						.attr("class", "lineplot-legendcheckbox")
+						.prop("checked", true)
+						.click(function(e) {
+							return scope.toggleLine(e);
+						});
+					$("<span></span>").appendTo(unit)
+						.attr("id", "legendbox_all")
+						.attr("class", "lineplot-legendbox")
+						.css("background-color", "none");
+					$("<span></span>").appendTo(unit)
+						.attr("id", "legendtext_all")
+						.attr("class", "lineplot-label")
+						.text("All");
 
 					var content = "";
 					for (var i = 0; i < numLines; i++) {
 						var unit = $("<div></div>").appendTo(legend).attr("id", "legend_" + i);
-						$("<input type='checkbox'></input>").appendTo(unit).attr("id", "legendcheck_" + i).attr("class", "lineplot-legendcheckbox").prop("checked", data[i].shown).click(function(e) {
-							return scope.toggleLine(e);
-						});
-						$("<span></span>").appendTo(unit).attr("id", "legendbox_" + i).attr("class", "lineplot-legendbox").css("background-color", data[i].color == null ? "black" : data[i].color);
-						$("<span></span>").appendTo(unit).attr("id", "legendtext_" + i).attr("class", "lineplot-label").text(data[i].legend);
+						$("<input type='checkbox'></input>").appendTo(unit)
+							.attr("id", "legendcheck_" + i)
+							.attr("class", "lineplot-legendcheckbox")
+							.prop("checked", data[i].shown)
+							.click(function(e) {
+								return scope.toggleLine(e);
+							});
+						$("<span></span>").appendTo(unit)
+							.attr("id", "legendbox_" + i)
+							.attr("class", "lineplot-legendbox")
+							.css("background-color", data[i].color == null ? "black" : data[i].color);
+						$("<span></span>").appendTo(unit)
+							.attr("id", "legendtext_" + i)
+							.attr("class", "lineplot-label")
+							.text(data[i].legend);
 					}
 				};
 				scope.toggleLine = function(e) {
@@ -926,7 +1006,13 @@
 					scope.svg.selectAll("#locatebox").remove();
 					if (scope.locateBox != null) {
 						var box = scope.locateBox;
-						scope.svg.selectAll("#locatebox").data([{}]).enter().append("rect").attr("id", "locatebox").attr("class", "lineplot-locatebox").attr("x", box.x).attr("y", box.y).attr("width", box.w).attr("height", box.h);
+						scope.svg.selectAll("#locatebox").data([{}]).enter().append("rect")
+							.attr("id", "locatebox")
+							.attr("class", "lineplot-locatebox")
+							.attr("x", box.x)
+							.attr("y", box.y)
+							.attr("width", box.w)
+							.attr("height", box.h);
 					}
 				};
 				scope.calcLocateBox = function() {
@@ -1179,6 +1265,7 @@
 				};
 				scope.init = function() {
 					scope.standardizeData();
+					
 					// first standardize
 					scope.initLayout();
 

@@ -109,9 +109,9 @@
 							delete data.outline_color;
 						}
 						
-						if(data.colors) data.colorArray = true;
-						if(data.sizes) data.sizeArray = true;
-						if(data.bases) data.baseArray = true;
+						if(data.colors != null) data.colorArray = true;
+						if(data.sizes != null) data.sizeArray = true;
+						if(data.bases != null) data.baseArray = true;
 
 						if (data.type == null || data.type === "Line") {
 							data.type = "line";
@@ -180,11 +180,11 @@
 							};
 							ele.x = data.x[j];
 							ele.y = data.y[j];
-							if(data.colors) {
+							if(data.colors!=null) {
 								ele.color_opacity = parseInt(data.colors[j].substr(1,2), 16)/255;
 								ele.color = "#" + data.colors[j].substr(3);
 							}
-							if(data.outline_colors){
+							if(data.outline_colors!=null){
 								ele.stroke_opacity = parseInt(data.outline_colors[j].substr(1,2), 16)/255;
 								ele.stroke = "#" + data.outline_colors[j].substr(3);
 							}
@@ -242,9 +242,9 @@
 							elements.push(ele);
 						}
 						
-						// TODO
-						var consts = model.const_lines;
+						// TODO constant band
 						var consts = model.const_bands;
+						// TODO text
 						var texts = model.text;
 						
 						delete data.x;
@@ -256,15 +256,64 @@
 						if(data.outline_colors) delete data.outline_colors;
 						newmodel.data.push(data);
 					}
-
-					if (newmodel.margin == null) {
-						newmodel.margin = {
-							bottom : onzeroY ? 0:5,
-							top : 5,
-							left : 5,
-							right : 5
+				}
+				
+				if(model.constant_lines!=null){
+					for(var i=0; i<model.constant_lines.length; i++){
+						var line = model.constant_lines[i];
+						var data = {
+							"type": "constline",
+							"width": line.width!=null ? line.width : 1,
+							"color": "black",
+							"elements": []
 						};
+						if(line.color){
+							data.stroke_opacity = parseInt(line.color.substr(1,2), 16)/255;
+							data.stroke = "#" + line.color.substr(3);
+						}
+						if(line.x!=null){
+							var ele = {"type":"x", "v":line.x};
+						} else if(line.y!=null){
+							var y = line.y;
+							var ele = {"type":"y", "v":y};
+							if(logy){
+								ele._v = y;
+								ele.v = Math.log(y) / Math.log(logyb);
+							}
+						}
+						data.elements.push(ele);
+						newmodel.data.push(data);
 					}
+				}
+				if(model.texts!=null){
+					for(var i=0; i<model.texts.length; i++){
+						var mtext = model.texts[i];
+						var data = {
+							"type": "text",
+							"color": mtext.color != null ? mtext.color : "black",
+							"elements": []
+						};
+						var ele = {
+							"x": mtext.x,
+							"y": mtext.y,
+							"v": mtext.text
+						};
+						if(logy){
+							ele._y = ele.y;
+							ele.y = Math.log(ele.y) / Math.log(logyb);
+						}
+						data.elements.push(ele);
+						newmodel.data.push(data);
+					}
+				}
+				
+				if (newmodel.margin == null) {
+					newmodel.margin = {
+						bottom : onzeroY ? 0:5,
+						top : 5,
+						left : 5,
+						right : 5
+					};
 				}
 				newmodel.onzeroY = onzeroY;
 				console.log(newmodel);

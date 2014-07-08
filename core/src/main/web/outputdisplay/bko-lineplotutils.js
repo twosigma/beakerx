@@ -43,17 +43,21 @@
         scope.stemg.selectAll("g").data(pipe, function(d){ return d.id; }).enter().append("g")
             .attr("id", function(d){ return d.id;} )
             .attr("class", function(d){ return d.class; })
+            .attr("stroke-width", function(d){ return d.stroke_width; })
+            .attr("stroke-dasharray", function(d){ return d.stroke_dasharray; })
             .attr("stroke", function(d){ return d.stroke; })
-            .attr("stroke-dasharray", function(d){ return d.stroke_dasharray; });
+            .attr("opacity", function(d){ return d.opacity; });
         for(var i=0; i<pipe.length; i++){
             scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){ return d.id; }).exit().remove();
-            scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){ return d.id; }).enter().append("line");
+            scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){ return d.id; }).enter().append("line")
+            	.attr("stroke-width", function(d){ return d.stroke_width; })
+            	.attr("stroke", function(d){ return d.stroke; })
+            	.attr("opacity", function(d){ return d.opacity; });
             scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){ return d.id; })
-                .attr("x1", function(d){ return d.x1; })
-                .attr("x2", function(d){ return d.x2; })
-                .attr("y1", function(d){ return d.y1; })
-                .attr("y2", function(d){ return d.y2; })
-                .attr("stroke-width", function(d){ return d["stroke-width"]; });
+              .attr("x1", function(d){ return d.x1; })
+              .attr("x2", function(d){ return d.x2; })
+              .attr("y1", function(d){ return d.y1; })
+              .attr("y2", function(d){ return d.y2; });
         }      
       },
       plotLines: function(scope){
@@ -71,35 +75,17 @@
             scope.lineg.select("#"+pipe[i].id+" polyline")
                 .attr("points", pipe[i].elements);
         }
-        return;
-    /*
-        var sel = scope.maing.selectAll("line");
-        sel.data(scope.rpipeLines, function(d){ return d.id; }).exit().remove();
-        sel.data(scope.rpipeLines, function(d){ return d.id; }).enter().append("line")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .attr("x1", function(d) { return d.x1; })
-          .attr("x2", function(d) { return d.x2; })
-          .attr("y1", function(d) { return d.y1; })
-          .attr("y2", function(d) { return d.y2; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-dasharray", function(d){ return d.stroke_dasharray; });
-        sel.data(scope.rpipeLines, function(d){ return d.id; })
-          .attr("x1", function(d) { return d.x1; })
-          .attr("x2", function(d) { return d.x2; })
-          .attr("y1", function(d) { return d.y1; })
-          .attr("y2", function(d) { return d.y2; });
-          */
+    
       },
       plotSegs: function(scope){
         var pipe = scope.rpipeSegs;
         scope.segg.selectAll("g").data(pipe, function(d){return d.id;}).exit().remove();
         scope.segg.selectAll("g").data(pipe, function(d){return d.id;}).enter().append("g")
             .attr("id", function(d){ return d.id; })
-            .attr("stroke", function(d){ return d.stroke; })
-            .attr("stroke-width", function(d){ return d["stroke-width"]; })
             .attr("class", function(d){ return d.class; })
-            .attr("opacity", function(d){ return d.opacity; });
+            .attr("stroke", function(d){ return d.stroke; })
+            .attr("stroke-width", function(d){ return d.stroke_width; })
+            .attr("stroke-opacity", function(d){ return d.stroke_opacity; });
         for(var i=0; i<pipe.length; i++){
             scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
             scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){return d.id;}).enter().append("line")
@@ -107,8 +93,7 @@
                 .attr("x1", function(d) { return d.x1; })
                 .attr("x2", function(d) { return d.x2; })
                 .attr("y1", function(d) { return d.y1; })
-                .attr("y2", function(d) { return d.y2; })
-                .attr("opacity", function(d){ return d.opacity; });
+                .attr("y2", function(d) { return d.y2; });
             scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){return d.id;})
                 .attr("x1", function(d) { return d.x1; })
                 .attr("x2", function(d) { return d.x2; })

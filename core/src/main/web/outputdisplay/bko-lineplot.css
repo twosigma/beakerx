@@ -13,12 +13,9 @@
     fill: none;
 }
 .lineplot-bar,
-.lineplot-river{
+.lineplot-river,
+.line-plot-stem {
     stroke-width: 1;
-    pointer-events: none;
-}
-.lineplot-stem{
-    stroke-width: 2;
     pointer-events: none;
 }
 .lineplot-coord {
@@ -39,7 +36,8 @@
 .lineplot-label,
 .lineplot-test,
 .lineplot-xylabel,
-.lineplot-cursorlabel {
+.lineplot-cursorlabel,
+.lineplot-constlabel {
     font-family: verdana, helvetica, arial, sans-serif;
     
 }
@@ -48,13 +46,24 @@
 	font-size: 0.75em;
 }
 .lineplot-text {
-    font-size: 0.9em;
+    font-size: 1.0em;
 }
 .lineplot-xylabel {
     font-size: 0.9em;
     text-anchor: middle;
 }
 .lineplot-cursorlabel {
+    font-size: 0.75em;
+    font-weight: bold;
+    color: white;
+    padding: 1px 5px;
+    pointer-events: none;
+    position: absolute;
+    width: auto;
+    height: auto;
+    border-radius: 5px;
+}
+.lineplot-constlabel {
     font-size: 0.75em;
     font-weight: bold;
     color: white;

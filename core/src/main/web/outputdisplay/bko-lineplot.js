@@ -451,28 +451,34 @@
 									"y1" : mapY(p.y),
 									"x2" : mapX(p.x),
 									"y2" : mapY(y2),
-									"stroke-width" : data[i].width
+									"stroke": p.color,
+									"stroke_opacity": p.color_opacity,
+									"stroke_width" : p.width
 								});
 								if (data[i].style.search("bottom") != -1) {
-									var y = Math.min(p.y, y2);
+									var y = y2;
 									reles.push({
 										"id" : "stem_b_" + i + "_" + j,
 										"x1" : mapX(p.x) - 5,
 										"y1" : mapY(y),
 										"x2" : mapX(p.x) + 5,
 										"y2" : mapY(y),
-										"stroke-width" : data[i].width
+										"stroke": p.color,
+										"stroke_opacity": p.color_opacity,
+										"stroke_width" : p.width
 									});
 								}
 								if (data[i].style.search("top") != -1) {
-									var y = Math.max(p.y, y2);
+									var y = p.y;
 									reles.push({
 										"id" : "stem_t_" + i + "_" + j,
 										"x1" : mapX(p.x) - 5,
 										"y1" : mapY(y),
 										"x2" : mapX(p.x) + 5,
 										"y2" : mapY(y),
-										"stroke-width" : data[i].width
+										"stroke": p.color,
+										"stroke_opacity": p.color_opacity,
+										"stroke_width" : p.width
 									});
 								}
 							}
@@ -480,7 +486,8 @@
 								"id" : "stem_" + i,
 								"class" : "lineplot-stem",
 								"stroke" : data[i].color,
-								"opacity": data[i].color_opacity,
+								"stroke_opacity": data[i].color_opacity,
+								"stroke_width": data[i].width,
 								"elements" : reles
 							});
 						} else if (data[i].type === "point") {
@@ -551,7 +558,7 @@
 									scope.jqcontainer.find("#" + id).remove();
 									var label = $("<div id=" + id + " class='lineplot-constlabel'></div>")
 										.appendTo(scope.jqcontainer)
-										.text(scope.model.xType == "time" ? lineplotUtils.formatDate(scope.xintv, p.v) : parseInt(p.v));
+										.text(scope.stdmodel.xType === "time" ? lineplotUtils.formatDate(scope.xintv, p.v) : parseInt(p.v));
 									var w = label.outerWidth(), h = label.outerHeight();
 									var p = {
 										"x" : x - w / 2,
@@ -576,8 +583,9 @@
 										"y2" : y
 									});
 									scope.jqcontainer.find("#" + id).remove();
+									var v = p._v!=null? p._v : p.v;
 									var label = $("<div id=" + id + " class='lineplot-constlabel'></div>")
-										.appendTo(scope.jqcontainer).text(p.v.toFixed(0));
+										.appendTo(scope.jqcontainer).text(v.toFixed(0));
 									var w = label.outerWidth(), h = label.outerHeight();
 									var p = {
 										"x" : lMargin + scope.labelPadding.x,
@@ -594,7 +602,7 @@
 								"id" : "const_" + i,
 								"class" : "lineplot-const",
 								"stroke" : data[i].color,
-								"opacity": data[i].color_opacity,
+								"stroke-opacity": data[i].color_opacity,
 								"stroke-width" : data[i].width,
 								"elements" : reles
 							});
@@ -1089,7 +1097,7 @@
 						var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
 						var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
 						var d3trans = d3.event.translate, d3scale = d3.event.scale;
-						var dx = d3trans[0] - scope.lastx, dy = d3trans[1] - scope.lasty, ds = d3scale / this.lastscale;
+						var dx = d3trans[0] - scope.lastx, dy = d3trans[1] - scope.lasty, ds = this.lastscale / d3scale;
 						scope.lastx = d3trans[0];
 						scope.lasty = d3trans[1];
 						scope.lastscale = d3scale;

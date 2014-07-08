@@ -55,6 +55,8 @@
             ga("send", "event", "tick", "tickAction", {
               "metric4": 1 // tick
             });
+          } else if (event === "outputDisplay") {
+            ga("send", "event", "outputDisplay", obj.resultType, obj.displayType);
           }
         }
       },

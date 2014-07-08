@@ -42,10 +42,13 @@
           }
           childScope = $rootScope.$new();
           childScope.model = scope.model;
-          bkUtils.log("outputDisplay", {
-            resultType: getResultType(scope.model),
-            displayType: type
-          });
+          var resultType = getResultType(scope.model);
+          if (resultType) {
+            bkUtils.log("outputDisplay", {
+              resultType: resultType,
+              displayType: type
+            });
+          }
           var directiveName = bkOutputDisplayFactory.getDirectiveName(type);
           element.html("<div " + directiveName + " model='model'></div>");
           $compile(element.contents())(childScope);

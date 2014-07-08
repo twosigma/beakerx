@@ -99,7 +99,19 @@
 						data.legend = data.display_name;
 						delete data.display_name;
 						data.shown = true;
-						if(data.color!=null && !(data.color instanceof Array)) data.color = "#" + data.color.substr(3);
+						if(data.color) {
+							data.color_opacity = parseInt(data.color.substr(1,2), 16)/255;
+							data.color = "#" + data.color.substr(3);
+						}
+						if(data.outline_color){
+							data.stroke_opacity = parseInt(data.outline_color.substr(1,2), 16)/255;
+							data.stroke = "#" + data.outline_color.substr(3);
+							delete data.outline_color;
+						}
+						
+						if(data.colors) data.colorArray = true;
+						if(data.sizes) data.sizeArray = true;
+						if(data.bases) data.baseArray = true;
 
 						if (data.type == null || data.type === "Line") {
 							data.type = "line";
@@ -130,7 +142,9 @@
 								
 						} else if (data.type === "Bars") {
 							data.type = "bar";
+							
 							if(data.width == null) data.width = 1;
+							
 						} else if (data.type === "Area") {
 							
 							data.type = "river";
@@ -148,15 +162,12 @@
 						} else if (data.type === "Points") {
 							data.type = "point";
 							
-							if(data.shape == null)
+							if(data.shape == null || data.shape === "DEFAULT" || data.shape === "DIAMOND")
 								data.style = "rect";
-							else if(data.shape === "CIRCLE") // ?? TODO check name
+							else if(data.shape === "CIRCLE") 
 								data.style = "circle";
 						}
-						if(data.outlineColor){
-							data.stroke = data.outlineColor;
-							delete data.outlineColor;
-						}
+						
 						if(data.type === "bar" || data.type === "river") {
 							onzeroY = true;	// auto stand on y=0
 						}
@@ -169,30 +180,24 @@
 							};
 							ele.x = data.x[j];
 							ele.y = data.y[j];
-							if(data.color && data.color instanceof Array) ele.color = "#" + data.color[j].substr(3);
+							if(data.colors) {
+								ele.color_opacity = parseInt(data.colors[j].substr(1,2), 16)/255;
+								ele.color = "#" + data.colors[j].substr(3);
+							}
+							if(data.outline_colors){
+								ele.stroke_opacity = parseInt(data.outline_colors[j].substr(1,2), 16)/255;
+								ele.stroke = "#" + data.outline_colors[j].substr(3);
+							}
 
-							/*
-							 var txt = "", prs = _.pairs(_.omit(data.elements[j], "value"));
-							 for (var k=0; k<prs.length; k++) {
-							 var val = prs[k][1];
-							 if (prs[k][0]==="x")  {
-							 val = model.xType=="time"? new Date(val).toLocaleString() : val;
-							 }
-							 txt += "<div>" + prs[k][0] + ": "+ val + "</div>";
-							 }
-							 data.elements[j].value = txt;
-							 */
-
+							
 							if (data.type === "river" || data.type === "bar" || data.type === "stem") {
 								if (data.y2 == null) {
 									if (data.height != null) {
 										ele.y2 = ele.y - data.height;
 									} else if (data.base != null) {
-										if(data.base instanceof Array){
-											ele.y2 = data.base[j];
-										}else{
-											ele.y2 = data.base;
-										}
+										ele.y2 = data.base;
+									} else if (data.bases != null){
+										ele.y2 = data.bases[j];
 									} else {
 										ele.y2 = null;
 									}
@@ -200,8 +205,14 @@
 									ele.y2 = data.y2[j];
 								}
 							}
-							if (data.type === "point" && data.sizes != null) {
-								ele.size = data.sizes[j];
+							if (data.type === "point") {
+								if(data.size != null){
+									ele.size = data.size;
+								} else if (data.sizes != null) {
+									ele.size = data.sizes[j];
+								} else {
+									ele.size = data.style === "rect"? 10 : 5;
+								}
 							}
 
 							var txt = "";
@@ -230,11 +241,19 @@
 							}
 							elements.push(ele);
 						}
+						
+						// TODO
+						var consts = model.const_lines;
+						var consts = model.const_bands;
+						var texts = model.text;
+						
 						delete data.x;
 						delete data.y;
 						data.elements = elements;
-						if(data.color && data.color instanceof Array) delete data.color;
-						if(data.base && data.base instanceof Array) delete data.base;
+						if(data.colors) delete data.colors;
+						if(data.sizes) delete data.sizes;
+						if(data.bases) delete data.bases;
+						if(data.outline_colors) delete data.outline_colors;
 						newmodel.data.push(data);
 					}
 

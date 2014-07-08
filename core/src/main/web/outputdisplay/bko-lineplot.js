@@ -23,10 +23,10 @@
 			template : "<div id='plotitle' class='lineplot-title'></div>" 
 							 + "<div id='lineplotContainer' class='lineplot-renderdiv'>"  //oncontextmenu='return false;'
 							 + "<svg>" 
-							 + "<g id='maing'>"
+							 + "<g id='maing'> <g id='coordg'></g>"
 							 + "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" 
 							 + "<g id='stemg'></g> <g id='pointrectg'></g> <g id='pointcircleg'></g> " 
-							 + "<g id='segg'></g> <g id='coordg'></g> <g id='rectg'></g> <g id='labelg'></g>" 
+							 + "<g id='segg'></g> <g id='labelg'></g> <g id='rectg'></g>  " 
 							 + "</g>"
 							 + "</svg>"
 							 + "</div>",
@@ -136,11 +136,11 @@
 					var numLines = data.length;
 					var xl = 1E20, xr = 0, yl = 1E20, yr = 0;
 					// get the x,y ranges
-					var vcnt = 0;
+					scope.visibleLines = 0;
 					for (var i = 0; i < numLines; i++) {
 						if (data[i].shown == false)
 							continue;
-						vcnt++;
+						scope.visibleLines ++;
 						var numPoints = data[i].elements.length;
 						var eles = data[i].elements;
 						for (var j = 0; j < numPoints; j++) {
@@ -201,29 +201,33 @@
 					_.extend(scope.vrange, _.omit(scope.range, "xspan", "yspan"));
 					
 					
-					if (model.range != null) {	// TODO, can server pass range?
+					if (model.range != null) {	// old code cannot set range but focus
 						scope.vrange.xl = model.range.left;
 						scope.vrange.xr = model.range.right;
 						scope.vrange.yl = model.range.bottom;
 						scope.vrange.yr = model.range.top;
 						
-						if(model.onzeroY) scope.vrange.yl = 0;
+						if(model.onzeroY != null) scope.vrange.yl = 0;
 					} else {
 						var margin = model.margin;
 						scope.vrange.xl -= scope.range.xspan * (margin == null || margin.left == null ? 0.1 : margin.left / 100.0);
 						scope.vrange.xr += scope.range.xspan * (margin == null || margin.right == null ? 0.1 : margin.right / 100.0);
 						scope.vrange.yl -= scope.range.yspan * (margin == null || margin.bottom == null ? 0.1 : margin.bottom / 100.0);
 						scope.vrange.yr += scope.range.yspan * (margin == null || margin.top == null ? 0.1 : margin.top / 100.0);
-						
 						if(model.onzeroY) scope.vrange.yl = 0;
 					}
 					scope.vrange.xspan = scope.vrange.xr - scope.vrange.xl;
 					scope.vrange.yspan = scope.vrange.yr - scope.vrange.yl;
 					scope.focus = {};
-					_.extend(scope.focus, scope.vrange);
+					var focus = scope.focus;
+					focus.xl = model.focus.xl!=null ? model.focus.xl : scope.vrange.xl;
+					focus.xr = model.focus.xr!=null ? model.focus.xr : scope.vrange.xr;
+					focus.yl = model.focus.yl!=null ? model.focus.yl : scope.vrange.yl;
+					focus.yr = model.focus.yr!=null ? model.focus.yr : scope.vrange.yr;
+					focus.xspan = focus.xr - focus.xl;
+					focus.yspan = focus.yr - focus.yl;
 					
-					
-					if (vcnt == 0) {
+					if (scope.visibleLines == 0) {
 						_.extend(scope.vrange, scope.range);
 						_.extend(scope.focus, scope.range);
 					}
@@ -384,11 +388,12 @@
 									"id" : "bar_" + i + "_" + j,
 									"x" : x1,
 									"y" : y,
-									"height" : y2 - y
+									"height" : y2 - y,
 								};
-								if (p.color != null){
-									bar.fill = p.color;
-								}
+								if (p.color != null) bar.fill = p.color;
+								if (p.fill_opacity != null) bar.fill_opaicty = p.fill_opacity;
+								if (p.stroke != null) bar.stroke = p.stroke;
+								if (p.stroke_opacity != null) bar.stroke_opacity = p.stroke_opacity;
 								reles.push(bar);
 							}
 							scope.rpipeBars.push({
@@ -396,6 +401,9 @@
 								"class" : "lineplot-bar",
 								"width" : sw,
 								"fill" : data[i].color,
+								"fill_opacity": data[i].fill_opacity,
+								"stroke": data[i].stroke,
+								"stroke_opacity": data[i].stroke_opacity,
 								"elements" : reles
 							});
 						} else if (data[i].type === "river") {
@@ -425,6 +433,9 @@
 								"id" : "river_" + i,
 								"class" : "lineplot-river",
 								"fill" : data[i].color,
+								"fill_opacity": data[i].color_opacity,
+								"stroke": data[i].stroke,
+								"stroke_opacity": data[i].stroke_opacity,
 								"elements" : pstr
 							});
 						} else if (data[i].type === "stem") {
@@ -469,36 +480,41 @@
 								"id" : "stem_" + i,
 								"class" : "lineplot-stem",
 								"stroke" : data[i].color,
+								"opacity": data[i].color_opacity,
 								"elements" : reles
 							});
 						} else if (data[i].type === "point") {
 							var reles = [];
 							for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-								var p = eles[j];
+								var p = eles[j], s = p.size, ele = {"id": "point_" + i + "_" + j};
 								if (data[i].style === "circle") {
-									var r = data[i].size == null ? 5 : data[i].size;
-									reles.push({
-										"id" : "point_" + i + "_" + j,
+									_.extend(ele, {
 										"cx" : mapX(p.x),
 										"cy" : mapY(p.y),
-										"r" : r
+										"r" : s
 									});
 								} else {
-									var s = data[i].size == null ? 10 : data[i].size;
-									reles.push({
-										"id" : "point_" + i + "_" + j,
+									_.extend(ele, {
 										"x" : mapX(p.x) - s / 2,
 										"y" : mapY(p.y) - s / 2,
 										"width" : s,
 										"height" : s
 									});
 								}
+								if(p.color!=null) ele.fill = p.color;
+								if(p.color_opacity!=null) ele.fill_opacity = p.color_opacity;
+								if(p.stroke!=null) ele.stroke = p.stroke;
+								if(p.stroke_opacity!=null) ele.stroke_opacity = p.stroke_opacity;
+								reles.push(ele);
 							}
 							if (data[i].style === "rect") {
 								scope.rpipePointRects.push({
 									"id" : "pointrect_" + i,
 									"class" : "lineplot-pointrect",
 									"fill" : data[i].color,
+									"fill_opacity": data[i].color_opacity,
+									"stroke": data[i].stroke,
+									"stroke_opacity": data[i].stroke_opacity,
 									"elements" : reles
 								});
 							} else {
@@ -506,6 +522,9 @@
 									"id" : "pointcircle_" + i,
 									"class" : "lineplot-pointcircle",
 									"fill" : data[i].color,
+									"fill_opacity": data[i].color_opacity,
+									"stroke": data[i].stroke,
+									"stroke_opacity": data[i].stroke_opacity,
 									"elements" : reles
 								});
 							}
@@ -575,6 +594,7 @@
 								"id" : "const_" + i,
 								"class" : "lineplot-const",
 								"stroke" : data[i].color,
+								"opacity": data[i].color_opacity,
 								"stroke-width" : data[i].width,
 								"elements" : reles
 							});
@@ -611,6 +631,9 @@
 								"id" : "const_" + i,
 								"class" : "lineplot-const",
 								"fill" : data[i].color,
+								"fill_opacity": data[i].color_opacity,
+								"stroke": data[i].stroke,
+								"stroke_opacity": data[i].stroke_opacity,
 								"elements" : reles
 							});
 						} else if (data[i].type === "text") {
@@ -689,7 +712,7 @@
 							"fill" : "white",
 							"elements" : reles
 						};
-						scope.rpipeCircles.push(wrapper);
+						scope.rpipeDots.push(wrapper);
 					}
 				};
 				scope.prepareInteraction = function(id) {
@@ -927,26 +950,29 @@
 							"top" : "0px"
 						});
 					legend.draggable();
-
-					var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
-					$("<input type='checkbox'></input>").appendTo(unit)
-						.attr("id", "legendcheck_all")
-						.attr("class", "lineplot-legendcheckbox")
-						.prop("checked", true)
-						.click(function(e) {
-							return scope.toggleLine(e);
-						});
-					$("<span></span>").appendTo(unit)
-						.attr("id", "legendbox_all")
-						.attr("class", "lineplot-legendbox")
-						.css("background-color", "none");
-					$("<span></span>").appendTo(unit)
-						.attr("id", "legendtext_all")
-						.attr("class", "lineplot-label")
-						.text("All");
+					
+					if(scope.visibleLines>1){	// skip "All" check when there is only one line
+						var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
+						$("<input type='checkbox'></input>").appendTo(unit)
+							.attr("id", "legendcheck_all")
+							.attr("class", "lineplot-legendcheckbox")
+							.prop("checked", true)
+							.click(function(e) {
+								return scope.toggleLine(e);
+							});
+						$("<span></span>").appendTo(unit)
+							.attr("id", "legendbox_all")
+							.attr("class", "lineplot-legendbox")
+							.css("background-color", "none");
+						$("<span></span>").appendTo(unit)
+							.attr("id", "legendtext_all")
+							.attr("class", "lineplot-label")
+							.text("All");
+					}
 
 					var content = "";
 					for (var i = 0; i < numLines; i++) {
+						if(data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") continue;
 						var unit = $("<div></div>").appendTo(legend).attr("id", "legend_" + i);
 						$("<input type='checkbox'></input>").appendTo(unit)
 							.attr("id", "legendcheck_" + i)
@@ -958,7 +984,7 @@
 						$("<span></span>").appendTo(unit)
 							.attr("id", "legendbox_" + i)
 							.attr("class", "lineplot-legendbox")
-							.css("background-color", data[i].color == null ? "black" : data[i].color);
+							.css("background-color", data[i].color == null? "none" : data[i].color);
 						$("<span></span>").appendTo(unit)
 							.attr("id", "legendtext_" + i)
 							.attr("class", "lineplot-label")
@@ -1072,12 +1098,16 @@
 						var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
 						//console.log(dx, dy, ds);
 						if (ds == 1.0) {// translate only
-							var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan;
-							focus.xl += tx;
-							focus.xr += tx;
-							focus.yl += ty;
-							focus.yr += ty;
-							scope.fixFocus();
+							var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan, vrange = scope.vrange;
+							if(focus.xl+tx>=vrange.xl && focus.xr+tx<=vrange.xr){
+								focus.xl += tx;
+								focus.xr += tx;
+							}
+							if(focus.yl+ty>=vrange.yl && focus.yr+ty<=vrange.yr){
+								focus.yl += ty;
+								focus.yr += ty;
+							}
+							//scope.);
 							scope.jqsvg.css("cursor", "move");
 						} else {// scale only
 							// scale x only
@@ -1208,7 +1238,7 @@
 					scope.rpipeCoords = [];
 					scope.rpipeTexts = [];
 					scope.rpipeRects = [];
-					scope.rpipeCircles = [];
+					scope.rpipeDots = [];
 					scope.rpipeBars = [];
 					scope.rpipeRivers = [];
 					scope.rpipeStems = [];
@@ -1302,7 +1332,7 @@
 					lineplotUtils.plotBars(scope);
 					lineplotUtils.plotStems(scope);
 					lineplotUtils.plotLines(scope);
-					lineplotUtils.plotCircles(scope);
+					lineplotUtils.plotDots(scope);
 					lineplotUtils.plotPointCircles(scope);
 					lineplotUtils.plotPointRects(scope);
 					lineplotUtils.plotSegs(scope);

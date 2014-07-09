@@ -40,9 +40,15 @@
 					resize : function(event, ui) {
 						scope.width = ui.size.width;
 						scope.height = ui.size.height;
+						scope.numIntervals = {
+							x: scope.width / 100,
+							y: scope.height / 50
+						};
+						scope.initRange();
 						scope.calcMapping(false);
 						scope.emitSizeChange();
 						scope.legendDone = false;
+						
 						scope.update();
 					}
 				});
@@ -84,13 +90,13 @@
 						labelHeight : 12,
 						tooltipWidth : 10
 					};
-					scope.numIntervals = {
-						x : 12,
-						y : 8
-					};
 					scope.labelPadding = {
 						x : 10,
 						y : 10
+					};
+					scope.numIntervals = {
+						x: parseInt(model.initSize.width) / 100,
+						y: parseInt(model.initSize.height) / 50
 					};
 					scope.locateBox = null;
 					scope.tips = {};
@@ -1133,6 +1139,14 @@
 									focus.yl = nyl;
 									focus.yr = nyr;
 									focus.yspan = nyspan;
+								}else{
+									if(nyspan > range.yspan * 100){
+										focus.yr = focus.yl + range.yspan * 100;
+										focus.yspan = focus.yr - focus.yl;
+									}else if(nyspan < range.yspan * 0.01){
+										focus.yr = focus.yl + range.yspan * 0.01;
+										focus.yspan = focus.yr - focus.yl;
+									}
 								}
 								//scope.translateY = scope.translateY*ds + (1-ds)*my;
 								//scope.scaleY *= ds;
@@ -1145,6 +1159,14 @@
 									focus.xl = nxl;
 									focus.xr = nxr;
 									focus.xspan = nxspan;
+								}else{
+									if(nxspan > range.xspan * 100){
+										focus.xr = focus.xl + range.xspan * 100;
+										focus.xspan = focus.xr - focus.xl;
+									}else if(nxspan < range.xspan * 0.01){
+										focus.xr = focus.xl + range.xspan * 0.01;
+										focus.xspan = focus.xr - focus.xl;
+									}
 								}
 								// scope.translateX = scope.translateX*ds + (1-ds)*mx;
 								// scope.scaleX *= ds;

@@ -56,8 +56,8 @@
 					use_tool_tip : model.use_tool_tip,
 					xCursor : model.xCursor,
 					yCursor : model.yCursor,
-					initSize: {"width": model.initWidth? model.initWidth+"px": 1200+"px", 
-										"height": model.initHeight? model.initHeight+"px": 350+"px"},
+					initSize: {"width": model.init_width? model.init_width+"px": 1200+"px", 
+										"height": model.init_height? model.init_height+"px": 350+"px"},
 					data : []
 				};
 				var onzeroY = false;
@@ -172,7 +172,9 @@
 							if(data.width == null) data.width = 1;
 						}
 						
-						if(data.type === "point") data.shape = pointShapeMap[data.shape];
+						if(data.type === "point") {
+							data.style = pointShapeMap[data.shape];
+						}
 						
 						
 						

@@ -36,6 +36,8 @@
 				// rendering code
 				element.find("#lineplotContainer").resizable({
 					maxWidth : element.width(), // no wider than the width of the cell
+					minWidth : 450,
+					minHeight: 150,
 					handles : "e, s, se",
 					resize : function(event, ui) {
 						scope.width = ui.size.width;
@@ -615,11 +617,14 @@
 						} else if (data[i].type === "constband") {
 							var W = scope.jqsvg.width(), H = scope.jqsvg.height();
 							var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
-							var reles = [];
+							var reles = [], focus = scope.focus;
 							for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
 								var p = eles[j], ele = { "id": "const_" + i + "_" + j };
 								if (p.type === "x") {
+									if(p.v1 > focus.xr || p.v2 < focus.xl) continue;
 									var x1 = mapX(p.v1), x2 = mapX(p.v2);
+									x1 = Math.max(x1, lMargin);
+									x2 = Math.min(x2, W);
 									_.extend(ele, {
 										"x" : x1,
 										"width" : x2 - x1,
@@ -628,7 +633,10 @@
 										"opacity" : p.opacity
 									});
 								} else if (p.type === "y") {
+									if(p.v1 > focus.yr || p.v2 < focus.yl) continue;
 									var y2 = mapY(p.v1), y1 = mapY(p.v2);
+									y2 = Math.min(y2, H-bMargin);
+									y1 = Math.max(y1, 0);
 									// after mapping, v1,v2 are reversed
 									_.extend(ele, {
 										"id" : "const_" + i + "_" + j,

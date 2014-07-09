@@ -10,9 +10,9 @@
 	fill: none;
 }
 .lineplot-line, 
-.lineplot-const {
-	pointer-events: none;
-}
+.lineplot-const,
+.lineplot-coord,
+.lineplot-coord-base,
 .lineplot-bar, 
 .lineplot-river, 
 .line-plot-stem {
@@ -24,14 +24,12 @@
 	stroke-dasharray: 1, 1;
 	stroke-width: 1;
 	opacity: .5;
-	pointer-events: none;
 }
 
 .lineplot-coord-base {
 	stroke: #333333;
-	stroke-width: 2;
+	stroke-width: 3;
 	opacity: .75;
-	pointer-events: none;
 }
 
 .lineplot-label, 
@@ -52,17 +50,7 @@
 	font-size: 0.9em;
 	text-anchor: middle;
 }
-.lineplot-cursorlabel {
-	font-size: 0.75em;
-	font-weight: bold;
-	color: white;
-	padding: 1px 5px;
-	pointer-events: none;
-	position: absolute;
-	width: auto;
-	height: auto;
-	border-radius: 5px;
-}
+.lineplot-cursorlabel,
 .lineplot-constlabel {
 	font-size: 0.75em;
 	font-weight: bold;
@@ -75,9 +63,7 @@
 	border-radius: 5px;
 }
 
-.lineplot-pointrect {
-
-}
+.lineplot-pointrect,
 .lineplot-pointcircle {
 
 }
@@ -140,9 +126,6 @@
 	height: auto;
 	border: 2px solid;
 	background-color: white;
-	/*
-	 -webkit-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
-	 -moz-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
-	 */
+	border-radius: 5px;
 	padding: 1em;
 }

@@ -15,7 +15,7 @@
 */
 /**
  * bko-LinePlot
- * ????
+ * This is the output display component for displaying xyChart
  */
 ( function() {'use strict';
 	var retfunc = function(lineplotUtils, lineplotConverter, bkCellMenuPluginManager) {
@@ -28,6 +28,7 @@
 							 + "<g id='stemg'></g> <g id='pointrectg'></g> <g id='pointcircleg'></g> " 
 							 + "<g id='segg'></g> <g id='labelg'></g> <g id='rectg'></g>  " 
 							 + "</g>"
+							 + "<g id='interg'> <g id='dotg'></g> </g>"
 							 + "</svg>"
 							 + "</div>",
 			controller : function($scope) {
@@ -57,16 +58,13 @@
 				scope.initLayout = function() {
 					var model = scope.stdmodel;
 					element.find("#plotitle").text(model.title);
-					element.find(".ui-icon-gripsmall-diagonal-se").removeClass("ui-icon ui-icon-gripsmall-diagonal-se");
-					// remove the ugly handle :D
-					scope.container = d3.select(element[0]).select("#lineplotContainer");
-					// hook container to use jquery interaction
+					element.find(".ui-icon-gripsmall-diagonal-se")
+						.removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
+					scope.container = d3.select(element[0]).select("#lineplotContainer"); // hook container to use jquery interaction
 					scope.jqcontainer = element.find("#lineplotContainer");
 					scope.jqcontainer.css(model.initSize);
-					if (model.width != null)
-						scope.jqcontainer.css("width", model.width + "px");
-					if (model.height != null)
-						scope.jqcontainer.css("height", model.height + "px");
+					if (model.width != null) scope.jqcontainer.css("width", model.width + "px");
+					if (model.height != null) scope.jqcontainer.css("height", model.height + "px");
 					scope.maing = d3.select(element[0]).select("#maing");
 					scope.coordg = d3.select(element[0]).select("#coordg");
 					scope.labelg = d3.select(element[0]).select("#labelg");
@@ -79,6 +77,9 @@
 					scope.pointcircleg = scope.maing.select("#pointcircleg");
 					scope.segg = scope.maing.select("#segg");
 					scope.rectg = scope.maing.select("#rectg");
+					
+					scope.interg = d3.select(element[0]).select("#interg");
+					scope.dotg = scope.interg.select("#dotg");
 
 					scope.range = null;
 					scope.layout = {
@@ -370,7 +371,7 @@
 						};
 					}
 				};
-				scope.renderLines = function() {
+				scope.renderData = function() {
 					var data = scope.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
 					var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
@@ -522,27 +523,16 @@
 								if(p.stroke_opacity!=null) ele.stroke_opacity = p.stroke_opacity;
 								reles.push(ele);
 							}
-							if (data[i].style === "rect") {
-								scope.rpipePointRects.push({
-									"id" : "pointrect_" + i,
-									"class" : "lineplot-pointrect",
+							var pipe = data[i].style === "rect" ? scope.rpipePointRects : scope.rpipePointCircles;
+							pipe.push({
+									"id" : "point_" + i,
+									"class" : "lineplot-point"+data[i].style,
 									"fill" : data[i].color,
 									"fill_opacity": data[i].color_opacity,
 									"stroke": data[i].stroke,
 									"stroke_opacity": data[i].stroke_opacity,
 									"elements" : reles
-								});
-							} else {
-								scope.rpipePointCircles.push({
-									"id" : "pointcircle_" + i,
-									"class" : "lineplot-pointcircle",
-									"fill" : data[i].color,
-									"fill_opacity": data[i].color_opacity,
-									"stroke": data[i].stroke,
-									"stroke_opacity": data[i].stroke_opacity,
-									"elements" : reles
-								});
-							}
+							});
 						} else if (data[i].type === "constline") {
 							var W = scope.jqsvg.width(), H = scope.jqsvg.height();
 							var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
@@ -688,7 +678,6 @@
 									pstr += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
 								}
 							}
-							
 							var line = {
 								"id": "line_"+i,
 								"class": "lineplot-line",
@@ -702,7 +691,7 @@
 						}
 					}
 				};
-				scope.renderLineDots = function() {
+				scope.renderDots = function() {
 					var data = scope.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
 					var mapX = scope.data2scrX, mapY = scope.data2scrY;
 					for (var i = 0; i < numLines; i++) {
@@ -729,14 +718,13 @@
 								"r" : 4,
 								"opacity" : scope.tips[id] == null ? 0 : 1,
 								"point" : _.omit(eles[j], "uniqid"),
-								//"color": data[i].color,
 								"value" : eles[j].value
 							});
 						}
 						var wrapper = {
 							"id" : "linedots_" + i,
 							"class" : "lineplot-dot",
-							"stroke" : data[i].color,
+							"stroke" : data[i].color==null? "gray": data[i].color,
 							"fill" : "white",
 							"elements" : reles
 						};
@@ -745,13 +733,11 @@
 				};
 				scope.prepareInteraction = function(id) {
 					var model = scope.stdmodel;
-					if (model.use_tool_tip != true)
-						return;
-					var sel;
+					if (model.use_tool_tip != true) return;
 					if (id == null) {
-						sel = scope.svg.selectAll(".lineplot-dot circle");
+						var sel = scope.svg.selectAll(".lineplot-dot circle");
 					} else {
-						sel = scope.svg.selectAll("#" + id);
+						var sel = scope.svg.selectAll("#" + id);
 					}
 					sel.on("mouseenter", function(d) {
 						return scope.tooltip(d);
@@ -790,7 +776,7 @@
 						.attr("class", "lineplot-tooltip")
 						.css("left", d.cx + scope.fonts.tooltipWidth + "px")
 						.css("top", d.cy + "px")
-						.css("border-color", scope.data[d.lineid].color)
+						.css("border-color", scope.data[d.lineid].color==null? "gray" : scope.data[d.lineid].color)
 						.append("<div>" + d.value + "</div>");
 				};
 				scope.untooltip = function(d) {
@@ -806,9 +792,7 @@
 							"x" : scope.data2scrX(d.point.x),
 							"y" : scope.data2scrY(d.point.y)
 						};
-						if (lineplotUtils.outsideScr(scope, p))
-							return;
-						//if (p==null) return;
+						if (lineplotUtils.outsideScr(scope, p)) return;
 						d.cx = p.x + scope.fonts.tooltipWidth;
 						d.cy = p.y;
 						var tip = scope.tips[d.id];
@@ -829,7 +813,6 @@
 								stop : function(event, ui) {
 									tip.cx = ui.position.left - scope.fonts.tooltipWidth;
 									tip.cy = ui.position.top;
-									//var p = lineplotUtils.scr2dataPoint(scope, {"x":tip.cx, "y":tip.cy } );
 									tip.point.x = scope.scr2dataX(tip.cx);
 									tip.point.y = scope.scr2dataY(tip.cy);
 								}
@@ -1124,7 +1107,6 @@
 
 						var focus = scope.focus, range = scope.range;
 						var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
-						//console.log(dx, dy, ds);
 						if (ds == 1.0) {// translate only
 							var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan, vrange = scope.vrange;
 							if(focus.xl+tx>=vrange.xl && focus.xr+tx<=vrange.xr){
@@ -1247,9 +1229,6 @@
 					var box = scope.locateBox;
 					if (box == null)
 						return;
-					//var p1 = lineplotUtils.scr2dataPercent(scope, {"x": box.x, "y": box.y});
-					//var p2 = lineplotUtils.scr2dataPercent(scope, {"x": box.x+box.w, "y": box.y+box.h});
-					//console.log(p1, p2);
 					var p1 = {
 						"x" : scope.scr2dataXp(box.x),
 						"y" : scope.scr2dataYp(box.y)
@@ -1321,7 +1300,6 @@
 							"xr" : focus.xr
 						});
 					}
-
 					scope.data2scrY = d3.scale.linear().domain([focus.yl, focus.yr]).range([H - bMargin, 0]);
 					scope.data2scrYp = d3.scale.linear().domain([focus.yl, focus.yr]).range([1, 0]);
 					scope.scr2dataY = d3.scale.linear().domain([0, H - bMargin]).range([focus.yr, focus.yl]);
@@ -1330,7 +1308,6 @@
 					scope.data2scrXp = d3.scale.linear().domain([focus.xl, focus.xr]).range([0, 1]);
 					scope.scr2dataX = d3.scale.linear().domain([lMargin, W]).range([focus.xl, focus.xr]);
 					scope.scr2dataXp = d3.scale.linear().domain([lMargin, W]).range([0, 1]);
-
 				};
 				scope.standardizeData = function() {
 					var model = scope.model.getCellModel();
@@ -1368,8 +1345,8 @@
 					scope.filterData();
 					scope.calcCoords();
 					scope.renderCoords();
-					scope.renderLines();
-					scope.renderLineDots();
+					scope.renderData();
+					scope.renderDots();
 					scope.renderLabels();
 					lineplotUtils.plotCoords(scope);
 					lineplotUtils.plotRivers(scope);

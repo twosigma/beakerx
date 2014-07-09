@@ -194,7 +194,6 @@
 								ele.stroke_opacity = parseInt(data.outline_colors[j].substr(1,2), 16)/255;
 								ele.stroke = "#" + data.outline_colors[j].substr(3);
 							}
-
 							
 							if (data.type === "river" || data.type === "bar" || data.type === "stem") {
 								if (data.y2 == null) {

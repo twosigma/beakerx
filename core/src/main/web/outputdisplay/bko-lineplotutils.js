@@ -119,8 +119,8 @@
       },
       plotDots: function(scope){
         var pipe = scope.rpipeDots;
-        scope.circleg.selectAll("g").data(pipe, function(d){ return d.id; }).exit().remove();
-        scope.circleg.selectAll("g").data(pipe, function(d){ return d.id; }).enter().append("g")
+        scope.dotg.selectAll("g").data(pipe, function(d){ return d.id; }).exit().remove();
+        scope.dotg.selectAll("g").data(pipe, function(d){ return d.id; }).enter().append("g")
             .attr("id", function(d){ return d.id; })
             .attr("class", function(d){ return d.class; })
             .attr("stroke", function(d){ return d.stroke; })
@@ -130,8 +130,8 @@
             .attr("stroke", function(d){ return d.stroke; })
           	.attr("stroke-opacity", function(d){ return d.stroke_opacity; });
         for(var i=0; i<pipe.length; i++){
-            scope.circleg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
-            scope.circleg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;}).enter().append("circle")
+            scope.dotg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
+            scope.dotg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;}).enter().append("circle")
               .attr("id", function(d){ return d.id; })
               .attr("cx", function(d){ return d.cx; })
               .attr("cy", function(d){ return d.cy; })
@@ -141,7 +141,7 @@
 	            .attr("fill-opacity", function(d){ return d.fill_opacity; })
 	            .attr("stroke", function(d){ return d.stroke; })
 	          	.attr("stroke-opacity", function(d){ return d.stroke_opacity; });
-            scope.circleg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;})
+            scope.dotg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;})
               .attr("cx", function(d){ return d.cx; })
               .attr("cy", function(d){ return d.cy; })
               .attr("opacity", function(d){ return d.opacity; });

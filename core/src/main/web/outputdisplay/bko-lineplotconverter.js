@@ -2,8 +2,8 @@
 	
 	var retfunc = function(bkUtils) {
 		return {
+			
 			standardizeModel : function(model) {
-				
 				var dataTypeMap = {
 					"Line": "line",
 					"Stems": "stem",
@@ -41,6 +41,7 @@
 					2: "curve",
 					"": "linear"
 				};
+				
 				
 				var newmodel = {
 					type : "LinePlot",
@@ -176,8 +177,6 @@
 							data.style = pointShapeMap[data.shape];
 						}
 						
-						
-						
 						var elements = [];
 						var numEles = data.x.length;
 						for (var j = 0; j < numEles; j++) {
@@ -218,6 +217,11 @@
 								} else {
 									ele.size = data.style === "rect"? 10 : 5;
 								}
+							}
+							if(data.type === "bar"){
+								var w = data.width;
+								ele.x1 = ele.x - w/2;
+								ele.x2 = ele.x + w/2;
 							}
 
 							var txt = "";
@@ -271,13 +275,13 @@
 							data.color = "#" + line.color.substr(3);
 						}
 						if(line.x!=null){
-							var ele = {"type": "x", "v": line.x};
+							var ele = {"type": "x", "x": line.x};
 						} else if(line.y!=null){
 							var y = line.y;
-							var ele = {"type": "y", "v": y};
+							var ele = {"type": "y", "y": y};
 							if(logy){
-								ele._v = y;
-								ele.v = Math.log(y) / Math.log(logyb);
+								ele._y = y;
+								ele.y = Math.log(y) / Math.log(logyb);
 							}
 						}
 						data.elements.push(ele);
@@ -296,16 +300,16 @@
 							data.color = "#" + band.color.substr(3);
 						}
 						if(band.x != null){
-							var ele = {"type": "x", "v1": band.x[0], "v2": band.x[1]};
+							var ele = {"type": "x", "x1": band.x[0], "x2": band.x[1]};
 						}else if(band.y != null){
 							var ele = {"type": "y"};
 							var y1 = band.y[0], y2 = band.y[1];
-							ele.v1 = y1; ele.v2 = y2;
+							ele.y1 = y1; ele.y2 = y2;
 							if(logy){
-								ele._v1 = y1;
-								ele.v1 = Math.log(y1) / Math.log(logyb);
-								ele._v2 = y2;
-								ele.v2 = Math.log(y2) / Math.log(logyb);
+								ele._y1 = y1;
+								ele.y1 = Math.log(y1) / Math.log(logyb);
+								ele._y2 = y2;
+								ele.y2 = Math.log(y2) / Math.log(logyb);
 							}
 						}
 						data.elements.push(ele);

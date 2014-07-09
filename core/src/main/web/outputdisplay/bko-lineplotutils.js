@@ -7,6 +7,45 @@
       months: ["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"],
       days: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
       
+      updateDataRangeVal : function(range, dim, val){
+				var dl = dim+"l", dr = dim+"r";
+				range[dl] = Math.min(range[dl], val);
+				range[dr] = Math.max(range[dr], val);
+			},
+			updateDataRange : function(range, ele){
+				if(ele.x!=null) this.updateDataRangeVal(range, "x", ele.x);
+				if(ele.y!=null) this.updateDataRangeVal(range, "y", ele.y);
+				if(ele.x1!=null) this.updateDataRangeVal(range, "x", ele.x1);
+				if(ele.x2!=null) this.updateDataRangeVal(range, "x", ele.x2);
+				if(ele.y1!=null) this.updateDataRangeVal(range, "y", ele.y1);
+				if(ele.y2!=null) this.updateDataRangeVal(range, "y", ele.y2);
+			},
+			getDataRange : function(data){
+				var datarange = {
+					xl: 1E20,
+					yl: 1E20,
+					xr: -1E20,
+					yr: -1E20
+				};
+				var visibleData = 0;
+				for(var i=0; i<data.length; i++){
+					if(data[i].shown == false) continue;
+					visibleData ++;
+					var eles = data[i].elements;
+					for(var j=0; j<eles.length; j++){
+						this.updateDataRange(datarange, eles[j]);
+					}
+				}
+				if(visibleData==0){
+					datarange.xl = datarange.xr = datarange.yl = datarange.yr = 0;
+				}
+				datarange.xspan = datarange.xr - datarange.xl;
+				datarange.yspan = datarange.yr - datarange.yl;
+				return {
+					"datarange" : datarange,
+					"visibleData": visibleData
+				};
+			},
       fixPercent: function(val){
         val = Math.max(val, 0);
         val = Math.min(val, 1);

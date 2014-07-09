@@ -18,7 +18,7 @@
  * ????
  */
 (function() {'use strict';
-	var retfunc = function(lineplotUtils, bkCellMenuPluginManager) {
+	var retfunc = function(lineplotUtils, combplotUtils, bkCellMenuPluginManager) {
 		return {
 			template : "<div id='combplotContainer' class='combplot-renderdiv'>" + 
 								 "<bk-output-display type='LinePlot' model='model1'></bk-output-display>" + 
@@ -26,6 +26,7 @@
 								 "</div>",
 			controller : function($scope) {
 				var model = $scope.model.getCellModel();
+				scope.stdmodel = combplotUtils.standardizeModel(model);
 
 				$scope.initFocus = function() {
 					var xl = 1E20, xr = 0;
@@ -97,5 +98,5 @@
 			}
 		};
 	};
-	beaker.bkoDirective("CombinedPlot", ["lineplotUtils", "bkCellMenuPluginManager", retfunc]);
+	beaker.bkoDirective("CombinedPlot", ["lineplotUtils", "combplotUtils", "bkCellMenuPluginManager", retfunc]);
 })(); 

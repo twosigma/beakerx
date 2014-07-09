@@ -142,71 +142,13 @@
 				};
 				scope.initRange = function() {
 					var data = scope.data, model = scope.stdmodel;
-					var numLines = data.length;
-					var xl = 1E20, xr = 0, yl = 1E20, yr = 0;
-					// get the x,y ranges
-					scope.visibleLines = 0;
-					for (var i = 0; i < numLines; i++) {
-						if (data[i].shown == false)
-							continue;
-						scope.visibleLines ++;
-						var numPoints = data[i].elements.length;
-						var eles = data[i].elements;
-						for (var j = 0; j < numPoints; j++) {
-							if (data[i].type === "river" && (data[i].height != null || eles[j].y2 != null)) {
-								var y2 = eles[j].y2 != null ? eles[j].y2 : eles[j].y + data[i].height;
-								yr = Math.max(yr, y2);
-							}
-							if (data[i].type === "stem" && (data[i].height != null || eles[j].y2 != null)) {
-								var y2 = eles[j].y2 != null ? eles[j].y2 : eles[j].y + data[i].height;
-								yr = Math.max(yr, y2);
-							}
-							if (data[i].type === "constline") {
-								if (eles[j].type === "x") {
-									xl = Math.min(xl, eles[j].v);
-									xr = Math.max(xr, eles[j].v);
-								} else if (eles[j].type === "y") {
-									yl = Math.min(yl, eles[j].v);
-									yr = Math.max(yr, eles[j].v);
-								}
-							} else if (data[i].type === "constband") {
-								if (eles[j].type === "x") {
-									xl = Math.min(xl, eles[j].v1);
-									xl = Math.min(xl, eles[j].v1);
-									xr = Math.max(xr, eles[j].v2);
-									xr = Math.max(xr, eles[j].v2);
-								} else if (eles[j].type === "y") {
-									yl = Math.min(yl, eles[j].v1);
-									yl = Math.min(yl, eles[j].v1);
-									yr = Math.max(yr, eles[j].v2);
-									yr = Math.max(yr, eles[j].v2);
-								}
-							} else if (data[i].type === "bar") {
-								var w = data[i].width;
-								xl = Math.min(xl, eles[j].x - w/2);
-								xr = Math.max(xr, eles[j].x + w/2);
-								yl = Math.min(yl, eles[j].y);
-								yr = Math.max(yr, eles[j].y);
-							} else {
-								xl = Math.min(xl, eles[j].x);
-								xr = Math.max(xr, eles[j].x);
-								yl = Math.min(yl, eles[j].y);
-								yr = Math.max(yr, eles[j].y);
-							}
-						}
-					}
-					scope.range = {
-						"xl" : xl,
-						"xr" : xr,
-						"yl" : yl,
-						"yr" : yr,
-						"xspan" : xr - xl,
-						"yspan" : yr - yl
-					};
 					
-					scope.vrange = {};
-					// visible range
-					// by default focus = range
+					var ret = lineplotUtils.getDataRange(data);
+					scope.range = {};
+					_.extend(scope.range, ret.datarange);
+					scope.visibleLines = ret.visibleData;
+					
+					scope.vrange = {}; 	// visible range
 					_.extend(scope.vrange, _.omit(scope.range, "xspan", "yspan"));
 					
 					
@@ -219,6 +161,7 @@
 						if(model.onzeroY != null) scope.vrange.yl = 0;
 					} else {
 						var margin = model.margin;
+						// visible range initially is a bit larger than data range
 						scope.vrange.xl -= scope.range.xspan * (margin == null || margin.left == null ? 0.1 : margin.left / 100.0);
 						scope.vrange.xr += scope.range.xspan * (margin == null || margin.right == null ? 0.1 : margin.right / 100.0);
 						scope.vrange.yl -= scope.range.yspan * (margin == null || margin.bottom == null ? 0.1 : margin.bottom / 100.0);
@@ -385,7 +328,7 @@
 							var reles = [];
 							for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
 								var p = eles[j];
-								var x1 = mapX(p.x - w / 2), x2 = mapX(p.x + w / 2);
+								var x1 = mapX(p.x1), x2 = mapX(p.x2);
 								var y = p.y, y2 = p.y2;
 								if(y2==null) y2 = focus.yl;
 								y = mapY(y); y2 = mapY(y2);
@@ -540,8 +483,8 @@
 							for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
 								var p = eles[j], id = "constlabel_" + i + "_" + j;
 								if (p.type === "x") {
-									var x = mapX(p.v);
-									if (p.v < focus.xl || p.v > focus.xr) {
+									var x = mapX(p.x);
+									if (p.x < focus.xl || p.x > focus.xr) {
 										scope.jqcontainer.find("#" + id).remove();
 										continue;
 									}
@@ -556,7 +499,7 @@
 									scope.jqcontainer.find("#" + id).remove();
 									var label = $("<div id=" + id + " class='lineplot-constlabel'></div>")
 										.appendTo(scope.jqcontainer)
-										.text(scope.stdmodel.xType === "time" ? lineplotUtils.formatDate(scope.xintv, p.v) : parseInt(p.v));
+										.text(scope.stdmodel.xType === "time" ? lineplotUtils.formatDate(scope.xintv, p.x) : parseInt(p.x));
 									var w = label.outerWidth(), h = label.outerHeight();
 									var p = {
 										"x" : x - w / 2,
@@ -568,8 +511,8 @@
 										"background-color" : data[i].color
 									});
 								} else if (p.type === "y") {
-									var y = mapY(p.v);
-									if (p.v < focus.yl || p.v > focus.yr) {
+									var y = mapY(p.y);
+									if (p.y < focus.yl || p.y > focus.yr) {
 										scope.jqcontainer.find("#constlabel_" + i + "_" + j).remove();
 										continue;
 									}
@@ -581,9 +524,9 @@
 										"y2" : y
 									});
 									scope.jqcontainer.find("#" + id).remove();
-									var v = p._v!=null? p._v : p.v;
+									var _y = p._y!=null? p._y : p.y;
 									var label = $("<div id=" + id + " class='lineplot-constlabel'></div>")
-										.appendTo(scope.jqcontainer).text(v.toFixed(0));
+										.appendTo(scope.jqcontainer).text(_y.toFixed(0));
 									var w = label.outerWidth(), h = label.outerHeight();
 									var p = {
 										"x" : lMargin + scope.labelPadding.x,
@@ -611,8 +554,8 @@
 							for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
 								var p = eles[j], ele = { "id": "const_" + i + "_" + j };
 								if (p.type === "x") {
-									if(p.v1 > focus.xr || p.v2 < focus.xl) continue;
-									var x1 = mapX(p.v1), x2 = mapX(p.v2);
+									if(p.x1 > focus.xr || p.x2 < focus.xl) continue;
+									var x1 = mapX(p.x1), x2 = mapX(p.x2);
 									x1 = Math.max(x1, lMargin);
 									x2 = Math.min(x2, W);
 									_.extend(ele, {
@@ -623,8 +566,8 @@
 										"opacity" : p.opacity
 									});
 								} else if (p.type === "y") {
-									if(p.v1 > focus.yr || p.v2 < focus.yl) continue;
-									var y2 = mapY(p.v1), y1 = mapY(p.v2);
+									if(p.y1 > focus.yr || p.y2 < focus.yl) continue;
+									var y2 = mapY(p.y1), y1 = mapY(p.y2);
 									y2 = Math.min(y2, H-bMargin);
 									y1 = Math.max(y1, 0);
 									// after mapping, v1,v2 are reversed
@@ -787,7 +730,6 @@
 				};
 				scope.renderTips = function() {
 					_.each(scope.tips, function(d) {
-						//var p = lineplotUtils.data2scrPoint(scope, d.point);
 						var p = {
 							"x" : scope.data2scrX(d.point.x),
 							"y" : scope.data2scrY(d.point.y)
@@ -1360,20 +1302,16 @@
 					lineplotUtils.plotRects(scope);
 
 					scope.renderTips();
-					scope.renderLocateBox();
-					// redraw
-					scope.renderLegends();
-					// redraw
-					scope.renderCoverBox();
-					// redraw
-					lineplotUtils.plotTexts(scope);
-					// redraw
+					scope.renderLocateBox(); // redraw
+					scope.renderLegends(); // redraw
+					scope.renderCoverBox(); // redraw
+					lineplotUtils.plotTexts(scope); // redraw
 
 					scope.prepareInteraction();
 				};
 
-				scope.init();
-				// initialize
+				scope.init(); // initialize
+				
 			}
 		};
 	};

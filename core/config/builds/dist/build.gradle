@@ -17,7 +17,11 @@
 def coreDir = file("../../../") // TODO, this can come from a property
 
 def gitDescribe() {
-  return "git describe".execute().text.trim()
+  def name = "git describe --all --long".execute().text.trim()
+  if (name.startsWith('heads/')) {
+    name = name.substring(6)
+  }
+  return name
 }
 
 // XXX move all of this into makeDist python script

@@ -43,7 +43,11 @@ task cleanPlugins (type: Exec) {
 }
 
 def gitDescribe() {
-  return "git describe".execute().text.trim()
+  def name = "git describe --all --long".execute().text.trim()
+  if (name.startsWith('heads/')) {
+    name = name.substring(6)
+  }
+  return name
 }
 
 task writeVersion << {

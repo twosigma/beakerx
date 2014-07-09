@@ -115,10 +115,15 @@ public interface BeakerConfig {
    */
   public Boolean getUseKerberos();
   /**
-   * where to find the config file
+   * where to find the configuration file
    * @return
    */
   public String getConfigFileUrl();
+  /**
+   * where to find the user preference file
+   * @return
+   */
+  public String getPreferenceFileUrl();
   /**
    * where to find the default notebook
    * @return

@@ -1,0 +1,44 @@
+.heirarchy-mode {
+
+  .evaluator .depth-indicator, .text-cell .depth-indicator, bk-markdown-cell .depth-indicator {
+    left: 0;
+    position: absolute;
+  }
+
+  .text-cell .depth-indicator {
+    top: 0;
+  }
+
+  .bkcell.code-cell-area, .text-cell, .bk-markdown-cell, bk-markdown-cell > div {
+    margin-left: 84px;
+  }
+
+  .insert-cell-indicator {
+    margin-left: 4px;
+  }
+
+  .depth-indicator {
+    display: inline-block;
+  }
+
+  .section-children {
+    border-left:  solid 1px #e6e6e6;
+    margin-left:  10px;
+    padding-left: 54px;
+  }
+
+  .bk-section-title {
+    top: 5px;
+    position: relative;
+  }
+}
+
+.insert-cell-indicator, .bkcell.code-cell-area, .text-cell {
+  transition: margin 500ms;
+}
+
+.section-children {
+  margin-left:  0;
+  padding-left: 0;
+  transition: all 500ms;
+}

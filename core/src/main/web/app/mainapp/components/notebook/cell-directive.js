@@ -32,7 +32,7 @@
   module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager) {
     return {
       restrict: 'E',
-      template: '<div class="bkcell">' +
+      template: '<div class="bkcell" index="$index">' +
           '<div ng-if="cellmodel.input.hidden && cellmodel.type==\'code\'" class="mini-cell-stats advanced-hide">'+
           '{{cellmodel.evaluator}} &nbsp;'+
           '({{cellmodel.lineCount}} lines)'+
@@ -58,7 +58,8 @@
           '<bk-new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>' +
           '</div>',
       scope: {
-        cellmodel: "="
+        cellmodel: "=",
+        index: "="
       },
       controller: function($scope, $element) {
         $scope.cellmodel.evaluatorReader = false;
@@ -97,6 +98,14 @@
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
           }
+        };
+
+        $scope.getFullIndex = function() {
+          if ($scope.$parent.getNestedLevel) {
+            return $scope.$parent.getFullIndex() + "." + $scope.index;
+          }
+
+          return $scope.index+$scope.getNestedLevel();
         };
 
         $scope.toggleShowDebugInfo = function() {

@@ -39,6 +39,11 @@
           inputMenu: [],
           displays: []
         };
+
+        $scope.getFullIndex = function() {
+          return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;
+        }
+
         var isLocked = function() {
           return bkSessionManager.isNotebookLocked();
         };

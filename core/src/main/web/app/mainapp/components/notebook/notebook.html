@@ -13,10 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div ng-class="isAdvancedMode() && 'advanced-mode'">
+<div ng-class="{'advanced-mode': isAdvancedMode(), 'heirarchy-mode': isHeirarchyEnabled()}">
   <div class="bkcell">
     <bk-plugin-manager></bk-plugin-manager>
-    <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell"></bk-cell>
+    <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index">
+    </bk-cell>
     <div class="dropdown bkcellmenu" style="position: fixed; z-index: 99">
       <a class="dropdown-toggle" data-toggle="dropdown"></a>
       <bk-dropdown-menu menu-items="menuItems" submenu-classes="pull-left"></bk-dropdown-menu>

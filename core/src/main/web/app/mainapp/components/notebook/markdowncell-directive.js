@@ -21,7 +21,15 @@
   module.directive('bkMarkdownCell', function(bkSessionManager) {
     return {
       restrict: 'E',
-      template: "<div ng-click='edit()', ng-class='focused && \"focused\"'></div>",
+      template: ""+
+        "<p class='depth-indicator'>{{getFullIndex()}}</p>"+
+        "<div ng-click='edit()', ng-class='focused && \"focused\"'></div>"
+      ,
+      controller: function($scope) {
+        $scope.getFullIndex = function() {
+          return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;
+        }
+      },
       link: function(scope, element, attrs) {
         var div = element.find("div").first().get()[0];
         var options = {

@@ -14,9 +14,17 @@
  *  limitations under the License.
  */
 
-.section-children {
-  border-left:  solid 1px #CCC;
-  padding-left: 20px;
+.depth-indicator {
+  display: none;
+  background: $green;
+  color: #FFF;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  height: 23px;
+  line-height: 25px;
+  margin: 0 10px;
+  padding: 0 10px;
 }
 
 .section0, .section1, .section2, .section3, .section4, .section5 {

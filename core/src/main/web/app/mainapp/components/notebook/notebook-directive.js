@@ -72,6 +72,12 @@
             isAdvancedMode: function() {
               return !!(this._advancedMode);
             },
+            isHeirarchyEnabled: function() {
+              return !!(this._heirarchyEnabled);
+            },
+            toggleHeirarchyEnabled: function() {
+              this._heirarchyEnabled = !this._heirarchyEnabled;
+            },
             toggleDebugging: function () {
               this._debugging = !this._debugging;
             },
@@ -146,6 +152,10 @@
 
         $scope.isAdvancedMode = function () {
           return _impl._viewModel.isAdvancedMode();
+        };
+
+        $scope.isHeirarchyEnabled = function () {
+          return _impl._viewModel.isHeirarchyEnabled();
         };
 
         var margin = $(".outputlogstdout").position().top;

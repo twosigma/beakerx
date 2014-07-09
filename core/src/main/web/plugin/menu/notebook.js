@@ -50,6 +50,17 @@ define(function(require, exports, module) {
       }
     },
     {
+      name: 'Toggle Cell Hierarchy',
+      isChecked: function() {
+        var notebookViewModel = bkHelper.getBkNotebookViewModel();
+        return notebookViewModel.isHeirarchyEnabled();
+      },
+      action: function() {
+        var notebookViewModel = bkHelper.getBkNotebookViewModel();
+        notebookViewModel.toggleHeirarchyEnabled();
+      }
+    },
+    {
       name: 'Toggle Advanced Mode',
       isChecked: function() {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();

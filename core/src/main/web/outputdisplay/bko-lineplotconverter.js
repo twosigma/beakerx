@@ -241,12 +241,6 @@
 							}
 							elements.push(ele);
 						}
-						
-						// TODO constant band
-						var consts = model.const_bands;
-						// TODO text
-						var texts = model.text;
-						
 						delete data.x;
 						delete data.y;
 						data.elements = elements;
@@ -267,18 +261,45 @@
 							"color": "black",
 							"elements": []
 						};
-						if(line.color){
-							data.stroke_opacity = parseInt(line.color.substr(1,2), 16)/255;
-							data.stroke = "#" + line.color.substr(3);
+						if(line.color != null){
+							data.color_opacity = parseInt(line.color.substr(1,2), 16)/255;
+							data.color = "#" + line.color.substr(3);
 						}
 						if(line.x!=null){
-							var ele = {"type":"x", "v":line.x};
+							var ele = {"type": "x", "v": line.x};
 						} else if(line.y!=null){
 							var y = line.y;
-							var ele = {"type":"y", "v":y};
+							var ele = {"type": "y", "v": y};
 							if(logy){
 								ele._v = y;
 								ele.v = Math.log(y) / Math.log(logyb);
+							}
+						}
+						data.elements.push(ele);
+						newmodel.data.push(data);
+					}
+				}
+				if(model.constant_bands!=null){
+					for(var i=0; i<model.constant_bands.length; i++){
+						var band = model.constant_bands[i];
+						var data = {
+							"type": "constband",
+							"elements": []
+						};
+						if(band.color != null){
+							data.color_opacity = parseInt(band.color.substr(1,2), 16)/255;
+							data.color = "#" + band.color.substr(3);
+						}
+						if(band.x != null){
+							var ele = {"type": "x", "v1": band.x[0], "v2": band.x[1]};
+						}else if(band.y != null){
+							var ele = {"type": "y"};
+							var y1 = band.y[0], y2 = band.y[1];
+							if(logy){
+								ele._v1 = y1;
+								ele.v1 = Math.log(y1) / Math.log(logyb);
+								ele._v2 = y2;
+								ele.v2 = Math.log(y2) / Math.log(logyb);
 							}
 						}
 						data.elements.push(ele);

@@ -611,11 +611,10 @@
 							var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
 							var reles = [];
 							for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-								var p = eles[j];
+								var p = eles[j], ele = { "id": "const_" + i + "_" + j };
 								if (p.type === "x") {
 									var x1 = mapX(p.v1), x2 = mapX(p.v2);
-									reles.push({
-										"id" : "const_" + i + "_" + j,
+									_.extend(ele, {
 										"x" : x1,
 										"width" : x2 - x1,
 										"y" : 0,
@@ -625,7 +624,7 @@
 								} else if (p.type === "y") {
 									var y2 = mapY(p.v1), y1 = mapY(p.v2);
 									// after mapping, v1,v2 are reversed
-									reles.push({
+									_.extend(ele, {
 										"id" : "const_" + i + "_" + j,
 										"x" : lMargin,
 										"width" : W - lMargin,
@@ -634,6 +633,7 @@
 										"opacity" : p.opacity
 									});
 								}
+								reles.push(ele);
 							}
 							scope.rpipeRects.push({
 								"id" : "const_" + i,

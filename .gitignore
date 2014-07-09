@@ -16,3 +16,4 @@ src/main/main.iml
 nbproject/
 build.xml
 manifest.mf
+.DS_Store

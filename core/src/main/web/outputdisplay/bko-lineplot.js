@@ -664,7 +664,7 @@
 									"text" : p.v
 								});
 							}
-						} else {// polyline: solid, dash or dot
+						} else {// standard line: solid, dash or dot
 							var pstr = "";
 							for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
 								var p = eles[j];
@@ -674,11 +674,17 @@
 									pstr += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
 								}
 							}
-							var prop = lineplotUtils.standardizeLineProp("line_" + i, data[i]);
-							_.extend(prop, {
-								"elements" : pstr
-							});
-							scope.rpipeLines.push(prop);
+							
+							var line = {
+								"id": "line_"+i,
+								"class": "lineplot-line",
+								"stroke": data[i].color,
+								"stroke_opacity": data[i].color_opacity,
+								"stroke_width": data[i].width,
+								"stroke_dasharray": data[i].stroke_dasharray,
+								"elements": pstr
+							};
+							scope.rpipeLines.push(line);
 						}
 					}
 				};

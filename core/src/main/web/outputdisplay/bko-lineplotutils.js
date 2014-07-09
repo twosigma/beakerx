@@ -16,18 +16,6 @@
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
         return p.x < 0 || p.x > W || p.y < 0 || p.y > H;
       },
-      generateLine: function(line, id, data){
-        var seg = { "id": id, "class": "lineplot-line", 
-            "x1": line[0], "y1": line[1], "x2": line[2], "y2": line[3],
-            "stroke": data.color
-          };
-        if (data.style==="dot") {
-          _.extend(seg, {"stroke_dasharray": "2,2"});
-        }else if (data.style==="dash") {
-          _.extend(seg, {"stroke_dasharray": "9,5"});
-        }
-        return seg;
-      },
       standardizeLineProp : function(id, data){
         var prop = {"id": id, "class": "lineplot-line", "stroke": data.color, "stroke-width": data.width==null?2:data.width};
         if (data.style==="dot") {

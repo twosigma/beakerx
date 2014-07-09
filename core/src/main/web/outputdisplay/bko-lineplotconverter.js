@@ -3,6 +3,45 @@
 	var retfunc = function(bkUtils) {
 		return {
 			standardizeModel : function(model) {
+				
+				var dataTypeMap = {
+					"Line": "line",
+					"Stems": "stem",
+					"Bars": "bar",
+					"Area": "river",
+					"Text": "text",
+					"Points": "point",
+					"": ""
+				};
+				var lineStyleMap = {
+					"SOLID": "solid",
+					"DASH": "dash",
+					"DOT": "dot",
+					"DASHDOT": "dashdot",
+					"LONGDASH": "longdash",
+					"": "solid"
+				};
+				var lineDasharrayMap = {
+					"solid": "",
+					"dash": "9,5",
+					"dot": "2,2",
+					"dashdot": "9,5,2,5",
+					"longdash": "20,5",
+					"": ""
+				};
+				var pointShapeMap = {
+					"DEFAULT": "rect",
+					"CIRCLE": "circle",
+					"DIAMOND": "rect",
+					"": "rect"
+				};
+				var interpolationMap = {
+					0: "none",
+					1: "linear",
+					2: "curve",
+					"": "linear"
+				};
+				
 				var newmodel = {
 					type : "LinePlot",
 					title : model.chart_title ? model.chart_title : model.title,
@@ -112,65 +151,30 @@
 						if(data.colors != null) data.colorArray = true;
 						if(data.sizes != null) data.sizeArray = true;
 						if(data.bases != null) data.baseArray = true;
+						
+						if(data.type == null) data.type = "";
+						if(data.style == null) data.style = "";
+						if(data.stroke_dasharray == null) data.stroke_dasharray = "";
+						if(data.interpolation == null) data.interpolation = "";
+						
+						data.type = dataTypeMap[data.type];
+						
+						if(data.type === "bar" || data.type === "river")  onzeroY = true;	// auto stand on y=0
 
-						if (data.type == null || data.type === "Line") {
-							data.type = "line";
-							if (data.style == null)
-								data.style = "solid";
-							else if(data.style === "DOT")
-								data.style = "dot";
-							else if(data.style === "DASH")
-								data.style = "dash";
-								
-							if (data.interpolation == null)
-								data.interpolation = "linear";
-							else if(data.interpolation == 0)
-								data.interpolation = "none";
-							else if(data.interpolation == 1)
-								data.interpolation = "linear";
-							else if(data.interpolation == 2)
-								data.interpolation = "curve";
-								
-						} else if (data.type === "Stems") {
-							data.type = "stem";
-							if (data.style == null)
-								data.style = "solid";
-							else if(data.style === "DOT")
-								data.style = "dot";
-							else if(data.style === "DASH")
-								data.style = "dash";
-								
-						} else if (data.type === "Bars") {
-							data.type = "bar";
-							
-							if(data.width == null) data.width = 1;
-							
-						} else if (data.type === "Area") {
-							
-							data.type = "river";
-							if (data.interpolation == null)
-								data.interpolation = "linear";
-							else if(data.interpolation == 0)
-								data.interpolation = "none";
-							else if(data.interpolation == 1)
-								data.interpolation = "linear";
-							else if(data.interpolation == 2)
-								data.interpolation = "curve";
-								
-						} else if (data.type === "Text") {
-							data.type = "text";
-						} else if (data.type === "Points") {
-							data.type = "point";
-							
-							if(data.shape == null || data.shape === "DEFAULT" || data.shape === "DIAMOND")
-								data.style = "rect";
-							else if(data.shape === "CIRCLE") 
-								data.style = "circle";
+						if(data.type === "line" || data.type === "stem") {
+							data.style = lineStyleMap[data.style];
+							data.stroke_dasharray = lineDasharrayMap[data.style];
 						}
 						
-						if(data.type === "bar" || data.type === "river") {
-							onzeroY = true;	// auto stand on y=0
+						if(data.type === "line" || data.type === "river") data.interpolation = interpolationMap[data.interpolation];
+
+						if(data.type === "bar"){
+							if(data.width == null) data.width = 1;
 						}
+						
+						if(data.type === "point") data.shape = pointShapeMap[data.shape];
+						
+						
 						
 						var elements = [];
 						var numEles = data.x.length;
@@ -295,6 +299,7 @@
 						}else if(band.y != null){
 							var ele = {"type": "y"};
 							var y1 = band.y[0], y2 = band.y[1];
+							ele.v1 = y1; ele.v2 = y2;
 							if(logy){
 								ele._v1 = y1;
 								ele.v1 = Math.log(y1) / Math.log(logyb);

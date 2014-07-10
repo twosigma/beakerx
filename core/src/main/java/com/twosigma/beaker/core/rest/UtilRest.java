@@ -167,7 +167,7 @@ public class UtilRest {
    * @param prefs
    * @return
    */
-  private static final String TO_REMOVE_PREFIX = "_remove-";
+  private static final String TO_REMOVE_PREFIX = "remove--";
   private static Set<String> mergeListSetting(
       String settingsListName,
       JSONObject configs,

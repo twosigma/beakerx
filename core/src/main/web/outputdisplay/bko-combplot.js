@@ -18,37 +18,64 @@
  * ????
  */
 (function() {'use strict';
-	var retfunc = function(lineplotUtils, combplotUtils, bkCellMenuPluginManager) {
+	var retfunc = function(lineplotUtils, combplotConverter, bkCellMenuPluginManager) {
 		return {
 			template : "<div id='combplotContainer' class='combplot-renderdiv'>" + 
-								 "<bk-output-display type='LinePlot' model='model1'></bk-output-display>" + 
-								 "<bk-output-display type='LinePlot' model='model2'></bk-output-display>" + 
+								"<bk-output-display type='LinePlot' ng-repeat='m in models' model='m'></bk-output-display>" +
+								 //"<bk-output-display type='LinePlot' model='model1'></bk-output-display>" + 
+								 //"<bk-output-display type='LinePlot' model='model2'></bk-output-display>" + 
 								 "</div>",
 			controller : function($scope) {
 				var model = $scope.model.getCellModel();
-				scope.stdmodel = combplotUtils.standardizeModel(model);
-
-				$scope.initFocus = function() {
+				$scope.stdmodel = combplotConverter.standardizeModel(model);
+				model = $scope.stdmodel;
+				$scope.models = [];
+				
+				$scope.init = function() {
 					var xl = 1E20, xr = 0;
+					var model = $scope.stdmodel;
 					var numPlots = model.plots.length;
+					
 					for (var i = 0; i < numPlots; i++) {
 						var data = model.plots[i].data;
-						for (var j = 0; j < data.length; j++) {
-							var eles = data[j].elements;
-							for (var k = 0; k < eles.length; k++) {
-								xl = Math.min(xl, eles[k].x);
-								xr = Math.max(xr, eles[k].x);
+						var ret = lineplotUtils.getDataRange(data);
+						xl = Math.min(xl, ret.datarange.xl);
+						xr = Math.max(xr, ret.datarange.xr);
+						var plotmodel = model.plots[i];
+						
+						//console.log(plotmodel, i, model.plots[i]);
+						$scope.models.push({
+							"model": plotmodel,
+							getCellModel : function(){
+								return this.model; 
+							},
+							resetShareMenuItems : function(){
+							},
+							getFocus : function() { 
+								return $scope.focus; 
+							},
+							updateFocus : function(focus){
+								$scope.focus = focus;
+								$scope.$apply();
+							},
+							updateWidth : function(width) {
+								$scope.width = width;
+								$scope.$apply();
+							},
+							getWidth : function(){
+								return $scope.width;
 							}
-						}
+						});
 					}
+					
 					$scope.focus = {
 						"xl" : xl,
 						"xr" : xr
 					};
 				};
+				$scope.init();
 
-				$scope.initFocus();
-
+/*
 				$scope.model1 = {
 					getCellModel : function() {
 						return model.plots[0];
@@ -93,10 +120,13 @@
 						return $scope.width;
 					}
 				};
+				*/
 			},
 			link : function(scope, element, attrs) {
+				scope.container = d3.select(element[0]).select("#combplotContainer");
+				scope.jqcontainer = element.find("#combplotContainer");
 			}
 		};
 	};
-	beaker.bkoDirective("CombinedPlot", ["lineplotUtils", "combplotUtils", "bkCellMenuPluginManager", retfunc]);
+	beaker.bkoDirective("CombinedPlot", ["lineplotUtils", "combplotConverter", "bkCellMenuPluginManager", retfunc]);
 })(); 

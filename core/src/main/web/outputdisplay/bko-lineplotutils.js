@@ -6,7 +6,6 @@
     return {
       months: ["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"],
       days: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
-      
       updateDataRangeVal : function(range, dim, val){
 				var dl = dim+"l", dr = dim+"r";
 				range[dl] = Math.min(range[dl], val);

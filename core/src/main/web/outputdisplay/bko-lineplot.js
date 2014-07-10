@@ -63,8 +63,8 @@
 					scope.container = d3.select(element[0]).select("#lineplotContainer"); // hook container to use jquery interaction
 					scope.jqcontainer = element.find("#lineplotContainer");
 					scope.jqcontainer.css(model.initSize);
-					if (model.width != null) scope.jqcontainer.css("width", model.width + "px");
-					if (model.height != null) scope.jqcontainer.css("height", model.height + "px");
+					//if (model.width != null) scope.jqcontainer.css("width", model.width + "px");
+					//if (model.height != null) scope.jqcontainer.css("height", model.height + "px");
 					scope.maing = d3.select(element[0]).select("#maing");
 					scope.coordg = d3.select(element[0]).select("#coordg");
 					scope.labelg = d3.select(element[0]).select("#labelg");
@@ -120,11 +120,11 @@
 					scope.$watch("model.getFocus()", function(newFocus) {
 						if (newFocus == null)
 							return;
-						$scope.focus.xl = newFocus.xl;
-						$scope.focus.xr = newFocus.xr;
-						$scope.focus.xspan = newFocus.xr - newFocus.xl;
-						$scope.calcMapping(false);
-						$scope.update();
+						scope.focus.xl = newFocus.xl;
+						scope.focus.xr = newFocus.xr;
+						scope.focus.xspan = newFocus.xr - newFocus.xl;
+						scope.calcMapping(false);
+						scope.update();
 					});
 					scope.$watch("model.getWidth()", function(newWidth) {
 						if (scope.width == newWidth)
@@ -138,7 +138,7 @@
 				};
 
 				scope.emitSizeChange = function() {
-					if(scope.stdmodel.updateWidth!=null) scope.stdmodel.updateWidth(scope.width);
+					if(scope.model.updateWidth!=null) scope.model.updateWidth(scope.width);	// not stdmodel here
 				};
 				scope.initRange = function() {
 					var data = scope.data, model = scope.stdmodel;
@@ -767,7 +767,7 @@
 				scope.renderLabels = function() {
 					var mapX = scope.data2scrX, mapY = scope.data2scrY;
 					var model = scope.stdmodel, ys = model.yScale;
-					if (model.xCoords != false) {
+					if (model.xCoordLabel != false) {
 						for (var i = 0; i < scope.xCoords.length; i++) {
 							var x = scope.xCoords[i];
 							var p = {
@@ -1252,7 +1252,9 @@
 					scope.scr2dataXp = d3.scale.linear().domain([lMargin, W]).range([0, 1]);
 				};
 				scope.standardizeData = function() {
+
 					var model = scope.model.getCellModel();
+
 					scope.stdmodel = lineplotConverter.standardizeModel(model);
 					scope.data = scope.stdmodel.data;
 				};
@@ -1309,7 +1311,6 @@
 
 					scope.prepareInteraction();
 				};
-
 				scope.init(); // initialize
 				
 			}

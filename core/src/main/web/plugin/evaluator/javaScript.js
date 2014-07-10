@@ -158,7 +158,7 @@ define(function(require, exports, module) {
         try {
           //modelOutput.result = "" + eval(code);
           
-          modelOutput.result = lineplotTestSerializer;
+          modelOutput.result = combplotTestSerializer; //lineplotTestSerializer;
           /*
           modelOutput.result = {
               "type": "LinePlot",

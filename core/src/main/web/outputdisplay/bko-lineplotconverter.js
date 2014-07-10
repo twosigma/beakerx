@@ -2,7 +2,6 @@
 	
 	var retfunc = function(bkUtils) {
 		return {
-			
 			standardizeModel : function(model) {
 				var dataTypeMap = {
 					"Line": "line",
@@ -42,25 +41,30 @@
 					"": "linear"
 				};
 				
+				if(model.version === "complete"){
+					console.log("pass", model);
+					return model;
+				} else if(model.version == null){
+					var newmodel = {
+						type : "LinePlot",
+						title : model.chart_title ? model.chart_title : model.title,
+						xLabel : model.domain_axis_label ? model.domain_axis_label : model.xLabel,
+						yLabel : model.y_label ? model.y_label : model.yLabel, // ? range_axis_label ?
+						xType : model.xType ? model.xType : "ordinal",
+						yType : model.yType ? model.yType : "ordinal",
+						margin: model.margin? model.margin: null,
+						range: model.range? model.range: null,
+						focus: model.focus? model.focus: {},
+						show_legend : model.show_legend!=null && model.show_legend==false? false : true,
+						use_tool_tip : model.use_tool_tip,
+						xCursor : model.xCursor,
+						yCursor : model.yCursor,
+						initSize: {"width": model.init_width? model.init_width+"px": 1200+"px", 
+											"height": model.init_height? model.init_height+"px": 350+"px"},
+						data : []
+					};
+				}
 				
-				var newmodel = {
-					type : "LinePlot",
-					title : model.chart_title ? model.chart_title : model.title,
-					xLabel : model.domain_axis_label ? model.domain_axis_label : model.xLabel,
-					yLabel : model.y_label ? model.y_label : model.yLabel, // ? range_axis_label ?
-					xType : model.xType ? model.xType : "ordinal",
-					yType : model.yType ? model.yType : "ordinal",
-					margin: model.margin? model.margin: null,
-					range: model.range? model.range: null,
-					focus: model.focus? model.focus: {},
-					show_legend : model.show_legend!=null && model.show_legend==false? false : true,
-					use_tool_tip : model.use_tool_tip,
-					xCursor : model.xCursor,
-					yCursor : model.yCursor,
-					initSize: {"width": model.init_width? model.init_width+"px": 1200+"px", 
-										"height": model.init_height? model.init_height+"px": 350+"px"},
-					data : []
-				};
 				var onzeroY = false;
 				
 				if(model.x_lower_bound) newmodel.focus.xl = model.x_lower_bound;
@@ -347,6 +351,7 @@
 					};
 				}
 				newmodel.onzeroY = onzeroY;
+				newmodel.version = "complete";
 				console.log(newmodel);
 				return newmodel;
 			}

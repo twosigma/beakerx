@@ -45,3 +45,11 @@ sudo apt-get install -y python-matplotlib python-scipy python-pandas
 # ruby
 sudo apt-get install -y ruby1.9.1 ruby1.9.1-dev
 sudo gem install iruby
+
+# julia
+sudo add-apt-repository --yes ppa:staticfloat/juliareleases
+sudo add-apt-repository --yes ppa:staticfloat/julia-deps
+sudo apt-get update
+sudo apt-get install -y julia
+julia --eval 'Pkg.add("IJulia")'
+julia --eval 'Pkg.add("Gadfly")'

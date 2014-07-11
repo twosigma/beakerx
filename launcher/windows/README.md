@@ -7,5 +7,5 @@ To build, needs three directories: dist.zip, jre1.7.0_60, and python
 
 Then execute this command:
 
-    7za a jre1.7.0_60 beaker.command.bat python
+    7za a dist.zip jre1.7.0_60 beaker.command.bat python
 

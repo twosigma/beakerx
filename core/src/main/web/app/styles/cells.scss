@@ -79,6 +79,11 @@ bk-code-cell .code-cell-output {
     border-top: solid 1px #CCC;
 }
 
+bk-code-cell .locked .code-cell-output {
+    border: none;
+    margin-top: 0;
+}
+
 bk-output-display pre {
     border:     none;
     margin:     0;

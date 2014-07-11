@@ -44,12 +44,12 @@
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;
         }
 
-        var isLocked = function() {
+        $scope.isLocked = function() {
           return bkSessionManager.isNotebookLocked();
-        };
+        }
 
         $scope.isShowInput = function() {
-          if (isLocked()) {
+          if ($scope.isLocked()) {
             return false;
           }
           if ($scope.cellmodel.input.hidden === true) {

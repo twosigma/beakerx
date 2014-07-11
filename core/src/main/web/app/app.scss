@@ -43,6 +43,10 @@ ul.cell-output-labels {
     margin-top: 10px;
 }
 
+.locked .cell-output-labels li {
+    padding-top: 0;
+}
+
 .cell-output-labels li {
     display:    inline-block;
     padding:    15px 15px 5px 0;

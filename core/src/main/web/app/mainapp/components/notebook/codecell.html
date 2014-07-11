@@ -14,10 +14,9 @@
     limitations under the License.
 -->
 
-<div class='evaluator' evaluator-type="{{ cellmodel.evaluator }}" ng-class="cellmodel.evaluatorReader && 'evaluator-ready'">
+<div class='evaluator' evaluator-type="{{ cellmodel.evaluator }}" ng-class="{'evaluator-ready': cellmodel.evaluatorReader, 'locked': isLocked()}">
   <p class='depth-indicator'>{{getFullIndex()}}</p>
   <div class="bkcell code-cell-area">
-    <div class="code-cell-hidden" ng-if="!isShowInput()"></div>
     <div class="code-cell-input" ng-show="isShowInput()">
         <bk-code-cell-input-menu></bk-code-cell-input-menu>
         <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>

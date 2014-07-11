@@ -34,6 +34,10 @@
     font-size:  13px;
 }
 
+.locked .toggle-menu {
+    display: none;
+}
+
 .toggle-menu {
     top:        20px;
     right:      20px;

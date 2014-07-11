@@ -13,8 +13,9 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 */
-/**
- * bko-LinePlot
+
+/*
+ * bkoPlot
  * This is the output display component for displaying xyChart
  */
 ( function() {'use strict';

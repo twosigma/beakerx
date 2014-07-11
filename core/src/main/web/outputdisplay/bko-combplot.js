@@ -13,10 +13,12 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 */
-/**
- * bko-CombinedPlot
- * ????
+
+/*
+ * bkoCombinedPlot
+ * This is the output display component for displaying multiple Plots
  */
+
 (function() {'use strict';
 	var retfunc = function(plotUtils, combplotConverter, bkCellMenuPluginManager) {
 		return {

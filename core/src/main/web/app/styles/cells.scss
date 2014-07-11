@@ -88,7 +88,6 @@ bk-output-display pre {
 
 .insert-cell-indicator {
     color:       #FFF;
-    width:       7px;
     cursor:      pointer;
     display:     inline-block;
     padding:     2px 5px 0;
@@ -98,11 +97,6 @@ bk-output-display pre {
     white-space: nowrap;
 }
 
-.insert-cell-indicator.expanded {
-    width: auto;
-}
-
 .code-cell-hidden {
     padding-top: 20px;
 }
-

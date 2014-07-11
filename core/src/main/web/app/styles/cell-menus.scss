@@ -14,6 +14,26 @@
  *  limitations under the License.
  */
 
+.bkcell bk-new-cell-menu {
+    display: block;
+
+    .dropdown-toggle {
+        opacity: 0;
+        transition: opacity, 300ms;
+    }
+
+    &:hover {
+        .dropdown-toggle {
+            opacity: 1;
+        }
+    }
+}
+
+.dropdown-toggle {
+    color:      #3f5264;
+    font-size:  13px;
+}
+
 .toggle-menu {
     top:        20px;
     right:      20px;

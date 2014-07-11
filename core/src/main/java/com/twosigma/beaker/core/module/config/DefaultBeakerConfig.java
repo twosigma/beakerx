@@ -59,6 +59,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Integer portBase;
   private final Integer reservedPortCount;
   private final String configFileUrl;
+  private final String preferenceFileUrl;
   private final String defaultNotebookUrl;
   private final String recentNotebooksFileUrl;
   private final String sessionBackupDir;
@@ -98,10 +99,13 @@ public class DefaultBeakerConfig implements BeakerConfig {
     String configDir = this.dotDir + "/config";
     utils.ensureDirectoryExists(configDir);
 
-    final String configFile = configDir + "/beaker.conf.json";
     final String defaultConfigFile = this.installDir + "/config/beaker.conf.json";
-    utils.ensureFileHasContent(configFile, defaultConfigFile);
-    this.configFileUrl = configFile;
+    this.configFileUrl = defaultConfigFile;
+
+    final String defaultPreferenceFile = this.installDir + "/config/beaker.pref.json";
+    final String preferenceFile = configDir + "/beaker.pref.json";
+    utils.ensureFileHasContent(preferenceFile, defaultPreferenceFile);
+    this.preferenceFileUrl = preferenceFile;
 
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
     final String mainDefaultNotebookPath = this.dotDir + "/config/default.bkr";
@@ -226,6 +230,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getConfigFileUrl() {
     return this.configFileUrl;
+  }
+
+  @Override
+  public String getPreferenceFileUrl() {
+    return this.preferenceFileUrl;
   }
 
   @Override

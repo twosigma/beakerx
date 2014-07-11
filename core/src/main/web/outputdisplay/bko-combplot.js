@@ -23,8 +23,7 @@
   'use strict';
   var retfunc = function(plotUtils, combplotConverter, bkCellMenuPluginManager) {
     return {
-      template : 
-          "<div id='combplotContainer' class='combplot-renderdiv'>" + 
+      template :  "<div id='combplotContainer' class='combplot-renderdiv'>" + 
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
           "</div>",
       controller : function($scope) {
@@ -35,7 +34,6 @@
 
         $scope.init = function() {
           var xl = 1E20, xr = 0;
-          var model = $scope.stdmodel;
           var numPlots = model.plots.length;
 
           for (var i = 0; i < numPlots; i++) {
@@ -76,8 +74,6 @@
         $scope.init();
       },
       link : function(scope, element, attrs) {
-        scope.container = d3.select(element[0]).select("#combplotContainer");
-        scope.jqcontainer = element.find("#combplotContainer");
       }
     };
   };

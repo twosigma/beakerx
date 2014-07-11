@@ -140,7 +140,7 @@
         };
 
         scope.emitSizeChange = function() {
-          if(scope.model.updateWidth!=null) scope.model.updateWidth(scope.width);  // not stdmodel here
+          if(scope.model.updateWidth != null) scope.model.updateWidth(scope.width);  // not stdmodel here
         };
         scope.initRange = function() {
           var data = scope.data, model = scope.stdmodel;
@@ -332,7 +332,7 @@
                 var p = eles[j];
                 var x1 = mapX(p.x1), x2 = mapX(p.x2);
                 var y = p.y, y2 = p.y2;
-                if(y2==null) y2 = focus.yl;
+                if(y2 == null) y2 = focus.yl;
                 y = mapY(y); y2 = mapY(y2);
                 sw = x2 - x1;
                 if (y > y2)
@@ -342,7 +342,7 @@
                   "id" : "bar_" + i + "_" + j,
                   "x" : x1,
                   "y" : y,
-                  "height" : y2 - y,
+                  "height" : y2 - y
                 };
                 if (p.color != null) bar.fill = p.color;
                 if (p.fill_opacity != null) bar.fill_opaicty = p.fill_opacity;
@@ -374,7 +374,7 @@
               for (var j = fdata[i].rightIndex; j >= fdata[i].leftIndex; j--) {
                 var p = eles[j];
                 var y2 = p.y2;
-                if(y2==null) y2 = focus.yl;
+                if(y2 == null) y2 = focus.yl;
                 
                 if (data[i].interpolation === "linear") {
                   pstr += mapX(p.x) + "," + mapY(y2) + " ";
@@ -462,10 +462,11 @@
                     "height" : s
                   });
                 }
-                if(p.color!=null) ele.fill = p.color;
-                if(p.color_opacity!=null) ele.fill_opacity = p.color_opacity;
-                if(p.stroke!=null) ele.stroke = p.stroke;
-                if(p.stroke_opacity!=null) ele.stroke_opacity = p.stroke_opacity;
+                if (p.color != null) ele.fill = p.color;
+                if (p.color_opacity != null) ele.fill_opacity = p.color_opacity;
+                if (p.stroke != null) ele.stroke = p.stroke;
+                if (p.stroke_opacity != null) ele.stroke_opacity = p.stroke_opacity;
+
                 reles.push(ele);
               }
               var pipe = data[i].style === "rect" ? scope.rpipePointRects : scope.rpipePointCircles;
@@ -669,10 +670,10 @@
             var wrapper = {
               "id" : "linedots_" + i,
               "class" : "plot-dot",
-              "stroke" : data[i].color==null? "gray": data[i].color,
+              "stroke" : data[i].color == null ? "gray" : data[i].color,
               "fill" : "white",
               "elements" : reles
-            };
+            }; 
             scope.rpipeDots.push(wrapper);
           }
         };
@@ -721,7 +722,7 @@
             .attr("class", "plot-tooltip")
             .css("left", d.cx + scope.fonts.tooltipWidth + "px")
             .css("top", d.cy + "px")
-            .css("border-color", scope.data[d.lineid].color==null? "gray" : scope.data[d.lineid].color)
+            .css("border-color", scope.data[d.lineid].color == null? "gray" : scope.data[d.lineid].color)
             .append("<div>" + d.value + "</div>");
         };
         scope.untooltip = function(d) {
@@ -960,9 +961,6 @@
             return;
           }
           var data = scope.data;
-          data[id].shown = !data[id].shown;
-          //scope.initRange();
-          //scope.calcMapping();
           scope.update();
         };
         scope.renderCoverBox = function() {
@@ -1051,7 +1049,8 @@
 
             var focus = scope.focus, range = scope.range;
             var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
-            if (ds == 1.0) {// translate only
+            if (ds == 1.0) {
+              // translate only
               var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan, vrange = scope.vrange;
               if(focus.xl+tx>=vrange.xl && focus.xr+tx<=vrange.xr){
                 focus.xl += tx;
@@ -1061,10 +1060,9 @@
                 focus.yl += ty;
                 focus.yr += ty;
               }
-              //scope.);
               scope.jqsvg.css("cursor", "move");
-            } else {// scale only
-              // scale x only
+            } else {
+              // scale only
               if (my <= scope.jqsvg.height() - scope.layout.bottomTextHeight) {
                 // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;

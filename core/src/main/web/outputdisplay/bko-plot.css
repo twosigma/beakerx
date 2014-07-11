@@ -20,31 +20,6 @@
   -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset */
   -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
 }
-.plot-line {
-  fill: none;
-}
-.plot-line, 
-.plot-const,
-.plot-coord,
-.plot-coord-base,
-.plot-bar, 
-.plot-river, 
-.line-plot-stem {
-  stroke-width: 1;
-  pointer-events: none;
-}
-.plot-coord {
-  stroke: #111111;
-  stroke-dasharray: 1, 1;
-  stroke-width: 1;
-  opacity: .5;
-}
-
-.plot-coord-base {
-  stroke: #333333;
-  stroke-width: 3;
-  opacity: .75;
-}
 
 .plot-label, 
 .plot-test, 
@@ -52,6 +27,10 @@
 .plot-cursorlabel, 
 .plot-constlabel {
   font-family: verdana, helvetica, arial, sans-serif;
+}
+
+.plot-line {
+  fill: none;
 }
 
 .plot-label {
@@ -77,9 +56,33 @@
   border-radius: 5px;
 }
 
+.plot-line, 
+.plot-const,
+.plot-coord,
+.plot-coord-base,
+.plot-bar, 
+.plot-river, 
+.line-plot-stem {
+  stroke-width: 1;
+  pointer-events: none;
+}
+.plot-coord {
+  stroke: #111111;
+  stroke-dasharray: 1, 1;
+  stroke-width: 1;
+  opacity: .5;
+}
+
+.plot-coord-base {
+  stroke: #333333;
+  stroke-width: 3;
+  opacity: .75;
+}
+
+
 .plot-pointrect,
 .plot-pointcircle {
-
+  /* to be added if needed */
 }
 
 .plot-locatebox {

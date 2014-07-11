@@ -4,20 +4,20 @@
     'use strict';
     var retfunc = function(bkUtils) {
     return {
-      months: ["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"],
-      days: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+      months: ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       updateDataRangeVal : function(range, dim, val){
         var dl = dim+"l", dr = dim+"r";
         range[dl] = Math.min(range[dl], val);
         range[dr] = Math.max(range[dr], val);
       },
       updateDataRange : function(range, ele){
-        if(ele.x!=null) this.updateDataRangeVal(range, "x", ele.x);
-        if(ele.y!=null) this.updateDataRangeVal(range, "y", ele.y);
-        if(ele.x1!=null) this.updateDataRangeVal(range, "x", ele.x1);
-        if(ele.x2!=null) this.updateDataRangeVal(range, "x", ele.x2);
-        if(ele.y1!=null) this.updateDataRangeVal(range, "y", ele.y1);
-        if(ele.y2!=null) this.updateDataRangeVal(range, "y", ele.y2);
+        if (ele.x != null) this.updateDataRangeVal(range, "x", ele.x);
+        if (ele.y != null) this.updateDataRangeVal(range, "y", ele.y);
+        if (ele.x1 != null) this.updateDataRangeVal(range, "x", ele.x1);
+        if (ele.x2 != null) this.updateDataRangeVal(range, "x", ele.x2);
+        if (ele.y1 != null) this.updateDataRangeVal(range, "y", ele.y1);
+        if (ele.y2 != null) this.updateDataRangeVal(range, "y", ele.y2);
       },
       getDataRange : function(data){
         var datarange = {
@@ -64,7 +64,7 @@
             .attr("stroke-dasharray", function(d){ return d.stroke_dasharray; })
             .attr("stroke", function(d){ return d.stroke; })
             .attr("opacity", function(d){ return d.opacity; });
-        for(var i=0; i<pipe.length; i++){
+        for (var i = 0; i < pipe.length; i++){
             scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){ return d.id; }).exit().remove();
             scope.stemg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){ return d.id; }).enter().append("line")
               .attr("stroke-width", function(d){ return d.stroke_width; })
@@ -78,7 +78,6 @@
         }      
       },
       plotLines: function(scope){
-        //scope.maing.attr("transform", "translate("+scope.translateX+","+scope.translateY+") scale("+scope.scaleX+","+scope.scaleY+")");
         var pipe = scope.rpipeLines;
         scope.lineg.selectAll("g").data(pipe, function(d){return d.id;}).exit().remove();
         scope.lineg.selectAll("g").data(pipe, function(d){return d.id;}).enter().append("g")
@@ -87,7 +86,7 @@
             .attr("stroke-width", function(d){ return d["stroke-width"]; })
             .attr("stroke-dasharray", function(d){ return d.stroke_dasharray; })
             .attr("class", function(d){ return d.class; });
-        for(var i=0; i<pipe.length; i++){
+        for (var i = 0; i < pipe.length; i++){
             scope.lineg.select("#"+pipe[i].id).selectAll("polyline").data([{}]).enter().append("polyline");
             scope.lineg.select("#"+pipe[i].id+" polyline")
                 .attr("points", pipe[i].elements);
@@ -103,7 +102,7 @@
             .attr("stroke", function(d){ return d.stroke; })
             .attr("stroke-width", function(d){ return d.stroke_width; })
             .attr("stroke-opacity", function(d){ return d.stroke_opacity; });
-        for(var i=0; i<pipe.length; i++){
+        for (var i = 0; i < pipe.length; i++){
             scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
             scope.segg.select("#"+pipe[i].id).selectAll("line").data(pipe[i].elements, function(d){return d.id;}).enter().append("line")
                 .attr("id", function(d) { return d.id; })
@@ -128,7 +127,7 @@
           .attr("fill-opacity", function(d){ return d.fill_opacity; })
           .attr("stroke", function(d){ return d.stroke; })
           .attr("stroke-opacity", function(d){ return d.stroke_opacity; });
-        for(var i=0; i<pipe.length; i++){
+        for (var i = 0; i < pipe.length; i++){
             scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){ return d.id; }).exit().remove();
             scope.rectg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){ return d.id; }).enter().append("rect")
               .attr("x", function(d){ return d.x; })
@@ -158,7 +157,7 @@
             .attr("fill-opacity", function(d){ return d.fill_opacity; })
             .attr("stroke", function(d){ return d.stroke; })
             .attr("stroke-opacity", function(d){ return d.stroke_opacity; });
-        for(var i=0; i<pipe.length; i++){
+        for (var i = 0; i < pipe.length; i++){
             scope.dotg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
             scope.dotg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){return d.id;}).enter().append("circle")
               .attr("id", function(d){ return d.id; })
@@ -187,7 +186,7 @@
             .attr("fill-opacity", function(d){ return d.fill_opacity; })
             .attr("stroke", function(d){ return d.stroke; })
             .attr("stroke-opacity", function(d){ return d.stroke_opacity; });
-        for(var i=0; i<pipe.length; i++){
+        for (var i = 0; i < pipe.length; i++){
             svg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){ return d.id; }).exit().remove();
             svg.select("#"+pipe[i].id).selectAll("circle").data(pipe[i].elements, function(d){ return d.id; }).enter().append("circle")
               .attr("id", function(d){ return d.id; })
@@ -214,7 +213,7 @@
             .attr("fill-opacity", function(d){ return d.fill_opacity; })
             .attr("stroke", function(d){ return d.stroke; })
             .attr("stroke-opacity", function(d){ return d.stroke_opacity; });
-        for (var i=0; i<pipe.length; i++) {
+        for (var i = 0; i < pipe.length; i++) {
             svg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
             svg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){return d.id;}).enter().append("rect")
               .attr("id", function(d){ return d.id; })
@@ -241,7 +240,7 @@
             .attr("fill-opacity", function(d){ return d.fill_opacity; })
             .attr("stroke", function(d){ return d.stroke; })
             .attr("stroke-opacity", function(d){ return d.stroke_opacity; });
-        for (var i=0; i<pipe.length; i++) {
+        for (var i = 0; i < pipe.length; i++) {
             scope.barg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){return d.id;}).exit().remove();
             scope.barg.select("#"+pipe[i].id).selectAll("rect").data(pipe[i].elements, function(d){return d.id;}).enter().append("rect")
               .attr("id", function(d){ return d.id; })
@@ -270,7 +269,7 @@
             .attr("fill-opacity", function(d){ return d.fill_opacity; })
             .attr("stroke", function(d){ return d.stroke; })
             .attr("stroke-opacity", function(d){ return d.stroke_opacity; });
-        for(var i=0; i<pipe.length; i++){
+        for (var i = 0; i < pipe.length; i++){
             scope.riverg.select("#"+pipe[i].id).selectAll("polygon").data([{}]).enter().append("polygon");
             scope.riverg.select("#"+pipe[i].id+" polygon")
               .attr("points", pipe[i].elements);
@@ -335,15 +334,15 @@
       formatDate: function(intv, x){
         var months = this.months, days = this.days;
         var d = new Date(x);
-        if (intv <= 1000*60*60) 
+        if (intv <= 1000 * 60 * 60) 
           return this.padStr(d.getHours(),2) + ":" + 
               this.padStr(d.getMinutes(),2) + ":" +
               this.padStr(d.getSeconds(),2); // minute:seconds
-        else if (intv <= 1000*60*60*24) 
+        else if (intv <= 1000 * 60 * 60 * 24) 
           return days[d.getDay()] + " " + 
               this.padStr(d.getHours(),2) + ":" + 
               this.padStr(d.getMinutes(),2); // day hour:minutes
-        else if (intv <= 1000*60*60*24*31) 
+        else if (intv <= 1000 * 60 * 60 * 24 * 31) 
           return months[d.getMonth()] + " " + 
               d.getDate() + " " + 
               days[d.getDay()]; // month date day
@@ -358,10 +357,10 @@
       },
       upper_bound: function(a, attr, val){
         var l = 0, r = a.length-1;
-        while (l<=r) {
-          var m = Math.floor((l+r)/2);
+        while (l <= r) {
+          var m = Math.floor((l + r) / 2);
           if (a[m][attr]>=val) r = m - 1;
-          else l = m+1;
+          else l = m + 1;
         }
         return r;
       },

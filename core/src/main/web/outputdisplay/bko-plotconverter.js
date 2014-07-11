@@ -19,48 +19,49 @@
   var retfunc = function(bkUtils) {
     return {
       standardizeModel : function(model) {
+        
         var dataTypeMap = {
-          "Line": "line",
-          "Stems": "stem",
-          "Bars": "bar",
-          "Area": "river",
-          "Text": "text",
-          "Points": "point",
-          "": ""
+          "Line" : "line",
+          "Stems" : "stem",
+          "Bars" : "bar",
+          "Area" : "river",
+          "Text" : "text",
+          "Points" : "point",
+          "" : ""
         };
         var lineStyleMap = {
-          "SOLID": "solid",
-          "DASH": "dash",
-          "DOT": "dot",
-          "DASHDOT": "dashdot",
-          "LONGDASH": "longdash",
-          "": "solid"
+          "SOLID" : "solid",
+          "DASH" : "dash",
+          "DOT" : "dot",
+          "DASHDOT" : "dashdot",
+          "LONGDASH" : "longdash",
+          "" : "solid"
         };
         var lineDasharrayMap = {
-          "solid": "",
-          "dash": "9,5",
-          "dot": "2,2",
-          "dashdot": "9,5,2,5",
-          "longdash": "20,5",
-          "": ""
+          "solid" : "",
+          "dash" : "9,5",
+          "dot" : "2,2",
+          "dashdot" : "9,5,2,5",
+          "longdash" : "20,5",
+          "" : ""
         };
         var pointShapeMap = {
-          "DEFAULT": "rect",
-          "CIRCLE": "circle",
-          "DIAMOND": "rect",
-          "": "rect"
+          "DEFAULT" : "rect",
+          "CIRCLE" : "circle",
+          "DIAMOND" : "rect",
+          "" : "rect"
         };
         var interpolationMap = {
-          0: "none",
-          1: "linear",
-          2: "curve",
-          "": "linear"
+          0 : "none",
+          1 : "linear",
+          2 : "curve",
+          "" : "linear"
         };
-        
-        if(model.version === "complete"){
+
+        if (model.version === "complete") {
           console.log("pass", model);
           return model;
-        } else if(model.version == null){
+        } else if (model.version == null) {
           var newmodel = {
             type : "plot",
             title : model.chart_title ? model.chart_title : model.title,
@@ -68,19 +69,21 @@
             yLabel : model.y_label ? model.y_label : model.yLabel, // ? range_axis_label ?
             xType : model.xType ? model.xType : "ordinal",
             yType : model.yType ? model.yType : "ordinal",
-            margin: model.margin? model.margin: null,
-            range: model.range? model.range: null,
-            focus: model.focus? model.focus: {},
-            show_legend : model.show_legend!=null && model.show_legend==false? false : true,
+            margin : model.margin ? model.margin : null,
+            range : model.range ? model.range : null,
+            focus : model.focus ? model.focus : {},
+            show_legend : model.show_legend != null && model.show_legend == false ? false : true,
             use_tool_tip : model.use_tool_tip,
             xCursor : model.xCursor,
             yCursor : model.yCursor,
-            initSize: {"width": model.init_width? model.init_width+"px": 1200+"px", 
-                      "height": model.init_height? model.init_height+"px": 350+"px"},
+            initSize : {
+              "width" : model.init_width ? model.init_width + "px" : 1200 + "px",
+              "height" : model.init_height ? model.init_height + "px" : 350 + "px"
+            },
             data : []
           };
         }
-        
+
         var onzeroY = false;
         
         if(model.x_lower_bound) newmodel.focus.xl = model.x_lower_bound;
@@ -159,24 +162,24 @@
             data.legend = data.display_name;
             delete data.display_name;
             data.shown = true;
-            if(data.color) {
+            if (data.color != null) {
               data.color_opacity = parseInt(data.color.substr(1,2), 16)/255;
               data.color = "#" + data.color.substr(3);
             }
-            if(data.outline_color){
+            if(data.outline_color != null){
               data.stroke_opacity = parseInt(data.outline_color.substr(1,2), 16)/255;
               data.stroke = "#" + data.outline_color.substr(3);
               delete data.outline_color;
             }
             
-            if(data.colors != null) data.colorArray = true;
-            if(data.sizes != null) data.sizeArray = true;
-            if(data.bases != null) data.baseArray = true;
+            if (data.colors != null) data.colorArray = true;
+            if (data.sizes != null) data.sizeArray = true;
+            if (data.bases != null) data.baseArray = true;
             
-            if(data.type == null) data.type = "";
-            if(data.style == null) data.style = "";
-            if(data.stroke_dasharray == null) data.stroke_dasharray = "";
-            if(data.interpolation == null) data.interpolation = "";
+            if (data.type == null) data.type = "";
+            if (data.style == null) data.style = "";
+            if (data.stroke_dasharray == null) data.stroke_dasharray = "";
+            if (data.interpolation == null) data.interpolation = "";
             
             data.type = dataTypeMap[data.type];
             
@@ -190,12 +193,10 @@
             if(data.type === "line" || data.type === "river") data.interpolation = interpolationMap[data.interpolation];
 
             if(data.type === "bar"){
-              if(data.width == null) data.width = 1;
+              if (data.width == null) data.width = 1;
             }
             
-            if(data.type === "point") {
-              data.style = pointShapeMap[data.shape];
-            }
+            if (data.type === "point") data.style = pointShapeMap[data.shape];
             
             var elements = [];
             var numEles = data.x.length;
@@ -205,11 +206,11 @@
               };
               ele.x = data.x[j];
               ele.y = data.y[j];
-              if(data.colors!=null) {
+              if(data.colors != null) {
                 ele.color_opacity = parseInt(data.colors[j].substr(1,2), 16)/255;
                 ele.color = "#" + data.colors[j].substr(3);
               }
-              if(data.outline_colors!=null){
+              if(data.outline_colors != null){
                 ele.stroke_opacity = parseInt(data.outline_colors[j].substr(1,2), 16)/255;
                 ele.stroke = "#" + data.outline_colors[j].substr(3);
               }
@@ -273,10 +274,10 @@
             delete data.x;
             delete data.y;
             data.elements = elements;
-            if(data.colors) delete data.colors;
-            if(data.sizes) delete data.sizes;
-            if(data.bases) delete data.bases;
-            if(data.outline_colors) delete data.outline_colors;
+            if (data.colors) delete data.colors;
+            if (data.sizes) delete data.sizes;
+            if (data.bases) delete data.bases;
+            if (data.outline_colors) delete data.outline_colors;
             newmodel.data.push(data);
           }
         }
@@ -290,13 +291,13 @@
               "color": "black",
               "elements": []
             };
-            if(line.color != null){
+            if (line.color != null){
               data.color_opacity = parseInt(line.color.substr(1,2), 16)/255;
               data.color = "#" + line.color.substr(3);
             }
-            if(line.x!=null){
+            if (line.x != null){
               var ele = {"type": "x", "x": line.x};
-            } else if(line.y!=null){
+            } else if(line.y != null){
               var y = line.y;
               var ele = {"type": "y", "y": y};
               if(logy){
@@ -308,24 +309,31 @@
             newmodel.data.push(data);
           }
         }
-        if(model.constant_bands!=null){
-          for(var i=0; i<model.constant_bands.length; i++){
+        if (model.constant_bands != null){
+          for (var i = 0; i < model.constant_bands.length; i++) {
             var band = model.constant_bands[i];
             var data = {
-              "type": "constband",
-              "elements": []
+              "type" : "constband",
+              "elements" : []
             };
-            if(band.color != null){
-              data.color_opacity = parseInt(band.color.substr(1,2), 16)/255;
+            if (band.color != null) {
+              data.color_opacity = parseInt(band.color.substr(1, 2), 16) / 255;
               data.color = "#" + band.color.substr(3);
             }
-            if(band.x != null){
-              var ele = {"type": "x", "x1": band.x[0], "x2": band.x[1]};
-            }else if(band.y != null){
-              var ele = {"type": "y"};
+            if (band.x != null) {
+              var ele = {
+                "type" : "x",
+                "x1" : band.x[0],
+                "x2" : band.x[1]
+              };
+            } else if (band.y != null) {
+              var ele = {
+                "type" : "y"
+              };
               var y1 = band.y[0], y2 = band.y[1];
-              ele.y1 = y1; ele.y2 = y2;
-              if(logy){
+              ele.y1 = y1;
+              ele.y2 = y2;
+              if (logy) {
                 ele._y1 = y1;
                 ele.y1 = Math.log(y1) / Math.log(logyb);
                 ele._y2 = y2;
@@ -336,20 +344,20 @@
             newmodel.data.push(data);
           }
         }
-        if(model.texts!=null){
-          for(var i=0; i<model.texts.length; i++){
+        if (model.texts != null) {
+          for (var i = 0; i < model.texts.length; i++) {
             var mtext = model.texts[i];
             var data = {
-              "type": "text",
-              "color": mtext.color != null ? mtext.color : "black",
-              "elements": []
+              "type" : "text",
+              "color" : mtext.color != null ? mtext.color : "black",
+              "elements" : []
             };
             var ele = {
-              "x": mtext.x,
-              "y": mtext.y,
-              "v": mtext.text
+              "x" : mtext.x,
+              "y" : mtext.y,
+              "v" : mtext.text
             };
-            if(logy){
+            if (logy) {
               ele._y = ele.y;
               ele.y = Math.log(ele.y) / Math.log(logyb);
             }
@@ -360,7 +368,7 @@
         
         if (newmodel.margin == null) {
           newmodel.margin = {
-            bottom : onzeroY ? 0:5,
+            bottom : onzeroY ? 0 : 5,
             top : 5,
             left : 5,
             right : 5

@@ -32,7 +32,7 @@
   module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager) {
     return {
       restrict: 'E',
-      template: '<div class="bkcell" index="$index">' +
+      template: '<div ng-class="cellmodel.type" class="bkcell" index="$index">' +
           '<div ng-if="cellmodel.input.hidden && cellmodel.type==\'code\'" class="mini-cell-stats advanced-hide">'+
           '{{cellmodel.evaluator}} &nbsp;'+
           '({{cellmodel.lineCount}} lines)'+

@@ -1,5 +1,5 @@
 (function() {'use strict';
-	var retfunc = function(bkUtils, lineplotConverter) {
+	var retfunc = function(bkUtils, plotConverter) {
 		return {
 			standardizeModel : function(model) {
 				model = model.result; 
@@ -20,7 +20,7 @@
 				var plots = model.plots;
 				for(var i=0; i<plots.length;i++){
 					var plotmodel = plots[i];
-					var newplotmodel = lineplotConverter.standardizeModel(plotmodel);
+					var newplotmodel = plotConverter.standardizeModel(plotmodel);
 					
 					if(i<plots.length-1) {	// turn off x coordinate labels
 						newplotmodel.xLabel = null;
@@ -36,5 +36,5 @@
 			}
 		};
 	};
-	beaker.bkoFactory('combplotConverter', ["bkUtils", "lineplotConverter", retfunc]);
+	beaker.bkoFactory('combplotConverter', ["bkUtils", "plotConverter", retfunc]);
 })(); 

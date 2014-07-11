@@ -18,12 +18,12 @@
  * ????
  */
 (function() {'use strict';
-	var retfunc = function(lineplotUtils, combplotConverter, bkCellMenuPluginManager) {
+	var retfunc = function(plotUtils, combplotConverter, bkCellMenuPluginManager) {
 		return {
 			template : "<div id='combplotContainer' class='combplot-renderdiv'>" + 
-								"<bk-output-display type='LinePlot' ng-repeat='m in models' model='m'></bk-output-display>" +
-								 //"<bk-output-display type='LinePlot' model='model1'></bk-output-display>" + 
-								 //"<bk-output-display type='LinePlot' model='model2'></bk-output-display>" + 
+								"<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
+								 //"<bk-output-display type='Plot' model='model1'></bk-output-display>" + 
+								 //"<bk-output-display type='Plot' model='model2'></bk-output-display>" + 
 								 "</div>",
 			controller : function($scope) {
 				var model = $scope.model.getCellModel();
@@ -38,7 +38,7 @@
 					
 					for (var i = 0; i < numPlots; i++) {
 						var data = model.plots[i].data;
-						var ret = lineplotUtils.getDataRange(data);
+						var ret = plotUtils.getDataRange(data);
 						xl = Math.min(xl, ret.datarange.xl);
 						xr = Math.max(xr, ret.datarange.xr);
 						var plotmodel = model.plots[i];
@@ -128,5 +128,5 @@
 			}
 		};
 	};
-	beaker.bkoDirective("CombinedPlot", ["lineplotUtils", "combplotConverter", "bkCellMenuPluginManager", retfunc]);
+	beaker.bkoDirective("CombinedPlot", ["plotUtils", "combplotConverter", "bkCellMenuPluginManager", retfunc]);
 })(); 

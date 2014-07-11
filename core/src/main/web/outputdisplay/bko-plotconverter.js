@@ -46,7 +46,7 @@
 					return model;
 				} else if(model.version == null){
 					var newmodel = {
-						type : "LinePlot",
+						type : "plot",
 						title : model.chart_title ? model.chart_title : model.title,
 						xLabel : model.domain_axis_label ? model.domain_axis_label : model.xLabel,
 						yLabel : model.y_label ? model.y_label : model.yLabel, // ? range_axis_label ?
@@ -357,5 +357,5 @@
 			}
 		};
 	};
-	beaker.bkoFactory('lineplotConverter', ["bkUtils", retfunc]);
+	beaker.bkoFactory('plotConverter', ["bkUtils", retfunc]);
 })(); 

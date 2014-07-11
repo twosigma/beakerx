@@ -55,7 +55,7 @@
         return p.x < 0 || p.x > W || p.y < 0 || p.y > H;
       },
       standardizeLineProp : function(id, data){
-        var prop = {"id": id, "class": "lineplot-line", "stroke": data.color, "stroke-width": data.width==null?2:data.width};
+        var prop = {"id": id, "class": "plot-line", "stroke": data.color, "stroke-width": data.width==null?2:data.width};
         if (data.style==="dot") {
           _.extend(prop, {"stroke_dasharray": "2,2"});
         }else if (data.style==="dash") {
@@ -374,5 +374,5 @@
       }
     };
   };
-  beaker.bkoFactory('lineplotUtils', ["bkUtils", retfunc]);
+  beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);
 })();

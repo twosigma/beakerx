@@ -1,57 +1,57 @@
-.lineplot-renderdiv {
+.plot-renderdiv {
 	background-color: #FEFEFE;
 	border: 1px solid #EEEEEE;
-	-webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset? */
+	-webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset */
 	-moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
 	/*width: 1200px;
 	 height: 350px;*/
 }
-.lineplot-line {
+.plot-line {
 	fill: none;
 }
-.lineplot-line, 
-.lineplot-const,
-.lineplot-coord,
-.lineplot-coord-base,
-.lineplot-bar, 
-.lineplot-river, 
+.plot-line, 
+.plot-const,
+.plot-coord,
+.plot-coord-base,
+.plot-bar, 
+.plot-river, 
 .line-plot-stem {
 	stroke-width: 1;
 	pointer-events: none;
 }
-.lineplot-coord {
+.plot-coord {
 	stroke: #111111;
 	stroke-dasharray: 1, 1;
 	stroke-width: 1;
 	opacity: .5;
 }
 
-.lineplot-coord-base {
+.plot-coord-base {
 	stroke: #333333;
 	stroke-width: 3;
 	opacity: .75;
 }
 
-.lineplot-label, 
-.lineplot-test, 
-.lineplot-xylabel, 
-.lineplot-cursorlabel, 
-.lineplot-constlabel {
+.plot-label, 
+.plot-test, 
+.plot-xylabel, 
+.plot-cursorlabel, 
+.plot-constlabel {
 	font-family: verdana, helvetica, arial, sans-serif;
 }
 
-.lineplot-label {
+.plot-label {
 	font-size: 0.75em;
 }
-.lineplot-text {
+.plot-text {
 	font-size: 1.0em;
 }
-.lineplot-xylabel {
+.plot-xylabel {
 	font-size: 0.9em;
 	text-anchor: middle;
 }
-.lineplot-cursorlabel,
-.lineplot-constlabel {
+.plot-cursorlabel,
+.plot-constlabel {
 	font-size: 0.75em;
 	font-weight: bold;
 	color: white;
@@ -63,43 +63,43 @@
 	border-radius: 5px;
 }
 
-.lineplot-pointrect,
-.lineplot-pointcircle {
+.plot-pointrect,
+.plot-pointcircle {
 
 }
 
-.lineplot-locatebox {
+.plot-locatebox {
 	fill: #003366;
 	opacity: 0.2;
 }
 
-.lineplot-truncatebox {
+.plot-truncatebox {
 	fill: #FEFEFE;
 }
-.lineplot-cursor {
+.plot-cursor {
 	pointer-events: none;
 	stroke-width: 2.0;
 }
 
-.lineplot-title {
+.plot-title {
 	text-align: center;
 	width: 1200px;
 	font-weight: bold;
 	font-size: 1.2em;
 	margin: 5px;
 }
-.lineplot-legendbox {
+.plot-legendbox {
 	width: 12px;
 	height: 12px;
 	margin: 0px 5px;
 	display: inline-block;
 }
-.lineplot-legendcheckbox {
+.plot-legendcheckbox {
 	margin: 0px !important;
 	margin-right: 5px;
 }
 
-.lineplot-legendcontainer {
+.plot-legendcontainer {
 	stroke: gray;
 	fill: #FEFEFE;
 	position: absolute;
@@ -111,14 +111,14 @@
 	-moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
 	background-color: white;
 }
-.lineplot-coverbox {
+.plot-coverbox {
 	fill: #FEFEFE;
 }
-.lineplot-dot {
+.plot-dot {
 	fill: white;
 	stroke-width: 2;
 }
-.lineplot-tooltip {
+.plot-tooltip {
 	font-size: 0.9em;
 	font-weight: bold;
 	position: absolute;

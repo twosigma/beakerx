@@ -18,10 +18,10 @@
  * This is the output display component for displaying xyChart
  */
 ( function() {'use strict';
-	var retfunc = function(lineplotUtils, lineplotConverter, bkCellMenuPluginManager) {
+	var retfunc = function(plotUtils, plotConverter, bkCellMenuPluginManager) {
 		return {
-			template : "<div id='plotitle' class='lineplot-title'></div>" 
-							 + "<div id='lineplotContainer' class='lineplot-renderdiv'>"  //oncontextmenu='return false;'
+			template : "<div id='plotitle' class='plot-title'></div>" 
+							 + "<div id='plotContainer' class='plot-renderdiv'>"  //oncontextmenu='return false;'
 							 + "<svg>" 
 							 + "<g id='maing'> <g id='coordg'></g>"
 							 + "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" 
@@ -35,7 +35,7 @@
 			},
 			link : function(scope, element, attrs) {
 				// rendering code
-				element.find("#lineplotContainer").resizable({
+				element.find("#plotContainer").resizable({
 					maxWidth : element.width(), // no wider than the width of the cell
 					minWidth : 450,
 					minHeight: 150,
@@ -60,8 +60,8 @@
 					element.find("#plotitle").text(model.title);
 					element.find(".ui-icon-gripsmall-diagonal-se")
 						.removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
-					scope.container = d3.select(element[0]).select("#lineplotContainer"); // hook container to use jquery interaction
-					scope.jqcontainer = element.find("#lineplotContainer");
+					scope.container = d3.select(element[0]).select("#plotContainer"); // hook container to use jquery interaction
+					scope.jqcontainer = element.find("#plotContainer");
 					scope.jqcontainer.css(model.initSize);
 					//if (model.width != null) scope.jqcontainer.css("width", model.width + "px");
 					//if (model.height != null) scope.jqcontainer.css("height", model.height + "px");
@@ -143,7 +143,7 @@
 				scope.initRange = function() {
 					var data = scope.data, model = scope.stdmodel;
 					
-					var ret = lineplotUtils.getDataRange(data);
+					var ret = plotUtils.getDataRange(data);
 					scope.range = {};
 					_.extend(scope.range, ret.datarange);
 					scope.visibleLines = ret.visibleData;
@@ -254,7 +254,7 @@
 						var x = scope.xCoords[i];
 						scope.rpipeCoords.push({
 							"id" : "coord_x_" + i,
-							"class" : "lineplot-coord",
+							"class" : "plot-coord",
 							"x1" : mapX(x),
 							"y1" : mapY(focus.yl),
 							"x2" : mapX(x),
@@ -265,7 +265,7 @@
 						var y = scope.yCoords[i];
 						scope.rpipeCoords.push({
 							"id" : "coord_y_" + i,
-							"class" : "lineplot-coord",
+							"class" : "plot-coord",
 							"x1" : mapX(focus.xl),
 							"y1" : mapY(y),
 							"x2" : mapX(focus.xr),
@@ -274,7 +274,7 @@
 					}
 					scope.rpipeCoords.push({
 						"id" : "coord_x_base",
-						"class" : "lineplot-coord-base",
+						"class" : "plot-coord-base",
 						"x1" : mapX(focus.xl),
 						"y1" : mapY(focus.yl),
 						"x2" : mapX(focus.xr),
@@ -282,7 +282,7 @@
 					});
 					scope.rpipeCoords.push({
 						"id" : "coord_y_base",
-						"class" : "lineplot-coord-base",
+						"class" : "plot-coord-base",
 						"x1" : mapX(focus.xl),
 						"y1" : mapY(focus.yl),
 						"x2" : mapX(focus.xl),
@@ -303,8 +303,8 @@
 							continue;
 						}
 
-						var l = lineplotUtils.upper_bound(eles, "x", focus.xl);
-						var r = lineplotUtils.upper_bound(eles, "x", focus.xr) + 1;
+						var l = plotUtils.upper_bound(eles, "x", focus.xl);
+						var r = plotUtils.upper_bound(eles, "x", focus.xr) + 1;
 						// truncate out-of-sight segment on x-axis
 						l = Math.max(l, 0);
 						r = Math.min(r, eles.length - 1);
@@ -350,7 +350,7 @@
 							}
 							scope.rpipeBars.push({
 								"id" : "bar_" + i,
-								"class" : "lineplot-bar",
+								"class" : "plot-bar",
 								"width" : sw,
 								"fill" : data[i].color,
 								"fill_opacity": data[i].fill_opacity,
@@ -383,7 +383,7 @@
 							}
 							scope.rpipeRivers.push({
 								"id" : "river_" + i,
-								"class" : "lineplot-river",
+								"class" : "plot-river",
 								"fill" : data[i].color,
 								"fill_opacity": data[i].color_opacity,
 								"stroke": data[i].stroke,
@@ -436,7 +436,7 @@
 							}
 							scope.rpipeStems.push({
 								"id" : "stem_" + i,
-								"class" : "lineplot-stem",
+								"class" : "plot-stem",
 								"stroke" : data[i].color,
 								"stroke_opacity": data[i].color_opacity,
 								"stroke_width": data[i].width,
@@ -469,7 +469,7 @@
 							var pipe = data[i].style === "rect" ? scope.rpipePointRects : scope.rpipePointCircles;
 							pipe.push({
 									"id" : "point_" + i,
-									"class" : "lineplot-point"+data[i].style,
+									"class" : "plot-point"+data[i].style,
 									"fill" : data[i].color,
 									"fill_opacity": data[i].color_opacity,
 									"stroke": data[i].stroke,
@@ -497,9 +497,9 @@
 									});
 
 									scope.jqcontainer.find("#" + id).remove();
-									var label = $("<div id=" + id + " class='lineplot-constlabel'></div>")
+									var label = $("<div id=" + id + " class='plot-constlabel'></div>")
 										.appendTo(scope.jqcontainer)
-										.text(scope.stdmodel.xType === "time" ? lineplotUtils.formatDate(scope.xintv, p.x) : parseInt(p.x));
+										.text(scope.stdmodel.xType === "time" ? plotUtils.formatDate(scope.xintv, p.x) : parseInt(p.x));
 									var w = label.outerWidth(), h = label.outerHeight();
 									var p = {
 										"x" : x - w / 2,
@@ -525,7 +525,7 @@
 									});
 									scope.jqcontainer.find("#" + id).remove();
 									var _y = p._y!=null? p._y : p.y;
-									var label = $("<div id=" + id + " class='lineplot-constlabel'></div>")
+									var label = $("<div id=" + id + " class='plot-constlabel'></div>")
 										.appendTo(scope.jqcontainer).text(_y.toFixed(0));
 									var w = label.outerWidth(), h = label.outerHeight();
 									var p = {
@@ -541,7 +541,7 @@
 							}
 							scope.rpipeSegs.push({
 								"id" : "const_" + i,
-								"class" : "lineplot-const",
+								"class" : "plot-const",
 								"stroke" : data[i].color,
 								"stroke-opacity": data[i].color_opacity,
 								"stroke-width" : data[i].width,
@@ -584,7 +584,7 @@
 							}
 							scope.rpipeRects.push({
 								"id" : "const_" + i,
-								"class" : "lineplot-const",
+								"class" : "plot-const",
 								"fill" : data[i].color,
 								"fill_opacity": data[i].color_opacity,
 								"stroke": data[i].stroke,
@@ -604,7 +604,7 @@
 
 								scope.rpipeTexts.push({
 									"id" : "text_" + i + "_" + j,
-									"class" : "lineplot-text",
+									"class" : "plot-text",
 									"x" : 0,
 									"y" : 0,
 									"transform" : tf,
@@ -623,7 +623,7 @@
 							}
 							var line = {
 								"id": "line_"+i,
-								"class": "lineplot-line",
+								"class": "plot-line",
 								"stroke": data[i].color,
 								"stroke_opacity": data[i].color_opacity,
 								"stroke_width": data[i].width,
@@ -645,12 +645,12 @@
 						var eles = data[i].elements;
 						var reles = [];
 						for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-							//var p = lineplotUtils.data2scrPoint(scope, eles[j]);
+							//var p = plotUtils.data2scrPoint(scope, eles[j]);
 							var p = {
 								"x" : mapX(eles[j].x),
 								"y" : mapY(eles[j].y)
 							};
-							if (lineplotUtils.outsideScr(scope, p))
+							if (plotUtils.outsideScr(scope, p))
 								continue;
 							var id = "dot_" + eles[j].uniqid;
 							reles.push({
@@ -666,7 +666,7 @@
 						}
 						var wrapper = {
 							"id" : "linedots_" + i,
-							"class" : "lineplot-dot",
+							"class" : "plot-dot",
 							"stroke" : data[i].color==null? "gray": data[i].color,
 							"fill" : "white",
 							"elements" : reles
@@ -678,7 +678,7 @@
 					var model = scope.stdmodel;
 					if (model.use_tool_tip != true) return;
 					if (id == null) {
-						var sel = scope.svg.selectAll(".lineplot-dot circle");
+						var sel = scope.svg.selectAll(".plot-dot circle");
 					} else {
 						var sel = scope.svg.selectAll("#" + id);
 					}
@@ -698,7 +698,7 @@
 						d.opacity = 1;
 						scope.tips[id] = d;
 						scope.svg.selectAll("#" + id).attr("opacity", 1);
-						//lineplotUtils.replotSingleCircle(scope, d);
+						//plotUtils.replotSingleCircle(scope, d);
 						//scope.prepareInteraction(d.id);
 					} else {
 						delete scope.tips[id];
@@ -716,7 +716,7 @@
 						return;
 					}
 					$("<div></div>").appendTo(scope.jqcontainer).attr("id", "tip_mouse")
-						.attr("class", "lineplot-tooltip")
+						.attr("class", "plot-tooltip")
 						.css("left", d.cx + scope.fonts.tooltipWidth + "px")
 						.css("top", d.cy + "px")
 						.css("border-color", scope.data[d.lineid].color==null? "gray" : scope.data[d.lineid].color)
@@ -734,7 +734,7 @@
 							"x" : scope.data2scrX(d.point.x),
 							"y" : scope.data2scrY(d.point.y)
 						};
-						if (lineplotUtils.outsideScr(scope, p)) return;
+						if (plotUtils.outsideScr(scope, p)) return;
 						d.cx = p.x + scope.fonts.tooltipWidth;
 						d.cy = p.y;
 						var tip = scope.tips[d.id];
@@ -742,7 +742,7 @@
 						if (tipdiv.length == 0) {
 							tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
 							.attr("id", "tip_" + d.id)
-							.attr("class", "lineplot-tooltip")
+							.attr("class", "plot-tooltip")
 							.css("left", d.cx + "px").css("top", d.cy + "px")
 							.css("border-color", scope.data[d.lineid].color)
 							.append(d.value).mousedown(function(e) {
@@ -776,8 +776,8 @@
 							};
 							scope.rpipeTexts.push({
 								"id" : "label_x_" + i,
-								"class" : "lineplot-label",
-								"text" : model.xType == "time" ? lineplotUtils.formatDate(scope.xintv, x) : x,
+								"class" : "plot-label",
+								"text" : model.xType == "time" ? plotUtils.formatDate(scope.xintv, x) : x,
 								"x" : p.x,
 								"y" : p.y,
 								"text-anchor" : "middle",
@@ -793,7 +793,7 @@
 						};
 						scope.rpipeTexts.push({
 							"id" : "label_y_" + i,
-							"class" : "lineplot-label",
+							"class" : "plot-label",
 							"text" : ys.type == "log" ? parseFloat(Math.pow(ys.base, y)).toFixed(2) : y,
 							"x" : p.x,
 							"y" : p.y,
@@ -805,7 +805,7 @@
 					if (model.xLabel != null) {
 						scope.rpipeTexts.push({
 							"id" : "xlabel",
-							"class" : "lineplot-xylabel",
+							"class" : "plot-xylabel",
 							"text" : model.xLabel,
 							"x" : lMargin + (scope.jqsvg.width() - lMargin) / 2,
 							"y" : scope.jqsvg.height() - scope.fonts.labelHeight
@@ -815,7 +815,7 @@
 						var x = scope.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
 						scope.rpipeTexts.push({
 							"id" : "ylabel",
-							"class" : "lineplot-xylabel",
+							"class" : "plot-xylabel",
 							"text" : model.yLabel,
 							"x" : x,
 							"y" : y,
@@ -828,8 +828,8 @@
 					var W = scope.jqsvg.width(), H = scope.jqsvg.height();
 					var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
 					if (x < lMargin || y > H - bMargin) {
-						scope.svg.selectAll(".lineplot-cursor").remove();
-						scope.jqcontainer.find(".lineplot-cursorlabel").remove();
+						scope.svg.selectAll(".plot-cursor").remove();
+						scope.jqcontainer.find(".plot-cursorlabel").remove();
 						return;
 					}
 					var model = scope.stdmodel;
@@ -838,15 +838,15 @@
 						var opt = model.xCursor;
 						scope.svg.selectAll("#cursor_x").data([{}]).enter().append("line")
 							.attr("id", "cursor_x")
-							.attr("class", "lineplot-cursor")
+							.attr("class", "plot-cursor")
 							.attr("stroke", opt.color != null ? opt.color : "black");
 						scope.svg.select("#cursor_x")
 							.attr("x1", x).attr("y1", 0).attr("x2", x).attr("y2", H - bMargin);
 
 						scope.jqcontainer.find("#cursor_xlabel").remove();
-						var label = $("<div id='cursor_xlabel' class='lineplot-cursorlabel'></div>")
+						var label = $("<div id='cursor_xlabel' class='plot-cursorlabel'></div>")
 							.appendTo(scope.jqcontainer)
-							.text(scope.model.xType == "time" ? lineplotUtils.formatDate(scope.xintv, mapX(x)) : parseInt(mapX(x)));
+							.text(scope.model.xType == "time" ? plotUtils.formatDate(scope.xintv, mapX(x)) : parseInt(mapX(x)));
 						var w = label.outerWidth(), h = label.outerHeight();
 						var p = {
 							"x" : x - w / 2,
@@ -862,7 +862,7 @@
 						var opt = model.yCursor;
 						scope.svg.selectAll("#cursor_y").data([{}]).enter().append("line")
 							.attr("id", "cursor_y")
-							.attr("class", "lineplot-cursor")
+							.attr("class", "plot-cursor")
 							.attr("stroke", opt.color != null ? opt.color : "black");
 						scope.svg.select("#cursor_y")
 							.attr("x1", lMargin)
@@ -871,7 +871,7 @@
 							.attr("y2", y);
 
 						scope.jqcontainer.find("#cursor_ylabel").remove();
-						var label = $("<div id='cursor_ylabel' class='lineplot-cursorlabel'></div>")
+						var label = $("<div id='cursor_ylabel' class='plot-cursorlabel'></div>")
 							.appendTo(scope.jqcontainer).text(mapY(y).toFixed(0));
 						var w = label.outerWidth(), h = label.outerHeight();
 						var p = {
@@ -897,7 +897,7 @@
 					scope.legendDone = true;
 					var legend = $("<div></div>").appendTo(scope.jqcontainer)
 						.attr("id", "legends")
-						.attr("class", "lineplot-legendcontainer")
+						.attr("class", "plot-legendcontainer")
 						.css({
 							"left" : scope.jqcontainer.width() + 10 + "px",
 							"top" : "0px"
@@ -908,18 +908,18 @@
 						var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
 						$("<input type='checkbox'></input>").appendTo(unit)
 							.attr("id", "legendcheck_all")
-							.attr("class", "lineplot-legendcheckbox")
+							.attr("class", "plot-legendcheckbox")
 							.prop("checked", true)
 							.click(function(e) {
 								return scope.toggleLine(e);
 							});
 						$("<span></span>").appendTo(unit)
 							.attr("id", "legendbox_all")
-							.attr("class", "lineplot-legendbox")
+							.attr("class", "plot-legendbox")
 							.css("background-color", "none");
 						$("<span></span>").appendTo(unit)
 							.attr("id", "legendtext_all")
-							.attr("class", "lineplot-label")
+							.attr("class", "plot-label")
 							.text("All");
 					}
 
@@ -929,18 +929,18 @@
 						var unit = $("<div></div>").appendTo(legend).attr("id", "legend_" + i);
 						$("<input type='checkbox'></input>").appendTo(unit)
 							.attr("id", "legendcheck_" + i)
-							.attr("class", "lineplot-legendcheckbox")
+							.attr("class", "plot-legendcheckbox")
 							.prop("checked", data[i].shown)
 							.click(function(e) {
 								return scope.toggleLine(e);
 							});
 						$("<span></span>").appendTo(unit)
 							.attr("id", "legendbox_" + i)
-							.attr("class", "lineplot-legendbox")
+							.attr("class", "plot-legendbox")
 							.css("background-color", data[i].color == null? "none" : data[i].color);
 						$("<span></span>").appendTo(unit)
 							.attr("id", "legendtext_" + i)
-							.attr("class", "lineplot-label")
+							.attr("class", "plot-label")
 							.text(data[i].legend);
 					}
 				};
@@ -964,17 +964,17 @@
 					scope.update();
 				};
 				scope.renderCoverBox = function() {
-					lineplotUtils.replotSingleRect(scope.labelg, {
+					plotUtils.replotSingleRect(scope.labelg, {
 						"id" : "coverboxX",
-						"class" : "lineplot-coverbox",
+						"class" : "plot-coverbox",
 						"x" : 0,
 						"y" : 0,
 						"width" : scope.layout.leftTextWidth,
 						"height" : scope.jqsvg.height()
 					});
-					lineplotUtils.replotSingleRect(scope.labelg, {
+					plotUtils.replotSingleRect(scope.labelg, {
 						"id" : "coverboxY",
-						"class" : "lineplot-coverbox",
+						"class" : "plot-coverbox",
 						"x" : 0,
 						"y" : scope.jqsvg.height() - scope.layout.bottomTextHeight,
 						"width" : scope.jqsvg.width(),
@@ -987,7 +987,7 @@
 						var box = scope.locateBox;
 						scope.svg.selectAll("#locatebox").data([{}]).enter().append("rect")
 							.attr("id", "locatebox")
-							.attr("class", "lineplot-locatebox")
+							.attr("class", "plot-locatebox")
 							.attr("x", box.x)
 							.attr("y", box.y)
 							.attr("width", box.w)
@@ -1179,10 +1179,10 @@
 						"x" : scope.scr2dataXp(box.x + box.w),
 						"y" : scope.scr2dataYp(box.y + box.h)
 					};
-					p1.x = lineplotUtils.fixPercent(p1.x);
-					p1.y = lineplotUtils.fixPercent(p1.y);
-					p2.x = lineplotUtils.fixPercent(p2.x);
-					p2.y = lineplotUtils.fixPercent(p2.y);
+					p1.x = plotUtils.fixPercent(p1.x);
+					p1.y = plotUtils.fixPercent(p1.y);
+					p2.x = plotUtils.fixPercent(p2.x);
+					p2.y = plotUtils.fixPercent(p2.y);
 					var focus = scope.focus, ofocus = {};
 					_.extend(ofocus, scope.focus);
 					focus.xl = ofocus.xl + ofocus.xspan * p1.x;
@@ -1194,10 +1194,10 @@
 					scope.calcMapping(true);
 				};
 				scope.resetSvg = function() {
-					var svg = d3.select(element[0]).select("#lineplotContainer svg");
+					var svg = d3.select(element[0]).select("#plotContainer svg");
 					scope.svg = svg;
 					scope.jqsvg = element.find("svg");
-					scope.jqcontainer.find(".lineplot-constlabel").remove();
+					scope.jqcontainer.find(".plot-constlabel").remove();
 
 					scope.rpipeLines = [];
 					scope.rpipeCoords = [];
@@ -1228,8 +1228,8 @@
 				};
 
 				scope.mouseleaveClear = function() {
-					scope.svg.selectAll(".lineplot-cursor").remove();
-					scope.jqcontainer.find(".lineplot-cursorlabel").remove();
+					scope.svg.selectAll(".plot-cursor").remove();
+					scope.jqcontainer.find(".plot-cursorlabel").remove();
 				};
 				scope.calcMapping = function(emitFocusUpdate) {// called every time after the focus is changed
 					var focus = scope.focus, range = scope.range;
@@ -1255,7 +1255,7 @@
 
 					var model = scope.model.getCellModel();
 
-					scope.stdmodel = lineplotConverter.standardizeModel(model);
+					scope.stdmodel = plotConverter.standardizeModel(model);
 					scope.data = scope.stdmodel.data;
 				};
 				scope.init = function() {
@@ -1292,22 +1292,22 @@
 					scope.renderData();
 					scope.renderDots();
 					scope.renderLabels();
-					lineplotUtils.plotCoords(scope);
-					lineplotUtils.plotRivers(scope);
-					lineplotUtils.plotBars(scope);
-					lineplotUtils.plotStems(scope);
-					lineplotUtils.plotLines(scope);
-					lineplotUtils.plotDots(scope);
-					lineplotUtils.plotPointCircles(scope);
-					lineplotUtils.plotPointRects(scope);
-					lineplotUtils.plotSegs(scope);
-					lineplotUtils.plotRects(scope);
+					plotUtils.plotCoords(scope);
+					plotUtils.plotRivers(scope);
+					plotUtils.plotBars(scope);
+					plotUtils.plotStems(scope);
+					plotUtils.plotLines(scope);
+					plotUtils.plotDots(scope);
+					plotUtils.plotPointCircles(scope);
+					plotUtils.plotPointRects(scope);
+					plotUtils.plotSegs(scope);
+					plotUtils.plotRects(scope);
 
 					scope.renderTips();
 					scope.renderLocateBox(); // redraw
 					scope.renderLegends(); // redraw
 					scope.renderCoverBox(); // redraw
-					lineplotUtils.plotTexts(scope); // redraw
+					plotUtils.plotTexts(scope); // redraw
 
 					scope.prepareInteraction();
 				};
@@ -1316,5 +1316,5 @@
 			}
 		};
 	};
-	beaker.bkoDirective("LinePlot", ["lineplotUtils", "lineplotConverter", "bkCellMenuPluginManager", retfunc]);
+	beaker.bkoDirective("Plot", ["plotUtils", "plotConverter", "bkCellMenuPluginManager", retfunc]);
 })();

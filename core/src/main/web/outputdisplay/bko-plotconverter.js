@@ -374,4 +374,4 @@
 		};
 	};
 	beaker.bkoFactory('plotConverter', ["bkUtils", retfunc]);
-})(); 
+})();

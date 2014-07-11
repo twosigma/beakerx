@@ -131,4 +131,4 @@
 		};
 	};
 	beaker.bkoDirective("CombinedPlot", ["plotUtils", "combplotConverter", "bkCellMenuPluginManager", retfunc]);
-})(); 
+})();

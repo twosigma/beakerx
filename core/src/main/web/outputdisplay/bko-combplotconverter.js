@@ -54,4 +54,4 @@
 		};
 	};
 	beaker.bkoFactory('combplotConverter', ["bkUtils", "plotConverter", retfunc]);
-})(); 
+})();

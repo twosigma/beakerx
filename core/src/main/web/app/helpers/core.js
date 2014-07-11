@@ -204,7 +204,7 @@
               result = homeDir + "/"
             } else if (_.string.startsWith(result, '~/')) {
               result = result.replace('~', homeDir);
-            } else if (!_.string.startsWith(result, '/')) {
+            } else if (!_.string.startsWith(result, '/') && !result.match(/^\w+:\\/)) {
               result = pwd + "/" + result;
             }
             if (!_.string.endsWith(result, '.bkr')

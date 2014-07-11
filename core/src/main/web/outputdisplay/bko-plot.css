@@ -15,15 +15,13 @@
 */
 
 .plot-renderdiv {
-	background-color: #FEFEFE;
-	border: 1px solid #EEEEEE;
-	-webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset */
-	-moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-	/*width: 1200px;
-	 height: 350px;*/
+  background-color: #FEFEFE;
+  border: 1px solid #EEEEEE;
+  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset */
+  -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
 }
 .plot-line {
-	fill: none;
+  fill: none;
 }
 .plot-line, 
 .plot-const,
@@ -32,20 +30,20 @@
 .plot-bar, 
 .plot-river, 
 .line-plot-stem {
-	stroke-width: 1;
-	pointer-events: none;
+  stroke-width: 1;
+  pointer-events: none;
 }
 .plot-coord {
-	stroke: #111111;
-	stroke-dasharray: 1, 1;
-	stroke-width: 1;
-	opacity: .5;
+  stroke: #111111;
+  stroke-dasharray: 1, 1;
+  stroke-width: 1;
+  opacity: .5;
 }
 
 .plot-coord-base {
-	stroke: #333333;
-	stroke-width: 3;
-	opacity: .75;
+  stroke: #333333;
+  stroke-width: 3;
+  opacity: .75;
 }
 
 .plot-label, 
@@ -53,30 +51,30 @@
 .plot-xylabel, 
 .plot-cursorlabel, 
 .plot-constlabel {
-	font-family: verdana, helvetica, arial, sans-serif;
+  font-family: verdana, helvetica, arial, sans-serif;
 }
 
 .plot-label {
-	font-size: 0.75em;
+  font-size: 0.75em;
 }
 .plot-text {
-	font-size: 1.0em;
+  font-size: 1.0em;
 }
 .plot-xylabel {
-	font-size: 0.9em;
-	text-anchor: middle;
+  font-size: 0.9em;
+  text-anchor: middle;
 }
 .plot-cursorlabel,
 .plot-constlabel {
-	font-size: 0.75em;
-	font-weight: bold;
-	color: white;
-	padding: 1px 5px;
-	pointer-events: none;
-	position: absolute;
-	width: auto;
-	height: auto;
-	border-radius: 5px;
+  font-size: 0.75em;
+  font-weight: bold;
+  color: white;
+  padding: 1px 5px;
+  pointer-events: none;
+  position: absolute;
+  width: auto;
+  height: auto;
+  border-radius: 5px;
 }
 
 .plot-pointrect,
@@ -85,63 +83,63 @@
 }
 
 .plot-locatebox {
-	fill: #003366;
-	opacity: 0.2;
+  fill: #003366;
+  opacity: 0.2;
 }
 
 .plot-truncatebox {
-	fill: #FEFEFE;
+  fill: #FEFEFE;
 }
 .plot-cursor {
-	pointer-events: none;
-	stroke-width: 2.0;
+  pointer-events: none;
+  stroke-width: 2.0;
 }
 
 .plot-title {
-	text-align: center;
-	width: 1200px;
-	font-weight: bold;
-	font-size: 1.2em;
-	margin: 5px;
+  text-align: center;
+  width: 1200px;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 5px;
 }
 .plot-legendbox {
-	width: 12px;
-	height: 12px;
-	margin: 0px 5px;
-	display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 0px 5px;
+  display: inline-block;
 }
 .plot-legendcheckbox {
-	margin: 0px !important;
-	margin-right: 5px;
+  margin: 0px !important;
+  margin-right: 5px;
 }
 
 .plot-legendcontainer {
-	stroke: gray;
-	fill: #FEFEFE;
-	position: absolute;
-	padding-left: 10px;
-	width: 150px;
-	height: auto;
-	/*border: 1px solid #EEEEEE; */
-	-webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset? */
-	-moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-	background-color: white;
+  stroke: gray;
+  fill: #FEFEFE;
+  position: absolute;
+  padding-left: 10px;
+  width: 150px;
+  height: auto;
+  /*border: 1px solid #EEEEEE; */
+  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset */
+  -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+  background-color: white;
 }
 .plot-coverbox {
-	fill: #FEFEFE;
+  fill: #FEFEFE;
 }
 .plot-dot {
-	fill: white;
-	stroke-width: 2;
+  fill: white;
+  stroke-width: 2;
 }
 .plot-tooltip {
-	font-size: 0.9em;
-	font-weight: bold;
-	position: absolute;
-	width: auto;
-	height: auto;
-	border: 2px solid;
-	background-color: white;
-	border-radius: 5px;
-	padding: 1em;
+  font-size: 0.9em;
+  font-weight: bold;
+  position: absolute;
+  width: auto;
+  height: auto;
+  border: 2px solid;
+  background-color: white;
+  border-radius: 5px;
+  padding: 1em;
 }

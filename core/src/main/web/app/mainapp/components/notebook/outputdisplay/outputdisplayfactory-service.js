@@ -36,10 +36,10 @@
         }
       },
       "Warning": {
-        template: "<pre class='out_warning'>{{model.getCellModel().message}}</pre>"
+        template: "<div class='outline warning'></div> <pre class='out_warning'>{{model.getCellModel().message}}</pre>"
       },
       "Error": {
-        template: "<pre class='out_error' ng-hide='expanded'>" +
+        template: "<div class='outline error'></div><pre class='out_error' ng-hide='expanded'>" +
             "<span></span>" + // first span
             "</pre>" +
             "<pre class='out_error' ng-show='expanded'>" +

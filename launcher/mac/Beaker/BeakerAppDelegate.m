@@ -26,7 +26,23 @@
     setenv("JAVA_HOME", [javaPath UTF8String], TRUE);
     self.serverTask = [[NSTask alloc] init];
     [self.serverTask setLaunchPath:fullPath];
+    NSPipe *pipe = [NSPipe pipe];
+    [self.serverTask setStandardOutput:pipe];
+    [self.serverTask setStandardError:pipe];
+    [[pipe fileHandleForReading] waitForDataInBackgroundAndNotify];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(logNotification:)
+                                                 name:NSFileHandleDataAvailableNotification
+                                               object:nil];
     [self.serverTask launch];
+}
+
+- (void)logNotification:(NSNotification *)note
+{
+    NSFileHandle *file = [note object];
+    NSData *data = [file availableData];
+    NSString *str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    NSLog(@"%@", str);
 }
 
 - (void) applicationWillTerminate:(NSNotification *)aNotification

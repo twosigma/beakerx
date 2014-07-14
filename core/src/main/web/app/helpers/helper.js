@@ -196,6 +196,9 @@
       newPromise: function(value) {
         return bkUtils.newPromise(value);
       },
+      all: function(promises) {
+        return bkUtils.all(promises);
+      },
       fcall: function(func) {
         return bkUtils.fcall(func);
       },

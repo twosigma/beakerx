@@ -90,7 +90,7 @@
         if(model.x_upper_bound) newmodel.focus.xr = model.x_upper_bound;
         if(model.rangeAxes && model.rangeAxes[0].lower_bound) newmodel.focus.yl = model.rangeAxes[0].lower_bound;
         if(model.rangeAxes && model.rangeAxes[0].upper_bound) newmodel.focus.yr = model.rangeAxes[0].upper_bound;
-        if(model.rangeAxes && model.rangeAxes[0].auto_range_include_zero) onzeroY = true;
+        if(model.rangeAxes && model.rangeAxes[0].auto_range_includes_zero) onzeroY = true;
         
         if (model.type === "TimePlot") {
           newmodel.xType = "time";

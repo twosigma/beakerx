@@ -104,7 +104,7 @@
               var zoomMove = function(area) {
                 if (area.xfirst < area.xsecond && area.yfirst > area.ysecond) {
                   scope.zoomOptions = {
-                    xaxis: {min: area.x1, max: area.x2, mode:"time"},
+                    xaxis: {min: area.x1, max: area.x2},
                     yaxis: {min: area.y1, max: area.y2}
                   };
                 } else {

@@ -149,6 +149,7 @@ define(function(require, exports, module) {
     return getCompletions(token, context, keywords, options);
   }
 
+
   var JavaScript_0 = {
     pluginName: PLUGIN_NAME,
     cmMode: "javascript",
@@ -156,21 +157,7 @@ define(function(require, exports, module) {
     evaluate: function(code, modelOutput) {
       return bkHelper.fcall(function() {
         try {
-          //modelOutput.result = "" + eval(code);
-          
-          modelOutput.result = plotTestSerializer; //lineplotTestSerializer;
-          /*
-          modelOutput.result = {
-              "type": "LinePlot",
-              "plotTitle": "Dummy Line Plot",
-              //"showLegend": true, 
-              "xLabel": "X Label",
-              "yLabel": "Y Label",
-              "xCursor": { style: "solid", color: "#003366", width: 3},
-              "yCursor": { style: "dash", color: "#003366", width: 2 },
-              "data": testdata // automated testdata
-           };
-           */
+          modelOutput.result = "" + eval(code);
         } catch (err) {
           modelOutput.result = {
             type: "BeakerDisplay",

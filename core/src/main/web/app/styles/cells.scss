@@ -73,10 +73,15 @@ bk-section-cell, bk-text-cell {
 }
 
 bk-code-cell .code-cell-output {
-    margin:     20px -20px -10px;
+    margin:     40px -20px -10px;
     padding:    0 20px;
     position:   relative;
     border-top: solid 1px #CCC;
+}
+
+.advanced-mode bk-code-cell .code-cell-output {
+    margin-top: 20px;
+    border-top: none;
 }
 
 bk-code-cell .locked .code-cell-output {

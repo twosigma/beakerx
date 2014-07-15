@@ -25,12 +25,14 @@ bin = './build/install/core/bin/core'
 # GUI launcher, no login shell has yet been created and so the user's
 # .bash_profile hasn't been read, and that's where anaconda sets up
 # the PATH.  Also, who knows what other settings they may have in
-# their and want.
-
-# Quote args that contain spaces. XXX
+# there and want.
 
 if sys.platform == 'darwin':
-    os.execvp('bash', ['bash', '-cl', bin + ' '.join(sys.argv)])
+    cmd = bin
+    quote = '\''
+    for arg in sys.argv:
+        cmd = cmd + ' ' + quote + arg + quote
+    os.execvp('bash', ['bash', '-cl', cmd])
 
 args = [bin] + sys.argv
 os.execvp(bin, args)

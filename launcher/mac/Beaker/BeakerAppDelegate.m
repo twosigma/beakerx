@@ -18,7 +18,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    NSLog( @"Beaker App start JVM and launch browser");
+    NSLog(@"Beaker App start JVM and launch browser");
     NSBundle* mainBundle = [NSBundle mainBundle];
     NSString* resourcePath = [mainBundle resourcePath];
     NSString* fullPath = [NSString stringWithFormat:@"%@/dist/beaker.command", resourcePath];
@@ -26,7 +26,30 @@
     setenv("JAVA_HOME", [javaPath UTF8String], TRUE);
     self.serverTask = [[NSTask alloc] init];
     [self.serverTask setLaunchPath:fullPath];
+    NSPipe *pipe0 = [NSPipe pipe];
+    NSPipe *pipe1 = [NSPipe pipe];
+    [self.serverTask setStandardOutput:pipe0];
+    [self.serverTask setStandardError:pipe1];
+    [[pipe0 fileHandleForReading] waitForDataInBackgroundAndNotify];
+    [[pipe1 fileHandleForReading] waitForDataInBackgroundAndNotify];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(logNotification:)
+                                                 name:NSFileHandleDataAvailableNotification
+                                               object:nil];
     [self.serverTask launch];
+}
+
+- (void)logNotification:(NSNotification *)note
+{
+    NSFileHandle *file = [note object];
+    NSData *data = [file availableData];
+    if ([data length] == 0) {
+        NSLog(@"stream closed!");
+        return;
+    }
+    NSString *str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    NSLog(@"%@", str);
+    [file waitForDataInBackgroundAndNotify];
 }
 
 - (void) applicationWillTerminate:(NSNotification *)aNotification

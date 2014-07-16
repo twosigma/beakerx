@@ -364,7 +364,7 @@
               var pstr = "";
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
-                if(data[i].interpolation === "linear"){
+                if(data[i].interpolation === "linear") {
                   pstr += mapX(p.x) + "," + mapY(p.y) + " ";
                 }else if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
                   var p2 = eles[j + 1];
@@ -695,7 +695,7 @@
         };
         scope.toggleTooltip = function(d) {
           var id = d.id, nv = scope.tips[id] == null ? 1 : 0;
-          //scope.svg.selectAll("#"+id)
+          //scope.svg.selectAll("#" + id)
           //  .attr("visibility", nv);
           if (nv == 1) {
             d.opacity = 1;
@@ -907,7 +907,7 @@
             });
           legend.draggable();
           
-          if(scope.visibleLines>1){  // skip "All" check when there is only one line
+          if(scope.visibleLines>1) {  // skip "All" check when there is only one line
             var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_all")
@@ -1052,11 +1052,11 @@
             if (ds == 1.0) {
               // translate only
               var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan, vrange = scope.vrange;
-              if(focus.xl+tx>=vrange.xl && focus.xr+tx<=vrange.xr){
+              if(focus.xl+tx>=vrange.xl && focus.xr+tx<=vrange.xr) {
                 focus.xl += tx;
                 focus.xr += tx;
               }
-              if(focus.yl+ty>=vrange.yl && focus.yr+ty<=vrange.yr){
+              if(focus.yl+ty>=vrange.yl && focus.yr+ty<=vrange.yr) {
                 focus.yl += ty;
                 focus.yr += ty;
               }
@@ -1072,10 +1072,10 @@
                   focus.yr = nyr;
                   focus.yspan = nyspan;
                 }else{
-                  if(nyspan > range.yspan * 100){
+                  if(nyspan > range.yspan * 100) {
                     focus.yr = focus.yl + range.yspan * 100;
                     focus.yspan = focus.yr - focus.yl;
-                  }else if(nyspan < range.yspan * 0.01){
+                  }else if(nyspan < range.yspan * 0.01) {
                     focus.yr = focus.yl + range.yspan * 0.01;
                     focus.yspan = focus.yr - focus.yl;
                   }
@@ -1090,10 +1090,10 @@
                   focus.xr = nxr;
                   focus.xspan = nxspan;
                 }else{
-                  if(nxspan > range.xspan * 100){
+                  if(nxspan > range.xspan * 100) {
                     focus.xr = focus.xl + range.xspan * 100;
                     focus.xspan = focus.xr - focus.xl;
-                  }else if(nxspan < range.xspan * 0.01){
+                  }else if(nxspan < range.xspan * 0.01) {
                     focus.xr = focus.xl + range.xspan * 0.01;
                     focus.xspan = focus.xr - focus.xl;
                   }

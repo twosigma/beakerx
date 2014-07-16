@@ -43,6 +43,7 @@
   font-size: 0.9em;
   text-anchor: middle;
 }
+
 .plot-cursorlabel,
 .plot-constlabel {
   font-size: 0.75em;
@@ -66,6 +67,7 @@
   stroke-width: 1;
   pointer-events: none;
 }
+
 .plot-coord {
   stroke: #111111;
   stroke-dasharray: 1, 1;
@@ -78,7 +80,6 @@
   stroke-width: 3;
   opacity: .75;
 }
-
 
 .plot-pointrect,
 .plot-pointcircle {
@@ -93,6 +94,7 @@
 .plot-truncatebox {
   fill: #FEFEFE;
 }
+
 .plot-cursor {
   pointer-events: none;
   stroke-width: 2.0;
@@ -105,12 +107,14 @@
   font-size: 1.2em;
   margin: 5px;
 }
+
 .plot-legendbox {
   width: 12px;
   height: 12px;
   margin: 0px 5px;
   display: inline-block;
 }
+
 .plot-legendcheckbox {
   margin: 0px !important;
   margin-right: 5px;
@@ -128,13 +132,16 @@
   -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
   background-color: white;
 }
+
 .plot-coverbox {
   fill: #FEFEFE;
 }
+
 .plot-dot {
   fill: white;
   stroke-width: 2;
 }
+
 .plot-tooltip {
   font-size: 0.9em;
   font-weight: bold;

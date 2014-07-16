@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,20 +18,12 @@
  * This adds a menu items to the File menu: open...(IPython), that loads IPython notebook and
  * convert it to a Beaker noteboook
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var notebookConverter = (function() {
-    var generateID = function(length) {
-      var text = "";
-      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (var i = 0; i < length; ++i) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      }
-      return text;
-    };
     var convertCodeCell = function(ipyCodeCell) {
       var bkrCodeCell = {
-        "id": "code" + generateID(6),
+        "id": "code" + bkHelper.generateId(6),
         "evaluator": "IPython",
         "class": ["code"],
         "input": {
@@ -41,19 +33,19 @@
         }
       };
       if (ipyCodeCell.input && ipyCodeCell.input.length > 0) {
-        bkrCodeCell.input.body = ipyCodeCell.input.join('\n');
+        bkrCodeCell.input.body = ipyCodeCell.input.join('');
       }
       if (ipyCodeCell.outputs && ipyCodeCell.outputs.length > 0) {
         var ipyOutput = ipyCodeCell.outputs[0];
         if (ipyOutput.output_type === "pyout" && ipyOutput.text) {
           bkrCodeCell.output.selectedType = "Text";
-          bkrCodeCell.output.result = ipyOutput.text[0]
+          bkrCodeCell.output.result = ipyOutput.text[0];
         } else if (ipyOutput.output_type === "display_data" && ipyOutput.png) {
           bkrCodeCell.output.selectedType = "Image";
           bkrCodeCell.output.result = {
             "type": "ImageIcon",
             "imageData": ipyOutput.png
-          }
+          };
         }
       } else {
         bkrCodeCell.output.result = "";
@@ -64,13 +56,13 @@
 
     var convertMarkDownCell = function(ipyMDCell) {
       var bkrMDCell = {
-        "id": "markdown" + generateID(6),
+        "id": "markdown" + bkHelper.generateId(6),
         "class": ["markdown"],
         "body": "",
         "mode": "preview"
       };
       if (ipyMDCell.source && ipyMDCell.source.length > 0) {
-        bkrMDCell.body = ipyMDCell.source.join("\n");
+        bkrMDCell.body = ipyMDCell.source.join("");
       }
 
       return bkrMDCell;
@@ -78,19 +70,19 @@
 
     var convertRawCell = function(ipyRawCell) {
       var bkrTextCell = {
-        "id": "text" + generateID(6),
+        "id": "text" + bkHelper.generateId(6),
         "class": ["text"],
         "body": ""
       };
       if (ipyRawCell.source && ipyRawCell.source.length > 0) {
-        bkrTextCell.body = ipyRawCell.source.join("\n");
+        bkrTextCell.body = ipyRawCell.source.join(" ");
       }
       return bkrTextCell;
     };
 
     var convertHeadingCell = function(ipyHeadingCell) {
       var bkrTextCell = {
-        "id": "text" + generateID(6),
+        "id": "text" + bkHelper.generateId(6),
         "class": ["text"],
         "body": ""
       };
@@ -108,11 +100,11 @@
         "evaluators": [
           {
             "name": "Html",
-            "plugin": "./plugin/evaluator/html.js"
+            "plugin": "Html"
           },
           {
             "name": "Latex",
-            "plugin": "./plugin/evaluator/latex.js"
+            "plugin": "Latex"
           },
           {
             "name": "IPython",
@@ -147,7 +139,7 @@
         ipyNb.worksheets[0].cells.forEach(function(cell) {
           var bkrCell;
           if (cell.cell_type === "code") {
-            bkrCell = convertCodeCell(cell)
+            bkrCell = convertCodeCell(cell);
           } else if (cell.cell_type === "markdown") {
             bkrCell = convertMarkDownCell(cell);
           } else if (cell.cell_type === "raw") {
@@ -168,98 +160,33 @@
     };
   })();
 
-  var loadFromFile = function(path) {
-    var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/file-io/load", {path: path}).
-        success(function(content) {
-          deferred.resolve(content);
-        }).
-        error(function(data, status, header, config) {
-          deferred.reject(data, status, header, config);
-        });
-    return deferred.promise;
-  };
-  var loadFromHttp = function(url) {
-    var deferred = bkHelper.newDeferred();
-    bkHelper.httpGet("/beaker/rest/http-proxy/load", {url: url}).
-        success(function(content) {
-          deferred.resolve(content);
-        }).
-        error(function(data, status, header, config) {
-          deferred.reject(data, status, header, config);
-        });
-    return deferred.promise;
-  };
-
   var IPYNB_PATH_PREFIX = "ipynb";
-  bkHelper.setPathOpener(IPYNB_PATH_PREFIX, {
-    open: function(path) {
-      if (path.indexOf(IPYNB_PATH_PREFIX + ":/") === 0) {
-        path = path.substring(IPYNB_PATH_PREFIX.length + 2);
-      }
-      if (path) {
-        var load = /^https?:\/\//.exec(path) ? loadFromHttp : loadFromFile;
-        load(path).then(function(content) {
-          var ipyNbJson = content;
-          var ipyNb = JSON.parse(ipyNbJson);
-          var bkrNb = notebookConverter.convert(ipyNb);
-          bkHelper.loadNotebook(bkrNb, true);
-          bkHelper.evaluate("initialization");
-          document.title = path.replace(/^.*[\\\/]/, '');
-        }, function(data, status, headers, config) {
-          bkHelper.showErrorModal(data);
-          bkHelper.refreshRootScope();
-        });
-      }
+  bkHelper.setNotebookImporter(IPYNB_PATH_PREFIX, {
+    import: function(fileContentAsString) {
+      var ipyNbJson = fileContentAsString;
+      var ipyNb = JSON.parse(ipyNbJson);
+      var bkrNb = notebookConverter.convert(ipyNb);
+      return bkrNb;
     }
   });
 
-  bkHelper.httpGet("/beaker/rest/file-io/getHomeDirectory").success(function(homeDir) {
-    var fileChooserStrategy = { result: "" };
-    fileChooserStrategy.close = function(ev, closeFunc) {
-      if (ev.which === 13) {
-        closeFunc(this.result);
-      }
-    };
-    fileChooserStrategy.treeViewfs = { // file service
-      getChildren: function(path, callback) {
-        var self = this;
-        this.showSpinner = true;
-        $http({
-          method: 'GET',
-          url: "/beaker/rest/file-io/getDecoratedChildren",
-          params: {
-            path: path
-          }
-        }).success(function(list) {
-              self.showSpinner = false;
-              callback(list);
-            }).error(function() {
-              self.showSpinner = false;
-              console.log("Error loading children");
-            });
-      },
-      open: function(path) {
-        fileChooserStrategy.result = path;
-      },
-      showSpinner: false
-    };
-
+  var menuItemsDeferred = bkHelper.newDeferred();
+  bkHelper.getHomeDirectory().then(function(homeDir) {
+    var strategy = bkHelper.getFileSystemFileChooserStrategy();
+    strategy.treeViewfs.extFilter = ['ipynb'];
     var toAdd = [
       {
         parent: "File",
         submenu: "Open",
         items: [
           {
-            name: "Open... (.ipynb)",
+            name: "Open... IPython (.ipynb)",
             reducedName: "Open...",
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
             action: function() {
-              bkHelper.showFileChooser(
-                  function(path) {
-                    if (path) {
-                      bkHelper.openURI(IPYNB_PATH_PREFIX + ":/" + path);
-                    }
+              bkHelper.showModalDialog(
+                  function(originalUrl) {
+                    bkHelper.openNotebook(originalUrl, null, true, IPYNB_PATH_PREFIX);
                   },
                   '<div class="modal-header">' +
                       '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
@@ -270,17 +197,25 @@
                       '</div>' +
                       '<div class="modal-footer">' +
                       "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
-                      '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().result" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
+                      '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
+                      '   <span style="float:left;">' +
+                      '     <input type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">' +
+                      '     <span ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .ipynb files only</span>' +
+                      '   </span>' +
                       '   <button ng-click="close()" class="btn">Cancel</button>' +
-                      '   <button ng-click="close(getStrategy().result)" class="btn btn-primary">Open</button>' +
+                      '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary">Open</button>' +
                       '</div>', // template
-                  fileChooserStrategy// strategy
+                  strategy
               );
             }
           }
         ]
       }
     ];
-    pluginObj.onReady(toAdd);
+    menuItemsDeferred.resolve(toAdd);
   });
-})();
+
+  exports.getMenuItems = function() {
+    return menuItemsDeferred.promise;
+  };
+});

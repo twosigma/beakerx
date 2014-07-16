@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -58,19 +59,29 @@ public class SessionBackupRest {
   }
 
   public static class Session {
-
-    String notebookurl;
-    String caption;
-    String content;
-    long openDate;  // millis
+    String notebookUri;
+    String uriType;
+    boolean readOnly;
+    String format;
+    String notebookModelJson;
+    long openedDate;  // millis
     boolean edited;
 
-    private Session(String url, String contentAsString, String cap, long date, boolean ed) {
-      notebookurl = url;
-      content = contentAsString;
-      caption = cap;
-      openDate = date;
-      edited = ed;
+    private Session(
+        String notebookUri,
+        String uriType,
+        boolean readOnly,
+        String format,
+        String notebookModelJson,
+        boolean edited,
+        long openedDate) {
+      this.notebookUri = notebookUri;
+      this.uriType = uriType;
+      this.readOnly = readOnly;
+      this.format = format;
+      this.notebookModelJson = notebookModelJson;
+      this.edited = edited;
+      this.openedDate = openedDate;
     }
   }
 
@@ -88,34 +99,37 @@ public class SessionBackupRest {
   private final List<Plugin> plugins = new ArrayList<>();
 
   @POST
-  @Path("backup")
+  @Path("backup/{session-id}")
   public void backup(
-      @FormParam("sessionid") String sessionID,
-      @FormParam("notebookurl") String notebookUrl,
-      @FormParam("content") String contentAsString,
-      @FormParam("caption") String caption,
+      @PathParam("session-id") String sessionId,
+      @FormParam("notebookUri") String notebookUri,
+      @FormParam("uriType") String uriType,
+      @FormParam("readOnly") boolean readOnly,
+      @FormParam("format") String format,
+      @FormParam("notebookModelJson") String notebookModelJson,
       @FormParam("edited") boolean edited) {
-    Session previous = this.sessions.get(sessionID);
+    Session previous = this.sessions.get(sessionId);
     long date;
     if (previous != null) {
-      date = previous.openDate;
+      date = previous.openedDate;
     } else {
       date = System.currentTimeMillis();
     }
-    this.sessions.put(sessionID, new Session(notebookUrl, contentAsString, caption, date, edited));
+    this.sessions.put(sessionId, new Session(
+        notebookUri, uriType, readOnly, format, notebookModelJson, edited, date));
     try {
-      recordToFile(sessionID, notebookUrl, contentAsString);
+      recordToFile(sessionId, notebookUri, notebookModelJson);
     } catch (IOException | InterruptedException ex) {
       Logger.getLogger(SessionBackupRest.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
 
-  private void recordToFile(String sessionID, String notebookUrl, String contentAsString)
-          throws IOException, InterruptedException {
-    if (notebookUrl == null) {
-      notebookUrl = "NewNotebook";
+  private void recordToFile(String sessionID, String notebookUri, String contentAsString)
+      throws IOException, InterruptedException {
+    if (notebookUri == null) {
+      notebookUri = "NewNotebook";
     }
-    final String fileName = sessionID + "_" + URLEncoder.encode(notebookUrl, "ISO-8859-1") + ".bkr.backup";
+    final String fileName = sessionID + "_" + URLEncoder.encode(notebookUri, "ISO-8859-1") + ".bkr.backup";
     final File file = new File(this.backupDirectory, fileName);
     this.utils.saveFile(file, contentAsString);
     file.setReadable(false, false);
@@ -127,14 +141,14 @@ public class SessionBackupRest {
   @GET
   @Path("load")
   public Session load(
-          @QueryParam("sessionid") String sessionID) {
+      @QueryParam("sessionid") String sessionID) {
     return this.sessions.get(sessionID);
   }
 
   @POST
   @Path("close")
   public void close(
-          @FormParam("sessionid") String sessionID) {
+      @FormParam("sessionid") String sessionID) {
     this.sessions.remove(sessionID);
   }
 
@@ -148,14 +162,16 @@ public class SessionBackupRest {
           extends JsonSerializer<Session> {
 
     @Override
-    public void serialize(Session t, JsonGenerator jgen, SerializerProvider sp)
+    public void serialize(Session session, JsonGenerator jgen, SerializerProvider sp)
         throws IOException, JsonProcessingException {
       jgen.writeStartObject();
-      jgen.writeObjectField("notebookurl", t.notebookurl);
-      jgen.writeObjectField("caption", t.caption);
-      jgen.writeObjectField("openDate", t.openDate);
-      jgen.writeObjectField("content", t.content);
-      jgen.writeObjectField("edited", t.edited);
+      jgen.writeObjectField("notebookUri", session.notebookUri);
+      jgen.writeObjectField("uriType", session.uriType);
+      jgen.writeObjectField("readOnly", session.readOnly);
+      jgen.writeObjectField("format", session.format);
+      jgen.writeObjectField("notebookModelJson", session.notebookModelJson);
+      jgen.writeObjectField("openedDate", session.openedDate);
+      jgen.writeObjectField("edited", session.edited);
       jgen.writeEndObject();
     }
   }
@@ -165,6 +181,7 @@ public class SessionBackupRest {
   public void addPlugin(
       @FormParam("pluginname") String pluginName,
       @FormParam("pluginurl") String pluginUrl) {
+    // can NPE if arguments are null XXX
     boolean existsAlready = false;
     for (int i = 0; i < this.plugins.size(); ++i) {
       Plugin p = this.plugins.get(i);

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,6 +26,11 @@ public interface WebServerConfig {
    * @return
    */
   public Integer getPort();
+  /**
+   * gets the password that protects the server
+   * @return
+   */
+  public String getPassword();
   /**
    * gets the username
    * @return

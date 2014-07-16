@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,13 @@ import com.google.inject.servlet.GuiceFilter;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.rest.filter.OwnerFilter;
+import org.eclipse.jetty.security.authentication.BasicAuthenticator;
+import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.security.Credential;
+import org.eclipse.jetty.security.ConstraintMapping;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
@@ -45,7 +52,26 @@ public class WebServerModule extends AbstractModule {
     final Connector conn = new SelectChannelConnector();
     WebServerConfig webAppConfig = injector.getInstance(WebServerConfig.class);
     conn.setPort(webAppConfig.getPort());
+    conn.setHost("127.0.0.1");
     return conn;
+  }
+
+  private SecurityHandler makeSecurityHandler(String password) {
+    Constraint constraint = new Constraint(Constraint.__BASIC_AUTH, "user");
+    constraint.setAuthenticate(true);
+    constraint.setRoles(new String[]{"user"});
+    ConstraintMapping cm = new ConstraintMapping();
+    cm.setConstraint(constraint);
+    cm.setPathSpec("/*");
+    ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
+    csh.setAuthenticator(new BasicAuthenticator());
+    csh.setRealmName("SecureRealm");
+    csh.addConstraintMapping(cm);
+    HashLoginService loginService = new HashLoginService();
+    loginService.putUser("beaker", Credential.getCredential(password),
+                         new String[]{"user"});
+    csh.setLoginService(loginService);
+    return csh;
   }
 
   @Provides
@@ -63,6 +89,7 @@ public class WebServerModule extends AbstractModule {
       }
     });
 
+    servletHandler.setSecurityHandler(makeSecurityHandler(System.getenv("beaker_plugin_password")));
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
     servletHandler.addServlet(DefaultServlet.class, "/*");
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);

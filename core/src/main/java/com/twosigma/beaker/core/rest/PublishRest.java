@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -64,6 +64,6 @@ public class PublishRest {
       System.err.println("no slash found in github url: " + githubUrl);
       return githubUrl;
     }
-    return "http://54.82.109.105:5000/gist/anonymous" + githubUrl.substring(slash);
+    return "http://sharing.beakernotebook.com/gist/anonymous" + githubUrl.substring(slash);
   }
 }

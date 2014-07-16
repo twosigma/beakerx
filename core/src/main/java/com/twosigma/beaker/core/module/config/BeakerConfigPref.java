@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -36,6 +36,8 @@ public interface BeakerConfigPref {
    * @return
    */
   public Integer getPortBase();
+  public Boolean getPublicServer();
+  public Boolean getNoPasswordAllowed();
   /**
    * Gets the url of the default notebook
    * @return

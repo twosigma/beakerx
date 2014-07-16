@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.twosigma.beaker.core.module.config;
 
 import java.util.Map;
+import java.net.UnknownHostException;
 
 /**
  * BeakerConfig
@@ -64,6 +65,41 @@ public interface BeakerConfig {
    */
   public String getNginxExtraRules();
   /**
+   * optional/extra/override nginx plugin rules
+   * @return
+   */
+  public Map<String, String> getNginxPluginRules();
+  /**
+   * Public Server
+   * @return
+   */
+  public Boolean getPublicServer();
+  /**
+   * No Password allowed
+   * @return
+   */
+  public Boolean getNoPasswordAllowed();
+  /**
+   * Auth cookie
+   * @return
+   */
+  public String getAuthCookie();
+  /**
+   * Password Hash
+   * @return
+   */
+  public String getPasswordHash();
+  /**
+   * Password
+   * @return
+   */
+  public String getPassword();
+  /**
+   * Password Salt
+   * @return
+   */
+  public String getPasswordSalt();
+  /**
    * gets the port base
    * @return
    */
@@ -79,10 +115,15 @@ public interface BeakerConfig {
    */
   public Boolean getUseKerberos();
   /**
-   * where to find the config file
+   * where to find the configuration file
    * @return
    */
   public String getConfigFileUrl();
+  /**
+   * where to find the user preference file
+   * @return
+   */
+  public String getPreferenceFileUrl();
   /**
    * where to find the default notebook
    * @return
@@ -113,4 +154,19 @@ public interface BeakerConfig {
    * @return
    */
   public Map<String, String[]> getPluginEnvps();
+  /**
+   * base URL from which whole application is served
+   * @return
+   */
+  public String getBaseURL() throws UnknownHostException;
+  /**
+   * version
+   * @return
+   */
+  public String getVersion();
+  /**
+   * build time
+   * @return
+   */
+  public String getBuildTime();
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,9 +17,13 @@
  * evaluator menu plugin
  * Add an item to the evaluators menu that is a placeholder to show available evaluators.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var evaluatorsMenuItems = [];
-  var toAdd = {items: evaluatorsMenuItems, parent: "Evaluators"};
-  pluginObj.onReady(toAdd);
-})();
+  var meunItemPromise = bkHelper.newPromise({
+    parent: "Evaluators",
+    items: bkHelper.getEvaluatorMenuItems
+  });
+  exports.getMenuItems = function() {
+    return meunItemPromise;
+  };
+});

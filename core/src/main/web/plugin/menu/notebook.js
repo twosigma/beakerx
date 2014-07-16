@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
  * This creates the 'Notebook' menu which contains menu items for user interaction with the content
  * of the loading notebook.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
@@ -26,7 +26,7 @@
       action: function () {
         bkHelper.shareNotebook();
       },
-      tooltip: "Share the notebook to a public web page"
+      tooltip: "Share the notebook to a public web page using an anonymous github gist"
     },
     {
       name: "Lock", action: function() {
@@ -34,7 +34,7 @@
     },
       tooltip: "Lock notebook from further editing",
       isChecked: function() {
-        return bkHelper.isNotebookLocked()
+        return bkHelper.isNotebookLocked();
       }
     },
     {
@@ -113,8 +113,10 @@
         }
       ],
       tooltip: "Evaluate cells"
-    },
+    }
   ];
-  var toAdd = {items: menuItems, parent: "Notebook"};
-  pluginObj.onReady(toAdd);
-})();
+  var menuItemPromise = bkHelper.newPromise({items: menuItems, parent: "Notebook"});
+  exports.getMenuItems = function() {
+    return menuItemPromise;
+  };
+});

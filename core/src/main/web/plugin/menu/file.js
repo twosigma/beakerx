@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,17 +18,14 @@
  * This plugs in the 'File' menu that is the container of menu items like New, Open, Save,
  * Close for notebooks
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var newNotebook = function() {
-    bkHelper.getDefaultNotebook().then(function(notebookJSON) {
-      bkHelper.loadNotebook(notebookJSON, true);
-    });
-  };
   var fileMenuItems = [
     {
       name: "New",
-      action: newNotebook,
+      action: function() {
+        bkHelper.newSession();
+      },
       tooltip: "Open a new notebook with default languages (Evaluators)"
     },
     {
@@ -65,14 +62,14 @@
       autoReduce: true,
       items: []
     }
-//        ,
-//        {
-//            name: "Current open",
-//            items: function() {
-//                return bkHelper.getCurrentOpenMenuItems();
-//            }
-//        }
   ];
-  var toAdd = {items: fileMenuItems, parent: "File"};
-  pluginObj.onReady(toAdd);
-})();
+
+  var menuItemPromise = bkHelper.newPromise({
+    parent: "File",
+    items: fileMenuItems
+  });
+
+  exports.getMenuItems = function() {
+    return menuItemPromise;
+  };
+});

@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/python
 #
-# Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+# Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,14 +14,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-BEAKER_IPYTHON=ipython
+import os
+import sys
 
-while [ -n "$1" ]
-do
-    case "$1" in
-        --path*) BEAKER_IPYTHON="${1#??????}"; shift;;
-        *) break;;
-    esac
-done
+if len(sys.argv) > 1:
+    arg1 = sys.argv[1]
+    if arg1 == "--version":
+        os.execlp("ipython", "ipython", "--version")
+    elif arg1 == "--hash":
+        os.execlp("python", "python")
+    elif arg1 == "--profile":
+        os.execlp("ipython", "ipython", "profile", "create", "beaker_backend", "--ipython-dir=" + sys.argv[2])
 
-exec $BEAKER_IPYTHON notebook --pylab inline --IPKernelApp.pylab='inline' --NotebookApp.ip=127.0.0.1 --NotebookApp.port=$1 --NotebookApp.open_browser=False
+coreport = sys.argv.pop()
+port = sys.argv.pop()
+
+# default is to search PATH
+ipython_path = "ipython"
+
+# XXX use a real options processor lib
+for arg in sys.argv[1:]:
+    if arg.startswith("--path"):
+        ipython_path = arg[6:]
+    else:
+        sys.stderr.write("ignoring unrecognized option: " + arg + "\n")
+
+ipython_dir = os.environ["beaker_tmp_dir"]
+
+os.execlp(ipython_path, ipython_path, "notebook",
+          "--ipython-dir=" + ipython_dir, "--profile", "beaker_backend",
+          "--pylab", "inline")

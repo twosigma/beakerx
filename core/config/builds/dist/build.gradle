@@ -1,19 +1,49 @@
-def versionHtml() {
-  def buildTime = new Date().format("yyyy-MM-dd HH:mm z")
-  def gitSha = "git rev-parse --short HEAD".execute().text.trim()
-  return "<div>build time: " + buildTime + "<br>" + "git sha: " + gitSha + "<br></div>"
-}
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
 def coreDir = file("../../../") // TODO, this can come from a property
 
-task writeVersion << {
-  new File(coreDir, 'src/main/web/template/version.html').write(versionHtml())
+def gitDescribe() {
+  def name = "git describe --all --long".execute().text.trim()
+  if (name.startsWith('heads/')) {
+    name = name.substring(6)
+  }
+  return name
 }
 
+// XXX move all of this into makeDist python script
 task makeDist(type: Exec) {
-  workingDir coreDir
-  commandLine 'zip', '-r', 'beaker-notebook.zip', 'config', 'src/main/web', 'build/install/core', 'nginx', 'beaker.command'
+  def osName = System.properties['os.name']
+  def platform = 'windows'
+  if (osName.startsWith('Mac')) {
+    platform = 'mac'
+  }
+  if (osName.startsWith('Linux')) {
+    platform = 'ubuntu'
+  }
+  def zipName = 'beaker-notebook-' + gitDescribe() + '-' + platform
+  if (platform == 'windows') {
+    workingDir '../../..'
+    commandLine 'cmd', '/c', '7za', 'a',
+                (zipName + '.zip'), 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
+                'beaker.command.bat', '-xr!.~', '-xr!.gradle'
+  } else {
+    commandLine './makeDist', zipName
+  }
 }
 
-makeDist.dependsOn(":writeVersion")
+
 makeDist.dependsOn(":dev:build")

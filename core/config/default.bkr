@@ -3,18 +3,18 @@
     "evaluators": [
         {
             "name": "Html",
-            "plugin": "./plugin/evaluator/html.js",
+            "plugin": "Html",
             "shellID": null
         },
         {
             "name": "Latex",
-            "plugin": "./plugin/evaluator/latex.js",
+            "plugin": "Latex",
             "shellID": null
         },
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "BD67DDF962194BD8A10A9D164DE9F36A",
+            "shellID": "",
             "imports": "",
             "supplementalClassPath": ""
         },
@@ -28,19 +28,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "35490d5b-d8aa-4484-86b4-7f10b63b87a1"
-        },
-        {
-            "name": "Groovy",
-            "plugin": "Groovy",
-            "shellID": "72177339-15f9-4cb8-a784-e601b041feea"
-        },
-        {
-            "name": "IRuby",
-            "plugin": "IRuby",
-            "shellID": "BD67DDF962194BD8A10A9D164DE9F36B",
-            "imports": "",
-            "supplementalClassPath": ""
+            "shellID": ""
         }
     ],
     "cells": [
@@ -56,18 +44,7 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "#Python - will turn light blue if plugin loads successfully"
-            },
-            "output": {
-                "selectedType": "Hidden"
-            }
-        },
-        {
-            "id": "code001ruby",
-            "type": "code",
-            "evaluator": "IRuby",
-            "input": {
-                "body": "#Ruby - will turn light blue if plugin loads successfully"
+                "body": "#Python - will turn light blue when plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -78,18 +55,7 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#R - will turn dark blue if plugin loads successfully"
-            },
-            "output": {
-                "selectedType": "Hidden"
-            }
-        },
-        {
-            "id": "codeD2ujjG",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": "//Groovy - will turn green if plugin loads successfully"
+                "body": "#R - will turn dark blue when plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -100,11 +66,16 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "//JavaScript - will turn pink if plugin loads successfully"
+                "body": "//JavaScript - will turn pink when plugin loads successfully"
             },
             "output": {
                 "selectedType": "Hidden"
             }
+        },
+        {
+            "id": "text97Oipt",
+            "type": "text",
+            "body": "<p style=\"margin-bottom: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 20px;\">Beaker also supports <b>Julia</b>, <b>Groovy</b>, <b>Ruby</b>, and <b>Node</b>. To add another language to this notebook, select <b>Notebook</b> &#9654; <b>Plugin manager</b> from the menu on top of the screen.</p><p style=\"margin-top: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 20px; margin-bottom: 0px !important;\">For general help, see the tutorial notebook under <b>Help</b> &#9654; <b>Tutorial notebook</b></p>"
         }
     ]
 }

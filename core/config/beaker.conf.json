@@ -2,10 +2,14 @@
   "conf-format": "1",
   "allow-anonymous-usage-tracking": null,
   "init": [
-    "./plugin/init/track.js"
+    "./plugin/init/track.js",
+    "./plugin/init/addevalplugins.js"
   ],
   "control-panel-menu-plugins": [
-    "./plugin/menu/forControlPanel.js"
+    "./plugin/menu/controlpanel.js",
+    "./plugin/menu/controlpanel_addition.js",
+    "./plugin/menu/file_ipython.js",
+    "./plugin/menu/file_iruby.js"
   ],
   "notebook-app-menu-plugins":[
     "./plugin/menu/file.js",
@@ -17,8 +21,6 @@
     "./plugin/menu/help.js"
   ],
   "notebook-cell-menu-plugins": [
-    "./plugin/menu/sharing_notebook.js",
-    "./plugin/menu/sharing_section.js",
-    "./plugin/menu/sharing_cell.js"
+    "./plugin/cellmenu/sharing.js"
   ]
 }

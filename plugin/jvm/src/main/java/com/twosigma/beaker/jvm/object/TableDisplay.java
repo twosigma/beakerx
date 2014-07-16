@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ public class TableDisplay {
         jgen.writeObjectField("type", "TableDisplay");
         jgen.writeObjectField("columnNames", value.columns);
         jgen.writeObjectField("values", value.values);
+        // jgen.writeObjectField("timeZone", "UTC");
         jgen.writeEndObject();
       }
     }

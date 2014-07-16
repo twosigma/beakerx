@@ -1,3 +1,18 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 def coreDir = file("../../../") // TODO, this can come from a property
 
 ext {
@@ -6,6 +21,7 @@ ext {
 
 task build
 task clean
+task check
 task run (type: Exec) {
   workingDir coreDir
   commandLine './beaker.command'
@@ -26,9 +42,28 @@ task cleanPlugins (type: Exec) {
   commandLine 'rm', '-rf', evalPluginDir.absolutePath
 }
 
+def gitDescribe() {
+  def name = "git describe --all --long".execute().text.trim()
+  if (name.startsWith('heads/')) {
+    name = name.substring(6)
+  }
+  return name
+}
+
+task writeVersion << {
+  new File(coreDir, 'config/version').write(gitDescribe());
+  new File(coreDir, 'config/build_time').write(new Date().format("yyyy-MM-dd HH:mm z"));
+}
+
 clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
 build.dependsOn(":core:build")
 build.dependsOn(":core:installApp")
+build.dependsOn(writeVersion)
 build.dependsOn(installPlugins)
 run.dependsOn(build)
+check.dependsOn(":core:build")
+check.dependsOn(installPlugins)
+check.dependsOn(":core:installApp")
+check.dependsOn(":test:check")
+

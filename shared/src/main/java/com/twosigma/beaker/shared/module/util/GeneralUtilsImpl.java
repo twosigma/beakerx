@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -29,14 +29,22 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * BasicUtilsImpl
  *
  */
 public class GeneralUtilsImpl implements GeneralUtils {
+
+  private boolean isWindows() {
+    return System.getProperty("os.name").contains("Windows");
+  }  
 
   @Override
   public void openUrl(String url) {
@@ -54,22 +62,30 @@ public class GeneralUtilsImpl implements GeneralUtils {
     }
   }
 
-  @Override
-  public String readFile(Path path) {
+  private String readFile(Path path, boolean isSuppressLogging) {
     if (path == null) {
-      Logger.getLogger(GeneralUtilsImpl.class.getName())
-          .log(Level.INFO, "ERROR locating file {0}", path);
+      if (isSuppressLogging) {
+        Logger.getLogger(GeneralUtilsImpl.class.getName())
+            .log(Level.INFO, "ERROR locating file {0}", path);
+      }
       return null;
     }
     byte[] encoded = null;
     try {
       encoded = Files.readAllBytes(path);
     } catch (IOException ex) {
-      Logger.getLogger(GeneralUtilsImpl.class.getName())
-          .log(Level.INFO, "ERROR reading file {0}", path);
+      if (isSuppressLogging) {
+        Logger.getLogger(GeneralUtilsImpl.class.getName())
+            .log(Level.INFO, "ERROR reading file {0}", path);
+      }
       return null;
     }
     return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
+  }
+
+  @Override
+  public String readFile(Path path) {
+    return this.readFile(path, false);
   }
 
   @Override
@@ -178,7 +194,15 @@ public class GeneralUtilsImpl implements GeneralUtils {
 
   @Override
   public String createTempDirectory(Path dir, String prefix) throws IOException {
-    Path tempDir = Files.createTempDirectory(dir, prefix);
+    Path tempDir;
+    if (isWindows()) {
+	tempDir = Files.createTempDirectory(dir, prefix);
+    } else {
+	Set<PosixFilePermission> userOnly = EnumSet.of(PosixFilePermission.OWNER_READ,
+						       PosixFilePermission.OWNER_WRITE,
+						       PosixFilePermission.OWNER_EXECUTE);
+	tempDir = Files.createTempDirectory(dir, prefix, PosixFilePermissions.asFileAttribute(userOnly));
+    }
     recursiveDeleteOnShutdownHook(tempDir);
     return tempDir.toString();
   }
@@ -237,7 +261,7 @@ public class GeneralUtilsImpl implements GeneralUtils {
   }
 
   private boolean isFileValid(Object file) {
-    String content = readFile(castToPath(file));
+    String content = this.readFile(castToPath(file), true);
     return content != null && !content.isEmpty();
   }
 

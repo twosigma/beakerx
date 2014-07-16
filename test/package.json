@@ -1,0 +1,9 @@
+{
+  "name": "beaker-tests",
+  "scripts": {
+    "start": "dill --require util --require steps --require widgets -f pretty --driver=firefox"
+  },
+  "dependencies": {
+    "dill": "^0.4.1"
+  }
+}

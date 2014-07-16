@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.twosigma.beaker.core.module.SerializerModule;
 import com.twosigma.beaker.core.module.URLConfigModule;
 import com.twosigma.beaker.core.module.WebServerModule;
 import com.twosigma.beaker.core.module.config.DefaultBeakerConfigModule;
+import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
@@ -31,11 +32,16 @@ import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -58,29 +64,87 @@ public class Main {
   private static final Integer PORT_BASE_START_DEFAULT = 8800;
   private static final Boolean OPEN_BROWSER_DEFAULT = Boolean.TRUE;
   private static final Boolean USE_HTTPS_DEFAULT = Boolean.FALSE;
+  private static final Boolean PUBLIC_SERVER_DEFAULT = Boolean.FALSE;
+  private static final Boolean NO_PASSWORD_DEFAULT = Boolean.FALSE;
   private static final Boolean USE_KERBEROS_DEFAULT = Boolean.FALSE;
   private static final Integer CLEAR_PORT_OFFSET = 1;
   private static final Integer BEAKER_SERVER_PORT_OFFSET = 2;
 
-  public static void main(String[] args) throws Exception {
-    final CliOptions cliOptions = new CliOptions(args);
+  private static CommandLine parseCommandLine(String[] args)
+    throws ParseException
+  {
+    CommandLineParser parser = new GnuParser();
+    Options opts = new Options();
+    opts.addOption("h", "help", false, "print this message");
+    opts.addOption(null, "disable-kerberos", false, "do not require kerberos authentication");
+    opts.addOption(null, "open-browser", true, "open a web browser connected to the Beaker server");
+    opts.addOption(null, "port-base", true, "main port number to use, other ports are allocated starting here");
+    opts.addOption(null, "default-notebook", true, "file name to find default notebook");
+    opts.addOption(null, "plugin-option", true, "pass option on to plugin");
+    opts.addOption(null, "public-server", false, "allow connections from external computers");
+    opts.addOption(null, "no-password", false, "do not require a password from external connections " +
+                   "(warning: for advanced users only!)");
+    CommandLine line = parser.parse(opts, args);
+    if (line.hasOption("help")) {
+      new HelpFormatter().printHelp("beaker.command", opts);
+      System.exit(0);
+    }
+    return line;
+  }
 
-    final Integer portBase = cliOptions.getPortBase() != null ?
-        cliOptions.getPortBase() : findPortBase(PORT_BASE_START_DEFAULT);
-    final Boolean useKerberos = cliOptions.getDisableKerberos() != null ?
-        !cliOptions.getDisableKerberos() : USE_KERBEROS_DEFAULT;
-    final Boolean openBrowser = cliOptions.getOpenBrowser() != null ?
-        cliOptions.getOpenBrowser() : OPEN_BROWSER_DEFAULT;
-    final Boolean useHttps = cliOptions.getUseHttps() != null ?
-        cliOptions.getUseHttps() : USE_HTTPS_DEFAULT;
+  private static boolean parseBoolean(String arg) {
+    switch (arg.toLowerCase()) {
+      case "true":
+      case "t":
+      case "yes":
+      case "y":
+        return true;
+      case "false":
+      case "f":
+      case "no":
+      case "n":
+        return false;
+      default:
+        throw new RuntimeException("unrecognized boolean command line argument: " + arg);
+    }
+  }
+
+  private static Map<String, String> getPluginOptions(CommandLine options) {
+    Map<String, String> result = new HashMap<>();
+    if (options.hasOption("plugin-option")) {
+      for (String param: options.getOptionValues("plugin-option")) {
+        int x = param.indexOf(':');
+        if (x < 0) {
+          throw new RuntimeException("plugin option requires colon (':')");
+        }
+        result.put(param.substring(0, x), param.substring(x + 1, param.length()));
+      }
+    }
+    return result;
+  }
+
+  public static void main(String[] args) throws Exception {
+    CommandLine options = parseCommandLine(args);
+
+    final Integer portBase = options.hasOption("port-base") ?
+      Integer.parseInt(options.getOptionValue("port-base")) : findPortBase(PORT_BASE_START_DEFAULT);
+    final Boolean useKerberos = options.hasOption("disable-kerberos") ?
+      !parseBoolean(options.getOptionValue("disable-kerberos")) : USE_KERBEROS_DEFAULT;
+    final Boolean openBrowser = options.hasOption("open-browser") ?
+      parseBoolean(options.getOptionValue("open-browser")) : OPEN_BROWSER_DEFAULT;
+    final Boolean useHttps = options.hasOption("use-https") ?
+      parseBoolean(options.getOptionValue("use-https")) : USE_HTTPS_DEFAULT;
+    final Boolean publicServer = options.hasOption("public-server");
 
     // create preferences for beaker core from cli options and others
     // to be used by BeakerCoreConfigModule to initialize its config
     BeakerConfigPref beakerCorePref = createBeakerCoreConfigPref(
         useKerberos,
+        publicServer,
+        false,
         portBase,
-        cliOptions.getDefaultNotebookUrl(),
-        cliOptions.getPluginOptions());
+        options.getOptionValue("default-notebook"),
+        getPluginOptions(options));
 
     WebAppConfigPref webAppPref = createWebAppConfigPref(
         portBase + BEAKER_SERVER_PORT_OFFSET,
@@ -98,36 +162,29 @@ public class Main {
     PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
     processStarter.start();
 
+    BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
+
     Server server = injector.getInstance(Server.class);
     server.start();
 
     // openBrower and show connection instruction message
-    final String initUrl = getInitUrl(useHttps, portBase, useKerberos);
+    final String initUrl = bkConfig.getBaseURL();
     if (openBrowser) {
       injector.getInstance(GeneralUtils.class).openUrl(initUrl);
-      System.out.println("\nConnecting to " + initUrl + "\n");
+      System.out.println("\nConnecting to " + initUrl);
     } else {
-      System.out.println("\nConnect to " + initUrl + "\n");
+      System.out.println("\nConnect to " + initUrl);
     }
-
-  }
-
-  private static String getInitUrl(Boolean useHttps, Integer portBase, Boolean useKerberos) throws UnknownHostException {
-    String initUrl;
-
-    final String localhostname = InetAddress.getLocalHost().getHostName();
-
-    if (useHttps) {
-      initUrl = "https://" + localhostname + ":" + portBase + "/beaker/";
-    } else {
-      initUrl = "http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
-              + localhostname + ":" + (portBase + CLEAR_PORT_OFFSET) + "/beaker/";
+    if (publicServer) {
+      System.out.println("Submit this password: " + bkConfig.getPassword());
     }
-    return initUrl;
+    System.out.println("");
   }
 
   private static BeakerConfigPref createBeakerCoreConfigPref(
       final Boolean useKerberos,
+      final Boolean publicServer,
+      final Boolean noPasswordAllowed,
       final Integer portBase,
       final String defaultNotebookUrl,
       final Map<String, String> pluginOptions) {
@@ -141,6 +198,16 @@ public class Main {
       @Override
       public Integer getPortBase() {
         return portBase;
+      }
+
+      @Override
+      public Boolean getPublicServer() {
+        return publicServer;
+      }
+
+      @Override
+      public Boolean getNoPasswordAllowed() {
+        return noPasswordAllowed;
       }
 
       @Override
@@ -170,7 +237,7 @@ public class Main {
   }
 
   private static int findPortBase(Integer start) {
-    int width = 3;
+    int width = 4;
     int tries = 0;
     int base = start.intValue();
     while (!portRangeAvailable(base, width)) {
@@ -188,7 +255,8 @@ public class Main {
 
     ServerSocket ss = null;
     try {
-      ss = new ServerSocket(port);
+      InetAddress address = InetAddress.getByName("127.0.0.1");
+      ss = new ServerSocket(port, 1, address);
       ss.setReuseAddress(true);
       return true;
     } catch (IOException e) {
@@ -212,98 +280,5 @@ public class Main {
       }
     }
     return true;
-  }
-
-  private static class CliOptions {
-
-    // This should reflect user pref so default should be null;
-    // It is up to the ConfigModule to provide actual default when seeing null's.
-    Boolean disableKerberosPref = null;
-    Boolean openBrowserPref = null;
-    String defaultNotebookUrl = null;
-    Integer portBase = null;
-    Map<String, String> pluginOptions = new HashMap<>();
-
-    CliOptions(String[] args) {
-      for (int i = 0; i < args.length; i++) {
-        if (args[i].equals("--disable-kerberos")) {
-          this.disableKerberosPref = Boolean.TRUE;
-          break;
-        } else if (args[i].startsWith("--open-browser")) {
-          String value = args[i + 1].toLowerCase();
-          switch (value) {
-            case "true":
-            case "t":
-            case "yes":
-            case "y":
-              this.openBrowserPref = Boolean.TRUE;
-              i++;
-              break;
-            case "false":
-            case "f":
-            case "no":
-            case "n":
-              this.openBrowserPref = Boolean.FALSE;
-              i++;
-              break;
-            default:
-              System.err.println("ignoring command line flag --open-browser: unrecognized value, possible values are: true or false");
-              break;
-          }
-        } else if (args[i].equals("-port-base")) {
-          if (i < (args.length - 1)) {
-            this.portBase = Integer.parseInt(args[i + 1]);
-            i++;
-          } else {
-            System.err.println("missing argument to --default-notebook, ignoring it");
-          }
-        } else if (args[i].equals("--default-notebook")) {
-          if (i < (args.length - 1)) {
-            this.defaultNotebookUrl = args[i + 1];
-            i++;
-          } else {
-            System.err.println("missing argument to --default-notebook, ignoring it");
-          }
-        } else if (args[i].equals("--plugin-option")) {
-          if (i < (args.length - 1)) {
-            String param = args[i + 1];
-            int x = param.indexOf(':');
-            if (x < 0) {
-              continue;
-            }
-            this.pluginOptions.put(param.substring(0, x), param.substring(x + 1, param.length()));
-            i++;
-          } else {
-            System.err.println("missing argument to --plugin-option, ignoring it");
-          }
-        } else {
-          System.err.println("ignoring unrecognized command line option: " + args[i]);
-        }
-      }
-    }
-
-    Boolean getDisableKerberos() {
-      return this.disableKerberosPref;
-    }
-
-    Boolean getOpenBrowser() {
-      return this.openBrowserPref;
-    }
-
-    Integer getPortBase() {
-      return this.portBase;
-    }
-
-    Boolean getUseHttps() {
-      return null;
-    }
-
-    String getDefaultNotebookUrl() {
-      return this.defaultNotebookUrl;
-    }
-
-    Map<String, String> getPluginOptions() {
-      return this.pluginOptions;
-    }
   }
 }

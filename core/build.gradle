@@ -1,46 +1,83 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 apply plugin:'java'
+
+apply plugin:'application'
+mainClassName = 'com.twosigma.beaker.core.Main'
+
+def windows() {
+  return System.getProperty('os.name').contains('Windows')
+}
+def mac() {
+  return System.getProperty('os.name').contains('Mac')
+}
 
 repositories {
   mavenCentral()
 }
 
 dependencies {
-  compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '8.1.13.v20130916'
-  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
-  runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.6'
-  compile group: 'org.samba.jcifs', name: 'jcifs', version: '1.3.3'
+  compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
   compile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17.1'
   compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17.1'
   compile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
-  compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+  compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
+  compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
   compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.3.1'
+  compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '8.1.13.v20130916'
+  compile group: 'org.jvnet.winp', name: 'winp', version: '1.18'
+  compile group: 'org.samba.jcifs', name: 'jcifs', version: '1.3.3'
+  runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.6'
   compile project(':shared')
 }
 
-apply plugin:'application'
-mainClassName = 'com.twosigma.beaker.core.Main'
-
 task (npmInstall, type: Exec) {
-  commandLine 'npm', 'install'
+  if (windows()) {
+     commandLine 'cmd', '/c', 'npm', 'install'
+  } else {
+     commandLine 'npm', 'install'
+  }
 }
 
 task (bowerInstall, type: Exec) {
-  commandLine './node_modules/bower/bin/bower', 'install'
+  if (windows()) {
+    commandLine 'cmd', '/c', 'bower', 'install'
+  } else {
+    commandLine './node_modules/bower/bin/bower', 'install'
+  }
 }
 
 task (copyNginx, type: Exec) {
-  commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx/bin'.split()
+  if (mac()) {
+    commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx/bin'.split()
+  } else if (windows()) {
+    def nginxLocation = 'cmd /c where nginx'.execute().text.trim()
+    commandLine 'cmd', '/c', 'xcopy', '/Y', '/Q', nginxLocation, 'nginx\\bin', '&', 'xcopy', '/Y', '/Q', nginxLocation + '\\..\\conf\\mime.types', 'nginx\\bin'
+  }
 }
 
 bowerInstall.dependsOn npmInstall
 build.dependsOn bowerInstall
 run.dependsOn bowerInstall
 run.dependsOn jar
-if (System.properties['os.name'].contains('Mac')) {
+if (mac() || windows()) {
   build.dependsOn copyNginx
   run.dependsOn copyNginx
   startScripts {
-    defaultJvmOpts=["-Dbeaker.nginx.bin.dir=" + file("./nginx/bin").absolutePath]
+    defaultJvmOpts=['-Dbeaker.nginx.bin.dir=' + './nginx/bin']
   }
 }
 
@@ -49,14 +86,16 @@ compileJava {
   options.compilerArgs << '-Xlint:unchecked'
 }
 
-/* for testing
-run {
-  args '--disable-kerberos', '--default-notebook', 'config/default-test.bkr'
+if (hasProperty('inTesting')) {
+  run {
+    args '--disable-kerberos', '--default-notebook', 'config/default-test.bkr'
+  }
 }
-*/
 
-// need to remove META-INF/*.SF to use this.
-//build.dependsOn jar
-//jar {
-//  from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-//}
+if (hasProperty('includeDepsInJar')) {
+  build.dependsOn jar
+  jar {
+    // need to remove META-INF/*.SF to use this.
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+}

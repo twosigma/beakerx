@@ -2,65 +2,79 @@ worker_processes  1;
 daemon off;
 
 #debug level logging is quite voluminous
-#error_log  stderr  debug;
+#error_log  /tmp/nginx.log  debug;
 error_log  stderr  error;
 
 pid nginx.pid;
 
 events {
-    worker_connections  1024;
+  worker_connections  1024;
 }
 
 http {
-    default_type  application/octet-stream;
-    types_hash_max_size 2048;
 
+  default_type  application/octet-stream;
+  types_hash_max_size 2048;
 
-#    turn this on for debugging
-#    access_log access.log;
-    access_log off;
+  # turn this on for debugging
+  #access_log access.log;
+  access_log off;
 
-    sendfile        on;
+  sendfile on;
 
-    # i tried setting to 0 and removing the keepalive timer from the ipython client.
-    # but it did not fix the problem.
-    #keepalive_timeout  0;
-    keepalive_timeout  1000;
-    proxy_read_timeout 1000000;
+  # i tried setting to 0 and removing the keepalive timer from the ipython client.
+  # but it did not fix the problem.
+  #keepalive_timeout  0;
+  keepalive_timeout  1000;
+  proxy_read_timeout 1000000;
 
-    server {
+  client_max_body_size 100M;
+  client_body_temp_path "client_temp";
+  proxy_temp_path "client_temp";
+  fastcgi_temp_path "client_temp";
+  uwsgi_temp_path "client_temp";
+  scgi_temp_path "client_temp";
 
-# Exactly one of the two following sections should be active.
+  server {
 
-# https
-#        listen       %(port_main)s ssl;
-#        server_name  localhost;
-#        ssl_certificate %(host)s.cer;
-#        ssl_certificate_key %(host)s.key;
-         client_max_body_size 100M;
-         client_body_temp_path "%(client_temp_dir)s";
-         proxy_temp_path "%(client_temp_dir)s";
-         fastcgi_temp_path "%(client_temp_dir)s";
-         uwsgi_temp_path "%(client_temp_dir)s";
-         scgi_temp_path "%(client_temp_dir)s";
+    %(listen_section)s
 
-
-# kerberos
-        listen       %(port_clear)s;
-
-        # redirect server error pages to the static page /50x.html
-        #
-        # html directory is missing now XXX
-        # this is also a problem for favicon XXX
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   html;
-        }
-
-        location /beaker/ {
-            proxy_pass http://127.0.0.1:%(port_beaker)s/;
-        }
-        %(plugin_section)s
-        %(extra_rules)s
+    # redirect server error pages to the static page /50x.html
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+      root   html;
     }
+
+    # nginx should probably serve the static content instead of
+    # passing it on to jetty. XXX
+
+    location /loginrest/ {
+      proxy_pass http://127.0.0.1:%(port_beaker)s/rest/login/;
+      proxy_set_header Authorization "Basic %(auth)s";
+    }
+
+    location /login/ {
+      alias html/;
+    }
+
+    location = / {
+      return 301 %(start_page)s;
+    }
+
+    location /beaker/ {
+      proxy_pass http://127.0.0.1:%(port_beaker)s/;
+      proxy_set_header Authorization "Basic %(auth)s";
+      %(auth_cookie_rule)s
+    }
+
+    %(plugin_section)s
+    %(extra_rules)s
+  }
+  server {
+    listen 127.0.0.1:%(port_restart)s;
+
+    location = /restart.%(restart_id)s/present.html {
+      alias html/present.html;
+    }
+  }
 }

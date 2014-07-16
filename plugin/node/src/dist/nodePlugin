@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/python
 #
-# Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+# Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo port=$1
-cd $(dirname $0)
-exec node app.js $1 127.0.0.1
-echo "Server started"
+import os
+import sys
+
+coreport = sys.argv.pop()
+port = sys.argv.pop()
+self_path = sys.argv.pop()
+
+os.chdir(os.path.dirname(self_path))
+
+os.execlp("node", "node", "app/app.js", port, "127.0.0.1")

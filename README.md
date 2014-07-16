@@ -1,5 +1,5 @@
 <!--
-    Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+    Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,40 +13,60 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
- 
-#Notices
 
-* As long as this repo is 'private', do not share code or builds with anybody outside of Two Sigma
-* Two Sigma employees must complete the appropriate authorization forms in Bonita before contributing to any open source project, including Beaker
+#Beaker - the data scientist's laboratory
 
-#Beaker notebook
-##Overview
+Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.
 
-Beaker is a polyglot code notebook that allows data scientists to analyze data and document their process using multiple programming languages. Users can seamlessly switch between their favorite languages and tools within a single document. Current language support includes Python, Groovy, R, Scala, Matlab, HTML, Markdown, and Latex. Results can be rendered as interactive visualizations that can easily be shared with colleagues or the public.
+This page is for developers.  If you want to use or learn more about Beaker, see the [home page](http://beakernotebook.com).
 
-##Polyglot literate programming
+Beaker is currently in early beta release and is not yet production quality. We find it useful and we hope you do too, but there are bugs and the user interface and APIs are going to change. We love to improve it and we look forward to hearing your feedback.
+![screenshots](http://twosigma.github.io/beaker-notebook/images/bk4.png)
 
-Imagine a classic lab notebook. The flexibility it provides is endless. You can write words, do math, draw sketches, paint pictures, tape in photographs, or anything else you can imagine. What's more, you can mix these different media however you want. A single page can have English, German, calculus, chemistry, and a picture of your cat.
-Beaker provides the same flexibility with code. You can switch seamlessly between many different markup and programming languages within a single document. We've built in support for many languages, and if you want something we haven't gotten to yet, you can add it yourself by writing a plugin.
+##Language support
 
-##Sharing your progress
+We currently provide support for Python, R, Julia, Groovy, Ruby, JavaScript, HTML, Markdown, and LaTeX.
 
-Returning to our paper-based notebook, when you have something to share with your colleagues, there are many options: take the notebook to their desks, mail them a carbon copy of relevant pages, or hang pages on a bulletin board.
-Beaker gives you all this flexibility and more. You can take a snapshot of your work at any time and easily share it with the world. Whether you want to share a block of code, a chart, one section of a notebook, or a whole document, you're one click away from publishing a snapshot that anybody can view in a browser, even if they don't use Beaker themselves.
+Beaker has a plugin-based architecture, so additional languages are easily added.
 
-##Publication and reproducible science
+##Iterative exploration
 
-Here is where Beaker blows past what's possible on paper. Traditionally, there are many steps between exploratory work and publication. Notes will be spread across many pages or even different notebooks, data might be somewhere completely different, and drafts of figures could be on whiteboards or napkins. Eventually all of this work is summarized into a document with only text and figures. The reviewers and readers never get to see the full process or data.
-Beaker changes all of that. With its polyglot nature, hierarchical section format, and ability to show or hide any cells you want, you can record your full process in a single document. Once you're done with exploration, start a new section with facts and figures. When you're ready to publish, you can collapse the data and details, expand your writeup, and send off the document. The viewers can choose how deeply to examine your work. A casual reader may just look at the writeup, but anybody who's interested can dig into your process and code with the ability to completely reproduce your work.
+The notebook format is based on blocks of code called cells. Cells can be added anywhere in the notebook and can be edited and run independently from each other. This makes an ideal environment for iterative exploration of data and coding ideas.
 
-##Open Source Software
+##Visualizations
 
-Beaker was built as an internal Two Sigma project but is now being released to the public under the Apache 2.0 license. Is currently available to contributors via a private GitHub repo and will be made public in the near future.
- 
-#Running Beaker
+Visualizations created with libraries like ggplot2 and matplotlib will appear directly in the notebook along with your code.
 
-[Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run)
+##Inline documentation
 
-[Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run)
+The inclusion of markup languages like HTML, Markdown, and LaTeX means that you can document your work right alongside your code.
 
-[Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run)
+##Organization
+
+Beaker provides several features to help your organize your notebooks, for your own convenience or for sharing your work with colleagues.
+
+These features include: collapsible nested sections with headers, lock notebook (hide all code and disable editing), toggle visibility of code and output on individual cells, initialization cells (run automatically on notebook load), and delete all output.
+
+##Notebook viewer
+
+We provide a notebook viewer that can render any notebook accessible from the web. We also provide a one-click action to save a copy of your notebook to a GitHub Gist and generate a notebook viewer link.
+
+The viewer is, of course, open source. This means you can install a copy on your private cloud to view notebooks you don't want to share with the whole world
+
+##Plugin-based architecture
+Beaker was designed from the beginning with flexibility in mind. All of the core functionality including language evaluation, menu items, and output displays are built using plugins. This means that any language or feature you want to add to Beaker can work just as well as everything we've included by default.
+
+Plugins are written in JavaScript and have the option to start a process on the back end server. For anything that uses only JavaScript, you can simply provide your users with the URL for the plugin, which they can load directly from the UI.
+
+Plugin specifications: [Evaluator plugins](https://github.com/twosigma/beaker-notebook/wiki/Eval-plugin-spec), [Menu plugins](https://github.com/twosigma/beaker-notebook/wiki/Menu-plugin-spec), [Output display plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
+
+##Open source
+Beaker's full source code and documentation is available under the Apache 2.0 license.  Beaker's sharing feature uses a server with its own [repository](https://github.com/twosigma/beaker-sharing-server).
+
+#Build and run instructions
+
+[![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
+
+Users should download beaker from [BeakerNotebook.com](http://beakernotebook.com)
+
+Developers, see the page for your platform for how to build from source: [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run), [Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run), [Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run)

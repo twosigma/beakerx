@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,9 +19,8 @@
  * For creating and configuring evaluators that evaluate Javascript code on
  *   a remote node server and update code cell results.
  */
-(function () {
+define(function(require, exports, module) {
     'use strict';
-    var url = "./plugins/eval/node/node.js";
     var PLUGIN_NAME = "Node";
     var COMMAND = "node/nodePlugin";
 
@@ -30,7 +29,7 @@
     var nodeProto = {
         pluginName: PLUGIN_NAME,
         cmMode: "javascript",
-        background: "#80bd01",
+        background: "#dbecb5",
         newShell: function (shellID, cb) {
             var self = this;
 
@@ -106,6 +105,7 @@
         spec: {}
     };
 
+    var shellReadyDeferred = bkHelper.newDeferred();
     var init = function () {
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
@@ -113,7 +113,7 @@
         recordOutput: "true"
         }).success(function (ret) {
             serviceBase = ret;
-            var NodeShell = function (settings, cb) {
+            var NodeShell = function (settings, doneCB) {
                 var self = this;
                 var setShellIdCB = function (id) {
                     if (id !== settings.shellID) {
@@ -121,7 +121,9 @@
                     }
                     settings.shellID = id;
                     self.settings = settings;
-                    cb();
+                    if (doneCB) {
+                      doneCB(self);
+                    }
                 };
                 if (!settings.shellID) {
                     settings.shellID = "";
@@ -133,11 +135,27 @@
                 };
             };
             NodeShell.prototype = nodeProto;
-            bkHelper.getLoadingPlugin(url).onReady(NodeShell);
+            shellReadyDeferred.resolve(NodeShell);
         }).error(function () {
             alert('fail');
             console.log("process start failed", arguments);
         });
     };
     init();
-})();
+
+  exports.getEvaluatorFactory = function() {
+    return shellReadyDeferred.promise.then(function(Shell) {
+      return {
+        create: function(settings) {
+          var deferred = bkHelper.newDeferred();
+          new Shell(settings, function(shell) {
+            deferred.resolve(shell);
+          });
+          return deferred.promise;
+        }
+      };
+    });
+  };
+
+    exports.name = PLUGIN_NAME;
+});

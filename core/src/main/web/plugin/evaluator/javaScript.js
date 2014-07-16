@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,12 +17,9 @@
  * JavaScript eval plugin
  * For creating and config evaluators that evaluate JavaScript code and update code cell results.
  */
-(function() {
+define(function(require, exports, module) {
   'use strict';
-  var url = "./plugin/evaluator/javaScript.js";
-//    var init = function() { };
-//    init();
-
+  var PLUGIN_NAME = "JavaScript";
   var stringProps = ("charAt charCodeAt indexOf lastIndexOf substring substr slice trim trimLeft trimRight " +
       "toUpperCase toLowerCase split concat match replace search").split(" ");
   var arrayProps = ("length concat join splice push pop shift unshift slice reverse sort indexOf " +
@@ -154,11 +151,11 @@
 
 
   var JavaScript_0 = {
-    pluginName: "JavaScript",
+    pluginName: PLUGIN_NAME,
     cmMode: "javascript",
     background: "#FFE0F0",
     evaluate: function(code, modelOutput) {
-      return Q.fcall(function() {
+      return bkHelper.fcall(function() {
         try {
           modelOutput.result = "" + eval(code);
         } catch (err) {
@@ -168,7 +165,6 @@
             object: "" + err
           };
         }
-        bkHelper.refreshRootScope();
       });
     },
     autocomplete2: function(editor, options, cb) {
@@ -192,23 +188,32 @@
     spec: {
     }
   };
-  var JavaScript0 = function(settings, cb) {
+  var JavaScript0 = function(settings) {
     if (!settings.jsSetting2) {
       settings.jsSetting2 = "";
     }
     if (!settings.jsSetting1) {
       settings.jsSetting1 = "";
     }
+    if (!settings.view) {
+      settings.view = {};
+    }
+    if (!settings.view.cm) {
+      settings.view.cm = {};
+    }
+    settings.view.cm.mode = JavaScript_0.cmMode;
+    settings.view.cm.background = JavaScript_0.background;
     this.settings = settings;
     this.updateAll();
     this.perform = function(what) {
       var action = this.spec[what].action;
       this[action]();
     };
-    window.setTimeout(cb, 0);
   };
   JavaScript0.prototype = JavaScript_0;
-  //MyShell = JavaScript0;
 
-  bkHelper.getLoadingPlugin(url).onReady(JavaScript0);
-})();
+  exports.getEvaluatorFactory = function() {
+    return bkHelper.getEvaluatorFactory(bkHelper.newPromise(JavaScript0));
+  };
+  exports.name = PLUGIN_NAME;
+});

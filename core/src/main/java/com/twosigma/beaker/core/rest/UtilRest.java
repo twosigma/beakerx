@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -66,6 +67,14 @@ public class UtilRest {
   @Produces(MediaType.TEXT_PLAIN)
   public String whoami(@Context HttpServletRequest request) {
     return "\"" + System.getProperty("user.name") + "\"";
+  }
+
+  @GET
+  @Path("getVersionInfo")
+  @Produces(MediaType.APPLICATION_JSON)
+  public String getVersionInfo(@Context HttpServletRequest request) {
+    return "{\"buildTime\": \"" + this.bkConfig.getBuildTime() + "\","
+        + " \"version\":\"" + this.bkConfig.getVersion() + "\"}";
   }
 
   @GET
@@ -123,60 +132,111 @@ public class UtilRest {
     return clean(content);
   }
 
+  /**
+   * This function returns a Boolean setting as string. If the setting is null in the preference,
+   * it will use the setting in the config, otherwise, what is set in preference is used.
+   * @param settingsListName
+   * @param configs
+   * @param prefs
+   * @return
+   */
+  private static String mergeBooleanSetting(
+      String settingName,
+      JSONObject configs,
+      JSONObject prefs) {
+      Boolean sc = (Boolean) configs.get(settingName);
+      Boolean sp = (Boolean) prefs.get(settingName);
+      Boolean s = (sp != null) ? sp : sc;
+      String setting = null;
+      if (s != null) {
+        if (s.equals(Boolean.TRUE)) {
+          setting = "true";
+        } else if (s.equals(Boolean.FALSE)) {
+          setting = "false";
+        }
+      }
+      return setting;
+  }
+
+  /**
+   * This function returns a list of settings from the result of merging setting gotten from
+   * both the config and preference files and having to-remove items specified in the preference
+   * file removed
+   * @param settingsListName
+   * @param configs
+   * @param prefs
+   * @return
+   */
+  private static final String TO_REMOVE_PREFIX = "remove--";
+  private static Set<String> mergeListSetting(
+      String settingsListName,
+      JSONObject configs,
+      JSONObject prefs) {
+    Set<String> settings = new LinkedHashSet<>();
+    Set<String> settingsToRemove = new HashSet<>();
+    { // settings from config
+      JSONArray s = (JSONArray) configs.get(settingsListName);
+      if (s != null) {
+        @SuppressWarnings("unchecked")
+        Iterator<String> iterator = s.iterator();
+        while (iterator.hasNext()) {
+          settings.add(iterator.next());
+        }
+      }
+    }
+    { // settings from preference
+      JSONArray s = (JSONArray) prefs.get(settingsListName);
+      if (s != null) {
+        @SuppressWarnings("unchecked")
+        Iterator<String> iterator = s.iterator();
+        while (iterator.hasNext()) {
+          settings.add(iterator.next());
+        }
+      }
+    }
+    { // to-remove settings from preference
+      JSONArray s = (JSONArray) prefs.get(TO_REMOVE_PREFIX + settingsListName);
+      if (s != null) {
+        @SuppressWarnings("unchecked")
+        Iterator<String> iterator = s.iterator();
+        while (iterator.hasNext()) {
+          settingsToRemove.add(iterator.next());
+        }
+      }
+    }
+    settings.removeAll(settingsToRemove);
+    return settings;
+  }
+
   private void resetConfig() {
     final String configFileUrl = this.bkConfig.getConfigFileUrl();
+    final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
 
     // TODO, assume the url is a file path for now.
     java.nio.file.Path configFile = Paths.get(configFileUrl);
+    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
     try {
       JSONParser parser = new JSONParser();
-      Object obj = parser.parse(this.utils.readFile(configFile));
+      JSONObject configJsonObject =
+          (JSONObject) parser.parse(this.utils.readFile(configFile));
+      JSONObject preferenceJsonObject =
+          (JSONObject) parser.parse(this.utils.readFile(preferenceFile));
 
-      JSONObject jsonObject = (JSONObject) obj;
-      {
-        Boolean allowTracking = (Boolean) jsonObject.get("allow-anonymous-usage-tracking");
-        if (allowTracking == null) {
-          setAllowAnonymousTracking(null);
-        } else if (allowTracking.equals(Boolean.TRUE)) {
-          setAllowAnonymousTracking("true");
-        } else if (allowTracking.equals(Boolean.FALSE)) {
-          setAllowAnonymousTracking("false");
-        } else {
-          setAllowAnonymousTracking(null);
-        }
-      }
-      {
-        JSONArray menus = (JSONArray) jsonObject.get("init");
-        @SuppressWarnings("unchecked")
-        Iterator<String> iterator = menus.iterator();
-        while (iterator.hasNext()) {
-          addInitPlugin(iterator.next());
-        }
-      }
-      {
-        JSONArray menus = (JSONArray) jsonObject.get("control-panel-menu-plugins");
-        @SuppressWarnings("unchecked")
-        Iterator<String> iterator = menus.iterator();
-        while (iterator.hasNext()) {
-          addControlPanelMenuPlugin(iterator.next());
-        }
-      }
-      {
-        JSONArray menus = (JSONArray) jsonObject.get("notebook-app-menu-plugins");
-        @SuppressWarnings("unchecked")
-        Iterator<String> iterator = menus.iterator();
-        while (iterator.hasNext()) {
-          addMenuPlugin(iterator.next());
-        }
-      }
-      {
-        JSONArray menus = (JSONArray) jsonObject.get("notebook-cell-menu-plugins");
-        @SuppressWarnings("unchecked")
-        Iterator<String> iterator = menus.iterator();
-        while (iterator.hasNext()) {
-          addCellMenuPlugin(iterator.next());
-        }
-      }
+      String isAllowTracking = mergeBooleanSetting(
+          "allow-anonymous-usage-tracking",
+          configJsonObject,
+          preferenceJsonObject);
+      setAllowAnonymousTracking(isAllowTracking);
+
+      this.initPlugins.addAll(
+          mergeListSetting("init", configJsonObject, preferenceJsonObject));
+      this.controlPanelMenuPlugins.addAll(
+          mergeListSetting("control-panel-menu-plugins", configJsonObject, preferenceJsonObject));
+      this.menuPlugins.addAll(
+          mergeListSetting("notebook-app-menu-plugins", configJsonObject, preferenceJsonObject));
+      this.cellMenuPlugins.addAll(
+          mergeListSetting("notebook-cell-menu-plugins", configJsonObject, preferenceJsonObject));
+
     } catch (ParseException e) {
       throw new RuntimeException("failed getting beaker configurations from config file", e);
     }
@@ -198,21 +258,21 @@ public class UtilRest {
     } else {
       this.isAllowAnonymousTracking = null;
     }
-    final String configFileUrl = this.bkConfig.getConfigFileUrl();
+    final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
 
     // TODO, assume the url is a file path for now.
-    java.nio.file.Path configFile = Paths.get(configFileUrl);
+    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
     try {
       ObjectMapper om = new ObjectMapper();
       TypeReference readType = new TypeReference<HashMap<String, Object>>() {
       };
-      Map<String, Object> configs = om.readValue(configFile.toFile(), readType);
-      Boolean oldValue = (Boolean) configs.get("allow-anonymous-usage-tracking");
+      Map<String, Object> prefs = om.readValue(preferenceFile.toFile(), readType);
+      Boolean oldValue = (Boolean) prefs.get("allow-anonymous-usage-tracking");
       // If value changed, write it to the file too
       if ((this.isAllowAnonymousTracking == null && oldValue != null)
               || (this.isAllowAnonymousTracking != null && !(this.isAllowAnonymousTracking.equals(oldValue)))) {
-        configs.put("allow-anonymous-usage-tracking", this.isAllowAnonymousTracking);
-        om.writerWithDefaultPrettyPrinter().writeValue(configFile.toFile(), configs);
+        prefs.put("allow-anonymous-usage-tracking", this.isAllowAnonymousTracking);
+        om.writerWithDefaultPrettyPrinter().writeValue(preferenceFile.toFile(), prefs);
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -226,15 +286,11 @@ public class UtilRest {
   }
 
   /* Init Plugins */
-  private final List<String> initPlugins = new ArrayList<>();
-
-  public void addInitPlugin(String p) {
-    this.initPlugins.add(p);
-  }
+  private final Set<String> initPlugins = new LinkedHashSet<>();
 
   @GET
   @Path("getInitPlugins")
-  public List<String> getInitPlugins() {
+  public Set<String> getInitPlugins() {
     return this.initPlugins;
   }
 
@@ -271,7 +327,7 @@ public class UtilRest {
   }
 
   /* bkCell Menu Plugins */
-  private final List<String> cellMenuPlugins = new ArrayList<>();
+  private final Set<String> cellMenuPlugins = new LinkedHashSet<>();
 
   @POST
   @Path("addCellMenuPlugin")
@@ -281,7 +337,7 @@ public class UtilRest {
 
   @GET
   @Path("getCellMenuPlugins")
-  public List<String> getCellMenuPlugins() {
+  public Set<String> getCellMenuPlugins() {
     return this.cellMenuPlugins;
   }
 }

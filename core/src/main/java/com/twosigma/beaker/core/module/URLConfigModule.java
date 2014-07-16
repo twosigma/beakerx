@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.twosigma.beaker.core.rest.OutputLogService;
 import com.twosigma.beaker.core.rest.NamespaceService;
 import com.twosigma.beaker.core.rest.FileIORest;
 import com.twosigma.beaker.core.rest.HttpProxyRest;
+import com.twosigma.beaker.core.rest.LoginRest;
 import com.twosigma.beaker.core.rest.OutputLogRest;
 import com.twosigma.beaker.core.rest.NamespaceRest;
 import com.twosigma.beaker.core.rest.RecentMenuRest;
@@ -76,5 +77,6 @@ public class URLConfigModule extends ServletModule {
     bind(NamespaceRest.class);
     bind(SessionBackupRest.class);
     bind(RecentMenuRest.class);
+    bind(LoginRest.class);
   }
 }

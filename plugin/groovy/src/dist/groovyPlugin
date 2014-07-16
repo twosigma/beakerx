@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/python
 #
-# Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+# Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,14 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-opt=($*) # opt is array of command line parameters
+import os
+import sys
 
-coreport=${opt[${#opt[@]}-1]} # coreport is the last one
-unset opt[${#opt[@]}-1]   # delete it
+coreport = sys.argv.pop()
+port = sys.argv.pop()
+self_path = sys.argv.pop(0)
 
-plugport=${opt[${#opt[@]}-1]} # now port is the last one
-unset opt[${#opt[@]}-1]   # delete it
+os.chdir(os.path.dirname(self_path))
 
-export GROOVY_OPTS="${opt[*]}"  # remaining prameters passed to JVM
-cd $(dirname $0)
-bin/groovy $plugport $coreport
+os.environ["GROOVY_OPTS"] = " ".join(sys.argv)
+
+if os.name == 'nt':
+    bin = "bin\\groovy"
+else:
+    bin = "bin/groovy"
+
+os.execlp(bin, bin, port, coreport)

@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var http = require('http');
 var uuid = require('node-uuid');
@@ -11,21 +13,23 @@ console.log('Server Starting')
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
+app.use(express.basicAuth('beaker', process.env.beaker_plugin_password));
+
 // route for testing service is alive
 app.get('/pulse', function(request, response){
     response.send('node server is running');
 });
 
 app.post('/shell', function(request, response){
-    returnObject = {'shellID':uuid.v4()};
+    var returnObject = {'shellID':uuid.v4()};
     response.setHeader('Content-Type', 'application/json');
     response.send(JSON.stringify(returnObject));
 });
 
 app.post('/evaluate', function(request, response){
-    shellID = request.body.shellID;
-    code =  decodeURIComponent(request.body.code);
-    evaluationResult = processCode(code);
+    var shellID = request.body.shellID;
+    var code =  decodeURIComponent(request.body.code);
+    var evaluationResult = processCode(code);
     if (evaluationResult.processed){
         response.statusCode = 200;
     } else {
@@ -35,7 +39,6 @@ app.post('/evaluate', function(request, response){
 });
 
 function processCode(code) {
-    'use strict';
     var returnValue;
     var result;
     try {

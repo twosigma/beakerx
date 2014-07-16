@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class RecentMenuRest {
       }
     }
     for (String line: lines) {
-       addRecentDocument(transformUrl(line.trim()));
+       addRecentDocument(line.trim());
     }
   }
 
@@ -76,11 +76,11 @@ public class RecentMenuRest {
     return new ArrayList<>(this.recentDocuments);
   }
 
-  private void addRecentDocument(String docName) {
-    if (this.recentDocuments.contains(docName)) {
-      this.recentDocuments.remove(docName);
+  private void addRecentDocument(String json) {
+    if (this.recentDocuments.contains(json)) {
+      this.recentDocuments.remove(json);
     }
-    this.recentDocuments.addFirst(transformUrl(docName));
+    this.recentDocuments.addFirst(json);
   }
 
   private void recordToFile() throws IOException {
@@ -93,16 +93,6 @@ public class RecentMenuRest {
     Iterator<String> it = input.descendingIterator();
     while (it.hasNext()) {
       ret.add(it.next());
-    }
-    return ret;
-  }
-
-  private static String transformUrl(String input) {
-    String ret;
-    if (input.contains(":/") || input.startsWith("file:")) {
-      ret = input;
-    } else {
-      ret = "file:" + input;
     }
     return ret;
   }

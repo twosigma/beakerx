@@ -95,6 +95,19 @@
               }
             },
             {
+              name: "Hide Cell Output",
+              isChecked: function() {
+                return !$scope.$parent.cellmodel.output.hidden;
+              },
+              action: function() {
+                if ($scope.$parent.cellmodel.output.hidden) {
+                  delete $scope.$parent.cellmodel.output.hidden;
+                } else {
+                  $scope.$parent.cellmodel.output.hidden = true;
+                }
+              }
+            },
+            {
               name: "Delete",
               action: function() {
                 $scope.model.result = undefined;

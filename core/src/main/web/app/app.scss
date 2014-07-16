@@ -40,7 +40,9 @@ ul.cell-output-labels {
 }
 
 .notebook-container {
+    padding: 0 10px;
     margin-top: 10px;
+    box-sizing: border-box;
 }
 
 .locked .cell-output-labels li {

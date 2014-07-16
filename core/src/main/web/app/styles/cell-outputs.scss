@@ -22,6 +22,10 @@ bk-code-cell-output {
     }
   }
 
+  .slick-column-name {
+    margin-left: -9px;
+  }
+
   .slick-header-column:first-child {
     border-left: solid 1px $cell-border;
   }

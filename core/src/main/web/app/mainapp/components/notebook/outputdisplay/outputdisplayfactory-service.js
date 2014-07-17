@@ -40,21 +40,13 @@
       },
       "Error": {
         template: "<div class='outline error'></div><pre class='out_error' ng-hide='expanded'>" +
-            "<span></span>" + // first span
-            "</pre>" +
-            "<pre class='out_error' ng-show='expanded'>" +
-            "<span></span>" + // last span
+            "<span></span>" +
             "</pre>",
         controller: function($scope, $element) {
           $scope.expanded = false;
+
           $scope.$watch('model.getCellModel()', function(cellModel) {
-            if (_.isArray(cellModel)) {
-              $element.find('span').first().html(cellModel[0]);
-              $element.find('span').last().html(cellModel[1]);
-            } else {
-              $element.find('span').first().html(cellModel);
-              $element.find('span').last().html("");
-            }
+            $element.find('span').first().html(Array.prototype.concat(cellModel).join("\n"));
           });
         }
       },

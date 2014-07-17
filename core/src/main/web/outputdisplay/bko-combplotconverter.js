@@ -33,7 +33,7 @@
         var sumweights = 0;
         var weights = model.weights == null ? [] : model.weights;
         for(var i = 0; i < model.plots.length; i++) {
-          if(weights[i] == null) weights[i] = 1;
+          if(weights[i] == null) { weights[i] = 1; }
           sumweights += weights[i];
         }
         var plots = model.plots;

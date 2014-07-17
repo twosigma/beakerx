@@ -77,5 +77,6 @@
       }
     };
   };
-  beaker.bkoDirective("CombinedPlot", ["plotUtils", "combplotConverter", "bkCellMenuPluginManager", retfunc]);
+  beaker.bkoDirective("CombinedPlot", 
+      ["plotUtils", "combplotConverter", "bkCellMenuPluginManager", retfunc]);
 })();

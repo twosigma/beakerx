@@ -36,6 +36,7 @@
       controller : function($scope) {
       },
       link : function(scope, element, attrs) {
+        
         // rendering code
         element.find("#plotContainer").resizable({
           maxWidth : element.width(), // no wider than the width of the cell
@@ -140,7 +141,9 @@
         };
 
         scope.emitSizeChange = function() {
-          if(scope.model.updateWidth != null) scope.model.updateWidth(scope.width);  // not stdmodel here
+          if(scope.model.updateWidth != null) { 
+            scope.model.updateWidth(scope.width);
+          } // not stdmodel here
         };
         scope.initRange = function() {
           var data = scope.data, model = scope.stdmodel;
@@ -168,7 +171,9 @@
             scope.vrange.xr += scope.range.xspan * (margin == null || margin.right == null ? 0.1 : margin.right / 100.0);
             scope.vrange.yl -= scope.range.yspan * (margin == null || margin.bottom == null ? 0.1 : margin.bottom / 100.0);
             scope.vrange.yr += scope.range.yspan * (margin == null || margin.top == null ? 0.1 : margin.top / 100.0);
-            if(model.onzeroY) scope.vrange.yl = 0;
+            if(model.onzeroY) {
+              scope.vrange.yl = 0;
+            }
           }
           scope.vrange.xspan = scope.vrange.xr - scope.vrange.xl;
           scope.vrange.yspan = scope.vrange.yr - scope.vrange.yl;
@@ -238,7 +243,7 @@
           else if (ybase <= 0.5)
             deci = 1;
           var xintv = xbase, yintv = ybase;
-          var xs = Math.ceil(focus.xl / xintv) * xintv, xt = Math.floor(focus.xr / xintv) * xintv, 
+          var xs = Math.ceil(focus.xl / xintv) * xintv, xt = Math.floor(focus.xr / xintv) * xintv,
               ys = Math.ceil(focus.yl / yintv) * yintv, yt = Math.floor(focus.yr / yintv) * yintv;
           scope.xCoords = [];
           scope.yCoords = [];
@@ -297,7 +302,8 @@
           var fdata = scope.fdata;
           for (var i = 0; i < numLines; i++) {
             var eles = data[i].elements;
-            if (data[i].type === "constline" || data[i].type === "constband" || data[i].type === "text") {
+            if (data[i].type === "constline" || data[i].type === "constband" || 
+                data[i].type === "text") {
               fdata[i] = {
                 "leftIndex" : 0,
                 "rightIndex" : eles.length - 1
@@ -321,8 +327,9 @@
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
           for (var i = 0; i < numLines; i++) {
-            if (data[i].shown == false)
+            if (data[i].shown == false) {
               continue;
+            }
             var eles = data[i].elements;
             if (data[i].type === "bar") {
               var w = data[i].width, sw;
@@ -335,8 +342,9 @@
                 if(y2 == null) y2 = focus.yl;
                 y = mapY(y); y2 = mapY(y2);
                 sw = x2 - x1;
-                if (y > y2)
+                if (y > y2) {
                   continue;
+                }
                 // prevent negative height
                 var bar = {
                   "id" : "bar_" + i + "_" + j,
@@ -469,7 +477,8 @@
 
                 reles.push(ele);
               }
-              var pipe = data[i].style === "rect" ? scope.rpipePointRects : scope.rpipePointCircles;
+              var pipe = data[i].style === "rect" ? 
+                  scope.rpipePointRects : scope.rpipePointCircles;
               pipe.push({
                   "id" : "point_" + i,
                   "class" : "plot-point"+data[i].style,
@@ -502,7 +511,8 @@
                   scope.jqcontainer.find("#" + id).remove();
                   var label = $("<div id=" + id + " class='plot-constlabel'></div>")
                     .appendTo(scope.jqcontainer)
-                    .text(scope.stdmodel.xType === "time" ? plotUtils.formatDate(scope.xintv, p.x) : parseInt(p.x));
+                    .text(scope.stdmodel.xType === "time" ? 
+                        plotUtils.formatDate(scope.xintv, p.x) : parseInt(p.x));
                   var w = label.outerWidth(), h = label.outerHeight();
                   var p = {
                     "x" : x - w / 2,
@@ -557,7 +567,7 @@
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j], ele = { "id": "const_" + i + "_" + j };
                 if (p.type === "x") {
-                  if(p.x1 > focus.xr || p.x2 < focus.xl) continue;
+                  if(p.x1 > focus.xr || p.x2 < focus.xl) { continue; }
                   var x1 = mapX(p.x1), x2 = mapX(p.x2);
                   x1 = Math.max(x1, lMargin);
                   x2 = Math.min(x2, W);
@@ -569,7 +579,7 @@
                     "opacity" : p.opacity
                   });
                 } else if (p.type === "y") {
-                  if(p.y1 > focus.yr || p.y2 < focus.yl) continue;
+                  if(p.y1 > focus.yr || p.y2 < focus.yl) { continue; }
                   var y2 = mapY(p.y1), y1 = mapY(p.y2);
                   y2 = Math.min(y2, H-bMargin);
                   y1 = Math.max(y1, 0);
@@ -614,15 +624,26 @@
                   "text" : p.v
                 });
               }
-            } else {// standard line: solid, dash or dot
+            } else { // standard line: solid, dash or dot
               var pstr = "";
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
-                pstr += mapX(p.x) + "," + mapY(p.y) + " ";
-                if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
-                  var p2 = eles[j + 1];
-                  pstr += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
+                if (j == fdata[i].leftIndex) pstr += "M";
+                else if (j == fdata[i].leftIndex + 1) {
+                  if(data[i].interpolation !== "curve") pstr += "L";
+                  else pstr += "C";
                 }
+                var nxtp = mapX(p.x) + "," + mapY(p.y) + " ";
+                
+                if(j < fdata[i].rightIndex) {
+                  if (data[i].interpolation === "none") {
+                    var p2 = eles[j + 1];
+                    nxtp += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
+                  } else if (data[i].interpolation === "curve") {
+                    // TODO
+                  }
+                }
+                pstr += nxtp;
               }
               var line = {
                 "id": "line_"+i,
@@ -641,10 +662,13 @@
           var data = scope.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
           for (var i = 0; i < numLines; i++) {
-            if (data[i].shown == false)
+            if (data[i].shown == false) {
               continue;
-            if (data[i].type === "point" || data[i].type === "constline" || data[i].type === "constband")
+            }
+            if (data[i].type === "point" || data[i].type === "constline" || 
+                data[i].type === "constband") {
               continue;
+            }
             var eles = data[i].elements;
             var reles = [];
             for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
@@ -653,8 +677,7 @@
                 "x" : mapX(eles[j].x),
                 "y" : mapY(eles[j].y)
               };
-              if (plotUtils.outsideScr(scope, p))
-                continue;
+              if (plotUtils.outsideScr(scope, p)) { continue; }
               var id = "dot_" + eles[j].uniqid;
               reles.push({
                 "id" : id,
@@ -694,15 +717,14 @@
           });
         };
         scope.toggleTooltip = function(d) {
-          var id = d.id, nv = scope.tips[id] == null ? 1 : 0;
+          var id = d.id, nv = !scope.tips[id];
           //scope.svg.selectAll("#" + id)
           //  .attr("visibility", nv);
-          if (nv == 1) {
+          if (nv === true) {
+            scope.tooltip(d);
             d.opacity = 1;
             scope.tips[id] = d;
             scope.svg.selectAll("#" + id).attr("opacity", 1);
-            //plotUtils.replotSingleCircle(scope, d);
-            //scope.prepareInteraction(d.id);
           } else {
             delete scope.tips[id];
             d.opacity = 0;
@@ -722,7 +744,8 @@
             .attr("class", "plot-tooltip")
             .css("left", d.cx + scope.fonts.tooltipWidth + "px")
             .css("top", d.cy + "px")
-            .css("border-color", scope.data[d.lineid].color == null? "gray" : scope.data[d.lineid].color)
+            .css("border-color", scope.data[d.lineid].color == null ? 
+                "gray" : scope.data[d.lineid].color)
             .append("<div>" + d.value + "</div>");
         };
         scope.untooltip = function(d) {
@@ -737,7 +760,7 @@
               "x" : scope.data2scrX(d.point.x),
               "y" : scope.data2scrY(d.point.y)
             };
-            if (plotUtils.outsideScr(scope, p)) return;
+            if (plotUtils.outsideScr(scope, p)) { return; }
             d.cx = p.x + scope.fonts.tooltipWidth;
             d.cy = p.y;
             var tip = scope.tips[d.id];
@@ -928,7 +951,7 @@
 
           var content = "";
           for (var i = 0; i < numLines; i++) {
-            if(data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") continue;
+            if(data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
             var unit = $("<div></div>").appendTo(legend).attr("id", "legend_" + i);
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_" + i)
@@ -961,6 +984,7 @@
             return;
           }
           var data = scope.data;
+          data[id].shown = !data[id].shown;
           scope.update();
         };
         scope.renderCoverBox = function() {
@@ -996,7 +1020,8 @@
         };
         scope.calcLocateBox = function() {
           var p1 = scope.mousep1, p2 = scope.mousep2;
-          var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x), yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
+          var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
+              yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
           scope.locateBox = {
             "x" : xl,
             "y" : yl,
@@ -1019,8 +1044,7 @@
           }
         };
         scope.zoomStart = function(d) {
-          if (scope.interactMode === "other")
-            return;
+          if (scope.interactMode === "other") { return; }
           scope.lastx = scope.lasty = 0;
           scope.lastscale = 1.0;
           scope.zoomObj.scale(1.0);
@@ -1042,7 +1066,8 @@
             var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
             var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
             var d3trans = d3.event.translate, d3scale = d3.event.scale;
-            var dx = d3trans[0] - scope.lastx, dy = d3trans[1] - scope.lasty, ds = this.lastscale / d3scale;
+            var dx = d3trans[0] - scope.lastx, dy = d3trans[1] - scope.lasty, 
+                ds = this.lastscale / d3scale;
             scope.lastx = d3trans[0];
             scope.lasty = d3trans[1];
             scope.lastscale = d3scale;
@@ -1052,11 +1077,11 @@
             if (ds == 1.0) {
               // translate only
               var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan, vrange = scope.vrange;
-              if(focus.xl+tx>=vrange.xl && focus.xr+tx<=vrange.xr) {
+              if (focus.xl + tx >= vrange.xl && focus.xr + tx <= vrange.xr) {
                 focus.xl += tx;
                 focus.xr += tx;
               }
-              if(focus.yl+ty>=vrange.yl && focus.yr+ty<=vrange.yr) {
+              if (focus.yl + ty >= vrange.yl && focus.yr + ty <= vrange.yr) {
                 focus.yl += ty;
                 focus.yr += ty;
               }
@@ -1066,7 +1091,8 @@
               if (my <= scope.jqsvg.height() - scope.layout.bottomTextHeight) {
                 // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
-                var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym), nyspan = nyr - nyl;
+                var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym), 
+                    nyspan = nyr - nyl;
                 if (nyspan <= range.yspan * 100 && nyspan >= range.yspan * 0.01) {
                   focus.yl = nyl;
                   focus.yr = nyr;
@@ -1084,7 +1110,8 @@
               if (mx >= scope.layout.leftTextWidth) {
                 // scale x
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
-                var nxl = xm - ds * (xm - focus.xl), nxr = xm + ds * (focus.xr - xm), nxspan = nxr - nxl;
+                var nxl = xm - ds * (xm - focus.xl), nxr = xm + ds * (focus.xr - xm), 
+                    nxspan = nxr - nxl;
                 if (nxspan <= range.xspan * 100 && nxspan >= range.xspan * 0.01) {
                   focus.xl = nxl;
                   focus.xr = nxr;
@@ -1140,7 +1167,8 @@
           if (focus.yr > vrange.yr)
             focus.yr = vrange.yr;
           if (focus.xl > focus.xr || focus.yl > focus.yr) {
-            console.error("visual range specified does not match data range, enforcing visual range");
+            console.error("visual range specified does not match data range, " + 
+                "enforcing visual range");
             _.extend(focus, vrange);
           }
           focus.xspan = focus.xr - focus.xl;
@@ -1227,7 +1255,8 @@
           scope.svg.selectAll(".plot-cursor").remove();
           scope.jqcontainer.find(".plot-cursorlabel").remove();
         };
-        scope.calcMapping = function(emitFocusUpdate) {// called every time after the focus is changed
+        scope.calcMapping = function(emitFocusUpdate) {
+          // called every time after the focus is changed
           var focus = scope.focus, range = scope.range;
           var lMargin = scope.layout.leftTextWidth, bMargin = scope.layout.bottomTextHeight;
           var model = scope.stdmodel;

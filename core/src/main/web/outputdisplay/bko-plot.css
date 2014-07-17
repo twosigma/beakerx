@@ -16,9 +16,12 @@
 
 .plot-renderdiv {
   background-color: #FEFEFE;
-  border: 1px solid #EEEEEE;
-  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset */
+  border: 1px solid #BBBBBB;
+  /*
+  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); 
   -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+  */
+ /* inset */
 }
 
 .plot-label, 
@@ -127,9 +130,12 @@
   padding-left: 10px;
   width: 150px;
   height: auto;
-  /*border: 1px solid #EEEEEE; */
-  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); /* inset */
+  border: 1px solid #BBBBBB;
+  /*
+  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
   -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+  */
+   /* inset */
   background-color: white;
 }
 

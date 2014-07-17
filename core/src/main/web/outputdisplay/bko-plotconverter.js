@@ -16,7 +16,7 @@
 
 (function() {'use strict';
   
-  var retfunc = function(bkUtils) {
+  var retfunc = function(bkUtils, plotUtils) {
     return {
       standardizeModel : function(model) {
         
@@ -54,7 +54,7 @@
         var interpolationMap = {
           0 : "none",
           1 : "linear",
-          2 : "curve",
+          2 : "linear", // should be "curve" but right now there is no plan to support curve
           "" : "linear"
         };
 
@@ -80,17 +80,24 @@
               "width" : model.init_width ? model.init_width + "px" : 1200 + "px",
               "height" : model.init_height ? model.init_height + "px" : 350 + "px"
             },
+            nanoOffset : null,
             data : []
           };
         }
+        
 
         var onzeroY = false;
+        if(model.rangeAxes && model.rangeAxes[0].auto_range_includes_zero) { onzeroY = true; }
         
-        if(model.x_lower_bound) newmodel.focus.xl = model.x_lower_bound;
-        if(model.x_upper_bound) newmodel.focus.xr = model.x_upper_bound;
-        if(model.rangeAxes && model.rangeAxes[0].lower_bound) newmodel.focus.yl = model.rangeAxes[0].lower_bound;
-        if(model.rangeAxes && model.rangeAxes[0].upper_bound) newmodel.focus.yr = model.rangeAxes[0].upper_bound;
-        if(model.rangeAxes && model.rangeAxes[0].auto_range_includes_zero) onzeroY = true;
+        if(model.x_lower_bound) { newmodel.focus.xl = model.x_lower_bound; }
+        if(model.x_upper_bound) { newmodel.focus.xr = model.x_upper_bound; }
+        if(model.rangeAxes && model.rangeAxes[0].lower_bound) { 
+          newmodel.focus.yl = model.rangeAxes[0].lower_bound;
+        }
+        if(model.rangeAxes && model.rangeAxes[0].upper_bound) {
+           newmodel.focus.yr = model.rangeAxes[0].upper_bound;
+        }
+        
         
         if (model.type === "TimePlot") {
           newmodel.xType = "time";
@@ -125,12 +132,14 @@
               data.type = "line";
             }
             if (data.type === "line") {
-              if (data.style == null)
+              if (data.style == null) {
                 data.style = "solid";
+              }
             }
             if(data.type === "river" || data.type === "line") {
-              if (data.interpolation == null)
+              if (data.interpolation == null) {
                 data.interpolation = "linear";
+              }
             }
 
             var numEles = data.elements.length;
@@ -172,31 +181,39 @@
               delete data.outline_color;
             }
             
-            if (data.colors != null) data.colorArray = true;
-            if (data.sizes != null) data.sizeArray = true;
-            if (data.bases != null) data.baseArray = true;
+            if (data.colors != null) { data.colorArray = true; }
+            if (data.sizes != null) { data.sizeArray = true; }
+            if (data.bases != null) { data.baseArray = true; }
             
-            if (data.type == null) data.type = "";
-            if (data.style == null) data.style = "";
-            if (data.stroke_dasharray == null) data.stroke_dasharray = "";
-            if (data.interpolation == null) data.interpolation = "";
+            if (data.type == null) { data.type = ""; }
+            if (data.style == null) { data.style = ""; }
+            if (data.stroke_dasharray == null) { data.stroke_dasharray = ""; }
+            if (data.interpolation == null) { data.interpolation = ""; }
             
             data.type = dataTypeMap[data.type];
             
-            if(data.type === "bar" || data.type === "river")  onzeroY = true;  // auto stand on y=0
+            if(data.type === "bar" || data.type === "river") { 
+              onzeroY = true; // auto range to y=0
+            } 
 
             if(data.type === "line" || data.type === "stem") {
               data.style = lineStyleMap[data.style];
               data.stroke_dasharray = lineDasharrayMap[data.style];
             }
             
-            if(data.type === "line" || data.type === "river") data.interpolation = interpolationMap[data.interpolation];
+            if(data.type === "line" || data.type === "river") { 
+              data.interpolation = interpolationMap[data.interpolation]; 
+              }
 
             if(data.type === "bar") {
-              if (data.width == null) data.width = 1;
+              if (data.width == null) { 
+                data.width = 1;
+              }
             }
             
-            if (data.type === "point") data.style = pointShapeMap[data.shape];
+            if (data.type === "point") { 
+              data.style = pointShapeMap[data.shape]; 
+            }
             
             var elements = [];
             var numEles = data.x.length;
@@ -257,14 +274,16 @@
 
               if (logy) {
                 if (ele.y != null) {
-                  if (ele.y <= 0)
+                  if (ele.y <= 0) {
                     console.error("cannot apply log scale to non-positive y value");
+                  }
                   ele._y = ele.y;
                   ele.y = Math.log(ele.y) / Math.log(logyb);
                 }
                 if (ele.y2 != null) {
-                  if (ele.y2 <= 0)
+                  if (ele.y2 <= 0) {
                     console.error("cannot apply log scale to non-positive y value");
+                  }
                   ele._y2 = ele.y2;
                   ele.y2 = Math.log(ele.y2) / Math.log(logyb);
                 }
@@ -274,16 +293,16 @@
             delete data.x;
             delete data.y;
             data.elements = elements;
-            if (data.colors) delete data.colors;
-            if (data.sizes) delete data.sizes;
-            if (data.bases) delete data.bases;
-            if (data.outline_colors) delete data.outline_colors;
+            if (data.colors) { delete data.colors; }
+            if (data.sizes) { delete data.sizes; }
+            if (data.bases) { delete data.bases; }
+            if (data.outline_colors) { delete data.outline_colors; }
             newmodel.data.push(data);
           }
         }
         
         if(model.constant_lines != null) {
-          for(var i=0; i<model.constant_lines.length; i++) {
+          for(var i = 0; i < model.constant_lines.length; i++) {
             var line = model.constant_lines[i];
             var data = {
               "type": "constline",
@@ -374,6 +393,12 @@
             right : 5
           };
         }
+        
+        if (model.type === "NanoPlot") {
+          // TODO, beaker crashes when loading long integers
+          // var range = plotUtils.getDataRange(newmodel.data);
+          // newmodel.nanoOffset = range.xl;
+        }
         newmodel.onzeroY = onzeroY;
         newmodel.version = "complete";
         console.log(newmodel);
@@ -381,5 +406,5 @@
       }
     };
   };
-  beaker.bkoFactory('plotConverter', ["bkUtils", retfunc]);
+  beaker.bkoFactory('plotConverter', ["bkUtils", 'plotUtils', retfunc]);
 })();

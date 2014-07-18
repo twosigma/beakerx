@@ -68,6 +68,7 @@ public class NamespaceService {
     return pair;
   }
 
+  // should be an option to block until it completes on client XXX
   public void set(String name, Object value) {
     Map<String, Object> data = new HashMap<String, Object>(2);
     data.put("name", name);

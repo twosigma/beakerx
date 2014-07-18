@@ -232,6 +232,8 @@ define(function(require, exports, module) {
         shell: {reply: execute_reply},
         iopub: {output: output}
       };
+      // XXX hack should do this just once when we connect
+      code = "_beaker_session_id = '" + bkHelper.getSessionId() + "'\n" + code;
       kernel.execute(code, callbacks, {silent: false});
       deferred.promise.finally(function() {
         _theCancelFunction = null;

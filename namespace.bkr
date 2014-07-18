@@ -1,0 +1,277 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "shellID": null,
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "shellID": null,
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "shellID": "89D1288C12624000945BAA42599FFC41",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python",
+                    "background": "#EAEAFF"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "shellID": null,
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "shellID": "74efd49d-7425-4add-8853-89ca81c984f6",
+            "view": {
+                "cm": {
+                    "mode": "r",
+                    "background": "#C0CFF0"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "Notebook Namespace",
+            "collapsed": false
+        },
+        {
+            "id": "markdowneNyWKM",
+            "type": "markdown",
+            "body": "Implementation and experimentation towards https://github.com/twosigma/beaker-notebook/issues/89",
+            "mode": "preview"
+        },
+        {
+            "id": "sectionk4CosY",
+            "type": "section",
+            "title": "Python",
+            "level": 2,
+            "collapsed": false
+        },
+        {
+            "id": "code001",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "import os, urllib, urllib2, json\n\nurl = '127.0.0.1:' + os.environ['beaker_core_port']\npassword_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()\npassword_mgr.add_password(None, url, 'beaker', os.environ['beaker_core_password'])\nhandler = urllib2.HTTPBasicAuthHandler(password_mgr)\nopener = urllib2.build_opener(handler)\nurllib2.install_opener(opener)\n\n# the subtlety with this is it returns before it completes.\n# this might be desireable for performance but to avoid weirdness\n# probably want the default to block using similar technique as get\ndef bset(var, val):\n    req = urllib2.Request('http://' + url + '/rest/namespace/set',  \n                          urllib.urlencode({'name': var, 'value': val, 'session':_beaker_session_id}))\n    conn = urllib2.urlopen(req)\n    conn.read()\n\ndef bget(var):\n    req = urllib2.Request('http://' + url + '/rest/namespace/get?' + \n                          urllib.urlencode({'name': var, 'session':_beaker_session_id}))\n    conn = urllib2.urlopen(req)\n    result = json.loads(conn.read())\n    return result['value']"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "result": "",
+                "outputArrived": false,
+                "elapsedTime": 31
+            }
+        },
+        {
+            "id": "codeHcaNw0",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "bset('x', \"hi mom\")"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "result": "",
+                "outputArrived": false,
+                "elapsedTime": 18
+            }
+        },
+        {
+            "id": "codeP6hk18",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "bget('x')"
+            },
+            "output": {
+                "selectedType": "BeakerDisplay",
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>u'hi mom'</pre></div>"
+                },
+                "outputArrived": true,
+                "elapsedTime": 39
+            }
+        },
+        {
+            "id": "codexWNnS0",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "_beaker_session_id"
+            },
+            "output": {
+                "selectedType": "BeakerDisplay",
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>'371D2U'</pre></div>"
+                },
+                "outputArrived": true,
+                "elapsedTime": 38
+            }
+        },
+        {
+            "id": "sectionso97Zp",
+            "type": "section",
+            "title": "R",
+            "level": 2,
+            "collapsed": false
+        },
+        {
+            "id": "code2uVtKX",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "#R - will turn dark blue when plugin loads successfully\nlibrary(RCurl)\nlibrary(RJSONIO)\n\n# this one isn't done yet\nbset <- function(var, val) {\n  postForm('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),'/rest/namespace/set', name=var, value=val)\n}\n\npwarg = paste('beaker:',Sys.getenv(\"beaker_core_password\"),sep='')\n\nbget <- function(var) {\n  req = paste('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),'/rest/namespace/get?name=', var, sep='')\n  res = getURL(req, userpwd=pwarg)\n  return (fromJSON(res)$value)\n}"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "result": "",
+                "elapsedTime": 492
+            }
+        },
+        {
+            "id": "codeaR6jnD",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "bget('x')"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "[1] \"99\"",
+                "elapsedTime": 59
+            }
+        },
+        {
+            "id": "code6O8IcJ",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "# these need to be added to our dependencies\ninstall.packages('RCurl',,'http://cran.us.r-project.org')\ninstall.packages('RJSONIO',,'http://cran.us.r-project.org')"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "NULL",
+                "elapsedTime": 7088
+            }
+        },
+        {
+            "id": "sectioneI1Ews",
+            "type": "section",
+            "title": "Javascript via HTTP",
+            "level": 2,
+            "collapsed": true
+        },
+        {
+            "id": "markdownBpTbyn",
+            "type": "markdown",
+            "body": "This is the hard way to do javascript.  but perhaps if we are forced to move the namespace to the server, then it will be the std way.",
+            "mode": "preview"
+        },
+        {
+            "id": "code301W1U",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "// this is the wrong way, since the values live locally, no need to go over http but we can...\nbeaker.get = function(vr, cb) {\n  $.get('http://127.0.0.1:8801/beaker/rest/namespace/get?name=' + vr,\n          function(result) {\n            cb(result.value);\n          });\n}"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "codeyTX1fJ",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "// can't get return result of notebook namespace because js has no way to convert async value to sync\nbeaker.get('x', function(r){console.log(r);})\n// the value is printed on the console but only after the cell evaluates to undefined"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "undefined"
+            }
+        },
+        {
+            "id": "sectionL13RxX",
+            "type": "section",
+            "title": "Javascript Locally",
+            "level": 2,
+            "collapsed": false
+        },
+        {
+            "id": "codeVksxuS",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "// this is the right way, requires a bit of a hack now\nnamespace.x"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "hi mom"
+            }
+        },
+        {
+            "id": "codeoz5hcp",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "// this works too\nnamespace.x = 101;"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "101"
+            }
+        },
+        {
+            "id": "codeUBLWO2",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "console.log(namespace)\n"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "undefined"
+            }
+        }
+    ],
+    "namespace": {
+        "x": "hi mom",
+        "y": "999"
+    }
+}

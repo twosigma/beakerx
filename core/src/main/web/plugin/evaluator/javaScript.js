@@ -157,6 +157,7 @@ define(function(require, exports, module) {
     evaluate: function(code, modelOutput) {
       return bkHelper.fcall(function() {
         try {
+          var namespace = bkHelper.getNotebookModel().namespace;
           modelOutput.result = "" + eval(code);
         } catch (err) {
           modelOutput.result = {

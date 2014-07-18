@@ -187,7 +187,7 @@
         $.cometd.subscribe("/namespace", function(reply) {
           var name = reply.data.name;
           var value = reply.data.value;
-          var notebookModel = bkBaseSessionModel.getNotebookModel();
+          var notebookModel = $scope.getNotebookModel();
           if (undefined === value) {
             var namespace = notebookModel.namespace;
             var reply = {name: name, defined: false};
@@ -200,7 +200,6 @@
             }
             $.cometd.publish("/service/namespace/receive", JSON.stringify(reply));
           } else {
-            var notebookModel = bkBaseSessionModel.getNotebookModel();
             var namespace = notebookModel.namespace;
             if (undefined === namespace)
               notebookModel.namespace = {};

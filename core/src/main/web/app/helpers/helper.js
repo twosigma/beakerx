@@ -69,11 +69,11 @@
           console.error("Current app doesn't support getSessionId");
         }
       },
-      getNodebookModel: function() {
-        if (getCurrentApp().getNodebookModel) {
-          return getCurrentApp().getNodebookModel();
+      getNotebookModel: function() {
+        if (getCurrentApp().getNotebookModel) {
+          return getCurrentApp().getNotebookModel();
         } else {
-          console.error("Current app doesn't support getNodebookModel");
+          console.error("Current app doesn't support getNotebookModel");
         }
       },
       closeNotebook: function() {

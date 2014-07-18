@@ -349,6 +349,9 @@
             getSessionId: function() {
               return bkSessionManager.getSessionId();
             },
+            getNotebookModel: function() {
+              return bkSessionManager.getRawNotebookModel();
+            },
             saveNotebook: function() {
               saveStart();
               var thenable;

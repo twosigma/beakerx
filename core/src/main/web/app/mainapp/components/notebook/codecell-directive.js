@@ -48,6 +48,10 @@
           return bkSessionManager.isNotebookLocked();
         }
 
+        $scope.isEmpty = function() {
+          return !($scope.cellmodel.output.result);
+        }
+
         $scope.isShowInput = function() {
           if ($scope.isLocked()) {
             return false;

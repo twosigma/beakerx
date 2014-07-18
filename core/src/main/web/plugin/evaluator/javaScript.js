@@ -158,6 +158,10 @@ define(function(require, exports, module) {
       return bkHelper.fcall(function() {
         try {
           var namespace = bkHelper.getNotebookModel().namespace;
+          if (undefined === namespace) {
+            bkHelper.getNotebookModel().namespace = {};
+            namespace = bkHelper.getNotebookModel().namespace;
+          }
           modelOutput.result = "" + eval(code);
         } catch (err) {
           modelOutput.result = {

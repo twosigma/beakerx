@@ -26,7 +26,6 @@ if len(sys.argv) > 1:
     elif arg1 == "--profile":
         os.execlp("ipython", "ipython", "profile", "create", "beaker_backend", "--ipython-dir=" + sys.argv[2])
 
-coreport = sys.argv.pop()
 port = sys.argv.pop()
 
 # default is to search PATH

@@ -373,7 +373,6 @@ public class PluginServiceLocatorRest {
       fullCommand += " " + StringUtils.join(extraArgs, " ");
     }
     fullCommand += " " + Integer.toString(pConfig.port);
-    fullCommand += " " + Integer.toString(corePort);
 
     String[] env = this.pluginEnvps.get(pluginId);
     List<String> envList = new ArrayList<>();
@@ -390,6 +389,7 @@ public class PluginServiceLocatorRest {
     }
     envList.add("beaker_plugin_password=" + password);
     envList.add("beaker_core_password=" + this.corePassword);
+    envList.add("beaker_core_port=" + corePort);
     envList.add("beaker_tmp_dir=" + this.nginxServDir);
     env = new String[envList.size()];
     envList.toArray(env);

@@ -17,7 +17,6 @@
 import os
 import sys
 
-coreport = sys.argv.pop()
 port = sys.argv.pop()
 self_path = sys.argv.pop()
 
@@ -28,4 +27,4 @@ if os.name == 'nt':
 else:
     bin ="bin/r"
 
-os.execlp(bin, bin, port, coreport)
+os.execlp(bin, bin, port)

@@ -72,6 +72,10 @@
           }
         });
 
+        $scope.isHiddenOutput = function() {
+          return $scope.cellmodel.output.selectedType == 'Hidden';
+        }
+
         $scope.isShowOutput = function() {
           if ($scope.cellmodel.output.hidden === true) {
             return false;

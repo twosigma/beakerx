@@ -82,6 +82,10 @@ bk-code-cell .code-cell-output {
 .advanced-mode bk-code-cell .code-cell-output {
     margin-top: 20px;
     border-top: none;
+
+    &.no-output .cell-menu-item {
+        display: none;
+    }
 }
 
 bk-code-cell .locked .code-cell-output {

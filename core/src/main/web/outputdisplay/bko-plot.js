@@ -66,6 +66,9 @@
           scope.container = d3.select(element[0]).select("#plotContainer"); // hook container to use jquery interaction
           scope.jqcontainer = element.find("#plotContainer");
           scope.jqcontainer.css(model.initSize);
+          scope.svg = d3.select(element[0]).select("#plotContainer svg");
+          scope.jqsvg = element.find("svg");
+
           //if (model.width != null) scope.jqcontainer.css("width", model.width + "px");
           //if (model.height != null) scope.jqcontainer.css("height", model.height + "px");
           scope.maing = d3.select(element[0]).select("#maing");
@@ -1249,9 +1252,6 @@
           scope.calcMapping(true);
         };
         scope.resetSvg = function() {
-          var svg = d3.select(element[0]).select("#plotContainer svg");
-          scope.svg = svg;
-          scope.jqsvg = element.find("svg");
           scope.jqcontainer.find(".plot-constlabel").remove();
 
           scope.rpipeLines = [];

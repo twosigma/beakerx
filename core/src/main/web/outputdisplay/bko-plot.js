@@ -28,7 +28,7 @@
           "<g id='maing'> <g id='coordg'></g>" +
           "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" +
           "<g id='stemg'></g> <g id='pointrectg'></g> <g id='pointcircleg'></g> " +
-          "<g id='segg'></g> <g id='labelg'></g> <g id='rectg'></g> <g id='textg'></g>" +
+          "<g id='segg'></g> <g id='rectg'></g> <g id='textg'></g> <g id='labelg'></g> " +
           "</g>" +
           "<g id='interg'> <g id='dotg'></g> </g>" +
           "</svg>" +

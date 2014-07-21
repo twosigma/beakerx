@@ -85,6 +85,10 @@
           return "";
         };
 
+        $scope.isShowOutput = function() {
+          return $scope.$parent.isShowOutput();
+        };
+
         // to be used in output cell menu
         $scope.outputCellMenuModel = (function() {
           var _additionalMenuItems = [
@@ -95,7 +99,7 @@
               }
             },
             {
-              name: "Hide Cell Output",
+              name: "Toggle Cell Output",
               isChecked: function() {
                 return !$scope.$parent.cellmodel.output.hidden;
               },

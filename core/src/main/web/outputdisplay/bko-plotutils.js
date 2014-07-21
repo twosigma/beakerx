@@ -38,7 +38,8 @@
         }
 
         if (visibleData === 0) {
-          datarange.xl = datarange.xr = datarange.yl = datarange.yr = 0;
+          datarange.xl = datarange.yl = 0;
+          datarange.xr = datarange.yr = 100;
         }
         datarange.xspan = datarange.xr - datarange.xl;
         datarange.yspan = datarange.yr - datarange.yl;
@@ -101,7 +102,6 @@
             scope.lineg.select("#" + pipe[i].id + " path")
               .attr("d", pipe[i].elements);
         }
-    
       },
       plotSegs: function(scope) {
         var pipe = scope.rpipeSegs;
@@ -297,6 +297,33 @@
               .attr("height", function(d) { return d.height; });
         }
       },
+      plotUserTexts: function(scope) {
+        var pipe = scope.rpipeUserTexts;
+        scope.textg.selectAll("g")
+          .data(pipe, function(d) { return d.id; }).exit().remove();
+        scope.textg.selectAll("g")
+          .data(pipe, function(d) { return d.id; }).enter().append("g")
+          .attr("id", function(d) { return d.id; })
+          .attr("class", function(d) { return d.class; })
+          .attr("fill", function(d) { return d.fill; })
+          .attr("fill-opacity", function(d) { return d.fill_opacity; })
+          .attr("transform", function(d) { return d.transform; });
+        for (var i = 0; i < pipe.length; i++) {
+          scope.textg.select("#" + pipe[i].id).selectAll("text")
+            .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
+          scope.textg.select("#" + pipe[i].id).selectAll("text")
+            .data(pipe[i].elements, function(d) { return d.id; }).enter().append("text")
+            .attr("id", function(d) { return d.id; })
+            .attr("class", function(d) { return d.class; })
+            .attr("fill", function(d) { return d.fill; })
+            .attr("fill-opacity", function(d) { return d.fill_opacity; })
+            .attr("transform", function(d) { return d.transform; })
+            .text(function(d) { return d.text; });
+          scope.textg.select("#" + pipe[i].id).selectAll("text")
+            .data(pipe[i].elements, function(d) { return d.id; })
+            .attr("transform", function(d) { return d.transform; });
+        }
+      },
       plotRivers: function(scope) {
         var pipe = scope.rpipeRivers;
         scope.riverg.selectAll("g")
@@ -317,6 +344,7 @@
         }
         return;
       },
+     
       plotCoords: function(scope) {
         var sel = scope.coordg.selectAll("line");
         sel.data(scope.rpipeCoords, function(d) { return d.id; }).exit().remove();
@@ -335,7 +363,9 @@
           .attr("y1", function(d) { return d.y1; })
           .attr("y2", function(d) { return d.y2; });
       },
-      plotTexts: function(scope) {   // redraw
+      
+      
+      plotLabels: function(scope) {   // redraw
         var pipe = scope.rpipeTexts;
         scope.labelg.selectAll("text").remove();
         scope.labelg.selectAll("text")

@@ -46,6 +46,7 @@
           resize : function(event, ui) {
             scope.width = ui.size.width;
             scope.height = ui.size.height;
+            scope.jqsvg.css({"width": scope.width + "px", "height": scope.height + "px"});
             scope.numIntervals = {
               x: scope.width / 100,
               y: scope.height / 50
@@ -68,6 +69,7 @@
           scope.jqcontainer.css(model.initSize);
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
+          scope.jqsvg.css(model.initSize);
 
           //if (model.width != null) scope.jqcontainer.css("width", model.width + "px");
           //if (model.height != null) scope.jqcontainer.css("height", model.height + "px");

@@ -56,7 +56,8 @@
         "" : "linear"
       },
       formatData: function(newmodel, model) {
-        _.extend(newmodel, model);
+        // TODO
+        // fill in null entries, compute y2, etc.
       },
       formatSerializedData : function(newmodel, model) {
         var onzeroY = false;
@@ -321,6 +322,9 @@
         newmodel.onzeroY = onzeroY;
       },
       standardizeModel : function(model) {
+        if (model.graphics_list != null) {
+          model.version = "dnote";  // TODO, a hack now to check DS source
+        }
         if (model.version === "complete") { // skip standardized model in combined plot
           console.log("pass", model);
           return model;

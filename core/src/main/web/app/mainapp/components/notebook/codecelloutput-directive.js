@@ -89,6 +89,18 @@
           return $scope.$parent.isShowOutput();
         };
 
+        $scope.toggleExpansion = function() {
+          if ($scope.$parent.cellmodel.output.hidden) {
+            delete $scope.$parent.cellmodel.output.hidden;
+          } else {
+            $scope.$parent.cellmodel.output.hidden = true;
+          }
+        };
+
+        $scope.isExpanded = function() {
+          return !$scope.$parent.cellmodel.output.hidden;
+        };
+
         // to be used in output cell menu
         $scope.outputCellMenuModel = (function() {
           var _additionalMenuItems = [
@@ -101,14 +113,10 @@
             {
               name: "Toggle Cell Output",
               isChecked: function() {
-                return !$scope.$parent.cellmodel.output.hidden;
+                $scope.isExpanded();
               },
               action: function() {
-                if ($scope.$parent.cellmodel.output.hidden) {
-                  delete $scope.$parent.cellmodel.output.hidden;
-                } else {
-                  $scope.$parent.cellmodel.output.hidden = true;
-                }
+                $scope.toggleExpansion();
               }
             },
             {

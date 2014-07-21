@@ -24,7 +24,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "89D1288C12624000945BAA42599FFC41",
+            "shellID": "19C7CEAFE3F546C4B6B444AE296B3D43",
             "imports": "",
             "supplementalClassPath": "",
             "view": {
@@ -50,7 +50,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "74efd49d-7425-4add-8853-89ca81c984f6",
+            "shellID": "acf0aa63-a32b-45b8-aa42-8fe3e8087bca",
             "view": {
                 "cm": {
                     "mode": "r",
@@ -91,7 +91,7 @@
                 "selectedType": "Hidden",
                 "result": "",
                 "outputArrived": false,
-                "elapsedTime": 31
+                "elapsedTime": 30
             }
         },
         {
@@ -99,7 +99,7 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "bset('x', \"hi mom\")"
+                "body": "bset('x', \"hi momx\")"
             },
             "output": {
                 "selectedType": "Hidden",
@@ -156,12 +156,12 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#R - will turn dark blue when plugin loads successfully\nlibrary(RCurl)\nlibrary(RJSONIO)\n\n# this one isn't done yet\nbset <- function(var, val) {\n  postForm('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),'/rest/namespace/set', name=var, value=val)\n}\n\npwarg = paste('beaker:',Sys.getenv(\"beaker_core_password\"),sep='')\n\nbget <- function(var) {\n  req = paste('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),'/rest/namespace/get?name=', var, sep='')\n  res = getURL(req, userpwd=pwarg)\n  return (fromJSON(res)$value)\n}"
+                "body": "#R - will turn dark blue when plugin loads successfully\nlibrary(RCurl)\nlibrary(RJSONIO)\n\n# this one isn't done yet\nbset <- function(var, val) {\n  postForm('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),'/rest/namespace/set', name=var, value=val, session=beaker_session_id_)\n}\n\npwarg = paste('beaker:',Sys.getenv(\"beaker_core_password\"),sep='')\n\nbget <- function(var) {\n  req = paste('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),\n              '/rest/namespace/get?name=', var, '&session=', beaker_session_id_, sep='')\n  res = getURL(req, userpwd=pwarg)\n  return (fromJSON(res)$value)\n}"
             },
             "output": {
                 "selectedType": "Hidden",
                 "result": "",
-                "elapsedTime": 492
+                "elapsedTime": 503
             }
         },
         {
@@ -173,8 +173,8 @@
             },
             "output": {
                 "selectedType": "Text",
-                "result": "[1] \"99\"",
-                "elapsedTime": 59
+                "result": "[1] \"hi momx\"",
+                "elapsedTime": 67
             }
         },
         {
@@ -271,7 +271,7 @@
         }
     ],
     "namespace": {
-        "x": "hi mom",
+        "x": "hi momx",
         "y": "999"
     }
 }

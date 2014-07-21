@@ -46,7 +46,7 @@ public class NamespaceService {
   private LocalSession localSession;
   private ObjectMapper mapper = new ObjectMapper();
   private String channelName = "/namespace";
-  private SynchronousQueue<NameValuePair> handoff = new SynchronousQueue<NameValuePair>();
+  private Map<String, SynchronousQueue<NameValuePair>> handoff = new HashMap<>();
 
   @Inject
   public NamespaceService(BayeuxServer bayeuxServer) {
@@ -55,45 +55,67 @@ public class NamespaceService {
     this.localSession.handshake();
   }
 
-  public NameValuePair get(String name)
+  private ServerChannel getChannel(String session) {
+    return bayeux.getChannel(channelName + "/" + session);
+  }
+
+  // XXX garbage collect when sessions are closed
+  private SynchronousQueue<NameValuePair> getHandoff(String session) {
+    SynchronousQueue<NameValuePair> result = handoff.get(session);
+    if (null == result) {
+      result = new SynchronousQueue<NameValuePair>();
+      handoff.put(session, result);
+    }
+    return result;
+  }
+
+  public NameValuePair get(String session, String name)
     throws RuntimeException, InterruptedException
   {
+    System.err.println("XXX get session=" + session + " name=" + name);
     Map<String, Object> data = new HashMap<String, Object>(1);
     data.put("name", name);
-    ServerChannel channel = bayeux.getChannel(channelName);
-    channel.publish(this.localSession, data, null);
-    NameValuePair pair = handoff.take(); // blocks
+    getChannel(session).publish(this.localSession, data, null);
+    NameValuePair pair = getHandoff(session).take(); // blocks
+    System.err.println("XXX got it");
     if (!pair.name.equals(name))
       throw new RuntimeException("name mismatch.  received " + pair.name + ", expected " + name);
+    // no reason to return the session XXX
     return pair;
   }
 
   // should be an option to block until it completes on client XXX
-  public void set(String name, Object value) {
+  public void set(String session, String name, Object value) {
+    System.err.println("XXX set session=" + session + " name=" + name);
     Map<String, Object> data = new HashMap<String, Object>(2);
     data.put("name", name);
     data.put("value", value);
-    ServerChannel channel = bayeux.getChannel(channelName);
-    channel.publish(this.localSession, data, null);
+    getChannel(session).publish(this.localSession, data, null);
   }
 
   @Listener("/service/namespace/receive")
   public void receive(ServerSession session, ServerMessage msg)
     throws IOException, InterruptedException
   {
+    System.err.println("XXX receive");
     NameValuePair pair = this.mapper.readValue(String.valueOf(msg.getData()), NameValuePair.class);
-    handoff.put(pair);
+    getHandoff(pair.getSession()).put(pair);
   }
 
+  // rename from Pair to Binding XXX
   @JsonAutoDetect
   public static class NameValuePair {
 
     private String name;
+    private String session;
     private Object value;
     private Boolean defined;
 
     public String getName() {
       return this.name;
+    }
+    public String getSession() {
+      return this.session;
     }
     public Object getValue() {
       return this.value;
@@ -104,6 +126,9 @@ public class NamespaceService {
     public void setName(String s) {
       this.name = s;
     }
+    public void setSession(String s) {
+      this.session = s;
+    }
     public void setValue(Object o) {
       this.value = o;
     }
@@ -112,12 +137,11 @@ public class NamespaceService {
     }
     public NameValuePair() {
     }
-    public NameValuePair(String name, Object value, Boolean defined) {
+    public NameValuePair(String session, String name, Object value, Boolean defined) {
+      this.session = session;
       this.name = name;
       this.value = value;
       this.defined = defined;
     }
-
   }
-
 }

@@ -88,6 +88,8 @@ define(function(require, exports, module) {
         }
       };
       modelOutput.result = progressObj;
+      // XXX should do this once per session not every eval
+      code = "beaker_session_id_ = '" + bkHelper.getSessionId() + "'\n" + code;
       $.ajax({
         type: "POST",
         datatype: "json",

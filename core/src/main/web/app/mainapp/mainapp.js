@@ -141,6 +141,39 @@
               });
               bkHelper.evaluate("initialization");
             }
+
+            console.log("XXX setting up namespace websocket for sessionID = " + sessionId);
+            // XXX this should be in another module 
+            $.cometd.subscribe("/namespace/" + sessionId, function(reply) {
+              console.log("XXX got commet msg sessionId=" + sessionId);
+              var name = reply.data.name;
+              var value = reply.data.value;
+              var notebookModel = bkHelper.getNotebookModel();
+              if (undefined === value) {
+                console.log("getting");
+                var namespace = notebookModel.namespace;
+                var reply2 = {name: name, defined: false, session: sessionId};
+                if (undefined !== namespace) {
+                  console.log("getting2");
+                  var readValue = notebookModel.namespace[name];
+                  if (undefined !== readValue) {
+                    console.log("getting3");
+                    reply2.value = readValue;
+                    reply2.defined = true;
+                  }
+                }
+                console.log("getting4");
+                console.log("sending reply back: " + reply2);
+                $.cometd.publish("/service/namespace/receive", JSON.stringify(reply2));
+              } else {
+                console.log("setting");
+                var namespace = notebookModel.namespace;
+                if (undefined === namespace)
+                  notebookModel.namespace = {};
+                notebookModel.namespace[name] = value;
+              }
+            });
+
             $scope.loading = false;
           };
           return {

@@ -44,16 +44,16 @@ public class NamespaceRest {
 
   @GET
   @Path("get")
-  public Object get(@QueryParam("name") String name) 
+  public Object get(@QueryParam("session") String session, @QueryParam("name") String name) 
     throws InterruptedException 
   {
-    return this.namespaceService.get(name);
+    return this.namespaceService.get(session, name);
   }
 
   @POST
   @Path("set")
-  public void set(@FormParam("name") String name, @FormParam("value") String value) {
+  public void set(@FormParam("session") String session, @FormParam("name") String name, @FormParam("value") String value) {
     // check name is well formed XXX
-    this.namespaceService.set(name, value);
+    this.namespaceService.set(session, name, value);
   }
 }

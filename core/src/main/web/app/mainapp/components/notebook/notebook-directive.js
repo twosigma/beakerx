@@ -184,28 +184,6 @@
         bkOutputLog.getLog(function (res) {
           $scope.outputLog = res;
         });
-        $.cometd.subscribe("/namespace", function(reply) {
-          var name = reply.data.name;
-          var value = reply.data.value;
-          var notebookModel = $scope.getNotebookModel();
-          if (undefined === value) {
-            var namespace = notebookModel.namespace;
-            var reply = {name: name, defined: false};
-            if (undefined !== namespace) {
-              var readValue = notebookModel.namespace[name];
-              if (undefined !== readValue) {
-                reply.value = readValue;
-                reply.defined = true;
-              }
-            }
-            $.cometd.publish("/service/namespace/receive", JSON.stringify(reply));
-          } else {
-            var namespace = notebookModel.namespace;
-            if (undefined === namespace)
-              notebookModel.namespace = {};
-            notebookModel.namespace[name] = value;
-          }
-        });
         bkOutputLog.subscribe(function (reply) {
           if (!_impl._viewModel.isShowingOutput()) {
             _impl._viewModel.toggleShowOutput();

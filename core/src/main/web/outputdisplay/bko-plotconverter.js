@@ -61,7 +61,15 @@
       },
       formatSerializedData : function(newmodel, model) {
         var onzeroY = false;
-        if(model.rangeAxes && model.rangeAxes[0].auto_range_includes_zero) { onzeroY = true; }
+        var logy = false, logyb;
+        if(model.rangeAxes != null) {
+          var axis = model.rangeAxes[0];
+          if (axis.auto_range_includes_zero) { onzeroY = true; }
+          if (axis.use_log === true) {
+            logy = true;
+            logyb = axis.log_base == null ? 10 : axis.log_base;
+          }
+        }
         
         if(model.x_lower_bound) { newmodel.focus.xl = model.x_lower_bound; }
         if(model.x_upper_bound) { newmodel.focus.xr = model.x_upper_bound; }
@@ -78,13 +86,11 @@
 
         // scaling
         var logy = false, logyb;
-        if (model.log_y) {
+        if (logy) {
           newmodel.yScale = {
             "type" : "log",
-            "base" : model.y_log_base == null ? 10 : model.y_log_base
+            "base" : logyb
           };
-          logy = true;
-          logyb = newmodel.yScale.base;
         } else {
           newmodel.yScale = {
             "type" : "linear"
@@ -134,7 +140,7 @@
           
           if(data.type === "line" || data.type === "river") { 
             data.interpolation = this.interpolationMap[data.interpolation]; 
-            }
+          }
 
           if(data.type === "bar") {
             if (data.width == null) { 
@@ -326,7 +332,7 @@
           model.version = "dnote";  // TODO, a hack now to check DS source
         }
         if (model.version === "complete") { // skip standardized model in combined plot
-          console.log("pass", model);
+          //console.log("pass", model);
           return model;
         } else if (model.version === "dnote") {
         } else {

@@ -22,7 +22,8 @@
   'use strict';
   var retfunc = function(plotUtils, plotConverter, bkCellMenuPluginManager) {
     return {
-      template : "<div id='plotitle' class='plot-title'></div>" + 
+      template : 
+          "<div id='plotitle' class='plot-title'></div>" + 
           "<div id='plotContainer' class='plot-renderdiv' oncontextmenu='return false;'>" +
           "<svg>"  +
           "<g id='maing'> <g id='coordg'></g>" +
@@ -47,6 +48,7 @@
             scope.width = ui.size.width;
             scope.height = ui.size.height;
             scope.jqsvg.css({"width": scope.width + "px", "height": scope.height + "px"});
+            scope.jqplottitle.css({"width": scope.width + "px"});
             scope.numIntervals = {
               x: scope.width / 100,
               y: scope.height / 50
@@ -61,7 +63,7 @@
         });
         scope.initLayout = function() {
           var model = scope.stdmodel;
-          element.find("#plotitle").text(model.title);
+          
           element.find(".ui-icon-gripsmall-diagonal-se")
             .removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
           scope.container = d3.select(element[0]).select("#plotContainer"); // hook container to use jquery interaction
@@ -70,6 +72,10 @@
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
           scope.jqsvg.css(model.initSize);
+          
+          // set title
+          scope.jqplottitle = element.find("#plotitle");
+          scope.jqplottitle.text(model.title).css("width", model.initSize.width);
 
           //if (model.width != null) scope.jqcontainer.css("width", model.width + "px");
           //if (model.height != null) scope.jqcontainer.css("height", model.height + "px");
@@ -93,9 +99,9 @@
           scope.range = null;
           scope.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
             bottomLayoutMargin : 30,
-            topLayoutMargin : 10,
+            topLayoutMargin : 0,
             leftLayoutMargin : 80,
-            rightLayoutMargin : 10,
+            rightLayoutMargin : 0,
             legendMargin : 10,
             legendBoxSize : 10
           };
@@ -423,6 +429,7 @@
                   "y2" : mapY(y2),
                   "stroke": p.color,
                   "stroke_opacity": p.color_opacity,
+                  "stroke_dasharray": data[i].stroke_dasharray,
                   "stroke_width" : p.width
                 });
                 if (data[i].style.search("bottom") != -1) {
@@ -435,6 +442,7 @@
                     "y2" : mapY(y),
                     "stroke": p.color,
                     "stroke_opacity": p.color_opacity,
+                    "stroke_dasharray": data[i].stroke_dasharray,
                     "stroke_width" : p.width
                   });
                 }
@@ -448,6 +456,7 @@
                     "y2" : mapY(y),
                     "stroke": p.color,
                     "stroke_opacity": p.color_opacity,
+                    "stroke_dasharray": data[i].stroke_dasharray,
                     "stroke_width" : p.width
                   });
                 }
@@ -458,6 +467,7 @@
                 "stroke" : data[i].color,
                 "stroke_opacity": data[i].color_opacity,
                 "stroke_width": data[i].width,
+                "stroke_dasharray": data[i].stroke_dasharray,
                 "elements" : reles
               });
             } else if (data[i].type === "point") {

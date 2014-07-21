@@ -113,7 +113,8 @@
           .attr("class", function(d) { return d.class; })
           .attr("stroke", function(d) { return d.stroke; })
           .attr("stroke-width", function(d) { return d.stroke_width; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; });
         for (var i = 0; i < pipe.length; i++) {
             scope.segg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();

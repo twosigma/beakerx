@@ -20,7 +20,6 @@
   var retfunc = function(bkUtils, plotConverter) {
     return {
       standardizeModel : function(model) {
-        model = model.result; 
         var newmodel = {
           title : model.title,
           xLabel : model.x_label != null ? model.x_label : model.xLabel,
@@ -39,6 +38,9 @@
         var plots = model.plots;
         for(var i = 0; i < plots.length; i++) {
           var plotmodel = plots[i];
+          if (model.version === "dnote") {
+            plotmodel.version = "dnote";
+          }
           var newplotmodel = plotConverter.standardizeModel(plotmodel);
           
           if(i < plots.length - 1) {  // turn off x coordinate labels

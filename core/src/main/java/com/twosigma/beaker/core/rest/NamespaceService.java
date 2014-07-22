@@ -76,12 +76,12 @@ public class NamespaceService {
     Map<String, Object> data = new HashMap<String, Object>(1);
     data.put("name", name);
     getChannel(session).publish(this.localSession, data, null);
-    Binding pair = getHandoff(session).take(); // blocks
+    Binding binding = getHandoff(session).take(); // blocks
     System.err.println("XXX got it");
-    if (!pair.name.equals(name))
-      throw new RuntimeException("name mismatch.  received " + pair.name + ", expected " + name);
+    if (!binding.name.equals(name))
+      throw new RuntimeException("name mismatch.  received " + binding.name + ", expected " + name);
     // no reason to return the session XXX
-    return pair;
+    return binding;
   }
 
   // should be an option to block until it completes on client XXX
@@ -98,11 +98,10 @@ public class NamespaceService {
     throws IOException, InterruptedException
   {
     System.err.println("XXX receive");
-    Binding pair = this.mapper.readValue(String.valueOf(msg.getData()), Binding.class);
-    getHandoff(pair.getSession()).put(pair);
+    Binding binding = this.mapper.readValue(String.valueOf(msg.getData()), Binding.class);
+    getHandoff(binding.getSession()).put(binding);
   }
 
-  // rename from Pair to Binding XXX
   @JsonAutoDetect
   public static class Binding {
 

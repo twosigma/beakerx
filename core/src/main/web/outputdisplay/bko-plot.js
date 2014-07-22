@@ -713,7 +713,7 @@
             if (data[i].shown == false) {
               continue;
             }
-            if (data[i].type !== "line" && data[i].type !== "area" && data[i].type !== "point") {
+            if (data[i].type !== "line" && data[i].type !== "river" && data[i].type !== "point") {
               continue;
             }
             var eles = data[i].elements;
@@ -724,17 +724,18 @@
                 "y" : mapY(eles[j].y)
               };
               if (plotUtils.outsideScr(scope, p.x, p.y)) { continue; }
-              var id = "dot_" + eles[j].uniqid;
+              var id = "dot_" + i + "_" + j;
               reles.push({
                 "id" : id,
-                "lineid" : i,
-                "eleid" : data[i].type + "_" + eles[j].uniqid,
+                "class" : "plot-resp",
+                "isResp" : true,
                 "cx" : p.x,
                 "cy" : p.y,
                 "r" : 4,
                 "opacity" : scope.tips[id] == null ? 0 : 1,
                 "point" : _.omit(eles[j], "uniqid"),
-                "value" : eles[j].value
+                "tip_text" : eles[j].value,
+                "tip_color" : data[i].color
               });
             }
             var wrapper = {
@@ -758,21 +759,7 @@
             return scope.untooltip(d);
           }).on("click", function(d) {
             return scope.toggleTooltip(d);
-          });         
-          /*
-          if (id == null) {
-            var sel = scope.svg.selectAll(".plot-dot circle");
-          } else {
-            var sel = scope.svg.selectAll("#" + id);
-          }
-          sel.on("mouseenter", function(d) {
-            return scope.tooltip(d);
-          }).on("mouseleave", function(d) {
-            return scope.untooltip(d);
-          }).on("click", function(d) {
-            return scope.toggleTooltip(d);
           });
-          */
         };
         scope.toggleTooltip = function(d) {
           var id = d.id, nv = !scope.tips[id];
@@ -806,7 +793,11 @@
           if (scope.tips[d.id].sticking === false){
             delete scope.tips[d.id];
             scope.jqcontainer.find("#tip_" + d.id).remove();
-            scope.jqsvg.find("#" + d.id).removeAttr("filter");
+            if (d.isResp === true) {
+              scope.jqsvg.find("#" + d.id).attr("opacity", 0);
+            } else {
+              scope.jqsvg.find("#" + d.id).removeAttr("filter");
+            }
             scope.renderTips();
           }
           
@@ -832,7 +823,11 @@
               .css("border-color", d.tip_color == null ? "gray" : d.tip_color)
               .append(d.tip_text).mousedown(function(e) {
                 if (e.which == 3) {
-                  scope.jqsvg.find("#" + d.id).removeAttr("filter");
+                  if (d.isResp === true) {
+                    scope.jqsvg.find("#" + d.id).attr("opacity", 0);
+                  } else {
+                    scope.jqsvg.find("#" + d.id).removeAttr("filter");
+                  }
                   delete scope.tips[d.id];
                   $(this).remove();
                 }
@@ -850,10 +845,16 @@
                 return;
               }
             }
-            var objw = parseFloat(scope.jqsvg.find("#" + d.id).attr("width"));
+            var objw = scope.jqsvg.find("#" + d.id).attr("width");
+            objw = objw == null ? 0 : parseFloat(objw);
             tipdiv.css("left", p.x + objw + scope.fonts.tooltipWidth + "px")
               .css("top", p.y + "px");
-            scope.jqsvg.find("#" + d.id).attr("filter", "url(#svgfilter)");
+            if (d.isResp === true) {
+              scope.jqsvg.find("#" + d.id).attr("opacity", 1);
+            } else {
+              scope.jqsvg.find("#" + d.id)
+                .attr("filter", "url(#svgfilter)");
+            }
           });
         };
         scope.renderLabels = function() {

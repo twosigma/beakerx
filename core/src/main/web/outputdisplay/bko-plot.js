@@ -26,12 +26,22 @@
           "<div id='plotitle' class='plot-title'></div>" + 
           "<div id='plotContainer' class='plot-renderdiv' oncontextmenu='return false;'>" +
           "<svg>"  +
-          "<g id='maing'> <g id='coordg'></g>" +
-          "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" +
-          "<g id='stemg'></g> <g id='pointrectg'></g> <g id='pointcircleg'></g> " +
-          "<g id='segg'></g> <g id='rectg'></g> <g id='textg'></g> <g id='labelg'></g> " +
+          "<defs>" + 
+            "<filter id='svgfilter'>" +
+              "<feOffset result='offOut' in='SourceAlpha' dx='2' dy='2' />" +
+              "<feGaussianBlur result='blurOut' in='offOut' stdDeviation='1' />" + 
+              "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" + 
+            "</filter>" + 
+          "</defs>" +
+          "<g id='maing'>" + 
+            "<g id='coordg'></g>" +
+            "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" +
+            "<g id='stemg'></g> <g id='pointrectg'></g> <g id='pointcircleg'></g> " +
+            "<g id='segg'></g> <g id='rectg'></g> <g id='textg'></g> <g id='labelg'></g> " +
           "</g>" +
-          "<g id='interg'> <g id='dotg'></g> </g>" +
+          "<g id='interg'>" + 
+            "<g id='dotg'></g>" +
+          "</g>" +
           "</svg>" +
           "</div>",
       controller : function($scope) {
@@ -362,9 +372,12 @@
                 // prevent negative height
                 var bar = {
                   "id" : "bar_" + i + "_" + j,
+                  "class" : "plot-resp",
                   "x" : x1,
                   "y" : y,
-                  "height" : y2 - y
+                  "height" : y2 - y,
+                  "tip_text" : p.value,
+                  "tip_color" : data[i].color
                 };
                 if (p.color != null) bar.fill = p.color;
                 if (p.fill_opacity != null) bar.fill_opaicty = p.fill_opacity;
@@ -423,14 +436,17 @@
                   y2 = focus.yl;
                 reles.push({
                   "id" : "stem_" + i + "_" + j,
+                  "class" : "plot-resp",
                   "x1" : mapX(p.x),
                   "y1" : mapY(p.y),
                   "x2" : mapX(p.x),
                   "y2" : mapY(y2),
                   "stroke": p.color,
                   "stroke_opacity": p.color_opacity,
-                  "stroke_dasharray": data[i].stroke_dasharray,
-                  "stroke_width" : p.width
+                  "stroke_dasharray": p.stroke_dasharray,
+                  "stroke_width" : p.width,
+                  "tip_text": p.value,
+                  "tip_color": data[i].color
                 });
                 if (data[i].style.search("bottom") != -1) {
                   var y = y2;
@@ -442,7 +458,7 @@
                     "y2" : mapY(y),
                     "stroke": p.color,
                     "stroke_opacity": p.color_opacity,
-                    "stroke_dasharray": data[i].stroke_dasharray,
+                    "stroke_dasharray": p.stroke_dasharray,
                     "stroke_width" : p.width
                   });
                 }
@@ -456,7 +472,7 @@
                     "y2" : mapY(y),
                     "stroke": p.color,
                     "stroke_opacity": p.color_opacity,
-                    "stroke_dasharray": data[i].stroke_dasharray,
+                    "stroke_dasharray": p.stroke_dasharray,
                     "stroke_width" : p.width
                   });
                 }
@@ -473,7 +489,11 @@
             } else if (data[i].type === "point") {
               var reles = [];
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j], s = p.size, ele = {"id": "point_" + i + "_" + j};
+                var p = eles[j], s = p.size;
+                var ele = {
+                  "id" : "point_" + i + "_" + j,
+                  "class" : "plot-resp"
+                };
                 if (data[i].style === "circle") {
                   _.extend(ele, {
                     "cx" : mapX(p.x),
@@ -499,7 +519,7 @@
                   scope.rpipePointRects : scope.rpipePointCircles;
               pipe.push({
                   "id" : "point_" + i,
-                  "class" : "plot-point"+data[i].style,
+                  "class" : "plot-point",
                   "fill" : data[i].color,
                   "fill_opacity": data[i].color_opacity,
                   "stroke": data[i].stroke,
@@ -693,23 +713,22 @@
             if (data[i].shown == false) {
               continue;
             }
-            if (data[i].type === "point" || data[i].type === "constline" || 
-                data[i].type === "constband") {
+            if (data[i].type !== "line" && data[i].type !== "area" && data[i].type !== "point") {
               continue;
             }
             var eles = data[i].elements;
             var reles = [];
             for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-              //var p = plotUtils.data2scrPoint(scope, eles[j]);
               var p = {
                 "x" : mapX(eles[j].x),
                 "y" : mapY(eles[j].y)
               };
-              if (plotUtils.outsideScr(scope, p)) { continue; }
+              if (plotUtils.outsideScr(scope, p.x, p.y)) { continue; }
               var id = "dot_" + eles[j].uniqid;
               reles.push({
                 "id" : id,
                 "lineid" : i,
+                "eleid" : data[i].type + "_" + eles[j].uniqid,
                 "cx" : p.x,
                 "cy" : p.y,
                 "r" : 4,
@@ -731,6 +750,16 @@
         scope.prepareInteraction = function(id) {
           var model = scope.stdmodel;
           if (model.use_tool_tip != true) return;
+            
+          var sel = scope.svg.selectAll(".plot-resp");
+          sel.on("mouseenter", function(d) {
+            return scope.tooltip(d);
+          }).on("mouseleave", function(d) {
+            return scope.untooltip(d);
+          }).on("click", function(d) {
+            return scope.toggleTooltip(d);
+          });         
+          /*
           if (id == null) {
             var sel = scope.svg.selectAll(".plot-dot circle");
           } else {
@@ -743,79 +772,88 @@
           }).on("click", function(d) {
             return scope.toggleTooltip(d);
           });
+          */
         };
         scope.toggleTooltip = function(d) {
           var id = d.id, nv = !scope.tips[id];
-          //scope.svg.selectAll("#" + id)
-          //  .attr("visibility", nv);
           if (nv === true) {
             scope.tooltip(d);
-            d.opacity = 1;
-            scope.tips[id] = d;
-            scope.svg.selectAll("#" + id).attr("opacity", 1);
           } else {
-            delete scope.tips[id];
-            d.opacity = 0;
-            scope.svg.selectAll("#" + id).attr("opacity", 0);
-            scope.jqcontainer.find("#tip_" + id).remove();
-            scope.jqcontainer.find("#tip_mouse").remove();
+            scope.tips[id].sticking = !scope.tips[id].sticking;
+            if (scope.tips[id].sticking === false) {
+              scope.untooltip(d);
+            }
           }
         };
         scope.tooltip = function(d) {
-          d.opacity = 1;
-          scope.svg.select("#" + d.id).attr("opacity", 1);
-          scope.jqcontainer.find("#tip_mouse").remove();
           if (scope.tips[d.id] != null) {
             return;
           }
-          $("<div></div>").appendTo(scope.jqcontainer).attr("id", "tip_mouse")
-            .attr("class", "plot-tooltip")
-            .css("left", d.cx + scope.fonts.tooltipWidth + "px")
-            .css("top", d.cy + "px")
-            .css("border-color", scope.data[d.lineid].color == null ? 
-                "gray" : scope.data[d.lineid].color)
-            .append("<div>" + d.value + "</div>");
+          scope.tips[d.id] = {};
+          _.extend(scope.tips[d.id], d);
+          var d = scope.tips[d.id];
+          d.sticking = false;
+          var pos = scope.jqsvg.find("#" + d.id).position();
+          d.tipx = pos.left;
+          d.tipy = pos.top;
+          d.datax = scope.scr2dataX(d.tipx);
+          d.datay = scope.scr2dataY(d.tipy);
+                    
+          scope.renderTips();
         };
         scope.untooltip = function(d) {
-          var opaq = scope.tips[d.id] == null ? 0 : 1;
-          scope.svg.selectAll("#" + d.id).attr("opacity", opaq);
-          scope.jqcontainer.find("#tip_mouse").remove();
-          scope.renderTips();
+          if (scope.tips[d.id] == null) { return; }
+          if (scope.tips[d.id].sticking === false){
+            delete scope.tips[d.id];
+            scope.jqcontainer.find("#tip_" + d.id).remove();
+            scope.jqsvg.find("#" + d.id).removeAttr("filter");
+            scope.renderTips();
+          }
+          
         };
         scope.renderTips = function() {
           _.each(scope.tips, function(d) {
             var p = {
-              "x" : scope.data2scrX(d.point.x),
-              "y" : scope.data2scrY(d.point.y)
+              "x" : scope.data2scrX(d.datax),
+              "y" : scope.data2scrY(d.datay)
             };
-            if (plotUtils.outsideScr(scope, p)) { return; }
-            d.cx = p.x + scope.fonts.tooltipWidth;
-            d.cy = p.y;
-            var tip = scope.tips[d.id];
             var tipdiv = scope.jqcontainer.find("#tip_" + d.id);
+            if (tipdiv.length > 0) {
+              var w = tipdiv.width(), h = tipdiv.height();
+              if (plotUtils.outsideScrBox(scope, p.x, p.y, w, h)) {
+                tipdiv.remove();
+                return;
+              }
+            }
             if (tipdiv.length == 0) {
               tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
               .attr("id", "tip_" + d.id)
               .attr("class", "plot-tooltip")
-              .css("left", d.cx + "px").css("top", d.cy + "px")
-              .css("border-color", scope.data[d.lineid].color)
-              .append(d.value).mousedown(function(e) {
+              .css("border-color", d.tip_color == null ? "gray" : d.tip_color)
+              .append(d.tip_text).mousedown(function(e) {
                 if (e.which == 3) {
-                  scope.svg.selectAll("#" + d.id).attr("opacity", 0);
+                  scope.jqsvg.find("#" + d.id).removeAttr("filter");
                   delete scope.tips[d.id];
                   $(this).remove();
                 }
               }).draggable({
                 stop : function(event, ui) {
-                  tip.cx = ui.position.left - scope.fonts.tooltipWidth;
-                  tip.cy = ui.position.top;
-                  tip.point.x = scope.scr2dataX(tip.cx);
-                  tip.point.y = scope.scr2dataY(tip.cy);
+                  d.tipx = ui.position.left - scope.fonts.tooltipWidth;
+                  d.tipy = ui.position.top;
+                  d.datax = scope.scr2dataX(d.tipx);
+                  d.datay = scope.scr2dataY(d.tipy);
                 }
               });
-            } else {
-              tipdiv.css("left", d.cx + "px").css("top", d.cy + "px");
+              var w = tipdiv.width(), h = tipdiv.height();
+              if (plotUtils.outsideScrBox(scope, p.x, p.y, w, h)) {
+                tipdiv.remove();
+                return;
+              }
             }
+            var objw = parseFloat(scope.jqsvg.find("#" + d.id).attr("width"));
+            tipdiv.css("left", p.x + objw + scope.fonts.tooltipWidth + "px")
+              .css("top", p.y + "px");
+            scope.jqsvg.find("#" + d.id).attr("filter", "url(#svgfilter)");
           });
         };
         scope.renderLabels = function() {
@@ -1101,7 +1139,7 @@
           };
           scope.mousep2 = {};
           _.extend(scope.mousep2, scope.mousep1);
-          scope.jqcontainer.find("#tip_mouse").remove();
+          //scope.jqcontainer.find("#tip_mouse").remove();
         };
         scope.zooming = function(d) {
           if (scope.interactMode === "other") {

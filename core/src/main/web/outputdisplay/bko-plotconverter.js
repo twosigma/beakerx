@@ -28,6 +28,7 @@
         "" : ""
       },
       lineStyleMap : {
+        "DEFAULT": "solid",
         "SOLID" : "solid",
         "DASH" : "dash",
         "DOT" : "dot",
@@ -64,7 +65,9 @@
         var logy = false, logyb;
         if(model.rangeAxes != null) {
           var axis = model.rangeAxes[0];
-          if (axis.auto_range_includes_zero) { onzeroY = true; }
+          if (axis.auto_range_includes_zero === true) { 
+            onzeroY = true;
+           }
           if (axis.use_log === true) {
             logy = true;
             logyb = axis.log_base == null ? 10 : axis.log_base;
@@ -85,7 +88,6 @@
         }
 
         // scaling
-        var logy = false, logyb;
         if (logy) {
           newmodel.yScale = {
             "type" : "log",
@@ -112,7 +114,10 @@
             data.color_opacity = parseInt(data.color.substr(1,2), 16) / 255;
             data.color = "#" + data.color.substr(3);
           }
-          if(data.outline_color != null) {
+          if (data.fill != null && data.fill === false) {
+            data.color = "none";
+          }
+          if (data.outline_color != null) {
             data.stroke_opacity = parseInt(data.outline_color.substr(1,2), 16) / 255;
             data.stroke = "#" + data.outline_color.substr(3);
             delete data.outline_color;
@@ -121,6 +126,8 @@
           if (data.colors != null) { data.colorArray = true; }
           if (data.sizes != null) { data.sizeArray = true; }
           if (data.bases != null) { data.baseArray = true; }
+          if (data.shapes != null) { data.shapeArray = true; }
+          if (data.styles != null) { data.styleArray = true; }
           
           if (data.type == null) { data.type = ""; }
           if (data.style == null) { data.style = ""; }
@@ -149,6 +156,9 @@
           }
           
           if (data.type === "point") { 
+            if (data.shape == null) {
+              data.shape = "DEFAULT";
+            }
             data.style = this.pointShapeMap[data.shape]; 
           }
           
@@ -160,13 +170,27 @@
             };
             ele.x = data.x[j];
             ele.y = data.y[j];
-            if(data.colors != null) {
+            if (data.colors != null) {
               ele.color_opacity = parseInt(data.colors[j].substr(1,2), 16) / 255;
               ele.color = "#" + data.colors[j].substr(3);
             }
-            if(data.outline_colors != null) {
+            if (data.fills != null && data.fills[j] === false) {
+              ele.color = "none";
+            }
+            if (data.outline_colors != null) {
               ele.stroke_opacity = parseInt(data.outline_colors[j].substr(1,2), 16) / 255;
               ele.stroke = "#" + data.outline_colors[j].substr(3);
+            }
+            
+            if (data.type === "line" || data.type === "stem") {
+              if (data.styles != null) {
+                var style = data.styles[j];
+                if (style == null) {
+                  style = "";
+                }
+                var shape = this.lineStyleMap[style];
+                ele.stroke_dasharray = this.lineDasharrayMap[shape];
+              }
             }
             
             if (data.type === "river" || data.type === "bar" || data.type === "stem") {

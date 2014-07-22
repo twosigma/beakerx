@@ -36,7 +36,6 @@
             this.updateDataRange(datarange, eles[j]);
           }
         }
-
         if (visibleData === 0) {
           datarange.xl = datarange.yl = 0;
           datarange.xr = datarange.yr = 100;
@@ -53,9 +52,13 @@
         val = Math.min(val, 1);
         return val;
       },
-      outsideScr: function(scope, p) {
+      outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
-        return p.x < 0 || p.x > W || p.y < 0 || p.y > H;
+        return x < 0 || x > W || y < 0 || y > H;
+      },
+      outsideScrBox: function(scope, x, y, w, h) {
+        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+        return x > W || x + w < 0 || y > H || y + h < 0;
       },
       plotStems: function(scope) {
         var pipe = scope.rpipeStems;
@@ -74,9 +77,12 @@
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
             scope.stemg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
+              .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("stroke-width", function(d) { return d.stroke_width; })
               .attr("stroke", function(d) { return d.stroke; })
-              .attr("opacity", function(d) { return d.opacity; });
+              .attr("opacity", function(d) { return d.opacity; })
+              .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; });
             scope.stemg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("x1", function(d) { return d.x1; })
@@ -121,6 +127,7 @@
             scope.segg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
               .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("x1", function(d) { return d.x1; })
               .attr("x2", function(d) { return d.x2; })
               .attr("y1", function(d) { return d.y1; })
@@ -150,6 +157,8 @@
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
             scope.rectg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("rect")
+              .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("x", function(d) { return d.x; })
               .attr("y", function(d) { return d.y; })
               .attr("width", function(d) { return d.width; })
@@ -186,6 +195,7 @@
             scope.dotg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("circle")
               .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("cx", function(d) { return d.cx; })
               .attr("cy", function(d) { return d.cy; })
               .attr("r", function(d) { return d.r; })
@@ -220,6 +230,7 @@
             svg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("circle")
               .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("cx", function(d) { return d.cx; })
               .attr("cy", function(d) { return d.cy; })
               .attr("r", function(d) { return d.r; })
@@ -250,6 +261,7 @@
             svg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("rect")
               .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("x", function(d) { return d.x; })
               .attr("y", function(d) { return d.y; })
               .attr("width", function(d) { return d.width; })
@@ -282,6 +294,7 @@
             scope.barg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("rect")
               .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("x", function(d) { return d.x; })
               .attr("y", function(d) { return d.y; })
               .attr("width", pipe[i].width)
@@ -343,7 +356,6 @@
             scope.riverg.select("#" + pipe[i].id+" polygon")
               .attr("points", pipe[i].elements);
         }
-        return;
       },
      
       plotCoords: function(scope) {

@@ -20,6 +20,10 @@
   /*
   -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); 
   -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+  
+  -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,1.0); 
+  -moz-box-shadow: 10px 10px 5px rgba(0,0,0,1.0);
+  
   */
  /* inset */
 }
@@ -66,9 +70,9 @@
 .plot-coord-base,
 .plot-bar, 
 .plot-river, 
-.line-plot-stem {
+.plot-stem {
   stroke-width: 1;
-  pointer-events: none;
+  pointer-events: all;
 }
 
 .plot-coord {

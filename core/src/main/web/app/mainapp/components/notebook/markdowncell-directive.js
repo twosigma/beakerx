@@ -18,7 +18,7 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkMarkdownCell', function(bkSessionManager) {
+  module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', function(bkSessionManager, bkHelper) {
     return {
       restrict: 'E',
       template: ""+
@@ -61,7 +61,7 @@
           editor.preview();
         });
         editor.on('preview-clicked', function() {
-          editor.edit();
+          scope.edit();
         });
         editor.on('reflow', function(size) {
           div.style.height = size.height;
@@ -73,6 +73,10 @@
         });
 
         scope.edit = function() {
+          if (bkHelper.isNotebookLocked()) {
+            return
+          }
+
           editor.edit();
         }
 
@@ -96,6 +100,6 @@
         });
       }
     };
-  });
+  }]);
 
 })();

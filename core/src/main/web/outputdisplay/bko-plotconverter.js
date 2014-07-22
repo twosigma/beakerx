@@ -59,6 +59,17 @@
       formatData: function(newmodel, model) {
         // TODO
         // fill in null entries, compute y2, etc.
+        
+        // TODO
+        // move some of format SerializedData to formatData?
+        var data = newmodel.data;
+        for (var i = 0; i < data.length; i++) {
+          if (data[i].type === "line" || data[i].type === "stem") {
+            if (data[i].width == null) {
+              data[i].width = 2;
+            }
+          }
+        }
       },
       formatSerializedData : function(newmodel, model) {
         var onzeroY = false;

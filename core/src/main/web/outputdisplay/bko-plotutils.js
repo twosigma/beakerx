@@ -68,10 +68,10 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("stroke-width", function(d) { return d.stroke_width; })
           .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; })
           .attr("stroke", function(d) { return d.stroke; })
-          .attr("opacity", function(d) { return d.opacity; });
+          .attr("opacity", function(d) { return d.opacity; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.stemg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
@@ -79,10 +79,10 @@
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
               .attr("id", function(d) { return d.id; })
               .attr("class", function(d) { return d.class; })
-              .attr("stroke-width", function(d) { return d.stroke_width; })
               .attr("stroke", function(d) { return d.stroke; })
               .attr("opacity", function(d) { return d.opacity; })
-              .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; });
+              .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+              .style("stroke-width", function(d) { return d.stroke_width; });
             scope.stemg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("x1", function(d) { return d.x1; })
@@ -98,10 +98,10 @@
         scope.lineg.selectAll("g")
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
+          .attr("class", function(d) { return d.class; })
           .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-width", function(d) { return d["stroke-width"]; })
           .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .attr("class", function(d) { return d.class; });
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.lineg.select("#" + pipe[i].id).selectAll("path")
               .data([{}]).enter().append("path");
@@ -118,9 +118,9 @@
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-width", function(d) { return d.stroke_width; })
           .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; });
+          .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.segg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
@@ -223,7 +223,8 @@
           .attr("fill", function(d) { return d.fill; })
           .attr("fill-opacity", function(d) { return d.fill_opacity; })
           .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             svg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
@@ -237,7 +238,8 @@
               .attr("fill", function(d) { return d.fill; })
               .attr("fill-opacity", function(d) { return d.fill_opacity; })
               .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+              .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("stroke-width", function(d) { return d.stroke_width; });
             svg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("cx", function(d) { return d.cx; })
@@ -254,7 +256,8 @@
             .attr("fill", function(d) { return d.fill; })
             .attr("fill-opacity", function(d) { return d.fill_opacity; })
             .attr("stroke", function(d) { return d.stroke; })
-            .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+            .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+            .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             svg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
@@ -269,7 +272,8 @@
               .attr("fill", function(d) { return d.fill; })
               .attr("fill-opacity", function(d) { return d.fill_opacity; })
               .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+              .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("stroke-width", function(d) { return d.stroke_width; });
             svg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("x", function(d) { return d.x; })
@@ -287,7 +291,8 @@
           .attr("fill", function(d) { return d.fill; })
           .attr("fill-opacity", function(d) { return d.fill_opacity; })
           .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.barg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
@@ -302,7 +307,8 @@
               .attr("fill", function(d) { return d.fill; })
               .attr("fill-opacity", function(d) { return d.fill_opacity; })
               .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+              .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("stroke-width", function(d) { return d.stroke_width; });
             scope.barg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("x", function(d) { return d.x; })
@@ -349,7 +355,8 @@
           .attr("fill", function(d) { return d.fill; })
           .attr("fill-opacity", function(d) { return d.fill_opacity; })
           .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.riverg.select("#" + pipe[i].id).selectAll("polygon")
               .data([{}]).enter().append("polygon");

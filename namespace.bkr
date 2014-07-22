@@ -24,7 +24,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "19C7CEAFE3F546C4B6B444AE296B3D43",
+            "shellID": "8D7E3279FF3F48E398A4C94B86891978",
             "imports": "",
             "supplementalClassPath": "",
             "view": {
@@ -50,7 +50,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "acf0aa63-a32b-45b8-aa42-8fe3e8087bca",
+            "shellID": "e62b2327-4202-44ce-b6da-5ade09b7462d",
             "view": {
                 "cm": {
                     "mode": "r",
@@ -91,7 +91,7 @@
                 "selectedType": "Hidden",
                 "result": "",
                 "outputArrived": false,
-                "elapsedTime": 30
+                "elapsedTime": 31
             }
         },
         {
@@ -120,28 +120,10 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>u'hi mom'</pre></div>"
+                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>u'99'</pre></div>"
                 },
                 "outputArrived": true,
-                "elapsedTime": 39
-            }
-        },
-        {
-            "id": "codexWNnS0",
-            "type": "code",
-            "evaluator": "IPython",
-            "input": {
-                "body": "_beaker_session_id"
-            },
-            "output": {
-                "selectedType": "BeakerDisplay",
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>'371D2U'</pre></div>"
-                },
-                "outputArrived": true,
-                "elapsedTime": 38
+                "elapsedTime": 61
             }
         },
         {
@@ -156,12 +138,12 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#R - will turn dark blue when plugin loads successfully\nlibrary(RCurl)\nlibrary(RJSONIO)\n\n# this one isn't done yet\nbset <- function(var, val) {\n  postForm('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),'/rest/namespace/set', name=var, value=val, session=beaker_session_id_)\n}\n\npwarg = paste('beaker:',Sys.getenv(\"beaker_core_password\"),sep='')\n\nbget <- function(var) {\n  req = paste('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),\n              '/rest/namespace/get?name=', var, '&session=', beaker_session_id_, sep='')\n  res = getURL(req, userpwd=pwarg)\n  return (fromJSON(res)$value)\n}"
+                "body": "#R - will turn dark blue when plugin loads successfully\nlibrary(RCurl)\nlibrary(RJSONIO)\n\npwarg = paste('beaker:',Sys.getenv(\"beaker_core_password\"),sep='')\n\n# this one isn't done yet\nbset <- function(var, val) {\n  req = paste('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),\n           '/rest/namespace/set', sep='')\n  postForm(req, style='POST', name=var, value=val, session=beaker_session_id_,\n        \t\t .opts=list(userpwd=pwarg, httpauth = AUTH_BASIC))\n  return (val)\n}\n\n\nbget <- function(var) {\n  req = paste('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),\n              '/rest/namespace/get?name=', var, '&session=', beaker_session_id_, sep='')\n  res = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)\n  return (fromJSON(res)$value)\n}"
             },
             "output": {
                 "selectedType": "Hidden",
                 "result": "",
-                "elapsedTime": 503
+                "elapsedTime": 74
             }
         },
         {
@@ -173,8 +155,21 @@
             },
             "output": {
                 "selectedType": "Text",
-                "result": "[1] \"hi momx\"",
-                "elapsedTime": 67
+                "result": "[1] \"65\"",
+                "elapsedTime": 76
+            }
+        },
+        {
+            "id": "codeni81R3",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "bset('x', 99)"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "[1] 99",
+                "elapsedTime": 73
             }
         },
         {
@@ -242,7 +237,7 @@
             },
             "output": {
                 "selectedType": "Text",
-                "result": "hi mom"
+                "result": "99"
             }
         },
         {
@@ -271,7 +266,7 @@
         }
     ],
     "namespace": {
-        "x": "hi momx",
+        "x": "99",
         "y": "999"
     }
 }

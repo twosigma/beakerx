@@ -27,12 +27,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 /**
- * RESTful API for namespace service (in the notebook model).  This is
- * broken because it does not specify the notebook.
+ * RESTful API for namespace service (in the notebook model).
  *
- * works like this:
- * curl http://127.0.0.1:8802/rest/namespace/get?name=x
- * curl -d 'name=x&value=99' http://127.0.0.1:8802/rest/namespace/set
  */
 @Path("namespace")
 @Produces(MediaType.APPLICATION_JSON)
@@ -52,8 +48,9 @@ public class NamespaceRest {
 
   @POST
   @Path("set")
-  public void set(@FormParam("session") String session, @FormParam("name") String name, @FormParam("value") String value) {
-    // check name is well formed XXX
+  public String set(@FormParam("session") String session, @FormParam("name") String name, @FormParam("value") String value) {
+    // check arguments are well formed XXX
     this.namespaceService.set(session, name, value);
+    return "ok";
   }
 }

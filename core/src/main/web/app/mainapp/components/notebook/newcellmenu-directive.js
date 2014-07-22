@@ -37,21 +37,25 @@
 
         $scope.newCodeCell = function(evaluatorName) {
           var newCell = newCellFactory.newCodeCell(evaluatorName);
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
         };
         $scope.newTextCell = function() {
           var newCell = newCellFactory.newTextCell();
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
         };
         $scope.newMarkdownCell = function() {
           var newCell = newCellFactory.newMarkdownCell();
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
         };
 
         $scope.newSectionCell = function(level) {
           var newCell = newCellFactory.newSectionCell(level);
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
         };
+
+        function attachCell(cell) {
+          return $scope.config.attachCell(cell);
+        }
       },
       link: function(scope, element, attrs) {
         scope.moveMenu = function(event) {

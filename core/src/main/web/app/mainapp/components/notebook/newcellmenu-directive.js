@@ -54,7 +54,14 @@
         };
 
         function attachCell(cell) {
-          return $scope.config.attachCell(cell);
+          var cellOp = bkSessionManager.getNotebookCellOp();
+
+          if ($scope.config && $scope.config.attachCell) {
+            return $scope.config.attachCell(cell);
+          }
+
+          bkSessionManager.getRawNotebookModel().cells
+          cellOp.insertLast(cell);
         }
       },
       link: function(scope, element, attrs) {

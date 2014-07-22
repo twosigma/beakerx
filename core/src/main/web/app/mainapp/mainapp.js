@@ -153,8 +153,8 @@
               if (retryCountMax === undefined) {
                 retryCountMax = 100;
               }
-              if (!target.uriType) {
-                target.uriType = bkCoreManager.guessUriType(target.uri);
+              if (!target.type) {
+                target.type = bkCoreManager.guessUriType(target.uri);
               }
               target.readOnly = !!target.readOnly;
               if (!target.format) {
@@ -177,13 +177,13 @@
                       });
                 }
               }
-              var fileLoader = bkCoreManager.getFileLoader(target.uriType);
+              var fileLoader = bkCoreManager.getFileLoader(target.type);
               fileLoader.load(target.uri).then(function(fileContentAsString) {
                 var notebookModel = importer.import(fileContentAsString);
                 notebookModel = bkNotebookVersionManager.open(notebookModel);
                 loadNotebookModelAndResetSession(
                     target.uri,
-                    target.uriType,
+                    target.type,
                     target.readOnly,
                     target.format,
                     notebookModel, false, sessionId, false);

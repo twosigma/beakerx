@@ -24,7 +24,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "8D7E3279FF3F48E398A4C94B86891978",
+            "shellID": "71C80909CDDD41F280E6224557B7BF79",
             "imports": "",
             "supplementalClassPath": "",
             "view": {
@@ -50,7 +50,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "e62b2327-4202-44ce-b6da-5ade09b7462d",
+            "shellID": "60f1c0b3-9916-4f83-b400-91332b04350b",
             "view": {
                 "cm": {
                     "mode": "r",
@@ -85,13 +85,13 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "import os, urllib, urllib2, json\n\nurl = '127.0.0.1:' + os.environ['beaker_core_port']\npassword_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()\npassword_mgr.add_password(None, url, 'beaker', os.environ['beaker_core_password'])\nhandler = urllib2.HTTPBasicAuthHandler(password_mgr)\nopener = urllib2.build_opener(handler)\nurllib2.install_opener(opener)\n\n# the subtlety with this is it returns before it completes.\n# this might be desireable for performance but to avoid weirdness\n# probably want the default to block using similar technique as get\ndef bset(var, val):\n    req = urllib2.Request('http://' + url + '/rest/namespace/set',  \n                          urllib.urlencode({'name': var, 'value': val, 'session':_beaker_session_id}))\n    conn = urllib2.urlopen(req)\n    conn.read()\n\ndef bget(var):\n    req = urllib2.Request('http://' + url + '/rest/namespace/get?' + \n                          urllib.urlencode({'name': var, 'session':_beaker_session_id}))\n    conn = urllib2.urlopen(req)\n    result = json.loads(conn.read())\n    return result['value']"
+                "body": "import os, urllib, urllib2, json\n\nurl = '127.0.0.1:' + os.environ['beaker_core_port']\npassword_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()\npassword_mgr.add_password(None, url, 'beaker', os.environ['beaker_core_password'])\nhandler = urllib2.HTTPBasicAuthHandler(password_mgr)\nopener = urllib2.build_opener(handler)\nurllib2.install_opener(opener)\n\n# the subtlety with this is it returns before it completes.\n# this might be desireable for performance but to avoid weirdness\n# probably want the default to block using similar technique as get\ndef bset(var, val):\n    req = urllib2.Request('http://' + url + '/rest/namespace/set',  \n                          urllib.urlencode({'name': var, 'value': json.dumps(val), 'session':_beaker_session_id}))\n    conn = urllib2.urlopen(req)\n    conn.read()\n\ndef bget(var):\n    req = urllib2.Request('http://' + url + '/rest/namespace/get?' + \n                          urllib.urlencode({'name': var, 'session':_beaker_session_id}))\n    conn = urllib2.urlopen(req)\n    result = json.loads(conn.read())\n    return result['value']\n  \n# in addition to get and set, could probably use an undef method to remove values from the namespace"
             },
             "output": {
                 "selectedType": "Hidden",
                 "result": "",
                 "outputArrived": false,
-                "elapsedTime": 31
+                "elapsedTime": 35
             }
         },
         {
@@ -99,13 +99,13 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "bset('x', \"hi momx\")"
+                "body": "bset('s', \"hi momx\")\nbset('b', True)\nbset('i', 99)\nbset('d', 99.9)\nbset('dict', {'with': 'different', 'types': 23.2})"
             },
             "output": {
                 "selectedType": "Hidden",
                 "result": "",
                 "outputArrived": false,
-                "elapsedTime": 18
+                "elapsedTime": 33
             }
         },
         {
@@ -113,17 +113,17 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "bget('x')"
+                "body": "type(bget('b'))"
             },
             "output": {
                 "selectedType": "BeakerDisplay",
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>u'99'</pre></div>"
+                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>bool</pre></div>"
                 },
                 "outputArrived": true,
-                "elapsedTime": 61
+                "elapsedTime": 58
             }
         },
         {
@@ -143,7 +143,7 @@
             "output": {
                 "selectedType": "Hidden",
                 "result": "",
-                "elapsedTime": 74
+                "elapsedTime": 494
             }
         },
         {
@@ -151,12 +151,37 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "bget('x')"
+                "body": "x = bget('dict')"
+            },
+            "output": {
+                "selectedType": "Table",
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "with",
+                        "types"
+                    ],
+                    "values": [
+                        [
+                            "different",
+                            "23.2"
+                        ]
+                    ]
+                },
+                "elapsedTime": 181
+            }
+        },
+        {
+            "id": "codeIivJZa",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "x$types"
             },
             "output": {
                 "selectedType": "Text",
-                "result": "[1] \"65\"",
-                "elapsedTime": 76
+                "result": "[1] 23.2",
+                "elapsedTime": 123
             }
         },
         {
@@ -233,11 +258,11 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "// this is the right way, requires a bit of a hack now\nnamespace.x"
+                "body": "// this is the right way, requires a bit of a hack now\nnamespace.dict.with"
             },
             "output": {
                 "selectedType": "Text",
-                "result": "99"
+                "result": "different"
             }
         },
         {
@@ -257,7 +282,7 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "console.log(namespace)\n"
+                "body": "console.log(namespace)"
             },
             "output": {
                 "selectedType": "Text",
@@ -267,6 +292,14 @@
     ],
     "namespace": {
         "x": "99",
-        "y": "999"
+        "y": "999",
+        "s": "hi momx",
+        "i": 99,
+        "d": 99.9,
+        "dict": {
+            "with": "different",
+            "types": 23.2
+        },
+        "b": true
     }
 }

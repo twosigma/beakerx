@@ -17,6 +17,8 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.codehaus.jackson.map.ObjectMapper;
+import java.io.IOException;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -48,9 +50,13 @@ public class NamespaceRest {
 
   @POST
   @Path("set")
-  public String set(@FormParam("session") String session, @FormParam("name") String name, @FormParam("value") String value) {
+  public String set(@FormParam("session") String session, @FormParam("name") String name, @FormParam("value") String value)
+    throws IOException
+  {
     // check arguments are well formed XXX
-    this.namespaceService.set(session, name, value);
+    System.out.println("value=" + value);
+    Object parsedValue = new ObjectMapper().readValue(value, Object.class);
+    this.namespaceService.set(session, name, parsedValue);
     return "ok";
   }
 }

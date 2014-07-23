@@ -48,7 +48,7 @@ public class NamespaceRest {
     return this.namespaceService.get(session, name);
   }
 
-  // sync means wait until write completes before returning
+  // sync means wait until write completes before returning.  null value means unset.
   @POST
   @Path("set")
   public String set(@FormParam("session") String session, @FormParam("name") String name,
@@ -58,8 +58,13 @@ public class NamespaceRest {
     // check arguments are well formed XXX
     System.out.println("name=" + name);
     System.out.println("value=" + value);
-    Object parsedValue = new ObjectMapper().readValue(value, Object.class);
-    this.namespaceService.set(session, name, parsedValue, sync);
+    Object parsedValue = null;
+    Boolean unset = true;
+    if (null != value) {
+      parsedValue = new ObjectMapper().readValue(value, Object.class);
+      unset = false;
+    }
+    this.namespaceService.set(session, name, parsedValue, unset, sync);
     return "ok";
   }
 }

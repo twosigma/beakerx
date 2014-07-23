@@ -85,14 +85,16 @@ public class NamespaceService {
     return binding;
   }
 
-  // sync means wait until write completes before returning
-  public void set(String session, String name, Object value, Boolean sync) 
+  // sync means wait until write completes before returning.
+  public void set(String session, String name, Object value, Boolean unset, Boolean sync)
     throws RuntimeException, InterruptedException
   {
     System.err.println("XXX set session=" + session + " name=" + name + " sync=" + sync);
     Map<String, Object> data = new HashMap<String, Object>(2);
     data.put("name", name);
-    data.put("value", value);
+    if (!unset) {
+      data.put("value", value);
+    }
     data.put("sync", sync);
     getChannel(session).publish(this.localSession, data, null);
     if (sync) {

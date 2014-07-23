@@ -40,6 +40,14 @@ for arg in sys.argv[1:]:
 
 ipython_dir = os.environ["beaker_tmp_dir"]
 
+# set pythonpath to include this directory so we can import beaker.py
+plugin_dir = os.path.dirname(sys.argv.pop(0))
+if "PYTHONPATH" in os.environ:
+    old_path = ':' + os.environ["PYTHONPATH"]
+else:
+    old_path = ''
+os.environ["PYTHONPATH"] = plugin_dir + old_path
+
 os.execlp(ipython_path, ipython_path, "notebook",
           "--ipython-dir=" + ipython_dir, "--profile", "beaker_backend",
           "--pylab", "inline")

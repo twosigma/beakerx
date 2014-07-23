@@ -232,8 +232,6 @@ define(function(require, exports, module) {
         shell: {reply: execute_reply},
         iopub: {output: output}
       };
-      // XXX hack should do this just once when we connect
-      code = "_beaker_session_id = '" + bkHelper.getSessionId() + "'\n" + code;
       kernel.execute(code, callbacks, {silent: false});
       deferred.promise.finally(function() {
         _theCancelFunction = null;
@@ -291,6 +289,9 @@ define(function(require, exports, module) {
             if (doneCB) {
               doneCB(self);
             }
+            var initCode = "import beaker\n" +
+              "beaker.session_id = '" + bkHelper.getSessionId() + "'\n";
+            self.evaluate(initCode, {});
           };
           if (!settings.shellID) {
             settings.shellID = "";

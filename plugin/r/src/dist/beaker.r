@@ -1,12 +1,12 @@
 library(RCurl, quietly=TRUE)
 library(RJSONIO, quietly=TRUE)
 
-pwarg = paste('beaker:',Sys.getenv("beaker_core_password"),sep='')
+beaker_pwarg = paste('beaker:',Sys.getenv("beaker_core_password"),sep='')
 
-bset4 <- function(var, val, unset, sync) {
+beaker_set4 <- function(var, val, unset, sync) {
   req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
            '/rest/namespace/set', sep='')
-  opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
+  opts = list(userpwd=beaker_pwarg, httpauth = AUTH_BASIC)
   if (unset) {
     postForm(req, style='POST', name=var, session=beaker_session_id_, sync=sync, .opts=opts)
   } else {
@@ -15,22 +15,22 @@ bset4 <- function(var, val, unset, sync) {
   return (val)
 }
 
-bset <- function(var, val) {
-  return (bset4(var, val, FALSE, TRUE))
+beaker_set <- function(var, val) {
+  return (beaker_set4(var, val, FALSE, TRUE))
 }
 
-bunset <- function(var) {
-  return (bset4(var, NULL, TRUE, TRUE))
+beaker_unset <- function(var) {
+  return (beaker_set4(var, NULL, TRUE, TRUE))
 }
 
 # returns before it completes
-bset_fast <- function(var, val) {
-  return (bset4(var, val, FALSE, FALSE))
+beaker_set_fast <- function(var, val) {
+  return (beaker_set4(var, val, FALSE, FALSE))
 }
 
-bget <- function(var) {
+beaker_get <- function(var) {
   req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
               '/rest/namespace/get?name=', var, '&session=', beaker_session_id_, sep='')
-  res = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
+  res = getURL(req, userpwd=beaker_pwarg, httpauth = AUTH_BASIC)
   return (fromJSON(res)$value)
 }

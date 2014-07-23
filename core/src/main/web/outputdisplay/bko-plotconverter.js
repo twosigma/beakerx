@@ -237,7 +237,9 @@
             var txt = "";
             var valx = newmodel.xType === "time" ? new Date(ele.x).toLocaleString() : ele.x;
             var valy = ele.y;
-            txt += "<div>Type: " + data.type + "</div>";
+            if (data.legend != null) {
+              txt += "<div>" + data.legend + "</div>";
+            }
             txt += "<div>x: " + valx + "</div><div>y: " + valy + "</div>";
             if (ele.y2 != null) {
               txt += "<div>y2: " + ele.y2 + "</div>";
@@ -356,7 +358,7 @@
         }
         if (model.type === "NanoPlot") {
           // TODO, beaker crashes when loading long integers
-          // var range = plotUtils.getDataRange(newmodel.data);
+          // 
           // newmodel.nanoOffset = range.xl;
         }
         
@@ -417,6 +419,7 @@
           this.formatSerializedData(newmodel, model);
         }
         this.formatData(newmodel, model); // fill in null entries, compute y2, etc.
+        var range = plotUtils.getDataRange(newmodel.data).datarange;
         
         if (newmodel.margin == null) { 
           newmodel.margin = {
@@ -425,6 +428,17 @@
             left : 5,
             right : 5
           };
+        }
+        if (newmodel.vrange == null) {
+          newmodel.vrange = {
+            xl : range.xl - range.xspan * 0.5,
+            xr : range.xr + range.xspan * 0.5,
+            yl : range.yl - range.yspan * 0.5,
+            yr : range.yr + range.yspan * 0.5
+          };
+          if (newmodel.onzeroY === true) {
+            newmodel.vrange.yl = 0;
+          }
         }
         newmodel.version = "complete";
         console.log(newmodel);

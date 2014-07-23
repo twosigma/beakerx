@@ -158,6 +158,7 @@
               return;
             scope.width = newWidth;
             scope.jqcontainer.css("width", newWidth + "px");
+            scope.jqsvg.css("width", newWidth + "px");
             scope.calcMapping(false);
             scope.legendDone = false;
             scope.update();
@@ -181,32 +182,35 @@
           _.extend(scope.vrange, _.omit(scope.range, "xspan", "yspan"));
           
           
-          if (model.range != null) {  // old code cannot set range but focus
-            scope.vrange.xl = model.range.left;
-            scope.vrange.xr = model.range.right;
-            scope.vrange.yl = model.range.bottom;
-            scope.vrange.yr = model.range.top;
-            
-            if(model.onzeroY != null) scope.vrange.yl = 0;
+          if (model.vrange != null) {  // old code cannot set range but focus
+            scope.vrange.xl = model.vrange.xl;
+            scope.vrange.xr = model.vrange.xr;
+            scope.vrange.yl = model.vrange.yl;
+            scope.vrange.yr = model.vrange.yr;
+            scope.vrange.xspan = scope.vrange.xr - scope.vrange.xl;
+            scope.vrange.yspan = scope.vrange.yr - scope.vrange.yl;
           } else {
-            var margin = model.margin;
-            // visible range initially is a bit larger than data range
-            scope.vrange.xl -= scope.range.xspan * (margin == null || margin.left == null ? 0.1 : margin.left / 100.0);
-            scope.vrange.xr += scope.range.xspan * (margin == null || margin.right == null ? 0.1 : margin.right / 100.0);
-            scope.vrange.yl -= scope.range.yspan * (margin == null || margin.bottom == null ? 0.1 : margin.bottom / 100.0);
-            scope.vrange.yr += scope.range.yspan * (margin == null || margin.top == null ? 0.1 : margin.top / 100.0);
-            if(model.onzeroY) {
-              scope.vrange.yl = 0;
-            }
+            console.error("vrange is not prepared in model");
           }
-          scope.vrange.xspan = scope.vrange.xr - scope.vrange.xl;
-          scope.vrange.yspan = scope.vrange.yr - scope.vrange.yl;
+          
+          // TODO distinguish datarange and visualrange
+          var margin = model.margin;
+          // visible range initially is a bit larger than data range
+          scope.vrange.xl -= scope.range.xspan * (margin == null || margin.left == null ? 0.5 : margin.left / 100.0);
+          scope.vrange.xr += scope.range.xspan * (margin == null || margin.right == null ? 0.5 : margin.right / 100.0);
+          scope.vrange.yl -= scope.range.yspan * (margin == null || margin.bottom == null ? 0.5 : margin.bottom / 100.0);
+          scope.vrange.yr += scope.range.yspan * (margin == null || margin.top == null ? 0.5 : margin.top / 100.0);
+
           scope.focus = {};
-          var focus = scope.focus;
-          focus.xl = model.focus.xl!=null ? model.focus.xl : scope.vrange.xl;
-          focus.xr = model.focus.xr!=null ? model.focus.xr : scope.vrange.xr;
-          focus.yl = model.focus.yl!=null ? model.focus.yl : scope.vrange.yl;
-          focus.yr = model.focus.yr!=null ? model.focus.yr : scope.vrange.yr;
+          var focus = scope.focus, range = scope.range;
+          focus.xl = model.focus.xl != null ? 
+            model.focus.xl : range.xl - range.xspan * margin.left / 100.0;
+          focus.xr = model.focus.xr != null ? 
+            model.focus.xr : range.xr + range.xspan * margin.right / 100.0;
+          focus.yl = model.focus.yl != null ? 
+            model.focus.yl : range.yl - range.yspan * margin.bottom / 100.0;
+          focus.yr = model.focus.yr != null ? 
+            model.focus.yr : range.yr + range.yspan * margin.top / 100.0;
           focus.xspan = focus.xr - focus.xl;
           focus.yspan = focus.yr - focus.yl;
           
@@ -214,10 +218,6 @@
             _.extend(scope.vrange, scope.range);
             _.extend(scope.focus, scope.range);
           }
-          if(model.focus.xl) scope.focus.xl = model.focus.xl;
-          if(model.focus.xr) scope.focus.xr = model.focus.xr;
-          if(model.focus.yl) scope.focus.yl = model.focus.yl;
-          if(model.focus.yr) scope.focus.yr = model.focus.yr;
           scope.fixFocus();
         };
 
@@ -813,7 +813,8 @@
             var tipdiv = scope.jqcontainer.find("#tip_" + d.id);
             if (tipdiv.length > 0) {
               var w = tipdiv.width(), h = tipdiv.height();
-              if (plotUtils.outsideScrBox(scope, p.x, p.y, w, h)) {
+              if (plotUtils.outsideScrBox(scope, p.x + d.objw + scope.fonts.tooltipWidth, p.y, 
+                w, h)) {
                 tipdiv.remove();
                 return;
               }
@@ -833,22 +834,25 @@
                   delete scope.tips[d.id];
                   $(this).remove();
                 }
-              }).draggable({
-                stop : function(event, ui) {
-                  d.tipx = ui.position.left - scope.fonts.tooltipWidth;
-                  d.tipy = ui.position.top;
-                  d.datax = scope.scr2dataX(d.tipx);
-                  d.datay = scope.scr2dataY(d.tipy);
-                }
               });
-              var w = tipdiv.width(), h = tipdiv.height();
-              if (plotUtils.outsideScrBox(scope, p.x, p.y, w, h)) {
-                tipdiv.remove();
-                return;
-              }
             }
             var objw = scope.jqsvg.find("#" + d.id).attr("width");
             objw = objw == null ? 0 : parseFloat(objw);
+            d.objw = objw;
+            var w = tipdiv.width(), h = tipdiv.height();
+            if (plotUtils.outsideScrBox(scope, p.x + objw + scope.fonts.tooltipWidth, p.y, w, h)) {
+              tipdiv.remove();
+              return;
+            }
+            tipdiv.draggable({
+              stop : function(event, ui) {
+                d.tipx = ui.position.left - objw - scope.fonts.tooltipWidth;
+                d.tipy = ui.position.top;
+                d.datax = scope.scr2dataX(d.tipx);
+                d.datay = scope.scr2dataY(d.tipy);
+              }
+            });
+              
             tipdiv.css("left", p.x + objw + scope.fonts.tooltipWidth + "px")
               .css("top", p.y + "px");
             if (d.isResp === true) {
@@ -1159,7 +1163,7 @@
             scope.lasty = d3trans[1];
             scope.lastscale = d3scale;
 
-            var focus = scope.focus, range = scope.range;
+            var focus = scope.focus, range = scope.range, vrange = scope.vrange;
             var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
             if (ds == 1.0) {
               // translate only
@@ -1180,16 +1184,16 @@
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
                 var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym), 
                     nyspan = nyr - nyl;
-                if (nyspan <= range.yspan * 100 && nyspan >= range.yspan * 0.01) {
+                if (nyspan <= vrange.yspan * 100 && nyspan >= vrange.yspan * 0.01) {
                   focus.yl = nyl;
                   focus.yr = nyr;
                   focus.yspan = nyspan;
                 }else{
-                  if(nyspan > range.yspan * 100) {
-                    focus.yr = focus.yl + range.yspan * 100;
+                  if(nyspan > vrange.yspan * 100) {
+                    focus.yr = focus.yl + vrange.yspan * 100;
                     focus.yspan = focus.yr - focus.yl;
-                  }else if(nyspan < range.yspan * 0.01) {
-                    focus.yr = focus.yl + range.yspan * 0.01;
+                  }else if(nyspan < vrange.yspan * 0.01) {
+                    focus.yr = focus.yl + vrange.yspan * 0.01;
                     focus.yspan = focus.yr - focus.yl;
                   }
                 }

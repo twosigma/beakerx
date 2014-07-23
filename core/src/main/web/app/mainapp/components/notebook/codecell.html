@@ -27,7 +27,10 @@
         <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
         <a href="#" class="evaluate-script advanced-hide" ng-click="evaluate()" eat-click>Run</a>
     </div>
-    <div class="code-cell-output" ng-class="{'no-output': isHiddenOutput()}">
+    <div class="code-cell-output" ng-class="{
+      'no-output': isHiddenOutput(),
+      'output-hidden': cellmodel.output.hidden
+    }">
         <ul class="cell-output-labels advanced-hide">
           <li ng-if="!isShowOutput()"><b> Output Hidden</b></li>
           <li ng-if='cellmodel.output.result.innertype != "Error" && isShowOutput()'><b>Cell Output</b></li>

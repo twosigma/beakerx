@@ -88,6 +88,10 @@ bk-code-cell .code-cell-output {
     }
 }
 
+.advanced-mode .output-hidden .cell-menu-item {
+    display: none;
+}
+
 bk-code-cell .locked .code-cell-output {
     border: none;
     margin-top: 0;

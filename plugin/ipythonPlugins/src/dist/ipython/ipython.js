@@ -290,7 +290,7 @@ define(function(require, exports, module) {
               doneCB(self);
             }
             var initCode = "import beaker\n" +
-              "beaker.session_id = '" + bkHelper.getSessionId() + "'\n";
+              "beaker.set_session('" + bkHelper.getSessionId() + "')\n";
             self.evaluate(initCode, {});
           };
           if (!settings.shellID) {

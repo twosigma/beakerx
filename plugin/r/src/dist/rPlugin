@@ -22,6 +22,8 @@ self_path = sys.argv.pop()
 
 os.chdir(os.path.dirname(self_path))
 
+os.environ['beaker_r_init'] = os.getcwd() + '/beaker.r'
+
 if os.name == 'nt':
     bin = "bin\\r"
 else:

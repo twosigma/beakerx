@@ -169,6 +169,7 @@
                 console.log("setting, " + value);
                 if (undefined === namespace) {
                   notebookModel.namespace = {};
+                  namespace = notebookModel.namespace;
                 }
                 if (undefined === value) {
                   console.log("undef");
@@ -176,7 +177,9 @@
                 } else {
                   namespace[name] = value;
                 }
+                console.log("checking sync");
                 if (sync) {
+                  console.log("syncing");
                   var reply2 = {name: name, session: sessionId};
                   $.cometd.publish("/service/namespace/receive", JSON.stringify(reply2));
                 }

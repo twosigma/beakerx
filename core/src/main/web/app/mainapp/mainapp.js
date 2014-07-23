@@ -142,50 +142,6 @@
               bkHelper.evaluate("initialization");
             }
 
-            console.log("XXX setting up namespace websocket for sessionID = " + sessionId);
-            // XXX this should be in another module 
-            $.cometd.subscribe("/namespace/" + sessionId, function(reply) {
-              console.log("XXX got commet msg sessionId=" + sessionId);
-              console.log(reply);
-              var name = reply.data.name;
-              var value = reply.data.value;
-              var sync = reply.data.sync;
-              var notebookModel = bkHelper.getNotebookModel();
-              var namespace = notebookModel.namespace;
-              if (undefined === sync) {
-                console.log("getting");
-                var reply2 = {name: name, defined: false, session: sessionId};
-                if (undefined !== namespace) {
-                  var readValue = namespace[name];
-                  if (undefined !== readValue) {
-                    reply2.value = readValue;
-                    reply2.defined = true;
-                  }
-                }
-                console.log("getting4");
-                console.log("sending reply back: " + reply2);
-                $.cometd.publish("/service/namespace/receive", JSON.stringify(reply2));
-              } else {
-                console.log("setting, " + value);
-                if (undefined === namespace) {
-                  notebookModel.namespace = {};
-                  namespace = notebookModel.namespace;
-                }
-                if (undefined === value) {
-                  console.log("undef");
-                  delete namespace[name];
-                } else {
-                  namespace[name] = value;
-                }
-                console.log("checking sync");
-                if (sync) {
-                  console.log("syncing");
-                  var reply2 = {name: name, session: sessionId};
-                  $.cometd.publish("/service/namespace/receive", JSON.stringify(reply2));
-                }
-              }
-            });
-
             $scope.loading = false;
           };
           return {

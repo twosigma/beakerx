@@ -22,6 +22,7 @@
     'bk.utils',
     'bk.session',
     'bk.notebookCellModelManager',
+    'bk.notebookNamespaceModelManager',
     'bk.recentMenu',
     'bk.evaluatorManager'
   ]);
@@ -30,6 +31,7 @@
       bkUtils,
       bkSession,
       bkNotebookCellModelManager,
+      bkNotebookNamespaceModelManager,
       bkEvaluatorManager,
       bkRecentMenu) {
 
@@ -139,6 +141,8 @@
         _notebookModel.set(notebookModel);
         _edited = !!edited;
         _sessionId = sessionId;
+
+        bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
       },
       clear: function() {
         bkEvaluatorManager.reset();

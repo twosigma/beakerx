@@ -148,16 +148,15 @@
               console.log("XXX got commet msg sessionId=" + sessionId);
               var name = reply.data.name;
               var value = reply.data.value;
+              var sync = reply.data.sync;
               var notebookModel = bkHelper.getNotebookModel();
+              var namespace = notebookModel.namespace;
               if (undefined === value) {
                 console.log("getting");
-                var namespace = notebookModel.namespace;
                 var reply2 = {name: name, defined: false, session: sessionId};
                 if (undefined !== namespace) {
-                  console.log("getting2");
                   var readValue = notebookModel.namespace[name];
                   if (undefined !== readValue) {
-                    console.log("getting3");
                     reply2.value = readValue;
                     reply2.defined = true;
                   }
@@ -167,10 +166,14 @@
                 $.cometd.publish("/service/namespace/receive", JSON.stringify(reply2));
               } else {
                 console.log("setting");
-                var namespace = notebookModel.namespace;
-                if (undefined === namespace)
+                if (undefined === namespace) {
                   notebookModel.namespace = {};
+                }
                 notebookModel.namespace[name] = value;
+                if (sync) {
+                  var reply2 = {name: name, session: sessionId};
+                  $.cometd.publish("/service/namespace/receive", JSON.stringify(reply2));
+                }
               }
             });
 

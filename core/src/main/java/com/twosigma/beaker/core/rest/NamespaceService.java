@@ -78,19 +78,29 @@ public class NamespaceService {
     getChannel(session).publish(this.localSession, data, null);
     Binding binding = getHandoff(session).take(); // blocks
     System.err.println("XXX got it");
-    if (!binding.name.equals(name))
-      throw new RuntimeException("name mismatch.  received " + binding.name + ", expected " + name);
+    if (!binding.name.equals(name)) {
+      throw new RuntimeException("Namespace get, name mismatch.  Received " + binding.name + ", expected " + name);
+    }
     // no reason to return the session XXX
     return binding;
   }
 
-  // should be an option to block until it completes on client XXX
-  public void set(String session, String name, Object value) {
-    System.err.println("XXX set session=" + session + " name=" + name);
+  // sync means wait until write completes before returning
+  public void set(String session, String name, Object value, Boolean sync) 
+    throws RuntimeException, InterruptedException
+  {
+    System.err.println("XXX set session=" + session + " name=" + name + " sync=" + sync);
     Map<String, Object> data = new HashMap<String, Object>(2);
     data.put("name", name);
     data.put("value", value);
+    data.put("sync", sync);
     getChannel(session).publish(this.localSession, data, null);
+    if (sync) {
+      Binding binding = getHandoff(session).take(); // blocks
+      if (!binding.name.equals(name)) {
+        throw new RuntimeException("Namespace set, name mismatch.  Received " + binding.name + ", expected " + name);
+      }
+    }
   }
 
   @Listener("/service/namespace/receive")

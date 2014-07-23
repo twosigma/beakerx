@@ -24,7 +24,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "DC562903195245708DA9B37306EF2F09",
+            "shellID": "C7598192D98048199FE7C2D6594692FC",
             "imports": "",
             "supplementalClassPath": "",
             "view": {
@@ -50,7 +50,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "52e0a1c4-ee2f-4369-b285-26a52a4ef5f8",
+            "shellID": "f5787b68-59f2-4e69-b179-1b6165fc16fc",
             "view": {
                 "cm": {
                     "mode": "r",
@@ -85,31 +85,13 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "import os, urllib, urllib2, json, pandas, yaml\n\n\nclass DataFrameEncoder(json.JSONEncoder):\n    def default(self, obj):\n      \t# similarly handle Series, Panels, .... ?\n        if type(obj) == pandas.core.frame.DataFrame:\n            return obj.to_dict(outtype='list')\n        return json.JSONEncoder.default(self, obj)\n        \nurl = '127.0.0.1:' + os.environ['beaker_core_port']\npassword_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()\npassword_mgr.add_password(None, url, 'beaker', os.environ['beaker_core_password'])\nhandler = urllib2.HTTPBasicAuthHandler(password_mgr)\nopener = urllib2.build_opener(handler)\nurllib2.install_opener(opener)\n\n# the subtlety with this is it returns before it completes.\n# this might be desireable for performance but to avoid weirdness\n# probably want the default to block using similar technique as get\ndef bset(var, val):\n    req = urllib2.Request('http://' + url + '/rest/namespace/set',  \n                          urllib.urlencode({'name': var, 'value': json.dumps(val, cls=DataFrameEncoder), 'session':_beaker_session_id}))\n    conn = urllib2.urlopen(req)\n    conn.read()\n\ndef bget(var):\n    req = urllib2.Request('http://' + url + '/rest/namespace/get?' + \n                          urllib.urlencode({'name': var, 'session':_beaker_session_id}))\n    conn = urllib2.urlopen(req)\n    res1 = conn.read()\n    print(res1)\n    result = yaml.load(res1) # would use json.loads but it returns unicode\n    return result['value']\n  \n# in addition to get and set, could probably use an undef method to remove values from the namespace\n"
+                "body": "import os, urllib, urllib2, json, pandas, yaml\n\n\nclass DataFrameEncoder(json.JSONEncoder):\n    def default(self, obj):\n      \t# similarly handle Series, Panels, .... ?\n        if type(obj) == pandas.core.frame.DataFrame:\n            return obj.to_dict(outtype='list')\n        return json.JSONEncoder.default(self, obj)\n        \nurl = '127.0.0.1:' + os.environ['beaker_core_port']\npassword_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()\npassword_mgr.add_password(None, url, 'beaker', os.environ['beaker_core_password'])\nhandler = urllib2.HTTPBasicAuthHandler(password_mgr)\nopener = urllib2.build_opener(handler)\nurllib2.install_opener(opener)\n\n# the subtlety with this is it returns before it completes.\n# this might be desireable for performance but to avoid weirdness\n# probably want the default to block using similar technique as get\ndef bset3(var, val, sync):\n    req = urllib2.Request('http://' + url + '/rest/namespace/set',  \n                          urllib.urlencode({'name': var, 'value': json.dumps(val, cls=DataFrameEncoder),\n                                            'session':_beaker_session_id, 'sync':sync}))\n    conn = urllib2.urlopen(req)\n    conn.read()\n\ndef bset(var, val):\n    bset3(var, val, True)\n\ndef bset_fast(var, val):\n    bset3(var, val, False)\n\ndef bget(var):\n    req = urllib2.Request('http://' + url + '/rest/namespace/get?' + \n                          urllib.urlencode({'name': var, 'session':_beaker_session_id}))\n    conn = urllib2.urlopen(req)\n    result = yaml.load(conn.read()) # would use json.loads but it returns unicode\n    return result['value']\n  \n# in addition to get and set, could probably use an undef method to remove values from the namespace\n"
             },
             "output": {
                 "selectedType": "Hidden",
                 "result": "",
                 "outputArrived": false,
-                "elapsedTime": 931
-            }
-        },
-        {
-            "id": "codefUxxlF",
-            "type": "code",
-            "evaluator": "IPython",
-            "input": {
-                "body": "x = '{  \"name\" : \"x\",  \"session\" : \"fR2Aa9\",  \"value\" : 101, \"defined\" : True}'\nast.literal_eval(x)"
-            },
-            "output": {
-                "selectedType": "BeakerDisplay",
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>{'defined': True, 'name': 'x', 'session': 'fR2Aa9', 'value': 101}</pre></div>"
-                },
-                "outputArrived": true,
-                "elapsedTime": 96
+                "elapsedTime": 299
             }
         },
         {
@@ -117,13 +99,13 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "bset('s', \"hi momx\")\nbset('u', u'hi momx')\nbset('b', True)\nbset('i', 99)\nbset('d', 99.9)\nbset('dict', {'with': 'different', 'types': 23.2})"
+                "body": "bset('s', \"hi momx\")\nbset('u', u'hi momx') # unicode not recovered properly XXX\nbset('b', True)\nbset('i', 99)\nbset('d', 99.9)\nbset('dict', {'with': 'different', 'types': 23.2})"
             },
             "output": {
                 "selectedType": "Hidden",
                 "result": "",
                 "outputArrived": false,
-                "elapsedTime": 86
+                "elapsedTime": 49
             }
         },
         {
@@ -131,17 +113,13 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "type(bget('b'))"
+                "body": "bset_fast('s', \"hi momx\")"
             },
             "output": {
-                "selectedType": "BeakerDisplay",
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>bool</pre></div>"
-                },
-                "outputArrived": true,
-                "elapsedTime": 139
+                "selectedType": "Hidden",
+                "result": "",
+                "outputArrived": false,
+                "elapsedTime": 27
             }
         },
         {
@@ -294,10 +272,10 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>{'types': 23.2, 'with': 'different'}</pre></div>"
+                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>{'types': 23.2, 'with': 'different'}</pre></div>"
                 },
                 "outputArrived": true,
-                "elapsedTime": 142
+                "elapsedTime": 111
             }
         },
         {
@@ -312,12 +290,12 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#R - will turn dark blue when plugin loads successfully\nlibrary(RCurl)\nlibrary(RJSONIO)\n\npwarg = paste('beaker:',Sys.getenv(\"beaker_core_password\"),sep='')\n\n# this one isn't done yet\nbset <- function(var, val) {\n  req = paste('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),\n           '/rest/namespace/set', sep='')\n  postForm(req, style='POST', name=var, value=toJSON(val), session=beaker_session_id_,\n        \t\t .opts=list(userpwd=pwarg, httpauth = AUTH_BASIC))\n  return (val)\n}\n\n\nbget <- function(var) {\n  req = paste('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),\n              '/rest/namespace/get?name=', var, '&session=', beaker_session_id_, sep='')\n  res = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)\n  return (fromJSON(res)$value)\n}"
+                "body": "#R - will turn dark blue when plugin loads successfully\nlibrary(RCurl)\nlibrary(RJSONIO)\n\npwarg = paste('beaker:',Sys.getenv(\"beaker_core_password\"),sep='')\n\nbset3 <- function(var, val, sync) {\n  req = paste('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),\n           '/rest/namespace/set', sep='')\n  postForm(req, style='POST', name=var, value=toJSON(val), session=beaker_session_id_, sync=sync,\n        \t\t .opts=list(userpwd=pwarg, httpauth = AUTH_BASIC))\n  return (val)\n}\n\nbset <- function(var, val) {\n  return (bset3(var, val, TRUE))\n}\n\nbset_fast <- function(var, val) {\n  return (bset3(var, val, FALSE))\n}\n\nbget <- function(var) {\n  req = paste('http://127.0.0.1:',Sys.getenv(\"beaker_core_port\"),\n              '/rest/namespace/get?name=', var, '&session=', beaker_session_id_, sep='')\n  res = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)\n  return (fromJSON(res)$value)\n}"
             },
             "output": {
                 "selectedType": "Hidden",
                 "result": "",
-                "elapsedTime": 887
+                "elapsedTime": 458
             }
         },
         {
@@ -371,12 +349,12 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "bset('x', 99)"
+                "body": "bset_fast('x', 97)"
             },
             "output": {
                 "selectedType": "Text",
-                "result": "[1] 99",
-                "elapsedTime": 73
+                "result": "[1] 97",
+                "elapsedTime": 84
             }
         },
         {
@@ -489,6 +467,18 @@
             }
         },
         {
+            "id": "codewfnoWY",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "namespace.x"
+            },
+            "output": {
+                "selectedType": "Text",
+                "result": "97"
+            }
+        },
+        {
             "id": "codeoz5hcp",
             "type": "code",
             "evaluator": "JavaScript",
@@ -514,7 +504,9 @@
         }
     ],
     "namespace": {
-        "x": 101,
+        "x": [
+            97
+        ],
         "y": {
             "with": "different",
             "types": 23.2

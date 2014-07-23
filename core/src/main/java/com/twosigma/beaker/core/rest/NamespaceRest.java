@@ -43,20 +43,23 @@ public class NamespaceRest {
   @GET
   @Path("get")
   public Object get(@QueryParam("session") String session, @QueryParam("name") String name) 
-    throws InterruptedException 
+    throws InterruptedException
   {
     return this.namespaceService.get(session, name);
   }
 
+  // sync means wait until write completes before returning
   @POST
   @Path("set")
-  public String set(@FormParam("session") String session, @FormParam("name") String name, @FormParam("value") String value)
-    throws IOException
+  public String set(@FormParam("session") String session, @FormParam("name") String name,
+                    @FormParam("value") String value, @FormParam("sync") Boolean sync)
+    throws IOException, InterruptedException
   {
     // check arguments are well formed XXX
+    System.out.println("name=" + name);
     System.out.println("value=" + value);
     Object parsedValue = new ObjectMapper().readValue(value, Object.class);
-    this.namespaceService.set(session, name, parsedValue);
+    this.namespaceService.set(session, name, parsedValue, sync);
     return "ok";
   }
 }

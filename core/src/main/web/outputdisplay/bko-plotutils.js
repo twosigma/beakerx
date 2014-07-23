@@ -273,7 +273,7 @@
               .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
               .style("stroke-width", function(d) { return d.stroke_width; })
               .attr("points", function(d) { return d.points; });
-            svg.select("#" + pipe[i].id).selectAll("circle")
+            svg.select("#" + pipe[i].id).selectAll("polygon")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("points", function(d) { return d.points; });
         }

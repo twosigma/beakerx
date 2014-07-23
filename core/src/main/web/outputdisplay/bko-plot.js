@@ -221,6 +221,9 @@
             _.extend(scope.focus, scope.range);
           }
           scope.fixFocus();
+          
+          scope.initFocus = {};
+          _.extend(scope.initFocus, focus);
         };
 
         scope.calcCoords = function() {
@@ -1297,11 +1300,11 @@
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           if (mx < lMargin && my < H - bMargin) {
-            _.extend(scope.focus, _.pick(scope.vrange, "yl", "yr", "yspan"));
+            _.extend(scope.focus, _.pick(scope.initFocus, "yl", "yr", "yspan"));
           } else if (my > H - bMargin && mx > lMargin) {
-            _.extend(scope.focus, _.pick(scope.vrange, "xl", "xr", "xspan"));
+            _.extend(scope.focus, _.pick(scope.initFocus, "xl", "xr", "xspan"));
           } else {
-            _.extend(scope.focus, scope.vrange);
+            _.extend(scope.focus, scope.initFocus);
           }
           scope.calcMapping(true);
 

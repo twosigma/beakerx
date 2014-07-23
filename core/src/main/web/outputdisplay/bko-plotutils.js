@@ -246,6 +246,38 @@
               .attr("cy", function(d) { return d.cy; });
         }
       },
+      plotPointDiamonds: function(scope) {
+        var pipe = scope.rpipePointDiamonds;
+        var svg = scope.pointdiamondg;
+        svg.selectAll("g")
+          .data(pipe, function(d) { return d.id; }).exit().remove();
+        svg.selectAll("g")
+          .data(pipe, function(d) { return d.id; }).enter().append("g")
+          .attr("id", function(d) { return d.id; })
+          .attr("class", function(d) { return d.class; })
+          .attr("fill", function(d) { return d.fill; })
+          .attr("fill-opacity", function(d) { return d.fill_opacity; })
+          .attr("stroke", function(d) { return d.stroke; })
+          .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
+        for (var i = 0; i < pipe.length; i++) {
+            svg.select("#" + pipe[i].id).selectAll("polygon")
+              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
+            svg.select("#" + pipe[i].id).selectAll("polygon")
+              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("polygon")
+              .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
+              .attr("fill", function(d) { return d.fill; })
+              .attr("fill-opacity", function(d) { return d.fill_opacity; })
+              .attr("stroke", function(d) { return d.stroke; })
+              .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("stroke-width", function(d) { return d.stroke_width; })
+              .attr("points", function(d) { return d.points; });
+            svg.select("#" + pipe[i].id).selectAll("circle")
+              .data(pipe[i].elements, function(d) { return d.id; })
+              .attr("points", function(d) { return d.points; });
+        }
+      },
       plotPointRects: function(scope) {
         var pipe = scope.rpipePointRects;
         var svg = scope.pointrectg;

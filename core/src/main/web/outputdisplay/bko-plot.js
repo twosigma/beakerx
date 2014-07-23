@@ -36,8 +36,9 @@
           "<g id='maing'>" + 
             "<g id='coordg'></g>" +
             "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" +
-            "<g id='stemg'></g> <g id='pointrectg'></g> <g id='pointcircleg'></g> " +
-            "<g id='segg'></g> <g id='rectg'></g> <g id='textg'></g> <g id='labelg'></g> " +
+            "<g id='stemg'></g> <g id='segg'></g> <g id='rectg'></g>" +
+            "<g id='pointrectg'></g> <g id='pointcircleg'></g> <g id='pointdiamondg'></g>" +
+            "<g id='textg'></g> <g id='labelg'></g> " +
           "</g>" +
           "<g id='interg'>" + 
             "<g id='dotg'></g>" +
@@ -99,6 +100,7 @@
           scope.circleg = scope.maing.select("#circleg");
           scope.pointrectg = scope.maing.select("#pointrectg");
           scope.pointcircleg = scope.maing.select("#pointcircleg");
+          scope.pointdiamondg = scope.maing.select("#pointdiamondg");
           scope.segg = scope.maing.select("#segg");
           scope.rectg = scope.maing.select("#rectg");
           scope.textg = scope.maing.select("#textg");
@@ -377,7 +379,9 @@
                   "y" : y,
                   "height" : y2 - y,
                   "tip_text" : p.value,
-                  "tip_color" : data[i].color
+                  "tip_color" : data[i].color,
+                  "tip_x" : x1,
+                  "tip_y" : y
                 };
                 if (p.color != null) bar.fill = p.color;
                 if (p.fill_opacity != null) bar.fill_opaicty = p.fill_opacity;
@@ -446,7 +450,9 @@
                   "stroke_dasharray": p.stroke_dasharray,
                   "stroke_width" : p.width,
                   "tip_text": p.value,
-                  "tip_color": data[i].color
+                  "tip_color": data[i].color,
+                  "tip_x" : mapX(p.x),
+                  "tip_y" : mapY(p.y)
                 });
                 if (data[i].style.search("bottom") != -1) {
                   var y = y2;
@@ -490,22 +496,34 @@
               var reles = [];
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j], s = p.size;
+                var x = mapX(p.x), y = mapY(p.y);
                 var ele = {
                   "id" : "point_" + i + "_" + j,
                   "class" : "plot-resp",
                   "tip_text" : p.value,
-                  "tip_color" : data[i].color
+                  "tip_color" : data[i].color,
+                  "tip_x" : x,
+                  "tip_y" : y
                 };
                 if (data[i].style === "circle") {
                   _.extend(ele, {
-                    "cx" : mapX(p.x),
-                    "cy" : mapY(p.y),
+                    "cx" : x,
+                    "cy" : y,
                     "r" : s
+                  });
+                } else if (data[i].style === "diamond") {
+                  var pstr = "";
+                  pstr += (x - s) + "," + (y    ) + " ";
+                  pstr += (x    ) + "," + (y - s) + " ";
+                  pstr += (x + s) + "," + (y    ) + " ";
+                  pstr += (x    ) + "," + (y + s) + " ";
+                  _.extend(ele, {
+                    "points" : pstr
                   });
                 } else {
                   _.extend(ele, {
-                    "x" : mapX(p.x) - s / 2,
-                    "y" : mapY(p.y) - s / 2,
+                    "x" : x - s / 2,
+                    "y" : y - s / 2,
                     "width" : s,
                     "height" : s
                   });
@@ -517,8 +535,11 @@
 
                 reles.push(ele);
               }
-              var pipe = data[i].style === "rect" ? 
-                  scope.rpipePointRects : scope.rpipePointCircles;
+              var pipe;
+              if (data[i].style === "diamond") { pipe = scope.rpipePointDiamonds; }
+              else if (data[i].style === "circle") { pipe = scope.rpipePointCircles; }
+              else pipe = scope.rpipePointRects;
+              
               pipe.push({
                   "id" : "point_" + i,
                   "class" : "plot-point",
@@ -737,7 +758,9 @@
                 "opacity" : scope.tips[id] == null ? 0 : 1,
                 "point" : _.omit(eles[j], "uniqid"),
                 "tip_text" : eles[j].value,
-                "tip_color" : data[i].color
+                "tip_color" : data[i].color,
+                "tip_x" : p.x,
+                "tip_y" : p.y
               });
             }
             var wrapper = {
@@ -782,11 +805,11 @@
           _.extend(scope.tips[d.id], d);
           var d = scope.tips[d.id];
           d.sticking = false;
-          var pos = scope.jqsvg.find("#" + d.id).position();
-          d.tipx = pos.left;
-          d.tipy = pos.top;
-          d.datax = scope.scr2dataX(d.tipx);
-          d.datay = scope.scr2dataY(d.tipy);
+          //var pos = scope.jqsvg.find("#" + d.id).position();
+          //d.tipx = pos.left;
+          //d.tipy = pos.top;
+          d.datax = scope.scr2dataX(d.tip_x);
+          d.datay = scope.scr2dataY(d.tip_y);
                     
           scope.renderTips();
         };
@@ -810,6 +833,8 @@
               "x" : scope.data2scrX(d.datax),
               "y" : scope.data2scrY(d.datay)
             };
+            d.scrx = p.x;
+            d.scry = p.y;
             var tipdiv = scope.jqcontainer.find("#tip_" + d.id);
             if (tipdiv.length > 0) {
               var w = tipdiv.width(), h = tipdiv.height();
@@ -846,10 +871,10 @@
             }
             tipdiv.draggable({
               stop : function(event, ui) {
-                d.tipx = ui.position.left - objw - scope.fonts.tooltipWidth;
-                d.tipy = ui.position.top;
-                d.datax = scope.scr2dataX(d.tipx);
-                d.datay = scope.scr2dataY(d.tipy);
+                d.scrx = ui.position.left - objw - scope.fonts.tooltipWidth;
+                d.scry = ui.position.top;
+                d.datax = scope.scr2dataX(d.scrx);
+                d.datay = scope.scr2dataY(d.scry);
               }
             });
               
@@ -1321,6 +1346,7 @@
           scope.rpipeStems = [];
           scope.rpipePointCircles = [];
           scope.rpipePointRects = [];
+          scope.rpipePointDiamonds = [];
           scope.rpipeSegs = [];
           scope.rpipeUserTexts = [];
         };
@@ -1415,6 +1441,7 @@
           plotUtils.plotDots(scope);
           plotUtils.plotPointCircles(scope);
           plotUtils.plotPointRects(scope);
+          plotUtils.plotPointDiamonds(scope);
           plotUtils.plotSegs(scope);
           plotUtils.plotRects(scope);
           plotUtils.plotUserTexts(scope);

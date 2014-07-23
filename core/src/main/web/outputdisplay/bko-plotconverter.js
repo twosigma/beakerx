@@ -47,7 +47,7 @@
       pointShapeMap : {
         "DEFAULT" : "rect",
         "CIRCLE" : "circle",
-        "DIAMOND" : "rect",
+        "DIAMOND" : "diamond",
         "" : "rect"
       },
       interpolationMap : {

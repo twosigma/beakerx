@@ -64,16 +64,19 @@
   border-radius: 5px;
 }
 
-.plot-line, 
 .plot-const,
 .plot-coord,
-.plot-coord-base,
-.plot-bar, 
-.plot-river, 
-.plot-stem {
+.plot-coord-base {
   stroke-width: 1;
-  pointer-events: all;
+  pointer-events: none;
 }
+.plot-line,
+.plot-river,
+.plot-bar,
+.plot-stem {
+  pointer-events: auto;
+}
+
 
 .plot-coord {
   stroke: #111111;

@@ -492,7 +492,9 @@
                 var p = eles[j], s = p.size;
                 var ele = {
                   "id" : "point_" + i + "_" + j,
-                  "class" : "plot-resp"
+                  "class" : "plot-resp",
+                  "tip_text" : p.value,
+                  "tip_color" : data[i].color
                 };
                 if (data[i].style === "circle") {
                   _.extend(ele, {
@@ -713,7 +715,7 @@
             if (data[i].shown == false) {
               continue;
             }
-            if (data[i].type !== "line" && data[i].type !== "river" && data[i].type !== "point") {
+            if (data[i].type !== "line" && data[i].type !== "river") {
               continue;
             }
             var eles = data[i].elements;

@@ -504,6 +504,7 @@
           bkCoreManager.setBkAppImpl(null);
           $(document).unbind('keydown', keydownHandler);
           window.onbeforeunload = null;
+          bkUtils.removeConnectedStatusListener();
         };
 
         // TODO, when use setLocation and leave from bkApp (e.g. to control panel),

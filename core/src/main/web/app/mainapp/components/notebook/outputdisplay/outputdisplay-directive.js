@@ -61,6 +61,11 @@
             refresh(scope.type);
           }
         });
+        scope.$on("$destroy", function () {
+          if (childScope) {
+            childScope.$destroy();
+          }
+        });
       }
     };
   });

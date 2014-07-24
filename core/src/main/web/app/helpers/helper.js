@@ -20,7 +20,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share']);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share', 'bk.debug']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare) {
+  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare, bkDebug) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -43,6 +43,10 @@
     };
 
     var bkHelper = {
+      // enable debug
+      debug: function() {
+        window.bkDebug = bkDebug;
+      },
 
       // beaker (root)
       gotoControlPanel: function() {
@@ -265,7 +269,7 @@
       // bkShare
       share: bkShare
     };
-    window.bkHelper = bkHelper; // TODO, we want to revisit the decision of making this global
+
     return bkHelper;
   });
 })();

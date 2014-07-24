@@ -35,7 +35,10 @@
         $.cometd.removeListener(_statusListener);
       },
       addOutputlogUpdateListener: function (cb) {
-        $.cometd.subscribe("/outputlog", cb);
+        var listener = $.cometd.subscribe("/outputlog", cb);
+        return function() {
+          $.cometd.removeListener(listener);
+        };
       }
     };
   });

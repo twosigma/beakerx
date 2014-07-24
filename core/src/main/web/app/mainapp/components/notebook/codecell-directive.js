@@ -193,10 +193,6 @@
             notebookCellOp.reset();
           }
         });
-        $scope.$on("$destroy", function() {
-          $scope.bkNotebook.unregisterFocusable($scope.cellmodel.id);
-          $scope.bkNotebook.unregisterCM($scope.cellmodel.id);
-        });
       },
       link: function(scope, element, attrs) {
         scope.showDebug = false;
@@ -222,13 +218,14 @@
           }
           cm.refresh();
         }
-
-        CodeMirror.on(window, "resize", function() {
+        var resizeHandler = function() {
           var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
           if (!showing)
             return;
           showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-        });
+        };
+
+        CodeMirror.on(window, "resize", resizeHandler);
         var moveFocusDown = function() {
           // move focus to next code cell
           var thisCellId = scope.cellmodel.id;
@@ -363,10 +360,11 @@
           }
         });
         // cellmodel.body <-- CodeMirror
-        scope.cm.on("change", function(cm, e) {
+        var changeHandler = function(cm, e) {
           scope.cellmodel.input.body = cm.getValue();
           bkUtils.refreshRootScope();
-        });
+        };
+        scope.cm.on("change", changeHandler);
 
         var inputMenuDiv = element.find(".bkcell").first();
         scope.popupMenu = function(event) {
@@ -376,19 +374,21 @@
           menu.css("left", clicked ? event.clientX - 150 : "");
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
-        inputMenuDiv.click(function(event) {
+        var inputClickHandler = function(event) {
           if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
             scope.popupMenu(event);
             event.stopPropagation();
           }
-        });
-        inputMenuDiv.mousemove(function(event) {
+        };
+        inputMenuDiv.click(inputClickHandler);
+        var inputMousemoveHandler = function(event) {
           if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
             inputMenuDiv.css('cursor', 'pointer');
           } else {
             inputMenuDiv.css('cursor', 'default');
           }
-        });
+        };
+        inputMenuDiv.mousemove(inputMousemoveHandler);
 
         if (scope.isInitializationCell()) {
           element.closest(".bkcell").addClass("initcell");
@@ -413,6 +413,16 @@
           var cells = [scope.cellmodel];
           return bkUtils.generateNotebook([evaluator], cells);
         };
+
+        scope.$on("$destroy", function() {
+          inputMenuDiv.off("click", inputClickHandler);
+          inputMenuDiv.off("mousemove", inputMousemoveHandler);
+          CodeMirror.off(window, "resize", resizeHandler);
+          CodeMirror.off("change", changeHandler);
+          scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
+          scope.bkNotebook.unregisterCM(scope.cellmodel.id);
+          scope.bkNotebook = null;
+        });
       }
     };
   });

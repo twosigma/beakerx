@@ -64,7 +64,7 @@
               x: scope.width / 100,
               y: scope.height / 50
             };
-            scope.initRange();
+            scope.initRange(false);
             scope.calcMapping(false);
             scope.emitSizeChange();
             scope.legendDone = false;
@@ -122,6 +122,12 @@
             labelHeight : 12,
             tooltipWidth : 10
           };
+          scope.zoomLevel = {
+            minSpanX : 1000,
+            minSpanY : 1,
+            maxScaleX : 100,
+            maxScaleY : 100
+          };
           scope.labelPadding = {
             x : 10,
             y : 10
@@ -173,7 +179,7 @@
             scope.model.updateWidth(scope.width);
           } // not stdmodel here
         };
-        scope.initRange = function() {
+        scope.initRange = function(resetFocus) {
           var data = scope.data, model = scope.stdmodel;
           
           var ret = plotUtils.getDataRange(data);
@@ -204,28 +210,28 @@
           scope.vrange.yl -= scope.range.yspan * (margin == null || margin.bottom == null ? 0.5 : margin.bottom / 100.0);
           scope.vrange.yr += scope.range.yspan * (margin == null || margin.top == null ? 0.5 : margin.top / 100.0);
 
-          
-          scope.focus = {};
-          var focus = scope.focus, range = scope.range;
-          focus.xl = model.focus.xl != null ? 
-            model.focus.xl : range.xl - range.xspan * margin.left / 100.0;
-          focus.xr = model.focus.xr != null ? 
-            model.focus.xr : range.xr + range.xspan * margin.right / 100.0;
-          focus.yl = model.focus.yl != null ? 
-            model.focus.yl : range.yl - range.yspan * margin.bottom / 100.0;
-          focus.yr = model.focus.yr != null ? 
-            model.focus.yr : range.yr + range.yspan * margin.top / 100.0;
-          focus.xspan = focus.xr - focus.xl;
-          focus.yspan = focus.yr - focus.yl;
-          
-          if (scope.visibleLines == 0) {
-            _.extend(scope.vrange, scope.range);
-            _.extend(scope.focus, scope.range);
+          if (resetFocus !== false) {
+            scope.focus = {};
+            var focus = scope.focus, range = scope.range;
+            focus.xl = model.focus.xl != null ? 
+              model.focus.xl : range.xl - range.xspan * margin.left / 100.0;
+            focus.xr = model.focus.xr != null ? 
+              model.focus.xr : range.xr + range.xspan * margin.right / 100.0;
+            focus.yl = model.focus.yl != null ? 
+              model.focus.yl : range.yl - range.yspan * margin.bottom / 100.0;
+            focus.yr = model.focus.yr != null ? 
+              model.focus.yr : range.yr + range.yspan * margin.top / 100.0;
+            focus.xspan = focus.xr - focus.xl;
+            focus.yspan = focus.yr - focus.yl;
+            
+            if (scope.visibleLines == 0) {
+              _.extend(scope.vrange, scope.range);
+              _.extend(scope.focus, scope.range);
+            }
+            scope.fixFocus();
+            scope.initFocus = {};
+            _.extend(scope.initFocus, focus);
           }
-          scope.fixFocus();
-          
-          scope.initFocus = {};
-          _.extend(scope.initFocus, focus);
         };
 
         scope.calcCoords = function() {
@@ -737,12 +743,13 @@
           var data = scope.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
           for (var i = 0; i < numLines; i++) {
-            if (data[i].shown == false) {
+            if (data[i].shown === false) {
               continue;
             }
             if (data[i].type !== "line" && data[i].type !== "river") {
               continue;
             }
+            
             var eles = data[i].elements;
             var reles = [];
             for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
@@ -1208,42 +1215,42 @@
               scope.jqsvg.css("cursor", "move");
             } else {
               // scale only
+              var level = scope.zoomLevel;
               if (my <= scope.jqsvg.height() - scope.layout.bottomLayoutMargin) {
                 // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
                 var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym), 
                     nyspan = nyr - nyl;
-                if (nyspan <= vrange.yspan * 100 && nyspan >= vrange.yspan * 0.01) {
+                if (nyspan >= level.minSpanY && nyspan <= vrange.yspan * level.maxScaleY) {
                   focus.yl = nyl;
                   focus.yr = nyr;
                   focus.yspan = nyspan;
-                }else{
-                  if(nyspan > vrange.yspan * 100) {
-                    focus.yr = focus.yl + vrange.yspan * 100;
-                    focus.yspan = focus.yr - focus.yl;
-                  }else if(nyspan < vrange.yspan * 0.01) {
-                    focus.yr = focus.yl + vrange.yspan * 0.01;
-                    focus.yspan = focus.yr - focus.yl;
+                } else {
+                  if (nyspan > vrange.yspan * level.maxScaleY) {
+                    focus.yr = focus.yl + vrange.yspan * level.maxScaleY;
+                  } else if (nyspan < level.minSpanY) {
+                    focus.yr = focus.yl + level.minSpanY;
                   }
+                  focus.yspan = focus.yr - focus.yl;
                 }
               }
+              // TODO
               if (mx >= scope.layout.leftLayoutMargin) {
                 // scale x
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
                 var nxl = xm - ds * (xm - focus.xl), nxr = xm + ds * (focus.xr - xm), 
                     nxspan = nxr - nxl;
-                if (nxspan <= range.xspan * 100 && nxspan >= range.xspan * 0.01) {
+                if (nxspan >= level.minSpanX && nxspan <= vrange.xspan * level.maxScaleX) {
                   focus.xl = nxl;
                   focus.xr = nxr;
                   focus.xspan = nxspan;
-                }else{
-                  if(nxspan > range.xspan * 100) {
-                    focus.xr = focus.xl + range.xspan * 100;
-                    focus.xspan = focus.xr - focus.xl;
-                  }else if(nxspan < range.xspan * 0.01) {
-                    focus.xr = focus.xl + range.xspan * 0.01;
-                    focus.xspan = focus.xr - focus.xl;
+                } else {
+                  if (nxspan > vrange.yspan * level.maxScaleX) {
+                    focus.xr = focus.xl + vrange.xspan * level.maxScaleX;
+                  } else if (nxspan < level.minSpanX) {
+                    focus.xr = focus.xl + level.minSpanX;
                   }
+                  focus.xspan = focus.xr - focus.xl;
                 }
               }
               scope.fixFocus();

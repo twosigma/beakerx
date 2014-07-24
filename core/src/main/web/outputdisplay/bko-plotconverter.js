@@ -63,22 +63,25 @@
         var data = newmodel.data;
         var logy = newmodel.yScale.type === "log", logyb = newmodel.yScale.base;
         for (var i = 0; i < data.length; i++) {
+          var dat = data[i], eles = dat.elements;
+
+          dat.shown = true;
           
-          data[i].shown = true;
-          
-          if (data[i].type === "line" || data[i].type === "stem") {
-            if (data[i].width == null) {
-              data[i].width = 2;
+          if (dat.type == null) {
+            dat.type = "line";
+          }
+          if (dat.type === "line" || dat.type === "stem") {
+            if (dat.width == null) {
+              dat.width = 2;
             }
           }
-          if (data[i].type === "bar" && data[i].width == null) {
-            data[i].width = 1;
+          if (dat.type === "bar" && dat.width == null) {
+            dat.width = 1;
           }
-          var eles = data[i].elements, dat = data[i];
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
             if (dat.type === "bar") {
-              var w = data[i].width;
+              var w = dat.width;
               ele.x1 = ele.x - w/2;
               ele.x2 = ele.x + w/2;
             }

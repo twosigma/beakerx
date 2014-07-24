@@ -71,7 +71,10 @@
   pointer-events: none;
 }
 .plot-line,
-.plot-river,
+.plot-river {
+  stroke-width: 1;
+  pointer-events: none;
+}
 .plot-bar,
 .plot-stem {
   pointer-events: auto;

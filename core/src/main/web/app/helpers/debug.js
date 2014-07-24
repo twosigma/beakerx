@@ -25,7 +25,6 @@
     'bk.cellMenuPluginManager',
     "bk.core",
     'bk.sessionManager',
-    "bk.helper",
     "bk.outputLog",
     "bk.recentMenu",
     "bk.session",
@@ -41,7 +40,7 @@
   ]);
   module.factory("bkDebug", function(
       $injector, angularUtils, bkEvaluateJobManager, bkCellMenuPluginManager, bkSessionManager,
-      bkCoreManager, bkHelper, bkOutputLog, bkRecentMenu, bkSession, bkShare,
+      bkCoreManager, bkOutputLog, bkRecentMenu, bkSession, bkShare,
       bkTrack, bkUtils, cometdUtils, commonUtils, bkMenuPluginManager, bkEvaluatePluginManager,
       bkEvaluatorManager) {
     return {
@@ -51,7 +50,6 @@
       bkCellMenuPluginManager: bkCellMenuPluginManager,
       bkSessionManager: bkSessionManager,
       bkCoreManager: bkCoreManager,
-      bkHelper: bkHelper,
       bkOutputLog: bkOutputLog,
       bkRecentMenu: bkRecentMenu,
       bkSession: bkSession,

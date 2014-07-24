@@ -23,7 +23,7 @@
 
   var module = angular.module('bk.outputDisplay');
 
-  module.factory("bkOutputDisplayFactory", function($rootScope) {
+  module.factory("bkOutputDisplayFactory", function($rootScope, $sce) {
 
     var impls = {
       "Text": {
@@ -39,14 +39,21 @@
         template: "<div class='outline warning'></div> <pre class='out_warning'>{{model.getCellModel().message}}</pre>"
       },
       "Error": {
-        template: "<div class='outline error'></div><pre class='out_error' ng-hide='expanded'>" +
-            "<span></span>" +
+        template: "<div class='outline error'></div><pre class='out_error'>" +
+            "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
+            "<span ng-bind-html='shortError'></span></pre>" +
+            "<pre ng-show='expanded'><span ng-bind-html='longError'></span>" +
             "</pre>",
         controller: function($scope, $element) {
           $scope.expanded = false;
 
           $scope.$watch('model.getCellModel()', function(cellModel) {
-            $element.find('span').first().html(Array.prototype.concat(cellModel).join("\n"));
+            var outputs = $element.find('span');
+            var errors  = Array.prototype.concat(cellModel);
+
+            $scope.shortError   = $sce.trustAsHtml(errors[0]);
+            $scope.canExpand    = errors.length > 1;
+            $scope.longError    = $sce.trustAsHtml(errors.slice(1).join("\n"));
           });
         }
       },

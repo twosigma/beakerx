@@ -23,6 +23,21 @@
   }
 }
 
+.error-title {
+  color: $error_red;
+}
+
+.toggle-error {
+  width: 20px;
+  height: 20px;
+  border: solid 1px;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  line-height: 18px;
+  margin-right: 10px;
+}
+
 pre {
     &.out_warning {
       @include error_state($warning_yellow);

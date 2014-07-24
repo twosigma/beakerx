@@ -64,7 +64,7 @@
       },
       link: function(scope, element, attrs) {
         var outputMenuDiv = element.parent('.bkcell');
-        outputMenuDiv.click(function(event) {
+        var clickHandler = function(event) {
           //click in the border or padding should trigger menu
           if (bkUtils.getEventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
             var menu = outputMenuDiv.find('.dropdown').last();
@@ -73,13 +73,19 @@
             menu.find('.dropdown-toggle').first().dropdown('toggle');
             event.stopPropagation();
           }
-        });
-        outputMenuDiv.mousemove(function(event) {
+        };
+        outputMenuDiv.click(clickHandler);
+        var mousemoveHandler = function(event) {
           if (bkUtils.getEventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
             outputMenuDiv.css('cursor', 'pointer');
           } else {
             outputMenuDiv.css('cursor', 'default');
           }
+        };
+        outputMenuDiv.mousemove(mousemoveHandler);
+        scope.$on("$destroy", function () {
+          outputMenuDiv.off("click", clickHandler);
+          outputMenuDiv.off("mousemove", mousemoveHandler);
         });
       }
     };

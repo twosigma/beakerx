@@ -89,6 +89,7 @@
           },
           unregisterFocusable: function (cellId) {
             delete this._focusables[cellId];
+            this._focusables[cellId] = null;
           },
           getFocusable: function (cellId) {
             return this._focusables[cellId];
@@ -100,6 +101,7 @@
           },
           unregisterCM: function (cellId) {
             delete this._codeMirrors[cellId];
+            this._codeMirrors[cellId] = null;
           },
           _cmKeyMapMode: "default",
           setCMKeyMapMode: function (keyMapMode) {
@@ -268,6 +270,9 @@
               div.removeClass("initcell");
             }
           }
+        });
+        scope.$on("$destroy", function() {
+          scope.setBkNotebook({bkNotebook: undefined});
         });
       }
     };

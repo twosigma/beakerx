@@ -537,6 +537,7 @@
             window.open("./");
           } else {
             bkSessionManager.backup().then(function() {
+              bkSessionManager.clear();
               bkCoreManager.gotoControlPanel();
             });
           }

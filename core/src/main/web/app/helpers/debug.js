@@ -60,7 +60,11 @@
       commonUtils: commonUtils,
       bkMenuPluginManager: bkMenuPluginManager,
       bkEvaluatePluginManager: bkEvaluatePluginManager,
-      bkEvaluatorManager: bkEvaluatorManager
+      bkEvaluatorManager: bkEvaluatorManager,
+      debugUI: function() {
+        bkHelper.getBkNotebookViewModel().toggleDebugging();
+        bkHelper.refreshRootScope();
+      }
     };
   });
 })();

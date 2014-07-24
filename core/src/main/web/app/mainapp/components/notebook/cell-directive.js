@@ -149,7 +149,7 @@
       },
       link: function(scope, element, attrs) {
         var div = element.find(".bkcell").first();
-        div.click(function(event) {
+        var clickHandler = function(event) {
           //click in the border or padding should trigger menu
           if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
             var menu = div.find('.bkcellmenu').last();
@@ -158,13 +158,20 @@
             menu.find('.dropdown-toggle').first().dropdown('toggle');
             event.stopPropagation();
           }
-        });
-        div.mousemove(function(event) {
+        };
+        div.on("click", clickHandler);
+        var mouseMoveHandler = function(event) {
           if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
             div.css('cursor', 'pointer');
           } else {
             div.css('cursor', 'default');
           }
+        };
+        div.mousemove('mousemove', mouseMoveHandler);
+
+        scope.$on("$destroy", function() {
+          div.off("click", clickHandler);
+          div.off("mousemove", mouseMoveHandler);
         });
       }
     };

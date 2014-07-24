@@ -70,6 +70,23 @@
           if (dat.type == null) {
             dat.type = "line";
           }
+          
+          if(dat.type === "bar" || dat.type === "river") { 
+            newmodel.onzeroY = true; // auto range to y=0
+          } 
+
+          if(dat.type === "line" || dat.type === "stem") {
+            if (dat.style == null) {
+              dat.style = "solid";
+            }
+            dat.stroke_dasharray = this.lineDasharrayMap[dat.style];
+          }
+          
+          if(dat.type === "line" || dat.type === "river") { 
+            if (dat.interpolation === "curve") {
+            }
+          }
+          
           if (dat.type === "line" || dat.type === "stem") {
             if (dat.width == null) {
               dat.width = 2;
@@ -78,10 +95,33 @@
           if (dat.type === "bar" && dat.width == null) {
             dat.width = 1;
           }
+          
+          if (dat.outline_color != null) {
+            dat.stroke = dat.outline_color;
+          }
+          if (dat.outline_width != null) {
+            dat.stroke_width = dat.outline_width;
+          }
+          if (dat.outline_opacity != null) {
+            dat.stroke_opacity = dat.outline_opacity;
+          }
+          
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
+            
+            if (ele.outline_color != null) {
+              ele.stroke = ele.outline_color;
+            }
+            if (ele.outline_width != null) {
+              ele.stroke_width = ele.outline_width;
+            }
+            if (ele.outline_opacity != null) {
+              ele.stroke_opacity = ele.outline_opacity;
+            }
+            
             if (dat.type === "bar") {
               var w = dat.width;
+              if (w < 2) { w = 2; }
               ele.x1 = ele.x - w/2;
               ele.x2 = ele.x + w/2;
             }

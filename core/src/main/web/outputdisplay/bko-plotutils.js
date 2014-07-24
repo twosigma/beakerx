@@ -68,8 +68,8 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .attr("stroke", function(d) { return d.stroke; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+          .style("stroke", function(d) { return d.stroke; })
           .attr("opacity", function(d) { return d.opacity; })
           .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
@@ -81,7 +81,7 @@
               .attr("class", function(d) { return d.class; })
               .attr("stroke", function(d) { return d.stroke; })
               .attr("opacity", function(d) { return d.opacity; })
-              .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+              .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
               .style("stroke-width", function(d) { return d.stroke_width; });
             scope.stemg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; })
@@ -99,8 +99,8 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
           .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.lineg.select("#" + pipe[i].id).selectAll("path")
@@ -117,9 +117,9 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
           .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.segg.select("#" + pipe[i].id).selectAll("line")
@@ -148,10 +148,10 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
         for (var i = 0; i < pipe.length; i++) {
             scope.rectg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
@@ -163,10 +163,10 @@
               .attr("y", function(d) { return d.y; })
               .attr("width", function(d) { return d.width; })
               .attr("height", function(d) { return d.height; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; });
             scope.rectg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("x", function(d) { return d.x; })
@@ -185,10 +185,10 @@
           .attr("class", function(d) { return d.class; })
           .attr("stroke", function(d) { return d.stroke; })
           .attr("opacity", function(d) { return d.opacity; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
         for (var i = 0; i < pipe.length; i++) {
             scope.dotg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
@@ -200,10 +200,10 @@
               .attr("cy", function(d) { return d.cy; })
               .attr("r", function(d) { return d.r; })
               .attr("opacity", function(d) { return d.opacity; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; });
             scope.dotg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("cx", function(d) { return d.cx; })
@@ -220,10 +220,10 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
           .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             svg.select("#" + pipe[i].id).selectAll("circle")
@@ -235,10 +235,10 @@
               .attr("cx", function(d) { return d.cx; })
               .attr("cy", function(d) { return d.cy; })
               .attr("r", function(d) { return d.r; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
               .style("stroke-width", function(d) { return d.stroke_width; });
             svg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; })
@@ -255,10 +255,10 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
           .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             svg.select("#" + pipe[i].id).selectAll("polygon")
@@ -267,10 +267,10 @@
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("polygon")
               .attr("id", function(d) { return d.id; })
               .attr("class", function(d) { return d.class; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
               .style("stroke-width", function(d) { return d.stroke_width; })
               .attr("points", function(d) { return d.points; });
             svg.select("#" + pipe[i].id).selectAll("polygon")
@@ -285,10 +285,10 @@
         svg.selectAll("g").data(pipe, function(d) { return d.id; }).enter().append("g")
             .attr("id", function(d) { return d.id; })
             .attr("class", function(d) { return d.class; })
-            .attr("fill", function(d) { return d.fill; })
-            .attr("fill-opacity", function(d) { return d.fill_opacity; })
-            .attr("stroke", function(d) { return d.stroke; })
-            .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+            .style("fill", function(d) { return d.fill; })
+            .style("fill-opacity", function(d) { return d.fill_opacity; })
+            .style("stroke", function(d) { return d.stroke; })
+            .style("stroke-opacity", function(d) { return d.stroke_opacity; })
             .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             svg.select("#" + pipe[i].id).selectAll("rect")
@@ -301,10 +301,10 @@
               .attr("y", function(d) { return d.y; })
               .attr("width", function(d) { return d.width; })
               .attr("height", function(d) { return d.height; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
               .style("stroke-width", function(d) { return d.stroke_width; });
             svg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; })
@@ -320,10 +320,10 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
           .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.barg.select("#" + pipe[i].id).selectAll("rect")
@@ -336,10 +336,10 @@
               .attr("y", function(d) { return d.y; })
               .attr("width", pipe[i].width)
               .attr("height", function(d) { return d.height; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
               .style("stroke-width", function(d) { return d.stroke_width; });
             scope.barg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; })
@@ -384,10 +384,10 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
           .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.riverg.select("#" + pipe[i].id).selectAll("polygon")
@@ -407,8 +407,8 @@
           .attr("x2", function(d) { return d.x2; })
           .attr("y1", function(d) { return d.y1; })
           .attr("y2", function(d) { return d.y2; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; });
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; });
         sel.data(scope.rpipeCoords, function(d) { return d.id; })
           .attr("x1", function(d) { return d.x1; })
           .attr("x2", function(d) { return d.x2; })
@@ -441,8 +441,8 @@
           .attr("cx", function(d) { return d.cx; })
           .attr("cy", function(d) { return d.cy; })
           .attr("r", function(d) { return d.r; })
-          .attr("fill", function(d) { return d.color; })
-          .attr("stroke", function(d) { return d.stroke; })
+          .style("fill", function(d) { return d.color; })
+          .style("stroke", function(d) { return d.stroke; })
           .attr("opacity", function(d) { return d.opacity; });
       },
       replotSingleRect: function(svgElement, d) {
@@ -455,7 +455,7 @@
           .attr("y", function(d) { return d.y; })
           .attr("width", function(d) { return d.width; })
           .attr("height", function(d) { return d.height; })
-          .attr("fill", function(d) { return d.fill; });
+          .style("fill", function(d) { return d.fill; });
       },
       formatDate: function(intv, x) {
         var months = this.months, days = this.days;

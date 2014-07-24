@@ -407,6 +407,7 @@
                 "fill" : data[i].color,
                 "fill_opacity": data[i].fill_opacity,
                 "stroke": data[i].stroke,
+                "stroke_width": data[i].stroke_width,
                 "stroke_opacity": data[i].stroke_opacity,
                 "elements" : reles
               });
@@ -439,6 +440,7 @@
                 "fill" : data[i].color,
                 "fill_opacity": data[i].color_opacity,
                 "stroke": data[i].stroke,
+                "stroke_width": data[i].stroke_width,
                 "stroke_opacity": data[i].stroke_opacity,
                 "elements" : pstr
               });
@@ -557,6 +559,7 @@
                   "fill" : data[i].color,
                   "fill_opacity": data[i].color_opacity,
                   "stroke": data[i].stroke,
+                  "stroke_width": data[i].stroke_width,
                   "stroke_opacity": data[i].stroke_opacity,
                   "elements" : reles
               });
@@ -674,6 +677,7 @@
                 "fill_opacity": data[i].color_opacity,
                 "stroke": data[i].stroke,
                 "stroke_opacity": data[i].stroke_opacity,
+                "stroke_width": data[i].stroke_width,
                 "elements" : reles
               });
             } else if (data[i].type === "text") {

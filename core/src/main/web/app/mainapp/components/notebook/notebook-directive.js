@@ -161,15 +161,28 @@
           $(".outputlogout").css("width", width);
           $(".outputlogerr").css("width", width);
         };
+        $scope.unregisters = [];
         $(window).resize(fixOutputLogPosition);
-        $(".outputloghandle").drag("start", function () {
-          dragHeight = outputLogHeight;
+        $scope.unregisters.push(function() {
+          $(window).off("resize", fixOutputLogPosition);
         });
-        $(".outputloghandle").drag(function (ev, dd) {
+        var dragStartHandler = function () {
+          dragHeight = outputLogHeight;
+        };
+        var outputloghandle = $(".outputloghandle");
+        outputloghandle.drag("start", dragStartHandler);
+        $scope.unregisters.push(function() {
+          outputloghandle.off("dragstart", dragStartHandler);
+        });
+        var dragHandler = function (ev, dd) {
           outputLogHeight = dragHeight - dd.deltaY;
           if (outputLogHeight < 20) outputLogHeight = 20;
           if (outputLogHeight > window.innerHeight - 50) outputLogHeight = window.innerHeight - 50;
           fixOutputLogPosition();
+        };
+        outputloghandle.drag(dragHandler);
+        $scope.unregisters.push(function() {
+          outputloghandle.off("drag", dragHandler);
         });
         $scope.showStdOut = true;
         $scope.showStdErr = true;
@@ -274,6 +287,9 @@
         scope.$on("$destroy", function() {
           scope.setBkNotebook({bkNotebook: undefined});
           scope.unregisterOutputLog();
+          _(scope.unregisters).each(function(unregister) {
+            unregister();
+          })
         });
       }
     };

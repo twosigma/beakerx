@@ -88,8 +88,6 @@ define(function(require, exports, module) {
         }
       };
       modelOutput.result = progressObj;
-      // XXX should do this once per session not every eval
-      code = "beaker_session_id_ = '" + bkHelper.getSessionId() + "'\n" + code;
       $.ajax({
         type: "POST",
         datatype: "json",
@@ -178,7 +176,9 @@ define(function(require, exports, module) {
           if (doneCB) {
             doneCB(self);
           }
-          var initCode = "source(Sys.getenv('beaker_r_init'))\n";
+          var initCode = "devtools::load_all(Sys.getenv('beaker_r_init'), " +
+            "quiet=TRUE, export_all=FALSE)\n" +
+            "beaker:::set_session('" + bkHelper.getSessionId() + "')\n";
           self.evaluate(initCode, {});
         };
         if (!settings.shellID) {

@@ -186,7 +186,7 @@
         bkOutputLog.getLog(function (res) {
           $scope.outputLog = res;
         });
-        bkOutputLog.subscribe(function (reply) {
+        $scope.unregisterOutputLog = bkOutputLog.subscribe(function (reply) {
           if (!_impl._viewModel.isShowingOutput()) {
             _impl._viewModel.toggleShowOutput();
           }
@@ -273,6 +273,7 @@
         });
         scope.$on("$destroy", function() {
           scope.setBkNotebook({bkNotebook: undefined});
+          scope.unregisterOutputLog();
         });
       }
     };

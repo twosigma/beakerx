@@ -30,7 +30,7 @@
             });
       },
       subscribe: function (cb) {
-        cometdUtils.addOutputlogUpdateListener(cb);
+        return cometdUtils.addOutputlogUpdateListener(cb);
       }
     };
   });

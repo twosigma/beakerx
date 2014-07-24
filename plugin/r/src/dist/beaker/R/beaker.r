@@ -15,8 +15,6 @@
 library(RCurl, quietly=TRUE)
 library(RJSONIO, quietly=TRUE)
 
-# todo: use the namespace file to only export the entry points.
-
 pwarg = paste('beaker:', Sys.getenv("beaker_core_password"), sep='')
 
 session_id = ''
@@ -53,6 +51,9 @@ set_fast <- function(var, val) {
 get <- function(var) {
   req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
               '/rest/namespace/get?name=', var, '&session=', session_id, sep='')
-  res = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
-  return (fromJSON(res)$value)
+  res = fromJSON(getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC))
+  if (!res$defined) {
+    stop(paste("object '", var, "' not found in notebook namespace.", sep=''))
+  }
+  return (res$value)
 }

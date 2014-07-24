@@ -59,14 +59,94 @@
       formatData: function(newmodel, model) {
         // TODO
         // fill in null entries, compute y2, etc.
-        
-        // TODO
         // move some of format SerializedData to formatData?
         var data = newmodel.data;
+        var logy = newmodel.yScale.type === "log", logyb = newmodel.yScale.base;
         for (var i = 0; i < data.length; i++) {
+          
+          data[i].shown = true;
+          
           if (data[i].type === "line" || data[i].type === "stem") {
             if (data[i].width == null) {
               data[i].width = 2;
+            }
+          }
+          if (data[i].type === "bar" && data[i].width == null) {
+            data[i].width = 1;
+          }
+          var eles = data[i].elements, dat = data[i];
+          for (var j = 0; j < eles.length; j++) {
+            var ele = eles[j];
+            if (dat.type === "bar") {
+              var w = data[i].width;
+              ele.x1 = ele.x - w/2;
+              ele.x2 = ele.x + w/2;
+            }
+            if (dat.type === "river" || dat.type === "bar" || dat.type === "stem") {
+              if (dat.y2 == null) {
+                if (dat.height != null) {
+                  ele.y2 = ele.y - dat.height;
+                } else if (dat.base != null) {
+                  ele.y2 = dat.base;
+                } else if (dat.bases != null) {
+                  ele.y2 = dat.bases[j];
+                } else {
+                  ele.y2 = null;
+                }
+              } else {
+                ele.y2 = dat.y2[j];
+              }
+            }
+            if (dat.type === "point") {
+              if (dat.size != null) {
+                ele.size = dat.size;
+              } else if (dat.sizes != null) {
+                ele.size = dat.sizes[j];
+              } else {
+                ele.size = dat.style === "rect"? 10 : 5;
+              }
+            }
+            
+            if (dat.type === "river") {
+              if (dat.interpolation == null) {
+                dat.interpolation = "linear";
+              }
+            }
+            
+            var txt = "";
+            var valx = newmodel.xType === "time" ? new Date(ele.x).toLocaleString() : ele.x;
+            var valy = ele.y;
+            if (data.legend != null) {
+              txt += "<div>" + data.legend + "</div>";
+            }
+            txt += "<div>x: " + valx + "</div><div>y: " + valy + "</div>";
+            if (ele.y2 != null) {
+              txt += "<div>y2: " + ele.y2 + "</div>";
+            }
+            ele.tip_value = txt;
+            
+            if (logy) {
+              if (ele.y != null) {
+                if (ele.y <= 0) {
+                  console.error("cannot apply log scale to non-positive y value");
+                }
+                ele._y = ele.y;
+                ele.y = Math.log(ele.y) / Math.log(logyb);
+              }
+              if (ele.y1 != null) {
+                if (ele.y1 <= 0) {
+                  console.error("cannot apply log scale to non-positive y value");
+                }
+                ele._y1 = ele.y1;
+                ele.y1 = Math.log(ele.y1) / Math.log(logyb);
+              }
+              if (ele.y2 != null) {
+                if (ele.y2 <= 0) {
+                  console.error("cannot apply log scale to non-positive y value");
+                }
+                ele._y2 = ele.y2;
+                ele.y2 = Math.log(ele.y2) / Math.log(logyb);
+              }
             }
           }
         }
@@ -120,7 +200,7 @@
 
           data.legend = data.display_name;
           delete data.display_name;
-          data.shown = true;
+
           if (data.color != null) {
             data.color_opacity = parseInt(data.color.substr(1,2), 16) / 255;
             data.color = "#" + data.color.substr(3);
@@ -134,12 +214,14 @@
             delete data.outline_color;
           }
           
+          /*
           if (data.colors != null) { data.colorArray = true; }
           if (data.sizes != null) { data.sizeArray = true; }
           if (data.bases != null) { data.baseArray = true; }
           if (data.shapes != null) { data.shapeArray = true; }
           if (data.styles != null) { data.styleArray = true; }
-          
+          */
+         
           if (data.type == null) { data.type = ""; }
           if (data.style == null) { data.style = ""; }
           if (data.stroke_dasharray == null) { data.stroke_dasharray = ""; }
@@ -203,74 +285,11 @@
                 ele.stroke_dasharray = this.lineDasharrayMap[shape];
               }
             }
-            
-            if (data.type === "river" || data.type === "bar" || data.type === "stem") {
-              if (data.y2 == null) {
-                if (data.height != null) {
-                  ele.y2 = ele.y - data.height;
-                } else if (data.base != null) {
-                  ele.y2 = data.base;
-                } else if (data.bases != null) {
-                  ele.y2 = data.bases[j];
-                } else {
-                  ele.y2 = null;
-                }
-              } else {
-                ele.y2 = data.y2[j];
-              }
-            }
-            if (data.type === "point") {
-              if(data.size != null) {
-                ele.size = data.size;
-              } else if (data.sizes != null) {
-                ele.size = data.sizes[j];
-              } else {
-                ele.size = data.style === "rect"? 10 : 5;
-              }
-            }
-            if(data.type === "bar") {
-              var w = data.width;
-              ele.x1 = ele.x - w/2;
-              ele.x2 = ele.x + w/2;
-            }
-
-            var txt = "";
-            var valx = newmodel.xType === "time" ? new Date(ele.x).toLocaleString() : ele.x;
-            var valy = ele.y;
-            if (data.legend != null) {
-              txt += "<div>" + data.legend + "</div>";
-            }
-            txt += "<div>x: " + valx + "</div><div>y: " + valy + "</div>";
-            if (ele.y2 != null) {
-              txt += "<div>y2: " + ele.y2 + "</div>";
-            }
-            ele.value = txt;
-
-            if (logy) {
-              if (ele.y != null) {
-                if (ele.y <= 0) {
-                  console.error("cannot apply log scale to non-positive y value");
-                }
-                ele._y = ele.y;
-                ele.y = Math.log(ele.y) / Math.log(logyb);
-              }
-              if (ele.y2 != null) {
-                if (ele.y2 <= 0) {
-                  console.error("cannot apply log scale to non-positive y value");
-                }
-                ele._y2 = ele.y2;
-                ele.y2 = Math.log(ele.y2) / Math.log(logyb);
-              }
-            }
             elements.push(ele);
           }
-          delete data.x;
-          delete data.y;
+          
           data.elements = elements;
-          if (data.colors) { delete data.colors; }
-          if (data.sizes) { delete data.sizes; }
-          if (data.bases) { delete data.bases; }
-          if (data.outline_colors) { delete data.outline_colors; }
+          
           newmodel.data.push(data);
         }
         if(model.constant_lines != null) {
@@ -278,7 +297,7 @@
             var line = model.constant_lines[i];
             var data = {
               "type": "constline",
-              "width": line.width!=null ? line.width : 1,
+              "width": line.width != null ? line.width : 1,
               "color": "black",
               "elements": []
             };
@@ -291,10 +310,6 @@
             } else if(line.y != null) {
               var y = line.y;
               var ele = {"type": "y", "y": y};
-              if(logy) {
-                ele._y = y;
-                ele.y = Math.log(y) / Math.log(logyb);
-              }
             }
             data.elements.push(ele);
             newmodel.data.push(data);
@@ -324,12 +339,6 @@
               var y1 = band.y[0], y2 = band.y[1];
               ele.y1 = y1;
               ele.y2 = y2;
-              if (logy) {
-                ele._y1 = y1;
-                ele.y1 = Math.log(y1) / Math.log(logyb);
-                ele._y2 = y2;
-                ele.y2 = Math.log(y2) / Math.log(logyb);
-              }
             }
             data.elements.push(ele);
             newmodel.data.push(data);
@@ -348,10 +357,6 @@
               "y" : mtext.y,
               "v" : mtext.text
             };
-            if (logy) {
-              ele._y = ele.y;
-              ele.y = Math.log(ele.y) / Math.log(logyb);
-            }
             data.elements.push(ele);
             newmodel.data.push(data);
           }
@@ -363,6 +368,17 @@
         }
         
         newmodel.onzeroY = onzeroY;
+      },
+      cleanupModel : function(model) {
+        for (var i = 0; i < model.data.length; i++) {
+          var data = model.data;
+          if (data.x != null) { delete data.x; }
+          if (data.y != null) { delete data.y; }
+          if (data.colors) { delete data.colors; }
+          if (data.sizes) { delete data.sizes; }
+          if (data.bases) { delete data.bases; }
+          if (data.outline_colors) { delete data.outline_colors; }
+        }
       },
       standardizeModel : function(model) {
         if (model.graphics_list != null) {
@@ -417,6 +433,8 @@
         
         if (model.version === "dnote") {
           this.formatSerializedData(newmodel, model);
+        } else {  // DS generated directly
+          _.extend(newmodel, model);
         }
         this.formatData(newmodel, model); // fill in null entries, compute y2, etc.
         var range = plotUtils.getDataRange(newmodel.data).datarange;
@@ -440,6 +458,7 @@
             newmodel.vrange.yl = 0;
           }
         }
+        this.cleanupModel(newmodel);
         newmodel.version = "complete";
         console.log(newmodel);
         return newmodel;

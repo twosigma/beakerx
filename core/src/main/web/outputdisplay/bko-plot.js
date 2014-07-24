@@ -156,8 +156,9 @@
             scope.update();
           });
           scope.$watch("model.getWidth()", function(newWidth) {
-            if (scope.width == newWidth)
+            if (scope.width == newWidth) {
               return;
+            }
             scope.width = newWidth;
             scope.jqcontainer.css("width", newWidth + "px");
             scope.jqsvg.css("width", newWidth + "px");
@@ -203,6 +204,7 @@
           scope.vrange.yl -= scope.range.yspan * (margin == null || margin.bottom == null ? 0.5 : margin.bottom / 100.0);
           scope.vrange.yr += scope.range.yspan * (margin == null || margin.top == null ? 0.5 : margin.top / 100.0);
 
+          
           scope.focus = {};
           var focus = scope.focus, range = scope.range;
           focus.xl = model.focus.xl != null ? 
@@ -229,7 +231,7 @@
         scope.calcCoords = function() {
           // prepare the coordinates
           var focus = scope.focus, model = scope.stdmodel;
-
+          
           var dateIntervals = [
             1, 5, 10, 15, 30, 60, 300, 600, 1800, 3600, 10800, 21600, 43200, 
             86400, 604800, 2592000, 7776000, 15552000, 31104000
@@ -381,7 +383,7 @@
                   "x" : x1,
                   "y" : y,
                   "height" : y2 - y,
-                  "tip_text" : p.value,
+                  "tip_text" : p.tip_value,
                   "tip_color" : data[i].color,
                   "tip_x" : x1,
                   "tip_y" : y
@@ -408,7 +410,7 @@
                 var p = eles[j];
                 if(data[i].interpolation === "linear") {
                   pstr += mapX(p.x) + "," + mapY(p.y) + " ";
-                }else if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
+                } else if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
                   var p2 = eles[j + 1];
                   pstr += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
                 }
@@ -416,7 +418,7 @@
               for (var j = fdata[i].rightIndex; j >= fdata[i].leftIndex; j--) {
                 var p = eles[j];
                 var y2 = p.y2;
-                if(y2 == null) y2 = focus.yl;
+                if (y2 == null) { y2 = focus.yl; }
                 
                 if (data[i].interpolation === "linear") {
                   pstr += mapX(p.x) + "," + mapY(y2) + " ";
@@ -452,7 +454,7 @@
                   "stroke_opacity": p.color_opacity,
                   "stroke_dasharray": p.stroke_dasharray,
                   "stroke_width" : p.width,
-                  "tip_text": p.value,
+                  "tip_text": p.tip_value,
                   "tip_color": data[i].color,
                   "tip_x" : mapX(p.x),
                   "tip_y" : mapY(p.y)
@@ -503,7 +505,7 @@
                 var ele = {
                   "id" : "point_" + i + "_" + j,
                   "class" : "plot-resp",
-                  "tip_text" : p.value,
+                  "tip_text" : p.tip_value,
                   "tip_color" : data[i].color,
                   "tip_x" : x,
                   "tip_y" : y
@@ -601,7 +603,7 @@
                     "y2" : y
                   });
                   scope.jqcontainer.find("#" + id).remove();
-                  var _y = p._y!=null? p._y : p.y;
+                  var _y = p._y != null? p._y : p.y;
                   var label = $("<div id=" + id + " class='plot-constlabel'></div>")
                     .appendTo(scope.jqcontainer).text(_y.toFixed(0));
                   var w = label.outerWidth(), h = label.outerHeight();
@@ -645,10 +647,9 @@
                   });
                 } else if (p.type === "y") {
                   if(p.y1 > focus.yr || p.y2 < focus.yl) { continue; }
-                  var y2 = mapY(p.y1), y1 = mapY(p.y2);
+                  var y2 = mapY(p.y1), y1 = mapY(p.y2); // after mapping, y1,y2 are reversed
                   y2 = Math.min(y2, H - bMargin);
                   y1 = Math.max(y1, tMargin);
-                  // after mapping, v1,v2 are reversed
                   _.extend(ele, {
                     "id" : "const_" + i + "_" + j,
                     "x" : lMargin,
@@ -760,7 +761,7 @@
                 "r" : 4,
                 "opacity" : scope.tips[id] == null ? 0 : 1,
                 "point" : _.omit(eles[j], "uniqid"),
-                "tip_text" : eles[j].value,
+                "tip_text" : eles[j].tip_value,
                 "tip_color" : data[i].color,
                 "tip_x" : p.x,
                 "tip_y" : p.y
@@ -904,7 +905,7 @@
               scope.rpipeTexts.push({
                 "id" : "label_x_" + i,
                 "class" : "plot-label",
-                "text" : model.xType == "time" ? plotUtils.formatDate(scope.xintv, x) : x,
+                "text" : model.xType === "time" ? plotUtils.formatDate(scope.xintv, x) : x,
                 "x" : p.x,
                 "y" : p.y,
                 "text-anchor" : "middle",
@@ -921,7 +922,7 @@
             scope.rpipeTexts.push({
               "id" : "label_y_" + i,
               "class" : "plot-label",
-              "text" : ys.type == "log" ? parseFloat(Math.pow(ys.base, y)).toFixed(2) : y,
+              "text" : ys.type === "log" ? parseFloat(Math.pow(ys.base, y)).toFixed(2) : y,
               "x" : p.x,
               "y" : p.y,
               "text-anchor" : "end",
@@ -973,7 +974,7 @@
             scope.jqcontainer.find("#cursor_xlabel").remove();
             var label = $("<div id='cursor_xlabel' class='plot-cursorlabel'></div>")
               .appendTo(scope.jqcontainer)
-              .text(scope.model.xType == "time" ? plotUtils.formatDate(scope.xintv, mapX(x)) : parseInt(mapX(x)));
+              .text(scope.stdmodel.xType === "time" ? plotUtils.formatDate(scope.xintv, mapX(x)) : parseInt(mapX(x)));
             var w = label.outerWidth(), h = label.outerHeight();
             var p = {
               "x" : x - w / 2,

@@ -24,7 +24,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "52465A7EFBBD4815831EB019B0FF2C2F",
+            "shellID": "536968767E5F40528C0098E8711C7BA8",
             "imports": "",
             "supplementalClassPath": "",
             "view": {
@@ -50,7 +50,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "60ce06d4-b17a-43c3-9436-43f1df983d84",
+            "shellID": "118d2351-fe00-483c-afad-4bf954804a5c",
             "view": {
                 "cm": {
                     "mode": "r",
@@ -61,7 +61,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "shellID": "4f847475-7a63-4020-a9a8-63610b7eea68",
+            "shellID": "78cd1d3d-c6ba-46f7-90ba-56b8903aea3a",
             "view": {
                 "cm": {
                     "mode": "groovy",
@@ -303,12 +303,12 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "import pandas as pd\ndf = pd.DataFrame([[1, 2], [1, 3], [4, 6]], columns=['A', 'B'])\ndf"
+                "body": "import pandas\ndf = pandas.DataFrame([[1, 2], [1, 3], [4, 6]], columns=['A', 'B'])\n# cause the dataframe to be displayed as a table.\n# the value of only the last line is shown, and in python the value\n# of an assignment (like the previous line) has no value.\ndf"
             },
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": true,
-                "elapsedTime": 940
+                "elapsedTime": 366
             }
         },
         {
@@ -519,7 +519,7 @@
         {
             "id": "markdownmEE28X",
             "type": "markdown",
-            "body": "This example loads some data using Python then builds a bar chart of the data using d3 in HTML and JavaScript cells.\n\nRight now the process for getting the data from Python to JS is fairly complex. We are looking into ways to simplify this.",
+            "body": "This example loads some data using Python then builds a bar chart of the data using d3 in HTML and JavaScript cells.",
             "mode": "preview"
         },
         {
@@ -527,12 +527,12 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "#Load some data into a DataFrame\n\nimport pandas as pd\ndf = pd.DataFrame([[1, 9], [1, 8], [4, 6]], columns=['A', 'B'])\ndf"
+                "body": "import pandas\ndf = pandas.DataFrame([[1, 9], [1, 8], [4, 6]], columns=['A', 'B'])\nbeaker.set('df', df) # copy the dataframe into the notebook and make it accessible to the JS below\ndf"
             },
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": true,
-                "elapsedTime": 189
+                "elapsedTime": 400
             }
         },
         {
@@ -544,7 +544,7 @@
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 47
+                "elapsedTime": 96
             }
         },
         {
@@ -552,7 +552,7 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "//Currently accessing Python values from JavaScript requires constructing a full cell object\n//The \"body\" is Python code that will be evaluated, in this case, simply returning the DataFrame created above\nvar cell = { evaluator: \"IPython\", input: { body: \"df\" }, output: {} };\n\n//Use the bkHelper API to evaluate the cell\nbkHelper.evaluate(cell).then(function(){\n  \n  \t//After the evaluation we are reading one column of the data into an array\n\tvar data = cell.output.result.values;\n\tvar col = [];\n  \t_.each(data, function(a){col.push(a[2])})\n        \n    //Here is the D3 part\n\td3.select(\"#barchart1\")\n  \t\t.selectAll(\"div\")\n    \t.data(col)\n  \t\t.enter().append(\"div\")\n    \t.style(\"width\", function(d) { return d * 10 + \"px\"; })\n    \t.style(\"background-color\", function(d) { return \"#\" + \"00\" + \"00\" + d.trim() + \"0\" })\n    \t.style(\"color\", \"#FFFFFF\")\n    \t.style(\"text-align\", \"right\")\n    \t.style(\"padding\", \"3px\")    \n    \t.style(\"margin\", \"1px\")        \n    \t.text(function(d) { return d; });\n})"
+                "body": "var data = beaker.df.B;\n\nd3.select(\"#barchart1\")\n  \t\t.selectAll(\"div\")\n    \t.data(data)\n  \t\t.enter().append(\"div\")\n    \t.style(\"width\", function(d) { console.log(d);return d * 10 + \"px\"; })\n    \t.style(\"background-color\", function(d) { return \"#0000\" + d + \"0\" })\n    \t.style(\"color\", \"#FFFFFF\")\n    \t.style(\"text-align\", \"right\")\n    \t.style(\"padding\", \"3px\")    \n    \t.style(\"margin\", \"1px\")        \n        .text(function(d) { return d.toString(); });\n"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -560,6 +560,18 @@
         }
     ],
     "namespace": {
-        "x": "any value even a dict or data frame"
+        "x": "any value even a dict or data frame",
+        "df": {
+            "A": [
+                1,
+                1,
+                4
+            ],
+            "B": [
+                9,
+                8,
+                6
+            ]
+        }
     }
 }

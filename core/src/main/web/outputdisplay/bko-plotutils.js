@@ -334,7 +334,7 @@
               .attr("class", function(d) { return d.class; })
               .attr("x", function(d) { return d.x; })
               .attr("y", function(d) { return d.y; })
-              .attr("width", pipe[i].width)
+              .attr("width", function(d) { return d.width; })
               .attr("height", function(d) { return d.height; })
               .style("fill", function(d) { return d.fill; })
               .style("fill-opacity", function(d) { return d.fill_opacity; })
@@ -345,7 +345,7 @@
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("x", function(d) { return d.x; })
               .attr("y", function(d) { return d.y; })
-              .attr("width", pipe[i].width)
+              .attr("width", function(d) { return d.width; })
               .attr("height", function(d) { return d.height; });
         }
       },

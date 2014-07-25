@@ -375,35 +375,36 @@
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
                 var x1 = mapX(p.x1), x2 = mapX(p.x2);
+                if (x2 - x1 < 1) x2 = x1 + 1;
                 var y = p.y, y2 = p.y2;
-                if(y2 == null) y2 = focus.yl;
+                if(y2 == null) { y2 = focus.yl; }
                 y = mapY(y); y2 = mapY(y2);
                 sw = x2 - x1;
                 if (y > y2) {
-                  continue;
+                  continue; // prevent negative height
                 }
-                // prevent negative height
                 var bar = {
                   "id" : "bar_" + i + "_" + j,
                   "class" : "plot-resp",
                   "x" : x1,
                   "y" : y,
+                  "width" : sw,
                   "height" : y2 - y,
                   "tip_text" : p.tip_value,
                   "tip_color" : data[i].color,
                   "tip_x" : x1,
                   "tip_y" : y
                 };
-                if (p.color != null) bar.fill = p.color;
-                if (p.fill_opacity != null) bar.fill_opaicty = p.fill_opacity;
-                if (p.stroke != null) bar.stroke = p.stroke;
-                if (p.stroke_opacity != null) bar.stroke_opacity = p.stroke_opacity;
+                if (p.color != null) { bar.fill = p.color; }
+                if (p.fill_opacity != null) { bar.fill_opaicty = p.fill_opacity; }
+                if (p.stroke != null) { bar.stroke = p.stroke; }
+                if (p.stroke_opacity != null) { bar.stroke_opacity = p.stroke_opacity; }
                 reles.push(bar);
               }
               scope.rpipeBars.push({
                 "id" : "bar_" + i,
                 "class" : "plot-bar",
-                "width" : sw,
+                //"width" : data[i].width,
                 "fill" : data[i].color,
                 "fill_opacity": data[i].fill_opacity,
                 "stroke": data[i].stroke,

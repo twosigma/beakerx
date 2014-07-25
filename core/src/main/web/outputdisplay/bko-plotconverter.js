@@ -121,7 +121,7 @@
             
             if (dat.type === "bar") {
               var w = dat.width;
-              if (w < 2) { w = 2; }
+              //if (w < 2) { w = 2; } // fix thin bar in rendering
               ele.x1 = ele.x - w/2;
               ele.x2 = ele.x + w/2;
             }
@@ -453,7 +453,6 @@
               "height" : (model.init_height != null ? model.init_height : 350) + "px"
             },
             nanoOffset : null,
-            data : []
           };
         } else {
           newmodel = {
@@ -472,6 +471,7 @@
         }
         newmodel.show_legend = model.show_legend != null ? model.show_legend : false;
         newmodel.use_tool_tip = model.use_tool_tip != null ? model.use_tool_tip : false;
+        newmodel.data = [];
 
         
         if (model.version === "dnote") {

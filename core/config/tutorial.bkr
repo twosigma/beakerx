@@ -4,36 +4,70 @@
         {
             "name": "Html",
             "plugin": "Html",
-            "shellID": null
+            "shellID": null,
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
         },
         {
             "name": "Latex",
             "plugin": "Latex",
-            "shellID": null
+            "shellID": null,
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
         },
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "64CAA6FA29CD420C80AC31CD2E6E658A",
+            "shellID": "52465A7EFBBD4815831EB019B0FF2C2F",
             "imports": "",
-            "supplementalClassPath": ""
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python",
+                    "background": "#EAEAFF"
+                }
+            }
         },
         {
             "name": "JavaScript",
             "plugin": "JavaScript",
             "shellID": null,
             "jsSetting2": "",
-            "jsSetting1": ""
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
         },
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "7bd1830e-0f1e-432f-ab1a-3abcb81c2688"
+            "shellID": "60ce06d4-b17a-43c3-9436-43f1df983d84",
+            "view": {
+                "cm": {
+                    "mode": "r",
+                    "background": "#C0CFF0"
+                }
+            }
         },
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "shellID": "9f2ecf6f-7def-40e2-9e00-d6625aa9d87a"
+            "shellID": "4f847475-7a63-4020-a9a8-63610b7eea68",
+            "view": {
+                "cm": {
+                    "mode": "groovy",
+                    "background": "#E0FFE0"
+                }
+            }
         }
     ],
     "cells": [
@@ -49,16 +83,16 @@
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://beakernotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, plain text</p>\n\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, Groovy</p>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>",
+                "body": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, plain text</p>\n\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, Groovy</p>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>",
                 "hidden": true
             },
             "output": {
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 71,
+                "elapsedTime": 369,
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://beakernotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, plain text</p>\n\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, Groovy</p>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>"
+                    "object": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, plain text</p>\n\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, Groovy</p>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>"
                 }
             }
         },
@@ -85,7 +119,7 @@
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": true,
-                "elapsedTime": 130
+                "elapsedTime": 154
             }
         },
         {
@@ -104,7 +138,7 @@
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": true,
-                "elapsedTime": 366
+                "elapsedTime": 364
             }
         },
         {
@@ -182,7 +216,7 @@
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 268
+                "elapsedTime": 221
             }
         },
         {
@@ -218,7 +252,7 @@
             },
             "output": {
                 "selectedType": "Hidden",
-                "elapsedTime": 264
+                "elapsedTime": 1249
             }
         },
         {
@@ -421,6 +455,61 @@
             }
         },
         {
+            "id": "section2qVNos",
+            "type": "section",
+            "title": "Communicating among languages",
+            "level": 1,
+            "collapsed": false
+        },
+        {
+            "id": "markdownxQBZcY",
+            "type": "markdown",
+            "body": "Beaker provides a namespace (a collection of variables and their values) in the notebook.\n\nYou can use it to produce data in one language and then consume or process it in another.",
+            "mode": "preview"
+        },
+        {
+            "id": "codeMXyZnW",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "beaker.set('x', \"any value even a dict or data frame\")"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "outputArrived": false,
+                "elapsedTime": 168
+            }
+        },
+        {
+            "id": "code4NkMTF",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "beaker::get('x')"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 197
+            }
+        },
+        {
+            "id": "codeuP2kh6",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "beaker.x"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "markdown6c1oNJ",
+            "type": "markdown",
+            "body": "The values are stored in the notebook including when it is saved to disk.\n\nThe format for interchange and storage is JSON.",
+            "mode": "preview"
+        },
+        {
             "id": "Sectionviqq24",
             "type": "section",
             "level": 1,
@@ -469,5 +558,8 @@
                 "selectedType": "Hidden"
             }
         }
-    ]
+    ],
+    "namespace": {
+        "x": "any value even a dict or data frame"
+    }
 }

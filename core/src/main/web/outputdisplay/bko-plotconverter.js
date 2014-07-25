@@ -416,17 +416,17 @@
       },
       standardizeModel : function(model) {
         if (model.graphics_list != null) {
-          model.version = "dnote";  // TODO, a hack now to check DS source
+          model.version = "groovy";  // TODO, a hack now to check DS source
         }
         if (model.version === "complete") { // skip standardized model in combined plot
           //console.log("pass", model);
           return model;
-        } else if (model.version === "dnote") {
+        } else if (model.version === "groovy") {
         } else {
           model.version = "direct";
         }
         var newmodel;
-        if (model.version === "dnote") {  // model returned from serializer
+        if (model.version === "groovy") {  // model returned from serializer
           newmodel = {
             type : "plot",
             title : model.chart_title != null ? model.chart_title : model.title,
@@ -465,7 +465,7 @@
         newmodel.data = [];
 
         
-        if (model.version === "dnote") {
+        if (model.version === "groovy") {
           this.formatSerializedData(newmodel, model);
         } else {  // DS generated directly
           _.extend(newmodel, model);

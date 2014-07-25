@@ -55,7 +55,7 @@
               name: "",
               plugin: plugin
             };
-            bkSessionManager.getRawNotebookModel().evaluators.push(newEvaluatorObj);
+            bkSessionManager.addEvaluator(newEvaluatorObj);
             bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
           }
         };

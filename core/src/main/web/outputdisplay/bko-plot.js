@@ -175,7 +175,7 @@
         };
 
         scope.emitSizeChange = function() {
-          if(scope.model.updateWidth != null) { 
+          if (scope.model.updateWidth != null) { 
             scope.model.updateWidth(scope.width);
           } // not stdmodel here
         };
@@ -377,12 +377,10 @@
                 var x1 = mapX(p.x1), x2 = mapX(p.x2);
                 if (x2 - x1 < 1) x2 = x1 + 1;
                 var y = p.y, y2 = p.y2;
-                if(y2 == null) { y2 = focus.yl; }
+                if (y2 == null) { y2 = focus.yl; }
                 y = mapY(y); y2 = mapY(y2);
                 sw = x2 - x1;
-                if (y > y2) {
-                  continue; // prevent negative height
-                }
+                if (y > y2) { continue; } // prevent negative height
                 var bar = {
                   "id" : "bar_" + i + "_" + j,
                   "class" : "plot-resp",
@@ -404,7 +402,6 @@
               scope.rpipeBars.push({
                 "id" : "bar_" + i,
                 "class" : "plot-bar",
-                //"width" : data[i].width,
                 "fill" : data[i].color,
                 "fill_opacity": data[i].fill_opacity,
                 "stroke": data[i].stroke,
@@ -416,7 +413,7 @@
               var pstr = "";
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
-                if(data[i].interpolation === "linear") {
+                if (data[i].interpolation === "linear") {
                   pstr += mapX(p.x) + "," + mapY(p.y) + " ";
                 } else if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
                   var p2 = eles[j + 1];
@@ -644,7 +641,7 @@
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j], ele = { "id": "const_" + i + "_" + j };
                 if (p.type === "x") {
-                  if(p.x1 > focus.xr || p.x2 < focus.xl) { continue; }
+                  if (p.x1 > focus.xr || p.x2 < focus.xl) { continue; }
                   var x1 = mapX(p.x1), x2 = mapX(p.x2);
                   x1 = Math.max(x1, lMargin);
                   x2 = Math.min(x2, W - rMargin);
@@ -656,7 +653,7 @@
                     "opacity" : p.opacity
                   });
                 } else if (p.type === "y") {
-                  if(p.y1 > focus.yr || p.y2 < focus.yl) { continue; }
+                  if (p.y1 > focus.yr || p.y2 < focus.yl) { continue; }
                   var y2 = mapY(p.y1), y1 = mapY(p.y2); // after mapping, y1,y2 are reversed
                   y2 = Math.min(y2, H - bMargin);
                   y1 = Math.max(y1, tMargin);
@@ -683,7 +680,7 @@
               });
             } else if (data[i].type === "text") {
               var reles = [], dtf = "";
-              if(data[i].rotate != null){
+              if (data[i].rotate != null){
                 dtf = "rotate(" +  data[i].rotate + ")";  // TODO check global rotation
               }
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
@@ -716,12 +713,12 @@
                 var p = eles[j];
                 if (j == fdata[i].leftIndex) pstr += "M";
                 else if (j == fdata[i].leftIndex + 1) {
-                  if(data[i].interpolation !== "curve") pstr += "L";
+                  if (data[i].interpolation !== "curve") pstr += "L";
                   else pstr += "C";
                 }
                 var nxtp = mapX(p.x) + "," + mapY(p.y) + " ";
                 
-                if(j < fdata[i].rightIndex) {
+                if (j < fdata[i].rightIndex) {
                   if (data[i].interpolation === "none") {
                     var p2 = eles[j + 1];
                     nxtp += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
@@ -821,9 +818,6 @@
           _.extend(scope.tips[d.id], d);
           var d = scope.tips[d.id];
           d.sticking = false;
-          //var pos = scope.jqsvg.find("#" + d.id).position();
-          //d.tipx = pos.left;
-          //d.tipy = pos.top;
           d.datax = scope.scr2dataX(d.tip_x);
           d.datay = scope.scr2dataY(d.tip_y);
                     
@@ -841,7 +835,6 @@
             }
             scope.renderTips();
           }
-          
         };
         scope.renderTips = function() {
           _.each(scope.tips, function(d) {
@@ -1044,7 +1037,7 @@
             });
           legend.draggable();
           
-          if(scope.visibleLines>1) {  // skip "All" check when there is only one line
+          if (scope.visibleLines > 1) {  // skip "All" check when there is only one line
             var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_all")
@@ -1065,7 +1058,7 @@
 
           var content = "";
           for (var i = 0; i < numLines; i++) {
-            if(data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
+            if (data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
             var unit = $("<div></div>").appendTo(legend).attr("id", "legend_" + i);
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_" + i)

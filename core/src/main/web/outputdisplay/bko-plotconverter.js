@@ -53,7 +53,7 @@
       interpolationMap : {
         0 : "none",
         1 : "linear",
-        2 : "linear", // should be "curve" but right now there is no plan to support curve
+        2 : "linear", // should be "curve" but right now it is not implemented yet
         "" : "linear"
       },
       formatData: function(newmodel, model) {
@@ -121,7 +121,6 @@
             
             if (dat.type === "bar") {
               var w = dat.width;
-              //if (w < 2) { w = 2; } // fix thin bar in rendering
               ele.x1 = ele.x - w/2;
               ele.x2 = ele.x + w/2;
             }
@@ -256,14 +255,6 @@
             data.stroke = "#" + data.outline_color.substr(3);
             delete data.outline_color;
           }
-          
-          /*
-          if (data.colors != null) { data.colorArray = true; }
-          if (data.sizes != null) { data.sizeArray = true; }
-          if (data.bases != null) { data.baseArray = true; }
-          if (data.shapes != null) { data.shapeArray = true; }
-          if (data.styles != null) { data.styleArray = true; }
-          */
          
           if (data.type == null) { data.type = ""; }
           if (data.style == null) { data.style = ""; }

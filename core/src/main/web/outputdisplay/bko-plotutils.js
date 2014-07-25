@@ -68,9 +68,9 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
           .style("stroke", function(d) { return d.stroke; })
-          .attr("opacity", function(d) { return d.opacity; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
           .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.stemg.select("#" + pipe[i].id).selectAll("line")
@@ -79,8 +79,8 @@
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
               .attr("id", function(d) { return d.id; })
               .attr("class", function(d) { return d.class; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("opacity", function(d) { return d.opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
               .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
               .style("stroke-width", function(d) { return d.stroke_width; });
             scope.stemg.select("#" + pipe[i].id).selectAll("line")
@@ -101,7 +101,8 @@
           .attr("class", function(d) { return d.class; })
           .style("stroke", function(d) { return d.stroke; })
           .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
+          .style("stroke-width", function(d) { return d.stroke_width; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
         for (var i = 0; i < pipe.length; i++) {
             scope.lineg.select("#" + pipe[i].id).selectAll("path")
               .data([{}]).enter().append("path");
@@ -184,7 +185,7 @@
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .attr("stroke", function(d) { return d.stroke; })
-          .attr("opacity", function(d) { return d.opacity; })
+          //.style("opacity", function(d) { return d.opacity; })
           .style("fill", function(d) { return d.fill; })
           .style("fill-opacity", function(d) { return d.fill_opacity; })
           .style("stroke", function(d) { return d.stroke; })
@@ -199,7 +200,7 @@
               .attr("cx", function(d) { return d.cx; })
               .attr("cy", function(d) { return d.cy; })
               .attr("r", function(d) { return d.r; })
-              .attr("opacity", function(d) { return d.opacity; })
+              //.attr("opacity", function(d) { return d.opacity; })
               .style("fill", function(d) { return d.fill; })
               .style("fill-opacity", function(d) { return d.fill_opacity; })
               .style("stroke", function(d) { return d.stroke; })
@@ -357,8 +358,8 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
           .attr("transform", function(d) { return d.transform; });
         for (var i = 0; i < pipe.length; i++) {
           scope.textg.select("#" + pipe[i].id).selectAll("text")
@@ -367,8 +368,8 @@
             .data(pipe[i].elements, function(d) { return d.id; }).enter().append("text")
             .attr("id", function(d) { return d.id; })
             .attr("class", function(d) { return d.class; })
-            .attr("fill", function(d) { return d.fill; })
-            .attr("fill-opacity", function(d) { return d.fill_opacity; })
+            .style("fill", function(d) { return d.fill; })
+            .style("fill-opacity", function(d) { return d.fill_opacity; })
             .attr("transform", function(d) { return d.transform; })
             .text(function(d) { return d.text; });
           scope.textg.select("#" + pipe[i].id).selectAll("text")

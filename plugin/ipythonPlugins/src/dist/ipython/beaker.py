@@ -46,7 +46,7 @@ class Beaker:
         conn = urllib2.urlopen(req)
         result = yaml.load(conn.read()) # would use json.loads but it returns unicode
         if not result['defined']:
-            raise NameError('name \'' + var + '\' not defined in notebook namespace')
+            raise NameError('name \'' + var + '\' is not defined in notebook namespace')
         return result['value']
 
 

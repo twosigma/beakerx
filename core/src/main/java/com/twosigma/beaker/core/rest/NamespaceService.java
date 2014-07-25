@@ -75,6 +75,7 @@ public class NamespaceService {
     System.err.println("XXX get session=" + session + " name=" + name);
     Map<String, Object> data = new HashMap<String, Object>(1);
     data.put("name", name);
+    // if session does not exist, should just fail and avoid NPE XXX
     getChannel(session).publish(this.localSession, data, null);
     Binding binding = getHandoff(session).take(); // blocks
     System.err.println("XXX got it");
@@ -96,6 +97,7 @@ public class NamespaceService {
       data.put("value", value);
     }
     data.put("sync", sync);
+    // if session does not exist, should just fail and avoid NPE XXX
     getChannel(session).publish(this.localSession, data, null);
     if (sync) {
       Binding binding = getHandoff(session).take(); // blocks

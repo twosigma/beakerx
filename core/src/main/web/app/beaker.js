@@ -98,7 +98,7 @@
       'bk.evaluatePluginManager',
       'bk.controlPanel',
       'bk.mainApp',
-      'bk.debug'
+      'bk.helper'
     ]);
 
     // setup routing. the template is going to replace ng-view
@@ -201,7 +201,7 @@
       }
     });
 
-    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkDebug) {
+    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkHelper) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
@@ -261,7 +261,7 @@
           $('.dropdown.open .dropdown-toggle').dropdown('toggle');
         }
       });
-      window.bkDebug = bkDebug;
+      window.bkHelper = bkHelper;
     });
 
     beaker.run(function(bkEvaluatePluginManager) {

@@ -72,6 +72,11 @@
             bkSessionManager.setNotebookModelEdited(true);
           }
         });
+
+        scope.$on('$destroy', function() {
+          editor.unload();
+          EpicEditor._data.unnamedEditors = [];
+        });
       }
     };
   });

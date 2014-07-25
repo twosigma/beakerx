@@ -18017,6 +18017,7 @@
 					"$(PROJECT_DIR)/dist/config/plugins/eval/node/app/node_modules/ws/build/Release",
 					"$(PROJECT_DIR)/dist/nginx/bin",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -18042,6 +18043,7 @@
 					"$(PROJECT_DIR)/dist/config/plugins/eval/node/app/node_modules/ws/build/Release",
 					"$(PROJECT_DIR)/dist/nginx/bin",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

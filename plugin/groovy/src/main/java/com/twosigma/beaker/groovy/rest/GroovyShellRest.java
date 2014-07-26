@@ -124,7 +124,7 @@ public class GroovyShellRest {
     throws MalformedURLException
   {
     URLClassLoader classLoader = new URLClassLoader(new URL[] {
-        new URL("file:///Users/spot/beaker-notebook/core/config/plugins/eval/r/lib/fluent-hc-4.3.3.jar")});
+        new URL("file:///Users/spot/beaker-notebook/plugin/jvm/build/libs/jvm.jar")});
 
     this.shells.put(id, new GroovyShell(classLoader));
   }

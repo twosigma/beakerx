@@ -76,7 +76,12 @@ public class NamespaceService {
     Map<String, Object> data = new HashMap<String, Object>(1);
     data.put("name", name);
     // if session does not exist, should just fail and avoid NPE XXX
-    getChannel(session).publish(this.localSession, data, null);
+    ServerChannel channel = getChannel(session);
+    if (null == channel) {
+	System.err.println("channel not found for session " + session);
+	return null;
+    }
+    channel.publish(this.localSession, data, null);
     Binding binding = getHandoff(session).take(); // blocks
     System.err.println("XXX got it");
     if (!binding.name.equals(name)) {
@@ -98,7 +103,12 @@ public class NamespaceService {
     }
     data.put("sync", sync);
     // if session does not exist, should just fail and avoid NPE XXX
-    getChannel(session).publish(this.localSession, data, null);
+    ServerChannel channel = getChannel(session);
+    if (null == channel) {
+	System.err.println("channel not found for session " + session);
+	return;
+    }
+    channel.publish(this.localSession, data, null);
     if (sync) {
       Binding binding = getHandoff(session).take(); // blocks
       if (!binding.name.equals(name)) {

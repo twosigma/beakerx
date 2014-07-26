@@ -23,26 +23,31 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class Namespace {
 
     private Base64 encoder;
     private String session;
+    private ObjectMapper mapper;
 
     public Namespace(String session) {
 	this.encoder = new Base64();
+	this.mapper = new ObjectMapper();
 	this.session = session;
     }
 
     public void set(String name, Object value)
 	throws ClientProtocolException, IOException
     {
-
 	String account = "beaker:" + System.getenv("beaker_core_password");
 	String auth = encoder.encodeBase64String(account.getBytes());
-	List<NameValuePair> form = Form.form().add("name", name)
+	List<NameValuePair> form = Form.form()
+	    .add("name", name)
+	    .add("value", mapper.writeValueAsString(value))
+	    .add("sync", "false")
 	    .add("session", this.session).build();
-	Request.Get("http://127.0.0.1:" + System.getenv("beaker_core_port") +
+	Request.Post("http://127.0.0.1:" + System.getenv("beaker_core_port") +
 		    "/rest/namespace/set")
 	    .addHeader("Authorization", "Basic " + auth).bodyForm(form).execute();
     }

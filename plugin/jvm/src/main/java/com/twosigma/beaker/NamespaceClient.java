@@ -17,6 +17,7 @@
 package com.twosigma.beaker;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.fluent.Request;
@@ -25,33 +26,45 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class Namespace {
+public class NamespaceClient {
 
     private Base64 encoder;
     private String session;
     private ObjectMapper mapper;
+    private String auth;
+    private String urlBase;
 
-    public Namespace(String session) {
+    public NamespaceClient(String session) {
 	this.encoder = new Base64();
 	this.mapper = new ObjectMapper();
 	this.session = session;
+	String account = "beaker:" + System.getenv("beaker_core_password");
+	this.auth = "Basic " + encoder.encodeBase64String(account.getBytes());
+	this.urlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") +
+	    "/rest/namespace";
     }
 
     public void set(String name, Object value)
 	throws ClientProtocolException, IOException
     {
-	String account = "beaker:" + System.getenv("beaker_core_password");
-	String auth = encoder.encodeBase64String(account.getBytes());
+	
+	
 	List<NameValuePair> form = Form.form()
 	    .add("name", name)
 	    .add("value", mapper.writeValueAsString(value))
 	    .add("sync", "false")
 	    .add("session", this.session).build();
-	Request.Post("http://127.0.0.1:" + System.getenv("beaker_core_port") +
-		    "/rest/namespace/set")
-	    .addHeader("Authorization", "Basic " + auth).bodyForm(form).execute();
+	Request.Post(urlBase + "/set")
+	    .addHeader("Authorization", auth).bodyForm(form).execute();
     }
-    public Object get(String name) {
-	return null;
+    public Object get(String name)
+	throws ClientProtocolException, IOException
+    {
+	String args = "name=" + URLEncoder.encode(name, "ISO-8859-1") +
+	    "&session=" + URLEncoder.encode(this.session, "ISO-8859-1");
+	String valueString = Request.Get(urlBase + "/get?" + args)
+	    .addHeader("Authorization", auth)
+	    .execute().returnContent().asString();;
+	return mapper.readValue(valueString, Object.class);
     }
 }

@@ -176,6 +176,9 @@ define(function(require, exports, module) {
           if (doneCB) {
             doneCB(self);
           }
+	  var initCode = "import com.twosigma.beaker.Namespace\n" +
+	    "beaker = new Namespace('" + bkHelper.getSessionId() + "')\n";
+          self.evaluate(initCode, {});	  
         };
         if (!settings.shellID) {
           settings.shellID = "";

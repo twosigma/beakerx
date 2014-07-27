@@ -89,7 +89,7 @@
           model: "="
         },
         controller: function($scope) {
-          $scope.items = _($scope.model.getCellModel().items).map(function(it) {
+          $scope.items = _.map($scope.model.getCellModel().items, function(it) {
             return {
               result: it
             };
@@ -228,7 +228,7 @@
     return factory;
   });
 
-  _(_.range(MAX_CAPACITY)).each(function(i) {
+  _.range(MAX_CAPACITY).forEach(function(i) {
     module.directive("bko" + i,
         function(bkOutputDisplayFactory, bkOutputDisplayServiceManager, $injector) {
       var impl = bkOutputDisplayFactory.get(i);

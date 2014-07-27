@@ -106,7 +106,7 @@
       var sessionRouteResolve = {};
       var generateId = function() {
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        return _(_.range(6)).map(function() {
+        return _.range(6).map(function() {
           return possible.charAt(Math.floor(Math.random() * possible.length));
         }).join('');
       };
@@ -271,14 +271,13 @@
         "JavaScript": "./plugin/evaluator/javaScript.js"
       };
 
-      _.chain(defaultEvaluatorUrlMap).each(function(value, key) {
+      _.each(defaultEvaluatorUrlMap, function(value, key) {
         bkEvaluatePluginManager.addNameToUrlEntry(key, value);
       });
 
       if (window.bkInit && window.bkInit.getEvaluatorUrlMap) {
         var evaluatorsUrlMap = window.bkInit.getEvaluatorUrlMap();
-        _.chain(evaluatorsUrlMap).keys().each(function(key) {
-          var value = evaluatorsUrlMap[key];
+        _.each(evaluatorsUrlMap, function(value, key) {
           bkEvaluatePluginManager.addNameToUrlEntry(key, value);
         });
       }

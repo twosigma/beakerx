@@ -406,8 +406,8 @@
         });
 
         scope.getShareData = function() {
-          var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
-              .find(function (evaluator) {
+          var evaluator = _.find(bkSessionManager.getRawNotebookModel().evaluators,
+              function (evaluator) {
                 return evaluator.name === scope.cellmodel.evaluator;
               });
           var cells = [scope.cellmodel];

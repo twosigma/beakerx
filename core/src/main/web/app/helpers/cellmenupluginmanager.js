@@ -39,13 +39,13 @@
         var self = this;
         bkUtils.httpGet('../beaker/rest/util/getCellMenuPlugins')
             .success(function(menuUrls) {
-              menuUrls.forEach(self.loadPlugin);
+              _.each(menuUrls, self.loadPlugin);
             });
       },
       loadPlugin: function(url) {
         return bkUtils.loadModule(url).then(function(ex) {
           if (_.isArray(ex.cellType)) {
-            _(ex.cellType).each(function(cType) {
+            _.each(ex.cellType, function(cType) {
               addPlugin(cType, ex.plugin);
             });
           } else {
@@ -60,9 +60,9 @@
       getMenuItems: function(cellType, scope) {
         var menuItemGetters = _cellMenuPlugins[cellType];
         var newItems = [];
-        _(menuItemGetters).each(function(getter) {
+        _.each(menuItemGetters, function(getter) {
           var items = getter(scope);
-          _(items).each(function(it) {
+          _.each(items, function(it) {
             newItems.push(it);
           });
         });

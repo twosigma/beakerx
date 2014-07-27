@@ -69,7 +69,7 @@
                 deferred.reject("failed to load plugin: " + name + " at " + url);
               }
             }).finally(function() {
-              loadingInProgressPlugins = _(loadingInProgressPlugins).filter(function(it) {
+              loadingInProgressPlugins = _.filter(loadingInProgressPlugins, function(it) {
                 return it.url !== url;
               });
             });
@@ -90,7 +90,7 @@
                 }
               })
               .then(function() {
-                _(plugins).filter(function(aShell) {
+                _.filter(plugins, function(aShell) {
                   return aShell !== theShell;
                 });
               });

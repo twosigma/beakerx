@@ -80,7 +80,7 @@
               .then(function(evaluator) {
                 if (!_.isEmpty(evaluator.spec)) {
                   var actionItems = [];
-                  _(evaluator.spec).each(function(value, key) {
+                  _.each(evaluator.spec, function(value, key) {
                     if (value.type === "action") {
                       actionItems.push({
                         name: value.name ? value.name : value.action,
@@ -134,7 +134,7 @@
                 uri: notebookUri,
                 uriType: uriType,
                 format: format,
-                maxCellLevel: _(notebookModel.cells).max(function(cell) {
+                maxCellLevel: _.max(notebookModel.cells, function(cell) {
                   return cell.level;
                 }).level,
                 cellCount: notebookModel.cells.length

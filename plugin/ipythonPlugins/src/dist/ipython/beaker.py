@@ -17,9 +17,12 @@ import os, urllib, urllib2, json, pandas, yaml
 # should be inner class to Beaker
 class DataFrameEncoder(json.JSONEncoder):
     def default(self, obj):
-        # similarly handle Series, Panels, etc XXX
+        # similarly handle Panels.
+        # make this extensible by the user to handle their own types.
         if type(obj) == pandas.core.frame.DataFrame:
             return obj.to_dict(outtype='list')
+        if type(obj) == pandas.core.series.Series:
+            return obj.to_dict()
         return json.JSONEncoder.default(self, obj)
 
 class Beaker:

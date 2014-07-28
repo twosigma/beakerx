@@ -19,9 +19,6 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +43,7 @@ public class GroovyShellRest {
   @Path("getShell")
   @Produces(MediaType.TEXT_PLAIN)
   public String getShell(@FormParam("shellId") String shellId) 
-    throws InterruptedException, MalformedURLException
+    throws InterruptedException
   {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {

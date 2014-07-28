@@ -120,14 +120,8 @@ public class GroovyShellRest {
       @FormParam("imports") String classPathes) {
   }
 
-  private void newEvaluator(String id)
-    throws MalformedURLException
-  {
-    URLClassLoader classLoader = new URLClassLoader(new URL[] {
-	// XXX use relative or config to find
-        new URL("file:///Users/spot/beaker-notebook/plugin/jvm/build/libs/jvm.jar")});
-
-    this.shells.put(id, new GroovyShell(classLoader));
+  private void newEvaluator(String id) {
+    this.shells.put(id, new GroovyShell());
   }
 
   private GroovyShell getEvaluator(String shellId) {

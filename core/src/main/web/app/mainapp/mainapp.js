@@ -141,7 +141,6 @@
               });
               bkHelper.evaluate("initialization");
             }
-
             $scope.loading = false;
           };
           return {

@@ -72,10 +72,8 @@ public class NamespaceService {
   public NamespaceBinding get(String session, String name)
     throws RuntimeException, InterruptedException
   {
-    System.err.println("XXX get session=" + session + " name=" + name);
     Map<String, Object> data = new HashMap<String, Object>(1);
     data.put("name", name);
-    // if session does not exist, should just fail and avoid NPE XXX
     ServerChannel channel = getChannel(session);
     if (null == channel) {
 	System.err.println("channel not found for session " + session);
@@ -83,11 +81,9 @@ public class NamespaceService {
     }
     channel.publish(this.localSession, data, null);
     NamespaceBinding binding = getHandoff(session).take(); // blocks
-    System.err.println("XXX got it");
     if (!binding.name.equals(name)) {
       throw new RuntimeException("Namespace get, name mismatch.  Received " + binding.name + ", expected " + name);
     }
-    // no reason to return the session XXX
     return binding;
   }
 
@@ -95,14 +91,12 @@ public class NamespaceService {
   public void set(String session, String name, Object value, Boolean unset, Boolean sync)
     throws RuntimeException, InterruptedException
   {
-    System.err.println("XXX set session=" + session + " name=" + name + " sync=" + sync);
     Map<String, Object> data = new HashMap<String, Object>(2);
     data.put("name", name);
     if (!unset) {
       data.put("value", value);
     }
     data.put("sync", sync);
-    // if session does not exist, should just fail and avoid NPE XXX
     ServerChannel channel = getChannel(session);
     if (null == channel) {
 	System.err.println("channel not found for session " + session);
@@ -121,7 +115,6 @@ public class NamespaceService {
   public void receive(ServerSession session, ServerMessage msg)
     throws IOException, InterruptedException
   {
-    System.err.println("XXX receive");
     NamespaceBinding binding = this.mapper.readValue(String.valueOf(msg.getData()), NamespaceBinding.class);
     getHandoff(binding.getSession()).put(binding);
   }

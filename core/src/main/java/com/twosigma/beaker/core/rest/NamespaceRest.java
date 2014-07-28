@@ -56,8 +56,6 @@ public class NamespaceRest {
     throws IOException, InterruptedException
   {
     // check arguments are well formed XXX
-    System.out.println("name=" + name);
-    System.out.println("value=" + value);
     Object parsedValue = null;
     Boolean unset = true;
     if (null != value) {

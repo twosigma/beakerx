@@ -46,11 +46,9 @@ public class NamespaceClient {
 	    "/rest/namespace";
     }
 
-    public void set(String name, Object value)
+    public Object set(String name, Object value)
 	throws ClientProtocolException, IOException
     {
-	
-	
 	List<NameValuePair> form = Form.form()
 	    .add("name", name)
 	    .add("value", mapper.writeValueAsString(value))
@@ -58,6 +56,7 @@ public class NamespaceClient {
 	    .add("session", this.session).build();
 	Request.Post(urlBase + "/set")
 	    .addHeader("Authorization", auth).bodyForm(form).execute();
+        return value;
     }
     public Object get(String name)
 	throws ClientProtocolException, IOException

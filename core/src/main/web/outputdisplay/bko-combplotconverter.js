@@ -22,15 +22,41 @@
       standardizeModel : function(model) {
         var newmodel = {
           title : model.title,
-          xLabel : model.x_label != null ? model.x_label : model.xLabel,
-          yLabel : model.y_label != null ? model.y_label : model.yLabel,
           plots : []
         };
+        var version;
+        if (model.version === "groovy") {
+          version = "groovy";
+        } else {
+          version = "direct";
+        }
+        
+        var width, height;
+        if (version === "groovy") {
+          newmodel.xLabel = model.x_label;
+          newmodel.yLabel = model.y_label;
+          width = model.init_width;
+          height = model.init_height;
+        } else if (version === "direct"){
+          newmodel.xLabel = model.xLabel;
+          newmodel.yLabel = model.yLabel;
+          width = model.width;
+          height = model.height;
+        }
+        var show_legend = model.show_legend,
+            use_tool_tip = model.use_tool_tips;
+        
+        if (width == null) { width = 1200; }
+        if (height == null) { height = 600; }
+        
+        newmodel.initSize = {
+          "width" : width + "px",
+          "height" : height + "px"
+        };
+        
         var plotType = model.plot_type;
         if (plotType == null) { plotType = "Plot"; }
         
-        var width = model.init_width != null ? model.init_width : 1200,
-            height = model.init_height != null ? model.init_height : 600;
         var sumweights = 0;
         var weights = model.weights == null ? [] : model.weights;
         for(var i = 0; i < model.plots.length; i++) {
@@ -40,9 +66,11 @@
         var plots = model.plots;
         for(var i = 0; i < plots.length; i++) {
           var plotmodel = plots[i];
-          if (model.version === "dnote") {
-            plotmodel.version = "dnote";
-          }
+          
+          if (plotmodel.version == null) { plotmodel.version = version; }
+          if (plotmodel.show_legend == null) { plotmodel.show_legend = show_legend; }
+          if (plotmodel.use_tool_tip == null) { plotmodel.use_tool_tip = plotmodel.use_tool_tip; }
+          
           plotmodel.type = plotType;
           var newplotmodel = plotConverter.standardizeModel(plotmodel);
           

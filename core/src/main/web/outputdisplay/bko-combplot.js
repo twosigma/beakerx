@@ -74,6 +74,9 @@
         $scope.init();
       },
       link : function(scope, element, attrs) {
+        //scope.container = d3.select(element[0]).select("#plotContainer"); 
+        scope.jqcontainer = element.find("#combplotContainer");
+        scope.jqcontainer.css(scope.stdmodel.initSize);
       }
     };
   };

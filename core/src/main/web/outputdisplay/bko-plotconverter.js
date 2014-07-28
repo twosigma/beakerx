@@ -64,6 +64,8 @@
         var logy = newmodel.yScale.type === "log", logyb = newmodel.yScale.base;
         for (var i = 0; i < data.length; i++) {
           var dat = data[i], eles = dat.elements;
+          
+          if (eles == null) eles = [];
 
           dat.shown = true;
           

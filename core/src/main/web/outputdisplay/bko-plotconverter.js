@@ -98,27 +98,37 @@
             dat.width = 1;
           }
           
-          if (dat.outline_color != null) {
-            dat.stroke = dat.outline_color;
+          if (dat.colorOpacity != null) {
+            dat.color_opacity = dat.colorOpacity;
+            delete dat.colorOpacity;
           }
-          if (dat.outline_width != null) {
-            dat.stroke_width = dat.outline_width;
+          if (dat.outlineColor != null) {
+            dat.stroke = dat.outlineColor;
+            delete dat.outlineColor;
           }
-          if (dat.outline_opacity != null) {
-            dat.stroke_opacity = dat.outline_opacity;
+          if (dat.outlineWidth != null) {
+            dat.stroke_width = dat.outlineWidth;
+            delete dat.outlineWidth;
+          }
+          if (dat.outlineOpacity != null) {
+            dat.stroke_opacity = dat.outlineOpacity;
+            delete dat.outlineOpacity;
           }
           
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
             
-            if (ele.outline_color != null) {
-              ele.stroke = ele.outline_color;
+            if (ele.outlineColor != null) {
+              ele.stroke = ele.outlineColor;
+              delete ele.outlineColor;
             }
-            if (ele.outline_width != null) {
-              ele.stroke_width = ele.outline_width;
+            if (ele.outlineWidth != null) {
+              ele.stroke_width = ele.outlineWidth;
+              delete ele.outlineWidth;
             }
-            if (ele.outline_opacity != null) {
-              ele.stroke_opacity = ele.outline_opacity;
+            if (ele.outlineOpacity != null) {
+              ele.stroke_opacity = ele.outlineOpacity;
+              delete ele.outlineOpacity;
             }
             
             if (dat.type === "bar") {
@@ -432,15 +442,17 @@
           newmodel = {
             type : "plot",
             title : model.chart_title != null ? model.chart_title : model.title,
-            xLabel : model.domain_axis_label != null ? model.domain_axis_label : model.xLabel,
-            yLabel : model.y_label != null ? model.y_label : model.yLabel, // ? range_axis_label ?
-            xType : model.xType != null ? model.xType : "ordinal",
-            yType : model.yType != null ? model.yType : "ordinal",
-            margin : model.margin != null ? model.margin : null,
-            range : model.range != null ? model.range : null,
-            focus : model.focus != null ? model.focus : {},
-            xCursor : model.xCursor,
-            yCursor : model.yCursor,
+            xLabel : model.domain_axis_label != null ? model.domain_axis_label : null,
+            yLabel : model.y_label != null ? model.y_label : null, // ? range_axis_label ?
+            xType : "ordinal",
+            yType : "ordinal",
+            margin : null,
+            range : null,
+            focus : {},
+            xCursor : null,
+            yCursor : null,
+            showLegend : model.show_legend != null ? model.show_legend : false,
+            useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
             initSize : {
               "width" : (model.init_width != null ? model.init_width : 1200) + "px",
               "height" : (model.init_height != null ? model.init_height : 350) + "px"
@@ -451,19 +463,24 @@
           newmodel = {
             xLabel : model.xLabel != null ? model.xLabel : null,
             yLabel : model.yLabel != null ? model.yLabel : null,
-            xType : model.xType != null ? model.xType : "ordinal",
-            yType : model.yType != null ? model.yType : "ordinal",
-            focus : model.focus != null ? model.focus : {},
             xScale : model.xScale != null ? model.xScale : { type: "linear" },
             yScale : model.yScale != null ? model.yScale : { type: "linear" },
+            showLegend : model.showLegend != null ? model.showLegend : false,
+            useToolTip : model.useToolTip != null ? model.useToolTip : false,
+            xType : model.xType != null ? model.xType : "ordinal",
+            yType : model.yType != null ? model.yType : "ordinal",
+            margin : model.margin != null ? model.margin : null,
+            range : model.range != null ? model.range : null,
+            focus : model.focus != null ? model.focus : {},
+            xCursor : model.xCursor,
+            yCursor : model.yCursor,
             initSize : {
               "width" : (model.width != null ? model.width : 1200) + "px",
               "height": (model.height != null ? model.height : 350) + "px"
             }
           };
         }
-        newmodel.show_legend = model.show_legend != null ? model.show_legend : false;
-        newmodel.use_tool_tip = model.use_tool_tip != null ? model.use_tool_tip : false;
+        
         newmodel.data = [];
 
         

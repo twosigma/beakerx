@@ -32,19 +32,22 @@
         }
         
         var width, height;
+        var showLegend, useToolTip;
         if (version === "groovy") {
           newmodel.xLabel = model.x_label;
           newmodel.yLabel = model.y_label;
           width = model.init_width;
           height = model.init_height;
+          showLegend = model.show_legend;
+          useToolTip = model.use_tool_tip;
         } else if (version === "direct"){
           newmodel.xLabel = model.xLabel;
           newmodel.yLabel = model.yLabel;
           width = model.width;
           height = model.height;
+          showLegend = model.showLegend;
+          useToolTip = model.useToolTip;
         }
-        var show_legend = model.show_legend,
-            use_tool_tip = model.use_tool_tips;
         
         if (width == null) { width = 1200; }
         if (height == null) { height = 600; }
@@ -68,8 +71,8 @@
           var plotmodel = plots[i];
           
           if (plotmodel.version == null) { plotmodel.version = version; }
-          if (plotmodel.show_legend == null) { plotmodel.show_legend = show_legend; }
-          if (plotmodel.use_tool_tip == null) { plotmodel.use_tool_tip = plotmodel.use_tool_tip; }
+          if (plotmodel.showLegend == null) { plotmodel.showLegend = showLegend; }
+          if (plotmodel.useToolTip == null) { plotmodel.useToolTip = useToolTip; }
           
           plotmodel.type = plotType;
           var newplotmodel = plotConverter.standardizeModel(plotmodel);

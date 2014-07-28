@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ import javax.ws.rs.core.MediaType;
 @Singleton
 public class NamespaceRest {
 
+  private String legalNamePattern = "[a-zA-Z_][a-zA-Z0-9_]*";
+
   @Inject
   private NamespaceService namespaceService;
 
@@ -55,9 +57,11 @@ public class NamespaceRest {
                     @FormParam("value") String value, @FormParam("sync") Boolean sync)
     throws IOException, InterruptedException
   {
-    // check arguments are well formed XXX
     Object parsedValue = null;
     Boolean unset = true;
+    if (!name.matches(legalNamePattern)) {
+      return("name is illegal for notebook namespace: " + name);
+    }
     if (null != value) {
       parsedValue = new ObjectMapper().readValue(value, Object.class);
       unset = false;

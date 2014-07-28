@@ -70,9 +70,9 @@
                   // save session
                   var saveSession = function() {
                     var notebookModelAsString = bkUtils.toPrettyJson(notebookModel);
-                    if (!_.isEmpty(session.notebookUri)) {
+                    if (session.isSavable()) {
                       var fileSaver = bkCoreManager.getFileSaver(session.uriType);
-                      return fileSaver.save(session.notebookUri, notebookModelAsString);
+                      return fileSaver.save(session.notebookUri, notebookModelAsString, true);
                     } else {
                       var deferred = bkUtils.newDeferred();
                       bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {

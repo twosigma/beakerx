@@ -435,7 +435,7 @@
                     skipped = true;
                     break;
                   }
-                  pstr += x2 + "," + y + " " + x + "," + y + " ";
+                  pstr += x + "," + y + " " + x2 + "," + y + " ";
                 }
               }
               for (var j = fdata[i].rightIndex; j >= fdata[i].leftIndex; j--) {

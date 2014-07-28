@@ -24,7 +24,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "536968767E5F40528C0098E8711C7BA8",
+            "shellID": "6DAE0DC7AF064A438CBEB0BE52548E42",
             "imports": "",
             "supplementalClassPath": "",
             "view": {
@@ -50,7 +50,7 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "118d2351-fe00-483c-afad-4bf954804a5c",
+            "shellID": "c4ad7947-cad7-42d2-a9a6-5ce56341d4fe",
             "view": {
                 "cm": {
                     "mode": "r",
@@ -61,7 +61,7 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "shellID": "78cd1d3d-c6ba-46f7-90ba-56b8903aea3a",
+            "shellID": "24acc31c-e945-411c-b824-4664b640c927",
             "view": {
                 "cm": {
                     "mode": "groovy",
@@ -497,10 +497,22 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "beaker.x"
+                "body": "beaker.y = {a:1, b:2.2, c:\"three\"};"
             },
             "output": {
                 "selectedType": "Hidden"
+            }
+        },
+        {
+            "id": "codeeLdoVF",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "beaker.get('y')"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 395
             }
         },
         {
@@ -572,6 +584,11 @@
                 8,
                 6
             ]
+        },
+        "y": {
+            "a": 1,
+            "b": 2.2,
+            "c": "three"
         }
     }
 }

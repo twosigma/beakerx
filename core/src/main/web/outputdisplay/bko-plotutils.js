@@ -107,7 +107,7 @@
             scope.lineg.select("#" + pipe[i].id).selectAll("path")
               .data([{}]).enter().append("path");
             scope.lineg.select("#" + pipe[i].id + " path")
-              .attr("d", pipe[i].elements);
+              .attr("d", pipe[i].d);
         }
       },
       plotSegs: function(scope) {
@@ -483,7 +483,7 @@
         return str;
       },
       upper_bound: function(a, attr, val) {
-        var l = 0, r = a.length-1;
+        var l = 0, r = a.length - 1;
         while (l <= r) {
           var m = Math.floor((l + r) / 2);
           if (a[m][attr] >= val) r = m - 1;

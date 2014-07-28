@@ -60,7 +60,7 @@ public class NamespaceRest {
     Object parsedValue = null;
     Boolean unset = true;
     if (!name.matches(legalNamePattern)) {
-      return("name is illegal for notebook namespace: " + name);
+      return("name is illegal for notebook namespace: \'" + name + "\'");
     }
     if (null != value) {
       parsedValue = new ObjectMapper().readValue(value, Object.class);

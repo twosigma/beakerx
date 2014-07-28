@@ -28,9 +28,12 @@ set4 <- function(var, val, unset, sync) {
            '/rest/namespace/set', sep='')
   opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
   if (unset) {
-    postForm(req, style='POST', name=var, session=session_id, sync=sync, .opts=opts)
+    reply = postForm(req, style='POST', name=var, session=session_id, sync=sync, .opts=opts)
   } else {
-    postForm(req, style='POST', name=var, value=toJSON(val), session=session_id, sync=sync, .opts=opts)
+    reply = postForm(req, style='POST', name=var, value=toJSON(val), session=session_id, sync=sync, .opts=opts)
+  }
+  if (reply != 'ok') {
+    stop(paste(reply))
   }
   return (val)
 }

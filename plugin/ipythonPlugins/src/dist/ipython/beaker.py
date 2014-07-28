@@ -38,7 +38,9 @@ class Beaker:
         req = urllib2.Request('http://' + self.core_url + '/rest/namespace/set',
                               urllib.urlencode(args))
         conn = urllib2.urlopen(req)
-        conn.read()
+        reply = conn.read()
+        if reply != 'ok':
+            raise NameError(reply)
   
     def get(self, var):
         req = urllib2.Request('http://' + self.core_url + '/rest/namespace/get?' + 

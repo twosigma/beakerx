@@ -55,8 +55,12 @@ public class NamespaceClient {
     if (!unset) {
       form.add("value", mapper.writeValueAsString(value));
     }
-    Request.Post(urlBase + "/set")
-      .addHeader("Authorization", auth).bodyForm(form.build()).execute();
+    String reply = Request.Post(urlBase + "/set")
+      .addHeader("Authorization", auth).bodyForm(form.build())
+      .execute().returnContent().asString();
+    if (!reply.equals("ok")) {
+      throw new RuntimeException(reply);
+    }
     return value;
   }
 
@@ -85,7 +89,7 @@ public class NamespaceClient {
       "&session=" + URLEncoder.encode(this.session, "ISO-8859-1");
     String valueString = Request.Get(urlBase + "/get?" + args)
       .addHeader("Authorization", auth)
-      .execute().returnContent().asString();;
+      .execute().returnContent().asString();
     NamespaceBinding binding = mapper.readValue(valueString, NamespaceBinding.class);
     if (!binding.defined) {
       throw new RuntimeException("name not defined: " + name);

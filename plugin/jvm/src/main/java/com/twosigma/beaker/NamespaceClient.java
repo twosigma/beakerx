@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker;
 
+import com.twosigma.beaker.shared.NamespaceBinding;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -24,7 +25,6 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.ObjectMapper;
 
 
@@ -67,54 +67,10 @@ public class NamespaceClient {
 	String valueString = Request.Get(urlBase + "/get?" + args)
 	    .addHeader("Authorization", auth)
 	    .execute().returnContent().asString();;
-	Binding binding = mapper.readValue(valueString, Binding.class);
+	NamespaceBinding binding = mapper.readValue(valueString, NamespaceBinding.class);
 	if (!binding.defined) {
 	    throw new RuntimeException("name not defined: " + name);
 	}
 	return binding.value;
     }
-
-    // XXX duplicated code with NamespaceService, move to shared module.
-  @JsonAutoDetect
-  public static class Binding {
-
-    private String name;
-    private String session;
-    private Object value;
-    private Boolean defined;
-
-    public String getName() {
-      return this.name;
-    }
-    public String getSession() {
-      return this.session;
-    }
-    public Object getValue() {
-      return this.value;
-    }
-    public Boolean getDefined() {
-      return this.defined;
-    }
-    public void setName(String s) {
-      this.name = s;
-    }
-    public void setSession(String s) {
-      this.session = s;
-    }
-    public void setValue(Object o) {
-      this.value = o;
-    }
-    public void setDefined(Boolean b) {
-      this.defined = b;
-    }
-    public Binding() {
-    }
-    public Binding(String session, String name, Object value, Boolean defined) {
-      this.session = session;
-      this.name = name;
-      this.value = value;
-      this.defined = defined;
-    }
-  }
-
 }

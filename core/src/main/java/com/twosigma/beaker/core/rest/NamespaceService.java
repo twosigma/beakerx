@@ -17,11 +17,11 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.shared.NamespaceBinding;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.SynchronousQueue;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.annotation.Listener;
 import org.cometd.annotation.Service;
@@ -46,7 +46,7 @@ public class NamespaceService {
   private LocalSession localSession;
   private ObjectMapper mapper = new ObjectMapper();
   private String channelName = "/namespace";
-  private Map<String, SynchronousQueue<Binding>> handoff = new HashMap<>();
+  private Map<String, SynchronousQueue<NamespaceBinding>> handoff = new HashMap<>();
 
   @Inject
   public NamespaceService(BayeuxServer bayeuxServer) {
@@ -60,16 +60,16 @@ public class NamespaceService {
   }
 
   // XXX garbage collect when sessions are closed
-  private SynchronousQueue<Binding> getHandoff(String session) {
-    SynchronousQueue<Binding> result = handoff.get(session);
+  private SynchronousQueue<NamespaceBinding> getHandoff(String session) {
+    SynchronousQueue<NamespaceBinding> result = handoff.get(session);
     if (null == result) {
-      result = new SynchronousQueue<Binding>();
+      result = new SynchronousQueue<NamespaceBinding>();
       handoff.put(session, result);
     }
     return result;
   }
 
-  public Binding get(String session, String name)
+  public NamespaceBinding get(String session, String name)
     throws RuntimeException, InterruptedException
   {
     System.err.println("XXX get session=" + session + " name=" + name);
@@ -82,7 +82,7 @@ public class NamespaceService {
 	return null;
     }
     channel.publish(this.localSession, data, null);
-    Binding binding = getHandoff(session).take(); // blocks
+    NamespaceBinding binding = getHandoff(session).take(); // blocks
     System.err.println("XXX got it");
     if (!binding.name.equals(name)) {
       throw new RuntimeException("Namespace get, name mismatch.  Received " + binding.name + ", expected " + name);
@@ -110,7 +110,7 @@ public class NamespaceService {
     }
     channel.publish(this.localSession, data, null);
     if (sync) {
-      Binding binding = getHandoff(session).take(); // blocks
+      NamespaceBinding binding = getHandoff(session).take(); // blocks
       if (!binding.name.equals(name)) {
         throw new RuntimeException("Namespace set, name mismatch.  Received " + binding.name + ", expected " + name);
       }
@@ -122,49 +122,7 @@ public class NamespaceService {
     throws IOException, InterruptedException
   {
     System.err.println("XXX receive");
-    Binding binding = this.mapper.readValue(String.valueOf(msg.getData()), Binding.class);
+    NamespaceBinding binding = this.mapper.readValue(String.valueOf(msg.getData()), NamespaceBinding.class);
     getHandoff(binding.getSession()).put(binding);
-  }
-
-  @JsonAutoDetect
-  public static class Binding {
-
-    private String name;
-    private String session;
-    private Object value;
-    private Boolean defined;
-
-    public String getName() {
-      return this.name;
-    }
-    public String getSession() {
-      return this.session;
-    }
-    public Object getValue() {
-      return this.value;
-    }
-    public Boolean getDefined() {
-      return this.defined;
-    }
-    public void setName(String s) {
-      this.name = s;
-    }
-    public void setSession(String s) {
-      this.session = s;
-    }
-    public void setValue(Object o) {
-      this.value = o;
-    }
-    public void setDefined(Boolean b) {
-      this.defined = b;
-    }
-    public Binding() {
-    }
-    public Binding(String session, String name, Object value, Boolean defined) {
-      this.session = session;
-      this.name = name;
-      this.value = value;
-      this.defined = defined;
-    }
   }
 }

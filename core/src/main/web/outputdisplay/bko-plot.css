@@ -20,6 +20,10 @@
   /*
   -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); 
   -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+  
+  -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,1.0); 
+  -moz-box-shadow: 10px 10px 5px rgba(0,0,0,1.0);
+  
   */
  /* inset */
 }
@@ -60,16 +64,22 @@
   border-radius: 5px;
 }
 
-.plot-line, 
 .plot-const,
 .plot-coord,
-.plot-coord-base,
-.plot-bar, 
-.plot-river, 
-.line-plot-stem {
+.plot-coord-base {
   stroke-width: 1;
   pointer-events: none;
 }
+.plot-line,
+.plot-river {
+  stroke-width: 1;
+  pointer-events: none;
+}
+.plot-bar,
+.plot-stem {
+  pointer-events: auto;
+}
+
 
 .plot-coord {
   stroke: #111111;
@@ -105,7 +115,6 @@
 
 .plot-title {
   text-align: center;
-  width: 1200px;
   font-weight: bold;
   font-size: 1.2em;
   margin: 5px;

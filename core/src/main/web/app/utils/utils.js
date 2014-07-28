@@ -185,7 +185,10 @@
         return deferred.promise;
       },
       addConnectedStatusListener: function(cb) {
-        cometdUtils.addConnectedStatusListener(cb);
+        return cometdUtils.addConnectedStatusListener(cb);
+      },
+      removeConnectedStatusListener: function() {
+        return cometdUtils.removeConnectedStatusListener();
       },
 
       // wrapper around requireJS

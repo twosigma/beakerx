@@ -224,6 +224,10 @@
           _edited = true;
         }
       },
+      addEvaluator: function(evaluator) {
+        _notebookModel.get().evaluators.push(evaluator);
+        _edited = true;
+      },
       getNotebookCellOp: function() {
         return bkNotebookCellModelManager;
       },

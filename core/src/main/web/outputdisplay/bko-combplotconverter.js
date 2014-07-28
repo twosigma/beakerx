@@ -20,14 +20,15 @@
   var retfunc = function(bkUtils, plotConverter) {
     return {
       standardizeModel : function(model) {
-        model = model.result; 
         var newmodel = {
           title : model.title,
           xLabel : model.x_label != null ? model.x_label : model.xLabel,
           yLabel : model.y_label != null ? model.y_label : model.yLabel,
           plots : []
-        }; 
-
+        };
+        var plotType = model.plot_type;
+        if (plotType == null) { plotType = "Plot"; }
+        
         var width = model.init_width != null ? model.init_width : 1200,
             height = model.init_height != null ? model.init_height : 600;
         var sumweights = 0;
@@ -39,6 +40,10 @@
         var plots = model.plots;
         for(var i = 0; i < plots.length; i++) {
           var plotmodel = plots[i];
+          if (model.version === "dnote") {
+            plotmodel.version = "dnote";
+          }
+          plotmodel.type = plotType;
           var newplotmodel = plotConverter.standardizeModel(plotmodel);
           
           if(i < plots.length - 1) {  // turn off x coordinate labels

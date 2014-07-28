@@ -123,6 +123,7 @@
       "BeakerDisplay": ["BeakerDisplay", "Text"],
       "Plot": ["Plot", "Chart", "Text"],
       "TimePlot": ["Plot", "Chart", "Text"],
+      "NanoPlot": ["Plot", "Text"],
       "CombinedPlot": ["CombinedPlot", "Text"],
       "HiddenOutputCell": ["Hidden"],
       "Warning": ["Warning"],

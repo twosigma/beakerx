@@ -91,7 +91,7 @@
           retCell = convertMarkdownCell(cell);
           break;
       }
-      if (_(tagMap2.initialization).contains(cell.id)) {
+      if (tagMap2 && _(tagMap2.initialization).contains(cell.id)) {
         retCell.initialization = true;
       }
       return retCell;

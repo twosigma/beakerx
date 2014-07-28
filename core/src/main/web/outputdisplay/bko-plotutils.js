@@ -36,9 +36,9 @@
             this.updateDataRange(datarange, eles[j]);
           }
         }
-
         if (visibleData === 0) {
-          datarange.xl = datarange.xr = datarange.yl = datarange.yr = 0;
+          datarange.xl = datarange.yl = 0;
+          datarange.xr = datarange.yr = 100;
         }
         datarange.xspan = datarange.xr - datarange.xl;
         datarange.yspan = datarange.yr - datarange.yl;
@@ -52,9 +52,13 @@
         val = Math.min(val, 1);
         return val;
       },
-      outsideScr: function(scope, p) {
+      outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
-        return p.x < 0 || p.x > W || p.y < 0 || p.y > H;
+        return x < 0 || x > W || y < 0 || y > H;
+      },
+      outsideScrBox: function(scope, x, y, w, h) {
+        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+        return x > W || x + w < 0 || y > H || y + h < 0;
       },
       plotStems: function(scope) {
         var pipe = scope.rpipeStems;
@@ -64,18 +68,21 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("stroke-width", function(d) { return d.stroke_width; })
-          .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("opacity", function(d) { return d.opacity; });
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.stemg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
             scope.stemg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
-              .attr("stroke-width", function(d) { return d.stroke_width; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("opacity", function(d) { return d.opacity; });
+              .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+              .style("stroke-width", function(d) { return d.stroke_width; });
             scope.stemg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("x1", function(d) { return d.x1; })
@@ -91,17 +98,17 @@
         scope.lineg.selectAll("g")
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-width", function(d) { return d["stroke-width"]; })
-          .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .attr("class", function(d) { return d.class; });
+          .attr("class", function(d) { return d.class; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+          .style("stroke-width", function(d) { return d.stroke_width; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
         for (var i = 0; i < pipe.length; i++) {
             scope.lineg.select("#" + pipe[i].id).selectAll("path")
               .data([{}]).enter().append("path");
             scope.lineg.select("#" + pipe[i].id + " path")
               .attr("d", pipe[i].elements);
         }
-    
       },
       plotSegs: function(scope) {
         var pipe = scope.rpipeSegs;
@@ -111,15 +118,17 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-width", function(d) { return d.stroke_width; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.segg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
             scope.segg.select("#" + pipe[i].id).selectAll("line")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
               .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("x1", function(d) { return d.x1; })
               .attr("x2", function(d) { return d.x2; })
               .attr("y1", function(d) { return d.y1; })
@@ -140,23 +149,25 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
         for (var i = 0; i < pipe.length; i++) {
             scope.rectg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
             scope.rectg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("rect")
+              .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("x", function(d) { return d.x; })
               .attr("y", function(d) { return d.y; })
               .attr("width", function(d) { return d.width; })
               .attr("height", function(d) { return d.height; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; });
             scope.rectg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("x", function(d) { return d.x; })
@@ -174,25 +185,26 @@
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .attr("stroke", function(d) { return d.stroke; })
-          .attr("opacity", function(d) { return d.opacity; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          //.style("opacity", function(d) { return d.opacity; })
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
         for (var i = 0; i < pipe.length; i++) {
             scope.dotg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
             scope.dotg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("circle")
               .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("cx", function(d) { return d.cx; })
               .attr("cy", function(d) { return d.cy; })
               .attr("r", function(d) { return d.r; })
-              .attr("opacity", function(d) { return d.opacity; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+              //.attr("opacity", function(d) { return d.opacity; })
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; });
             scope.dotg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("cx", function(d) { return d.cx; })
@@ -209,27 +221,62 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             svg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
             svg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("circle")
               .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("cx", function(d) { return d.cx; })
               .attr("cy", function(d) { return d.cy; })
               .attr("r", function(d) { return d.r; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("stroke-width", function(d) { return d.stroke_width; });
             svg.select("#" + pipe[i].id).selectAll("circle")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("cx", function(d) { return d.cx; })
               .attr("cy", function(d) { return d.cy; });
+        }
+      },
+      plotPointDiamonds: function(scope) {
+        var pipe = scope.rpipePointDiamonds;
+        var svg = scope.pointdiamondg;
+        svg.selectAll("g")
+          .data(pipe, function(d) { return d.id; }).exit().remove();
+        svg.selectAll("g")
+          .data(pipe, function(d) { return d.id; }).enter().append("g")
+          .attr("id", function(d) { return d.id; })
+          .attr("class", function(d) { return d.class; })
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
+        for (var i = 0; i < pipe.length; i++) {
+            svg.select("#" + pipe[i].id).selectAll("polygon")
+              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
+            svg.select("#" + pipe[i].id).selectAll("polygon")
+              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("polygon")
+              .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("stroke-width", function(d) { return d.stroke_width; })
+              .attr("points", function(d) { return d.points; });
+            svg.select("#" + pipe[i].id).selectAll("polygon")
+              .data(pipe[i].elements, function(d) { return d.id; })
+              .attr("points", function(d) { return d.points; });
         }
       },
       plotPointRects: function(scope) {
@@ -239,24 +286,27 @@
         svg.selectAll("g").data(pipe, function(d) { return d.id; }).enter().append("g")
             .attr("id", function(d) { return d.id; })
             .attr("class", function(d) { return d.class; })
-            .attr("fill", function(d) { return d.fill; })
-            .attr("fill-opacity", function(d) { return d.fill_opacity; })
-            .attr("stroke", function(d) { return d.stroke; })
-            .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+            .style("fill", function(d) { return d.fill; })
+            .style("fill-opacity", function(d) { return d.fill_opacity; })
+            .style("stroke", function(d) { return d.stroke; })
+            .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+            .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             svg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
             svg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("rect")
               .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("x", function(d) { return d.x; })
               .attr("y", function(d) { return d.y; })
               .attr("width", function(d) { return d.width; })
               .attr("height", function(d) { return d.height; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("stroke-width", function(d) { return d.stroke_width; });
             svg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("x", function(d) { return d.x; })
@@ -271,30 +321,60 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.barg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
             scope.barg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; }).enter().append("rect")
               .attr("id", function(d) { return d.id; })
+              .attr("class", function(d) { return d.class; })
               .attr("x", function(d) { return d.x; })
               .attr("y", function(d) { return d.y; })
-              .attr("width", pipe[i].width)
+              .attr("width", function(d) { return d.width; })
               .attr("height", function(d) { return d.height; })
-              .attr("fill", function(d) { return d.fill; })
-              .attr("fill-opacity", function(d) { return d.fill_opacity; })
-              .attr("stroke", function(d) { return d.stroke; })
-              .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+              .style("fill", function(d) { return d.fill; })
+              .style("fill-opacity", function(d) { return d.fill_opacity; })
+              .style("stroke", function(d) { return d.stroke; })
+              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+              .style("stroke-width", function(d) { return d.stroke_width; });
             scope.barg.select("#" + pipe[i].id).selectAll("rect")
               .data(pipe[i].elements, function(d) { return d.id; })
               .attr("x", function(d) { return d.x; })
               .attr("y", function(d) { return d.y; })
-              .attr("width", pipe[i].width)
+              .attr("width", function(d) { return d.width; })
               .attr("height", function(d) { return d.height; });
+        }
+      },
+      plotUserTexts: function(scope) {
+        var pipe = scope.rpipeUserTexts;
+        scope.textg.selectAll("g")
+          .data(pipe, function(d) { return d.id; }).exit().remove();
+        scope.textg.selectAll("g")
+          .data(pipe, function(d) { return d.id; }).enter().append("g")
+          .attr("id", function(d) { return d.id; })
+          .attr("class", function(d) { return d.class; })
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .attr("transform", function(d) { return d.transform; });
+        for (var i = 0; i < pipe.length; i++) {
+          scope.textg.select("#" + pipe[i].id).selectAll("text")
+            .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
+          scope.textg.select("#" + pipe[i].id).selectAll("text")
+            .data(pipe[i].elements, function(d) { return d.id; }).enter().append("text")
+            .attr("id", function(d) { return d.id; })
+            .attr("class", function(d) { return d.class; })
+            .style("fill", function(d) { return d.fill; })
+            .style("fill-opacity", function(d) { return d.fill_opacity; })
+            .attr("transform", function(d) { return d.transform; })
+            .text(function(d) { return d.text; });
+          scope.textg.select("#" + pipe[i].id).selectAll("text")
+            .data(pipe[i].elements, function(d) { return d.id; })
+            .attr("transform", function(d) { return d.transform; });
         }
       },
       plotRivers: function(scope) {
@@ -305,18 +385,19 @@
           .data(pipe, function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
-          .attr("fill", function(d) { return d.fill; })
-          .attr("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
         for (var i = 0; i < pipe.length; i++) {
             scope.riverg.select("#" + pipe[i].id).selectAll("polygon")
               .data([{}]).enter().append("polygon");
             scope.riverg.select("#" + pipe[i].id+" polygon")
               .attr("points", pipe[i].elements);
         }
-        return;
       },
+     
       plotCoords: function(scope) {
         var sel = scope.coordg.selectAll("line");
         sel.data(scope.rpipeCoords, function(d) { return d.id; }).exit().remove();
@@ -327,15 +408,17 @@
           .attr("x2", function(d) { return d.x2; })
           .attr("y1", function(d) { return d.y1; })
           .attr("y2", function(d) { return d.y2; })
-          .attr("stroke", function(d) { return d.stroke; })
-          .attr("stroke-dasharray", function(d) { return d.stroke_dasharray; });
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; });
         sel.data(scope.rpipeCoords, function(d) { return d.id; })
           .attr("x1", function(d) { return d.x1; })
           .attr("x2", function(d) { return d.x2; })
           .attr("y1", function(d) { return d.y1; })
           .attr("y2", function(d) { return d.y2; });
       },
-      plotTexts: function(scope) {   // redraw
+      
+      
+      plotLabels: function(scope) {   // redraw
         var pipe = scope.rpipeTexts;
         scope.labelg.selectAll("text").remove();
         scope.labelg.selectAll("text")
@@ -359,8 +442,8 @@
           .attr("cx", function(d) { return d.cx; })
           .attr("cy", function(d) { return d.cy; })
           .attr("r", function(d) { return d.r; })
-          .attr("fill", function(d) { return d.color; })
-          .attr("stroke", function(d) { return d.stroke; })
+          .style("fill", function(d) { return d.color; })
+          .style("stroke", function(d) { return d.stroke; })
           .attr("opacity", function(d) { return d.opacity; });
       },
       replotSingleRect: function(svgElement, d) {
@@ -373,7 +456,7 @@
           .attr("y", function(d) { return d.y; })
           .attr("width", function(d) { return d.width; })
           .attr("height", function(d) { return d.height; })
-          .attr("fill", function(d) { return d.fill; });
+          .style("fill", function(d) { return d.fill; });
       },
       formatDate: function(intv, x) {
         var months = this.months, days = this.days;

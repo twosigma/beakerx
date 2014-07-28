@@ -119,8 +119,6 @@
     return {
       reset: function(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
 
-        console.log("session reset: sessionId=" + sessionId);
-
         // backup existing session if it's not empty.
         if (_sessionId && !_notebookModel.isEmpty()) {
           bkSession.backup(_sessionId, generateBackupData());

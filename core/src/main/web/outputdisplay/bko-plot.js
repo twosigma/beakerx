@@ -435,7 +435,7 @@
                     skipped = true;
                     break;
                   }
-                  pstr += x2 + "," + y + " " + x + "," + y + " ";
+                  pstr += x + "," + y + " " + x2 + "," + y + " ";
                 }
               }
               for (var j = fdata[i].rightIndex; j >= fdata[i].leftIndex; j--) {
@@ -825,7 +825,7 @@
         };
         scope.prepareInteraction = function(id) {
           var model = scope.stdmodel;
-          if (model.use_tool_tip != true) return;
+          if (model.useToolTip != true) return;
             
           var sel = scope.svg.selectAll(".plot-resp");
           sel.on("mouseenter", function(d) {
@@ -1056,7 +1056,7 @@
           }
         };
         scope.renderLegends = function() {
-          if (scope.stdmodel.show_legend == false || scope.legendDone == true)
+          if (scope.stdmodel.showLegend == false || scope.legendDone == true)
             return;
           // legend redraw is controlled by legendDone
           var data = scope.data, numLines = data.length;

@@ -56,7 +56,7 @@
 
   treeView.filter("fileFilter", function() {
     return function(children, filter) {
-      return _.isFunction(filter) ? _(children).filter(filter) : children;
+      return _.isFunction(filter) ? _.filter(children, filter) : children;
     };
   })
 

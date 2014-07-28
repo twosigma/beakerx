@@ -53,7 +53,7 @@
     stack.peek = function() {
       return this[this.length - 1];
     };
-    _(decoratedCells).each(function(cell) {
+    _.each(decoratedCells, function(cell) {
       if (cell.id === "root") {
         return;
       }

@@ -94,7 +94,7 @@
   });
   module.filter('isHidden', function() {
     return function(input) {
-      return _(input).filter(function(it) {
+      return _.filter(input, function(it) {
         return !it.hidden;
       });
     }

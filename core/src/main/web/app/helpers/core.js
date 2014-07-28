@@ -76,7 +76,7 @@
           if (!fs.applyExtFilter || _.isEmpty(fs.extFilter) || child.type === "directory") {
             return true;
           } else {
-            return _(fs.extFilter).any(function(ext) {
+            return _.any(fs.extFilter, function(ext) {
               return _.string.endsWith(child.uri, ext);
             });
           }

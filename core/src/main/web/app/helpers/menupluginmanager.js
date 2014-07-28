@@ -25,7 +25,7 @@
     // replace the existingItem in place.
     var addMenuItem = function(itemsList, newItem) {
       // check if an entry with same name already exist
-      var existingItem = _(itemsList).find(function(it) {
+      var existingItem = _.find(itemsList, function(it) {
         return it.name === newItem.name;
       });
       if (existingItem) {
@@ -148,7 +148,7 @@
         loadPlugin(job).then(function(plugin) {
           loadedPlugins.push({url: job.getUrl()});
           if (_.isArray(plugin)) {
-            _(plugin).each(function (item, i) {
+            _.each(plugin, function (item, i) {
               addPlugin(item, index, i);
             });
           } else {
@@ -166,7 +166,7 @@
       },
       clear: function() {
         menus = {};
-        _(loadingInProgressPluginJobs).each(function(job) {
+        _.each(loadingInProgressPluginJobs, function(job) {
           job.cancel();
         });
         pluginIndex = 0;

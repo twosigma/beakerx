@@ -70,7 +70,7 @@
         return _evaluate(cell);
       },
       evaluateAll: function(cells) {
-        _(cells).each(_evaluate);
+        _.each(cells, _evaluate);
         return _promise;
       },
       isCancellable: function() {

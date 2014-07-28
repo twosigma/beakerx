@@ -1337,8 +1337,6 @@
           focus.yspan = focus.yr - focus.yl;
         };
         scope.resetFocus = function() {
-          scope.initRange();
-          scope.calcMapping();
           var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();

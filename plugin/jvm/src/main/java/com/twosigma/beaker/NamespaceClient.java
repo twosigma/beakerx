@@ -30,46 +30,66 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 public class NamespaceClient {
 
-    private Base64 encoder;
-    private String session;
-    private ObjectMapper mapper;
-    private String auth;
-    private String urlBase;
+  private Base64 encoder;
+  private String session;
+  private ObjectMapper mapper;
+  private String auth;
+  private String urlBase;
 
-    public NamespaceClient(String session) {
-	this.encoder = new Base64();
-	this.mapper = new ObjectMapper();
-	this.session = session;
-	String account = "beaker:" + System.getenv("beaker_core_password");
-	this.auth = "Basic " + encoder.encodeBase64String(account.getBytes());
-	this.urlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") +
-	    "/rest/namespace";
-    }
+  public NamespaceClient(String session) {
+    this.encoder = new Base64();
+    this.mapper = new ObjectMapper();
+    this.session = session;
+    String account = "beaker:" + System.getenv("beaker_core_password");
+    this.auth = "Basic " + encoder.encodeBase64String(account.getBytes());
+    this.urlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") +
+      "/rest/namespace";
+  }
 
-    public Object set(String name, Object value)
-	throws ClientProtocolException, IOException
-    {
-	List<NameValuePair> form = Form.form()
-	    .add("name", name)
-	    .add("value", mapper.writeValueAsString(value))
-	    .add("sync", "false")
-	    .add("session", this.session).build();
-	Request.Post(urlBase + "/set")
-	    .addHeader("Authorization", auth).bodyForm(form).execute();
-        return value;
+  public Object set4(String name, Object value, Boolean unset, Boolean sync)
+    throws ClientProtocolException, IOException
+  {
+    Form form = Form.form().add("name", name)
+      .add("sync", sync.toString())
+      .add("session", this.session);
+    if (!unset) {
+      form.add("value", mapper.writeValueAsString(value));
     }
-    public Object get(String name)
-	throws ClientProtocolException, IOException
-    {
-	String args = "name=" + URLEncoder.encode(name, "ISO-8859-1") +
-	    "&session=" + URLEncoder.encode(this.session, "ISO-8859-1");
-	String valueString = Request.Get(urlBase + "/get?" + args)
-	    .addHeader("Authorization", auth)
-	    .execute().returnContent().asString();;
-	NamespaceBinding binding = mapper.readValue(valueString, NamespaceBinding.class);
-	if (!binding.defined) {
-	    throw new RuntimeException("name not defined: " + name);
-	}
-	return binding.value;
+    Request.Post(urlBase + "/set")
+      .addHeader("Authorization", auth).bodyForm(form.build()).execute();
+    return value;
+  }
+
+  public Object set(String name, Object value)
+    throws ClientProtocolException, IOException
+  {
+    return set4(name, value, false, true);
+  }
+
+  public Object setFast(String name, Object value)
+    throws ClientProtocolException, IOException
+  {
+    return set4(name, value, false, false);
+  }
+
+  public Object unset(String name)
+    throws ClientProtocolException, IOException
+  {
+    return set4(name, null, true, true);
+  }
+
+  public Object get(String name)
+    throws ClientProtocolException, IOException
+  {
+    String args = "name=" + URLEncoder.encode(name, "ISO-8859-1") +
+      "&session=" + URLEncoder.encode(this.session, "ISO-8859-1");
+    String valueString = Request.Get(urlBase + "/get?" + args)
+      .addHeader("Authorization", auth)
+      .execute().returnContent().asString();;
+    NamespaceBinding binding = mapper.readValue(valueString, NamespaceBinding.class);
+    if (!binding.defined) {
+      throw new RuntimeException("name not defined: " + name);
     }
+    return binding.value;
+  }
 }

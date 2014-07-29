@@ -60,7 +60,7 @@ beaker_instance = Beaker()
 def set(var, val):
     return beaker_instance.set4(var, val, False, True)
 
-# returns before it completes
+# returns before the write completes
 def set_fast(var, val):
     return beaker_instance.set4(var, val, False, False)
 

@@ -76,7 +76,7 @@ define(function(require, exports, module) {
             console.log("failed to create shell", arguments);
           });
     },
-    evaluate: function(code, modelOutput) {
+    evaluate: function(code, modelOutput, cb) {
       var deferred = Q.defer();
       var self = this;
       var progressObj = {
@@ -122,6 +122,9 @@ define(function(require, exports, module) {
             modelOutput.result = progressObj;
           }
           bkHelper.refreshRootScope();
+          if (cb) {
+            cb();
+          }
         };
         onEvalStatusUpdate(ret);
         if (ret.update_id) {
@@ -173,12 +176,12 @@ define(function(require, exports, module) {
           }
           settings.shellID = id;
           self.settings = settings;
-          if (doneCB) {
-            doneCB(self);
-          }
 	  var initCode = "import com.twosigma.beaker.NamespaceClient\n" +
 	    "beaker = new NamespaceClient('" + bkHelper.getSessionId() + "')\n";
-          self.evaluate(initCode, {});
+          self.evaluate(initCode, {}, function () {
+            if (doneCB) {
+              doneCB(self);
+            }});
         };
         if (!settings.shellID) {
           settings.shellID = "";

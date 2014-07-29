@@ -113,7 +113,7 @@ define(function(require, exports, module) {
       };
       bkHelper.fcall(spin);
     },
-    evaluate: function(code, modelOutput) {
+    evaluate: function(code, modelOutput, cb) {
       if (_theCancelFunction) {
         throw "multiple evaluation at the same time is not supported";
       }
@@ -178,6 +178,9 @@ define(function(require, exports, module) {
         modelOutput.elapsedTime = now() - startTime;
         deferred.resolve();
         bkHelper.refreshRootScope();
+        if (cb) {
+          cb();
+        }
       }
       var output = function output(a0, a1) {
         var type;
@@ -286,12 +289,12 @@ define(function(require, exports, module) {
               settings.supplementalClassPath = "";
             }
             self.settings = settings;
-            if (doneCB) {
-              doneCB(self);
-            }
             var initCode = "import beaker\n" +
               "beaker.set_session('" + bkHelper.getSessionId() + "')\n";
-            self.evaluate(initCode, {});
+            self.evaluate(initCode, {}, function () {
+              if (doneCB) {
+                doneCB(self);
+              }});
           };
           if (!settings.shellID) {
             settings.shellID = "";

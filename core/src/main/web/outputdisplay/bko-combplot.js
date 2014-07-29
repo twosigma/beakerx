@@ -23,7 +23,8 @@
   'use strict';
   var retfunc = function(plotUtils, combplotConverter, bkCellMenuPluginManager) {
     return {
-      template :  "<div id='combplotContainer' class='combplot-renderdiv'>" + 
+      template :  "<div id='combplotTitle' class='plot-title'></div>" + 
+          "<div id='combplotContainer' class='combplot-renderdiv'>" + 
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
           "</div>",
       controller : function($scope) {
@@ -59,6 +60,7 @@
               },
               updateWidth : function(width) {
                 $scope.width = width;
+                $scope.jqplottitle.css("width", width + "px");
                 $scope.$apply();
               },
               getWidth : function() {
@@ -74,9 +76,10 @@
         $scope.init();
       },
       link : function(scope, element, attrs) {
-        //scope.container = d3.select(element[0]).select("#plotContainer"); 
-        //scope.jqcontainer = element.find("#combplotContainer");
-        //scope.jqcontainer.css(scope.stdmodel.initSize);
+        var model = scope.stdmodel;
+        scope.jqplottitle = element.find("#combplotTitle");
+        console.log("sdfds", model)
+        scope.jqplottitle.text(model.title).css("width", model.initSize.width);
       }
     };
   };

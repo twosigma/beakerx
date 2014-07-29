@@ -23,7 +23,7 @@
   var retfunc = function(plotUtils, plotConverter, bkCellMenuPluginManager) {
     return {
       template : 
-          "<div id='plotitle' class='plot-title'></div>" + 
+          "<div id='plotTitle' class='plot-title'></div>" + 
           "<div id='plotContainer' class='plot-renderdiv' oncontextmenu='return false;'>" +
           "<svg>"  +
           "<defs>" + 
@@ -85,7 +85,7 @@
           scope.jqsvg.css(model.initSize);
           
           // set title
-          scope.jqplottitle = element.find("#plotitle");
+          scope.jqplottitle = element.find("#plotTitle");
           scope.jqplottitle.text(model.title).css("width", model.initSize.width);
 
           //if (model.width != null) scope.jqcontainer.css("width", model.width + "px");
@@ -396,6 +396,11 @@
                   "y" : y,
                   "width" : sw,
                   "height" : y2 - y,
+                  "fill" : p.color,
+                  "fill_opacity" : p.color_opacity,
+                  "stroke" : p.stroke,
+                  "stroke_width" : p.stroke_width,
+                  "stroke_opacity" : p.stroke_opacity,
                   "tip_text" : p.tip_value,
                   "tip_color" : data[i].color,
                   "tip_x" : x1,

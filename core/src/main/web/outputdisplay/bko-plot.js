@@ -411,7 +411,7 @@
                 "id" : "bar_" + i,
                 "class" : "plot-bar",
                 "fill" : data[i].color,
-                "fill_opacity": data[i].fill_opacity,
+                "fill_opacity": data[i].color_opacity,
                 "stroke": data[i].stroke,
                 "stroke_width": data[i].stroke_width,
                 "stroke_opacity": data[i].stroke_opacity,

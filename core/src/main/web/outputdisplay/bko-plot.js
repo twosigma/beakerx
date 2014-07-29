@@ -123,8 +123,8 @@
             tooltipWidth : 10
           };
           scope.zoomLevel = {
-            minSpanX : 1000,
-            minSpanY : 1,
+            minSpanX : 1E-6,
+            minSpanY : 1E-6,
             maxScaleX : 100,
             maxScaleY : 100
           };
@@ -334,10 +334,10 @@
           });
         };
         scope.filterData = function() {
-          var focus = scope.focus, data = scope.data, numLines = data.length;
+          var focus = scope.focus, data = scope.stdmodel.data;
           scope.fdata = [];
           var fdata = scope.fdata;
-          for (var i = 0; i < numLines; i++) {
+          for (var i = 0; i < data.length; i++) {
             var eles = data[i].elements;
             if (data[i].type === "constline" || data[i].type === "constband" || 
                 data[i].type === "text") {
@@ -349,10 +349,18 @@
             }
 
             var l = plotUtils.upper_bound(eles, "x", focus.xl);
-            var r = plotUtils.upper_bound(eles, "x", focus.xr) + 1;
+            var r = plotUtils.upper_bound(eles, "x", focus.xr) + 1; 
+            // cover one more point to the right for line
+            
             // truncate out-of-sight segment on x-axis
             l = Math.max(l, 0);
             r = Math.min(r, eles.length - 1);
+            
+            if (l == eles.length - 1 && eles[l].x < focus.xl) {
+              // all elements are to the left of the svg
+              l = 0;
+              r = -1;
+            }
             fdata[i] = {
               "leftIndex" : l,
               "rightIndex" : r
@@ -410,38 +418,54 @@
                 "elements" : reles
               });
             } else if (data[i].type === "river") {
-              var pstr = "";
+              var pstr = "", skipped = false;
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
+                var x = mapX(p.x), y = mapY(p.y);
+                if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
+                  skipped = true;
+                  break;
+                }
                 if (data[i].interpolation === "linear") {
-                  pstr += mapX(p.x) + "," + mapY(p.y) + " ";
+                  pstr += x + "," + y + " ";
                 } else if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
                   var p2 = eles[j + 1];
-                  pstr += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
+                  var x2 = mapX(p2.x);
+                  if (Math.abs(x2) > 1E6) {
+                    skipped = true;
+                    break;
+                  }
+                  pstr += x + "," + y + " " + x2 + "," + y + " ";
                 }
               }
               for (var j = fdata[i].rightIndex; j >= fdata[i].leftIndex; j--) {
-                var p = eles[j];
-                var y2 = p.y2;
-                if (y2 == null) { y2 = focus.yl; }
-                
+                var p = eles[j], x = mapX(p.x), y2 = p.y2 == null ? mapY(focus.yl) : mapY(p.y2);
+                if (Math.abs(y2) > 1E6) { // x is already checked above
+                  skipped = true;
+                  break;
+                }
                 if (data[i].interpolation === "linear") {
-                  pstr += mapX(p.x) + "," + mapY(y2) + " ";
+                  pstr += x + "," + y2 + " ";
                 } else if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
                   var p2 = eles[j + 1];
-                  pstr += mapX(p2.x) + "," + mapY(y2) + " " + mapX(p.x) + "," + mapY(y2) + " ";
+                  var x2 = mapX(p2.x);
+                  pstr += x2 + "," + y2 + " " + x + "," + y2 + " ";
                 }
               }
-              scope.rpipeRivers.push({
-                "id" : "river_" + i,
-                "class" : "plot-river",
-                "fill" : data[i].color,
-                "fill_opacity": data[i].color_opacity,
-                "stroke": data[i].stroke,
-                "stroke_width": data[i].stroke_width,
-                "stroke_opacity": data[i].stroke_opacity,
-                "elements" : pstr
-              });
+              if (skipped === false) {
+                scope.rpipeRivers.push({
+                  "id" : "river_" + i,
+                  "class" : "plot-river",
+                  "fill" : data[i].color,
+                  "fill_opacity": data[i].color_opacity,
+                  "stroke": data[i].stroke,
+                  "stroke_width": data[i].stroke_width,
+                  "stroke_opacity": data[i].stroke_opacity,
+                  "elements" : pstr
+                });
+              } else {
+                console.error("data not shown due to too large coordinate");
+              }
             } else if (data[i].type === "stem") {
               var reles = [];
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
@@ -683,8 +707,12 @@
               if (data[i].rotate != null){
                 dtf = "rotate(" +  data[i].rotate + ")";  // TODO check global rotation
               }
+              var focus  = scope.focus;
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
+                if (p.x < focus.xl || p.x > focus.xr || p.y < focus.yl || p.y > focus.yr) {
+                  continue; // text point out of sight
+                }
                 var x = mapX(p.x), y = mapY(p.y);
                 var tf = "";
                 if (p.rotate != null) {
@@ -708,7 +736,7 @@
                 "elements" : reles
               });
             } else { // standard line: solid, dash or dot
-              var pstr = "";
+              var pstr = "", skipped = false;
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
                 if (j == fdata[i].leftIndex) pstr += "M";
@@ -716,7 +744,12 @@
                   if (data[i].interpolation !== "curve") pstr += "L";
                   else pstr += "C";
                 }
-                var nxtp = mapX(p.x) + "," + mapY(p.y) + " ";
+                var x = mapX(p.x), y = mapY(p.y);
+                if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
+                  skipped = true;
+                  break;
+                }
+                var nxtp = x + "," + y + " ";
                 
                 if (j < fdata[i].rightIndex) {
                   if (data[i].interpolation === "none") {
@@ -728,16 +761,20 @@
                 }
                 pstr += nxtp;
               }
-              var line = {
-                "id": "line_"+i,
-                "class": "plot-line",
-                "stroke": data[i].color,
-                "stroke_opacity": data[i].color_opacity,
-                "stroke_width": data[i].width,
-                "stroke_dasharray": data[i].stroke_dasharray,
-                "elements": pstr
-              };
-              scope.rpipeLines.push(line);
+              if (pstr.length > 0 && skipped === false) {
+                var line = {
+                  "id": "line_"+i,
+                  "class": "plot-line",
+                  "stroke": data[i].color,
+                  "stroke_opacity": data[i].color_opacity,
+                  "stroke_width": data[i].width,
+                  "stroke_dasharray": data[i].stroke_dasharray,
+                  "d": pstr
+                };
+                scope.rpipeLines.push(line);
+              } else if (skipped === true) {
+                console.error("data not shown due to too large coordinate");
+              }
             }
           }
         };
@@ -788,7 +825,7 @@
         };
         scope.prepareInteraction = function(id) {
           var model = scope.stdmodel;
-          if (model.use_tool_tip != true) return;
+          if (model.useToolTip != true) return;
             
           var sel = scope.svg.selectAll(".plot-resp");
           sel.on("mouseenter", function(d) {
@@ -1019,7 +1056,7 @@
           }
         };
         scope.renderLegends = function() {
-          if (scope.stdmodel.show_legend == false || scope.legendDone == true)
+          if (scope.stdmodel.showLegend == false || scope.legendDone == true)
             return;
           // legend redraw is controlled by legendDone
           var data = scope.data, numLines = data.length;
@@ -1232,7 +1269,6 @@
                   focus.yspan = focus.yr - focus.yl;
                 }
               }
-              // TODO
               if (mx >= scope.layout.leftLayoutMargin) {
                 // scale x
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
@@ -1291,6 +1327,7 @@
             focus.yl = vrange.yl;
           if (focus.yr > vrange.yr)
             focus.yr = vrange.yr;
+          
           if (focus.xl > focus.xr || focus.yl > focus.yr) {
             console.error("visual range specified does not match data range, " + 
                 "enforcing visual range");

@@ -64,7 +64,7 @@
               x: scope.width / 100,
               y: scope.height / 50
             };
-            scope.initRange(false);
+            scope.calcRange();
             scope.calcMapping(false);
             scope.emitSizeChange();
             scope.legendDone = false;
@@ -175,36 +175,39 @@
             scope.model.updateWidth(scope.width);
           } // not stdmodel here
         };
-        scope.initRange = function(setInitFocus) {
-          var data = scope.data, model = scope.stdmodel;
-          
+        scope.calcRange = function(){
+          var model = scope.stdmodel, data = scope.stdmodel.data;
           var ret = plotUtils.getDataRange(data);
-          scope.range = {};
-          _.extend(scope.range, ret.datarange);
+          var range = ret.datarange, margin = model.margin;
           scope.visibleLines = ret.visibleData;
           
-          var margin = model.margin;
-          
-          if (setInitFocus === true) {
-            scope.focus = {};
-            scope.vrange = {};   // visible range
-            _.extend(scope.vrange, model.vrange);
-            
-            var focus = scope.focus, range = scope.range, vrange = scope.vrange;
-            
-            _.extend(scope.vrange, model.vrange);
-            _.extend(scope.focus, model.focus);
-           
-            /*
-            if (scope.visibleLines == 0) {
-              _.extend(scope.vrange, scope.range);
-              _.extend(scope.focus, scope.range);
-            }
-            */
-            scope.fixFocus();
-            scope.initFocus = {};
-            _.extend(scope.initFocus, focus);
+          scope.initFocus = {};
+          var focus = scope.initFocus;
+          if (model.focus.xl == null) { focus.xl = range.xl - range.xspan * margin.left / 100.0; }
+          if (model.focus.xr == null) { focus.xr = range.xr + range.xspan * margin.right / 100.0; }
+          if (model.focus.yl == null) { focus.yl = range.yl - range.yspan * margin.bottom / 100.0; }
+          if (model.focus.yr == null) { focus.yr = range.yr + range.yspan * margin.top / 100.0; }
+          focus.xspan = focus.xr - focus.xl;
+          focus.yspan = focus.yr - focus.yl;
+          if (focus.xspan < 1E-6) {
+            focus.xr += Math.max(5E-5, focus.xspan * 0.5);
+            focus.xl -= Math.max(5E-5, focus.xspan * 0.5);
+            focus.xspan = focus.xr - focus.xl;
           }
+          if (focus.yspan < 1E-6) {
+            focus.yr += Math.max(5E-5, focus.yspan * 0.5);
+            focus.yl -= Math.max(5E-5, focus.yspan * 0.5);
+            focus.yspan = focus.yr - focus.yl;
+          }
+        },
+        scope.initRange = function() {
+          var model = scope.stdmodel;
+          scope.calcRange();
+          scope.vrange = {};   // visible range
+          _.extend(scope.vrange, model.vrange);
+          scope.focus = {};
+          _.extend(scope.focus, scope.initFocus);
+          scope.fixFocus();
         };
 
         scope.calcCoords = function() {
@@ -341,7 +344,7 @@
           }
         };
         scope.renderData = function() {
-          var data = scope.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
+          var data = scope.stdmodel.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
           for (var i = 0; i < numLines; i++) {
@@ -757,7 +760,7 @@
           }
         };
         scope.renderDots = function() {
-          var data = scope.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
+          var data = scope.stdmodel.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
           for (var i = 0; i < numLines; i++) {
             if (data[i].shown === false) {
@@ -1037,7 +1040,7 @@
           if (scope.stdmodel.showLegend == false || scope.legendDone == true)
             return;
           // legend redraw is controlled by legendDone
-          var data = scope.data, numLines = data.length;
+          var data = scope.stdmodel.data, numLines = data.length;
           var margin = scope.layout.legendMargin;
 
           scope.jqcontainer.find("#legends").remove();
@@ -1094,20 +1097,20 @@
           }
         };
         scope.toggleLine = function(e) {
-          var id = e.target.id.split("_")[1];
+          var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
           // id in the format "legendcheck_i"
           if (id == "all") {
             scope.showAllLines = !scope.showAllLines;
-            var data = scope.data;
             for (var i = 0; i < data.length; i++) {
               data[i].shown = scope.showAllLines;
               scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
             }
+            scope.calcRange();
             scope.update();
             return;
           }
-          var data = scope.data;
           data[id].shown = !data[id].shown;
+          scope.calcRange();
           scope.update();
         };
         scope.renderCoverBox = function() {
@@ -1213,7 +1216,7 @@
             scope.lasty = d3trans[1];
             scope.lastscale = d3scale;
 
-            var focus = scope.focus, range = scope.range, vrange = scope.vrange;
+            var focus = scope.focus, vrange = scope.vrange;
             var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
             if (ds == 1.0) {
               // translate only
@@ -1417,7 +1420,6 @@
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
           scope.stdmodel = plotConverter.standardizeModel(model);
-          scope.data = scope.stdmodel.data;
         };
         scope.init = function() {
           scope.standardizeData();
@@ -1440,7 +1442,7 @@
           });
 
           scope.enableZoom();
-          scope.initRange(true);
+          scope.initRange();  // init copies focus to initFocus, called only once
           scope.calcMapping();
           scope.update();
         };

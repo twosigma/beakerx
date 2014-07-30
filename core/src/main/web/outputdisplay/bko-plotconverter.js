@@ -219,7 +219,6 @@
           }
         }
         
-        
         // set margin
         newmodel.margin = {};
         // set axis bound as focus
@@ -526,24 +525,6 @@
         if (margin.top == null) { margin.top = 5; }
         if (margin.left == null) { margin.left = 5; }
         if (margin.right == null) { margin.right = 5; }
-        
-        var focus = newmodel.focus;
-        if (focus.xl == null) { focus.xl = range.xl - range.xspan * margin.left / 100.0; }
-        if (focus.xr == null) { focus.xr = range.xr + range.xspan * margin.right / 100.0; }
-        if (focus.yl == null) { focus.yl = range.yl - range.yspan * margin.bottom / 100.0; }
-        if (focus.yr == null) { focus.yr = range.yr + range.yspan * margin.top / 100.0; }
-        focus.xspan = focus.xr - focus.xl;
-        focus.yspan = focus.yr - focus.yl;
-        if (focus.xspan < 1E-6) {
-          focus.xr += Math.max(5E-5, focus.xspan * 0.5);
-          focus.xl -= Math.max(5E-5, focus.xspan * 0.5);
-          focus.xspan = focus.xr - focus.xl;
-        }
-        if (focus.yspan < 1E-6) {
-          focus.yr += Math.max(5E-5, focus.yspan * 0.5);
-          focus.yl -= Math.max(5E-5, focus.yspan * 0.5);
-          focus.yspan = focus.yr - focus.yl;
-        }
         
         if (newmodel.vrange == null) {
           // visible range initially is 10x larger than data range by default

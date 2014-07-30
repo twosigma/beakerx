@@ -76,8 +76,8 @@ public class NamespaceService {
     data.put("name", name);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-	System.err.println("channel not found for session " + session);
-	return null;
+      System.err.println("channel not found for session " + session);
+      return null;
     }
     channel.publish(this.localSession, data, null);
     NamespaceBinding binding = getHandoff(session).take(); // blocks
@@ -99,8 +99,8 @@ public class NamespaceService {
     data.put("sync", sync);
     ServerChannel channel = getChannel(session);
     if (null == channel) {
-	System.err.println("channel not found for session " + session);
-	return;
+      System.err.println("channel not found for session " + session);
+      return;
     }
     channel.publish(this.localSession, data, null);
     if (sync) {

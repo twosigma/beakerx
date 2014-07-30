@@ -194,7 +194,7 @@
           return type + "-cell.html";
         };
       },
-      link: function(scope, element, attrs) {
+      link: function($scope, $element, attrs) {
         $scope.toggleCellMenu = function(event) {
           $element
           .find(".bkcell").first()

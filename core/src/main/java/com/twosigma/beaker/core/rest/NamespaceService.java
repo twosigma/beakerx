@@ -81,8 +81,9 @@ public class NamespaceService {
     }
     channel.publish(this.localSession, data, null);
     NamespaceBinding binding = getHandoff(session).take(); // blocks
-    if (!binding.name.equals(name)) {
-      throw new RuntimeException("Namespace get, name mismatch.  Received " + binding.name + ", expected " + name);
+    if (!binding.getName().equals(name)) {
+      throw new RuntimeException("Namespace get, name mismatch.  Received " +
+                                 binding.getName() + ", expected " + name);
     }
     return binding;
   }
@@ -105,8 +106,9 @@ public class NamespaceService {
     channel.publish(this.localSession, data, null);
     if (sync) {
       NamespaceBinding binding = getHandoff(session).take(); // blocks
-      if (!binding.name.equals(name)) {
-        throw new RuntimeException("Namespace set, name mismatch.  Received " + binding.name + ", expected " + name);
+      if (!binding.getName().equals(name)) {
+        throw new RuntimeException("Namespace set, name mismatch.  Received " +
+                                   binding.getName() + ", expected " + name);
       }
     }
   }

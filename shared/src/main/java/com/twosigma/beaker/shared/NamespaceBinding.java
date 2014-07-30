@@ -21,10 +21,10 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 @JsonAutoDetect
 public class NamespaceBinding {
 
-  public String name;
-  public String session;
-  public Object value;
-  public Boolean defined;
+  private String name;
+  private String session;
+  private Object value;
+  private Boolean defined;
 
   public String getName() {
     return this.name;

@@ -91,9 +91,9 @@ public class NamespaceClient {
       .addHeader("Authorization", auth)
       .execute().returnContent().asString();
     NamespaceBinding binding = mapper.readValue(valueString, NamespaceBinding.class);
-    if (!binding.defined) {
+    if (!binding.getDefined()) {
       throw new RuntimeException("name not defined: " + name);
     }
-    return binding.value;
+    return binding.getValue();
   }
 }

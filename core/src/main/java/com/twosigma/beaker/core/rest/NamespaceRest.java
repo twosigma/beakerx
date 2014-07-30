@@ -29,7 +29,6 @@ import javax.ws.rs.core.MediaType;
 
 /**
  * RESTful API for namespace service (in the notebook model).
- *
  */
 @Path("namespace")
 @Produces(MediaType.APPLICATION_JSON)

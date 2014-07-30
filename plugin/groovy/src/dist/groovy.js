@@ -122,9 +122,6 @@ define(function(require, exports, module) {
             modelOutput.result = progressObj;
           }
           bkHelper.refreshRootScope();
-          if (cb) {
-            cb();
-          }
         };
         onEvalStatusUpdate(ret);
         if (ret.update_id) {
@@ -178,7 +175,7 @@ define(function(require, exports, module) {
           self.settings = settings;
 	  var initCode = "import com.twosigma.beaker.NamespaceClient\n" +
 	    "beaker = new NamespaceClient('" + bkHelper.getSessionId() + "')\n";
-          self.evaluate(initCode, {}, function () {
+          self.evaluate(initCode, {}).then(function () {
             if (doneCB) {
               doneCB(self);
             }});

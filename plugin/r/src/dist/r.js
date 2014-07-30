@@ -122,9 +122,6 @@ define(function(require, exports, module) {
                 modelOutput.result = progressObj;
               }
               bkHelper.refreshRootScope();
-              if (cb) {
-                cb();
-              }
             };
             onEvalStatusUpdate(ret);
             if (ret.update_id) {
@@ -179,7 +176,7 @@ define(function(require, exports, module) {
           var initCode = "devtools::load_all(Sys.getenv('beaker_r_init'), " +
             "quiet=TRUE, export_all=FALSE)\n" +
             "beaker:::set_session('" + bkHelper.getSessionId() + "')\n";
-          self.evaluate(initCode, {}, function () {
+          self.evaluate(initCode, {}).then(function () {
             if (doneCB) {
               doneCB(self);
             }});

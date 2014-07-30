@@ -23,7 +23,8 @@
   'use strict';
   var retfunc = function(plotUtils, combplotConverter, bkCellMenuPluginManager) {
     return {
-      template :  "<div id='combplotContainer' class='combplot-renderdiv'>" + 
+      template :  "<div id='combplotTitle' class='plot-title'></div>" + 
+          "<div id='combplotContainer' class='combplot-renderdiv'>" + 
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
           "</div>",
       controller : function($scope) {
@@ -35,14 +36,15 @@
         $scope.init = function() {
           var xl = 1E20, xr = 0;
           var numPlots = model.plots.length;
-
           for (var i = 0; i < numPlots; i++) {
-            var data = model.plots[i].data;
-            var ret = plotUtils.getDataRange(data);
-            xl = Math.min(xl, ret.datarange.xl);
-            xr = Math.max(xr, ret.datarange.xr);
+            var plotmodel = model.plots[i]; // models are already standardized at this point
+            xl = Math.min(xl, plotmodel.focus.xl);
+            xr = Math.max(xr, plotmodel.focus.xr);
+          }
+          
+          for (var i = 0; i < numPlots; i++) {
             var plotmodel = model.plots[i];
-
+            
             $scope.models.push({
               "model" : plotmodel,
               getCellModel : function() {
@@ -59,6 +61,7 @@
               },
               updateWidth : function(width) {
                 $scope.width = width;
+                $scope.jqplottitle.css("width", width + "px");
                 $scope.$apply();
               },
               getWidth : function() {
@@ -74,9 +77,9 @@
         $scope.init();
       },
       link : function(scope, element, attrs) {
-        //scope.container = d3.select(element[0]).select("#plotContainer"); 
-        scope.jqcontainer = element.find("#combplotContainer");
-        scope.jqcontainer.css(scope.stdmodel.initSize);
+        var model = scope.stdmodel;
+        scope.jqplottitle = element.find("#combplotTitle");
+        scope.jqplottitle.text(model.title).css("width", model.initSize.width);
       }
     };
   };

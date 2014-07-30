@@ -23,7 +23,7 @@
   var retfunc = function(plotUtils, plotConverter, bkCellMenuPluginManager) {
     return {
       template : 
-          "<div id='plotitle' class='plot-title'></div>" + 
+          "<div id='plotTitle' class='plot-title'></div>" + 
           "<div id='plotContainer' class='plot-renderdiv' oncontextmenu='return false;'>" +
           "<svg>"  +
           "<defs>" + 
@@ -85,7 +85,7 @@
           scope.jqsvg.css(model.initSize);
           
           // set title
-          scope.jqplottitle = element.find("#plotitle");
+          scope.jqplottitle = element.find("#plotTitle");
           scope.jqplottitle.text(model.title).css("width", model.initSize.width);
 
           //if (model.width != null) scope.jqcontainer.css("width", model.width + "px");
@@ -108,7 +108,6 @@
           scope.interg = d3.select(element[0]).select("#interg");
           scope.dotg = scope.interg.select("#dotg");
 
-          scope.range = null;
           scope.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
             bottomLayoutMargin : 30,
             topLayoutMargin : 0,
@@ -153,8 +152,7 @@
             scope.layout.bottomLayoutMargin = 0;
           }
           scope.$watch("model.getFocus()", function(newFocus) {
-            if (newFocus == null)
-              return;
+            if (newFocus == null) { return; }
             scope.focus.xl = newFocus.xl;
             scope.focus.xr = newFocus.xr;
             scope.focus.xspan = newFocus.xr - newFocus.xl;
@@ -162,9 +160,7 @@
             scope.update();
           });
           scope.$watch("model.getWidth()", function(newWidth) {
-            if (scope.width == newWidth) {
-              return;
-            }
+            if (scope.width == newWidth) { return; }
             scope.width = newWidth;
             scope.jqcontainer.css("width", newWidth + "px");
             scope.jqsvg.css("width", newWidth + "px");
@@ -179,7 +175,7 @@
             scope.model.updateWidth(scope.width);
           } // not stdmodel here
         };
-        scope.initRange = function(resetFocus) {
+        scope.initRange = function(setInitFocus) {
           var data = scope.data, model = scope.stdmodel;
           
           var ret = plotUtils.getDataRange(data);
@@ -187,47 +183,24 @@
           _.extend(scope.range, ret.datarange);
           scope.visibleLines = ret.visibleData;
           
-          scope.vrange = {};   // visible range
-          _.extend(scope.vrange, _.omit(scope.range, "xspan", "yspan"));
-          
-          
-          if (model.vrange != null) {  // old code cannot set range but focus
-            scope.vrange.xl = model.vrange.xl;
-            scope.vrange.xr = model.vrange.xr;
-            scope.vrange.yl = model.vrange.yl;
-            scope.vrange.yr = model.vrange.yr;
-            scope.vrange.xspan = scope.vrange.xr - scope.vrange.xl;
-            scope.vrange.yspan = scope.vrange.yr - scope.vrange.yl;
-          } else {
-            console.error("vrange is not prepared in model");
-          }
-          
-          // TODO distinguish datarange and visualrange
           var margin = model.margin;
-          // visible range initially is a bit larger than data range
-          scope.vrange.xl -= scope.range.xspan * (margin == null || margin.left == null ? 0.5 : margin.left / 100.0);
-          scope.vrange.xr += scope.range.xspan * (margin == null || margin.right == null ? 0.5 : margin.right / 100.0);
-          scope.vrange.yl -= scope.range.yspan * (margin == null || margin.bottom == null ? 0.5 : margin.bottom / 100.0);
-          scope.vrange.yr += scope.range.yspan * (margin == null || margin.top == null ? 0.5 : margin.top / 100.0);
-
-          if (resetFocus !== false) {
+          
+          if (setInitFocus === true) {
             scope.focus = {};
-            var focus = scope.focus, range = scope.range;
-            focus.xl = model.focus.xl != null ? 
-              model.focus.xl : range.xl - range.xspan * margin.left / 100.0;
-            focus.xr = model.focus.xr != null ? 
-              model.focus.xr : range.xr + range.xspan * margin.right / 100.0;
-            focus.yl = model.focus.yl != null ? 
-              model.focus.yl : range.yl - range.yspan * margin.bottom / 100.0;
-            focus.yr = model.focus.yr != null ? 
-              model.focus.yr : range.yr + range.yspan * margin.top / 100.0;
-            focus.xspan = focus.xr - focus.xl;
-            focus.yspan = focus.yr - focus.yl;
+            scope.vrange = {};   // visible range
+            _.extend(scope.vrange, model.vrange);
             
+            var focus = scope.focus, range = scope.range, vrange = scope.vrange;
+            
+            _.extend(scope.vrange, model.vrange);
+            _.extend(scope.focus, model.focus);
+           
+            /*
             if (scope.visibleLines == 0) {
               _.extend(scope.vrange, scope.range);
               _.extend(scope.focus, scope.range);
             }
+            */
             scope.fixFocus();
             scope.initFocus = {};
             _.extend(scope.initFocus, focus);
@@ -396,6 +369,11 @@
                   "y" : y,
                   "width" : sw,
                   "height" : y2 - y,
+                  "fill" : p.color,
+                  "fill_opacity" : p.color_opacity,
+                  "stroke" : p.stroke,
+                  "stroke_width" : p.stroke_width,
+                  "stroke_opacity" : p.stroke_opacity,
                   "tip_text" : p.tip_value,
                   "tip_color" : data[i].color,
                   "tip_x" : x1,
@@ -411,7 +389,7 @@
                 "id" : "bar_" + i,
                 "class" : "plot-bar",
                 "fill" : data[i].color,
-                "fill_opacity": data[i].fill_opacity,
+                "fill_opacity": data[i].color_opacity,
                 "stroke": data[i].stroke,
                 "stroke_width": data[i].stroke_width,
                 "stroke_opacity": data[i].stroke_opacity,
@@ -1096,6 +1074,7 @@
           var content = "";
           for (var i = 0; i < numLines; i++) {
             if (data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
+            if (data[i].legend == null || data[i].legend === "") { continue; }
             var unit = $("<div></div>").appendTo(legend).attr("id", "legend_" + i);
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_" + i)
@@ -1337,8 +1316,6 @@
           focus.yspan = focus.yr - focus.yl;
         };
         scope.resetFocus = function() {
-          scope.initRange();
-          scope.calcMapping();
           var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -1350,7 +1327,6 @@
             _.extend(scope.focus, scope.initFocus);
           }
           scope.calcMapping(true);
-
           scope.update();
         };
         scope.locateFocus = function() {
@@ -1418,7 +1394,7 @@
         };
         scope.calcMapping = function(emitFocusUpdate) {
           // called every time after the focus is changed
-          var focus = scope.focus, range = scope.range;
+          var focus = scope.focus;
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
               tMargin = scope.layout.topLayoutMargin, rMargin = scope.layout.rightLayoutMargin;
           var model = scope.stdmodel;
@@ -1439,9 +1415,7 @@
           scope.scr2dataXp = d3.scale.linear().domain([lMargin, W-rMargin]).range([0, 1]);
         };
         scope.standardizeData = function() {
-
           var model = scope.model.getCellModel();
-
           scope.stdmodel = plotConverter.standardizeModel(model);
           scope.data = scope.stdmodel.data;
         };
@@ -1466,7 +1440,7 @@
           });
 
           scope.enableZoom();
-          scope.initRange();
+          scope.initRange(true);
           scope.calcMapping();
           scope.update();
         };

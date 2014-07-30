@@ -157,7 +157,12 @@ define(function(require, exports, module) {
     evaluate: function(code, modelOutput) {
       return bkHelper.fcall(function() {
         try {
-          modelOutput.result = "" + eval(code);
+          var beaker = bkHelper.getNotebookModel().namespace; // this is visible to JS code in cell
+          if (undefined === beaker) {
+            bkHelper.getNotebookModel().namespace = {};
+            beaker = bkHelper.getNotebookModel().namespace;
+          }
+          modelOutput.result = "" + eval(code); // See Issue #396
         } catch (err) {
           modelOutput.result = {
             type: "BeakerDisplay",

@@ -17,15 +17,16 @@
 import os
 import sys
 
-coreport = sys.argv.pop()
 port = sys.argv.pop()
 self_path = sys.argv.pop()
 
 os.chdir(os.path.dirname(self_path))
+
+os.environ['beaker_r_init'] = os.getcwd() + '/beaker'
 
 if os.name == 'nt':
     bin = "bin\\r"
 else:
     bin ="bin/r"
 
-os.execlp(bin, bin, port, coreport)
+os.execlp(bin, bin, port)

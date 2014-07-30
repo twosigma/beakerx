@@ -17,7 +17,6 @@
 import os
 import sys
 
-coreport = sys.argv.pop()
 port = sys.argv.pop()
 self_path = sys.argv.pop(0)
 
@@ -30,4 +29,4 @@ if os.name == 'nt':
 else:
     bin = "bin/groovy"
 
-os.execlp(bin, bin, port, coreport)
+os.execlp(bin, bin, port)

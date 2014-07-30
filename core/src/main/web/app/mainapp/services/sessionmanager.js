@@ -144,6 +144,7 @@
       },
       clear: function() {
         bkEvaluatorManager.reset();
+        bkNotebookNamespaceModelManager.clear(_sessionId);
         _notebookUri.reset();
         _uriType = null;
         _readOnly = null;

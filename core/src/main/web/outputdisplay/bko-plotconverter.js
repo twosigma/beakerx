@@ -219,14 +219,35 @@
           }
         }
         
-        if(model.x_lower_bound) { newmodel.focus.xl = model.x_lower_bound; }
-        if(model.x_upper_bound) { newmodel.focus.xr = model.x_upper_bound; }
-        if(model.rangeAxes && model.rangeAxes[0].lower_bound) { 
+        // set axis bound as focus
+        if (model.x_lower_bound != null) { 
+          newmodel.focus.xl = model.x_lower_bound; 
+        }
+        if (model.x_upper_bound != null) { 
+          newmodel.focus.xr = model.x_upper_bound; 
+        }
+        if (model.rangeAxes != null && model.rangeAxes[0].lower_bound != null) { 
           newmodel.focus.yl = model.rangeAxes[0].lower_bound;
         }
-        if(model.rangeAxes && model.rangeAxes[0].upper_bound) {
-           newmodel.focus.yr = model.rangeAxes[0].upper_bound;
+        if (model.rangeAxes != null && model.rangeAxes[0].upper_bound != null) {
+          newmodel.focus.yr = model.rangeAxes[0].upper_bound;
         }
+        
+        // set margin
+        newmodel.margin = {};
+        if (model.x_lower_margin != null) {
+          newmodel.margin.left = model.x_lower_margin * 100.0;
+        }
+        if (model.x_upper_margin != null) {
+          newmodel.margin.right = model.x_upper_margin * 100.0;
+        }
+        if (model.rangeAxes != null && model.rangeAxes[0].lower_margin != null) {
+          newmodel.margin.bottom = model.rangeAxes[0].lower_margin * 100.0;
+        }
+        if (model.rangeAxes != null && model.rangeAxes[0].upper_margin != null) {
+          newmodel.margin.top = model.rangeAxes[0].upper_margin * 100.0;
+        }
+        
         
         if (model.type === "TimePlot") {
           newmodel.xType = "time";
@@ -446,7 +467,7 @@
             yLabel : model.y_label != null ? model.y_label : null, // ? range_axis_label ?
             xType : "ordinal",
             yType : "ordinal",
-            margin : null,
+            margin : {},
             range : null,
             focus : {},
             xCursor : null,
@@ -469,7 +490,7 @@
             useToolTip : model.useToolTip != null ? model.useToolTip : false,
             xType : model.xType != null ? model.xType : "ordinal",
             yType : model.yType != null ? model.yType : "ordinal",
-            margin : model.margin != null ? model.margin : null,
+            margin : model.margin != null ? model.margin : {},
             range : model.range != null ? model.range : null,
             focus : model.focus != null ? model.focus : {},
             xCursor : model.xCursor,
@@ -483,7 +504,6 @@
         
         newmodel.data = [];
 
-        
         if (model.version === "groovy") {
           this.formatSerializedData(newmodel, model);
         } else {  // DS generated directly
@@ -492,24 +512,44 @@
         this.formatData(newmodel, model); // fill in null entries, compute y2, etc.
         var range = plotUtils.getDataRange(newmodel.data).datarange;
         
-        if (newmodel.margin == null) { 
-          newmodel.margin = {
-            bottom : newmodel.onzeroY === true ? 0 : 5,
-            top : 5,
-            left : 5,
-            right : 5
-          };
+        var margin = newmodel.margin;
+        if (margin.bottom == null) { margin.bottom = newmodel.onzeroY === true ? 0 : 5; }
+        if (margin.top == null) { margin.top = 5; }
+        if (margin.left == null) { margin.left = 5; }
+        if (margin.right == null) { margin.right = 5; }
+        
+        var focus = newmodel.focus;
+        if (focus.xl == null) { focus.xl = range.xl - range.xspan * margin.left / 100.0; }
+        if (focus.xr == null) { focus.xr = range.xr + range.xspan * margin.right / 100.0; }
+        if (focus.yl == null) { focus.yl = range.yl - range.yspan * margin.bottom / 100.0; }
+        if (focus.yr == null) { focus.yr = range.yr + range.yspan * margin.top / 100.0; }
+        focus.xspan = focus.xr - focus.xl;
+        focus.yspan = focus.yr - focus.yl;
+        if (focus.xspan < 1E-6) {
+          focus.xr += Math.max(5E-5, focus.xspan * 0.5);
+          focus.xl -= Math.max(5E-5, focus.xspan * 0.5);
+          focus.xspan = focus.xr - focus.xl;
         }
+        if (focus.yspan < 1E-6) {
+          focus.yr += Math.max(5E-5, focus.yspan * 0.5);
+          focus.yl -= Math.max(5E-5, focus.yspan * 0.5);
+          focus.yspan = focus.yr - focus.yl;
+        }
+        
         if (newmodel.vrange == null) {
+          // visible range initially is 10x larger than data range by default
           newmodel.vrange = {
-            xl : range.xl - range.xspan * 0.5,
-            xr : range.xr + range.xspan * 0.5,
-            yl : range.yl - range.yspan * 0.5,
-            yr : range.yr + range.yspan * 0.5
+            xl : range.xl - range.xspan * 10.0,
+            xr : range.xr + range.xspan * 10.0,
+            yl : range.yl - range.yspan * 10.0,
+            yr : range.yr + range.yspan * 10.0
           };
+          var vrange = newmodel.vrange;
           if (newmodel.onzeroY === true) {
-            newmodel.vrange.yl = 0;
+            vrange.yl = 0;
           }
+          vrange.xspan = vrange.xr - vrange.xl;
+          vrange.yspan = vrange.yr - vrange.yl;
         }
         this.cleanupModel(newmodel);
         newmodel.version = "complete";

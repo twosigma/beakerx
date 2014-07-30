@@ -36,14 +36,15 @@
         $scope.init = function() {
           var xl = 1E20, xr = 0;
           var numPlots = model.plots.length;
-
           for (var i = 0; i < numPlots; i++) {
-            var data = model.plots[i].data;
-            var ret = plotUtils.getDataRange(data);
-            xl = Math.min(xl, ret.datarange.xl);
-            xr = Math.max(xr, ret.datarange.xr);
+            var plotmodel = model.plots[i]; // models are already standardized at this point
+            xl = Math.min(xl, plotmodel.focus.xl);
+            xr = Math.max(xr, plotmodel.focus.xr);
+          }
+          
+          for (var i = 0; i < numPlots; i++) {
             var plotmodel = model.plots[i];
-
+            
             $scope.models.push({
               "model" : plotmodel,
               getCellModel : function() {
@@ -78,7 +79,6 @@
       link : function(scope, element, attrs) {
         var model = scope.stdmodel;
         scope.jqplottitle = element.find("#combplotTitle");
-        console.log("sdfds", model)
         scope.jqplottitle.text(model.title).css("width", model.initSize.width);
       }
     };

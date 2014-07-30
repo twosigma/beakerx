@@ -219,35 +219,44 @@
           }
         }
         
-        // set axis bound as focus
-        if (model.x_lower_bound != null) { 
-          newmodel.focus.xl = model.x_lower_bound; 
-        }
-        if (model.x_upper_bound != null) { 
-          newmodel.focus.xr = model.x_upper_bound; 
-        }
-        if (model.rangeAxes != null && model.rangeAxes[0].lower_bound != null) { 
-          newmodel.focus.yl = model.rangeAxes[0].lower_bound;
-        }
-        if (model.rangeAxes != null && model.rangeAxes[0].upper_bound != null) {
-          newmodel.focus.yr = model.rangeAxes[0].upper_bound;
-        }
         
         // set margin
         newmodel.margin = {};
-        if (model.x_lower_margin != null) {
-          newmodel.margin.left = model.x_lower_margin * 100.0;
-        }
-        if (model.x_upper_margin != null) {
-          newmodel.margin.right = model.x_upper_margin * 100.0;
-        }
-        if (model.rangeAxes != null && model.rangeAxes[0].lower_margin != null) {
-          newmodel.margin.bottom = model.rangeAxes[0].lower_margin * 100.0;
-        }
-        if (model.rangeAxes != null && model.rangeAxes[0].upper_margin != null) {
-          newmodel.margin.top = model.rangeAxes[0].upper_margin * 100.0;
+        // set axis bound as focus
+        if (model.x_auto_range === false) {
+          if (model.x_lower_bound != null) { 
+            newmodel.focus.xl = model.x_lower_bound; 
+          }
+          if (model.x_upper_bound != null) { 
+            newmodel.focus.xr = model.x_upper_bound; 
+          }
+        } else {
+          if (model.x_lower_margin != null) {
+            newmodel.margin.left = model.x_lower_margin * 100.0;
+          }
+          if (model.x_upper_margin != null) {
+            newmodel.margin.right = model.x_upper_margin * 100.0;
+          }
         }
         
+        if (model.rangeAxes != null) {
+          var axis = model.rangeAxes[0];
+          if (axis.auto_range === false) {
+            if (axis.lower_bound != null) { 
+              newmodel.focus.yl = axis.lower_bound; 
+            }
+            if (axis.upper_bound != null) { 
+              newmodel.focus.yr = axis.upper_bound; 
+            }
+          } else {
+            if (axis.lower_margin != null) {
+              newmodel.margin.bottom = axis.lower_margin * 100.0;
+            }
+            if (axis.upper_margin != null) {
+              newmodel.margin.top = axis.upper_margin * 100.0;
+            }
+          }
+        }
         
         if (model.type === "TimePlot") {
           newmodel.xType = "time";

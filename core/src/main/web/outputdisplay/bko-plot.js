@@ -1074,7 +1074,7 @@
           var content = "";
           for (var i = 0; i < numLines; i++) {
             if (data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
-            if (data[i].legend == null) { continue; }
+            if (data[i].legend == null || data[i].legend === "") { continue; }
             var unit = $("<div></div>").appendTo(legend).attr("id", "legend_" + i);
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_" + i)

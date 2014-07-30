@@ -16,6 +16,7 @@
 
 @import "styles/variables";
 @import "styles/fonts";
+@import "styles/ui";
 @import "styles/header";
 @import "styles/dropdowns";
 @import "styles/notebook";
@@ -23,6 +24,7 @@
 @import "styles/sections";
 @import "styles/animations";
 @import "styles/heirarchy";
+@import "styles/stdout";
 
 root {
     display: block;
@@ -239,51 +241,6 @@ table.dataTable tbody td {
 
 .cursor_hand {
     cursor: pointer;
-}
-
-.outputlogbox {
-    overflow: auto;
-}
-
-.outputlog {
-    vertical-align: top;
-}
-
-.btn-toolbar {
-    padding-left: 10px;
-}
-
-.outputlogout {
-    display: block;
-    float: left;
-}
-
-.outputlogerr {
-    display: block;
-}
-
-.outputlogcontainer {
-    background-color: #E6F5F6;
-    position: fixed;
-    left: 0px;
-    width: 100%;
-    z-index: 100;
-}
-
-.outputloghandle {
-    background: linear-gradient(#D6E5E6, #E6F5F6, #D6E5E6);
-    border: 1;
-    height: 10px;
-    width: 100%;
-    cursor: ns-resize;
-}
-
-.prelog {
-    border: none;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    padding: 0px;
-    border-radius: 0px;
 }
 
 .ui-widget {

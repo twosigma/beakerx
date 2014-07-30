@@ -27,19 +27,18 @@
 
   <div ng-show="isShowingOutput()" class="outputlogbox"></div>
   <div ng-show="isShowingOutput()" class="outputlogcontainer">
-    <div class="outputloghandle"></div>
     <div class="btn-toolbar">
-      <div class="btn-group">
-        <button class="btn" ng-click='clearOutput()'>Clear</button>
-        <button class="btn hide-output-logger" ng-click='hideOutput()'>Hide</button>
+      <div class="btn-group alt-controls">
+        <a class="beaker-btn small" ng-click="clearOutput()" >Clear</a>
+        <a class="beaker-btn small" ng-click="hideOutput()" >Hide</a>
       </div>
       <div class="btn-group" data-toggle="buttons-checkbox">
-        <button type="button" class="btn active" ng-click="toggleStdOut()">stdout</button>
-        <button type="button" class="btn active" ng-click="toggleStdErr()">stderr</button>
+        <a class="beaker-btn" ng-class="{active: showStdOut}" ng-click="toggleStdOut()" >stdout</a>
+        <a class="beaker-btn" ng-class="{active: showStdErr}" ng-click="toggleStdErr()" >stderr</a>
       </div>
     </div>
     <div class="outputlogout" ng-show="showStdOut">
-      stdout:
+      <label class="output-label">stdout:</label>
       <div class="outputlogbox outputlogstdout">
         <div ng-repeat="line in outputLog track by $index">
           <div ng-show="line.type == 'text' || line.type == 'stdout'">
@@ -49,7 +48,7 @@
       </div>
     </div>
     <div class="outputlogerr" ng-show="showStdErr">
-      stderr:
+      <label class="output-label">stderr:</label>
       <div class="outputlogbox">
         <div ng-repeat="line in outputLog track by $index">
           <div ng-show="line.type == 'stderr'">

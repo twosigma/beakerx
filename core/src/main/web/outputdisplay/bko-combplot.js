@@ -22,9 +22,10 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils, combplotConverter, bkCellMenuPluginManager) {
+    var CELL_TYPE = "bko-combinedplot";
     return {
-      template :  "<div id='combplotTitle' class='plot-title'></div>" + 
-          "<div id='combplotContainer' class='combplot-renderdiv'>" + 
+      template :  "<div id='combplotTitle' class='plot-title'></div>" +
+          "<div id='combplotContainer' class='combplot-renderdiv'>" +
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
           "</div>",
       controller : function($scope) {
@@ -41,10 +42,10 @@
             xl = Math.min(xl, plotmodel.focus.xl);
             xr = Math.max(xr, plotmodel.focus.xr);
           }
-          
+
           for (var i = 0; i < numPlots; i++) {
             var plotmodel = model.plots[i];
-            
+
             $scope.models.push({
               "model" : plotmodel,
               getCellModel : function() {
@@ -75,6 +76,13 @@
           };
         };
         $scope.init();
+        $scope.getShareMenuPlugin = function() {
+          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
+        };
+        $scope.$watch("getShareMenuPlugin()", function() {
+          var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
+          $scope.model.resetShareMenuItems(newItems);
+        });
       },
       link : function(scope, element, attrs) {
         var model = scope.stdmodel;
@@ -83,6 +91,6 @@
       }
     };
   };
-  beaker.bkoDirective("CombinedPlot", 
+  beaker.bkoDirective("CombinedPlot",
       ["plotUtils", "combplotConverter", "bkCellMenuPluginManager", retfunc]);
 })();

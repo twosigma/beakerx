@@ -1,0 +1,30 @@
+.dashboard.container {
+  padding: 30px 0;
+}
+
+.notebook-dashboard-list {
+  margin:     0;
+  list-style: none;
+
+  .caption {
+    font-size:    15px;
+    font-weight:  bold;
+  }
+
+  .session {
+    margin:       10px 0;
+    border:       solid 1px $cell-border;
+    padding:      20px;
+    border-left:  solid 3px #41566a;
+  }
+
+  .open-date {
+    color:        $font-grey;
+    font-size:    11px;
+    margin-right: 30px;
+
+    span {
+      color: $green;
+    }
+  }
+}

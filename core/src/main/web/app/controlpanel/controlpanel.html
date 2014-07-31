@@ -20,7 +20,7 @@
         <img src="/beaker/app/images/beaker_icon@2x.png"></img>
         Beaker
       </a>
-      <ul class="nav">
+      <ul class="sub-nav">
         <li class="dropdown" ng-repeat="m in getMenus()">
           <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
           <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
@@ -32,7 +32,7 @@
     </div>
   </div>
 </div>
-<div class="container">
+<div class="dashboard container">
   <div class="row">
     <div class="span12">
 
@@ -41,8 +41,8 @@
           <p>Click <strong>New Notebook</strong> to get started coding in Python, R, Julia, Groovy, JavaScript, and Ruby. For help, check out <strong>Help &#8594; Tutorial notebook</strong>.</p>
       </div>
 
-      <button class='btn new-notebook' ng-click="newNotebook()">New Notebook</button>
-      <!--<button class='btn' ng-click="openTutorial()">Tutorial</button>-->
+      <a class='beaker-btn new-notebook' ng-click="newNotebook()">New Notebook</a>
+
       <br/><br/>
 
       <div ng-hide='isSessionsListEmpty()'>

@@ -38,8 +38,9 @@
           var numPlots = model.plots.length;
           for (var i = 0; i < numPlots; i++) {
             var plotmodel = model.plots[i]; // models are already standardized at this point
-            xl = Math.min(xl, plotmodel.focus.xl);
-            xr = Math.max(xr, plotmodel.focus.xr);
+            var ret = plotUtils.getInitFocus(plotmodel);
+            xl = Math.min(xl, ret.initFocus.xl);
+            xr = Math.max(xr, ret.initFocus.xr);
           }
           
           for (var i = 0; i < numPlots; i++) {

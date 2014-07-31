@@ -47,6 +47,31 @@
           "visibleData": visibleData
         };
       },
+      getInitFocus : function(model) {
+        var ret = this.getDataRange(model.data);
+        var range = ret.datarange, margin = model.margin;
+        var focus = {};
+        if (model.focus.xl == null) { focus.xl = range.xl - range.xspan * margin.left / 100.0; }
+        if (model.focus.xr == null) { focus.xr = range.xr + range.xspan * margin.right / 100.0; }
+        if (model.focus.yl == null) { focus.yl = range.yl - range.yspan * margin.bottom / 100.0; }
+        if (model.focus.yr == null) { focus.yr = range.yr + range.yspan * margin.top / 100.0; }
+        focus.xspan = focus.xr - focus.xl;
+        focus.yspan = focus.yr - focus.yl;
+        if (focus.xspan < 1E-6) {
+          focus.xr += Math.max(5E-5, focus.xspan * 0.5);
+          focus.xl -= Math.max(5E-5, focus.xspan * 0.5);
+          focus.xspan = focus.xr - focus.xl;
+        }
+        if (focus.yspan < 1E-6) {
+          focus.yr += Math.max(5E-5, focus.yspan * 0.5);
+          focus.yl -= Math.max(5E-5, focus.yspan * 0.5);
+          focus.yspan = focus.yr - focus.yl;
+        }
+        return {
+          "initFocus" : focus,
+          "visibleData" : ret.visibleData
+        };
+      },
       fixPercent: function(val) {
         val = Math.max(val, 0);
         val = Math.min(val, 1);

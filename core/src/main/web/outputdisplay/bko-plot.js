@@ -175,30 +175,10 @@
             scope.model.updateWidth(scope.width);
           } // not stdmodel here
         };
-        scope.calcRange = function(){
-          var model = scope.stdmodel, data = scope.stdmodel.data;
-          var ret = plotUtils.getDataRange(data);
-          var range = ret.datarange, margin = model.margin;
-          scope.visibleLines = ret.visibleData;
-          
-          scope.initFocus = {};
-          var focus = scope.initFocus;
-          if (model.focus.xl == null) { focus.xl = range.xl - range.xspan * margin.left / 100.0; }
-          if (model.focus.xr == null) { focus.xr = range.xr + range.xspan * margin.right / 100.0; }
-          if (model.focus.yl == null) { focus.yl = range.yl - range.yspan * margin.bottom / 100.0; }
-          if (model.focus.yr == null) { focus.yr = range.yr + range.yspan * margin.top / 100.0; }
-          focus.xspan = focus.xr - focus.xl;
-          focus.yspan = focus.yr - focus.yl;
-          if (focus.xspan < 1E-6) {
-            focus.xr += Math.max(5E-5, focus.xspan * 0.5);
-            focus.xl -= Math.max(5E-5, focus.xspan * 0.5);
-            focus.xspan = focus.xr - focus.xl;
-          }
-          if (focus.yspan < 1E-6) {
-            focus.yr += Math.max(5E-5, focus.yspan * 0.5);
-            focus.yl -= Math.max(5E-5, focus.yspan * 0.5);
-            focus.yspan = focus.yr - focus.yl;
-          }
+        scope.calcRange = function() {
+          var ret = plotUtils.getInitFocus(scope.stdmodel);
+          scope.visibleData = ret.visibleData;
+          scope.initFocus = ret.initFocus;
         },
         scope.initRange = function() {
           var model = scope.stdmodel;
@@ -1055,7 +1035,7 @@
             });
           legend.draggable();
           
-          if (scope.visibleLines > 1) {  // skip "All" check when there is only one line
+          if (scope.visibleData > 1) {  // skip "All" check when there is only one line
             var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_all")

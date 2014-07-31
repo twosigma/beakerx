@@ -27,19 +27,7 @@
       bkUtils, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
     return {
       restrict: 'E',
-      template: "<table class='table table-striped'>" +
-          "<tbody>" +
-          "<tr><th>ID</th><th>Open Date</th><th>Name</th><th>Path</th><th>Edited</th><th>Operation</th></tr>" +
-          "<tr class='session' ng-repeat='session in sessions | orderBy:\"openedDate\":true'>" +
-          "<td class='id'>{{session.id}}</td>" +
-          "<td class='open-date'>{{session.openedDate | date:'medium'}}</td>" +
-          "<td><span class='caption' contenteditable='false'>{{getCaption(session)}}</span></td>" +
-          "<td class='description'>{{getDescription(session)}}</td>" +
-          "<td class='edited'>{{session.edited ? '*' : ''}}</td>" +
-          "<td><div class='btn-group'><button class='btn' ng-click='open(session)'>Go to</button>" +
-          "<button class='btn close-session' ng-click='close(session)'>Close</button></div></td>" +
-          "</tr></tbody>" +
-          "</table>",
+      template: JST['dashboard/table'],
       controller: function($scope) {
         $scope.open = function(session) {
           bkCoreManager.openSession(session.id);

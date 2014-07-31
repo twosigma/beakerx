@@ -149,7 +149,6 @@ define(function(require, exports, module) {
     return getCompletions(token, context, keywords, options);
   }
 
-
   var JavaScript_0 = {
     pluginName: PLUGIN_NAME,
     cmMode: "javascript",

@@ -47,6 +47,31 @@
           "visibleData": visibleData
         };
       },
+      getInitFocus : function(model) {
+        var ret = this.getDataRange(model.data);
+        var range = ret.datarange, margin = model.margin;
+        var focus = {};
+        if (model.focus.xl == null) { focus.xl = range.xl - range.xspan * margin.left / 100.0; }
+        if (model.focus.xr == null) { focus.xr = range.xr + range.xspan * margin.right / 100.0; }
+        if (model.focus.yl == null) { focus.yl = range.yl - range.yspan * margin.bottom / 100.0; }
+        if (model.focus.yr == null) { focus.yr = range.yr + range.yspan * margin.top / 100.0; }
+        focus.xspan = focus.xr - focus.xl;
+        focus.yspan = focus.yr - focus.yl;
+        if (focus.xspan < 1E-6) {
+          focus.xr += Math.max(5E-5, focus.xspan * 0.5);
+          focus.xl -= Math.max(5E-5, focus.xspan * 0.5);
+          focus.xspan = focus.xr - focus.xl;
+        }
+        if (focus.yspan < 1E-6) {
+          focus.yr += Math.max(5E-5, focus.yspan * 0.5);
+          focus.yl -= Math.max(5E-5, focus.yspan * 0.5);
+          focus.yspan = focus.yr - focus.yl;
+        }
+        return {
+          "initFocus" : focus,
+          "visibleData" : ret.visibleData
+        };
+      },
       fixPercent: function(val) {
         val = Math.max(val, 0);
         val = Math.min(val, 1);
@@ -119,26 +144,30 @@
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
           .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
+          .style("stroke-width", function(d) { return d.stroke_width; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
         for (var i = 0; i < pipe.length; i++) {
-            scope.segg.select("#" + pipe[i].id).selectAll("line")
-              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-            scope.segg.select("#" + pipe[i].id).selectAll("line")
-              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
-              .attr("id", function(d) { return d.id; })
-              .attr("class", function(d) { return d.class; })
-              .attr("x1", function(d) { return d.x1; })
-              .attr("x2", function(d) { return d.x2; })
-              .attr("y1", function(d) { return d.y1; })
-              .attr("y2", function(d) { return d.y2; });
-            scope.segg.select("#" + pipe[i].id).selectAll("line")
-              .data(pipe[i].elements, function(d) { return d.id; })
-              .attr("x1", function(d) { return d.x1; })
-              .attr("x2", function(d) { return d.x2; })
-              .attr("y1", function(d) { return d.y1; })
-              .attr("y2", function(d) { return d.y2; });
+          scope.segg.select("#" + pipe[i].id).selectAll("line")
+            .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
+          scope.segg.select("#" + pipe[i].id).selectAll("line")
+            .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
+            .attr("id", function(d) { return d.id; })
+            .attr("class", function(d) { return d.class; })
+            .attr("x1", function(d) { return d.x1; })
+            .attr("x2", function(d) { return d.x2; })
+            .attr("y1", function(d) { return d.y1; })
+            .attr("y2", function(d) { return d.y2; })
+            .style("stroke", function(d) { return d.stroke; })
+            .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+            .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+            .style("stroke-width", function(d) { return d.stroke_width; });
+          scope.segg.select("#" + pipe[i].id).selectAll("line")
+            .data(pipe[i].elements, function(d) { return d.id; })
+            .attr("x1", function(d) { return d.x1; })
+            .attr("x2", function(d) { return d.x2; })
+            .attr("y1", function(d) { return d.y1; })
+            .attr("y2", function(d) { return d.y2; });
         }
       },
       plotRects: function(scope) {

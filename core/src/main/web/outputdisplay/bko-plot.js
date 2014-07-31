@@ -21,34 +21,42 @@
 ( function() {
   'use strict';
   var retfunc = function(plotUtils, plotConverter, bkCellMenuPluginManager) {
+    var CELL_TYPE = "bko-plot";
     return {
-      template : 
-          "<div id='plotTitle' class='plot-title'></div>" + 
+      template :
+          "<div id='plotTitle' class='plot-title'></div>" +
           "<div id='plotContainer' class='plot-renderdiv' oncontextmenu='return false;'>" +
           "<svg>"  +
-          "<defs>" + 
+          "<defs>" +
             "<filter id='svgfilter'>" +
               "<feOffset result='offOut' in='SourceAlpha' dx='2' dy='2' />" +
-              "<feGaussianBlur result='blurOut' in='offOut' stdDeviation='1' />" + 
-              "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" + 
-            "</filter>" + 
+              "<feGaussianBlur result='blurOut' in='offOut' stdDeviation='1' />" +
+              "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
+            "</filter>" +
           "</defs>" +
-          "<g id='maing'>" + 
+          "<g id='maing'>" +
             "<g id='coordg'></g>" +
             "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" +
             "<g id='stemg'></g> <g id='segg'></g> <g id='rectg'></g>" +
             "<g id='pointrectg'></g> <g id='pointcircleg'></g> <g id='pointdiamondg'></g>" +
             "<g id='textg'></g> <g id='labelg'></g> " +
           "</g>" +
-          "<g id='interg'>" + 
+          "<g id='interg'>" +
             "<g id='dotg'></g>" +
           "</g>" +
           "</svg>" +
           "</div>",
       controller : function($scope) {
+        $scope.getShareMenuPlugin = function() {
+          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
+        };
+        $scope.$watch("getShareMenuPlugin()", function() {
+          var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
+          $scope.model.resetShareMenuItems(newItems);
+        });
       },
       link : function(scope, element, attrs) {
-        
+
         // rendering code
         element.find("#plotContainer").resizable({
           maxWidth : element.width(), // no wider than the width of the cell
@@ -68,13 +76,13 @@
             scope.calcMapping(false);
             scope.emitSizeChange();
             scope.legendDone = false;
-            
+
             scope.update();
           }
         });
         scope.initLayout = function() {
           var model = scope.stdmodel;
-          
+
           element.find(".ui-icon-gripsmall-diagonal-se")
             .removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
           scope.container = d3.select(element[0]).select("#plotContainer"); // hook container to use jquery interaction
@@ -83,7 +91,7 @@
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
           scope.jqsvg.css(model.initSize);
-          
+
           // set title
           scope.jqplottitle = element.find("#plotTitle");
           scope.jqplottitle.text(model.title).css("width", model.initSize.width);
@@ -104,7 +112,7 @@
           scope.segg = scope.maing.select("#segg");
           scope.rectg = scope.maing.select("#rectg");
           scope.textg = scope.maing.select("#textg");
-          
+
           scope.interg = d3.select(element[0]).select("#interg");
           scope.dotg = scope.interg.select("#dotg");
 
@@ -171,30 +179,30 @@
         };
 
         scope.emitSizeChange = function() {
-          if (scope.model.updateWidth != null) { 
+          if (scope.model.updateWidth != null) {
             scope.model.updateWidth(scope.width);
           } // not stdmodel here
         };
         scope.initRange = function(setInitFocus) {
           var data = scope.data, model = scope.stdmodel;
-          
+
           var ret = plotUtils.getDataRange(data);
           scope.range = {};
           _.extend(scope.range, ret.datarange);
           scope.visibleLines = ret.visibleData;
-          
+
           var margin = model.margin;
-          
+
           if (setInitFocus === true) {
             scope.focus = {};
             scope.vrange = {};   // visible range
             _.extend(scope.vrange, model.vrange);
-            
+
             var focus = scope.focus, range = scope.range, vrange = scope.vrange;
-            
+
             _.extend(scope.vrange, model.vrange);
             _.extend(scope.focus, model.focus);
-           
+
             /*
             if (scope.visibleLines == 0) {
               _.extend(scope.vrange, scope.range);
@@ -210,13 +218,13 @@
         scope.calcCoords = function() {
           // prepare the coordinates
           var focus = scope.focus, model = scope.stdmodel;
-          
+
           var dateIntervals = [
-            1, 5, 10, 15, 30, 60, 300, 600, 1800, 3600, 10800, 21600, 43200, 
+            1, 5, 10, 15, 30, 60, 300, 600, 1800, 3600, 10800, 21600, 43200,
             86400, 604800, 2592000, 7776000, 15552000, 31104000
           ];
           var valIntervals = [
-            0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 50, 100, 500, 1000, 
+            0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 50, 100, 500, 1000,
             5000, 10000, 50000, 100000
           ];
           var ys = model.yScale;
@@ -312,7 +320,7 @@
           var fdata = scope.fdata;
           for (var i = 0; i < data.length; i++) {
             var eles = data[i].elements;
-            if (data[i].type === "constline" || data[i].type === "constband" || 
+            if (data[i].type === "constline" || data[i].type === "constband" ||
                 data[i].type === "text") {
               fdata[i] = {
                 "leftIndex" : 0,
@@ -322,13 +330,13 @@
             }
 
             var l = plotUtils.upper_bound(eles, "x", focus.xl);
-            var r = plotUtils.upper_bound(eles, "x", focus.xr) + 1; 
+            var r = plotUtils.upper_bound(eles, "x", focus.xr) + 1;
             // cover one more point to the right for line
-            
+
             // truncate out-of-sight segment on x-axis
             l = Math.max(l, 0);
             r = Math.min(r, eles.length - 1);
-            
+
             if (l == eles.length - 1 && eles[l].x < focus.xl) {
               // all elements are to the left of the svg
               l = 0;
@@ -552,7 +560,7 @@
               if (data[i].style === "diamond") { pipe = scope.rpipePointDiamonds; }
               else if (data[i].style === "circle") { pipe = scope.rpipePointCircles; }
               else pipe = scope.rpipePointRects;
-              
+
               pipe.push({
                   "id" : "point_" + i,
                   "class" : "plot-point",
@@ -586,7 +594,7 @@
                   scope.jqcontainer.find("#" + id).remove();
                   var label = $("<div id=" + id + " class='plot-constlabel'></div>")
                     .appendTo(scope.jqcontainer)
-                    .text(scope.stdmodel.xType === "time" ? 
+                    .text(scope.stdmodel.xType === "time" ?
                         plotUtils.formatDate(scope.xintv, p.x) : parseInt(p.x));
                   var w = label.outerWidth(), h = label.outerHeight();
                   var p = {
@@ -728,7 +736,7 @@
                   break;
                 }
                 var nxtp = x + "," + y + " ";
-                
+
                 if (j < fdata[i].rightIndex) {
                   if (data[i].interpolation === "none") {
                     var p2 = eles[j + 1];
@@ -766,7 +774,7 @@
             if (data[i].type !== "line" && data[i].type !== "river") {
               continue;
             }
-            
+
             var eles = data[i].elements;
             var reles = [];
             for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
@@ -797,14 +805,14 @@
               "stroke" : data[i].color == null ? "gray" : data[i].color,
               "fill" : "white",
               "elements" : reles
-            }; 
+            };
             scope.rpipeDots.push(wrapper);
           }
         };
         scope.prepareInteraction = function(id) {
           var model = scope.stdmodel;
           if (model.useToolTip != true) return;
-            
+
           var sel = scope.svg.selectAll(".plot-resp");
           sel.on("mouseenter", function(d) {
             return scope.tooltip(d);
@@ -835,7 +843,7 @@
           d.sticking = false;
           d.datax = scope.scr2dataX(d.tip_x);
           d.datay = scope.scr2dataY(d.tip_y);
-                    
+
           scope.renderTips();
         };
         scope.untooltip = function(d) {
@@ -862,7 +870,7 @@
             var tipdiv = scope.jqcontainer.find("#tip_" + d.id);
             if (tipdiv.length > 0) {
               var w = tipdiv.width(), h = tipdiv.height();
-              if (plotUtils.outsideScrBox(scope, p.x + d.objw + scope.fonts.tooltipWidth, p.y, 
+              if (plotUtils.outsideScrBox(scope, p.x + d.objw + scope.fonts.tooltipWidth, p.y,
                 w, h)) {
                 tipdiv.remove();
                 return;
@@ -901,7 +909,7 @@
                 d.datay = scope.scr2dataY(d.scry);
               }
             });
-              
+
             tipdiv.css("left", p.x + objw + scope.fonts.tooltipWidth + "px")
               .css("top", p.y + "px");
             if (d.isResp === true) {
@@ -1051,7 +1059,7 @@
               "top" : "0px"
             });
           legend.draggable();
-          
+
           if (scope.visibleLines > 1) {  // skip "All" check when there is only one line
             var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
             $("<input type='checkbox'></input>").appendTo(unit)
@@ -1207,7 +1215,7 @@
             var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
             var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
             var d3trans = d3.event.translate, d3scale = d3.event.scale;
-            var dx = d3trans[0] - scope.lastx, dy = d3trans[1] - scope.lasty, 
+            var dx = d3trans[0] - scope.lastx, dy = d3trans[1] - scope.lasty,
                 ds = this.lastscale / d3scale;
             scope.lastx = d3trans[0];
             scope.lasty = d3trans[1];
@@ -1233,7 +1241,7 @@
               if (my <= scope.jqsvg.height() - scope.layout.bottomLayoutMargin) {
                 // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
-                var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym), 
+                var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym),
                     nyspan = nyr - nyl;
                 if (nyspan >= level.minSpanY && nyspan <= vrange.yspan * level.maxScaleY) {
                   focus.yl = nyl;
@@ -1251,7 +1259,7 @@
               if (mx >= scope.layout.leftLayoutMargin) {
                 // scale x
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
-                var nxl = xm - ds * (xm - focus.xl), nxr = xm + ds * (focus.xr - xm), 
+                var nxl = xm - ds * (xm - focus.xl), nxr = xm + ds * (focus.xr - xm),
                     nxspan = nxr - nxl;
                 if (nxspan >= level.minSpanX && nxspan <= vrange.xspan * level.maxScaleX) {
                   focus.xl = nxl;
@@ -1306,9 +1314,9 @@
             focus.yl = vrange.yl;
           if (focus.yr > vrange.yr)
             focus.yr = vrange.yr;
-          
+
           if (focus.xl > focus.xr || focus.yl > focus.yr) {
-            console.error("visual range specified does not match data range, " + 
+            console.error("visual range specified does not match data range, " +
                 "enforcing visual range");
             _.extend(focus, vrange);
           }
@@ -1421,7 +1429,7 @@
         };
         scope.init = function() {
           scope.standardizeData();
-          
+
           // first standardize
           scope.initLayout();
 

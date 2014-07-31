@@ -80,6 +80,8 @@
             scope.update();
           }
         });
+        
+
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
@@ -91,6 +93,14 @@
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
           scope.jqsvg.css(model.initSize);
+          
+          $(window).resize(function() {
+            // update resize maxWidth when the browser window resizes
+            var width = element.width();
+            scope.jqcontainer.resizable({
+              maxWidth : width
+            });
+          });
 
           // set title
           scope.jqplottitle = element.find("#plotTitle");

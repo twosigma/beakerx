@@ -19,3 +19,4 @@ manifest.mf
 .DS_Store
 /core/src/main/web/app/app.css
 npm-debug.log
+core/src/main/web/app/templates.js

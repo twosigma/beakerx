@@ -50,11 +50,16 @@
       getInitFocus : function(model) {
         var ret = this.getDataRange(model.data);
         var range = ret.datarange, margin = model.margin;
-        var focus = {};
-        if (model.focus.xl == null) { focus.xl = range.xl - range.xspan * margin.left / 100.0; }
-        if (model.focus.xr == null) { focus.xr = range.xr + range.xspan * margin.right / 100.0; }
-        if (model.focus.yl == null) { focus.yl = range.yl - range.yspan * margin.bottom / 100.0; }
-        if (model.focus.yr == null) { focus.yr = range.yr + range.yspan * margin.top / 100.0; }
+        var focus = {
+          xl : model.focus.xl,
+          xr : model.focus.xr,
+          yl : model.focus.yl,
+          yr : model.focus.yr
+        };
+        if (focus.xl == null) { focus.xl = range.xl - range.xspan * margin.left / 100.0; }
+        if (focus.xr == null) { focus.xr = range.xr + range.xspan * margin.right / 100.0; }
+        if (focus.yl == null) { focus.yl = range.yl - range.yspan * margin.bottom / 100.0; }
+        if (focus.yr == null) { focus.yr = range.yr + range.yspan * margin.top / 100.0; }
         focus.xspan = focus.xr - focus.xl;
         focus.yspan = focus.yr - focus.yl;
         if (focus.xspan < 1E-6) {

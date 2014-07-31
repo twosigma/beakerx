@@ -71,10 +71,10 @@ define(function(require, exports, module) {
         shellID = "";
       }
       bkHelper.httpPost(serviceBase + "/rest/rsh/getShell", { shellid: shellID })
-          .success(cb)
-          .error(function() {
-            console.log("failed to create shell", arguments);
-          });
+        .success(cb)
+        .error(function() {
+          console.log("failed to create shell", arguments);
+        });
     },
     evaluate: function(code, modelOutput) {
       var deferred = Q.defer();
@@ -173,9 +173,13 @@ define(function(require, exports, module) {
           }
           settings.shellID = id;
           self.settings = settings;
-          if (doneCB) {
-            doneCB(self);
-          }
+          var initCode = "devtools::load_all(Sys.getenv('beaker_r_init'), " +
+            "quiet=TRUE, export_all=FALSE)\n" +
+            "beaker:::set_session('" + bkHelper.getSessionId() + "')\n";
+          self.evaluate(initCode, {}).then(function () {
+            if (doneCB) {
+              doneCB(self);
+            }});
         };
         if (!settings.shellID) {
           settings.shellID = "";

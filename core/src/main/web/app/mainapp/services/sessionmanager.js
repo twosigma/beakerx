@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@
     'bk.utils',
     'bk.session',
     'bk.notebookCellModelManager',
+    'bk.notebookNamespaceModelManager',
     'bk.recentMenu',
     'bk.evaluatorManager'
   ]);
@@ -30,6 +31,7 @@
       bkUtils,
       bkSession,
       bkNotebookCellModelManager,
+      bkNotebookNamespaceModelManager,
       bkEvaluatorManager,
       bkRecentMenu) {
 
@@ -137,9 +139,12 @@
         _notebookModel.set(notebookModel);
         _edited = !!edited;
         _sessionId = sessionId;
+
+        bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
       },
       clear: function() {
         bkEvaluatorManager.reset();
+        bkNotebookNamespaceModelManager.clear(_sessionId);
         _notebookUri.reset();
         _uriType = null;
         _readOnly = null;

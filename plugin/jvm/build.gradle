@@ -26,6 +26,7 @@ dependencies {
   compile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17.1'
   compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17.1'
   compile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
+  compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.3.1'
   compile project(':shared')
 }
 

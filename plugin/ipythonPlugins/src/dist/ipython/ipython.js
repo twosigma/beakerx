@@ -286,9 +286,12 @@ define(function(require, exports, module) {
               settings.supplementalClassPath = "";
             }
             self.settings = settings;
-            if (doneCB) {
-              doneCB(self);
-            }
+            var initCode = "import beaker\n" +
+              "beaker.set_session('" + bkHelper.getSessionId() + "')\n";
+            self.evaluate(initCode, {}).then(function () {
+              if (doneCB) {
+                doneCB(self);
+              }});
           };
           if (!settings.shellID) {
             settings.shellID = "";

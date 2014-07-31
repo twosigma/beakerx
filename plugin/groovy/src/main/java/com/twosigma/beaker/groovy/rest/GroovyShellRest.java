@@ -42,8 +42,9 @@ public class GroovyShellRest {
   @POST
   @Path("getShell")
   @Produces(MediaType.TEXT_PLAIN)
-  public String getShell(
-          @FormParam("shellId") String shellId) throws InterruptedException {
+  public String getShell(@FormParam("shellId") String shellId) 
+    throws InterruptedException
+  {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();

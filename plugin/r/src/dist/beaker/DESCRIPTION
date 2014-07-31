@@ -1,0 +1,8 @@
+Package: beaker
+Title: Beaker integration with R
+Version: 0.1
+Authors@R: "Scott Draves <spot@draves.org> [aut, cre]"
+Description: Defines accessor functions for notebook namespaces.
+Depends: R (>= 3.0.2)
+License: Apache 2.0
+LazyData: true

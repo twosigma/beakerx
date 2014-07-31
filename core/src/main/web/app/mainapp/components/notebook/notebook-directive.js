@@ -211,13 +211,10 @@
                 $(v).scrollTop(v.scrollHeight);
               });
         });
-
-
         $scope.getChildren = function () {
           // this is the root
           return notebookCellOp.getChildren("root");
         };
-
 
         $scope.getShareMenuPlugin = function () {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);

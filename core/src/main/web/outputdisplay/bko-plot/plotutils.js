@@ -144,26 +144,30 @@
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
           .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
+          .style("stroke-width", function(d) { return d.stroke_width; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
         for (var i = 0; i < pipe.length; i++) {
-            scope.segg.select("#" + pipe[i].id).selectAll("line")
-              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-            scope.segg.select("#" + pipe[i].id).selectAll("line")
-              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
-              .attr("id", function(d) { return d.id; })
-              .attr("class", function(d) { return d.class; })
-              .attr("x1", function(d) { return d.x1; })
-              .attr("x2", function(d) { return d.x2; })
-              .attr("y1", function(d) { return d.y1; })
-              .attr("y2", function(d) { return d.y2; });
-            scope.segg.select("#" + pipe[i].id).selectAll("line")
-              .data(pipe[i].elements, function(d) { return d.id; })
-              .attr("x1", function(d) { return d.x1; })
-              .attr("x2", function(d) { return d.x2; })
-              .attr("y1", function(d) { return d.y1; })
-              .attr("y2", function(d) { return d.y2; });
+          scope.segg.select("#" + pipe[i].id).selectAll("line")
+            .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
+          scope.segg.select("#" + pipe[i].id).selectAll("line")
+            .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
+            .attr("id", function(d) { return d.id; })
+            .attr("class", function(d) { return d.class; })
+            .attr("x1", function(d) { return d.x1; })
+            .attr("x2", function(d) { return d.x2; })
+            .attr("y1", function(d) { return d.y1; })
+            .attr("y2", function(d) { return d.y2; })
+            .style("stroke", function(d) { return d.stroke; })
+            .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+            .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+            .style("stroke-width", function(d) { return d.stroke_width; });
+          scope.segg.select("#" + pipe[i].id).selectAll("line")
+            .data(pipe[i].elements, function(d) { return d.id; })
+            .attr("x1", function(d) { return d.x1; })
+            .attr("x2", function(d) { return d.x2; })
+            .attr("y1", function(d) { return d.y1; })
+            .attr("y2", function(d) { return d.y2; });
         }
       },
       plotRects: function(scope) {

@@ -36,6 +36,7 @@
   font-family: verdana, helvetica, arial, sans-serif;
 }
 
+.plot-const,
 .plot-line {
   fill: none;
 }
@@ -64,22 +65,20 @@
   border-radius: 5px;
 }
 
-.plot-const,
 .plot-coord,
 .plot-coord-base {
   stroke-width: 1;
   pointer-events: none;
 }
+.plot-const,
 .plot-line,
 .plot-river {
-  stroke-width: 1;
   pointer-events: none;
 }
 .plot-bar,
 .plot-stem {
   pointer-events: auto;
 }
-
 
 .plot-coord {
   stroke: #111111;

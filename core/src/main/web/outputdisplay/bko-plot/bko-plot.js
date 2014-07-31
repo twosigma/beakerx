@@ -326,6 +326,10 @@
         scope.renderData = function() {
           var data = scope.stdmodel.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
+          
+          var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+          var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
+              tMargin = scope.layout.topLayoutMargin, rMargin = scope.layout.rightLayoutMargin;
 
           for (var i = 0; i < numLines; i++) {
             if (data[i].shown == false) {
@@ -334,7 +338,6 @@
             var eles = data[i].elements;
             if (data[i].type === "bar") {
               var w = data[i].width, sw;
-              var H = scope.jqsvg.height() - scope.layout.bottomLayoutMargin;
               var reles = [];
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
@@ -547,27 +550,30 @@
                   "elements" : reles
               });
             } else if (data[i].type === "constline") {
-              var W = scope.jqsvg.width(), H = scope.jqsvg.height();
-              var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
               var reles = [];
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j], id = "constlabel_" + i + "_" + j;
+                var p = eles[j];
+                var labelid = "constlabel_" + i + "_" + j;
                 if (p.type === "x") {
                   var x = mapX(p.x);
                   if (p.x < focus.xl || p.x > focus.xr) {
-                    scope.jqcontainer.find("#" + id).remove();
+                    scope.jqcontainer.find("#" + labelid).remove();
                     continue;
                   }
                   reles.push({
-                    "id" : "const_" + i + "_" + j,
+                    "id" : "constline_" + i + "_" + j,
                     "x1" : x,
                     "x2" : x,
                     "y1" : mapY(focus.yl),
-                    "y2" : mapY(focus.yr)
+                    "y2" : mapY(focus.yr),
+                    "stroke" : p.color,
+                    "stroke_opacity" : p.color_opacity,
+                    "stroke_width" : p.width,
+                    "stroke_dasharray" : p.stroke_dasharray
                   });
 
-                  scope.jqcontainer.find("#" + id).remove();
-                  var label = $("<div id=" + id + " class='plot-constlabel'></div>")
+                  scope.jqcontainer.find("#" + labelid).remove();
+                  var label = $("<div id=" + labelid + " class='plot-constlabel'></div>")
                     .appendTo(scope.jqcontainer)
                     .text(scope.stdmodel.xType === "time" ? 
                         plotUtils.formatDate(scope.xintv, p.x) : parseInt(p.x));
@@ -584,19 +590,23 @@
                 } else if (p.type === "y") {
                   var y = mapY(p.y);
                   if (p.y < focus.yl || p.y > focus.yr) {
-                    scope.jqcontainer.find("#constlabel_" + i + "_" + j).remove();
+                    scope.jqcontainer.find("#" + labelid).remove();
                     continue;
                   }
                   reles.push({
-                    "id" : "const_" + i + "_" + j,
+                    "id" : "constline_" + i + "_" + j,
                     "x1" : mapX(focus.xl),
                     "x2" : mapX(focus.xr),
                     "y1" : y,
-                    "y2" : y
+                    "y2" : y,
+                    "stroke" : p.color,
+                    "stroke_opacity" : p.color_opacity,
+                    "stroke_width" : p.width,
+                    "stroke_dasharray" : p.stroke_dasharray
                   });
-                  scope.jqcontainer.find("#" + id).remove();
+                  scope.jqcontainer.find("#" + labelid).remove();
                   var _y = p._y != null? p._y : p.y;
-                  var label = $("<div id=" + id + " class='plot-constlabel'></div>")
+                  var label = $("<div id=" + labelid + " class='plot-constlabel'></div>")
                     .appendTo(scope.jqcontainer).text(_y.toFixed(0));
                   var w = label.outerWidth(), h = label.outerHeight();
                   var p = {
@@ -611,20 +621,21 @@
                 }
               }
               scope.rpipeSegs.push({
-                "id" : "const_" + i,
+                "id" : "constline_" + i,
                 "class" : "plot-const",
                 "stroke" : data[i].color,
-                "stroke-opacity": data[i].color_opacity,
-                "stroke-width" : data[i].width,
+                "stroke_opacity": data[i].color_opacity,
+                "stroke_width" : data[i].width,
+                "stroke_dasharray" : data[i].stroke_dasharray,
                 "elements" : reles
               });
             } else if (data[i].type === "constband") {
-              var W = scope.jqsvg.width(), H = scope.jqsvg.height();
-              var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
-                  tMargin = scope.layout.topLayoutMargin, rMargin = scope.layout.rightLayoutMargin;
-              var reles = [], focus = scope.focus;
+              var reles = [];
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j], ele = { "id": "const_" + i + "_" + j };
+                var p = eles[j];
+                var ele = { 
+                  "id": "constband_" + i + "_" + j
+                };
                 if (p.type === "x") {
                   if (p.x1 > focus.xr || p.x2 < focus.xl) { continue; }
                   var x1 = mapX(p.x1), x2 = mapX(p.x2);
@@ -654,7 +665,7 @@
                 reles.push(ele);
               }
               scope.rpipeRects.push({
-                "id" : "const_" + i,
+                "id" : "constband_" + i,
                 "class" : "plot-const",
                 "fill" : data[i].color,
                 "fill_opacity": data[i].color_opacity,

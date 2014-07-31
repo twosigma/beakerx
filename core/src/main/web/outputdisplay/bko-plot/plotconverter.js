@@ -380,6 +380,11 @@
               data.color_opacity = parseInt(line.color.substr(1,2), 16) / 255;
               data.color = "#" + line.color.substr(3);
             }
+            var style = line.style;
+            if (style == null) { style = ""; }
+            style = this.lineStyleMap[style];
+            data.stroke_dasharray = this.lineDasharrayMap[style];
+            
             if (line.x != null) {
               var ele = {"type": "x", "x": line.x};
             } else if(line.y != null) {

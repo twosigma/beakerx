@@ -17,3 +17,7 @@ before_script:
   - sudo apt-get install python-matplotlib python-scipy python-pandas
   - sudo apt-get install r-base r-base-dev
   - sudo Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"
+  - sudo Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"
+  - sudo Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')"
+  - sudo Rscript -e "install.packages('RJSONIO',,'http://cran.us.r-project.org')"
+  - sudo Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')"

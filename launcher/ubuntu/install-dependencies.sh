@@ -30,6 +30,9 @@ sudo apt-get update
 sudo apt-get install -y r-base r-base-dev # R -v = 3.1.0
 sudo Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"
+sudo Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')"
+sudo Rscript -e "install.packages('RJSONIO',,'http://cran.us.r-project.org')"
+sudo Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')"
 
 # for zmq, needed by ipython and iruby
 sudo add-apt-repository --yes ppa:chris-lea/zeromq

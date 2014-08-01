@@ -203,9 +203,12 @@
           scope.calcRange();
           scope.vrange = {};   // visible range
           _.extend(scope.vrange, model.vrange);
+          if (model.onzeroY === true) {
+            scope.vrange.yl = 0;
+          }
           scope.focus = {};
           _.extend(scope.focus, scope.initFocus);
-          scope.fixFocus();
+          scope.fixFocus(scope.focus);
         };
 
         scope.calcCoords = function() {
@@ -1277,7 +1280,7 @@
                   focus.xspan = focus.xr - focus.xl;
                 }
               }
-              scope.fixFocus();
+              scope.fixFocus(focus);
             }
             scope.calcMapping(true);
             scope.renderCursor({
@@ -1307,8 +1310,8 @@
           }
           scope.jqsvg.css("cursor", "auto");
         };
-        scope.fixFocus = function() {
-          var focus = scope.focus, vrange = scope.vrange;
+        scope.fixFocus = function(focus) {
+          var vrange = scope.vrange;
           if (focus.xl < vrange.xl)
             focus.xl = vrange.xl;
           if (focus.xr > vrange.xr)
@@ -1319,8 +1322,8 @@
             focus.yr = vrange.yr;
 
           if (focus.xl > focus.xr || focus.yl > focus.yr) {
-            console.error("visual range specified does not match data range, " +
-                "enforcing visual range");
+            console.error("visible range specified does not match data range, " +
+                "enforcing visible range");
             _.extend(focus, vrange);
           }
           focus.xspan = focus.xr - focus.xl;
@@ -1337,6 +1340,7 @@
           } else {
             _.extend(scope.focus, scope.initFocus);
           }
+          scope.fixFocus(scope.focus);
           scope.calcMapping(true);
           scope.update();
         };

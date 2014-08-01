@@ -80,6 +80,8 @@
             scope.update();
           }
         });
+        
+
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
@@ -91,6 +93,14 @@
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
           scope.jqsvg.css(model.initSize);
+          
+          $(window).resize(function() {
+            // update resize maxWidth when the browser window resizes
+            var width = element.width();
+            scope.jqcontainer.resizable({
+              maxWidth : width
+            });
+          });
 
           // set title
           scope.jqplottitle = element.find("#plotTitle");
@@ -193,9 +203,12 @@
           scope.calcRange();
           scope.vrange = {};   // visible range
           _.extend(scope.vrange, model.vrange);
+          if (model.onzeroY === true) {
+            scope.vrange.yl = 0;
+          }
           scope.focus = {};
           _.extend(scope.focus, scope.initFocus);
-          scope.fixFocus();
+          scope.fixFocus(scope.focus);
         };
 
         scope.calcCoords = function() {
@@ -989,7 +1002,10 @@
             scope.svg.selectAll("#cursor_x").data([{}]).enter().append("line")
               .attr("id", "cursor_x")
               .attr("class", "plot-cursor")
-              .attr("stroke", opt.color != null ? opt.color : "black");
+              .style("stroke", opt.color)
+              .style("stroke-opacity", opt.color_opacity)
+              .style("stroke-width", opt.width)
+              .style("stroke-dasharray", opt.stroke_dasharray);
             scope.svg.select("#cursor_x")
               .attr("x1", x).attr("y1", 0).attr("x2", x).attr("y2", H - bMargin);
 
@@ -1013,7 +1029,10 @@
             scope.svg.selectAll("#cursor_y").data([{}]).enter().append("line")
               .attr("id", "cursor_y")
               .attr("class", "plot-cursor")
-              .attr("stroke", opt.color != null ? opt.color : "black");
+              .style("stroke", opt.color)
+              .style("stroke-opacity", opt.color_opacity)
+              .style("stroke-width", opt.width)
+              .style("stroke-dasharray", opt.stroke_dasharray);
             scope.svg.select("#cursor_y")
               .attr("x1", lMargin)
               .attr("y1", y)
@@ -1267,7 +1286,7 @@
                   focus.xspan = focus.xr - focus.xl;
                 }
               }
-              scope.fixFocus();
+              scope.fixFocus(focus);
             }
             scope.calcMapping(true);
             scope.renderCursor({
@@ -1297,8 +1316,8 @@
           }
           scope.jqsvg.css("cursor", "auto");
         };
-        scope.fixFocus = function() {
-          var focus = scope.focus, vrange = scope.vrange;
+        scope.fixFocus = function(focus) {
+          var vrange = scope.vrange;
           if (focus.xl < vrange.xl)
             focus.xl = vrange.xl;
           if (focus.xr > vrange.xr)
@@ -1309,8 +1328,8 @@
             focus.yr = vrange.yr;
 
           if (focus.xl > focus.xr || focus.yl > focus.yr) {
-            console.error("visual range specified does not match data range, " +
-                "enforcing visual range");
+            console.error("visible range specified does not match data range, " +
+                "enforcing visible range");
             _.extend(focus, vrange);
           }
           focus.xspan = focus.xr - focus.xl;
@@ -1327,6 +1346,7 @@
           } else {
             _.extend(scope.focus, scope.initFocus);
           }
+          scope.fixFocus(scope.focus);
           scope.calcMapping(true);
           scope.update();
         };

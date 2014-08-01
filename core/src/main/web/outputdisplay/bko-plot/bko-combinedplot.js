@@ -87,8 +87,10 @@
       },
       link : function(scope, element, attrs) {
         var model = scope.stdmodel;
-        scope.jqplottitle = element.find("#combplotTitle");
-        scope.jqplottitle.text(model.title).css("width", model.initSize.width);
+        if(model.title != null) {
+          scope.jqplottitle = element.find("#combplotTitle");
+          scope.jqplottitle.text(model.title).css("width", model.initSize.width);
+        }
       }
     };
   };

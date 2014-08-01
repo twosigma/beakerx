@@ -1002,7 +1002,10 @@
             scope.svg.selectAll("#cursor_x").data([{}]).enter().append("line")
               .attr("id", "cursor_x")
               .attr("class", "plot-cursor")
-              .attr("stroke", opt.color != null ? opt.color : "black");
+              .style("stroke", opt.color)
+              .style("stroke-opacity", opt.color_opacity)
+              .style("stroke-width", opt.width)
+              .style("stroke-dasharray", opt.stroke_dasharray);
             scope.svg.select("#cursor_x")
               .attr("x1", x).attr("y1", 0).attr("x2", x).attr("y2", H - bMargin);
 
@@ -1026,7 +1029,10 @@
             scope.svg.selectAll("#cursor_y").data([{}]).enter().append("line")
               .attr("id", "cursor_y")
               .attr("class", "plot-cursor")
-              .attr("stroke", opt.color != null ? opt.color : "black");
+              .style("stroke", opt.color)
+              .style("stroke-opacity", opt.color_opacity)
+              .style("stroke-width", opt.width)
+              .style("stroke-dasharray", opt.stroke_dasharray);
             scope.svg.select("#cursor_y")
               .attr("x1", lMargin)
               .attr("y1", y)

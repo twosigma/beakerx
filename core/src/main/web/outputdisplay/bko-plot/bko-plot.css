@@ -72,9 +72,11 @@
 }
 .plot-const,
 .plot-line,
-.plot-river {
+.plot-river,
+.plot-cursor {
   pointer-events: none;
 }
+
 .plot-bar,
 .plot-stem {
   pointer-events: auto;
@@ -107,10 +109,7 @@
   fill: #FEFEFE;
 }
 
-.plot-cursor {
-  pointer-events: none;
-  stroke-width: 2.0;
-}
+
 
 .plot-title {
   text-align: center;

@@ -56,8 +56,14 @@
         2 : "linear", // should be "curve" but right now it is not implemented yet
         "" : "linear"
       },
-      formatData: function(newmodel, model) {
-        // TODO
+      formatModel: function(newmodel, model) {
+        if (newmodel.xCursor != null) {
+          var cursor = newmodel.xCursor;
+          if (cursor.color == null) { cursor.color = "black"; }
+          if (cursor.width == null) { cursor.width = 2; }
+        }
+        
+        
         // fill in null entries, compute y2, etc.
         // move some of format SerializedData to formatData?
         var data = newmodel.data;
@@ -260,7 +266,25 @@
         if (model.type === "TimePlot") {
           newmodel.xType = "time";
         }
-
+        
+        if (model.crosshair != null) {
+          var color = model.crosshair.color;
+          newmodel.xCursor = {};
+          var cursor = newmodel.xCursor;
+          
+          cursor.color_opacity = parseInt(color.substr(1,2), 16) / 255;
+          cursor.color = "#" + color.substr(3);
+          
+          var style = model.crosshair.style;
+          if (style == null) style = "";
+          style = this.lineStyleMap[style];
+          cursor.stroke_dasharray = this.lineDasharrayMap[style];
+          cursor.width = model.crosshair.width != null ? model.crosshair.width : 2;
+          
+          newmodel.yCursor = {};
+          _.extend(newmodel.yCursor, cursor);
+        }
+        
         // scaling
         if (logy) {
           newmodel.yScale = {
@@ -522,7 +546,7 @@
         } else {  // DS generated directly
           _.extend(newmodel, model);
         }
-        this.formatData(newmodel, model); // fill in null entries, compute y2, etc.
+        this.formatModel(newmodel, model); // fill in null entries, compute y2, etc.
         var range = plotUtils.getDataRange(newmodel.data).datarange;
         
         var margin = newmodel.margin;

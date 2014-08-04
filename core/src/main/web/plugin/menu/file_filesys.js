@@ -33,23 +33,7 @@ define(function(require, exports, module) {
             action: function() {
               bkHelper.showModalDialog(
                   bkHelper.openNotebook,
-                  '<div class="modal-header">' +
-                      '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
-                      '</div>' +
-                      '<div class="modal-body">' +
-                      '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-                      '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
-                      '</div>' +
-                      '<div class="modal-footer">' +
-                      "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
-                      '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
-                      '   <span style="float:left;">' +
-                      '     <input type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">' +
-                      '     <span ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .bkr files only</span>' +
-                      '   </span>' +
-                      '   <button ng-click="close()" class="btn">Cancel</button>' +
-                      '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary">Open</button>' +
-                      '</div>', // template
+                  JST['openmenumodal']({homeDir: homeDir}),
                   bkHelper.getFileSystemFileChooserStrategy()
               );
             }

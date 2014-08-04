@@ -1,5 +1,10 @@
 .dashboard.container {
   padding: 30px 0;
+
+  .new-notebook {
+    display:    inline-block;
+    margin-top: 20px;
+  }
 }
 
 .notebook-dashboard-list {

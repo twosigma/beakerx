@@ -41,14 +41,13 @@
           <p>Click <strong>New Notebook</strong> to get started coding in Python, R, Julia, Groovy, JavaScript, and Ruby. For help, check out <strong>Help &#8594; Tutorial notebook</strong>.</p>
       </div>
 
-      <a class='beaker-btn new-notebook' ng-click="newNotebook()">New Notebook</a>
-
-      <br/><br/>
-
       <div ng-hide='isSessionsListEmpty()'>
         <h4>Open notebooks:</h4>
         <bk-control-panel-session-item class="open-notebooks"></bk-control-panel-session-item>
       </div>
+
+      <a class='beaker-btn new-notebook' ng-click="newNotebook()">New Notebook</a>
+
     </div>
   </div>
   <div class="row" ng-show="isAllowAnonymousTracking == null">

@@ -17,6 +17,8 @@
     "./plugin/menu/file_ipython.js",
     "./plugin/menu/file_iruby.js",
     "./plugin/menu/notebook.js",
+    "./plugin/menu/edit.js",
+    "./plugin/menu/run.js",
     "./plugin/menu/help.js"
   ],
   "notebook-cell-menu-plugins": [

@@ -21,18 +21,18 @@ define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
+      name: "Tutorial",
+      action: function() {
+        bkHelper.openNotebook("config/tutorial.bkr", undefined, true);
+      },
+      tooltip: "Open the tutorial notebook"
+    },
+    {
       name: "About Beaker",
       action: function() {
         bkHelper.showModalDialog(undefined, "app/template/about.html");
       },
       tooltip: "Basic information about this application"
-    },
-    {
-      name: "Tutorial notebook",
-      action: function() {
-        bkHelper.openNotebook("config/tutorial.bkr", undefined, true);
-      },
-      tooltip: "Open the tutorial notebook"
     },
     {
       name: "Keyboard shortcuts",
@@ -54,7 +54,7 @@ define(function(require, exports, module) {
         window.open("http://beakernotebook.com/privacy");
       },
       tooltip: "Privacy policy on beakernotebook.com"
-    }    
+    }
   ];
   var menuItemPromise = bkHelper.newPromise({
     parent: "Help",

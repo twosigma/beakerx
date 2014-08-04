@@ -22,35 +22,13 @@ define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
-      name: "Publish to web",
-      action: function () {
-        bkHelper.shareNotebook();
-      },
-      tooltip: "Share the notebook to a public web page using an anonymous github gist"
-    },
-    {
-      name: "Lock", action: function() {
-      bkHelper.toggleNotebookLocked();
-    },
-      tooltip: "Lock notebook from further editing",
-      isChecked: function() {
-        return bkHelper.isNotebookLocked();
+      name: "Start Page",
+      action: function() {
+        bkHelper.gotoControlPanel();
       }
     },
     {
-      name: "Show stdout/err", action: function() {
-      bkHelper.getBkNotebookViewModel().toggleShowOutput();
-    },
-      tooltip: "Show or hide the stdout and stderr.",
-      isChecked: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        if (notebookViewModel) {
-          return notebookViewModel.isShowingOutput();
-        }
-      }
-    },
-    {
-      name: 'Toggle Cell Hierarchy',
+      name: 'Show Hierarchy',
       isChecked: function() {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
         return notebookViewModel.isHeirarchyEnabled();
@@ -61,7 +39,7 @@ define(function(require, exports, module) {
       }
     },
     {
-      name: 'Toggle Advanced Mode',
+      name: 'Advanced Mode',
       isChecked: function() {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
         return notebookViewModel.isAdvancedMode();
@@ -71,73 +49,21 @@ define(function(require, exports, module) {
         notebookViewModel.toggleAdvancedMode();
       }
     },
-    // BEAKER-324 - delete all output button.
     {
-      name: 'Delete all output cells',
+      name: "Show stdout/err",
       action: function() {
-        bkHelper.deleteAllOutputCells();
+        bkHelper.getBkNotebookViewModel().toggleShowOutput();
       },
-      tooltip: 'Deletes all of the output cells.'
-    },
-    {
-      name: "Edit mode",
-      items: [
-        {
-          name: "Normal",
-          isChecked: function() {
-            return bkHelper.getInputCellKeyMapMode() === "default";
-          },
-          action: function() {
-            bkHelper.setInputCellKeyMapMode("default");
-          }
-        },
-        {
-          name: "Vim (limited support)",
-          isChecked: function() {
-            return bkHelper.getInputCellKeyMapMode() === "vim";
-          },
-          action: function() {
-            bkHelper.setInputCellKeyMapMode("vim");
-          }
-        },
-        {
-          name: "Emacs",
-          isChecked: function() {
-            return bkHelper.getInputCellKeyMapMode() === "emacs";
-          },
-          action: function() {
-            bkHelper.setInputCellKeyMapMode("emacs");
-          }
+      tooltip: "Show or hide the stdout and stderr.",
+      isChecked: function() {
+        var notebookViewModel = bkHelper.getBkNotebookViewModel();
+        if (notebookViewModel) {
+          return notebookViewModel.isShowingOutput();
         }
-      ]
-    },
-    {
-      name: "Plugin manager...",
-      action: function() {
-        bkHelper.getBkNotebookViewModel().showEvaluators();
-      },
-      tooltip: "Show evaluators settings"
-    },
-    {
-      name: "Evaluate",
-      items: [
-        {
-          name: "All",
-          action: function() {
-            bkHelper.evaluate("root");
-          }
-        },
-        {
-          name: "Initialization Cells",
-          action: function() {
-            bkHelper.evaluate("initialization");
-          }
-        }
-      ],
-      tooltip: "Evaluate cells"
+      }
     }
   ];
-  var menuItemPromise = bkHelper.newPromise({items: menuItems, parent: "Notebook"});
+  var menuItemPromise = bkHelper.newPromise({items: menuItems, parent: "View"});
   exports.getMenuItems = function() {
     return menuItemPromise;
   };

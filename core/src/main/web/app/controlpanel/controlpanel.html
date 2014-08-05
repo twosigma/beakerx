@@ -36,13 +36,14 @@
   <div class="row">
     <div class="span12">
 
+      <h1>Beaker <small>The data scientist's laboratory</small></h1>
+
       <div ng-if='isSessionsListEmpty()' class="empty-session-prompt">
-          <h1>Beaker <small>The data scientist's laboratory</small></h1>
           <p>Click <strong>New Notebook</strong> to get started coding in Python, R, Julia, Groovy, JavaScript, and Ruby. For help, check out <strong>Help &#8594; Tutorial notebook</strong>.</p>
       </div>
 
       <div ng-hide='isSessionsListEmpty()'>
-        <h4>Open notebooks:</h4>
+        <h4 class="open-notebook-headline">Open Notebooks</h4>
         <bk-control-panel-session-item class="open-notebooks"></bk-control-panel-session-item>
       </div>
 

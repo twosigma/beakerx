@@ -80,7 +80,7 @@
           }
           
           if(dat.type === "bar" || dat.type === "river") { 
-            newmodel.yPreventNegative = true; // prevent move to y < 0
+            //newmodel.yPreventNegative = true; // prevent move to y < 0
           } 
 
           if(dat.type === "line" || dat.type === "stem") {
@@ -151,7 +151,7 @@
                 } else if (dat.bases != null) {
                   ele.y2 = dat.bases[j];
                 } else {
-                  ele.y2 = null;
+                  ele.y2 = 0;
                 }
               } else {
                 ele.y2 = dat.y2[j];
@@ -171,6 +171,13 @@
               if (dat.interpolation == null) {
                 dat.interpolation = "linear";
               }
+            }
+            
+            // swap y, y2 
+            if (ele.y != null && ele.y2 != null && ele.y < ele.y2) {
+              var temp = ele.y;
+              ele.y = ele.y2;
+              ele.y2 = temp;
             }
             
             var txt = "";
@@ -329,7 +336,7 @@
           data.type = this.dataTypeMap[data.type];
           
           if(data.type === "bar" || data.type === "river") { 
-            newmodel.yPreventNegative = true; // auto range to y = 0
+            //newmodel.yPreventNegative = true; // auto range to y = 0
           } 
 
           if(data.type === "line" || data.type === "stem") {

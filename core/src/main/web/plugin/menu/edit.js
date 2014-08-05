@@ -18,15 +18,6 @@ define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
-      name: "Rename notebook",
-      action: function() {
-        bkHelper.showDefaultSavingFileChooser().then(function(ret) {
-          if (ret.uri) {
-            return bkHelper.saveNotebookAs(ret.uri, ret.uriType);
-          }
-        });
-      },
-      tooltip: "Rename a notebook"
     },
     {
       name: "Lock", action: function() {

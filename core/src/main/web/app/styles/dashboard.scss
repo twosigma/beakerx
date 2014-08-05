@@ -16,8 +16,13 @@
   list-style: none;
 
   .caption {
+    cursor:       pointer;
     font-size:    15px;
     font-weight:  bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   .session {

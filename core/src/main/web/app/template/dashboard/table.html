@@ -17,7 +17,7 @@
 <ul class="notebook-dashboard-list">
   <li class='session' ng-repeat='session in sessions | orderBy:"openedDate":true'>
     <div class="left">
-      <div class='caption'>{{getCaption(session)}}</div>
+      <div class='caption' ng-click='open(session)'>{{getCaption(session)}}</div>
       <div class='light path' ng-if="getDescription(session)">
         {{getDescription(session)}}
       </div>

@@ -54,7 +54,8 @@ html .navbar {
 
     &.pull-right { float: right; }
 
-    > a {
+    > a.dropdown-toggle {
+        padding: 10px;
         text-decoration: none;
 
         &:hover {

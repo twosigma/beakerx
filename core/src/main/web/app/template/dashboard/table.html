@@ -16,12 +16,17 @@
 -->
 <ul class="notebook-dashboard-list">
   <li class='session' ng-repeat='session in sessions | orderBy:"openedDate":true'>
-    <div class='caption left' contenteditable='false'>{{getCaption(session)}}</div>
+    <div class="left">
+      <div class='caption'>{{getCaption(session)}}</div>
+      <div class='light path' ng-if="getDescription(session)">
+        {{getDescription(session)}}
+      </div>
+    </div>
     <div class='btn-group right'>
       <a class='mid beaker-btn' ng-click='open(session)'>Go to</a>
       <a class='mid beaker-btn close-session' ng-click='close(session)'>Close</a>
     </div>
-    <div class='open-date right'>
+    <div class='open-date light right'>
       <span>Opened at</span>
       {{session.openedDate | date:'medium'}}
     </div>

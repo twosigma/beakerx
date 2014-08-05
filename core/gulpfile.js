@@ -3,6 +3,7 @@ var sass      = require('gulp-sass');
 var template  = require('gulp-template-compile');
 var concat    = require('gulp-concat');
 var minifyCSS = require('gulp-minify-css');
+var htmlmin   = require('gulp-htmlmin');
 
 var Path      = require('path');
 var rootPath  = Path.join(__dirname, "/src/main/web/app/");
@@ -20,6 +21,7 @@ gulp.task("compileScss", function() {
 
 gulp.task("compileTemplates", function() {
   gulp.src(rootPath + "/template/**/*.html")
+  .pipe(htmlmin({removeComments: true}))
   .pipe(template({
     name: function (file) {
       return file.relative.split(".")[0];

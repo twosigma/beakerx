@@ -18,6 +18,11 @@ define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
+       name: "Plugin manager...",
+       action: function() {
+         bkHelper.getBkNotebookViewModel().showEvaluators();
+       },
+       tooltip: "Show evaluators settings"
     },
     {
       name: "Lock", action: function() {

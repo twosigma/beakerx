@@ -20,7 +20,7 @@
  */
 ( function() {
   'use strict';
-  var retfunc = function(plotUtils, plotConverter, bkCellMenuPluginManager) {
+  var retfunc = function(plotAxis, plotUtils, plotConverter, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -85,6 +85,8 @@
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
+          console.log(model.xType);
+          
           element.find(".ui-icon-gripsmall-diagonal-se")
             .removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
           scope.container = d3.select(element[0]).select("#plotContainer"); // hook container to use jquery interaction
@@ -219,9 +221,17 @@
             1, 5, 10, 15, 30, 60, 300, 600, 1800, 3600, 10800, 21600, 43200,
             86400, 604800, 2592000, 7776000, 15552000, 31104000
           ];
+          for (var i = 0; i < dateIntervals.length; i++) {
+            dateIntervals[i] *= 1000;
+          }
           var valIntervals = [
             0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 50, 100, 500, 1000,
             5000, 10000, 50000, 100000
+          ];
+          var nanoIntervals = [
+            1, 5, 10, 25, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000,
+            100000, 200000, 500000, 1000000, 20000000, 50000000, 100000000, 200000000,
+            500000000, 1000000000
           ];
           var ys = model.yScale;
           if (ys.type == "log") {
@@ -232,9 +242,13 @@
 
           var xspan = focus.xr - focus.xl, yspan = focus.yr - focus.yl;
           var xbase, ybase, deci = 0, intervals;
-          intervals = model.xType == "time" ? dateIntervals : valIntervals;
+          
+          if (model.xType === "time") { intervals = dateIntervals; }
+          else if (model.xType === "nanotime") { intervals = valIntervals; }
+          else { intervals = valIntervals; }
+          
           for (var i = intervals.length - 1; i >= 0; i--) {
-            xbase = intervals[i] * 1000;
+            xbase = intervals[i];
             if (xspan / xbase >= scope.numIntervals.x)
               break;
           }
@@ -259,10 +273,12 @@
           var xintv = xbase, yintv = ybase;
           var xs = Math.ceil(focus.xl / xintv) * xintv, xt = Math.floor(focus.xr / xintv) * xintv,
               ys = Math.ceil(focus.yl / yintv) * yintv, yt = Math.floor(focus.yr / yintv) * yintv;
+          
           scope.xCoords = [];
           scope.yCoords = [];
-          for (var i = xs; i <= xt; i += xintv)
+          for (var i = xs; i <= xt; i += xintv) {
             scope.xCoords.push(i);
+          }
           for (var i = ys; i <= yt; i += yintv)
             scope.yCoords.push(i.toFixed(deci));
           scope.xintv = xintv;
@@ -345,14 +361,14 @@
           }
         };
         scope.renderData = function() {
-          var data = scope.stdmodel.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
-          var mapX = scope.data2scrX, mapY = scope.data2scrY;
+          var model = scope.stdmodel, data = scope.stdmodel.data, fdata = scope.fdata;
+          var focus = scope.focus, mapX = scope.data2scrX, mapY = scope.data2scrY;
           
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
               tMargin = scope.layout.topLayoutMargin, rMargin = scope.layout.rightLayoutMargin;
 
-          for (var i = 0; i < numLines; i++) {
+          for (var i = 0; i < data.length; i++) {
             if (data[i].shown == false) {
               continue;
             }
@@ -456,8 +472,9 @@
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
                 var y2 = p.y2;
-                if (y2 == null)
+                if (y2 == null) {
                   y2 = focus.yl;
+                }
                 reles.push({
                   "id" : "stem_" + i + "_" + j,
                   "class" : "plot-resp",
@@ -596,8 +613,7 @@
                   scope.jqcontainer.find("#" + labelid).remove();
                   var label = $("<div id=" + labelid + " class='plot-constlabel'></div>")
                     .appendTo(scope.jqcontainer)
-                    .text(scope.stdmodel.xType === "time" ?
-                        plotUtils.formatDate(scope.xintv, p.x) : parseInt(p.x));
+                    .text(plotUtils.formatCoord(model.xType, scope.xintv, p.x));
                   var w = label.outerWidth(), h = label.outerHeight();
                   var p = {
                     "x" : x - w / 2,
@@ -658,8 +674,8 @@
                   "id": "constband_" + i + "_" + j
                 };
                 if (p.type === "x") {
-                  if (p.x1 > focus.xr || p.x2 < focus.xl) { continue; }
-                  var x1 = mapX(p.x1), x2 = mapX(p.x2);
+                  if (p.x > focus.xr || p.x2 < focus.xl) { continue; }
+                  var x1 = mapX(p.x), x2 = mapX(p.x2);
                   x1 = Math.max(x1, lMargin);
                   x2 = Math.min(x2, W - rMargin);
                   _.extend(ele, {
@@ -670,8 +686,8 @@
                     "opacity" : p.opacity
                   });
                 } else if (p.type === "y") {
-                  if (p.y1 > focus.yr || p.y2 < focus.yl) { continue; }
-                  var y2 = mapY(p.y1), y1 = mapY(p.y2); // after mapping, y1,y2 are reversed
+                  if (p.y > focus.yr || p.y2 < focus.yl) { continue; }
+                  var y2 = mapY(p.y), y1 = mapY(p.y2); // after mapping, y1,y2 are reversed
                   y2 = Math.min(y2, H - bMargin);
                   y1 = Math.max(y1, tMargin);
                   _.extend(ele, {
@@ -818,7 +834,9 @@
         };
         scope.prepareInteraction = function(id) {
           var model = scope.stdmodel;
-          if (model.useToolTip != true) return;
+          if (model.useToolTip != true) {
+            return;
+          }
 
           var sel = scope.svg.selectAll(".plot-resp");
           sel.on("mouseenter", function(d) {
@@ -890,7 +908,7 @@
               .css("border-color", d.tip_color == null ? "gray" : d.tip_color)
               .append(d.tip_text).mousedown(function(e) {
                 if (e.which == 3) {
-                  if (d.isResp === true) {
+                  if (d.isResp === true) {  // is line responsive dot
                     scope.jqsvg.find("#" + d.id).attr("opacity", 0);
                   } else {
                     scope.jqsvg.find("#" + d.id).removeAttr("filter");
@@ -940,7 +958,7 @@
               scope.rpipeTexts.push({
                 "id" : "label_x_" + i,
                 "class" : "plot-label",
-                "text" : model.xType === "time" ? plotUtils.formatDate(scope.xintv, x) : x,
+                "text" : plotUtils.formatCoord(model.xType, scope.xintv, x),
                 "x" : p.x,
                 "y" : p.y,
                 "text-anchor" : "middle",
@@ -1012,7 +1030,7 @@
             scope.jqcontainer.find("#cursor_xlabel").remove();
             var label = $("<div id='cursor_xlabel' class='plot-cursorlabel'></div>")
               .appendTo(scope.jqcontainer)
-              .text(scope.stdmodel.xType === "time" ? plotUtils.formatDate(scope.xintv, mapX(x)) : parseInt(mapX(x)));
+              .text(plotUtils.formatCoord(model.xType, scope.xintv, mapX(x)));
             var w = label.outerWidth(), h = label.outerHeight();
             var p = {
               "x" : x - w / 2,
@@ -1441,7 +1459,7 @@
         };
         scope.init = function() {
           scope.standardizeData();
-
+          
           // first standardize
           scope.initLayout();
 
@@ -1498,5 +1516,5 @@
       }
     };
   };
-  beaker.bkoDirective("Plot", ["plotUtils", "plotConverter", "bkCellMenuPluginManager", retfunc]);
+  beaker.bkoDirective("Plot", ["plotAxis", "plotUtils", "plotConverter", "bkCellMenuPluginManager", retfunc]);
 })();

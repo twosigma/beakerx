@@ -14,9 +14,9 @@
 *  limitations under the License.
 */
 
-(function() {'use strict';
-  
-  var retfunc = function(bkUtils, plotUtils) {
+(function() {
+  'use strict';
+  var retfunc = function(bkUtils, plotAxis, plotUtils) {
     return {
       dataTypeMap : {
         "Line" : "line",
@@ -265,6 +265,10 @@
         
         if (model.type === "TimePlot") {
           newmodel.xType = "time";
+        } else if (model.type === "NanoPlot") {
+          // TODO, beaker crashes when loading long integers
+          //newmodel.nanoOffset = range.xl;
+          newmodel.xType = "nanotime";
         }
         
         if (model.crosshair != null) {
@@ -433,7 +437,7 @@
             if (band.x != null) {
               var ele = {
                 "type" : "x",
-                "x1" : band.x[0],
+                "x" : band.x[0],
                 "x2" : band.x[1]
               };
             } else if (band.y != null) {
@@ -441,7 +445,7 @@
                 "type" : "y"
               };
               var y1 = band.y[0], y2 = band.y[1];
-              ele.y1 = y1;
+              ele.y = y1;
               ele.y2 = y2;
             }
             data.elements.push(ele);
@@ -465,12 +469,6 @@
             newmodel.data.push(data);
           }
         }
-        if (model.type === "NanoPlot") {
-          // TODO, beaker crashes when loading long integers
-          // 
-          // newmodel.nanoOffset = range.xl;
-        }
-        
         newmodel.onzeroY = onzeroY;
       },
       cleanupModel : function(model) {
@@ -547,6 +545,7 @@
           _.extend(newmodel, model);
         }
         this.formatModel(newmodel, model); // fill in null entries, compute y2, etc.
+        
         var range = plotUtils.getDataRange(newmodel.data).datarange;
         
         var margin = newmodel.margin;
@@ -570,6 +569,7 @@
           vrange.xspan = vrange.xr - vrange.xl;
           vrange.yspan = vrange.yr - vrange.yl;
         }
+        
         this.cleanupModel(newmodel);
         newmodel.version = "complete";
         console.log(newmodel);
@@ -577,5 +577,5 @@
       }
     };
   };
-  beaker.bkoFactory('plotConverter', ["bkUtils", 'plotUtils', retfunc]);
+  beaker.bkoFactory('plotConverter', ["bkUtils", 'plotAxis', 'plotUtils', retfunc]);
 })();

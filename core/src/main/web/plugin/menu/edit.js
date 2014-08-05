@@ -31,7 +31,7 @@ define(function(require, exports, module) {
   ];
 
   var menuItemPromise = bkHelper.newPromise({
-    parent: "Edit",
+    parent: "Notebook",
     items: menuItems
   });
 

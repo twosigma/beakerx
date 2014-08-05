@@ -23,7 +23,6 @@ Background:
   And I create a notebook
   Then I should see a new notebook
   Then I should see notebook cells
-  Then I should hide the outputlogger
 
 Scenario: Toggling a insert cell menu
   When I click the '1' insert cell menu toggle

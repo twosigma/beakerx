@@ -44,10 +44,6 @@ module.exports = function() {
     })
   });
 
-  this.Then(/^I should hide the outputlogger$/, function() {
-    return new this.Widget({root: ".hide-output-logger"}).click();
-  });
-
   this.Given(/^I evaluate "([^"]*)" with "([^"]*)"$/, function(editorName, code) {
     return new this.Widgets.CodeCell().evaluate(code, editorName, this.driver);
   });

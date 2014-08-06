@@ -194,9 +194,9 @@
           return type + "-cell.html";
         };
       },
-      link: function($scope, $element, attrs) {
-        $scope.toggleCellMenu = function(event) {
-          $element
+      link: function(scope, element, attrs) {
+        scope.toggleCellMenu = function(event) {
+          element
           .find(".bkcell").first()
           .find('.bkcellmenu').last()
            .css({

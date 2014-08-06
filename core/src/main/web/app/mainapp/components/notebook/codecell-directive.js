@@ -76,6 +76,10 @@
           return $scope.cellmodel.output.selectedType == 'Hidden';
         }
 
+        $scope.hasOutput = function() {
+          return $scope.cellmodel.output.result;
+        }
+
         $scope.isShowOutput = function() {
           if ($scope.cellmodel.output.hidden === true) {
             return false;

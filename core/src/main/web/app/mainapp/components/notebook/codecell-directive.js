@@ -414,8 +414,6 @@
         };
 
         scope.$on("$destroy", function() {
-          inputMenuDiv.off("click", inputClickHandler);
-          inputMenuDiv.off("mousemove", inputMousemoveHandler);
           CodeMirror.off(window, "resize", resizeHandler);
           CodeMirror.off("change", changeHandler);
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);

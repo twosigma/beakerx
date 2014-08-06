@@ -37,7 +37,7 @@
     var CELL_TYPE = "notebook";
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/notebook.html",
+      template: JST["notebook/notebook"](),
       scope: {
         setBkNotebook: "&"
       },
@@ -59,6 +59,9 @@
             },
             isShowingOutput: function () {
               return this._showOutput;
+            },
+            isLocked: function() {
+              return bkSessionManager.isNotebookLocked();
             },
             isHideEvaluators: function () {
               return this._hideEvaluators;
@@ -127,6 +130,10 @@
           }
         };
         $scope.setBkNotebook({bkNotebook: _impl});
+
+        $scope.isLocked = function() {
+          return _impl._viewModel.isLocked();
+        }
 
         $scope.isDebugging = function () {
           return _impl._viewModel.isDebugging();

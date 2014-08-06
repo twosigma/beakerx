@@ -32,31 +32,7 @@
   module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager) {
     return {
       restrict: 'E',
-      template: '<div ng-class="isLocked() && \'locked\' " class="bkcell {{cellmodel.type}}">' +
-          '<div ng-if="cellmodel.input.hidden && cellmodel.type==\'code\'" class="mini-cell-stats advanced-hide">'+
-          '{{cellmodel.evaluator}} &nbsp;'+
-          '({{cellmodel.lineCount}} lines)'+
-          '</div>' +
-          '<div class="toggle-menu">' +
-          '<div class="cell-menu-item cell-dropdown" ng-click="toggleCellMenu($event)"></div>'+
-          '<div class="cell-menu-item move-cell-down advanced-hide" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && \'disabled\'"></div>'+
-          '<div class="cell-menu-item move-cell-up advanced-hide" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && \'disabled\'"></div>'+
-          '<div class="cell-menu-item delete-cell advanced-hide" ng-click="deleteCell()"></div>'+
-          '<div class="cell-menu-item expand-contract advanced-hide" ng-if="cellmodel.type==\'code\'" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden && \'collapsed\'"></div>'+
-          '<div class="cell-menu-item loading-state advanced-hide" ng-if="cellmodel.type==\'code\' && !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}} <div class="loading-spinner rotating"></div></div>'+
-          '</div>'+
-          '<div ng-if="isDebugging()">' +
-          '[Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}} ' +
-          '<a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>' +
-          '<a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()">show less</a>' +
-          '<div collapse="!isShowDebugInfo()">' +
-          '<pre>{{cellmodel | json}}</pre>' +
-          '</div>' +
-          '</div>' +
-          '<div ng-include="getTypeCellUrl()"></div>' +
-          '<bk-cell-menu items="cellview.menu.items"></bk-cell-menu>' +
-          '<bk-new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>' +
-          '</div>',
+      template: JST["notebook/cell"](),
       scope: {
         cellmodel: "=",
         index: "="

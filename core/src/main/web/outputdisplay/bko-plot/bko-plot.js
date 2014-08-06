@@ -205,9 +205,6 @@
           scope.calcRange();
           scope.vrange = {};   // visible range
           _.extend(scope.vrange, model.vrange);
-          if (model.onzeroY === true) {
-            scope.vrange.yl = 0;
-          }
           scope.focus = {};
           _.extend(scope.focus, scope.initFocus);
           scope.fixFocus(scope.focus);
@@ -1259,10 +1256,26 @@
               if (focus.xl + tx >= vrange.xl && focus.xr + tx <= vrange.xr) {
                 focus.xl += tx;
                 focus.xr += tx;
+              } else {
+                if (focus.xl + tx < vrange.xl) {
+                  focus.xl = vrange.xl;
+                  focus.xr = focus.xl + focus.xspan;
+                } else if (focus.xr + tx > vrange.xr) {
+                  focus.xr = vrange.xr;
+                  focus.xl = focus.xr - focus.xspan;
+                }
               }
               if (focus.yl + ty >= vrange.yl && focus.yr + ty <= vrange.yr) {
                 focus.yl += ty;
                 focus.yr += ty;
+              } else {
+                if (focus.yl + ty < vrange.yl) {
+                  focus.yl = vrange.yl;
+                  focus.yr = focus.yl + focus.yspan;
+                } else if (focus.yr + ty > vrange.yr) {
+                  focus.yr = vrange.yr;
+                  focus.yl = focus.yr - focus.yspan;
+                }
               }
               scope.jqsvg.css("cursor", "move");
             } else {

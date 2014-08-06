@@ -80,7 +80,7 @@
           }
           
           if(dat.type === "bar" || dat.type === "river") { 
-            newmodel.onzeroY = true; // auto range to y=0
+            //newmodel.yPreventNegative = true; // prevent move to y < 0
           } 
 
           if(dat.type === "line" || dat.type === "stem") {
@@ -151,7 +151,7 @@
                 } else if (dat.bases != null) {
                   ele.y2 = dat.bases[j];
                 } else {
-                  ele.y2 = null;
+                  ele.y2 = 0;
                 }
               } else {
                 ele.y2 = dat.y2[j];
@@ -171,6 +171,13 @@
               if (dat.interpolation == null) {
                 dat.interpolation = "linear";
               }
+            }
+            
+            // swap y, y2 
+            if (ele.y != null && ele.y2 != null && ele.y < ele.y2) {
+              var temp = ele.y;
+              ele.y = ele.y2;
+              ele.y2 = temp;
             }
             
             var txt = "";
@@ -212,13 +219,13 @@
         }
       },
       formatSerializedData : function(newmodel, model) {
-        var onzeroY = false;
+        var yIncludeZero = false;
         var logy = false, logyb;
         if(model.rangeAxes != null) {
           var axis = model.rangeAxes[0];
           if (axis.auto_range_includes_zero === true) { 
-            onzeroY = true;
-           }
+            yIncludeZero = true;
+          }
           if (axis.use_log === true) {
             logy = true;
             logyb = axis.log_base == null ? 10 : axis.log_base;
@@ -333,7 +340,7 @@
           data.type = this.dataTypeMap[data.type];
           
           if(data.type === "bar" || data.type === "river") { 
-            onzeroY = true; // auto range to y=0
+            //newmodel.yPreventNegative = true; // auto range to y = 0
           } 
 
           if(data.type === "line" || data.type === "stem") {
@@ -469,7 +476,7 @@
             newmodel.data.push(data);
           }
         }
-        newmodel.onzeroY = onzeroY;
+        newmodel.yIncludeZero = yIncludeZero;
       },
       cleanupModel : function(model) {
         for (var i = 0; i < model.data.length; i++) {
@@ -549,7 +556,7 @@
         var range = plotUtils.getDataRange(newmodel.data).datarange;
         
         var margin = newmodel.margin;
-        if (margin.bottom == null) { margin.bottom = newmodel.onzeroY === true ? 0 : 5; }
+        if (margin.bottom == null) { margin.bottom = 5; }
         if (margin.top == null) { margin.top = 5; }
         if (margin.left == null) { margin.left = 5; }
         if (margin.right == null) { margin.right = 5; }
@@ -563,9 +570,21 @@
             yr : range.yr + range.yspan * 10.0
           };
           var vrange = newmodel.vrange;
-          if (newmodel.onzeroY === true) {
-            vrange.yl = 0;
+          
+          if (newmodel.yPreventNegative === true) {
+            vrange.yl = Math.min(0, range.yl);
+          } 
+          if (newmodel.yIncludeZero === true) {
+            if (vrange.yl > 0) {
+              vrange.yl = 0;
+            }
           }
+          var focus = newmodel.focus; // allow user to overide vrange
+          if (focus.xl != null) { vrange.xl = Math.min(focus.xl, vrange.xl); }
+          if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
+          if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
+          if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); } 
+          
           vrange.xspan = vrange.xr - vrange.xl;
           vrange.yspan = vrange.yr - vrange.yl;
         }

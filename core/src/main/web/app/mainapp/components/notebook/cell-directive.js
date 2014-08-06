@@ -32,7 +32,7 @@
   module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager) {
     return {
       restrict: 'E',
-      template: '<div ng-class="isLocked() && \'locked\' " class="bkcell {{cellmodel.type}}" index="$index">' +
+      template: '<div ng-class="isLocked() && \'locked\' " class="bkcell {{cellmodel.type}}">' +
           '<div ng-if="cellmodel.input.hidden && cellmodel.type==\'code\'" class="mini-cell-stats advanced-hide">'+
           '{{cellmodel.evaluator}} &nbsp;'+
           '({{cellmodel.lineCount}} lines)'+

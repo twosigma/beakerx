@@ -14,8 +14,12 @@
     limitations under the License.
 -->
 <div ng-hide='cellmodel.hideTitle'>
-  <span class='bksectiontoggleplus section-toggle' ng-click='toggleShowChildren()' ng-hide='isShowChildren()'>+</span>
-  <span class='bksectiontoggleminus section-toggle' ng-click='toggleShowChildren()' ng-show='isShowChildren()'>-</span>
+  <span class='bksectiontoggleplus section-toggle' ng-click='toggleShowChildren()' ng-hide='isShowChildren()'>
+    <i class='fa fa-plus'></i>
+  </span>
+  <span class='bksectiontoggleminus section-toggle' ng-click='toggleShowChildren()' ng-show='isShowChildren()'>
+    <i class='fa fa-minus'></i>
+  </span>
   <p class='depth-indicator'>{{getFullIndex()}}</p>
   <span class='section{{cellmodel.level}} bk-section-title' contenteditable="true">{{cellmodel.title}}</span>
 </div>

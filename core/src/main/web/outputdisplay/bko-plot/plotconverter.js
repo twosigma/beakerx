@@ -99,15 +99,15 @@
         if (focus.yl != null) { focus.yl = yAxis.getPercent(focus.yl); }
         if (focus.yr != null) { focus.yr = yAxis.getPercent(focus.yr); }
       },
-      generateTooltips : function(model) {
+      generateTips : function(model) {
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
           var dat = data[i], eles = dat.elements;
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
             var txt = "";
-            var valx = plotUtils.getTipString(model.xAxis.getType(), ele._x);
-            var valy = plotUtils.getTipString(model.yAxis.getType(), ele._y);
+            var valx = plotUtils.getTipString(ele._x, model.xAxis);
+            var valy = plotUtils.getTipString(ele._y, model.yAxis);
             if (dat.legend != null) {
               txt += "<div>" + dat.legend + "</div>";
             }
@@ -390,8 +390,6 @@
           newmodel.yAxis.type = "linear";
         }
         
-        
-        
         var list = model.graphics_list;
         var numLines = list.length;
         for (var i = 0; i < numLines; i++) {
@@ -666,7 +664,7 @@
         }
         
         this.remapModel(newmodel);
-        this.generateTooltips(newmodel);
+        this.generateTips(newmodel);
         
         this.cleanupModel(newmodel);
         newmodel.version = "complete";

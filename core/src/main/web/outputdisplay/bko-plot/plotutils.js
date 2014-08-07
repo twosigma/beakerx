@@ -535,11 +535,20 @@
         while (s.length < 6) s = "0" + s;
         return "#" + s;
       },
-      getTipString : function(type, value) {
+      getTipString : function(val, axis) {
+        var type = axis.getType();
         if (type === "time"){
-          return new Date(value).toLocaleString();
+          return new Date(val).toLocaleString();
+        } 
+        return "" + val;
+      },
+      getTipStringPercent : function(pct, axis) {
+        var val = axis.getValue(pct);
+        if (axis.getType() === "log") {
+          val = axis.axisPow(pct);
+          return val.toFixed(3);
         }
-        return "" + value;
+        return this.getTipString(val, axis);
       }
 
     };

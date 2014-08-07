@@ -48,7 +48,7 @@
       
       var axisCoords, axisCoordLabels, axisStep, axisFixed;
       
-      var axisPow = function(pct) {
+      this.axisPow = function(pct) {
         return Math.pow(axisBase, pct * axisValSpan + axisValL);
       };
       this.setLabel = function(label) {
@@ -60,22 +60,10 @@
         if (bs != null ) { axisBase = bs; }
         
         if (axisType === "log") {
-          /*
-          if (axisValL <= 1E-6) {
-            var delta = 1E-6 - axisValL;
-            axisValL += delta;
-          }
-          if (axisValR <= 1E-6) {
-            var delta = 1E-6 - axisValR;
-            axisValR += delta;
-          }
-          */
           if (axisBase <= 1) {
             axisBase = 10;
             console.error("cannot set base to <= 1");
           }
-          //axisValL = Math.log(axisValL) / Math.log(axisBase);
-          //axisValR = Math.log(axisValR) / Math.log(axisBase);
         }
         if (axisValR - axisValL < 1E-12) {
           console.error("axis range too small");

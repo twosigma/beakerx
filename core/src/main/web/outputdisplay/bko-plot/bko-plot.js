@@ -550,7 +550,7 @@
                   scope.jqcontainer.find("#" + labelid).remove();
                   var label = $("<div id=" + labelid + " class='plot-constlabel'></div>")
                     .appendTo(scope.jqcontainer)
-                    .text(plotUtils.getTipString(model.xAxis.getType(), ele._x));
+                    .text(plotUtils.getTipString(ele._x, model.xAxis));
                   var w = label.outerWidth(), h = label.outerHeight();
                   label.css({
                     "left" : x - w / 2,
@@ -577,7 +577,7 @@
                   scope.jqcontainer.find("#" + labelid).remove();
                   var label = $("<div id=" + labelid + " class='plot-constlabel'></div>")
                     .appendTo(scope.jqcontainer)
-                    .text(plotUtils.getTipString(model.yAxis.getType(), ele._y));
+                    .text(plotUtils.getTipString(ele._y, model.yAxis));
                   var w = label.outerWidth(), h = label.outerHeight();
                   label.css({
                     "left" : lMargin + scope.labelPadding.x,
@@ -956,7 +956,7 @@
             scope.jqcontainer.find("#cursor_xlabel").remove();
             var label = $("<div id='cursor_xlabel' class='plot-cursorlabel'></div>")
               .appendTo(scope.jqcontainer)
-              .text(model.xAxis.getString(mapX(x)));
+              .text(plotUtils.getTipStringPercent(mapX(x), model.xAxis));
             var w = label.outerWidth(), h = label.outerHeight();
             var p = {
               "x" : x - w / 2,
@@ -986,7 +986,7 @@
             scope.jqcontainer.find("#cursor_ylabel").remove();
             var label = $("<div id='cursor_ylabel' class='plot-cursorlabel'></div>")
               .appendTo(scope.jqcontainer)
-              .text(model.yAxis.getString(mapY(y)));
+              .text(plotUtils.getTipStringPercent(mapY(y), model.yAxis));
             var w = label.outerWidth(), h = label.outerHeight();
             var p = {
               "x" : lMargin + scope.labelPadding.x,

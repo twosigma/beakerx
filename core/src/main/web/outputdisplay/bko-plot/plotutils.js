@@ -14,17 +14,15 @@
       updateDataRange : function(range, ele) {
         if (ele.x != null) { this.updateDataRangeVal(range, "x", ele.x); }
         if (ele.y != null) { this.updateDataRangeVal(range, "y", ele.y); }
-        if (ele.x1 != null) { this.updateDataRangeVal(range, "x", ele.x1); }
         if (ele.x2 != null) { this.updateDataRangeVal(range, "x", ele.x2); }
-        if (ele.y1 != null) { this.updateDataRangeVal(range, "y", ele.y1); }
         if (ele.y2 != null) { this.updateDataRangeVal(range, "y", ele.y2); }
       },
-      getDataRange : function(data) {
+      getDataRange : function(data) { // data range is in [0,1] x [0,1]
         var datarange = {
-          xl: 1E20,
-          yl: 1E20,
-          xr: -1E20,
-          yr: -1E20
+          xl: 1E100,
+          yl: 1E100,
+          xr: -1E100,
+          yr: -1E100
         };
         var visibleData = 0;
         for (var i = 0; i < data.length; i++) {
@@ -37,7 +35,7 @@
         }
         if (visibleData === 0) {
           datarange.xl = datarange.yl = 0;
-          datarange.xr = datarange.yr = 100;
+          datarange.xr = datarange.yr = 1;
         }
         datarange.xspan = datarange.xr - datarange.xl;
         datarange.yspan = datarange.yr - datarange.yl;
@@ -55,22 +53,20 @@
           yl : model.focus.yl,
           yr : model.focus.yr
         };
-        if (focus.xl == null) { focus.xl = range.xl - range.xspan * margin.left / 100.0; }
-        if (focus.xr == null) { focus.xr = range.xr + range.xspan * margin.right / 100.0; }
-        if (focus.yl == null) { focus.yl = range.yl - range.yspan * margin.bottom / 100.0; }
-        if (focus.yr == null) { focus.yr = range.yr + range.yspan * margin.top / 100.0; }
+        if (focus.xl == null) { 
+          focus.xl = range.xl - range.xspan * margin.left;
+        }
+        if (focus.xr == null) {
+          focus.xr = range.xr + range.xspan * margin.right;
+        }
+        if (focus.yl == null) {
+          focus.yl = range.yl - range.yspan * margin.bottom;
+        }
+        if (focus.yr == null) {
+          focus.yr = range.yr + range.yspan * margin.top;
+        }
         focus.xspan = focus.xr - focus.xl;
         focus.yspan = focus.yr - focus.yl;
-        if (focus.xspan < 1E-6) {
-          focus.xr += Math.max(5E-5, focus.xspan * 0.5);
-          focus.xl -= Math.max(5E-5, focus.xspan * 0.5);
-          focus.xspan = focus.xr - focus.xl;
-        }
-        if (focus.yspan < 1E-6) {
-          focus.yr += Math.max(5E-5, focus.yspan * 0.5);
-          focus.yl -= Math.max(5E-5, focus.yspan * 0.5);
-          focus.yspan = focus.yr - focus.yl;
-        }
         return {
           "initFocus" : focus,
           "visibleData" : ret.visibleData
@@ -450,7 +446,6 @@
           .attr("y2", function(d) { return d.y2; });
       },
       
-      
       plotLabels: function(scope) {   // redraw
         var pipe = scope.rpipeTexts;
         scope.labelg.selectAll("text").remove();
@@ -465,7 +460,6 @@
           .attr("dominant-baseline", function(d) { return d["dominant-baseline"]; })
           .text(function(d) { return d.text; });
       },
-      
       replotSingleCircle: function(scope, d) {
         scope.svg.selectAll("#" + d.id).remove();
         scope.svg.selectAll("#" + d.id)
@@ -491,21 +485,21 @@
           .attr("height", function(d) { return d.height; })
           .style("fill", function(d) { return d.fill; });
       },
-      formatCoord: function(type, intv, x, nanoOffset) {
+      formatCoord: function(type, w, x, nanoOffset) {
         if (type === "time" || type === "nanotime") {
           var months = this.months, days = this.days, d, ret = "";
           if (type === "time") { d = new Date(x); }
           else { d = new Date(parseInt(x / 1000000)); }
           
-          if (intv <= 1000 * 60 * 60) 
+          if (w <= 1000 * 60 * 60) 
             ret = this.padStr(d.getHours(),2) + ":" + 
                 this.padStr(d.getMinutes(),2) + ":" +
                 this.padStr(d.getSeconds(),2); // minute:seconds
-          else if (intv <= 1000 * 60 * 60 * 24) 
+          else if (w <= 1000 * 60 * 60 * 24) 
             ret = days[d.getDay()] + " " + 
                 this.padStr(d.getHours(),2) + ":" + 
                 this.padStr(d.getMinutes(),2); // day hour:minutes
-          else if (intv <= 1000 * 60 * 60 * 24 * 31) 
+          else if (w <= 1000 * 60 * 60 * 24 * 31) 
             ret = months[d.getMonth()] + " " + 
                 d.getDate() + " " + 
                 days[d.getDay()]; // month date day
@@ -540,6 +534,12 @@
         var s = rhex6.toString(16);
         while (s.length < 6) s = "0" + s;
         return "#" + s;
+      },
+      getTipString : function(type, value) {
+        if (type === "time"){
+          return new Date(value).toLocaleString();
+        }
+        return "" + value;
       }
 
     };

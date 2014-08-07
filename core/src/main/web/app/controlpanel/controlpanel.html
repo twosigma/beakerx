@@ -65,8 +65,10 @@
       <p>
         <a href="http://beakernotebook.com/privacy">Privacy policy</a> - <a class="cursor_hand" ng-click="showWhatWeLog()">What will we log?</a>
       </p>
-      <button class="btn" ng-click="isAllowAnonymousTracking = false">No, don't track</button>
-      <button class="btn btn-primary" ng-click="isAllowAnonymousTracking = true">Yes, track my info</button>
+      <div class="btn-group">
+        <button class="beaker-btn" ng-click="isAllowAnonymousTracking = false">No, don't track</button>
+        <button class="beaker-btn active" ng-click="isAllowAnonymousTracking = true">Yes, track my info</button>
+      </div>
     </div>
 
   </div>

@@ -113,7 +113,7 @@
             }
             txt += "<div>x: " + valx + "</div><div>y: " + valy + "</div>";
             if (ele._y2 != null) {
-              var valy2 = plotUtils.getTipString(model.yAxis.type, ele._y2);
+              var valy2 = plotUtils.getTipString(ele._y2, model.yAxis);
               txt += "<div>y2: " + valy2 + "</div>";
             }
             ele.tip_value = txt;

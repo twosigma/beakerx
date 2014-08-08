@@ -1322,10 +1322,11 @@
             "x" : scope.scr2dataXp(box.x + box.w),
             "y" : scope.scr2dataYp(box.y + box.h)
           };
-          p1.x = plotUtils.fixPercent(p1.x);
-          p1.y = plotUtils.fixPercent(p1.y);
-          p2.x = plotUtils.fixPercent(p2.x);
-          p2.y = plotUtils.fixPercent(p2.y);
+          p1.x = Math.max(0, p1.x);
+          p1.y = Math.max(0, p1.y);
+          p2.x = Math.min(1, p2.x);
+          p2.y = Math.min(1, p2.y);
+          
           var focus = scope.focus, ofocus = {};
           _.extend(ofocus, scope.focus);
           focus.xl = ofocus.xl + ofocus.xspan * p1.x;

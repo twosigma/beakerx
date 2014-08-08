@@ -72,11 +72,6 @@
           "visibleData" : ret.visibleData
         };
       },
-      fixPercent: function(val) {
-        val = Math.max(val, 0);
-        val = Math.min(val, 1);
-        return val;
-      },
       outsideScr: function(scope, x, y) {
         var W = scope.jqsvg.width(), H = scope.jqsvg.height();
         return x < 0 || x > W || y < 0 || y > H;

@@ -70,7 +70,7 @@
                   // save session
                   var saveSession = function() {
                     var notebookModelAsString = bkUtils.toPrettyJson(notebookModel);
-                    if (session.isSavable()) {
+                    if (!_.isEmpty(session.notebookUri) && !session.readOnly) {
                       var fileSaver = bkCoreManager.getFileSaver(session.uriType);
                       return fileSaver.save(session.notebookUri, notebookModelAsString, true);
                     } else {

@@ -1013,16 +1013,17 @@
           scope.jqcontainer.find("#legends").remove();
 
           scope.legendDone = true;
-          var legend = $("<div></div>").appendTo(scope.jqcontainer)
+          var legend = $("<ul></ul>").appendTo(scope.jqcontainer)
             .attr("id", "legends")
             .attr("class", "plot-legendcontainer")
             .css({
               "left" : scope.jqcontainer.width() + 10 ,
               "top" : "0px"
             });
-          legend.draggable();
+          
           if (scope.visibleData > 1) {  // skip "All" check when there is only one line
-            var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
+            var unit = $("<li></li>").appendTo(legend)
+              .attr("id", "legend_all");
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_all")
               .attr("class", "plot-legendcheckbox")
@@ -1044,7 +1045,8 @@
           for (var i = 0; i < numLines; i++) {
             if (data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
             if (data[i].legend == null || data[i].legend === "") { continue; }
-            var unit = $("<div></div>").appendTo(legend).attr("id", "legend_" + i);
+            var unit = $("<li></li>").appendTo(legend)
+              .attr("id", "legend_" + i);
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_" + i)
               .attr("class", "plot-legendcheckbox")
@@ -1061,6 +1063,7 @@
               .attr("class", "plot-label")
               .text(data[i].legend);
           }
+          legend.draggable();
         };
         scope.toggleLine = function(e) {
           var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
@@ -1068,6 +1071,8 @@
           if (id == "all") {
             scope.showAllLines = !scope.showAllLines;
             for (var i = 0; i < data.length; i++) {
+              if (data[i].type === "constline" || data[i].type === "constband" 
+                || data[i].type === "text") continue;
               data[i].shown = scope.showAllLines;
               scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
             }

@@ -1128,6 +1128,8 @@
           var p1 = scope.mousep1, p2 = scope.mousep2;
           var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
               yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
+          if (xr === xl) xr = xl + 1;
+          if (yr === yl) yr = yl + 1;
           scope.locateBox = {
             "x" : xl,
             "y" : yl,

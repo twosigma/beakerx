@@ -40,7 +40,7 @@
       var numIntws = [], numFixs = [];
       var bs = 1E-6;
       for (var i = 0; i < 18; i++) {
-        var f = Math.max(6-i, 0);
+        var f = Math.max(7-i, 0);
         numIntws = numIntws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs]);  // generate 1s, 5s
         numFixs = numFixs.concat([f, f, f]);
         bs *= 10;

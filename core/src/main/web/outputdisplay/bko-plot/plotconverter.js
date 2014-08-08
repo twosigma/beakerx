@@ -59,6 +59,9 @@
       remapModel : function(model) {
         // map data entrie to [0, 1] of axis range
         var vrange = model.vrange;
+        var xAxisLabel = model.xAxis.label,
+            yAxisLabel = model.yAxis.label;
+        
         var xAxis = new plotAxis(model.xAxis.type),
             yAxis = new plotAxis(model.yAxis.type);
         
@@ -73,11 +76,11 @@
           yAxis.setRange(vrange.yl, vrange.yr, model.timezone);
         }
         
-        if (model.xAxisLabel != null) {
-          xAxis.setLabel(model.xAxisLabel);
+        if (xAxisLabel != null) {
+          xAxis.setLabel(xAxisLabel);
         }
-        if (model.yAxisLabel != null) {
-          yAxis.setLabel(model.yAxisLabel);
+        if (yAxisLabel != null) {
+          yAxis.setLabel(yAxisLabel);
         }
         model.xAxis = xAxis;
         model.yAxis = yAxis;
@@ -569,7 +572,10 @@
           if (dat.outline_colors) { delete dat.outline_colors; }
         }
       },
-      standardizeModel : function(model) {
+      standardizeModel : function(_model) {
+        var model = {};
+        $.extend(true, model, _model); // deep copy model to prevent changing the original JSON
+        
         if (model.graphics_list != null) {
           model.version = "groovy";  // TODO, a hack now to check DS source
         }
@@ -671,7 +677,7 @@
         
         this.cleanupModel(newmodel);
         newmodel.version = "complete";
-        console.log(newmodel);
+        //console.log(newmodel);
         return newmodel;
       }
     };

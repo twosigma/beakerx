@@ -535,6 +535,9 @@
         if (type === "time") {
           return moment(val).tz(axis.getTimezone()).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
         } 
+        if (typeof(val) === "number") {
+          val = val.toFixed(axis.getFixed());
+        }
         return "" + val;
       },
       getTipStringPercent : function(pct, axis) {

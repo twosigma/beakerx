@@ -148,8 +148,8 @@
             y : 10
           };
           scope.intervalStepHint = {
-            x : 100,
-            y : 50
+            x : 150,
+            y : 75
           };
           scope.numIntervals = {
             x: parseInt(model.initSize.width) / scope.intervalStepHint.x,
@@ -283,16 +283,22 @@
               };
               continue;
             }
-
             var l = plotUtils.upper_bound(eles, "x", focus.xl);
-            var r = plotUtils.upper_bound(eles, "x", focus.xr) + 1;
-            // cover one more point to the right for line
-
+            var r = plotUtils.upper_bound(eles, "x", focus.xr);
+            
+            if ( data[i].type === "line" || data[i].type === "area") {
+              // cover one more point to the right for line and area
+              r++;
+            } else {
+              // skip the left side element
+              l++;
+            }
+            
             // truncate out-of-sight segment on x-axis
             l = Math.max(l, 0);
             r = Math.min(r, eles.length - 1);
 
-            if (l == eles.length - 1 && eles[l].x < focus.xl) {
+            if (l == r && eles[l].x < focus.xl) {
               // all elements are to the left of the svg
               l = 0;
               r = -1;
@@ -422,7 +428,7 @@
                   "x1" : mapX(p.x),
                   "y1" : mapY(p.y),
                   "x2" : mapX(p.x),
-                  "y2" : mapY(y2),
+                  "y2" : mapY(p.y2),
                   "stroke": p.color,
                   "stroke_opacity": p.color_opacity,
                   "stroke_dasharray": p.stroke_dasharray,
@@ -432,6 +438,7 @@
                   "tip_x" : mapX(p.x),
                   "tip_y" : mapY(p.y)
                 });
+                /*
                 if (data[i].style.search("bottom") != -1) {
                   var y = y2;
                   reles.push({
@@ -460,6 +467,7 @@
                     "stroke_width" : p.width
                   });
                 }
+                */
               }
               scope.rpipeStems.push({
                 "id" : "stem_" + i,

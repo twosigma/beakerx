@@ -32,18 +32,25 @@
       if (type == null) { type = "linear"; }  // linear, log, time, nanotime, category
       
       var dateIntws = [
-        1, 5, 10, 50, 100, 500,   // milliseconds
-        1000, 5000, 10000, 30000, 60000, // 1, 5, 10, 30, 60 seconds
-        300000, 600000, 1800000, 3600000, // 5, 10, 30, 60 minutes
-        10800000, 21600000, 43200000, 86400000, // 3, 6, 12, 24 hours
-        604800000, 2592000000, 7776000000, 15552000000, 31104000000 // 7, 30, 90, 180, 360 days
+        // milliseconds
+        1, 5, 10, 50, 100, 500,   
+        // 1, 5, 10, 30, 60 seconds
+        1000, 5000, 10000, 30000, 60000,
+        // 5, 10, 30, 60 minutes
+        300000, 600000, 1800000, 3600000, 
+        // 3, 6, 12, 24 hours
+        3600000 * 3, 3600000 * 6, 3600000 * 12, 3600000 * 24, 
+        // 7, 30, 90, 180, 360 days
+        86400000 * 7, 86400000 * 30, 86400000 * 90, 86400000 * 180, 86400000 * 360, 
+        // 5, 10, 25, 50, 100 years
+        31104000000 * 5, 31104000000 * 10, 31104000000 * 25, 31104000000 * 50, 31104000000 * 100
       ];
       var numIntws = [], numFixs = [];
       var bs = 1E-6;
       for (var i = 0; i < 18; i++) {
-        var f = Math.max(7-i, 0);
+        var f = Math.max(6 - i, 0);
         numIntws = numIntws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs]);  // generate 1s, 5s
-        numFixs = numFixs.concat([f, f, f]);
+        numFixs = numFixs.concat([f, f + 1, f]);
         bs *= 10;
       }
       
@@ -67,12 +74,6 @@
         } else if (axisType === "time"){
           if (para != null) { axisTimezone = para; }
         }
-        /*
-        if (axisValR - axisValL < 1E-12) {
-          console.error("axis range too small");
-          axisValR = axisValL + 1E-12;
-        }
-        */
         axisValSpan = axisValR - axisValL;
       };
       this.setCoords = function(pl, pr, count) {

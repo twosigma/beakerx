@@ -5,6 +5,7 @@ nginx/bin
 src/main/web/vendor/bower_components
 src/main/web/template/version.html
 src/main/dist/
+src/main/web/app/dist
 *~
 .gradle
 .idea

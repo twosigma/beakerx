@@ -7,6 +7,7 @@ var htmlmin   = require('gulp-htmlmin');
 
 var Path      = require('path');
 var rootPath  = Path.join(__dirname, "/src/main/web/app/");
+var buildPath = Path.join(__dirname, "/src/main/web/app/dist");
 
 function handleError(e) {
   console.log('\u0007', e.message);
@@ -16,7 +17,7 @@ gulp.task("compileScss", function() {
   gulp.src(Path.join(rootPath, "app.scss"))
   .pipe(sass().on('error', handleError))
   .pipe(minifyCSS())
-  .pipe(gulp.dest(rootPath))
+  .pipe(gulp.dest(buildPath))
 });
 
 gulp.task("compileTemplates", function() {
@@ -28,7 +29,7 @@ gulp.task("compileTemplates", function() {
     }
   }))
   .pipe(concat('templates.js'))
-  .pipe(gulp.dest(rootPath));
+  .pipe(gulp.dest(buildPath));
 });
 
 gulp.task("watchScss", function() {

@@ -22,7 +22,7 @@
         "Line" : "line",
         "Stems" : "stem",
         "Bars" : "bar",
-        "Area" : "river",
+        "Area" : "area",
         "Text" : "text",
         "Points" : "point",
         "" : ""
@@ -64,7 +64,7 @@
         
         var xAxis = new plotAxis(model.xAxis.type),
             yAxis = new plotAxis(model.yAxis.type);
-        
+            
         if (xAxis.getType() !== "time") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
         } else {
@@ -156,7 +156,7 @@
             dat.type = "line";
           }
           
-          if(dat.type === "bar" || dat.type === "river") { 
+          if(dat.type === "bar" || dat.type === "area") { 
             //newmodel.yPreventNegative = true; // prevent move to y < 0
           } 
 
@@ -167,7 +167,7 @@
             dat.stroke_dasharray = this.lineDasharrayMap[dat.style];
           }
           
-          if(dat.type === "line" || dat.type === "river") { 
+          if(dat.type === "line" || dat.type === "area") { 
             if (dat.interpolation === "curve") {
             }
           }
@@ -219,7 +219,7 @@
               ele.x = ele.x - w/2;
               ele.x2 = ele.x + w/2;
             }
-            if (dat.type === "river" || dat.type === "bar" || dat.type === "stem") {
+            if (dat.type === "area" || dat.type === "bar" || dat.type === "stem") {
               if (dat.y2 == null) {
                 if (dat.height != null) {
                   ele.y2 = ele.y - dat.height;
@@ -244,7 +244,7 @@
               }
             }
             
-            if (dat.type === "river") {
+            if (dat.type === "area") {
               if (dat.interpolation == null) {
                 dat.interpolation = "linear";
               }
@@ -422,7 +422,7 @@
           
           dat.type = this.dataTypeMap[dat.type];
           
-          if(dat.type === "bar" || dat.type === "river") { 
+          if(dat.type === "bar" || dat.type === "area") { 
             //newmodel.yPreventNegative = true; // auto range to y = 0
           } 
 
@@ -431,7 +431,7 @@
             dat.stroke_dasharray = this.lineDasharrayMap[dat.style];
           }
           
-          if(dat.type === "line" || dat.type === "river") { 
+          if(dat.type === "line" || dat.type === "area") { 
             dat.interpolation = this.interpolationMap[dat.interpolation]; 
           }
 
@@ -677,7 +677,7 @@
         
         this.cleanupModel(newmodel);
         newmodel.version = "complete";
-        //console.log(newmodel);
+        console.log(newmodel);
         return newmodel;
       }
     };

@@ -367,7 +367,7 @@
                 "stroke_opacity": data[i].stroke_opacity,
                 "elements" : reles
               });
-            } else if (data[i].type === "river") {
+            } else if (data[i].type === "area") {
               var pstr = "", skipped = false;
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
@@ -735,7 +735,7 @@
             if (data[i].shown === false) {
               continue;
             }
-            if (data[i].type !== "line" && data[i].type !== "river") {
+            if (data[i].type !== "line" && data[i].type !== "area") {
               continue;
             }
 

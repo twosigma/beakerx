@@ -25,10 +25,6 @@
       var axisPctL, axisPctR, axisPctSpan;
       var axisLabel;
       
-      var months = ["Jan", "Feb", "Mar", "Apr", "May", "June", 
-          "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      var days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      
       if (type == null) { type = "linear"; }  // linear, log, time, nanotime, category
       
       var dateIntws = [

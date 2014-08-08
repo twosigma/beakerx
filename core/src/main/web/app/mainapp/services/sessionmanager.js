@@ -84,6 +84,21 @@
         },
         toPrettyJson: function() {
           return bkUtils.toPrettyJson(_v);
+        },
+        toCleanPrettyJson: function() {
+          //strip out the shell IDs
+          var shellIds = _(_v.evaluators).map(function(evaluator) {
+            var shellId = evaluator.shellID;
+            delete evaluator.shellID;
+            return shellId;
+          });
+          // generate pretty JSON
+          var prettyJson = bkUtils.toPrettyJson(_v);
+          // put the shell IDs back
+          _(_v.evaluators).each(function(evaluator, index) {
+            evaluator.shellID = shellIds[index];
+          });
+          return prettyJson;
         }
       };
     })();
@@ -112,7 +127,7 @@
       return {
         uriType: _uriType,
         notebookUri: _notebookUri.get(),
-        notebookModelAsString: _notebookModel.toPrettyJson()
+        notebookModelAsString: _notebookModel.toCleanPrettyJson()
       };
     };
 

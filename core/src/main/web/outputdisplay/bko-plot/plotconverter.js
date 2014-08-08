@@ -61,9 +61,17 @@
         var vrange = model.vrange;
         var xAxis = new plotAxis(model.xAxis.type),
             yAxis = new plotAxis(model.yAxis.type);
-            
-        xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
-        yAxis.setRange(vrange.yl, vrange.yr, model.yAxis.base);
+        
+        if (xAxis.getType() !== "time") {
+          xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
+        } else {
+          xAxis.setRange(vrange.xl, vrange.xr, model.timezone);
+        }
+        if (yAxis.getType() !== "time") {
+          yAxis.setRange(vrange.yl, vrange.yr, model.yAxis.base);
+        } else {
+          yAxis.setRange(vrange.yl, vrange.yr, model.timezone);
+        }
         
         if (model.xAxisLabel != null) {
           xAxis.setLabel(model.xAxisLabel);
@@ -126,13 +134,10 @@
           if (cursor.color == null) { cursor.color = "black"; }
           if (cursor.width == null) { cursor.width = 2; }
         }
-        
         var logx = newmodel.xAxis.type === "log",
             logxb = newmodel.xAxis.base,
             logy = newmodel.yAxis.type === "log",
             logyb = newmodel.yAxis.base;
-            
-        
         // fill in null entries, compute y2, etc.
         // move some of format SerializedData to formatData?
         var data = newmodel.data;
@@ -350,14 +355,6 @@
           }
         }
         
-        if (model.type === "TimePlot") {
-          newmodel.xType = "time";
-        } else if (model.type === "NanoPlot") {
-          // TODO, beaker crashes when loading long integers
-          //newmodel.nanoOffset = range.xl;
-          newmodel.xType = "nanotime";
-        }
-        
         if (model.crosshair != null) {
           var color = model.crosshair.color;
           newmodel.xCursor = {};
@@ -380,9 +377,13 @@
         if (logx) {
           newmodel.xAxis.type = "log";
           newmodel.xAxis.base = logxb;
+        } else if (model.type === "TimePlot") {
+          newmodel.xAxis.type = "time";
+        } else if (model.type === "NanoPlot"){  // TODO
         } else {
-          newmodel.xAxis.type = "linear";
+          newmodel.xAxis = "linear";
         }
+        
         if (logy) {
           newmodel.yAxis.type = "log";
           newmodel.yAxis.base = logyb;
@@ -597,6 +598,7 @@
               "height" : model.init_height != null ? model.init_height : 350
             },
             nanoOffset : null,
+            timezone : model.timezone
           };
         } else {
           newmodel = {
@@ -612,7 +614,8 @@
             initSize : {
               "width" : model.width != null ? model.width : 1200,
               "height": model.height != null ? model.height : 350
-            }
+            },
+            timezone : model.timezone
           };
         }
         

@@ -68,8 +68,8 @@
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });
             scope.numIntervals = {
-              x: scope.width / 200,
-              y: scope.height / 100
+              x: scope.width / scope.intervalStepHint.x,
+              y: scope.height / scope.intervalStepHint.y
             };
             scope.calcRange();
             scope.calcMapping(false);
@@ -147,9 +147,13 @@
             x : 10,
             y : 10
           };
+          scope.intervalStepHint = {
+            x : 100,
+            y : 50
+          };
           scope.numIntervals = {
-            x: parseInt(model.initSize.width) / 200,
-            y: parseInt(model.initSize.height) / 100
+            x: parseInt(model.initSize.width) / scope.intervalStepHint.x,
+            y: parseInt(model.initSize.height) / scope.intervalStepHint.y
           };
           scope.locateBox = null;
           scope.tips = {};

@@ -532,8 +532,8 @@
       },
       getTipString : function(val, axis) {
         var type = axis.getType();
-        if (type === "time"){
-          return new Date(val).toLocaleString();
+        if (type === "time") {
+          return moment(val).tz(axis.getTimezone()).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
         } 
         return "" + val;
       },

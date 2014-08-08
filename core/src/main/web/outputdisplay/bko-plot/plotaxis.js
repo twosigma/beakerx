@@ -20,6 +20,7 @@
     return function(type) {
       var axisType = type;
       var axisBase = 10;
+      var axisTime = 0, axisTimezone = "America/New_York";
       var axisValL = 0, axisValR = 1, axisValSpan;
       var axisPctL, axisPctR, axisPctSpan;
       var axisLabel;
@@ -54,21 +55,24 @@
       this.setLabel = function(label) {
         axisLabel = label;
       };
-      this.setRange = function(vl, vr, bs) {
+      this.setRange = function(vl, vr, para) {
         if (vl != null) { axisValL = vl; }
         if (vr != null) { axisValR = vr; }
-        if (bs != null ) { axisBase = bs; }
-        
         if (axisType === "log") {
+          if (para != null ) { axisBase = para; }
           if (axisBase <= 1) {
             axisBase = 10;
             console.error("cannot set base to <= 1");
           }
+        } else if (axisType === "time"){
+          if (para != null) { axisTimezone = para; }
         }
+        /*
         if (axisValR - axisValL < 1E-12) {
           console.error("axis range too small");
           axisValR = axisValL + 1E-12;
         }
+        */
         axisValSpan = axisValR - axisValL;
       };
       this.setCoords = function(pl, pr, count) {
@@ -93,12 +97,14 @@
           fixs = numFixs;
         }
        
-        var w, f;
+        var w, f, mindiff = 1E100;
         for (var i = intws.length - 1; i >= 0; i--) {
-          if (span / intws[i] >= count) {
+          var nowcount = span / intws[i];
+          var diff = Math.abs(nowcount - count);
+          if (diff < mindiff) {
+            mindiff = diff;
             w = intws[i];
             f = fixs[i];
-            break;
           } 
         }
         axisStep = w;
@@ -114,11 +120,11 @@
           coords.push(pct);
           val += w;
         }
-        
         axisCoords = coords;
         axisCoordLabels = labels;
       };
       this.getType = function() { return axisType; };
+      this.getTimezone = function() { return axisTimezone; };
       this.getCoords = function() { return _.without(axisCoords); };
       this.getCoordLabels = function() { return _.without(axisCoordLabels); };
       this.getStep = function() { return axisStep; };
@@ -143,11 +149,11 @@
           }
         }
         var val = this.getValue(pct);
-        var span = (vr - vl) * axisPctSpan;
+        var span = axisValSpan * axisPctSpan;
         
         var d, ret = "";
         if (axisType === "time") {
-          d = new Date(val.toFixed(0));
+          d = Math.ceil(val * 1000) / 1000;
         }
         else if (axisType === "nanotime"){
           var bval = new Big(val).plus(axisOffset).div(1000000);
@@ -159,25 +165,21 @@
           while (str.length < len) str = "0" + str;
           return str;
         };
-        if (span <= 1000 * 60 * 60) 
-          ret = padStr(d.getHours(),2) + ":" + 
-              padStr(d.getMinutes(),2) + ":" +
-              padStr(d.getSeconds(),2); // minute:seconds
-        else if (span <= 1000 * 60 * 60 * 24) 
-          ret = days[d.getDay()] + " " + 
-              padStr(d.getHours(),2) + ":" + 
-              padStr(d.getMinutes(),2); // date day hour:minutes
-        else if (span <= 1000 * 60 * 60 * 24 * 30) 
-          ret = months[d.getMonth()] + " " + 
-              d.getDate() + " " + 
-              days[d.getDay()]; // month date day
-        else 
-          ret = d.getFullYear() + " " + 
-              months[d.getMonth()]; //year month
-        
-        if (type === "time" && span < 1000) {
-          ret += "." + padStr(val % 1000, 3);
+        if (span <= 1000) {
+          ret = val + "  ";
+          ret = moment(d).tz(axisTimezone).format(".SSS") + ( (d - Math.floor(d)).toFixed(axisFixed));
+        } else if (span <= 1000 * 60) {
+          ret = moment(d).tz(axisTimezone).format("mm:ss.SSS");
+        } else if (span <= 1000 * 60 * 60) {
+          ret = moment(d).tz(axisTimezone).format("HH:mm:ss");
+        } else if (span <= 1000) {
+          ret = moment(d).tz(axisTimeozne).format("MMM DD ddd, HH:mm");
+        } else if (span <= 1000 * 60 * 60 * 24 * 30) {
+          ret = moment(d).tz(axisTimezone).format("MMM DD ddd");
+        } else {
+          ret = moment(d).tz(axisTimezone).format("YYYY MMM");
         }
+        
         if (type === "nanotime"  && span < 1000000) {
           var digits = bval.mod(1000000000).toFixed(0);
           if (span < 1000) {

@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotAxis, plotFactory, plotUtils) {
+  var retfunc = function(bkUtils, PlotAxis, plotFactory, plotUtils) {
     return {
       dataTypeMap : {
         "Line" : "line",
@@ -56,14 +56,15 @@
         2 : "linear", // should be "curve" but right now it is not implemented yet
         "" : "linear"
       },
+
       remapModel : function(model) {
         // map data entrie to [0, 1] of axis range
         var vrange = model.vrange;
         var xAxisLabel = model.xAxis.label,
             yAxisLabel = model.yAxis.label;
 
-        var xAxis = new plotAxis(model.xAxis.type),
-            yAxis = new plotAxis(model.yAxis.type);
+        var xAxis = new PlotAxis(model.xAxis.type),
+            yAxis = new PlotAxis(model.yAxis.type);
 
         if (xAxis.getType() !== "time") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
@@ -87,7 +88,9 @@
 
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
-          var item = data[i], eles = item.elements;
+
+          var item = data[i], eles = item.data.elements;
+
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
             if (ele.x != null) {
@@ -104,16 +107,18 @@
             }
           }
         }
+        // map focus region
         var focus = model.focus;
         if (focus.xl != null) { focus.xl = xAxis.getPercent(focus.xl); }
         if (focus.xr != null) { focus.xr = xAxis.getPercent(focus.xr); }
         if (focus.yl != null) { focus.yl = yAxis.getPercent(focus.yl); }
         if (focus.yr != null) { focus.yr = yAxis.getPercent(focus.yr); }
       },
+
       generateTips : function(model) {
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
-          var item = data[i], eles = item.elements;
+          var item = data[i], eles = item.data.elements;
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
             var txt = "";
@@ -284,12 +289,15 @@
               }
             }
           }
-
           // recreate rendering objects
+          item.tag = "item_" + i;
 
-          //console.log(plotFactory, item);
           data[i] = plotFactory.createPlotItem(item);
+
+          console.log(data[i]);
         }
+
+        // apply log to focus
         var focus = newmodel.focus;
         if (logx) {
           if (focus.xl != null) {
@@ -587,7 +595,6 @@
           model.version = "groovy";  // TODO, a hack now to check DS source
         }
         if (model.version === "complete") { // skip standardized model in combined plot
-          //console.log("pass", model);
           return model;
         } else if (model.version === "groovy") {
         } else {
@@ -689,5 +696,5 @@
       }
     };
   };
-  beaker.bkoFactory('plotConverter', ["bkUtils", 'plotAxis', 'plotFactory', 'plotUtils', retfunc]);
+  beaker.bkoFactory('plotConverter', ["bkUtils", 'PlotAxis', 'plotFactory', 'plotUtils', retfunc]);
 })();

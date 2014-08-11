@@ -198,5 +198,5 @@
     };
     return PlotAxis;
   };
-  beaker.bkoFactory('plotAxis', [retfunc]);
+  beaker.bkoFactory('PlotAxis', [retfunc]);
 })();

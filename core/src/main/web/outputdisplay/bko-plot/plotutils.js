@@ -17,6 +17,12 @@
         if (ele.x2 != null) { this.updateDataRangeVal(range, "x", ele.x2); }
         if (ele.y2 != null) { this.updateDataRangeVal(range, "y", ele.y2); }
       },
+      updateRange : function(datarange, itemrange) {
+        if (itemrange.xl != null) { datarange.xl = Math.min(datarange.xl, itemrange.xl); }
+        if (itemrange.xr != null) { datarange.xr = Math.max(datarange.xr, itemrange.xr); }
+        if (itemrange.yl != null) { datarange.yl = Math.min(datarange.yl, itemrange.yl); }
+        if (itemrange.yr != null) { datarange.yr = Math.max(datarange.yr, itemrange.yr); }
+      },
       getDataRange : function(data) { // data range is in [0,1] x [0,1]
         var datarange = {
           xl: 1E100,
@@ -28,10 +34,15 @@
         for (var i = 0; i < data.length; i++) {
           if (data[i].shown === false) { continue; }
           visibleData++;
+
+          var itemrange = data[i].getRange();
+          this.updateRange(datarange, itemrange);
+          /*
           var eles = data[i].elements;
           for (var j = 0; j < eles.length; j++) {
             this.updateDataRange(datarange, eles[j]);
           }
+          */
         }
         if (visibleData === 0) {
           datarange.xl = datarange.yl = 0;

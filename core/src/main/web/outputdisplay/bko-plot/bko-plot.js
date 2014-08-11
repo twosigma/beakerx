@@ -20,7 +20,7 @@
  */
 ( function() {
   'use strict';
-  var retfunc = function(plotAxis, plotUtils, plotConverter, bkCellMenuPluginManager) {
+  var retfunc = function(plotUtils, plotConverter, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -34,13 +34,15 @@
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
             "</filter>" +
           "</defs>" +
-          "<g id='maing'>" +
-            "<g id='coordg'></g>" +
+          "<g id='coordg'></g>" +
+          "<g id='maing'></g>" +
+          /*
             "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" +
             "<g id='stemg'></g> <g id='segg'></g> <g id='rectg'></g>" +
             "<g id='pointrectg'></g> <g id='pointcircleg'></g> <g id='pointdiamondg'></g>" +
-            "<g id='textg'></g> <g id='labelg'></g> " +
-          "</g>" +
+            "<g id='textg'></g> "
+            */
+          "<g id='labelg'></g> " +
           "<g id='interg'>" +
             "<g id='dotg'></g>" +
           "</g>" +
@@ -109,6 +111,7 @@
           scope.maing = d3.select(element[0]).select("#maing");
           scope.coordg = d3.select(element[0]).select("#coordg");
           scope.labelg = d3.select(element[0]).select("#labelg");
+          /*
           scope.lineg = scope.maing.select("#lineg");
           scope.barg = scope.maing.select("#barg");
           scope.riverg = scope.maing.select("#riverg");
@@ -120,6 +123,7 @@
           scope.segg = scope.maing.select("#segg");
           scope.rectg = scope.maing.select("#rectg");
           scope.textg = scope.maing.select("#textg");
+          */
 
           scope.interg = d3.select(element[0]).select("#interg");
           scope.dotg = scope.interg.select("#dotg");
@@ -313,12 +317,25 @@
           var model = scope.stdmodel, data = scope.stdmodel.data, fdata = scope.fdata;
           var focus = scope.focus, mapX = scope.data2scrX, mapY = scope.data2scrY;
 
+
+          for (var i = 0; i < data.length; i++) {
+            if (data[i].shown === false) {
+              continue;
+            }
+            data[i].render(scope);
+          }
+
+          return;
+          /*****************
+            emergency return
+           *******************/
+
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
               tMargin = scope.layout.topLayoutMargin, rMargin = scope.layout.rightLayoutMargin;
 
           for (var i = 0; i < data.length; i++) {
-            if (data[i].shown == false) {
+            if (data[i].shown === false) {
               continue;
             }
             var eles = data[i].elements;
@@ -1447,13 +1464,16 @@
 
         scope.update = function(first) {
           scope.resetSvg();
-          scope.filterData();
+          //scope.filterData();
           scope.calcCoords();
           scope.renderCoords();
           scope.renderData();
           scope.renderDots();
           scope.renderLabels();
+
           plotUtils.plotCoords(scope);
+
+          /*
           plotUtils.plotRivers(scope);
           plotUtils.plotBars(scope);
           plotUtils.plotStems(scope);
@@ -1465,6 +1485,7 @@
           plotUtils.plotSegs(scope);
           plotUtils.plotRects(scope);
           plotUtils.plotUserTexts(scope);
+          */
 
           scope.renderTips();
           scope.renderLocateBox(); // redraw
@@ -1478,5 +1499,5 @@
       }
     };
   };
-  beaker.bkoDirective("Plot", ["plotAxis", "plotUtils", "plotConverter", "bkCellMenuPluginManager", retfunc]);
+  beaker.bkoDirective("Plot", ["plotUtils", "plotConverter", "bkCellMenuPluginManager", retfunc]);
 })();

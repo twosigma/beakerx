@@ -18,20 +18,20 @@
   background-color: #FEFEFE;
   border: 1px solid #BBBBBB;
   /*
-  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5); 
+  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
   -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-  
-  -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,1.0); 
+
+  -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,1.0);
   -moz-box-shadow: 10px 10px 5px rgba(0,0,0,1.0);
-  
+
   */
  /* inset */
 }
 
-.plot-label, 
-.plot-test, 
-.plot-xylabel, 
-.plot-cursorlabel, 
+.plot-label,
+.plot-test,
+.plot-xylabel,
+.plot-cursorlabel,
 .plot-constlabel {
   font-family: verdana, helvetica, arial, sans-serif;
 }
@@ -144,6 +144,7 @@
   */
    /* inset */
   background-color: white;
+  list-style: none;
 }
 
 .plot-coverbox {

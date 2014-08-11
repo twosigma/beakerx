@@ -56,7 +56,6 @@
         });
       },
       link : function(scope, element, attrs) {
-
         // rendering code
         element.find("#plotContainer").resizable({
           maxWidth : element.width(), // no wider than the width of the cell
@@ -66,11 +65,11 @@
           resize : function(event, ui) {
             scope.width = ui.size.width;
             scope.height = ui.size.height;
-            scope.jqsvg.css({"width": scope.width + "px", "height": scope.height + "px"});
-            scope.jqplottitle.css({"width": scope.width + "px"});
+            scope.jqsvg.css({"width": scope.width, "height": scope.height});
+            scope.jqplottitle.css({"width": scope.width });
             scope.numIntervals = {
-              x: scope.width / 100,
-              y: scope.height / 50
+              x: scope.width / scope.intervalStepHint.x,
+              y: scope.height / scope.intervalStepHint.y
             };
             scope.calcRange();
             scope.calcMapping(false);
@@ -80,7 +79,6 @@
             scope.update();
           }
         });
-        
 
         scope.initLayout = function() {
           var model = scope.stdmodel;
@@ -93,7 +91,7 @@
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
           scope.jqsvg.css(model.initSize);
-          
+
           $(window).resize(function() {
             // update resize maxWidth when the browser window resizes
             var width = element.width();
@@ -106,8 +104,6 @@
           scope.jqplottitle = element.find("#plotTitle");
           scope.jqplottitle.text(model.title).css("width", model.initSize.width);
 
-          //if (model.width != null) scope.jqcontainer.css("width", model.width + "px");
-          //if (model.height != null) scope.jqcontainer.css("height", model.height + "px");
           scope.maing = d3.select(element[0]).select("#maing");
           scope.coordg = d3.select(element[0]).select("#coordg");
           scope.labelg = d3.select(element[0]).select("#labelg");
@@ -140,18 +136,22 @@
             tooltipWidth : 10
           };
           scope.zoomLevel = {
-            minSpanX : 1E-6,
-            minSpanY : 1E-6,
-            maxScaleX : 100,
-            maxScaleY : 100
+            minSpanX : 1E-12,
+            minSpanY : 1E-12,
+            maxScaleX : 1E9,
+            maxScaleY : 1E9
           };
           scope.labelPadding = {
             x : 10,
             y : 10
           };
+          scope.intervalStepHint = {
+            x : 150,
+            y : 75
+          };
           scope.numIntervals = {
-            x: parseInt(model.initSize.width) / 100,
-            y: parseInt(model.initSize.height) / 50
+            x: parseInt(model.initSize.width) / scope.intervalStepHint.x,
+            y: parseInt(model.initSize.height) / scope.intervalStepHint.y
           };
           scope.locateBox = null;
           scope.tips = {};
@@ -160,14 +160,11 @@
             y : -1
           };
           scope.showAllLines = true;
-          if (model.xLabel != null) {
+          if (model.xAxis.getLabel() != null) {
             scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * 2;
           }
-          if (model.yLabel != null) {
+          if (model.yAxis.getLabel() != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
-          }
-          if (model.xCoords == false) {
-            scope.layout.bottomLayoutMargin = 0;
           }
           scope.$watch("model.getFocus()", function(newFocus) {
             if (newFocus == null) { return; }
@@ -180,8 +177,8 @@
           scope.$watch("model.getWidth()", function(newWidth) {
             if (scope.width == newWidth) { return; }
             scope.width = newWidth;
-            scope.jqcontainer.css("width", newWidth + "px");
-            scope.jqsvg.css("width", newWidth + "px");
+            scope.jqcontainer.css("width", newWidth );
+            scope.jqsvg.css("width", newWidth );
             scope.calcMapping(false);
             scope.legendDone = false;
             scope.update();
@@ -197,79 +194,36 @@
           var ret = plotUtils.getInitFocus(scope.stdmodel);
           scope.visibleData = ret.visibleData;
           scope.initFocus = ret.initFocus;
-        },
+          scope.fixFocus(scope.initFocus);
+        };
         scope.initRange = function() {
           var model = scope.stdmodel;
+          scope.vrange = {
+            xl : 0,
+            xr : 1,
+            yl : 0,
+            yr : 1,
+            xspan : 1,
+            yspan : 1
+          };  // visible range is mapped to [0,1] x [0,1]
+
           scope.calcRange();
-          scope.vrange = {};   // visible range
-          _.extend(scope.vrange, model.vrange);
           scope.focus = {};
           _.extend(scope.focus, scope.initFocus);
-          scope.fixFocus(scope.focus);
         };
-
         scope.calcCoords = function() {
           // prepare the coordinates
           var focus = scope.focus, model = scope.stdmodel;
-
-          var dateIntervals = [
-            1, 5, 10, 15, 30, 60, 300, 600, 1800, 3600, 10800, 21600, 43200,
-            86400, 604800, 2592000, 7776000, 15552000, 31104000
-          ];
-          var valIntervals = [
-            0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 50, 100, 500, 1000,
-            5000, 10000, 50000, 100000
-          ];
-          var ys = model.yScale;
-          if (ys.type == "log") {
-            var valIntervalsLog = [];
-            for (var j = 1; j <= 100; j++)
-              valIntervalsLog.push(j);
-          }
-
-          var xspan = focus.xr - focus.xl, yspan = focus.yr - focus.yl;
-          var xbase, ybase, deci = 0, intervals;
-          intervals = model.xType == "time" ? dateIntervals : valIntervals;
-          for (var i = intervals.length - 1; i >= 0; i--) {
-            xbase = intervals[i] * 1000;
-            if (xspan / xbase >= scope.numIntervals.x)
-              break;
-          }
-          intervals = ys.type == "log" ? valIntervalsLog : valIntervals;
-          for (var i = intervals.length - 1; i >= 0; i--) {
-            ybase = intervals[i];
-            if (yspan / ybase >= scope.numIntervals.y)
-              break;
-          }
-          while (xspan / xbase > scope.numIntervals.x * 1.1) {
-            xbase *= 2;
-          }
-          while (yspan / ybase > scope.numIntervals.y * 1.1) {
-            ybase *= 2;
-          }
-          if (ybase <= 0.005)
-            deci = 3;
-          else if (ybase <= 0.05)
-            deci = 2;
-          else if (ybase <= 0.5)
-            deci = 1;
-          var xintv = xbase, yintv = ybase;
-          var xs = Math.ceil(focus.xl / xintv) * xintv, xt = Math.floor(focus.xr / xintv) * xintv,
-              ys = Math.ceil(focus.yl / yintv) * yintv, yt = Math.floor(focus.yr / yintv) * yintv;
-          scope.xCoords = [];
-          scope.yCoords = [];
-          for (var i = xs; i <= xt; i += xintv)
-            scope.xCoords.push(i);
-          for (var i = ys; i <= yt; i += yintv)
-            scope.yCoords.push(i.toFixed(deci));
-          scope.xintv = xintv;
-          scope.yintv = yintv;
+          model.xAxis.setCoords(focus.xl, focus.xr, scope.numIntervals.x);
+          model.yAxis.setCoords(focus.yl, focus.yr, scope.numIntervals.y);
         };
         scope.renderCoords = function() {
-          var focus = scope.focus;
+          var focus = scope.focus, model = scope.stdmodel;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
-          for (var i = 0; i < scope.xCoords.length; i++) {
-            var x = scope.xCoords[i];
+
+          var xCoords = model.xAxis.getCoords();
+          for (var i = 0; i < xCoords.length; i++) {
+            var x = xCoords[i];
             scope.rpipeCoords.push({
               "id" : "coord_x_" + i,
               "class" : "plot-coord",
@@ -279,8 +233,9 @@
               "y2" : mapY(focus.yr)
             });
           }
-          for (var i = 0; i < scope.yCoords.length; i++) {
-            var y = scope.yCoords[i];
+          var yCoords = model.yAxis.getCoords();
+          for (var i = 0; i < yCoords.length; i++) {
+            var y = yCoords[i];
             scope.rpipeCoords.push({
               "id" : "coord_y_" + i,
               "class" : "plot-coord",
@@ -321,16 +276,22 @@
               };
               continue;
             }
-
             var l = plotUtils.upper_bound(eles, "x", focus.xl);
-            var r = plotUtils.upper_bound(eles, "x", focus.xr) + 1;
-            // cover one more point to the right for line
+            var r = plotUtils.upper_bound(eles, "x", focus.xr);
+
+            if ( data[i].type === "line" || data[i].type === "area") {
+              // cover one more point to the right for line and area
+              r++;
+            } else {
+              // skip the left side element
+              l++;
+            }
 
             // truncate out-of-sight segment on x-axis
             l = Math.max(l, 0);
             r = Math.min(r, eles.length - 1);
 
-            if (l == eles.length - 1 && eles[l].x < focus.xl) {
+            if (l == r && eles[l].x < focus.xl) {
               // all elements are to the left of the svg
               l = 0;
               r = -1;
@@ -342,14 +303,14 @@
           }
         };
         scope.renderData = function() {
-          var data = scope.stdmodel.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
-          var mapX = scope.data2scrX, mapY = scope.data2scrY;
-          
+          var model = scope.stdmodel, data = scope.stdmodel.data, fdata = scope.fdata;
+          var focus = scope.focus, mapX = scope.data2scrX, mapY = scope.data2scrY;
+
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
               tMargin = scope.layout.topLayoutMargin, rMargin = scope.layout.rightLayoutMargin;
 
-          for (var i = 0; i < numLines; i++) {
+          for (var i = 0; i < data.length; i++) {
             if (data[i].shown == false) {
               continue;
             }
@@ -359,10 +320,9 @@
               var reles = [];
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
-                var x1 = mapX(p.x1), x2 = mapX(p.x2);
+                var x1 = mapX(p.x), x2 = mapX(p.x2);
                 if (x2 - x1 < 1) x2 = x1 + 1;
                 var y = p.y, y2 = p.y2;
-                if (y2 == null) { y2 = focus.yl; }
                 y = mapY(y); y2 = mapY(y2);
                 sw = x2 - x1;
                 if (y > y2) { continue; } // prevent negative height
@@ -399,7 +359,7 @@
                 "stroke_opacity": data[i].stroke_opacity,
                 "elements" : reles
               });
-            } else if (data[i].type === "river") {
+            } else if (data[i].type === "area") {
               var pstr = "", skipped = false;
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
@@ -453,15 +413,13 @@
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
                 var y2 = p.y2;
-                if (y2 == null)
-                  y2 = focus.yl;
                 reles.push({
                   "id" : "stem_" + i + "_" + j,
                   "class" : "plot-resp",
                   "x1" : mapX(p.x),
                   "y1" : mapY(p.y),
                   "x2" : mapX(p.x),
-                  "y2" : mapY(y2),
+                  "y2" : mapY(p.y2),
                   "stroke": p.color,
                   "stroke_opacity": p.color_opacity,
                   "stroke_dasharray": p.stroke_dasharray,
@@ -471,6 +429,7 @@
                   "tip_x" : mapX(p.x),
                   "tip_y" : mapY(p.y)
                 });
+                /*
                 if (data[i].style.search("bottom") != -1) {
                   var y = y2;
                   reles.push({
@@ -499,6 +458,7 @@
                     "stroke_width" : p.width
                   });
                 }
+                */
               }
               scope.rpipeStems.push({
                 "id" : "stem_" + i,
@@ -570,70 +530,61 @@
             } else if (data[i].type === "constline") {
               var reles = [];
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j];
+                var ele = eles[j];
                 var labelid = "constlabel_" + i + "_" + j;
-                if (p.type === "x") {
-                  var x = mapX(p.x);
-                  if (p.x < focus.xl || p.x > focus.xr) {
+                if (ele.type === "x") {
+                  if (ele.x < focus.xl || ele.x > focus.xr) {
                     scope.jqcontainer.find("#" + labelid).remove();
                     continue;
                   }
+                  var x = mapX(ele.x);
                   reles.push({
                     "id" : "constline_" + i + "_" + j,
                     "x1" : x,
                     "x2" : x,
                     "y1" : mapY(focus.yl),
                     "y2" : mapY(focus.yr),
-                    "stroke" : p.color,
-                    "stroke_opacity" : p.color_opacity,
-                    "stroke_width" : p.width,
-                    "stroke_dasharray" : p.stroke_dasharray
+                    "stroke" : ele.color,
+                    "stroke_opacity" : ele.color_opacity,
+                    "stroke_width" : ele.width,
+                    "stroke_dasharray" : ele.stroke_dasharray
                   });
 
                   scope.jqcontainer.find("#" + labelid).remove();
                   var label = $("<div id=" + labelid + " class='plot-constlabel'></div>")
                     .appendTo(scope.jqcontainer)
-                    .text(scope.stdmodel.xType === "time" ?
-                        plotUtils.formatDate(scope.xintv, p.x) : parseInt(p.x));
+                    .text(plotUtils.getTipString(ele._x, model.xAxis));
                   var w = label.outerWidth(), h = label.outerHeight();
-                  var p = {
-                    "x" : x - w / 2,
-                    "y" : H - bMargin - h - scope.labelPadding.y
-                  };
                   label.css({
-                    "left" : p.x + "px",
-                    "top" : p.y + "px",
+                    "left" : x - w / 2,
+                    "top" : H - bMargin - h - scope.labelPadding.y,
                     "background-color" : data[i].color
                   });
-                } else if (p.type === "y") {
-                  var y = mapY(p.y);
-                  if (p.y < focus.yl || p.y > focus.yr) {
+                } else if (ele.type === "y") {
+                  if (ele.y < focus.yl || ele.y > focus.yr) {
                     scope.jqcontainer.find("#" + labelid).remove();
                     continue;
                   }
+                  var y = mapY(ele.y);
                   reles.push({
                     "id" : "constline_" + i + "_" + j,
                     "x1" : mapX(focus.xl),
                     "x2" : mapX(focus.xr),
                     "y1" : y,
                     "y2" : y,
-                    "stroke" : p.color,
-                    "stroke_opacity" : p.color_opacity,
-                    "stroke_width" : p.width,
-                    "stroke_dasharray" : p.stroke_dasharray
+                    "stroke" : ele.color,
+                    "stroke_opacity" : ele.color_opacity,
+                    "stroke_width" : ele.width,
+                    "stroke_dasharray" : ele.stroke_dasharray
                   });
                   scope.jqcontainer.find("#" + labelid).remove();
-                  var _y = p._y != null? p._y : p.y;
                   var label = $("<div id=" + labelid + " class='plot-constlabel'></div>")
-                    .appendTo(scope.jqcontainer).text(_y.toFixed(0));
+                    .appendTo(scope.jqcontainer)
+                    .text(plotUtils.getTipString(ele._y, model.yAxis));
                   var w = label.outerWidth(), h = label.outerHeight();
-                  var p = {
-                    "x" : lMargin + scope.labelPadding.x,
-                    "y" : y - h / 2
-                  };
                   label.css({
-                    "left" : p.x + "px",
-                    "top" : p.y + "px",
+                    "left" : lMargin + scope.labelPadding.x,
+                    "top" : y - h / 2,
                     "background-color" : data[i].color
                   });
                 }
@@ -651,32 +602,32 @@
               var reles = [];
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
-                var ele = { 
+                var ele = {
                   "id": "constband_" + i + "_" + j
                 };
                 if (p.type === "x") {
-                  if (p.x1 > focus.xr || p.x2 < focus.xl) { continue; }
-                  var x1 = mapX(p.x1), x2 = mapX(p.x2);
-                  x1 = Math.max(x1, lMargin);
+                  if (p.x > focus.xr || p.x2 < focus.xl) { continue; }
+                  var x = mapX(p.x), x2 = mapX(p.x2);
+                  x = Math.max(x, lMargin);
                   x2 = Math.min(x2, W - rMargin);
                   _.extend(ele, {
-                    "x" : x1,
-                    "width" : x2 - x1,
+                    "x" : x,
+                    "width" : x2 - x,
                     "y" : tMargin,
                     "height" : H - bMargin - tMargin,
                     "opacity" : p.opacity
                   });
                 } else if (p.type === "y") {
-                  if (p.y1 > focus.yr || p.y2 < focus.yl) { continue; }
-                  var y2 = mapY(p.y1), y1 = mapY(p.y2); // after mapping, y1,y2 are reversed
-                  y2 = Math.min(y2, H - bMargin);
-                  y1 = Math.max(y1, tMargin);
+                  if (p.y > focus.yr || p.y2 < focus.yl) { continue; }
+                  var y = mapY(p.y), y2 = mapY(p.y2); // after mapping, y1,y2 are reversed
+                  y = Math.min(y, H - bMargin);
+                  y2 = Math.max(y2, tMargin);
                   _.extend(ele, {
                     "id" : "const_" + i + "_" + j,
                     "x" : lMargin,
                     "width" : W - lMargin - rMargin,
-                    "y" : y1,
-                    "height" : y2 - y1,
+                    "y" : y,
+                    "height" : y2 - y,
                     "opacity" : p.opacity
                   });
                 }
@@ -775,7 +726,7 @@
             if (data[i].shown === false) {
               continue;
             }
-            if (data[i].type !== "line" && data[i].type !== "river") {
+            if (data[i].type !== "line" && data[i].type !== "area") {
               continue;
             }
 
@@ -815,7 +766,9 @@
         };
         scope.prepareInteraction = function(id) {
           var model = scope.stdmodel;
-          if (model.useToolTip != true) return;
+          if (model.useToolTip != true) {
+            return;
+          }
 
           var sel = scope.svg.selectAll(".plot-resp");
           sel.on("mouseenter", function(d) {
@@ -887,7 +840,7 @@
               .css("border-color", d.tip_color == null ? "gray" : d.tip_color)
               .append(d.tip_text).mousedown(function(e) {
                 if (e.which == 3) {
-                  if (d.isResp === true) {
+                  if (d.isResp === true) {  // is line responsive dot
                     scope.jqsvg.find("#" + d.id).attr("opacity", 0);
                   } else {
                     scope.jqsvg.find("#" + d.id).removeAttr("filter");
@@ -914,8 +867,9 @@
               }
             });
 
-            tipdiv.css("left", p.x + objw + scope.fonts.tooltipWidth + "px")
-              .css("top", p.y + "px");
+            tipdiv
+              .css("left", p.x + objw + scope.fonts.tooltipWidth)
+              .css("top", p.y);
             if (d.isResp === true) {
               scope.jqsvg.find("#" + d.id).attr("opacity", 1);
             } else {
@@ -927,56 +881,52 @@
         scope.renderLabels = function() {
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
           var model = scope.stdmodel, ys = model.yScale;
-          if (model.xCoordLabel != false) {
-            for (var i = 0; i < scope.xCoords.length; i++) {
-              var x = scope.xCoords[i];
-              var p = {
-                "x" : mapX(x),
-                "y" : mapY(scope.focus.yl) + scope.labelPadding.y
-              };
-              scope.rpipeTexts.push({
-                "id" : "label_x_" + i,
-                "class" : "plot-label",
-                "text" : model.xType === "time" ? plotUtils.formatDate(scope.xintv, x) : x,
-                "x" : p.x,
-                "y" : p.y,
-                "text-anchor" : "middle",
-                "dominant-baseline" : "hanging"
-              });
-            }
+          var coords, labels;
+          coords = model.xAxis.getCoords();
+          labels = model.xAxis.getCoordLabels();
+          for (var i = 0; i < labels.length; i++) {
+            var x = coords[i];
+            scope.rpipeTexts.push({
+              "id" : "label_x_" + i,
+              "class" : "plot-label",
+              "text" : labels[i],
+              "x" : mapX(x),
+              "y" : mapY(scope.focus.yl) + scope.labelPadding.y,
+              "text-anchor" : "middle",
+              "dominant-baseline" : "hanging"
+            });
           }
-          for (var i = 0; i < scope.yCoords.length; i++) {
-            var y = scope.yCoords[i];
-            var p = {
-              "x" : mapX(scope.focus.xl) - scope.labelPadding.x,
-              "y" : mapY(y)
-            };
+          coords = model.yAxis.getCoords();
+          labels = model.yAxis.getCoordLabels();
+          for (var i = 0; i < labels.length; i++) {
+            var y = coords[i];
             scope.rpipeTexts.push({
               "id" : "label_y_" + i,
               "class" : "plot-label",
-              "text" : ys.type === "log" ? parseFloat(Math.pow(ys.base, y)).toFixed(2) : y,
-              "x" : p.x,
-              "y" : p.y,
+              "text" : labels[i],
+              //ys.type === "log" ? parseFloat(Math.pow(ys.base, y)).toFixed(2) : y,
+              "x" : mapX(scope.focus.xl) - scope.labelPadding.x,
+              "y" : mapY(y),
               "text-anchor" : "end",
               "dominant-baseline" : "central"
             });
           }
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-          if (model.xLabel != null) {
+          if (model.xAxis.getLabel() != null) {
             scope.rpipeTexts.push({
               "id" : "xlabel",
               "class" : "plot-xylabel",
-              "text" : model.xLabel,
+              "text" : model.xAxis.getLabel(),
               "x" : lMargin + (scope.jqsvg.width() - lMargin) / 2,
               "y" : scope.jqsvg.height() - scope.fonts.labelHeight
             });
           }
-          if (model.yLabel != null) {
+          if (model.yAxis.getLabel() != null) {
             var x = scope.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "ylabel",
               "class" : "plot-xylabel",
-              "text" : model.yLabel,
+              "text" : model.yAxis.getLabel(),
               "x" : x,
               "y" : y,
               "transform" : "rotate(-90 " + x + " " + y + ")"
@@ -1009,15 +959,15 @@
             scope.jqcontainer.find("#cursor_xlabel").remove();
             var label = $("<div id='cursor_xlabel' class='plot-cursorlabel'></div>")
               .appendTo(scope.jqcontainer)
-              .text(scope.stdmodel.xType === "time" ? plotUtils.formatDate(scope.xintv, mapX(x)) : parseInt(mapX(x)));
+              .text(plotUtils.getTipStringPercent(mapX(x), model.xAxis));
             var w = label.outerWidth(), h = label.outerHeight();
             var p = {
               "x" : x - w / 2,
               "y" : H - bMargin - scope.labelPadding.y - h
             };
             label.css({
-              "left" : p.x + "px",
-              "top" : p.y + "px",
+              "left" : p.x ,
+              "top" : p.y ,
               "background-color" : opt.color != null ? opt.color : "black"
             });
           }
@@ -1038,15 +988,16 @@
 
             scope.jqcontainer.find("#cursor_ylabel").remove();
             var label = $("<div id='cursor_ylabel' class='plot-cursorlabel'></div>")
-              .appendTo(scope.jqcontainer).text(mapY(y).toFixed(0));
+              .appendTo(scope.jqcontainer)
+              .text(plotUtils.getTipStringPercent(mapY(y), model.yAxis));
             var w = label.outerWidth(), h = label.outerHeight();
             var p = {
               "x" : lMargin + scope.labelPadding.x,
               "y" : y - h / 2
             };
             label.css({
-              "left" : p.x + "px",
-              "top" : p.y + "px",
+              "left" : p.x ,
+              "top" : p.y ,
               "background-color" : opt.color != null ? opt.color : "black"
             });
           }
@@ -1061,16 +1012,17 @@
           scope.jqcontainer.find("#legends").remove();
 
           scope.legendDone = true;
-          var legend = $("<div></div>").appendTo(scope.jqcontainer)
+          var legend = $("<ul></ul>").appendTo(scope.jqcontainer)
             .attr("id", "legends")
             .attr("class", "plot-legendcontainer")
             .css({
-              "left" : scope.jqcontainer.width() + 10 + "px",
+              "left" : scope.jqcontainer.width() + 10 ,
               "top" : "0px"
             });
-          legend.draggable();
+
           if (scope.visibleData > 1) {  // skip "All" check when there is only one line
-            var unit = $("<div></div>").appendTo(legend).attr("id", "legend_all");
+            var unit = $("<li></li>").appendTo(legend)
+              .attr("id", "legend_all");
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_all")
               .attr("class", "plot-legendcheckbox")
@@ -1092,7 +1044,8 @@
           for (var i = 0; i < numLines; i++) {
             if (data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
             if (data[i].legend == null || data[i].legend === "") { continue; }
-            var unit = $("<div></div>").appendTo(legend).attr("id", "legend_" + i);
+            var unit = $("<li></li>").appendTo(legend)
+              .attr("id", "legend_" + i);
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_" + i)
               .attr("class", "plot-legendcheckbox")
@@ -1109,6 +1062,7 @@
               .attr("class", "plot-label")
               .text(data[i].legend);
           }
+          legend.draggable();
         };
         scope.toggleLine = function(e) {
           var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
@@ -1116,6 +1070,8 @@
           if (id == "all") {
             scope.showAllLines = !scope.showAllLines;
             for (var i = 0; i < data.length; i++) {
+              if (data[i].type === "constline" || data[i].type === "constband"
+                || data[i].type === "text") { continue; }
               data[i].shown = scope.showAllLines;
               scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
             }
@@ -1180,6 +1136,8 @@
           var p1 = scope.mousep1, p2 = scope.mousep2;
           var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
               yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
+          if (xr === xl) { xr = xl + 1; }
+          if (yr === yl) { yr = yl + 1; }
           scope.locateBox = {
             "x" : xl,
             "y" : yl,
@@ -1188,7 +1146,7 @@
           };
         };
         scope.mouseDown = function() {
-          if (d3.event.target.nodeName != "svg") {
+          if (d3.event.target.nodeName === "div") {
             scope.interactMode = "other";
             scope.disableZoom();
             return;
@@ -1213,7 +1171,6 @@
           };
           scope.mousep2 = {};
           _.extend(scope.mousep2, scope.mousep1);
-          //scope.jqcontainer.find("#tip_mouse").remove();
         };
         scope.zooming = function(d) {
           if (scope.interactMode === "other") {
@@ -1268,6 +1225,7 @@
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
                 var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym),
                     nyspan = nyr - nyl;
+
                 if (nyspan >= level.minSpanY && nyspan <= vrange.yspan * level.maxScaleY) {
                   focus.yl = nyl;
                   focus.yr = nyr;
@@ -1331,22 +1289,18 @@
         };
         scope.fixFocus = function(focus) {
           var vrange = scope.vrange;
-          if (focus.xl < vrange.xl)
-            focus.xl = vrange.xl;
-          if (focus.xr > vrange.xr)
-            focus.xr = vrange.xr;
-          if (focus.yl < vrange.yl)
-            focus.yl = vrange.yl;
-          if (focus.yr > vrange.yr)
-            focus.yr = vrange.yr;
+          focus.xl = focus.xl < 0 ? 0 : focus.xl;
+          focus.xr = focus.xr > 1 ? 1 : focus.xr;
+          focus.yl = focus.yl < 0 ? 0 : focus.yl;
+          focus.yr = focus.yr > 1 ? 1 : focus.yr;
+          focus.xspan = focus.xr - focus.xl;
+          focus.yspan = focus.yr - focus.yl;
 
           if (focus.xl > focus.xr || focus.yl > focus.yr) {
             console.error("visible range specified does not match data range, " +
                 "enforcing visible range");
-            _.extend(focus, vrange);
+            _.extend(focus, scope.initFocus);
           }
-          focus.xspan = focus.xr - focus.xl;
-          focus.yspan = focus.yr - focus.yl;
         };
         scope.resetFocus = function() {
           var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
@@ -1375,10 +1329,11 @@
             "x" : scope.scr2dataXp(box.x + box.w),
             "y" : scope.scr2dataYp(box.y + box.h)
           };
-          p1.x = plotUtils.fixPercent(p1.x);
-          p1.y = plotUtils.fixPercent(p1.y);
-          p2.x = plotUtils.fixPercent(p2.x);
-          p2.y = plotUtils.fixPercent(p2.y);
+          p1.x = Math.max(0, p1.x);
+          p1.y = Math.max(0, p1.y);
+          p2.x = Math.min(1, p2.x);
+          p2.y = Math.min(1, p2.y);
+
           var focus = scope.focus, ofocus = {};
           _.extend(ofocus, scope.focus);
           focus.xl = ofocus.xl + ofocus.xspan * p1.x;
@@ -1439,6 +1394,7 @@
               "xr" : focus.xr
             });
           }
+
           scope.data2scrY = d3.scale.linear().domain([focus.yl, focus.yr]).range([H - bMargin, tMargin]);
           scope.data2scrYp = d3.scale.linear().domain([focus.yl, focus.yr]).range([1, 0]);
           scope.scr2dataY = d3.scale.linear().domain([tMargin, H - bMargin]).range([focus.yr, focus.yl]);
@@ -1453,9 +1409,10 @@
           scope.stdmodel = plotConverter.standardizeModel(model);
         };
         scope.init = function() {
-          scope.standardizeData();
 
-          // first standardize
+          // first standardize data
+          scope.standardizeData();
+          // create layout elements
           scope.initLayout();
 
           scope.resetSvg();
@@ -1471,9 +1428,11 @@
           }).mouseleave(function(e) {
             return scope.mouseleaveClear();
           });
-
           scope.enableZoom();
-          scope.initRange();  // init copies focus to initFocus, called only once
+
+          // init copies focus to initFocus, called only once, create axes
+          scope.initRange();
+
           scope.calcMapping();
           scope.update();
         };

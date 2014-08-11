@@ -104,8 +104,6 @@
           scope.jqplottitle = element.find("#plotTitle");
           scope.jqplottitle.text(model.title).css("width", model.initSize.width);
 
-          //if (model.width != null) scope.jqcontainer.css("width", model.width );
-          //if (model.height != null) scope.jqcontainer.css("height", model.height );
           scope.maing = d3.select(element[0]).select("#maing");
           scope.coordg = d3.select(element[0]).select("#coordg");
           scope.labelg = d3.select(element[0]).select("#labelg");
@@ -168,11 +166,6 @@
           if (model.yAxis.getLabel() != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
           }
-          /*
-          if (model.xCoords == false) {
-            scope.layout.bottomLayoutMargin = 0;
-          }
-          */
           scope.$watch("model.getFocus()", function(newFocus) {
             if (newFocus == null) { return; }
             scope.focus.xl = newFocus.xl;
@@ -1078,7 +1071,7 @@
             scope.showAllLines = !scope.showAllLines;
             for (var i = 0; i < data.length; i++) {
               if (data[i].type === "constline" || data[i].type === "constband"
-                || data[i].type === "text") continue;
+                || data[i].type === "text") { continue; }
               data[i].shown = scope.showAllLines;
               scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
             }
@@ -1143,8 +1136,8 @@
           var p1 = scope.mousep1, p2 = scope.mousep2;
           var xl = Math.min(p1.x, p2.x), xr = Math.max(p1.x, p2.x),
               yl = Math.min(p1.y, p2.y), yr = Math.max(p1.y, p2.y);
-          if (xr === xl) xr = xl + 1;
-          if (yr === yl) yr = yl + 1;
+          if (xr === xl) { xr = xl + 1; }
+          if (yr === yl) { yr = yl + 1; }
           scope.locateBox = {
             "x" : xl,
             "y" : yl,
@@ -1178,7 +1171,6 @@
           };
           scope.mousep2 = {};
           _.extend(scope.mousep2, scope.mousep1);
-          //scope.jqcontainer.find("#tip_mouse").remove();
         };
         scope.zooming = function(d) {
           if (scope.interactMode === "other") {

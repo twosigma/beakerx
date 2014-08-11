@@ -144,7 +144,6 @@
         // fill in null entries, compute y2, etc.
         // move some of format SerializedData to formatData?
         var data = newmodel.data;
-        //var logy = newmodel.yScale.type === "log", logyb = newmodel.yScale.base;
         for (var i = 0; i < data.length; i++) {
           var item = data[i], eles = item.elements;
 
@@ -580,7 +579,6 @@
           model.version = "groovy";  // TODO, a hack now to check DS source
         }
         if (model.version === "complete") { // skip standardized model in combined plot
-          //console.log("pass", model);
           return model;
         } else if (model.version === "groovy") {
         } else {

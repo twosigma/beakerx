@@ -21,9 +21,15 @@
   module.directive('bkTextCell', function(bkSessionManager) {
     return {
       restrict: 'E',
-      template: "<div contenteditable='true'></div>",
+      template: ""+
+        "<p class='depth-indicator'>{{getFullIndex()}}</p>"+
+        "<div contenteditable='true'></div>"
+      ,
       //scope: { cell: "=" },
       controller: function($scope) {
+        $scope.getFullIndex = function() {
+          return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;
+        }
       },
       link: function(scope, element, attrs) {
         var titleElement = $(element.find("div").first());

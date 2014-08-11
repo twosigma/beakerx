@@ -14,100 +14,84 @@
  *  limitations under the License.
  */
 
+@import "styles/variables";
+@import "styles/fonts";
+@import "styles/ui";
+@import "styles/header";
+@import "styles/dropdowns";
+@import "styles/dashboard";
+@import "styles/notebook";
+@import "styles/cells";
+@import "styles/sections";
+@import "styles/animations";
+@import "styles/heirarchy";
+@import "styles/stdout";
+
 root {
     display: block;
 }
 
-body {
+html body {
     margin: 10px;
-}
-
-body {
     padding-top: 60px;
+    font-family: $font-family-primary;
 }
 
-.bkcell {
-    padding-right: 8px;
-    padding-top: 5px;
-    margin-bottom: 10px;
-    border-right: 1px solid #999999;
+ul.cell-output-labels {
+    list-style: none;
+    margin: 0;
 }
 
-.cell-bracket-initialization {
-    border-right: 2px solid #00FF00;
+.notebook-container {
+    padding: 0 30px;
+    margin-top: 10px;
+    box-sizing: border-box;
 }
 
-.cell-bracket-selected {
-    border-right: 2px solid #009AA6;
-    box-shadow: 5px 0 10px -5px #009AA6;
+.locked .cell-output-labels li {
+    padding-top: 0;
 }
 
-.initcell {
-    border-right: 2px solid #009AA6;
+.cell-output-labels li {
+    display:    inline-block;
+    padding:    15px 15px 5px 0;
+    font-size:  13px;
 }
 
-.bk-hr {
-    border: 0;
-    height: 10px;
-    color: #009AA6;
-    background-color: #009AA6;
-    opacity: 0.0;
-    box-shadow: inset 0 0 3px 3px #FFF;
-    margin: 0px;
-    text-align: center;
+.output_subarea {
+    background: transparent;
+    border: none;
 }
 
-.bk-hr:after {
-    content: "insert cell";
-    display: inline-block;
-    position: relative;
-    top: -0.5em;
-    font-size: 1.0em;
-    padding: 0 0.25em 0 0.25em;
-    background: rgba(255, 255, 255, 0.8);
+.bkcell a.evaluate-script {
+    color:      black;
+    border:     solid 1px rgb(213, 213, 213);
+    display:    inline-block;
+    padding:    7px 26px;
+    font-size:  13px;
+    margin-top: 20px;
+    background: rgb(241, 241, 241);
 }
 
-.section0 {
-    font-size: 28pt;
-    font-weight: bold;
-    color: #365F91;
+.bkcell a.evaluate-script:hover {
+    text-decoration: none;
 }
 
-.section1 {
-    font-size: 24pt;
-    font-weight: bold;
-    color: #4F81BD;
+.bkcell .CodeMirror {
+    clear: both;
 }
 
-.section2 {
-    font-size: 20pt;
-    font-weight: normal;
-    text-decoration: underline;
-    color: #4F81BD;
+.CodeMirror-linenumber {
+    text-align: left;
 }
 
-.section3 {
-    font-size: 16pt;
-    font-weight: normal;
-    font-style: italic;
-    color: #4F81BD;
-}
-
-.section4 {
-    font-size: 14pt;
-    font-weight: normal;
-    color: #4F81BD;
-}
-
-.section5 {
-    font-size: 12pt;
-    font-weight: normal;
-    color: #4F81BD;
+.CodeMirror-gutters {
+    border:             none;
+    background-color:   transparent;
 }
 
 .CodeMirror {
     height: auto;
-    border: 1px solid grey;
 }
 
 .tschartcontainer {
@@ -185,14 +169,6 @@ PRE.CodeContainer img {
     display: none;
 }
 
-pre.out_warning {
-    background-color: #FFFFCE;
-}
-
-pre.out_error {
-    background-color: #FF9B9B;
-}
-
 .CodeMirror-fullscreen {
     display: block;
     position: fixed;
@@ -266,51 +242,6 @@ table.dataTable tbody td {
 
 .cursor_hand {
     cursor: pointer;
-}
-
-.outputlogbox {
-    overflow: auto;
-}
-
-.outputlog {
-    vertical-align: top;
-}
-
-.btn-toolbar {
-    padding-left: 10px;
-}
-
-.outputlogout {
-    display: block;
-    float: left;
-}
-
-.outputlogerr {
-    display: block;
-}
-
-.outputlogcontainer {
-    background-color: #E6F5F6;
-    position: fixed;
-    left: 0px;
-    width: 100%;
-    z-index: 10;
-}
-
-.outputloghandle {
-    background: linear-gradient(#D6E5E6, #E6F5F6, #D6E5E6);
-    border: 1;
-    height: 10px;
-    width: 100%;
-    cursor: ns-resize;
-}
-
-.prelog {
-    border: none;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    padding: 0px;
-    border-radius: 0px;
 }
 
 .ui-widget {

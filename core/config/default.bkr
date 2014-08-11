@@ -44,7 +44,7 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "#Python - will turn light blue when plugin loads successfully"
+                "body": "#Python"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -55,7 +55,7 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#R - will turn dark blue when plugin loads successfully"
+                "body": "#R"
             },
             "output": {
                 "selectedType": "Hidden"
@@ -66,7 +66,7 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "//JavaScript - will turn pink when plugin loads successfully"
+                "body": "//JavaScript"
             },
             "output": {
                 "selectedType": "Hidden"

@@ -1,5 +1,9 @@
+<div class="toggle-menu">
+  <div class="cell-menu-item cell-dropdown"></div>
+  <div class="cell-menu-item expand-contract advanced-hide" ng-click="toggleExpansion()" ng-class="!isExpanded() && 'collapsed'"></div>
+</div>
 <div class="bkcell">
-  <bk-output-display
+  <bk-output-display ng-show="isShowOutput()"
       model="outputDisplayModel"
       type="{{ getOutputDisplayType() }}">
   </bk-output-display>

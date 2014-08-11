@@ -211,6 +211,14 @@
         }
         recreateCellMap();
       },
+      insertLast: function(cell) {
+        if (!_.isObject(cell)) {
+          throw "unacceptable"
+        }
+
+        cells.splice(cells.length, 0, cell);
+        recreateCellMap();
+      },
       insertAfter: function(id, cell) {
         if (!_.isObject(cell)) {
           throw "unacceptable"

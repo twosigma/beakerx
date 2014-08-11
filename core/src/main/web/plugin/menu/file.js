@@ -34,33 +34,34 @@ define(function(require, exports, module) {
       items: []
     },
     {
-      name: "Save",
-      action: function() {
-        bkHelper.saveNotebook();
-      }
-    },
-    {
-      name: "Close",
-      action: function() {
-        bkHelper.closeNotebook();
-      }
-    },
-    {
       name: "Open recent",
       items: function() {
         return bkHelper.getRecentMenuItems();
       }
     },
     {
-      name: "Control panel",
+      name: "Save",
       action: function() {
-        bkHelper.gotoControlPanel();
+        bkHelper.saveNotebook();
       }
     },
     {
       name: "Save As",
       autoReduce: true,
       items: []
+    },
+    {
+      name: "Share to Web",
+      action: function () {
+        bkHelper.shareNotebook();
+      },
+      tooltip: "Share the notebook to a public web page using an anonymous github gist"
+    },
+    {
+      name: "Close",
+      action: function() {
+        bkHelper.closeNotebook();
+      }
     }
   ];
 

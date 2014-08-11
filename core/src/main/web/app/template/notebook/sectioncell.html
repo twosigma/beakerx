@@ -14,11 +14,16 @@
     limitations under the License.
 -->
 <div ng-hide='cellmodel.hideTitle'>
-  <i class='fa fa-plus-square-o bksectiontoggleplus' ng-click='toggleShowChildren()' ng-hide='isShowChildren()'></i>
-  <i class='fa fa-minus-square-o bksectiontoggleminus' ng-click='toggleShowChildren()' ng-show='isShowChildren()'></i>
+  <span class='bksectiontoggleplus section-toggle' ng-click='toggleShowChildren()' ng-hide='isShowChildren()'>
+    <i class='fa fa-plus'></i>
+  </span>
+  <span class='bksectiontoggleminus section-toggle' ng-click='toggleShowChildren()' ng-show='isShowChildren()'>
+    <i class='fa fa-minus'></i>
+  </span>
+  <p class='depth-indicator'>{{getFullIndex()}}</p>
   <span class='section{{cellmodel.level}} bk-section-title' contenteditable="true">{{cellmodel.title}}</span>
 </div>
 <bk-new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
-<div bk-show="isShowChildren()">
-  <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell"></bk-cell>
+<div bk-show="isShowChildren()" class="section-children">
+  <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index"></bk-cell>
 </div>

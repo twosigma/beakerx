@@ -1,0 +1,48 @@
+.dashboard.container {
+  padding: 30px 0;
+
+  .new-notebook {
+    margin:   20px 0;
+    display:  inline-block;
+  }
+}
+
+.open-notebook-headline {
+  margin-top: 36px;
+}
+
+.notebook-dashboard-list {
+  margin:     0;
+  list-style: none;
+
+  .caption {
+    cursor:       pointer;
+    font-size:    15px;
+    font-weight:  bold;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .session {
+    margin:       10px 0;
+    border:       solid 1px $cell-border;
+    padding:      20px;
+    border-left:  solid 3px #41566a;
+  }
+
+  .path {
+    margin-bottom: -7px
+  }
+
+  .light {
+    color:        $font-grey;
+    font-size:    11px;
+    margin-right: 30px;
+
+    span {
+      color: $green;
+    }
+  }
+}

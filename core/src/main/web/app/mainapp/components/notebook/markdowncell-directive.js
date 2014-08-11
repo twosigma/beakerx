@@ -18,11 +18,17 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkMarkdownCell', function(bkSessionManager) {
+  module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', function(bkSessionManager, bkHelper) {
     return {
       restrict: 'E',
-      template: "<div></div>",
+      template: ""+
+        "<p class='depth-indicator'>{{getFullIndex()}}</p>"+
+        "<div ng-click='edit()', ng-class='focused && \"focused\"'></div>"
+      ,
       controller: function($scope) {
+        $scope.getFullIndex = function() {
+          return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;
+        }
       },
       link: function(scope, element, attrs) {
         var div = element.find("div").first().get()[0];
@@ -32,16 +38,12 @@
           file: {
             defaultContent: scope.cellmodel.body
           },
+          button: false,
           clientSideStorage: false,
           autogrow: {
             minHeight: 50,
             maxHeight: false,
             scroll: true
-          },
-          string: {
-            togglePreview: 'Toggle Preview Mode(Alt+p)',
-            toggleEdit: 'Toggle Edit Mode(Alt+p)',
-            toggleFullscreen: 'Enter Fullscreen(Alt+f)'
           }
         };
         var editor = new EpicEditor(options).load();
@@ -51,14 +53,33 @@
         editor.on('edit', function() {
           scope.cellmodel.mode = "edit";
         });
+        editor.on('focus', function() {
+          scope.focused = true;
+        });
+        editor.on('blur', function() {
+          scope.focused = false;
+          editor.preview();
+        });
+        editor.on('preview-clicked', function() {
+          scope.edit();
+        });
+        editor.on('reflow', function(size) {
+          div.style.height = size.height;
+        });
+
         editor.editorIframeDocument.addEventListener('keyup', function(e) {
-//                    if (e.ctrlKey && e.shiftKey && e.keyCode === 65) {
-//                        scope.newMarkdownCell();
-//                        return;
-//                    }
           scope.cellmodel.body = editor.getText();
           scope.$apply();
         });
+
+        scope.edit = function() {
+          if (bkHelper.isNotebookLocked()) {
+            return
+          }
+
+          editor.edit();
+        }
+
         if (scope.cellmodel.mode === "preview") {
           // set timeout otherwise the height will be wrong.
           // similar hack found in epic editor source:
@@ -79,6 +100,6 @@
         });
       }
     };
-  });
+  }]);
 
 })();

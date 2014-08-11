@@ -13,30 +13,32 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div>
+<div ng-class="{'advanced-mode': isAdvancedMode(), 'heirarchy-mode': isHeirarchyEnabled()}">
   <div class="bkcell">
     <bk-plugin-manager></bk-plugin-manager>
-    <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell"></bk-cell>
+    <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index">
+    </bk-cell>
     <div class="dropdown bkcellmenu" style="position: fixed; z-index: 99">
       <a class="dropdown-toggle" data-toggle="dropdown"></a>
       <bk-dropdown-menu menu-items="menuItems" submenu-classes="pull-left"></bk-dropdown-menu>
     </div>
   </div>
+  <bk-new-cell-menu ng-if="!isLocked()" class="base-menu-add" config="newCellMenuConfig"></bk-new-cell-menu>
+
   <div ng-show="isShowingOutput()" class="outputlogbox"></div>
   <div ng-show="isShowingOutput()" class="outputlogcontainer">
-    <div class="outputloghandle"></div>
     <div class="btn-toolbar">
-      <div class="btn-group">
-        <button class="btn" ng-click='clearOutput()'>Clear</button>
-        <button class="btn" ng-click='hideOutput()'>Hide</button>
+      <div class="btn-group alt-controls">
+        <a class="beaker-btn small" ng-click="clearOutput()" >Clear</a>
+        <a class="beaker-btn small" ng-click="hideOutput()" >Hide</a>
       </div>
       <div class="btn-group" data-toggle="buttons-checkbox">
-        <button type="button" class="btn active" ng-click="toggleStdOut()">stdout</button>
-        <button type="button" class="btn active" ng-click="toggleStdErr()">stderr</button>
+        <a class="beaker-btn" ng-class="{active: showStdOut}" ng-click="toggleStdOut()" >stdout</a>
+        <a class="beaker-btn" ng-class="{active: showStdErr}" ng-click="toggleStdErr()" >stderr</a>
       </div>
     </div>
     <div class="outputlogout" ng-show="showStdOut">
-      stdout:
+      <label class="output-label">stdout:</label>
       <div class="outputlogbox outputlogstdout">
         <div ng-repeat="line in outputLog track by $index">
           <div ng-show="line.type == 'text' || line.type == 'stdout'">
@@ -46,7 +48,7 @@
       </div>
     </div>
     <div class="outputlogerr" ng-show="showStdErr">
-      stderr:
+      <label class="output-label">stderr:</label>
       <div class="outputlogbox">
         <div ng-repeat="line in outputLog track by $index">
           <div ng-show="line.type == 'stderr'">

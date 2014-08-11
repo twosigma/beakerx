@@ -1021,6 +1021,21 @@
       });
     }
 
+    self.previewerIframeDocument.addEventListener('click', function(e) {
+      self.emit('preview-clicked');
+    });
+
+    self.editor.addEventListener('click', function (e) {
+      self.emit('editor-clicked');
+    });
+
+    self.editor.addEventListener('focus', function (e) {
+      self.emit('focus');
+    });
+    self.editor.addEventListener('blur', function (e) {
+      self.emit('blur');
+    });
+
     // Save the document every 100ms by default
     // TODO: Move into autosave setup function (_setupAutoSave)
     if (self.settings.file.autoSave) {

@@ -37,35 +37,37 @@
 
         $scope.newCodeCell = function(evaluatorName) {
           var newCell = newCellFactory.newCodeCell(evaluatorName);
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
         };
         $scope.newTextCell = function() {
           var newCell = newCellFactory.newTextCell();
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
         };
         $scope.newMarkdownCell = function() {
           var newCell = newCellFactory.newMarkdownCell();
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
         };
 
         $scope.newSectionCell = function(level) {
           var newCell = newCellFactory.newSectionCell(level);
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
         };
+
+        function attachCell(cell) {
+          var cellOp = bkSessionManager.getNotebookCellOp();
+
+          if ($scope.config && $scope.config.attachCell) {
+            return $scope.config.attachCell(cell);
+          }
+
+          bkSessionManager.getRawNotebookModel().cells
+          cellOp.insertLast(cell);
+        }
       },
       link: function(scope, element, attrs) {
-        var hr = element.find('hr');
-        hr.mouseover(function(event) {
-          hr.animate({ opacity: 1.0 }, 100);
-          event.stopPropagation();
-        });
-        hr.mouseout(function(event) {
-          hr.animate({ opacity: 0.0 }, 200);
-          event.stopPropagation();
-        });
         scope.moveMenu = function(event) {
           var menu = element.find('.dropdown-menu').first();
-          menu.css("left", bkUtils.getEventOffsetX(hr, event));
+          menu.css("left", bkUtils.getEventOffsetX(0, event));
         };
       }
     };

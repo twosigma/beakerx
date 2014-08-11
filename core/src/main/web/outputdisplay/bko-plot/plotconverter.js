@@ -286,6 +286,8 @@
           }
 
           // recreate rendering objects
+
+          //console.log(plotFactory, item);
           data[i] = plotFactory.createPlotItem(item);
         }
         var focus = newmodel.focus;

@@ -17,9 +17,23 @@
 (function() {
   'use strict';
   var retfunc = function() {
-    return {
+    var plotText = function(data){
+      this.data = data;
+    };
+    plotText.prototype.format = function(){
 
     };
+    plotText.prototype.init = function(){
+
+    };
+    plotText.prototype.render = function(scope){
+      var svg = scope.svg;
+
+    };
+    plotText.prototype.getRange = function(){
+
+    };
+    return plotText;
   };
   beaker.bkoFactory('plotText', [retfunc]);
 })();

@@ -17,9 +17,23 @@
 (function() {
   'use strict';
   var retfunc = function() {
-    return {
+    var plotArea = function(data){
+      this.data = data;
+    };
+    plotArea.prototype.format = function(){
 
     };
+    plotArea.prototype.init = function(){
+
+    };
+    plotArea.prototype.render = function(scope){
+      var svg = scope.svg;
+
+    };
+    plotArea.prototype.getRange = function(){
+
+    };
+    return plotArea;
   };
   beaker.bkoFactory('plotArea', [retfunc]);
 })();

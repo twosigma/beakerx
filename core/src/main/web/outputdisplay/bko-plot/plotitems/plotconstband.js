@@ -17,9 +17,23 @@
 (function() {
   'use strict';
   var retfunc = function() {
-    return {
+    var plotConstband = function(data){
+      this.data = data;
+    };
+    plotConstband.prototype.format = function(){
 
     };
+    plotConstband.prototype.init = function(){
+
+    };
+    plotConstband.prototype.render = function(scope){
+      var svg = scope.svg;
+
+    };
+    plotConstband.prototype.getRange = function(){
+
+    };
+    return plotConstband;
   };
   beaker.bkoFactory('plotConstband', [retfunc]);
 })();

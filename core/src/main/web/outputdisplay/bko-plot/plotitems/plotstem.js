@@ -17,9 +17,23 @@
 (function() {
   'use strict';
   var retfunc = function() {
-    return {
+    var plotStem = function(data){
+      this.data = data;
+    };
+    plotStem.prototype.format = function(){
 
     };
+    plotStem.prototype.init = function(){
+
+    };
+    plotStem.prototype.render = function(scope){
+      var svg = scope.svg;
+
+    };
+    plotStem.prototype.getRange = function(){
+
+    };
+    return plotStem;
   };
   beaker.bkoFactory('plotStem', [retfunc]);
 })();

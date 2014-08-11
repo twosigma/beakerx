@@ -66,6 +66,12 @@
         }
         return "Unknown App";
       },
+      hasSessionId: function() {
+        if (getCurrentApp().getSessionId) {
+          return true;
+        }
+        return false;
+      },
       getSessionId: function() {
         if (getCurrentApp().getSessionId) {
           return getCurrentApp().getSessionId();

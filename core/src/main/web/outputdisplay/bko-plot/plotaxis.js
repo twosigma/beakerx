@@ -36,15 +36,15 @@
     };
     PlotAxis.prototype.dateIntws = [
       // milliseconds
-      1, 5, 10, 50, 100, 500,   
+      1, 5, 10, 50, 100, 500,
       // 1, 5, 10, 30, 60 seconds
       1000, 5000, 10000, 30000, 60000,
       // 5, 10, 30, 60 minutes
-      300000, 600000, 1800000, 3600000, 
+      300000, 600000, 1800000, 3600000,
       // 3, 6, 12, 24 hours
-      3600000 * 3, 3600000 * 6, 3600000 * 12, 3600000 * 24, 
+      3600000 * 3, 3600000 * 6, 3600000 * 12, 3600000 * 24,
       // 7, 30, 90, 180, 360 days
-      86400000 * 7, 86400000 * 30, 86400000 * 90, 86400000 * 180, 86400000 * 360, 
+      86400000 * 7, 86400000 * 30, 86400000 * 90, 86400000 * 180, 86400000 * 360,
       // 5, 10, 25, 50, 100 years
       31104000000 * 5, 31104000000 * 10, 31104000000 * 25, 31104000000 * 50, 31104000000 * 100
     ];
@@ -83,7 +83,7 @@
         console.error("cannot set right coord < left coord");
         return;
       }
-      if (count == null) { 
+      if (count == null) {
         console.error("missing setCoords count");
         count = 1;
       }
@@ -92,7 +92,7 @@
       this.axisPctSpan = pr - pl;
       var span = this.axisPctSpan * this.axisValSpan;
       var intws, fixs;
-      if (this.axisType === "time") { 
+      if (this.axisType === "time") {
         intws = this.dateIntws;
         fixs = {};
       } else {
@@ -107,7 +107,7 @@
           mindiff = diff;
           w = intws[i];
           f = fixs[i];
-        } 
+        }
       }
       this.axisStep = w;
       this.axisFixed = f;
@@ -134,7 +134,7 @@
     PlotAxis.prototype.getPercent = function(val) {
       if (val < this.axisValL) { val = this.axisValL; }
       if (val > this.axisValR) { val = this.axisValR; }
-      return (val - this.axisValL) / this.axisValSpan;        
+      return (val - this.axisValL) / this.axisValSpan;
     };
     PlotAxis.prototype.getValue = function(pct) {
       if (pct < 0) { pct = 0; }
@@ -151,7 +151,7 @@
       }
       var val = this.getValue(pct);
       var span = this.axisValSpan * this.axisPctSpan;
-      
+
       var d, ret = "";
       if (this.axisType === "time") {
         d = Math.ceil(val * 1000) / 1000;
@@ -160,7 +160,7 @@
         var bval = new Big(val).plus(this.axisOffset).div(1000000);
         d = new Date(bval.toFixed(0));
       }
-      
+
       var padStr = function(val, len) {
         var str = "" + val;
         while (str.length < len) str = "0" + str;
@@ -180,7 +180,7 @@
       } else {
         ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
       }
-      
+
       /*
       // Nanoplot TODO
       if (this.axisType === "nanotime"  && span < 1000000) {

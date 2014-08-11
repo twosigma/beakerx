@@ -30,7 +30,7 @@
         } else {
           version = "direct";
         }
-        
+
         var width, height;
         var showLegend, useToolTip;
         if (version === "groovy") {
@@ -48,18 +48,18 @@
           showLegend = model.showLegend;
           useToolTip = model.useToolTip;
         }
-        
+
         if (width == null) { width = 1200; }
         if (height == null) { height = 600; }
-        
+
         newmodel.initSize = {
           "width" : width + "px",
           "height" : height + "px"
         };
-        
+
         var plotType = model.plot_type;
         if (plotType == null) { plotType = "Plot"; }
-        
+
         var sumweights = 0;
         var weights = model.weights == null ? [] : model.weights;
         for(var i = 0; i < model.plots.length; i++) {
@@ -69,22 +69,22 @@
         var plots = model.plots;
         for(var i = 0; i < plots.length; i++) {
           var plotmodel = plots[i];
-          
+
           if (plotmodel.version == null) { plotmodel.version = version; }
           if (plotmodel.showLegend == null) { plotmodel.showLegend = showLegend; }
           if (plotmodel.useToolTip == null) { plotmodel.useToolTip = useToolTip; }
-          
+
           plotmodel.type = plotType;
           var newplotmodel = plotConverter.standardizeModel(plotmodel);
-          
+
           if(i < plots.length - 1) {  // turn off x coordinate labels
             newplotmodel.xLabel = null;
             newplotmodel.xCoordLabel = false;
           }
-          
+
           newplotmodel.initSize.width = width + "px";
           newplotmodel.initSize.height = height * weights[i] / sumweights + "px";
-          
+
           newmodel.plots.push(newplotmodel);
         }
         return newmodel;

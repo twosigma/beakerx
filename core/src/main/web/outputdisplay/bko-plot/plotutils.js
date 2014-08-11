@@ -3,7 +3,7 @@
     'use strict';
     var retfunc = function(bkUtils) {
     return {
-      months: ["Jan", "Feb", "Mar", "Apr", "May", "June", 
+      months: ["Jan", "Feb", "Mar", "Apr", "May", "June",
           "July", "Aug", "Sep", "Oct", "Nov", "Dec"],
       days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       updateDataRangeVal : function(range, dim, val) {
@@ -53,7 +53,7 @@
           yl : model.focus.yl,
           yr : model.focus.yr
         };
-        if (focus.xl == null) { 
+        if (focus.xl == null) {
           focus.xl = range.xl - range.xspan * margin.left;
         }
         if (focus.xr == null) {
@@ -109,7 +109,7 @@
               .attr("x2", function(d) { return d.x2; })
               .attr("y1", function(d) { return d.y1; })
               .attr("y2", function(d) { return d.y2; });
-        }      
+        }
       },
       plotLines: function(scope) {
         var pipe = scope.rpipeLines;
@@ -421,7 +421,7 @@
               .attr("points", pipe[i].elements);
         }
       },
-     
+
       plotCoords: function(scope) {
         var sel = scope.coordg.selectAll("line");
         sel.data(scope.rpipeCoords, function(d) { return d.id; }).exit().remove();
@@ -440,7 +440,7 @@
           .attr("y1", function(d) { return d.y1; })
           .attr("y2", function(d) { return d.y2; });
       },
-      
+
       plotLabels: function(scope) {   // redraw
         var pipe = scope.rpipeTexts;
         scope.labelg.selectAll("text").remove();
@@ -485,30 +485,30 @@
           var months = this.months, days = this.days, d, ret = "";
           if (type === "time") { d = new Date(x); }
           else { d = new Date(parseInt(x / 1000000)); }
-          
-          if (w <= 1000 * 60 * 60) 
-            ret = this.padStr(d.getHours(),2) + ":" + 
+
+          if (w <= 1000 * 60 * 60)
+            ret = this.padStr(d.getHours(),2) + ":" +
                 this.padStr(d.getMinutes(),2) + ":" +
                 this.padStr(d.getSeconds(),2); // minute:seconds
-          else if (w <= 1000 * 60 * 60 * 24) 
-            ret = days[d.getDay()] + " " + 
-                this.padStr(d.getHours(),2) + ":" + 
+          else if (w <= 1000 * 60 * 60 * 24)
+            ret = days[d.getDay()] + " " +
+                this.padStr(d.getHours(),2) + ":" +
                 this.padStr(d.getMinutes(),2); // day hour:minutes
-          else if (w <= 1000 * 60 * 60 * 24 * 31) 
-            ret = months[d.getMonth()] + " " + 
-                d.getDate() + " " + 
+          else if (w <= 1000 * 60 * 60 * 24 * 31)
+            ret = months[d.getMonth()] + " " +
+                d.getDate() + " " +
                 days[d.getDay()]; // month date day
-          else 
-            ret = d.getFullYear() + " " + 
+          else
+            ret = d.getFullYear() + " " +
                 months[d.getMonth()]; //year month
-          
+
           if (type === "nanotime") {
             ret += "." + parseInt(x % 1000000);
           }
           return ret;
         } else {
           return parseInt(x);
-        } 
+        }
       },
       padStr: function(str, len) {
         str = "" + str;
@@ -534,7 +534,7 @@
         var type = axis.getType();
         if (type === "time") {
           return moment(val).tz(axis.getTimezone()).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
-        } 
+        }
         if (typeof(val) === "number") {
           val = val.toFixed(axis.getFixed());
         }

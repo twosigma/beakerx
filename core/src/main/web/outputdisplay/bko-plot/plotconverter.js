@@ -61,10 +61,10 @@
         var vrange = model.vrange;
         var xAxisLabel = model.xAxis.label,
             yAxisLabel = model.yAxis.label;
-        
+
         var xAxis = new plotAxis(model.xAxis.type),
             yAxis = new plotAxis(model.yAxis.type);
-            
+
         if (xAxis.getType() !== "time") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
         } else {
@@ -75,7 +75,7 @@
         } else {
           yAxis.setRange(vrange.yl, vrange.yr, model.timezone);
         }
-        
+
         if (xAxisLabel != null) {
           xAxis.setLabel(xAxisLabel);
         }
@@ -84,7 +84,7 @@
         }
         model.xAxis = xAxis;
         model.yAxis = yAxis;
-        
+
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
           var dat = data[i], eles = dat.elements;
@@ -147,18 +147,18 @@
         //var logy = newmodel.yScale.type === "log", logyb = newmodel.yScale.base;
         for (var i = 0; i < data.length; i++) {
           var dat = data[i], eles = dat.elements;
-          
+
           if (eles == null) eles = [];
 
           dat.shown = true;
-          
+
           if (dat.type == null) {
             dat.type = "line";
           }
-          
-          if(dat.type === "bar" || dat.type === "area") { 
+
+          if(dat.type === "bar" || dat.type === "area") {
             //newmodel.yPreventNegative = true; // prevent move to y < 0
-          } 
+          }
 
           if(dat.type === "line" || dat.type === "stem") {
             if (dat.style == null) {
@@ -166,12 +166,12 @@
             }
             dat.stroke_dasharray = this.lineDasharrayMap[dat.style];
           }
-          
-          if(dat.type === "line" || dat.type === "area") { 
+
+          if(dat.type === "line" || dat.type === "area") {
             if (dat.interpolation === "curve") {
             }
           }
-          
+
           if (dat.type === "line" || dat.type === "stem") {
             if (dat.width == null) {
               dat.width = 2;
@@ -180,7 +180,7 @@
           if (dat.type === "bar" && dat.width == null) {
             dat.width = 1;
           }
-          
+
           if (dat.colorOpacity != null) {
             dat.color_opacity = dat.colorOpacity;
             delete dat.colorOpacity;
@@ -197,10 +197,10 @@
             dat.stroke_opacity = dat.outlineOpacity;
             delete dat.outlineOpacity;
           }
-          
+
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
-            
+
             if (ele.outlineColor != null) {
               ele.stroke = ele.outlineColor;
               delete ele.outlineColor;
@@ -213,7 +213,7 @@
               ele.stroke_opacity = ele.outlineOpacity;
               delete ele.outlineOpacity;
             }
-            
+
             if (dat.type === "bar") {
               var w = dat.width;
               ele.x = ele.x - w/2;
@@ -243,20 +243,20 @@
                 ele.size = dat.style === "rect"? 10 : 5;
               }
             }
-            
+
             if (dat.type === "area") {
               if (dat.interpolation == null) {
                 dat.interpolation = "linear";
               }
             }
-            
-            // swap y, y2 
+
+            // swap y, y2
             if (ele.y != null && ele.y2 != null && ele.y < ele.y2) {
               var temp = ele.y;
               ele.y = ele.y2;
               ele.y2 = temp;
             }
-            
+
             if (ele.x != null) {
               ele._x = ele.x;
               if (logx) {
@@ -301,14 +301,14 @@
           }
         }
       },
-      
-      
+
+
       formatGroovyData : function(newmodel, model) {
         var yIncludeZero = false;
         var logx = false, logy = false, logxb, logyb;
         if (model.rangeAxes != null) {
           var axis = model.rangeAxes[0];
-          if (axis.auto_range_includes_zero === true) { 
+          if (axis.auto_range_includes_zero === true) {
             yIncludeZero = true;
           }
           if (axis.use_log === true) {
@@ -324,11 +324,11 @@
         newmodel.margin = {};
         // set axis bound as focus
         if (model.x_auto_range === false) {
-          if (model.x_lower_bound != null) { 
-            newmodel.focus.xl = model.x_lower_bound; 
+          if (model.x_lower_bound != null) {
+            newmodel.focus.xl = model.x_lower_bound;
           }
-          if (model.x_upper_bound != null) { 
-            newmodel.focus.xr = model.x_upper_bound; 
+          if (model.x_upper_bound != null) {
+            newmodel.focus.xr = model.x_upper_bound;
           }
         } else {
           if (model.x_lower_margin != null) {
@@ -338,15 +338,15 @@
             newmodel.margin.right = model.x_upper_margin;
           }
         }
-        
+
         if (model.rangeAxes != null) {
           var axis = model.rangeAxes[0];
           if (axis.auto_range === false) {
-            if (axis.lower_bound != null) { 
-              newmodel.focus.yl = axis.lower_bound; 
+            if (axis.lower_bound != null) {
+              newmodel.focus.yl = axis.lower_bound;
             }
-            if (axis.upper_bound != null) { 
-              newmodel.focus.yr = axis.upper_bound; 
+            if (axis.upper_bound != null) {
+              newmodel.focus.yr = axis.upper_bound;
             }
           } else {
             if (axis.lower_margin != null) {
@@ -357,25 +357,25 @@
             }
           }
         }
-        
+
         if (model.crosshair != null) {
           var color = model.crosshair.color;
           newmodel.xCursor = {};
           var cursor = newmodel.xCursor;
-          
+
           cursor.color_opacity = parseInt(color.substr(1,2), 16) / 255;
           cursor.color = "#" + color.substr(3);
-          
+
           var style = model.crosshair.style;
           if (style == null) style = "";
           style = this.lineStyleMap[style];
           cursor.stroke_dasharray = this.lineDasharrayMap[style];
           cursor.width = model.crosshair.width != null ? model.crosshair.width : 2;
-          
+
           newmodel.yCursor = {};
           _.extend(newmodel.yCursor, cursor);
         }
-        
+
         // log scaling
         if (logx) {
           newmodel.xAxis.type = "log";
@@ -386,14 +386,14 @@
         } else {
           newmodel.xAxis = "linear";
         }
-        
+
         if (logy) {
           newmodel.yAxis.type = "log";
           newmodel.yAxis.base = logyb;
         } else {
           newmodel.yAxis.type = "linear";
         }
-        
+
         var list = model.graphics_list;
         var numLines = list.length;
         for (var i = 0; i < numLines; i++) {
@@ -414,40 +414,40 @@
             dat.stroke = "#" + dat.outline_color.substr(3);
             delete dat.outline_color;
           }
-         
+
           if (dat.type == null) { dat.type = ""; }
           if (dat.style == null) { dat.style = ""; }
           if (dat.stroke_dasharray == null) { dat.stroke_dasharray = ""; }
           if (dat.interpolation == null) { dat.interpolation = ""; }
-          
+
           dat.type = this.dataTypeMap[dat.type];
-          
-          if(dat.type === "bar" || dat.type === "area") { 
+
+          if(dat.type === "bar" || dat.type === "area") {
             //newmodel.yPreventNegative = true; // auto range to y = 0
-          } 
+          }
 
           if(dat.type === "line" || dat.type === "stem") {
             dat.style = this.lineStyleMap[dat.style];
             dat.stroke_dasharray = this.lineDasharrayMap[dat.style];
           }
-          
-          if(dat.type === "line" || dat.type === "area") { 
-            dat.interpolation = this.interpolationMap[dat.interpolation]; 
+
+          if(dat.type === "line" || dat.type === "area") {
+            dat.interpolation = this.interpolationMap[dat.interpolation];
           }
 
           if(dat.type === "bar") {
-            if (dat.width == null) { 
+            if (dat.width == null) {
               dat.width = 1;
             }
           }
-          
-          if (dat.type === "point") { 
+
+          if (dat.type === "point") {
             if (dat.shape == null) {
               dat.shape = "DEFAULT";
             }
-            dat.style = this.pointShapeMap[dat.shape]; 
+            dat.style = this.pointShapeMap[dat.shape];
           }
-          
+
           var elements = [];
           var numEles = dat.x.length;
           for (var j = 0; j < numEles; j++) {
@@ -467,7 +467,7 @@
               ele.stroke_opacity = parseInt(dat.outline_colors[j].substr(1,2), 16) / 255;
               ele.stroke = "#" + dat.outline_colors[j].substr(3);
             }
-            
+
             if (dat.type === "line" || dat.type === "stem") {
               if (dat.styles != null) {
                 var style = dat.styles[j];
@@ -480,9 +480,9 @@
             }
             elements.push(ele);
           }
-          
+
           dat.elements = elements;
-          
+
           newmodel.data.push(dat);
         }
         if(model.constant_lines != null) {
@@ -502,7 +502,7 @@
             if (style == null) { style = ""; }
             style = this.lineStyleMap[style];
             dat.stroke_dasharray = this.lineDasharrayMap[style];
-            
+
             if (line.x != null) {
               var ele = {"type": "x", "x": line.x};
             } else if(line.y != null) {
@@ -575,7 +575,7 @@
       standardizeModel : function(_model) {
         var model = {};
         $.extend(true, model, _model); // deep copy model to prevent changing the original JSON
-        
+
         if (model.graphics_list != null) {
           model.version = "groovy";  // TODO, a hack now to check DS source
         }
@@ -624,7 +624,7 @@
             timezone : model.timezone
           };
         }
-        
+
         newmodel.data = [];
 
         if (model.version === "groovy") {
@@ -633,17 +633,17 @@
           _.extend(newmodel, model);
         }
         this.formatModel(newmodel, model); // fill in null entries, compute y2, etc.
-        
+
         // at this point, data is in standard format (log is applied as well)
-        
+
         var range = plotUtils.getDataRange(newmodel.data).datarange;
-        
+
         var margin = newmodel.margin;
         if (margin.bottom == null) { margin.bottom = .05; }
         if (margin.top == null) { margin.top = .05; }
         if (margin.left == null) { margin.left = .05; }
         if (margin.right == null) { margin.right = .05; }
-        
+
         if (newmodel.vrange == null) {
           // visible range initially is 10x larger than data range by default
           newmodel.vrange = {
@@ -653,10 +653,10 @@
             yr : range.yr + range.yspan * 10.0
           };
           var vrange = newmodel.vrange;
-          
+
           if (newmodel.yPreventNegative === true) {
             vrange.yl = Math.min(0, range.yl);
-          } 
+          }
           if (newmodel.yIncludeZero === true) {
             if (vrange.yl > 0) {
               vrange.yl = 0;
@@ -667,14 +667,14 @@
           if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
           if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
           if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); }
-          
+
           vrange.xspan = vrange.xr - vrange.xl;
           vrange.yspan = vrange.yr - vrange.yl;
         }
-        
+
         this.remapModel(newmodel);
         this.generateTips(newmodel);
-        
+
         this.cleanupModel(newmodel);
         newmodel.version = "complete";
         console.log(newmodel);

@@ -82,7 +82,7 @@
 
         scope.initLayout = function() {
           var model = scope.stdmodel;
-          
+
           element.find(".ui-icon-gripsmall-diagonal-se")
             .removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
           scope.container = d3.select(element[0]).select("#plotContainer"); // hook container to use jquery interaction
@@ -91,7 +91,7 @@
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
           scope.jqsvg.css(model.initSize);
-          
+
           $(window).resize(function() {
             // update resize maxWidth when the browser window resizes
             var width = element.width();
@@ -213,7 +213,7 @@
             xspan : 1,
             yspan : 1
           };  // visible range is mapped to [0,1] x [0,1]
-          
+
           scope.calcRange();
           scope.focus = {};
           _.extend(scope.focus, scope.initFocus);
@@ -227,7 +227,7 @@
         scope.renderCoords = function() {
           var focus = scope.focus, model = scope.stdmodel;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
-          
+
           var xCoords = model.xAxis.getCoords();
           for (var i = 0; i < xCoords.length; i++) {
             var x = xCoords[i];
@@ -285,7 +285,7 @@
             }
             var l = plotUtils.upper_bound(eles, "x", focus.xl);
             var r = plotUtils.upper_bound(eles, "x", focus.xr);
-            
+
             if ( data[i].type === "line" || data[i].type === "area") {
               // cover one more point to the right for line and area
               r++;
@@ -293,7 +293,7 @@
               // skip the left side element
               l++;
             }
-            
+
             // truncate out-of-sight segment on x-axis
             l = Math.max(l, 0);
             r = Math.min(r, eles.length - 1);
@@ -312,7 +312,7 @@
         scope.renderData = function() {
           var model = scope.stdmodel, data = scope.stdmodel.data, fdata = scope.fdata;
           var focus = scope.focus, mapX = scope.data2scrX, mapY = scope.data2scrY;
-          
+
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
               tMargin = scope.layout.topLayoutMargin, rMargin = scope.layout.rightLayoutMargin;
@@ -609,7 +609,7 @@
               var reles = [];
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
-                var ele = { 
+                var ele = {
                   "id": "constband_" + i + "_" + j
                 };
                 if (p.type === "x") {
@@ -1026,7 +1026,7 @@
               "left" : scope.jqcontainer.width() + 10 ,
               "top" : "0px"
             });
-          
+
           if (scope.visibleData > 1) {  // skip "All" check when there is only one line
             var unit = $("<li></li>").appendTo(legend)
               .attr("id", "legend_all");
@@ -1077,7 +1077,7 @@
           if (id == "all") {
             scope.showAllLines = !scope.showAllLines;
             for (var i = 0; i < data.length; i++) {
-              if (data[i].type === "constline" || data[i].type === "constband" 
+              if (data[i].type === "constline" || data[i].type === "constband"
                 || data[i].type === "text") continue;
               data[i].shown = scope.showAllLines;
               scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
@@ -1233,7 +1233,7 @@
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
                 var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym),
                     nyspan = nyr - nyl;
-                    
+
                 if (nyspan >= level.minSpanY && nyspan <= vrange.yspan * level.maxScaleY) {
                   focus.yl = nyl;
                   focus.yr = nyr;
@@ -1303,7 +1303,7 @@
           focus.yr = focus.yr > 1 ? 1 : focus.yr;
           focus.xspan = focus.xr - focus.xl;
           focus.yspan = focus.yr - focus.yl;
-          
+
           if (focus.xl > focus.xr || focus.yl > focus.yr) {
             console.error("visible range specified does not match data range, " +
                 "enforcing visible range");
@@ -1341,7 +1341,7 @@
           p1.y = Math.max(0, p1.y);
           p2.x = Math.min(1, p2.x);
           p2.y = Math.min(1, p2.y);
-          
+
           var focus = scope.focus, ofocus = {};
           _.extend(ofocus, scope.focus);
           focus.xl = ofocus.xl + ofocus.xspan * p1.x;
@@ -1402,7 +1402,7 @@
               "xr" : focus.xr
             });
           }
-          
+
           scope.data2scrY = d3.scale.linear().domain([focus.yl, focus.yr]).range([H - bMargin, tMargin]);
           scope.data2scrYp = d3.scale.linear().domain([focus.yl, focus.yr]).range([1, 0]);
           scope.scr2dataY = d3.scale.linear().domain([tMargin, H - bMargin]).range([focus.yr, focus.yl]);
@@ -1417,7 +1417,7 @@
           scope.stdmodel = plotConverter.standardizeModel(model);
         };
         scope.init = function() {
-          
+
           // first standardize data
           scope.standardizeData();
           // create layout elements
@@ -1437,10 +1437,10 @@
             return scope.mouseleaveClear();
           });
           scope.enableZoom();
-          
+
           // init copies focus to initFocus, called only once, create axes
           scope.initRange();
-          
+
           scope.calcMapping();
           scope.update();
         };

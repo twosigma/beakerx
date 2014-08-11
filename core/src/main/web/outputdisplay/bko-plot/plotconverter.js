@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotAxis, plotUtils) {
+  var retfunc = function(bkUtils, plotAxis, plotFactory, plotUtils) {
     return {
       dataTypeMap : {
         "Line" : "line",
@@ -181,6 +181,7 @@
             item.width = 1;
           }
 
+
           if (item.colorOpacity != null) {
             item.color_opacity = item.colorOpacity;
             delete item.colorOpacity;
@@ -200,6 +201,7 @@
 
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
+
 
             if (ele.outlineColor != null) {
               ele.stroke = ele.outlineColor;
@@ -282,6 +284,9 @@
               }
             }
           }
+
+          // recreate rendering objects
+          data[i] = plotFactory.createPlotItem(item);
         }
         var focus = newmodel.focus;
         if (logx) {
@@ -397,7 +402,7 @@
         var list = model.graphics_list;
         var numLines = list.length;
         for (var i = 0; i < numLines; i++) {
-          var item = _.omit(list[i]);
+          var item = list[i];
 
           item.legend = item.display_name;
           delete item.display_name;
@@ -682,5 +687,5 @@
       }
     };
   };
-  beaker.bkoFactory('plotConverter', ["bkUtils", 'plotAxis', 'plotUtils', retfunc]);
+  beaker.bkoFactory('plotConverter', ["bkUtils", 'plotAxis', 'plotFactory', 'plotUtils', retfunc]);
 })();

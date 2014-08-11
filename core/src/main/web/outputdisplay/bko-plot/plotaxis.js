@@ -17,7 +17,7 @@
 (function() {
   'use strict';
   var retfunc = function() {
-    var plotAxis = function(type) {
+    var PlotAxis = function(type) {
       this.axisType = type == null ? "linear" : type; // linear, log, time, nanotime, category
       this.axisBase = 10;
       this.axisTime = 0;
@@ -34,7 +34,7 @@
       this.axisStep = 1;
       this.axisFixed = 0;
     };
-    plotAxis.prototype.dateIntws = [
+    PlotAxis.prototype.dateIntws = [
       // milliseconds
       1, 5, 10, 50, 100, 500,
       // 1, 5, 10, 30, 60 seconds
@@ -56,15 +56,15 @@
       numFixs = numFixs.concat([f, f + 1, f]);
       bs *= 10;
     }
-    plotAxis.prototype.numIntws = numIntws;
-    plotAxis.prototype.numFixs = numFixs;
-    plotAxis.prototype.axisPow = function(pct) {
+    PlotAxis.prototype.numIntws = numIntws;
+    PlotAxis.prototype.numFixs = numFixs;
+    PlotAxis.prototype.axisPow = function(pct) {
       return Math.pow(this.axisBase, pct * this.axisValSpan + this.axisValL);
     };
-    plotAxis.prototype.setLabel = function(label) {
+    PlotAxis.prototype.setLabel = function(label) {
       this.axisLabel = label;
     };
-    plotAxis.prototype.setRange = function(vl, vr, para) {
+    PlotAxis.prototype.setRange = function(vl, vr, para) {
       if (vl != null) { this.axisValL = vl; }
       if (vr != null) { this.axisValR = vr; }
       if (this.axisType === "log") {
@@ -78,7 +78,7 @@
       }
       this.axisValSpan = this.axisValR - this.axisValL;
     };
-    plotAxis.prototype.setCoords = function(pl, pr, count) {
+    PlotAxis.prototype.setCoords = function(pl, pr, count) {
       if (pr < pl) {
         console.error("cannot set right coord < left coord");
         return;
@@ -124,24 +124,24 @@
       this.axisCoords = coords;
       this.axisCoordLabels = labels;
     };
-    plotAxis.prototype.getType = function() { return this.axisType; };
-    plotAxis.prototype.getTimezone = function() { return this.axisTimezone; };
-    plotAxis.prototype.getCoords = function() { return _.without(this.axisCoords); };
-    plotAxis.prototype.getCoordLabels = function() { return _.without(this.axisCoordLabels); };
-    plotAxis.prototype.getStep = function() { return this.axisStep; };
-    plotAxis.prototype.getFixed = function() { return this.axisFixed; };
-    plotAxis.prototype.getLabel = function() { return this.axisLabel; };
-    plotAxis.prototype.getPercent = function(val) {
+    PlotAxis.prototype.getType = function() { return this.axisType; };
+    PlotAxis.prototype.getTimezone = function() { return this.axisTimezone; };
+    PlotAxis.prototype.getCoords = function() { return _.without(this.axisCoords); };
+    PlotAxis.prototype.getCoordLabels = function() { return _.without(this.axisCoordLabels); };
+    PlotAxis.prototype.getStep = function() { return this.axisStep; };
+    PlotAxis.prototype.getFixed = function() { return this.axisFixed; };
+    PlotAxis.prototype.getLabel = function() { return this.axisLabel; };
+    PlotAxis.prototype.getPercent = function(val) {
       if (val < this.axisValL) { val = this.axisValL; }
       if (val > this.axisValR) { val = this.axisValR; }
       return (val - this.axisValL) / this.axisValSpan;
     };
-    plotAxis.prototype.getValue = function(pct) {
+    PlotAxis.prototype.getValue = function(pct) {
       if (pct < 0) { pct = 0; }
       if (pct > 1) { pct = 1; }
       return this.axisValSpan * pct + this.axisValL;
     };
-    plotAxis.prototype.getString = function(pct) {
+    PlotAxis.prototype.getString = function(pct) {
       if (this.axisType != "time" && this.axisType != "nanotime") {
         if (this.axisType === "log") {
           return "" + this.axisBase + "^" + this.getValue(pct).toFixed(this.axisFixed);
@@ -196,7 +196,7 @@
       */
       return ret;
     };
-    return plotAxis;
+    return PlotAxis;
   };
-  beaker.bkoFactory('plotAxis', [retfunc]);
+  beaker.bkoFactory('PlotAxis', [retfunc]);
 })();

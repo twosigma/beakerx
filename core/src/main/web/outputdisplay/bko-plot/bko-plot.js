@@ -20,7 +20,7 @@
  */
 ( function() {
   'use strict';
-  var retfunc = function(plotAxis, plotUtils, plotConverter, bkCellMenuPluginManager) {
+  var retfunc = function(plotUtils, plotConverter, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -1478,5 +1478,5 @@
       }
     };
   };
-  beaker.bkoDirective("Plot", ["plotAxis", "plotUtils", "plotConverter", "bkCellMenuPluginManager", retfunc]);
+  beaker.bkoDirective("Plot", ["plotUtils", "plotConverter", "bkCellMenuPluginManager", retfunc]);
 })();

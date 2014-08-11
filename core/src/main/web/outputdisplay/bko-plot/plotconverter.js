@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotAxis, plotUtils) {
+  var retfunc = function(bkUtils, PlotAxis, plotUtils) {
     return {
       dataTypeMap : {
         "Line" : "line",
@@ -62,8 +62,8 @@
         var xAxisLabel = model.xAxis.label,
             yAxisLabel = model.yAxis.label;
 
-        var xAxis = new plotAxis(model.xAxis.type),
-            yAxis = new plotAxis(model.yAxis.type);
+        var xAxis = new PlotAxis(model.xAxis.type),
+            yAxis = new PlotAxis(model.yAxis.type);
 
         if (xAxis.getType() !== "time") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
@@ -682,5 +682,5 @@
       }
     };
   };
-  beaker.bkoFactory('plotConverter', ["bkUtils", 'plotAxis', 'plotUtils', retfunc]);
+  beaker.bkoFactory('plotConverter', ["bkUtils", 'PlotAxis', 'plotUtils', retfunc]);
 })();

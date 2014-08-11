@@ -87,7 +87,7 @@
 
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
-          var dat = data[i], eles = dat.elements;
+          var item = data[i], eles = item.elements;
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
             if (ele.x != null) {
@@ -113,14 +113,14 @@
       generateTips : function(model) {
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
-          var dat = data[i], eles = dat.elements;
+          var item = data[i], eles = item.elements;
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
             var txt = "";
-            var valx = plotUtils.getTipString(ele._x, model.xAxis);
-            var valy = plotUtils.getTipString(ele._y, model.yAxis);
-            if (dat.legend != null) {
-              txt += "<div>" + dat.legend + "</div>";
+            var valx = plotUtils.getTipString(ele._x, model.xAxis),
+                valy = plotUtils.getTipString(ele._y, model.yAxis);
+            if (item.legend != null) {
+              txt += "<div>" + item.legend + "</div>";
             }
             txt += "<div>x: " + valx + "</div><div>y: " + valy + "</div>";
             if (ele._y2 != null) {
@@ -146,56 +146,56 @@
         var data = newmodel.data;
         //var logy = newmodel.yScale.type === "log", logyb = newmodel.yScale.base;
         for (var i = 0; i < data.length; i++) {
-          var dat = data[i], eles = dat.elements;
+          var item = data[i], eles = item.elements;
 
           if (eles == null) eles = [];
 
-          dat.shown = true;
+          item.shown = true;
 
-          if (dat.type == null) {
-            dat.type = "line";
+          if (item.type == null) {
+            item.type = "line";
           }
 
-          if(dat.type === "bar" || dat.type === "area") {
+          if(item.type === "bar" || item.type === "area") {
             //newmodel.yPreventNegative = true; // prevent move to y < 0
           }
 
-          if(dat.type === "line" || dat.type === "stem") {
-            if (dat.style == null) {
-              dat.style = "solid";
+          if(item.type === "line" || item.type === "stem") {
+            if (item.style == null) {
+              item.style = "solid";
             }
-            dat.stroke_dasharray = this.lineDasharrayMap[dat.style];
+            item.stroke_dasharray = this.lineDasharrayMap[item.style];
           }
 
-          if(dat.type === "line" || dat.type === "area") {
-            if (dat.interpolation === "curve") {
+          if(item.type === "line" || item.type === "area") {
+            if (item.interpolation === "curve") {
             }
           }
 
-          if (dat.type === "line" || dat.type === "stem") {
-            if (dat.width == null) {
-              dat.width = 2;
+          if (item.type === "line" || item.type === "stem") {
+            if (item.width == null) {
+              item.width = 2;
             }
           }
-          if (dat.type === "bar" && dat.width == null) {
-            dat.width = 1;
+          if (item.type === "bar" && item.width == null) {
+            item.width = 1;
           }
 
-          if (dat.colorOpacity != null) {
-            dat.color_opacity = dat.colorOpacity;
-            delete dat.colorOpacity;
+          if (item.colorOpacity != null) {
+            item.color_opacity = item.colorOpacity;
+            delete item.colorOpacity;
           }
-          if (dat.outlineColor != null) {
-            dat.stroke = dat.outlineColor;
-            delete dat.outlineColor;
+          if (item.outlineColor != null) {
+            item.stroke = item.outlineColor;
+            delete item.outlineColor;
           }
-          if (dat.outlineWidth != null) {
-            dat.stroke_width = dat.outlineWidth;
-            delete dat.outlineWidth;
+          if (item.outlineWidth != null) {
+            item.stroke_width = item.outlineWidth;
+            delete item.outlineWidth;
           }
-          if (dat.outlineOpacity != null) {
-            dat.stroke_opacity = dat.outlineOpacity;
-            delete dat.outlineOpacity;
+          if (item.outlineOpacity != null) {
+            item.stroke_opacity = item.outlineOpacity;
+            delete item.outlineOpacity;
           }
 
           for (var j = 0; j < eles.length; j++) {
@@ -214,39 +214,39 @@
               delete ele.outlineOpacity;
             }
 
-            if (dat.type === "bar") {
-              var w = dat.width;
+            if (item.type === "bar") {
+              var w = item.width;
               ele.x = ele.x - w/2;
               ele.x2 = ele.x + w/2;
             }
-            if (dat.type === "area" || dat.type === "bar" || dat.type === "stem") {
-              if (dat.y2 == null) {
-                if (dat.height != null) {
-                  ele.y2 = ele.y - dat.height;
-                } else if (dat.base != null) {
-                  ele.y2 = dat.base;
-                } else if (dat.bases != null) {
-                  ele.y2 = dat.bases[j];
+            if (item.type === "area" || item.type === "bar" || item.type === "stem") {
+              if (item.y2 == null) {
+                if (item.height != null) {
+                  ele.y2 = ele.y - item.height;
+                } else if (item.base != null) {
+                  ele.y2 = item.base;
+                } else if (item.bases != null) {
+                  ele.y2 = item.bases[j];
                 } else {
                   ele.y2 = logy ? 1 : 0;
                 }
               } else {
-                ele.y2 = dat.y2[j];
+                ele.y2 = item.y2[j];
               }
             }
-            if (dat.type === "point") {
-              if (dat.size != null) {
-                ele.size = dat.size;
-              } else if (dat.sizes != null) {
-                ele.size = dat.sizes[j];
+            if (item.type === "point") {
+              if (item.size != null) {
+                ele.size = item.size;
+              } else if (item.sizes != null) {
+                ele.size = item.sizes[j];
               } else {
-                ele.size = dat.style === "rect"? 10 : 5;
+                ele.size = item.style === "rect"? 10 : 5;
               }
             }
 
-            if (dat.type === "area") {
-              if (dat.interpolation == null) {
-                dat.interpolation = "linear";
+            if (item.type === "area") {
+              if (item.interpolation == null) {
+                item.interpolation = "linear";
               }
             }
 
@@ -397,80 +397,80 @@
         var list = model.graphics_list;
         var numLines = list.length;
         for (var i = 0; i < numLines; i++) {
-          var dat = _.omit(list[i]);
+          var item = _.omit(list[i]);
 
-          dat.legend = dat.display_name;
-          delete dat.display_name;
+          item.legend = item.display_name;
+          delete item.display_name;
 
-          if (dat.color != null) {
-            dat.color_opacity = parseInt(dat.color.substr(1,2), 16) / 255;
-            dat.color = "#" + dat.color.substr(3);
+          if (item.color != null) {
+            item.color_opacity = parseInt(item.color.substr(1,2), 16) / 255;
+            item.color = "#" + item.color.substr(3);
           }
-          if (dat.fill != null && dat.fill === false) {
-            dat.color = "none";
+          if (item.fill != null && item.fill === false) {
+            item.color = "none";
           }
-          if (dat.outline_color != null) {
-            dat.stroke_opacity = parseInt(dat.outline_color.substr(1,2), 16) / 255;
-            dat.stroke = "#" + dat.outline_color.substr(3);
-            delete dat.outline_color;
+          if (item.outline_color != null) {
+            item.stroke_opacity = parseInt(item.outline_color.substr(1,2), 16) / 255;
+            item.stroke = "#" + item.outline_color.substr(3);
+            delete item.outline_color;
           }
 
-          if (dat.type == null) { dat.type = ""; }
-          if (dat.style == null) { dat.style = ""; }
-          if (dat.stroke_dasharray == null) { dat.stroke_dasharray = ""; }
-          if (dat.interpolation == null) { dat.interpolation = ""; }
+          if (item.type == null) { item.type = ""; }
+          if (item.style == null) { item.style = ""; }
+          if (item.stroke_dasharray == null) { item.stroke_dasharray = ""; }
+          if (item.interpolation == null) { item.interpolation = ""; }
 
-          dat.type = this.dataTypeMap[dat.type];
+          item.type = this.dataTypeMap[item.type];
 
-          if(dat.type === "bar" || dat.type === "area") {
+          if(item.type === "bar" || item.type === "area") {
             //newmodel.yPreventNegative = true; // auto range to y = 0
           }
 
-          if(dat.type === "line" || dat.type === "stem") {
-            dat.style = this.lineStyleMap[dat.style];
-            dat.stroke_dasharray = this.lineDasharrayMap[dat.style];
+          if(item.type === "line" || item.type === "stem") {
+            item.style = this.lineStyleMap[item.style];
+            item.stroke_dasharray = this.lineDasharrayMap[item.style];
           }
 
-          if(dat.type === "line" || dat.type === "area") {
-            dat.interpolation = this.interpolationMap[dat.interpolation];
+          if(item.type === "line" || item.type === "area") {
+            item.interpolation = this.interpolationMap[item.interpolation];
           }
 
-          if(dat.type === "bar") {
-            if (dat.width == null) {
-              dat.width = 1;
+          if(item.type === "bar") {
+            if (item.width == null) {
+              item.width = 1;
             }
           }
 
-          if (dat.type === "point") {
-            if (dat.shape == null) {
-              dat.shape = "DEFAULT";
+          if (item.type === "point") {
+            if (item.shape == null) {
+              item.shape = "DEFAULT";
             }
-            dat.style = this.pointShapeMap[dat.shape];
+            item.style = this.pointShapeMap[item.shape];
           }
 
           var elements = [];
-          var numEles = dat.x.length;
+          var numEles = item.x.length;
           for (var j = 0; j < numEles; j++) {
             var ele = {
               uniqid : i + "_" + j
             };
-            ele.x = dat.x[j];
-            ele.y = dat.y[j];
-            if (dat.colors != null) {
-              ele.color_opacity = parseInt(dat.colors[j].substr(1,2), 16) / 255;
-              ele.color = "#" + dat.colors[j].substr(3);
+            ele.x = item.x[j];
+            ele.y = item.y[j];
+            if (item.colors != null) {
+              ele.color_opacity = parseInt(item.colors[j].substr(1,2), 16) / 255;
+              ele.color = "#" + item.colors[j].substr(3);
             }
-            if (dat.fills != null && dat.fills[j] === false) {
+            if (item.fills != null && item.fills[j] === false) {
               ele.color = "none";
             }
-            if (dat.outline_colors != null) {
-              ele.stroke_opacity = parseInt(dat.outline_colors[j].substr(1,2), 16) / 255;
-              ele.stroke = "#" + dat.outline_colors[j].substr(3);
+            if (item.outline_colors != null) {
+              ele.stroke_opacity = parseInt(item.outline_colors[j].substr(1,2), 16) / 255;
+              ele.stroke = "#" + item.outline_colors[j].substr(3);
             }
 
-            if (dat.type === "line" || dat.type === "stem") {
-              if (dat.styles != null) {
-                var style = dat.styles[j];
+            if (item.type === "line" || item.type === "stem") {
+              if (item.styles != null) {
+                var style = item.styles[j];
                 if (style == null) {
                   style = "";
                 }
@@ -481,27 +481,27 @@
             elements.push(ele);
           }
 
-          dat.elements = elements;
+          item.elements = elements;
 
-          newmodel.data.push(dat);
+          newmodel.data.push(item);
         }
         if(model.constant_lines != null) {
           for(var i = 0; i < model.constant_lines.length; i++) {
             var line = model.constant_lines[i];
-            var dat = {
+            var item = {
               "type": "constline",
               "width": line.width != null ? line.width : 1,
               "color": "black",
               "elements": []
             };
             if (line.color != null) {
-              dat.color_opacity = parseInt(line.color.substr(1,2), 16) / 255;
-              dat.color = "#" + line.color.substr(3);
+              item.color_opacity = parseInt(line.color.substr(1,2), 16) / 255;
+              item.color = "#" + line.color.substr(3);
             }
             var style = line.style;
             if (style == null) { style = ""; }
             style = this.lineStyleMap[style];
-            dat.stroke_dasharray = this.lineDasharrayMap[style];
+            item.stroke_dasharray = this.lineDasharrayMap[style];
 
             if (line.x != null) {
               var ele = {"type": "x", "x": line.x};
@@ -509,20 +509,20 @@
               var y = line.y;
               var ele = {"type": "y", "y": y};
             }
-            dat.elements.push(ele);
-            newmodel.data.push(dat);
+            item.elements.push(ele);
+            newmodel.data.push(item);
           }
         }
         if (model.constant_bands != null) {
           for (var i = 0; i < model.constant_bands.length; i++) {
             var band = model.constant_bands[i];
-            var dat = {
+            var item = {
               "type" : "constband",
               "elements" : []
             };
             if (band.color != null) {
-              dat.color_opacity = parseInt(band.color.substr(1, 2), 16) / 255;
-              dat.color = "#" + band.color.substr(3);
+              item.color_opacity = parseInt(band.color.substr(1, 2), 16) / 255;
+              item.color = "#" + band.color.substr(3);
             }
             if (band.x != null) {
               var ele = {
@@ -538,14 +538,14 @@
               ele.y = y1;
               ele.y2 = y2;
             }
-            dat.elements.push(ele);
-            newmodel.data.push(dat);
+            item.elements.push(ele);
+            newmodel.data.push(item);
           }
         }
         if (model.texts != null) {
           for (var i = 0; i < model.texts.length; i++) {
             var mtext = model.texts[i];
-            var dat = {
+            var item = {
               "type" : "text",
               "color" : mtext.color != null ? mtext.color : "black",
               "elements" : []
@@ -555,21 +555,21 @@
               "y" : mtext.y,
               "v" : mtext.text
             };
-            dat.elements.push(ele);
-            newmodel.data.push(dat);
+            item.elements.push(ele);
+            newmodel.data.push(item);
           }
         }
         newmodel.yIncludeZero = yIncludeZero;
       },
       cleanupModel : function(model) {
         for (var i = 0; i < model.data.length; i++) {
-          var dat = model.data[i];
-          if (dat.x != null) { delete dat.x; }
-          if (dat.y != null) { delete dat.y; }
-          if (dat.colors) { delete dat.colors; }
-          if (dat.sizes) { delete dat.sizes; }
-          if (dat.bases) { delete dat.bases; }
-          if (dat.outline_colors) { delete dat.outline_colors; }
+          var item = model.data[i];
+          if (item.x != null) { delete item.x; }
+          if (item.y != null) { delete item.y; }
+          if (item.colors) { delete item.colors; }
+          if (item.sizes) { delete item.sizes; }
+          if (item.bases) { delete item.bases; }
+          if (item.outline_colors) { delete item.outline_colors; }
         }
       },
       standardizeModel : function(_model) {

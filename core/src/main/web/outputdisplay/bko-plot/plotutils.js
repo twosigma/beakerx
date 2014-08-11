@@ -480,41 +480,6 @@
           .attr("height", function(d) { return d.height; })
           .style("fill", function(d) { return d.fill; });
       },
-      formatCoord: function(type, w, x, nanoOffset) {
-        if (type === "time" || type === "nanotime") {
-          var months = this.months, days = this.days, d, ret = "";
-          if (type === "time") { d = new Date(x); }
-          else { d = new Date(parseInt(x / 1000000)); }
-
-          if (w <= 1000 * 60 * 60)
-            ret = this.padStr(d.getHours(),2) + ":" +
-                this.padStr(d.getMinutes(),2) + ":" +
-                this.padStr(d.getSeconds(),2); // minute:seconds
-          else if (w <= 1000 * 60 * 60 * 24)
-            ret = days[d.getDay()] + " " +
-                this.padStr(d.getHours(),2) + ":" +
-                this.padStr(d.getMinutes(),2); // day hour:minutes
-          else if (w <= 1000 * 60 * 60 * 24 * 31)
-            ret = months[d.getMonth()] + " " +
-                d.getDate() + " " +
-                days[d.getDay()]; // month date day
-          else
-            ret = d.getFullYear() + " " +
-                months[d.getMonth()]; //year month
-
-          if (type === "nanotime") {
-            ret += "." + parseInt(x % 1000000);
-          }
-          return ret;
-        } else {
-          return parseInt(x);
-        }
-      },
-      padStr: function(str, len) {
-        str = "" + str;
-        while (str.length < len) str = "0" + str;
-        return str;
-      },
       upper_bound: function(a, attr, val) {
         var l = 0, r = a.length - 1;
         while (l <= r) {

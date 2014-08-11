@@ -17,23 +17,23 @@
 (function() {
   'use strict';
   var retfunc = function() {
-    var plotStem = function(data){
+    var PlotStem = function(data){
       this.data = data;
     };
-    plotStem.prototype.format = function(){
+    PlotStem.prototype.format = function(){
 
     };
-    plotStem.prototype.init = function(){
+    PlotStem.prototype.init = function(){
 
     };
-    plotStem.prototype.render = function(scope){
+    PlotStem.prototype.render = function(scope){
       var svg = scope.svg;
 
     };
-    plotStem.prototype.getRange = function(){
+    PlotStem.prototype.getRange = function(){
 
     };
-    return plotStem;
+    return PlotStem;
   };
-  beaker.bkoFactory('plotStem', [retfunc]);
+  beaker.bkoFactory('PlotStem', [retfunc]);
 })();

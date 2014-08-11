@@ -145,8 +145,6 @@
       reset: function(_cells_) {
         if (_cells_) {
           cells = _cells_;
-        } else {
-          cells = [];
         }
         this.clipboard = null;
         recreateCellMap();

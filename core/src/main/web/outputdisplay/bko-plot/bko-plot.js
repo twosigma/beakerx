@@ -227,10 +227,10 @@
         scope.renderCoords = function() {
           var focus = scope.focus, model = scope.stdmodel;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
-          var coords;
-          coords = model.xAxis.getCoords();
-          for (var i = 0; i < coords.length; i++) {
-            var x = coords[i];
+          
+          var xCoords = model.xAxis.getCoords();
+          for (var i = 0; i < xCoords.length; i++) {
+            var x = xCoords[i];
             scope.rpipeCoords.push({
               "id" : "coord_x_" + i,
               "class" : "plot-coord",
@@ -240,9 +240,9 @@
               "y2" : mapY(focus.yr)
             });
           }
-          coords = model.yAxis.getCoords();
-          for (var i = 0; i < coords.length; i++) {
-            var y = coords[i];
+          var yCoords = model.yAxis.getCoords();
+          for (var i = 0; i < yCoords.length; i++) {
+            var y = yCoords[i];
             scope.rpipeCoords.push({
               "id" : "coord_y_" + i,
               "class" : "plot-coord",
@@ -330,7 +330,6 @@
                 var x1 = mapX(p.x), x2 = mapX(p.x2);
                 if (x2 - x1 < 1) x2 = x1 + 1;
                 var y = p.y, y2 = p.y2;
-                //if (y2 == null) { y2 = focus.yl; }
                 y = mapY(y); y2 = mapY(y2);
                 sw = x2 - x1;
                 if (y > y2) { continue; } // prevent negative height
@@ -421,7 +420,6 @@
               for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
                 var p = eles[j];
                 var y2 = p.y2;
-                //if (y2 == null) { y2 = focus.yl; }
                 reles.push({
                   "id" : "stem_" + i + "_" + j,
                   "class" : "plot-resp",

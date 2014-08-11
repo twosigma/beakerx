@@ -13,17 +13,15 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * evaluator menu plugin
- * Add an item to the evaluators menu that is a placeholder to show available evaluators.
- */
-define(function(require, exports, module) {
-  'use strict';
-  var meunItemPromise = bkHelper.newPromise({
-    parent: "Evaluators",
-    items: bkHelper.getEvaluatorMenuItems
-  });
-  exports.getMenuItems = function() {
-    return meunItemPromise;
-  };
-});
+
+module.exports = function() {
+  this.Widgets.CellMenu = this.Widget.extend({
+    root: '.dropdown.bkcellmenu.open',
+    toggleInputCell: function() {
+      return this.driver.executeScript("return $('"+this.root+" li:contains(\"Show input cell\")')[0]")
+      .then(function(elm) {
+        return elm.click();
+      });
+    }
+  })
+}

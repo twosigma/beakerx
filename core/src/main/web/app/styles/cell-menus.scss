@@ -1,0 +1,147 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.bkcell bk-new-cell-menu {
+    display: block;
+
+    .dropdown-toggle {
+        opacity: 0;
+        transition: opacity, 300ms;
+    }
+
+    &:hover {
+        .dropdown-toggle {
+            opacity: 1;
+        }
+    }
+}
+
+.dropdown-toggle {
+    color:      #3f5264;
+    font-size:  13px;
+}
+
+.locked .toggle-menu {
+    display: none;
+}
+
+.toggle-menu {
+    top:        20px;
+    right:      20px;
+    z-index:    1;
+    position:   absolute;
+}
+
+.cell-menu-item {
+    float:      right;
+    cursor:     pointer;
+    height:     24px;
+    padding:    0 15px;
+}
+
+.cell-menu-item.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.cell-menu-item:hover {
+    color: #FFF;
+    background-color: $highlight-blue;
+
+    &.delete-cell {
+        background-image: url(/beaker/app/images/trash_white@2x.png);
+    }
+
+    &.move-cell-up {
+        background-image: url(/beaker/app/images/up_white@2x.png);
+    }
+
+    &.move-cell-down {
+        background-image: url(/beaker/app/images/down_white@2x.png);
+    }
+
+    &.expand-contract {
+        background-image: url(/beaker/app/images/collapse_white@2x.png);
+        &.collapsed {
+            background-image: url(/beaker/app/images/expand_white@2x.png);
+        }
+    }
+
+    &.cell-dropdown {
+        background-image: url(/beaker/app/images/menu_white@2x.png);
+    }
+
+
+    &.loading-state .loading-spinner {
+        background-image: url(/beaker/app/images/loading_white@2x.png);
+    }
+}
+
+.delete-cell {
+    background: url(/beaker/app/images/trash@2x.png) no-repeat center;
+    background-size: 9px;
+}
+
+.move-cell-up {
+    background: url(/beaker/app/images/up@2x.png) no-repeat center;
+    background-size: 8px;
+}
+
+.move-cell-down {
+    background: url(/beaker/app/images/down@2x.png) no-repeat center;
+    background-size: 8px;
+}
+
+.expand-contract {
+    background: url(/beaker/app/images/collapse@2x.png) no-repeat center {
+        size: 11px;
+    }
+
+    &.collapsed {
+        background-image: url(/beaker/app/images/expand@2x.png);
+    }
+}
+
+.loading-spinner {
+    top: 4px;
+    width: 15px;
+    margin: 0 -10px 0 10px;
+    height: 15px;
+    display: inline-block;
+    position: relative;
+    background-image: url(/beaker/app/images/loading@2x.png);
+    background-size: cover;
+}
+
+.cell-dropdown {
+    background: url(/beaker/app/images/menu@2x.png) no-repeat center;
+    background-size: 3px;
+}
+
+.cell-evaluator-menu {
+    color:              $green;
+    cursor:             pointer;
+    display:            inline-block;
+    font-size:          12px;
+    background:         url(/beaker/app/images/down@2x.png) no-repeat center right;
+    padding-right:      13px;
+    background-size:    8px;
+
+    &:hover {
+        color: darken($green, 5%);
+    }
+}
+

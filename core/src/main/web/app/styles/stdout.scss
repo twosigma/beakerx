@@ -1,0 +1,52 @@
+.outputlogbox {
+    overflow: auto;
+}
+
+.outputlog {
+    vertical-align: top;
+}
+
+.btn-toolbar {
+    padding:    10px;
+    text-align: center;
+}
+
+.alt-controls {
+    float: right;
+}
+
+.outputlogerr, .outputlogout {
+    float:      left;
+    width:      50%;
+    display:    block;
+    padding:    0 10px;
+    box-sizing: border-box;
+}
+
+.outputlogbox {
+    height:     200px;
+    overflow:   auto;
+}
+
+.output-label {
+    font-family: pt_sansbold;
+}
+
+.outputlogcontainer {
+    background-color: #eff2f8;
+    position: fixed;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    bottom: 0;
+    height: 300px;
+}
+
+.prelog {
+    border:         none;
+    margin:         0 auto;
+    padding:        0;
+    background:     transparent;
+    font-family:    monospace;
+    border-radius:  0;
+}

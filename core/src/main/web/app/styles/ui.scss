@@ -1,0 +1,49 @@
+.beaker-btn {
+  color:      #000;
+  cursor:     pointer;
+  border:     solid 1px $cell-border;
+  padding:    8px 19px;
+  font-size:  14px;
+  background: #f1f1f1;
+
+  &.mid {
+    font-size: 12px;
+  }
+
+  &.small {
+    font-size: 10px;
+  }
+
+  &:hover {
+    text-decoration: none;
+    background: darken(#f1f1f1, 5%)
+  }
+
+  &.active {
+    color:      #FFF;
+    border:     solid 1px darken($highlight-blue, 8%);
+    background: $highlight-blue;
+
+    &:hover {
+      background: darken($highlight-blue, 5%)
+    }
+  }
+}
+
+.btn-group {
+  .beaker-btn {
+    margin: 0 5px;
+  }
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.cl {
+  clear: both;
+}

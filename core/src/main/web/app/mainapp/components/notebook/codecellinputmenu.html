@@ -13,18 +13,16 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="dropdown" style="position: fixed; z-index: 99">
-  <a class="dropdown-toggle" data-toggle="dropdown"></a>
-  <ul class="dropdown-menu inputcellmenu" role="menu" aria-labelledby="dLabel">
+<div class="dropdown">
+  <a class="dropdown-toggle cell-evaluator-menu advanced-hide" data-toggle="dropdown">
+    <b>{{cellmodel.evaluator}}</b>
+  </a>
+  <ul class="dropdown-menu inputcellmenu advanced-hide" role="menu" aria-labelledby="dLabel">
     <li ng-repeat="(evaluatorName, evaluator) in getEvaluators()">
       <a tabindex="-1" href="#" ng-click="setEvaluator(evaluatorName)" eat-click>
         <i class="icon-ok" ng-show="getShowEvalIcon(evaluatorName)"></i>
         {{evaluatorName}}
       </a>
-    </li>
-    <li class="divider"></li>
-    <li>
-      <a tabindex="-1" href="#" ng-click="run()" eat-click>Run</a>
     </li>
   </ul>
 </div>

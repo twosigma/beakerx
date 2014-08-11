@@ -1,0 +1,49 @@
+@mixin error_state($color) {
+  color:    $color;
+  padding:  10px 0;
+  z-index:  1;
+  position: relative;
+}
+
+.outline {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: -1px;
+  top: -1px;
+  z-index: 0;
+  padding-bottom: 20px;
+
+  &.error {
+    border: solid 1px $error_red;
+  }
+
+  &.warning {
+    border: solid 1px $warning_yellow;
+  }
+}
+
+.error-title {
+  color: $error_red;
+}
+
+.toggle-error {
+  width: 20px;
+  height: 20px;
+  border: solid 1px;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  line-height: 18px;
+  margin-right: 10px;
+}
+
+pre {
+    &.out_warning {
+      @include error_state($warning_yellow);
+    }
+
+    &.out_error {
+      @include error_state($error_red);
+    }
+}

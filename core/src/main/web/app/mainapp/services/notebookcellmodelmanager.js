@@ -145,8 +145,6 @@
       reset: function(_cells_) {
         if (_cells_) {
           cells = _cells_;
-        } else {
-          cells = [];
         }
         this.clipboard = null;
         recreateCellMap();
@@ -211,6 +209,14 @@
         } else {
           throw "target cell " + id + " was not found";
         }
+        recreateCellMap();
+      },
+      insertLast: function(cell) {
+        if (!_.isObject(cell)) {
+          throw "unacceptable"
+        }
+
+        cells.splice(cells.length, 0, cell);
         recreateCellMap();
       },
       insertAfter: function(id, cell) {

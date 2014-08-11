@@ -1,0 +1,35 @@
+<!--
+
+  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<ul class="notebook-dashboard-list">
+  <li class='session' ng-repeat='session in sessions | orderBy:"openedDate":true'>
+    <div class="left">
+      <div class='caption' ng-click='open(session)'>{{getCaption(session)}}</div>
+      <div class='light path' ng-if="getDescription(session)">
+        {{getDescription(session)}}
+      </div>
+    </div>
+    <div class='btn-group right'>
+      <a class='mid beaker-btn' ng-click='open(session)'>Go to</a>
+      <a class='mid beaker-btn close-session' ng-click='close(session)'>Close</a>
+    </div>
+    <div class='open-date light right'>
+      <span>Opened at</span>
+      {{session.openedDate | date:'medium'}}
+    </div>
+    <div class="cl"></div>
+  </li>
+</ul>

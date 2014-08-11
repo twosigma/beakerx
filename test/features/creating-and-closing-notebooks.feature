@@ -26,4 +26,4 @@ Scenario: Creating and closing multiple notebooks.
   And I visit the user dashboard
   And I close all the open notebooks
   Then I should see the following notebooks:
-    | ID | Open Date | Name | Path | Edited | Operation |
+    | Name | Open Date |

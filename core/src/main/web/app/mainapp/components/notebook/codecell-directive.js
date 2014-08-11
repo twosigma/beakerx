@@ -32,19 +32,28 @@
     var CELL_TYPE = "code";
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/codecell.html",
+      template: JST["notebook/codecell"](),
       scope: { cellmodel: "=", cellmenu: "="},
       controller: function($scope) {
         $scope.cellview = {
           inputMenu: [],
           displays: []
         };
-        var isLocked = function() {
+
+        $scope.getFullIndex = function() {
+          return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;
+        }
+
+        $scope.isLocked = function() {
           return bkSessionManager.isNotebookLocked();
-        };
+        }
+
+        $scope.isEmpty = function() {
+          return !($scope.cellmodel.output.result);
+        }
 
         $scope.isShowInput = function() {
-          if (isLocked()) {
+          if ($scope.isLocked()) {
             return false;
           }
           if ($scope.cellmodel.input.hidden === true) {
@@ -62,6 +71,14 @@
             });
           }
         });
+
+        $scope.isHiddenOutput = function() {
+          return $scope.cellmodel.output.selectedType == 'Hidden';
+        }
+
+        $scope.hasOutput = function() {
+          return $scope.cellmodel.output.result;
+        }
 
         $scope.isShowOutput = function() {
           if ($scope.cellmodel.output.hidden === true) {
@@ -115,9 +132,7 @@
         $scope.updateUI = function(evaluator) {
           if ($scope.cm && evaluator) {
             $scope.cm.setOption("mode", evaluator.cmMode);
-            var bg = evaluator.background ? evaluator.background : "white";
-            $($scope.cm.getWrapperElement()).css("background", bg);
-            $scope.evaluatorReader = true;
+            $scope.cellmodel.evaluatorReader = true;
           }
         };
         $scope.$watch("getEvaluator()", function(newValue, oldValue) {
@@ -361,34 +376,18 @@
         });
         // cellmodel.body <-- CodeMirror
         var changeHandler = function(cm, e) {
+          scope.cellmodel.lineCount = cm.lineCount();
           scope.cellmodel.input.body = cm.getValue();
           bkUtils.refreshRootScope();
         };
+
         scope.cm.on("change", changeHandler);
 
         var inputMenuDiv = element.find(".bkcell").first();
         scope.popupMenu = function(event) {
           var menu = inputMenuDiv.find('.dropdown').first();
-          var clicked = event && event.hasOwnProperty("clientY");
-          menu.css("top", clicked ? event.clientY : "");
-          menu.css("left", clicked ? event.clientX - 150 : "");
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
-        var inputClickHandler = function(event) {
-          if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
-            scope.popupMenu(event);
-            event.stopPropagation();
-          }
-        };
-        inputMenuDiv.click(inputClickHandler);
-        var inputMousemoveHandler = function(event) {
-          if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
-            inputMenuDiv.css('cursor', 'pointer');
-          } else {
-            inputMenuDiv.css('cursor', 'default');
-          }
-        };
-        inputMenuDiv.mousemove(inputMousemoveHandler);
 
         if (scope.isInitializationCell()) {
           element.closest(".bkcell").addClass("initcell");
@@ -415,8 +414,6 @@
         };
 
         scope.$on("$destroy", function() {
-          inputMenuDiv.off("click", inputClickHandler);
-          inputMenuDiv.off("mousemove", inputMousemoveHandler);
           CodeMirror.off(window, "resize", resizeHandler);
           CodeMirror.off("change", changeHandler);
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);

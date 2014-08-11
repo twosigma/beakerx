@@ -95,7 +95,7 @@ public class PluginServiceLocatorRest {
     "}\n" +
     "location ~ %(base_url)s/kernels/[0-9a-f-]+/ {\n" +
     IPYTHON_RULES_BASE;
-  private static final String IPYTHON2_RULES = 
+  private static final String IPYTHON2_RULES =
     "location %(base_url)s/api/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;\n" +
     "}\n" +
@@ -569,8 +569,8 @@ public class PluginServiceLocatorRest {
                  Paths.get(htmlDir.toString() + "/login.html"));
       Files.copy(Paths.get(this.nginxStaticDir + "/present.html"),
                  Paths.get(htmlDir.toString() + "/present.html"));
-      Files.copy(Paths.get(this.nginxStaticDir + "/favicon.ico"),
-                 Paths.get(htmlDir.toString() + "/favicon.ico"));
+      Files.copy(Paths.get(this.nginxStaticDir + "/favicon.png"),
+                 Paths.get(htmlDir.toString() + "/favicon.png"));
     }
 
     String restartId = RandomStringUtils.random(12, false, true);

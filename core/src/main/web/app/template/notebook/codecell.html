@@ -1,0 +1,45 @@
+<!--
+    Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<div class='evaluator' evaluator-type="{{ cellmodel.evaluator }}" ng-class="{
+  'evaluator-ready': cellmodel.evaluatorReader,
+  'locked': isLocked(),
+  'empty': isEmpty()
+  }">
+
+  <p class='depth-indicator'>{{getFullIndex()}}</p>
+  <div class="bkcell code-cell-area">
+    <div class="code-cell-input" ng-show="isShowInput()">
+        <bk-code-cell-input-menu></bk-code-cell-input-menu>
+        <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
+        <a href="#" class="evaluate-script advanced-hide" ng-click="evaluate()" eat-click>Run</a>
+    </div>
+    <div ng-if ="hasOutput()" class="code-cell-output" ng-class="{
+      'no-output': isHiddenOutput(),
+      'output-hidden': cellmodel.output.hidden
+    }">
+        <ul class="cell-output-labels advanced-hide">
+          <li ng-if="!isShowOutput()"><b> Output Hidden</b></li>
+          <li ng-if='cellmodel.output.result.innertype != "Error" && isShowOutput()'><b>Cell Output</b></li>
+          <li class="error-title" ng-if='cellmodel.output.result.innertype == "Error" && isShowOutput()'><b>Error</b></li>
+        </ul>
+        <bk-code-cell-output
+            model="cellmodel.output"
+            evaluator-id="{{ cellmodel.evaluator }}">
+        </bk-code-cell-output>
+    </div>
+  </div>
+</div>

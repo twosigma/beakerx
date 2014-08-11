@@ -22,7 +22,7 @@
       bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack) {
     return {
       restrict: 'E',
-      templateUrl: './app/controlpanel/controlpanel.html',
+      template: JST["dashboard/controlpanel"](),
       controller: function($scope) {
         document.title = "Beaker";
         var _impl = {

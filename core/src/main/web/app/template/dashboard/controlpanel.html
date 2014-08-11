@@ -17,39 +17,38 @@
   <div class="navbar-inner">
     <div class="container pull-left" style="margin-left: 10px; padding-left: 0px;">
       <a class="brand" href="#/control" ng-click="gotoControlPanel($event)" eat-click>
-        <img src="static/icon48.png" width="24px" height="24px"></img>
+        <img src="/beaker/app/images/beaker_icon@2x.png"></img>
         Beaker
       </a>
-      <ul class="nav">
+      <ul class="sub-nav">
         <li class="dropdown" ng-repeat="m in getMenus()">
-          <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}<b
-              class="caret"></b></a>
+          <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
           <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
         </li>
-        <li class="pull-right" style="padding: 10px 15px 10px; cursor: default;">
+        <li class="pull-right" style="padding: 10px 54px 10px; cursor: default;">
           <span ng-show="disconnected"><font color="red">offline</font></span>
         </li>
       </ul>
     </div>
   </div>
 </div>
-<div class="container">
+<div class="dashboard container">
   <div class="row">
     <div class="span12">
 
+      <h1>Beaker <small>The data scientist's laboratory</small></h1>
+
       <div ng-if='isSessionsListEmpty()' class="empty-session-prompt">
-          <h1>Beaker <small>The data scientist's laboratory</small></h1>
           <p>Click <strong>New Notebook</strong> to get started coding in Python, R, Julia, Groovy, JavaScript, and Ruby. For help, check out <strong>Help &#8594; Tutorial notebook</strong>.</p>
       </div>
 
-      <button class='btn new-notebook' ng-click="newNotebook()">New Notebook</button>
-      <!--<button class='btn' ng-click="openTutorial()">Tutorial</button>-->
-      <br/><br/>
-
       <div ng-hide='isSessionsListEmpty()'>
-        <h4>Open notebooks:</h4>
+        <h4 class="open-notebook-headline">Open Notebooks</h4>
         <bk-control-panel-session-item class="open-notebooks"></bk-control-panel-session-item>
       </div>
+
+      <a class='beaker-btn new-notebook' ng-click="newNotebook()">New Notebook</a>
+
     </div>
   </div>
   <div class="row" ng-show="isAllowAnonymousTracking == null">
@@ -66,8 +65,10 @@
       <p>
         <a href="http://beakernotebook.com/privacy">Privacy policy</a> - <a class="cursor_hand" ng-click="showWhatWeLog()">What will we log?</a>
       </p>
-      <button class="btn" ng-click="isAllowAnonymousTracking = false">No, don't track</button>
-      <button class="btn btn-primary" ng-click="isAllowAnonymousTracking = true">Yes, track my info</button>
+      <div class="btn-group">
+        <button class="beaker-btn" ng-click="isAllowAnonymousTracking = false">No, don't track</button>
+        <button class="beaker-btn active" ng-click="isAllowAnonymousTracking = true">Yes, track my info</button>
+      </div>
     </div>
 
   </div>

@@ -71,7 +71,11 @@
         },
         set: function(v) {
           _v = v;
-          bkNotebookCellModelManager.reset(_v.cells);
+          if (this.isEmpty()) {
+            bkNotebookCellModelManager.reset([]);
+          } else {
+            bkNotebookCellModelManager.reset(_v.cells);
+          }
         },
         isEmpty: function() {
           return _.isEmpty(_v);

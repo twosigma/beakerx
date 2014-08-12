@@ -121,7 +121,7 @@
             }
           })
           .when('/session/:sessionId', {
-            template: "<bk-main-app></bk-main-app>",
+            template: JST["mainapp/app"](),
             resolve: sessionRouteResolve
           })
           .when('/open', {
@@ -137,7 +137,7 @@
             }
           })
           .when('/control', {
-            template: "<bk-control-panel></bk-control-panel>"
+            template: JST["dashboard/app"](),
           }).otherwise({
             redirectTo: "/control"
           });

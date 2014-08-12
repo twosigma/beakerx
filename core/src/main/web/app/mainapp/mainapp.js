@@ -204,7 +204,7 @@
               var notebookModel = angular.fromJson(session.notebookModelJson);
               var edited = session.edited;
               loadNotebookModelAndResetSession(
-                  notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
+                  notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, true);
             });
           },
           defaultNotebook: function(sessionId) {

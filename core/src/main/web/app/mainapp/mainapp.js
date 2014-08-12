@@ -56,7 +56,7 @@
       bkEvaluateJobManager) {
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/mainapp.html",
+      template: JST["mainapp/mainapp"](),
       scope: {},
       controller: function($scope) {
         var showStatusMessage = function(message) {

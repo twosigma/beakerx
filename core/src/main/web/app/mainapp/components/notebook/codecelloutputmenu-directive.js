@@ -21,7 +21,7 @@
   module.directive('bkCodeCellOutputMenu', function(bkUtils) {
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/codecelloutputmenu.html",
+      template: JST["notebook/codecelloutputmenu"](),
       scope: {
         model: '='
       },

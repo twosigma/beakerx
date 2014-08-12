@@ -22,6 +22,38 @@
       this.format();
     };
 
+    PlotLine.prototype.render = function(scope){
+      if (this.shown === false) {
+        this.clear(scope);
+        return;
+      }
+      this.filter(scope);
+      this.prepare(scope);
+      if (this.vlength === 0) {
+        this.clear(scope);
+      } else {
+        this.draw(scope);
+      }
+    };
+
+    PlotLine.prototype.getRange = function() {
+      var eles = this.elements;
+      var range = {
+        xl : 1E100,
+        xr : -1E100,
+        yl : 1E100,
+        yr : -1E100
+      };
+      for (var i = 0; i < eles.length; i++) {
+        var ele = eles[i];
+        range.xl = Math.min(range.xl, ele.x);
+        range.xr = Math.max(range.xr, ele.x);
+        range.yl = Math.min(range.yl, ele.y);
+        range.yr = Math.max(range.yr, ele.y);
+      }
+      return range;
+    };
+
     PlotLine.prototype.format = function() {
       this.itemProps = {
         "id" : this.id,
@@ -58,15 +90,7 @@
       this.vlength = r - l + 1;
     };
 
-    PlotLine.prototype.render = function(scope){
-
-      if (this.shown === false) {
-        this.clear(scope);
-        return;
-      }
-
-      this.filter(scope);
-
+    PlotLine.prototype.prepare = function(scope) {
       var eles = this.elements;
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
       var pstr = "", skipped = false;
@@ -96,44 +120,16 @@
         pstr += nxtp;
       }
 
-      if (pstr.length > 0 && skipped === false) {
-        this.itemProps.d = pstr;
-      } else if (skipped === true) {
+      if (skipped === true) {
         console.error("data not shown due to too large coordinate");
       }
-
-      this.renderSvg(scope);
-    };
-
-    PlotLine.prototype.getRange = function() {
-      var eles = this.elements;
-      var range = {
-        xl : 1E100,
-        xr : -1E100,
-        yl : 1E100,
-        yr : -1E100
-      };
-      for (var i = 0; i < eles.length; i++) {
-        var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
-        range.yl = Math.min(range.yl, ele.y);
-        range.yr = Math.max(range.yr, ele.y);
+      if (pstr.length > 0) {
+        this.itemProps.d = pstr;
       }
-      return range;
     };
 
-    PlotLine.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
-    };
-
-    PlotLine.prototype.renderSvg = function(scope) {
+    PlotLine.prototype.draw = function(scope) {
       var svg = scope.maing, prop = this.itemProps;
-
-      if (this.vlength === 0) {
-        this.clear(scope);
-        return;
-      }
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -146,14 +142,18 @@
           .style("stroke-opacity", function(d) { return d.stroke_opacity; });
       }
 
-      var selg = svg.selectAll("g")
-        .data([prop], function(d) { return d.id; });
+      var itemsvg = svg.select("#" + this.id);
 
-      selg.selectAll("path")
+      itemsvg.selectAll("path")
         .data([prop]).enter().append("path");
-      selg.selectAll("path")
-        .data([prop]).attr("d", prop.d);
+      itemsvg.select("path")
+        .attr("d", prop.d);
     };
+
+    PlotLine.prototype.clear = function(scope) {
+      scope.maing.select("#" + this.id).remove();
+    };
+
     return PlotLine;
   };
   beaker.bkoFactory('PlotLine', ['plotUtils', retfunc]);

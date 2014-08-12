@@ -73,7 +73,7 @@
 }
 .plot-const,
 .plot-line,
-.plot-river,
+.plot-area,
 .plot-cursor {
   pointer-events: none;
 }

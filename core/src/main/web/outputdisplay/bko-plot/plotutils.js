@@ -516,6 +516,7 @@
         var r = parseInt(hexstr.substr(1,2), 16),
             g = parseInt(hexstr.substr(3,2), 16),
             b = parseInt(hexstr.substr(5,2), 16);
+            var str = "rgba(" + r + "," + g + "," + b + "," + opacity + ")";;
         return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
       },
       getTipString : function(val, axis) {

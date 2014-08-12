@@ -17,11 +17,46 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
+
     var PlotBar = function(data) {
       $.extend(true, this, data);
       this.format();
     };
+
+    PlotBar.prototype.render = function(scope) {
+      if (this.shown == false) {
+        this.clear(scope);
+        return;
+      }
+      this.filter(scope);
+      this.prepare(scope);
+      if (this.vlength === 0) {
+        this.clear(scope);
+      } else {
+        this.draw(scope);
+      }
+    };
+
+    PlotBar.prototype.getRange = function(){
+      var eles = this.elements;
+      var range = {
+        xl : 1E100,
+        xr : -1E100,
+        yl : 1E100,
+        yr : -1E100
+      };
+      for (var i = 0; i < eles.length; i++) {
+        var ele = eles[i];
+        range.xl = Math.min(range.xl, ele.x);
+        range.xr = Math.max(range.xr, ele.x2);
+        range.yl = Math.min(range.yl, ele.y);
+        range.yr = Math.max(range.yr, ele.y);
+      }
+      return range;
+    };
+
     PlotBar.prototype.format = function() {
+
       this.itemProps = {
         "id" : this.id,
         "class" : "plot-bar",
@@ -31,6 +66,7 @@
         "stroke_width": this.stroke_width,
         "stroke_opacity": this.stroke_opacity
       };
+
       this.elementProps = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
@@ -67,15 +103,7 @@
       this.vlength = r - l + 1;
     };
 
-    PlotBar.prototype.render = function(scope) {
-
-      if (this.shown == false) {
-        this.clear(scope);
-        return;
-      }
-
-      this.filter(scope);
-
+    PlotBar.prototype.prepare = function(scope) {
       var w = this.width, sw;
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
       var eleprops = this.elementProps, eles = this.elements;
@@ -98,20 +126,10 @@
           "tip_y" : y
         });
       }
-      this.renderSvg(scope);
     };
 
-    PlotBar.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
-    };
-
-    PlotBar.prototype.renderSvg = function(scope) {
+    PlotBar.prototype.draw = function(scope) {
       var svg = scope.maing, prop = this.itemProps, eleprops = this.elementProps;
-
-      if (this.vlength === 0) {
-        this.clear(scope);
-        return;
-      }
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -150,23 +168,10 @@
         .attr("height", function(d) { return d.height; });
     };
 
-    PlotBar.prototype.getRange = function(){
-      var eles = this.elements;
-      var range = {
-        xl : 1E100,
-        xr : -1E100,
-        yl : 1E100,
-        yr : -1E100
-      };
-      for (var i = 0; i < eles.length; i++) {
-        var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
-        range.yl = Math.min(range.yl, ele.y);
-        range.yr = Math.max(range.yr, ele.y);
-      }
-      return range;
+    PlotBar.prototype.clear = function(scope) {
+      scope.maing.select("#" + this.id).remove();
     };
+
     return PlotBar;
   };
   beaker.bkoFactory('PlotBar', ['plotUtils', retfunc]);

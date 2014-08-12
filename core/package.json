@@ -19,6 +19,7 @@
     "gulp-minify-css": "^0.3.5",
     "gulp-template-compile": "^0.2.0",
     "gulp-concat": "^2.3.4",
-    "gulp-htmlmin": "^0.1.3"
+    "gulp-htmlmin": "^0.1.3",
+    "html-classer-gulp": "0.0.1"
   }
 }

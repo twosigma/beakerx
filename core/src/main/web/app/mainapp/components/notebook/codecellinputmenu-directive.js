@@ -28,7 +28,7 @@
     } ;
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/codecellinputmenu.html",
+      template: JST["notebook/codecellinputmenu"](),
       controller: function($scope) {
         $scope.getItemClass = function(item) {
           var result = [];

@@ -22,7 +22,7 @@
       bkUtils, bkSessionManager, bkEvaluatorManager) {
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/newcellmenu.html",
+      template: JST["notebook/newcellmenu"](),
       scope: { config: '=' },
       controller: function($scope) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();

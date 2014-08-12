@@ -21,7 +21,7 @@
   module.directive('bkCellMenu', function() {
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/cellmenu.html",
+      template: JST["notebook/cellmenu"](),
       scope: { items: '=' }
     };
   });

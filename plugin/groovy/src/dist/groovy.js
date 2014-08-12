@@ -173,12 +173,18 @@ define(function(require, exports, module) {
           }
           settings.shellID = id;
           self.settings = settings;
-          var initCode = "import com.twosigma.beaker.NamespaceClient\n" +
-            "beaker = new NamespaceClient('" + bkHelper.getSessionId() + "')\n";
-          self.evaluate(initCode, {}).then(function () {
+          if (bkHelper.hasSessionId()) {
+            var initCode = "import com.twosigma.beaker.NamespaceClient\n" +
+              "beaker = new NamespaceClient('" + bkHelper.getSessionId() + "')\n";
+            self.evaluate(initCode, {}).then(function () {
+              if (doneCB) {
+                doneCB(self);
+              }});
+          } else {
             if (doneCB) {
               doneCB(self);
-            }});
+            }
+          }
         };
         if (!settings.shellID) {
           settings.shellID = "";

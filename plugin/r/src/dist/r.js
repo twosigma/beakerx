@@ -173,13 +173,19 @@ define(function(require, exports, module) {
           }
           settings.shellID = id;
           self.settings = settings;
-          var initCode = "devtools::load_all(Sys.getenv('beaker_r_init'), " +
-            "quiet=TRUE, export_all=FALSE)\n" +
-            "beaker:::set_session('" + bkHelper.getSessionId() + "')\n";
-          self.evaluate(initCode, {}).then(function () {
+          if (bkHelper.hasSessionId()) {
+            var initCode = "devtools::load_all(Sys.getenv('beaker_r_init'), " +
+              "quiet=TRUE, export_all=FALSE)\n" +
+              "beaker:::set_session('" + bkHelper.getSessionId() + "')\n";
+            self.evaluate(initCode, {}).then(function () {
+              if (doneCB) {
+                doneCB(self);
+              }});
+          } else {
             if (doneCB) {
               doneCB(self);
-            }});
+            }
+          }
         };
         if (!settings.shellID) {
           settings.shellID = "";

@@ -56,14 +56,14 @@
 .plot-cursorlabel,
 .plot-constlabel {
   font-size: 0.75em;
-  font-weight: bold;
+  /* font-weight: bold; */
   color: white;
   padding: 1px 5px;
   pointer-events: none;
   position: absolute;
   width: auto;
   height: auto;
-  border-radius: 5px;
+  border-radius: 2px;
 }
 
 .plot-coord,

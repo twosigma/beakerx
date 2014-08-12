@@ -18,29 +18,30 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotLine = function(data){
-      this.data = data;
-      this.init();
-    };
-
-    PlotLine.prototype.init = function(){
+      $.extend(true, this, data); // copy properties to itself
       this.format();
     };
 
     PlotLine.prototype.format = function() {
-      var data = this.data;
-      this.itemProp = {
-        "id" : data.tag,
+      this.itemProps = {
+        "id" : this.id,
         "class" : "plot-line",
-        "stroke" : data.color,
-        "stroke_opacity" : data.color_opacity,
-        "stroke_width" : data.width,
-        "stroke_dasharray" : data.stroke_dasharray,
+        "stroke" : this.color,
+        "stroke_opacity" : this.color_opacity,
+        "stroke_width" : this.width,
+        "stroke_dasharray" : this.stroke_dasharray,
         "d" : ""
       };
+      this.elementProps = [];
+      for (var i = 0; i < this.elements.length; i++) {
+        var ele = this.elements[i];
+        var point = {};
+        this.elementProps.push(point);
+      }
     };
 
-    PlotLine.prototype.truncate = function(scope) {
-      var eles = this.data.elements;
+    PlotLine.prototype.filter = function(scope) {
+      var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
           r = plotUtils.upper_bound(eles, "x", scope.focus.xr) + 1;
 
@@ -48,11 +49,9 @@
       r = Math.min(r, eles.length - 1);
 
       if (l > r || l == r && eles[l].x < focus.xl) {
-        // nothing visible, or,
-        // all elements are to the left of the svg
+        // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
-        // in this case vlength = 0
       }
       this.vindexL = l;
       this.vindexR = r;
@@ -61,9 +60,14 @@
 
     PlotLine.prototype.render = function(scope){
 
-      this.truncate(scope);
+      if (this.shown === false) {
+        this.clear(scope);
+        return;
+      }
 
-      var data = this.data, eles = data.elements;
+      this.filter(scope);
+
+      var eles = this.elements;
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
       var pstr = "", skipped = false;
 
@@ -71,7 +75,7 @@
         var p = eles[i];
         if (i == this.vindexL) pstr += "M";
         else if (i == this.vindexL + 1) {
-          if (data.interpolation !== "curve") pstr += "L";
+          if (this.interpolation !== "curve") pstr += "L";
           else pstr += "C";
         }
         var x = mapX(p.x), y = mapY(p.y);
@@ -82,10 +86,10 @@
         var nxtp = x + "," + y + " ";
 
         if (i < this.vindexR) {
-          if (data.interpolation === "none") {
+          if (this.interpolation === "none") {
             var p2 = eles[i + 1];
             nxtp += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
-          } else if (data.interpolation === "curve") {
+          } else if (this.interpolation === "curve") {
             // TODO curve implementation
           }
         }
@@ -93,7 +97,7 @@
       }
 
       if (pstr.length > 0 && skipped === false) {
-        this.itemProp.d = pstr;
+        this.itemProps.d = pstr;
       } else if (skipped === true) {
         console.error("data not shown due to too large coordinate");
       }
@@ -101,8 +105,8 @@
       this.renderSvg(scope);
     };
 
-    PlotLine.prototype.getRange = function(){
-      var eles = this.data.elements;
+    PlotLine.prototype.getRange = function() {
+      var eles = this.elements;
       var range = {
         xl : 1E100,
         xr : -1E100,
@@ -119,23 +123,28 @@
       return range;
     };
 
+    PlotLine.prototype.clear = function(scope) {
+      scope.maing.select("#" + this.id).remove();
+    };
+
     PlotLine.prototype.renderSvg = function(scope) {
-      var svg = scope.maing, prop = this.itemProp;
+      var svg = scope.maing, prop = this.itemProps;
 
       if (this.vlength === 0) {
-        svg.selectAll("g")
-        .data([prop], function(d) { return d.id; }).exit().remove();
+        this.clear(scope);
         return;
       }
 
-      svg.selectAll("g")
-        .data([prop], function(d) { return d.id; }).enter().append("g")
-        .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-        .style("stroke-width", function(d) { return d.stroke_width; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; });
+      if (svg.select("#" + this.id).empty()) {
+        svg.selectAll("g")
+          .data([prop], function(d){ return d.id; }).enter().append("g")
+          .attr("id", function(d) { return d.id; })
+          .attr("class", function(d) { return d.class; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+          .style("stroke-width", function(d) { return d.stroke_width; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
+      }
 
       var selg = svg.selectAll("g")
         .data([prop], function(d) { return d.id; });

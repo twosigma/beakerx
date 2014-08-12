@@ -89,7 +89,7 @@
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
 
-          var item = data[i], eles = item.data.elements;
+          var item = data[i], eles = item.elements;
 
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
@@ -118,24 +118,26 @@
       generateTips : function(model) {
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
-          var item = data[i], eles = item.data.elements;
+          var item = data[i], eles = item.elements;
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
             var txt = "";
             var valx = plotUtils.getTipString(ele._x, model.xAxis),
                 valy = plotUtils.getTipString(ele._y, model.yAxis);
             if (item.legend != null) {
-              txt += "<div>" + item.legend + "</div>";
+              txt += "<div style='font-weight:bold'>" + item.legend + "</div>";
             }
             txt += "<div>x: " + valx + "</div><div>y: " + valy + "</div>";
             if (ele._y2 != null) {
               var valy2 = plotUtils.getTipString(ele._y2, model.yAxis);
               txt += "<div>y2: " + valy2 + "</div>";
             }
-            ele.tip_value = txt;
+
+            item.elementProps[j].tip_text = txt;
           }
         }
       },
+
       formatModel: function(newmodel, model) {
         if (newmodel.xCursor != null) {
           var cursor = newmodel.xCursor;
@@ -289,7 +291,7 @@
             }
           }
           // recreate rendering objects
-          item.tag = "item_" + i;
+          item.id = "i" + i;
 
           data[i] = plotFactory.createPlotItem(item);
 
@@ -465,9 +467,7 @@
           var elements = [];
           var numEles = item.x.length;
           for (var j = 0; j < numEles; j++) {
-            var ele = {
-              uniqid : i + "_" + j
-            };
+            var ele = {};
             ele.x = item.x[j];
             ele.y = item.y[j];
             if (item.colors != null) {
@@ -647,6 +647,7 @@
         }
         this.formatModel(newmodel, model); // fill in null entries, compute y2, etc.
 
+
         // at this point, data is in standard format (log is applied as well)
 
         var range = plotUtils.getDataRange(newmodel.data).datarange;
@@ -688,7 +689,9 @@
         this.remapModel(newmodel);
         this.generateTips(newmodel);
 
-        this.cleanupModel(newmodel);
+
+        //this.cleanupModel(newmodel);
+
         newmodel.version = "complete";
         console.log(newmodel);
         return newmodel;

@@ -506,6 +506,18 @@
         while (s.length < 6) s = "0" + s;
         return "#" + s;
       },
+      createColor : function(hexstr, opacity) {
+        if (hexstr == null) {
+          hexstr = "#000000";
+        }
+        if (opacity == null) {
+          opacity = 1.0;
+        }
+        var r = parseInt(hexstr.substr(1,2), 16),
+            g = parseInt(hexstr.substr(3,2), 16),
+            b = parseInt(hexstr.substr(5,2), 16);
+        return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
+      },
       getTipString : function(val, axis) {
         var type = axis.getType();
         if (type === "time") {

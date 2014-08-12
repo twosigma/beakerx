@@ -312,9 +312,11 @@
 
 
           for (var i = 0; i < data.length; i++) {
+            /*
             if (data[i].shown === false) {
               continue;
             }
+            */
             data[i].render(scope);
           }
 
@@ -360,10 +362,12 @@
                   "tip_x" : x1,
                   "tip_y" : y
                 };
+                /*
                 if (p.color != null) { bar.fill = p.color; }
                 if (p.fill_opacity != null) { bar.fill_opaicty = p.fill_opacity; }
                 if (p.stroke != null) { bar.stroke = p.stroke; }
                 if (p.stroke_opacity != null) { bar.stroke_opacity = p.stroke_opacity; }
+                */
                 reles.push(bar);
               }
               scope.rpipeBars.push({
@@ -835,16 +839,14 @@
         };
         scope.renderTips = function() {
           _.each(scope.tips, function(d) {
-            var p = {
-              "x" : scope.data2scrX(d.datax),
-              "y" : scope.data2scrY(d.datay)
-            };
-            d.scrx = p.x;
-            d.scry = p.y;
+            var x = scope.data2scrX(d.datax),
+                y = scope.data2scrY(d.datay);
+            d.scrx = x;
+            d.scry = y;
             var tipdiv = scope.jqcontainer.find("#tip_" + d.id);
             if (tipdiv.length > 0) {
               var w = tipdiv.width(), h = tipdiv.height();
-              if (plotUtils.outsideScrBox(scope, p.x + d.objw + scope.fonts.tooltipWidth, p.y,
+              if (plotUtils.outsideScrBox(scope, x + d.objw + scope.fonts.tooltipWidth, y,
                 w, h)) {
                 tipdiv.remove();
                 return;
@@ -854,7 +856,7 @@
               tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
               .attr("id", "tip_" + d.id)
               .attr("class", "plot-tooltip")
-              .css("border-color", d.tip_color == null ? "gray" : d.tip_color)
+              .css("border-color", d.tip_color)
               .append(d.tip_text).mousedown(function(e) {
                 if (e.which == 3) {
                   if (d.isResp === true) {  // is line responsive dot
@@ -871,7 +873,7 @@
             objw = objw == null ? 0 : parseFloat(objw);
             d.objw = objw;
             var w = tipdiv.width(), h = tipdiv.height();
-            if (plotUtils.outsideScrBox(scope, p.x + objw + scope.fonts.tooltipWidth, p.y, w, h)) {
+            if (plotUtils.outsideScrBox(scope, x + objw + scope.fonts.tooltipWidth, y, w, h)) {
               tipdiv.remove();
               return;
             }
@@ -885,8 +887,8 @@
             });
 
             tipdiv
-              .css("left", p.x + objw + scope.fonts.tooltipWidth)
-              .css("top", p.y);
+              .css("left", x + objw + scope.fonts.tooltipWidth)
+              .css("top", y);
             if (d.isResp === true) {
               scope.jqsvg.find("#" + d.id).attr("opacity", 1);
             } else {
@@ -1023,7 +1025,7 @@
           if (scope.stdmodel.showLegend == false || scope.legendDone == true)
             return;
           // legend redraw is controlled by legendDone
-          var data = scope.stdmodel.data, numLines = data.length;
+          var data = scope.stdmodel.data;
           var margin = scope.layout.legendMargin;
 
           scope.jqcontainer.find("#legends").remove();
@@ -1058,7 +1060,7 @@
           }
 
           var content = "";
-          for (var i = 0; i < numLines; i++) {
+          for (var i = 0; i < data.length; i++) {
             if (data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
             if (data[i].legend == null || data[i].legend === "") { continue; }
             var unit = $("<li></li>").appendTo(legend)
@@ -1460,7 +1462,7 @@
           scope.calcCoords();
           scope.renderCoords();
           scope.renderData();
-          scope.renderDots();
+          //scope.renderDots();
           scope.renderLabels();
 
           plotUtils.plotCoords(scope);

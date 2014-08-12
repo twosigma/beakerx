@@ -4,7 +4,7 @@ var template  = require('gulp-template-compile');
 var concat    = require('gulp-concat');
 var minifyCSS = require('gulp-minify-css');
 var htmlmin   = require('gulp-htmlmin');
-
+var htmlClass = require('html-classer-gulp');
 var Path      = require('path');
 var rootPath  = Path.join(__dirname, "/src/main/web/app/");
 var buildPath = Path.join(__dirname, "/src/main/web/app/dist");
@@ -22,6 +22,7 @@ gulp.task("compileScss", function() {
 
 gulp.task("compileTemplates", function() {
   gulp.src(rootPath + "/template/**/*.html")
+  .pipe(htmlClass({klass: "bkr"}))
   .pipe(htmlmin({removeComments: true}))
   .pipe(template({
     name: function (file) {

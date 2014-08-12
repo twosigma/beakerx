@@ -31,11 +31,11 @@ define(function(require, exports, module) {
       name: 'Show Hierarchy',
       isChecked: function() {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        return notebookViewModel.isHeirarchyEnabled();
+        return notebookViewModel.isHierarchyEnabled();
       },
       action: function() {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        notebookViewModel.toggleHeirarchyEnabled();
+        notebookViewModel.toggleHierarchyEnabled();
       }
     },
     {

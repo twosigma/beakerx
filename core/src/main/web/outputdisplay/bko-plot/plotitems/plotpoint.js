@@ -17,13 +17,14 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
-    var PlotStem = function(data){
+
+    var PlotBar = function(data) {
       $.extend(true, this, data);
       this.format();
     };
 
-    PlotStem.prototype.render = function(scope) {
-      if(this.vlength === 0) {
+    PlotBar.prototype.render = function(scope) {
+      if (this.shown == false) {
         this.clear(scope);
         return;
       }
@@ -36,7 +37,7 @@
       }
     };
 
-    PlotStem.prototype.getRange = function() {
+    PlotBar.prototype.getRange = function(){
       var eles = this.elements;
       var range = {
         xl : 1E100,
@@ -47,42 +48,44 @@
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
         range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
-        range.yl = Math.min(range.yl, ele.y2);
+        range.xr = Math.max(range.xr, ele.x2);
+        range.yl = Math.min(range.yl, ele.y);
         range.yr = Math.max(range.yr, ele.y);
       }
       return range;
     };
 
-    PlotStem.prototype.format = function() {
+    PlotBar.prototype.format = function() {
 
       this.itemProps = {
         "id" : this.id,
-        "class" : "plot-stem",
-        "stroke" : this.color,
-        "stroke_opacity": this.color_opacity,
-        "stroke_width": this.width,
-        "stroke_dasharray": this.stroke_dasharray
+        "class" : "plot-bar",
+        "fill" : this.color,
+        "fill_opacity": this.color_opacity,
+        "stroke": this.stroke,
+        "stroke_width": this.stroke_width,
+        "stroke_opacity": this.stroke_opacity
       };
 
       this.elementProps = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
-        var stem = {
+        var bar = {
           "id" : this.id + "_" + i,
           "class" : "plot-resp",
-          "stroke" : ele.color,
-          "stroke_opacity": ele.color_opacity,
-          "stroke_width" : ele.width,
-          "stroke_dasharray": ele.stroke_dasharray,
+          "fill" : ele.color,
+          "fill_opacity" : ele.color_opacity,
+          "stroke" : ele.stroke,
+          "stroke_width" : ele.stroke_width,
+          "stroke_opacity" : ele.stroke_opacity,
           "tip_text" : ele.tip_text,
-          "tip_color" : plotUtils.createColor(this.color, this.color_opacity)
+          "tip_color" : plotUtils.createColor(this.color, this.color_opacity),
         };
-        this.elementProps.push(stem);
+        this.elementProps.push(bar);
       }
     };
 
-    PlotStem.prototype.filter = function(scope) {
+    PlotBar.prototype.filter = function(scope) {
       var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl) + 1,
           r = plotUtils.upper_bound(eles, "x2", scope.focus.xr);
@@ -100,60 +103,76 @@
       this.vlength = r - l + 1;
     };
 
-    PlotStem.prototype.prepare = function(scope) {
-      var eles = this.elements, eleprops = this.elementProps;
+    PlotBar.prototype.prepare = function(scope) {
+      var w = this.width, sw;
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
+      var eleprops = this.elementProps, eles = this.elements;
+
       for (var i = this.vindexL; i <= this.vindexR; i++) {
-        var ele = eles[i];
+        var p = eles[i];
+        var x1 = mapX(p.x), x2 = mapX(p.x2);
+        if (x2 - x1 < 1) x2 = x1 + 1;
+        var y = p.y, y2 = p.y2;
+        y = mapY(y); y2 = mapY(y2);
+        sw = x2 - x1;
+        if (y > y2) { continue; } // prevent negative height
+
         _(eleprops[i]).extend({
-          "x1" : mapX(ele.x),
-          "y1" : mapY(ele.y),
-          "x2" : mapX(ele.x),
-          "y2" : mapY(ele.y2),
-          "tip_x" : mapX(ele.x),
-          "tip_y" : mapY(ele.y)
+          "x" : x1,
+          "y" : y,
+          "width" : sw,
+          "height" : y2 - y,
+          "tip_x" : x1,
+          "tip_y" : y
         });
       }
     };
 
-    PlotStem.prototype.draw = function(scope) {
+    PlotBar.prototype.draw = function(scope) {
       var svg = scope.maing, prop = this.itemProps, eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
           .data([prop], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-        .style("stroke-width", function(d) { return d.stroke_width; });
+          .attr("class", function(d) { return d.class; })
+          .style("fill", function(d) { return d.fill; })
+          .style("fill-opacity", function(d) { return d.fill_opacity; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
       }
 
       var svgitem = svg.select("#" + this.id);
-      svgitem.selectAll("line")
+
+      svgitem.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
-      svgitem.selectAll("line")
-        .data(eleprops, function(d) { return d.id; }).enter().append("line")
+      svgitem.selectAll("rect")
+        .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
         .attr("class", function(d) { return d.class; })
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; })
+        .attr("width", function(d) { return d.width; })
+        .attr("height", function(d) { return d.height; })
+        .style("fill", function(d) { return d.fill; })
+        .style("fill-opacity", function(d) { return d.fill_opacity; })
         .style("stroke", function(d) { return d.stroke; })
         .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
         .style("stroke-width", function(d) { return d.stroke_width; });
-      svgitem.selectAll("line")
+      svgitem.selectAll("rect")
         .data(eleprops, function(d) { return d.id; })
-        .attr("x1", function(d) { return d.x1; })
-        .attr("x2", function(d) { return d.x2; })
-        .attr("y1", function(d) { return d.y1; })
-        .attr("y2", function(d) { return d.y2; });
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; })
+        .attr("width", function(d) { return d.width; })
+        .attr("height", function(d) { return d.height; });
     };
 
-    PlotStem.prototype.clear = function(scope) {
+    PlotBar.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
     };
 
-    return PlotStem;
+    return PlotBar;
   };
-  beaker.bkoFactory('PlotStem', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotBar', ['plotUtils', retfunc]);
 })();

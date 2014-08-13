@@ -841,6 +841,7 @@
               });
             }
             var objw = scope.jqsvg.find("#" + d.id).attr("width");
+            objw = 0;
             objw = objw == null ? 0 : parseFloat(objw);
             d.objw = objw;
             var w = tipdiv.width(), h = tipdiv.height();

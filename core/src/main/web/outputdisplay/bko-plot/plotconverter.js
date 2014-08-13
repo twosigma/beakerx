@@ -567,7 +567,7 @@
             var ele = {
               "x" : mtext.x,
               "y" : mtext.y,
-              "v" : mtext.text
+              "text" : mtext.text
             };
             item.elements.push(ele);
             newmodel.data.push(item);

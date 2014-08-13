@@ -83,6 +83,8 @@
         };
         this.elementProps.push(bar);
       }
+
+      this.pipe = [];
     };
 
     PlotBar.prototype.filter = function(scope) {
@@ -108,7 +110,7 @@
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
       var eleprops = this.elementProps, eles = this.elements;
 
-      this.pipe = [];
+      this.pipe.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var p = eles[i];
         var x1 = mapX(p.x), x2 = mapX(p.x2);

@@ -17,7 +17,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(PlotLine, PlotBar, PlotStem, PlotArea,
+  var retfunc = function(PlotLine, PlotBar, PlotStem, PlotArea, PlotPoint,
     PlotConstline, PlotConstband, PlotText) {
     return {
       createPlotItem : function(item) {
@@ -34,6 +34,9 @@
             break;
           case "area":
             plotitem = new PlotArea(item);
+            break;
+          case "point":
+            plotitem = new PlotPoint(item);
             break;
           case "constline":
             plotitem = new PlotConstline(item);
@@ -52,6 +55,7 @@
     };
   };
   beaker.bkoFactory('plotFactory',
-    ['PlotLine', 'PlotBar', 'PlotStem', 'PlotArea', 'PlotConstline', 'PlotConstband', 'PlotText',
+    ['PlotLine', 'PlotBar', 'PlotStem', 'PlotArea', 'PlotPoint',
+     'PlotConstline', 'PlotConstband', 'PlotText',
       retfunc]);
 })();

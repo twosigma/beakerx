@@ -80,6 +80,8 @@
         };
         this.elementProps.push(stem);
       }
+
+      this.pipe = [];
     };
 
     PlotStem.prototype.filter = function(scope) {
@@ -104,7 +106,7 @@
       var eles = this.elements, eleprops = this.elementProps;
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
-      this.pipe = [];
+      this.pipe.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         _(eleprops[i]).extend({

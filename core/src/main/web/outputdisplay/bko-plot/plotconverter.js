@@ -461,7 +461,7 @@
             if (item.shape == null) {
               item.shape = "DEFAULT";
             }
-            item.style = this.pointShapeMap[item.shape];
+            item.shape = this.pointShapeMap[item.shape];
           }
 
           var elements = [];

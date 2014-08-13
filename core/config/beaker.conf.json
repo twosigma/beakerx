@@ -16,8 +16,8 @@
     "./plugin/menu/file_filesys.js",
     "./plugin/menu/file_ipython.js",
     "./plugin/menu/file_iruby.js",
+    "./plugin/menu/view.js",
     "./plugin/menu/notebook.js",
-    "./plugin/menu/notebook_edit.js",
     "./plugin/menu/run.js",
     "./plugin/menu/help.js"
   ],

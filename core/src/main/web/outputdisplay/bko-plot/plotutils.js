@@ -17,6 +17,12 @@
         if (ele.x2 != null) { this.updateDataRangeVal(range, "x", ele.x2); }
         if (ele.y2 != null) { this.updateDataRangeVal(range, "y", ele.y2); }
       },
+      updateRange : function(datarange, itemrange) {
+        if (itemrange.xl != null) { datarange.xl = Math.min(datarange.xl, itemrange.xl); }
+        if (itemrange.xr != null) { datarange.xr = Math.max(datarange.xr, itemrange.xr); }
+        if (itemrange.yl != null) { datarange.yl = Math.min(datarange.yl, itemrange.yl); }
+        if (itemrange.yr != null) { datarange.yr = Math.max(datarange.yr, itemrange.yr); }
+      },
       getDataRange : function(data) { // data range is in [0,1] x [0,1]
         var datarange = {
           xl: 1E100,
@@ -28,10 +34,15 @@
         for (var i = 0; i < data.length; i++) {
           if (data[i].shown === false) { continue; }
           visibleData++;
+
+          var itemrange = data[i].getRange();
+          this.updateRange(datarange, itemrange);
+          /*
           var eles = data[i].elements;
           for (var j = 0; j < eles.length; j++) {
             this.updateDataRange(datarange, eles[j]);
           }
+          */
         }
         if (visibleData === 0) {
           datarange.xl = datarange.yl = 0;
@@ -480,6 +491,26 @@
           .attr("height", function(d) { return d.height; })
           .style("fill", function(d) { return d.fill; });
       },
+
+      plotHintText : function(scope, labelid, props) {
+
+        var hint = scope.jqcontainer.find("#" + labelid);
+        if (hint.empty()) {
+          hint = $("<div id=" + labelid + " class='plot-constlabel'></div>")
+            .appendTo(scope.jqcontainer)
+            .text(props.label);
+        }
+        var w = hint.outerWidth(), h = hint.outerHeight();
+        hint
+          .css("left", props.left - w / 2)
+          .css("top", props.top - h / 2)
+          .css("background-color", props.background_color);
+
+         // "left" : x - w / 2,
+          //  "top" : H - bMargin - h - scope.labelPadding.y,
+          //  "background-color" : data[i].color
+      },
+
       upper_bound: function(a, attr, val) {
         var l = 0, r = a.length - 1;
         while (l <= r) {
@@ -494,6 +525,19 @@
         var s = rhex6.toString(16);
         while (s.length < 6) s = "0" + s;
         return "#" + s;
+      },
+      createColor : function(hexstr, opacity) {
+        if (hexstr == null) {
+          hexstr = "#000000";
+        }
+        if (opacity == null) {
+          opacity = 1.0;
+        }
+        var r = parseInt(hexstr.substr(1,2), 16),
+            g = parseInt(hexstr.substr(3,2), 16),
+            b = parseInt(hexstr.substr(5,2), 16);
+            var str = "rgba(" + r + "," + g + "," + b + "," + opacity + ")";;
+        return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
       },
       getTipString : function(val, axis) {
         var type = axis.getType();

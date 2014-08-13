@@ -32,11 +32,16 @@
 .plot-test,
 .plot-xylabel,
 .plot-cursorlabel,
-.plot-constlabel {
+.plot-constlabel,
+.plot-tooltip {
   font-family: verdana, helvetica, arial, sans-serif;
 }
 
-.plot-const,
+.plot-resp {
+  pointer-events : auto;
+}
+
+.plot-constline,
 .plot-line {
   fill: none;
 }
@@ -55,14 +60,14 @@
 .plot-cursorlabel,
 .plot-constlabel {
   font-size: 0.75em;
-  font-weight: bold;
+  /* font-weight: bold; */
   color: white;
   padding: 1px 5px;
   pointer-events: none;
   position: absolute;
   width: auto;
   height: auto;
-  border-radius: 5px;
+  border-radius: 2px;
 }
 
 .plot-coord,
@@ -70,9 +75,10 @@
   stroke-width: 1;
   pointer-events: none;
 }
-.plot-const,
+.plot-constline,
+.plot-constband,
 .plot-line,
-.plot-river,
+.plot-area,
 .plot-cursor {
   pointer-events: none;
 }
@@ -96,7 +102,8 @@
 }
 
 .plot-pointrect,
-.plot-pointcircle {
+.plot-pointcircle,
+.plot-pointdiamond {
   /* to be added if needed */
 }
 
@@ -151,19 +158,18 @@
   fill: #FEFEFE;
 }
 
-.plot-dot {
+.plot-respdot,
+.plot-respstem {
   fill: white;
-  stroke-width: 2;
+  stroke-width: 1;
 }
 
 .plot-tooltip {
-  font-size: 0.9em;
-  font-weight: bold;
+  font-size: 0.8em;
   position: absolute;
-  width: auto;
-  height: auto;
-  border: 2px solid;
+  display: inline-table;
+  border: 1px solid;
   background-color: white;
-  border-radius: 5px;
-  padding: 1em;
+  /* border-radius: 5px; */
+  padding: 0.8em;
 }

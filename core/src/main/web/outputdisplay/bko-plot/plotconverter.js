@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, PlotAxis, plotUtils) {
+  var retfunc = function(bkUtils, PlotAxis, plotFactory, plotUtils) {
     return {
       dataTypeMap : {
         "Line" : "line",
@@ -56,6 +56,7 @@
         2 : "linear", // should be "curve" but right now it is not implemented yet
         "" : "linear"
       },
+
       remapModel : function(model) {
         // map data entrie to [0, 1] of axis range
         var vrange = model.vrange;
@@ -87,7 +88,9 @@
 
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
+
           var item = data[i], eles = item.elements;
+
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
             if (ele.x != null) {
@@ -104,12 +107,14 @@
             }
           }
         }
+        // map focus region
         var focus = model.focus;
         if (focus.xl != null) { focus.xl = xAxis.getPercent(focus.xl); }
         if (focus.xr != null) { focus.xr = xAxis.getPercent(focus.xr); }
         if (focus.yl != null) { focus.yl = yAxis.getPercent(focus.yl); }
         if (focus.yr != null) { focus.yr = yAxis.getPercent(focus.yr); }
       },
+
       generateTips : function(model) {
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
@@ -120,17 +125,19 @@
             var valx = plotUtils.getTipString(ele._x, model.xAxis),
                 valy = plotUtils.getTipString(ele._y, model.yAxis);
             if (item.legend != null) {
-              txt += "<div>" + item.legend + "</div>";
+              txt += "<div style='font-weight:bold'>" + item.legend + "</div>";
             }
             txt += "<div>x: " + valx + "</div><div>y: " + valy + "</div>";
             if (ele._y2 != null) {
               var valy2 = plotUtils.getTipString(ele._y2, model.yAxis);
               txt += "<div>y2: " + valy2 + "</div>";
             }
-            ele.tip_value = txt;
+
+            item.elementProps[j].tip_text = txt;
           }
         }
       },
+
       formatModel: function(newmodel, model) {
         if (newmodel.xCursor != null) {
           var cursor = newmodel.xCursor;
@@ -180,6 +187,7 @@
             item.width = 1;
           }
 
+
           if (item.colorOpacity != null) {
             item.color_opacity = item.colorOpacity;
             delete item.colorOpacity;
@@ -199,6 +207,7 @@
 
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
+
 
             if (ele.outlineColor != null) {
               ele.stroke = ele.outlineColor;
@@ -250,7 +259,7 @@
             }
 
             // swap y, y2
-            if (ele.y != null && ele.y2 != null && ele.y < ele.y2) {
+            if (ele.y != null && ele.y2 != null && ele.y > ele.y2) {
               var temp = ele.y;
               ele.y = ele.y2;
               ele.y2 = temp;
@@ -281,7 +290,13 @@
               }
             }
           }
+          // recreate rendering objects
+          item.id = "i" + i;
+
+          data[i] = plotFactory.createPlotItem(item);
         }
+
+        // apply log to focus
         var focus = newmodel.focus;
         if (logx) {
           if (focus.xl != null) {
@@ -396,7 +411,7 @@
         var list = model.graphics_list;
         var numLines = list.length;
         for (var i = 0; i < numLines; i++) {
-          var item = _.omit(list[i]);
+          var item = list[i];
 
           item.legend = item.display_name;
           delete item.display_name;
@@ -444,15 +459,13 @@
             if (item.shape == null) {
               item.shape = "DEFAULT";
             }
-            item.style = this.pointShapeMap[item.shape];
+            item.shape = this.pointShapeMap[item.shape];
           }
 
           var elements = [];
           var numEles = item.x.length;
           for (var j = 0; j < numEles; j++) {
-            var ele = {
-              uniqid : i + "_" + j
-            };
+            var ele = {};
             ele.x = item.x[j];
             ele.y = item.y[j];
             if (item.colors != null) {
@@ -552,7 +565,7 @@
             var ele = {
               "x" : mtext.x,
               "y" : mtext.y,
-              "v" : mtext.text
+              "text" : mtext.text
             };
             item.elements.push(ele);
             newmodel.data.push(item);
@@ -632,6 +645,7 @@
         }
         this.formatModel(newmodel, model); // fill in null entries, compute y2, etc.
 
+
         // at this point, data is in standard format (log is applied as well)
 
         var range = plotUtils.getDataRange(newmodel.data).datarange;
@@ -673,12 +687,14 @@
         this.remapModel(newmodel);
         this.generateTips(newmodel);
 
-        this.cleanupModel(newmodel);
+
+        //this.cleanupModel(newmodel);
+
         newmodel.version = "complete";
-        console.log(newmodel);
+        //console.log(newmodel);
         return newmodel;
       }
     };
   };
-  beaker.bkoFactory('plotConverter', ["bkUtils", 'PlotAxis', 'plotUtils', retfunc]);
+  beaker.bkoFactory('plotConverter', ["bkUtils", 'PlotAxis', 'plotFactory', 'plotUtils', retfunc]);
 })();

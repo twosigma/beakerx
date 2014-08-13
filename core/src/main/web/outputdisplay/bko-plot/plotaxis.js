@@ -53,7 +53,7 @@
     for (var i = 0; i < 18; i++) {
       var f = Math.max(6 - i, 0);
       numIntws = numIntws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs]);  // generate 1s, 5s
-      numFixs = numFixs.concat([f, f + 1, f]);
+      numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
       bs *= 10;
     }
     PlotAxis.prototype.numIntws = numIntws;

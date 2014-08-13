@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div ng-class="{'advanced-mode': isAdvancedMode(), 'heirarchy-mode': isHeirarchyEnabled()}">
+<div ng-class="{'advanced-mode': isAdvancedMode(), 'hierarchy-mode': isHierarchyEnabled()}">
   <div class="bkcell">
     <bk-plugin-manager></bk-plugin-manager>
     <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index">

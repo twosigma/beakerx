@@ -13,57 +13,37 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * 'Notebook' menu plugin
- * This creates the 'Notebook' menu which contains menu items for user interaction with the content
- * of the loading notebook.
- */
+
 define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
-      name: "Start Page",
-      action: function() {
-        bkHelper.gotoControlPanel();
+       name: "Plugin manager...",
+       action: function() {
+         bkHelper.getBkNotebookViewModel().showEvaluators();
+       },
+       tooltip: "Show evaluators settings"
+    },
+    {
+      name: "Lock", action: function() {
+      bkHelper.toggleNotebookLocked();
+    },
+      tooltip: "Lock notebook from further editing",
+      isChecked: function() {
+        return bkHelper.isNotebookLocked();
       }
     },
     {
-      name: 'Show Hierarchy',
-      isChecked: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        return notebookViewModel.isHeirarchyEnabled();
-      },
-      action: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        notebookViewModel.toggleHeirarchyEnabled();
-      }
-    },
-    {
-      name: 'Advanced Mode',
-      isChecked: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        return notebookViewModel.isAdvancedMode();
-      },
-      action: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        notebookViewModel.toggleAdvancedMode();
-      }
-    },
-    {
-      name: "Show stdout/err",
-      action: function() {
-        bkHelper.getBkNotebookViewModel().toggleShowOutput();
-      },
-      tooltip: "Show or hide the stdout and stderr.",
-      isChecked: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        if (notebookViewModel) {
-          return notebookViewModel.isShowingOutput();
-        }
-      }
+      name: "Evaluators",
+      items: bkHelper.getEvaluatorMenuItems
     }
   ];
-  var menuItemPromise = bkHelper.newPromise({items: menuItems, parent: "View"});
+
+  var menuItemPromise = bkHelper.newPromise({
+    parent: "Notebook",
+    items: menuItems
+  });
+
   exports.getMenuItems = function() {
     return menuItemPromise;
   };

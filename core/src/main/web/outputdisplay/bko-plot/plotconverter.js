@@ -122,8 +122,8 @@
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
             var txt = "";
-            var valx = plotUtils.getTipString(ele._x, model.xAxis),
-                valy = plotUtils.getTipString(ele._y, model.yAxis);
+            var valx = plotUtils.getTipString(ele._x, model.xAxis, true),
+                valy = plotUtils.getTipString(ele._y, model.yAxis, true);
             if (item.legend != null) {
               txt += "<div style='font-weight:bold'>" + item.legend + "</div>";
             }
@@ -148,6 +148,7 @@
             logxb = newmodel.xAxis.base,
             logy = newmodel.yAxis.type === "log",
             logyb = newmodel.yAxis.base;
+
         // fill in null entries, compute y2, etc.
         // move some of format SerializedData to formatData?
         var data = newmodel.data;
@@ -398,7 +399,7 @@
           newmodel.xAxis.type = "time";
         } else if (model.type === "NanoPlot"){  // TODO
         } else {
-          newmodel.xAxis = "linear";
+          newmodel.xAxis.type = "linear";
         }
 
         if (logy) {

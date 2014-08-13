@@ -126,10 +126,12 @@
 }
 
 .plot-legendbox {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   margin: 0px 5px;
+  vertical-align: middle;
   display: inline-block;
+  bottom: 0px;
 }
 
 .plot-legendcheckbox {

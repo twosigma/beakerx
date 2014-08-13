@@ -539,23 +539,27 @@
             var str = "rgba(" + r + "," + g + "," + b + "," + opacity + ")";;
         return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
       },
-      getTipString : function(val, axis) {
+      getTipString : function(val, axis, keepFixed) {
         var type = axis.getType();
         if (type === "time") {
           return moment(val).tz(axis.getTimezone()).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
         }
         if (typeof(val) === "number") {
-          val = val.toFixed(axis.getFixed());
+          if (keepFixed === true) {
+            return "" + val;
+          } else {
+            val = val.toFixed(axis.getFixed());
+          }
         }
         return "" + val;
       },
-      getTipStringPercent : function(pct, axis) {
+      getTipStringPercent : function(pct, axis, keepFixed) {
         var val = axis.getValue(pct);
         if (axis.getType() === "log") {
           val = axis.axisPow(pct);
-          return val.toFixed(3);
+          return this.getTipString(val, axis, keepFixed) + " (" + axis.getString(pct) + ")";
         }
-        return this.getTipString(val, axis);
+        return this.getTipString(val, axis, keepFixed);
       }
 
     };

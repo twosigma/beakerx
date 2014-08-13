@@ -266,97 +266,13 @@
             "y2" : mapY(focus.yr)
           });
         };
-        scope.filterData = function() {
-          var focus = scope.focus, data = scope.stdmodel.data;
-          scope.fdata = [];
-          var fdata = scope.fdata;
-          for (var i = 0; i < data.length; i++) {
-            var eles = data[i].elements;
-            if (data[i].type === "constline" || data[i].type === "constband" ||
-                data[i].type === "text") {
-              fdata[i] = {
-                "leftIndex" : 0,
-                "rightIndex" : eles.length - 1
-              };
-              continue;
-            }
-            var l = plotUtils.upper_bound(eles, "x", focus.xl);
-            var r = plotUtils.upper_bound(eles, "x", focus.xr);
-
-            if ( data[i].type === "line" || data[i].type === "area") {
-              // cover one more point to the right for line and area
-              r++;
-            } else {
-              // skip the left side element
-              l++;
-            }
-
-            // truncate out-of-sight segment on x-axis
-            l = Math.max(l, 0);
-            r = Math.min(r, eles.length - 1);
-
-            if (l == r && eles[l].x < focus.xl) {
-              // all elements are to the left of the svg
-              l = 0;
-              r = -1;
-            }
-            fdata[i] = {
-              "leftIndex" : l,
-              "rightIndex" : r
-            };
-          }
-        };
         scope.renderData = function() {
           var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
             data[i].render(scope);
           }
         };
-        scope.renderDots = function() {
-          var data = scope.stdmodel.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
-          var mapX = scope.data2scrX, mapY = scope.data2scrY;
-          for (var i = 0; i < numLines; i++) {
-            if (data[i].shown === false) {
-              continue;
-            }
-            if (data[i].type !== "line" && data[i].type !== "area") {
-              continue;
-            }
 
-            var eles = data[i].elements;
-            var reles = [];
-            for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-              var p = {
-                "x" : mapX(eles[j].x),
-                "y" : mapY(eles[j].y)
-              };
-              if (plotUtils.outsideScr(scope, p.x, p.y)) { continue; }
-              var id = "dot_" + i + "_" + j;
-              reles.push({
-                "id" : id,
-                "class" : "plot-resp",
-                "isResp" : true,
-                "cx" : p.x,
-                "cy" : p.y,
-                "r" : 4,
-                "opacity" : scope.tips[id] == null ? 0 : 1,
-                "point" : _.omit(eles[j], "uniqid"),
-                "tip_text" : eles[j].tip_value,
-                "tip_color" : data[i].color,
-                "tip_x" : p.x,
-                "tip_y" : p.y
-              });
-            }
-            var wrapper = {
-              "id" : "linedots_" + i,
-              "class" : "plot-dot",
-              "stroke" : data[i].color == null ? "gray" : data[i].color,
-              "fill" : "white",
-              "elements" : reles
-            };
-            scope.rpipeDots.push(wrapper);
-          }
-        };
         scope.prepareInteraction = function(id) {
           var model = scope.stdmodel;
           if (model.useToolTip != true) {
@@ -364,7 +280,7 @@
           }
           scope.svg.selectAll(".plot-resp")
             .on('mouseenter', function(d) {
-              return scope.tooltip(d, d3.mouse(this));
+              return scope.tooltip(d, d3.mouse(scope.svg[0][0]));
             })
             .on("mouseleave", function(d) {
               return scope.untooltip(d);
@@ -373,6 +289,7 @@
               return scope.toggleTooltip(d);
             });
         };
+
         scope.toggleTooltip = function(d) {
           var id = d.id, nv = !scope.tips[id];
           if (nv === true) {
@@ -398,6 +315,7 @@
           d.datax = scope.scr2dataX(d.tip_x);
           d.datax = Math.max(d.datax, scope.scr2dataX(mousePos[0] + 5));
           d.datay = scope.scr2dataY(d.tip_y);
+          d.datay = Math.max(d.datay, scope.scr2dataY(mousePos[1] + 5));
 
           scope.renderTips();
         };
@@ -477,6 +395,7 @@
             }
           });
         };
+
         scope.renderLabels = function() {
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
           var model = scope.stdmodel, ys = model.yScale;
@@ -532,6 +451,7 @@
             });
           }
         };
+
         scope.renderCursor = function(e) {
           var x = e.offsetX, y = e.offsetY;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -601,6 +521,7 @@
             });
           }
         };
+
         scope.renderLegends = function() {
           if (scope.stdmodel.showLegend == false || scope.legendDone == true)
             return;
@@ -655,7 +576,10 @@
             $("<span></span>").appendTo(unit)
               .attr("id", "legendbox_" + i)
               .attr("class", "plot-legendbox")
-              .css("background-color", data[i].color == null? "none" : data[i].color);
+              .css("background-color",
+                data[i].color == null ? "none" : data[i].color)
+              .css("border",
+                data[i].color != null ? "1px solid " + data[i].color : "1px dotted gray");
             $("<span></span>").appendTo(unit)
               .attr("id", "legendtext_" + i)
               .attr("class", "plot-label")
@@ -669,8 +593,8 @@
           if (id == "all") {
             scope.showAllLines = !scope.showAllLines;
             for (var i = 0; i < data.length; i++) {
-              if (data[i].type === "constline" || data[i].type === "constband"
-                || data[i].type === "text") { continue; }
+             // if (data[i].type === "constline" || data[i].type === "constband"
+              //  || data[i].type === "text") { continue; }
               data[i].shown = scope.showAllLines;
               scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
             }
@@ -1038,28 +962,12 @@
 
         scope.update = function(first) {
           scope.resetSvg();
-          //scope.filterData();
           scope.calcCoords();
           scope.renderCoords();
           scope.renderData();
-          //scope.renderDots();
           scope.renderLabels();
 
           plotUtils.plotCoords(scope);
-
-          /*
-          plotUtils.plotRivers(scope);
-          plotUtils.plotBars(scope);
-          plotUtils.plotStems(scope);
-          plotUtils.plotLines(scope);
-          plotUtils.plotDots(scope);
-          plotUtils.plotPointCircles(scope);
-          plotUtils.plotPointRects(scope);
-          plotUtils.plotPointDiamonds(scope);
-          plotUtils.plotSegs(scope);
-          plotUtils.plotRects(scope);
-          plotUtils.plotUserTexts(scope);
-          */
 
           scope.renderTips();
           scope.renderLocateBox(); // redraw

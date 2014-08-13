@@ -155,7 +155,7 @@
           var text = plotUtils.getTipString(ele._y, scope.stdmodel.yAxis);
 
           _(eleprops[i]).extend({
-            "left" : function(w, h) { return lMargin + scope.labelPadding.x; }, //  why padding?
+            "left" : function(w, h) { return lMargin + scope.labelPadding.x; },
             "top" : function(w, h) { return y - w / 2; },
             "label_text" : text
           });

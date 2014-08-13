@@ -1,31 +1,22 @@
 /*
-*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*/
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
 .plot-renderdiv {
   background-color: #FEFEFE;
   border: 1px solid #BBBBBB;
-  /*
-  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-  -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-
-  -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,1.0);
-  -moz-box-shadow: 10px 10px 5px rgba(0,0,0,1.0);
-
-  */
- /* inset */
 }
 
 .plot-label,
@@ -38,7 +29,7 @@
 }
 
 .plot-resp {
-  pointer-events : auto;
+  pointer-events: auto;
 }
 
 .plot-constline,
@@ -60,7 +51,6 @@
 .plot-cursorlabel,
 .plot-constlabel {
   font-size: 0.75em;
-  /* font-weight: bold; */
   color: white;
   padding: 1px 5px;
   pointer-events: none;
@@ -75,6 +65,7 @@
   stroke-width: 1;
   pointer-events: none;
 }
+
 .plot-constline,
 .plot-constband,
 .plot-line,
@@ -116,8 +107,6 @@
   fill: #FEFEFE;
 }
 
-
-
 .plot-title {
   text-align: center;
   font-weight: bold;
@@ -147,11 +136,6 @@
   width: 150px;
   height: auto;
   border: 1px solid #BBBBBB;
-  /*
-  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-  -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-  */
-   /* inset */
   background-color: white;
   list-style: none;
 }
@@ -172,6 +156,5 @@
   display: inline-table;
   border: 1px solid;
   background-color: white;
-  /* border-radius: 5px; */
   padding: 0.8em;
 }

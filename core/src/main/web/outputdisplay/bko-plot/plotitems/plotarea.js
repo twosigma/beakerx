@@ -75,7 +75,7 @@
           "isresp" : true,
           "tip_text" : ele.tip_text,
           "tip_color" : this.color == null ? "gray" : this.color,
-          "width" : 20
+          "width" : 5
         };
         this.elementProps.push(point);
       }
@@ -132,9 +132,9 @@
 
         if (ele.y <= focus.yr && ele.y2 >= focus.yl) {
           _(eleprops[i]).extend({
-            "x" : x - 2.5,
+            "x" : x - eleprops[i].width / 2,
             "y" : y2,
-            "height" : y - y2,
+            "height" : Math.max(y - y2, 5), // at least height 5 to be hoverable
             "tip_x" : x,
             "tip_y" : (y + y2) / 2,
             "opacity" : scope.tips[eleprops[i].id] == null ? 0 : 1
@@ -192,7 +192,6 @@
       itemsvg.select("polygon")
         .attr("points", props.points);
 
-      console.log(resppipe);
       if (scope.stdmodel.useToolTip === true) {
         itemsvg.selectAll("rect")
           .data(resppipe, function(d) { return d.id; }).exit().remove();

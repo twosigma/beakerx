@@ -49,8 +49,8 @@
         var ele = eles[i];
         range.xl = Math.min(range.xl, ele.x);
         range.xr = Math.max(range.xr, ele.x);
-        range.yl = Math.min(range.yl, ele.y2);
-        range.yr = Math.max(range.yr, ele.y);
+        range.yl = Math.min(range.yl, ele.y);
+        range.yr = Math.max(range.yr, ele.y2);
       }
       return range;
     };

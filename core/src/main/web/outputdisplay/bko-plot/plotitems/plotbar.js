@@ -116,15 +116,15 @@
         var y = p.y, y2 = p.y2;
         y = mapY(y); y2 = mapY(y2);
         sw = x2 - x1;
-        if (y > y2) { continue; } // prevent negative height
+        if (y < y2) { continue; } // prevent negative height
 
         _(eleprops[i]).extend({
           "x" : x1,
-          "y" : y,
+          "y" : y2,
           "width" : sw,
-          "height" : y2 - y,
+          "height" : y - y2,
           "tip_x" : x1,
-          "tip_y" : y
+          "tip_y" : y2
         });
 
         this.pipe.push(eleprops[i]);

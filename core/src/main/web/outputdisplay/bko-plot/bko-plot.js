@@ -1032,7 +1032,7 @@
 
           var content = "";
           for (var i = 0; i < data.length; i++) {
-            if (data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
+            //if (data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
             if (data[i].legend == null || data[i].legend === "") { continue; }
             var unit = $("<li></li>").appendTo(legend)
               .attr("id", "legend_" + i);

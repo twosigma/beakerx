@@ -60,6 +60,12 @@
             bkSessionManager.setNotebookModelEdited(true);
           }
         });
+
+        $scope.cellview.menu.renameItem({
+          name: "Delete cell",
+          newName: "Delete heading and keep contents"
+        });
+
         $scope.cellview.menu.addItemToHead({
           name: "Delete section and all sub-sections",
           action: function() {

@@ -49,6 +49,11 @@
           showDebugInfo: false,
           menu: {
             items: [],
+            renameItem: function(opts)  {
+              _.findWhere(this.items,
+                {name: opts.name}
+              ).name = opts.newName;
+            },
             addItem: function(menuItem) {
               this.items.push(menuItem);
             },

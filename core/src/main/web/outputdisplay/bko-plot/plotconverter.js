@@ -294,8 +294,6 @@
           item.id = "i" + i;
 
           data[i] = plotFactory.createPlotItem(item);
-
-          console.log(data[i]);
         }
 
         // apply log to focus
@@ -693,7 +691,7 @@
         //this.cleanupModel(newmodel);
 
         newmodel.version = "complete";
-        console.log(newmodel);
+        //console.log(newmodel);
         return newmodel;
       }
     };

@@ -55,6 +55,7 @@
     };
 
     PlotLine.prototype.format = function() {
+
       this.itemProps = {
         "id" : this.id,
         "class" : "plot-line",
@@ -64,12 +65,22 @@
         "stroke_dasharray" : this.stroke_dasharray,
         "d" : ""
       };
+
       this.elementProps = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
-        var point = {};
+        var point = {
+          "id" : this.id + "_" + i,
+          "class" : "plot-resp plot-respdot",
+          "isresp" : true,
+          "tip_text" : ele.tip_text,
+          "tip_color" : this.color == null ? "gray" : this.color,
+          "r" : 5
+        };
         this.elementProps.push(point);
       }
+
+      this.resppipe = [];
     };
 
     PlotLine.prototype.filter = function(scope) {
@@ -91,28 +102,44 @@
     };
 
     PlotLine.prototype.prepare = function(scope) {
-      var eles = this.elements;
-      var mapX = scope.data2scrX, mapY = scope.data2scrY;
+      var focus = scope.focus;
+      var eles = this.elements,
+          eleprops = this.elementProps;
+      var mapX = scope.data2scrX,
+          mapY = scope.data2scrY;
       var pstr = "", skipped = false;
 
+      this.resppipe.length = 0;
+
       for (var i = this.vindexL; i <= this.vindexR; i++) {
-        var p = eles[i];
+        var ele = eles[i];
         if (i == this.vindexL) pstr += "M";
         else if (i == this.vindexL + 1) {
           if (this.interpolation !== "curve") pstr += "L";
           else pstr += "C";
         }
-        var x = mapX(p.x), y = mapY(p.y);
+        var x = mapX(ele.x), y = mapY(ele.y);
         if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
           skipped = true;
           break;
         }
         var nxtp = x + "," + y + " ";
 
+        if (focus.yl <= ele.y && ele.y <= focus.yr) {
+          _(eleprops[i]).extend({
+            "cx" : x,
+            "cy" : y,
+            "tip_x" : x,
+            "tip_y" : y,
+            "opacity" : scope.tips[eleprops[i].id] == null ? 0 : 1
+          });
+          this.resppipe.push(eleprops[i]);
+        }
+
         if (i < this.vindexR) {
           if (this.interpolation === "none") {
-            var p2 = eles[i + 1];
-            nxtp += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
+            var ele2 = eles[i + 1];
+            nxtp += mapX(ele.x) + "," + mapY(ele.y) + " " + mapX(ele2.x) + "," + mapY(ele.y) + " ";
           } else if (this.interpolation === "curve") {
             // TODO curve implementation
           }
@@ -130,25 +157,43 @@
 
     PlotLine.prototype.draw = function(scope) {
       var svg = scope.maing;
-      var props = this.itemProps;
+      var props = this.itemProps,
+          eleprops = this.elementProps,
+          resppipe = this.resppipe;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
           .data([props], function(d){ return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .style("stroke-width", function(d) { return d.stroke_width; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
+          .attr("id", function(d) { return d.id; });
       }
 
       var itemsvg = svg.select("#" + this.id);
 
       itemsvg.selectAll("path")
-        .data([props]).enter().append("path");
+        .data([props]).enter().append("path")
+        .attr("class", function(d) { return d.class; })
+        .style("stroke", function(d) { return d.stroke; })
+        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+        .style("stroke-width", function(d) { return d.stroke_width; })
+        .style("stroke-opacity", function(d) { return d.stroke_opacity; });
       itemsvg.select("path")
         .attr("d", props.d);
+
+      if (scope.stdmodel.useToolTip === true) {
+        itemsvg.selectAll("circle")
+          .data(resppipe, function(d) { return d.id; }).exit().remove();
+        itemsvg.selectAll("circle")
+          .data(resppipe, function(d) { return d.id; }).enter().append("circle")
+          .attr("id", function(d) { return d.id; })
+          .attr("class", function(d) { return d.class; })
+          .style("stroke", function(d) { return d.tip_color; });
+        itemsvg.selectAll("circle")
+          .data(resppipe, function(d) { return d.id; })
+          .attr("cx", function(d) { return d.cx; })
+          .attr("cy", function(d) { return d.cy; })
+          .attr("r", function(d) { return d.r; })
+          .style("opacity", function(d) { return d.opacity; });
+      }
     };
 
     PlotLine.prototype.clear = function(scope) {

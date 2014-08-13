@@ -60,7 +60,7 @@
     PlotConstline.prototype.format = function(){
       this.itemProps = {
         "id" : this.id,
-        "class" : "plot-const",
+        "class" : "plot-constline",
         "stroke" : this.color,
         "stroke_opacity": this.color_opacity,
         "stroke_width" : this.width,

@@ -60,7 +60,7 @@
     PlotConstband.prototype.format = function(){
       this.itemProps = {
         "id" : this.id,
-        "class" : "plot-const",
+        "class" : "plot-constband",
         "fill" : this.color,
         "fill_opacity": this.color_opacity,
         "stroke" : this.stroke,
@@ -83,6 +83,8 @@
         };
         this.elementProps.push(line);
       }
+
+      this.pipe = [];
     };
 
     PlotConstband.prototype.filter = function(scope) {
@@ -107,16 +109,18 @@
       var W = scope.jqsvg.width(),
           H = scope.jqsvg.height();
 
-      this.pipe = [];
+      this.pipe.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
 
-        this.pipe.push(eleprops[i]);
-
         // TODO how to distribute work between draw and jq update?
         if (ele.type === "x") {
-          if (ele.x > focus.xr || ele.x2 < focus.xl) { continue; }
+          if (ele.x > focus.xr || ele.x2 < focus.xl) {
+            continue;
+          } else {
+            this.pipe.push(eleprops[i]);
+          }
 
           var x = mapX(ele.x),
               x2 = mapX(ele.x2);
@@ -130,7 +134,11 @@
             "height" : H - bMargin - tMargin
           });
         } else if (ele.type === "y") {
-          if (ele.y > focus.yr || ele.y2 < focus.yl) { continue; }
+          if (ele.y > focus.yr || ele.y2 < focus.yl) {
+            continue;
+          } else {
+            this.pipe.push(eleprops[i]);
+          }
 
           var y = mapY(ele.y),
               y2 = mapY(ele.y2);

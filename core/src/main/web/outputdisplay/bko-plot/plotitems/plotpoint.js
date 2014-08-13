@@ -23,7 +23,7 @@
     };
 
     PlotPoint.prototype.render = function(scope) {
-      if(this.vlength === 0) {
+      if (this.shown === false) {
         this.clear(scope);
         return;
       }

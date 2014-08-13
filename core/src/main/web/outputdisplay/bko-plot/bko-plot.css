@@ -37,7 +37,11 @@
   font-family: verdana, helvetica, arial, sans-serif;
 }
 
-.plot-const,
+.plot-resp {
+  pointer-events : auto;
+}
+
+.plot-constline,
 .plot-line {
   fill: none;
 }
@@ -71,7 +75,8 @@
   stroke-width: 1;
   pointer-events: none;
 }
-.plot-const,
+.plot-constline,
+.plot-constband,
 .plot-line,
 .plot-area,
 .plot-cursor {
@@ -153,16 +158,16 @@
   fill: #FEFEFE;
 }
 
-.plot-dot {
+.plot-respdot,
+.plot-respstem {
   fill: white;
-  stroke-width: 2;
+  stroke-width: 1;
 }
 
 .plot-tooltip {
   font-size: 0.8em;
   position: absolute;
-  width: auto;
-  height: auto;
+  display: inline-table;
   border: 1px solid;
   background-color: white;
   /* border-radius: 5px; */

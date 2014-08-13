@@ -24,7 +24,7 @@
     };
 
     PlotArea.prototype.render = function(scope){
-      if(this.vlength === 0) {
+      if (this.shown === false) {
         this.clear(scope);
         return;
       }
@@ -69,9 +69,18 @@
       this.elementProps = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
-        var point = {};
+        var point = {
+          "id" : this.id + "_" + i,
+          "class" : "plot-resp plot-respstem",
+          "isresp" : true,
+          "tip_text" : ele.tip_text,
+          "tip_color" : this.color == null ? "gray" : this.color,
+          "width" : 20
+        };
         this.elementProps.push(point);
       }
+
+      this.resppipe = [];
     };
 
     PlotArea.prototype.filter = function(scope) {
@@ -93,13 +102,18 @@
     };
 
     PlotArea.prototype.prepare = function(scope) {
-      var focus = scope.focus, eles = this.elements;
+      var focus = scope.focus;
+      var eles = this.elements,
+          eleprops = this.elementProps;
       var pstr = "", skipped = false;
-      var mapX = scope.data2scrX, mapY = scope.data2scrY;
+      var mapX = scope.data2scrX,
+          mapY = scope.data2scrY;
+
+      this.resppipe.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
-        var x = mapX(ele.x), y = mapY(ele.y);
+        var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
         if (Math.abs(ele.x) > 1E6 || Math.abs(ele.y) > 1E6) {
           skipped = true;
           break;
@@ -114,6 +128,18 @@
             break;
           }
           pstr += x + "," + y + " " + x2 + "," + y + " ";
+        }
+
+        if (ele.y <= focus.yr && ele.y2 >= focus.yl) {
+          _(eleprops[i]).extend({
+            "x" : x - 2.5,
+            "y" : y2,
+            "height" : y - y2,
+            "tip_x" : x,
+            "tip_y" : (y + y2) / 2,
+            "opacity" : scope.tips[eleprops[i].id] == null ? 0 : 1
+          });
+          this.resppipe.push(eleprops[i]);
         }
       }
 
@@ -144,26 +170,46 @@
 
     PlotArea.prototype.draw = function(scope) {
       var svg = scope.maing;
-      var props = this.itemProps;
+      var props = this.itemProps,
+          resppipe = this.resppipe;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
           .data([props], function(d){ return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill-opacity", function(d) { return d.fill_opacity; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
+          .attr("id", function(d) { return d.id; });
       }
 
       var itemsvg = svg.select("#" + this.id);
 
       itemsvg.selectAll("polygon")
-        .data([props]).enter().append("polygon");
+        .data([props]).enter().append("polygon")
+        .attr("class", function(d) { return d.class; })
+        .style("fill", function(d) { return d.fill; })
+        .style("fill-opacity", function(d) { return d.fill_opacity; })
+        .style("stroke", function(d) { return d.stroke; })
+        .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+        .style("stroke-width", function(d) { return d.stroke_width; });
       itemsvg.select("polygon")
         .attr("points", props.points);
+
+      console.log(resppipe);
+      if (scope.stdmodel.useToolTip === true) {
+        itemsvg.selectAll("rect")
+          .data(resppipe, function(d) { return d.id; }).exit().remove();
+        itemsvg.selectAll("rect")
+          .data(resppipe, function(d) { return d.id; }).enter().append("rect")
+          .attr("id", function(d) { return d.id; })
+          .attr("class", function(d) { return d.class; })
+          .attr("width", function(d) { return d.width; })
+          .style("stroke", function(d) { return d.tip_color; });
+
+        itemsvg.selectAll("rect")
+          .data(resppipe, function(d) { return d.id; })
+          .attr("x", function(d) { return d.x; })
+          .attr("y", function(d) { return d.y; })
+          .attr("height", function(d) { return d.height; })
+          .style("opacity", function(d) { return d.opacity; });
+      }
     };
 
     PlotArea.prototype.clear = function(scope) {

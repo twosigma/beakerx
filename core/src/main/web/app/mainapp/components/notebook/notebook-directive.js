@@ -75,11 +75,11 @@
             isAdvancedMode: function() {
               return !!(this._advancedMode);
             },
-            isHeirarchyEnabled: function() {
-              return !!(this._heirarchyEnabled);
+            isHierarchyEnabled: function() {
+              return !!(this._hierarchyEnabled);
             },
-            toggleHeirarchyEnabled: function() {
-              this._heirarchyEnabled = !this._heirarchyEnabled;
+            toggleHierarchyEnabled: function() {
+              this._hierarchyEnabled = !this._hierarchyEnabled;
             },
             toggleDebugging: function () {
               this._debugging = !this._debugging;
@@ -161,8 +161,8 @@
           return _impl._viewModel.isAdvancedMode();
         };
 
-        $scope.isHeirarchyEnabled = function () {
-          return _impl._viewModel.isHeirarchyEnabled();
+        $scope.isHierarchyEnabled = function () {
+          return _impl._viewModel.isHierarchyEnabled();
         };
 
         $scope.showStdOut = true;

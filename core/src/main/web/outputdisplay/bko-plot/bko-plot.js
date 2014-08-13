@@ -36,16 +36,7 @@
           "</defs>" +
           "<g id='coordg'></g>" +
           "<g id='maing'></g>" +
-          /*
-            "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" +
-            "<g id='stemg'></g> <g id='segg'></g> <g id='rectg'></g>" +
-            "<g id='pointrectg'></g> <g id='pointcircleg'></g> <g id='pointdiamondg'></g>" +
-            "<g id='textg'></g> "
-            */
           "<g id='labelg'></g> " +
-          "<g id='interg'>" +
-            "<g id='dotg'></g>" +
-          "</g>" +
           "</svg>" +
           "</div>",
       controller : function($scope) {
@@ -109,22 +100,6 @@
           scope.maing = d3.select(element[0]).select("#maing");
           scope.coordg = d3.select(element[0]).select("#coordg");
           scope.labelg = d3.select(element[0]).select("#labelg");
-          /*
-          scope.lineg = scope.maing.select("#lineg");
-          scope.barg = scope.maing.select("#barg");
-          scope.riverg = scope.maing.select("#riverg");
-          scope.stemg = scope.maing.select("#stemg");
-          scope.circleg = scope.maing.select("#circleg");
-          scope.pointrectg = scope.maing.select("#pointrectg");
-          scope.pointcircleg = scope.maing.select("#pointcircleg");
-          scope.pointdiamondg = scope.maing.select("#pointdiamondg");
-          scope.segg = scope.maing.select("#segg");
-          scope.rectg = scope.maing.select("#rectg");
-          scope.textg = scope.maing.select("#textg");
-          */
-
-          scope.interg = d3.select(element[0]).select("#interg");
-          scope.dotg = scope.interg.select("#dotg");
 
           scope.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
             bottomLayoutMargin : 30,
@@ -356,7 +331,7 @@
               .on('mousedown', function(e) {
                 if (e.which == 3) {
                   delete scope.tips[d.id];
-                  if (d.isresp === true) {  // is line responsive dot
+                  if (d.isresp === true) {  // is interaction responsive element
                     scope.jqsvg.find("#" + d.id).css("opacity", 0);
                   } else {
                     scope.jqsvg.find("#" + d.id).removeAttr("filter");
@@ -593,8 +568,6 @@
           if (id == "all") {
             scope.showAllLines = !scope.showAllLines;
             for (var i = 0; i < data.length; i++) {
-             // if (data[i].type === "constline" || data[i].type === "constband"
-              //  || data[i].type === "text") { continue; }
               data[i].shown = scope.showAllLines;
               scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
             }
@@ -973,6 +946,7 @@
           scope.renderLocateBox(); // redraw
           scope.renderLegends(); // redraw
           scope.renderCoverBox(); // redraw
+
           plotUtils.plotLabels(scope); // redraw
 
           scope.prepareInteraction();

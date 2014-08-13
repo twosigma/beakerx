@@ -50,7 +50,7 @@
         range.xl = Math.min(range.xl, ele.x);
         range.xr = Math.max(range.xr, ele.x2);
         range.yl = Math.min(range.yl, ele.y);
-        range.yr = Math.max(range.yr, ele.y);
+        range.yr = Math.max(range.yr, ele.y2);
       }
       return range;
     };
@@ -79,7 +79,10 @@
           "stroke_width" : ele.stroke_width,
           "stroke_opacity" : ele.stroke_opacity,
           "tip_text" : ele.tip_text,
-          "tip_color" : plotUtils.createColor(this.color, this.color_opacity),
+          "tip_color" : plotUtils.createColor(
+            ele.color == null ? this.color : ele.color,
+            ele.color_opacity == null ? this.color_opacity : ele.color_opacity
+          )
         };
         this.elementProps.push(bar);
       }

@@ -408,8 +408,9 @@
             scope.jqcontainer.find("#tip_" + d.id).remove();
             if (d.isresp === true) {
               scope.jqsvg.find("#" + d.id).css("opacity", 0);
+            } else {
+              scope.jqsvg.find("#" + d.id).removeAttr("filter");
             }
-            scope.jqsvg.find("#" + d.id).removeAttr("filter");
             scope.renderTips();
           }
         };
@@ -436,12 +437,12 @@
               .append(d.tip_text)
               .on('mousedown', function(e) {
                 if (e.which == 3) {
-                  if (d.isResp === true) {  // is line responsive dot
-                    scope.jqsvg.find("#" + d.id).attr("opacity", 0);
+                  delete scope.tips[d.id];
+                  if (d.isresp === true) {  // is line responsive dot
+                    scope.jqsvg.find("#" + d.id).css("opacity", 0);
                   } else {
                     scope.jqsvg.find("#" + d.id).removeAttr("filter");
                   }
-                  delete scope.tips[d.id];
                   $(this).remove();
                 }
               });
@@ -468,7 +469,7 @@
             tipdiv
               .css("left", x + objw + scope.fonts.tooltipWidth)
               .css("top", y);
-            if (d.isResp === true) {
+            if (d.isresp === true) {
               scope.jqsvg.find("#" + d.id).attr("opacity", 1);
             } else {
               scope.jqsvg.find("#" + d.id)

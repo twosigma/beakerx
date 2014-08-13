@@ -72,6 +72,7 @@
           "fill" : ele.color,
           "fill_opacity" : ele.fill_opacity,
           "text" : ele.text,
+          "tip_text" : ele.tip_text,
           "transform" : ""
         };
         this.elementProps.push(stem);
@@ -88,7 +89,7 @@
       l = Math.max(l, 0);
       r = Math.min(r, eles.length - 1);
 
-      if (l > r || l == r && eles[l].x2 < focus.xl) {
+      if (l > r || l == r && eles[l].x2 < scope.focus.xl) {
         // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
@@ -124,7 +125,9 @@
           "transform" : tf,
           "text" : ele.text,
           "fill" : ele.color,
-          "fill_opacity" : ele.opacity
+          "fill_opacity" : ele.opacity,
+          "tip_x" : x,
+          "tip_y" : y
         });
         this.pipe.push(eleprops[i]);
       }

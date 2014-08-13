@@ -91,7 +91,7 @@
       l = Math.max(l, 0);
       r = Math.min(r, eles.length - 1);
 
-      if (l > r || l == r && eles[l].x < focus.xl) {
+      if (l > r || l == r && eles[l].x < scope.focus.xl) {
         // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;

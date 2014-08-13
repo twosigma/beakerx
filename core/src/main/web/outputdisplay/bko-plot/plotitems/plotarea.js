@@ -143,11 +143,12 @@
     };
 
     PlotArea.prototype.draw = function(scope) {
-      var svg = scope.maing, prop = this.itemProps;
+      var svg = scope.maing;
+      var props = this.itemProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
-          .data([prop], function(d){ return d.id; }).enter().append("g")
+          .data([props], function(d){ return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .style("fill", function(d) { return d.fill; })
@@ -160,9 +161,9 @@
       var itemsvg = svg.select("#" + this.id);
 
       itemsvg.selectAll("polygon")
-        .data([prop]).enter().append("polygon");
+        .data([props]).enter().append("polygon");
       itemsvg.select("polygon")
-        .attr("points", prop.points);
+        .attr("points", props.points);
     };
 
     PlotArea.prototype.clear = function(scope) {

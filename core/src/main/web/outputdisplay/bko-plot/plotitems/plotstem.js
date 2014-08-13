@@ -103,6 +103,8 @@
     PlotStem.prototype.prepare = function(scope) {
       var eles = this.elements, eleprops = this.elementProps;
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
+
+      this.pipe = [];
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         _(eleprops[i]).extend({
@@ -113,36 +115,39 @@
           "tip_x" : mapX(ele.x),
           "tip_y" : mapY(ele.y)
         });
+        this.pipe.push(eleprops[i]);
       }
     };
 
     PlotStem.prototype.draw = function(scope) {
-      var svg = scope.maing, prop = this.itemProps, eleprops = this.elementProps;
+      var svg = scope.maing;
+      var props = this.itemProps,
+          pipe = this.pipe;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
-          .data([prop], function(d) { return d.id; }).enter().append("g")
+          .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-        .style("stroke-width", function(d) { return d.stroke_width; });
+          .attr("class", function(d) { return d.class; })
+          .style("stroke", function(d) { return d.stroke; })
+          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
+          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
+          .style("stroke-width", function(d) { return d.stroke_width; });
       }
 
-      var svgitem = svg.select("#" + this.id);
-      svgitem.selectAll("line")
-        .data(eleprops, function(d) { return d.id; }).exit().remove();
-      svgitem.selectAll("line")
-        .data(eleprops, function(d) { return d.id; }).enter().append("line")
+      var itemsvg = svg.select("#" + this.id);
+      itemsvg.selectAll("line")
+        .data(pipe, function(d) { return d.id; }).exit().remove();
+      itemsvg.selectAll("line")
+        .data(pipe, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
         .attr("class", function(d) { return d.class; })
         .style("stroke", function(d) { return d.stroke; })
         .style("stroke-opacity", function(d) { return d.stroke_opacity; })
         .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
         .style("stroke-width", function(d) { return d.stroke_width; });
-      svgitem.selectAll("line")
-        .data(eleprops, function(d) { return d.id; })
+      itemsvg.selectAll("line")
+        .data(pipe, function(d) { return d.id; })
         .attr("x1", function(d) { return d.x1; })
         .attr("x2", function(d) { return d.x2; })
         .attr("y1", function(d) { return d.y1; })

@@ -491,6 +491,26 @@
           .attr("height", function(d) { return d.height; })
           .style("fill", function(d) { return d.fill; });
       },
+
+      plotHintText : function(scope, labelid, props) {
+
+        var hint = scope.jqcontainer.find("#" + labelid);
+        if (hint.empty()) {
+          hint = $("<div id=" + labelid + " class='plot-constlabel'></div>")
+            .appendTo(scope.jqcontainer)
+            .text(props.label);
+        }
+        var w = hint.outerWidth(), h = hint.outerHeight();
+        hint
+          .css("left", props.left - w / 2)
+          .css("top", props.top - h / 2)
+          .css("background-color", props.background_color);
+
+         // "left" : x - w / 2,
+          //  "top" : H - bMargin - h - scope.labelPadding.y,
+          //  "background-color" : data[i].color
+      },
+
       upper_bound: function(a, attr, val) {
         var l = 0, r = a.length - 1;
         while (l <= r) {

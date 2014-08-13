@@ -108,6 +108,7 @@
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
       var eleprops = this.elementProps, eles = this.elements;
 
+      this.pipe = [];
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var p = eles[i];
         var x1 = mapX(p.x), x2 = mapX(p.x2);
@@ -125,15 +126,19 @@
           "tip_x" : x1,
           "tip_y" : y
         });
+
+        this.pipe.push(eleprops[i]);
       }
     };
 
     PlotBar.prototype.draw = function(scope) {
-      var svg = scope.maing, prop = this.itemProps, eleprops = this.elementProps;
+      var svg = scope.maing;
+      var props = this.itemProps,
+          pipe = this.pipe;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
-          .data([prop], function(d) { return d.id; }).enter().append("g")
+          .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .style("fill", function(d) { return d.fill; })
@@ -143,12 +148,12 @@
           .style("stroke-width", function(d) { return d.stroke_width; });
       }
 
-      var svgitem = svg.select("#" + this.id);
+      var itemsvg = svg.select("#" + this.id);
 
-      svgitem.selectAll("rect")
-        .data(eleprops, function(d) { return d.id; }).exit().remove();
-      svgitem.selectAll("rect")
-        .data(eleprops, function(d) { return d.id; }).enter().append("rect")
+      itemsvg.selectAll("rect")
+        .data(pipe, function(d) { return d.id; }).exit().remove();
+      itemsvg.selectAll("rect")
+        .data(pipe, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
         .attr("class", function(d) { return d.class; })
         .style("fill", function(d) { return d.fill; })
@@ -156,8 +161,8 @@
         .style("stroke", function(d) { return d.stroke; })
         .style("stroke-opacity", function(d) { return d.stroke_opacity; })
         .style("stroke-width", function(d) { return d.stroke_width; });
-      svgitem.selectAll("rect")
-        .data(eleprops, function(d) { return d.id; })
+      itemsvg.selectAll("rect")
+        .data(pipe, function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
         .attr("width", function(d) { return d.width; })

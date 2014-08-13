@@ -450,36 +450,7 @@
                   "tip_x" : mapX(p.x),
                   "tip_y" : mapY(p.y)
                 });
-                /*
-                if (data[i].style.search("bottom") != -1) {
-                  var y = y2;
-                  reles.push({
-                    "id" : "stem_b_" + i + "_" + j,
-                    "x1" : mapX(p.x) - 5,
-                    "y1" : mapY(y),
-                    "x2" : mapX(p.x) + 5,
-                    "y2" : mapY(y),
-                    "stroke": p.color,
-                    "stroke_opacity": p.color_opacity,
-                    "stroke_dasharray": p.stroke_dasharray,
-                    "stroke_width" : p.width
-                  });
-                }
-                if (data[i].style.search("top") != -1) {
-                  var y = p.y;
-                  reles.push({
-                    "id" : "stem_t_" + i + "_" + j,
-                    "x1" : mapX(p.x) - 5,
-                    "y1" : mapY(y),
-                    "x2" : mapX(p.x) + 5,
-                    "y2" : mapY(y),
-                    "stroke": p.color,
-                    "stroke_opacity": p.color_opacity,
-                    "stroke_dasharray": p.stroke_dasharray,
-                    "stroke_width" : p.width
-                  });
-                }
-                */
+
               }
               scope.rpipeStems.push({
                 "id" : "stem_" + i,

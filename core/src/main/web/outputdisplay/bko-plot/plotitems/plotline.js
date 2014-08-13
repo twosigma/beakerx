@@ -129,11 +129,12 @@
     };
 
     PlotLine.prototype.draw = function(scope) {
-      var svg = scope.maing, prop = this.itemProps;
+      var svg = scope.maing;
+      var props = this.itemProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
-          .data([prop], function(d){ return d.id; }).enter().append("g")
+          .data([props], function(d){ return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .style("stroke", function(d) { return d.stroke; })
@@ -145,9 +146,9 @@
       var itemsvg = svg.select("#" + this.id);
 
       itemsvg.selectAll("path")
-        .data([prop]).enter().append("path");
+        .data([props]).enter().append("path");
       itemsvg.select("path")
-        .attr("d", prop.d);
+        .attr("d", props.d);
     };
 
     PlotLine.prototype.clear = function(scope) {

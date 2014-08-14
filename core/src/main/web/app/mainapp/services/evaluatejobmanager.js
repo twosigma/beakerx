@@ -18,75 +18,141 @@
   'use strict';
   var module = angular.module('bk.evaluateJobManager', ['bk.utils', 'bk.evaluatorManager']);
   module.factory('bkEvaluateJobManager', function(bkUtils, bkEvaluatorManager) {
+
     var setOutputCellText = function(cell, text) {
       if (!cell.output) {
         cell.output = {};
       }
       cell.output.result = text;
     };
-    var _promise = bkUtils.newPromise();
-    var _theEvaluator = null;
-    var _evaluate = function(cell) {
-      if (!cell.evaluator) {
-        return;
-      }
-      var lastPromise = _promise;
-      setOutputCellText(cell, "pending");
-      var evaluateCell = function() {
-        var evaluator = bkEvaluatorManager.getEvaluator(cell.evaluator);
-        if (evaluator) {
-          var evalP = lastPromise.then(function() {
-            _theEvaluator = evaluator;
-            bkUtils.log("evaluate", {
-              plugin: evaluator.pluginName,
-              length: cell.input.body.length});
-            return _theEvaluator.evaluate(cell.input.body, cell.output);
-          });
-          evalP.catch(function(ret) {
-            if (ret === "cancelled by user") {
-              _promise = bkUtils.newPromise();
-            }
-            if (cell.output && cell.output.result === "pending") {
-              cell.output.result = "";
-            }
-          });
-          evalP.finally(function() {
-            _theEvaluator = null;
-          });
-          return evalP;
+
+    var jobQueue = (function() {
+      var RETRY_MAX = 120;
+      var RETRY_DELAY = 500; // ms
+      var errorMessage = function(msg) {
+        return {
+          type: "BeakerDisplay",
+          innertype: "Error",
+          object: msg
+        }
+      };
+      var ERROR_MESSAGE_ON_EARLIER_FAILURE =
+          errorMessage("Evaluation cancelled due to a failure of an earlier cell evaluation");
+      var MESSAGE_WAITING_FOR_EVALUTOR_INIT =
+          "waiting for evaluator initialization ...";
+
+      var _queue = [];
+      var _jobInProgress = undefined;
+
+      var evaluateJob = function(job) {
+        job.evaluator = bkEvaluatorManager.getEvaluator(job.evaluatorId);
+        if (job.evaluator) {
+          bkUtils.log("evaluate", {
+            plugin: job.evaluator.pluginName,
+            length: job.code.length });
+          return bkEvaluatorManager.getEvaluator(job.evaluatorId).evaluate(job.code, job.output);
         } else {
-          setOutputCellText(cell, "waiting for evaluator initialization ...");
-          return bkUtils.delay(500).then(function() {
-            return evaluateCell();
+          if (job.retry > RETRY_MAX) {
+            return bkUtils.fcall(function() {
+              var err = job.evaluatorId + " failed to start";
+              job.output.result = errorMessage(err);
+              throw new Error(err);
+            });
+          }
+          job.retry++;
+          job.output.result = MESSAGE_WAITING_FOR_EVALUTOR_INIT;
+          return bkUtils.delay(RETRY_DELAY).then(function () {
+            return evaluateJob(job);
           });
         }
       };
-      _promise = evaluateCell();
-      return _promise;
-    };
+
+      var doNext = function() {
+        if (_jobInProgress) {
+          return;
+        }
+        _jobInProgress = _queue.shift();
+        if (_jobInProgress) {
+          return evaluateJob(_jobInProgress)
+              .then(_jobInProgress.resolve, function(err) {
+                // empty result of all pending cells
+                _queue.forEach(function(job) {
+                  job.output.result = ERROR_MESSAGE_ON_EARLIER_FAILURE;
+                });
+                // clear the queue
+                _queue.splice(0, _queue.length);
+                // reject current job so whoever is waiting for it is notified
+                _jobInProgress.reject(err);
+              })
+              .finally(function () {
+                _jobInProgress = undefined;
+              })
+              .then(doNext);
+        }
+      };
+
+      return {
+        add: function(job) {
+          _queue.push(job);
+          bkUtils.fcall(doNext);
+        },
+        getCurrentJob: function() {
+          return _jobInProgress;
+        },
+        empty: function() {
+          _jobInProgress = undefined;
+          _queue.splice(0, _queue.length);
+        }
+      };
+    })();
 
     return {
       evaluate: function(cell) {
-        return _evaluate(cell);
+        var deferred = bkUtils.newDeferred();
+        setOutputCellText(cell, "pending");
+        var evalJob = {
+          cellId: cell.id,
+          evaluatorId: cell.evaluator,
+          code: cell.input.body,
+          output: cell.output,
+          retry: 0,
+          resolve: function(ret) {
+            deferred.resolve(ret);
+          },
+          reject: function(error) {
+            deferred.reject(error);
+          }
+        };
+        jobQueue.add(evalJob);
+        return deferred.promise;
       },
       evaluateAll: function(cells) {
-        _(cells).each(_evaluate);
-        return _promise;
+        var self = this;
+        var promises = _(cells).map(function(cell) {
+          self.evaluate(cell);
+        });
+        return bkUtils.all(promises);
       },
       isCancellable: function() {
-        return !!(_theEvaluator && _theEvaluator.cancelExecution);
+        var currentJob = jobQueue.getCurrentJob();
+        return currentJob && currentJob.evaluator && currentJob.cancelExecution;
       },
       cancel: function() {
-        if (_theEvaluator) {
-          if (_theEvaluator.cancelExecution) {
-            _theEvaluator.cancelExecution();
+        var currentJob = jobQueue.getCurrentJob();
+
+        if (currentJob && currentJob.evaluator) {
+          if (currentJob.cancelExecution) {
+            currentJob.cancelExecution();
           } else {
             throw "cancel is not supported for the current evaluator";
           }
         }
       },
       isAnyInProgress: function() {
-        return !!_theEvaluator;
+        return !!jobQueue.getCurrentJob();
+      },
+      reset: function() {
+        jobQueue.empty();
       }
     };
   });

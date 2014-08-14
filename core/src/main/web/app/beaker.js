@@ -121,7 +121,7 @@
             }
           })
           .when('/session/:sessionId', {
-            template: JST["mainapp/app"](),
+            template: JST["template/mainapp/app"](),
             resolve: sessionRouteResolve
           })
           .when('/open', {
@@ -137,7 +137,7 @@
             }
           })
           .when('/control', {
-            template: JST["dashboard/app"](),
+            template: JST["template/dashboard/app"](),
           }).otherwise({
             redirectTo: "/control"
           });

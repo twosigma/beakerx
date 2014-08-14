@@ -27,7 +27,7 @@
       bkUtils, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
     return {
       restrict: 'E',
-      template: JST['dashboard/table'],
+      template: JST['template/dashboard/table'],
       controller: function($scope) {
         $scope.open = function(session) {
           bkCoreManager.openSession(session.id);

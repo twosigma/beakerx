@@ -32,7 +32,7 @@
   module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager) {
     return {
       restrict: 'E',
-      template: JST["notebook/cell"](),
+      template: JST["template/notebook/cell"](),
       scope: {
         cellmodel: "=",
         index: "="

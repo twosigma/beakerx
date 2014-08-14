@@ -410,7 +410,7 @@
   module.directive('fileActionDialog', function() {
     return {
       scope: { actionName: '@', inputId: '@', close: '=' },
-      template: JST['fileactiondialog'](),
+      template: JST['template/fileactiondialog'](),
       link: function(scope, element, attrs) {
         element.find('input').focus();
       }

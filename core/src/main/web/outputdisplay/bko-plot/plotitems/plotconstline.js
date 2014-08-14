@@ -156,7 +156,7 @@
 
           _(eleprops[i]).extend({
             "left" : function(w, h) { return lMargin + scope.labelPadding.x; },
-            "top" : function(w, h) { return y - w / 2; },
+            "top" : function(w, h) { return y - h / 2; },
             "label_text" : text
           });
         }

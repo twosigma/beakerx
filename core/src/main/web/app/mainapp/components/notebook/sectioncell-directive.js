@@ -27,7 +27,7 @@
     var CELL_TYPE = "section";
     return {
       restrict: 'E',
-      template: JST["template/notebook/sectioncell"],
+      template: JST["mainapp/components/notebook/sectioncell"],
       //scope: { cell: "=" },
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();

@@ -37,7 +37,7 @@
     var CELL_TYPE = "notebook";
     return {
       restrict: 'E',
-      template: JST["template/notebook/notebook"](),
+      template: JST["mainapp/components/notebook/notebook"](),
       scope: {
         setBkNotebook: "&"
       },

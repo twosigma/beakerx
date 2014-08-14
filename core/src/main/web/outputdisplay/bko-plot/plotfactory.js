@@ -19,21 +19,23 @@
   'use strict';
   var retfunc = function(PlotLine, PlotBar, PlotStem, PlotArea, PlotPoint,
     PlotConstline, PlotConstband, PlotText) {
+    var lodLimit = 1E4;
     return {
       createPlotItem : function(item) {
+        var size = item.elements.length;
         var plotitem;
         switch (item.type) {
           case "line":
-            plotitem = new PlotLine(item);
+            plotitem = size >= lodLimit ? new PlotLineLOD(item) : new PlotLine(item);
             break;
           case "bar":
-            plotitem = new PlotBar(item);
+            plotitem = size >= lodLimit ? new PlotBarLOD(item) : new PlotBar(item);
             break;
           case "stem":
             plotitem = new PlotStem(item);
             break;
           case "area":
-            plotitem = new PlotArea(item);
+            plotitem = size >= lodLimit ? new PlotAreaLOD(item) : new PlotArea(item);
             break;
           case "point":
             plotitem = new PlotPoint(item);

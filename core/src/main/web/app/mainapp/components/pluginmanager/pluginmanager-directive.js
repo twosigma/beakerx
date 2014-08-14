@@ -27,7 +27,7 @@
       bkEvaluatorManager) {
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/pluginmanager/pluginmanager.html",
+      template: JST["mainapp/components/pluginmanager/pluginmanager"](),
       controller: function($scope) {
         $scope.isHideEvaluators = function() {
           return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel().isHideEvaluators();

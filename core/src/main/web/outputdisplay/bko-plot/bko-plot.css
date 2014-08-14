@@ -58,6 +58,7 @@
   width: auto;
   height: auto;
   border-radius: 2px;
+  display: inline-table;
 }
 
 .plot-coord,

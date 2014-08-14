@@ -551,6 +551,7 @@
             $("<span></span>").appendTo(unit)
               .attr("id", "legendbox_" + i)
               .attr("class", "plot-legendbox")
+              .attr("title", data[i].color == null ? "Multi-colored item" : "")
               .css("background-color",
                 data[i].color == null ? "none" : data[i].color)
               .css("border",

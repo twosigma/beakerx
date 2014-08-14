@@ -57,6 +57,24 @@
       return range;
     };
 
+    PlotConstline.prototype.applyAxis = function(xAxis, yAxis) {
+      this.xAxis = xAxis;
+      this.yAxis = yAxis;
+      for (var i = 0; i < this.elements.length; i++) {
+        var ele = this.elements[i];
+        if (ele.type === "x") {
+          ele.x = xAxis.getPercent(ele.x);
+        } else if (ele.type === "y") {
+          ele.y = yAxis.getPercent(ele.y);
+        }
+      }
+      // createTips() is not called because there would be no tips
+    };
+
+    PlotConstline.prototype.createTips = function() {
+      // do nothing and not called
+    };
+
     PlotConstline.prototype.format = function(){
       this.itemProps = {
         "id" : this.id,

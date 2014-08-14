@@ -55,6 +55,39 @@
       return range;
     };
 
+    PlotArea.prototype.applyAxis = function(xAxis, yAxis) {
+      this.xAxis = xAxis;
+      this.yAxis = yAxis;
+      for (var i = 0; i < this.elements.length; i++) {
+        var ele = this.elements[i];
+        ele.x = xAxis.getPercent(ele.x);
+        ele.y = yAxis.getPercent(ele.y);
+        ele.y2 = yAxis.getPercent(ele.y2);
+      }
+      this.createTips();
+    };
+
+    PlotArea.prototype.createTips = function() {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      for (var i = 0; i < this.elements.length; i++) {
+        var ele = this.elements[i];
+        var txt = "";
+        var valx = plotUtils.getTipString(ele._x, xAxis, true),
+            valy = plotUtils.getTipString(ele._y, yAxis, true),
+            valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
+
+        var tip = {};
+        if (this.legend != null) {
+          tip.title = this.legend;
+        }
+        tip.x = valx;
+        tip.y = valy;
+        tip.y2 = valy2;
+        this.elementProps[i].tip_text = plotUtils.createTipString(tip);
+      }
+    };
+
     PlotArea.prototype.format = function(){
       this.itemProps = {
         "id" : this.id,

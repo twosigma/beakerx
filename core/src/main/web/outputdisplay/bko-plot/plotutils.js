@@ -158,27 +158,45 @@
             var str = "rgba(" + r + "," + g + "," + b + "," + opacity + ")";;
         return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
       },
-      getTipString : function(val, axis, keepFixed) {
-        var type = axis.getType();
-        if (type === "time") {
-          return moment(val).tz(axis.getTimezone()).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
+
+      getTipString : function(val, axis, fixed) {
+        if (axis.axisType === "time") {
+          return moment(val).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
         }
         if (typeof(val) === "number") {
-          if (keepFixed === true) {
-            return "" + val;
+          if (fixed === true) {
+            // do nothing, keep full val
+          } else if (typeof(fixed) === "number"){
+            val = val.toFixed(fixed);
           } else {
             val = val.toFixed(axis.getFixed());
           }
         }
         return "" + val;
       },
-      getTipStringPercent : function(pct, axis, keepFixed) {
+
+      getTipStringPercent : function(pct, axis, fixed) {
         var val = axis.getValue(pct);
-        if (axis.getType() === "log") {
+        if (axis.axisType === "log") {
           val = axis.axisPow(pct);
-          return this.getTipString(val, axis, keepFixed) + " (" + axis.getString(pct) + ")";
+          return this.getTipString(val, axis, fixed) + " (" + axis.getString(pct) + ")";
         }
-        return this.getTipString(val, axis, keepFixed);
+        return this.getTipString(val, axis, fixed);
+      },
+
+      createTipString : function(obj) {
+        var txt = "";
+        _.each(obj, function(value, key) {
+          if (key == "title") {
+            txt += "<div style='font-weight:bold'>";
+          } else {
+            txt += "<div>";
+            txt += key + ": ";
+          }
+          txt += value;
+          txt += "</div>";
+        });
+        return txt;
       }
 
     };

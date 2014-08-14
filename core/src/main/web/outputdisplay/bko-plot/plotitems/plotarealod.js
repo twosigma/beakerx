@@ -55,6 +55,14 @@
       return range;
     };
 
+    PlotAreaLOD.prototype.applyAxis = function(xAxis, yAxis) {
+
+    };
+
+    PlotAreaLOD.prototype.createTips = function(xAxis, yAxis) {
+
+    }
+
     PlotAreaLOD.prototype.format = function(){
       this.itemProps = {
         "id" : this.id,
@@ -67,6 +75,7 @@
         "points" : ""
       };
       this.elementProps = [];
+      /*
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         var point = {
@@ -79,7 +88,7 @@
         };
         this.elementProps.push(point);
       }
-
+      */
       this.resppipe = [];
     };
 

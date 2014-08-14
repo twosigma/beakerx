@@ -54,6 +54,37 @@
       return range;
     };
 
+    PlotLine.prototype.applyAxis = function(xAxis, yAxis) {
+      this.xAxis = xAxis;
+      this.yAxis = yAxis;
+      for (var i = 0; i < this.elements.length; i++) {
+        var ele = this.elements[i];
+        ele.x = xAxis.getPercent(ele.x);
+        ele.y = yAxis.getPercent(ele.y);
+      }
+      this.createTips();
+    };
+
+    PlotLine.prototype.createTips = function() {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      for (var i = 0; i < this.elements.length; i++) {
+        var ele = this.elements[i];
+        var txt = "";
+        var valx = plotUtils.getTipString(ele._x, xAxis, true),
+            valy = plotUtils.getTipString(ele._y, yAxis, true);
+
+        var tip = {};
+        if (this.legend != null) {
+          tip.title = this.legend;
+        }
+        tip.x = valx;
+        tip.y = valy;
+
+        this.elementProps[i].tip_text = plotUtils.createTipString(tip);
+      }
+    };
+
     PlotLine.prototype.format = function() {
 
       this.itemProps = {
@@ -113,8 +144,9 @@
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
-        if (i == this.vindexL) pstr += "M";
-        else if (i == this.vindexL + 1) {
+        if (i === this.vindexL) {
+          pstr += "M";
+        } else if (i === this.vindexL + 1) {
           if (this.interpolation !== "curve") pstr += "L";
           else pstr += "C";
         }
@@ -202,5 +234,5 @@
 
     return PlotLine;
   };
-  beaker.bkoFactory('PlotLine', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotLine', ['plotUtils', 'PlotSampler', retfunc]);
 })();

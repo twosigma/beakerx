@@ -57,6 +57,26 @@
       return range;
     };
 
+    PlotConstband.prototype.applyAxis = function(xAxis, yAxis) {
+      this.xAxis = xAxis;
+      this.yAxis = yAxis;
+      for (var i = 0; i < this.elements.length; i++) {
+        var ele = this.elements[i];
+        if (ele.type === "x") {
+          ele.x = xAxis.getPercent(ele.x);
+          ele.x2 = xAxis.getPercent(ele.x2);
+        } else if (ele.type === "y") {
+          ele.y = yAxis.getPercent(ele.y);
+          ele.y2 = yAxis.getPercent(ele.y2);
+        }
+      }
+      // createTips() is not called because there would be no tips
+    };
+
+    PlotConstband.prototype.createTips = function() {
+      // do nothing and not called
+    };
+
     PlotConstband.prototype.format = function(){
       this.itemProps = {
         "id" : this.id,

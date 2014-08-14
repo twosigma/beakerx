@@ -124,8 +124,8 @@
       this.axisCoords = coords;
       this.axisCoordLabels = labels;
     };
-    PlotAxis.prototype.getType = function() { return this.axisType; };
-    PlotAxis.prototype.getTimezone = function() { return this.axisTimezone; };
+    //PlotAxis.prototype.getType = function() { return this.axisType; };
+    //PlotAxis.prototype.getTimezone = function() { return this.axisTimezone; };
     PlotAxis.prototype.getCoords = function() { return _.without(this.axisCoords); };
     PlotAxis.prototype.getCoordLabels = function() { return _.without(this.axisCoordLabels); };
     PlotAxis.prototype.getStep = function() { return this.axisStep; };

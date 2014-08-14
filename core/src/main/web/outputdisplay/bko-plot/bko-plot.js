@@ -29,8 +29,8 @@
           "<svg>"  +
           "<defs>" +
             "<filter id='svgfilter'>" +
-              "<feOffset result='offOut' in='SourceAlpha' dx='2' dy='2' />" +
-              "<feGaussianBlur result='blurOut' in='offOut' stdDeviation='1' />" +
+              //"<feOffset result='offOut' in='SourceAlpha' dx='0' dy='0' />" +
+              "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
             "</filter>" +
           "</defs>" +

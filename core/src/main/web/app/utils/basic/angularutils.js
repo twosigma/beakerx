@@ -56,7 +56,7 @@
         return $q.all.apply($q, arguments);
       },
       fcall: function(func) {
-        return $q.when(Q.fcall(func));
+        $timeout(func, 0);
       },
       delay: function(ms) {
         var deferred = $q.defer();

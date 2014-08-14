@@ -25,7 +25,6 @@
         "<p class='depth-indicator'>{{getFullIndex()}}</p>"+
         "<div contenteditable='true'></div>"
       ,
-      //scope: { cell: "=" },
       controller: function($scope) {
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;

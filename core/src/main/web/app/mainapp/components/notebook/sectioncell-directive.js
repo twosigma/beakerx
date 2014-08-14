@@ -28,7 +28,6 @@
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/sectioncell"],
-      //scope: { cell: "=" },
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         $scope.toggleShowChildren = function() {

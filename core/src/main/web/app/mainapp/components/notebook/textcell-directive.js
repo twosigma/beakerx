@@ -21,10 +21,7 @@
   module.directive('bkTextCell', function(bkSessionManager) {
     return {
       restrict: 'E',
-      template: ""+
-        "<p class='depth-indicator'>{{getFullIndex()}}</p>"+
-        "<div contenteditable='true'></div>"
-      ,
+      template: JST["mainapp/components/notebook/textcell"](),
       controller: function($scope) {
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;

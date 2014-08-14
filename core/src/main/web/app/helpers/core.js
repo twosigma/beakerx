@@ -277,7 +277,6 @@
           keyboard: true,
           backdropClick: true,
           controller: 'modalDialogCtrl'
-          //templateUrl: template,
         };
 
         // XXX - template is sometimes a url now.

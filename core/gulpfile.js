@@ -21,7 +21,7 @@ gulp.task("compileScss", function() {
 });
 
 gulp.task("compileTemplates", function() {
-  gulp.src(rootPath + "/template/**/*.html")
+  gulp.src(rootPath+ "/**/*.jst.html")
   .pipe(htmlClass({klass: "bkr"}))
   .pipe(htmlmin({removeComments: true}))
   .pipe(template({
@@ -39,7 +39,7 @@ gulp.task("watchScss", function() {
 });
 
 gulp.task("watchTemplates", function() {
-  var watchPath = rootPath + "/template/**/*.html";
+  var watchPath = rootPath + "/**/*.jst.html";
   gulp.watch(watchPath, ["compileTemplates"])
 });
 

@@ -578,7 +578,6 @@
         (function() {
           var sessionId = $routeParams.sessionId;
           var sessionRouteResolve = $route.current.$$route.resolve;
-          console.log("isNewSession?", $route.current.$$route.resolve);
           if ($route.current.locals.isNewSession) {
             delete sessionRouteResolve.isNewSession;
             loadNotebook.defaultNotebook(sessionId);

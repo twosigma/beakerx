@@ -18,7 +18,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.evaluatePluginManager', ['bk.utils']);
+  var module = angular.module('bk.evaluatePluginManager', ['bk.utils', 'bk.evaluatorManager']);
   module.factory('bkEvaluatePluginManager', function(bkUtils) {
       var nameToUrlMap = {};
       var plugins = {};

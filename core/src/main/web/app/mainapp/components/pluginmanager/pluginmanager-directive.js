@@ -44,7 +44,38 @@
             return bkEvaluatorManager.getLoadingEvaluators();
           },
           getKnownEvaluatePlugins: function(name) {
-            return bkEvaluatePluginManager.getKnownEvaluatorPlugins();
+            var knownPlugins = bkEvaluatePluginManager.getKnownEvaluatorPlugins();
+            var activePlugins = bkEvaluatorManager.getAllEvaluators();
+            var loadingPlugins = bkEvaluatorManager.getLoadingEvaluators();
+            console.log("known plugs:");
+            console.log(knownPlugins);
+            console.log("active plugs:");
+            console.log(activePlugins);
+            console.log("loading plugs:");
+            console.log(loadingPlugins);
+            if (loadingPlugins.length > 0)
+              console.log(loadingPlugins[0]);
+            var result = {};
+            for (var p in knownPlugins) {
+              var status = false;
+              if (activePlugins[p])
+                status = "active";
+              else {
+                for (var l in loadingPlugins) {
+                  if (l.plugin == p) {
+                    status = "loading";
+                    break;
+                  }
+                }
+                if (!status) {
+                  status = "known";
+                }
+              }
+              result[p] = status;
+            }
+            console.log("result:");
+            console.log(result);
+            return result;
           },
           setNewPluginNameOrUrl: function(pluginNameOrUrl) {
             this.newPluginNameOrUrl = pluginNameOrUrl;

@@ -286,18 +286,31 @@ define(function(require, exports, module) {
               settings.supplementalClassPath = "";
             }
             self.settings = settings;
-            if (bkHelper.hasSessionId()) {
-              var initCode = "import beaker\n" +
-                "beaker.set_session('" + bkHelper.getSessionId() + "')\n";
-              self.evaluate(initCode, {}).then(function () {
+            var finish = function () {
+              if (bkHelper.hasSessionId()) {
+                var initCode = "import beaker\n" +
+                  "beaker.set_session('" + bkHelper.getSessionId() + "')\n";
+                self.evaluate(initCode, {}).then(function () {
+                  if (doneCB) {
+                    doneCB(self);
+                  }});
+              } else {
                 if (doneCB) {
                   doneCB(self);
-                }});
-            } else {
-              if (doneCB) {
-                doneCB(self);
+                }
+              }
+            };
+            var kernel = kernels[shellID];
+            var waitForKernel = function () {
+              if (kernel.shell_channel.readyState == 1 &&
+                  kernel.stdin_channel.readyState == 1 &&
+                  kernel.iopub_channel.readyState == 1) {
+                finish();
+              } else {
+                setTimeout(waitForKernel, 50);
               }
             }
+            waitForKernel();
           };
           if (!settings.shellID) {
             settings.shellID = "";

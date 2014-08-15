@@ -24,7 +24,9 @@
 .plot-xylabel,
 .plot-cursorlabel,
 .plot-constlabel,
-.plot-tooltip {
+.plot-tooltip,
+.plot-message-content,
+.plot-message-title {
   font-family: verdana, helvetica, arial, sans-serif;
 }
 
@@ -128,6 +130,16 @@
   margin-right: 5px;
 }
 
+.plot-legendlod {
+  width: 5px;
+  height: 5px;
+  border-radius : 5px;
+  margin: 0px 5px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+
 .plot-legendcontainer {
   stroke: gray;
   fill: #FEFEFE;
@@ -158,3 +170,21 @@
   background-color: white;
   padding: 0.8em;
 }
+
+.plot-message-content {
+  vertical-align: middle;
+}
+.plot-message-title {
+  font-weight: bold;
+}
+.plot-message {
+  min-width: 150px;
+  min-height: 50px;
+  font-size: 0.8em;
+  position: absolute;
+  border: 1px solid gray;
+  background-color: white;
+  padding: 0.8em;
+  display: inline-table;
+}
+

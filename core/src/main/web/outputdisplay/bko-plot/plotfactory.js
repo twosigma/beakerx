@@ -18,7 +18,7 @@
 (function() {
   'use strict';
   var retfunc = function(PlotLine, PlotBar, PlotStem, PlotArea, PlotPoint,
-    PlotConstline, PlotConstband, PlotText, PlotLineLOD, PlotBarLOD, PlotAreaLOD) {
+    PlotConstline, PlotConstband, PlotText, PlotLineLod, PlotBarLod, PlotAreaLod) {
     var lodthresh = 200;
     return {
       createPlotItem : function(item) {
@@ -26,16 +26,16 @@
         var plotitem;
         switch (item.type) {
           case "line":
-            plotitem = new PlotLineLOD(item);
+            plotitem = new PlotLineLod(item);
             break;
           case "bar":
-            plotitem = size >= lodthresh ? new PlotBarLOD(item) : new PlotBar(item);
+            plotitem = size >= lodthresh ? new PlotBarLod(item) : new PlotBar(item);
             break;
           case "stem":
             plotitem = new PlotStem(item);
             break;
           case "area":
-            plotitem = size >= lodthresh ? new PlotAreaLOD(item) : new PlotArea(item);
+            plotitem = size >= lodthresh ? new PlotAreaLod(item) : new PlotArea(item);
             break;
           case "point":
             plotitem = new PlotPoint(item);
@@ -59,6 +59,6 @@
   beaker.bkoFactory('plotFactory',
     ['PlotLine', 'PlotBar', 'PlotStem', 'PlotArea', 'PlotPoint',
      'PlotConstline', 'PlotConstband', 'PlotText',
-     'PlotLineLOD', 'PlotBarLOD', 'PlotAreaLOD',
+     'PlotLineLod', 'PlotBarLod', 'PlotAreaLod',
       retfunc]);
 })();

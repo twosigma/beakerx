@@ -17,9 +17,10 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils, PlotSampler, PlotLine) {
-    var PlotLineLOD = function(data){
+    var PlotLineLod = function(data){
       $.extend(true, this, data); // copy properties to itself
-      this.type = "sample"; // samples, or aggregations (boxplot)
+      this.lodType = "sampling"; // sampling, aggregation (boxplot), none
+      this.isLodItem = true;
       this.format();
 
       this.lodthresh = 200;
@@ -30,7 +31,15 @@
       this.lodon = false;
     };
 
-    PlotLineLOD.prototype.render = function(scope){
+    PlotLineLod.prototype.zoomLevelChanged = function(scope) {
+      this.clearresp(scope);
+    };
+
+    PlotLineLod.prototype.switchLodType = function(scope) {
+
+    };
+
+    PlotLineLod.prototype.render = function(scope){
       if (this.shown === false) {
         if (this.lodon === true) {
           this.clear(scope);
@@ -47,6 +56,7 @@
         lod = true;
       }
       if (this.lodon != lod) {
+        scope.legendDone = false;
         if (this.lodon === true) {
           this.clear(scope);
         } else {
@@ -59,12 +69,11 @@
         this.line.render(scope);
       } else {
         this.prepare(scope);
-        this.clear(scope);
         this.draw(scope);
       }
     };
 
-    PlotLineLOD.prototype.getRange = function() {
+    PlotLineLod.prototype.getRange = function() {
       var eles = this.elements;
       var range = {
         xl : 1E100,
@@ -82,7 +91,7 @@
       return range;
     };
 
-    PlotLineLOD.prototype.applyAxis = function(xAxis, yAxis) {
+    PlotLineLod.prototype.applyAxis = function(xAxis, yAxis) {
       this.xAxis = xAxis;
       this.yAxis = yAxis;
       for (var i = 0; i < this.elements.length; i++) {
@@ -90,13 +99,13 @@
         ele.x = xAxis.getPercent(ele.x);
         ele.y = yAxis.getPercent(ele.y);
       }
-      // createTips is not called because LOD tips are changing
+      // createTips is not called because Lod tips are changing
       // sampler is created after coordinate axis remapping
       this.createSampler();
       this.line.applyAxis(xAxis, yAxis);
     };
 
-    PlotLineLOD.prototype.createSampler = function() {
+    PlotLineLod.prototype.createSampler = function() {
       var xs = [], ys = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
@@ -106,7 +115,7 @@
       this.sampler = new PlotSampler(xs, ys);
     };
 
-    PlotLineLOD.prototype.format = function() {
+    PlotLineLod.prototype.format = function() {
       this.itemProps = {
         "id" : this.id,
         "class" : "plot-line",
@@ -120,7 +129,7 @@
       this.resppipe = [];
     };
 
-    PlotLineLOD.prototype.filter = function(scope) {
+    PlotLineLod.prototype.filter = function(scope) {
       var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
           r = plotUtils.upper_bound(eles, "x", scope.focus.xr) + 1;
@@ -138,7 +147,7 @@
       this.vlength = r - l + 1;
     };
 
-    PlotLineLOD.prototype.prepare = function(scope) {
+    PlotLineLod.prototype.prepare = function(scope) {
       var focus = scope.focus,
           pixelWidth = scope.stdmodel.initSize.width;
       var eles = this.elements,
@@ -147,7 +156,6 @@
           mapY = scope.data2scrY;
       var pstr = "", skipped = false;
 
-      this.clearresp(scope);
       this.resppipe.length = 0;
       this.elementProps.length = 0;
 
@@ -180,15 +188,17 @@
         }
 
         var id = this.id + "_" + i + "s";
-        eleprops.push({
-          "id" : id
-        });  // create a new sample element
+        if (eleprops[i] == null) {
+          eleprops[i] = {}; // create a new sample element if doesn't exists
+        }
 
         var nxtp = x + "," + y + " ";
 
         if (focus.yl <= ele.y && ele.y <= focus.yr) {
+          var hashid = this.id + "_" + step + "_" + i;
+
           _(eleprops[i]).extend({
-            "id" : id,
+            "id" : hashid,
             "class" : "plot-resp plot-respdot plot-respdotsamp",
             "isresp" : true,
             "cx" : x,
@@ -197,7 +207,7 @@
             "tip_x" : x,
             "tip_y" : y,
             "tip_color" : this.color == null ? "gray" : this.color,
-            "opacity" : scope.tips[id] == null ? 0 : 1
+            "opacity" : scope.tips[hashid] == null ? 0 : 1
           });
           this.resppipe.push(eleprops[i]);
         }
@@ -223,7 +233,7 @@
       }
     };
 
-    PlotLineLOD.prototype.createTips = function() {
+    PlotLineLod.prototype.createTips = function() {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var samples = this.elementSamples;
@@ -249,7 +259,7 @@
       }
     };
 
-    PlotLineLOD.prototype.draw = function(scope) {
+    PlotLineLod.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps,
@@ -290,19 +300,19 @@
       }
     };
 
-    PlotLineLOD.prototype.clear = function(scope) {
+    PlotLineLod.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
       this.clearresp(scope);
     };
 
-    PlotLineLOD.prototype.clearresp = function(scope) {
+    PlotLineLod.prototype.clearresp = function(scope) {
       for (var i = 0; i < this.resppipe.length; i++) {
         scope.jqcontainer.find("#tip_" + this.resppipe[i].id).remove();
         delete scope.tips[this.resppipe[i].id];
       }
     };
 
-    return PlotLineLOD;
+    return PlotLineLod;
   };
-  beaker.bkoFactory('PlotLineLOD', ['plotUtils', 'PlotSampler', 'PlotLine', retfunc]);
+  beaker.bkoFactory('PlotLineLod', ['plotUtils', 'PlotSampler', 'PlotLine', retfunc]);
 })();

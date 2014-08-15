@@ -73,7 +73,6 @@
           yAxis = this.yAxis;
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
-        var txt = "";
         var valx = plotUtils.getTipString(ele._x, xAxis, true),
             valy = plotUtils.getTipString(ele._y, yAxis, true),
             valy2 = plotUtils.getTipString(ele._y2, yAxis, true);

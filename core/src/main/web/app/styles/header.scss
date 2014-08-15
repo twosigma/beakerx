@@ -68,6 +68,11 @@ html .navbar {
         display: block;
         padding: 10px 5px;
     }
+
+    span.offline-label {
+        color: #FF0000;
+        cursor: pointer;
+    }
 }
 
 html .navbar a.brand, html .navbar .nav > li > a {
@@ -75,7 +80,7 @@ html .navbar a.brand, html .navbar .nav > li > a {
     text-shadow: none;
 }
 
-.navbar-fixed-top .navbar-inner{
+.navbar-fixed-top .navbar-inner {
     background:         #3f5264;
     box-shadow:         none;
     -webkit-box-shadow: none;

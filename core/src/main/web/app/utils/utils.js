@@ -64,6 +64,9 @@
       findTable: function(elem) {
         return commonUtils.findTable(elem);
       },
+      saveAsClientFile: function(data, filename) {
+        return commonUtils.saveAsClientFile(data, filename);
+      },
 
       // wrap angularUtils
       refreshRootScope: function() {

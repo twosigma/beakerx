@@ -131,6 +131,8 @@
         };
         $scope.setBkNotebook({bkNotebook: _impl});
 
+        $scope.getFullIndex = function() { return "1" }
+
         $scope.isLocked = function() {
           return _impl._viewModel.isLocked();
         }

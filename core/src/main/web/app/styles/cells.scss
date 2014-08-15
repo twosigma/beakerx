@@ -77,6 +77,10 @@ bk-code-cell .code-cell-output {
     padding:    0 20px;
     position:   relative;
     border-top: solid 1px #CCC;
+
+    &.input-hidden {
+        margin-top: 35px;
+    }
 }
 
 .advanced-mode bk-code-cell .code-cell-output {

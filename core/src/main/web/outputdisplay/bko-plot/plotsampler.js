@@ -21,6 +21,7 @@
       this.xs = _x;
       this.y = _y;
       this.n = _x.length;
+      console.log(this.n);
       this.buildCoordTable();
       this.buildSegTree();
     };
@@ -32,6 +33,7 @@
       }
       var step = (xr - xl) / count;
       var ret = [];
+      var hash = {};
       for (var i = 0; i < count; i++) {
         var sl = xl + i * step,
             sr = xl + (i + 1) * step - 1E-12; // [sl,sr) closed open, be ware of precision problem
@@ -39,29 +41,43 @@
         if (qret == null) {
           continue;
         }
-        var ele = {};
-        _(ele).extend(qret);  // prevent segtree from being modified
-
-        ele.xl = sl;
-        ele.xr = sr;
-        ele.avg = ele.sum / ele.cnt;
-
-        ele.x = (sl + sr) / 2;
-        ele.y = ele.avg;
-
+        var h = qret.l + "," + qret.r;
+        if (hash[h] != null) {
+          continue;
+        } else {
+          hash[h] = 1;
+        }
+        // prevent segtree from being modified
+        var avg = qret.sum / qret.cnt;
+        var ele = {
+          min : qret.min,
+          max : qret.max,
+          xl : sl,
+          xr : sr,
+          avg : avg,
+          x : (sl + sr) / 2,
+          y : avg
+        };
         ret.push(ele);
       }
       return ret;
     };
 
     PlotSampler.prototype.query = function(xl, xr) {
+      if (xr < this.xs[0] || xl > this.xs[this.xs.length - 1]) {
+        return null;
+      }
       var l = this.mapIndex(xl),
           r = this.mapIndex(xr);
       l = Math.max(l, 0);
+      r = Math.min(r, this.n - 1);
       if (l > r || r == -1) {
         return null;
       }
-      return this.querySegTree(0, 0, this.n - 1, l, r);
+      var ret = this.querySegTree(0, 0, this.n - 1, l, r);
+      ret.l = l;
+      ret.r = r;
+      return ret;
     };
 
     PlotSampler.prototype.buildCoordTable = function() {
@@ -73,21 +89,28 @@
     };
 
     PlotSampler.prototype.buildSegTree = function() {
-      this.values = [];
-      for (var i = 0; i < this.n; i++) {
-        this.values.push({});
+      this.mins = [];
+      this.maxs = [];
+      this.sums = [];
+      this.cnts = [];
+      /*
+      for (var k = 0; ; k++) {
+        if ( (1 << k) >= this.n ) {
+          this.m = 1 << (k + 1);
+          break;
+        }
       }
+      this.mins.length = this.maxs.length = this.sums.length = this.cnts.length = this.m;
+      */
       this.initSegTree(0, 0, this.n - 1);
     };
 
     PlotSampler.prototype.initSegTree = function(k, nl, nr) {
       if (nl == nr) {
-        this.values[k] = {
-          min : this.y[nl],
-          max : this.y[nl],
-          sum : this.y[nl],
-          cnt : 1
-        };
+        this.mins[k] = this.y[nl];
+        this.maxs[k] = this.y[nl];
+        this.sums[k] = this.y[nl];
+        this.cnts[k] = 1;
         return;
       }
       var nm = Math.floor((nl + nr) / 2),
@@ -95,20 +118,23 @@
           kr = 2 * k + 2;
       this.initSegTree(kl, nl, nm);
       this.initSegTree(kr, nm + 1, nr);
-      this.values[k] = {
-        min : Math.min(this.values[kl].min, this.values[kr].min),
-        max : Math.max(this.values[kl].max, this.values[kr].max),
-        sum : this.values[kl].sum + this.values[kr].sum,
-        cnt : this.values[kl].cnt + this.values[kr].cnt
-      };
+      this.mins[k] = Math.min(this.mins[kl], this.mins[kr]);
+      this.maxs[k] = Math.max(this.maxs[kl], this.maxs[kr]);
+      this.sums[k] = this.sums[kl] + this.sums[kr];
+      this.cnts[k] = this.cnts[kl] + this.cnts[kr];
     };
 
     PlotSampler.prototype.querySegTree = function(k, nl, nr, l, r) {
-      if (r < nl || l > nl || l > r) {
+      if (r < nl || l > nr || l > r) {
         return null;
       }
       if (l <= nl && r >= nr) {
-        return this.values[k];
+        return {
+          min : this.mins[k],
+          max : this.maxs[k],
+          sum : this.sums[k],
+          cnt : this.cnts[k]
+        };
       }
       var nm = Math.floor((nl + nr) / 2),
           kl = 2 * k + 1,

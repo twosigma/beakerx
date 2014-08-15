@@ -16,21 +16,52 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, PlotSampler) {
+  var retfunc = function(plotUtils, PlotSampler, PlotLine) {
     var PlotLineLOD = function(data){
       $.extend(true, this, data); // copy properties to itself
       this.type = "sample"; // samples, or aggregations (boxplot)
       this.format();
+
+      this.lodthresh = 200;
+      var datacopy = {};
+      $.extend(true, datacopy, data);
+      datacopy.id = data.id + "f";
+      this.line = new PlotLine(datacopy);
+      this.lodon = false;
     };
 
     PlotLineLOD.prototype.render = function(scope){
       if (this.shown === false) {
-        this.clear(scope);
+        if (this.lodon === true) {
+          this.clear(scope);
+        } else {
+          this.line.clear(scope);
+        }
         return;
       }
-      this.prepare(scope);
-      this.clear(scope);
-      this.draw(scope);
+
+      this.filter(scope);
+
+      var lod = false;
+      if (this.vlength > this.lodthresh) {
+        lod = true;
+      }
+      if (this.lodon != lod) {
+        if (this.lodon === true) {
+          this.clear(scope);
+        } else {
+          this.line.clear(scope);
+        }
+        this.lodon = lod;
+      }
+
+      if (this.lodon === false) {
+        this.line.render(scope);
+      } else {
+        this.prepare(scope);
+        this.clear(scope);
+        this.draw(scope);
+      }
     };
 
     PlotLineLOD.prototype.getRange = function() {
@@ -62,6 +93,7 @@
       // createTips is not called because LOD tips are changing
       // sampler is created after coordinate axis remapping
       this.createSampler();
+      this.line.applyAxis(xAxis, yAxis);
     };
 
     PlotLineLOD.prototype.createSampler = function() {
@@ -88,6 +120,24 @@
       this.resppipe = [];
     };
 
+    PlotLineLOD.prototype.filter = function(scope) {
+      var eles = this.elements;
+      var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
+          r = plotUtils.upper_bound(eles, "x", scope.focus.xr) + 1;
+
+      l = Math.max(l, 0);
+      r = Math.min(r, eles.length - 1);
+
+      if (l > r || l == r && eles[l].x < scope.focus.xl) {
+        // nothing visible, or all elements are to the left of the svg, vlength = 0
+        l = 0;
+        r = -1;
+      }
+      this.vindexL = l;
+      this.vindexR = r;
+      this.vlength = r - l + 1;
+    };
+
     PlotLineLOD.prototype.prepare = function(scope) {
       var focus = scope.focus,
           pixelWidth = scope.stdmodel.initSize.width;
@@ -97,16 +147,24 @@
           mapY = scope.data2scrY;
       var pstr = "", skipped = false;
 
+      this.clearresp(scope);
       this.resppipe.length = 0;
       this.elementProps.length = 0;
 
-      var xl = focus.xl, xr = focus.xr;
-      var count = pixelWidth / 200; // 5 pixels for each bar
 
+      var xAxis = this.xAxis;
+      var xl = xAxis.getValue(focus.xl), xr = xAxis.getValue(focus.xr);
+
+      var step = xAxis.axisStep;
+      xl = Math.floor(xl / step) * step;
+      xr = Math.ceil(xr / step) * step;
+      xl = xAxis.getPercent(xl);
+      xr = xAxis.getPercent(xr);
+
+      var count = Math.ceil(pixelWidth / 5); // 5 pixels for each bar
       this.elementSamples = this.sampler.sample(xl, xr, count);
 
       var samples = this.elementSamples;
-      console.log(samples);
       for (var i = 0; i < samples.length; i++) {
         var ele = samples[i];
         if (i === 0) {
@@ -131,7 +189,7 @@
         if (focus.yl <= ele.y && ele.y <= focus.yr) {
           _(eleprops[i]).extend({
             "id" : id,
-            "class" : "plot-resp plot-respdot",
+            "class" : "plot-resp plot-respdot plot-respdotsamp",
             "isresp" : true,
             "cx" : x,
             "cy" : y,
@@ -171,11 +229,11 @@
       var samples = this.elementSamples;
       for (var i = 0; i < samples.length; i++) {
         var ele = samples[i];
-        var valxl = plotUtils.getTipString(ele.xl, xAxis, 6),
-            valxr = plotUtils.getTipString(ele.xr, xAxis, 6),
-            valmin = plotUtils.getTipString(ele.min, yAxis, 6),
-            valmax = plotUtils.getTipString(ele.max, yAxis, 6),
-            valavg = plotUtils.getTipString(ele.avg, yAxis, 6);
+        var valxl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6),
+            valxr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6),
+            valmin = plotUtils.getTipStringPercent(ele.min, yAxis),
+            valmax = plotUtils.getTipStringPercent(ele.max, yAxis),
+            valavg = plotUtils.getTipStringPercent(ele.avg, yAxis);
 
         var tip = {};
         if (this.legend != null) {
@@ -234,9 +292,17 @@
 
     PlotLineLOD.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
+      this.clearresp(scope);
+    };
+
+    PlotLineLOD.prototype.clearresp = function(scope) {
+      for (var i = 0; i < this.resppipe.length; i++) {
+        scope.jqcontainer.find("#tip_" + this.resppipe[i].id).remove();
+        delete scope.tips[this.resppipe[i].id];
+      }
     };
 
     return PlotLineLOD;
   };
-  beaker.bkoFactory('PlotLineLOD', ['plotUtils', 'PlotSampler', retfunc]);
+  beaker.bkoFactory('PlotLineLOD', ['plotUtils', 'PlotSampler', 'PlotLine', retfunc]);
 })();

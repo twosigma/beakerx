@@ -169,7 +169,7 @@
           } else if (typeof(fixed) === "number"){
             val = val.toFixed(fixed);
           } else {
-            val = val.toFixed(axis.getFixed());
+            val = val.toFixed(axis.axisFixed);
           }
         }
         return "" + val;

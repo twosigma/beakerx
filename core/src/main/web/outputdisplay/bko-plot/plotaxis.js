@@ -128,9 +128,9 @@
     //PlotAxis.prototype.getTimezone = function() { return this.axisTimezone; };
     PlotAxis.prototype.getCoords = function() { return _.without(this.axisCoords); };
     PlotAxis.prototype.getCoordLabels = function() { return _.without(this.axisCoordLabels); };
-    PlotAxis.prototype.getStep = function() { return this.axisStep; };
-    PlotAxis.prototype.getFixed = function() { return this.axisFixed; };
-    PlotAxis.prototype.getLabel = function() { return this.axisLabel; };
+    //PlotAxis.prototype.getStep = function() { return this.axisStep; };
+    //PlotAxis.prototype.getFixed = function() { return this.axisFixed; };
+    //PlotAxis.prototype.getLabel = function() { return this.axisLabel; };
     PlotAxis.prototype.getPercent = function(val) {
       if (val < this.axisValL) { val = this.axisValL; }
       if (val > this.axisValR) { val = this.axisValR; }

@@ -139,10 +139,10 @@
             y : -1
           };
           scope.showAllLines = true;
-          if (model.xAxis.getLabel() != null) {
+          if (model.xAxis.axisLabel != null) {
             scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * 2;
           }
-          if (model.yAxis.getLabel() != null) {
+          if (model.yAxis.axisLabel != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
           }
           scope.$watch("model.getFocus()", function(newFocus) {
@@ -405,21 +405,21 @@
             });
           }
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-          if (model.xAxis.getLabel() != null) {
+          if (model.xAxis.axisLabel != null) {
             scope.rpipeTexts.push({
               "id" : "xlabel",
               "class" : "plot-xylabel",
-              "text" : model.xAxis.getLabel(),
+              "text" : model.xAxis.axisLabel,
               "x" : lMargin + (scope.jqsvg.width() - lMargin) / 2,
               "y" : scope.jqsvg.height() - scope.fonts.labelHeight
             });
           }
-          if (model.yAxis.getLabel() != null) {
+          if (model.yAxis.axisLabel != null) {
             var x = scope.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "ylabel",
               "class" : "plot-xylabel",
-              "text" : model.yAxis.getLabel(),
+              "text" : model.yAxis.axisLabel,
               "x" : x,
               "y" : y,
               "transform" : "rotate(-90 " + x + " " + y + ")"

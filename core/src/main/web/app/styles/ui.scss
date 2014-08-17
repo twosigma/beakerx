@@ -63,3 +63,15 @@
 .cl {
   clear: both;
 }
+
+.plugin-active {
+  color: green;
+}
+
+.plugin-loading {
+  color: yellow;
+}
+
+.plugin-known {
+  color: gray;
+}

@@ -21,9 +21,9 @@
     <div>
       <button ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()"
               ng-click="evalTabOp.addPlugin(pluginName)">
-        <span ng-show="pluginStatus=='active'">A</span>
-        <span ng-show="pluginStatus=='loading'">L</span>
-        <span ng-show="pluginStatus=='known'">K</span>
+        <span ng-show="pluginStatus=='active'" class="plugin-active">&#x25cf;</span>
+        <span ng-show="pluginStatus=='loading'" class="plugin-loading">&#x25cf;</span>
+        <span ng-show="pluginStatus=='known'" class="plugin-known">&#x25cf;</span>
         {{pluginName}}
       </button><button ng-click="evalTabOp.showURL = !evalTabOp.showURL">From URL...</button>
     </div>

@@ -40,6 +40,16 @@
           getAllEvaluators: function() {
             return bkEvaluatorManager.getAllEvaluators();
           },
+          getEvaluatorsWithSpec: function() {
+	    var activePlugins = bkEvaluatorManager.getAllEvaluators();
+            var result = {};
+            for (var p in activePlugins) {
+	      if (Object.keys(activePlugins[p].spec).length > 0) {
+		result[p] = activePlugins[p];
+	      }
+	    }
+	    return result;
+          },
           getLoadingEvaluators: function() {
             return bkEvaluatorManager.getLoadingEvaluators();
           },
@@ -47,14 +57,6 @@
             var knownPlugins = bkEvaluatePluginManager.getKnownEvaluatorPlugins();
             var activePlugins = bkEvaluatorManager.getAllEvaluators();
             var loadingPlugins = bkEvaluatorManager.getLoadingEvaluators();
-            console.log("known plugs:");
-            console.log(knownPlugins);
-            console.log("active plugs:");
-            console.log(activePlugins);
-            console.log("loading plugs:");
-            console.log(loadingPlugins);
-            if (loadingPlugins.length > 0)
-              console.log(loadingPlugins[0]);
             var result = {};
             for (var p in knownPlugins) {
               var status = false;
@@ -73,8 +75,6 @@
               }
               result[p] = status;
             }
-            console.log("result:");
-            console.log(result);
             return result;
           },
           setNewPluginNameOrUrl: function(pluginNameOrUrl) {

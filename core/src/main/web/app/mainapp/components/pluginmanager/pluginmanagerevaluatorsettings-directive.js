@@ -26,8 +26,7 @@
       $compile, bkSessionManager) {
     return {
       restrict: 'E',
-      template: '<div><accordion-group heading="{{evaluatorName}} (plugin: {{evaluator.settings.plugin}})">' +
-          '<div class="bbody"></div></accordion-group></div>',
+      template: '<div class="bbody"></div>',
       controller: function($scope) {
         $scope.set = function(val) {
           $scope.evaluator.perform(val);

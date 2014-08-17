@@ -32,7 +32,7 @@
       <button class="btn" ng-click='evalTabOp.addPlugin()'>Add Plugin from URL</button>
     </div>
     <tabs>
-      <pane ng-repeat="(evaluatorName, evaluator) in evalTabOp.getAllEvaluators()" heading="{{evaluatorName}}">
+      <pane ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}">
         <bk-plugin-manager-evaluator-settings>
         </bk-plugin-manager-evaluator-settings>
       </pane>

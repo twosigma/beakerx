@@ -80,8 +80,11 @@
           setNewPluginNameOrUrl: function(pluginNameOrUrl) {
             this.newPluginNameOrUrl = pluginNameOrUrl;
           },
-          addPlugin: function() {
+          addPlugin: function(name) {
             var plugin = this.newPluginNameOrUrl;
+	    if (name) {
+		plugin = name;
+	    }
             var newEvaluatorObj = {
               name: "",
               plugin: plugin

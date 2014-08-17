@@ -20,7 +20,7 @@
   <div class="modal-body modal-large">
     <div>
       <button ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()"
-              ng-click="evalTabOp.setNewPluginNameOrUrl(pluginName)">
+              ng-click="evalTabOp.addPlugin(pluginName)">
         <span ng-show="pluginStatus=='active'">A</span>
         <span ng-show="pluginStatus=='loading'">L</span>
         <span ng-show="pluginStatus=='known'">K</span>

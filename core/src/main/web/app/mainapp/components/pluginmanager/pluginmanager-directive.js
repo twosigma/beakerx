@@ -37,6 +37,7 @@
         };
         $scope.evalTabOp = {
           newPluginNameOrUrl: "",
+	  showURL: false,
           getAllEvaluators: function() {
             return bkEvaluatorManager.getAllEvaluators();
           },
@@ -82,6 +83,7 @@
           },
           addPlugin: function(name) {
             var plugin = this.newPluginNameOrUrl;
+	    $scope.evalTabOp.showURL = false;
 	    if (name) {
 		plugin = name;
 	    }

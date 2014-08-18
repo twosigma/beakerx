@@ -17,8 +17,10 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
-    var PlotLine = function(data){
+    var PlotLine = function(data, loadOnDemand){
+      this.loadOnDemand = loadOnDemand;
       $.extend(true, this, data); // copy properties to itself
+      console.log(this, data);
       this.format();
     };
 
@@ -28,7 +30,11 @@
         return;
       }
       this.filter(scope);
-      this.prepare(scope);
+      if (this.loadOnDemand === true) {
+        this.prepareOnDemand(scope);
+      } else {
+        this.prepare(scope);
+      }
       if (this.vlength === 0) {
         this.clear(scope);
       } else {
@@ -62,26 +68,30 @@
         ele.x = xAxis.getPercent(ele.x);
         ele.y = yAxis.getPercent(ele.y);
       }
-      this.createTips();
+      if (this.loadOnDemand !== true) {
+        this.createTips();
+      }
     };
 
     PlotLine.prototype.createTips = function() {
-      var xAxis = this.xAxis,
-          yAxis = this.yAxis;
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
-        var valx = plotUtils.getTipString(ele._x, xAxis, true),
-            valy = plotUtils.getTipString(ele._y, yAxis, true);
-
-        var tip = {};
-        if (this.legend != null) {
-          tip.title = this.legend;
-        }
-        tip.x = valx;
-        tip.y = valy;
-
-        this.elementProps[i].tip_text = plotUtils.createTipString(tip);
+        this.elementProps[i].tip_text = this.createTip(ele);
       }
+    };
+
+    PlotLine.prototype.createTip = function(ele) {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var valx = plotUtils.getTipString(ele._x, xAxis, true),
+          valy = plotUtils.getTipString(ele._y, yAxis, true);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
+      }
+      tip.x = valx;
+      tip.y = valy;
+      return plotUtils.createTipString(tip);
     };
 
     PlotLine.prototype.format = function() {
@@ -97,6 +107,11 @@
       };
 
       this.elementProps = [];
+      this.resppipe = [];
+
+      // do not create element prop if loadOnDemand is on
+      if (this.loadOnDemand === true) { return; }
+
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         var point = {
@@ -110,7 +125,6 @@
         this.elementProps.push(point);
       }
 
-      this.resppipe = [];
     };
 
     PlotLine.prototype.filter = function(scope) {
@@ -165,6 +179,70 @@
             "opacity" : scope.tips[eleprops[i].id] == null ? 0 : 1
           });
           this.resppipe.push(eleprops[i]);
+        }
+
+        if (i < this.vindexR) {
+          if (this.interpolation === "none") {
+            var ele2 = eles[i + 1];
+            nxtp += mapX(ele.x) + "," + mapY(ele.y) + " " + mapX(ele2.x) + "," + mapY(ele.y) + " ";
+          } else if (this.interpolation === "curve") {
+            // TODO curve implementation
+          }
+        }
+        pstr += nxtp;
+      }
+
+      if (skipped === true) {
+        console.error("data not shown due to too large coordinate");
+      }
+      if (pstr.length > 0) {
+        this.itemProps.d = pstr;
+      }
+    };
+
+    PlotLine.prototype.prepareOnDemand = function(scope) {
+      var focus = scope.focus;
+      var eles = this.elements,
+          eleprops = this.elementProps;
+      var mapX = scope.data2scrX,
+          mapY = scope.data2scrY;
+      var pstr = "", skipped = false;
+
+      this.resppipe.length = 0;
+      this.elementProps.length = 0;
+
+      for (var i = this.vindexL; i <= this.vindexR; i++) {
+        var ele = eles[i];
+        if (i === this.vindexL) {
+          pstr += "M";
+        } else if (i === this.vindexL + 1) {
+          if (this.interpolation !== "curve") pstr += "L";
+          else pstr += "C";
+        }
+        var x = mapX(ele.x), y = mapY(ele.y);
+        if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
+          skipped = true;
+          break;
+        }
+        var nxtp = x + "," + y + " ";
+
+        if (focus.yl <= ele.y && ele.y <= focus.yr) {
+          var id = this.id + "_" + i;
+          var prop = {
+            "id" : id,
+            "class" : "plot-resp plot-respdot",
+            "isresp" : true,
+            "r" : 5,
+            "cx" : x,
+            "cy" : y,
+            "tip_x" : x,
+            "tip_y" : y,
+            "tip_text" : this.createTip(ele),
+            "tip_color" : this.color == null ? "gray" : this.color,
+            "opacity" : scope.tips[id] == null ? 0 : 1
+          };
+          eleprops.push(prop);
+          this.resppipe.push(prop);
         }
 
         if (i < this.vindexR) {

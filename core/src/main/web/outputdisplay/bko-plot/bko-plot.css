@@ -208,6 +208,7 @@
   stroke: black;
   stroke-width: 1;
   fill: white;
+  fill-opacity: 0.5;
 }
 
 .plot-lodboxline {

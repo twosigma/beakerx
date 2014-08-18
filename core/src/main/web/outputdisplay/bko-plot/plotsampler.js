@@ -22,21 +22,27 @@
       this.y = _y;
       this.n = _x.length;
       console.log(this.n);
+      var t = Date.now();
       this.buildCoordTable();
+      console.log("coord table: ", Date.now() - t, "ms");
+      t = Date.now();
       this.buildSegTree();
+      console.log("seg tree: ", Date.now() - t, "ms");
     };
 
-    PlotSampler.prototype.sample = function(xl, xr, count) {
-      if (count <= 0 || xr < xl) {
+    PlotSampler.prototype.sample = function(xl, xr, step) {
+      if (step <= 0 || xr < xl) {
         console.error("incorrect sample parameters");
         return [];
       }
-      var step = (xr - xl) / count;
       var ret = [];
       var hash = {};
-      for (var i = 0; i < count; i++) {
-        var sl = xl + i * step,
-            sr = xl + (i + 1) * step - 1E-12; // [sl,sr) closed open, be ware of precision problem
+      var nsl = xl, sl, sr;
+      while (nsl < xr) {
+        sl = nsl;
+        nsl += step;
+        sr = sl + step - 1E-12; // [sl,sr) closed open, be ware of precision problem
+
         var qret = this.query(sl, sr);
         if (qret == null) {
           continue;
@@ -82,10 +88,14 @@
 
     PlotSampler.prototype.buildCoordTable = function() {
       this.x = this.xs.slice(0); // copy xs to x
-      _.uniq(this.xs); // keep unique values in xs
+      var t = Date.now();
+      _.uniq(this.xs, true); // keep unique values in xs
+      console.log("uniq ", Date.now() - t, "ms");
+      t = Date.now();
       for (var i = 0; i < this.n; i++) {
         this.x[i] = this.mapIndex(this.x[i]);
       }
+      console.log("map ", Date.now() - t, "ms");
     };
 
     PlotSampler.prototype.buildSegTree = function() {
@@ -93,15 +103,6 @@
       this.maxs = [];
       this.sums = [];
       this.cnts = [];
-      /*
-      for (var k = 0; ; k++) {
-        if ( (1 << k) >= this.n ) {
-          this.m = 1 << (k + 1);
-          break;
-        }
-      }
-      this.mins.length = this.maxs.length = this.sums.length = this.cnts.length = this.m;
-      */
       this.initSegTree(0, 0, this.n - 1);
     };
 

@@ -261,9 +261,11 @@
             scope.shownLodHint = true;
             scope.renderMessage("Level-of-Detail (LOD) is enabled",
               [ "Some data items contain too many elements to be directly plotted.",
-              "Level-of-Detail (LOD) rendering is automatically enabled. ",
+              "Level-of-Detail (LOD) rendering is automatically enabled. " +
               "LOD hint is displayed at the right of the item legend.",
-              "To switch LOD type, left click the LOD hint.",
+              "LOD by default runs in auto mode. In auto mode, " +
+              "LOD will be automatically turned off when you reach detailed enough zoom level.",
+              "To switch LOD type, left click the LOD hint." +
               "To turn off LOD, right click the LOD hint." ]);
           }
         };
@@ -595,7 +597,7 @@
                 .attr("class", "plot-legendlod");
               var type = $("<span></span>").appendTo(lodhint)
                 .attr("class", "plot-legendlodhint");
-              var setlodhint = function() {
+              var setlodhint = function(dat) {
                 // lod hint light
                 light.attr("title",
                   dat.lodon === true ? "LOD is on" : "")
@@ -607,8 +609,9 @@
                 type.css("color", dat.lodon === true ? "red" : "gray")
                   .text(dat.lodType);
               };
-              setlodhint();
-              lodhint.on('mousedown', function(e) {
+              setlodhint(dat);
+              lodhint.on('mousedown', {"index": i}, function(e) {
+                var dat = data[e.data.index];
                 e.stopPropagation();
                 if (e.which === 3) {
                   if (dat.lodType === "off") { return; }
@@ -629,8 +632,9 @@
                   } else {
                     dat.switchLodType(scope);
                   }
+                  dat.zoomLevelChanged(scope);
                   scope.update();
-                  setlodhint();
+                  setlodhint(dat);
                 }
               });
             }
@@ -935,6 +939,7 @@
           }
           scope.fixFocus(scope.focus);
           scope.calcMapping(true);
+          scope.emitZoomLevelChange();
           scope.update();
         };
         scope.locateFocus = function() {
@@ -964,6 +969,7 @@
           focus.xspan = focus.xr - focus.xl;
           focus.yspan = focus.yr - focus.yl;
           scope.calcMapping(true);
+          scope.emitZoomLevelChange();
         };
         scope.resetSvg = function() {
           scope.jqcontainer.find(".plot-constlabel").remove();

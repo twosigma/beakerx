@@ -145,6 +145,16 @@
         while (s.length < 6) s = "0" + s;
         return "#" + s;
       },
+
+      randomString: function(len) {
+        var ret = "";
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for (var i = 0; i < len; i++ ) {
+          ret += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return ret;
+      },
+
       createColor : function(hexstr, opacity) {
         if (hexstr == null) {
           hexstr = "#000000";

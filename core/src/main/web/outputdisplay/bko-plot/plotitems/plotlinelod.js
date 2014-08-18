@@ -32,12 +32,17 @@
       var datacopy = {};
       $.extend(true, datacopy, data);
       datacopy.id = data.id;
-      this.line = new PlotLine(datacopy);
+      this.line = new PlotLine(datacopy, true);
       this.lodon = false;
+
+      this.sampleStep = -1;
+      this.zoomHash = plotUtils.randomString(6);
     };
 
     PlotLineLod.prototype.zoomLevelChanged = function(scope) {
       this.clearresp(scope);
+      this.sampleStep = -1;
+      this.zoomHash = plotUtils.randomString(6);
     };
 
     PlotLineLod.prototype.switchLodType = function(scope) {
@@ -118,9 +123,9 @@
         ele.x = xAxis.getPercent(ele.x);
         ele.y = yAxis.getPercent(ele.y);
       }
-      // createTips is not called because Lod tips are changing
-      // sampler is created after coordinate axis remapping
+      // sampler is created AFTER coordinate axis remapping
       this.createSampler();
+      // createTips is not called because Lod tips are changing
       this.line.applyAxis(xAxis, yAxis);
     };
 
@@ -167,18 +172,23 @@
     };
 
     PlotLineLod.prototype.sample = function(scope) {
-      var pixelWidth = scope.stdmodel.initSize.width;
-      var xAxis = this.xAxis;
-      var xl = xAxis.getValue(scope.focus.xl), xr = xAxis.getValue(scope.focus.xr);
 
-      var step = xAxis.axisStep;
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var xl = scope.focus.xl, xr = scope.focus.xr;
+
+      if (this.sampleStep === -1) {
+        var pixelWidth = scope.stdmodel.initSize.width;
+        var count = Math.ceil(pixelWidth / this.lodSteps[this.lodTypeIndex]);
+        var s = (xr - xl) / count;
+        this.sampleStep = s;
+      }
+
+      var step = this.sampleStep;
       xl = Math.floor(xl / step) * step;
       xr = Math.ceil(xr / step) * step;
-      xl = xAxis.getPercent(xl);
-      xr = xAxis.getPercent(xr);
 
-      var count = Math.ceil(pixelWidth / this.lodSteps[this.lodTypeIndex]);
-      this.elementSamples = this.sampler.sample(xl, xr, count);
+      this.elementSamples = this.sampler.sample(xl, xr, this.sampleStep);
     };
 
     PlotLineLod.prototype.prepareSample = function(scope) {
@@ -187,7 +197,8 @@
       var mapX = scope.data2scrX,
           mapY = scope.data2scrY;
       var pstr = "", skipped = false;
-      var step = this.xAxis.axisStep;
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
 
       this.resppipe.length = 0;
       this.elementProps.length = 0;
@@ -200,7 +211,6 @@
         } else if (i === 1) {
           pstr += "L";
         }
-
         var x = mapX(ele.x), y = mapY(ele.y);
         if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
           skipped = true;
@@ -214,7 +224,7 @@
         var nxtp = x + "," + y + " ";
 
         if (focus.yl <= ele.y && ele.y <= focus.yr) {
-          var hashid = this.id + "_" + step + "_" + i;
+          var hashid = this.id + "_" + this.zoomHash + "_" + i;
 
           _(eleprops[i]).extend({
             "id" : hashid,
@@ -234,7 +244,7 @@
         if (i < samples.length - 1) {
           if (this.interpolation === "none") {
             var ele2 = samples[i + 1];
-            nxtp += mapX(ele.x) + "," + mapY(ele.y) + " " + mapX(ele2.x) + "," + mapY(ele.y) + " ";
+            nxtp += x + "," + y + " " + mapX(ele2.x) + "," + y + " ";
           } else if (this.interpolation === "curve") {
             // TODO curve implementation
           }
@@ -257,7 +267,7 @@
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps,
-          resppipe = this.resppipe;
+          pipe = this.resppipe;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -279,14 +289,14 @@
 
       if (scope.stdmodel.useToolTip === true) {
         itemsvg.selectAll("circle")
-          .data(resppipe, function(d) { return d.id; }).exit().remove();
+          .data(pipe, function(d) { return d.id; }).exit().remove();
         itemsvg.selectAll("circle")
-          .data(resppipe, function(d) { return d.id; }).enter().append("circle")
+          .data(pipe, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .style("stroke", function(d) { return d.tip_color; });
         itemsvg.selectAll("circle")
-          .data(resppipe, function(d) { return d.id; })
+          .data(pipe, function(d) { return d.id; })
           .attr("cx", function(d) { return d.cx; })
           .attr("cy", function(d) { return d.cy; })
           .attr("r", function(d) { return d.r; })
@@ -301,7 +311,6 @@
       var mapX = scope.data2scrX,
           mapY = scope.data2scrY;
       var skipped = false;
-      var step = this.xAxis.axisStep;
 
       this.resppipe.length = 0;
       this.elementProps.length = 0;
@@ -319,7 +328,7 @@
         if (eleprops[i] == null) {
           eleprops[i] = {}; // create a new sample element if doesn't exists
         }
-        var hashid = this.id + "_" + step + "_" + i;
+        var hashid = this.id + "_" + this.zoomHash + "_" + i;
         _(eleprops[i]).extend({
           "id" : hashid,
           "class" : "plot-resp plot-lodbox",

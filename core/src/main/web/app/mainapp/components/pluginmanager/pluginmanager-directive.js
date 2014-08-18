@@ -65,7 +65,7 @@
                 status = "active";
               else {
                 for (var l in loadingPlugins) {
-                  if (l.plugin == p) {
+                  if (loadingPlugins[l].plugin == p) {
                     status = "loading";
                     break;
                   }

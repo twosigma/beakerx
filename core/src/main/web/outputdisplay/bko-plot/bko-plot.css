@@ -130,18 +130,25 @@
   margin-right: 5px;
 }
 
+.plot-legendtext {
+  pointer-events: none;
+}
+
 .plot-legendlod {
   width: 5px;
   height: 5px;
   border-radius : 5px;
   margin: 0px 5px;
   display: inline-block;
+  pointer-events: none;
 }
 
 .plot-legendlodhint {
+  min-width: 6em;
   font-size: 0.7em;
   display: inline-block;
   vertical-align: middle;
+  pointer-events: none;
 }
 
 .plot-legendcontainer {

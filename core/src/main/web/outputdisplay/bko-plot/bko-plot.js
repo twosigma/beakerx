@@ -262,7 +262,9 @@
             scope.renderMessage("Level-of-Detail (LOD) is enabled",
               [ "Some data items contain too many elements to be directly plotted.",
               "Level-of-Detail (LOD) rendering is automatically enabled. ",
-              "To switch LOD type or disable LOD, click the LOD light at the right of legends." ]);
+              "LOD hint is displayed at the right of the item legend.",
+              "To switch LOD type, left click the LOD hint.",
+              "To turn off LOD, right click the LOD hint." ]);
           }
         };
 
@@ -518,9 +520,9 @@
         };
 
         scope.renderLegends = function() {
-          if (scope.stdmodel.showLegend == false || scope.legendDone == true)
-            return;
           // legend redraw is controlled by legendDone
+          if (scope.stdmodel.showLegend === false || scope.legendDone === true) { return; }
+
           var data = scope.stdmodel.data;
           var margin = scope.layout.legendMargin;
 
@@ -533,7 +535,8 @@
             .css({
               "left" : scope.jqcontainer.width() + 10 ,
               "top" : 0
-            });
+            })
+            .draggable();
 
           if (scope.visibleData > 1) {  // skip "All" check when there is only one line
             var unit = $("<div></div>").appendTo(legend)
@@ -586,33 +589,53 @@
               .text(dat.legend);
 
             if (dat.isLodItem === true) {
-              // lod hint light
-              $("<span></span>").appendTo(unit)
-                .attr("class", "plot-legendlod")
-                .attr("title",
+              var lodhint = $("<span></span>").appendTo(unit)
+                .css("background-color", "white");
+              var light = $("<span></span>").appendTo(lodhint)
+                .attr("class", "plot-legendlod");
+              var type = $("<span></span>").appendTo(lodhint)
+                .attr("class", "plot-legendlodhint");
+              var setlodhint = function() {
+                // lod hint light
+                light.attr("title",
                   dat.lodon === true ? "LOD is on" : "")
                 .css("background-color",
                   dat.lodon === true ? "red" : "gray")
                 .css("border",
-                  dat.lodon === true ? "1px solid red" : "1px solid gray")
-                .on('click', function() {
-                  scope.legendDone = false;
-                  dat.switchLodType(scope);
+                  dat.lodon === true ? "1px solid red" : "1px solid gray");
+                // lod hint text
+                type.css("color", dat.lodon === true ? "red" : "gray")
+                  .text(dat.lodType);
+              };
+              setlodhint();
+              lodhint.on('mousedown', function(e) {
+                e.stopPropagation();
+                if (e.which === 3) {
+                  if (dat.lodType === "off") { return; }
+                  scope.removePipe.push("msg_lodoff");
+                  scope.renderMessage("LOD is being turned off",
+                    [ "You are trying to turning off LOD. Loading full resolution data is " +
+                    "going to take some time.",
+                    "Left click to proceed / Right click to cancel"],
+                    "msg_lodoff",
+                    function() {
+                      dat.toggleLod(scope);
+                      scope.update();
+                      setlodhint();
+                    }, null);
+                } else {
+                  if (dat.lodType === "off") {
+                    dat.toggleLod(scope);
+                  } else {
+                    dat.switchLodType(scope);
+                  }
                   scope.update();
-                });
-              // lod hint text
-              $("<span></span>").appendTo(unit)
-                .attr("class", "plot-legendlodhint")
-                .css("color", dat.lodon === true ? "red" : "gray")
-                .text(dat.lodType)
-                .on('click', function() {
-                  scope.legendDone = false;
-                  dat.switchLodType(scope);
-                  scope.update();
-                });
+                  setlodhint();
+                }
+              });
             }
           }
-          legend.draggable();
+
         };
         scope.toggleVisibility = function(e) {
           var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
@@ -632,14 +655,21 @@
           scope.update();
         };
 
-        scope.renderMessage = function(title, msgs) {
+        scope.renderMessage = function(title, msgs, msgid, callbacky, callbackn) {
           var message = $("<div></div>").appendTo(scope.jqcontainer)
-            .attr("id", "message")
+            .attr("id", msgid)
             .attr("class", "plot-message")
             .on('mousedown', function(e) {
-              if (e.which == 3) {
-                $(this).remove();
+              if (e.which === 3) {
+                if (callbackn != null) {
+                  callbackn();
+                }
+              } else {
+                if (callbacky != null) {
+                  callbacky();
+                }
               }
+              $(this).remove();
             });
 
           if (title != null && title != "") {
@@ -657,7 +687,6 @@
             $("<div></div>").appendTo(content)
               .text(msgs[i]);
           }
-          //content.css("line-height", content.height() + "px");
 
           var w = message.outerWidth(), h = message.outerHeight();
           var lMargin = scope.layout.leftLayoutMargin,
@@ -666,8 +695,6 @@
             "left" : (scope.jqcontainer.width() - lMargin) / 2 - w / 2 + lMargin,
             "top" : (scope.jqcontainer.height() - bMargin) / 2 - h / 2,
           });
-
-          message.draggable();
         };
 
         scope.renderCoverBox = function() {
@@ -1006,6 +1033,14 @@
           scope.shownLodHint = false;
         };
 
+        scope.clearRemovePipe = function() {
+          for (var i = 0; i < scope.removePipe.length; i++) {
+            var id = scope.removePipe[i];
+            scope.jqcontainer.find("#" + id).remove();
+          }
+          scope.removePipe.length = 0;
+        };
+
         scope.init = function() {
 
           // first standardize data
@@ -1016,7 +1051,7 @@
           scope.resetSvg();
           scope.zoomObj = d3.behavior.zoom();
           // set zoom object
-          scope.container.on("mousedown", function() {
+          scope.svg.on("mousedown", function() {
             return scope.mouseDown();
           }).on("mouseup", function() {
             return scope.mouseUp();
@@ -1024,7 +1059,7 @@
           scope.jqsvg.mousemove(function(e) {
             return scope.renderCursor(e);
           }).mouseleave(function(e) {
-            return scope.mouseleaveClear();
+            return scope.mouseleaveClear(e);
           });
           scope.enableZoom();
 
@@ -1034,6 +1069,9 @@
 
           // init message flags
           scope.initMessages();
+
+          // init remove pipe
+          scope.removePipe = [];
 
           scope.update();
         };
@@ -1055,6 +1093,8 @@
           scope.renderLegends(); // redraw
 
           scope.prepareInteraction();
+
+          scope.clearRemovePipe();
         };
 
         scope.init(); // initialize

@@ -18,7 +18,7 @@
   'use strict';
   var retfunc = function(plotUtils, PlotSampler, PlotLine) {
     var PlotLineLod = function(data){
-      this.lodTypes = ["auto sample", "auto box", "sample", "box", "off"];
+      this.lodTypes = ["auto sample", "auto box", "sample", "box"];
       this.lodSteps = [5, 10, 5, 10, -1];
       this.lodTypeIndex = 0;
 
@@ -46,6 +46,15 @@
       this.clear(scope);
     };
 
+    PlotLineLod.prototype.toggleLod = function(scope) {
+      if (this.lodType === "off") {
+        this.lodType = this.lodTypes[this.lodTypeIndex];
+      } else {
+        this.lodType = "off";
+      }
+      this.clear(scope);
+    };
+
     PlotLineLod.prototype.render = function(scope){
       if (this.shown === false) {
         this.clear(scope);
@@ -66,8 +75,8 @@
       if (this.lodon != lod) {
         scope.legendDone = false;
         this.clear(scope);
-        this.lodon = lod;
       }
+      this.lodon = lod;
 
       if (this.lodon === false) {
         this.line.render(scope);

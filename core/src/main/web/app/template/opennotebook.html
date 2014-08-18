@@ -22,7 +22,7 @@
    <tree-view rooturi="<%- homedir %>" fs="getStrategy().treeViewfs"></tree-view>
 </div>
 <div class="modal-footer">
-"   <div class=text-left>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>"
+   <div class=text-left>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>
    <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>
    <span style="float:left;">
      <input type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">

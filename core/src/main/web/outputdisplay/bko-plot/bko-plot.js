@@ -527,7 +527,7 @@
           scope.jqcontainer.find("#legends").remove();
 
           scope.legendDone = true;
-          var legend = $("<ul></ul>").appendTo(scope.jqcontainer)
+          var legend = $("<div></div>").appendTo(scope.jqcontainer)
             .attr("id", "legends")
             .attr("class", "plot-legendcontainer")
             .css({
@@ -536,7 +536,7 @@
             });
 
           if (scope.visibleData > 1) {  // skip "All" check when there is only one line
-            var unit = $("<li></li>").appendTo(legend)
+            var unit = $("<div></div>").appendTo(legend)
               .attr("id", "legend_all");
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_all")
@@ -557,37 +557,60 @@
 
           var content = "";
           for (var i = 0; i < data.length; i++) {
-            if (data[i].legend == null || data[i].legend === "") { continue; }
-            var unit = $("<li></li>").appendTo(legend)
-              .attr("id", "legend_" + i);
+            var dat = data[i];
+            if (dat.legend == null || dat.legend === "") { continue; }
+            var unit = $("<div></div>").appendTo(legend)
+              .attr("id", "legend_" + i)
+              .attr("class", "plot-legenddiv");
+            // checkbox
             $("<input type='checkbox'></input>").appendTo(unit)
               .attr("id", "legendcheck_" + i)
               .attr("class", "plot-legendcheckbox")
-              .prop("checked", data[i].shown)
+              .prop("checked", dat.shown)
               .click(function(e) {
                 return scope.toggleVisibility(e);
               });
+            // color box
             $("<span></span>").appendTo(unit)
               .attr("id", "legendbox_" + i)
               .attr("class", "plot-legendbox")
-              .attr("title", data[i].color == null ? "Multi-colored item" : "")
+              .attr("title", dat.color == null ? "Multi-colored item" : "")
               .css("background-color",
-                data[i].color == null ? "none" : data[i].color)
+                dat.color == null ? "none" : dat.color)
               .css("border",
-                data[i].color != null ? "1px solid " + data[i].color : "1px dotted gray");
+                dat.color != null ? "1px solid " + dat.color : "1px dotted gray");
+            // legend text
             $("<span></span>").appendTo(unit)
               .attr("id", "legendtext_" + i)
               .attr("class", "plot-label")
-              .text(data[i].legend);
-            $("<span></span>").appendTo(unit)
-              .attr("id", "legendlod_" + i)
-              .attr("class", "plot-legendlod")
-              .attr("title",
-                data[i].lodon === true ? "LOD is on" : "")
-              .css("background-color",
-                data[i].lodon === true ? "red" : "none")
-              .css("border",
-                data[i].lodon === true ? "1px solid red" : "none");
+              .text(dat.legend);
+
+            if (dat.isLodItem === true) {
+              // lod hint light
+              $("<span></span>").appendTo(unit)
+                .attr("class", "plot-legendlod")
+                .attr("title",
+                  dat.lodon === true ? "LOD is on" : "")
+                .css("background-color",
+                  dat.lodon === true ? "red" : "gray")
+                .css("border",
+                  dat.lodon === true ? "1px solid red" : "1px solid gray")
+                .on('click', function() {
+                  scope.legendDone = false;
+                  dat.switchLodType(scope);
+                  scope.update();
+                });
+              // lod hint text
+              $("<span></span>").appendTo(unit)
+                .attr("class", "plot-legendlodhint")
+                .css("color", dat.lodon === true ? "red" : "gray")
+                .text(dat.lodType)
+                .on('click', function() {
+                  scope.legendDone = false;
+                  dat.switchLodType(scope);
+                  scope.update();
+                });
+            }
           }
           legend.draggable();
         };

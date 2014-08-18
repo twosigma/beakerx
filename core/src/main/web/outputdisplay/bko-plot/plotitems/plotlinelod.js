@@ -18,15 +18,20 @@
   'use strict';
   var retfunc = function(plotUtils, PlotSampler, PlotLine) {
     var PlotLineLod = function(data){
+      this.lodTypes = ["auto sample", "auto box", "sample", "box", "off"];
+      this.lodSteps = [5, 10, 5, 10, -1];
+      this.lodTypeIndex = 0;
+
       $.extend(true, this, data); // copy properties to itself
-      this.lodType = "sampling"; // sampling, aggregation (boxplot), none
+
+      this.lodType = this.lodTypes[this.lodTypeIndex]; // sampling, aggregation (boxplot), none
       this.isLodItem = true;
       this.format();
 
       this.lodthresh = 200;
       var datacopy = {};
       $.extend(true, datacopy, data);
-      datacopy.id = data.id + "f";
+      datacopy.id = data.id;
       this.line = new PlotLine(datacopy);
       this.lodon = false;
     };
@@ -36,40 +41,45 @@
     };
 
     PlotLineLod.prototype.switchLodType = function(scope) {
-
+      this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
+      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.clear(scope);
     };
 
     PlotLineLod.prototype.render = function(scope){
       if (this.shown === false) {
-        if (this.lodon === true) {
-          this.clear(scope);
-        } else {
-          this.line.clear(scope);
-        }
+        this.clear(scope);
         return;
       }
 
       this.filter(scope);
 
       var lod = false;
-      if (this.vlength > this.lodthresh) {
+      if (this.lodType === "auto sample" || this.lodType === "auto box") {
+        if (this.vlength > this.lodthresh) {
+          lod = true;
+        }
+      } else if (this.lodType === "sample" || this.lodType === "box") {
         lod = true;
       }
+
       if (this.lodon != lod) {
         scope.legendDone = false;
-        if (this.lodon === true) {
-          this.clear(scope);
-        } else {
-          this.line.clear(scope);
-        }
+        this.clear(scope);
         this.lodon = lod;
       }
 
       if (this.lodon === false) {
         this.line.render(scope);
       } else {
-        this.prepare(scope);
-        this.draw(scope);
+        this.sample(scope);
+        if (this.lodType === "auto sample" || this.lodType === "sample") {
+          this.prepareSample(scope);
+          this.drawSample(scope);
+        } else {
+          this.prepareBox(scope);
+          this.drawBox(scope);
+        }
       }
     };
 
@@ -147,21 +157,10 @@
       this.vlength = r - l + 1;
     };
 
-    PlotLineLod.prototype.prepare = function(scope) {
-      var focus = scope.focus,
-          pixelWidth = scope.stdmodel.initSize.width;
-      var eles = this.elements,
-          eleprops = this.elementProps;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
-      var pstr = "", skipped = false;
-
-      this.resppipe.length = 0;
-      this.elementProps.length = 0;
-
-
+    PlotLineLod.prototype.sample = function(scope) {
+      var pixelWidth = scope.stdmodel.initSize.width;
       var xAxis = this.xAxis;
-      var xl = xAxis.getValue(focus.xl), xr = xAxis.getValue(focus.xr);
+      var xl = xAxis.getValue(scope.focus.xl), xr = xAxis.getValue(scope.focus.xr);
 
       var step = xAxis.axisStep;
       xl = Math.floor(xl / step) * step;
@@ -169,8 +168,20 @@
       xl = xAxis.getPercent(xl);
       xr = xAxis.getPercent(xr);
 
-      var count = Math.ceil(pixelWidth / 5); // 5 pixels for each bar
+      var count = Math.ceil(pixelWidth / this.lodSteps[this.lodTypeIndex]);
       this.elementSamples = this.sampler.sample(xl, xr, count);
+    };
+
+    PlotLineLod.prototype.prepareSample = function(scope) {
+      var focus = scope.focus;
+      var eleprops = this.elementProps;
+      var mapX = scope.data2scrX,
+          mapY = scope.data2scrY;
+      var pstr = "", skipped = false;
+      var step = this.xAxis.axisStep;
+
+      this.resppipe.length = 0;
+      this.elementProps.length = 0;
 
       var samples = this.elementSamples;
       for (var i = 0; i < samples.length; i++) {
@@ -187,7 +198,6 @@
           break;
         }
 
-        var id = this.id + "_" + i + "s";
         if (eleprops[i] == null) {
           eleprops[i] = {}; // create a new sample element if doesn't exists
         }
@@ -199,7 +209,7 @@
 
           _(eleprops[i]).extend({
             "id" : hashid,
-            "class" : "plot-resp plot-respdot plot-respdotsamp",
+            "class" : "plot-resp plot-respdot",
             "isresp" : true,
             "cx" : x,
             "cy" : y,
@@ -233,33 +243,8 @@
       }
     };
 
-    PlotLineLod.prototype.createTips = function() {
-      var xAxis = this.xAxis,
-          yAxis = this.yAxis;
-      var samples = this.elementSamples;
-      for (var i = 0; i < samples.length; i++) {
-        var ele = samples[i];
-        var valxl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6),
-            valxr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6),
-            valmin = plotUtils.getTipStringPercent(ele.min, yAxis),
-            valmax = plotUtils.getTipStringPercent(ele.max, yAxis),
-            valavg = plotUtils.getTipStringPercent(ele.avg, yAxis);
 
-        var tip = {};
-        if (this.legend != null) {
-          tip.title = this.legend + " (sample)";
-        }
-        tip.xl = valxl;
-        tip.xr = valxr;
-        tip.min = valmin;
-        tip.max = valmax;
-        tip.avg = valavg;
-
-        this.elementProps[i].tip_text = plotUtils.createTipString(tip);
-      }
-    };
-
-    PlotLineLod.prototype.draw = function(scope) {
+    PlotLineLod.prototype.drawSample = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps,
@@ -300,12 +285,132 @@
       }
     };
 
+    PlotLineLod.prototype.prepareBox = function(scope) {
+      var focus = scope.focus;
+      var eles = this.elements,
+          eleprops = this.elementProps;
+      var mapX = scope.data2scrX,
+          mapY = scope.data2scrY;
+      var skipped = false;
+      var step = this.xAxis.axisStep;
+
+      this.resppipe.length = 0;
+      this.elementProps.length = 0;
+
+      var samples = this.elementSamples;
+      for (var i = 0; i < samples.length; i++) {
+        var ele = samples[i];
+        var x = mapX(ele.xl), x2 = mapX(ele.xr),
+            y = mapY(ele.max), y2 = mapY(ele.min),
+            y3 = mapY(ele.avg);
+        if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6 || Math.abs(x2) > 1E6 || Math.abs(y2) > 1E6) {
+          skipped = true;
+          break;
+        }
+        if (eleprops[i] == null) {
+          eleprops[i] = {}; // create a new sample element if doesn't exists
+        }
+        var hashid = this.id + "_" + step + "_" + i;
+        _(eleprops[i]).extend({
+          "id" : hashid,
+          "class" : "plot-resp plot-lodbox",
+          "x" : x + 1,
+          "y" : y,
+          "width" : x2 - x - 2,
+          "height" : y2 - y,
+          "ym" : y3,
+          "tip_x" : x,
+          "tip_y" : y,
+          "tip_color" : this.color == null ? "gray" : this.color
+        });
+      }
+
+      if (samples.length > 0) {
+        this.createTips();
+      }
+    };
+
+    PlotLineLod.prototype.drawBox = function(scope) {
+      var svg = scope.maing;
+      var props = this.itemProps,
+          pipe = this.elementProps;
+
+      if (svg.select("#" + this.id).empty()) {
+        svg.selectAll("g")
+          .data([props], function(d) { return d.id; }).enter().append("g")
+          .attr("id", function(d) { return d.id; });
+      }
+
+      var itemsvg = svg.select("#" + this.id);
+
+      // draw boxes
+      itemsvg.selectAll("rect")
+        .data(pipe, function(d) { return d.id; }).exit().remove();
+      itemsvg.selectAll("rect")
+        .data(pipe, function(d) { return d.id; }).enter().append("rect")
+        .attr("id", function(d) { return d.id; })
+        .attr("class", function(d) { return d.class; })
+        .style("stroke", this.color);
+      itemsvg.selectAll("rect")
+        .data(pipe, function(d) { return d.id; })
+        .attr("x", function(d) { return d.x; })
+        .attr("y", function(d) { return d.y; })
+        .attr("width", function(d) { return d.width; })
+        .attr("height", function(d) { return d.height; });
+
+      // draw lines
+      itemsvg.selectAll("line")
+        .data(pipe, function(d) { return d.id + "l"; }).exit().remove();
+      itemsvg.selectAll("line")
+        .data(pipe, function(d) { return d.id + "l"; }).enter().append("line")
+        .attr("id", function(d) { return d.id + "l"; })
+        .attr("class", "plot-lodboxline")
+        .style("stroke", this.color);
+      itemsvg.selectAll("line")
+        .data(pipe, function(d) { return d.id + "l"; })
+        .attr("x1", function(d) { return d.x; })
+        .attr("x2", function(d) { return d.x + d.width; })
+        .attr("y1", function(d) { return d.ym; })
+        .attr("y2", function(d) { return d.ym; });
+    };
+
+    PlotLineLod.prototype.createTips = function() {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var samples = this.elementSamples;
+      for (var i = 0; i < samples.length; i++) {
+        var ele = samples[i];
+        var valxl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6),
+            valxr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6),
+            valmin = plotUtils.getTipStringPercent(ele.min, yAxis),
+            valmax = plotUtils.getTipStringPercent(ele.max, yAxis),
+            valavg = plotUtils.getTipStringPercent(ele.avg, yAxis);
+
+        var tip = {};
+        if (this.legend != null) {
+          tip.title = this.legend + " (sample)";
+        }
+        tip.xl = valxl;
+        tip.xr = valxr;
+        tip.min = valmin;
+        tip.max = valmax;
+        tip.avg = valavg;
+
+        this.elementProps[i].tip_text = plotUtils.createTipString(tip);
+      }
+    };
+
     PlotLineLod.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
       this.clearresp(scope);
     };
 
     PlotLineLod.prototype.clearresp = function(scope) {
+      var eleprops = this.elementProps;
+      for (var i = 0; i < eleprops.length; i++) {
+        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+        delete scope.tips[eleprops[i].id];
+      }
       for (var i = 0; i < this.resppipe.length; i++) {
         scope.jqcontainer.find("#tip_" + this.resppipe[i].id).remove();
         delete scope.tips[this.resppipe[i].id];

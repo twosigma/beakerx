@@ -121,8 +121,8 @@
   width: 10px;
   height: 10px;
   margin: 0px 5px;
-  vertical-align: middle;
   display: inline-block;
+  vertical-align: middle;
 }
 
 .plot-legendcheckbox {
@@ -135,21 +135,30 @@
   height: 5px;
   border-radius : 5px;
   margin: 0px 5px;
-  vertical-align: middle;
   display: inline-block;
 }
 
+.plot-legendlodhint {
+  font-size: 0.7em;
+  display: inline-block;
+  vertical-align: middle;
+}
 
 .plot-legendcontainer {
   stroke: gray;
   fill: #FEFEFE;
   position: absolute;
-  padding-left: 10px;
-  width: 150px;
+  padding: 5px;
+  width: auto;
   height: auto;
   border: 1px solid #BBBBBB;
   background-color: white;
   list-style: none;
+}
+
+.plot-legenddiv {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .plot-coverbox {
@@ -188,3 +197,13 @@
   display: inline-table;
 }
 
+.plot-lodbox {
+  stroke: black;
+  stroke-width: 1;
+  fill: white;
+}
+
+.plot-lodboxline {
+  stroke: black;
+  stroke-width: 2;
+}

@@ -16,48 +16,68 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, PlotSampler, PlotLine, PlotLodLine, PlotLodBox) {
+  var retfunc = function(plotUtils, PlotSampler, PlotBar, PlotLodBox) {
     var PlotBarLodLoader = function(data, lodthresh){
-
       this.datacopy = {};
       _(this.datacopy).extend(data);  // save for later use
       _(this).extend(data); // copy properties to itself
+      this.lodthresh = lodthresh;
+      this.format(lodthresh);
+    };
+    // class constants
+    PlotBarLodLoader.prototype.lodTypes = ["box"];
+    PlotBarLodLoader.prototype.lodSteps = [10];
 
+    PlotBarLodLoader.prototype.format = function() {
+      // create plot type index
       this.lodTypeIndex = 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
-
-      this.format();
-
       // create the two plotters
-      this.plotter = new PlotLine(datacopy);
-      this.lodplotter = new PlotLodLine(datacopy);
+      this.plotter = new PlotBar(this.datacopy);
+      this.lodplotter = new PlotLodBox(this.datacopy);
+      this.lodplotter2 = new PlotLodBox(this.datacopy);
 
-
+      // a few switches and constants
       this.isLodItem = true;
-      this.lodthresh = lodthresh;
       this.lodOn = false;
       this.lodAuto = true;
       this.sampleStep = -1;
-      this.zoomHash = plotUtils.randomString(3);
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
       } else {
         this.tip_color = "gray";
       }
+
+      this.itemProps = {
+        "id" : this.id,
+        "st" : this.color,
+        "st_op" : this.color_opacity,
+        "st_w" : this.width,
+        "st_da" : this.stroke_dasharray,
+        "d" : ""
+      };
+      this.elementProps = [];
     };
 
-    PlotBarLodLoader.prototype.lodTypes = ["line", "box"];
-    PlotBarLodLoader.prototype.lodSteps = [5, 10, 5, 10, -1];
-
     PlotBarLodLoader.prototype.zoomLevelChanged = function(scope) {
-      this.clearresp(scope);
       this.sampleStep = -1;
-      this.zoomHash = plotUtils.randomString(3);
+      this.lodplotter.zoomLevelChanged(scope);  // pass message to lod plotter
     };
 
     PlotBarLodLoader.prototype.switchLodType = function(scope) {
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.clear(scope);
+
+      if (this.lodType === "line") {
+        this.lodplotter = new PlotLodLine(this.datacopy);
+      } else if (this.lodType === "box") {
+        this.lodplotter = new PlotLodBox(this.datacopy);
+      }
+    };
+
+    PlotBarLodLoader.prototype.toggleAuto = function(scope) {
+      this.lodAuto = !this.lodAuto;
       this.clear(scope);
     };
 
@@ -95,86 +115,43 @@
         this.plotter.render(scope);
       } else {
         this.sample(scope);
-        this.lodplotter.plot(scope, this.elementSamples);
+        this.lodplotter.render(scope, this.elementSamples);
+        this.lodplotter2.render(scope, this.elementSamples2);
       }
     };
 
-    PlotBarLodLoader.prototype.getRange = function() {
-      var eles = this.elements;
-      var range = {
-        xl : 1E100,
-        xr : -1E100,
-        yl : 1E100,
-        yr : -1E100
-      };
-      for (var i = 0; i < eles.length; i++) {
-        var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
-        range.yl = Math.min(range.yl, ele.y);
-        range.yr = Math.max(range.yr, ele.y);
-      }
-      return range;
+    PlotBarLodLoader.prototype.getRange = function(){
+      return this.plotter.getRange();
     };
 
     PlotBarLodLoader.prototype.applyAxis = function(xAxis, yAxis) {
       this.xAxis = xAxis;
       this.yAxis = yAxis;
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        ele.x = xAxis.getPercent(ele.x);
-        ele.y = yAxis.getPercent(ele.y);
-      }
+      this.plotter.applyAxis(xAxis, yAxis);
       // sampler is created AFTER coordinate axis remapping
       this.createSampler();
-      // do not apply axis to line because element coordinates have been changed above
-      this.line.xAxis = xAxis;
-      this.line.yAxis = yAxis;
     };
 
     PlotBarLodLoader.prototype.createSampler = function() {
-      var xs = [], ys = [];
+      var xs = [], ys = [], y2s = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
-        xs.push(ele.x);
+        xs.push( (ele.x + ele.x2) / 2 );
         ys.push(ele.y);
+        y2s.push(ele.y2);
       }
       this.sampler = new PlotSampler(xs, ys);
-    };
-
-    PlotBarLodLoader.prototype.format = function() {
-      this.itemProps = {
-        "id" : this.id,
-        "cls" : "plot-line",
-        "st" : this.color,
-        "st_op" : this.color_opacity,
-        "st_w" : this.width,
-        "st_da" : this.stroke_dasharray,
-        "d" : ""
-      };
-      this.elementProps = [];
+      this.sampler2 = new PlotSampler(xs, y2s);
     };
 
     PlotBarLodLoader.prototype.filter = function(scope) {
-      var eles = this.elements;
-      var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
-          r = plotUtils.upper_bound(eles, "x", scope.focus.xr) + 1;
-
-      l = Math.max(l, 0);
-      r = Math.min(r, eles.length - 1);
-
-      if (l > r || l == r && eles[l].x < scope.focus.xl) {
-        // nothing visible, or all elements are to the left of the svg, vlength = 0
-        l = 0;
-        r = -1;
-      }
-      this.vindexL = l;
-      this.vindexR = r;
-      this.vlength = r - l + 1;
+      this.plotter.filter(scope);
+      this.vindexL = this.plotter.vindexL;
+      this.vindexR = this.plotter.vindexR;
+      this.vlength = this.plotter.vlength;
     };
 
     PlotBarLodLoader.prototype.sample = function(scope) {
-
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var xl = scope.focus.xl, xr = scope.focus.xr;
@@ -191,11 +168,12 @@
       xr = Math.ceil(xr / step) * step;
 
       this.elementSamples = this.sampler.sample(xl, xr, this.sampleStep);
+      this.elementSamples2 = this.sampler2.sample(xl, xr, this.sampleStep);
     };
 
     PlotBarLodLoader.prototype.createTip = function(ele) {
       if (this.lodOn === false) {
-        return this.line.createTip(ele);
+        return this.plotter.createTip(ele);
       }
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
@@ -213,24 +191,18 @@
       tip.min = valmin;
       tip.max = valmax;
       tip.avg = valavg;
-     return plotUtils.createTipString(tip);
+      return plotUtils.createTipString(tip);
     };
 
     PlotBarLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
-      this.clearresp(scope);
-    };
-
-    PlotBarLodLoader.prototype.clearresp = function(scope) {
-      var eleprops = this.elementProps;
-      for (var i = 0; i < eleprops.length; i++) {
-        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
-        delete scope.tips[eleprops[i].id];
-      }
+      this.plotter.clearTips(scope);
+      this.lodplotter.clearTips(scope);
+      this.lodplotter2.clearTips(scope);
     };
 
     return PlotBarLodLoader;
   };
   beaker.bkoFactory('PlotBarLodLoader',
-    ['plotUtils', 'PlotSampler', 'PlotLine', 'PlotLodLine', 'PlotLodBox', retfunc]);
+    ['plotUtils', 'PlotSampler', 'PlotBar', 'PlotLodBox', retfunc]);
 })();

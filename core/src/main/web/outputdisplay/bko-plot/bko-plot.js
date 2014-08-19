@@ -619,7 +619,7 @@
                 type.css("color", dat.lodOn === true ? "red" : "gray")
                   .text(dat.lodType);
                 // lod auto hint
-                auto.css("color", "red")
+                auto.css("color", dat.lodOn === true ? "red" : "gray")
                   .text(dat.lodType === "off" ? "" : (dat.lodAuto === true ? "auto" : "on"));
               };
               setlodhint(dat);

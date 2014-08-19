@@ -51,8 +51,9 @@
       this.draw(scope);
     };
 
-    PlotLodBox.prototype.zoomLevelChanged = function() {
+    PlotLodBox.prototype.zoomLevelChanged = function(scope) {
       this.zoomHash = plotUtils.randomString(3);
+      this.clearTips(scope);
     };
 
     PlotLodBox.prototype.prepare = function(scope) {
@@ -135,6 +136,14 @@
         .attr("y", function(d) { return d.y; })
         .attr("width", function(d) { return d.w; })
         .attr("height", function(d) { return d.h; });
+    };
+
+    PlotLodBox.prototype.clearTips = function(scope) {
+      var eleprops = this.elementProps;
+      for (var i = 0; i < eleprops.length; i++) {
+        var sel = scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+        delete scope.tips[eleprops[i].id];  // must clear from tip drawing queue
+      }
     };
 
     return PlotLodBox;

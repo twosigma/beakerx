@@ -163,7 +163,7 @@
     PlotLodLine.prototype.clearTips = function(scope) {
       var eleprops = this.elementProps;
       for (var i = 0; i < eleprops.length; i++) {
-        var sel = scope.jqcontainer.find("#tip_" + eleprops[i].id);
+        var sel = scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
         delete scope.tips[eleprops[i].id];  // must clear from tip drawing queue
       }
     };

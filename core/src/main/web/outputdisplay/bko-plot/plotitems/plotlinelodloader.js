@@ -26,7 +26,7 @@
     };
     // class constants
     PlotLineLodLoader.prototype.lodTypes = ["line", "box"];
-    PlotLineLodLoader.prototype.lodSteps = [5, 10, 5, 10, -1];
+    PlotLineLodLoader.prototype.lodSteps = [5, 10];
 
     PlotLineLodLoader.prototype.format = function() {
       // create plot type index
@@ -119,36 +119,15 @@
     };
 
     PlotLineLodLoader.prototype.getRange = function() {
-      var eles = this.elements;
-      var range = {
-        xl : 1E100,
-        xr : -1E100,
-        yl : 1E100,
-        yr : -1E100
-      };
-      for (var i = 0; i < eles.length; i++) {
-        var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
-        range.yl = Math.min(range.yl, ele.y);
-        range.yr = Math.max(range.yr, ele.y);
-      }
-      return range;
+      return this.plotter.getRange();
     };
 
     PlotLineLodLoader.prototype.applyAxis = function(xAxis, yAxis) {
       this.xAxis = xAxis;
       this.yAxis = yAxis;
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        ele.x = xAxis.getPercent(ele.x);
-        ele.y = yAxis.getPercent(ele.y);
-      }
+      this.plotter.applyAxis(xAxis, yAxis);
       // sampler is created AFTER coordinate axis remapping
       this.createSampler();
-      // do not apply axis to line because element coordinates have been changed above
-      this.plotter.xAxis = xAxis;
-      this.plotter.yAxis = yAxis;
     };
 
     PlotLineLodLoader.prototype.createSampler = function() {
@@ -163,21 +142,10 @@
 
 
     PlotLineLodLoader.prototype.filter = function(scope) {
-      var eles = this.elements;
-      var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
-          r = plotUtils.upper_bound(eles, "x", scope.focus.xr) + 1;
-
-      l = Math.max(l, 0);
-      r = Math.min(r, eles.length - 1);
-
-      if (l > r || l == r && eles[l].x < scope.focus.xl) {
-        // nothing visible, or all elements are to the left of the svg, vlength = 0
-        l = 0;
-        r = -1;
-      }
-      this.vindexL = l;
-      this.vindexR = r;
-      this.vlength = r - l + 1;
+      this.plotter.filter(scope);
+      this.vindexL = this.plotter.vindexL;
+      this.vindexR = this.plotter.vindexR;
+      this.vlength = this.plotter.vlength;
     };
 
     PlotLineLodLoader.prototype.sample = function(scope) {

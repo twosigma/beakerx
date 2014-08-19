@@ -21,15 +21,26 @@
     var PlotBar = function(data) {
       _(this).extend(data); // copy properties to itself
       this.format();
+    };
+    PlotBar.prototype.plotClass = "plot-bar";
+    PlotBar.prototype.respClass = "plot-resp";
 
+    PlotBar.prototype.format = function() {
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
       } else {
         this.tip_color = "gray";
       }
+      this.itemProps = {
+        "id" : this.id,
+        "fi" : this.color,
+        "fi_op": this.color_opacity,
+        "st": this.stroke,
+        "st_w": this.stroke_width,
+        "st_op": this.stroke_opacity
+      };
+      this.elementProps = [];
     };
-
-    PlotBar.prototype.respclass = "plot-resp";
 
     PlotBar.prototype.render = function(scope) {
       if (this.shown == false) {
@@ -75,37 +86,6 @@
       }
     };
 
-    PlotBar.prototype.createTip = function(ele) {
-      var xAxis = this.xAxis,
-          yAxis = this.yAxis;
-      var valx = plotUtils.getTipString(ele._x, xAxis, true),
-          valy = plotUtils.getTipString(ele._y, yAxis, true),
-          valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
-      var tip = {};
-      if (this.legend != null) {
-        tip.title = this.legend;
-      }
-      tip.x = valx;
-      tip.y = valy;
-      tip.y2 = valy2;
-      return plotUtils.createTipString(tip);
-    };
-
-    PlotBar.prototype.format = function() {
-
-      this.itemProps = {
-        "id" : this.id,
-        "cls" : "plot-bar",
-        "fi" : this.color,
-        "fi_op": this.color_opacity,
-        "st": this.stroke,
-        "st_w": this.stroke_width,
-        "st_op": this.stroke_opacity
-      };
-
-      this.elementProps = [];
-    };
-
     PlotBar.prototype.filter = function(scope) {
       var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x2", scope.focus.xl) + 1,
@@ -145,7 +125,6 @@
           "id" : id,
           "iidx" : this.index,
           "eidx" : i,
-          "cls" : this.respclass,
           "x" : x1,
           "y" : y2,
           "w" : sw,
@@ -171,7 +150,7 @@
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.cls; })
+          .attr("class", this.plotClass)
           .style("fill", function(d) { return d.fi; })
           .style("fill-opacity", function(d) { return d.fi_op; })
           .style("stroke", function(d) { return d.st; })
@@ -186,7 +165,7 @@
       itemsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.cls; })
+        .attr("class", this.respClass)
         .style("fill", function(d) { return d.fi; })
         .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })
@@ -202,6 +181,30 @@
 
     PlotBar.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
+      this.clearTips(scope);
+    };
+
+    PlotBar.prototype.clearTips = function(scope) {
+      var eleprops = this.elementProps;
+      for (var i = 0; i < eleprops.length; i++) {
+        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+      }
+    };
+
+    PlotBar.prototype.createTip = function(ele) {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var valx = plotUtils.getTipString(ele._x, xAxis, true),
+          valy = plotUtils.getTipString(ele._y, yAxis, true),
+          valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
+      }
+      tip.x = valx;
+      tip.y = valy;
+      tip.y2 = valy2;
+      return plotUtils.createTipString(tip);
     };
 
     return PlotBar;

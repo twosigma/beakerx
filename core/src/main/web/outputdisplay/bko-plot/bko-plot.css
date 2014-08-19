@@ -63,11 +63,24 @@
   display: inline-table;
 }
 
-.plot-coord,
-.plot-coord-base {
+.plot-gridline,
+.plot-gridline-base {
   stroke-width: 1;
   pointer-events: none;
 }
+.plot-gridline {
+  stroke: #111111;
+  stroke-dasharray: 1, 1;
+  stroke-width: 1;
+  opacity: .5;
+}
+.plot-gridline-base {
+  stroke: #333333;
+  stroke-width: 3;
+  opacity: .75;
+}
+
+
 
 .plot-constline,
 .plot-constband,
@@ -80,19 +93,6 @@
 .plot-bar,
 .plot-stem {
   pointer-events: auto;
-}
-
-.plot-coord {
-  stroke: #111111;
-  stroke-dasharray: 1, 1;
-  stroke-width: 1;
-  opacity: .5;
-}
-
-.plot-coord-base {
-  stroke: #333333;
-  stroke-width: 3;
-  opacity: .75;
 }
 
 .plot-pointrect,

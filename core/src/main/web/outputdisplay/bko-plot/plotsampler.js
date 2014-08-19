@@ -21,7 +21,7 @@
       this.xs = _x;
       this.y = _y;
       this.n = _x.length;
-      console.log(this.n);
+      console.log("data size: ", this.n);
       var t = Date.now();
       this.buildCoordTable();
       console.log("coord table: ", Date.now() - t, "ms");

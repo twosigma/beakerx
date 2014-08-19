@@ -33,7 +33,7 @@
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
             "</filter>" +
           "</defs>" +
-          "<g id='coordg'></g>" +
+          "<g id='gridg'></g>" +
           "<g id='maing'></g>" +
           "<g id='labelg'></g> " +
           "</svg>" +
@@ -101,7 +101,7 @@
           scope.jqplottitle.text(model.title).css("width", model.initSize.width);
 
           scope.maing = d3.select(element[0]).select("#maing");
-          scope.coordg = d3.select(element[0]).select("#coordg");
+          scope.gridg = d3.select(element[0]).select("#gridg");
           scope.labelg = d3.select(element[0]).select("#labelg");
 
           scope.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
@@ -202,51 +202,51 @@
           scope.focus = {};
           _.extend(scope.focus, scope.defaultFocus);
         };
-        scope.calcCoords = function() {
-          // prepare the coordinates
+        scope.calcGridlines = function() {
+          // prepare the gridlines
           var focus = scope.focus, model = scope.stdmodel;
-          model.xAxis.setCoords(focus.xl, focus.xr, scope.numIntervals.x);
-          model.yAxis.setCoords(focus.yl, focus.yr, scope.numIntervals.y);
+          model.xAxis.setGridlines(focus.xl, focus.xr, scope.numIntervals.x);
+          model.yAxis.setGridlines(focus.yl, focus.yr, scope.numIntervals.y);
         };
-        scope.renderCoords = function() {
+        scope.renderGridlines = function() {
           var focus = scope.focus, model = scope.stdmodel;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
-          var xCoords = model.xAxis.getCoords();
-          for (var i = 0; i < xCoords.length; i++) {
-            var x = xCoords[i];
-            scope.rpipeCoords.push({
-              "id" : "coord_x_" + i,
-              "class" : "plot-coord",
+          var xGridlines = model.xAxis.getGridlines();
+          for (var i = 0; i < xGridlines.length; i++) {
+            var x = xGridlines[i];
+            scope.rpipeGridlines.push({
+              "id" : "gridline_x_" + i,
+              "class" : "plot-gridline",
               "x1" : mapX(x),
               "y1" : mapY(focus.yl),
               "x2" : mapX(x),
               "y2" : mapY(focus.yr)
             });
           }
-          var yCoords = model.yAxis.getCoords();
-          for (var i = 0; i < yCoords.length; i++) {
-            var y = yCoords[i];
-            scope.rpipeCoords.push({
-              "id" : "coord_y_" + i,
-              "class" : "plot-coord",
+          var yGridlines = model.yAxis.getGridlines();
+          for (var i = 0; i < yGridlines.length; i++) {
+            var y = yGridlines[i];
+            scope.rpipeGridlines.push({
+              "id" : "gridline_y_" + i,
+              "class" : "plot-gridline",
               "x1" : mapX(focus.xl),
               "y1" : mapY(y),
               "x2" : mapX(focus.xr),
               "y2" : mapY(y)
             });
           }
-          scope.rpipeCoords.push({
-            "id" : "coord_x_base",
-            "class" : "plot-coord-base",
+          scope.rpipeGridlines.push({
+            "id" : "gridline_x_base",
+            "class" : "plot-gridline-base",
             "x1" : mapX(focus.xl),
             "y1" : mapY(focus.yl),
             "x2" : mapX(focus.xr),
             "y2" : mapY(focus.yl)
           });
-          scope.rpipeCoords.push({
-            "id" : "coord_y_base",
-            "class" : "plot-coord-base",
+          scope.rpipeGridlines.push({
+            "id" : "gridline_y_base",
+            "class" : "plot-gridline-base",
             "x1" : mapX(focus.xl),
             "y1" : mapY(focus.yl),
             "x2" : mapX(focus.xl),
@@ -406,11 +406,11 @@
         scope.renderLabels = function() {
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
           var model = scope.stdmodel, ys = model.yScale;
-          var coords, labels;
-          coords = model.xAxis.getCoords();
-          labels = model.xAxis.getCoordLabels();
+          var lines, labels;
+          lines = model.xAxis.getGridlines();
+          labels = model.xAxis.getGridlineLabels();
           for (var i = 0; i < labels.length; i++) {
-            var x = coords[i];
+            var x = lines[i];
             scope.rpipeTexts.push({
               "id" : "label_x_" + i,
               "class" : "plot-label",
@@ -421,15 +421,14 @@
               "dominant-baseline" : "hanging"
             });
           }
-          coords = model.yAxis.getCoords();
-          labels = model.yAxis.getCoordLabels();
+          lines = model.yAxis.getGridlines();
+          labels = model.yAxis.getGridlineLabels();
           for (var i = 0; i < labels.length; i++) {
-            var y = coords[i];
+            var y = lines[i];
             scope.rpipeTexts.push({
               "id" : "label_y_" + i,
               "class" : "plot-label",
               "text" : labels[i],
-              //ys.type === "log" ? parseFloat(Math.pow(ys.base, y)).toFixed(2) : y,
               "x" : mapX(scope.focus.xl) - scope.labelPadding.x,
               "y" : mapY(y),
               "text-anchor" : "end",
@@ -982,7 +981,7 @@
         scope.resetSvg = function() {
           scope.jqcontainer.find(".plot-constlabel").remove();
 
-          scope.rpipeCoords = [];
+          scope.rpipeGridlines = [];
           scope.rpipeTexts = [];
         };
         scope.enableZoom = function() {
@@ -1092,9 +1091,9 @@
 
         scope.update = function(first) {
           scope.resetSvg();
-          scope.calcCoords();
-          scope.renderCoords();
-          plotUtils.plotCoords(scope);
+          scope.calcGridlines();
+          scope.renderGridlines();
+          plotUtils.plotGridlines(scope);
 
 
           scope.renderData();

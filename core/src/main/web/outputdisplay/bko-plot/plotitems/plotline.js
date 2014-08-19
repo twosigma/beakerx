@@ -70,21 +70,7 @@
         ele.x = xAxis.getPercent(ele.x);
         ele.y = yAxis.getPercent(ele.y);
       }
-      /*
-      if (this.loadOnDemand !== true) {
-        this.createTips();
-      }
-      */
     };
-
-    /*
-    PlotLine.prototype.createTips = function() {
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        this.elementProps[i].t_txt = this.createTip(ele);
-      }
-    };
-    */
 
     PlotLine.prototype.createTip = function(ele) {
       var xAxis = this.xAxis,
@@ -113,22 +99,6 @@
       };
 
       this.elementProps = [];
-
-      /*
-      this.resppipe = [];
-
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var point = {
-          "id" : this.id + "_" + i,
-          "cls" : "plot-resp plot-respdot",
-          "isresp" : true,
-          "t_clr" : this.color == null ? "gray" : this.color,
-          "r" : 5
-        };
-        this.elementProps.push(point);
-      }
-      */
     };
 
     PlotLine.prototype.filter = function(scope) {

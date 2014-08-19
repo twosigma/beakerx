@@ -609,6 +609,7 @@
               });
             });
         bkCellMenuPluginManager.reset();
+        bkEvaluateJobManager.reset();
 
         (function() {
           var sessionId = $routeParams.sessionId;

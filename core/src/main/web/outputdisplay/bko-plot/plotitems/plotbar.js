@@ -24,7 +24,11 @@
       $.extend(true, this, data);
       this.format();
 
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      if (this.color != null) {
+        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      } else {
+        this.tip_color = "gray";
+      }
     };
 
     PlotBar.prototype.respclass = "plot-resp";

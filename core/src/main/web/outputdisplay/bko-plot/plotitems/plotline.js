@@ -23,7 +23,11 @@
       $.extend(true, this, data); // copy properties to itself
       this.format();
 
-      this.tip_color = this.color == null ? "gray" : this.color;
+      if (this.color != null) {
+        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      } else {
+        this.tip_color = "gray";
+      }
     };
 
     // constants

@@ -22,6 +22,12 @@
       delete data.elements;
       $.extend(true, this, data);
       this.format();
+
+      if (this.color != null) {
+        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      } else {
+        this.tip_color = "gray";
+      }
     };
 
     PlotText.prototype.render = function(scope) {

@@ -23,7 +23,13 @@
       delete data.elements;
       $.extend(true, this, data);
       this.format();
+
+      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
     };
+
+    PlotArea.prototype.respw = 5;
+    PlotArea.prototype.respminh = 5;
+    PlotArea.prototype.respclass = "plot-resp plot-respstem";
 
     PlotArea.prototype.render = function(scope){
       if (this.shown === false) {
@@ -66,28 +72,23 @@
         ele.y = yAxis.getPercent(ele.y);
         ele.y2 = yAxis.getPercent(ele.y2);
       }
-      this.createTips();
     };
 
-    PlotArea.prototype.createTips = function() {
+    PlotArea.prototype.createTip = function(ele) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var txt = "";
-        var valx = plotUtils.getTipString(ele._x, xAxis, true),
-            valy = plotUtils.getTipString(ele._y, yAxis, true),
-            valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
+      var valx = plotUtils.getTipString(ele._x, xAxis, true),
+          valy = plotUtils.getTipString(ele._y, yAxis, true),
+          valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
 
-        var tip = {};
-        if (this.legend != null) {
-          tip.title = this.legend;
-        }
-        tip.x = valx;
-        tip.y = valy;
-        tip.y2 = valy2;
-        this.elementProps[i].t_txt = plotUtils.createTipString(tip);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
       }
+      tip.x = valx;
+      tip.y = valy;
+      tip.y2 = valy2;
+      return plotUtils.createTipString(tip);
     };
 
     PlotArea.prototype.format = function(){
@@ -102,6 +103,7 @@
         "pts" : ""
       };
       this.elementProps = [];
+      /*
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         var point = {
@@ -116,6 +118,7 @@
       }
 
       this.resppipe = [];
+      */
     };
 
     PlotArea.prototype.filter = function(scope) {
@@ -144,7 +147,7 @@
       var mapX = scope.data2scrX,
           mapY = scope.data2scrY;
 
-      this.resppipe.length = 0;
+      eleprops.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
@@ -166,15 +169,22 @@
         }
 
         if (ele.y <= focus.yr && ele.y2 >= focus.yl) {
-          _(eleprops[i]).extend({
-            "x" : x - eleprops[i].w / 2,
+          var id = this.id + "_" + i;
+          var prop = {
+            "id" : id,
+            "gid" : this.index,
+            "cls" : this.respclass,
+            "isresp" : true,
+            "w" : this.respw,
+            "x" : x - this.respw / 2,
             "y" : y2,
-            "h" : Math.max(y - y2, 5), // at least height 5 to be hoverable
+            "h" : Math.max(y - y2, this.respminh),  // min height to be hoverable
             "t_x" : x,
             "t_y" : (y + y2) / 2,
-            "op" : scope.tips[eleprops[i].id] == null ? 0 : 1
-          });
-          this.resppipe.push(eleprops[i]);
+            "op" : scope.tips[id] == null ? 0 : 1,
+            "ele" : ele
+          };
+          eleprops.push(prop);
         }
       }
 
@@ -206,7 +216,7 @@
     PlotArea.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          resppipe = this.resppipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -227,18 +237,19 @@
       itemsvg.select("polygon")
         .attr("points", props.pts);
 
+      var item = this;
       if (scope.stdmodel.useToolTip === true) {
         itemsvg.selectAll("rect")
-          .data(resppipe, function(d) { return d.id; }).exit().remove();
+          .data(eleprops, function(d) { return d.id; }).exit().remove();
         itemsvg.selectAll("rect")
-          .data(resppipe, function(d) { return d.id; }).enter().append("rect")
+          .data(eleprops, function(d) { return d.id; }).enter().append("rect")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.cls; })
           .attr("width", function(d) { return d.w; })
-          .style("stroke", function(d) { return d.t_clr; });
+          .style("stroke", item.tip_color);
 
         itemsvg.selectAll("rect")
-          .data(resppipe, function(d) { return d.id; })
+          .data(eleprops, function(d) { return d.id; })
           .attr("x", function(d) { return d.x; })
           .attr("y", function(d) { return d.y; })
           .attr("height", function(d) { return d.h; })

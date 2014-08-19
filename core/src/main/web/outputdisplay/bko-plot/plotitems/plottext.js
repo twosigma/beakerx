@@ -30,6 +30,8 @@
       }
     };
 
+    PlotText.prototype.respclass = "plot-resp";
+
     PlotText.prototype.render = function(scope) {
       if (this.shown === false) {
         this.clear(scope);
@@ -70,27 +72,20 @@
         ele.x = xAxis.getPercent(ele.x);
         ele.y = yAxis.getPercent(ele.y);
       }
-      this.createTips();
     };
 
-    PlotText.prototype.createTips = function() {
+    PlotText.prototype.createTip = function(ele) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var txt = "";
-        var valx = plotUtils.getTipString(ele._x, xAxis, true),
-            valy = plotUtils.getTipString(ele._y, yAxis, true);
-
-        var tip = {};
-        if (this.legend != null) {
-          tip.title = this.legend;
-        }
-        tip.x = valx;
-        tip.y = valy;
-
-        this.elementProps[i].tip_text = plotUtils.createTipString(tip);
+      var valx = plotUtils.getTipString(ele._x, xAxis, true),
+          valy = plotUtils.getTipString(ele._y, yAxis, true);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
       }
+      tip.x = valx;
+      tip.y = valy;
+      return plotUtils.createTipString(tip);
     };
 
     PlotText.prototype.format = function() {
@@ -103,21 +98,6 @@
       };
 
       this.elementProps = [];
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var stem = {
-          "id" : this.id + "_" + i,
-          "class" : "plot-resp",
-          "fill" : ele.color,
-          "fill_opacity" : ele.fill_opacity,
-          "text" : ele.text,
-          "tip_text" : ele.tip_text,
-          "transform" : ""
-        };
-        this.elementProps.push(stem);
-      }
-
-      this.pipe = [];
     };
 
     PlotText.prototype.filter = function(scope) {
@@ -142,7 +122,7 @@
       var eles = this.elements, eleprops = this.elementProps;
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
-      this.pipe.length = 0;
+      eleprops.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         if (ele.x < focus.xl || ele.x > focus.xr || ele.y < focus.yl || ele.y > focus.yr ) {
@@ -162,46 +142,47 @@
 
         var prop = {
           "id" : this.id + "_" + i,
+          "cls" : this.respclass,
           "iidx" : this.index,
           "eidx" : i,
           "tf" : tf,
-          "text" : ele.text,
-          "fill" : ele.color,
-          "fill_opacity" : ele.opacity,
-          "tip_x" : x,
-          "tip_y" : y
-        });
-        this.pipe.push(eleprops[i]);
+          "txt" : ele.text,
+          "fi" : ele.color,
+          "fi_op" : ele.opacity,
+          "t_x" : x,
+          "t_y" : y
+        };
+        eleprops.push(prop);
       }
     };
 
     PlotText.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          pipe = this.pipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill_opacity", function(d) { return d.fill_opacity; });
+          .attr("class", function(d) { return d.cls; })
+          .style("fill", function(d) { return d.fi; })
+          .style("fill_opacity", function(d) { return d.fi_op; });
       }
 
       var itemsvg = svg.select("#" + this.id);
       itemsvg.selectAll("text")
-        .data(pipe, function(d) { return d.id; }).exit().remove();
+        .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("text")
-        .data(pipe, function(d) { return d.id; }).enter().append("text")
+        .data(eleprops, function(d) { return d.id; }).enter().append("text")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .style("fill", function(d) { return d.fill; })
-        .style("fill_opacity", function(d) { return d.fill_opacity; })
-        .text(function(d) { return d.text; });
+        .attr("class", function(d) { return d.cls; })
+        .style("fill", function(d) { return d.fi; })
+        .style("fill_opacity", function(d) { return d.fi_op; })
+        .text(function(d) { return d.txt; });
       itemsvg.selectAll("text")
-        .data(pipe, function(d) { return d.id; })
-        .attr("transform", function(d) { return d.transform; });
+        .data(eleprops, function(d) { return d.id; })
+        .attr("transform", function(d) { return d.tf; });
     };
 
     PlotText.prototype.clear = function(scope) {

@@ -139,27 +139,6 @@
       this.elementPropsDiamonds.length = 0;
       this.elementPropsCircles.length = 0;
 
-
-      /*
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var stem = {
-          "id" : this.id + "_" + i,
-          "cls" : "plot-resp",
-          "shape" : ele.shape == null ? this.shape : ele.shape,
-          "fi" : ele.color,
-          "fi_op" : ele.color_opacity,
-          "st" : ele.stroke,
-          "st_op": ele.stroke_opacity,
-          "st_w" : ele.stroke_width,
-          "st_da": ele.stroke_dasharray,
-          "t_txt" : ele.tip_text,
-          "t_clr" : plotUtils.createColor(this.color, this.color_opacity)
-        };
-        this.elementProps.push(stem);
-      }
-      */
-
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         var x = mapX(ele.x), y = mapY(ele.y), s = ele.size;

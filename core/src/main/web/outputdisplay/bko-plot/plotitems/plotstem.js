@@ -30,6 +30,8 @@
       }
     };
 
+    PlotStem.prototype.respclass = "plot-resp";
+
     PlotStem.prototype.render = function(scope) {
       if (this.shown === false) {
         this.clear(scope);
@@ -71,37 +73,28 @@
         ele.y = yAxis.getPercent(ele.y);
         ele.y2 = yAxis.getPercent(ele.y2);
       }
-      this.createTips();
     };
 
-    PlotStem.prototype.createTips = function() {
+    PlotStem.prototype.createTip = function(ele) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var txt = "";
-        var valx = plotUtils.getTipString(ele._x, xAxis, true),
-            valy = plotUtils.getTipString(ele._y, yAxis, true),
-            valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
-
-        var tip = {};
-        if (this.legend != null) {
-          tip.title = this.legend;
-        }
-        tip.x = valx;
-        tip.y = valy;
-        tip.y2 = valy2;
-
-        this.elementProps[i].t_txt = plotUtils.createTipString(tip);
+      var valx = plotUtils.getTipString(ele._x, xAxis, true),
+          valy = plotUtils.getTipString(ele._y, yAxis, true),
+          valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
       }
+      tip.x = valx;
+      tip.y = valy;
+      tip.y2 = valy2;
+      return plotUtils.createTipString(tip);
     };
 
     PlotStem.prototype.format = function() {
 
       this.itemProps = {
         "id" : this.id,
-        "iidx" : this.index,
-        "eidx" : i,
         "cls" : "plot-stem",
         "st" : this.color,
         "st_op": this.color_opacity,
@@ -110,22 +103,6 @@
       };
 
       this.elementProps = [];
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var stem = {
-          "id" : this.id + "_" + i,
-          "cls" : "plot-resp",
-          "st" : ele.color,
-          "st_op": ele.color_opacity,
-          "st_w" : ele.width,
-          "st_da": ele.stroke_dasharray,
-          "t_txt" : ele.tip_text,
-          "t_clr" : plotUtils.createColor(this.color, this.color_opacity)
-        };
-        this.elementProps.push(stem);
-      }
-
-      this.pipe = [];
     };
 
     PlotStem.prototype.filter = function(scope) {
@@ -150,25 +127,34 @@
       var eles = this.elements, eleprops = this.elementProps;
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
-      this.pipe.length = 0;
+      eleprops.length = 0;
+
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
-        _(eleprops[i]).extend({
+        var prop = {
+          "id" : this.id + "_" + i,
+          "iidx" : this.index,
+          "eidx" : i,
+          "cls" : this.respclass,
+          "st" : ele.color,
+          "st_op": ele.color_opacity,
+          "st_w" : ele.width,
+          "st_da": ele.stroke_dasharray,
           "x1" : mapX(ele.x),
           "y1" : mapY(ele.y),
           "x2" : mapX(ele.x),
           "y2" : mapY(ele.y2),
           "t_x" : mapX(ele.x),
           "t_y" : mapY(ele.y)
-        });
-        this.pipe.push(eleprops[i]);
+        };
+        eleprops.push(prop);
       }
     };
 
     PlotStem.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          pipe = this.pipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -183,9 +169,9 @@
 
       var itemsvg = svg.select("#" + this.id);
       itemsvg.selectAll("line")
-        .data(pipe, function(d) { return d.id; }).exit().remove();
+        .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("line")
-        .data(pipe, function(d) { return d.id; }).enter().append("line")
+        .data(eleprops, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
         .attr("class", function(d) { return d.cls; })
         .style("stroke", function(d) { return d.st; })
@@ -193,7 +179,7 @@
         .style("stroke-dasharray", function(d) { return d.st_da; })
         .style("stroke-width", function(d) { return d.st_da; });
       itemsvg.selectAll("line")
-        .data(pipe, function(d) { return d.id; })
+        .data(eleprops, function(d) { return d.id; })
         .attr("x1", function(d) { return d.x1; })
         .attr("x2", function(d) { return d.x2; })
         .attr("y1", function(d) { return d.y1; })

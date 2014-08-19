@@ -47,7 +47,7 @@
         if (qret == null) {
           continue;
         }
-        var h = qret.l + "," + qret.r;
+        var h = qret.l + "_" + qret.r;
         if (hash[h] != null) {
           continue;
         } else {
@@ -62,7 +62,8 @@
           xr : sr,
           avg : avg,
           x : (sl + sr) / 2,
-          y : avg
+          y : avg,
+          hash : h
         };
         ret.push(ele);
       }

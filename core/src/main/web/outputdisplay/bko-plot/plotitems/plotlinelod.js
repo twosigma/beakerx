@@ -224,7 +224,7 @@
         var nxtp = x + "," + y + " ";
 
         if (focus.yl <= ele.y && ele.y <= focus.yr) {
-          var hashid = this.id + "_" + this.zoomHash + "_" + i;
+          var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash;
 
           _(eleprops[i]).extend({
             "id" : hashid,

@@ -102,24 +102,6 @@
       };
 
       this.elementProps = [];
-      /*
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var bar = {
-          "id" : this.id + "_" + i,
-          "cls" : "plot-resp",
-          "fi" : ele.color,
-          "fi_op" : ele.color_opacity,
-          "st" : ele.stroke,
-          "st_w" : ele.stroke_width,
-          "st_op" : ele.stroke_opacity,
-          "t_txt" : ele.tip_text,
-          "t_clr" :
-        };
-        this.elementProps.push(bar);
-      }
-      */
-
     };
 
     PlotBar.prototype.filter = function(scope) {

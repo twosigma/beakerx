@@ -321,6 +321,7 @@
 
           scope.renderTips();
         };
+
         scope.untooltip = function(d) {
           if (scope.tips[d.id] == null) { return; }
           if (scope.tips[d.id].sticking === false){
@@ -334,53 +335,52 @@
             scope.renderTips();
           }
         };
+
         scope.renderTips = function() {
+          var data = scope.stdmodel.data;
           _.each(scope.tips, function(d) {
             var x = scope.data2scrX(d.datax),
                 y = scope.data2scrY(d.datay);
             d.scrx = x;
             d.scry = y;
-            var tipdiv = scope.jqcontainer.find("#tip_" + d.id);
-            if (tipdiv.length > 0) {
+            var tipid = "tip_" + d.id;
+            var tipdiv = scope.jqcontainer.find("#" + tipid);
+
+            if (tipdiv.length === 0) {
+              tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
+                .attr("id", tipid)
+                .attr("class", "plot-tooltip")
+                .css("border-color", data[d.gid].tip_color)
+                .append(data[d.gid].createTip(d.ele))
+                .on('mouseup', function(e) {
+                  if (e.which == 3) {
+                    delete scope.tips[d.id];
+                    if (d.isresp === true) {  // is interaction responsive element
+                      scope.jqsvg.find("#" + tipid).css("opacity", 0);
+                    } else {
+                      scope.jqsvg.find("#" + tipid).removeAttr("filter");
+                    }
+                    scope.interactMode = "remove";
+                    $(this).remove();
+                  }
+                });
+            } else {
               var w = tipdiv.width(), h = tipdiv.height();
-              if (plotUtils.outsideScrBox(scope, x + d.objw + scope.fonts.tooltipWidth, y,
+              if (plotUtils.outsideScrBox(scope, x + scope.fonts.tooltipWidth, y,
                 w, h)) {
                 tipdiv.remove();
                 return;
               }
             }
-            if (tipdiv.length == 0) {
-              tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
-              .attr("id", "tip_" + d.id)
-              .attr("class", "plot-tooltip")
-              .css("border-color", d.t_clr)
-              .append(d.t_txt)
-              .on('mouseup', function(e) {
-                if (e.which == 3) {
-                  delete scope.tips[d.id];
-                  if (d.isresp === true) {  // is interaction responsive element
-                    scope.jqsvg.find("#" + d.id).css("opacity", 0);
-                  } else {
-                    scope.jqsvg.find("#" + d.id).removeAttr("filter");
-                  }
-                  scope.interactMode = "remove";
-                  $(this).remove();
-                }
-              });
-            }
-            var objw = scope.jqsvg.find("#" + d.id).attr("width");
-            objw = 0;
-            objw = objw == null ? 0 : parseFloat(objw);
-            d.objw = objw;
             var w = tipdiv.width(), h = tipdiv.height();
-            if (plotUtils.outsideScrBox(scope, x + objw + scope.fonts.tooltipWidth, y, w, h)) {
+            if (plotUtils.outsideScrBox(scope, x + scope.fonts.tooltipWidth, y, w, h)) {
               tipdiv.remove();
               return;
             }
             tipdiv
               .draggable({
                 stop : function(event, ui) {
-                  d.scrx = ui.position.left - objw - scope.fonts.tooltipWidth;
+                  d.scrx = ui.position.left - scope.fonts.tooltipWidth;
                   d.scry = ui.position.top;
                   d.datax = scope.scr2dataX(d.scrx);
                   d.datay = scope.scr2dataY(d.scry);
@@ -388,12 +388,12 @@
               });
 
             tipdiv
-              .css("left", x + objw + scope.fonts.tooltipWidth)
+              .css("left", x + scope.fonts.tooltipWidth)
               .css("top", y);
             if (d.isresp === true) {
-              scope.jqsvg.find("#" + d.id).attr("opacity", 1);
+              scope.jqsvg.find("#" + tipid).attr("opacity", 1);
             } else {
-              scope.jqsvg.find("#" + d.id)
+              scope.jqsvg.find("#" + tipid)
                 .attr("filter", "url(#svgfilter)");
             }
           });

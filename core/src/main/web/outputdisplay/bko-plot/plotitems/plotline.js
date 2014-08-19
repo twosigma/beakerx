@@ -17,14 +17,18 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
-    var PlotLine = function(data, loadOnDemand){
-      this.loadOnDemand = loadOnDemand;
-
+    var PlotLine = function(data){
       this.elements = data.elements;
       delete data.elements;
       $.extend(true, this, data); // copy properties to itself
       this.format();
+
+      this.tip_color = this.color == null ? "gray" : this.color;
     };
+
+    // constants
+    PlotLine.prototype.respr = 5;
+    PlotLine.prototype.respclass = "plot-resp plot-respdot";
 
     PlotLine.prototype.render = function(scope){
       if (this.shown === false) {
@@ -32,11 +36,7 @@
         return;
       }
       this.filter(scope);
-      if (this.loadOnDemand === true) {
-        this.prepareOnDemand(scope);
-      } else {
-        this.prepare(scope);
-      }
+      this.prepare(scope);
       if (this.vlength === 0) {
         this.clear(scope);
       } else {
@@ -70,17 +70,21 @@
         ele.x = xAxis.getPercent(ele.x);
         ele.y = yAxis.getPercent(ele.y);
       }
+      /*
       if (this.loadOnDemand !== true) {
         this.createTips();
       }
+      */
     };
 
+    /*
     PlotLine.prototype.createTips = function() {
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         this.elementProps[i].t_txt = this.createTip(ele);
       }
     };
+    */
 
     PlotLine.prototype.createTip = function(ele) {
       var xAxis = this.xAxis,
@@ -109,10 +113,9 @@
       };
 
       this.elementProps = [];
-      this.resppipe = [];
 
-      // do not create element prop if loadOnDemand is on
-      if (this.loadOnDemand === true) { return; }
+      /*
+      this.resppipe = [];
 
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
@@ -120,13 +123,12 @@
           "id" : this.id + "_" + i,
           "cls" : "plot-resp plot-respdot",
           "isresp" : true,
-          "t_txt" : ele.tip_text,
           "t_clr" : this.color == null ? "gray" : this.color,
           "r" : 5
         };
         this.elementProps.push(point);
       }
-
+      */
     };
 
     PlotLine.prototype.filter = function(scope) {
@@ -155,63 +157,7 @@
           mapY = scope.data2scrY;
       var pstr = "", skipped = false;
 
-      this.resppipe.length = 0;
-
-      for (var i = this.vindexL; i <= this.vindexR; i++) {
-        var ele = eles[i];
-        if (i === this.vindexL) {
-          pstr += "M";
-        } else if (i === this.vindexL + 1) {
-          if (this.interpolation !== "curve") pstr += "L";
-          else pstr += "C";
-        }
-        var x = mapX(ele.x), y = mapY(ele.y);
-        if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
-          skipped = true;
-          break;
-        }
-        var nxtp = x + "," + y + " ";
-
-        if (focus.yl <= ele.y && ele.y <= focus.yr) {
-          _(eleprops[i]).extend({
-            "cx" : x,
-            "cy" : y,
-            "t_x" : x,
-            "t_y" : y,
-            "op" : scope.tips[eleprops[i].id] == null ? 0 : 1
-          });
-          this.resppipe.push(eleprops[i]);
-        }
-
-        if (i < this.vindexR) {
-          if (this.interpolation === "none") {
-            var ele2 = eles[i + 1];
-            nxtp += mapX(ele.x) + "," + mapY(ele.y) + " " + mapX(ele2.x) + "," + mapY(ele.y) + " ";
-          } else if (this.interpolation === "curve") {
-            // TODO curve implementation
-          }
-        }
-        pstr += nxtp;
-      }
-
-      if (skipped === true) {
-        console.error("data not shown due to too large coordinate");
-      }
-      if (pstr.length > 0) {
-        this.itemProps.d = pstr;
-      }
-    };
-
-    PlotLine.prototype.prepareOnDemand = function(scope) {
-      var focus = scope.focus;
-      var eles = this.elements,
-          eleprops = this.elementProps;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
-      var pstr = "", skipped = false;
-
-      this.resppipe.length = 0;
-      this.elementProps.length = 0;
+      eleprops.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
@@ -232,19 +178,17 @@
           var id = this.id + "_" + i;
           var prop = {
             "id" : id,
-            "cls" : "plot-resp plot-respdot",
+            "gid" : this.index,
             "isresp" : true,
-            "r" : 5,
+            "cls" : this.respclass,
             "cx" : x,
             "cy" : y,
             "t_x" : x,
             "t_y" : y,
-            "t_txt" : this.createTip(ele),
-            "t_clr" : this.color == null ? "gray" : this.color,
-            "op" : scope.tips[id] == null ? 0 : 1
+            "op" : scope.tips[id] == null ? 0 : 1,
+            "ele" : ele
           };
           eleprops.push(prop);
-          this.resppipe.push(prop);
         }
 
         if (i < this.vindexR) {
@@ -269,8 +213,7 @@
     PlotLine.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps,
-          resppipe = this.resppipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -290,19 +233,20 @@
       itemsvg.select("path")
         .attr("d", props.d);
 
+      var item = this;
       if (scope.stdmodel.useToolTip === true) {
         itemsvg.selectAll("circle")
-          .data(resppipe, function(d) { return d.id; }).exit().remove();
+          .data(eleprops, function(d) { return d.id; }).exit().remove();
         itemsvg.selectAll("circle")
-          .data(resppipe, function(d) { return d.id; }).enter().append("circle")
+          .data(eleprops, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.cls; })
-          .style("stroke", function(d) { return d.t_clr; });
+          .style("stroke", function(d) { return item.tip_color; });
         itemsvg.selectAll("circle")
-          .data(resppipe, function(d) { return d.id; })
+          .data(eleprops, function(d) { return d.id; })
           .attr("cx", function(d) { return d.cx; })
           .attr("cy", function(d) { return d.cy; })
-          .attr("r", function(d) { return d.r; })
+          .attr("r", function(d) { return item.respr; })
           .style("opacity", function(d) { return d.op; });
       }
     };

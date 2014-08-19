@@ -101,34 +101,6 @@
         if (focus.yl != null) { focus.yl = yAxis.getPercent(focus.yl); }
         if (focus.yr != null) { focus.yr = yAxis.getPercent(focus.yr); }
       },
-      /*
-      generateTips : function(model) {
-        var data = model.data;
-        for (var i = 0; i < data.length; i++) {
-          var item = data[i], eles = item.elements;
-          for (var j = 0; j < eles.length; j++) {
-            var ele = eles[j];
-            var txt = "";
-            var valx = plotUtils.getTipString(ele._x, model.xAxis, true),
-                valy = plotUtils.getTipString(ele._y, model.yAxis, true);
-
-            var tip = {};
-            if (item.legend != null) {
-              tip.title = item.legend;
-            }
-            tip.x = valx;
-            tip.y = valy;
-
-            if (ele._y2 != null) {
-              var valy2 = plotUtils.getTipString(ele._y2, model.yAxis);
-              tip.y2 = valy2;
-            }
-
-            item.elementProps[j].tip_text = plotUtils.createTipString(tip);
-          }
-        }
-      },
-      */
 
       formatModel: function(newmodel, model) {
         if (newmodel.xCursor != null) {
@@ -284,6 +256,7 @@
             }
           }
           // recreate rendering objects
+          item.index = i;
           item.id = "i" + i;
 
           data[i] = plotFactory.createPlotItem(item);
@@ -678,7 +651,6 @@
         }
 
         this.remapModel(newmodel);
-        //this.generateTips(newmodel);
 
         //this.cleanupModel(newmodel); // TODO remove unnecessary entries in model?
 

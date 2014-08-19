@@ -32,7 +32,7 @@
       this.lodthresh = 200;
       data.elements = this.elements;
 
-      this.line = new PlotLine(data, true);
+      this.line = new PlotLine(data);
       this.lodon = false;
 
       this.sampleStep = -1;

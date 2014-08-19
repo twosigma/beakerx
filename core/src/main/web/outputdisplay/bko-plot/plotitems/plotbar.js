@@ -23,7 +23,11 @@
       delete data.elements;
       $.extend(true, this, data);
       this.format();
+
+      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
     };
+
+    PlotBar.prototype.respclass = "plot-resp";
 
     PlotBar.prototype.render = function(scope) {
       if (this.shown == false) {
@@ -67,29 +71,23 @@
         ele.x2 = xAxis.getPercent(ele.x2);
         ele.y2 = yAxis.getPercent(ele.y2);
       }
-      this.createTips();
     };
 
-    PlotBar.prototype.createTips = function() {
+    PlotBar.prototype.createTip = function(ele) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var valx = plotUtils.getTipString(ele._x, xAxis, true),
-            valy = plotUtils.getTipString(ele._y, yAxis, true),
-            valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
-
-        var tip = {};
-        if (this.legend != null) {
-          tip.title = this.legend;
-        }
-        tip.x = valx;
-        tip.y = valy;
-        tip.y2 = valy2;
-        this.elementProps[i].t_txt = plotUtils.createTipString(tip);
+      var valx = plotUtils.getTipString(ele._x, xAxis, true),
+          valy = plotUtils.getTipString(ele._y, yAxis, true),
+          valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
       }
+      tip.x = valx;
+      tip.y = valy;
+      tip.y2 = valy2;
+      return plotUtils.createTipString(tip);
     };
-
 
     PlotBar.prototype.format = function() {
 
@@ -104,6 +102,7 @@
       };
 
       this.elementProps = [];
+      /*
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         var bar = {
@@ -115,15 +114,12 @@
           "st_w" : ele.stroke_width,
           "st_op" : ele.stroke_opacity,
           "t_txt" : ele.tip_text,
-          "t_clr" : plotUtils.createColor(
-            ele.color == null ? this.color : ele.color,
-            ele.color_opacity == null ? this.color_opacity : ele.color_opacity
-          )
+          "t_clr" :
         };
         this.elementProps.push(bar);
       }
+      */
 
-      this.pipe = [];
     };
 
     PlotBar.prototype.filter = function(scope) {
@@ -147,9 +143,10 @@
     PlotBar.prototype.prepare = function(scope) {
       var w = this.width, sw;
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
-      var eleprops = this.elementProps, eles = this.elements;
+      var eleprops = this.elementProps,
+          eles = this.elements;
 
-      this.pipe.length = 0;
+      eleprops.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         var x1 = mapX(ele.x), x2 = mapX(ele.x2);
@@ -159,23 +156,32 @@
         sw = x2 - x1;
         if (y < y2) { continue; } // prevent negative height
 
-        _(eleprops[i]).extend({
+        var id = this.id + "_" + i;
+        var prop = {
+          "id" : id,
+          "gid" : this.index,
+          "cls" : this.respclass,
           "x" : x1,
           "y" : y2,
           "w" : sw,
           "h" : y - y2,
           "t_x" : x1,
-          "t_y" : y2
-        });
-
-        this.pipe.push(eleprops[i]);
+          "t_y" : y2,
+          "fi" : ele.color,
+          "fi_op" : ele.color_opacity,
+          "st" : ele.stroke,
+          "st_w" : ele.stroke_width,
+          "st_op" : ele.stroke_opacity,
+          "ele" : ele
+        };
+        eleprops.push(prop);
       }
     };
 
     PlotBar.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          pipe = this.pipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -192,9 +198,9 @@
       var itemsvg = svg.select("#" + this.id);
 
       itemsvg.selectAll("rect")
-        .data(pipe, function(d) { return d.id; }).exit().remove();
+        .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("rect")
-        .data(pipe, function(d) { return d.id; }).enter().append("rect")
+        .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
         .attr("class", function(d) { return d.cls; })
         .style("fill", function(d) { return d.fi; })
@@ -203,7 +209,7 @@
         .style("stroke-opacity", function(d) { return d.st_op; })
         .style("stroke-width", function(d) { return d.st_w; });
       itemsvg.selectAll("rect")
-        .data(pipe, function(d) { return d.id; })
+        .data(eleprops, function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
         .attr("width", function(d) { return d.w; })

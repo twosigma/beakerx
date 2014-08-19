@@ -143,7 +143,6 @@
         return this.getImpl(type);
       },
       getImpl: function(type) {
-        //console.log("getImpl", type);
         if (type && impls[type]) {
           return impls[type];
         } else {
@@ -155,7 +154,6 @@
         if (index === -1) {
           index = types.indexOf("Text");
         }
-        //console.log('getDirectiveName', type, "bko" + index);
         return "bko" + index;
       },
       addOutputDisplayType: function(type, displays, index) {
@@ -189,7 +187,6 @@
           if (!result.type) {
             var ret = ["Text", "Html", "Latex"];
             if (isJSON(result)) {
-              //ret.splice(0, 0, "JSON", "Vega");
               ret.push("Json", "Vega");
             }
             if (isHTML(result)) {

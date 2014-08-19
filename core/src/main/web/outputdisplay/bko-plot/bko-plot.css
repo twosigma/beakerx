@@ -17,15 +17,6 @@
 .plot-renderdiv {
   background-color: #FEFEFE;
   border: 1px solid #BBBBBB;
-  /*
-  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-  -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-
-  -webkit-box-shadow: 10px 10px 5px rgba(0,0,0,1.0);
-  -moz-box-shadow: 10px 10px 5px rgba(0,0,0,1.0);
-
-  */
- /* inset */
 }
 
 .plot-label,
@@ -95,11 +86,6 @@
   opacity: .75;
 }
 
-.plot-pointrect,
-.plot-pointcircle {
-  /* to be added if needed */
-}
-
 .plot-locatebox {
   fill: #003366;
   opacity: 0.2;
@@ -108,8 +94,6 @@
 .plot-truncatebox {
   fill: #FEFEFE;
 }
-
-
 
 .plot-title {
   text-align: center;
@@ -138,11 +122,6 @@
   width: 150px;
   height: auto;
   border: 1px solid #BBBBBB;
-  /*
-  -webkit-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-  -moz-box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-  */
-   /* inset */
   background-color: white;
   list-style: none;
 }

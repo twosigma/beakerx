@@ -61,19 +61,6 @@
               $scope.data = _.map(model.graphics_list, function(g) {
                 return flotr2ViewUtils.fromGraphicsToData(g);
               });
-//                _.each($scope.model.graphics_list, function(g, index) {
-//                    var foo = {};
-//                    foo.update = function(newG) {
-//                        var oldG = $scope.model.graphics_list[index];
-//                        if (oldG.update_id !== newG.update_id) {
-//                            cometd.unsubscribe(oldG.update_id);
-//                            cometd.subscribe(newG.update_id, foo.update);
-//                        }
-//                        $scope.model.graphics_list[index] = newG;
-//                        $scope.$apply();
-//                    };
-//                    cometd.subscribe(g.update_id, foo.update);
-//                });
               $scope.$watch('model.getCellModel()', function(model) {
                 if (model) {
                   $scope.data = _.map(model.graphics_list, function(g) {

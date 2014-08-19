@@ -22,7 +22,7 @@
       bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack) {
     return {
       restrict: 'E',
-      template: JST["dashboard/controlpanel"](),
+      template: JST["controlpanel/controlpanel"](),
       controller: function($scope) {
         document.title = "Beaker";
         var _impl = {
@@ -95,20 +95,10 @@
           }
         });
         $scope.showWhatWeLog = function() {
-          var template = "<div class='modal-header'>" +
-              "<h3>What will we log</h3>" +
-              "</div>" +
-              "<div class='modal-body'>" +
-              "<p><b>What we log</b></p>" +
-              "<p>We use Google Analytics to collect usage info. Google Analytics collects data such as how long you spend in Beaker, what browser you're using, and your geographic region.</p>" +
-              "<p>In addition to the standard Google Analytics collection, we're logging how many times you run cells in each language and what types of notebooks you open (local .bkr file, remote .ipynb, et cetera).</p>" +
-              "<p><b>What we <i>don't</i> log</b></p>" +
-              "<p>We will never log any of the code you run, the names of your notebooks, your IP address, or any other personal or sensitive information.</p>" +
-              "</div>" +
-              '<div class="modal-footer">' +
-              "   <button class='btn' ng-click='close()' class='btn'>Got it</button>" +
-              "</div>";
-          return bkCoreManager.showModalDialog(function() {}, template);
+          return bkCoreManager.showModalDialog(
+            function() {},
+            JST['controlpanel/what_we_log']()
+          );
         };
 
 

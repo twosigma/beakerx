@@ -18,10 +18,11 @@
   'use strict';
   var retfunc = function(plotUtils, PlotSampler, PlotLine) {
     var PlotLineLod = function(data){
-      this.lodTypes = ["auto sample", "auto box", "sample", "box"];
-      this.lodSteps = [5, 10, 5, 10, -1];
+
       this.lodTypeIndex = 0;
 
+      this.elements = data.elements;  // prevent copy data
+      delete data.elements;
       $.extend(true, this, data); // copy properties to itself
 
       this.lodType = this.lodTypes[this.lodTypeIndex]; // sampling, aggregation (boxplot), none
@@ -29,10 +30,9 @@
       this.format();
 
       this.lodthresh = 200;
-      var datacopy = {};
-      $.extend(true, datacopy, data);
-      datacopy.id = data.id;
-      this.line = new PlotLine(datacopy, true);
+      data.elements = this.elements;
+
+      this.line = new PlotLine(data, true);
       this.lodon = false;
 
       this.sampleStep = -1;
@@ -126,7 +126,9 @@
       // sampler is created AFTER coordinate axis remapping
       this.createSampler();
       // createTips is not called because Lod tips are changing
-      this.line.applyAxis(xAxis, yAxis);
+      // this.line.applyAxis(xAxis, yAxis);
+      this.line.xAxis = xAxis;
+      this.line.yAxis = yAxis;
     };
 
     PlotLineLod.prototype.createSampler = function() {
@@ -138,6 +140,9 @@
       }
       this.sampler = new PlotSampler(xs, ys);
     };
+
+    PlotLineLod.prototype.lodTypes = ["auto sample", "auto box", "sample", "box"];
+    PlotLineLod.prototype.lodSteps = [5, 10, 5, 10, -1];
 
     PlotLineLod.prototype.format = function() {
       this.itemProps = {
@@ -361,6 +366,21 @@
 
       var itemsvg = svg.select("#" + this.id);
 
+      // draw lines
+      itemsvg.selectAll("line")
+        .data(pipe, function(d) { return d.id + "l"; }).exit().remove();
+      itemsvg.selectAll("line")
+        .data(pipe, function(d) { return d.id + "l"; }).enter().append("line")
+        .attr("id", function(d) { return d.id + "l"; })
+        .attr("class", "plot-lodboxline")
+        .style("stroke", this.color);
+      itemsvg.selectAll("line")
+        .data(pipe, function(d) { return d.id + "l"; })
+        .attr("x1", function(d) { return d.x; })
+        .attr("x2", function(d) { return d.x + d.width; })
+        .attr("y1", function(d) { return d.ym; })
+        .attr("y2", function(d) { return d.ym; });
+
       // draw boxes
       itemsvg.selectAll("rect")
         .data(pipe, function(d) { return d.id; }).exit().remove();
@@ -376,20 +396,7 @@
         .attr("width", function(d) { return d.width; })
         .attr("height", function(d) { return d.height; });
 
-      // draw lines
-      itemsvg.selectAll("line")
-        .data(pipe, function(d) { return d.id + "l"; }).exit().remove();
-      itemsvg.selectAll("line")
-        .data(pipe, function(d) { return d.id + "l"; }).enter().append("line")
-        .attr("id", function(d) { return d.id + "l"; })
-        .attr("class", "plot-lodboxline")
-        .style("stroke", this.color);
-      itemsvg.selectAll("line")
-        .data(pipe, function(d) { return d.id + "l"; })
-        .attr("x1", function(d) { return d.x; })
-        .attr("x2", function(d) { return d.x + d.width; })
-        .attr("y1", function(d) { return d.ym; })
-        .attr("y2", function(d) { return d.ym; });
+
     };
 
     PlotLineLod.prototype.createTips = function() {

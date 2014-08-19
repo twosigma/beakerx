@@ -36,7 +36,7 @@
         return [];
       }
       var ret = [];
-      var hash = {};
+      this.hashes = {};
       var nsl = xl, sl, sr;
       while (nsl < xr) {
         sl = nsl;
@@ -48,10 +48,10 @@
           continue;
         }
         var h = qret.l + "_" + qret.r;
-        if (hash[h] != null) {
+        if (this.hashes[h] != null) {
           continue;
         } else {
-          hash[h] = 1;
+          this.hashes[h] = 1;
         }
         // prevent segtree from being modified
         var avg = qret.sum / qret.cnt;
@@ -67,6 +67,7 @@
         };
         ret.push(ele);
       }
+      delete this.hashes;
       return ret;
     };
 
@@ -145,8 +146,10 @@
           retr = this.querySegTree(kr, nm + 1, nr, l, r);
       if (retl == null && retr == null) {
         return null;
-      } else if (retl == null || retr == null) {
-        return retl == null ? retr : retl;
+      } else if (retl == null) {
+        return retr;
+      } else if (retr == null) {
+        return retl;
       } else {
         return {
           min : Math.min(retl.min, retr.min),

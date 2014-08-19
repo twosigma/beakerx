@@ -18,6 +18,8 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotConstband = function(data){
+      this.elements = data.elements;
+      delete data.elements;
       $.extend(true, this, data); // copy properties to itself
       this.format();
     };
@@ -80,13 +82,13 @@
     PlotConstband.prototype.format = function(){
       this.itemProps = {
         "id" : this.id,
-        "class" : "plot-constband",
-        "fill" : this.color,
-        "fill_opacity": this.color_opacity,
-        "stroke" : this.stroke,
-        "stroke_opacity": this.stroke_opacity,
-        "stroke_width" : this.stroke_width,
-        "stroke_dasharray" : this.stroke_dasharray
+        "cls" : "plot-constband",
+        "fi" : this.color,
+        "fi_op": this.color_opacity,
+        "st" : this.stroke,
+        "st_op": this.stroke_opacity,
+        "st_w" : this.stroke_width,
+        "st_da" : this.stroke_dasharray
       };
 
       this.elementProps = [];
@@ -94,12 +96,12 @@
         var ele = this.elements[i];
         var line = {
           "id" : this.id + "_" + i,
-          "fill" : ele.color,
-          "fill_opacity" : ele.color_opacity,
-          "stroke" : ele.stroke,
-          "stroke_opacity" : ele.storke_opacity,
-          "stroke_width" : ele.stroke_width,
-          "stroke_dasharray" : ele.stroke_dasharray
+          "fi" : ele.color,
+          "fi_op" : ele.color_opacity,
+          "st" : ele.stroke,
+          "st_op" : ele.storke_opacity,
+          "st_w" : ele.stroke_width,
+          "st_da" : ele.stroke_dasharray
         };
         this.elementProps.push(line);
       }
@@ -149,9 +151,9 @@
 
           _(eleprops[i]).extend({
             "x" : x,
-            "width" : x2 - x,
+            "w" : x2 - x,
             "y" : tMargin,
-            "height" : H - bMargin - tMargin
+            "h" : H - bMargin - tMargin
           });
         } else if (ele.type === "y") {
           if (ele.y > focus.yr || ele.y2 < focus.yl) {
@@ -167,16 +169,16 @@
 
           _(eleprops[i]).extend({
             "x" : lMargin,
-            "width" : W - lMargin - rMargin,
+            "w" : W - lMargin - rMargin,
             "y" : y2,
-            "height" : y - y2
+            "h" : y - y2
           });
           var text = plotUtils.getTipString(ele._y, scope.stdmodel.yAxis);
 
           _(eleprops[i]).extend({
             "left" : function(w, h) { return lMargin + scope.labelPadding.x; }, //  why padding?
             "top" : function(w, h) { return y - w / 2; },
-            "label_text" : text
+            "lb_txt" : text
           });
         }
       }
@@ -192,12 +194,12 @@
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill-opacity", function(d) { return d.fill_opacity; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
+          .attr("class", function(d) { return d.cls; })
+          .style("fill", function(d) { return d.fi; })
+          .style("fill-opacity", function(d) { return d.fi_op; })
+          .style("stroke", function(d) { return d.st; })
+          .style("stroke-opacity", function(d) { return d.st_op; })
+          .style("stroke-width", function(d) { return d.st_w; });
       }
 
       var itemsvg = svg.select("#" + this.id);
@@ -207,18 +209,18 @@
       itemsvg.selectAll("rect")
         .data(pipe, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .style("fill", function(d) { return d.fill; })
-        .style("fill-opacity", function(d) { return d.fill_opacity; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-        .style("stroke-width", function(d) { return d.stroke_width; });
+        .attr("class", function(d) { return d.cls; })
+        .style("fill", function(d) { return d.fi; })
+        .style("fill-opacity", function(d) { return d.fi_op; })
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-width", function(d) { return d.st_wi; });
       itemsvg.selectAll("rect")
         .data(pipe, function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
-        .attr("width", function(d) { return d.width; })
-        .attr("height", function(d) { return d.height; });
+        .attr("width", function(d) { return d.w; })
+        .attr("height", function(d) { return d.h; });
     };
 
     PlotConstband.prototype.clear = function(scope) {

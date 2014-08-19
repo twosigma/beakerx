@@ -18,6 +18,8 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotConstline = function(data){
+      this.elements = data.elements;
+      delete data.elements;
       $.extend(true, this, data); // copy properties to itself
       this.format();
     };
@@ -78,11 +80,11 @@
     PlotConstline.prototype.format = function(){
       this.itemProps = {
         "id" : this.id,
-        "class" : "plot-constline",
-        "stroke" : this.color,
-        "stroke_opacity": this.color_opacity,
-        "stroke_width" : this.width,
-        "stroke_dasharray" : this.stroke_dasharray
+        "cls" : "plot-constline",
+        "st" : this.color,
+        "st_op": this.color_opacity,
+        "st_w" : this.width,
+        "st_da" : this.stroke_dasharray
       };
 
       this.elementProps = [];
@@ -90,12 +92,12 @@
         var ele = this.elements[i];
         var line = {
           "id" : this.id + "_" + i,
-          "labelid" : this.id + "_" + i + "l",
-          "stroke" : ele.color,
-          "stroke_opacity" : ele.color_opacity,
-          "stroke_width" : ele.width,
-          "stroke_dasharray" : ele.stroke_dasharray,
-          "background_color" : ele.color == null ? this.color : ele.color
+          "lbid" : this.id + "_" + i + "l",
+          "st" : ele.color,
+          "st_op" : ele.color_opacity,
+          "st_w" : ele.width,
+          "st_da" : ele.stroke_dasharray,
+          "bg_clr" : ele.color == null ? this.color : ele.color
         };
         this.elementProps.push(line);
       }
@@ -152,7 +154,7 @@
           _(eleprops[i]).extend({
             "left" : function(w, h) { return x - w / 2; },
             "top" : function(w, h) { return H - bMargin - h - scope.labelPadding.y; },
-            "label_text" : text
+            "lb_txt" : text
           });
 
         } else if (ele.type === "y") {
@@ -175,7 +177,7 @@
           _(eleprops[i]).extend({
             "left" : function(w, h) { return lMargin + scope.labelPadding.x; },
             "top" : function(w, h) { return y - h / 2; },
-            "label_text" : text
+            "lb_txt" : text
           });
         }
       }
@@ -192,11 +194,11 @@
         svg.selectAll("g")
           .data([props], function(d){ return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .style("stroke-width", function(d) { return d.stroke_width; })
-          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; });
+          .attr("class", function(d) { return d.cls; })
+          .style("stroke", function(d) { return d.st; })
+          .style("stroke-opacity", function(d) { return d.st_op; })
+          .style("stroke-width", function(d) { return d.st_w; })
+          .style("stroke-dasharray", function(d) { return d.st_da; });
       }
 
       var svgitem = svg.select("#" + this.id);
@@ -205,11 +207,11 @@
       svgitem.selectAll("line")
         .data(pipe, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-        .style("stroke-width", function(d) { return d.stroke_width; })
-        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; });
+        .attr("class", function(d) { return d.cls; })
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-width", function(d) { return d.st_w; })
+        .style("stroke-dasharray", function(d) { return d.st_da; });
       svgitem.selectAll("line")
         .data(pipe, function(d) { return d.id; })
         .attr("x1", function(d) { return d.x1; })
@@ -219,14 +221,14 @@
 
       // add and remove labels
       for (var i = 0; i < this.labelpipe.length; i++) {
-        var props = eleprops[i], labelid = props.labelid;
+        var props = eleprops[i], lbid = props.lbid;
 
-        var box = scope.jqcontainer.find("#" + labelid);
+        var box = scope.jqcontainer.find("#" + lbid);
         if (box.empty()) {
-          box = $("<div id=" + labelid + " class='plot-constlabel'></div>")
+          box = $("<div id=" + lbid + " class='plot-constlabel'></div>")
             .appendTo(scope.jqcontainer)
-            .css("background-color", props.background_color)
-            .text(props.label_text);
+            .css("background-color", props.bg_clr)
+            .text(props.lb_txt);
         }
         var w = box.outerWidth(), h = box.outerHeight();
         box.css({
@@ -236,8 +238,7 @@
       }
 
       for (var i = 0; i < this.rmlabelpipe.length; i++) {
-        var labelid = eleprops[i].labelid;
-        scope.jqcontainer.find("#" + labelid).remove();
+        scope.jqcontainer.find("#" + eleprops[i].lbid).remove();
       }
 
     };
@@ -246,7 +247,7 @@
       var eleprops = this.elementProps;
       scope.maing.select("#" + this.id).remove();
       for (var i = 0; i < this.elements.length; i++) {
-        scope.jqcontainer.find("#" + eleprops.labelid).remove();
+        scope.jqcontainer.find("#" + eleprops.lbid).remove();
       }
     };
 

@@ -17,7 +17,9 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
-    var PlotStem = function(data){
+    var PlotStem = function(data) {
+      this.elements = data.elements;
+      delete data.elements;
       $.extend(true, this, data);
       this.format();
     };
@@ -84,7 +86,7 @@
         tip.y = valy;
         tip.y2 = valy2;
 
-        this.elementProps[i].tip_text = plotUtils.createTipString(tip);
+        this.elementProps[i].t_txt = plotUtils.createTipString(tip);
       }
     };
 
@@ -92,11 +94,11 @@
 
       this.itemProps = {
         "id" : this.id,
-        "class" : "plot-stem",
-        "stroke" : this.color,
-        "stroke_opacity": this.color_opacity,
-        "stroke_width": this.width,
-        "stroke_dasharray": this.stroke_dasharray
+        "cls" : "plot-stem",
+        "st" : this.color,
+        "st_op": this.color_opacity,
+        "st_w": this.width,
+        "st_da": this.stroke_dasharray
       };
 
       this.elementProps = [];
@@ -104,13 +106,13 @@
         var ele = this.elements[i];
         var stem = {
           "id" : this.id + "_" + i,
-          "class" : "plot-resp",
-          "stroke" : ele.color,
-          "stroke_opacity": ele.color_opacity,
-          "stroke_width" : ele.width,
-          "stroke_dasharray": ele.stroke_dasharray,
-          "tip_text" : ele.tip_text,
-          "tip_color" : plotUtils.createColor(this.color, this.color_opacity)
+          "cls" : "plot-resp",
+          "st" : ele.color,
+          "st_op": ele.color_opacity,
+          "st_w" : ele.width,
+          "st_da": ele.stroke_dasharray,
+          "t_txt" : ele.tip_text,
+          "t_clr" : plotUtils.createColor(this.color, this.color_opacity)
         };
         this.elementProps.push(stem);
       }
@@ -148,8 +150,8 @@
           "y1" : mapY(ele.y),
           "x2" : mapX(ele.x),
           "y2" : mapY(ele.y2),
-          "tip_x" : mapX(ele.x),
-          "tip_y" : mapY(ele.y)
+          "t_x" : mapX(ele.x),
+          "t_y" : mapY(ele.y)
         });
         this.pipe.push(eleprops[i]);
       }
@@ -164,11 +166,11 @@
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
+          .attr("class", function(d) { return d.cls; })
+          .style("stroke", function(d) { return d.st; })
+          .style("stroke-opacity", function(d) { return d.st_op; })
+          .style("stroke-dasharray", function(d) { return d.st_da; })
+          .style("stroke-width", function(d) { return d.st_w; });
       }
 
       var itemsvg = svg.select("#" + this.id);
@@ -177,11 +179,11 @@
       itemsvg.selectAll("line")
         .data(pipe, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-        .style("stroke-width", function(d) { return d.stroke_width; });
+        .attr("class", function(d) { return d.cls; })
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-dasharray", function(d) { return d.st_da; })
+        .style("stroke-width", function(d) { return d.st_da; });
       itemsvg.selectAll("line")
         .data(pipe, function(d) { return d.id; })
         .attr("x1", function(d) { return d.x1; })

@@ -19,6 +19,8 @@
   var retfunc = function(plotUtils) {
 
     var PlotBar = function(data) {
+      this.elements = data.elements;
+      delete data.elements;
       $.extend(true, this, data);
       this.format();
     };
@@ -84,7 +86,7 @@
         tip.x = valx;
         tip.y = valy;
         tip.y2 = valy2;
-        this.elementProps[i].tip_text = plotUtils.createTipString(tip);
+        this.elementProps[i].t_txt = plotUtils.createTipString(tip);
       }
     };
 
@@ -93,12 +95,12 @@
 
       this.itemProps = {
         "id" : this.id,
-        "class" : "plot-bar",
-        "fill" : this.color,
-        "fill_opacity": this.color_opacity,
-        "stroke": this.stroke,
-        "stroke_width": this.stroke_width,
-        "stroke_opacity": this.stroke_opacity
+        "cls" : "plot-bar",
+        "fi" : this.color,
+        "fi_op": this.color_opacity,
+        "st": this.stroke,
+        "st_w": this.stroke_width,
+        "st_op": this.stroke_opacity
       };
 
       this.elementProps = [];
@@ -106,14 +108,14 @@
         var ele = this.elements[i];
         var bar = {
           "id" : this.id + "_" + i,
-          "class" : "plot-resp",
-          "fill" : ele.color,
-          "fill_opacity" : ele.color_opacity,
-          "stroke" : ele.stroke,
-          "stroke_width" : ele.stroke_width,
-          "stroke_opacity" : ele.stroke_opacity,
-          "tip_text" : ele.tip_text,
-          "tip_color" : plotUtils.createColor(
+          "cls" : "plot-resp",
+          "fi" : ele.color,
+          "fi_op" : ele.color_opacity,
+          "st" : ele.stroke,
+          "st_w" : ele.stroke_width,
+          "st_op" : ele.stroke_opacity,
+          "t_txt" : ele.tip_text,
+          "t_clr" : plotUtils.createColor(
             ele.color == null ? this.color : ele.color,
             ele.color_opacity == null ? this.color_opacity : ele.color_opacity
           )
@@ -149,10 +151,10 @@
 
       this.pipe.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
-        var p = eles[i];
-        var x1 = mapX(p.x), x2 = mapX(p.x2);
+        var ele = eles[i];
+        var x1 = mapX(ele.x), x2 = mapX(ele.x2);
         if (x2 - x1 < 1) x2 = x1 + 1;
-        var y = p.y, y2 = p.y2;
+        var y = ele.y, y2 = ele.y2;
         y = mapY(y); y2 = mapY(y2);
         sw = x2 - x1;
         if (y < y2) { continue; } // prevent negative height
@@ -160,10 +162,10 @@
         _(eleprops[i]).extend({
           "x" : x1,
           "y" : y2,
-          "width" : sw,
-          "height" : y - y2,
-          "tip_x" : x1,
-          "tip_y" : y2
+          "w" : sw,
+          "h" : y - y2,
+          "t_x" : x1,
+          "t_y" : y2
         });
 
         this.pipe.push(eleprops[i]);
@@ -179,12 +181,12 @@
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill-opacity", function(d) { return d.fill_opacity; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
+          .attr("class", function(d) { return d.cls; })
+          .style("fill", function(d) { return d.fi; })
+          .style("fill-opacity", function(d) { return d.fi_op; })
+          .style("stroke", function(d) { return d.st; })
+          .style("stroke-opacity", function(d) { return d.st_op; })
+          .style("stroke-width", function(d) { return d.st_w; });
       }
 
       var itemsvg = svg.select("#" + this.id);
@@ -194,18 +196,18 @@
       itemsvg.selectAll("rect")
         .data(pipe, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .style("fill", function(d) { return d.fill; })
-        .style("fill-opacity", function(d) { return d.fill_opacity; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-        .style("stroke-width", function(d) { return d.stroke_width; });
+        .attr("class", function(d) { return d.cls; })
+        .style("fill", function(d) { return d.fi; })
+        .style("fill-opacity", function(d) { return d.fi_op; })
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-width", function(d) { return d.st_w; });
       itemsvg.selectAll("rect")
         .data(pipe, function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
-        .attr("width", function(d) { return d.width; })
-        .attr("height", function(d) { return d.height; });
+        .attr("width", function(d) { return d.w; })
+        .attr("height", function(d) { return d.h; });
     };
 
     PlotBar.prototype.clear = function(scope) {

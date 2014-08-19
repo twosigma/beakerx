@@ -57,6 +57,10 @@
           resize : function(event, ui) {
             scope.width = ui.size.width;
             scope.height = ui.size.height;
+            scope.stdmodel.initSize = {
+              width : scope.width,
+              height : scope.height
+            };
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });
             scope.numIntervals = {
@@ -310,9 +314,9 @@
           _.extend(scope.tips[d.id], d);
           var d = scope.tips[d.id];
           d.sticking = false;
-          d.datax = scope.scr2dataX(d.tip_x);
+          d.datax = scope.scr2dataX(d.t_x);
           d.datax = Math.max(d.datax, scope.scr2dataX(mousePos[0] + 5));
-          d.datay = scope.scr2dataY(d.tip_y);
+          d.datay = scope.scr2dataY(d.t_y);
           d.datay = Math.max(d.datay, scope.scr2dataY(mousePos[1] + 5));
 
           scope.renderTips();
@@ -349,8 +353,8 @@
               tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
               .attr("id", "tip_" + d.id)
               .attr("class", "plot-tooltip")
-              .css("border-color", d.tip_color)
-              .append(d.tip_text)
+              .css("border-color", d.t_clr)
+              .append(d.t_txt)
               .on('mouseup', function(e) {
                 if (e.which == 3) {
                   delete scope.tips[d.id];
@@ -616,10 +620,10 @@
                 if (e.which === 3) {
                   if (dat.lodType === "off") { return; }
                   scope.removePipe.push("msg_lodoff");
-                  scope.renderMessage("LOD is being turned off",
+                  scope.renderMessage("LOD is being turned off. Are you sure?",
                     [ "You are trying to turning off LOD. Loading full resolution data is " +
-                    "going to take some time.",
-                    "Left click to proceed / Right click to cancel"],
+                    "going to take time and may potentially crash the browser.",
+                    "PROCEED (left click) / CANCEL (right click)"],
                     "msg_lodoff",
                     function() {
                       dat.toggleLod(scope);

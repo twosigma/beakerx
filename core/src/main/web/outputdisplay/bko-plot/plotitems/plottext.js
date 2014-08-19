@@ -18,6 +18,8 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotText = function(data){
+      this.elements = data.elements;
+      delete data.elements;
       $.extend(true, this, data);
       this.format();
     };

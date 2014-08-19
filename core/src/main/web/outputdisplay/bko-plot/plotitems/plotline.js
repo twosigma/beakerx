@@ -19,8 +19,10 @@
   var retfunc = function(plotUtils) {
     var PlotLine = function(data, loadOnDemand){
       this.loadOnDemand = loadOnDemand;
+
+      this.elements = data.elements;
+      delete data.elements;
       $.extend(true, this, data); // copy properties to itself
-      console.log(this, data);
       this.format();
     };
 
@@ -76,7 +78,7 @@
     PlotLine.prototype.createTips = function() {
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
-        this.elementProps[i].tip_text = this.createTip(ele);
+        this.elementProps[i].t_txt = this.createTip(ele);
       }
     };
 
@@ -98,11 +100,11 @@
 
       this.itemProps = {
         "id" : this.id,
-        "class" : "plot-line",
-        "stroke" : this.color,
-        "stroke_opacity" : this.color_opacity,
-        "stroke_width" : this.width,
-        "stroke_dasharray" : this.stroke_dasharray,
+        "cls" : "plot-line",
+        "st" : this.color,
+        "st_op" : this.color_opacity,
+        "st_w" : this.width,
+        "st_da" : this.stroke_dasharray,
         "d" : ""
       };
 
@@ -116,10 +118,10 @@
         var ele = this.elements[i];
         var point = {
           "id" : this.id + "_" + i,
-          "class" : "plot-resp plot-respdot",
+          "cls" : "plot-resp plot-respdot",
           "isresp" : true,
-          "tip_text" : ele.tip_text,
-          "tip_color" : this.color == null ? "gray" : this.color,
+          "t_txt" : ele.tip_text,
+          "t_clr" : this.color == null ? "gray" : this.color,
           "r" : 5
         };
         this.elementProps.push(point);
@@ -174,9 +176,9 @@
           _(eleprops[i]).extend({
             "cx" : x,
             "cy" : y,
-            "tip_x" : x,
-            "tip_y" : y,
-            "opacity" : scope.tips[eleprops[i].id] == null ? 0 : 1
+            "t_x" : x,
+            "t_y" : y,
+            "op" : scope.tips[eleprops[i].id] == null ? 0 : 1
           });
           this.resppipe.push(eleprops[i]);
         }
@@ -230,16 +232,16 @@
           var id = this.id + "_" + i;
           var prop = {
             "id" : id,
-            "class" : "plot-resp plot-respdot",
+            "cls" : "plot-resp plot-respdot",
             "isresp" : true,
             "r" : 5,
             "cx" : x,
             "cy" : y,
-            "tip_x" : x,
-            "tip_y" : y,
-            "tip_text" : this.createTip(ele),
-            "tip_color" : this.color == null ? "gray" : this.color,
-            "opacity" : scope.tips[id] == null ? 0 : 1
+            "t_x" : x,
+            "t_y" : y,
+            "t_txt" : this.createTip(ele),
+            "t_clr" : this.color == null ? "gray" : this.color,
+            "op" : scope.tips[id] == null ? 0 : 1
           };
           eleprops.push(prop);
           this.resppipe.push(prop);
@@ -280,11 +282,11 @@
 
       itemsvg.selectAll("path")
         .data([props]).enter().append("path")
-        .attr("class", function(d) { return d.class; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-        .style("stroke-width", function(d) { return d.stroke_width; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; });
+        .attr("class", function(d) { return d.cls; })
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-dasharray", function(d) { return d.st_da; })
+        .style("stroke-width", function(d) { return d.st_w; })
+        .style("stroke-opacity", function(d) { return d.st_op; });
       itemsvg.select("path")
         .attr("d", props.d);
 
@@ -294,14 +296,14 @@
         itemsvg.selectAll("circle")
           .data(resppipe, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("stroke", function(d) { return d.tip_color; });
+          .attr("class", function(d) { return d.cls; })
+          .style("stroke", function(d) { return d.t_clr; });
         itemsvg.selectAll("circle")
           .data(resppipe, function(d) { return d.id; })
           .attr("cx", function(d) { return d.cx; })
           .attr("cy", function(d) { return d.cy; })
           .attr("r", function(d) { return d.r; })
-          .style("opacity", function(d) { return d.opacity; });
+          .style("opacity", function(d) { return d.op; });
       }
     };
 

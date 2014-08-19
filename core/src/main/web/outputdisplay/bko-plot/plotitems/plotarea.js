@@ -19,6 +19,8 @@
   var retfunc = function(plotUtils) {
 
     var PlotArea = function(data){
+      this.elements = data.elements;
+      delete data.elements;
       $.extend(true, this, data);
       this.format();
     };
@@ -84,31 +86,31 @@
         tip.x = valx;
         tip.y = valy;
         tip.y2 = valy2;
-        this.elementProps[i].tip_text = plotUtils.createTipString(tip);
+        this.elementProps[i].t_txt = plotUtils.createTipString(tip);
       }
     };
 
     PlotArea.prototype.format = function(){
       this.itemProps = {
         "id" : this.id,
-        "class" : "plot-area",
-        "fill" : this.color,
-        "fill_opacity": this.color_opacity,
-        "stroke": this.stroke,
-        "stroke_width": this.stroke_width,
-        "stroke_opacity": this.stroke_opacity,
-        "points" : ""
+        "cls" : "plot-area",
+        "fi" : this.color,
+        "fi_op": this.color_opacity,
+        "st": this.stroke,
+        "st_w": this.stroke_width,
+        "st_op": this.stroke_opacity,
+        "pts" : ""
       };
       this.elementProps = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         var point = {
           "id" : this.id + "_" + i,
-          "class" : "plot-resp plot-respstem",
+          "cls" : "plot-resp plot-respstem",
           "isresp" : true,
-          "tip_text" : ele.tip_text,
-          "tip_color" : this.color == null ? "gray" : this.color,
-          "width" : 5
+          "t_txt" : ele.tip_text,
+          "t_clr" : this.color == null ? "gray" : this.color,
+          "w" : 5
         };
         this.elementProps.push(point);
       }
@@ -165,12 +167,12 @@
 
         if (ele.y <= focus.yr && ele.y2 >= focus.yl) {
           _(eleprops[i]).extend({
-            "x" : x - eleprops[i].width / 2,
+            "x" : x - eleprops[i].w / 2,
             "y" : y2,
-            "height" : Math.max(y - y2, 5), // at least height 5 to be hoverable
-            "tip_x" : x,
-            "tip_y" : (y + y2) / 2,
-            "opacity" : scope.tips[eleprops[i].id] == null ? 0 : 1
+            "h" : Math.max(y - y2, 5), // at least height 5 to be hoverable
+            "t_x" : x,
+            "t_y" : (y + y2) / 2,
+            "op" : scope.tips[eleprops[i].id] == null ? 0 : 1
           });
           this.resppipe.push(eleprops[i]);
         }
@@ -197,7 +199,7 @@
       }
 
       if (pstr.length > 0) {
-        this.itemProps.points = pstr;
+        this.itemProps.pts = pstr;
       }
     };
 
@@ -216,14 +218,14 @@
 
       itemsvg.selectAll("polygon")
         .data([props]).enter().append("polygon")
-        .attr("class", function(d) { return d.class; })
-        .style("fill", function(d) { return d.fill; })
-        .style("fill-opacity", function(d) { return d.fill_opacity; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-        .style("stroke-width", function(d) { return d.stroke_width; });
+        .attr("class", function(d) { return d.cls; })
+        .style("fill", function(d) { return d.fi; })
+        .style("fill-opacity", function(d) { return d.fi_op; })
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-width", function(d) { return d.st_w; });
       itemsvg.select("polygon")
-        .attr("points", props.points);
+        .attr("points", props.pts);
 
       if (scope.stdmodel.useToolTip === true) {
         itemsvg.selectAll("rect")
@@ -231,16 +233,16 @@
         itemsvg.selectAll("rect")
           .data(resppipe, function(d) { return d.id; }).enter().append("rect")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .attr("width", function(d) { return d.width; })
-          .style("stroke", function(d) { return d.tip_color; });
+          .attr("class", function(d) { return d.cls; })
+          .attr("width", function(d) { return d.w; })
+          .style("stroke", function(d) { return d.t_clr; });
 
         itemsvg.selectAll("rect")
           .data(resppipe, function(d) { return d.id; })
           .attr("x", function(d) { return d.x; })
           .attr("y", function(d) { return d.y; })
-          .attr("height", function(d) { return d.height; })
-          .style("opacity", function(d) { return d.opacity; });
+          .attr("height", function(d) { return d.h; })
+          .style("opacity", function(d) { return d.op; });
       }
     };
 

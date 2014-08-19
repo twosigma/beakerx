@@ -26,7 +26,7 @@
         var plotitem;
         switch (item.type) {
           case "line":
-            plotitem = new PlotLineLod(item);
+            plotitem = size >= lodthresh ? new PlotLineLod(item) : new PlotLine(item);
             break;
           case "bar":
             plotitem = size >= lodthresh ? new PlotBarLod(item) : new PlotBar(item);

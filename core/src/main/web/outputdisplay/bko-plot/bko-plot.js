@@ -347,11 +347,15 @@
             var tipdiv = scope.jqcontainer.find("#" + tipid);
 
             if (tipdiv.length === 0) {
+              var tiptext = data[d.iidx].lodOn === true?
+                data[d.iidx].createTip(data[d.iidx].elementSamples[d.eidx]) :
+                data[d.iidx].createTip(data[d.iidx].elements[d.eidx]);
+
               tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
                 .attr("id", tipid)
                 .attr("class", "plot-tooltip")
                 .css("border-color", data[d.iidx].tip_color)
-                .append(data[d.iidx].createTip(data[d.iidx].elements[d.eidx]))
+                .append(tiptext)
                 .on('mouseup', function(e) {
                   if (e.which == 3) {
                     delete scope.tips[d.id];
@@ -604,13 +608,13 @@
               var setlodhint = function(dat) {
                 // lod hint light
                 light.attr("title",
-                  dat.lodon === true ? "LOD is on" : "")
+                  dat.lodOn === true ? "LOD is on" : "")
                 .css("background-color",
-                  dat.lodon === true ? "red" : "gray")
+                  dat.lodOn === true ? "red" : "gray")
                 .css("border",
-                  dat.lodon === true ? "1px solid red" : "1px solid gray");
+                  dat.lodOn === true ? "1px solid red" : "1px solid gray");
                 // lod hint text
-                type.css("color", dat.lodon === true ? "red" : "gray")
+                type.css("color", dat.lodOn === true ? "red" : "gray")
                   .text(dat.lodType);
               };
               setlodhint(dat);
@@ -628,7 +632,7 @@
                     function() {
                       dat.toggleLod(scope);
                       scope.update();
-                      setlodhint();
+                      setlodhint(dat);
                     }, null);
                 } else {
                   if (dat.lodType === "off") {

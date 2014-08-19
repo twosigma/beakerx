@@ -33,16 +33,27 @@
       data.elements = this.elements;
 
       this.line = new PlotLine(data);
-      this.lodon = false;
+      this.lodOn = false;
 
       this.sampleStep = -1;
-      this.zoomHash = plotUtils.randomString(6);
+      this.zoomHash = plotUtils.randomString(3);
+
+      if (this.color != null) {
+        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      } else {
+        this.tip_color = "gray";
+      }
     };
+
+    PlotLineLod.prototype.respclassDot = "plot-resp plot-respdot";
+    PlotLineLod.prototype.respclassBox = "plot-resp plot-lodbox";
+    PlotLineLod.prototype.lodTypes = ["auto sample", "auto box", "sample", "box"];
+    PlotLineLod.prototype.lodSteps = [5, 10, 5, 10, -1];
 
     PlotLineLod.prototype.zoomLevelChanged = function(scope) {
       this.clearresp(scope);
       this.sampleStep = -1;
-      this.zoomHash = plotUtils.randomString(6);
+      this.zoomHash = plotUtils.randomString(3);
     };
 
     PlotLineLod.prototype.switchLodType = function(scope) {
@@ -77,13 +88,13 @@
         lod = true;
       }
 
-      if (this.lodon != lod) {
+      if (this.lodOn != lod) {
         scope.legendDone = false;
         this.clear(scope);
       }
-      this.lodon = lod;
+      this.lodOn = lod;
 
-      if (this.lodon === false) {
+      if (this.lodOn === false) {
         this.line.render(scope);
       } else {
         this.sample(scope);
@@ -125,8 +136,7 @@
       }
       // sampler is created AFTER coordinate axis remapping
       this.createSampler();
-      // createTips is not called because Lod tips are changing
-      // this.line.applyAxis(xAxis, yAxis);
+      // do not apply axis to line because element coordinates have been changed above
       this.line.xAxis = xAxis;
       this.line.yAxis = yAxis;
     };
@@ -141,21 +151,17 @@
       this.sampler = new PlotSampler(xs, ys);
     };
 
-    PlotLineLod.prototype.lodTypes = ["auto sample", "auto box", "sample", "box"];
-    PlotLineLod.prototype.lodSteps = [5, 10, 5, 10, -1];
-
     PlotLineLod.prototype.format = function() {
       this.itemProps = {
         "id" : this.id,
-        "class" : "plot-line",
-        "stroke" : this.color,
-        "stroke_opacity" : this.color_opacity,
-        "stroke_width" : this.width,
-        "stroke_dasharray" : this.stroke_dasharray,
+        "cls" : "plot-line",
+        "st" : this.color,
+        "st_op" : this.color_opacity,
+        "st_w" : this.width,
+        "st_da" : this.stroke_dasharray,
         "d" : ""
       };
       this.elementProps = [];
-      this.resppipe = [];
     };
 
     PlotLineLod.prototype.filter = function(scope) {
@@ -205,8 +211,7 @@
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
 
-      this.resppipe.length = 0;
-      this.elementProps.length = 0;
+      eleprops.length = 0;
 
       var samples = this.elementSamples;
       for (var i = 0; i < samples.length; i++) {
@@ -222,28 +227,25 @@
           break;
         }
 
-        if (eleprops[i] == null) {
-          eleprops[i] = {}; // create a new sample element if doesn't exists
-        }
-
         var nxtp = x + "," + y + " ";
 
         if (focus.yl <= ele.y && ele.y <= focus.yr) {
           var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash;
 
-          _(eleprops[i]).extend({
+          var prop = {
             "id" : hashid,
-            "class" : "plot-resp plot-respdot",
+            "iidx" : this.index,
+            "eidx" : i,
+            "cls" : this.respclassDot,
             "isresp" : true,
             "cx" : x,
             "cy" : y,
             "r" : 5,
-            "tip_x" : x,
-            "tip_y" : y,
-            "tip_color" : this.color == null ? "gray" : this.color,
-            "opacity" : scope.tips[hashid] == null ? 0 : 1
-          });
-          this.resppipe.push(eleprops[i]);
+            "t_x" : x,
+            "t_y" : y,
+            "op" : scope.tips[hashid] == null ? 0 : 1
+          };
+          eleprops.push(prop);
         }
 
         if (i < samples.length - 1) {
@@ -263,16 +265,13 @@
       }
       if (pstr.length > 0) {
         this.itemProps.d = pstr;
-        this.createTips();
       }
     };
-
 
     PlotLineLod.prototype.drawSample = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps,
-          pipe = this.resppipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -284,28 +283,29 @@
 
       itemsvg.selectAll("path")
         .data([props]).enter().append("path")
-        .attr("class", function(d) { return d.class; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-        .style("stroke-width", function(d) { return d.stroke_width; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; });
+        .attr("class", function(d) { return d.cls; })
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-dasharray", function(d) { return d.st_da; })
+        .style("stroke-width", function(d) { return d.st_w; })
+        .style("stroke-opacity", function(d) { return d.st_op; });
       itemsvg.select("path")
         .attr("d", props.d);
 
+      var item = this;
       if (scope.stdmodel.useToolTip === true) {
         itemsvg.selectAll("circle")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
+          .data(eleprops, function(d) { return d.id; }).exit().remove();
         itemsvg.selectAll("circle")
-          .data(pipe, function(d) { return d.id; }).enter().append("circle")
+          .data(eleprops, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("stroke", function(d) { return d.tip_color; });
+          .attr("class", function(d) { return d.cls; })
+          .style("stroke", item.tip_color);
         itemsvg.selectAll("circle")
-          .data(pipe, function(d) { return d.id; })
+          .data(eleprops, function(d) { return d.id; })
           .attr("cx", function(d) { return d.cx; })
           .attr("cy", function(d) { return d.cy; })
           .attr("r", function(d) { return d.r; })
-          .style("opacity", function(d) { return d.opacity; });
+          .style("opacity", function(d) { return d.op; });
       }
     };
 
@@ -317,8 +317,7 @@
           mapY = scope.data2scrY;
       var skipped = false;
 
-      this.resppipe.length = 0;
-      this.elementProps.length = 0;
+      eleprops.length = 0;
 
       var samples = this.elementSamples;
       for (var i = 0; i < samples.length; i++) {
@@ -330,33 +329,28 @@
           skipped = true;
           break;
         }
-        if (eleprops[i] == null) {
-          eleprops[i] = {}; // create a new sample element if doesn't exists
-        }
         var hashid = this.id + "_" + this.zoomHash + "_" + i;
-        _(eleprops[i]).extend({
+        var prop = {
           "id" : hashid,
-          "class" : "plot-resp plot-lodbox",
+          "iidx" : this.index,
+          "eidx": i,
+          "cls" : this.respclassBox,
           "x" : x + 1,
           "y" : y,
-          "width" : x2 - x - 2,
-          "height" : y2 - y,
+          "w" : x2 - x - 2,
+          "h" : y2 - y,
           "ym" : y3,
-          "tip_x" : x,
-          "tip_y" : y,
-          "tip_color" : this.color == null ? "gray" : this.color
-        });
-      }
-
-      if (samples.length > 0) {
-        this.createTips();
+          "t_x" : x,
+          "t_y" : y
+        };
+        eleprops.push(prop);
       }
     };
 
     PlotLineLod.prototype.drawBox = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          pipe = this.elementProps;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -368,61 +362,56 @@
 
       // draw lines
       itemsvg.selectAll("line")
-        .data(pipe, function(d) { return d.id + "l"; }).exit().remove();
+        .data(eleprops, function(d) { return d.id + "l"; }).exit().remove();
       itemsvg.selectAll("line")
-        .data(pipe, function(d) { return d.id + "l"; }).enter().append("line")
+        .data(eleprops, function(d) { return d.id + "l"; }).enter().append("line")
         .attr("id", function(d) { return d.id + "l"; })
         .attr("class", "plot-lodboxline")
-        .style("stroke", this.color);
+        .style("stroke", this.tip_color);
       itemsvg.selectAll("line")
-        .data(pipe, function(d) { return d.id + "l"; })
+        .data(eleprops, function(d) { return d.id + "l"; })
         .attr("x1", function(d) { return d.x; })
-        .attr("x2", function(d) { return d.x + d.width; })
+        .attr("x2", function(d) { return d.x + d.w; })
         .attr("y1", function(d) { return d.ym; })
         .attr("y2", function(d) { return d.ym; });
 
       // draw boxes
       itemsvg.selectAll("rect")
-        .data(pipe, function(d) { return d.id; }).exit().remove();
+        .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("rect")
-        .data(pipe, function(d) { return d.id; }).enter().append("rect")
+        .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .style("stroke", this.color);
+        .attr("class", function(d) { return d.cls; })
+        .style("stroke", this.tip_color);
       itemsvg.selectAll("rect")
-        .data(pipe, function(d) { return d.id; })
+        .data(eleprops, function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
-        .attr("width", function(d) { return d.width; })
-        .attr("height", function(d) { return d.height; });
-
-
+        .attr("width", function(d) { return d.w; })
+        .attr("height", function(d) { return d.h; });
     };
 
-    PlotLineLod.prototype.createTips = function() {
+    PlotLineLod.prototype.createTip = function(ele) {
+      if (this.lodOn === false) {
+        return this.line.createTip(ele);
+      }
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
-      var samples = this.elementSamples;
-      for (var i = 0; i < samples.length; i++) {
-        var ele = samples[i];
-        var valxl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6),
-            valxr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6),
-            valmin = plotUtils.getTipStringPercent(ele.min, yAxis),
-            valmax = plotUtils.getTipStringPercent(ele.max, yAxis),
-            valavg = plotUtils.getTipStringPercent(ele.avg, yAxis);
-
-        var tip = {};
-        if (this.legend != null) {
-          tip.title = this.legend + " (sample)";
-        }
-        tip.xl = valxl;
-        tip.xr = valxr;
-        tip.min = valmin;
-        tip.max = valmax;
-        tip.avg = valavg;
-
-        this.elementProps[i].tip_text = plotUtils.createTipString(tip);
+      var valxl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6),
+          valxr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6),
+          valmin = plotUtils.getTipStringPercent(ele.min, yAxis),
+          valmax = plotUtils.getTipStringPercent(ele.max, yAxis),
+          valavg = plotUtils.getTipStringPercent(ele.avg, yAxis);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend + " (sample)";
       }
+      tip.xl = valxl;
+      tip.xr = valxr;
+      tip.min = valmin;
+      tip.max = valmax;
+      tip.avg = valavg;
+     return plotUtils.createTipString(tip);
     };
 
     PlotLineLod.prototype.clear = function(scope) {
@@ -435,10 +424,6 @@
       for (var i = 0; i < eleprops.length; i++) {
         scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
         delete scope.tips[eleprops[i].id];
-      }
-      for (var i = 0; i < this.resppipe.length; i++) {
-        scope.jqcontainer.find("#tip_" + this.resppipe[i].id).remove();
-        delete scope.tips[this.resppipe[i].id];
       }
     };
 

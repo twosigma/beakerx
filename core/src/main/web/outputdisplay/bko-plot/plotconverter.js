@@ -258,7 +258,6 @@
           // recreate rendering objects
           item.index = i;
           item.id = "i" + i;
-
           data[i] = plotFactory.createPlotItem(item);
         }
 

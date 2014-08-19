@@ -18,9 +18,7 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotPoint = function(data){
-      this.elements = data.elements;
-      delete data.elements;
-      $.extend(true, this, data);
+      _(this).extend(data); // copy properties to itself
       this.format();
 
       if (this.color != null) {

@@ -140,15 +140,14 @@
   border-radius : 5px;
   margin: 0px 5px;
   display: inline-block;
-  pointer-events: none;
 }
 
 .plot-legendlodhint {
-  min-width: 6em;
+  min-width: 2em;
   font-size: 0.7em;
   display: inline-block;
   vertical-align: middle;
-  pointer-events: none;
+  cursor: pointer;
 }
 
 .plot-legendcontainer {
@@ -156,8 +155,6 @@
   fill: #FEFEFE;
   position: absolute;
   padding: 5px;
-  width: auto;
-  height: auto;
   border: 1px solid #BBBBBB;
   background-color: white;
   list-style: none;

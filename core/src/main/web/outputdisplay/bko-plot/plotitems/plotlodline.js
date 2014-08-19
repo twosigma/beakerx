@@ -17,22 +17,35 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
-    var PlotLine = function(data){
+    var PlotLodLine = function(data){
       _(this).extend(data); // copy properties to itself
       this.format();
     };
 
-    // constants
-    PlotLine.prototype.respr = 5;
-    PlotLine.prototype.plotClass = "plot-line";
-    PlotLine.prototype.respClass = "plot-resp plot-respdot";
+    PlotLodLine.prototype.plotClass = "plot-line";
+    PlotLodLine.prototype.respClass = "plot-resp plot-respdot";
 
-    PlotLine.prototype.format = function() {
+    PlotLodLine.prototype.render = function(scope, samples){
+      this.elementSamples = samples;
+      this.prepare(scope);
+      this.draw(scope);
+    };
+
+    PlotLodLine.prototype.zoomLevelChanged = function(scope) {
+      this.zoomHash = plotUtils.randomString(3);
+      this.clearTips(scope);
+    };
+
+    PlotLodLine.prototype.format = function() {
+
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
       } else {
         this.tip_color = "gray";
       }
+
+      this.zoomHash = plotUtils.randomString(3);
+
       this.itemProps = {
         "id" : this.id,
         "st" : this.color,
@@ -44,130 +57,58 @@
       this.elementProps = [];
     };
 
-    PlotLine.prototype.render = function(scope){
-      if (this.shown === false) {
-        this.clear(scope);
-        return;
-      }
-      this.filter(scope);
-      this.prepare(scope);
-      if (this.vlength === 0) {
-        this.clear(scope);
-      } else {
-        this.draw(scope);
-      }
-    };
-
-    PlotLine.prototype.getRange = function() {
-      var eles = this.elements;
-      var range = {
-        xl : 1E100,
-        xr : -1E100,
-        yl : 1E100,
-        yr : -1E100
-      };
-      for (var i = 0; i < eles.length; i++) {
-        var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
-        range.yl = Math.min(range.yl, ele.y);
-        range.yr = Math.max(range.yr, ele.y);
-      }
-      return range;
-    };
-
-    PlotLine.prototype.applyAxis = function(xAxis, yAxis) {
-      this.xAxis = xAxis;
-      this.yAxis = yAxis;
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        ele.x = xAxis.getPercent(ele.x);
-        ele.y = yAxis.getPercent(ele.y);
-      }
-    };
-
-    PlotLine.prototype.createTip = function(ele) {
-      var xAxis = this.xAxis,
-          yAxis = this.yAxis;
-      var valx = plotUtils.getTipString(ele._x, xAxis, true),
-          valy = plotUtils.getTipString(ele._y, yAxis, true);
-      var tip = {};
-      if (this.legend != null) {
-        tip.title = this.legend;
-      }
-      tip.x = valx;
-      tip.y = valy;
-      return plotUtils.createTipString(tip);
-    };
-
-    PlotLine.prototype.filter = function(scope) {
-      var eles = this.elements;
-      var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
-          r = plotUtils.upper_bound(eles, "x", scope.focus.xr) + 1;
-
-      l = Math.max(l, 0);
-      r = Math.min(r, eles.length - 1);
-
-      if (l > r || l == r && eles[l].x < scope.focus.xl) {
-        // nothing visible, or all elements are to the left of the svg, vlength = 0
-        l = 0;
-        r = -1;
-      }
-      this.vindexL = l;
-      this.vindexR = r;
-      this.vlength = r - l + 1;
-    };
-
-    PlotLine.prototype.prepare = function(scope) {
+    PlotLodLine.prototype.prepare = function(scope) {
       var focus = scope.focus;
-      var eles = this.elements,
-          eleprops = this.elementProps,
-          tipids = this.tipIds;
+      var eleprops = this.elementProps;
       var mapX = scope.data2scrX,
           mapY = scope.data2scrY;
       var pstr = "", skipped = false;
 
       eleprops.length = 0;
 
-      for (var i = this.vindexL; i <= this.vindexR; i++) {
-        var ele = eles[i];
-        if (i === this.vindexL) {
+      var samples = this.elementSamples;
+      for (var i = 0; i < samples.length; i++) {
+        var ele = samples[i];
+        if (i === 0) {
           pstr += "M";
-        } else if (i === this.vindexL + 1) {
-          if (this.interpolation !== "curve") pstr += "L";
-          else pstr += "C";
+        } else if (i === 1) {
+          pstr += "L";
         }
         var x = mapX(ele.x), y = mapY(ele.y);
         if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
           skipped = true;
           break;
         }
+
         var nxtp = x + "," + y + " ";
 
         if (focus.yl <= ele.y && ele.y <= focus.yr) {
-          var id = this.id + "_" + i;
+          var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash;
+
           var prop = {
-            "id" : id,
+            "id" : hashid,
             "iidx" : this.index,
             "eidx" : i,
             "isresp" : true,
             "cx" : x,
             "cy" : y,
+            "r" : 5,
             "t_x" : x,
             "t_y" : y,
-            "op" : scope.tips[id] == null ? 0 : 1,
+            "op" : scope.tips[hashid] == null ? 0 : 1
           };
           eleprops.push(prop);
         }
 
-        if (i < this.vindexR) {
+        if (i < samples.length - 1) {
           if (this.interpolation === "none") {
-            var ele2 = eles[i + 1];
-            nxtp += mapX(ele.x) + "," + mapY(ele.y) + " " + mapX(ele2.x) + "," + mapY(ele.y) + " ";
+            var ele2 = samples[i + 1];
+            nxtp += x + "," + y + " " + mapX(ele2.x) + "," + y + " ";
           } else if (this.interpolation === "curve") {
             // TODO curve implementation
           }
         }
+
         pstr += nxtp;
       }
 
@@ -179,7 +120,7 @@
       }
     };
 
-    PlotLine.prototype.draw = function(scope) {
+    PlotLodLine.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps;
@@ -202,7 +143,6 @@
       itemsvg.select("path")
         .attr("d", props.d);
 
-      var item = this;
       if (scope.stdmodel.useToolTip === true) {
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; }).exit().remove();
@@ -210,29 +150,25 @@
           .data(eleprops, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
           .attr("class", this.respClass)
-          .style("stroke", function(d) { return item.tip_color; });
+          .style("stroke", this.tip_color);
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; })
           .attr("cx", function(d) { return d.cx; })
           .attr("cy", function(d) { return d.cy; })
-          .attr("r", function(d) { return item.respr; })
+          .attr("r", function(d) { return d.r; })
           .style("opacity", function(d) { return d.op; });
       }
     };
 
-    PlotLine.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
-      this.clearTips(scope);
-    };
-
-    PlotLine.prototype.clearTips = function(scope) {
+    PlotLodLine.prototype.clearTips = function(scope) {
       var eleprops = this.elementProps;
       for (var i = 0; i < eleprops.length; i++) {
-        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+        var sel = scope.jqcontainer.find("#tip_" + eleprops[i].id);
+        delete scope.tips[eleprops[i].id];  // must clear from tip drawing queue
       }
     };
 
-    return PlotLine;
+    return PlotLodLine;
   };
-  beaker.bkoFactory('PlotLine', ['plotUtils', 'PlotSampler', retfunc]);
+  beaker.bkoFactory('PlotLodLine', ['plotUtils', retfunc]);
 })();

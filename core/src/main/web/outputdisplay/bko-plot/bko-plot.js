@@ -604,6 +604,9 @@
                 .attr("class", "plot-legendlod");
               var type = $("<span></span>").appendTo(lodhint)
                 .attr("class", "plot-legendlodhint");
+              var auto = $("<span></span>").appendTo(lodhint)
+                .attr("class", "plot-legendlodhint");
+
               var setlodhint = function(dat) {
                 // lod hint light
                 light.attr("title",
@@ -615,6 +618,9 @@
                 // lod hint text
                 type.css("color", dat.lodOn === true ? "red" : "gray")
                   .text(dat.lodType);
+                // lod auto hint
+                auto.css("color", "red")
+                  .text(dat.lodType === "off" ? "" : (dat.lodAuto === true ? "auto" : "on"));
               };
               setlodhint(dat);
               lodhint.on('mousedown', {"index": i}, function(e) {
@@ -633,16 +639,25 @@
                       scope.update();
                       setlodhint(dat);
                     }, null);
-                } else {
-                  if (dat.lodType === "off") {
-                    dat.toggleLod(scope);
-                  } else {
-                    dat.switchLodType(scope);
-                  }
-                  dat.zoomLevelChanged(scope);
-                  scope.update();
-                  setlodhint(dat);
                 }
+              });
+              type.on('mousedown', {"index": i}, function(e) {
+                var dat = data[e.data.index];
+                if (dat.lodType === "off") {
+                  dat.toggleLod(scope);
+                } else {
+                  dat.switchLodType(scope);
+                }
+                dat.zoomLevelChanged(scope);
+                scope.update();
+                setlodhint(dat);
+              });
+              auto.on('mousedown', {"index": i}, function(e) {
+                var dat = data[e.data.index];
+                if (dat.lodType === "off") return;
+                dat.toggleAuto(scope);
+                scope.update();
+                setlodhint(dat);
               });
             }
           }

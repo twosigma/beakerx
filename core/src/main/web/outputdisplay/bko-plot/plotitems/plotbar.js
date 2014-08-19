@@ -145,7 +145,8 @@
         var id = this.id + "_" + i;
         var prop = {
           "id" : id,
-          "gid" : this.index,
+          "iidx" : this.index,
+          "eidx" : i,
           "cls" : this.respclass,
           "x" : x1,
           "y" : y2,
@@ -157,8 +158,7 @@
           "fi_op" : ele.color_opacity,
           "st" : ele.stroke,
           "st_w" : ele.stroke_width,
-          "st_op" : ele.stroke_opacity,
-          "ele" : ele
+          "st_op" : ele.stroke_opacity
         };
         eleprops.push(prop);
       }

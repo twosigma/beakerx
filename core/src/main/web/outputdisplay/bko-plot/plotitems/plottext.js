@@ -160,8 +160,11 @@
         }
         tf += "translate(" + x + "," + y + ")";
 
-        _(eleprops[i]).extend({
-          "transform" : tf,
+        var prop = {
+          "id" : this.id + "_" + i,
+          "iidx" : this.index,
+          "eidx" : i,
+          "tf" : tf,
           "text" : ele.text,
           "fill" : ele.color,
           "fill_opacity" : ele.opacity,

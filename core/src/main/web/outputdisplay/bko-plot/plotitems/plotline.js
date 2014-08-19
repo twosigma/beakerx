@@ -152,7 +152,8 @@
           var id = this.id + "_" + i;
           var prop = {
             "id" : id,
-            "gid" : this.index,
+            "iidx" : this.index,
+            "eidx" : i,
             "isresp" : true,
             "cls" : this.respclass,
             "cx" : x,
@@ -160,7 +161,6 @@
             "t_x" : x,
             "t_y" : y,
             "op" : scope.tips[id] == null ? 0 : 1,
-            "ele" : ele
           };
           eleprops.push(prop);
         }

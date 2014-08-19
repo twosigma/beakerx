@@ -100,6 +100,8 @@
 
       this.itemProps = {
         "id" : this.id,
+        "iidx" : this.index,
+        "eidx" : i,
         "cls" : "plot-stem",
         "st" : this.color,
         "st_op": this.color_opacity,

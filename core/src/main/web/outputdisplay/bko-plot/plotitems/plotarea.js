@@ -103,22 +103,6 @@
         "pts" : ""
       };
       this.elementProps = [];
-      /*
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var point = {
-          "id" : this.id + "_" + i,
-          "cls" : "plot-resp plot-respstem",
-          "isresp" : true,
-          "t_txt" : ele.tip_text,
-          "t_clr" : this.color == null ? "gray" : this.color,
-          "w" : 5
-        };
-        this.elementProps.push(point);
-      }
-
-      this.resppipe = [];
-      */
     };
 
     PlotArea.prototype.filter = function(scope) {
@@ -172,7 +156,8 @@
           var id = this.id + "_" + i;
           var prop = {
             "id" : id,
-            "gid" : this.index,
+            "iidx" : this.index,
+            "eidx" : i,
             "cls" : this.respclass,
             "isresp" : true,
             "w" : this.respw,
@@ -181,8 +166,7 @@
             "h" : Math.max(y - y2, this.respminh),  // min height to be hoverable
             "t_x" : x,
             "t_y" : (y + y2) / 2,
-            "op" : scope.tips[id] == null ? 0 : 1,
-            "ele" : ele
+            "op" : scope.tips[id] == null ? 0 : 1
           };
           eleprops.push(prop);
         }

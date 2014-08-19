@@ -350,15 +350,15 @@
               tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
                 .attr("id", tipid)
                 .attr("class", "plot-tooltip")
-                .css("border-color", data[d.gid].tip_color)
-                .append(data[d.gid].createTip(d.ele))
+                .css("border-color", data[d.iidx].tip_color)
+                .append(data[d.iidx].createTip(data[d.iidx].elements[d.eidx]))
                 .on('mouseup', function(e) {
                   if (e.which == 3) {
                     delete scope.tips[d.id];
                     if (d.isresp === true) {  // is interaction responsive element
-                      scope.jqsvg.find("#" + tipid).css("opacity", 0);
+                      scope.jqsvg.find("#" + d.id).css("opacity", 0);
                     } else {
-                      scope.jqsvg.find("#" + tipid).removeAttr("filter");
+                      scope.jqsvg.find("#" + d.id).removeAttr("filter");
                     }
                     scope.interactMode = "remove";
                     $(this).remove();
@@ -391,9 +391,9 @@
               .css("left", x + scope.fonts.tooltipWidth)
               .css("top", y);
             if (d.isresp === true) {
-              scope.jqsvg.find("#" + tipid).attr("opacity", 1);
+              scope.jqsvg.find("#" + d.id).attr("opacity", 1);
             } else {
-              scope.jqsvg.find("#" + tipid)
+              scope.jqsvg.find("#" + d.id)
                 .attr("filter", "url(#svgfilter)");
             }
           });

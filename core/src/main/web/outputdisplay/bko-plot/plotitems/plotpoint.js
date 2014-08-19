@@ -30,6 +30,10 @@
       }
     };
 
+    PlotPoint.prototype.respclass = "plot-resp";
+    PlotPoint.prototype.shapes = ["rect", "diamond", "circle"];
+    PlotPoint.prototype.svgtags = ["rect", "polygon", "circle"];
+
     PlotPoint.prototype.render = function(scope) {
       if (this.shown === false) {
         this.clear(scope);
@@ -70,27 +74,20 @@
         ele.x = xAxis.getPercent(ele.x);
         ele.y = yAxis.getPercent(ele.y);
       }
-      this.createTips();
     };
 
-    PlotPoint.prototype.createTips = function() {
+    PlotPoint.prototype.createTip = function(ele) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var txt = "";
-        var valx = plotUtils.getTipString(ele._x, xAxis, true),
-            valy = plotUtils.getTipString(ele._y, yAxis, true);
-
-        var tip = {};
-        if (this.legend != null) {
-          tip.title = this.legend;
-        }
-        tip.x = valx;
-        tip.y = valy;
-
-        this.elementProps[i].t_txt = plotUtils.createTipString(tip);
+      var valx = plotUtils.getTipString(ele._x, xAxis, true),
+          valy = plotUtils.getTipString(ele._y, yAxis, true);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
       }
+      tip.x = valx;
+      tip.y = valy;
+      return plotUtils.createTipString(tip);
     };
 
     PlotPoint.prototype.format = function() {
@@ -100,42 +97,20 @@
         "cls" : "plot-point",
         "fi" : this.color,
         "fi_op": this.color_opacity,
-        "stroke": this.stroke,
+        "st": this.stroke,
         "st_op" : this.stroke_opacity,
         "st_w": this.stroke_width,
         "st_da": this.stroke_dasharray
       };
 
-      this.elementProps = [];
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var stem = {
-          "id" : this.id + "_" + i,
-          "cls" : "plot-resp",
-          "shape" : ele.shape == null ? this.shape : ele.shape,
-          "fi" : ele.color,
-          "fi_op" : ele.color_opacity,
-          "st" : ele.stroke,
-          "st_op": ele.stroke_opacity,
-          "st_w" : ele.stroke_width,
-          "st_da": ele.stroke_dasharray,
-          "t_txt" : ele.tip_text,
-          "t_clr" : plotUtils.createColor(this.color, this.color_opacity)
-        };
-        this.elementProps.push(stem);
-      }
-
-      this.pipeRects = [];
-      this.pipeDiamonds = [];
-      this.pipeCircles = [];
-
-      this.shapes = ["rect", "diamond", "circle"];
-      this.pipes = {
-        "rect" : this.pipeRects,
-        "diamond" : this.pipeDiamonds,
-        "circle" : this.pipeCircles
+      this.elementPropsRects = [];
+      this.elementPropsDiamonds = [];
+      this.elementPropsCircles = [];
+      this.elementProps = {
+        "rect" : this.elementPropsRects,
+        "diamond" : this.elementPropsDiamonds,
+        "circle" : this.elementPropsCircles
       };
-      this.svgtags = ["rect", "polygon", "circle"];
     };
 
     PlotPoint.prototype.filter = function(scope) {
@@ -160,46 +135,78 @@
       var eles = this.elements, eleprops = this.elementProps;
       var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
-      this.pipeRects.length = 0;
-      this.pipeDiamonds.length = 0;
-      this.pipeCircles.length = 0;
+      this.elementPropsRects.length = 0;
+      this.elementPropsDiamonds.length = 0;
+      this.elementPropsCircles.length = 0;
+
+
+      /*
+      for (var i = 0; i < this.elements.length; i++) {
+        var ele = this.elements[i];
+        var stem = {
+          "id" : this.id + "_" + i,
+          "cls" : "plot-resp",
+          "shape" : ele.shape == null ? this.shape : ele.shape,
+          "fi" : ele.color,
+          "fi_op" : ele.color_opacity,
+          "st" : ele.stroke,
+          "st_op": ele.stroke_opacity,
+          "st_w" : ele.stroke_width,
+          "st_da": ele.stroke_dasharray,
+          "t_txt" : ele.tip_text,
+          "t_clr" : plotUtils.createColor(this.color, this.color_opacity)
+        };
+        this.elementProps.push(stem);
+      }
+      */
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         var x = mapX(ele.x), y = mapY(ele.y), s = ele.size;
-        _(eleprops[i]).extend({
+        var prop = {
+          "id" :  this.id + "_" + i,
+          "iidx" : this.index,
+          "eidx" : i,
+          "cls" : this.respclass,
+          "fi" : ele.color,
+          "fi_op" : ele.color_opacity,
+          "st" : ele.stroke,
+          "st_op" : ele.stroke_opacity,
+          "st_w" : ele.stroke_width,
+          "st_da" : ele.stroke_dasharray,
           "x" : x,
           "y" : y,
           "t_x" : x,
           "t_y" : y
-        });
-        switch (eleprops[i].shape) {
+        };
+        var shape = ele.shape == null ? this.shape : ele.shape;
+        switch (shape) {
           case "diamond":
             var pstr = "";
             pstr += (x - s) + "," + (y    ) + " ";
             pstr += (x    ) + "," + (y - s) + " ";
             pstr += (x + s) + "," + (y    ) + " ";
             pstr += (x    ) + "," + (y + s) + " ";
-            _(eleprops[i]).extend({
+            _(prop).extend({
               "pts" : pstr
             });
             break;
           case "circle":
-            _(eleprops[i]).extend({
+            _(prop).extend({
               "cx" : x,
               "cy" : y,
               "r" : s
             });
             break;
           default:    // rects
-            _(eleprops[i]).extend({
+            _(prop).extend({
               "x" : x - s / 2,
               "y" : y - s / 2,
               "w" : s,
               "h" : s
             });
         }
-        this.pipes[eleprops[i].shape].push(eleprops[i]);
+        this.elementProps[shape].push(prop);
       }
     };
 
@@ -225,7 +232,7 @@
       for (var i = 0; i < this.shapes.length; i++) {
         var shape = this.shapes[i],
             tag = this.svgtags[i],
-            pipe = this.pipes[shape];
+            eleprops = this.elementProps[shape];
 
         var shapesvg = itemsvg.select("#" + shape);
 
@@ -236,9 +243,9 @@
         }
 
         shapesvg.selectAll(tag)
-          .data(pipe, function(d) { return d.id; }).exit().remove();
+          .data(eleprops, function(d) { return d.id; }).exit().remove();
         shapesvg.selectAll(tag)
-          .data(pipe, function(d) { return d.id; }).enter().append(tag)
+          .data(eleprops, function(d) { return d.id; }).enter().append(tag)
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.cls; })
           .style("fill", function(d) { return d.fi; })
@@ -251,19 +258,19 @@
         switch (shape) {
           case "circle":
             shapesvg.selectAll(tag)
-              .data(pipe, function(d) { return d.id; })
+              .data(eleprops, function(d) { return d.id; })
               .attr("cx", function(d) { return d.cx; })
               .attr("cy", function(d) { return d.cy; })
               .attr("r", function(d) { return d.r; });
             break;
           case "diamond":
             shapesvg.selectAll(tag)
-              .data(pipe, function(d) { return d.id; })
+              .data(eleprops, function(d) { return d.id; })
               .attr("points", function(d) { return d.pts; });
             break;
           default:  // rect
             shapesvg.selectAll(tag)
-              .data(pipe, function(d) { return d.id; })
+              .data(eleprops, function(d) { return d.id; })
               .attr("x", function(d) { return d.x; })
               .attr("y", function(d) { return d.y; })
               .attr("width", function(d) { return d.w; })

@@ -289,7 +289,7 @@
 
         modalDialogOp.setStrategy(strategy);
         var dd = $dialog.dialog(options);
-        dd.open().then(function(result) {
+        return dd.open().then(function(result) {
           dd.$scope.$destroy();
           if (callback) {
             callback(result);

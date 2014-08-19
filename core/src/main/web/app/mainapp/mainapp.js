@@ -545,10 +545,45 @@
           }
         };
 
+
+        $scope.promptToSave = (function() {
+          var prompted = false;
+          return function() {
+            if (prompted) { // prevent prompting multiple at the same time
+              return;
+            }
+            prompted = true;
+            bkCoreManager.show2ButtonModal(
+                "Beaker server disconnected. Further edits will not be saved.<br>" +
+                "Save current notebook as a file?",
+                "Disconnected",
+                function() {
+                  // "Not now", hijack all keypress events to prompt again
+                  window.addEventListener('keypress', $scope.promptToSave, true);
+                },
+                function() {
+                  // "Save", save the notebook as a file on the client side
+                  bkUtils.saveAsClientFile(
+                      bkSessionManager.getSaveData().notebookModelAsString,
+                      "notebook.bkr");
+                },
+                "Not now", "Save", "", "btn-primary"
+            ).then(function() {
+              prompted = false;
+            });
+          };
+        })();
+
         bkUtils.addConnectedStatusListener(function(msg) {
           if (msg.successful !== !$scope.disconnected) {
-            $scope.disconnected = !msg.successful;
+            var disconnected = !msg.successful;
             $scope.$digest();
+            if (disconnected) {
+              $scope.disconnected = true;
+              $scope.promptToSave();
+            } else {
+              // we don't handle reconnect right now
+            }
           }
         });
         $scope.$watch('disconnected', function(disconnected) {

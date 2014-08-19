@@ -33,7 +33,7 @@ define(function(require, exports, module) {
             action: function() {
               bkHelper.showModalDialog(
                   bkHelper.openNotebook,
-                  JST['openmenumodal']({homeDir: homeDir}),
+                  JST['opennotebook']({homedir: homeDir}),
                   bkHelper.getFileSystemFileChooserStrategy()
               );
             }

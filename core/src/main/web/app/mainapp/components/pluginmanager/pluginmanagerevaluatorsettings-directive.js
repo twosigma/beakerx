@@ -26,7 +26,7 @@
       $compile, bkSessionManager) {
     return {
       restrict: 'E',
-      template: '<div class="bbody"></div>',
+      template: JST["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"](),
       controller: function($scope) {
         $scope.set = function(val) {
           $scope.evaluator.perform(val);

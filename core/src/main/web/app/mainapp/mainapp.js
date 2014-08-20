@@ -56,7 +56,7 @@
       bkEvaluateJobManager) {
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/mainapp.html",
+      template: JST["template/mainapp/mainapp"](),
       scope: {},
       controller: function($scope) {
         var showStatusMessage = function(message) {
@@ -609,6 +609,7 @@
               });
             });
         bkCellMenuPluginManager.reset();
+        bkEvaluateJobManager.reset();
 
         (function() {
           var sessionId = $routeParams.sessionId;

@@ -17,11 +17,6 @@
 .comblot-renderdiv {
     background-color: #FEFEFE;
     border: 1px solid #000000;
-    /*
-    -webkit-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
-    -moz-box-shadow: inset 0px 0px 5px rgba(0,0,0,0.5);
-    width: 1200px;
-    */
     width: auto;
     height: auto;
 }

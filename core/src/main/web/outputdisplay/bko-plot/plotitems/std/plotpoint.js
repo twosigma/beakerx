@@ -251,6 +251,14 @@
       scope.maing.select("#" + this.id).remove();
     };
 
+    PlotPoint.prototype.clearTips = function(scope) {
+      var eleprops = this.elementProps;
+      for (var i = 0; i < eleprops.length; i++) {
+        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+        delete scope.tips[eleprops[i].id];
+      }
+    };
+
     PlotPoint.prototype.createTip = function(ele) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;

@@ -173,6 +173,15 @@
 
     PlotText.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
+      this.clearTips(scope);
+    };
+
+    PlotText.prototype.clearTips = function(scope) {
+      var eleprops = this.elementProps;
+      for (var i = 0; i < eleprops.length; i++) {
+        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+        delete scope.tips[eleprops[i].id];
+      }
     };
 
     PlotText.prototype.createTip = function(ele) {

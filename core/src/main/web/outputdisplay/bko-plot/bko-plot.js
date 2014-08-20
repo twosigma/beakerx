@@ -71,6 +71,7 @@
             scope.calcMapping(false);
             scope.emitSizeChange();
             scope.legendDone = false;
+            scope.legendResetPosition = true;
 
             scope.update();
           }
@@ -148,6 +149,8 @@
           if (model.yAxis.axisLabel != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
           }
+          scope.legendResetPosition = true;
+
           scope.$watch("model.getFocus()", function(newFocus) {
             if (newFocus == null) { return; }
             scope.focus.xl = newFocus.xl;
@@ -539,12 +542,23 @@
           var legend = $("<div></div>").appendTo(scope.jqcontainer)
             .attr("id", "legends")
             .attr("class", "plot-legendcontainer")
-            .css({
-              "left" : scope.jqcontainer.width() + 10 ,
-              "top" : 0
-            })
-            .draggable();
+            .draggable({
+              stop : function(event, ui) {
+                scope.legendPosition = {
+                  "left" : ui.position.left,
+                  "top" : ui.position.top
+                };
+              }
+            });
 
+          if (scope.legendResetPosition === true) {
+            scope.legendPosition = {
+              "left" : scope.jqcontainer.width() + 10,
+              "top" : 0
+            };
+            scope.legendResetPosition = false;
+          }
+          legend.css(scope.legendPosition);
           if (scope.visibleData > 1) {  // skip "All" check when there is only one line
             var unit = $("<div></div>").appendTo(legend)
               .attr("id", "legend_all");

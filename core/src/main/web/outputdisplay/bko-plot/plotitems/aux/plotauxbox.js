@@ -44,7 +44,7 @@
 
     PlotAuxBox.prototype.setWidthShrink = function(shrink) {
       this.widthShrink = shrink;
-    }
+    };
 
     PlotAuxBox.prototype.render = function(scope, elements, gid){
       this.elements = elements;

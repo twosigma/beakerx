@@ -221,6 +221,7 @@
       var eleprops = this.elementProps;
       for (var i = 0; i < eleprops.length; i++) {
         scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+        delete scope.tips[eleprops[i].id];
       }
     };
 

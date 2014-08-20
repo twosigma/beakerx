@@ -84,7 +84,6 @@
           this.avgOn = false;
         }
 
-
         if (plotUtils.rangeAssert([x, x2, y, y2])) {
           eleprops.length = 0;
           return false;

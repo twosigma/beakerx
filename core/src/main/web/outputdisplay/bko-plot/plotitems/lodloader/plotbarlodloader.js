@@ -63,8 +63,13 @@
 
     PlotBarLodLoader.prototype.zoomLevelChanged = function(scope) {
       this.sampleStep = -1;
-      this.lodplotter.zoomLevelChanged(scope);  // pass message to lod plotter
-      this.lodplotter2.zoomLevelChanged(scope);
+      // pass message to lod plotter
+      if (this.lodType === "bar") {
+        this.lodplotter.zoomLevelChanged(scope);
+      } else if (this.lodType === "box") {
+        this.lodplotter.zoomLevelChanged(scope);
+        this.lodplotter2.zoomLevelChanged(scope);
+      }
     };
 
     PlotBarLodLoader.prototype.switchLodType = function(scope) {

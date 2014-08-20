@@ -18,19 +18,26 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotText = function(data){
-      this.elements = data.elements;
-      delete data.elements;
-      $.extend(true, this, data);
+      _(this).extend(data);
       this.format();
+    };
 
+    PlotText.prototype.plotClass = "plot-text";
+    PlotText.prototype.respClass = "plot-resp";
+
+    PlotText.prototype.format = function() {
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
       } else {
         this.tip_color = "gray";
       }
+      this.itemProps = {
+        "id" : this.id,
+        "fi" : this.color,
+        "fi_op" : this.color_opacity,
+      };
+      this.elementProps = [];
     };
-
-    PlotText.prototype.respclass = "plot-resp";
 
     PlotText.prototype.render = function(scope) {
       if (this.shown === false) {
@@ -74,32 +81,6 @@
       }
     };
 
-    PlotText.prototype.createTip = function(ele) {
-      var xAxis = this.xAxis,
-          yAxis = this.yAxis;
-      var valx = plotUtils.getTipString(ele._x, xAxis, true),
-          valy = plotUtils.getTipString(ele._y, yAxis, true);
-      var tip = {};
-      if (this.legend != null) {
-        tip.title = this.legend;
-      }
-      tip.x = valx;
-      tip.y = valy;
-      return plotUtils.createTipString(tip);
-    };
-
-    PlotText.prototype.format = function() {
-
-      this.itemProps = {
-        "id" : this.id,
-        "class" : "plot-text",
-        "fill" : this.color,
-        "fill_opacity" : this.color_opacity,
-      };
-
-      this.elementProps = [];
-    };
-
     PlotText.prototype.filter = function(scope) {
       var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl) + 1,
@@ -129,6 +110,12 @@
           continue;
         }
         var x = mapX(ele.x), y = mapY(ele.y);
+
+        if (plotUtils.rangeAssert([x, y])) {
+          eleprops.length = 0;
+          return;
+        }
+
         var tf = "", rot = null;
         if (ele.rotate != null) {
           rot = ele.rotate;
@@ -142,9 +129,8 @@
 
         var prop = {
           "id" : this.id + "_" + i,
-          "cls" : this.respclass,
-          "iidx" : this.index,
-          "eidx" : i,
+          "idx" : this.index,
+          "ele" : ele,
           "tf" : tf,
           "txt" : ele.text,
           "fi" : ele.color,
@@ -165,7 +151,7 @@
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.cls; })
+          .attr("class", this.plotClass)
           .style("fill", function(d) { return d.fi; })
           .style("fill_opacity", function(d) { return d.fi_op; });
       }
@@ -176,7 +162,7 @@
       itemsvg.selectAll("text")
         .data(eleprops, function(d) { return d.id; }).enter().append("text")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.cls; })
+        .attr("class", this.respClass)
         .style("fill", function(d) { return d.fi; })
         .style("fill_opacity", function(d) { return d.fi_op; })
         .text(function(d) { return d.txt; });
@@ -187,6 +173,20 @@
 
     PlotText.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
+    };
+
+    PlotText.prototype.createTip = function(ele) {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var valx = plotUtils.getTipString(ele._x, xAxis, true),
+          valy = plotUtils.getTipString(ele._y, yAxis, true);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
+      }
+      tip.x = valx;
+      tip.y = valy;
+      return plotUtils.createTipString(tip);
     };
 
     return PlotText;

@@ -195,7 +195,7 @@
 
       createTipString : function(obj) {
         var txt = "";
-        _.each(obj, function(value, key) {
+        _(obj).each(function(value, key) {
           if (key == "title") {
             txt += "<div style='font-weight:bold'>";
           } else {
@@ -206,8 +206,17 @@
           txt += "</div>";
         });
         return txt;
-      }
+      },
 
+      rangeAssert : function(list) {
+        _(list).each(function(e, i){
+          if (abs(e) > 1E6) {
+            console.error("data not shown due to too large coordinate");
+            return true;
+          }
+        });
+        return false;
+      }
     };
   };
   beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);

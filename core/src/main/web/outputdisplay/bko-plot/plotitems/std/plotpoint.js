@@ -20,18 +20,38 @@
     var PlotPoint = function(data){
       _(this).extend(data); // copy properties to itself
       this.format();
-
-      if (this.color != null) {
-        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
-      } else {
-        this.tip_color = "gray";
-      }
     };
 
     PlotPoint.prototype.plotClass = "plot-point";
     PlotPoint.prototype.respClass = "plot-resp";
     PlotPoint.prototype.shapes = ["rect", "diamond", "circle"];
     PlotPoint.prototype.svgtags = ["rect", "polygon", "circle"];
+
+    PlotPoint.prototype.format = function() {
+      if (this.color != null) {
+        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      } else {
+        this.tip_color = "gray";
+      }
+      this.itemProps = {
+        "id" : this.id,
+        "fi" : this.color,
+        "fi_op": this.color_opacity,
+        "st": this.stroke,
+        "st_op" : this.stroke_opacity,
+        "st_w": this.stroke_width,
+        "st_da": this.stroke_dasharray
+      };
+
+      this.elementPropsRects = [];
+      this.elementPropsDiamonds = [];
+      this.elementPropsCircles = [];
+      this.elementProps = {
+        "rect" : this.elementPropsRects,
+        "diamond" : this.elementPropsDiamonds,
+        "circle" : this.elementPropsCircles
+      };
+    };
 
     PlotPoint.prototype.render = function(scope) {
       if (this.shown === false) {
@@ -75,42 +95,6 @@
       }
     };
 
-    PlotPoint.prototype.createTip = function(ele) {
-      var xAxis = this.xAxis,
-          yAxis = this.yAxis;
-      var valx = plotUtils.getTipString(ele._x, xAxis, true),
-          valy = plotUtils.getTipString(ele._y, yAxis, true);
-      var tip = {};
-      if (this.legend != null) {
-        tip.title = this.legend;
-      }
-      tip.x = valx;
-      tip.y = valy;
-      return plotUtils.createTipString(tip);
-    };
-
-    PlotPoint.prototype.format = function() {
-
-      this.itemProps = {
-        "id" : this.id,
-        "fi" : this.color,
-        "fi_op": this.color_opacity,
-        "st": this.stroke,
-        "st_op" : this.stroke_opacity,
-        "st_w": this.stroke_width,
-        "st_da": this.stroke_dasharray
-      };
-
-      this.elementPropsRects = [];
-      this.elementPropsDiamonds = [];
-      this.elementPropsCircles = [];
-      this.elementProps = {
-        "rect" : this.elementPropsRects,
-        "diamond" : this.elementPropsDiamonds,
-        "circle" : this.elementPropsCircles
-      };
-    };
-
     PlotPoint.prototype.filter = function(scope) {
       var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl) + 1,
@@ -140,6 +124,14 @@
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         var x = mapX(ele.x), y = mapY(ele.y), s = ele.size;
+
+        if (plotUtils.rangeAssert([x, y])) {
+          this.elementPropsRects.length = 0;
+          this.elementPropsDiamonds.length = 0;
+          this.elementPropsCircles.length = 0;
+          return;
+        }
+
         var prop = {
           "id" :  this.id + "_" + i,
           "idx" : this.index,
@@ -257,6 +249,20 @@
 
     PlotPoint.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
+    };
+
+    PlotPoint.prototype.createTip = function(ele) {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var valx = plotUtils.getTipString(ele._x, xAxis, true),
+          valy = plotUtils.getTipString(ele._y, yAxis, true);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
+      }
+      tip.x = valx;
+      tip.y = valy;
+      return plotUtils.createTipString(tip);
     };
 
     return PlotPoint;

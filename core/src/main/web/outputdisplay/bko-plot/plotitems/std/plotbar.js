@@ -120,11 +120,16 @@
         sw = x2 - x1;
         if (y < y2) { continue; } // prevent negative height
 
+        if (plotUtils.rangeAssert([x1, x2, y1, y2])) {
+          eleprops.length = 0;
+          return;
+        }
+
         var id = this.id + "_" + i;
         var prop = {
           "id" : id,
-          "iidx" : this.index,
-          "eidx" : i,
+          "idx" : this.index,
+          "ele" : ele,
           "x" : x1,
           "y" : y2,
           "w" : sw,

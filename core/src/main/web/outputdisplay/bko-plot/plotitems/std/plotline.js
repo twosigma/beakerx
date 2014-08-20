@@ -111,7 +111,7 @@
           tipids = this.tipIds;
       var mapX = scope.data2scrX,
           mapY = scope.data2scrY;
-      var pstr = "", skipped = false;
+      var pstr = "";
 
       eleprops.length = 0;
 
@@ -124,18 +124,20 @@
           else pstr += "C";
         }
         var x = mapX(ele.x), y = mapY(ele.y);
-        if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
-          skipped = true;
-          break;
+
+        if (plotUtils.rangeAssert([x, y])) {
+          eleprops.length = 0;
+          return;
         }
+
         var nxtp = x + "," + y + " ";
 
         if (focus.yl <= ele.y && ele.y <= focus.yr) {
           var id = this.id + "_" + i;
           var prop = {
             "id" : id,
-            "iidx" : this.index,
-            "eidx" : i,
+            "idx" : this.index,
+            "ele" : ele,
             "isresp" : true,
             "cx" : x,
             "cy" : y,
@@ -149,16 +151,20 @@
         if (i < this.vindexR) {
           if (this.interpolation === "none") {
             var ele2 = eles[i + 1];
-            nxtp += mapX(ele.x) + "," + mapY(ele.y) + " " + mapX(ele2.x) + "," + mapY(ele.y) + " ";
+            var x2 = mapX(ele2.x);
+
+            if (plotUtils.rangeAssert([x2])) {
+              eleprops.length = 0;
+              return;
+            }
+
+            nxtp += x + "," +y + " " + x2 + "," + y + " ";
+
           } else if (this.interpolation === "curve") {
             // TODO curve implementation
           }
         }
         pstr += nxtp;
-      }
-
-      if (skipped === true) {
-        console.error("data not shown due to too large coordinate");
       }
       if (pstr.length > 0) {
         this.itemProps.d = pstr;

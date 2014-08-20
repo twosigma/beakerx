@@ -18,10 +18,39 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotConstband = function(data){
-      this.elements = data.elements;
-      delete data.elements;
-      $.extend(true, this, data); // copy properties to itself
+      _(this).extend(data); // copy properties to itself
       this.format();
+    };
+
+    PlotConstband.prototype.plotClass = "plot-constband";
+
+    PlotConstband.prototype.format = function(){
+      this.itemProps = {
+        "id" : this.id,
+        "fi" : this.color,
+        "fi_op": this.color_opacity,
+        "st" : this.stroke,
+        "st_op": this.stroke_opacity,
+        "st_w" : this.stroke_width,
+        "st_da" : this.stroke_dasharray
+      };
+
+      this.elementProps = [];
+      for (var i = 0; i < this.elements.length; i++) {
+        var ele = this.elements[i];
+        var line = {
+          "id" : this.id + "_" + i,
+          "fi" : ele.color,
+          "fi_op" : ele.color_opacity,
+          "st" : ele.stroke,
+          "st_op" : ele.storke_opacity,
+          "st_w" : ele.stroke_width,
+          "st_da" : ele.stroke_dasharray
+        };
+        this.elementProps.push(line);
+      }
+
+      this.pipe = [];
     };
 
     PlotConstband.prototype.render = function(scope){
@@ -72,41 +101,6 @@
           ele.y2 = yAxis.getPercent(ele.y2);
         }
       }
-      // createTips() is not called because there would be no tips
-    };
-
-    PlotConstband.prototype.createTips = function() {
-      // do nothing and not called
-    };
-
-    PlotConstband.prototype.format = function(){
-      this.itemProps = {
-        "id" : this.id,
-        "cls" : "plot-constband",
-        "fi" : this.color,
-        "fi_op": this.color_opacity,
-        "st" : this.stroke,
-        "st_op": this.stroke_opacity,
-        "st_w" : this.stroke_width,
-        "st_da" : this.stroke_dasharray
-      };
-
-      this.elementProps = [];
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var line = {
-          "id" : this.id + "_" + i,
-          "fi" : ele.color,
-          "fi_op" : ele.color_opacity,
-          "st" : ele.stroke,
-          "st_op" : ele.storke_opacity,
-          "st_w" : ele.stroke_width,
-          "st_da" : ele.stroke_dasharray
-        };
-        this.elementProps.push(line);
-      }
-
-      this.pipe = [];
     };
 
     PlotConstband.prototype.filter = function(scope) {
@@ -136,7 +130,7 @@
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
 
-        // TODO how to distribute work between draw and jq update?
+        // does not need range assert, clipped directly
         if (ele.type === "x") {
           if (ele.x > focus.xr || ele.x2 < focus.xl) {
             continue;
@@ -194,7 +188,7 @@
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.cls; })
+          .attr("class", this.plotClass)
           .style("fill", function(d) { return d.fi; })
           .style("fill-opacity", function(d) { return d.fi_op; })
           .style("stroke", function(d) { return d.st; })
@@ -209,7 +203,7 @@
       itemsvg.selectAll("rect")
         .data(pipe, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.cls; })
+        // does not need resp class
         .style("fill", function(d) { return d.fi; })
         .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })

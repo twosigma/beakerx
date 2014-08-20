@@ -18,10 +18,35 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotConstline = function(data){
-      this.elements = data.elements;
-      delete data.elements;
-      $.extend(true, this, data); // copy properties to itself
+      _(this).extend(data); // copy properties to itself
       this.format();
+    };
+
+    PlotConstline.prototype.plotClass = "plot-constline";
+
+    PlotConstline.prototype.format = function(){
+      this.itemProps = {
+        "id" : this.id,
+        "st" : this.color,
+        "st_op": this.color_opacity,
+        "st_w" : this.width,
+        "st_da" : this.stroke_dasharray
+      };
+
+      this.elementProps = [];
+      for (var i = 0; i < this.elements.length; i++) {
+        var ele = this.elements[i];
+        var line = {
+          "id" : this.id + "_" + i,
+          "lbid" : this.id + "_" + i + "l",
+          "st" : ele.color,
+          "st_op" : ele.color_opacity,
+          "st_w" : ele.width,
+          "st_da" : ele.stroke_dasharray,
+          "bg_clr" : ele.color == null ? this.color : ele.color
+        };
+        this.elementProps.push(line);
+      }
     };
 
     PlotConstline.prototype.render = function(scope){
@@ -70,37 +95,6 @@
           ele.y = yAxis.getPercent(ele.y);
         }
       }
-      // createTips() is not called because there would be no tips
-    };
-
-    PlotConstline.prototype.createTips = function() {
-      // do nothing and not called
-    };
-
-    PlotConstline.prototype.format = function(){
-      this.itemProps = {
-        "id" : this.id,
-        "cls" : "plot-constline",
-        "st" : this.color,
-        "st_op": this.color_opacity,
-        "st_w" : this.width,
-        "st_da" : this.stroke_dasharray
-      };
-
-      this.elementProps = [];
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var line = {
-          "id" : this.id + "_" + i,
-          "lbid" : this.id + "_" + i + "l",
-          "st" : ele.color,
-          "st_op" : ele.color_opacity,
-          "st_w" : ele.width,
-          "st_da" : ele.stroke_dasharray,
-          "bg_clr" : ele.color == null ? this.color : ele.color
-        };
-        this.elementProps.push(line);
-      }
     };
 
     PlotConstline.prototype.filter = function(scope) {
@@ -131,8 +125,8 @@
         var ele = eles[i];
 
         this.pipe.push(eleprops[i]);
+        // does not need range assert, clipped directly
 
-        // TODO how to distribute work between draw and jq update?
         if (ele.type === "x") {
           if (ele.x < focus.xl || ele.x > focus.xr) {
             this.rmlabelpipe.push(i);
@@ -194,7 +188,7 @@
         svg.selectAll("g")
           .data([props], function(d){ return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.cls; })
+          .attr("class", this.plotClass)
           .style("stroke", function(d) { return d.st; })
           .style("stroke-opacity", function(d) { return d.st_op; })
           .style("stroke-width", function(d) { return d.st_w; })
@@ -207,7 +201,7 @@
       svgitem.selectAll("line")
         .data(pipe, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.cls; })
+        //.attr("class", this.respClass) // does not need resp
         .style("stroke", function(d) { return d.st; })
         .style("stroke-opacity", function(d) { return d.st_op; })
         .style("stroke-width", function(d) { return d.st_w; })

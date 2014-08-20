@@ -18,19 +18,28 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotStem = function(data) {
-      this.elements = data.elements;
-      delete data.elements;
-      $.extend(true, this, data);
+      _(this).extend(data);
       this.format();
+    };
 
+    PlotStem.prototype.plotClass = "plot-stem";
+    PlotStem.prototype.respClass = "plot-resp";
+
+    PlotStem.prototype.format = function() {
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
       } else {
         this.tip_color = "gray";
       }
+      this.itemProps = {
+        "id" : this.id,
+        "st" : this.color,
+        "st_op": this.color_opacity,
+        "st_w": this.width,
+        "st_da": this.stroke_dasharray
+      };
+      this.elementProps = [];
     };
-
-    PlotStem.prototype.respclass = "plot-resp";
 
     PlotStem.prototype.render = function(scope) {
       if (this.shown === false) {
@@ -91,19 +100,6 @@
       return plotUtils.createTipString(tip);
     };
 
-    PlotStem.prototype.format = function() {
-
-      this.itemProps = {
-        "id" : this.id,
-        "cls" : "plot-stem",
-        "st" : this.color,
-        "st_op": this.color_opacity,
-        "st_w": this.width,
-        "st_da": this.stroke_dasharray
-      };
-
-      this.elementProps = [];
-    };
 
     PlotStem.prototype.filter = function(scope) {
       var eles = this.elements;
@@ -124,28 +120,36 @@
     };
 
     PlotStem.prototype.prepare = function(scope) {
-      var eles = this.elements, eleprops = this.elementProps;
-      var mapX = scope.data2scrX, mapY = scope.data2scrY;
+      var eles = this.elements,
+          eleprops = this.elementProps;
+      var mapX = scope.data2scrX,
+          mapY = scope.data2scrY;
 
       eleprops.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
+        var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
+
+        if (plotUtils.rangeAssert([x, y, y2])) {
+          eleprops.length = 0;
+          return;
+        }
+
         var prop = {
           "id" : this.id + "_" + i,
-          "iidx" : this.index,
-          "eidx" : i,
-          "cls" : this.respclass,
+          "idx" : this.index,
+          "ele" : ele,
           "st" : ele.color,
           "st_op": ele.color_opacity,
           "st_w" : ele.width,
           "st_da": ele.stroke_dasharray,
-          "x1" : mapX(ele.x),
-          "y1" : mapY(ele.y),
-          "x2" : mapX(ele.x),
-          "y2" : mapY(ele.y2),
-          "t_x" : mapX(ele.x),
-          "t_y" : mapY(ele.y)
+          "x1" : x,
+          "y1" : y,
+          "x2" : x,
+          "y2" : y2,
+          "t_x" : x,
+          "t_y" : y
         };
         eleprops.push(prop);
       }
@@ -160,7 +164,7 @@
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.cls; })
+          .attr("class", this.plotClass)
           .style("stroke", function(d) { return d.st; })
           .style("stroke-opacity", function(d) { return d.st_op; })
           .style("stroke-dasharray", function(d) { return d.st_da; })
@@ -173,7 +177,7 @@
       itemsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.cls; })
+        .attr("class", this.respClass)
         .style("stroke", function(d) { return d.st; })
         .style("stroke-opacity", function(d) { return d.st_op; })
         .style("stroke-dasharray", function(d) { return d.st_da; })

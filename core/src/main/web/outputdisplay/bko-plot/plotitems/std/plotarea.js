@@ -19,17 +19,32 @@
   var retfunc = function(plotUtils) {
 
     var PlotArea = function(data){
-      this.elements = data.elements;
-      delete data.elements;
-      $.extend(true, this, data);
+      _(this).extend(data); // copy properties to itself
       this.format();
-
-      this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
     };
 
     PlotArea.prototype.respw = 5;
     PlotArea.prototype.respminh = 5;
-    PlotArea.prototype.respclass = "plot-resp plot-respstem";
+    PlotArea.prototype.plotClass = "plot-area";
+    PlotArea.prototype.respClass = "plot-resp plot-respstem";
+
+    PlotArea.prototype.format = function(){
+      if (this.color != null) {
+        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      } else {
+        this.tip_color = "gray";
+      }
+      this.itemProps = {
+        "id" : this.id,
+        "fi" : this.color,
+        "fi_op": this.color_opacity,
+        "st": this.stroke,
+        "st_w": this.stroke_width,
+        "st_op": this.stroke_opacity,
+        "pts" : ""
+      };
+      this.elementProps = [];
+    };
 
     PlotArea.prototype.render = function(scope){
       if (this.shown === false) {
@@ -91,20 +106,6 @@
       return plotUtils.createTipString(tip);
     };
 
-    PlotArea.prototype.format = function(){
-      this.itemProps = {
-        "id" : this.id,
-        "cls" : "plot-area",
-        "fi" : this.color,
-        "fi_op": this.color_opacity,
-        "st": this.stroke,
-        "st_w": this.stroke_width,
-        "st_op": this.stroke_opacity,
-        "pts" : ""
-      };
-      this.elementProps = [];
-    };
-
     PlotArea.prototype.filter = function(scope) {
       var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
@@ -127,19 +128,21 @@
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
-      var pstr = "", skipped = false;
       var mapX = scope.data2scrX,
           mapY = scope.data2scrY;
+      var pstr = "";
 
       eleprops.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
-        if (Math.abs(ele.x) > 1E6 || Math.abs(ele.y) > 1E6) {
-          skipped = true;
-          break;
+
+        if (plotUtils.rangeAssert([x, y, y2])) {
+          eleprops.length = 0;
+          return;
         }
+
         if (this.interpolation === "linear") {
           pstr += x + "," + y + " ";
         } else if (this.interpolation === "none" && i < this.vindexR) {
@@ -156,9 +159,8 @@
           var id = this.id + "_" + i;
           var prop = {
             "id" : id,
-            "iidx" : this.index,
-            "eidx" : i,
-            "cls" : this.respclass,
+            "idx" : this.index,
+            "ele" : ele,
             "isresp" : true,
             "w" : this.respw,
             "x" : x - this.respw / 2,
@@ -174,24 +176,21 @@
 
       for (var i = this.vindexR; i >= this.vindexL; i--) {
         var ele = eles[i];
-        var x = mapX(ele.x), y2 = ele.y2 == null ? mapY(focus.yl) : mapY(ele.y2);
-        if (Math.abs(y2) > 1E6) { // x is already checked above
-          skipped = true;
-          break;
-        }
+
         if (this.interpolation === "linear") {
           pstr += x + "," + y2 + " ";
         } else if (this.interpolation === "none" && i < this.vindexR) {
           var ele2 = eles[i + 1];
           var x2 = mapX(ele2.x);
+
+          if (plotUtils.rangeAssert([x2])) {
+            eleprops.length = 0;
+            return;
+          }
+
           pstr += x2 + "," + y2 + " " + x + "," + y2 + " ";
         }
       }
-
-      if (skipped === true) {
-        console.error("data not shown due to too large coordinate");
-      }
-
       if (pstr.length > 0) {
         this.itemProps.pts = pstr;
       }
@@ -212,7 +211,7 @@
 
       itemsvg.selectAll("polygon")
         .data([props]).enter().append("polygon")
-        .attr("class", function(d) { return d.cls; })
+        .attr("class", this.plotClass)
         .style("fill", function(d) { return d.fi; })
         .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })
@@ -228,7 +227,7 @@
         itemsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; }).enter().append("rect")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.cls; })
+          .attr("class", this.respClass)
           .attr("width", function(d) { return d.w; })
           .style("stroke", item.tip_color);
 

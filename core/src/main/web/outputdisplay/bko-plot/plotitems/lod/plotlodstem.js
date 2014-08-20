@@ -126,13 +126,14 @@
       if (itemsvg.select("#" + groupid).empty()) {
         itemsvg.selectAll("#" + groupid)
           .data([props], function(d){ return d.id; }).enter().append("g")
-          .attr("id", groupid)
-          .style("class", this.plotClass)
-          .style("stroke", function(d) { return d.st; })
-          .style("stroke-opacity", function(d) { return d.st_op; })
-          .style("stroke-width", function(d) { return d.st_w; })
-          .style("stroke-dasharray", function(d) { return d.st_da; });
+          .attr("id", groupid);
       }
+      itemsvg.select("#" + groupid)
+        .style("class", this.plotClass)
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-width", function(d) { return d.st_w; })
+        .style("stroke-dasharray", function(d) { return d.st_da; });
 
       var groupsvg = itemsvg.select("#" + groupid);
 

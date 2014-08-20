@@ -129,10 +129,10 @@
 
         if (ele.type === "x") {
           if (ele.x < focus.xl || ele.x > focus.xr) {
-            this.rmlabelpipe.push(i);
+            this.rmlabelpipe.push(eleprops[i]);
             continue;
           } else {
-            this.labelpipe.push(i);
+            this.labelpipe.push(eleprops[i]);
           }
           var x = mapX(ele.x);
           _(eleprops[i]).extend({
@@ -153,10 +153,10 @@
 
         } else if (ele.type === "y") {
           if (ele.y < focus.yl || ele.y > focus.yr) {
-            this.rmlabelpipe.push(i);
+            this.rmlabelpipe.push(eleprops[i]);
             continue;
           } else {
-            this.labelpipe.push(i);
+            this.labelpipe.push(eleprops[i]);
           }
           var y = mapY(ele.y);
           _(eleprops[i]).extend({
@@ -187,13 +187,15 @@
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
           .data([props], function(d){ return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", this.plotClass)
-          .style("stroke", function(d) { return d.st; })
-          .style("stroke-opacity", function(d) { return d.st_op; })
-          .style("stroke-width", function(d) { return d.st_w; })
-          .style("stroke-dasharray", function(d) { return d.st_da; });
+          .attr("id", function(d) { return d.id; });
       }
+      svg.select("#" + this.id)
+        .attr("class", this.plotClass)
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-width", function(d) { return d.st_w; })
+        .style("stroke-dasharray", function(d) { return d.st_da; });
+
 
       var svgitem = svg.select("#" + this.id);
       svgitem.selectAll("line")
@@ -215,12 +217,14 @@
 
       // add and remove labels
       for (var i = 0; i < this.labelpipe.length; i++) {
-        var props = eleprops[i], lbid = props.lbid;
+        var props = this.labelpipe[i], lbid = props.lbid;
 
         var box = scope.jqcontainer.find("#" + lbid);
         if (box.empty()) {
-          box = $("<div id=" + lbid + " class='plot-constlabel'></div>")
+          box = $("<div></div>")
             .appendTo(scope.jqcontainer)
+            .attr("id", lbid)
+            .attr("class", "plot-constlabel")
             .css("background-color", props.bg_clr)
             .text(props.lb_txt);
         }
@@ -232,17 +236,13 @@
       }
 
       for (var i = 0; i < this.rmlabelpipe.length; i++) {
-        scope.jqcontainer.find("#" + eleprops[i].lbid).remove();
+        scope.jqcontainer.find("#" + this.rmlabelpipe[i].lbid).remove();
       }
 
     };
 
     PlotConstline.prototype.clear = function(scope) {
-      var eleprops = this.elementProps;
-      scope.maing.select("#" + this.id).remove();
-      for (var i = 0; i < this.elements.length; i++) {
-        scope.jqcontainer.find("#" + eleprops.lbid).remove();
-      }
+      scope.maing.select("#" + this.id).selectAll("*").remove();
     };
 
     return PlotConstline;

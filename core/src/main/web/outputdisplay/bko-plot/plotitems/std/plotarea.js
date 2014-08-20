@@ -224,7 +224,7 @@
     };
 
     PlotArea.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
+      scope.maing.select("#" + this.id).selectAll("*").remove();
       this.clearTips(scope);
     };
 

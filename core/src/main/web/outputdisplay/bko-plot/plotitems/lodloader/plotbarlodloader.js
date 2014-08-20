@@ -33,10 +33,8 @@
       this.lodTypeIndex = 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
-      var data = {};
-      _(data).extend(this.datacopy);  // make a copy, we need to change
-      // create the two plotters
-      this.plotter = new PlotBar(data);
+      // create the plotters
+      this.plotter = new PlotBar(this.datacopy);
       this.createLodPlotter();
 
       // a few switches and constants
@@ -229,7 +227,7 @@
     };
 
     PlotBarLodLoader.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
+      scope.maing.select("#" + this.id).selectAll("*").remove();
       if (this.lodType === "bar") {
         this.lodplotter.clearTips(scope);
       } else if (this.lodType === "box") {

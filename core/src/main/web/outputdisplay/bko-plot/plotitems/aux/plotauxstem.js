@@ -92,12 +92,13 @@
         // if special coloring is needed, it is set from the loader
         itemsvg.selectAll("#" + groupid)
           .data([props]).enter().append("g")
-          .attr("id", groupid)
-          .style("stroke", function(d) { return d.st; })
-          .style("stroke-opacity", function(d) { return d.st_op; })
-          .style("stroke-width", function(d) { return d.st_w; })
-          .style("stroke-dasharray", function(d) { return d.st_da; });
+          .attr("id", groupid);
       }
+      itemsvg.select("#" + groupid)
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-width", function(d) { return d.st_w; })
+        .style("stroke-dasharray", function(d) { return d.st_da; });
 
       var groupsvg = itemsvg.select("#" + groupid);
 

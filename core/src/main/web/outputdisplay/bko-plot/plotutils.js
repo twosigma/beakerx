@@ -24,15 +24,17 @@
           xr: -1E100,
           yr: -1E100
         };
-        var visibleData = 0;
+        var visibleItem = 0, legendableItem = 0;
         for (var i = 0; i < data.length; i++) {
+          if (data[i].legend != null && data[i].legend != "") {
+            legendableItem++;
+          }
           if (data[i].shown === false) { continue; }
-          visibleData++;
-
+          visibleItem++;
           var itemrange = data[i].getRange();
           this.updateRange(datarange, itemrange);
         }
-        if (visibleData === 0) {
+        if (visibleItem === 0) {
           datarange.xl = datarange.yl = 0;
           datarange.xr = datarange.yr = 1;
         }
@@ -40,10 +42,11 @@
         datarange.yspan = datarange.yr - datarange.yl;
         return {
           "datarange" : datarange,
-          "visibleData": visibleData
+          "visibleItem" : visibleItem,
+          "legendableItem" : legendableItem
         };
       },
-      getInitFocus : function(model) {
+      getDefaultFocus : function(model) {
         var ret = this.getDataRange(model.data);
         var range = ret.datarange, margin = model.margin;
         var focus = {
@@ -66,10 +69,10 @@
         }
         focus.xspan = focus.xr - focus.xl;
         focus.yspan = focus.yr - focus.yl;
-        return {
-          "initFocus" : focus,
-          "visibleData" : ret.visibleData
-        };
+        var result = {};
+        result.defaultFocus = focus;
+        _(result).extend(_.omit(ret, "datarange"));
+        return result;
       },
 
       plotGridlines: function(scope) {

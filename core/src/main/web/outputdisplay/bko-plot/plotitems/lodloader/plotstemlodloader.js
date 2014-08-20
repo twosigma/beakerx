@@ -34,10 +34,8 @@
       this.lodTypeIndex = 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
-      var data = {};
-      _(data).extend(this.datacopy);  // make a copy, we need to change
-      // create the two plotters
-      this.plotter = new PlotStem(data);
+      // create the plotters
+      this.plotter = new PlotStem(this.datacopy);
       this.createLodPlotter();
 
       // a few switches and constants
@@ -244,7 +242,7 @@
     };
 
     PlotStemLodLoader.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
+      scope.maing.select("#" + this.id).selectAll("*").remove();
       if (this.lodType === "bar") {
         this.lodplotter.clearTips(scope);
       } else if (this.lodType === "box") {

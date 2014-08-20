@@ -151,11 +151,13 @@
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", this.plotClass)
-          .style("fill", function(d) { return d.fi; })
-          .style("fill_opacity", function(d) { return d.fi_op; });
+          .attr("id", function(d) { return d.id; });
       }
+      svg.select("#" + this.id)
+        .attr("class", this.plotClass)
+        .style("fill", function(d) { return d.fi; })
+        .style("fill_opacity", function(d) { return d.fi_op; });
+
 
       var itemsvg = svg.select("#" + this.id);
       itemsvg.selectAll("text")
@@ -173,7 +175,7 @@
     };
 
     PlotText.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
+      scope.maing.select("#" + this.id).selectAll("*").remove();
       this.clearTips(scope);
     };
 

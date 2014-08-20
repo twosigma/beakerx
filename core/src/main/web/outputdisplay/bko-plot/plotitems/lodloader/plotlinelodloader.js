@@ -32,7 +32,8 @@
       // create plot type index
       this.lodTypeIndex = 0;
       this.lodType = this.lodTypes[this.lodTypeIndex];
-      // create the two plotters
+
+      // create the plotters
       this.plotter = new PlotLine(this.datacopy);
       this.createLodPlotter();
 
@@ -182,7 +183,7 @@
     };
 
     PlotLineLodLoader.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
+      scope.maing.select("#" + this.id).selectAll("*").remove();
       if (this.lodType === "off") {
         this.plotter.clearTips(scope);
       } else {

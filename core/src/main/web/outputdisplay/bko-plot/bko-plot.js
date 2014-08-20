@@ -189,9 +189,10 @@
           } // not stdmodel here
         };
         scope.calcRange = function() {
-          var ret = plotUtils.getInitFocus(scope.stdmodel);
-          scope.visibleData = ret.visibleData;
-          scope.defaultFocus = ret.initFocus;
+          var ret = plotUtils.getDefaultFocus(scope.stdmodel);
+          scope.visibleItem = ret.visibleItem;
+          scope.legendableItem = ret.legendableItem;
+          scope.defaultFocus = ret.defaultFocus;
           scope.fixFocus(scope.defaultFocus);
         };
         scope.initRange = function() {
@@ -276,7 +277,7 @@
               "LOD hint is displayed at the right of the item legend.",
               "LOD by default runs in auto mode. In auto mode, " +
               "LOD will be automatically turned off when you reach detailed enough zoom level.",
-              "To switch LOD type, left click the LOD hint." +
+              "To switch LOD type, left click the LOD hint. " +
               "To turn off LOD, right click the LOD hint." ]);
           }
         };
@@ -563,7 +564,7 @@
             scope.legendResetPosition = false;
           }
           legend.css(scope.legendPosition);
-          if (scope.visibleData > 1) {  // skip "All" check when there is only one line
+          if (scope.legendableItem > 1) {  // skip "All" check when there is only one line
             var unit = $("<div></div>").appendTo(legend)
               .attr("id", "legend_all");
             $("<input type='checkbox'></input>").appendTo(unit)
@@ -615,17 +616,25 @@
 
             if (dat.isLodItem === true) {
               var lodhint = $("<span></span>").appendTo(unit)
+                .attr("id", "hint_" + i)
                 .css("background-color", "white");
               var light = $("<span></span>").appendTo(lodhint)
+                .attr("id", "light")
                 .attr("class", "plot-legendlod");
               var type = $("<span></span>").appendTo(lodhint)
+                .attr("id", "type")
                 .attr("class", "plot-legendlodhint")
                 .css("min-width", "3em");
               var auto = $("<span></span>").appendTo(lodhint)
+                .attr("id", "auto")
                 .attr("class", "plot-legendlodhint")
                 .css("min-width", "2em");
 
               var setlodhint = function(dat) {
+                var hint = legend.find("#hint_" + dat.index);
+                var light = hint.find("#light"),
+                    type = hint.find("#type"),
+                    auto = hint.find("#auto");
                 // lod hint light
                 light.attr("title",
                   dat.lodOn === true ? "LOD is on" : "")
@@ -641,8 +650,8 @@
                   .text(dat.lodType === "off" ? "" : (dat.lodAuto === true ? "auto" : "on"));
               };
               setlodhint(dat);
-              lodhint.on('mousedown', {"index": i}, function(e) {
-                var dat = data[e.data.index];
+              lodhint.on('mousedown', {"dat" : dat}, function(e) {
+                var dat = e.data.dat;
                 e.stopPropagation();
                 if (e.which === 3) {
                   if (dat.lodType === "off") { return; }
@@ -659,9 +668,9 @@
                     }, null);
                 }
               });
-              type.on('mousedown', {"index": i}, function(e) {
+              type.on('mousedown', {"dat" : dat}, function(e) {
                 if (e.which === 3) { return; }
-                var dat = data[e.data.index];
+                var dat = e.data.dat;
                 if (dat.lodType === "off") {
                   dat.toggleLod(scope);
                 } else {
@@ -671,9 +680,9 @@
                 scope.update();
                 setlodhint(dat);
               });
-              auto.on('mousedown', {"index": i}, function(e) {
+              auto.on('mousedown', {"dat" : dat}, function(e) {
                 if (e.which === 3) { return; }
-                var dat = data[e.data.index];
+                var dat = e.data.dat;
                 if (dat.lodType === "off") return;
                 dat.toggleAuto(scope);
                 scope.update();

@@ -202,8 +202,8 @@
         for (var i = 0; i < count; i++) {
           elements.push({
             x : this.elementSamples[i].x,
-            min : this.elementSamples[i].min,
-            max : this.elementSamples2[i].max,
+            min : this.elementSamples[i].avg,
+            max : this.elementSamples2[i].avg,
             hash : this.elementSamples[i].hash,
             xl : this.elementSamples[i].xl,
             xr : this.elementSamples[i].xr
@@ -226,13 +226,13 @@
 
     PlotAreaLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
-      if (this.lodType === "off") {
-        this.plotter.clearTips(scope);
-      } else if (this.lodType === "area") {
+      if (this.lodType === "area") {
         this.lodplotter.clearTips(scope);
       } else if (this.lodType === "river") {
         this.lodplotter.clearTips(scope);
         this.lodplotter2.clearTips(scope);
+      } else {
+         this.plotter.clearTips(scope);
       }
     };
 
@@ -249,9 +249,12 @@
       }
       tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
       tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
-      tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
-      tip.max = plotUtils.getTipStringPercent(ele.max, yAxis);
-      if (ele.avg != null) {
+      if (this.lodType === "area") {
+        tip.avg_y = plotUtils.getTipStringPercent(ele.min, yAxis);
+        tip.avg_y2 = plotUtils.getTipStringPercent(ele.max, yAxis);
+      } else if (this.lodType === "river") {
+        tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
+        tip.max = plotUtils.getTipStringPercent(ele.max, yAxis);
         tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis);
       }
       return plotUtils.createTipString(tip);

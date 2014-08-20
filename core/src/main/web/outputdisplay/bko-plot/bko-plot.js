@@ -105,6 +105,9 @@
           scope.gridg = d3.select(element[0]).select("#gridg");
           scope.labelg = d3.select(element[0]).select("#labelg");
 
+          // set some constants
+
+          scope.renderFixed = 1;
           scope.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
             bottomLayoutMargin : 30,
             topLayoutMargin : 0,
@@ -142,6 +145,7 @@
             x : -1,
             y : -1
           };
+
           scope.showAllItems = true;
           if (model.xAxis.axisLabel != null) {
             scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * 2;
@@ -1067,10 +1071,10 @@
             d3.scale.linear().domain([lMargin, W-rMargin]).range([0, 1]);
 
           scope.data2scrXi = function(val) {
-            return Number(scope.data2scrX(val).toFixed(0));
+            return Number(scope.data2scrX(val).toFixed(scope.renderFixed));
           };
           scope.data2scrYi = function(val) {
-            return Number(scope.data2scrY(val).toFixed(0));
+            return Number(scope.data2scrY(val).toFixed(scope.renderFixed));
           };
         };
         scope.standardizeData = function() {

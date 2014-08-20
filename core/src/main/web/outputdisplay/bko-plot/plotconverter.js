@@ -170,9 +170,16 @@
             delete item.outlineOpacity;
           }
 
+          if (item.color_opacity == null) {
+            item.color_opacity = 1.0; // default show fully
+          }
+          if (item.stroke_opacity == null) {
+            // default show based on whether stroke is set
+            item.stroke_opacity = item.stroke == null ? 0.0 : 1.0;
+          }
+
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
-
 
             if (ele.outlineColor != null) {
               ele.stroke = ele.outlineColor;

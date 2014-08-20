@@ -25,8 +25,8 @@
       this.format(lodthresh);
     };
     // class constants
-    PlotBarLodLoader.prototype.lodTypes = ["box"];
-    PlotBarLodLoader.prototype.lodSteps = [10];
+    PlotBarLodLoader.prototype.lodTypes = ["bar", "box"];
+    PlotBarLodLoader.prototype.lodSteps = [10, 10];
 
     PlotBarLodLoader.prototype.format = function() {
       // create plot type index
@@ -76,15 +76,18 @@
 
     PlotBarLodLoader.prototype.createLodPlotter = function() {
       var data = {};
-      if (this.lodType === "box") {
-        _(data).extend(this.datacopy);
-
+      _(data).extend(this.datacopy);
+      if (this.lodType === "bar") {
+        this.lodplotter = new PlotLodBox(data);
+        this.lodplotter.setWidthShrink(1);
+      } else if (this.lodType === "box") {
         // lod boxes are plotted with special coloring (inversed color)
-        data.stroke = data.color;
         data.stroke_opacity = 1.0;
         data.color_opacity = .25;  // set box to be transparent
         this.lodplotter = new PlotLodBox(data);
         this.lodplotter2 = new PlotLodBox(data);
+        this.lodplotter.setWidthShrink(1);
+        this.lodplotter2.setWidthShrink(1);
 
         _(data).extend(this.datacopy); // normal color for aux box
         this.auxplotter = new PlotAuxBox(data);
@@ -127,13 +130,17 @@
       }
       this.lodOn = lod;
 
-      if (this.lodOn === false) {
-        this.plotter.render(scope);
-      } else {
+      if (this.lodOn === true) {
         this.sample(scope);
-        this.auxplotter.render(scope, this.elementAuxes, "a");
-        this.lodplotter.render(scope, this.elementSamples, "y");
-        this.lodplotter2.render(scope, this.elementSamples2, "y2");
+        if (this.lodType === "bar") {
+          this.lodplotter.render(scope, this.elementSamples);
+        } else if (this.lodType === "box") {
+          this.auxplotter.render(scope, this.elementAuxes, "a");
+          this.lodplotter.render(scope, this.elementSamples, "y");
+          this.lodplotter2.render(scope, this.elementSamples2, "y2");
+        }
+      } else {
+        this.plotter.render(scope);
       }
     };
 
@@ -186,24 +193,46 @@
 
       this.elementSamples = this.sampler.sample(xl, xr, this.sampleStep);
       this.elementSamples2 = this.sampler2.sample(xl, xr, this.sampleStep);
-      this.elementAuxes = [];
       var count = this.elementSamples.length;
-      // prepare the aux box in between
-      for (var i = 0; i < count; i++) {
-        this.elementAuxes.push({
-          x : this.elementSamples[i].xl,
-          x2 : this.elementSamples[i].xr,
-          y : this.elementSamples[i].max,
-          y2 : this.elementSamples2[i].min
-        });
+
+      if (this.lodType === "bar") {
+        var elements = [];
+        for (var i = 0; i < count; i++) {
+          elements.push({
+            x : this.elementSamples[i].xl,
+            x2 : this.elementSamples[i].xr,
+            min : this.elementSamples[i].avg,
+            max : this.elementSamples2[i].avg,
+            hash: this.elementSamples[i].hash,
+            xl : this.elementSamples[i].xl,
+            xr : this.elementSamples[i].xr
+          });
+        }
+        this.elementSamples = elements;
+      } else if (this.lodType === "box") {
+        this.elementAuxes = [];
+        // prepare the aux box in between
+        for (var i = 0; i < count; i++) {
+          this.elementAuxes.push({
+            x : this.elementSamples[i].xl,
+            x2 : this.elementSamples[i].xr,
+            y : this.elementSamples[i].max,
+            y2 : this.elementSamples2[i].min
+          });
+        }
       }
     };
 
     PlotBarLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
-      this.plotter.clearTips(scope);
-      this.lodplotter.clearTips(scope);
-      this.lodplotter2.clearTips(scope);
+      if (this.lodType === "bar") {
+        this.lodplotter.clearTips(scope);
+      } else if (this.lodType === "box") {
+        this.lodplotter.clearTips(scope);
+        this.lodplotter2.clearTips(scope);
+      } else {
+        this.plotter.clearTips(scope);
+      }
     };
 
     PlotBarLodLoader.prototype.createTip = function(ele, g) {
@@ -212,24 +241,21 @@
       }
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
-      var valxl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6),
-          valxr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6),
-          valmin = plotUtils.getTipStringPercent(ele.min, yAxis),
-          valmax = plotUtils.getTipStringPercent(ele.max, yAxis),
-          valavg = plotUtils.getTipStringPercent(ele.avg, yAxis);
       var tip = {};
-      var sub = "sample";
-      if (g != null) {
-        sub += " " + g;
-      }
+      var sub = "sample" + (g != null ? " " + g : "");
       if (this.legend != null) {
         tip.title = this.legend + " (" + sub + ")";
       }
-      tip.xl = valxl;
-      tip.xr = valxr;
-      tip.min = valmin;
-      tip.max = valmax;
-      tip.avg = valavg;
+      tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
+      tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
+      if (this.lodType === "bar") {
+        tip.avg_y = plotUtils.getTipStringPercent(ele.min, yAxis);
+        tip.avg_y2 = plotUtils.getTipStringPercent(ele.max, yAxis);
+      } else if (this.lodType === "box") {
+        tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
+        tip.max = plotUtils.getTipStringPercent(ele.max, yAxis);
+        tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis);
+      }
       return plotUtils.createTipString(tip);
     };
 

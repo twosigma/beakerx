@@ -206,12 +206,10 @@
 .plot-lodbox {
   stroke: black;
   stroke-width: 1;
-  stroke-opacity: 0.75;
-  fill: white;
-  fill-opacity: 0.25;
 }
 
 .plot-lodboxline {
   stroke: black;
-  stroke-width: 2;
+  stroke-width: 1.5;
+  pointer-events: none;
 }

@@ -30,7 +30,7 @@
 
     PlotLineLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 2;
+      this.lodTypeIndex = 0;
       this.lodType = this.lodTypes[this.lodTypeIndex];
       // create the two plotters
       this.plotter = new PlotLine(this.datacopy);
@@ -76,10 +76,13 @@
       if (this.lodType === "line") {
         this.lodplotter = new PlotLodLine(data);
       } else if (this.lodType === "box") {
+        data.color_opacity *= .25;
+        data.stroke_opacity = 1.0;
         this.lodplotter = new PlotLodBox(data);
+        this.lodplotter.setWidthShrink(1);
       } else if (this.lodType === "river") {
         data.stroke = data.color;
-        data.color_opacity = .25;
+        data.color_opacity *= .25;
         data.stroke_opacity = .75;
         this.lodplotter = new PlotLodRiver(data);
       }
@@ -120,11 +123,11 @@
       }
       this.lodOn = lod;
 
-      if (this.lodOn === false) {
-        this.plotter.render(scope);
-      } else {
+      if (this.lodOn === true) {
         this.sample(scope);
         this.lodplotter.render(scope, this.elementSamples);
+      } else {
+        this.plotter.render(scope);
       }
     };
 
@@ -180,8 +183,11 @@
 
     PlotLineLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
-      this.plotter.clearTips(scope);
-      this.lodplotter.clearTips(scope);
+      if (this.lodType === "off") {
+        this.plotter.clearTips(scope);
+      } else {
+        this.lodplotter.clearTips(scope);
+      }
     };
 
     PlotLineLodLoader.prototype.createTip = function(ele) {
@@ -190,20 +196,15 @@
       }
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
-      var valxl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6),
-          valxr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6),
-          valmin = plotUtils.getTipStringPercent(ele.min, yAxis),
-          valmax = plotUtils.getTipStringPercent(ele.max, yAxis),
-          valavg = plotUtils.getTipStringPercent(ele.avg, yAxis);
       var tip = {};
       if (this.legend != null) {
         tip.title = this.legend + " (sample)";
       }
-      tip.xl = valxl;
-      tip.xr = valxr;
-      tip.min = valmin;
-      tip.max = valmax;
-      tip.avg = valavg;
+      tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
+      tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
+      tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
+      tip.max = plotUtils.getTipStringPercent(ele.max, yAxis);
+      tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis);
       return plotUtils.createTipString(tip);
     };
 

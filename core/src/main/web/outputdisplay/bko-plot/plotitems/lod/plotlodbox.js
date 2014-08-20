@@ -22,7 +22,8 @@
       this.format();
     };
 
-    PlotLodBox.prototype.plotClassBox = "plot-resp plot-lodbox";
+    PlotLodBox.prototype.plotClassBox = "plot-lodbox";
+    PlotLodBox.prototype.respClass = "plot-resp";
     PlotLodBox.prototype.plotClassBoxLine = "plot-lodboxline";
 
     PlotLodBox.prototype.format = function() {
@@ -32,16 +33,21 @@
       } else {
         this.tip_color = "gray";
       }
-
+      this.widthShrink = 0;
       this.itemProps = {
         "id" : this.id,
-        "st" : this.color,
-        "st_op" : this.color_opacity,
-        "st_w" : this.width,
+        "fi" : this.color,
+        "fi_op" : this.color_opacity,
+        "st" : this.stroke,
+        "st_op" : this.stroke_opacity,
         "st_da" : this.stroke_dasharray,
         "d" : ""
       };
       this.elementProps = [];
+    };
+
+    PlotLodBox.prototype.setWidthShrink = function(shrink) {
+      this.widthShrink = shrink;
     };
 
     PlotLodBox.prototype.render = function(scope, samples, gid){
@@ -62,34 +68,46 @@
           eleprops = this.elementProps;
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
-      var skipped = false;
+      var fixed = scope.renderFixed;
 
       eleprops.length = 0;
+
+      this.avgOn = true;
 
       var samples = this.elementSamples;
       for (var i = 0; i < samples.length; i++) {
         var ele = samples[i];
         var x = mapX(ele.xl), x2 = mapX(ele.xr),
-            y = mapY(ele.max), y2 = mapY(ele.min),
-            y3 = mapY(ele.avg);
-        if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6 || Math.abs(x2) > 1E6 || Math.abs(y2) > 1E6) {
-          skipped = true;
-          break;
+            y = mapY(ele.max), y2 = mapY(ele.min);
+
+        if (ele.avg == null) {
+          this.avgOn = false;
         }
+
+
+        if (plotUtils.rangeAssert([x, x2, y, y2])) {
+          eleprops.length = 0;
+          return false;
+        }
+
         var hashid = this.id + "_" + this.zoomHash + "_" + i;
         var prop = {
           "id" : hashid,
           "idx" : this.index,
           "ele" : ele,
           "g" : gid,
-          "x" : x + 1,
+          "x" : x + this.widthShrink,
           "y" : y,
-          "w" : x2 - x - 2,
-          "h" : y2 - y,
-          "ym" : y3,
+          "w" : Number((x2 - x - this.widthShrink * 2).toFixed(fixed)),
+          "h" : Number((y2 - y).toFixed(fixed)),
+          "x2" : Number((x2 - this.widthShrink).toFixed(fixed)),
           "t_x" : x,
           "t_y" : y
         };
+        if (this.avgOn === true) {
+          var y3 = mapY(ele.avg);
+          prop.ym = y3;
+        }
         eleprops.push(prop);
       }
     };
@@ -111,25 +129,15 @@
       if (itemsvg.select("#" + groupid).empty()) {
         itemsvg.selectAll("#" + groupid)
           .data([props], function(d){ return d.id; }).enter().append("g")
-          .attr("id", groupid);
+          .attr("id", groupid)
+          .style("class", this.plotClassBox)
+          .style("fill", function(d) { return d.fi; })
+          .style("fill-opacity", function(d) { return d.fi_op; })
+          .style("stroke", function(d) { return d.st; })
+          .style("stroke-opacity", function(d) { return d.st_op; });
       }
 
       var groupsvg = itemsvg.select("#" + groupid);
-
-      // draw lines
-      groupsvg.selectAll("line")
-        .data(eleprops, function(d) { return d.id + "l"; }).exit().remove();
-      groupsvg.selectAll("line")
-        .data(eleprops, function(d) { return d.id + "l"; }).enter().append("line")
-        .attr("id", function(d) { return d.id + "l"; })
-        .attr("class", this.plotClassBoxLine)
-        .style("stroke", this.tip_color);
-      groupsvg.selectAll("line")
-        .data(eleprops, function(d) { return d.id + "l"; })
-        .attr("x1", function(d) { return d.x; })
-        .attr("x2", function(d) { return d.x + d.w; })
-        .attr("y1", function(d) { return d.ym; })
-        .attr("y2", function(d) { return d.ym; });
 
       // draw boxes
       groupsvg.selectAll("rect")
@@ -137,14 +145,31 @@
       groupsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-        .attr("class", this.plotClassBox)
-        .style("stroke", this.tip_color);
+        .attr("class", this.respClass);
       groupsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
         .attr("width", function(d) { return d.w; })
         .attr("height", function(d) { return d.h; });
+
+      if (this.avgOn === true) {
+        // draw lines
+        groupsvg.selectAll("line")
+          .data(eleprops, function(d) { return d.id + "l"; }).exit().remove();
+        groupsvg.selectAll("line")
+          .data(eleprops, function(d) { return d.id + "l"; }).enter().append("line")
+          .attr("id", function(d) { return d.id + "l"; })
+          .attr("class", this.plotClassBoxLine)
+          .style("stroke", props.st == null ? "gray" : props.st)
+          .style("stroke-opacity", props.st_op);
+        groupsvg.selectAll("line")
+          .data(eleprops, function(d) { return d.id + "l"; })
+          .attr("x1", function(d) { return d.x; })
+          .attr("x2", function(d) { return d.x2; })
+          .attr("y1", function(d) { return d.ym; })
+          .attr("y2", function(d) { return d.ym; });
+      }
     };
 
     PlotLodBox.prototype.clearTips = function(scope) {

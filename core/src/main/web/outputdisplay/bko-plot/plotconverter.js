@@ -152,6 +152,15 @@
             item.width = 1;
           }
 
+          if (item.type === "point") {
+            if (item.shape == null) {
+              item.shape = "rect";
+            }
+            if (item.size == null) {
+              item.size = item.shape === "rect" ? 8 : 5;
+            }
+          }
+
 
           if (item.colorOpacity != null) {
             item.color_opacity = item.colorOpacity;
@@ -196,8 +205,8 @@
 
             if (item.type === "bar") {
               var w = item.width;
-              ele.x = ele.x - w/2;
-              ele.x2 = ele.x + w/2;
+              ele.x = ele.x - w / 2;
+              ele.x2 = ele.x + w / 2;
             }
             if (item.type === "area" || item.type === "bar" || item.type === "stem") {
               if (item.y2 == null) {
@@ -220,7 +229,7 @@
               } else if (item.sizes != null) {
                 ele.size = item.sizes[j];
               } else {
-                ele.size = item.style === "rect"? 10 : 5;
+                ele.size = item.shape === "rect" ? 8 : 5;
               }
             }
 
@@ -435,8 +444,7 @@
           }
 
           var elements = [];
-          var numEles = item.x.length;
-          for (var j = 0; j < numEles; j++) {
+          for (var j = 0; j < item.x.length; j++) {
             var ele = {};
             ele.x = item.x[j];
             ele.y = item.y[j];

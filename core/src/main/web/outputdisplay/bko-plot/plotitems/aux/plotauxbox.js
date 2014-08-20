@@ -25,11 +25,6 @@
     PlotAuxBox.prototype.plotClass = "";
 
     PlotAuxBox.prototype.format = function() {
-      if (this.color != null) {
-        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
-      } else {
-        this.tip_color = "gray";
-      }
       this.itemProps = {
         "id" : this.id,
         "fi" : this.color,

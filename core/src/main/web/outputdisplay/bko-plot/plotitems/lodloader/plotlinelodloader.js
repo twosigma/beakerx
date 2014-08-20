@@ -202,8 +202,8 @@
       }
       tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
       tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
-      tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
       tip.max = plotUtils.getTipStringPercent(ele.max, yAxis);
+      tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
       tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis);
       return plotUtils.createTipString(tip);
     };

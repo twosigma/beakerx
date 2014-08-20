@@ -143,7 +143,6 @@
 }
 
 .plot-legendlodhint {
-  min-width: 2.5em;
   font-size: 0.7em;
   display: inline-block;
   vertical-align: middle;
@@ -208,8 +207,12 @@
   stroke-width: 1;
 }
 
-.plot-lodboxline {
+.plot-lodavg,
+.plot-lodavgline, {
+  pointer-events: none;
+}
+
+.plot-lodavgline {
   stroke: black;
   stroke-width: 1.5;
-  pointer-events: none;
 }

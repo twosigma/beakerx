@@ -27,7 +27,7 @@
     };
     // class constants
     PlotAreaLodLoader.prototype.lodTypes = ["area", "river"];
-    PlotAreaLodLoader.prototype.lodSteps = [5, 5];
+    PlotAreaLodLoader.prototype.lodSteps = [5, 10];
 
     PlotAreaLodLoader.prototype.format = function() {
       // create plot type index
@@ -141,8 +141,8 @@
         this.lodplotter.render(scope, this.elementSamples);
       } else if (this.lodType === "river") {
         this.auxplotter.render(scope, this.elementAuxes, "a");
-        this.lodplotter.render(scope, this.elementSamples, "y");
-        this.lodplotter2.render(scope, this.elementSamples2, "y2");
+        this.lodplotter.render(scope, this.elementSamples, "yBtm");
+        this.lodplotter2.render(scope, this.elementSamples2, "yTop");
       }
     };
 
@@ -250,11 +250,11 @@
       tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
       tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
       if (this.lodType === "area") {
-        tip.avg_y = plotUtils.getTipStringPercent(ele.min, yAxis);
-        tip.avg_y2 = plotUtils.getTipStringPercent(ele.max, yAxis);
+        tip.avg_yTop = plotUtils.getTipStringPercent(ele.max, yAxis);
+        tip.avg_yBtm = plotUtils.getTipStringPercent(ele.min, yAxis);
       } else if (this.lodType === "river") {
-        tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
         tip.max = plotUtils.getTipStringPercent(ele.max, yAxis);
+        tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
         tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis);
       }
       return plotUtils.createTipString(tip);

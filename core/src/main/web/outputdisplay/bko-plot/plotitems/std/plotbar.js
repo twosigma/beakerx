@@ -106,6 +106,7 @@
 
     PlotBar.prototype.prepare = function(scope) {
       var w = this.width, sw;
+      var focus = scope.focus;
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
       var eleprops = this.elementProps,
@@ -114,11 +115,14 @@
       eleprops.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
+        if (ele.y2 < focus.yl || ele.y > focus.yr) { continue; }
+
         var x = mapX(ele.x), x2 = mapX(ele.x2);
         if (x2 - x < 1) x2 = x + 1;
         var y = mapY(ele.y), y2 = mapY(ele.y2);
         sw = x2 - x;
         if (y < y2) { continue; } // prevent negative height
+
 
         if (plotUtils.rangeAssert([x, x2, y, y2])) {
           eleprops.length = 0;
@@ -200,16 +204,13 @@
     PlotBar.prototype.createTip = function(ele) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
-      var valx = plotUtils.getTipString(ele._x, xAxis, true),
-          valy = plotUtils.getTipString(ele._y, yAxis, true),
-          valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
       var tip = {};
       if (this.legend != null) {
         tip.title = this.legend;
       }
-      tip.x = valx;
-      tip.y = valy;
-      tip.y2 = valy2;
+      tip.x = plotUtils.getTipString(ele._x, xAxis, true);
+      tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
+      tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
       return plotUtils.createTipString(tip);
     };
 

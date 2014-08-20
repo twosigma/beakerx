@@ -26,7 +26,7 @@
     };
     // class constants
     PlotPointLodLoader.prototype.lodTypes = ["point", "box"];
-    PlotPointLodLoader.prototype.lodSteps = [10, 10];
+    PlotPointLodLoader.prototype.lodSteps = [5, 10];
 
     PlotPointLodLoader.prototype.format = function() {
       // create plot type index
@@ -196,11 +196,11 @@
       tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
       tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
       if (this.lodType === "bar") {
-        tip.avg_y = plotUtils.getTipStringPercent(ele.min, yAxis);
-        tip.avg_y2 = plotUtils.getTipStringPercent(ele.max, yAxis);
+        tip.avg_yTop = plotUtils.getTipStringPercent(ele.max, yAxis);
+        tip.avg_yBtm = plotUtils.getTipStringPercent(ele.min, yAxis);
       } else if (this.lodType === "box") {
-        tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
         tip.max = plotUtils.getTipStringPercent(ele.max, yAxis);
+        tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
         tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis);
       }
       return plotUtils.createTipString(tip);

@@ -72,6 +72,7 @@
 
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
+        if (ele.y < focus.yl || ele.y > focus.yr) { continue; }
         var x = mapX(ele.x), y = mapY(ele.avg);
 
         if (plotUtils.rangeAssert([x, y])) {

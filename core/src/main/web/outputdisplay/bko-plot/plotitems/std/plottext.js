@@ -84,12 +84,12 @@
     PlotText.prototype.filter = function(scope) {
       var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl) + 1,
-          r = plotUtils.upper_bound(eles, "x2", scope.focus.xr);
+          r = plotUtils.upper_bound(eles, "x", scope.focus.xr);
 
       l = Math.max(l, 0);
       r = Math.min(r, eles.length - 1);
 
-      if (l > r || l == r && eles[l].x2 < scope.focus.xl) {
+      if (l > r || l == r && eles[l].x < scope.focus.xl) {
         // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
@@ -100,6 +100,7 @@
     };
 
     PlotText.prototype.prepare = function(scope) {
+      var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
       var mapX = scope.data2scrXi,
@@ -108,9 +109,7 @@
       eleprops.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
-        if (ele.x < focus.xl || ele.x > focus.xr || ele.y < focus.yl || ele.y > focus.yr ) {
-          continue;
-        }
+        if (ele.y < focus.yl || ele.y > focus.yr ) { continue; }
         var x = mapX(ele.x), y = mapY(ele.y);
 
         if (plotUtils.rangeAssert([x, y])) {
@@ -189,14 +188,12 @@
     PlotText.prototype.createTip = function(ele) {
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
-      var valx = plotUtils.getTipString(ele._x, xAxis, true),
-          valy = plotUtils.getTipString(ele._y, yAxis, true);
       var tip = {};
       if (this.legend != null) {
         tip.title = this.legend;
       }
-      tip.x = valx;
-      tip.y = valy;
+      tip.x = plotUtils.getTipString(ele._x, xAxis, true);
+      tip.y = plotUtils.getTipString(ele._y, yAxis, true);
       return plotUtils.createTipString(tip);
     };
 

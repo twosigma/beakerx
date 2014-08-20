@@ -90,23 +90,6 @@
       }
     };
 
-    PlotArea.prototype.createTip = function(ele) {
-      var xAxis = this.xAxis,
-          yAxis = this.yAxis;
-      var valx = plotUtils.getTipString(ele._x, xAxis, true),
-          valy = plotUtils.getTipString(ele._y, yAxis, true),
-          valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
-
-      var tip = {};
-      if (this.legend != null) {
-        tip.title = this.legend;
-      }
-      tip.x = valx;
-      tip.y = valy;
-      tip.y2 = valy2;
-      return plotUtils.createTipString(tip);
-    };
-
     PlotArea.prototype.filter = function(scope) {
       var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
@@ -251,6 +234,19 @@
         scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
         delete scope.tips[eleprops[i].id];
       }
+    };
+
+    PlotArea.prototype.createTip = function(ele) {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
+      }
+      tip.x = plotUtils.getTipString(ele._x, xAxis, true);
+      tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
+      tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      return plotUtils.createTipString(tip);
     };
 
     return PlotArea;

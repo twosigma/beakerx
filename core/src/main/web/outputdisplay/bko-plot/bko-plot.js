@@ -619,9 +619,11 @@
               var light = $("<span></span>").appendTo(lodhint)
                 .attr("class", "plot-legendlod");
               var type = $("<span></span>").appendTo(lodhint)
-                .attr("class", "plot-legendlodhint");
+                .attr("class", "plot-legendlodhint")
+                .css("min-width", "3em");
               var auto = $("<span></span>").appendTo(lodhint)
-                .attr("class", "plot-legendlodhint");
+                .attr("class", "plot-legendlodhint")
+                .css("min-width", "2em");
 
               var setlodhint = function(dat) {
                 // lod hint light

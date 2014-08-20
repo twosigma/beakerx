@@ -17,16 +17,17 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
-    var PlotLodBox = function(data){
+    var PlotLodStem = function(data){
       _(this).extend(data); // copy properties to itself
       this.format();
     };
 
-    PlotLodBox.prototype.plotClass = "plot-lodbox";
-    PlotLodBox.prototype.respClass = "plot-resp";
-    PlotLodBox.prototype.plotClassAvgLine = "plot-lodavgline";
+    PlotLodStem.prototype.plotClass = "";
+    PlotLodStem.prototype.respClass = "plot-resp";
+    PlotLodStem.prototype.plotClassAvgCircle = "plot-lodavg";
+    PlotLodStem.prototype.plotAvgCircleR = 2;
 
-    PlotLodBox.prototype.format = function() {
+    PlotLodStem.prototype.format = function() {
       this.zoomHash = plotUtils.randomString(3);
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
@@ -36,33 +37,31 @@
       this.widthShrink = 0;
       this.itemProps = {
         "id" : this.id,
-        "fi" : this.color,
-        "fi_op" : this.color_opacity,
-        "st" : this.stroke,
-        "st_op" : this.stroke_opacity,
-        "st_da" : this.stroke_dasharray,
-        "d" : ""
+        "st" : this.color,
+        "st_w" : this.width,
+        "st_op" : this.color_opacity,
+        "st_da" : this.stroke_dasharray
       };
       this.elementProps = [];
     };
 
-    PlotLodBox.prototype.setWidthShrink = function(shrink) {
+    PlotLodStem.prototype.setWidthShrink = function(shrink) {
       this.widthShrink = shrink;
     };
 
-    PlotLodBox.prototype.render = function(scope, samples, gid){
+    PlotLodStem.prototype.render = function(scope, samples, gid){
       if (gid == null) { gid = ""; }
       this.elementSamples = samples;
       this.prepare(scope, gid);
       this.draw(scope, gid);
     };
 
-    PlotLodBox.prototype.zoomLevelChanged = function(scope) {
+    PlotLodStem.prototype.zoomLevelChanged = function(scope) {
       this.zoomHash = plotUtils.randomString(3);
       this.clearTips(scope);
     };
 
-    PlotLodBox.prototype.prepare = function(scope, gid) {
+    PlotLodStem.prototype.prepare = function(scope, gid) {
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
@@ -78,29 +77,27 @@
       for (var i = 0; i < samples.length; i++) {
         var ele = samples[i];
         if (ele.max < focus.yl || ele.min > focus.yr) { continue; }
-        var x = mapX(ele.xl), x2 = mapX(ele.xr),
+        var x = mapX(ele.x),
             y = mapY(ele.max), y2 = mapY(ele.min);
 
         if (ele.avg == null) {
           this.avgOn = false;
         }
 
-        if (plotUtils.rangeAssert([x, x2, y, y2])) {
+        if (plotUtils.rangeAssert([x, y, y2])) {
           eleprops.length = 0;
           return false;
         }
 
-        var hashid = this.id + "_" + this.zoomHash + "_" + i;
+        var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash;
         var prop = {
           "id" : hashid,
           "idx" : this.index,
           "ele" : ele,
           "g" : gid,
-          "x" : x + this.widthShrink,
+          "x" : x,
           "y" : y,
-          "w" : Number((x2 - x - this.widthShrink * 2).toFixed(fixed)),
-          "h" : Number((y2 - y).toFixed(fixed)),
-          "x2" : Number((x2 - this.widthShrink).toFixed(fixed)),
+          "y2" : y2,
           "t_x" : x,
           "t_y" : y
         };
@@ -112,7 +109,7 @@
       }
     };
 
-    PlotLodBox.prototype.draw = function(scope, gid) {
+    PlotLodStem.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps;
@@ -131,49 +128,48 @@
           .data([props], function(d){ return d.id; }).enter().append("g")
           .attr("id", groupid)
           .style("class", this.plotClass)
-          .style("fill", function(d) { return d.fi; })
-          .style("fill-opacity", function(d) { return d.fi_op; })
           .style("stroke", function(d) { return d.st; })
-          .style("stroke-opacity", function(d) { return d.st_op; });
+          .style("stroke-opacity", function(d) { return d.st_op; })
+          .style("stroke-width", function(d) { return d.st_w; })
+          .style("stroke-dasharray", function(d) { return d.st_da; });
       }
 
       var groupsvg = itemsvg.select("#" + groupid);
 
-      // draw boxes
-      groupsvg.selectAll("rect")
+      // draw stems
+      groupsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
-      groupsvg.selectAll("rect")
-        .data(eleprops, function(d) { return d.id; }).enter().append("rect")
+      groupsvg.selectAll("line")
+        .data(eleprops, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
         .attr("class", this.respClass);
-      groupsvg.selectAll("rect")
+      groupsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id; })
-        .attr("x", function(d) { return d.x; })
-        .attr("y", function(d) { return d.y; })
-        .attr("width", function(d) { return d.w; })
-        .attr("height", function(d) { return d.h; });
+        .attr("x1", function(d) { return d.x; })
+        .attr("x2", function(d) { return d.x; })
+        .attr("y1", function(d) { return d.y; })
+        .attr("y2", function(d) { return d.y2; });
 
       if (this.avgOn === true) {
         var clr = props.st == null ? "gray" : props.st;
         // draw avg lines
-        groupsvg.selectAll("line")
+        groupsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id + "l"; }).exit().remove();
-        groupsvg.selectAll("line")
-          .data(eleprops, function(d) { return d.id + "l"; }).enter().append("line")
+        groupsvg.selectAll("circle")
+          .data(eleprops, function(d) { return d.id + "l"; }).enter().append("circle")
           .attr("id", function(d) { return d.id + "l"; })
-          .attr("class", this.plotClassAvgLine)
+          .attr("class", this.plotClassAvgCircle)
+          .attr("r", this.plotAvgCircleR)
           .style("stroke", clr)
           .style("stroke-opacity", props.st_op);
-        groupsvg.selectAll("line")
+        groupsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id + "l"; })
-          .attr("x1", function(d) { return d.x; })
-          .attr("x2", function(d) { return d.x2; })
-          .attr("y1", function(d) { return d.ym; })
-          .attr("y2", function(d) { return d.ym; });
+          .attr("cx", function(d) { return d.x; })
+          .attr("cy", function(d) { return d.ym; });
       }
     };
 
-    PlotLodBox.prototype.clearTips = function(scope) {
+    PlotLodStem.prototype.clearTips = function(scope) {
       var eleprops = this.elementProps;
       for (var i = 0; i < eleprops.length; i++) {
         var sel = scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
@@ -181,7 +177,7 @@
       }
     };
 
-    return PlotLodBox;
+    return PlotLodStem;
   };
-  beaker.bkoFactory('PlotLodBox', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotLodStem', ['plotUtils', retfunc]);
 })();

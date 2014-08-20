@@ -17,65 +17,63 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
-    var PlotAuxRiver = function(data){
+    var PlotAuxStem = function(data){
       _(this).extend(data); // copy properties to itself
       this.format();
     };
-    PlotAuxRiver.prototype.plotClass = "";
 
-    PlotAuxRiver.prototype.format = function() {
+    PlotAuxStem.prototype.plotClass = "";
+
+    PlotAuxStem.prototype.format = function() {
       this.itemProps = {
         "id" : this.id,
-        "fi" : this.color,
-        "fi_op" : this.color_opacity,
-        "st" : this.stroke,
-        "st_w" : this.stroke_width,
-        "st_op" : this.stroke_opacity,
-        "pts" : null
+        "st" : this.color,
+        "st_op" : this.color_opacity,
+        "st_w" : this.width,
+        "st_da" : this.stroke_dasharray
       };
       this.elementProps = [];
     };
 
-    PlotAuxRiver.prototype.render = function(scope, elements, gid){
-      if (gid == null) { gid = ""; }
+    PlotAuxStem.prototype.render = function(scope, elements, gid){
       this.elements = elements;
       this.prepare(scope, gid);
       this.draw(scope, gid);
     };
 
-    PlotAuxRiver.prototype.prepare = function(scope, gid) {
+    PlotAuxStem.prototype.prepare = function(scope, gid) {
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
-      var pstr = "";
+      var skipped = false;
 
       eleprops.length = 0;
 
       var eles = this.elements;
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
-        var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
+        var x = mapX(ele.x),
+            y = mapY(ele.y), y2 = mapY(ele.y2);
 
         if (plotUtils.rangeAssert([x, y, y2])) {
           eleprops.length = 0;
           return;
         }
-        pstr += x + "," + y + " ";
-      }
 
-      for (var i = eles.length - 1; i >= 0; i--) {
-        var ele = eles[i];
-        var x = mapX(ele.x), y2 = mapY(ele.y2);
-        pstr += x + "," + y2 + " ";
-      }
-      if (pstr.length > 0) {
-        this.itemProps.pts = pstr;
+        var id = this.id + "_" + i;
+        var prop = {
+          "id" : id,
+          "x" : x,
+          "y" : y,
+          "y2" : y2
+        };
+        eleprops.push(prop);
       }
     };
 
-    PlotAuxRiver.prototype.draw = function(scope, gid) {
+    PlotAuxStem.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps;
@@ -94,24 +92,35 @@
         // if special coloring is needed, it is set from the loader
         itemsvg.selectAll("#" + groupid)
           .data([props]).enter().append("g")
-          .attr("id", groupid);
+          .attr("id", groupid)
+          .style("stroke", function(d) { return d.st; })
+          .style("stroke-opacity", function(d) { return d.st_op; })
+          .style("stroke-width", function(d) { return d.st_w; })
+          .style("stroke-dasharray", function(d) { return d.st_da; });
       }
 
       var groupsvg = itemsvg.select("#" + groupid);
 
-      groupsvg.selectAll("polygon")
-        .data([props]).enter().append("polygon");
-      groupsvg.selectAll("polygon")
-        .attr("points", props.pts)
+      // draw stems
+      groupsvg.selectAll("line")
+        .data(eleprops, function(d) { return d.id; }).exit().remove();
+      groupsvg.selectAll("line")
+        .data(eleprops, function(d) { return d.id; }).enter().append("line")
+        .attr("id", function(d) { return d.id; })
         .attr("class", this.plotClass)
-        .style("fill", function(d) { return d.fi; })
-        .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })
         .style("stroke-opacity", function(d) { return d.st_op; })
-        .style("stroke-width", function(d) { return d.st_w; });
+        .style("stroke-width", function(d) { return d.st_w; })
+        .style("stroke-dasharray", function(d) { return d.st_da; });
+      groupsvg.selectAll("line")
+        .data(eleprops, function(d) { return d.id; })
+        .attr("x1", function(d) { return d.x; })
+        .attr("x2", function(d) { return d.x; })
+        .attr("y1", function(d) { return d.y; })
+        .attr("y2", function(d) { return d.y2; });
     };
 
-    return PlotAuxRiver;
+    return PlotAuxStem;
   };
-  beaker.bkoFactory('PlotAuxRiver', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotAuxStem', ['plotUtils', retfunc]);
 })();

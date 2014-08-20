@@ -84,32 +84,15 @@
       }
     };
 
-    PlotStem.prototype.createTip = function(ele) {
-      var xAxis = this.xAxis,
-          yAxis = this.yAxis;
-      var valx = plotUtils.getTipString(ele._x, xAxis, true),
-          valy = plotUtils.getTipString(ele._y, yAxis, true),
-          valy2 = plotUtils.getTipString(ele._y2, yAxis, true);
-      var tip = {};
-      if (this.legend != null) {
-        tip.title = this.legend;
-      }
-      tip.x = valx;
-      tip.y = valy;
-      tip.y2 = valy2;
-      return plotUtils.createTipString(tip);
-    };
-
-
     PlotStem.prototype.filter = function(scope) {
       var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl) + 1,
-          r = plotUtils.upper_bound(eles, "x2", scope.focus.xr);
+          r = plotUtils.upper_bound(eles, "x", scope.focus.xr);
 
       l = Math.max(l, 0);
       r = Math.min(r, eles.length - 1);
 
-      if (l > r || l == r && eles[l].x2 < scope.focus.xl) {
+      if (l > r || l == r && eles[l].x < scope.focus.xl) {
         // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
@@ -120,6 +103,7 @@
     };
 
     PlotStem.prototype.prepare = function(scope) {
+      var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
       var mapX = scope.data2scrXi,
@@ -129,6 +113,8 @@
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
+        if (ele.y2 < focus.yl || ele.y > focus.yr) { continue; }
+
         var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
 
         if (plotUtils.rangeAssert([x, y, y2])) {
@@ -201,6 +187,19 @@
         scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
         delete scope.tips[eleprops[i].id];
       }
+    };
+
+    PlotStem.prototype.createTip = function(ele) {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
+      }
+      tip.x = plotUtils.getTipString(ele._x, xAxis, true);
+      tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
+      tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      return plotUtils.createTipString(tip);
     };
 
     return PlotStem;

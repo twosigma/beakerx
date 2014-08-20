@@ -115,8 +115,8 @@
         this.plotter.render(scope);
       } else {
         this.sample(scope);
-        this.lodplotter.render(scope, this.elementSamples);
-        this.lodplotter2.render(scope, this.elementSamples2);
+        this.lodplotter.render(scope, this.elementSamples, "y");
+        this.lodplotter2.render(scope, this.elementSamples2, "y2");
       }
     };
 
@@ -171,7 +171,7 @@
       this.elementSamples2 = this.sampler2.sample(xl, xr, this.sampleStep);
     };
 
-    PlotBarLodLoader.prototype.createTip = function(ele) {
+    PlotBarLodLoader.prototype.createTip = function(ele, g) {
       if (this.lodOn === false) {
         return this.plotter.createTip(ele);
       }
@@ -183,8 +183,12 @@
           valmax = plotUtils.getTipStringPercent(ele.max, yAxis),
           valavg = plotUtils.getTipStringPercent(ele.avg, yAxis);
       var tip = {};
+      var sub = "sample";
+      if (g != null) {
+        sub += " " + g;
+      }
       if (this.legend != null) {
-        tip.title = this.legend + " (sample)";
+        tip.title = this.legend + " (" + sub + ")";
       }
       tip.xl = valxl;
       tip.xr = valxr;

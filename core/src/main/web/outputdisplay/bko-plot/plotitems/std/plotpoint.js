@@ -28,7 +28,8 @@
       }
     };
 
-    PlotPoint.prototype.respclass = "plot-resp";
+    PlotPoint.prototype.plotClass = "plot-point";
+    PlotPoint.prototype.respClass = "plot-resp";
     PlotPoint.prototype.shapes = ["rect", "diamond", "circle"];
     PlotPoint.prototype.svgtags = ["rect", "polygon", "circle"];
 
@@ -92,7 +93,6 @@
 
       this.itemProps = {
         "id" : this.id,
-        "cls" : "plot-point",
         "fi" : this.color,
         "fi_op": this.color_opacity,
         "st": this.stroke,
@@ -142,9 +142,8 @@
         var x = mapX(ele.x), y = mapY(ele.y), s = ele.size;
         var prop = {
           "id" :  this.id + "_" + i,
-          "iidx" : this.index,
-          "eidx" : i,
-          "cls" : this.respclass,
+          "idx" : this.index,
+          "ele" : ele,
           "fi" : ele.color,
           "fi_op" : ele.color_opacity,
           "st" : ele.stroke,
@@ -195,7 +194,7 @@
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.cls; })
+          .attr("class", this.plotClass)
           .style("fill", function(d) { return d.fi; })
           .style("fill-opacity", function(d) { return d.fi_op; })
           .style("stroke", function(d) { return d.st; })
@@ -224,7 +223,7 @@
         shapesvg.selectAll(tag)
           .data(eleprops, function(d) { return d.id; }).enter().append(tag)
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.cls; })
+          .attr("class", this.respClass)
           .style("fill", function(d) { return d.fi; })
           .style("fill-opacity", function(d) { return d.fi_op; })
           .style("stroke", function(d) { return d.st; })

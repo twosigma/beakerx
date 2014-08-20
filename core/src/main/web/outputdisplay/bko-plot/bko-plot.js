@@ -347,14 +347,12 @@
             var tipdiv = scope.jqcontainer.find("#" + tipid);
 
             if (tipdiv.length === 0) {
-              var tiptext = data[d.iidx].lodOn === true?
-                data[d.iidx].createTip(data[d.iidx].elementSamples[d.eidx]) :
-                data[d.iidx].createTip(data[d.iidx].elements[d.eidx]);
+              var tiptext = data[d.idx].createTip(d.ele, d.g);
 
               tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
                 .attr("id", tipid)
                 .attr("class", "plot-tooltip")
-                .css("border-color", data[d.iidx].tip_color)
+                .css("border-color", data[d.idx].tip_color)
                 .append(tiptext)
                 .on('mouseup', function(e) {
                   if (e.which == 3) {

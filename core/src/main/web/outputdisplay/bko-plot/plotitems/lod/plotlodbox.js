@@ -26,7 +26,6 @@
     PlotLodBox.prototype.plotClassBoxLine = "plot-lodboxline";
 
     PlotLodBox.prototype.format = function() {
-      this.sampleStep = -1;
       this.zoomHash = plotUtils.randomString(3);
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
@@ -45,10 +44,10 @@
       this.elementProps = [];
     };
 
-    PlotLodBox.prototype.render = function(scope, samples){
+    PlotLodBox.prototype.render = function(scope, samples, gid){
       this.elementSamples = samples;
-      this.prepare(scope);
-      this.draw(scope);
+      this.prepare(scope, gid);
+      this.draw(scope, gid);
     };
 
     PlotLodBox.prototype.zoomLevelChanged = function(scope) {
@@ -56,7 +55,7 @@
       this.clearTips(scope);
     };
 
-    PlotLodBox.prototype.prepare = function(scope) {
+    PlotLodBox.prototype.prepare = function(scope, gid) {
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
@@ -79,9 +78,9 @@
         var hashid = this.id + "_" + this.zoomHash + "_" + i;
         var prop = {
           "id" : hashid,
-          "iidx" : this.index,
-          "eidx" : i,
-          "cls" : this.plotclass,
+          "idx" : this.index,
+          "ele" : ele,
+          "g" : gid,
           "x" : x + 1,
           "y" : y,
           "w" : x2 - x - 2,
@@ -94,7 +93,7 @@
       }
     };
 
-    PlotLodBox.prototype.draw = function(scope) {
+    PlotLodBox.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps;
@@ -105,17 +104,25 @@
           .attr("id", function(d) { return d.id; });
       }
 
+      var groupid = this.id + "_" + gid;
       var itemsvg = svg.select("#" + this.id);
 
+      if (itemsvg.select("#" + groupid).empty()) {
+        itemsvg.append("g")
+          .attr("id", groupid);
+      }
+
+      var groupsvg = itemsvg.select("#" + groupid);
+
       // draw lines
-      itemsvg.selectAll("line")
+      groupsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id + "l"; }).exit().remove();
-      itemsvg.selectAll("line")
+      groupsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id + "l"; }).enter().append("line")
         .attr("id", function(d) { return d.id + "l"; })
         .attr("class", this.plotClassBoxLine)
         .style("stroke", this.tip_color);
-      itemsvg.selectAll("line")
+      groupsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id + "l"; })
         .attr("x1", function(d) { return d.x; })
         .attr("x2", function(d) { return d.x + d.w; })
@@ -123,14 +130,14 @@
         .attr("y2", function(d) { return d.ym; });
 
       // draw boxes
-      itemsvg.selectAll("rect")
+      groupsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
-      itemsvg.selectAll("rect")
+      groupsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
         .attr("class", this.plotClassBox)
         .style("stroke", this.tip_color);
-      itemsvg.selectAll("rect")
+      groupsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })

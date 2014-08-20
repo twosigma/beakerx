@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, PlotSampler, PlotBar, PlotLodBox) {
+  var retfunc = function(plotUtils, PlotSampler, PlotBar, PlotLodBox, PlotAuxBox) {
     var PlotBarLodLoader = function(data, lodthresh){
       this.datacopy = {};
       _(this.datacopy).extend(data);  // save for later use
@@ -32,10 +32,16 @@
       // create plot type index
       this.lodTypeIndex = 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
+
+      var data = {};
+      _(data).extend(this.datacopy);  // make a copy, we need to change
       // create the two plotters
-      this.plotter = new PlotBar(this.datacopy);
-      this.lodplotter = new PlotLodBox(this.datacopy);
-      this.lodplotter2 = new PlotLodBox(this.datacopy);
+      this.plotter = new PlotBar(data);
+      this.lodplotter = new PlotLodBox(data);
+      this.lodplotter2 = new PlotLodBox(data);
+      data.color_opacity = 0.25;  // set aux box to be transparent
+      this.auxplotter = new PlotAuxBox(data);
+      this.auxplotter.setWidthShrink(1);  // reduce box width by 1px (left and right)
 
       // a few switches and constants
       this.isLodItem = true;
@@ -117,6 +123,7 @@
         this.sample(scope);
         this.lodplotter.render(scope, this.elementSamples, "y");
         this.lodplotter2.render(scope, this.elementSamples2, "y2");
+        this.auxplotter.render(scope, this.elementAuxes, "a");
       }
     };
 
@@ -169,6 +176,25 @@
 
       this.elementSamples = this.sampler.sample(xl, xr, this.sampleStep);
       this.elementSamples2 = this.sampler2.sample(xl, xr, this.sampleStep);
+      this.elementAuxes = [];
+      var count = this.elementSamples.length;
+      // prepare the aux box in between
+      for (var i = 0; i < count; i++) {
+        this.elementAuxes.push({
+          x : this.elementSamples[i].xl,
+          x2 : this.elementSamples[i].xr,
+          y : this.elementSamples[i].max,
+          y2 : this.elementSamples2[i].min
+        });
+      }
+    };
+
+    PlotBarLodLoader.prototype.clear = function(scope) {
+      scope.maing.select("#" + this.id).remove();
+      this.plotter.clearTips(scope);
+      this.lodplotter.clearTips(scope);
+      this.lodplotter2.clearTips(scope);
+      //this.auxplotter.clearTips(scope);  TODO double check aux need tip?
     };
 
     PlotBarLodLoader.prototype.createTip = function(ele, g) {
@@ -198,15 +224,8 @@
       return plotUtils.createTipString(tip);
     };
 
-    PlotBarLodLoader.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
-      this.plotter.clearTips(scope);
-      this.lodplotter.clearTips(scope);
-      this.lodplotter2.clearTips(scope);
-    };
-
     return PlotBarLodLoader;
   };
   beaker.bkoFactory('PlotBarLodLoader',
-    ['plotUtils', 'PlotSampler', 'PlotBar', 'PlotLodBox', retfunc]);
+    ['plotUtils', 'PlotSampler', 'PlotBar', 'PlotLodBox', 'PlotAuxBox', retfunc]);
 })();

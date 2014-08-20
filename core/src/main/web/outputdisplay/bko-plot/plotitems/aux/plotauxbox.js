@@ -22,7 +22,7 @@
       this.format();
     };
 
-    PlotAuxBox.prototype.plotClass = "plot-auxbox";
+    PlotAuxBox.prototype.plotClass = "";
 
     PlotAuxBox.prototype.format = function() {
       if (this.color != null) {
@@ -30,17 +30,21 @@
       } else {
         this.tip_color = "gray";
       }
-
       this.itemProps = {
         "id" : this.id,
-        "st" : this.color,
-        "st_op" : this.color_opacity,
-        "st_w" : this.width,
-        "st_da" : this.stroke_dasharray,
-        "d" : ""
+        "fi" : this.color,
+        "fi_op": this.color_opacity,
+        "st": this.stroke,
+        "st_w": this.stroke_width,
+        "st_op": this.stroke_opacity
       };
       this.elementProps = [];
+      this.widthShrink = 0;
     };
+
+    PlotAuxBox.prototype.setWidthShrink = function(shrink) {
+      this.widthShrink = shrink;
+    }
 
     PlotAuxBox.prototype.render = function(scope, elements, gid){
       this.elements = elements;
@@ -63,21 +67,19 @@
         var ele = eles[i];
         var x = mapX(ele.x), x2 = mapX(ele.x2),
             y = mapY(ele.y), y2 = mapY(ele.y2);
-        if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6 || Math.abs(x2) > 1E6 || Math.abs(y2) > 1E6) {
-          skipped = true;
-          break;
+
+        if (plotUtils.rangeAssert([x, x2, y, y2])) {
+          eleprops.length = 0;
+          return;
         }
+
         var id = this.id + "_" + i;
         var prop = {
           "id" : id,
-          "g" : gid,
-          "x" : x + 1,
-          "y" : y,
-          "w" : x2 - x - 2,
-          "h" : y2 - y,
-          "ym" : y3,
-          "t_x" : x,
-          "t_y" : y
+          "x" : x + this.widthShrink,
+          "y" : y2,
+          "w" : x2 - x - this.widthShrink * 2,
+          "h" : y - y2
         };
         eleprops.push(prop);
       }
@@ -98,8 +100,16 @@
       var itemsvg = svg.select("#" + this.id);
 
       if (itemsvg.select("#" + groupid).empty()) {
-        itemsvg.append("g")
-          .attr("id", groupid);
+        // aux box are ploted as bars with normal coloring
+        // if special coloring is needed, it is set from the loader
+        itemsvg.selectAll("#" + groupid)
+          .data([props]).enter().append("g")
+          .attr("id", groupid)
+          .style("fill", function(d) { return d.fi; })
+          .style("fill-opacity", function(d) { return d.fi_op; })
+          .style("stroke", function(d) { return d.st; })
+          .style("stroke-opacity", function(d) { return d.st_op; })
+          .style("stroke-width", function(d) { return d.st_w; });
       }
 
       var groupsvg = itemsvg.select("#" + groupid);

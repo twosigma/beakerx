@@ -210,7 +210,7 @@
 
       rangeAssert : function(list) {
         _(list).each(function(e, i){
-          if (abs(e) > 1E6) {
+          if (Math.abs(e) > 1E6) {
             console.error("data not shown due to too large coordinate");
             return true;
           }

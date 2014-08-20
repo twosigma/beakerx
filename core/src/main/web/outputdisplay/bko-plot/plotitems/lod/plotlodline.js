@@ -25,10 +25,11 @@
     PlotLodLine.prototype.plotClass = "plot-line";
     PlotLodLine.prototype.respClass = "plot-resp plot-respdot";
 
-    PlotLodLine.prototype.render = function(scope, samples){
+    PlotLodLine.prototype.render = function(scope, samples, gid){
+      if (gid == null) { gid = ""; }
       this.elementSamples = samples;
-      this.prepare(scope);
-      this.draw(scope);
+      this.prepare(scope, gid);
+      this.draw(scope, gid);
     };
 
     PlotLodLine.prototype.zoomLevelChanged = function(scope) {
@@ -57,7 +58,7 @@
       this.elementProps = [];
     };
 
-    PlotLodLine.prototype.prepare = function(scope) {
+    PlotLodLine.prototype.prepare = function(scope, gid) {
       var focus = scope.focus;
       var eleprops = this.elementProps;
       var mapX = scope.data2scrX,
@@ -87,8 +88,9 @@
 
           var prop = {
             "id" : hashid,
-            "iidx" : this.index,
-            "eidx" : i,
+            "idx" : this.index,
+            "ele" : ele,
+            "g" : gid,
             "isresp" : true,
             "cx" : x,
             "cy" : y,
@@ -120,7 +122,7 @@
       }
     };
 
-    PlotLodLine.prototype.draw = function(scope) {
+    PlotLodLine.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps;
@@ -131,7 +133,14 @@
           .attr("id", function(d) { return d.id; });
       }
 
+      var groupid = this.id + "_" + gid;
       var itemsvg = svg.select("#" + this.id);
+
+      if (itemsvg.select("#" + groupid).empty()) {
+        itemsvg.selectAll("#" + groupid)
+          .data([props], function(d){ return d.id; }).enter().append("g")
+          .attr("id", groupid);
+      }
 
       itemsvg.selectAll("path")
         .data([props]).enter().append("path")

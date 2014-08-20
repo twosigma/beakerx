@@ -113,14 +113,13 @@
       eleprops.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
-        var x1 = mapX(ele.x), x2 = mapX(ele.x2);
-        if (x2 - x1 < 1) x2 = x1 + 1;
-        var y = ele.y, y2 = ele.y2;
-        y = mapY(y); y2 = mapY(y2);
-        sw = x2 - x1;
+        var x = mapX(ele.x), x2 = mapX(ele.x2);
+        if (x2 - x < 1) x2 = x + 1;
+        var y = mapY(ele.y), y2 = mapY(ele.y2);
+        sw = x2 - x;
         if (y < y2) { continue; } // prevent negative height
 
-        if (plotUtils.rangeAssert([x1, x2, y1, y2])) {
+        if (plotUtils.rangeAssert([x, x2, y, y2])) {
           eleprops.length = 0;
           return;
         }
@@ -130,11 +129,11 @@
           "id" : id,
           "idx" : this.index,
           "ele" : ele,
-          "x" : x1,
+          "x" : x,
           "y" : y2,
           "w" : sw,
           "h" : y - y2,
-          "t_x" : x1,
+          "t_x" : x,
           "t_y" : y2,
           "fi" : ele.color,
           "fi_op" : ele.color_opacity,

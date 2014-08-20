@@ -45,6 +45,7 @@
     };
 
     PlotLodBox.prototype.render = function(scope, samples, gid){
+      if (gid == null) { gid = ""; }
       this.elementSamples = samples;
       this.prepare(scope, gid);
       this.draw(scope, gid);
@@ -108,7 +109,9 @@
       var itemsvg = svg.select("#" + this.id);
 
       if (itemsvg.select("#" + groupid).empty()) {
-        itemsvg.append("g")
+        // lod boxes are plotted with special coloring (inversed color)
+        itemsvg.selectAll("#" + groupid)
+          .data([props], function(d){ return d.id; }).enter().append("g")
           .attr("id", groupid);
       }
 

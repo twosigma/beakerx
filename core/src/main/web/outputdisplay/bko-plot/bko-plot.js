@@ -640,6 +640,7 @@
                 }
               });
               type.on('mousedown', {"index": i}, function(e) {
+                if (e.which === 3) { return; }
                 var dat = data[e.data.index];
                 if (dat.lodType === "off") {
                   dat.toggleLod(scope);
@@ -651,6 +652,7 @@
                 setlodhint(dat);
               });
               auto.on('mousedown', {"index": i}, function(e) {
+                if (e.which === 3) { return; }
                 var dat = data[e.data.index];
                 if (dat.lodType === "off") return;
                 dat.toggleAuto(scope);

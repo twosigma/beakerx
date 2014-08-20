@@ -38,15 +38,12 @@
     };
 
     PlotLodLine.prototype.format = function() {
-
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
       } else {
         this.tip_color = "gray";
       }
-
       this.zoomHash = plotUtils.randomString(3);
-
       this.itemProps = {
         "id" : this.id,
         "st" : this.color,

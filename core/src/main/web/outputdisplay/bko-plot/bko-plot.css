@@ -143,7 +143,7 @@
 }
 
 .plot-legendlodhint {
-  min-width: 2em;
+  min-width: 2.5em;
   font-size: 0.7em;
   display: inline-block;
   vertical-align: middle;
@@ -173,6 +173,7 @@
 .plot-respstem {
   fill: white;
   stroke-width: 1;
+  border-radius: 2px;
 }
 
 .plot-tooltip {

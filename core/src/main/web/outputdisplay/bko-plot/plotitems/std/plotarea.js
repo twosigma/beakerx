@@ -23,8 +23,8 @@
       this.format();
     };
 
-    PlotArea.prototype.respw = 5;
-    PlotArea.prototype.respminh = 5;
+    PlotArea.prototype.respWidth = 5;
+    PlotArea.prototype.respMinHeight = 5;
     PlotArea.prototype.plotClass = "plot-area";
     PlotArea.prototype.respClass = "plot-resp plot-respstem";
 
@@ -41,7 +41,7 @@
         "st": this.stroke,
         "st_w": this.stroke_width,
         "st_op": this.stroke_opacity,
-        "pts" : ""
+        "pts" : null
       };
       this.elementProps = [];
     };
@@ -162,10 +162,9 @@
             "idx" : this.index,
             "ele" : ele,
             "isresp" : true,
-            "w" : this.respw,
-            "x" : x - this.respw / 2,
+            "x" : x - this.respWidth / 2,
             "y" : y2,
-            "h" : Math.max(y - y2, this.respminh),  // min height to be hoverable
+            "h" : Math.max(y - y2, this.respMinHeight),  // min height to be hoverable
             "t_x" : x,
             "t_y" : (y + y2) / 2,
             "op" : scope.tips[id] == null ? 0 : 1
@@ -220,7 +219,6 @@
       itemsvg.select("polygon")
         .attr("points", props.pts);
 
-      var item = this;
       if (scope.stdmodel.useToolTip === true) {
         itemsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; }).exit().remove();
@@ -228,8 +226,8 @@
           .data(eleprops, function(d) { return d.id; }).enter().append("rect")
           .attr("id", function(d) { return d.id; })
           .attr("class", this.respClass)
-          .attr("width", function(d) { return d.w; })
-          .style("stroke", item.tip_color);
+          .attr("width", this.respWidth)
+          .style("stroke", this.tip_color);
 
         itemsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; })

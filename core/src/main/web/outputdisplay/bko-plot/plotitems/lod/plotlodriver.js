@@ -18,152 +18,156 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotLodRiver = function(data){
-
-      this.lodTypeIndex = 0;
-
-      this.elements = data.elements;  // prevent copy elements
-      delete data.elements;
-      $.extend(true, this, data); // copy properties to itself
-
+      _(this).extend(data); // copy properties to itself
       this.format();
+    };
+    PlotLodRiver.prototype.respWidth = 5;
+    PlotLodRiver.prototype.respMinHeight = 5;
+    PlotLodRiver.prototype.plotClass = "";
+    PlotLodRiver.prototype.respClass = "plot-resp plot-respstem";
 
-      this.sampleStep = -1;
-      this.zoomHash = plotUtils.randomString(3);
-
+    PlotLodRiver.prototype.format = function() {
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
       } else {
         this.tip_color = "gray";
       }
-    };
-
-    PlotLodRiver.prototype.respclass = "plot-resp plot-respdot";
-
-    PlotLodRiver.prototype.render = function(scope, samples){
-      this.elementSamples = samples;
-      this.prepare(scope);
-      this.draw(scope);
-    };
-
-    PlotLodRiver.prototype.zoomLevelChanged = function() {
-      this.zoomHash = plotUtils.randomString(3);
-    };
-
-    PlotLodRiver.prototype.format = function() {
       this.itemProps = {
         "id" : this.id,
-        "cls" : "plot-line",
-        "st" : this.color,
-        "st_op" : this.color_opacity,
-        "st_w" : this.width,
-        "st_da" : this.stroke_dasharray,
-        "d" : ""
+        "fi" : this.color,
+        "fi_op" : this.color_opacity,
+        "st" : this.stroke,
+        "st_w" : this.stroke_width,
+        "st_op" : this.stroke_opacity,
+        "pts" : null
       };
       this.elementProps = [];
+      this.widthShrink = 0;
     };
 
-    PlotLodRiver.prototype.prepare = function(scope) {
+    PlotLodRiver.prototype.zoomLevelChanged = function(scope) {
+      this.zoomHash = plotUtils.randomString(3);
+      this.clearTips(scope);
+    };
+
+    PlotLodRiver.prototype.render = function(scope, elements, gid){
+      if (gid == null) {
+        gid = "";
+      }
+      this.elements = elements;
+      this.prepare(scope, gid);
+      this.draw(scope, gid);
+    };
+
+    PlotLodRiver.prototype.prepare = function(scope, gid) {
       var focus = scope.focus;
-      var eleprops = this.elementProps;
+      var eles = this.elements,
+          eleprops = this.elementProps;
       var mapX = scope.data2scrX,
           mapY = scope.data2scrY;
-      var pstr = "", skipped = false;
+      var pstr = "";
 
       eleprops.length = 0;
 
-      var samples = this.elementSamples;
-      for (var i = 0; i < samples.length; i++) {
-        var ele = samples[i];
-        if (i === 0) {
-          pstr += "M";
-        } else if (i === 1) {
-          pstr += "L";
-        }
-        var x = mapX(ele.x), y = mapY(ele.y);
-        if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
-          skipped = true;
-          break;
+      var eles = this.elements;
+      for (var i = 0; i < eles.length; i++) {
+        var ele = eles[i];
+        var x = mapX(ele.x), y = mapY(ele.min), y2 = mapY(ele.max);
+
+        if (plotUtils.rangeAssert([x, y, y2])) {
+          eleprops.length = 0;
+          return;
         }
 
-        var nxtp = x + "," + y + " ";
+        pstr += x + "," + y + " ";
 
-        if (focus.yl <= ele.y && ele.y <= focus.yr) {
+        if (ele.min <= focus.yr && ele.max >= focus.yl) {
           var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash;
-
           var prop = {
             "id" : hashid,
-            "iidx" : this.index,
-            "eidx" : i,
-            "cls" : this.respclassDot,
+            "idx" : this.index,
+            "ele" : ele,
             "isresp" : true,
-            "cx" : x,
-            "cy" : y,
-            "r" : 5,
+            "x" : x - this.respWidth / 2,
+            "y" : y2,
+            "h" : Math.max(y - y2, this.respMinHeight),  // min height to be hoverable
             "t_x" : x,
-            "t_y" : y,
+            "t_y" : (y + y2) / 2,
             "op" : scope.tips[hashid] == null ? 0 : 1
           };
           eleprops.push(prop);
         }
-
-        if (i < samples.length - 1) {
-          if (this.interpolation === "none") {
-            var ele2 = samples[i + 1];
-            nxtp += x + "," + y + " " + mapX(ele2.x) + "," + y + " ";
-          } else if (this.interpolation === "curve") {
-            // TODO curve implementation
-          }
-        }
-
-        pstr += nxtp;
       }
 
-      if (skipped === true) {
-        console.error("data not shown due to too large coordinate");
+      for (var i = eles.length - 1; i >= 0; i--) {
+        var ele = eles[i];
+        var x = mapX(ele.x), y2 = mapY(ele.max);
+        pstr += x + "," + y2 + " ";
       }
       if (pstr.length > 0) {
-        this.itemProps.d = pstr;
+        this.itemProps.pts = pstr;
       }
     };
 
-    PlotLodRiver.prototype.draw = function(scope) {
+    PlotLodRiver.prototype.draw = function(scope, gid) {
       var svg = scope.maing;
       var props = this.itemProps,
           eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
-          .data([props], function(d){ return d.id; }).enter().append("g")
+          .data([props], function(d) { return d.id; }).enter().append("g")
           .attr("id", function(d) { return d.id; });
       }
 
+      var groupid = this.id + "_" + gid;
       var itemsvg = svg.select("#" + this.id);
 
-      itemsvg.selectAll("path")
-        .data([props]).enter().append("path")
-        .attr("class", function(d) { return d.cls; })
-        .style("stroke", function(d) { return d.st; })
-        .style("stroke-dasharray", function(d) { return d.st_da; })
-        .style("stroke-width", function(d) { return d.st_w; })
-        .style("stroke-opacity", function(d) { return d.st_op; });
-      itemsvg.select("path")
-        .attr("d", props.d);
+      if (itemsvg.select("#" + groupid).empty()) {
+        // aux box are ploted as bars with normal coloring
+        // if special coloring is needed, it is set from the loader
+        itemsvg.selectAll("#" + groupid)
+          .data([props]).enter().append("g")
+          .attr("id", groupid)
+          .attr("class", this.plotClass)
+          .style("fill", function(d) { return d.fi; })
+          .style("fill-opacity", function(d) { return d.fi_op; })
+          .style("stroke", function(d) { return d.st; })
+          .style("stroke-opacity", function(d) { return d.st_op; })
+          .style("stroke-width", function(d) { return d.st_w; });
+      }
 
-      var item = this;
+      var groupsvg = itemsvg.select("#" + groupid);
+
+      groupsvg.selectAll("polygon")
+        .data([props]).enter().append("polygon");
+      groupsvg.selectAll("polygon")
+        .attr("points", props.pts);
+
       if (scope.stdmodel.useToolTip === true) {
-        itemsvg.selectAll("circle")
+        itemsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; }).exit().remove();
-        itemsvg.selectAll("circle")
-          .data(eleprops, function(d) { return d.id; }).enter().append("circle")
+        itemsvg.selectAll("rect")
+          .data(eleprops, function(d) { return d.id; }).enter().append("rect")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.cls; })
-          .style("stroke", item.tip_color);
-        itemsvg.selectAll("circle")
+          .attr("class", this.respClass)
+          .attr("width", this.respWidth)
+          .style("stroke", this.tip_color);
+
+        itemsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; })
-          .attr("cx", function(d) { return d.cx; })
-          .attr("cy", function(d) { return d.cy; })
-          .attr("r", function(d) { return d.r; })
+          .attr("x", function(d) { return d.x; })
+          .attr("y", function(d) { return d.y; })
+          .attr("height", function(d) { return d.h; })
           .style("opacity", function(d) { return d.op; });
+      }
+    };
+
+    PlotLodRiver.prototype.clearTips = function(scope) {
+      var eleprops = this.elementProps;
+      for (var i = 0; i < eleprops.length; i++) {
+        var sel = scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+        delete scope.tips[eleprops[i].id];  // must clear from tip drawing queue
       }
     };
 

@@ -37,11 +37,7 @@
       _(data).extend(this.datacopy);  // make a copy, we need to change
       // create the two plotters
       this.plotter = new PlotBar(data);
-      this.lodplotter = new PlotLodBox(data);
-      this.lodplotter2 = new PlotLodBox(data);
-      data.color_opacity = 0.25;  // set aux box to be transparent
-      this.auxplotter = new PlotAuxBox(data);
-      this.auxplotter.setWidthShrink(1);  // reduce box width by 1px (left and right)
+      this.createLodPlotter();
 
       // a few switches and constants
       this.isLodItem = true;
@@ -74,11 +70,18 @@
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
       this.clear(scope);
+      this.createLodPlotter();
+    };
 
-      if (this.lodType === "line") {
-        this.lodplotter = new PlotLodLine(this.datacopy);
-      } else if (this.lodType === "box") {
-        this.lodplotter = new PlotLodBox(this.datacopy);
+    PlotBarLodLoader.prototype.createLodPlotter = function() {
+      if (this.lodType === "box") {
+        this.lodplotter = new PlotLodBox(data);
+        this.lodplotter2 = new PlotLodBox(data);
+        data.stroke = data.color;
+        data.stroke_opacity = .75;
+        data.color_opacity = .25;  // set aux box to be transparent
+        this.auxplotter = new PlotAuxBox(data);
+        this.auxplotter.setWidthShrink(1);  // reduce box width by 1px (left and right)
       }
     };
 

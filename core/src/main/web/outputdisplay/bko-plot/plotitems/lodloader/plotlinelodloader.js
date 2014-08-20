@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, PlotSampler, PlotLine, PlotLodLine, PlotLodBox) {
+  var retfunc = function(plotUtils, PlotSampler, PlotLine, PlotLodLine, PlotLodBox, PlotLodRiver) {
     var PlotLineLodLoader = function(data, lodthresh){
       this.datacopy = {};
       _(this.datacopy).extend(data);  // save for later use
@@ -25,16 +25,16 @@
       this.format(lodthresh);
     };
     // class constants
-    PlotLineLodLoader.prototype.lodTypes = ["line", "box"];
-    PlotLineLodLoader.prototype.lodSteps = [5, 10];
+    PlotLineLodLoader.prototype.lodTypes = ["line", "box", "river"];
+    PlotLineLodLoader.prototype.lodSteps = [5, 10, 5];
 
     PlotLineLodLoader.prototype.format = function() {
       // create plot type index
-      this.lodTypeIndex = 0;
-      this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
+      this.lodTypeIndex = 2;
+      this.lodType = this.lodTypes[this.lodTypeIndex];
       // create the two plotters
       this.plotter = new PlotLine(this.datacopy);
-      this.lodplotter = new PlotLodLine(this.datacopy);
+      this.createLodPlotter();
 
       // a few switches and constants
       this.isLodItem = true;
@@ -67,11 +67,21 @@
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
       this.clear(scope);
+      this.createLodPlotter();
+    };
 
+    PlotLineLodLoader.prototype.createLodPlotter = function() {
+      var data = {};
+      _(data).extend(this.datacopy);
       if (this.lodType === "line") {
-        this.lodplotter = new PlotLodLine(this.datacopy);
+        this.lodplotter = new PlotLodLine(data);
       } else if (this.lodType === "box") {
-        this.lodplotter = new PlotLodBox(this.datacopy);
+        this.lodplotter = new PlotLodBox(data);
+      } else if (this.lodType === "river") {
+        data.color_opacity = .25;
+        data.stroke = data.color;
+        data.stroke_opacity = .75;
+        this.lodplotter = new PlotLodRiver(data);
       }
     };
 
@@ -168,6 +178,12 @@
       this.elementSamples = this.sampler.sample(xl, xr, this.sampleStep);
     };
 
+    PlotLineLodLoader.prototype.clear = function(scope) {
+      scope.maing.select("#" + this.id).remove();
+      this.plotter.clearTips(scope);
+      this.lodplotter.clearTips(scope);
+    };
+
     PlotLineLodLoader.prototype.createTip = function(ele) {
       if (this.lodOn === false) {
         return this.plotter.createTip(ele);
@@ -191,14 +207,9 @@
       return plotUtils.createTipString(tip);
     };
 
-    PlotLineLodLoader.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
-      this.plotter.clearTips(scope);
-      this.lodplotter.clearTips(scope);
-    };
-
     return PlotLineLodLoader;
   };
   beaker.bkoFactory('PlotLineLodLoader',
-    ['plotUtils', 'PlotSampler', 'PlotLine', 'PlotLodLine', 'PlotLodBox', retfunc]);
+    ['plotUtils', 'PlotSampler', 'PlotLine', 'PlotLodLine', 'PlotLodBox', 'PlotLodRiver',
+    retfunc]);
 })();

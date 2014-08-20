@@ -39,7 +39,7 @@
         "st_op" : this.color_opacity,
         "st_w" : this.width,
         "st_da" : this.stroke_dasharray,
-        "d" : ""
+        "d" : null
       };
       this.elementProps = [];
     };

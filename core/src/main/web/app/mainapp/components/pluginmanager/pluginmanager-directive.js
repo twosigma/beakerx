@@ -37,20 +37,56 @@
         };
         $scope.evalTabOp = {
           newPluginNameOrUrl: "",
+	  showURL: false,
           getAllEvaluators: function() {
             return bkEvaluatorManager.getAllEvaluators();
+          },
+          getEvaluatorsWithSpec: function() {
+	    var activePlugins = bkEvaluatorManager.getAllEvaluators();
+            var result = {};
+            for (var p in activePlugins) {
+	      if (Object.keys(activePlugins[p].spec).length > 0) {
+		result[p] = activePlugins[p];
+	      }
+	    }
+	    return result;
           },
           getLoadingEvaluators: function() {
             return bkEvaluatorManager.getLoadingEvaluators();
           },
           getKnownEvaluatePlugins: function(name) {
-            return bkEvaluatePluginManager.getKnownEvaluatorPlugins();
+            var knownPlugins = bkEvaluatePluginManager.getKnownEvaluatorPlugins();
+            var activePlugins = bkEvaluatorManager.getAllEvaluators();
+            var loadingPlugins = bkEvaluatorManager.getLoadingEvaluators();
+            var result = {};
+            for (var p in knownPlugins) {
+              var status = false;
+              if (activePlugins[p])
+                status = "active";
+              else {
+                for (var l in loadingPlugins) {
+                  if (loadingPlugins[l].plugin == p) {
+                    status = "loading";
+                    break;
+                  }
+                }
+                if (!status) {
+                  status = "known";
+                }
+              }
+              result[p] = status;
+            }
+            return result;
           },
           setNewPluginNameOrUrl: function(pluginNameOrUrl) {
             this.newPluginNameOrUrl = pluginNameOrUrl;
           },
-          addPlugin: function() {
+          addPlugin: function(name) {
             var plugin = this.newPluginNameOrUrl;
+	    $scope.evalTabOp.showURL = false;
+	    if (name) {
+		plugin = name;
+	    }
             var newEvaluatorObj = {
               name: "",
               plugin: plugin

@@ -63,3 +63,24 @@
 .cl {
   clear: both;
 }
+
+.plugin-active {
+  color: limegreen;
+}
+
+.plugin-loading {
+  color: orange;
+}
+
+.plugin-known {
+  color: lightgray;
+}
+
+.plugin-invisible {
+  opacity: 0.0;
+}
+
+.plugin-status {
+  font-size: 150%;
+  vertical-align: -2px;
+}

@@ -18,34 +18,24 @@
     <h3>Plugin Manager</h3>
   </div>
   <div class="modal-body modal-large">
+    <div>
+      <button ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()"
+              ng-click="evalTabOp.addPlugin(pluginName)">
+        <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
+        <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
+        <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
+        {{pluginName}}
+      </button><button ng-click="evalTabOp.showURL = !evalTabOp.showURL"><span class="plugin-invisible plugin-status">&#x25cf;</span>From URL...</button>
+    </div>
+    <br>
+    <div ng-show="evalTabOp.showURL" class="input-append addeval">
+      <input type="text" bk-enter='evalTabOp.addPlugin()' ng-model="evalTabOp.newPluginNameOrUrl"></input>
+      <button class="btn" ng-click='evalTabOp.addPlugin()'>Add Plugin from URL</button>
+    </div>
     <tabs>
-      <pane heading="Evaluators">
-        <div>
-          <button ng-repeat="(pluginName, pluginUrl) in evalTabOp.getKnownEvaluatePlugins()"
-                  ng-click="evalTabOp.setNewPluginNameOrUrl(pluginName)">{{pluginName}}
-          </button>
-        </div>
-        <div class="input-append addeval">
-          <input type="text" bk-enter='evalTabOp.addPlugin()' ng-model="evalTabOp.newPluginNameOrUrl"></input>
-          <button class="btn" ng-click='evalTabOp.addPlugin()'>Add Plugin from URL</button>
-        </div>
-        <accordion>
-          <bk-plugin-manager-evaluator-settings ng-repeat="(evaluatorName, evaluator) in evalTabOp.getAllEvaluators()">
-          </bk-plugin-manager-evaluator-settings>
-          <div ng-repeat="evaluator in evalTabOp.getLoadingEvaluators()"><accordion-group heading="Loading {{evaluator.plugin}}..."></accordion-group></div>
-        </accordion>
-      </pane>
-      <pane heading="Menus">
-        <div class="input-append">
-          <input type="text" ng-model="menuTabOp.newMenuPluginUrl"></input>
-          <button class="btn" ng-click='menuTabOp.addMenuPlugin()'>Add Plugin from URL</button>
-        </div>
-        <div ng-repeat="plugin in menuTabOp.getMenuPlugins()">
-          {{plugin.url}}
-        </div>
-        <div ng-repeat="plugin in menuTabOp.getLoadingPlugins()">
-          Loading {{plugin.getUrl()}}
-        </div>
+      <pane ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}">
+        <bk-plugin-manager-evaluator-settings>
+        </bk-plugin-manager-evaluator-settings>
       </pane>
     </tabs>
   </div>

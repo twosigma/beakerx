@@ -16,48 +16,88 @@
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, PlotSampler, PlotLine, PlotLodLine, PlotLodBox) {
+  var retfunc = function(plotUtils, PlotSampler, PlotArea, PlotLodLine, PlotLodRiver,
+    PlotAuxRiver) {
     var PlotAreaLodLoader = function(data, lodthresh){
-
       this.datacopy = {};
       _(this.datacopy).extend(data);  // save for later use
       _(this).extend(data); // copy properties to itself
+      this.lodthresh = lodthresh;
+      this.format(lodthresh);
+    };
+    // class constants
+    PlotAreaLodLoader.prototype.lodTypes = ["area", "river"];
+    PlotAreaLodLoader.prototype.lodSteps = [5, 5];
 
+    PlotAreaLodLoader.prototype.format = function() {
+      // create plot type index
       this.lodTypeIndex = 0;
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
-      this.format();
-
+      var data = {};
+      _(data).extend(this.datacopy);  // make a copy, we need to change
       // create the two plotters
-      this.plotter = new PlotLine(datacopy);
-      this.lodplotter = new PlotLodLine(datacopy);
+      this.plotter = new PlotArea(data);
+      this.createLodPlotter();
 
-
+      // a few switches and constants
       this.isLodItem = true;
-      this.lodthresh = lodthresh;
       this.lodOn = false;
       this.lodAuto = true;
       this.sampleStep = -1;
-      this.zoomHash = plotUtils.randomString(3);
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
       } else {
         this.tip_color = "gray";
       }
+
+      this.itemProps = {
+        "id" : this.id,
+        "st" : this.color,
+        "st_op" : this.color_opacity,
+        "st_w" : this.width,
+        "st_da" : this.stroke_dasharray,
+        "d" : ""
+      };
+      this.elementProps = [];
     };
 
-    PlotAreaLodLoader.prototype.lodTypes = ["line", "box"];
-    PlotAreaLodLoader.prototype.lodSteps = [5, 10, 5, 10, -1];
-
     PlotAreaLodLoader.prototype.zoomLevelChanged = function(scope) {
-      this.clearresp(scope);
       this.sampleStep = -1;
-      this.zoomHash = plotUtils.randomString(3);
+      // pass message to lod plotter
+      if (this.lodType === "area") {
+        this.lodplotter.zoomLevelChanged(scope);
+      } else if (this.lodType === "river"){
+        this.lodplotter.zoomLevelChanged(scope);
+        this.lodplotter2.zoomLevelChanged(scope);
+      }
     };
 
     PlotAreaLodLoader.prototype.switchLodType = function(scope) {
+      this.clear(scope);  // must clear first before changing lodType
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.createLodPlotter();
+    };
+
+    PlotAreaLodLoader.prototype.createLodPlotter = function() {
+      var data = {};
+      _(data).extend(this.datacopy);
+      if (this.lodType === "area") {
+        this.lodplotter = new PlotLodRiver(data);
+      } else if (this.lodType === "river") {
+        data.stroke = data.color;
+        data.color_opacity = .25;
+        data.stroke_opacity = 1.0;
+        this.lodplotter = new PlotLodRiver(data);
+        this.lodplotter2 = new PlotLodRiver(data);
+        data.color_opacity = 1.0;
+        this.auxplotter = new PlotAuxRiver(data);
+      }
+    };
+
+    PlotAreaLodLoader.prototype.toggleAuto = function(scope) {
+      this.lodAuto = !this.lodAuto;
       this.clear(scope);
     };
 
@@ -93,88 +133,51 @@
 
       if (this.lodOn === false) {
         this.plotter.render(scope);
-      } else {
-        this.sample(scope);
-        this.lodplotter.plot(scope, this.elementSamples);
+        return;
+      }
+
+      this.sample(scope);
+      if (this.lodType === "area") {
+        this.lodplotter.render(scope, this.elementSamples);
+      } else if (this.lodType === "river") {
+        this.auxplotter.render(scope, this.elementAuxes, "a");
+        this.lodplotter.render(scope, this.elementSamples, "y");
+        this.lodplotter2.render(scope, this.elementSamples2, "y2");
       }
     };
 
-    PlotAreaLodLoader.prototype.getRange = function() {
-      var eles = this.elements;
-      var range = {
-        xl : 1E100,
-        xr : -1E100,
-        yl : 1E100,
-        yr : -1E100
-      };
-      for (var i = 0; i < eles.length; i++) {
-        var ele = eles[i];
-        range.xl = Math.min(range.xl, ele.x);
-        range.xr = Math.max(range.xr, ele.x);
-        range.yl = Math.min(range.yl, ele.y);
-        range.yr = Math.max(range.yr, ele.y);
-      }
-      return range;
+    PlotAreaLodLoader.prototype.getRange = function(){
+      return this.plotter.getRange();
     };
 
     PlotAreaLodLoader.prototype.applyAxis = function(xAxis, yAxis) {
       this.xAxis = xAxis;
       this.yAxis = yAxis;
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        ele.x = xAxis.getPercent(ele.x);
-        ele.y = yAxis.getPercent(ele.y);
-      }
+      this.plotter.applyAxis(xAxis, yAxis);
       // sampler is created AFTER coordinate axis remapping
       this.createSampler();
-      // do not apply axis to line because element coordinates have been changed above
-      this.line.xAxis = xAxis;
-      this.line.yAxis = yAxis;
     };
 
     PlotAreaLodLoader.prototype.createSampler = function() {
-      var xs = [], ys = [];
+      var xs = [], ys = [], y2s = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         xs.push(ele.x);
         ys.push(ele.y);
+        y2s.push(ele.y2);
       }
       this.sampler = new PlotSampler(xs, ys);
-    };
-
-    PlotAreaLodLoader.prototype.format = function() {
-      this.itemProps = {
-        "id" : this.id,
-        "cls" : "plot-line",
-        "st" : this.color,
-        "st_op" : this.color_opacity,
-        "st_w" : this.width,
-        "st_da" : this.stroke_dasharray,
-        "d" : ""
-      };
-      this.elementProps = [];
+      this.sampler2 = new PlotSampler(xs, y2s);
     };
 
     PlotAreaLodLoader.prototype.filter = function(scope) {
-      var eles = this.elements;
-      var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
-          r = plotUtils.upper_bound(eles, "x", scope.focus.xr) + 1;
-
-      l = Math.max(l, 0);
-      r = Math.min(r, eles.length - 1);
-
-      if (l > r || l == r && eles[l].x < scope.focus.xl) {
-        // nothing visible, or all elements are to the left of the svg, vlength = 0
-        l = 0;
-        r = -1;
-      }
-      this.vindexL = l;
-      this.vindexR = r;
-      this.vlength = r - l + 1;
+      this.plotter.filter(scope);
+      this.vindexL = this.plotter.vindexL;
+      this.vindexR = this.plotter.vindexR;
+      this.vlength = this.plotter.vlength;
     };
 
     PlotAreaLodLoader.prototype.sample = function(scope) {
-
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var xl = scope.focus.xl, xr = scope.focus.xr;
@@ -191,46 +194,72 @@
       xr = Math.ceil(xr / step) * step;
 
       this.elementSamples = this.sampler.sample(xl, xr, this.sampleStep);
-    };
+      this.elementSamples2 = this.sampler2.sample(xl, xr, this.sampleStep);
+      var count = this.elementSamples.length;
 
-    PlotAreaLodLoader.prototype.createTip = function(ele) {
-      if (this.lodOn === false) {
-        return this.line.createTip(ele);
+      if (this.lodType === "area") {
+        var elements = [];
+        for (var i = 0; i < count; i++) {
+          elements.push({
+            x : this.elementSamples[i].x,
+            min : this.elementSamples[i].min,
+            max : this.elementSamples2[i].max,
+            hash : this.elementSamples[i].hash,
+            xl : this.elementSamples[i].xl,
+            xr : this.elementSamples[i].xr
+          });
+        }
+        this.elementSamples = elements;
+      } else if (this.lodType === "river") {
+        this.elementAuxes = [];
+        // prepare the aux river in between
+        for (var i = 0; i < count; i++) {
+          this.elementAuxes.push({
+            x : this.elementSamples[i].x,
+            y : this.elementSamples[i].max,
+            y2 : this.elementSamples2[i].min
+          });
+        }
       }
-      var xAxis = this.xAxis,
-          yAxis = this.yAxis;
-      var valxl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6),
-          valxr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6),
-          valmin = plotUtils.getTipStringPercent(ele.min, yAxis),
-          valmax = plotUtils.getTipStringPercent(ele.max, yAxis),
-          valavg = plotUtils.getTipStringPercent(ele.avg, yAxis);
-      var tip = {};
-      if (this.legend != null) {
-        tip.title = this.legend + " (sample)";
-      }
-      tip.xl = valxl;
-      tip.xr = valxr;
-      tip.min = valmin;
-      tip.max = valmax;
-      tip.avg = valavg;
-     return plotUtils.createTipString(tip);
+
     };
 
     PlotAreaLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).remove();
-      this.clearresp(scope);
+      if (this.lodType === "off") {
+        this.plotter.clearTips(scope);
+      } else if (this.lodType === "area") {
+        this.lodplotter.clearTips(scope);
+      } else if (this.lodType === "river") {
+        this.lodplotter.clearTips(scope);
+        this.lodplotter2.clearTips(scope);
+      }
     };
 
-    PlotAreaLodLoader.prototype.clearresp = function(scope) {
-      var eleprops = this.elementProps;
-      for (var i = 0; i < eleprops.length; i++) {
-        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
-        delete scope.tips[eleprops[i].id];
+    PlotAreaLodLoader.prototype.createTip = function(ele, g) {
+      if (this.lodOn === false) {
+        return this.plotter.createTip(ele);
       }
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var tip = {};
+      var sub = "sample" + (g != null ? " " + g : "");
+      if (this.legend != null) {
+        tip.title = this.legend + " (" + sub + ")";
+      }
+      tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
+      tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
+      tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
+      tip.max = plotUtils.getTipStringPercent(ele.max, yAxis);
+      if (ele.avg != null) {
+        tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis);
+      }
+      return plotUtils.createTipString(tip);
     };
 
     return PlotAreaLodLoader;
   };
   beaker.bkoFactory('PlotAreaLodLoader',
-    ['plotUtils', 'PlotSampler', 'PlotLine', 'PlotLodLine', 'PlotLodBox', retfunc]);
+    ['plotUtils', 'PlotSampler', 'PlotArea', 'PlotLodLine', 'PlotLodRiver', 'PlotAuxRiver',
+    retfunc]);
 })();

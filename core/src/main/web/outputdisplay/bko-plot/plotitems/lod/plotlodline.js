@@ -58,8 +58,8 @@
     PlotLodLine.prototype.prepare = function(scope, gid) {
       var focus = scope.focus;
       var eleprops = this.elementProps;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
       var pstr = "", skipped = false;
 
       eleprops.length = 0;
@@ -102,7 +102,8 @@
         if (i < samples.length - 1) {
           if (this.interpolation === "none") {
             var ele2 = samples[i + 1];
-            nxtp += x + "," + y + " " + mapX(ele2.x) + "," + y + " ";
+            var x2 = mapX(ele2.x);
+            nxtp += x + "," + y + " " + x2 + "," + y + " ";
           } else if (this.interpolation === "curve") {
             // TODO curve implementation
           }

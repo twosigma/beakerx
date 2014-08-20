@@ -64,22 +64,29 @@
     PlotBarLodLoader.prototype.zoomLevelChanged = function(scope) {
       this.sampleStep = -1;
       this.lodplotter.zoomLevelChanged(scope);  // pass message to lod plotter
+      this.lodplotter2.zoomLevelChanged(scope);
     };
 
     PlotBarLodLoader.prototype.switchLodType = function(scope) {
+      this.clear(scope);  // must clear first before changing lodType
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
-      this.clear(scope);
       this.createLodPlotter();
     };
 
     PlotBarLodLoader.prototype.createLodPlotter = function() {
+      var data = {};
       if (this.lodType === "box") {
+        _(data).extend(this.datacopy);
+
+        // lod boxes are plotted with special coloring (inversed color)
+        data.stroke = data.color;
+        data.stroke_opacity = 1.0;
+        data.color_opacity = .25;  // set box to be transparent
         this.lodplotter = new PlotLodBox(data);
         this.lodplotter2 = new PlotLodBox(data);
-        data.stroke = data.color;
-        data.stroke_opacity = .75;
-        data.color_opacity = .25;  // set aux box to be transparent
+
+        _(data).extend(this.datacopy); // normal color for aux box
         this.auxplotter = new PlotAuxBox(data);
         this.auxplotter.setWidthShrink(1);  // reduce box width by 1px (left and right)
       }
@@ -124,9 +131,9 @@
         this.plotter.render(scope);
       } else {
         this.sample(scope);
+        this.auxplotter.render(scope, this.elementAuxes, "a");
         this.lodplotter.render(scope, this.elementSamples, "y");
         this.lodplotter2.render(scope, this.elementSamples2, "y2");
-        this.auxplotter.render(scope, this.elementAuxes, "a");
       }
     };
 
@@ -197,7 +204,6 @@
       this.plotter.clearTips(scope);
       this.lodplotter.clearTips(scope);
       this.lodplotter2.clearTips(scope);
-      //this.auxplotter.clearTips(scope);  TODO double check aux need tip?
     };
 
     PlotBarLodLoader.prototype.createTip = function(ele, g) {

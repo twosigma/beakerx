@@ -64,9 +64,9 @@
     };
 
     PlotLineLodLoader.prototype.switchLodType = function(scope) {
+      this.clear(scope);  // must clear first before changing lodType
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
-      this.clear(scope);
       this.createLodPlotter();
     };
 
@@ -78,8 +78,8 @@
       } else if (this.lodType === "box") {
         this.lodplotter = new PlotLodBox(data);
       } else if (this.lodType === "river") {
-        data.color_opacity = .25;
         data.stroke = data.color;
+        data.color_opacity = .25;
         data.stroke_opacity = .75;
         this.lodplotter = new PlotLodRiver(data);
       }

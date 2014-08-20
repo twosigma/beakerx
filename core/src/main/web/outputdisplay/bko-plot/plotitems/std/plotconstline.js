@@ -110,8 +110,8 @@
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
       var lMargin = scope.layout.leftLayoutMargin,
           bMargin = scope.layout.bottomLayoutMargin;
       var W = scope.jqsvg.width(),

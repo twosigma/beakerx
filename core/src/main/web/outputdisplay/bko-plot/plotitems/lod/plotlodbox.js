@@ -60,8 +60,8 @@
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
       var skipped = false;
 
       eleprops.length = 0;
@@ -109,7 +109,6 @@
       var itemsvg = svg.select("#" + this.id);
 
       if (itemsvg.select("#" + groupid).empty()) {
-        // lod boxes are plotted with special coloring (inversed color)
         itemsvg.selectAll("#" + groupid)
           .data([props], function(d){ return d.id; }).enter().append("g")
           .attr("id", groupid);

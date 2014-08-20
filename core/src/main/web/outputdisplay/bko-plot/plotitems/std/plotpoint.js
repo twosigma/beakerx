@@ -114,8 +114,10 @@
     };
 
     PlotPoint.prototype.prepare = function(scope) {
-      var eles = this.elements, eleprops = this.elementProps;
-      var mapX = scope.data2scrX, mapY = scope.data2scrY;
+      var eles = this.elements,
+          eleprops = this.elementProps;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
 
       this.elementPropsRects.length = 0;
       this.elementPropsDiamonds.length = 0;

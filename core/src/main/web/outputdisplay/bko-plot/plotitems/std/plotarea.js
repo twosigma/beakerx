@@ -34,6 +34,7 @@
       } else {
         this.tip_color = "gray";
       }
+
       this.itemProps = {
         "id" : this.id,
         "fi" : this.color,
@@ -128,8 +129,8 @@
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
       var pstr = "";
 
       eleprops.length = 0;
@@ -175,6 +176,7 @@
 
       for (var i = this.vindexR; i >= this.vindexL; i--) {
         var ele = eles[i];
+        var x = mapX(ele.x), y2 = mapY(ele.y2);
 
         if (this.interpolation === "linear") {
           pstr += x + "," + y2 + " ";

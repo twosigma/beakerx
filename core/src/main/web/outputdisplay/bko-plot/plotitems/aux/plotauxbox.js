@@ -56,8 +56,8 @@
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
       var skipped = false;
 
       eleprops.length = 0;
@@ -133,14 +133,6 @@
         .attr("y", function(d) { return d.y; })
         .attr("width", function(d) { return d.w; })
         .attr("height", function(d) { return d.h; });
-    };
-
-    PlotAuxBox.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      for (var i = 0; i < eleprops.length; i++) {
-        var sel = scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
-        delete scope.tips[eleprops[i].id];  // must clear from tip drawing queue
-      }
     };
 
     return PlotAuxBox;

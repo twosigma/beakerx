@@ -1065,6 +1065,13 @@
             d3.scale.linear().domain([lMargin, W-rMargin]).range([focus.xl, focus.xr]);
           scope.scr2dataXp =
             d3.scale.linear().domain([lMargin, W-rMargin]).range([0, 1]);
+
+          scope.data2scrXi = function(val) {
+            return Number(scope.data2scrX(val).toFixed(0));
+          };
+          scope.data2scrYi = function(val) {
+            return Number(scope.data2scrY(val).toFixed(0));
+          };
         };
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();

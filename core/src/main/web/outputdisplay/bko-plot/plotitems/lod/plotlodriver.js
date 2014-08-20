@@ -42,7 +42,7 @@
         "pts" : null
       };
       this.elementProps = [];
-      this.widthShrink = 0;
+      this.zoomHash = plotUtils.randomString(3);
     };
 
     PlotLodRiver.prototype.zoomLevelChanged = function(scope) {
@@ -51,9 +51,7 @@
     };
 
     PlotLodRiver.prototype.render = function(scope, elements, gid){
-      if (gid == null) {
-        gid = "";
-      }
+      if (gid == null) { gid = ""; }
       this.elements = elements;
       this.prepare(scope, gid);
       this.draw(scope, gid);
@@ -63,8 +61,8 @@
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
       var pstr = "";
 
       eleprops.length = 0;
@@ -87,6 +85,7 @@
             "id" : hashid,
             "idx" : this.index,
             "ele" : ele,
+            "g" : gid,
             "isresp" : true,
             "x" : x - this.respWidth / 2,
             "y" : y2,
@@ -128,13 +127,7 @@
         // if special coloring is needed, it is set from the loader
         itemsvg.selectAll("#" + groupid)
           .data([props]).enter().append("g")
-          .attr("id", groupid)
-          .attr("class", this.plotClass)
-          .style("fill", function(d) { return d.fi; })
-          .style("fill-opacity", function(d) { return d.fi_op; })
-          .style("stroke", function(d) { return d.st; })
-          .style("stroke-opacity", function(d) { return d.st_op; })
-          .style("stroke-width", function(d) { return d.st_w; });
+          .attr("id", groupid);
       }
 
       var groupsvg = itemsvg.select("#" + groupid);
@@ -142,19 +135,25 @@
       groupsvg.selectAll("polygon")
         .data([props]).enter().append("polygon");
       groupsvg.selectAll("polygon")
-        .attr("points", props.pts);
+        .attr("points", props.pts)
+        .attr("class", this.plotClass)
+        .style("fill", function(d) { return d.fi; })
+        .style("fill-opacity", function(d) { return d.fi_op; })
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-width", function(d) { return d.st_w; });
 
       if (scope.stdmodel.useToolTip === true) {
-        itemsvg.selectAll("rect")
+        groupsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; }).exit().remove();
-        itemsvg.selectAll("rect")
+        groupsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; }).enter().append("rect")
           .attr("id", function(d) { return d.id; })
           .attr("class", this.respClass)
           .attr("width", this.respWidth)
           .style("stroke", this.tip_color);
 
-        itemsvg.selectAll("rect")
+        groupsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; })
           .attr("x", function(d) { return d.x; })
           .attr("y", function(d) { return d.y; })

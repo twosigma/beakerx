@@ -100,8 +100,10 @@
     };
 
     PlotText.prototype.prepare = function(scope) {
-      var eles = this.elements, eleprops = this.elementProps;
-      var mapX = scope.data2scrX, mapY = scope.data2scrY;
+      var eles = this.elements,
+          eleprops = this.elementProps;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
 
       eleprops.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {

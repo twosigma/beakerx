@@ -21,14 +21,27 @@
       this.xs = _x;
       this.y = _y;
       this.n = _x.length;
-      console.log("data size: ", this.n);
-      var t = Date.now();
+
+      if (this.debug) {
+        console.log("data size: ", this.n);
+        var t = Date.now();
+      }
+
       this.buildCoordTable();
-      console.log("coord table: ", Date.now() - t, "ms");
-      t = Date.now();
+
+      if (this.debug) {
+        console.log("coord table: ", Date.now() - t, "ms");
+        t = Date.now();
+      }
+
       this.buildSegTree();
-      console.log("seg tree: ", Date.now() - t, "ms");
+
+      if (this.debug) {
+        console.log("seg tree: ", Date.now() - t, "ms");
+      }
     };
+
+    PlotSampler.prototype.debug = true;
 
     PlotSampler.prototype.sample = function(xl, xr, step) {
       if (step <= 0 || xr < xl) {
@@ -90,14 +103,25 @@
 
     PlotSampler.prototype.buildCoordTable = function() {
       this.x = this.xs.slice(0); // copy xs to x
-      var t = Date.now();
+
+      if (this.debug) {
+        var t = Date.now();
+      }
+
       _.uniq(this.xs, true); // keep unique values in xs
-      console.log("uniq ", Date.now() - t, "ms");
-      t = Date.now();
+
+      if (this.debug) {
+        console.log("uniq ", Date.now() - t, "ms");
+        t = Date.now();
+      }
+
       for (var i = 0; i < this.n; i++) {
         this.x[i] = this.mapIndex(this.x[i]);
       }
-      console.log("map ", Date.now() - t, "ms");
+
+      if (this.debug) {
+        console.log("map ", Date.now() - t, "ms");
+      }
     };
 
     PlotSampler.prototype.buildSegTree = function() {

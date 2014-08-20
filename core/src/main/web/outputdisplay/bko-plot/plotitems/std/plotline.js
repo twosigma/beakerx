@@ -109,8 +109,8 @@
       var eles = this.elements,
           eleprops = this.elementProps,
           tipids = this.tipIds;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
       var pstr = "";
 
       eleprops.length = 0;

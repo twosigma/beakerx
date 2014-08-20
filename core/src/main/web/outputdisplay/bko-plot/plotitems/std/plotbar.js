@@ -106,7 +106,8 @@
 
     PlotBar.prototype.prepare = function(scope) {
       var w = this.width, sw;
-      var mapX = scope.data2scrX, mapY = scope.data2scrY;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
       var eleprops = this.elementProps,
           eles = this.elements;
 

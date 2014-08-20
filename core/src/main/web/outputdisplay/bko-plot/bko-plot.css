@@ -172,8 +172,9 @@
 .plot-respdot,
 .plot-respstem {
   fill: white;
+  fill-opacity: 0.75;
   stroke-width: 1;
-  border-radius: 2px;
+  border-radius: 2.5px;
 }
 
 .plot-tooltip {

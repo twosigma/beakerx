@@ -95,10 +95,10 @@
           .attr("id", groupid);
       }
       itemsvg.select("#" + groupid)
-        .style("stroke", function(d) { return d.st; })
-        .style("stroke-opacity", function(d) { return d.st_op; })
-        .style("stroke-width", function(d) { return d.st_w; })
-        .style("stroke-dasharray", function(d) { return d.st_da; });
+        .style("stroke", props.st)
+        .style("stroke-opacity", props.st_op)
+        .style("stroke-width", props.st_w)
+        .style("stroke-dasharray", props.st_da);
 
       var groupsvg = itemsvg.select("#" + groupid);
 

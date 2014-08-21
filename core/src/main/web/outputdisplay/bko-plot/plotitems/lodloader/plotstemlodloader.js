@@ -84,10 +84,10 @@
       if (this.lodType === "stem") {
         this.lodplotter = new PlotLodStem(data);
       } else if (this.lodType === "stem+") {
-        data.width += 1;
+        data.width += 1.5;
         this.lodplotter = new PlotLodStem(data);
         this.lodplotter2 = new PlotLodStem(data);
-        data.width -= 1;
+        data.width -= 1.5;
         this.auxplotter = new PlotAuxStem(data);
       } else if (this.lodType === "box") {
         // lod boxes are plotted with special coloring (inversed color)

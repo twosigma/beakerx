@@ -208,26 +208,18 @@
               ele.x = ele.x - w / 2;
               ele.x2 = ele.x + w / 2;
             }
-            if (item.type === "area" || item.type === "bar" || item.type === "stem") {
-              if (item.y2 == null) {
-                if (item.height != null) {
-                  ele.y2 = ele.y - item.height;
-                } else if (item.base != null) {
-                  ele.y2 = item.base;
-                } else if (item.bases != null) {
-                  ele.y2 = item.bases[j];
-                } else {
-                  ele.y2 = logy ? 1 : 0;
-                }
+            if ((item.type === "area" || item.type === "bar" || item.type === "stem")
+              && ele.y2 == null) {
+              if (item.height != null) {
+                ele.y2 = ele.y + item.height;
               } else {
-                ele.y2 = item.y2[j];
+                ele.y2 = logy ? 1 : 0;
               }
             }
-            if (item.type === "point") {
+
+            if (item.type === "point" && ele.size == null) {
               if (item.size != null) {
                 ele.size = item.size;
-              } else if (item.sizes != null) {
-                ele.size = item.sizes[j];
               } else {
                 ele.size = item.shape === "rect" ? 8 : 5;
               }
@@ -469,6 +461,24 @@
                 ele.stroke_dasharray = this.lineDasharrayMap[shape];
               }
             }
+
+            if ((item.type === "stem" || item.type === "bar" || item.type === "area") &&
+              ele.y2 == null) {
+              if (item.bases != null) {
+                ele.y2 = item.bases[j];
+              } else if (item.base != null) {
+                ele.y2 = item.base;
+              }
+            }
+
+            if (item.type === "point") {
+              if (item.sizes != null) {
+                ele.size = item.sizes[j];
+              } else if (item.size != null) {
+                ele.size = item.size;
+              }
+            }
+
             elements.push(ele);
           }
 

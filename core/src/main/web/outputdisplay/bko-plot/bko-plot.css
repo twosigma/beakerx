@@ -14,9 +14,10 @@
  *  limitations under the License.
  */
 
-.plot-renderdiv {
+.plot-plotcontainer {
   background-color: #FEFEFE;
   border: 1px solid #BBBBBB;
+  position: relative;
 }
 
 .plot-label,

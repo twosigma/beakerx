@@ -25,7 +25,7 @@
     return {
       template :
           "<div id='plotTitle' class='plot-title'></div>" +
-          "<div id='plotContainer' class='plot-renderdiv' oncontextmenu='return false;'>" +
+          "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
           "<svg>"  +
           "<defs>" +
             "<filter id='svgfilter'>" +

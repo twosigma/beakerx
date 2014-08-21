@@ -37,7 +37,7 @@
     var CELL_TYPE = "notebook";
     return {
       restrict: 'E',
-      template: JST["notebook/notebook"](),
+      template: JST["mainapp/components/notebook/notebook"](),
       scope: {
         setBkNotebook: "&"
       },
@@ -130,6 +130,8 @@
           }
         };
         $scope.setBkNotebook({bkNotebook: _impl});
+
+        $scope.getFullIndex = function() { return "1" }
 
         $scope.isLocked = function() {
           return _impl._viewModel.isLocked();

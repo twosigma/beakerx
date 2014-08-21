@@ -51,7 +51,7 @@ define(function(require, exports, module) {
                   function(originalUrl) {
                     bkHelper.openNotebook(originalUrl);
                   },
-                  JST['openmenumodal']({homeDir: homeDir}),
+                  JST['opennotebook']({homedir: homeDir}),
                   bkHelper.getFileSystemFileChooserStrategy()
               );
             }

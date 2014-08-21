@@ -66,12 +66,12 @@
         var xAxis = new PlotAxis(model.xAxis.type),
             yAxis = new PlotAxis(model.yAxis.type);
 
-        if (xAxis.getType() !== "time") {
+        if (xAxis.axisType !== "time") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
         } else {
           xAxis.setRange(vrange.xl, vrange.xr, model.timezone);
         }
-        if (yAxis.getType() !== "time") {
+        if (yAxis.axisType !== "time") {
           yAxis.setRange(vrange.yl, vrange.yr, model.yAxis.base);
         } else {
           yAxis.setRange(vrange.yl, vrange.yr, model.timezone);
@@ -88,24 +88,11 @@
 
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
-
           var item = data[i], eles = item.elements;
 
-          for (var j = 0; j < eles.length; j++) {
-            var ele = eles[j];
-            if (ele.x != null) {
-              ele.x = xAxis.getPercent(ele.x);
-            }
-            if (ele.x2 != null) {
-              ele.x2 = xAxis.getPercent(ele.x2);
-            }
-            if (ele.y != null) {
-              ele.y = yAxis.getPercent(ele.y);
-            }
-            if (ele.y2 != null) {
-              ele.y2 = yAxis.getPercent(ele.y2);
-            }
-          }
+          // map coordinates using percentage
+          // tooltips are possibly generated at the same time
+          item.applyAxis(xAxis, yAxis);
         }
         // map focus region
         var focus = model.focus;
@@ -113,29 +100,6 @@
         if (focus.xr != null) { focus.xr = xAxis.getPercent(focus.xr); }
         if (focus.yl != null) { focus.yl = yAxis.getPercent(focus.yl); }
         if (focus.yr != null) { focus.yr = yAxis.getPercent(focus.yr); }
-      },
-
-      generateTips : function(model) {
-        var data = model.data;
-        for (var i = 0; i < data.length; i++) {
-          var item = data[i], eles = item.elements;
-          for (var j = 0; j < eles.length; j++) {
-            var ele = eles[j];
-            var txt = "";
-            var valx = plotUtils.getTipString(ele._x, model.xAxis, true),
-                valy = plotUtils.getTipString(ele._y, model.yAxis, true);
-            if (item.legend != null) {
-              txt += "<div style='font-weight:bold'>" + item.legend + "</div>";
-            }
-            txt += "<div>x: " + valx + "</div><div>y: " + valy + "</div>";
-            if (ele._y2 != null) {
-              var valy2 = plotUtils.getTipString(ele._y2, model.yAxis);
-              txt += "<div>y2: " + valy2 + "</div>";
-            }
-
-            item.elementProps[j].tip_text = txt;
-          }
-        }
       },
 
       formatModel: function(newmodel, model) {
@@ -188,6 +152,15 @@
             item.width = 1;
           }
 
+          if (item.type === "point") {
+            if (item.shape == null) {
+              item.shape = "rect";
+            }
+            if (item.size == null) {
+              item.size = item.shape === "rect" ? 8 : 5;
+            }
+          }
+
 
           if (item.colorOpacity != null) {
             item.color_opacity = item.colorOpacity;
@@ -206,9 +179,16 @@
             delete item.outlineOpacity;
           }
 
+          if (item.color_opacity == null) {
+            item.color_opacity = 1.0; // default show fully
+          }
+          if (item.stroke_opacity == null) {
+            // default show based on whether stroke is set
+            item.stroke_opacity = item.stroke == null ? 0.0 : 1.0;
+          }
+
           for (var j = 0; j < eles.length; j++) {
             var ele = eles[j];
-
 
             if (ele.outlineColor != null) {
               ele.stroke = ele.outlineColor;
@@ -225,8 +205,8 @@
 
             if (item.type === "bar") {
               var w = item.width;
-              ele.x = ele.x - w/2;
-              ele.x2 = ele.x + w/2;
+              ele.x = ele.x - w / 2;
+              ele.x2 = ele.x + w / 2;
             }
             if (item.type === "area" || item.type === "bar" || item.type === "stem") {
               if (item.y2 == null) {
@@ -249,7 +229,7 @@
               } else if (item.sizes != null) {
                 ele.size = item.sizes[j];
               } else {
-                ele.size = item.style === "rect"? 10 : 5;
+                ele.size = item.shape === "rect" ? 8 : 5;
               }
             }
 
@@ -258,7 +238,6 @@
                 item.interpolation = "linear";
               }
             }
-
             // swap y, y2
             if (ele.y != null && ele.y2 != null && ele.y > ele.y2) {
               var temp = ele.y;
@@ -292,8 +271,8 @@
             }
           }
           // recreate rendering objects
+          item.index = i;
           item.id = "i" + i;
-
           data[i] = plotFactory.createPlotItem(item);
         }
 
@@ -464,8 +443,7 @@
           }
 
           var elements = [];
-          var numEles = item.x.length;
-          for (var j = 0; j < numEles; j++) {
+          for (var j = 0; j < item.x.length; j++) {
             var ele = {};
             ele.x = item.x[j];
             ele.y = item.y[j];
@@ -686,10 +664,8 @@
         }
 
         this.remapModel(newmodel);
-        this.generateTips(newmodel);
 
-
-        //this.cleanupModel(newmodel);
+        //this.cleanupModel(newmodel); // TODO remove unnecessary entries in model?
 
         newmodel.version = "complete";
         //console.log(newmodel);

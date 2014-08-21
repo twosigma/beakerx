@@ -24,15 +24,17 @@
           xr: -1E100,
           yr: -1E100
         };
-        var visibleData = 0;
+        var visibleItem = 0, legendableItem = 0;
         for (var i = 0; i < data.length; i++) {
+          if (data[i].legend != null && data[i].legend != "") {
+            legendableItem++;
+          }
           if (data[i].shown === false) { continue; }
-          visibleData++;
-
+          visibleItem++;
           var itemrange = data[i].getRange();
           this.updateRange(datarange, itemrange);
         }
-        if (visibleData === 0) {
+        if (visibleItem === 0) {
           datarange.xl = datarange.yl = 0;
           datarange.xr = datarange.yr = 1;
         }
@@ -40,10 +42,11 @@
         datarange.yspan = datarange.yr - datarange.yl;
         return {
           "datarange" : datarange,
-          "visibleData": visibleData
+          "visibleItem" : visibleItem,
+          "legendableItem" : legendableItem
         };
       },
-      getInitFocus : function(model) {
+      getDefaultFocus : function(model) {
         var ret = this.getDataRange(model.data);
         var range = ret.datarange, margin = model.margin;
         var focus = {
@@ -66,16 +69,16 @@
         }
         focus.xspan = focus.xr - focus.xl;
         focus.yspan = focus.yr - focus.yl;
-        return {
-          "initFocus" : focus,
-          "visibleData" : ret.visibleData
-        };
+        var result = {};
+        result.defaultFocus = focus;
+        _(result).extend(_.omit(ret, "datarange"));
+        return result;
       },
 
-      plotCoords: function(scope) {
-        var sel = scope.coordg.selectAll("line");
-        sel.data(scope.rpipeCoords, function(d) { return d.id; }).exit().remove();
-        sel.data(scope.rpipeCoords, function(d) { return d.id; }).enter().append("line")
+      plotGridlines: function(scope) {
+        var sel = scope.gridg.selectAll("line");
+        sel.data(scope.rpipeGridlines, function(d) { return d.id; }).exit().remove();
+        sel.data(scope.rpipeGridlines, function(d) { return d.id; }).enter().append("line")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .attr("x1", function(d) { return d.x1; })
@@ -84,13 +87,12 @@
           .attr("y2", function(d) { return d.y2; })
           .style("stroke", function(d) { return d.stroke; })
           .style("stroke-dasharray", function(d) { return d.stroke_dasharray; });
-        sel.data(scope.rpipeCoords, function(d) { return d.id; })
+        sel.data(scope.rpipeGridlines, function(d) { return d.id; })
           .attr("x1", function(d) { return d.x1; })
           .attr("x2", function(d) { return d.x2; })
           .attr("y1", function(d) { return d.y1; })
           .attr("y2", function(d) { return d.y2; });
       },
-
       plotLabels: function(scope) {   // redraw
         var pipe = scope.rpipeTexts;
         scope.labelg.selectAll("text").remove();
@@ -101,8 +103,8 @@
           .attr("x", function(d) { return d.x; })
           .attr("y", function(d) { return d.y; })
           .attr("transform", function(d) { return d.transform; })
-          .attr("text-anchor", function(d) { return d["text-anchor"]; })
-          .attr("dominant-baseline", function(d) { return d["dominant-baseline"]; })
+          .style("text-anchor", function(d) { return d["text-anchor"]; })
+          .style("dominant-baseline", function(d) { return d["dominant-baseline"]; })
           .text(function(d) { return d.text; });
       },
       replotSingleCircle: function(scope, d) {
@@ -116,7 +118,7 @@
           .attr("r", function(d) { return d.r; })
           .style("fill", function(d) { return d.color; })
           .style("stroke", function(d) { return d.stroke; })
-          .attr("opacity", function(d) { return d.opacity; });
+          .style("opacity", function(d) { return d.opacity; });
       },
       replotSingleRect: function(svgElement, d) {
         svgElement.selectAll("#" + d.id).remove();
@@ -145,6 +147,16 @@
         while (s.length < 6) s = "0" + s;
         return "#" + s;
       },
+
+      randomString: function(len) {
+        var ret = "";
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for (var i = 0; i < len; i++ ) {
+          ret += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return ret;
+      },
+
       createColor : function(hexstr, opacity) {
         if (hexstr == null) {
           hexstr = "#000000";
@@ -158,29 +170,56 @@
             var str = "rgba(" + r + "," + g + "," + b + "," + opacity + ")";;
         return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
       },
-      getTipString : function(val, axis, keepFixed) {
-        var type = axis.getType();
-        if (type === "time") {
-          return moment(val).tz(axis.getTimezone()).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
+
+      getTipString : function(val, axis, fixed) {
+        if (axis.axisType === "time") {
+          return moment(val).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
         }
         if (typeof(val) === "number") {
-          if (keepFixed === true) {
-            return "" + val;
+          if (fixed === true) {
+            // do nothing, keep full val
+          } else if (typeof(fixed) === "number"){
+            val = val.toFixed(fixed);
           } else {
-            val = val.toFixed(axis.getFixed());
+            val = val.toFixed(axis.axisFixed);
           }
         }
         return "" + val;
       },
-      getTipStringPercent : function(pct, axis, keepFixed) {
-        var val = axis.getValue(pct);
-        if (axis.getType() === "log") {
-          val = axis.axisPow(pct);
-          return this.getTipString(val, axis, keepFixed) + " (" + axis.getString(pct) + ")";
-        }
-        return this.getTipString(val, axis, keepFixed);
-      }
 
+      getTipStringPercent : function(pct, axis, fixed) {
+        var val = axis.getValue(pct);
+        if (axis.axisType === "log") {
+          val = axis.axisPow(pct);
+          return this.getTipString(val, axis, fixed) + " (" + axis.getString(pct) + ")";
+        }
+        return this.getTipString(val, axis, fixed);
+      },
+
+      createTipString : function(obj) {
+        var txt = "";
+        _(obj).each(function(value, key) {
+          if (key == "title") {
+            txt += "<div style='font-weight:bold'>";
+          } else {
+            txt += "<div>";
+            txt += key + ": ";
+          }
+          txt += value;
+          txt += "</div>";
+        });
+        return txt;
+      },
+
+      rangeAssert : function(list) {
+        _(list).each(function(e, i){
+          if (Math.abs(e) > 1E6) {
+            console.error("data not shown due to too large coordinate");
+            return true;
+          }
+        });
+        return false;
+      }
     };
   };
   beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);

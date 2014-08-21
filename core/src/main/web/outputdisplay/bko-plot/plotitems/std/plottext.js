@@ -18,8 +18,25 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotText = function(data){
-      $.extend(true, this, data);
+      _(this).extend(data);
       this.format();
+    };
+
+    PlotText.prototype.plotClass = "plot-text";
+    PlotText.prototype.respClass = "plot-resp";
+
+    PlotText.prototype.format = function() {
+      if (this.color != null) {
+        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      } else {
+        this.tip_color = "gray";
+      }
+      this.itemProps = {
+        "id" : this.id,
+        "fi" : this.color,
+        "fi_op" : this.color_opacity
+      };
+      this.elementProps = [];
     };
 
     PlotText.prototype.render = function(scope) {
@@ -54,42 +71,25 @@
       return range;
     };
 
-    PlotText.prototype.format = function() {
-
-      this.itemProps = {
-        "id" : this.id,
-        "class" : "plot-text",
-        "fill" : this.color,
-        "fill_opacity" : this.color_opacity,
-      };
-
-      this.elementProps = [];
+    PlotText.prototype.applyAxis = function(xAxis, yAxis) {
+      this.xAxis = xAxis;
+      this.yAxis = yAxis;
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
-        var stem = {
-          "id" : this.id + "_" + i,
-          "class" : "plot-resp",
-          "fill" : ele.color,
-          "fill_opacity" : ele.fill_opacity,
-          "text" : ele.text,
-          "tip_text" : ele.tip_text,
-          "transform" : ""
-        };
-        this.elementProps.push(stem);
+        ele.x = xAxis.getPercent(ele.x);
+        ele.y = yAxis.getPercent(ele.y);
       }
-
-      this.pipe = [];
     };
 
     PlotText.prototype.filter = function(scope) {
       var eles = this.elements;
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl) + 1,
-          r = plotUtils.upper_bound(eles, "x2", scope.focus.xr);
+          r = plotUtils.upper_bound(eles, "x", scope.focus.xr);
 
       l = Math.max(l, 0);
       r = Math.min(r, eles.length - 1);
 
-      if (l > r || l == r && eles[l].x2 < scope.focus.xl) {
+      if (l > r || l == r && eles[l].x < scope.focus.xl) {
         // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
@@ -100,16 +100,23 @@
     };
 
     PlotText.prototype.prepare = function(scope) {
-      var eles = this.elements, eleprops = this.elementProps;
-      var mapX = scope.data2scrX, mapY = scope.data2scrY;
+      var focus = scope.focus;
+      var eles = this.elements,
+          eleprops = this.elementProps;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
 
-      this.pipe.length = 0;
+      eleprops.length = 0;
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
-        if (ele.x < focus.xl || ele.x > focus.xr || ele.y < focus.yl || ele.y > focus.yr ) {
-          continue;
-        }
+        if (ele.y < focus.yl || ele.y > focus.yr ) { continue; }
         var x = mapX(ele.x), y = mapY(ele.y);
+
+        if (plotUtils.rangeAssert([x, y])) {
+          eleprops.length = 0;
+          return;
+        }
+
         var tf = "", rot = null;
         if (ele.rotate != null) {
           rot = ele.rotate;
@@ -121,49 +128,74 @@
         }
         tf += "translate(" + x + "," + y + ")";
 
-        _(eleprops[i]).extend({
-          "transform" : tf,
-          "text" : ele.text,
-          "fill" : ele.color,
-          "fill_opacity" : ele.opacity,
-          "tip_x" : x,
-          "tip_y" : y
-        });
-        this.pipe.push(eleprops[i]);
+        var prop = {
+          "id" : this.id + "_" + i,
+          "idx" : this.index,
+          "ele" : ele,
+          "tf" : tf,
+          "txt" : ele.text,
+          "fi" : ele.color,
+          "fi_op" : ele.opacity,
+          "t_x" : x,
+          "t_y" : y
+        };
+        eleprops.push(prop);
       }
     };
 
     PlotText.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          pipe = this.pipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
           .data([props], function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill_opacity", function(d) { return d.fill_opacity; });
+          .attr("id", function(d) { return d.id; });
       }
+      svg.select("#" + this.id)
+        .attr("class", this.plotClass)
+        .style("fill", props.fi)
+        .style("fill-opacity", props.fi_op);
 
       var itemsvg = svg.select("#" + this.id);
       itemsvg.selectAll("text")
-        .data(pipe, function(d) { return d.id; }).exit().remove();
+        .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("text")
-        .data(pipe, function(d) { return d.id; }).enter().append("text")
+        .data(eleprops, function(d) { return d.id; }).enter().append("text")
         .attr("id", function(d) { return d.id; })
-        .attr("class", function(d) { return d.class; })
-        .style("fill", function(d) { return d.fill; })
-        .style("fill_opacity", function(d) { return d.fill_opacity; })
-        .text(function(d) { return d.text; });
+        .attr("class", this.respClass)
+        .style("fill", function(d) { return d.fi; })
+        .style("fill_opacity", function(d) { return d.fi_op; })
+        .text(function(d) { return d.txt; });
       itemsvg.selectAll("text")
-        .data(pipe, function(d) { return d.id; })
-        .attr("transform", function(d) { return d.transform; });
+        .data(eleprops, function(d) { return d.id; })
+        .attr("transform", function(d) { return d.tf; });
     };
 
     PlotText.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
+      scope.maing.select("#" + this.id).selectAll("*").remove();
+      this.clearTips(scope);
+    };
+
+    PlotText.prototype.clearTips = function(scope) {
+      var eleprops = this.elementProps;
+      for (var i = 0; i < eleprops.length; i++) {
+        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+        delete scope.tips[eleprops[i].id];
+      }
+    };
+
+    PlotText.prototype.createTip = function(ele) {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
+      }
+      tip.x = plotUtils.getTipString(ele._x, xAxis, true);
+      tip.y = plotUtils.getTipString(ele._y, yAxis, true);
+      return plotUtils.createTipString(tip);
     };
 
     return PlotText;

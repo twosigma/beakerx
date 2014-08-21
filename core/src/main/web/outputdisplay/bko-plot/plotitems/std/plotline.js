@@ -18,8 +18,30 @@
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotLine = function(data){
-      $.extend(true, this, data); // copy properties to itself
+      _(this).extend(data); // copy properties to itself
       this.format();
+    };
+
+    // constants
+    PlotLine.prototype.respr = 5;
+    PlotLine.prototype.plotClass = "plot-line";
+    PlotLine.prototype.respClass = "plot-resp plot-respdot";
+
+    PlotLine.prototype.format = function() {
+      if (this.color != null) {
+        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      } else {
+        this.tip_color = "gray";
+      }
+      this.itemProps = {
+        "id" : this.id,
+        "st" : this.color,
+        "st_op" : this.color_opacity,
+        "st_w" : this.width,
+        "st_da" : this.stroke_dasharray,
+        "d" : null
+      };
+      this.elementProps = [];
     };
 
     PlotLine.prototype.render = function(scope){
@@ -54,33 +76,14 @@
       return range;
     };
 
-    PlotLine.prototype.format = function() {
-
-      this.itemProps = {
-        "id" : this.id,
-        "class" : "plot-line",
-        "stroke" : this.color,
-        "stroke_opacity" : this.color_opacity,
-        "stroke_width" : this.width,
-        "stroke_dasharray" : this.stroke_dasharray,
-        "d" : ""
-      };
-
-      this.elementProps = [];
+    PlotLine.prototype.applyAxis = function(xAxis, yAxis) {
+      this.xAxis = xAxis;
+      this.yAxis = yAxis;
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
-        var point = {
-          "id" : this.id + "_" + i,
-          "class" : "plot-resp plot-respdot",
-          "isresp" : true,
-          "tip_text" : ele.tip_text,
-          "tip_color" : this.color == null ? "gray" : this.color,
-          "r" : 5
-        };
-        this.elementProps.push(point);
+        ele.x = xAxis.getPercent(ele.x);
+        ele.y = yAxis.getPercent(ele.y);
       }
-
-      this.resppipe = [];
     };
 
     PlotLine.prototype.filter = function(scope) {
@@ -104,51 +107,64 @@
     PlotLine.prototype.prepare = function(scope) {
       var focus = scope.focus;
       var eles = this.elements,
-          eleprops = this.elementProps;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
-      var pstr = "", skipped = false;
+          eleprops = this.elementProps,
+          tipids = this.tipIds;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
+      var pstr = "";
 
-      this.resppipe.length = 0;
+      eleprops.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
-        if (i == this.vindexL) pstr += "M";
-        else if (i == this.vindexL + 1) {
+        if (i === this.vindexL) {
+          pstr += "M";
+        } else if (i === this.vindexL + 1) {
           if (this.interpolation !== "curve") pstr += "L";
           else pstr += "C";
         }
         var x = mapX(ele.x), y = mapY(ele.y);
-        if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
-          skipped = true;
-          break;
+
+        if (plotUtils.rangeAssert([x, y])) {
+          eleprops.length = 0;
+          return;
         }
+
         var nxtp = x + "," + y + " ";
 
         if (focus.yl <= ele.y && ele.y <= focus.yr) {
-          _(eleprops[i]).extend({
+          var id = this.id + "_" + i;
+          var prop = {
+            "id" : id,
+            "idx" : this.index,
+            "ele" : ele,
+            "isresp" : true,
             "cx" : x,
             "cy" : y,
-            "tip_x" : x,
-            "tip_y" : y,
-            "opacity" : scope.tips[eleprops[i].id] == null ? 0 : 1
-          });
-          this.resppipe.push(eleprops[i]);
+            "t_x" : x,
+            "t_y" : y,
+            "op" : scope.tips[id] == null ? 0 : 1,
+          };
+          eleprops.push(prop);
         }
 
         if (i < this.vindexR) {
           if (this.interpolation === "none") {
             var ele2 = eles[i + 1];
-            nxtp += mapX(ele.x) + "," + mapY(ele.y) + " " + mapX(ele2.x) + "," + mapY(ele.y) + " ";
+            var x2 = mapX(ele2.x);
+
+            if (plotUtils.rangeAssert([x2])) {
+              eleprops.length = 0;
+              return;
+            }
+
+            nxtp += x + "," +y + " " + x2 + "," + y + " ";
+
           } else if (this.interpolation === "curve") {
             // TODO curve implementation
           }
         }
         pstr += nxtp;
-      }
-
-      if (skipped === true) {
-        console.error("data not shown due to too large coordinate");
       }
       if (pstr.length > 0) {
         this.itemProps.d = pstr;
@@ -158,8 +174,7 @@
     PlotLine.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps,
-          resppipe = this.resppipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -171,36 +186,61 @@
 
       itemsvg.selectAll("path")
         .data([props]).enter().append("path")
-        .attr("class", function(d) { return d.class; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-        .style("stroke-width", function(d) { return d.stroke_width; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; });
+        .attr("class", this.plotClass)
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-dasharray", function(d) { return d.st_da; })
+        .style("stroke-width", function(d) { return d.st_w; })
+        .style("stroke-opacity", function(d) { return d.st_op; });
       itemsvg.select("path")
         .attr("d", props.d);
 
+      var item = this;
       if (scope.stdmodel.useToolTip === true) {
         itemsvg.selectAll("circle")
-          .data(resppipe, function(d) { return d.id; }).exit().remove();
+          .data(eleprops, function(d) { return d.id; }).exit().remove();
         itemsvg.selectAll("circle")
-          .data(resppipe, function(d) { return d.id; }).enter().append("circle")
+          .data(eleprops, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("stroke", function(d) { return d.tip_color; });
+          .attr("class", this.respClass)
+          .style("stroke", function(d) { return item.tip_color; });
         itemsvg.selectAll("circle")
-          .data(resppipe, function(d) { return d.id; })
+          .data(eleprops, function(d) { return d.id; })
           .attr("cx", function(d) { return d.cx; })
           .attr("cy", function(d) { return d.cy; })
-          .attr("r", function(d) { return d.r; })
-          .style("opacity", function(d) { return d.opacity; });
+          .attr("r", function(d) { return item.respr; })
+          .style("opacity", function(d) { return d.op; });
       }
     };
 
     PlotLine.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
+      scope.maing.select("#" + this.id).selectAll("*").remove();
+      this.clearTips(scope);
+    };
+
+    PlotLine.prototype.clearTips = function(scope) {
+      var eleprops = this.elementProps;
+      for (var i = 0; i < eleprops.length; i++) {
+        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+        delete scope.tips[eleprops[i].id];
+      }
+    };
+
+    PlotLine.prototype.createTip = function(ele) {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var valx = plotUtils.getTipString(ele._x, xAxis, true),
+          valy = plotUtils.getTipString(ele._y, yAxis, true);
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
+      }
+      tip.x = valx;
+      tip.y = valy;
+      return plotUtils.createTipString(tip);
     };
 
     return PlotLine;
   };
-  beaker.bkoFactory('PlotLine', ['plotUtils', retfunc]);
+  beaker.bkoFactory('PlotLine', ['plotUtils', 'PlotSampler', retfunc]);
 })();
+

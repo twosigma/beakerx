@@ -18,25 +18,34 @@
 (function() {
   'use strict';
   var retfunc = function(PlotLine, PlotBar, PlotStem, PlotArea, PlotPoint,
-    PlotConstline, PlotConstband, PlotText) {
+    PlotConstline, PlotConstband, PlotText,
+    PlotLineLodLoader, PlotBarLodLoader, PlotStemLodLoader, PlotAreaLodLoader,
+    PlotPointLodLoader) {
+    var lodthresh = 200;
     return {
       createPlotItem : function(item) {
+        var size = item.elements.length;
         var plotitem;
         switch (item.type) {
           case "line":
-            plotitem = new PlotLine(item);
+            plotitem = size >= lodthresh ?
+              new PlotLineLodLoader(item, lodthresh) : new PlotLine(item);
             break;
           case "bar":
-            plotitem = new PlotBar(item);
+            plotitem = size >= lodthresh ?
+              new PlotBarLodLoader(item, lodthresh) : new PlotBar(item);
             break;
           case "stem":
-            plotitem = new PlotStem(item);
+            plotitem = size >= lodthresh ?
+              new PlotStemLodLoader(item, lodthresh) : new PlotStem(item);
             break;
           case "area":
-            plotitem = new PlotArea(item);
+            plotitem = size >= lodthresh ?
+              new PlotAreaLodLoader(item, lodthresh) : new PlotArea(item);
             break;
           case "point":
-            plotitem = new PlotPoint(item);
+            plotitem = size >= lodthresh ?
+              new PlotPointLodLoader(item, lodthresh) : new PlotPoint(item);
             break;
           case "constline":
             plotitem = new PlotConstline(item);
@@ -57,5 +66,7 @@
   beaker.bkoFactory('plotFactory',
     ['PlotLine', 'PlotBar', 'PlotStem', 'PlotArea', 'PlotPoint',
      'PlotConstline', 'PlotConstband', 'PlotText',
+     'PlotLineLodLoader', 'PlotBarLodLoader', 'PlotStemLodLoader', 'PlotAreaLodLoader',
+     'PlotPointLodLoader',
       retfunc]);
 })();

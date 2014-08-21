@@ -29,8 +29,8 @@
       this.axisPctR = 1;
       this.axisPctSpan = 1;
       this.axisLabel = "";
-      this.axisCoords = [];
-      this.axisCoordLabels = [];
+      this.axisGridlines = [];
+      this.axisGridlineLabels = [];
       this.axisStep = 1;
       this.axisFixed = 0;
     };
@@ -78,7 +78,7 @@
       }
       this.axisValSpan = this.axisValR - this.axisValL;
     };
-    PlotAxis.prototype.setCoords = function(pl, pr, count) {
+    PlotAxis.prototype.setGridlines = function(pl, pr, count) {
       if (pr < pl) {
         console.error("cannot set right coord < left coord");
         return;
@@ -113,24 +113,19 @@
       this.axisFixed = f;
       var val = Math.ceil(this.getValue(pl) / w) * w,
           valr = this.getValue(pr);
-      var coords = [],
+      var lines = [],
           labels = [];
       while(val < valr) {
         var pct = this.getPercent(val);
         labels.push(this.getString(pct));
-        coords.push(pct);
+        lines.push(pct);
         val += w;
       }
-      this.axisCoords = coords;
-      this.axisCoordLabels = labels;
+      this.axisGridlines = lines;
+      this.axisGridlineLabels = labels;
     };
-    PlotAxis.prototype.getType = function() { return this.axisType; };
-    PlotAxis.prototype.getTimezone = function() { return this.axisTimezone; };
-    PlotAxis.prototype.getCoords = function() { return _.without(this.axisCoords); };
-    PlotAxis.prototype.getCoordLabels = function() { return _.without(this.axisCoordLabels); };
-    PlotAxis.prototype.getStep = function() { return this.axisStep; };
-    PlotAxis.prototype.getFixed = function() { return this.axisFixed; };
-    PlotAxis.prototype.getLabel = function() { return this.axisLabel; };
+    PlotAxis.prototype.getGridlines = function() { return _.without(this.axisGridlines); };
+    PlotAxis.prototype.getGridlineLabels = function() { return _.without(this.axisGridlineLabels); };
     PlotAxis.prototype.getPercent = function(val) {
       if (val < this.axisValL) { val = this.axisValL; }
       if (val > this.axisValR) { val = this.axisValR; }

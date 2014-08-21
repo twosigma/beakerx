@@ -19,8 +19,32 @@
   var retfunc = function(plotUtils) {
 
     var PlotArea = function(data){
-      $.extend(true, this, data);
+      _(this).extend(data); // copy properties to itself
       this.format();
+    };
+
+    PlotArea.prototype.respWidth = 5;
+    PlotArea.prototype.respMinHeight = 5;
+    PlotArea.prototype.plotClass = "plot-area";
+    PlotArea.prototype.respClass = "plot-resp plot-respstem";
+
+    PlotArea.prototype.format = function(){
+      if (this.color != null) {
+        this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
+      } else {
+        this.tip_color = "gray";
+      }
+
+      this.itemProps = {
+        "id" : this.id,
+        "fi" : this.color,
+        "fi_op": this.color_opacity,
+        "st": this.stroke,
+        "st_w": this.stroke_width,
+        "st_op": this.stroke_opacity,
+        "pts" : null
+      };
+      this.elementProps = [];
     };
 
     PlotArea.prototype.render = function(scope){
@@ -55,32 +79,15 @@
       return range;
     };
 
-    PlotArea.prototype.format = function(){
-      this.itemProps = {
-        "id" : this.id,
-        "class" : "plot-area",
-        "fill" : this.color,
-        "fill_opacity": this.color_opacity,
-        "stroke": this.stroke,
-        "stroke_width": this.stroke_width,
-        "stroke_opacity": this.stroke_opacity,
-        "points" : ""
-      };
-      this.elementProps = [];
+    PlotArea.prototype.applyAxis = function(xAxis, yAxis) {
+      this.xAxis = xAxis;
+      this.yAxis = yAxis;
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
-        var point = {
-          "id" : this.id + "_" + i,
-          "class" : "plot-resp plot-respstem",
-          "isresp" : true,
-          "tip_text" : ele.tip_text,
-          "tip_color" : this.color == null ? "gray" : this.color,
-          "width" : 5
-        };
-        this.elementProps.push(point);
+        ele.x = xAxis.getPercent(ele.x);
+        ele.y = yAxis.getPercent(ele.y);
+        ele.y2 = yAxis.getPercent(ele.y2);
       }
-
-      this.resppipe = [];
     };
 
     PlotArea.prototype.filter = function(scope) {
@@ -105,19 +112,21 @@
       var focus = scope.focus;
       var eles = this.elements,
           eleprops = this.elementProps;
-      var pstr = "", skipped = false;
-      var mapX = scope.data2scrX,
-          mapY = scope.data2scrY;
+      var mapX = scope.data2scrXi,
+          mapY = scope.data2scrYi;
+      var pstr = "";
 
-      this.resppipe.length = 0;
+      eleprops.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
         var x = mapX(ele.x), y = mapY(ele.y), y2 = mapY(ele.y2);
-        if (Math.abs(ele.x) > 1E6 || Math.abs(ele.y) > 1E6) {
-          skipped = true;
-          break;
+
+        if (plotUtils.rangeAssert([x, y, y2])) {
+          eleprops.length = 0;
+          return;
         }
+
         if (this.interpolation === "linear") {
           pstr += x + "," + y + " ";
         } else if (this.interpolation === "none" && i < this.vindexR) {
@@ -131,47 +140,50 @@
         }
 
         if (ele.y <= focus.yr && ele.y2 >= focus.yl) {
-          _(eleprops[i]).extend({
-            "x" : x - eleprops[i].width / 2,
+          var id = this.id + "_" + i;
+          var prop = {
+            "id" : id,
+            "idx" : this.index,
+            "ele" : ele,
+            "isresp" : true,
+            "x" : x - this.respWidth / 2,
             "y" : y2,
-            "height" : Math.max(y - y2, 5), // at least height 5 to be hoverable
-            "tip_x" : x,
-            "tip_y" : (y + y2) / 2,
-            "opacity" : scope.tips[eleprops[i].id] == null ? 0 : 1
-          });
-          this.resppipe.push(eleprops[i]);
+            "h" : Math.max(y - y2, this.respMinHeight),  // min height to be hoverable
+            "t_x" : x,
+            "t_y" : (y + y2) / 2,
+            "op" : scope.tips[id] == null ? 0 : 1
+          };
+          eleprops.push(prop);
         }
       }
 
       for (var i = this.vindexR; i >= this.vindexL; i--) {
         var ele = eles[i];
-        var x = mapX(ele.x), y2 = ele.y2 == null ? mapY(focus.yl) : mapY(ele.y2);
-        if (Math.abs(y2) > 1E6) { // x is already checked above
-          skipped = true;
-          break;
-        }
+        var x = mapX(ele.x), y2 = mapY(ele.y2);
+
         if (this.interpolation === "linear") {
           pstr += x + "," + y2 + " ";
         } else if (this.interpolation === "none" && i < this.vindexR) {
           var ele2 = eles[i + 1];
           var x2 = mapX(ele2.x);
+
+          if (plotUtils.rangeAssert([x2])) {
+            eleprops.length = 0;
+            return;
+          }
+
           pstr += x2 + "," + y2 + " " + x + "," + y2 + " ";
         }
       }
-
-      if (skipped === true) {
-        console.error("data not shown due to too large coordinate");
-      }
-
       if (pstr.length > 0) {
-        this.itemProps.points = pstr;
+        this.itemProps.pts = pstr;
       }
     };
 
     PlotArea.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          resppipe = this.resppipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -183,36 +195,58 @@
 
       itemsvg.selectAll("polygon")
         .data([props]).enter().append("polygon")
-        .attr("class", function(d) { return d.class; })
-        .style("fill", function(d) { return d.fill; })
-        .style("fill-opacity", function(d) { return d.fill_opacity; })
-        .style("stroke", function(d) { return d.stroke; })
-        .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-        .style("stroke-width", function(d) { return d.stroke_width; });
+        .attr("class", this.plotClass)
+        .style("fill", function(d) { return d.fi; })
+        .style("fill-opacity", function(d) { return d.fi_op; })
+        .style("stroke", function(d) { return d.st; })
+        .style("stroke-opacity", function(d) { return d.st_op; })
+        .style("stroke-width", function(d) { return d.st_w; });
       itemsvg.select("polygon")
-        .attr("points", props.points);
+        .attr("points", props.pts);
 
       if (scope.stdmodel.useToolTip === true) {
         itemsvg.selectAll("rect")
-          .data(resppipe, function(d) { return d.id; }).exit().remove();
+          .data(eleprops, function(d) { return d.id; }).exit().remove();
         itemsvg.selectAll("rect")
-          .data(resppipe, function(d) { return d.id; }).enter().append("rect")
+          .data(eleprops, function(d) { return d.id; }).enter().append("rect")
           .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .attr("width", function(d) { return d.width; })
-          .style("stroke", function(d) { return d.tip_color; });
+          .attr("class", this.respClass)
+          .attr("width", this.respWidth)
+          .style("stroke", this.tip_color);
 
         itemsvg.selectAll("rect")
-          .data(resppipe, function(d) { return d.id; })
+          .data(eleprops, function(d) { return d.id; })
           .attr("x", function(d) { return d.x; })
           .attr("y", function(d) { return d.y; })
-          .attr("height", function(d) { return d.height; })
-          .style("opacity", function(d) { return d.opacity; });
+          .attr("height", function(d) { return d.h; })
+          .style("opacity", function(d) { return d.op; });
       }
     };
 
     PlotArea.prototype.clear = function(scope) {
-      scope.maing.select("#" + this.id).remove();
+      scope.maing.select("#" + this.id).selectAll("*").remove();
+      this.clearTips(scope);
+    };
+
+    PlotArea.prototype.clearTips = function(scope) {
+      var eleprops = this.elementProps;
+      for (var i = 0; i < eleprops.length; i++) {
+        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
+        delete scope.tips[eleprops[i].id];
+      }
+    };
+
+    PlotArea.prototype.createTip = function(ele) {
+      var xAxis = this.xAxis,
+          yAxis = this.yAxis;
+      var tip = {};
+      if (this.legend != null) {
+        tip.title = this.legend;
+      }
+      tip.x = plotUtils.getTipString(ele._x, xAxis, true);
+      tip.yTop = plotUtils.getTipString(ele._y2, yAxis, true);
+      tip.yBtm = plotUtils.getTipString(ele._y, yAxis, true);
+      return plotUtils.createTipString(tip);
     };
 
     return PlotArea;

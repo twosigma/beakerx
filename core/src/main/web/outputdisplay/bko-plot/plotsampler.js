@@ -41,7 +41,7 @@
       }
     };
 
-    PlotSampler.prototype.debug = true;
+    PlotSampler.prototype.debug = false;  // set time estimation
 
     PlotSampler.prototype.sample = function(xl, xr, step) {
       if (step <= 0 || xr < xl) {

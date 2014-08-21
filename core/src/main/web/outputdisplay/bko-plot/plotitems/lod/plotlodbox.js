@@ -40,8 +40,7 @@
         "fi_op" : this.color_opacity,
         "st" : this.stroke,
         "st_op" : this.stroke_opacity,
-        "st_da" : this.stroke_dasharray,
-        "d" : ""
+        "st_da" : this.stroke_dasharray
       };
       this.elementProps = [];
     };
@@ -131,12 +130,12 @@
           .data([props], function(d){ return d.id; }).enter().append("g")
           .attr("id", groupid);
       }
-      itemsvg.select("#" + groupid)
-        .style("class", this.plotClass)
-        .style("fill", function(d) { return d.fi; })
-        .style("fill-opacity", function(d) { return d.fi_op; })
-        .style("stroke", function(d) { return d.st; })
-        .style("stroke-opacity", function(d) { return d.st_op; });
+      itemsvg.selectAll("#" + groupid)
+        .attr("class", this.plotClass)
+        .style("fill", props.fi)
+        .style("fill-opacity", props.fi_op)
+        .style("stroke", props.st)
+        .style("stroke-opacity", props.st_op);
 
       var groupsvg = itemsvg.select("#" + groupid);
 
@@ -155,7 +154,7 @@
         .attr("height", function(d) { return d.h; });
 
       if (this.avgOn === true) {
-        var clr = props.st == null ? "gray" : props.st;
+        var clr = props.st == null ? "black" : props.st;
         // draw avg lines
         groupsvg.selectAll("line")
           .data(eleprops, function(d) { return d.id + "l"; }).exit().remove();

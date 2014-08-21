@@ -224,13 +224,19 @@
 
     PlotAreaLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
+      this.clearTips(scope);
+    };
+
+    PlotAreaLodLoader.prototype.clearTips = function(scope) {
+      if (this.lodOn === false) {
+        this.plotter.clearTips(scope);
+        return;
+      }
       if (this.lodType === "area") {
         this.lodplotter.clearTips(scope);
       } else if (this.lodType === "river") {
         this.lodplotter.clearTips(scope);
         this.lodplotter2.clearTips(scope);
-      } else {
-         this.plotter.clearTips(scope);
       }
     };
 
@@ -241,7 +247,7 @@
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
-      var sub = "sample" + (g != null ? " " + g : "");
+      var sub = "sample" + (g != null ? (" " + g) : "");
       if (this.legend != null) {
         tip.title = this.legend + " (" + sub + ")";
       }

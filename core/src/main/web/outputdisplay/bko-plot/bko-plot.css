@@ -144,24 +144,23 @@
 
 .plot-legendlodhint {
   font-size: 0.7em;
+  vertical-align: middle;
+  cursor: pointer;
   display: inline-block;
+}
+
+.plot-legendlodauto {
+  font-size: 0.7em;
   vertical-align: middle;
   cursor: pointer;
 }
 
 .plot-legendcontainer {
-  stroke: gray;
-  fill: #FEFEFE;
   position: absolute;
-  padding: 5px;
+  padding: .25em;
   border: 1px solid #BBBBBB;
-  background-color: white;
-  list-style: none;
-}
-
-.plot-legenddiv {
-  display: inline-block;
-  white-space: nowrap;
+  background-color: #FEFEFE;
+  border-collapse: initial; /* override the global table setting*/
 }
 
 .plot-coverbox {

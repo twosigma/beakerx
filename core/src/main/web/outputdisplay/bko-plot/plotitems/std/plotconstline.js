@@ -191,10 +191,10 @@
       }
       svg.select("#" + this.id)
         .attr("class", this.plotClass)
-        .style("stroke", function(d) { return d.st; })
-        .style("stroke-opacity", function(d) { return d.st_op; })
-        .style("stroke-width", function(d) { return d.st_w; })
-        .style("stroke-dasharray", function(d) { return d.st_da; });
+        .style("stroke", props.st)
+        .style("stroke-opacity", props.st_op)
+        .style("stroke-dasharray", props.st_da)
+        .style("stroke-width", props.st_w);
 
 
       var svgitem = svg.select("#" + this.id);
@@ -243,6 +243,10 @@
 
     PlotConstline.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
+    };
+
+    PlotConstline.prototype.clearTips = function(scope) {
+      // do nothing, no tip for this type
     };
 
     return PlotConstline;

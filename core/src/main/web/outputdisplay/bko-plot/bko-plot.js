@@ -544,7 +544,7 @@
           scope.jqcontainer.find("#legends").remove();
 
           scope.legendDone = true;
-          var legend = $("<div></div>").appendTo(scope.jqcontainer)
+          var legend = $("<table></table>").appendTo(scope.jqcontainer)
             .attr("id", "legends")
             .attr("class", "plot-legendcontainer")
             .draggable({
@@ -564,60 +564,65 @@
             scope.legendResetPosition = false;
           }
           legend.css(scope.legendPosition);
+
           if (scope.legendableItem > 1) {  // skip "All" check when there is only one line
-            var unit = $("<div></div>").appendTo(legend)
+            var unit = $("<tr></tr>").appendTo(legend)
               .attr("id", "legend_all");
-            $("<input type='checkbox'></input>").appendTo(unit)
+            $("<input type='checkbox'></input>")
               .attr("id", "legendcheck_all")
               .attr("class", "plot-legendcheckbox")
               .prop("checked", scope.showAllItems)
               .click(function(e) {
                 return scope.toggleVisibility(e);
-              });
-            $("<span></span>").appendTo(unit)
+              })
+              .appendTo($("<td></td>").appendTo(unit));
+            $("<span></span>")
               .attr("id", "legendbox_all")
               .attr("class", "plot-legendbox")
-              .css("background-color", "none");
-            $("<span></span>").appendTo(unit)
+              .css("background-color", "none")
+              .appendTo($("<td></td>").appendTo(unit));
+            $("<span></span>")
               .attr("id", "legendtext_all")
               .attr("class", "plot-label")
-              .text("All");
+              .text("All")
+              .appendTo($("<td></td>").appendTo(unit));
+            $("<td></td>").appendTo(unit);
           }
 
           var content = "";
           for (var i = 0; i < data.length; i++) {
             var dat = data[i];
             if (dat.legend == null || dat.legend === "") { continue; }
-            var unit = $("<div></div>").appendTo(legend)
-              .attr("id", "legend_" + i)
-              .attr("class", "plot-legenddiv");
+            var unit = $("<tr></tr>").appendTo(legend)
+              .attr("id", "legend_" + i);
             // checkbox
-            $("<input type='checkbox'></input>").appendTo(unit)
+            $("<input type='checkbox'></input>")
               .attr("id", "legendcheck_" + i)
               .attr("class", "plot-legendcheckbox")
               .prop("checked", dat.shown)
               .click(function(e) {
                 return scope.toggleVisibility(e);
-              });
+              })
+              .appendTo($("<td></td>").appendTo(unit));
             // color box
-            $("<span></span>").appendTo(unit)
+            $("<span></span>")
               .attr("id", "legendbox_" + i)
               .attr("class", "plot-legendbox")
               .attr("title", dat.color == null ? "Multi-colored item" : "")
               .css("background-color",
                 dat.color == null ? "none" : dat.color)
               .css("border",
-                dat.color != null ? "1px solid " + dat.color : "1px dotted gray");
+                dat.color != null ? "1px solid " + dat.color : "1px dotted gray")
+              .appendTo($("<td></td>").appendTo(unit));
             // legend text
-            $("<span></span>").appendTo(unit)
+            $("<td></td>").appendTo(unit)
               .attr("id", "legendtext_" + i)
               .attr("class", "plot-label")
               .text(dat.legend);
+            var lodhint = $("<td></td>").appendTo(unit)
+                .attr("id", "hint_" + i);
 
             if (dat.isLodItem === true) {
-              var lodhint = $("<span></span>").appendTo(unit)
-                .attr("id", "hint_" + i)
-                .css("background-color", "white");
               var light = $("<span></span>").appendTo(lodhint)
                 .attr("id", "light")
                 .attr("class", "plot-legendlod");
@@ -627,29 +632,9 @@
                 .css("min-width", "3em");
               var auto = $("<span></span>").appendTo(lodhint)
                 .attr("id", "auto")
-                .attr("class", "plot-legendlodhint")
+                .attr("class", "plot-legendlodauto")
                 .css("min-width", "2em");
-
-              var setlodhint = function(dat) {
-                var hint = legend.find("#hint_" + dat.index);
-                var light = hint.find("#light"),
-                    type = hint.find("#type"),
-                    auto = hint.find("#auto");
-                // lod hint light
-                light.attr("title",
-                  dat.lodOn === true ? "LOD is on" : "")
-                .css("background-color",
-                  dat.lodOn === true ? "red" : "gray")
-                .css("border",
-                  dat.lodOn === true ? "1px solid red" : "1px solid gray");
-                // lod hint text
-                type.css("color", dat.lodOn === true ? "red" : "gray")
-                  .text(dat.lodType);
-                // lod auto hint
-                auto.css("color", dat.lodOn === true ? "red" : "gray")
-                  .text(dat.lodType === "off" ? "" : (dat.lodAuto === true ? "auto" : "on"));
-              };
-              setlodhint(dat);
+              scope.setLodHint(dat);
               lodhint.on('mousedown', {"dat" : dat}, function(e) {
                 var dat = e.data.dat;
                 e.stopPropagation();
@@ -664,7 +649,7 @@
                     function() {
                       dat.toggleLod(scope);
                       scope.update();
-                      setlodhint(dat);
+                      scope.setLodHint(dat);
                     }, null);
                 }
               });
@@ -678,7 +663,7 @@
                 }
                 dat.zoomLevelChanged(scope);
                 scope.update();
-                setlodhint(dat);
+                scope.setLodHint(dat);
               });
               auto.on('mousedown', {"dat" : dat}, function(e) {
                 if (e.which === 3) { return; }
@@ -686,11 +671,32 @@
                 if (dat.lodType === "off") return;
                 dat.toggleAuto(scope);
                 scope.update();
-                setlodhint(dat);
+                scope.setLodHint(dat);
               });
+            } else {
+              $("<td></td>").appendTo(unit);
             }
           }
-
+        };
+        scope.setLodHint = function(dat) {
+          var legend = scope.jqcontainer.find("#legends");
+          var hint = legend.find("#hint_" + dat.index);
+          var light = hint.find("#light"),
+              type = hint.find("#type"),
+              auto = hint.find("#auto");
+          // lod hint light
+          light.attr("title",
+            dat.lodOn === true ? "LOD is on" : "")
+          .css("background-color",
+            dat.lodOn === true ? "red" : "gray")
+          .css("border",
+            dat.lodOn === true ? "1px solid red" : "1px solid gray");
+          // lod hint text
+          type.css("color", dat.lodOn === true ? "red" : "gray")
+            .text(dat.lodType);
+          // lod auto hint
+          auto.css("color", dat.lodOn === true ? "red" : "gray")
+            .text(dat.lodType === "off" ? "" : (dat.lodAuto === true ? "auto" : "on"));
         };
         scope.toggleVisibility = function(e) {
           var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
@@ -699,6 +705,13 @@
             scope.showAllItems = !scope.showAllItems;
             for (var i = 0; i < data.length; i++) {
               data[i].shown = scope.showAllItems;
+              if (data[i].shown === false) {
+                if (data[i].isLodItem === true) {
+                  data[i].lodOn = false;
+                  scope.setLodHint(data[i]);
+                }
+                data[i].clearTips(scope);
+              }
               scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
             }
             scope.calcRange();
@@ -706,6 +719,13 @@
             return;
           }
           data[id].shown = !data[id].shown;
+          if (data[id].shown === false) {
+            if (data[id].isLodItem === true) {
+              data[id].lodOn = false;
+              scope.setLodHint(data[id]);
+            }
+            data[id].clearTips(scope);
+          }
           scope.calcRange();
           scope.update();
         };

@@ -184,11 +184,15 @@
 
     PlotLineLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      if (this.lodType === "off") {
+      this.clearTips(scope);
+    };
+
+    PlotLineLodLoader.prototype.clearTips = function(scope) {
+      if (this.lodOn === false) {
         this.plotter.clearTips(scope);
-      } else {
-        this.lodplotter.clearTips(scope);
+        return;
       }
+      this.lodplotter.clearTips(scope);
     };
 
     PlotLineLodLoader.prototype.createTip = function(ele) {

@@ -91,8 +91,8 @@
         this.auxplotter = new PlotAuxStem(data);
       } else if (this.lodType === "box") {
         // lod boxes are plotted with special coloring (inversed color)
+        data.color_opacity *= .25;
         data.stroke_opacity = 1.0;
-        data.color_opacity = .25;  // set box to be transparent
         this.lodplotter = new PlotLodBox(data);
         this.lodplotter2 = new PlotLodBox(data);
         this.lodplotter.setWidthShrink(1);
@@ -243,13 +243,19 @@
 
     PlotStemLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
+      this.clearTips(scope);
+    };
+
+    PlotStemLodLoader.prototype.clearTips = function(scope) {
+      if (this.lodOn === false) {
+        this.plotter.clearTips(scope);
+        return;
+      }
       if (this.lodType === "bar") {
         this.lodplotter.clearTips(scope);
       } else if (this.lodType === "box") {
         this.lodplotter.clearTips(scope);
         this.lodplotter2.clearTips(scope);
-      } else {
-        this.plotter.clearTips(scope);
       }
     };
 
@@ -260,7 +266,7 @@
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
-      var sub = "sample" + (g != null ? " " + g : "");
+      var sub = "sample" + (g != null ? (" " + g) : "");
       if (this.legend != null) {
         tip.title = this.legend + " (" + sub + ")";
       }

@@ -238,7 +238,6 @@
                 item.interpolation = "linear";
               }
             }
-
             // swap y, y2
             if (ele.y != null && ele.y2 != null && ele.y > ele.y2) {
               var temp = ele.y;

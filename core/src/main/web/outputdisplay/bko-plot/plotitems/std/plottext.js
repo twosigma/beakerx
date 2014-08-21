@@ -34,7 +34,7 @@
       this.itemProps = {
         "id" : this.id,
         "fi" : this.color,
-        "fi_op" : this.color_opacity,
+        "fi_op" : this.color_opacity
       };
       this.elementProps = [];
     };
@@ -155,9 +155,8 @@
       }
       svg.select("#" + this.id)
         .attr("class", this.plotClass)
-        .style("fill", function(d) { return d.fi; })
-        .style("fill_opacity", function(d) { return d.fi_op; });
-
+        .style("fill", props.fi)
+        .style("fill-opacity", props.fi_op);
 
       var itemsvg = svg.select("#" + this.id);
       itemsvg.selectAll("text")

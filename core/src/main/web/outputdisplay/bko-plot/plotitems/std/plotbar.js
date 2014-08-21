@@ -162,11 +162,11 @@
       }
       svg.select("#" + this.id)
         .attr("class", this.plotClass)
-        .style("fill", function(d) { return d.fi; })
-        .style("fill-opacity", function(d) { return d.fi_op; })
-        .style("stroke", function(d) { return d.st; })
-        .style("stroke-opacity", function(d) { return d.st_op; })
-        .style("stroke-width", function(d) { return d.st_w; });
+        .style("fill", props.fi)
+        .style("fill-opacity", props.fi_op)
+        .style("stroke", props.st)
+        .style("stroke-opacity", props.st_op)
+        .style("stroke-width", props.st_w);
 
 
       var itemsvg = svg.select("#" + this.id);

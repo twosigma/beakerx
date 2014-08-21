@@ -177,6 +177,14 @@
 
     PlotPointLodLoader.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
+      this.clearTips(scope);
+    };
+
+    PlotPointLodLoader.prototype.clearTips = function(scope) {
+      if (this.lodOn === false) {
+        this.plotter.clearTips(scope);
+        return;
+      }
       this.lodplotter.clearTips(scope);
     };
 
@@ -187,7 +195,7 @@
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
-      var sub = "sample" + (g != null ? " " + g : "");
+      var sub = "sample" + (g != null ? (" " + g) : "");
       if (this.legend != null) {
         tip.title = this.legend + " (" + sub + ")";
       }

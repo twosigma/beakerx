@@ -146,9 +146,11 @@
             y : -1
           };
 
-          if (model.xAxis.axisLabel != null) {
-            scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * 2;
-          }
+          var factor = 2.0;
+          if (model.xAxis.axisLabel == null) { factor -= 1.0; }
+          if (model.xAxis.showGridlineLabels === false) { factor -= 1.0; }
+          scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * factor;
+
           if (model.yAxis.axisLabel != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
           }
@@ -393,37 +395,40 @@
           });
         };
 
-        scope.renderLabels = function() {
+        scope.renderGridlineLabels = function() {
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
           var model = scope.stdmodel, ys = model.yScale;
-          var lines, labels;
-          lines = model.xAxis.getGridlines();
-          labels = model.xAxis.getGridlineLabels();
-          for (var i = 0; i < labels.length; i++) {
-            var x = lines[i];
-            scope.rpipeTexts.push({
-              "id" : "label_x_" + i,
-              "class" : "plot-label",
-              "text" : labels[i],
-              "x" : mapX(x),
-              "y" : mapY(scope.focus.yl) + scope.labelPadding.y,
-              "text-anchor" : "middle",
-              "dominant-baseline" : "hanging"
-            });
+          if (model.xAxis.showGridlineLabels !== false) {
+            var lines = model.xAxis.getGridlines(),
+                labels = model.xAxis.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var x = lines[i];
+              scope.rpipeTexts.push({
+                "id" : "label_x_" + i,
+                "class" : "plot-label",
+                "text" : labels[i],
+                "x" : mapX(x),
+                "y" : mapY(scope.focus.yl) + scope.labelPadding.y,
+                "text-anchor" : "middle",
+                "dominant-baseline" : "hanging"
+              });
+            }
           }
-          lines = model.yAxis.getGridlines();
-          labels = model.yAxis.getGridlineLabels();
-          for (var i = 0; i < labels.length; i++) {
-            var y = lines[i];
-            scope.rpipeTexts.push({
-              "id" : "label_y_" + i,
-              "class" : "plot-label",
-              "text" : labels[i],
-              "x" : mapX(scope.focus.xl) - scope.labelPadding.x,
-              "y" : mapY(y),
-              "text-anchor" : "end",
-              "dominant-baseline" : "central"
-            });
+          if (model.yAxis.showGridlineLabels !== false) {
+            lines = model.yAxis.getGridlines();
+            labels = model.yAxis.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var y = lines[i];
+              scope.rpipeTexts.push({
+                "id" : "label_y_" + i,
+                "class" : "plot-label",
+                "text" : labels[i],
+                "x" : mapX(scope.focus.xl) - scope.labelPadding.x,
+                "y" : mapY(y),
+                "text-anchor" : "end",
+                "dominant-baseline" : "central"
+              });
+            }
           }
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
           if (model.xAxis.axisLabel != null) {
@@ -1190,7 +1195,7 @@
 
 
           scope.renderData();
-          scope.renderLabels();
+          scope.renderGridlineLabels();
           scope.renderCoverBox(); // redraw
           plotUtils.plotLabels(scope); // redraw
 

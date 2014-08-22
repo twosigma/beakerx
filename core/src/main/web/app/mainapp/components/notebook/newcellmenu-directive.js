@@ -62,28 +62,9 @@
           }
         }
 
-        // find the first code cell starting with the startCell and scan
-        // using the direction, if the startCell is a code cell, it will be returned.
-        var findCodeCell = function(startCell, forward) {
-          var cell = startCell;
-          while (cell) {
-            if (cellOps.getCellType(cell.id) === "code") {
-              return cell;
-            }
-            cell = forward ? cellOps.getNext(cell.id) : cellOps.getPrev(cell.id);
-          }
-          return null;
-        };
-
         // get the last code cell in the notebook
         var getLastCodeCell = function() {
-          return _(cellOps.getCells())
-              .chain()
-              .filter(function(c) {
-                return c.type === "code";
-              })
-              .last()
-              .value();
+          return _.last(cellOps.getAllCodeCells());
         };
 
 
@@ -98,7 +79,9 @@
           // If a prev cell is not given, use the very last code cell in the notebook.
           // If there is no code cell in the notebook, use the first evaluator in the list
           var prevCell = $scope.config && $scope.config.prevCell && $scope.config.prevCell();
-          var codeCell = findCodeCell(prevCell) || findCodeCell(prevCell, true) || getLastCodeCell();
+          var codeCell = (prevCell && cellOps.findCodeCell(prevCell.id))
+              || (prevCell && cellOps.findCodeCell(prevCell.id, true))
+              || getLastCodeCell();
           var evaluatorName = codeCell ?
               codeCell.evaluator : _.keys(bkEvaluatorManager.getAllEvaluators())[0];
           $scope.newCodeCell(evaluatorName);

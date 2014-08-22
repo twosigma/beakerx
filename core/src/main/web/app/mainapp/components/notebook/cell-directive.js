@@ -82,6 +82,9 @@
           },
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
+          },
+          prevCell: function() {
+            return $scope.cellmodel;
           }
         };
 

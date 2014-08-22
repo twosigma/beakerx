@@ -198,9 +198,24 @@
         });
       },
       getAllCodeCells: function(id) {
+        if (!id) {
+          id = "root";
+        }
         return this.getAllDescendants(id).filter(function(cell) {
           return cell.type === "code";
         });
+      },
+      // find the first code cell starting with the startCell and scan
+      // using the direction, if the startCell is a code cell, it will be returned.
+      findCodeCell: function(startCellId, forward) {
+        var cell = this.getCell(startCellId);
+        while (cell) {
+          if (cell.type === "code") {
+            return cell;
+          }
+          cell = forward ? this.getNext(cell.id) : this.getPrev(cell.id);
+        }
+        return null;
       },
       insertBefore: function(id, cell) {
         var index = this.getIndex(id);

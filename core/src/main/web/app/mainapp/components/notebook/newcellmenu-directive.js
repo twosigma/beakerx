@@ -55,6 +55,7 @@
         };
 
         function attachCell(cell) {
+          bkSessionManager.setNotebookModelEdited(true);
           if ($scope.config && $scope.config.attachCell) {
             return $scope.config.attachCell(cell);
           } else {

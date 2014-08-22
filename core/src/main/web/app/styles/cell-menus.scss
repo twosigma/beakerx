@@ -25,12 +25,17 @@
     &:hover {
         .dropdown-toggle {
             opacity: 1;
-            text-decoration: none;
         }
     }
-    .shift-right {
-        margin-left: 1px;
-    }
+}
+
+bk-new-cell-menu {
+  .dropdown-toggle {
+    text-decoration: none;
+  }
+  .shift-right {
+    margin-left: 1px;
+  }
 }
 
 .dropdown-toggle {

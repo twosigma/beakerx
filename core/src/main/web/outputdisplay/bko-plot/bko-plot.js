@@ -588,15 +588,19 @@
                 return scope.toggleVisibility(e);
               })
               .appendTo($("<td></td>").appendTo(unit));
+
+            var clr = plotUtils.createColor(dat.color, dat.color_opacity);
+            var sty = dat.color == null ? "dotted " : "solid ";
             // color box
             $("<span></span>")
               .attr("id", "legendbox_" + i)
               .attr("class", "plot-legendbox")
-              .attr("title", dat.color == null ? "Multi-colored item" : "")
+              .attr("title", dat.color == null ? "Element-based colored item" : "")
               .css("background-color",
-                dat.color == null ? "none" : dat.color)
+                dat.color == null ? "none" : clr)
               .css("border",
-                dat.color != null ? "1px solid " + dat.color : "1px dotted gray")
+                dat.stroke != null ? "1px " + sty + dat.stroke :
+                (dat.color != null ? "1px " + sty + clr : "1px dotted gray"))
               .appendTo($("<td></td>").appendTo(unit));
             // legend text
             $("<td></td>").appendTo(unit)

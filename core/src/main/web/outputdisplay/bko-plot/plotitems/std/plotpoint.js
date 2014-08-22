@@ -43,13 +43,10 @@
         "st_da": this.stroke_dasharray
       };
 
-      this.elementPropsRects = [];
-      this.elementPropsDiamonds = [];
-      this.elementPropsCircles = [];
       this.elementProps = {
-        "rect" : this.elementPropsRects,
-        "diamond" : this.elementPropsDiamonds,
-        "circle" : this.elementPropsCircles
+        "rect" : [],
+        "diamond" : [],
+        "circle" : []
       };
     };
 
@@ -115,14 +112,13 @@
 
     PlotPoint.prototype.prepare = function(scope) {
       var focus = scope.focus;
-      var eles = this.elements,
-          eleprops = this.elementProps;
+      var eles = this.elements;
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
 
-      this.elementPropsRects.length = 0;
-      this.elementPropsDiamonds.length = 0;
-      this.elementPropsCircles.length = 0;
+      _(this.elementProps).each(function(val) {
+        val.length = 0;
+      });
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
@@ -130,9 +126,9 @@
         var x = mapX(ele.x), y = mapY(ele.y), s = ele.size;
 
         if (plotUtils.rangeAssert([x, y])) {
-          this.elementPropsRects.length = 0;
-          this.elementPropsDiamonds.length = 0;
-          this.elementPropsCircles.length = 0;
+          _(this.elementProps).each(function(val) {
+            val.length = 0;
+          });
           return;
         }
 
@@ -198,7 +194,6 @@
         .style("stroke-dasharray", props.st_da)
         .style("stroke-width", props.st_w);
 
-
       var itemsvg = svg.select("#" + this.id);
 
       for (var i = 0; i < this.shapes.length; i++) {
@@ -257,10 +252,12 @@
     };
 
     PlotPoint.prototype.clearTips = function(scope) {
-      var eleprops = this.elementProps;
-      for (var i = 0; i < eleprops.length; i++) {
-        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
-        delete scope.tips[eleprops[i].id];
+      for (var i = 0; i < this.shapes.length; i++) {
+        var eleprops = this.elementProps[this.shapes[i]];
+        for (var j = 0; j < eleprops.length; j++) {
+          scope.jqcontainer.find("#tip_" + eleprops[j].id).remove();
+          delete scope.tips[eleprops[j].id];
+        }
       }
     };
 

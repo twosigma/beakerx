@@ -18,9 +18,10 @@
  * bkoPlot
  * This is the output display component for displaying xyChart
  */
+
 ( function() {
   'use strict';
-  var retfunc = function(plotUtils, plotConverter, bkCellMenuPluginManager) {
+  var retfunc = function(plotUtils, plotConverter, plotFactory, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -140,13 +141,11 @@
             y: parseInt(model.initSize.height) / scope.intervalStepHint.y
           };
           scope.locateBox = null;
-          scope.tips = {};
           scope.cursor = {
             x : -1,
             y : -1
           };
 
-          scope.showAllItems = true;
           if (model.xAxis.axisLabel != null) {
             scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * 2;
           }
@@ -194,21 +193,6 @@
           scope.legendableItem = ret.legendableItem;
           scope.defaultFocus = ret.defaultFocus;
           scope.fixFocus(scope.defaultFocus);
-        };
-        scope.initRange = function() {
-          var model = scope.stdmodel;
-          scope.vrange = {
-            xl : 0,
-            xr : 1,
-            yl : 0,
-            yr : 1,
-            xspan : 1,
-            yspan : 1
-          };  // visible range is mapped to [0,1] x [0,1]
-
-          scope.calcRange();
-          scope.focus = {};
-          _.extend(scope.focus, scope.defaultFocus);
         };
         scope.calcGridlines = function() {
           // prepare the gridlines
@@ -571,7 +555,7 @@
             $("<input type='checkbox'></input>")
               .attr("id", "legendcheck_all")
               .attr("class", "plot-legendcheckbox")
-              .prop("checked", scope.showAllItems)
+              .prop("checked", scope.stdmodel.showAllItems)
               .click(function(e) {
                 return scope.toggleVisibility(e);
               })
@@ -702,9 +686,9 @@
           var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
           // id in the format "legendcheck_i"
           if (id == "all") {
-            scope.showAllItems = !scope.showAllItems;
+            scope.stdmodel.showAllItems = !scope.stdmodel.showAllItems;
             for (var i = 0; i < data.length; i++) {
-              data[i].shown = scope.showAllItems;
+              data[i].shown = scope.stdmodel.showAllItems;
               if (data[i].shown === false) {
                 if (data[i].isLodItem === true) {
                   data[i].lodOn = false;
@@ -983,7 +967,7 @@
           scope.jqsvg.css("cursor", "auto");
         };
         scope.fixFocus = function(focus) {
-          var vrange = scope.vrange;
+          var vrange = scope.stdmodel.vrange;
           focus.xl = focus.xl < 0 ? 0 : focus.xl;
           focus.xr = focus.xr > 1 ? 1 : focus.xr;
           focus.yl = focus.yl < 0 ? 0 : focus.yl;
@@ -1109,8 +1093,32 @@
           };
         };
         scope.standardizeData = function() {
-          var model = scope.model.getCellModel();
-          scope.stdmodel = plotConverter.standardizeModel(model);
+          var state = scope.model.getClientState();
+
+          if (state.savedState == null) {
+            // create new state, standardize data
+            var model = scope.model.getCellModel();
+            scope.stdmodel = plotConverter.standardizeModel(model);
+            // link the state to the stdmodel so that it can be saved
+            state.savedState = scope.stdmodel;
+            scope.isPreviousState = false;
+          } else {
+            // just use the previous state
+            scope.stdmodel = state.savedState;
+            scope.recreatePlotItems();
+            scope.isPreviousState = true;
+          }
+          //console.log("isPreviousState: ", scope.isPreviousState, state);
+        };
+
+        scope.recreatePlotItems = function() {
+          var model = scope.stdmodel;
+          plotFactory.recreatePlotItem(model.xAxis);
+          plotFactory.recreatePlotItem(model.yAxis);
+          var data = model.data;
+          for (var i = 0; i < data.length; i++) {
+            plotFactory.recreatePlotItem(data[i]);
+          }
         };
 
         scope.initMessages = function() {
@@ -1147,8 +1155,18 @@
           });
           scope.enableZoom();
 
-          // init copies focus to defaultFocus, called only once, create axes
-          scope.initRange();
+
+          scope.calcRange();
+          if (scope.isPreviousState === false) {
+            // init copies focus to defaultFocus, called only once
+            scope.stdmodel.focus = {};
+            _(scope.stdmodel.focus).extend(scope.defaultFocus);
+          }
+          // set focus to reference model's focus
+          scope.focus = scope.stdmodel.focus;
+          scope.vrange = scope.stdmodel.vrange;
+          scope.tips = scope.stdmodel.tips;
+
           scope.calcMapping();
 
           // init message flags
@@ -1185,5 +1203,5 @@
       }
     };
   };
-  beaker.bkoDirective("Plot", ["plotUtils", "plotConverter", "bkCellMenuPluginManager", retfunc]);
+  beaker.bkoDirective("Plot", ["plotUtils", "plotConverter", "plotFactory", "bkCellMenuPluginManager", retfunc]);
 })();

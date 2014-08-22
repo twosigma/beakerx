@@ -38,6 +38,12 @@
         $scope.getOutputResult = function() {
           return $scope.model.result;
         };
+        $scope.getOutputState = function() {
+          if ($scope.model.state == null) {
+            $scope.model.state = {};
+          }
+          return $scope.model.state;
+        };
         $scope.applicableDisplays = [];
         $scope.$watch('getOutputResult()', function(result) {
           $scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(result);
@@ -53,6 +59,10 @@
             } else {
               return result;
             }
+          },
+          getClientState: function() {
+            var result = $scope.getOutputState();
+            return result;
           },
           resetShareMenuItems: function(newItems) {
             _shareMenuItems = newItems;

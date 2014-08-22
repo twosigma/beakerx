@@ -18,7 +18,8 @@
   'use strict';
   var retfunc = function() {
     var PlotAxis = function(type) {
-      this.axisType = type == null ? "linear" : type; // linear, log, time, nanotime, category
+      this.type = "axis";
+      this.axisType = type == null ? "linear" : type; // linear, log, time, [nanotime, category]
       this.axisBase = 10;
       this.axisTime = 0;
       this.axisTimezone = "America/New_York";
@@ -34,7 +35,7 @@
       this.axisStep = 1;
       this.axisFixed = 0;
     };
-    PlotAxis.prototype.dateIntws = [
+    var dateIntws = [
       // milliseconds
       1, 5, 10, 50, 100, 500,
       // 1, 5, 10, 30, 60 seconds
@@ -56,8 +57,11 @@
       numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
       bs *= 10;
     }
+
+    PlotAxis.prototype.dateIntws = dateIntws;
     PlotAxis.prototype.numIntws = numIntws;
     PlotAxis.prototype.numFixs = numFixs;
+
     PlotAxis.prototype.axisPow = function(pct) {
       return Math.pow(this.axisBase, pct * this.axisValSpan + this.axisValL);
     };

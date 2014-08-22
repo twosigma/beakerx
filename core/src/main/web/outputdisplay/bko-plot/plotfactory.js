@@ -17,7 +17,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(PlotLine, PlotBar, PlotStem, PlotArea, PlotPoint,
+  var retfunc = function(PlotAxis, PlotLine, PlotBar, PlotStem, PlotArea, PlotPoint,
     PlotConstline, PlotConstband, PlotText,
     PlotLineLodLoader, PlotBarLodLoader, PlotStemLodLoader, PlotAreaLodLoader,
     PlotPointLodLoader) {
@@ -57,14 +57,68 @@
             plotitem = new PlotText(item);
             break;
           default:
-            plotitem = new PlotLine(item);  // default is line
+            console.error("no type specified for item creation");
         }
         return plotitem;
+      },
+
+      recreatePlotItem : function(item) {
+        switch (item.type) {
+          case "line":
+            if (item.isLodItem === true) {
+              item.__proto__ = PlotLineLodLoader.prototype;
+            } else {
+              item.__proto__ = PlotLine.prototype;
+            }
+            break;
+          case "bar":
+            if (item.isLodItem === true) {
+              item.__proto__ = PlotBarLodLoader.prototype;
+            } else {
+              item.__proto__ = PlotBar.prototype;
+            }
+            break;
+          case "stem":
+          if (item.isLodItem === true) {
+              item.__proto__ = PlotStemLodLoader.prototype;
+            } else {
+              item.__proto__ = PlotStem.prototype;
+            }
+            break;
+          case "area":
+            if (item.isLodItem === true) {
+              item.__proto__ = PlotAreaLodLoader.prototype;
+            } else {
+              item.__proto__ = PlotArea.prototype;
+            }
+            break;
+          case "point":
+            if (item.isLodItem === true) {
+              item.__proto__ = PlotPointLodLoader.prototype;
+            } else {
+              item.__proto__ = PlotPoint.prototype;
+            }
+            break;
+          case "constline":
+            item.__proto__ = PlotConstline.prototype;
+            break;
+          case "constband":
+            item.__proto__ = PlotConstband.prototype;
+            break;
+          case "text":
+            item.__proto__ = PlotText.prototype;
+            break;
+          case "axis":
+            item.__proto__ = PlotAxis.prototype;
+            break;
+          default:
+            console.error("no type specified for item recreation");
+        }
       }
     };
   };
   beaker.bkoFactory('plotFactory',
-    ['PlotLine', 'PlotBar', 'PlotStem', 'PlotArea', 'PlotPoint',
+    ['PlotAxis', 'PlotLine', 'PlotBar', 'PlotStem', 'PlotArea', 'PlotPoint',
      'PlotConstline', 'PlotConstband', 'PlotText',
      'PlotLineLodLoader', 'PlotBarLodLoader', 'PlotStemLodLoader', 'PlotAreaLodLoader',
      'PlotPointLodLoader',

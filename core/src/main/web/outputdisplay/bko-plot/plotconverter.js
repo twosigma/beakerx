@@ -95,7 +95,7 @@
           item.applyAxis(xAxis, yAxis);
         }
         // map focus region
-        var focus = model.focus;
+        var focus = model.userFocus;
         if (focus.xl != null) { focus.xl = xAxis.getPercent(focus.xl); }
         if (focus.xr != null) { focus.xr = xAxis.getPercent(focus.xr); }
         if (focus.yl != null) { focus.yl = yAxis.getPercent(focus.yl); }
@@ -269,7 +269,7 @@
         }
 
         // apply log to focus
-        var focus = newmodel.focus;
+        var focus = newmodel.userFocus;
         if (logx) {
           if (focus.xl != null) {
             focus.xl = Math.log(focus.xl) / Math.log(logxb);
@@ -311,10 +311,10 @@
         // set axis bound as focus
         if (model.x_auto_range === false) {
           if (model.x_lower_bound != null) {
-            newmodel.focus.xl = model.x_lower_bound;
+            newmodel.userFocus.xl = model.x_lower_bound;
           }
           if (model.x_upper_bound != null) {
-            newmodel.focus.xr = model.x_upper_bound;
+            newmodel.userFocus.xr = model.x_upper_bound;
           }
         } else {
           if (model.x_lower_margin != null) {
@@ -329,10 +329,10 @@
           var axis = model.rangeAxes[0];
           if (axis.auto_range === false) {
             if (axis.lower_bound != null) {
-              newmodel.focus.yl = axis.lower_bound;
+              newmodel.userFocus.yl = axis.lower_bound;
             }
             if (axis.upper_bound != null) {
-              newmodel.focus.yr = axis.upper_bound;
+              newmodel.userFocus.yr = axis.upper_bound;
             }
           } else {
             if (axis.lower_margin != null) {
@@ -592,11 +592,9 @@
             type : "plot",
             title : model.chart_title != null ? model.chart_title : model.title,
             margin : {},
-            focus : {},
-            xAxis : {},
-            yAxis : {},
-            xAxisLabel : model.domain_axis_label,
-            yAxisLabel : model.y_label,
+            userFocus : {},
+            xAxis : { label : model.domain_axis_label },
+            yAxis : { label : model.y_label },
             showLegend : model.show_legend != null ? model.show_legend : false,
             useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
             initSize : {
@@ -614,7 +612,7 @@
             yAxis : model.yAxis != null ? model.yAxis : {},
             margin : model.margin != null ? model.margin : {},
             range : model.range != null ? model.range : null,
-            focus : model.focus != null ? model.focus : {},
+            userFocus : model.focus != null ? model.focus : {},
             xCursor : model.xCursor,
             yCursor : model.yCursor,
             initSize : {
@@ -625,6 +623,8 @@
           };
         }
 
+        newmodel.showAllItems = true;
+        newmodel.tips = {};
         newmodel.data = [];
 
         if (model.version === "groovy") {
@@ -663,7 +663,7 @@
               vrange.yl = 0;
             }
           }
-          var focus = newmodel.focus; // allow user to overide vrange
+          var focus = newmodel.userFocus; // allow user to overide vrange
           if (focus.xl != null) { vrange.xl = Math.min(focus.xl, vrange.xl); }
           if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
           if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
@@ -675,6 +675,14 @@
 
         this.remapModel(newmodel);
 
+        newmodel.vrange = {
+          xl : 0,
+          xr : 1,
+          yl : 0,
+          yr : 1,
+          xspan : 1,
+          yspan : 1
+        };
         //this.cleanupModel(newmodel); // TODO remove unnecessary entries in model?
 
         newmodel.version = "complete";

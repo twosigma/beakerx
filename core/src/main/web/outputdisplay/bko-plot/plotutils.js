@@ -50,10 +50,10 @@
         var ret = this.getDataRange(model.data);
         var range = ret.datarange, margin = model.margin;
         var focus = {
-          xl : model.focus.xl,
-          xr : model.focus.xr,
-          yl : model.focus.yl,
-          yr : model.focus.yr
+          xl : model.userFocus.xl,
+          xr : model.userFocus.xr,
+          yl : model.userFocus.yl,
+          yr : model.userFocus.yr
         };
         if (focus.xl == null) {
           focus.xl = range.xl - range.xspan * margin.left;

@@ -84,9 +84,13 @@
       }
     };
 
-    PlotPointLodLoader.prototype.toggleAuto = function(scope) {
+    PlotPointLodLoader.prototype.toggleLodAuto = function(scope) {
       this.lodAuto = !this.lodAuto;
       this.clear(scope);
+    };
+
+    PlotPointLodLoader.prototype.applyLodAuto = function(auto) {
+      this.lodAuto = auto;
     };
 
     PlotPointLodLoader.prototype.toggleLod = function(scope) {
@@ -144,10 +148,17 @@
       this.createSampler();
     };
 
-    PlotPointLodLoader.prototype.applyLodType = function(scope, type) {
-      this.clear(scope);
+    PlotPointLodLoader.prototype.switchLodType = function(scope) {
+      this.clear(scope);  // must clear first before changing lodType
+      this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
+      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.createLodPlotter();
+    };
+
+    PlotPointLodLoader.prototype.applyLodType = function(type) {
       this.lodType = type;
       this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
       this.createLodPlotter();
     };
 

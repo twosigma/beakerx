@@ -90,8 +90,7 @@
             logy = newmodel.yAxis.type === "log",
             logyb = newmodel.yAxis.base;
 
-        // fill in null entries, compute y2, etc.
-        // move some of format SerializedData to formatData?
+        if (newmodel.data == null) { newmodel.data = []; }
         var data = newmodel.data;
         for (var i = 0; i < data.length; i++) {
           var item = data[i], eles = item.elements;

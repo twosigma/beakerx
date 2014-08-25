@@ -78,10 +78,10 @@
       this.createLodPlotter();
     };
 
-    PlotStemLodLoader.prototype.applyLodType = function(scope, type) {
-      this.clear(scope);
+    PlotStemLodLoader.prototype.applyLodType = function(type) {
       this.lodType = type;
       this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
       this.createLodPlotter();
     };
 
@@ -111,9 +111,13 @@
       }
     };
 
-    PlotStemLodLoader.prototype.toggleAuto = function(scope) {
+    PlotStemLodLoader.prototype.toggleLodAuto = function(scope) {
       this.lodAuto = !this.lodAuto;
       this.clear(scope);
+    };
+
+    PlotStemLodLoader.prototype.applyLodAuto = function(auto) {
+      this.lodAuto = auto;
     };
 
     PlotStemLodLoader.prototype.toggleLod = function(scope) {

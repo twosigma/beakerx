@@ -77,10 +77,10 @@
       this.createLodPlotter();
     };
 
-    PlotBarLodLoader.prototype.applyLodType = function(scope, type) {
-      this.clear(scope);
+    PlotBarLodLoader.prototype.applyLodType = function(type) {
       this.lodType = type;
       this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+      if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
       this.createLodPlotter();
     };
 
@@ -105,9 +105,13 @@
       }
     };
 
-    PlotBarLodLoader.prototype.toggleAuto = function(scope) {
+    PlotBarLodLoader.prototype.toggleLodAuto = function(scope) {
       this.lodAuto = !this.lodAuto;
       this.clear(scope);
+    };
+
+    PlotBarLodLoader.prototype.applyLodAuto = function(auto) {
+      this.lodAuto = auto;
     };
 
     PlotBarLodLoader.prototype.toggleLod = function(scope) {

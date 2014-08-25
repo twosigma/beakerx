@@ -534,7 +534,8 @@
 
         scope.renderLegends = function() {
           // legend redraw is controlled by legendDone
-          if (scope.stdmodel.showLegend === false || scope.legendDone === true) { return; }
+          if (scope.legendableItem === 0 ||
+            scope.stdmodel.showLegend === false || scope.legendDone === true) { return; }
 
           var data = scope.stdmodel.data;
           var margin = scope.layout.legendMargin;
@@ -651,6 +652,9 @@
                     "msg_lodoff",
                     function() {
                       dat.toggleLod(scope);
+
+                      scope.state.lodTypes[dat.index] = dat.lodType;  // update state
+
                       scope.update();
                       scope.setLodHint(dat);
                     }, null);
@@ -664,6 +668,9 @@
                 } else {
                   dat.switchLodType(scope);
                 }
+
+                scope.state.lodTypes[dat.index] = dat.lodType;  // update state
+
                 dat.zoomLevelChanged(scope);
                 scope.update();
                 scope.setLodHint(dat);
@@ -672,7 +679,10 @@
                 if (e.which === 3) { return; }
                 var dat = e.data.dat;
                 if (dat.lodType === "off") return;
-                dat.toggleAuto(scope);
+                dat.toggleLodAuto(scope);
+
+                scope.state.lodAutos[dat.index] = dat.lodAuto; // update state
+
                 scope.update();
                 scope.setLodHint(dat);
               });
@@ -1147,15 +1157,16 @@
           state.focus = {};
           state.tips = {};
           state.showItems = [];
-          state.lodtypes = [];
+          state.lodTypes = [];
+          state.lodAutos = [];
           var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
             state.showItems[i] = data[i].showItem;
             if (data[i].isLodItem === true) {
-              state.lodtypes[i] = data[i].lodType;
+              state.lodTypes[i] = data[i].lodType;
+              state.lodAutos[i] = data[i].lodAuto;
             }
           }
-
           // list the flags to be stored
           state.flags = {
             showAllItems : scope.showAllItems,
@@ -1174,7 +1185,8 @@
           for (var i = 0; i < data.length; i++) {
             data[i].showItem = state.showItems[i];
             if (data[i].isLodItem === true) {
-              data[i].applyLodType(state.lodtypes[i]);
+              data[i].applyLodType(state.lodTypes[i]);
+              data[i].applyLodAuto(state.lodAutos[i]);
             }
           }
           _(state.flags).each(function(value, key) {

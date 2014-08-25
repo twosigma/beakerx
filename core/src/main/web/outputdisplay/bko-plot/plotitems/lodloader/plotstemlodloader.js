@@ -197,7 +197,7 @@
       var xl = scope.focus.xl, xr = scope.focus.xr;
 
       if (this.sampleStep === -1) {
-        var pixelWidth = scope.stdmodel.initSize.width;
+        var pixelWidth = scope.plotSize.width;
         var count = Math.ceil(pixelWidth / this.lodSteps[this.lodTypeIndex]);
         var s = (xr - xl) / count;
         this.sampleStep = s;

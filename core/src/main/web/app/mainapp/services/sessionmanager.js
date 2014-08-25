@@ -221,6 +221,15 @@
       getSessionId: function() {
         return _sessionId;
       },
+      isSessionValid: function() {
+        if (!_sessionId) {
+          return bkUtils.newPromise("false");
+        } else {
+          return bkSession.getSessions().then(function(sessions) {
+            return _(sessions).chain().keys().contains(_sessionId).value();
+          });
+        }
+      },
       // TODO, move the following impl to a dedicated notebook model manager
       // but still expose it here
       setNotebookModelEdited: function(edited) {

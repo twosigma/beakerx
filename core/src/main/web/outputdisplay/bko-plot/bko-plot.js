@@ -21,7 +21,7 @@
 
 ( function() {
   'use strict';
-  var retfunc = function(plotUtils, plotConverter, plotFactory, bkCellMenuPluginManager) {
+  var retfunc = function(plotUtils, plotFormatter, plotFactory, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
@@ -83,7 +83,8 @@
 
           element.find(".ui-icon-gripsmall-diagonal-se")
             .removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
-          scope.container = d3.select(element[0]).select("#plotContainer"); // hook container to use jquery interaction
+          // hook container to use jquery interaction
+          scope.container = d3.select(element[0]).select("#plotContainer");
           scope.jqcontainer = element.find("#plotContainer");
           scope.jqcontainer.css(model.initSize);
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
@@ -288,7 +289,7 @@
         scope.toggleTooltip = function(d) {
           var id = d.id, nv = !scope.tips[id];
           if (nv === true) {
-            scope.tooltip(d);
+            scope.tooltip(d, d3.mouse(scope.svg[0][0]));
           } else {
             scope.tips[id].sticking = !scope.tips[id].sticking;
             if (scope.tips[id].sticking === false) {
@@ -699,11 +700,11 @@
             for (var i = 0; i < data.length; i++) {
               data[i].shown = scope.stdmodel.showAllItems;
               if (data[i].shown === false) {
+                data[i].clearTips(scope);
                 if (data[i].isLodItem === true) {
                   data[i].lodOn = false;
                   scope.setLodHint(data[i]);
                 }
-                data[i].clearTips(scope);
               }
               scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
             }
@@ -713,11 +714,11 @@
           }
           data[id].shown = !data[id].shown;
           if (data[id].shown === false) {
+            data[id].clearTips(scope);
             if (data[id].isLodItem === true) {
               data[id].lodOn = false;
               scope.setLodHint(data[id]);
             }
-            data[id].clearTips(scope);
           }
           scope.calcRange();
           scope.update();
@@ -1104,12 +1105,22 @@
         scope.standardizeData = function() {
           var state = scope.model.getClientState();
 
+          delete state.savedState;
+
           if (state.savedState == null) {
             // create new state, standardize data
             var model = scope.model.getCellModel();
-            scope.stdmodel = plotConverter.standardizeModel(model);
+            scope.stdmodel = plotFormatter.standardizeModel(model);
             // link the state to the stdmodel so that it can be saved
-            state.savedState = scope.stdmodel;
+
+            // all the things that are going to be saved in states
+            scope.stdmodel.state = {
+              focus : null,
+              tips : null,
+              flags : []
+            };
+
+            //state.savedState = scope.stdmodel;
             scope.isPreviousState = false;
           } else {
             // just use the previous state
@@ -1117,7 +1128,6 @@
             scope.recreatePlotItems();
             scope.isPreviousState = true;
           }
-          //console.log("isPreviousState: ", scope.isPreviousState, state);
         };
 
         scope.recreatePlotItems = function() {
@@ -1212,5 +1222,5 @@
       }
     };
   };
-  beaker.bkoDirective("Plot", ["plotUtils", "plotConverter", "plotFactory", "bkCellMenuPluginManager", retfunc]);
+  beaker.bkoDirective("Plot", ["plotUtils", "plotFormatter", "plotFactory", "bkCellMenuPluginManager", retfunc]);
 })();

@@ -25,6 +25,7 @@
     PlotLodRiver.prototype.respMinHeight = 5;
     PlotLodRiver.prototype.plotClass = "";
     PlotLodRiver.prototype.respClass = "plot-resp plot-respstem";
+    PlotLodRiver.prototype.plotClassAvgLine = "plot-lodavgline";
 
     PlotLodRiver.prototype.format = function() {
       if (this.color != null) {
@@ -63,21 +64,38 @@
           eleprops = this.elementProps;
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
-      var pstr = "";
+      var pstr = "", pd = "";
 
       eleprops.length = 0;
+
+      this.avgOn = true;
 
       var eles = this.elements;
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
         var x = mapX(ele.x), y = mapY(ele.min), y2 = mapY(ele.max);
 
-        if (plotUtils.rangeAssert([x, y, y2])) {
+        if (ele.avg == null) {
+          this.avgOn = false;
+        }
+
+        if (this.avgOn === true) {
+          var ym = mapY(ele.avg);
+        }
+
+        if (plotUtils.rangeAssert([x, y, y2])) {  // no need to put ym here
           eleprops.length = 0;
           return;
         }
 
         pstr += x + "," + y + " ";
+        if (i === 0) {
+          pd += "M";
+        } else if (i === 1) {
+          pd += "L";
+        }
+
+        pd += x + "," + ym + " ";
 
         if (ele.min <= focus.yr && ele.max >= focus.yl) {
           var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash;
@@ -106,6 +124,9 @@
       if (pstr.length > 0) {
         this.itemProps.pts = pstr;
       }
+      if (this.avgOn === true && pd.length > 0) {
+        this.itemProps.d = pd;
+      }
     };
 
     PlotLodRiver.prototype.draw = function(scope, gid) {
@@ -132,6 +153,7 @@
 
       var groupsvg = itemsvg.select("#" + groupid);
 
+      // draw the river
       groupsvg.selectAll("polygon")
         .data([props]).enter().append("polygon");
       groupsvg.select("polygon")
@@ -142,6 +164,19 @@
         .style("stroke", props.st)
         .style("stroke-opacity", props.st_op)
         .style("stroke-width", props.st_w);
+
+      if (this.avgOn === true) {
+        // draw the middle line
+        var clr = props.st == null ? "black" : props.st;
+        groupsvg.selectAll("path")
+          .data([props]).enter().append("path");
+        groupsvg.select("path")
+          .attr("d", props.d)
+          .attr("class", this.plotClassAvgLine)
+          .style("stroke", clr)
+          .style("stroke-opacity", props.st_op);
+      }
+
 
       if (scope.stdmodel.useToolTip === true) {
         groupsvg.selectAll("rect")

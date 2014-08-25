@@ -17,7 +17,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotConverter) {
+  var retfunc = function(bkUtils, plotFormatter) {
     return {
       standardizeModel : function(model) {
         var newmodel = {
@@ -75,7 +75,7 @@
           if (plotmodel.useToolTip == null) { plotmodel.useToolTip = useToolTip; }
 
           plotmodel.type = plotType;
-          var newplotmodel = plotConverter.standardizeModel(plotmodel);
+          var newplotmodel = plotFormatter.standardizeModel(plotmodel);
 
           if (i < plots.length - 1) {  // turn off x coordinate labels
             newplotmodel.xAxis.axisLabel = null;
@@ -93,5 +93,5 @@
       }
     };
   };
-  beaker.bkoFactory('combplotConverter', ["bkUtils", "plotConverter", retfunc]);
+  beaker.bkoFactory('combinedplotFormatter', ["bkUtils", "plotFormatter", retfunc]);
 })();

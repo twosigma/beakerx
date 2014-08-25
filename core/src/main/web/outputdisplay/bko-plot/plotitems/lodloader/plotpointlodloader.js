@@ -121,7 +121,12 @@
 
       if (this.lodOn === true) {
         this.sample(scope);
-        this.lodplotter.render(scope, this.elementSamples);
+        if (this.lodType === "point") {
+          // lod point plotter needs size information
+          this.lodplotter.render(scope, this.elementSamples, this.sizeSamples);
+        } else if (this.lodType === "box") {
+          this.lodplotter.render(scope, this.elementSamples);
+        }
       } else {
         this.plotter.render(scope);
       }
@@ -140,13 +145,15 @@
     };
 
     PlotPointLodLoader.prototype.createSampler = function() {
-      var xs = [], ys = [];
+      var xs = [], ys = [], ss = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         xs.push(ele.x);
         ys.push(ele.y);
+        ss.push(ele.size != null ? ele.size : this.size);
       }
       this.sampler = new PlotSampler(xs, ys);
+      this.samplerSize = new PlotSampler(xs, ss);
     };
 
     PlotPointLodLoader.prototype.filter = function(scope) {
@@ -173,6 +180,7 @@
       xr = Math.ceil(xr / step) * step;
 
       this.elementSamples = this.sampler.sample(xl, xr, this.sampleStep);
+      this.sizeSamples = this.samplerSize.sample(xl, xr, this.sampleStep);
     };
 
     PlotPointLodLoader.prototype.clear = function(scope) {

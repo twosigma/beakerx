@@ -47,9 +47,10 @@
       this.elementProps = [];
     };
 
-    PlotLodPoint.prototype.render = function(scope, samples, gid){
+    PlotLodPoint.prototype.render = function(scope, samples, samplesSize, gid){
       if (gid == null) { gid = ""; }
       this.elementSamples = samples;
+      this.sizeSamples = samplesSize;
       this.prepare(scope, gid);
       this.draw(scope, gid);
     };
@@ -66,7 +67,6 @@
       var mapX = scope.data2scrXi,
           mapY = scope.data2scrYi;
       var fixed = scope.renderFixed;
-      var s = this.size;
 
       eleprops.length = 0;
 
@@ -74,6 +74,7 @@
         var ele = eles[i];
         if (ele.y < focus.yl || ele.y > focus.yr) { continue; }
         var x = mapX(ele.x), y = mapY(ele.avg);
+        var s = this.sizeSamples[i].avg;
 
         if (plotUtils.rangeAssert([x, y])) {
           eleprops.length = 0;

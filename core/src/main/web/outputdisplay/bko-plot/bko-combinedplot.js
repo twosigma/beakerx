@@ -23,7 +23,7 @@ var dbplot;
 
 (function() {
   'use strict';
-  var retfunc = function(plotUtils, combplotConverter, bkCellMenuPluginManager) {
+  var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-combinedplot";
     return {
       template :  "<div id='combplotTitle' class='plot-title'></div>" +
@@ -41,7 +41,7 @@ var dbplot;
           if (state.savedState == null) {
             $scope.isPreviousState = false;
 
-            $scope.stdmodel = combplotConverter.standardizeModel(model);
+            $scope.stdmodel = combinedplotFormatter.standardizeModel(model);
             $scope.stdmodel.focus = $scope.calcRange();
 
             state.savedStates = [];
@@ -118,7 +118,6 @@ var dbplot;
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
 
-
         $scope.standardizeData();
         $scope.$watch("getShareMenuPlugin()", function() {
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
@@ -135,5 +134,5 @@ var dbplot;
     };
   };
   beaker.bkoDirective("CombinedPlot",
-      ["plotUtils", "combplotConverter", "bkCellMenuPluginManager", retfunc]);
+      ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", retfunc]);
 })();

@@ -213,6 +213,7 @@
 }
 
 .plot-lodavgline {
+  fill: none;
   stroke: black;
   stroke-width: 1.5;
 }

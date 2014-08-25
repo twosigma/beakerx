@@ -286,7 +286,7 @@
 
         scope.prepareInteraction = function() {
           var model = scope.stdmodel;
-          if (model.useToolTip != true) {
+          if (model.useToolTip === false) {
             return;
           }
           scope.svg.selectAll(".plot-resp")
@@ -348,6 +348,7 @@
 
         scope.renderTips = function() {
           var data = scope.stdmodel.data;
+          var focus = scope.focus;
           _.each(scope.tips, function(d) {
             var x = scope.data2scrX(d.datax),
                 y = scope.data2scrY(d.datay);
@@ -376,16 +377,8 @@
                     $(this).remove();
                   }
                 });
-            } else {
-              var w = tipdiv.width(), h = tipdiv.height();
-              if (plotUtils.outsideScrBox(scope, x + scope.fonts.tooltipWidth, y,
-                w, h)) {
-                tipdiv.remove();
-                return;
-              }
             }
-            var w = tipdiv.width(), h = tipdiv.height();
-            if (plotUtils.outsideScrBox(scope, x + scope.fonts.tooltipWidth, y, w, h)) {
+            if (plotUtils.outsideScr(scope, x, y)) {
               tipdiv.remove();
               return;
             }
@@ -610,7 +603,8 @@
               })
               .appendTo($("<td></td>").appendTo(unit));
 
-            var clr = plotUtils.createColor(dat.color, dat.color_opacity);
+            var clr = plotUtils.createColor(dat.color, dat.color_opacity),
+                st_clr = plotUtils.createColor(dat.stroke, dat.stroke_opacity);
             var sty = dat.color == null ? "dotted " : "solid ";
             // color box
             $("<span></span>")
@@ -620,7 +614,7 @@
               .css("background-color",
                 dat.color == null ? "none" : clr)
               .css("border",
-                dat.stroke != null ? "1px " + sty + dat.stroke :
+                dat.stroke != null ? "1px " + sty + st_clr :
                 (dat.color != null ? "1px " + sty + clr : "1px dotted gray"))
               .appendTo($("<td></td>").appendTo(unit));
             // legend text

@@ -170,13 +170,13 @@
 
 
       var itemsvg = svg.select("#" + this.id);
-
+      var respClass = this.useToolTip === true ? this.respClass : null;
       itemsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-        .attr("class", this.respClass)
+        .attr("class", respClass)
         .style("fill", function(d) { return d.fi; })
         .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })

@@ -158,14 +158,14 @@
         .style("stroke-dasharray", props.st_da)
         .style("stroke-width", props.st_w);
 
-
+      var respClass = this.useToolTip === true ? this.respClass : null;
       var itemsvg = svg.select("#" + this.id);
       itemsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
-        .attr("class", this.respClass)
+        .attr("class", respClass)
         .style("stroke", function(d) { return d.st; })
         .style("stroke-opacity", function(d) { return d.st_op; })
         .style("stroke-dasharray", function(d) { return d.st_da; })

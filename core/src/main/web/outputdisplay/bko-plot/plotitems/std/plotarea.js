@@ -96,7 +96,7 @@
         // cannot do truncation on unordered item, force rendering all
         this.vindexL = 0;
         this.vindexR = eles.length - 1;
-        this.vlength = r - l + 1;
+        this.vlength = eles.length;
         return;
       }
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
@@ -146,7 +146,7 @@
           pstr += x + "," + y + " " + x2 + "," + y + " ";
         }
 
-        if (ele.y <= focus.yr && ele.y2 >= focus.yl) {
+        if (this.useToolTip === true && ele.y <= focus.yr && ele.y2 >= focus.yl) {
           var id = this.id + "_" + i;
           var prop = {
             "id" : id,
@@ -211,7 +211,7 @@
       itemsvg.select("polygon")
         .attr("points", props.pts);
 
-      if (scope.stdmodel.useToolTip === true) {
+      if (this.useToolTip === true) {
         itemsvg.selectAll("rect")
           .data(eleprops, function(d) { return d.id; }).exit().remove();
         itemsvg.selectAll("rect")

@@ -72,7 +72,7 @@
         if (focus.yr != null) { focus.yr = yAxis.getPercent(focus.yr); }
       },
 
-      formatModel: function(newmodel, model) {
+      formatModel: function(newmodel) {
         if (newmodel.xCursor != null) {
           var cursor = newmodel.xCursor;
           if (cursor.color == null) { cursor.color = "black"; }
@@ -109,6 +109,9 @@
           }
 
           if(item.type === "line" || item.type === "stem") {
+            if (item.color == null) {
+              item.color = "black";
+            }
             if (item.style == null) {
               item.style = "solid";
             }
@@ -138,6 +141,11 @@
             }
           }
 
+          if (item.useToolTip == null) {
+            if (newmodel.useToolTip === true) {
+              item.useToolTip = true;
+            }
+          }
 
           if (item.colorOpacity != null) {
             item.color_opacity = item.colorOpacity;
@@ -349,7 +357,7 @@
         } else {  // DS generated directly
           _.extend(newmodel, model);
         }
-        this.formatModel(newmodel, model); // fill in null entries, compute y2, etc.
+        this.formatModel(newmodel); // fill in null entries, compute y2, etc.
         this.sortModel(newmodel);
 
         // at this point, data is in standard format (log is applied as well)
@@ -393,7 +401,6 @@
         this.remapModel(newmodel);
 
         newmodel.version = "complete";
-        //console.log(newmodel);
         return newmodel;
       }
     };

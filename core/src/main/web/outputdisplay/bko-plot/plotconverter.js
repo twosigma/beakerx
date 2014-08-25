@@ -147,6 +147,11 @@
           item.legend = item.display_name;
           delete item.display_name;
 
+          if (item.use_tool_tip != null) {
+            item.useToolTip = item.use_tool_tip;
+            delete item.use_tool_tip;
+          }
+
           if (item.color != null) {
             item.color_opacity = parseInt(item.color.substr(1,2), 16) / 255;
             item.color = "#" + item.color.substr(3);

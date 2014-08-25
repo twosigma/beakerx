@@ -158,13 +158,14 @@
         .style("fill", props.fi)
         .style("fill-opacity", props.fi_op);
 
+      var respClass = this.useToolTip === true ? this.respClass : null;
       var itemsvg = svg.select("#" + this.id);
       itemsvg.selectAll("text")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("text")
         .data(eleprops, function(d) { return d.id; }).enter().append("text")
         .attr("id", function(d) { return d.id; })
-        .attr("class", this.respClass)
+        .attr("class", respClass)
         .style("fill", function(d) { return d.fi; })
         .style("fill_opacity", function(d) { return d.fi_op; })
         .text(function(d) { return d.txt; });

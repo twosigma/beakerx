@@ -156,8 +156,6 @@
             "x" : x - this.respWidth / 2,
             "y" : y2,
             "h" : Math.max(y - y2, this.respMinHeight),  // min height to be hoverable
-            "t_x" : x,
-            "t_y" : (y + y2) / 2,
             "op" : scope.tips[id] == null ? 0 : 1
           };
           eleprops.push(prop);

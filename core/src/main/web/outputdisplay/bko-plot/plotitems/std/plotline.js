@@ -23,7 +23,7 @@
     };
 
     // constants
-    PlotLine.prototype.respr = 5;
+    PlotLine.prototype.respR = 5;
     PlotLine.prototype.plotClass = "plot-line";
     PlotLine.prototype.respClass = "plot-resp plot-respdot";
 
@@ -148,8 +148,6 @@
             "isresp" : true,
             "cx" : x,
             "cy" : y,
-            "t_x" : x,
-            "t_y" : y,
             "op" : scope.tips[id] == null ? 0 : 1,
           };
           eleprops.push(prop);
@@ -201,7 +199,6 @@
       itemsvg.select("path")
         .attr("d", props.d);
 
-      var item = this;
       if (this.useToolTip === true) {
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; }).exit().remove();
@@ -209,12 +206,12 @@
           .data(eleprops, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
           .attr("class", this.respClass)
-          .style("stroke", function(d) { return item.tip_color; });
+          .style("stroke", this.tip_color);
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; })
           .attr("cx", function(d) { return d.cx; })
           .attr("cy", function(d) { return d.cy; })
-          .attr("r", function(d) { return item.respr; })
+          .attr("r", this.respR)
           .style("opacity", function(d) { return d.op; });
       }
     };

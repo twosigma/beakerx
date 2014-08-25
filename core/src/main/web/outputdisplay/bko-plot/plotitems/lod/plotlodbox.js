@@ -99,9 +99,7 @@
           "y" : y,
           "w" : Number((x2 - x - this.widthShrink * 2).toFixed(fixed)),
           "h" : Number((y2 - y).toFixed(fixed)),
-          "x2" : Number((x2 - this.widthShrink).toFixed(fixed)),
-          "t_x" : x,
-          "t_y" : y
+          "x2" : Number((x2 - this.widthShrink).toFixed(fixed))
         };
         if (this.avgOn === true) {
           var y3 = mapY(ele.avg);

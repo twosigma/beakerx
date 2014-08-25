@@ -135,9 +135,7 @@
           "tf" : tf,
           "txt" : ele.text,
           "fi" : ele.color,
-          "fi_op" : ele.opacity,
-          "t_x" : x,
-          "t_y" : y
+          "fi_op" : ele.opacity
         };
         eleprops.push(prop);
       }

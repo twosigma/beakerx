@@ -138,8 +138,6 @@
           "y" : y2,
           "w" : sw,
           "h" : y - y2,
-          "t_x" : x,
-          "t_y" : y2,
           "fi" : ele.color,
           "fi_op" : ele.color_opacity,
           "st" : ele.stroke,

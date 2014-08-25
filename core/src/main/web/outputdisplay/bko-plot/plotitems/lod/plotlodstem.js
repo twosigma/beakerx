@@ -97,9 +97,7 @@
           "g" : gid,
           "x" : x,
           "y" : y,
-          "y2" : y2,
-          "t_x" : x,
-          "t_y" : y
+          "y2" : y2
         };
         if (this.avgOn === true) {
           var y3 = mapY(ele.avg);

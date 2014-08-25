@@ -21,7 +21,7 @@
       _(this).extend(data); // copy properties to itself
       this.format();
     };
-
+    PlotLodLine.prototype.respR = 5;
     PlotLodLine.prototype.plotClass = "plot-line";
     PlotLodLine.prototype.respClass = "plot-resp plot-respdot";
 
@@ -91,9 +91,6 @@
             "isresp" : true,
             "cx" : x,
             "cy" : y,
-            "r" : 5,
-            "t_x" : x,
-            "t_y" : y,
             "op" : scope.tips[hashid] == null ? 0 : 1
           };
           eleprops.push(prop);
@@ -157,12 +154,12 @@
           .data(eleprops, function(d) { return d.id; }).enter().append("circle")
           .attr("id", function(d) { return d.id; })
           .attr("class", this.respClass)
-          .style("stroke", this.tip_color);
+          .style("stroke", this.tip_color)
+          .attr("r", this.respR);
         itemsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id; })
           .attr("cx", function(d) { return d.cx; })
           .attr("cy", function(d) { return d.cy; })
-          .attr("r", function(d) { return d.r; })
           .style("opacity", function(d) { return d.op; });
       }
     };

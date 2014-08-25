@@ -302,6 +302,8 @@
         };
 
         scope.toggleTooltip = function(d) {
+          if (scope.zoomed === true) { return; } // prevent dragging and toggling at the same time
+
           var id = d.id, nv = !scope.tips[id];
           if (nv === true) {
             scope.tooltip(d, d3.mouse(scope.svg[0][0]));
@@ -324,10 +326,8 @@
           _.extend(scope.tips[d.id], d);
           var d = scope.tips[d.id];
           d.sticking = false;
-          d.datax = scope.scr2dataX(d.t_x);
-          d.datax = Math.max(d.datax, scope.scr2dataX(mousePos[0] + 5));
-          d.datay = scope.scr2dataY(d.t_y);
-          d.datay = Math.max(d.datay, scope.scr2dataY(mousePos[1] + 5));
+          d.datax = scope.scr2dataX(mousePos[0] + 2);
+          d.datay = scope.scr2dataY(mousePos[1] + 2);
 
           scope.renderTips();
         };
@@ -869,6 +869,7 @@
         };
         scope.zoomStart = function(d) {
           if (scope.interactMode === "other") { return; }
+          scope.zoomed = false;
           scope.lastx = scope.lasty = 0;
           scope.lastscale = 1.0;
           scope.zoomObj.scale(1.0);
@@ -966,6 +967,7 @@
               }
               scope.fixFocus(focus);
             }
+            scope.zoomed = true;
             scope.calcMapping(true);
             scope.renderCursor({
               offsetX : mx,

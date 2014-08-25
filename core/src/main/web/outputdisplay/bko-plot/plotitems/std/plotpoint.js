@@ -141,9 +141,7 @@
           "st" : ele.stroke,
           "st_op" : ele.stroke_opacity,
           "st_w" : ele.stroke_width,
-          "st_da" : ele.stroke_dasharray,
-          "t_x" : x,
-          "t_y" : y
+          "st_da" : ele.stroke_dasharray
         };
         var shape = ele.shape == null ? this.shape : ele.shape;
         switch (shape) {

@@ -92,9 +92,7 @@
           "st" : ele.stroke,
           "st_op" : ele.stroke_opacity,
           "st_w" : ele.stroke_width,
-          "st_da" : ele.stroke_dasharray,
-          "t_x" : x,
-          "t_y" : y
+          "st_da" : ele.stroke_dasharray
         };
         // lod point does not accept shape for individual element
         switch (this.shape) {

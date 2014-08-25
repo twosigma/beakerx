@@ -4,7 +4,7 @@ var template  = require('gulp-template-compile');
 var concat    = require('gulp-concat');
 var minifyCSS = require('gulp-minify-css');
 var htmlmin   = require('gulp-htmlmin');
-
+var htmlClass = require('html-classer-gulp');
 var Path      = require('path');
 var rootPath  = Path.join(__dirname, "/src/main/web/app/");
 var buildPath = Path.join(__dirname, "/src/main/web/app/dist");
@@ -14,14 +14,15 @@ function handleError(e) {
 }
 
 gulp.task("compileScss", function() {
-  gulp.src(Path.join(rootPath, "app.scss"))
+  gulp.src(Path.join(rootPath, "**.scss"))
   .pipe(sass().on('error', handleError))
   .pipe(minifyCSS())
   .pipe(gulp.dest(buildPath))
 });
 
 gulp.task("compileTemplates", function() {
-  gulp.src(rootPath + "/template/**/*.html")
+  gulp.src(rootPath+ "/**/*.jst.html")
+  .pipe(htmlClass({klass: "bkr"}))
   .pipe(htmlmin({removeComments: true}))
   .pipe(template({
     name: function (file) {
@@ -38,7 +39,7 @@ gulp.task("watchScss", function() {
 });
 
 gulp.task("watchTemplates", function() {
-  var watchPath = rootPath + "/template/**/*.html";
+  var watchPath = rootPath + "/**/*.jst.html";
   gulp.watch(watchPath, ["compileTemplates"])
 });
 

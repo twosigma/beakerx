@@ -21,10 +21,7 @@
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', function(bkSessionManager, bkHelper) {
     return {
       restrict: 'E',
-      template: ""+
-        "<p class='depth-indicator'>{{getFullIndex()}}</p>"+
-        "<div ng-click='edit()', ng-class='focused && \"focused\"'></div>"
-      ,
+      template: JST["mainapp/components/notebook/markdowncell"](),
       controller: function($scope) {
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;

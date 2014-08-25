@@ -19,13 +19,15 @@
   </div>
   <div class="modal-body modal-large">
     <div>
-      <button ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()"
+      <button class="beaker-btn" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()"
               ng-click="evalTabOp.addPlugin(pluginName)">
         <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
         <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
         <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
         {{pluginName}}
-      </button><button ng-click="evalTabOp.showURL = !evalTabOp.showURL"><span class="plugin-invisible plugin-status">&#x25cf;</span>From URL...</button>
+      </button><button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="beaker-btn">
+        <span class="plugin-url">&#x25cf;</span> From URL...
+      </button>
     </div>
     <br>
     <div ng-show="evalTabOp.showURL" class="input-append addeval">
@@ -40,6 +42,6 @@
     </tabs>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click='hideEvaluators()'>Close</button>
+    <button class="beaker-btn active" ng-click='hideEvaluators()'>Close</button>
   </div>
 </div>

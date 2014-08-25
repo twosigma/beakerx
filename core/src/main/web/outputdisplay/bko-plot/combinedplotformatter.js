@@ -50,7 +50,7 @@
         if (width == null) { width = 1200; }
         if (height == null) { height = 600; }
 
-        newmodel.initSize = {
+        newmodel.plotSize = {
           "width" : width,
           "height" : height
         };
@@ -84,8 +84,8 @@
             newplotmodel.xAxis.axisLabel = newmodel.xAxisLabel;
           }
 
-          newplotmodel.initSize.width = width;
-          newplotmodel.initSize.height = height * weights[i] / sumweights;
+          newplotmodel.plotSize.width = width;
+          newplotmodel.plotSize.height = height * weights[i] / sumweights;
 
           newmodel.plots.push(newplotmodel);
         }

@@ -19,53 +19,77 @@
  * This is the output display component for displaying multiple Plots
  */
 
-var dbplot;
-
 (function() {
   'use strict';
   var retfunc = function(plotUtils, combinedplotFormatter, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-combinedplot";
     return {
       template :  "<div id='combplotTitle' class='plot-title'></div>" +
-          "<div id='combplotContainer' class='combplot-renderdiv'>" +
+          "<div id='combplotContainer' class='combplot-plotcontainer'>" +
           "<bk-output-display type='Plot' ng-repeat='m in models' model='m'></bk-output-display>" +
           "</div>",
       controller : function($scope) {
-
-        $scope.standardizeData = function() {
-          var model = $scope.model.getCellModel();
-          var state = $scope.model.getClientState();
-
-          dbplot = state;
-
-          if (state.savedState == null) {
-            $scope.isPreviousState = false;
-
-            $scope.stdmodel = combinedplotFormatter.standardizeModel(model);
-            $scope.stdmodel.focus = $scope.calcRange();
-
-            state.savedStates = [];
-            state.savedState = $scope.stdmodel;
-          } else {
-            $scope.isPreviousState = true;
-
-            $scope.stdmodel = state.savedState;
+        $scope.getShareMenuPlugin = function() {
+          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
+        };
+        $scope.$watch("getShareMenuPlugin()", function() {
+          var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
+          $scope.model.resetShareMenuItems(newItems);
+        });
+      },
+      link : function(scope, element, attrs) {
+        scope.initLayout = function() {
+          var model = scope.stdmodel;
+          if(model.title != null) {
+            scope.jqplottitle = element.find("#combplotTitle");
+            scope.jqplottitle.text(model.title).css("width", scope.width);
           }
-
-          $scope.preparePlotModels();
-          $scope.focus = $scope.stdmodel.focus;
         };
 
-        $scope.preparePlotModels = function() {
+        scope.standardizeData = function() {
+          var model = scope.model.getCellModel();
+          scope.stdmodel = combinedplotFormatter.standardizeModel(model);
+        };
+
+        scope.checkSavedState = function() {
+          var state = scope.model.getClientState();
+
+          if (state.savedState == null) {
+            scope.isPreviousState = false;
+            state.savedState = {};
+            state.savedStates = [];
+            scope.prepareSavedState(state.savedState, state.savedStates);
+          } else {
+            scope.isPreviousState = true;
+            scope.applySavedState(state.savedState, state.savedStates);
+          }
+        };
+
+        scope.prepareSavedState = function(state, states) {
+          scope.state = state;
+          state.focus = scope.calcRange();
+          scope.states = states;
+          // create a state for each plot
+          var plots = scope.stdmodel.plots;
+          for (var i = 0; i < plots.length; i++) {
+            states.push({});
+          }
+          state.width = scope.stdmodel.plotSize.width;
+          scope.width = state.width;
+        };
+
+        scope.applySavedState = function(state, states) {
+          scope.state = state;
+          scope.states = states;
+          scope.width = state.width;
+        };
+
+        scope.preparePlotModels = function() {
           var models = [];
-          var plots = $scope.stdmodel.plots;
-          var savedStates = $scope.model.getClientState().savedStates;
+          var plots = scope.stdmodel.plots;
+          var states = scope.states;
 
           for (var i = 0; i < plots.length; i++) {
-
-            if ($scope.isPreviousState === false) {
-              savedStates.push({});
-            }
 
             var plotmodel = plots[i];
             plotmodel.plotIndex = i;
@@ -75,33 +99,36 @@ var dbplot;
                 return this.model;
               },
               getClientState : function() {
-                return savedStates[this.model.plotIndex];
+                return states[this.model.plotIndex];
               },
               resetShareMenuItems : function() {
               },
               getFocus : function() {
-                return $scope.focus;
+                return scope.focus;
               },
               updateFocus : function(focus) {
-                _($scope.focus).extend(focus);
-                $scope.$apply();
+                scope.focus = {};
+                _(scope.focus).extend(focus);
+                scope.state.focus = scope.focus; // reference is changed
+                scope.$apply();
               },
               updateWidth : function(width) {
-                $scope.width = width;
-                $scope.jqplottitle.css("width", width);
-                $scope.$apply();
+                scope.width = width;
+                scope.state.width = width;
+                scope.jqplottitle.css("width", width);
+                scope.$apply();
               },
               getWidth : function() {
-                return $scope.width;
+                return scope.width;
               }
             });
           }
-          $scope.models = models;
+          scope.models = models;
         };
 
-        $scope.calcRange = function() {
+        scope.calcRange = function() {
           var xl = 1E100, xr = 0;
-          var plots = $scope.stdmodel.plots;
+          var plots = scope.stdmodel.plots;
           for (var i = 0; i < plots.length; i++) {
             var plotmodel = plots[i]; // models are already standardized at this point
             var ret = plotUtils.getDefaultFocus(plotmodel);
@@ -114,22 +141,17 @@ var dbplot;
           };
         };
 
-        $scope.getShareMenuPlugin = function() {
-          return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
+        scope.init = function() {
+          scope.standardizeData();
+          scope.checkSavedState();
+          scope.preparePlotModels();
+          scope.initLayout();
+
+          // call this after the plot models are prepared so as to update focus
+          scope.focus = scope.state.focus;
         };
 
-        $scope.standardizeData();
-        $scope.$watch("getShareMenuPlugin()", function() {
-          var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
-          $scope.model.resetShareMenuItems(newItems);
-        });
-      },
-      link : function(scope, element, attrs) {
-        var model = scope.stdmodel;
-        if(model.title != null) {
-          scope.jqplottitle = element.find("#combplotTitle");
-          scope.jqplottitle.text(model.title).css("width", model.initSize.width);
-        }
+        scope.init();
       }
     };
   };

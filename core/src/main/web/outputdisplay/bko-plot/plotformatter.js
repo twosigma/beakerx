@@ -310,7 +310,7 @@
             yAxis : { label : model.y_label },
             showLegend : model.show_legend != null ? model.show_legend : false,
             useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
-            initSize : {
+            plotSize : {
               "width" : model.init_width != null ? model.init_width : 1200,
               "height" : model.init_height != null ? model.init_height : 350
             },
@@ -328,7 +328,7 @@
             userFocus : model.focus != null ? model.focus : {},
             xCursor : model.xCursor,
             yCursor : model.yCursor,
-            initSize : {
+            plotSize : {
               "width" : model.width != null ? model.width : 1200,
               "height": model.height != null ? model.height : 350
             },

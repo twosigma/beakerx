@@ -18,6 +18,7 @@
   background-color: #FEFEFE;
   border: 1px solid #BBBBBB;
   position: relative;
+  border-collapse: initial;
 }
 
 .plot-label,

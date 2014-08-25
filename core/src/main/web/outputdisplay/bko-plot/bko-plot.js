@@ -58,10 +58,8 @@
           resize : function(event, ui) {
             scope.width = ui.size.width;
             scope.height = ui.size.height;
-            scope.stdmodel.initSize = {
-              width : scope.width,
-              height : scope.height
-            };
+            _(scope.plotSize).extend(ui.size);
+
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });
             scope.numIntervals = {
@@ -86,10 +84,12 @@
           // hook container to use jquery interaction
           scope.container = d3.select(element[0]).select("#plotContainer");
           scope.jqcontainer = element.find("#plotContainer");
-          scope.jqcontainer.css(model.initSize);
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
-          scope.jqsvg.css(model.initSize);
+
+          var plotSize = scope.plotSize;
+          scope.jqcontainer.css(plotSize);
+          scope.jqsvg.css(plotSize);
 
           $(window).resize(function() {
             // update resize maxWidth when the browser window resizes
@@ -101,7 +101,7 @@
 
           // set title
           scope.jqplottitle = element.find("#plotTitle");
-          scope.jqplottitle.text(model.title).css("width", model.initSize.width);
+          scope.jqplottitle.text(model.title).css("width", plotSize.width);
 
           scope.maing = d3.select(element[0]).select("#maing");
           scope.gridg = d3.select(element[0]).select("#gridg");
@@ -138,8 +138,8 @@
             y : 75
           };
           scope.numIntervals = {
-            x: parseInt(model.initSize.width) / scope.intervalStepHint.x,
-            y: parseInt(model.initSize.height) / scope.intervalStepHint.y
+            x: parseInt(plotSize.width) / scope.intervalStepHint.x,
+            y: parseInt(plotSize.height) / scope.intervalStepHint.y
           };
           scope.locateBox = null;
           scope.cursor = {
@@ -172,6 +172,7 @@
             scope.jqsvg.css("width", newWidth );
             scope.calcMapping(false);
             scope.legendDone = false;
+            scope.legendResetPosition = true;
             scope.update();
           });
         };
@@ -1165,6 +1166,10 @@
             showLodHint : scope.showLodHint,
             showUnorderedHint : scope.showUnorderedHint
           };
+
+          state.plotSize = {};
+          _(state.plotSize).extend(scope.stdmodel.plotSize);
+          scope.plotSize = state.plotSize;
         };
 
         scope.applySavedState = function(state) {
@@ -1179,6 +1184,7 @@
           _(state.flags).each(function(value, key) {
             scope[key] = value;
           });
+          scope.plotSize = state.plotSize;
         };
 
         scope.initFlags = function() {
@@ -1234,8 +1240,6 @@
           scope.tips = scope.state.tips;
 
           scope.calcMapping();
-
-
 
           // init remove pipe
           scope.removePipe = [];

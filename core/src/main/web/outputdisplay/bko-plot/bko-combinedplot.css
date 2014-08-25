@@ -14,9 +14,8 @@
 *  limitations under the License.
 */
 
-.comblot-renderdiv {
-    background-color: #FEFEFE;
-    border: 1px solid #000000;
-    width: auto;
-    height: auto;
+.combplot-plotcontainer {
+  background-color: #FEFEFE;
+  border: none;
+  position: relative;
 }

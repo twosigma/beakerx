@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, PlotAxis, plotFactory, plotUtils) {
+  var retfunc = function(bkUtils, plotConverter, PlotAxis, plotFactory, plotUtils) {
     return {
       lineDasharrayMap : {
         "solid" : "",
@@ -259,6 +259,33 @@
         }
       },
 
+      sortModel: function(model) {
+        var data = model.data;
+        for (var i = 0; i < data.length; i++) {
+          var item = data[i];
+          if (item.type === "constline" || item.type === "constband") { continue; }
+
+          var eles = item.elements;
+          var unordered = false;
+          for (var j = 1; j < eles.length; j++) {
+            if (eles[j].x < eles[j - 1].x) {
+              unordered = true;
+              break;
+            }
+          }
+          if (unordered === true) {
+            if (item.type === "bar" || item.type === "stem" ||
+            item.type === "point" || item.type === "text") {
+              eles.sort(function(a, b) {
+                return a.x - b.x;
+              });
+            } else {
+              item.isUnorderedItem = true;
+            }
+          }
+        }
+      },
+
       standardizeModel : function(_model) {
         var model = {};
         $.extend(true, model, _model); // deep copy model to prevent changing the original JSON
@@ -319,6 +346,9 @@
           _.extend(newmodel, model);
         }
         this.formatModel(newmodel, model); // fill in null entries, compute y2, etc.
+        this.sortModel(newmodel);
+
+        console.log(newmodel.data);
 
 
         // at this point, data is in standard format (log is applied as well)
@@ -376,5 +406,6 @@
       }
     };
   };
-  beaker.bkoFactory('plotFormatter', ["bkUtils", 'PlotAxis', 'plotFactory', 'plotUtils', retfunc]);
+  beaker.bkoFactory('plotFormatter',
+    ["bkUtils", 'plotConverter', 'PlotAxis', 'plotFactory', 'plotUtils', retfunc]);
 })();

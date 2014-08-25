@@ -255,6 +255,9 @@
             if (data[i].isLodItem === true) {
               scope.hasLodItem = true;
             }
+            if (data[i].isUnorderedItem === true) {
+              scope.hasUnorderedItem = true;
+            }
           }
           if (scope.hasLodItem === true && scope.shownLodHint === false) {
             scope.shownLodHint = true;
@@ -266,6 +269,15 @@
               "LOD will be automatically turned off when you reach detailed enough zoom level.",
               "To switch LOD type, left click the LOD hint. " +
               "To turn off LOD, right click the LOD hint." ]);
+          }
+          if (scope.hasUnorderedItem === true && scope.shownUnorderedHint === false) {
+            scope.shownUnorderedHint = true;
+            scope.renderMessage("Unordered line / area detected",
+              [ "The plot requires line and area elements to have x-monotonicity in order to apply " +
+              "truncation for performance optimization.",
+              "Line or area items are found with unordered x coordinates.",
+              "Truncation has been disabled to display correct result.",
+              "To enable truncation for better performance, please render x-monotonic line and area items." ]);
           }
         };
 
@@ -1142,6 +1154,7 @@
 
         scope.initMessages = function() {
           scope.shownLodHint = false;
+          scope.shownUnorderedHint = false;
         };
 
         scope.clearRemovePipe = function() {

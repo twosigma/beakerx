@@ -88,6 +88,13 @@
 
     PlotLine.prototype.filter = function(scope) {
       var eles = this.elements;
+      if (this.isUnorderedItem === true) {
+        // cannot do truncation on unordered item, force rendering all
+        this.vindexL = 0;
+        this.vindexR = eles.length - 1;
+        this.vlength = r - l + 1;
+        return;
+      }
       var l = plotUtils.upper_bound(eles, "x", scope.focus.xl),
           r = plotUtils.upper_bound(eles, "x", scope.focus.xr) + 1;
 

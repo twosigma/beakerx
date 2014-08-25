@@ -99,7 +99,7 @@
     };
 
     PlotPointLodLoader.prototype.render = function(scope){
-      if (this.shown === false) {
+      if (this.showItem === false) {
         this.clear(scope);
         return;
       }
@@ -142,6 +142,13 @@
       this.plotter.applyAxis(xAxis, yAxis);
       // sampler is created AFTER coordinate axis remapping
       this.createSampler();
+    };
+
+    PlotPointLodLoader.prototype.applyLodType = function(scope, type) {
+      this.clear(scope);
+      this.lodType = type;
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+      this.createLodPlotter();
     };
 
     PlotPointLodLoader.prototype.createSampler = function() {

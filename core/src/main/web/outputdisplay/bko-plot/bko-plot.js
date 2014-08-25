@@ -259,8 +259,9 @@
               scope.hasUnorderedItem = true;
             }
           }
-          if (scope.hasLodItem === true && scope.shownLodHint === false) {
-            scope.shownLodHint = true;
+          if (scope.hasLodItem === true && scope.showLodHint === true) {
+            scope.showLodHint = false;
+            scope.state.flags.showLodHint = false;
             scope.renderMessage("Level-of-Detail (LOD) is enabled",
               [ "Some data items contain too many elements to be directly plotted.",
               "Level-of-Detail (LOD) rendering is automatically enabled. " +
@@ -270,8 +271,9 @@
               "To switch LOD type, left click the LOD hint. " +
               "To turn off LOD, right click the LOD hint." ]);
           }
-          if (scope.hasUnorderedItem === true && scope.shownUnorderedHint === false) {
-            scope.shownUnorderedHint = true;
+          if (scope.hasUnorderedItem === true && scope.showUnorderedHint === true) {
+            scope.showUnorderedHint = false;
+            scope.state.flags.showUnorderedHint = false;
             scope.renderMessage("Unordered line / area detected",
               [ "The plot requires line and area elements to have x-monotonicity in order to apply " +
               "truncation for performance optimization.",
@@ -573,7 +575,7 @@
             $("<input type='checkbox'></input>")
               .attr("id", "legendcheck_all")
               .attr("class", "plot-legendcheckbox")
-              .prop("checked", scope.stdmodel.showAllItems)
+              .prop("checked", scope.showAllItems)
               .click(function(e) {
                 return scope.toggleVisibility(e);
               })
@@ -601,7 +603,7 @@
             $("<input type='checkbox'></input>")
               .attr("id", "legendcheck_" + i)
               .attr("class", "plot-legendcheckbox")
-              .prop("checked", dat.shown)
+              .prop("checked", dat.showItem)
               .click(function(e) {
                 return scope.toggleVisibility(e);
               })
@@ -708,24 +710,33 @@
           var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
           // id in the format "legendcheck_i"
           if (id == "all") {
-            scope.stdmodel.showAllItems = !scope.stdmodel.showAllItems;
+            scope.showAllItems = !scope.showAllItems;
+
+            scope.state.flags.showAllItems = scope.showAllItems; // update state flag
+
             for (var i = 0; i < data.length; i++) {
-              data[i].shown = scope.stdmodel.showAllItems;
-              if (data[i].shown === false) {
+              data[i].showItem = scope.showAllItems;
+
+              scope.state.showItems[i] = data[i].showItem; // update state flag
+
+              if (data[i].showItem === false) {
                 data[i].clearTips(scope);
                 if (data[i].isLodItem === true) {
                   data[i].lodOn = false;
                   scope.setLodHint(data[i]);
                 }
               }
-              scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
+              scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].showItem);
             }
             scope.calcRange();
             scope.update();
             return;
           }
-          data[id].shown = !data[id].shown;
-          if (data[id].shown === false) {
+          data[id].showItem = !data[id].showItem;
+
+          scope.state.showItems[id] = data[id].showItem; // update state flag
+
+          if (data[id].showItem === false) {
             data[id].clearTips(scope);
             if (data[id].isLodItem === true) {
               data[id].lodOn = false;
@@ -887,32 +898,32 @@
             scope.lasty = d3trans[1];
             scope.lastscale = d3scale;
 
-            var focus = scope.focus, vrange = scope.vrange;
+            var focus = scope.focus;
             var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
             if (ds == 1.0) {
               // translate only
-              var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan, vrange = scope.vrange;
-              if (focus.xl + tx >= vrange.xl && focus.xr + tx <= vrange.xr) {
+              var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan;
+              if (focus.xl + tx >= 0 && focus.xr + tx <= 1) {
                 focus.xl += tx;
                 focus.xr += tx;
               } else {
-                if (focus.xl + tx < vrange.xl) {
-                  focus.xl = vrange.xl;
+                if (focus.xl + tx < 0) {
+                  focus.xl = 0;
                   focus.xr = focus.xl + focus.xspan;
-                } else if (focus.xr + tx > vrange.xr) {
-                  focus.xr = vrange.xr;
+                } else if (focus.xr + tx > 1) {
+                  focus.xr = 1;
                   focus.xl = focus.xr - focus.xspan;
                 }
               }
-              if (focus.yl + ty >= vrange.yl && focus.yr + ty <= vrange.yr) {
+              if (focus.yl + ty >= 0 && focus.yr + ty <= 1) {
                 focus.yl += ty;
                 focus.yr += ty;
               } else {
-                if (focus.yl + ty < vrange.yl) {
-                  focus.yl = vrange.yl;
+                if (focus.yl + ty < 0) {
+                  focus.yl = 0;
                   focus.yr = focus.yl + focus.yspan;
-                } else if (focus.yr + ty > vrange.yr) {
-                  focus.yr = vrange.yr;
+                } else if (focus.yr + ty > 1) {
+                  focus.yr = 1;
                   focus.yl = focus.yr - focus.yspan;
                 }
               }
@@ -926,13 +937,13 @@
                 var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym),
                     nyspan = nyr - nyl;
 
-                if (nyspan >= level.minSpanY && nyspan <= vrange.yspan * level.maxScaleY) {
+                if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
                   focus.yl = nyl;
                   focus.yr = nyr;
                   focus.yspan = nyspan;
                 } else {
-                  if (nyspan > vrange.yspan * level.maxScaleY) {
-                    focus.yr = focus.yl + vrange.yspan * level.maxScaleY;
+                  if (nyspan > level.maxScaleY) {
+                    focus.yr = focus.yl + level.maxScaleY;
                   } else if (nyspan < level.minSpanY) {
                     focus.yr = focus.yl + level.minSpanY;
                   }
@@ -944,13 +955,13 @@
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
                 var nxl = xm - ds * (xm - focus.xl), nxr = xm + ds * (focus.xr - xm),
                     nxspan = nxr - nxl;
-                if (nxspan >= level.minSpanX && nxspan <= vrange.xspan * level.maxScaleX) {
+                if (nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
                   focus.xl = nxl;
                   focus.xr = nxr;
                   focus.xspan = nxspan;
                 } else {
-                  if (nxspan > vrange.yspan * level.maxScaleX) {
-                    focus.xr = focus.xl + vrange.xspan * level.maxScaleX;
+                  if (nxspan > level.maxScaleX) {
+                    focus.xr = focus.xl + level.maxScaleX;
                   } else if (nxspan < level.minSpanX) {
                     focus.xr = focus.xl + level.minSpanX;
                   }
@@ -989,7 +1000,6 @@
           scope.jqsvg.css("cursor", "auto");
         };
         scope.fixFocus = function(focus) {
-          var vrange = scope.stdmodel.vrange;
           focus.xl = focus.xl < 0 ? 0 : focus.xl;
           focus.xr = focus.xr > 1 ? 1 : focus.xr;
           focus.yl = focus.yl < 0 ? 0 : focus.yl;
@@ -1074,6 +1084,7 @@
           scope.svg.selectAll(".plot-cursor").remove();
           scope.jqcontainer.find(".plot-cursorlabel").remove();
         };
+
         scope.calcMapping = function(emitFocusUpdate) {
           // called every time after the focus is changed
           var focus = scope.focus;
@@ -1089,7 +1100,6 @@
               "xr" : focus.xr
             });
           }
-
           scope.data2scrY =
             d3.scale.linear().domain([focus.yl, focus.yr]).range([H - bMargin, tMargin]);
           scope.data2scrYp =
@@ -1114,50 +1124,71 @@
             return Number(scope.data2scrY(val).toFixed(scope.renderFixed));
           };
         };
+
         scope.standardizeData = function() {
+          var model = scope.model.getCellModel();
+          scope.stdmodel = plotFormatter.standardizeModel(model);
+        };
+
+        scope.checkSavedState = function() {
           var state = scope.model.getClientState();
-
-          delete state.savedState;
-
           if (state.savedState == null) {
-            // create new state, standardize data
-            var model = scope.model.getCellModel();
-            scope.stdmodel = plotFormatter.standardizeModel(model);
-            // link the state to the stdmodel so that it can be saved
-
-            // all the things that are going to be saved in states
-            scope.stdmodel.state = {
-              focus : null,
-              tips : null,
-              flags : []
-            };
-
-            //state.savedState = scope.stdmodel;
+            // create new state
+            state.savedState = {};
+            // link scope elements to savedState in prepare function
+            scope.prepareSavedState(state.savedState);
             scope.isPreviousState = false;
           } else {
             // just use the previous state
-            scope.stdmodel = state.savedState;
-            scope.recreatePlotItems();
+            scope.applySavedState(state.savedState);
             scope.isPreviousState = true;
           }
         };
 
-        scope.recreatePlotItems = function() {
-          var model = scope.stdmodel;
-          plotFactory.recreatePlotItem(model.xAxis);
-          plotFactory.recreatePlotItem(model.yAxis);
-          var data = model.data;
+        scope.prepareSavedState = function(state) {
+          scope.state = state;
+          state.focus = {};
+          state.tips = {};
+          state.showItems = [];
+          state.lodtypes = [];
+          var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
-            plotFactory.recreatePlotItem(data[i]);
+            state.showItems[i] = data[i].showItem;
+            if (data[i].isLodItem === true) {
+              state.lodtypes[i] = data[i].lodType;
+            }
           }
+
+          // list the flags to be stored
+          state.flags = {
+            showAllItems : scope.showAllItems,
+            showLodHint : scope.showLodHint,
+            showUnorderedHint : scope.showUnorderedHint
+          };
         };
 
-        scope.initMessages = function() {
-          scope.shownLodHint = false;
-          scope.shownUnorderedHint = false;
+        scope.applySavedState = function(state) {
+          scope.state = state;
+          var data = scope.stdmodel.data;
+          for (var i = 0; i < data.length; i++) {
+            data[i].showItem = state.showItems[i];
+            if (data[i].isLodItem === true) {
+              data[i].applyLodType(state.lodtypes[i]);
+            }
+          }
+          _(state.flags).each(function(value, key) {
+            scope[key] = value;
+          });
+        };
+
+        scope.initFlags = function() {
+          scope.showAllItems = true;
+          scope.showLodHint = true;
+          scope.showUnorderedHint = true;
         };
 
         scope.clearRemovePipe = function() {
+          // some hints are set to be removed at the end of the next rendering cycle
           for (var i = 0; i < scope.removePipe.length; i++) {
             var id = scope.removePipe[i];
             scope.jqcontainer.find("#" + id).remove();
@@ -1169,6 +1200,11 @@
 
           // first standardize data
           scope.standardizeData();
+          // init flags
+          scope.initFlags();
+          // see if previous state can be applied
+          scope.checkSavedState();
+
           // create layout elements
           scope.initLayout();
 
@@ -1191,18 +1227,15 @@
           scope.calcRange();
           if (scope.isPreviousState === false) {
             // init copies focus to defaultFocus, called only once
-            scope.stdmodel.focus = {};
-            _(scope.stdmodel.focus).extend(scope.defaultFocus);
+            _(scope.state.focus).extend(scope.defaultFocus);
           }
           // set focus to reference model's focus
-          scope.focus = scope.stdmodel.focus;
-          scope.vrange = scope.stdmodel.vrange;
-          scope.tips = scope.stdmodel.tips;
+          scope.focus = scope.state.focus;
+          scope.tips = scope.state.tips;
 
           scope.calcMapping();
 
-          // init message flags
-          scope.initMessages();
+
 
           // init remove pipe
           scope.removePipe = [];

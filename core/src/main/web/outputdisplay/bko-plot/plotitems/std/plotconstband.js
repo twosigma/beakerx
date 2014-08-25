@@ -54,7 +54,7 @@
     };
 
     PlotConstband.prototype.render = function(scope){
-      if (this.shown === false) {
+      if (this.shotItem === false) {
         this.clear(scope);
         return;
       }

@@ -78,6 +78,13 @@
       this.createLodPlotter();
     };
 
+    PlotAreaLodLoader.prototype.applyLodType = function(scope, type) {
+      this.clear(scope);
+      this.lodType = type;
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
+      this.createLodPlotter();
+    };
+
     PlotAreaLodLoader.prototype.createLodPlotter = function() {
       var data = {};
       _(data).extend(this.datacopy);
@@ -109,7 +116,7 @@
     };
 
     PlotAreaLodLoader.prototype.render = function(scope){
-      if (this.shown === false) {
+      if (this.showItem === false) {
         this.clear(scope);
         return;
       }

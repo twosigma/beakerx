@@ -92,7 +92,7 @@
 
           if (eles == null) eles = [];
 
-          item.shown = true;
+          item.showItem = true;
 
           if (item.type == null) {
             item.type = "line";
@@ -336,8 +336,6 @@
           };
         }
 
-        newmodel.showAllItems = true;
-        newmodel.tips = {};
         newmodel.data = [];
 
         if (model.version === "groovy") {
@@ -347,9 +345,6 @@
         }
         this.formatModel(newmodel, model); // fill in null entries, compute y2, etc.
         this.sortModel(newmodel);
-
-        console.log(newmodel.data);
-
 
         // at this point, data is in standard format (log is applied as well)
 
@@ -390,15 +385,6 @@
         }
 
         this.remapModel(newmodel);
-
-        newmodel.vrange = {
-          xl : 0,
-          xr : 1,
-          yl : 0,
-          yr : 1,
-          xspan : 1,
-          yspan : 1
-        };
 
         newmodel.version = "complete";
         //console.log(newmodel);

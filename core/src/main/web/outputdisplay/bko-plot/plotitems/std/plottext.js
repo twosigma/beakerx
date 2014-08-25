@@ -40,7 +40,7 @@
     };
 
     PlotText.prototype.render = function(scope) {
-      if (this.shown === false) {
+      if (this.showItem === false) {
         this.clear(scope);
         return;
       }

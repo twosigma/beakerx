@@ -79,6 +79,12 @@
           if (cursor.width == null) { cursor.width = 2; }
           cursor.stroke_dasharray = this.lineDasharrayMap[cursor.style];
         }
+        if (newmodel.yCursor != null) {
+          var cursor = newmodel.yCursor;
+          if (cursor.color == null) { cursor.color = "black"; }
+          if (cursor.width == null) { cursor.width = 2; }
+          cursor.stroke_dasharray = this.lineDasharrayMap[cursor.style];
+        }
         var logx = newmodel.xAxis.type === "log",
             logxb = newmodel.xAxis.base,
             logy = newmodel.yAxis.type === "log",

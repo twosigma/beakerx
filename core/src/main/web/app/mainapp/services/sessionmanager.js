@@ -160,6 +160,7 @@
         _sessionId = sessionId;
 
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
+        bkSession.backup(_sessionId, generateBackupData());
       },
       clear: function() {
         bkEvaluatorManager.reset();

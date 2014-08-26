@@ -29,7 +29,7 @@
           if (data[i].legend != null && data[i].legend != "") {
             legendableItem++;
           }
-          if (data[i].shown === false) { continue; }
+          if (data[i].showItem === false) { continue; }
           visibleItem++;
           var itemrange = data[i].getRange();
           this.updateRange(datarange, itemrange);

@@ -64,7 +64,7 @@
         }
         if (model.log_x === true) {
           logx = true;
-          logxb = model.x_log_base;
+          logxb = model.x_log_base == null ? 10 : model.x_log_base;
         }
         // set margin
         newmodel.margin = {};

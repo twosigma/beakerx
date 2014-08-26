@@ -262,7 +262,7 @@
           }
           if (scope.hasLodItem === true && scope.showLodHint === true) {
             scope.showLodHint = false;
-            scope.state.flags.showLodHint = false;
+            //scope.state.flags.showLodHint = false;
             scope.renderMessage("Level-of-Detail (LOD) is enabled",
               [ "Some data items contain too many elements to be directly plotted.",
               "Level-of-Detail (LOD) rendering is automatically enabled. " +
@@ -274,7 +274,7 @@
           }
           if (scope.hasUnorderedItem === true && scope.showUnorderedHint === true) {
             scope.showUnorderedHint = false;
-            scope.state.flags.showUnorderedHint = false;
+            //scope.state.flags.showUnorderedHint = false;
             scope.renderMessage("Unordered line / area detected",
               [ "The plot requires line and area elements to have x-monotonicity in order to apply " +
               "truncation for performance optimization.",
@@ -1182,9 +1182,9 @@
           }
           // list the flags to be stored
           state.flags = {
-            showAllItems : scope.showAllItems,
-            showLodHint : scope.showLodHint,
-            showUnorderedHint : scope.showUnorderedHint
+            showAllItems : scope.showAllItems
+            //showLodHint : scope.showLodHint,
+            //showUnorderedHint : scope.showUnorderedHint
           };
 
           state.plotSize = {};

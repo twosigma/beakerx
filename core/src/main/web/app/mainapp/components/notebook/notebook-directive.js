@@ -39,7 +39,8 @@
       restrict: 'E',
       template: JST["mainapp/components/notebook/notebook"](),
       scope: {
-        setBkNotebook: "&"
+        setBkNotebook: "&",
+        isLoading: "="
       },
       controller: function ($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();

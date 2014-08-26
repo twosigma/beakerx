@@ -14,33 +14,19 @@
  *  limitations under the License.
  */
 
-define(function(require, exports, module) {
+/**
+ * evaluator menu plugin
+ * Add an item to the evaluators menu that is a placeholder to show available evaluators.
+ */
+define(function (require, exports, module) {
   'use strict';
-  var menuItems = [
-    {
-       name: "Plugin manager...",
-       action: function() {
-         bkHelper.getBkNotebookViewModel().showEvaluators();
-       },
-       tooltip: "Show evaluators settings"
-    },
-    {
-      name: "Lock", action: function() {
-      bkHelper.toggleNotebookLocked();
-    },
-      tooltip: "Lock notebook from further editing",
-      isChecked: function() {
-        return bkHelper.isNotebookLocked();
-      }
-    }
-  ];
 
   var menuItemPromise = bkHelper.newPromise({
-    parent: "Notebook",
-    items: menuItems
+    parent: "Evaluators",
+    items: bkHelper.getEvaluatorMenuItems
   });
 
-  exports.getMenuItems = function() {
+  exports.getMenuItems = function () {
     return menuItemPromise;
   };
 });

@@ -35,6 +35,7 @@
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters
+      this.zoomHash = plotUtils.randomString(3);
       this.plotter = new PlotStem(this.datacopy);
       this.createLodPlotter();
 
@@ -62,12 +63,25 @@
 
     PlotStemLodLoader.prototype.zoomLevelChanged = function(scope) {
       this.sampleStep = -1;
-      // pass message to lod plotter
+      this.zoomHash = plotUtils.randomString(3);
       if (this.lodType === "stem") {
-        this.lodplotter.zoomLevelChanged(scope);
+        this.lodplotter.setZoomHash(this.zoomHash);
+        this.lodplotter.clearTips(scope);
       } else if (this.lodType === "stem+" || this.lodType === "box") {
-        this.lodplotter.zoomLevelChanged(scope);
-        this.lodplotter2.zoomLevelChanged(scope);
+        this.lodplotter.setZoomHash(this.zoomHash);
+        this.lodplotter2.setZoomHash(this.zoomHash);
+        this.lodplotter.clearTips(scope);
+        this.lodplotter2.clearTips(scope);
+      }
+    };
+
+    PlotStemLodLoader.prototype.applyZoomHash = function(hash) {
+      this.zoomHash = hash;
+      if (this.lodType === "stem") {
+        this.lodplotter.setZoomHash(hash);
+      } else if (this.lodType === "stem+" ||  this.lodType === "box") {
+        this.lodplotter.setZoomHash(hash);
+        this.lodplotter2.setZoomHash(hash);
       }
     };
 
@@ -90,20 +104,27 @@
       _(data).extend(this.datacopy);
       if (this.lodType === "stem") {
         this.lodplotter = new PlotLodStem(data);
+        this.lodplotter.setZoomHash(this.zoomHash);
       } else if (this.lodType === "stem+") {
         data.width += 1.5;
         this.lodplotter = new PlotLodStem(data);
         this.lodplotter2 = new PlotLodStem(data);
+        this.lodplotter.setZoomHash(this.zoomHash);
+        this.lodplotter2.setZoomHash(this.zoomHash);
+
         data.width -= 1.5;
         this.auxplotter = new PlotAuxStem(data);
       } else if (this.lodType === "box") {
         // lod boxes are plotted with special coloring (inversed color)
+        data.stroke = data.color; // assume the user has no way to set outline for stem
         data.color_opacity *= .25;
         data.stroke_opacity = 1.0;
         this.lodplotter = new PlotLodBox(data);
         this.lodplotter2 = new PlotLodBox(data);
         this.lodplotter.setWidthShrink(1);
         this.lodplotter2.setWidthShrink(1);
+        this.lodplotter.setZoomHash(this.zoomHash);
+        this.lodplotter2.setZoomHash(this.zoomHash);
 
         _(data).extend(this.datacopy); // normal color for aux box
         this.auxplotter = new PlotAuxBox(data);
@@ -277,7 +298,7 @@
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
-      var sub = "sample" + (g != null ? (" " + g) : "");
+      var sub = "sample" + (g !== "" ? (" " + g) : "");
       if (this.legend != null) {
         tip.title = this.legend + " (" + sub + ")";
       }

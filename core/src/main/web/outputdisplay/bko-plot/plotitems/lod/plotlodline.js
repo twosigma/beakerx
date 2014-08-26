@@ -32,9 +32,8 @@
       this.draw(scope, gid);
     };
 
-    PlotLodLine.prototype.zoomLevelChanged = function(scope) {
-      this.zoomHash = plotUtils.randomString(3);
-      this.clearTips(scope);
+    PlotLodLine.prototype.setZoomHash = function(hash) {
+      this.zoomHash = hash;
     };
 
     PlotLodLine.prototype.format = function() {
@@ -43,7 +42,6 @@
       } else {
         this.tip_color = "gray";
       }
-      this.zoomHash = plotUtils.randomString(3);
       this.itemProps = {
         "id" : this.id,
         "st" : this.color,

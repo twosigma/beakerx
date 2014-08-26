@@ -34,6 +34,7 @@
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters
+      this.zoomHash = plotUtils.randomString(3);
       this.plotter = new PlotPoint(this.datacopy);
       this.createLodPlotter();
 
@@ -61,7 +62,14 @@
 
     PlotPointLodLoader.prototype.zoomLevelChanged = function(scope) {
       this.sampleStep = -1;
-      this.lodplotter.zoomLevelChanged(scope); // pass message to lod plotter
+      this.zoomHash = plotUtils.randomString(3);
+      this.lodplotter.setZoomHash(this.zoomHash);
+      this.lodplotter.clearTips(scope);
+    };
+
+    PlotPointLodLoader.prototype.applyZoomHash = function(hash) {
+      this.zoomHash = hash;
+      this.lodplotter.setZoomHash(hash);
     };
 
     PlotPointLodLoader.prototype.switchLodType = function(scope) {
@@ -76,11 +84,14 @@
       _(data).extend(this.datacopy);
       if (this.lodType === "point") {
         this.lodplotter = new PlotLodPoint(data);
+        this.lodplotter.setZoomHash(this.zoomHash);
       } else if (this.lodType === "box") {
+        // user can set outline for point
         data.color_opacity *= .25;
         data.stroke_opacity = 1.0;
         this.lodplotter = new PlotLodBox(data);
         this.lodplotter.setWidthShrink(1);
+        this.lodplotter.setZoomHash(this.zoomHash);
       }
     };
 
@@ -221,7 +232,7 @@
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
-      var sub = "sample" + (g != null ? (" " + g) : "");
+      var sub = "sample" + (g !== "" ? (" " + g) : "");
       if (this.legend != null) {
         tip.title = this.legend + " (" + sub + ")";
       }

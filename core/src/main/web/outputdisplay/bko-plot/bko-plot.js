@@ -378,7 +378,8 @@
                   }
                 });
             }
-            if (plotUtils.outsideScr(scope, x, y)) {
+            var w = tipdiv.outerWidth(), h = tipdiv.outerHeight();
+            if (plotUtils.outsideScrBox(scope, x, y, w, h)) {
               tipdiv.remove();
               return;
             }
@@ -1005,6 +1006,16 @@
             scope.interactMode = "zoom";
           }
           scope.jqsvg.css("cursor", "auto");
+
+          if (scope.zoomed === true) {
+            // save zoom hash for lod items
+            var data = scope.stdmodel.data;
+            for (var i = 0; i < data.length; i++) {
+              if (data[i].isLodItem === true) {
+                scope.state.zoomHashes[i] = data[i].zoomHash;
+              }
+            }
+          }
         };
         scope.fixFocus = function(focus) {
           focus.xl = focus.xl < 0 ? 0 : focus.xl;
@@ -1159,12 +1170,14 @@
           state.showItems = [];
           state.lodTypes = [];
           state.lodAutos = [];
+          state.zoomHashes = [];
           var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
             state.showItems[i] = data[i].showItem;
             if (data[i].isLodItem === true) {
               state.lodTypes[i] = data[i].lodType;
               state.lodAutos[i] = data[i].lodAuto;
+              state.zoomHashes[i] = data[i].zoomHash;
             }
           }
           // list the flags to be stored
@@ -1187,6 +1200,7 @@
             if (data[i].isLodItem === true) {
               data[i].applyLodType(state.lodTypes[i]);
               data[i].applyLodAuto(state.lodAutos[i]);
+              data[i].applyZoomHash(state.zoomHashes[i]);
             }
           }
           _(state.flags).each(function(value, key) {

@@ -34,6 +34,7 @@
       this.lodType = this.lodTypes[this.lodTypeIndex];
 
       // create the plotters
+      this.zoomHash = plotUtils.randomString(3);
       this.plotter = new PlotLine(this.datacopy);
       this.createLodPlotter();
 
@@ -61,7 +62,14 @@
 
     PlotLineLodLoader.prototype.zoomLevelChanged = function(scope) {
       this.sampleStep = -1;
-      this.lodplotter.zoomLevelChanged(scope);  // pass message to lod plotter
+      this.zoomHash = plotUtils.randomString(3);
+      this.lodplotter.setZoomHash(this.zoomHash);
+      this.lodplotter.clearTips(scope);
+    };
+
+    PlotLineLodLoader.prototype.applyZoomHash = function(hash) {
+      this.zoomHash = hash;
+      this.lodplotter.setZoomHash(hash);
     };
 
     PlotLineLodLoader.prototype.switchLodType = function(scope) {
@@ -83,16 +91,20 @@
       _(data).extend(this.datacopy);
       if (this.lodType === "line") {
         this.lodplotter = new PlotLodLine(data);
+        this.lodplotter.setZoomHash(this.zoomHash);
       } else if (this.lodType === "box") {
+        data.stroke = data.color;
         data.color_opacity *= .25;
         data.stroke_opacity = 1.0;
         this.lodplotter = new PlotLodBox(data);
         this.lodplotter.setWidthShrink(1);
+        this.lodplotter.setZoomHash(this.zoomHash);
       } else if (this.lodType === "river") {
-        data.stroke = data.color;
+        data.stroke = data.color;  // assume the user has no way to set outline for line
         data.color_opacity *= .25;
-        data.stroke_opacity = .75;
+        data.stroke_opacity = 1.0;
         this.lodplotter = new PlotLodRiver(data);
+        this.lodplotter.setZoomHash(this.zoomHash);
       }
     };
 

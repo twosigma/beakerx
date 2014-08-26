@@ -27,7 +27,6 @@
     PlotLodBox.prototype.plotClassAvgLine = "plot-lodavgline";
 
     PlotLodBox.prototype.format = function() {
-      this.zoomHash = plotUtils.randomString(3);
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
       } else {
@@ -56,9 +55,8 @@
       this.draw(scope, gid);
     };
 
-    PlotLodBox.prototype.zoomLevelChanged = function(scope) {
-      this.zoomHash = plotUtils.randomString(3);
-      this.clearTips(scope);
+    PlotLodBox.prototype.setZoomHash = function(hash) {
+      this.zoomHash = hash;
     };
 
     PlotLodBox.prototype.prepare = function(scope, gid) {
@@ -89,7 +87,7 @@
           return false;
         }
 
-        var hashid = this.id + "_" + this.zoomHash + "_" + i;
+        var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash;
         var prop = {
           "id" : hashid,
           "idx" : this.index,

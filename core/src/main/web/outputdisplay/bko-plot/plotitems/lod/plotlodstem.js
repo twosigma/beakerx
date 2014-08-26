@@ -28,7 +28,6 @@
     PlotLodStem.prototype.plotAvgCircleR = 2;
 
     PlotLodStem.prototype.format = function() {
-      this.zoomHash = plotUtils.randomString(3);
       if (this.color != null) {
         this.tip_color = plotUtils.createColor(this.color, this.color_opacity);
       } else {
@@ -56,9 +55,8 @@
       this.draw(scope, gid);
     };
 
-    PlotLodStem.prototype.zoomLevelChanged = function(scope) {
-      this.zoomHash = plotUtils.randomString(3);
-      this.clearTips(scope);
+    PlotLodStem.prototype.setZoomHash = function(hash) {
+      this.zoomHash = hash;
     };
 
     PlotLodStem.prototype.prepare = function(scope, gid) {

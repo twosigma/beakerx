@@ -43,12 +43,10 @@
         "pts" : null
       };
       this.elementProps = [];
-      this.zoomHash = plotUtils.randomString(3);
     };
 
-    PlotLodRiver.prototype.zoomLevelChanged = function(scope) {
-      this.zoomHash = plotUtils.randomString(3);
-      this.clearTips(scope);
+    PlotLodRiver.prototype.setZoomHash = function(hash) {
+      this.zoomHash = hash;
     };
 
     PlotLodRiver.prototype.render = function(scope, elements, gid){

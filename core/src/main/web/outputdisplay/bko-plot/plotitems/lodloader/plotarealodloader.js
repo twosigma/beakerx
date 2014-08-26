@@ -27,7 +27,7 @@
     };
     // class constants
     PlotAreaLodLoader.prototype.lodTypes = ["area", "river"];
-    PlotAreaLodLoader.prototype.lodSteps = [5, 10];
+    PlotAreaLodLoader.prototype.lodSteps = [5, 5];
 
     PlotAreaLodLoader.prototype.format = function() {
       // create plot type index
@@ -35,6 +35,7 @@
       this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
       // create the plotters
+      this.zoomHash = plotUtils.randomString(3);
       this.plotter = new PlotArea(this.datacopy);
       this.createLodPlotter();
 
@@ -62,12 +63,25 @@
 
     PlotAreaLodLoader.prototype.zoomLevelChanged = function(scope) {
       this.sampleStep = -1;
-      // pass message to lod plotter
+      this.zoomHash = plotUtils.randomString(3);
       if (this.lodType === "area") {
-        this.lodplotter.zoomLevelChanged(scope);
+        this.lodplotter.setZoomHash(this.zoomHash);
+        this.lodplotter.clearTips(scope);
       } else if (this.lodType === "river"){
-        this.lodplotter.zoomLevelChanged(scope);
-        this.lodplotter2.zoomLevelChanged(scope);
+        this.lodplotter.setZoomHash(this.zoomHash);
+        this.lodplotter2.setZoomHash(this.zoomHash);
+        this.lodplotter.clearTips(scope);
+        this.lodplotter2.clearTips(scope);
+      }
+    };
+
+    PlotAreaLodLoader.prototype.applyZoomHash = function(hash) {
+      this.zoomHash = hash;
+      if (this.lodType === "area") {
+        this.lodplotter.setZoomHash(hash);
+      } else if (this.lodType === "river") {
+        this.lodplotter.setZoomHash(hash);
+        this.lodplotter2.setZoomHash(hash);
       }
     };
 
@@ -90,13 +104,17 @@
       _(data).extend(this.datacopy);
       if (this.lodType === "area") {
         this.lodplotter = new PlotLodRiver(data);
+        this.lodplotter.setZoomHash(this.zoomHash);
       } else if (this.lodType === "river") {
-        data.stroke = data.color;
-        data.color_opacity = .25;
+        data.stroke = data.color;  // assume the user has no way to set outline for area
+        data.color_opacity *= .25;
         data.stroke_opacity = 1.0;
         this.lodplotter = new PlotLodRiver(data);
         this.lodplotter2 = new PlotLodRiver(data);
-        data.color_opacity = 1.0;
+        this.lodplotter.setZoomHash(this.zoomHash);
+        this.lodplotter2.setZoomHash(this.zoomHash);
+
+        _(data).extend(this.datacopy);
         this.auxplotter = new PlotAuxRiver(data);
       }
     };
@@ -258,7 +276,7 @@
       var xAxis = this.xAxis,
           yAxis = this.yAxis;
       var tip = {};
-      var sub = "sample" + (g != null ? (" " + g) : "");
+      var sub = "sample" + (g !== "" ? (" " + g) : "");
       if (this.legend != null) {
         tip.title = this.legend + " (" + sub + ")";
       }

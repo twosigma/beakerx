@@ -66,6 +66,10 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "groovy",
     background: "#E0FFE0",
+    bgColor: "#6497A9",
+    fgColor: "#FFFFFF",
+    borderColor: "",
+    shortName: "Gr",
     newShell: function(shellId, cb) {
       if (!shellId) {
         shellId = "";

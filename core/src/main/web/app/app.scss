@@ -300,3 +300,17 @@ table.dataTable tbody td {
 .text-danger {
     color: #a94442;
 }
+
+bk-language-logo {
+  span {
+    width: 20px;
+    height: 19px;
+    font-weight: bold;
+    font-family: $font-family-primary-bold;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 10px;
+    padding-top: 1px;
+  }
+}

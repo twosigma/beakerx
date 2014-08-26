@@ -34,6 +34,10 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "ruby",
     background: "#F29F9B",
+    bgColor: "#AF1712",
+    fgColor: "#FFFFFF",
+    borderColor: "",
+    shortName: "Ru",
     newShell: function(shellID, cb) {
 
       var kernel = null;

@@ -66,6 +66,10 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "r",
     background: "#C0CFF0",
+    bgColor: "#8495BB",
+    fgColor: "#FFFFFF",
+    borderColor: "",
+    shortName: "R",
     newShell: function(shellID, cb) {
       if (!shellID) {
         shellID = "";

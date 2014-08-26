@@ -34,6 +34,10 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "julia",
     background: "#EAFAEF",
+    bgColor: "#6EAC5E",
+    fgColor: "#FFFFFF",
+    borderColor: "",
+    shortName: "Ju",
     newShell: function(shellID, cb) {
 
       var kernel = null;

@@ -19,13 +19,21 @@
   </div>
   <div class="modal-body modal-large">
     <div>
-      <button class="beaker-btn" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()"
-              ng-click="evalTabOp.addPlugin(pluginName)">
-        <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
-        <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
-        <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
-        {{pluginName}}
-      </button><button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="beaker-btn">
+      <span ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()">
+	<button class="beaker-btn" ng-click="evalTabOp.addPlugin(pluginName)" ng-show="pluginStatus=='known'">
+          <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
+          <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
+          <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
+          {{pluginName}}
+	</button>
+	<button class="beaker-btn" ng-show="pluginStatus!='known'" disabled="true">
+          <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
+          <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
+          <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
+          {{pluginName}}
+	</button>
+      </span>
+      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="beaker-btn">
         <span class="plugin-invisible plugin-url">&#x25cf;</span> From URL...
       </button>
     </div>

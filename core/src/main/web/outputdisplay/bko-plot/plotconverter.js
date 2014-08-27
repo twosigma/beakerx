@@ -197,6 +197,12 @@
             item.shape = this.pointShapeMap[item.shape];
           }
 
+          if (item.base != null && logy) {
+            if (item.base === 0) {
+              item.base = 1;
+            }
+          }
+
           var elements = [];
           for (var j = 0; j < item.x.length; j++) {
             var ele = {};
@@ -228,16 +234,12 @@
               ele.y2 == null) {
               if (item.bases != null) {
                 ele.y2 = item.bases[j];
-              } else if (item.base != null) {
-                ele.y2 = item.base;
               }
             }
 
             if (item.type === "point") {
               if (item.sizes != null) {
                 ele.size = item.sizes[j];
-              } else if (item.size != null) {
-                ele.size = item.size;
               }
             }
 

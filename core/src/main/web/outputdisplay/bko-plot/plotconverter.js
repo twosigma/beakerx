@@ -243,6 +243,11 @@
               }
             }
 
+            if (item.type === "bar" && item.widths != null) {
+              ele.x -= item.widths[j] / 2;
+              ele.x2 = ele.x + item.widths[j];
+            }
+
             elements.push(ele);
           }
 

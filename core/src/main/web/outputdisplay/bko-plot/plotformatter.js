@@ -187,10 +187,9 @@
               delete ele.outlineOpacity;
             }
 
-            if (item.type === "bar") {
-              var w = item.width;
-              ele.x = ele.x - w / 2;
-              ele.x2 = ele.x + w / 2;
+            if (item.type === "bar" && ele.x2 == null) {
+              ele.x -= item.width / 2;
+              ele.x2 = ele.x + item.width;
             }
             if ((item.type === "area" || item.type === "bar" || item.type === "stem")
               && ele.y2 == null) {

@@ -195,6 +195,8 @@
               && ele.y2 == null) {
               if (item.height != null) {
                 ele.y2 = ele.y + item.height;
+              } else if (item.base != null) {
+                ele.y2 = item.base;
               } else {
                 ele.y2 = logy ? 1 : 0;
               }

@@ -189,15 +189,17 @@
     };
 
     PlotBarLodLoader.prototype.createSampler = function() {
-      var xs = [], ys = [], y2s = [];
+      var xs = [], ys = [], y2s = [], _ys = [], _y2s = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         xs.push( (ele.x + ele.x2) / 2 );
         ys.push(ele.y);
         y2s.push(ele.y2);
+        _ys.push(ele._y);
+        _y2s.push(ele._y2);
       }
-      this.sampler = new PlotSampler(xs, ys);
-      this.sampler2 = new PlotSampler(xs, y2s);
+      this.sampler = new PlotSampler(xs, ys, _ys);
+      this.sampler2 = new PlotSampler(xs, y2s, _y2s);
     };
 
     PlotBarLodLoader.prototype.filter = function(scope) {
@@ -287,12 +289,12 @@
       tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
       tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
       if (this.lodType === "bar") {
-        tip.avg_yTop = plotUtils.getTipStringPercent(ele.max, yAxis);
-        tip.avg_yBtm = plotUtils.getTipStringPercent(ele.min, yAxis);
+        tip.avg_yTop = plotUtils.getTipStringPercent(ele.max, yAxis, 6);
+        tip.avg_yBtm = plotUtils.getTipStringPercent(ele.min, yAxis, 6);
       } else if (this.lodType === "box") {
-        tip.max = plotUtils.getTipStringPercent(ele.max, yAxis);
-        tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
-        tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis);
+        tip.max = plotUtils.getTipString(ele._max, yAxis, true);
+        tip.min = plotUtils.getTipString(ele._min, yAxis, true);
+        tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
       }
       return plotUtils.createTipString(tip);
     };

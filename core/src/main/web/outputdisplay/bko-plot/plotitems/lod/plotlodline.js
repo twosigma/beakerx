@@ -79,7 +79,7 @@
         var nxtp = x + "," + y + " ";
 
         if (focus.yl <= ele.y && ele.y <= focus.yr) {
-          var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash;
+          var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash + gid;
 
           var prop = {
             "id" : hashid,

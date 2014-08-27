@@ -17,10 +17,11 @@
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
-    var PlotSampler = function(_x, _y){
-      this.xs = _x;
-      this.y = _y;
-      this.n = _x.length;
+    var PlotSampler = function(xs, ys, _ys){
+      this.xs = xs;
+      this.ys = ys;
+      this._ys = _ys;
+      this.n = xs.length;
 
       if (this.debug) {
         console.log("data size: ", this.n);
@@ -71,6 +72,8 @@
         var ele = {
           min : qret.min,
           max : qret.max,
+          _min : qret._min,
+          _max : qret._max,
           xl : sl,
           xr : sr,
           avg : avg,
@@ -132,14 +135,18 @@
       this.maxs = [];
       this.sums = [];
       this.cnts = [];
+      this._mins = [];
+      this._maxs = [];
       this.initSegTree(0, 0, this.n - 1);
     };
 
     PlotSampler.prototype.initSegTree = function(k, nl, nr) {
       if (nl == nr) {
-        this.mins[k] = this.y[nl];
-        this.maxs[k] = this.y[nl];
-        this.sums[k] = this.y[nl];
+        this.mins[k] = this.ys[nl];
+        this.maxs[k] = this.ys[nl];
+        this.sums[k] = this.ys[nl];
+        this._mins[k] = this._ys[nl];
+        this._maxs[k] = this._ys[nl];
         this.cnts[k] = 1;
         return;
       }
@@ -150,6 +157,8 @@
       this.initSegTree(kr, nm + 1, nr);
       this.mins[k] = Math.min(this.mins[kl], this.mins[kr]);
       this.maxs[k] = Math.max(this.maxs[kl], this.maxs[kr]);
+      this._mins[k] = Math.min(this._mins[kl], this._mins[kr]);
+      this._maxs[k] = Math.max(this._maxs[kl], this._maxs[kr]);
       this.sums[k] = this.sums[kl] + this.sums[kr];
       this.cnts[k] = this.cnts[kl] + this.cnts[kr];
     };
@@ -162,6 +171,8 @@
         return {
           min : this.mins[k],
           max : this.maxs[k],
+          _min : this._mins[k],
+          _max : this._maxs[k],
           sum : this.sums[k],
           cnt : this.cnts[k]
         };
@@ -181,6 +192,8 @@
         return {
           min : Math.min(retl.min, retr.min),
           max : Math.max(retl.max, retr.max),
+          _min : Math.min(retl._min, retr._min),
+          _max : Math.max(retl._max, retr._max),
           sum : retl.sum + retr.sum,
           cnt : retl.cnt + retr.cnt
         };

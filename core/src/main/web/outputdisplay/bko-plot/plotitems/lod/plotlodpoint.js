@@ -79,7 +79,7 @@
           return;
         }
 
-        var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash;
+        var hashid = this.id + "_" + this.zoomHash + "_" + ele.hash + gid;
         var prop = {
           "id" :  hashid,
           "idx" : this.index,

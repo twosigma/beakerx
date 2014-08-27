@@ -168,13 +168,14 @@
     };
 
     PlotLineLodLoader.prototype.createSampler = function() {
-      var xs = [], ys = [];
+      var xs = [], ys = [], _ys = [];
       for (var i = 0; i < this.elements.length; i++) {
         var ele = this.elements[i];
         xs.push(ele.x);
         ys.push(ele.y);
+        _ys.push(ele._y);
       }
-      this.sampler = new PlotSampler(xs, ys);
+      this.sampler = new PlotSampler(xs, ys, _ys);
     };
 
 
@@ -228,11 +229,12 @@
       if (this.legend != null) {
         tip.title = this.legend + " (sample)";
       }
+      var eles = this.elements;
       tip.xl = plotUtils.getTipStringPercent(ele.xl, xAxis, 6);
       tip.xr = plotUtils.getTipStringPercent(ele.xr, xAxis, 6);
-      tip.max = plotUtils.getTipStringPercent(ele.max, yAxis);
-      tip.min = plotUtils.getTipStringPercent(ele.min, yAxis);
-      tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis);
+      tip.max = plotUtils.getTipString(ele._max, yAxis, true);
+      tip.min = plotUtils.getTipString(ele._min, yAxis, true);
+      tip.avg = plotUtils.getTipStringPercent(ele.avg, yAxis, 6);
       return plotUtils.createTipString(tip);
     };
 

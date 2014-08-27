@@ -195,10 +195,13 @@
 
     PlotBar.prototype.clearTips = function(scope) {
       var eleprops = this.elementProps;
-      for (var i = 0; i < eleprops.length; i++) {
-        scope.jqcontainer.find("#tip_" + eleprops[i].id).remove();
-        delete scope.tips[eleprops[i].id];
-      }
+      var itemid = this.id;
+      _(scope.tips).each(function(value, key){
+        if (key.search("" + itemid) === 0) {
+          scope.jqcontainer.find("#tip_" + key).remove();
+          delete scope.tips[key];
+        }
+      });
     };
 
     PlotBar.prototype.createTip = function(ele) {

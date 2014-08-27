@@ -251,13 +251,14 @@
     };
 
     PlotPoint.prototype.clearTips = function(scope) {
-      for (var i = 0; i < this.shapes.length; i++) {
-        var eleprops = this.elementProps[this.shapes[i]];
-        for (var j = 0; j < eleprops.length; j++) {
-          scope.jqcontainer.find("#tip_" + eleprops[j].id).remove();
-          delete scope.tips[eleprops[j].id];
+      var eleprops = this.elementProps;
+      var itemid = this.id;
+      _(scope.tips).each(function(value, key){
+        if (key.search("" + itemid) === 0) {
+          scope.jqcontainer.find("#tip_" + key).remove();
+          delete scope.tips[key];
         }
-      }
+      });
     };
 
     PlotPoint.prototype.createTip = function(ele) {

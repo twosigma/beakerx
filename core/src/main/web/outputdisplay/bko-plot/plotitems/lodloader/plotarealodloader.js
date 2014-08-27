@@ -64,6 +64,7 @@
     PlotAreaLodLoader.prototype.zoomLevelChanged = function(scope) {
       this.sampleStep = -1;
       this.zoomHash = plotUtils.randomString(3);
+      if (this.lodOn === false) { return; }
       if (this.lodType === "area") {
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter.clearTips(scope);

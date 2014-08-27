@@ -974,8 +974,8 @@
                   }
                   focus.xspan = focus.xr - focus.xl;
                 }
-                scope.emitZoomLevelChange();
               }
+              scope.emitZoomLevelChange();
               scope.fixFocus(focus);
             }
             scope.zoomed = true;

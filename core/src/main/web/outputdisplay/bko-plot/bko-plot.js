@@ -907,6 +907,9 @@
 
             var focus = scope.focus;
             var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
+            if (Math.abs(mx - scope.mousep1.x) > 0 || Math.abs(my - scope.mousep1.y) > 0) {
+              scope.zoomed = true;
+            }
             if (ds == 1.0) {
               // translate only
               var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan;
@@ -978,7 +981,6 @@
               scope.emitZoomLevelChange();
               scope.fixFocus(focus);
             }
-            scope.zoomed = true;
             scope.calcMapping(true);
             scope.renderCursor({
               offsetX : mx,

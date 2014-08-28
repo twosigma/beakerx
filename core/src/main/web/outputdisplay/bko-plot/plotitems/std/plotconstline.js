@@ -34,19 +34,8 @@
       };
 
       this.elementProps = [];
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var line = {
-          "id" : this.id + "_" + i,
-          "lbid" : this.id + "_" + i + "l",
-          "st" : ele.color,
-          "st_op" : ele.color_opacity,
-          "st_w" : ele.width,
-          "st_da" : ele.stroke_dasharray,
-          "bg_clr" : ele.color == null ? this.color : ele.color
-        };
-        this.elementProps.push(line);
-      }
+      this.labelpipe = [];
+      this.rmlabelpipe = [];
     };
 
     PlotConstline.prototype.render = function(scope){
@@ -66,10 +55,10 @@
     PlotConstline.prototype.getRange = function() {
       var eles = this.elements;
       var range = {
-        xl : 1E100,
-        xr : -1E100,
-        yl : 1E100,
-        yr : -1E100
+        xl : Infinity,
+        xr : -Infinity,
+        yl : Infinity,
+        yr : -Infinity,
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
@@ -117,16 +106,25 @@
       var W = scope.jqsvg.width(),
           H = scope.jqsvg.height();
 
-      this.pipe = [];
-      this.labelpipe = [];
-      this.rmlabelpipe = [];
+      eleprops.length = 0;
+      this.labelpipe.length = 0;
+      this.rmlabelpipe.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
 
-        this.pipe.push(eleprops[i]);
-        // does not need range assert, clipped directly
+        var prop = {
+          "id" : this.id + "_" + i,
+          "lbid" : this.id + "_" + i + "l",
+          "st" : ele.color,
+          "st_op" : ele.color_opacity,
+          "st_w" : ele.width,
+          "st_da" : ele.stroke_dasharray,
+          "bg_clr" : ele.color == null ? this.color : ele.color
+        };
+        eleprops.push(prop);
 
+        // does not need range assert, clipped directly
         if (ele.type === "x") {
           if (ele.x < focus.xl || ele.x > focus.xr) {
             this.rmlabelpipe.push(eleprops[i]);
@@ -135,8 +133,7 @@
             this.labelpipe.push(eleprops[i]);
           }
           var x = mapX(ele.x);
-          _(eleprops[i]).extend({
-            "id" : this.id + "_" + i + "l",
+          _(prop).extend({
             "x1" : x,
             "x2" : x,
             "y1" : mapY(focus.yl),
@@ -145,9 +142,9 @@
 
           var text = plotUtils.getTipString(ele._x, scope.stdmodel.xAxis);
 
-          _(eleprops[i]).extend({
-            "left" : function(w, h) { return x - w / 2; },
-            "top" : function(w, h) { return H - bMargin - h - scope.labelPadding.y; },
+          _(prop).extend({
+            "left" : function(w, h, x) { return x - w / 2; },
+            "top" : function(w, h, y) { return H - bMargin - h - scope.labelPadding.y; },
             "lb_txt" : text
           });
 
@@ -159,8 +156,7 @@
             this.labelpipe.push(eleprops[i]);
           }
           var y = mapY(ele.y);
-          _(eleprops[i]).extend({
-            "id" : this.id + "_" + i + "l",
+          _(prop).extend({
             "x1" : mapX(focus.xl),
             "x2" : mapX(focus.xr),
             "y1" : y,
@@ -168,9 +164,9 @@
           });
           var text = plotUtils.getTipString(ele._y, scope.stdmodel.yAxis);
 
-          _(eleprops[i]).extend({
-            "left" : function(w, h) { return lMargin + scope.labelPadding.x; },
-            "top" : function(w, h) { return y - h / 2; },
+          _(prop).extend({
+            "left" : function(w, h, x) { return lMargin + scope.labelPadding.x; },
+            "top" : function(w, h, y) { return y - h / 2; },
             "lb_txt" : text
           });
         }
@@ -181,8 +177,7 @@
     PlotConstline.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          eleprops = this.elementProps,
-          pipe = this.pipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -196,12 +191,11 @@
         .style("stroke-dasharray", props.st_da)
         .style("stroke-width", props.st_w);
 
-
       var svgitem = svg.select("#" + this.id);
       svgitem.selectAll("line")
-        .data(pipe, function(d) { return d.id; }).exit().remove();
+        .data(eleprops, function(d) { return d.id; }).exit().remove();
       svgitem.selectAll("line")
-        .data(pipe, function(d) { return d.id; }).enter().append("line")
+        .data(eleprops, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
         //.attr("class", this.respClass) // does not need resp
         .style("stroke", function(d) { return d.st; })
@@ -209,7 +203,7 @@
         .style("stroke-width", function(d) { return d.st_w; })
         .style("stroke-dasharray", function(d) { return d.st_da; });
       svgitem.selectAll("line")
-        .data(pipe, function(d) { return d.id; })
+        .data(eleprops, function(d) { return d.id; })
         .attr("x1", function(d) { return d.x1; })
         .attr("x2", function(d) { return d.x2; })
         .attr("y1", function(d) { return d.y1; })
@@ -217,7 +211,7 @@
 
       // add and remove labels
       for (var i = 0; i < this.labelpipe.length; i++) {
-        var props = this.labelpipe[i], lbid = props.lbid;
+        var lb = this.labelpipe[i], lbid = lb.lbid;
 
         var box = scope.jqcontainer.find("#" + lbid);
         if (box.empty()) {
@@ -225,13 +219,13 @@
             .appendTo(scope.jqcontainer)
             .attr("id", lbid)
             .attr("class", "plot-constlabel")
-            .css("background-color", props.bg_clr)
-            .text(props.lb_txt);
+            .css("background-color", lb.bg_clr)
+            .text(lb.lb_txt);
         }
         var w = box.outerWidth(), h = box.outerHeight();
         box.css({
-          "left" : props.left(w, h),
-          "top" : props.top(w, h)
+          "left" : lb.left(w, h, lb.x1),
+          "top" : lb.top(w, h, lb.y1)
         });
       }
 

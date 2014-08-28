@@ -36,21 +36,6 @@
       };
 
       this.elementProps = [];
-      for (var i = 0; i < this.elements.length; i++) {
-        var ele = this.elements[i];
-        var line = {
-          "id" : this.id + "_" + i,
-          "fi" : ele.color,
-          "fi_op" : ele.color_opacity,
-          "st" : ele.stroke,
-          "st_op" : ele.storke_opacity,
-          "st_w" : ele.stroke_width,
-          "st_da" : ele.stroke_dasharray
-        };
-        this.elementProps.push(line);
-      }
-
-      this.pipe = [];
     };
 
     PlotConstband.prototype.render = function(scope){
@@ -70,10 +55,10 @@
     PlotConstband.prototype.getRange = function() {
       var eles = this.elements;
       var range = {
-        xl : 1E100,
-        xr : -1E100,
-        yl : 1E100,
-        yr : -1E100
+        xl : Infinity,
+        xr : -Infinity,
+        yl : Infinity,
+        yr : -Infinity,
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];
@@ -125,17 +110,27 @@
       var W = scope.jqsvg.width(),
           H = scope.jqsvg.height();
 
-      this.pipe.length = 0;
+      eleprops.length = 0;
 
       for (var i = this.vindexL; i <= this.vindexR; i++) {
         var ele = eles[i];
+
+        var prop = {
+          "id" : this.id + "_" + i,
+          "fi" : ele.color,
+          "fi_op" : ele.color_opacity,
+          "st" : ele.stroke,
+          "st_op" : ele.storke_opacity,
+          "st_w" : ele.stroke_width,
+          "st_da" : ele.stroke_dasharray
+        };
 
         // does not need range assert, clipped directly
         if (ele.type === "x") {
           if (ele.x > focus.xr || ele.x2 < focus.xl) {
             continue;
           } else {
-            this.pipe.push(eleprops[i]);
+            eleprops.push(prop);
           }
 
           var x = mapX(ele.x),
@@ -143,7 +138,7 @@
           x = Math.max(x, lMargin);
           x2 = Math.min(x2, W - rMargin);
 
-          _(eleprops[i]).extend({
+          _(prop).extend({
             "x" : x,
             "w" : x2 - x,
             "y" : tMargin,
@@ -153,7 +148,7 @@
           if (ele.y > focus.yr || ele.y2 < focus.yl) {
             continue;
           } else {
-            this.pipe.push(eleprops[i]);
+            eleprops.push(prop);
           }
 
           var y = mapY(ele.y),
@@ -161,18 +156,11 @@
           y = Math.min(y, H - bMargin);
           y2 = Math.max(y2, tMargin);
 
-          _(eleprops[i]).extend({
+          _(prop).extend({
             "x" : lMargin,
             "w" : W - lMargin - rMargin,
             "y" : y2,
             "h" : y - y2
-          });
-          var text = plotUtils.getTipString(ele._y, scope.stdmodel.yAxis);
-
-          _(eleprops[i]).extend({
-            "left" : function(w, h) { return lMargin + scope.labelPadding.x; }, //  why padding?
-            "top" : function(w, h) { return y - w / 2; },
-            "lb_txt" : text
           });
         }
       }
@@ -182,7 +170,7 @@
     PlotConstband.prototype.draw = function(scope) {
       var svg = scope.maing;
       var props = this.itemProps,
-          pipe = this.pipe;
+          eleprops = this.elementProps;
 
       if (svg.select("#" + this.id).empty()) {
         svg.selectAll("g")
@@ -198,13 +186,12 @@
         .style("stroke-width", props.st_w)
         .style("stroke-dasharray", props.st_da);
 
-
       var itemsvg = svg.select("#" + this.id);
 
       itemsvg.selectAll("rect")
-        .data(pipe, function(d) { return d.id; }).exit().remove();
+        .data(eleprops, function(d) { return d.id; }).exit().remove();
       itemsvg.selectAll("rect")
-        .data(pipe, function(d) { return d.id; }).enter().append("rect")
+        .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
         // does not need resp class
         .style("fill", function(d) { return d.fi; })
@@ -213,7 +200,7 @@
         .style("stroke-opacity", function(d) { return d.st_op; })
         .style("stroke-width", function(d) { return d.st_wi; });
       itemsvg.selectAll("rect")
-        .data(pipe, function(d) { return d.id; })
+        .data(eleprops, function(d) { return d.id; })
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
         .attr("width", function(d) { return d.w; })
@@ -222,11 +209,6 @@
 
     PlotConstband.prototype.clear = function(scope) {
       scope.maing.select("#" + this.id).selectAll("*").remove();
-      // remove labels
-      var eleprops = this.elementProps;
-      for (var i = 0; i < this.elements.length; i++) {
-        scope.jqcontainer.find("#" + eleprops.labelid).remove();
-      }
     };
 
     PlotConstband.prototype.clearTips = function(scope) {

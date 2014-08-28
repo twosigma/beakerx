@@ -61,10 +61,10 @@
     PlotLine.prototype.getRange = function() {
       var eles = this.elements;
       var range = {
-        xl : 1E100,
-        xr : -1E100,
-        yl : 1E100,
-        yr : -1E100
+        xl : Infinity,
+        xr : -Infinity,
+        yl : Infinity,
+        yr : -Infinity,
       };
       for (var i = 0; i < eles.length; i++) {
         var ele = eles[i];

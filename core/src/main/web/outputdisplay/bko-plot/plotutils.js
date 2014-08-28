@@ -19,10 +19,10 @@
       },
       getDataRange : function(data) { // data range is in [0,1] x [0,1]
         var datarange = {
-          xl: 1E100,
-          yl: 1E100,
-          xr: -1E100,
-          yr: -1E100
+          xl : Infinity,
+          xr : -Infinity,
+          yl : Infinity,
+          yr : -Infinity
         };
         var visibleItem = 0, legendableItem = 0;
         for (var i = 0; i < data.length; i++) {
@@ -34,9 +34,13 @@
           var itemrange = data[i].getRange();
           this.updateRange(datarange, itemrange);
         }
-        if (visibleItem === 0) {
-          datarange.xl = datarange.yl = 0;
-          datarange.xr = datarange.yr = 1;
+        if (visibleItem === 0 || datarange.xl === Infinity) {
+          datarange.xl = 0;
+          datarange.xr = 1;
+        }
+        if (visibleItem === 0 || datarange.yl === Infinity) {
+          datarange.yl = 0;
+          datarange.yr = 1;
         }
         datarange.xspan = datarange.xr - datarange.xl;
         datarange.yspan = datarange.yr - datarange.yl;

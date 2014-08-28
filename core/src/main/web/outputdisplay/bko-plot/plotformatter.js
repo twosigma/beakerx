@@ -140,6 +140,12 @@
             }
           }
 
+          if (item.type === "constline" || item.type === "constband") {
+            if (item.color == null) {
+              item.color = "black";
+            }
+          }
+
           if (item.useToolTip == null) {
             if (newmodel.useToolTip === true) {
               item.useToolTip = true;

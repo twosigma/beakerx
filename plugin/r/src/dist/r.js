@@ -151,7 +151,17 @@ define(function(require, exports, module) {
         data: { shellID: self.settings.shellID }
       }).done(cb);
     },
+    interrupt: function() {
+      var self = this;
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: serviceBase + "/rest/rsh/interrupt",
+        data: { shellID: self.settings.shellID }
+      });
+    },
     spec: {
+      interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
     },
     cometdUtil: cometdUtil
   };

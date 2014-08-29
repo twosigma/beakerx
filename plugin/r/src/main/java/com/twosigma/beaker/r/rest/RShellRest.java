@@ -164,7 +164,7 @@ public class RShellRest {
 
     RConnection rconn = new RConnection("127.0.0.1", port);
     rconn.login("beaker", password);
-    return new RServer(rconn, handler, port, password);
+    return new RServer(rconn, handler, port, password, rServe);
   }
 
   // set the port used for communication with the Core server
@@ -279,6 +279,13 @@ public class RShellRest {
   public void exit(@FormParam("shellID") String shellID) {
   }
 
+  @POST
+  @Path("interrupt")
+  public void interrupt(@FormParam("shellID") String shellID) {
+    RServer server = getEvaluator(shellID);
+                        System.out.println("XXX R interrupt");
+  }
+
   private void newEvaluator(String id)
           throws RserveException, IOException
   {
@@ -291,7 +298,7 @@ public class RShellRest {
       }
       RConnection rconn = new RConnection("127.0.0.1", rServer.port);
       rconn.login("beaker", rServer.password);
-      newRs = new RServer(rconn, rServer.outputHandler, rServer.port, rServer.password);
+      newRs = new RServer(rconn, rServer.outputHandler, rServer.port, rServer.password, rServer.process);
     }
     this.shells.put(id, newRs);
   }
@@ -395,11 +402,13 @@ public class RShellRest {
     ROutputHandler outputHandler;
     int port;
     String password;
-    public RServer(RConnection con, ROutputHandler handler, int port, String password) {
+    Process process;
+    public RServer(RConnection con, ROutputHandler handler, int port, String password, Process process) {
       this.connection = con;
       this.outputHandler = handler;
       this.port = port;
       this.password = password;
+      this.process = process;
     }
   }
 }

@@ -32,10 +32,6 @@ define(function(require, exports, module) {
       isChecked: function() {
         return bkHelper.isNotebookLocked();
       }
-    },
-    {
-      name: "Evaluators",
-      items: bkHelper.getEvaluatorMenuItems
     }
   ];
 

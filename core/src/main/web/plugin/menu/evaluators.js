@@ -14,7 +14,19 @@
  *  limitations under the License.
  */
 
-@import "../vendor/bower_components/codemirror/lib/codemirror.css";
-@import "../vendor/bower_components/codemirror/addon/hint/show-hint.css";
-@import "../vendor/slickgrid/slick.grid.css";
-@import "../vendor/jquery-ui/css/smoothness/jquery-ui.custom.css";
+/**
+ * evaluator menu plugin
+ * Add an item to the evaluators menu that is a placeholder to show available evaluators.
+ */
+define(function (require, exports, module) {
+  'use strict';
+
+  var menuItemPromise = bkHelper.newPromise({
+    parent: "Evaluators",
+    items: bkHelper.getEvaluatorMenuItems
+  });
+
+  exports.getMenuItems = function () {
+    return menuItemPromise;
+  };
+});

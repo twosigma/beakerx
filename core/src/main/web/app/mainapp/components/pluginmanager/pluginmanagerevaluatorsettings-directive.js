@@ -41,10 +41,10 @@
             if (evaluator.spec[property].type === "settableString") {
               element.find('.bbody').append($compile(
                       "<div>" + name + ":<br><textarea ng-model='evaluator.settings." + property +
-                      "'></textarea><button ng-click='set(\"" + property +
+                      "'></textarea><button class='btn' ng-click='set(\"" + property +
                       "\")'>set</button></div>")(scope));
             } else if (evaluator.spec[property].type === "action") {
-              element.find('.bbody').append($compile("<div><button ng-click='evaluator.perform(\"" + property +
+              element.find('.bbody').append($compile("<div><button class='btn' ng-click='evaluator.perform(\"" + property +
                   "\")'>" + name + "</button></div>")(scope));
             }
           }

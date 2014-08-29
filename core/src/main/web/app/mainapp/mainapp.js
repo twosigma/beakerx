@@ -559,16 +559,16 @@
                 "Save current notebook as a file?",
                 "Disconnected",
                 function() {
-                  // "Not now", hijack all keypress events to prompt again
-                  window.addEventListener('keypress', $scope.promptToSave, true);
-                },
-                function() {
                   // "Save", save the notebook as a file on the client side
                   bkUtils.saveAsClientFile(
                       bkSessionManager.getSaveData().notebookModelAsString,
                       "notebook.bkr");
                 },
-                "Not now", "Save", "", "btn-primary"
+                function() {
+                  // "Not now", hijack all keypress events to prompt again
+                  window.addEventListener('keypress', $scope.promptToSave, true);
+                },
+                "Save", "Not now", "btn-primary", ""
             ).then(function() {
               prompted = false;
             });

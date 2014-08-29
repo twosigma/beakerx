@@ -603,7 +603,7 @@
               $timeout.cancel(reconnectTimeout);
               reconnectTimeout = undefined;
             }
-            window.removeEventListener('keypress', indicateReconnectFailed);
+            window.removeEventListener('keypress', indicateReconnectFailed, true);
           };
 
           return {

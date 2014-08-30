@@ -45,6 +45,7 @@
   module.directive('bkMainApp', function(
       $route,
       $routeParams,
+      $timeout,
       bkUtils,
       bkCoreManager,
       bkSession,
@@ -558,35 +559,96 @@
                 "Save current notebook as a file?",
                 "Disconnected",
                 function() {
-                  // "Not now", hijack all keypress events to prompt again
-                  window.addEventListener('keypress', $scope.promptToSave, true);
-                },
-                function() {
                   // "Save", save the notebook as a file on the client side
                   bkUtils.saveAsClientFile(
                       bkSessionManager.getSaveData().notebookModelAsString,
                       "notebook.bkr");
                 },
-                "Not now", "Save", "", "btn-primary"
+                function() {
+                  // "Not now", hijack all keypress events to prompt again
+                  window.addEventListener('keypress', $scope.promptToSave, true);
+                },
+                "Save", "Not now", "btn-primary", ""
             ).then(function() {
               prompted = false;
             });
           };
         })();
 
-        bkUtils.addConnectedStatusListener(function(msg) {
-          if (msg.successful !== !$scope.disconnected) {
-            var disconnected = !msg.successful;
-            $scope.$digest();
-            if (disconnected) {
-              $scope.disconnected = true;
-              $scope.promptToSave();
-            } else {
-              // we don't handle reconnect right now
+        var connectionManager = (function() {
+          var RECONNECT_TIMEOUT = 5000; // 5 seconds
+          var OFFLINE_MESSAGE = "offline";
+          var CONNECTING_MESSAGE = "reconnecting";
+          var reconnectTimeout = undefined;
+          var statusMessage = OFFLINE_MESSAGE;
+          var disconnected = false;
+          var indicateReconnectFailed = function() {
+            stopWaitingReconnect();
+            statusMessage = OFFLINE_MESSAGE;
+            bkUtils.disconnect(); // prevent further attempting to reconnect
+            $scope.promptToSave();
+          };
+          var waitReconnect = function() {
+            statusMessage = CONNECTING_MESSAGE;
+
+            // wait for 5 sceonds, if reconnect didn't happen, prompt to save
+            if (!reconnectTimeout) {
+              reconnectTimeout = $timeout(indicateReconnectFailed, RECONNECT_TIMEOUT);
             }
+            // if user attempts to interact within 5 second, also prompt to save
+            window.addEventListener('keypress', indicateReconnectFailed, true);
+          };
+          var stopWaitingReconnect = function() {
+            if (reconnectTimeout) {
+              $timeout.cancel(reconnectTimeout);
+              reconnectTimeout = undefined;
+            }
+            window.removeEventListener('keypress', indicateReconnectFailed, true);
+          };
+
+          return {
+            onDisconnected: function() {
+              disconnected = true;
+              waitReconnect();
+            },
+            onReconnected: function() {
+              bkSessionManager.isSessionValid().then(function(isValid) {
+                if (isValid) {
+                  stopWaitingReconnect();
+                  disconnected = false;
+                } else {
+                  indicateReconnectFailed();
+                }
+              });
+            },
+            getStatusMessage: function() {
+              return statusMessage;
+            },
+            isDisconnected: function() {
+              return disconnected;
+            }
+          };
+        })();
+
+        $scope.getOffineMessage = function() {
+          return connectionManager.getStatusMessage();
+        };
+        $scope.isDisconnected = function() {
+          return connectionManager.isDisconnected();
+        };
+
+        bkUtils.addConnectedStatusListener(function(msg) {
+          if (msg.successful !== !$scope.isDisconnected()) {
+            var disconnected = !msg.successful;
+            if (disconnected) {
+              connectionManager.onDisconnected();
+            } else {
+              connectionManager.onReconnected();
+            }
+            $scope.$digest();
           }
         });
-        $scope.$watch('disconnected', function(disconnected) {
+        $scope.$watch('isDisconnected()', function(disconnected) {
           if (disconnected) {
             stopAutoBackup();
           } else {

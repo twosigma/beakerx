@@ -193,6 +193,9 @@
       removeConnectedStatusListener: function() {
         return cometdUtils.removeConnectedStatusListener();
       },
+      disconnect: function() {
+        return cometdUtils.disconnect();
+      },
 
       // wrapper around requireJS
       moduleMap: {},

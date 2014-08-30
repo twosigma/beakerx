@@ -18,27 +18,14 @@
     <h3>Plugin Manager</h3>
   </div>
   <div class="modal-body modal-large">
-    <div>
-      <span ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()">
-	<button class="beaker-btn" ng-click="evalTabOp.addPlugin(pluginName)" ng-show="pluginStatus=='known'">
-          <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
-          <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
-          <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
+    <button class="beaker-btn" ng-click="evalTabOp.addPlugin(pluginName)" ng-disabled="pluginStatus!='known'" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()">
+      <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
+      <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
+      <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
           {{pluginName}}
-	</button>
-	<button class="beaker-btn" ng-show="pluginStatus!='known'" disabled="true">
-          <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
-          <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
-          <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
-          {{pluginName}}
-	</button>
-      </span>
-      <span>
-        <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="beaker-btn">
-        <span class="plugin-invisible plugin-url">&#x25cf;</span> From URL...
-        </button>
-      </span>
-    </div>
+    </button><button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="beaker-btn">
+      <span class="plugin-invisible plugin-url">&#x25cf;</span> From URL...
+    </button>
     <p><br/></p>
     <div ng-show="evalTabOp.showURL" class="input-append addeval">
       <input type="text" bk-enter='evalTabOp.addPlugin()' ng-model="evalTabOp.newPluginNameOrUrl"></input>

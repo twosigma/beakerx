@@ -209,7 +209,6 @@
 		$(window).off("resize", fixOutputLogPosition);
 	    });
 	var dragStartHandler = function () {
-	    console.log("dragStartHandler, dragHeight=" + outputLogHeight);
 	    dragHeight = outputLogHeight;
 	};
 	var outputloghandle = $(".outputloghandle");
@@ -305,6 +304,9 @@
         scope.$on("$destroy", function() {
           scope.setBkNotebook({bkNotebook: undefined});
           scope.unregisterOutputLog();
+	  _(scope.unregisters).each(function(unregister) {
+		  unregister();
+	      });
         });
       }
     };

@@ -195,6 +195,43 @@
                 $(v).scrollTop(v.scrollHeight);
               });
         });
+	var margin = $(".outputlogstdout").position().top;
+	var outputLogHeight = 300;
+	var dragHeight;
+	var fixOutputLogPosition = function () {
+	    $(".outputlogcontainer").css("top", window.innerHeight - outputLogHeight);
+	    $(".outputlogcontainer").css("height", outputLogHeight);
+	    $(".outputlogbox").css("height", outputLogHeight - margin - 5);
+	};
+	$scope.unregisters = [];
+	$(window).resize(fixOutputLogPosition);
+	$scope.unregisters.push(function() {
+		$(window).off("resize", fixOutputLogPosition);
+	    });
+	var dragStartHandler = function () {
+	    console.log("dragStartHandler, dragHeight=" + outputLogHeight);
+	    dragHeight = outputLogHeight;
+	};
+	var outputloghandle = $(".outputloghandle");
+	outputloghandle.drag("start", dragStartHandler);
+	$scope.unregisters.push(function() {
+		outputloghandle.off("dragstart", dragStartHandler);
+	    });
+	var dragHandler = function (ev, dd) {
+	    outputLogHeight = dragHeight - dd.deltaY;
+	    if (outputLogHeight < 20) {
+		outputLogHeight = 20;
+	    }
+	    if (outputLogHeight > window.innerHeight - 80) {
+		outputLogHeight = window.innerHeight - 80;
+	    }
+	    fixOutputLogPosition();
+	};
+	outputloghandle.drag(dragHandler);
+	$scope.unregisters.push(function() {
+		outputloghandle.off("drag", dragHandler);
+	    });
+
         $scope.getChildren = function () {
           // this is the root
           return notebookCellOp.getChildren("root");

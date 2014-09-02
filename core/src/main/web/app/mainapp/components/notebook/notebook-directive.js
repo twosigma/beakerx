@@ -150,10 +150,11 @@
           return bkSessionManager.getRawNotebookModel();
         };
         $scope.clearOutput = function () {
-          $.ajax({type: "GET",
-                  datatype: "json",
-                  url: "../beaker/rest/outputlog/clear",
-                  data: {}});
+          $.ajax({
+            type: "GET",
+            datatype: "json",
+            url: "../beaker/rest/outputlog/clear",
+            data: {}});
           $scope.outputLog = [];
         };
         $scope.hideOutput = function () {
@@ -257,9 +258,9 @@
             name: "Run all",
             action: function () {
               bkCoreManager.getBkApp().evaluate("root").
-                catch(function (data) {
-                  console.error(data);
-                });
+                  catch(function (data) {
+                    console.error(data);
+                  });
             }
           },
           {
@@ -305,8 +306,8 @@
           scope.setBkNotebook({bkNotebook: undefined});
           scope.unregisterOutputLog();
           _(scope.unregisters).each(function(unregister) {
-                  unregister();
-              });
+            unregister();
+          });
         });
       }
     };

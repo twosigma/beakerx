@@ -150,7 +150,8 @@
           return bkSessionManager.getRawNotebookModel();
         };
         $scope.clearOutput = function () {
-          $.ajax({type: "GET",
+          $.ajax({
+            type: "GET",
             datatype: "json",
             url: "../beaker/rest/outputlog/clear",
             data: {}});
@@ -191,10 +192,46 @@
           $scope.$apply();
           // Scroll to bottom so this output is visible.
           $.each($('.outputlogbox'),
-              function (i, v) {
-                $(v).scrollTop(v.scrollHeight);
-              });
+                 function (i, v) {
+                   $(v).scrollTop(v.scrollHeight);
+                 });
         });
+        var margin = $(".outputlogstdout").position().top;
+        var outputLogHeight = 300;
+        var dragHeight;
+        var fixOutputLogPosition = function () {
+          $(".outputlogcontainer").css("top", window.innerHeight - outputLogHeight);
+          $(".outputlogcontainer").css("height", outputLogHeight);
+          $(".outputlogbox").css("height", outputLogHeight - margin - 5);
+        };
+        $scope.unregisters = [];
+        $(window).resize(fixOutputLogPosition);
+        $scope.unregisters.push(function() {
+          $(window).off("resize", fixOutputLogPosition);
+        });
+        var dragStartHandler = function () {
+          dragHeight = outputLogHeight;
+        };
+        var outputloghandle = $(".outputloghandle");
+        outputloghandle.drag("start", dragStartHandler);
+        $scope.unregisters.push(function() {
+          outputloghandle.off("dragstart", dragStartHandler);
+        });
+        var dragHandler = function (ev, dd) {
+          outputLogHeight = dragHeight - dd.deltaY;
+          if (outputLogHeight < 20) {
+            outputLogHeight = 20;
+          }
+          if (outputLogHeight > window.innerHeight - 80) {
+            outputLogHeight = window.innerHeight - 80;
+          }
+          fixOutputLogPosition();
+        };
+        outputloghandle.drag(dragHandler);
+        $scope.unregisters.push(function() {
+          outputloghandle.off("drag", dragHandler);
+        });
+
         $scope.getChildren = function () {
           // this is the root
           return notebookCellOp.getChildren("root");
@@ -268,6 +305,9 @@
         scope.$on("$destroy", function() {
           scope.setBkNotebook({bkNotebook: undefined});
           scope.unregisterOutputLog();
+          _(scope.unregisters).each(function(unregister) {
+            unregister();
+          });
         });
       }
     };

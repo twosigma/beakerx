@@ -4,31 +4,52 @@
         {
             "name": "Html",
             "plugin": "Html",
-            "shellID": null
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
         },
         {
             "name": "Latex",
             "plugin": "Latex",
-            "shellID": null
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
         },
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "",
             "imports": "",
-            "supplementalClassPath": ""
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
         },
         {
             "name": "JavaScript",
             "plugin": "JavaScript",
-            "shellID": null,
             "jsSetting2": "",
-            "jsSetting1": ""
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
         },
         {
             "name": "R",
             "plugin": "R",
-            "shellID": ""
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
         }
     ],
     "cells": [
@@ -37,45 +58,43 @@
             "type": "section",
             "level": 1,
             "title": "Hello Beaker",
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
             "id": "code001",
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "#Python"
+                "body": "# Click below, on the 2nd line, then type some Python code (eg \"1+2\"), then click \"Run\".\n"
             },
             "output": {
-                "selectedType": "Hidden"
-            }
+                "selectedType": "BeakerDisplay",
+                "outputArrived": true,
+                "elapsedTime": 30
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "code2uVtKX",
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "#R"
+                "body": "# This cell is for the R language.  Try running \"hist(rnorm(100))\".\n"
             },
             "output": {
-                "selectedType": "Hidden"
-            }
-        },
-        {
-            "id": "code301W1U",
-            "type": "code",
-            "evaluator": "JavaScript",
-            "input": {
-                "body": "//JavaScript"
+                "selectedType": "Html",
+                "elapsedTime": 945
             },
-            "output": {
-                "selectedType": "Hidden"
-            }
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "text97Oipt",
             "type": "text",
-            "body": "<p style=\"margin-bottom: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 20px;\">Beaker also supports <b>Julia</b>, <b>Groovy</b>, <b>Ruby</b>, and <b>Node</b>. To add another language to this notebook, select <b>Notebook</b> &#9654; <b>Plugin manager</b> from the menu on top of the screen.</p><p style=\"margin-top: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 20px; margin-bottom: 0px !important;\">For general help, see the tutorial notebook under <b>Help</b> &#9654; <b>Tutorial notebook</b></p>"
+            "body": "<p style=\"margin-bottom: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 20px;\">Beaker also supports <b>JavaScript</b>, <b>Julia</b>, <b>Groovy</b>, <b>Ruby</b>, and <b>Node</b>. To add another language to this notebook, select <b>Notebook</b> ▶ <b>Plugin manager</b> from the menu on top of the screen.</p><p style=\"margin-top: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 20px; margin-bottom: 0px !important;\">For general help, see the tutorial notebook under <b>Help</b> ▶ <b>Tutorial notebook</b></p>",
+            "evaluatorReader": false
         }
     ]
 }

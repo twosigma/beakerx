@@ -61,6 +61,12 @@ bk-new-cell-menu {
     padding:    0 15px;
 }
 
+.cell-status-item {
+    float:      right;
+    height:     24px;
+    padding:    0 15px;
+}
+
 .cell-menu-item.disabled {
     opacity: 0.3;
     cursor: not-allowed;

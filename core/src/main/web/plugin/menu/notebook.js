@@ -18,18 +18,19 @@ define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
-       name: "Plugin manager...",
-       action: function() {
-         bkHelper.getBkNotebookViewModel().showEvaluators();
-       },
-       tooltip: "Show evaluators settings"
+      name: "Plugin manager...",
+      action: function () {
+        bkHelper.getBkNotebookViewModel().showEvaluators();
+      },
+      tooltip: "Show evaluators settings"
     },
     {
-      name: "Lock", action: function() {
-      bkHelper.toggleNotebookLocked();
-    },
+      name: "Lock",
+      action: function () {
+        bkHelper.toggleNotebookLocked();
+      },
       tooltip: "Lock notebook from further editing",
-      isChecked: function() {
+      isChecked: function () {
         return bkHelper.isNotebookLocked();
       }
     }
@@ -40,7 +41,7 @@ define(function(require, exports, module) {
     items: menuItems
   });
 
-  exports.getMenuItems = function() {
+  exports.getMenuItems = function () {
     return menuItemPromise;
   };
 });

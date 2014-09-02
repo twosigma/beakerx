@@ -33,6 +33,45 @@ define(function(require, exports, module) {
       isChecked: function () {
         return bkHelper.isNotebookLocked();
       }
+    },
+    {
+      name: 'Delete all output cells',
+      action: function () {
+        bkHelper.deleteAllOutputCells();
+      },
+      tooltip: 'Deletes all of the output cells.'
+    },
+    {
+      name: "Edit mode",
+      items: [
+        {
+          name: "Normal",
+          isChecked: function () {
+            return bkHelper.getInputCellKeyMapMode() === "default";
+          },
+          action: function () {
+            bkHelper.setInputCellKeyMapMode("default");
+          }
+        },
+        {
+          name: "Vim (limited support)",
+          isChecked: function () {
+            return bkHelper.getInputCellKeyMapMode() === "vim";
+          },
+          action: function () {
+            bkHelper.setInputCellKeyMapMode("vim");
+          }
+        },
+        {
+          name: "Emacs",
+          isChecked: function () {
+            return bkHelper.getInputCellKeyMapMode() === "emacs";
+          },
+          action: function () {
+            bkHelper.setInputCellKeyMapMode("emacs");
+          }
+        }
+      ]
     }
   ];
 

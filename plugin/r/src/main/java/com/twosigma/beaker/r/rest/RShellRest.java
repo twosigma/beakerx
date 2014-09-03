@@ -244,7 +244,11 @@ public class RShellRest {
         con.eval("print(\"" + END_MAGIC + "\")");
       }
     } catch (RserveException e) {
-      obj.error(e.getMessage());
+      if (127 == e.getRequestReturnCode()) {
+        obj.error("Interrupted");
+      } else {
+        obj.error(e.getMessage());
+      }
     } catch (REXPMismatchException e) {
       gotMismatch = true;
     }

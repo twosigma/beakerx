@@ -29,6 +29,9 @@ We currently provide support for Python, R, Julia, Groovy, Ruby, JavaScript, HTM
 
 Beaker has a plugin-based architecture, so additional languages are easily added.
 
+Beaker supports *autotranslation* of variables between languages.  For example, you can read and process some data in Python,
+model it with R, and then turn that into an interactive visualization with Javascript.
+
 ##Iterative exploration
 
 The notebook format is based on blocks of code called cells. Cells can be added anywhere in the notebook and can be edited and run independently from each other. This makes an ideal environment for iterative exploration of data and coding ideas.

@@ -49,17 +49,18 @@ public class LoginRest {
   @POST
   @Path("login")
   @Produces(MediaType.TEXT_HTML)
-  public Response login(@FormParam("password") String password)
-                        throws UnknownHostException
+  public Response login(@FormParam("password") String password,
+			@FormParam("origin") String origin)
+      throws UnknownHostException
   {
-    String url = config.getBaseURL();
     String cookie = config.getAuthCookie();
-    if (password != null && hash(password).equals(config.getPasswordHash())) {
-      return Response.seeOther(URI.create(url + "beaker/"))
+    if (password != null && origin != null &&
+	hash(password).equals(config.getPasswordHash())) {
+      return Response.seeOther(URI.create(origin + "/beaker/"))
         .cookie(new NewCookie("BeakerAuth", cookie, "/", null, null,
                               NewCookie.DEFAULT_MAX_AGE, true)).build();
     }
     // bad password, try again
-    return Response.seeOther(URI.create(url + "login/login.html")).build();
+    return Response.seeOther(URI.create(origin + "/login/login.html")).build();
   }
 }

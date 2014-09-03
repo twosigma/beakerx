@@ -66,3 +66,11 @@
     font-family:    monospace;
     border-radius:  0;
 }
+
+.outputloghandle {
+    background: linear-gradient(#DDE0E6, #EFF2F8, #DDE0E6);
+    border: 1;
+    height: 10px;
+    width: 100%;
+    cursor: ns-resize;
+}

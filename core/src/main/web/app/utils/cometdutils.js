@@ -39,6 +39,9 @@
         return function() {
           $.cometd.removeListener(listener);
         };
+      },
+      disconnect: function() {
+        return $.cometd.disconnect();
       }
     };
   });

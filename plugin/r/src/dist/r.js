@@ -152,23 +152,10 @@ define(function(require, exports, module) {
       }).done(cb);
     },
     interrupt: function() {
-      var self = this;
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: serviceBase + "/rest/rsh/interrupt",
-        data: { shellID: self.settings.shellID }
-      });
+      this.cancelExecution();
     },
     cancelExecution: function() {
-      // XXX duplicate of interrupt.
-      var self = this;
-      $.ajax({
-        type: "POST",
-        datatype: "json",
-        url: serviceBase + "/rest/rsh/interrupt",
-        data: { shellID: self.settings.shellID }
-      });
+      bkHelper.httpPost(serviceBase + "/rest/rsh/interrupt", {shellID: this.settings.shellID});
     },
     spec: {
       interrupt: {type: "action", action: "interrupt", name: "Interrupt"}

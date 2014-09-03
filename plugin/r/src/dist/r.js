@@ -151,7 +151,14 @@ define(function(require, exports, module) {
         data: { shellID: self.settings.shellID }
       }).done(cb);
     },
+    interrupt: function() {
+      this.cancelExecution();
+    },
+    cancelExecution: function() {
+      bkHelper.httpPost(serviceBase + "/rest/rsh/interrupt", {shellID: this.settings.shellID});
+    },
     spec: {
+      interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
     },
     cometdUtil: cometdUtil
   };

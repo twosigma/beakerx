@@ -125,7 +125,7 @@ public class RShellRest {
   }
 
   private RServer startRserve()
-    throws IOException, RserveException
+    throws IOException, RserveException, REXPMismatchException
   {
     int port = getPortFromCore();
     String pluginInstallDir = System.getProperty("user.dir");
@@ -164,7 +164,8 @@ public class RShellRest {
 
     RConnection rconn = new RConnection("127.0.0.1", port);
     rconn.login("beaker", password);
-    return new RServer(rconn, handler, port, password);
+    int pid = rconn.eval("Sys.getpid()").asInteger();
+    return new RServer(rconn, handler, errorGobbler, port, password, pid);
   }
 
   // set the port used for communication with the Core server
@@ -177,7 +178,8 @@ public class RShellRest {
   @POST
   @Path("getShell")
   public String getShell(@FormParam("shellid") String shellId)
-                         throws InterruptedException, RserveException, IOException {
+    throws InterruptedException, RserveException, IOException, REXPMismatchException
+  {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
@@ -198,7 +200,6 @@ public class RShellRest {
       @FormParam("code") String code) throws InterruptedException, REXPMismatchException, IOException {
 
     boolean gotMismatch = false;
-    // System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
     RServer server = getEvaluator(shellID);
@@ -243,7 +244,11 @@ public class RShellRest {
         con.eval("print(\"" + END_MAGIC + "\")");
       }
     } catch (RserveException e) {
-      obj.error(e.getMessage());
+      if (127 == e.getRequestReturnCode()) {
+        obj.error("Interrupted");
+      } else {
+        obj.error(e.getMessage());
+      }
     } catch (REXPMismatchException e) {
       gotMismatch = true;
     }
@@ -279,8 +284,21 @@ public class RShellRest {
   public void exit(@FormParam("shellID") String shellID) {
   }
 
+  @POST
+  @Path("interrupt")
+  public void interrupt(@FormParam("shellID") String shellID)
+    throws IOException
+  {
+    if (windows()) {
+      return;
+    }
+    RServer server = getEvaluator(shellID);
+    server.errorGobbler.expectExtraLine();
+    Runtime.getRuntime().exec("kill -SIGINT " + server.pid);
+  }
+
   private void newEvaluator(String id)
-          throws RserveException, IOException
+    throws RserveException, IOException, REXPMismatchException
   {
     RServer newRs;
     if (useMultipleRservers) {
@@ -291,8 +309,11 @@ public class RShellRest {
       }
       RConnection rconn = new RConnection("127.0.0.1", rServer.port);
       rconn.login("beaker", rServer.password);
-      newRs = new RServer(rconn, rServer.outputHandler, rServer.port, rServer.password);
+      int pid = rconn.eval("Sys.getpid()").asInteger();
+      newRs = new RServer(rconn, rServer.outputHandler, rServer.errorGobbler,
+                          rServer.port, rServer.password, pid);
     }
+    
     this.shells.put(id, newRs);
   }
 
@@ -393,13 +414,18 @@ public class RShellRest {
   private static class RServer {
     RConnection connection;
     ROutputHandler outputHandler;
+    ErrorGobbler errorGobbler;
     int port;
     String password;
-    public RServer(RConnection con, ROutputHandler handler, int port, String password) {
+    int pid;
+    public RServer(RConnection con, ROutputHandler handler, ErrorGobbler gobbler,
+                   int port, String password, int pid) {
       this.connection = con;
       this.outputHandler = handler;
+      this.errorGobbler = gobbler;
       this.port = port;
       this.password = password;
+      this.pid = pid;
     }
   }
 }

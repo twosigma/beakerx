@@ -160,6 +160,16 @@ define(function(require, exports, module) {
         data: { shellID: self.settings.shellID }
       });
     },
+    cancelExecution: function() {
+      // XXX duplicate of interrupt.
+      var self = this;
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: serviceBase + "/rest/rsh/interrupt",
+        data: { shellID: self.settings.shellID }
+      });
+    },
     spec: {
       interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
     },

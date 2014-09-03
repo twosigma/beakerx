@@ -165,7 +165,7 @@ public class RShellRest {
     RConnection rconn = new RConnection("127.0.0.1", port);
     rconn.login("beaker", password);
     int pid = rconn.eval("Sys.getpid()").asInteger();
-    return new RServer(rconn, handler, port, password, pid);
+    return new RServer(rconn, handler, errorGobbler, port, password, pid);
   }
 
   // set the port used for communication with the Core server
@@ -290,6 +290,7 @@ public class RShellRest {
     throws IOException
   {
     RServer server = getEvaluator(shellID);
+    server.errorGobbler.expectExtraLine();
     Runtime.getRuntime().exec("kill -SIGINT " + server.pid);
   }
 
@@ -306,7 +307,8 @@ public class RShellRest {
       RConnection rconn = new RConnection("127.0.0.1", rServer.port);
       rconn.login("beaker", rServer.password);
       int pid = rconn.eval("Sys.getpid()").asInteger();
-      newRs = new RServer(rconn, rServer.outputHandler, rServer.port, rServer.password, pid);
+      newRs = new RServer(rconn, rServer.outputHandler, rServer.errorGobbler,
+                          rServer.port, rServer.password, pid);
     }
     
     this.shells.put(id, newRs);
@@ -409,12 +411,15 @@ public class RShellRest {
   private static class RServer {
     RConnection connection;
     ROutputHandler outputHandler;
+    ErrorGobbler errorGobbler;
     int port;
     String password;
     int pid;
-    public RServer(RConnection con, ROutputHandler handler, int port, String password, int pid) {
+    public RServer(RConnection con, ROutputHandler handler, ErrorGobbler gobbler,
+                   int port, String password, int pid) {
       this.connection = con;
       this.outputHandler = handler;
+      this.errorGobbler = gobbler;
       this.port = port;
       this.password = password;
       this.pid = pid;

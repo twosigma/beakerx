@@ -147,9 +147,11 @@ bk-new-cell-menu {
 }
 
 .cell-evaluator-menu {
+    top:                -20px;
     color:              $green;
     cursor:             pointer;
     display:            inline-block;
+    position:           absolute;
     font-size:          12px;
     background:         url(/beaker/app/images/down@2x.png) no-repeat center right;
     padding-right:      13px;

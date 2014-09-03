@@ -289,6 +289,9 @@ public class RShellRest {
   public void interrupt(@FormParam("shellID") String shellID)
     throws IOException
   {
+    if (windows()) {
+      return;
+    }
     RServer server = getEvaluator(shellID);
     server.errorGobbler.expectExtraLine();
     Runtime.getRuntime().exec("kill -SIGINT " + server.pid);

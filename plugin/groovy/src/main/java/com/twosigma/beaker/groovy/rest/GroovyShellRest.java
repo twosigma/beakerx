@@ -19,6 +19,9 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import groovy.lang.GroovyShell;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +39,7 @@ import org.codehaus.groovy.control.CompilationFailedException;
 public class GroovyShellRest {
 
   private final Map<String, GroovyShell> shells = new HashMap<>();
+  private final Map<String, String> classPaths = new HashMap<>();
 
   public GroovyShellRest() throws IOException {}
 
@@ -43,7 +47,7 @@ public class GroovyShellRest {
   @Path("getShell")
   @Produces(MediaType.TEXT_PLAIN)
   public String getShell(@FormParam("shellId") String shellId) 
-    throws InterruptedException
+    throws InterruptedException, MalformedURLException
   {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
@@ -107,18 +111,38 @@ public class GroovyShellRest {
   @Path("setClassPath")
   public void setClassPath(
       @FormParam("shellId") String shellId,
-      @FormParam("classPath") String classPath) {
+      @FormParam("classPath") String classPath) 
+    throws MalformedURLException
+  {
+      this.classPaths.put(shellId, classPath);
+      // XXX it would be better to just create the GroovyShell with
+      // the desired classpath instead of creating and then changing
+      // (which requires creating a new one).
+      newEvaluator(shellId);
   }
 
-  @POST
-  @Path("setImports")
-  public void setImports(
-      @FormParam("shellId") String shellId,
-      @FormParam("imports") String classPathes) {
-  }
-
-  private void newEvaluator(String id) {
-    this.shells.put(id, new GroovyShell());
+  private void newEvaluator(String id)
+    throws MalformedURLException
+  {
+    String classPath = this.classPaths.get(id);
+    String[] files = {};
+    URL[] urls = {};
+    if (null != classPath) {
+      files = classPath.split("\n");
+      int count = 0;
+      for (int i = 0; i < files.length; i++) {
+        if (!files[i].isEmpty()) {
+          count++;
+        }
+      }
+      urls = new URL[count];
+      for (int i = 0; i < files.length; i++) {
+        if (!files[i].isEmpty()) {
+          urls[i] = new URL("file://" + files[i]);
+        }
+      }
+    }
+    this.shells.put(id, new GroovyShell(new URLClassLoader(urls)));
   }
 
   private GroovyShell getEvaluator(String shellId) {

@@ -111,8 +111,14 @@ public class GroovyShellRest {
   @Path("setClassPath")
   public void setClassPath(
       @FormParam("shellId") String shellId,
-      @FormParam("classPath") String classPath) {
+      @FormParam("classPath") String classPath) 
+    throws MalformedURLException
+  {
       this.classPaths.put(shellId, classPath);
+      // XXX it would be better to just create the GroovyShell with
+      // the desired classpath instead of creating and then changing
+      // (which requires creating a new one).
+      newEvaluator(shellId);
   }
 
   private void newEvaluator(String id)
@@ -125,7 +131,6 @@ public class GroovyShellRest {
       files = classPath.split(":");
       urls = new URL[files.length];
       for (int i = 0; i < files.length; i++) {
-	System.out.println("XXX files[i]=" + files[i]);
 	urls[i] = new URL("file://" + files[i]);
       }
     }

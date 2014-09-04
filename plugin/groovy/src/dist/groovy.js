@@ -155,7 +155,7 @@ define(function(require, exports, module) {
         shellId: this.settings.shellID, classPath: this.settings.classPath}).success(cb);
     },
     spec: {
-      classPath: {type: "settableString", action: "updateClassPath", name: "Class path"}
+      classPath: {type: "settableString", action: "updateClassPath", name: "Class path (jar files, one per line)"}
     },
     cometdUtil: cometdUtil
   };

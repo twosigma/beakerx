@@ -128,10 +128,18 @@ public class GroovyShellRest {
     String[] files = {};
     URL[] urls = {};
     if (null != classPath) {
-      files = classPath.split(":");
-      urls = new URL[files.length];
+      files = classPath.split("\n");
+      int count = 0;
       for (int i = 0; i < files.length; i++) {
-	urls[i] = new URL("file://" + files[i]);
+        if (!files[i].isEmpty()) {
+          count++;
+        }
+      }
+      urls = new URL[count];
+      for (int i = 0; i < files.length; i++) {
+        if (!files[i].isEmpty()) {
+          urls[i] = new URL("file://" + files[i]);
+        }
       }
     }
     this.shells.put(id, new GroovyShell(new URLClassLoader(urls)));

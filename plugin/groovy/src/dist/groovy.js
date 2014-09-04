@@ -151,6 +151,7 @@ define(function(require, exports, module) {
       }).done(cb);
     },
     spec: {
+	  classPath: {type: "settableString", name: "Class path"}
     },
     cometdUtil: cometdUtil
   };

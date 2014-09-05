@@ -91,10 +91,12 @@
                       });
                     }
                   });
-                  evaluatorMenuItems.push({
-                    name: evaluator.pluginName,//TODO, this should be evaluator.settings.name
-                    items: actionItems
-                  });
+                  if (actionItems.length > 0) {
+                    evaluatorMenuItems.push({
+                      name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
+                      items: actionItems
+                    });
+                  }
                 }
               });
         };
@@ -445,6 +447,10 @@
             },
             addEvaluator: function(settings) {
               addEvaluator(settings, true);
+            },
+            removeEvaluator: function(plugin) {
+              bkEvaluatorManager.removeEvaluator(plugin);
+              // remove from evaluatorMenuItems too
             },
             getEvaluatorMenuItems: function() {
               return evaluatorMenuItems;

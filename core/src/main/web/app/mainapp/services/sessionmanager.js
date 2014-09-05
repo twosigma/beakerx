@@ -256,6 +256,13 @@
         _notebookModel.get().evaluators.push(evaluator);
         _edited = true;
       },
+      removeEvaluator: function(plugin) {
+        var model = _notebookModel.get();
+        model.evaluators = _.reject(model.evaluators, function(e) {
+          return e.plugin == plugin;
+        });
+        _edited = true;
+      },
       getNotebookCellOp: function() {
         return bkNotebookCellModelManager;
       },

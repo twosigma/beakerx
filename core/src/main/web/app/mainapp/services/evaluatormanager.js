@@ -27,11 +27,24 @@
       reset: function() {
         evaluators = {};
       },
+      removeEvaluator: function(plugin) {
+        console.log("bkEvaluatorManager.removeEvaluator");
+        console.log(evaluators);
+        for (var key in evaluators) {
+          var e = evaluators[key];
+          if (e.pluginName == plugin) {
+            if (_.isFunction(e.exit)) {
+              e.exit();
+            }
+            delete evaluators[key];
+          }
+        }
+      },
       newEvaluator: function(evaluatorSettings) {
         loadingInProgressEvaluators.push(evaluatorSettings);
         return bkEvaluatePluginManager.getEvaluatorFactory(evaluatorSettings.plugin)
-            .then(function(facotry) {
-              return facotry.create(evaluatorSettings);
+            .then(function(factory) {
+              return factory.create(evaluatorSettings);
             })
             .then(function(evaluator) {
               if (_.isEmpty(evaluatorSettings.name)) {
@@ -69,7 +82,7 @@
       },
       exitAndRemoveAllEvaluators: function() {
         _.each(evaluators, function(ev) {
-          if (ev && _.isFinite(ev.exit)) {
+          if (ev && _.isFunction(ev.exit)) {
             ev.exit();
           }
         });

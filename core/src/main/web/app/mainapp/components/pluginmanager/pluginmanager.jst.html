@@ -18,7 +18,7 @@
     <h3>Plugin Manager</h3>
   </div>
   <div class="modal-body modal-large">
-    <button class="beaker-btn" ng-click="evalTabOp.addPlugin(pluginName)" ng-disabled="pluginStatus!='known'" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()">
+    <button class="beaker-btn" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()">
       <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
       <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
       <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
@@ -28,8 +28,8 @@
     </button>
     <p><br/></p>
     <div ng-show="evalTabOp.showURL" class="input-append addeval">
-      <input type="text" bk-enter='evalTabOp.addPlugin()' ng-model="evalTabOp.newPluginNameOrUrl"></input>
-      <button class="btn" ng-click='evalTabOp.addPlugin()'>Add Plugin from URL</button>
+      <input type="text" bk-enter='evalTabOp.togglePlugin()' ng-model="evalTabOp.newPluginNameOrUrl"></input>
+      <button class="btn" ng-click='evalTabOp.togglePlugin()'>Add Plugin from URL</button>
     </div>
     <tabs>
       <pane ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}">

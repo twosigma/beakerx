@@ -68,6 +68,10 @@ bk-section-cell, bk-text-cell {
     padding: 20px;
 }
 
+bk-text-cell div[contenteditable]{
+    margin-top: 5px;
+}
+
 .bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
     margin-top: -20px;
 }

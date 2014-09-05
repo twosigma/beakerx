@@ -92,3 +92,8 @@
   font-size: 150%;
   vertical-align: -2px;
 }
+
+html .modal {
+  max-height: 80%;
+  overflow: auto;
+}

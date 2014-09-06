@@ -450,7 +450,9 @@
             },
             removeEvaluator: function(plugin) {
               bkEvaluatorManager.removeEvaluator(plugin);
-              // remove from evaluatorMenuItems too
+	      evaluatorMenuItems = _.reject(evaluatorMenuItems, function(item) {
+		      return item.name == plugin;
+		});
             },
             getEvaluatorMenuItems: function() {
               return evaluatorMenuItems;

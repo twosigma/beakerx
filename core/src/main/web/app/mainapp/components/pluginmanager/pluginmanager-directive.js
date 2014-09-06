@@ -38,6 +38,7 @@
         $scope.evalTabOp = {
           newPluginNameOrUrl: "",
 	  showURL: false,
+	  showWarning: false,
           getAllEvaluators: function() {
             return bkEvaluatorManager.getAllEvaluators();
           },
@@ -104,11 +105,13 @@
               // you would really want to be able to delete them.
               // other states we should support: failed and exiting.
               console.log("remove plugin");
-              if (true/*bkSessionManager.evaluatorUnused(plugin)*/) {
+              if (bkSessionManager.evaluatorUnused(plugin)) {
+		console.log("removing!!");
                 bkSessionManager.removeEvaluator(plugin);
                 bkCoreManager.getBkApp().removeEvaluator(plugin);
               } else {
                 console.log("show warning pane");
+		  $scope.evalTabOp.showWarning = true;
               }
             }
           }

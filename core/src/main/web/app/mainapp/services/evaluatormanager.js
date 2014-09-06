@@ -28,8 +28,6 @@
         evaluators = {};
       },
       removeEvaluator: function(plugin) {
-        console.log("bkEvaluatorManager.removeEvaluator");
-        console.log(evaluators);
         for (var key in evaluators) {
           var e = evaluators[key];
           if (e.pluginName == plugin) {

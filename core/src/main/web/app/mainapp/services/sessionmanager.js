@@ -253,12 +253,9 @@
         }
       },
       evaluatorUnused: function(plugin) {
-	console.log("finding: " + plugin);
 	var n = _.find(_notebookModel.get().cells, function (c) {
-	    console.log("c.type=" + c.type + " c.evaluator=" + c.evaluator);
 	    return c.type == "code" && c.evaluator == plugin;
 	});
-          console.log("n=" + n + " !n=" + !n);
 	return !n;
       },
       addEvaluator: function(evaluator) {

@@ -83,14 +83,12 @@
             this.newPluginNameOrUrl = pluginNameOrUrl;
           },
           togglePlugin: function(name) {
-            console.log("togglePlugin: " + name);
             var plugin = this.newPluginNameOrUrl;
 	    $scope.evalTabOp.showURL = false;
 	    if (name) {
 		plugin = name;
 	    }
             var status = this.getKnownEvaluatePlugins()[plugin];
-            console.log("status: " + status);
             if (status == "known") {
               var newEvaluatorObj = {
                 name: "",
@@ -104,14 +102,11 @@
               // to try to load and fail, and get stuck loading.  then
               // you would really want to be able to delete them.
               // other states we should support: failed and exiting.
-              console.log("remove plugin");
               if (bkSessionManager.evaluatorUnused(plugin)) {
-		console.log("removing!!");
                 bkSessionManager.removeEvaluator(plugin);
                 bkCoreManager.getBkApp().removeEvaluator(plugin);
               } else {
-                console.log("show warning pane");
-		  $scope.evalTabOp.showWarning = true;
+		$scope.evalTabOp.showWarning = true;
               }
             }
           }

@@ -4,40 +4,163 @@
         {
             "name": "Html",
             "plugin": "Html",
-            "shellID": null
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
         },
         {
             "name": "Latex",
             "plugin": "Latex",
-            "shellID": null
-        },
-        {
-            "name": "IPython",
-            "plugin": "IPython",
-            "shellID": "35D72D736E0A431DA72BDB278B393A32",
-            "imports": "",
-            "supplementalClassPath": ""
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
         },
         {
             "name": "JavaScript",
             "plugin": "JavaScript",
-            "shellID": null,
             "jsSetting2": "",
-            "jsSetting1": ""
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
         },
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "5cc4bbc9-4351-4f2c-ae56-745bc38a6429"
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
         }
     ],
     "cells": [
+    {
+            "id": "textKDdmxf",
+            "type": "text",
+            "body": "Pick a section below: examples giving a demo of R, or a survey of the basic language primitives.",
+            "evaluatorReader": false
+        },
+        {
+            "id": "sectionIwMpFR",
+            "type": "section",
+            "title": "R Examples",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": true
+        },
+        {
+            "id": "codeY69oh7",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "hist(data)"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 309
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "code9i3xs2",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "DF = data.frame(x=c(\"b\",\"b\",\"b\",\"a\",\"a\"),v=rnorm(5))"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 523
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeZCInZV",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "library(ggplot2)\nqplot(1:10, data)"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 1249
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codezB5I5w",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "library(ggplot2)\ncde <- geom_histogram(position=\"fill\", binwidth = 500)\nggplot(diamonds, aes(x=price, fill=clarity)) + cde"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 1253
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "coden2V0oT",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "occur <- matrix(c(4,3,2),ncol=3,byrow=TRUE)\ncolnames(occur) <- c(\"A\",\"B\",\"C\")\noccur"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 126
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codenl0dfP",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "a <- c(\"Sometimes\",\"Sometimes\",\"Never\",\"Always\",\"Always\",\"Sometimes\",\"Sometimes\",\"Never\")\nb <- c(\"Maybe\",\"Maybe\",\"Yes\",\"Maybe\",\"Maybe\",\"No\",\"Yes\",\"No\")\nresults <- table(a,b)"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 146
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeHZjtj9",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "data <- c(1,1,1,2,3,3,4,5,5,5)"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 221
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
         {
             "id": "section001",
             "type": "section",
             "level": 1,
-            "title": "R basics",
-            "collapsed": false
+            "title": "R Basics",
+            "collapsed": true,
+            "evaluatorReader": false
         },
         {
             "id": "code2uVtKX",
@@ -49,7 +172,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 80
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codeFBCt4I",
@@ -61,7 +186,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 51
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codeVEXScq",
@@ -73,7 +200,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 53
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         },
         {
             "id": "codeqwiFQG",
@@ -85,7 +214,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 67
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codeLfBKB9",
@@ -97,7 +228,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 187
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codeNfYSPD",
@@ -109,7 +242,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 440
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codeKvYEoF",
@@ -121,7 +256,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 67
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codePK8OjD",
@@ -133,7 +270,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 56
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
         },
         {
             "id": "codev3jNOm",
@@ -145,7 +284,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 91
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codeXnB2fB",
@@ -157,7 +298,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 194
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         },
         {
             "id": "codeoXU48Q",
@@ -169,7 +312,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 105
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codemZDt1J",
@@ -181,7 +326,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 94
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codewPuwi3",
@@ -193,7 +340,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 120
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codeIGQOy3",
@@ -205,7 +354,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 2108
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
         }
     ]
 }

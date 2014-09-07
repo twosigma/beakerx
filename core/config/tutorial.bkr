@@ -78,16 +78,16 @@
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<style>\n  .tut-cell {\n    border:1px solid gray;\n    padding: 10px;\n  }\n  .tut-row {\n    padding: 10px;\n  }\n</style>\n<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook application that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly move data between languages with autotranslation.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, and plain text.</p>\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, and Groovy.  \n      For each language we have two different tutorials, one showing what the language is good for (the first row in the table below), and another cataloging the primtive operations available in the language (linked from the 2nd row of the table).</p>\n    <table>\n      <tr><td class=\"tut-row\">Demos and Examples</td>\n          <td class=\"tut-cell\">IPython</td>\n          <td class=\"tut-cell\">R</td>\n          <td class=\"tut-cell\">Groovy</td>\n      </tr>\n      <tr><td class=\"tut-row\">Basics and Fundamentals</td>\n          <td class=\"tut-cell\">IPython</td>\n          <td class=\"tut-cell\"><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R</a></td>\n          <td class=\"tut-cell\"><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy</a></td>\n      </tr>\n    </table>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.  Plugins can also easily extend the menus and output media types.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>",
+                "body": "<style>\n  .tut-cell {\n    border:1px solid gray;\n    padding: 10px;\n  }\n  .tut-row {\n    padding: 10px;\n  }\n</style>\n<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook application that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly move data between languages with autotranslation.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, and plain text.</p>\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, and Groovy.  \n      For each language we have two different tutorials, one showing what the language is good for (the first row in the table below), and another cataloging the primtive operations available in the language (linked from the 2nd row of the table).</p>\n    <table>\n      <tr><td class=\"tut-row\">Demos and Examples</td>\n          <td class=\"tut-cell\">IPython</td>\n          <td class=\"tut-cell\"><a href=\"#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr\">R</a></td>\n          <td class=\"tut-cell\">Groovy</td>\n      </tr>\n      <tr><td class=\"tut-row\">Basics and Fundamentals</td>\n          <td class=\"tut-cell\">IPython</td>\n          <td class=\"tut-cell\"><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R</a></td>\n          <td class=\"tut-cell\"><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy</a></td>\n      </tr>\n    </table>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.  Plugins can also easily extend the menus and output media types.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>",
                 "hidden": true
             },
             "output": {
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 97,
+                "elapsedTime": 87,
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<style>\n  .tut-cell {\n    border:1px solid gray;\n    padding: 10px;\n  }\n  .tut-row {\n    padding: 10px;\n  }\n</style>\n<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook application that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly move data between languages with autotranslation.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, and plain text.</p>\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, and Groovy.  \n      For each language we have two different tutorials, one showing what the language is good for (the first row in the table below), and another cataloging the primtive operations available in the language (linked from the 2nd row of the table).</p>\n    <table>\n      <tr><td class=\"tut-row\">Demos and Examples</td>\n          <td class=\"tut-cell\">IPython</td>\n          <td class=\"tut-cell\">R</td>\n          <td class=\"tut-cell\">Groovy</td>\n      </tr>\n      <tr><td class=\"tut-row\">Basics and Fundamentals</td>\n          <td class=\"tut-cell\">IPython</td>\n          <td class=\"tut-cell\"><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R</a></td>\n          <td class=\"tut-cell\"><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy</a></td>\n      </tr>\n    </table>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.  Plugins can also easily extend the menus and output media types.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>"
+                    "object": "<style>\n  .tut-cell {\n    border:1px solid gray;\n    padding: 10px;\n  }\n  .tut-row {\n    padding: 10px;\n  }\n</style>\n<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook application that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly move data between languages with autotranslation.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, and plain text.</p>\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, and Groovy.  \n      For each language we have two different tutorials, one showing what the language is good for (the first row in the table below), and another cataloging the primtive operations available in the language (linked from the 2nd row of the table).</p>\n    <table>\n      <tr><td class=\"tut-row\">Demos and Examples</td>\n          <td class=\"tut-cell\">IPython</td>\n          <td class=\"tut-cell\"><a href=\"#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr\">R</a></td>\n          <td class=\"tut-cell\">Groovy</td>\n      </tr>\n      <tr><td class=\"tut-row\">Basics and Fundamentals</td>\n          <td class=\"tut-cell\">IPython</td>\n          <td class=\"tut-cell\"><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R</a></td>\n          <td class=\"tut-cell\"><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy</a></td>\n      </tr>\n    </table>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.  Plugins can also easily extend the menus and output media types.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>"
                 }
             },
             "evaluatorReader": true,
@@ -194,133 +194,6 @@
             "evaluatorReader": false
         },
         {
-            "id": "SectionpjDGkv",
-            "type": "section",
-            "level": 1,
-            "title": "R examples",
-            "collapsed": false,
-            "evaluatorReader": false
-        },
-        {
-            "id": "codeGXkj8Z",
-            "type": "code",
-            "evaluator": "Html",
-            "input": {
-                "body": "<p>For more examples, see the <a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics tutorial</a> </p>",
-                "hidden": true
-            },
-            "output": {
-                "selectedType": "BeakerDisplay",
-                "elapsedTime": 121,
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<p>For more examples, see the <a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics tutorial</a> </p>"
-                }
-            },
-            "evaluatorReader": true,
-            "lineCount": 1,
-            "initialization": true
-        },
-        {
-            "id": "codeHZjtj9",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": "data <- c(1,1,1,2,3,3,4,5,5,5)"
-            },
-            "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 221
-            },
-            "evaluatorReader": true,
-            "lineCount": 1
-        },
-        {
-            "id": "codeY69oh7",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": "hist(data)"
-            },
-            "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 309
-            },
-            "evaluatorReader": true,
-            "lineCount": 1
-        },
-        {
-            "id": "code9i3xs2",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": "DF = data.frame(x=c(\"b\",\"b\",\"b\",\"a\",\"a\"),v=rnorm(5))"
-            },
-            "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 523
-            },
-            "evaluatorReader": true,
-            "lineCount": 1
-        },
-        {
-            "id": "codeZCInZV",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": "library(ggplot2)\nqplot(1:10, data)"
-            },
-            "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 1249
-            },
-            "evaluatorReader": true,
-            "lineCount": 2
-        },
-        {
-            "id": "codezB5I5w",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": "library(ggplot2)\ncde <- geom_histogram(position=\"fill\", binwidth = 500)\nggplot(diamonds, aes(x=price, fill=clarity)) + cde"
-            },
-            "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 1253
-            },
-            "evaluatorReader": true,
-            "lineCount": 3
-        },
-        {
-            "id": "coden2V0oT",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": "occur <- matrix(c(4,3,2),ncol=3,byrow=TRUE)\ncolnames(occur) <- c(\"A\",\"B\",\"C\")\noccur"
-            },
-            "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 126
-            },
-            "evaluatorReader": true,
-            "lineCount": 3
-        },
-        {
-            "id": "codenl0dfP",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": "a <- c(\"Sometimes\",\"Sometimes\",\"Never\",\"Always\",\"Always\",\"Sometimes\",\"Sometimes\",\"Never\")\nb <- c(\"Maybe\",\"Maybe\",\"Yes\",\"Maybe\",\"Maybe\",\"No\",\"Yes\",\"No\")\nresults <- table(a,b)"
-            },
-            "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 146
-            },
-            "evaluatorReader": true,
-            "lineCount": 3
-        },
-        {
             "id": "SectionpfjX2U",
             "type": "section",
             "level": 1,
@@ -406,7 +279,7 @@
             },
             "output": {
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 226,
+                "elapsedTime": 142,
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",

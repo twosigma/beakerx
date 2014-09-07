@@ -4,7 +4,6 @@
         {
             "name": "Html",
             "plugin": "Html",
-            "shellID": null,
             "view": {
                 "cm": {
                     "mode": "htmlmixed"
@@ -14,7 +13,6 @@
         {
             "name": "Latex",
             "plugin": "Latex",
-            "shellID": null,
             "view": {
                 "cm": {
                     "mode": "stex"
@@ -24,7 +22,6 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "6DAE0DC7AF064A438CBEB0BE52548E42",
             "imports": "",
             "supplementalClassPath": "",
             "view": {
@@ -37,7 +34,6 @@
         {
             "name": "JavaScript",
             "plugin": "JavaScript",
-            "shellID": null,
             "jsSetting2": "",
             "jsSetting1": "",
             "view": {
@@ -50,7 +46,6 @@
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "c4ad7947-cad7-42d2-a9a6-5ce56341d4fe",
             "view": {
                 "cm": {
                     "mode": "r",
@@ -61,7 +56,6 @@
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "shellID": "24acc31c-e945-411c-b824-4664b640c927",
             "view": {
                 "cm": {
                     "mode": "groovy",
@@ -76,38 +70,42 @@
             "type": "section",
             "level": 1,
             "title": "Beaker Tutorial",
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
             "id": "codewQAk41",
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, plain text</p>\n\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, Groovy</p>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>",
+                "body": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly move data between languages with autotranslation.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, plain text</p>\n\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, Groovy</p>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.  Plugins can also easily extend the menus and output media types.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>",
                 "hidden": true
             },
             "output": {
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 369,
+                "elapsedTime": 78,
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, plain text</p>\n\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, Groovy</p>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>"
+                    "object": "<div class=\"row-fluid\">\n\n  <div class=\"span9\">\n\n\t<p>Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly move data between languages with autotranslation.</p>\n\n    <p>Official website: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n    <h4>Language support</h4>\n\n    <p><strong>Text:</strong> Markdown, HTML, LaTeX, plain text</p>\n\n    <p><strong>Code:</strong> Python (IPython), Julia, JavaScript, Ruby, Node, R, Groovy</p>\n\n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.  Plugins can also easily extend the menus and output media types.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n  </div>  \n  \n  \n  <div class=\"span3\">\n    <h3>Additional tutorials</h3>\n    <h4>Beaker</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fform.bkr\">Basic forms in Beaker</a> </p>\n\n    <h4>Python</h4>\n    <a href=\"#/open?uri=ipynb:%2Fhttp:%2F%2Fatwallab.cshl.edu%2Fteaching%2FQBbootcamp3.ipynb\">Scientific Computing with Python</a> - From Mickey Atwal\n    \n    <h4>R</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics</a> </p>\n\n    <h4>Groovy</h4>\n    <p><a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics</a> </p>\n  </div>  \n\n  \n</div>"
                 }
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 42
         },
         {
             "id": "Section8EWbZ9",
             "type": "section",
             "level": 1,
             "title": "Running code",
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
-            "id": "markdownEmlByI",
-            "type": "markdown",
-            "body": "Here's some IPython code. To run it, move your cursor into the cell and press CTRL-ENTER.",
-            "mode": "preview"
+            "id": "textKDdmxf",
+            "type": "text",
+            "body": "Below is some IPython code. To run it, move your cursor into the cell, click, and then press CTRL-ENTER or click on the \"Run\" button.<div><br></div><div>The output from running a cell appears right below the input.</div>",
+            "evaluatorReader": false
         },
         {
             "id": "codeh1TYII",
@@ -117,16 +115,18 @@
                 "body": "a = 1\na"
             },
             "output": {
-                "selectedType": "Hidden",
+                "selectedType": "BeakerDisplay",
                 "outputArrived": true,
-                "elapsedTime": 154
-            }
+                "elapsedTime": 119
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
-            "id": "markdownCInWzc",
-            "type": "markdown",
-            "body": "And here's a basic histogram from matplotlib.",
-            "mode": "preview"
+            "id": "textmEdrvq",
+            "type": "text",
+            "body": "And here's a basic histogram from matplotlib:",
+            "evaluatorReader": false
         },
         {
             "id": "code3E0zXv",
@@ -139,60 +139,67 @@
                 "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 364
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "Section2enUlh",
             "type": "section",
             "level": 1,
             "title": "Working with cells",
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
             "id": "SectionIQvToW",
             "type": "section",
             "level": 2,
             "title": "Adding cells",
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
-            "id": "markdownDfaAFR",
-            "type": "markdown",
-            "body": "Move your cursor to the area below this text. You'll see a bar appear with the text 'insert cell.' Click on that bar and add a new JavaScript cell.\n\nClick into the new cell and press CTRL-SHIFT-A. This will create a new cell of the same type.\n\n",
-            "mode": "preview"
+            "id": "textJwyp0v",
+            "type": "text",
+            "body": "<div>Move your cursor to the area below this text. You'll see a blue bar appear with the text 'Insert Cell.' Click on that bar and add a new IPython cell. &nbsp;It uses the language of the previous code cell in the notebook, which in this case is IPython.</div><div><br></div><div>If you want to create a cell of a different language or type, then click on the right side of the bar on the triangle.</div><div><br></div><div>Click into the new cell and press CTRL-SHIFT-A. This will create a new cell of the same type.</div>",
+            "evaluatorReader": false
         },
         {
             "id": "SectionkfKSFY",
             "type": "section",
             "level": 2,
             "title": "Manipulating cells",
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
-            "id": "markdownB58chY",
-            "type": "markdown",
-            "body": "Move your cursor into one of our JavaScript cells. Note that using the UP and DOWN keys will move your cursor between the different code cells. \n\nPressing CTRL-SHIFT-E within a code cell will allow you to change the cell's language.\n\nTo the right of the cells, you'll see a hierarchical representation of brackets. Clicking on the brackets will bring up menus that let you do everything from change languages to hiding output to deleting cells. Explore the options available in these menus.",
-            "mode": "preview"
+            "id": "textOYea2S",
+            "type": "text",
+            "body": "<div>Move your cursor into a code cell. Pressing the UP and DOWN arrow keys will move your cursor from line to line within the cell, and then from cell to cell if you keep going over the edge.</div><div><br></div><div>Pressing CTRL-SHIFT-E within a code cell will allow you to change the cell's language.</div><div><br></div><div>In the top-right corner of the cell are some icons with common operations including deleting, moving the cell up and down, and three dots for a menu with more actions. &nbsp;Code cells have toggles to hide or show the input and output areas.</div>",
+            "evaluatorReader": false
         },
         {
             "id": "SectionEt3gzB",
             "type": "section",
             "level": 2,
             "title": "Section cells",
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
-            "id": "markdownso9XEe",
-            "type": "markdown",
-            "body": "Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any type of cell including other sections. Try clicking the +/- buttons to get a feel for how the hierarchy works and how it corresponds to the bracket menus on the right.\n\nTry adding and removing some section cells of different levels.",
-            "mode": "preview"
+            "id": "textMULqPW",
+            "type": "text",
+            "body": "<div>Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any number of cells including other sections. There are four levels of heading, so you can organize your notebook in a tree and hide the parts you don't need. &nbsp;Try clicking the +/- buttons to get a feel for how the hierarchy works. &nbsp;The View&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→ Show Hierarchy menu makes the Hierarchy visible, including auto-numbering the sections.</span></div><div><br></div><div>Each section has a three-dot menu on the right side of the screen with operations that pertain to it, including Sharing, running all the cells in it, &nbsp;and changing its header level.</div><div><br></div><div>You can add sections with the usual Insert Cell menu.</div>",
+            "evaluatorReader": false
         },
         {
             "id": "SectionpjDGkv",
             "type": "section",
             "level": 1,
             "title": "R examples",
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
             "id": "codeGXkj8Z",
@@ -203,9 +210,17 @@
                 "hidden": true
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 0
-            }
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 38,
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<p>For more examples, see the <a href=\"#/open?uri=file:config%2Ftutorials%2Fr.bkr\">R basics tutorial</a> </p>"
+                }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1,
+            "initialization": true
         },
         {
             "id": "codeHZjtj9",
@@ -217,7 +232,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 221
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeY69oh7",
@@ -229,7 +246,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 309
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "code9i3xs2",
@@ -241,7 +260,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 523
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeZCInZV",
@@ -253,7 +274,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 1249
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codezB5I5w",
@@ -265,7 +288,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 1253
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         },
         {
             "id": "coden2V0oT",
@@ -277,7 +302,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 126
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         },
         {
             "id": "codenl0dfP",
@@ -289,14 +316,17 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 146
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         },
         {
             "id": "SectionpfjX2U",
             "type": "section",
             "level": 1,
             "title": "Python examples",
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
             "id": "codeqPMAfv",
@@ -309,7 +339,9 @@
                 "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 366
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
         },
         {
             "id": "codeK0EmdK",
@@ -322,7 +354,9 @@
                 "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 434
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeDF97hS",
@@ -335,7 +369,9 @@
                 "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 761
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeAEuaJ8",
@@ -348,14 +384,17 @@
                 "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 458
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "sectionF7ZQVV",
             "type": "section",
             "title": "Groovy examples",
             "level": 1,
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
             "id": "code88rlLh",
@@ -366,9 +405,17 @@
                 "hidden": true
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 0
-            }
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 107,
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<p>For more examples, see the <a href=\"#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr\">Groovy basics tutorial</a> </p>"
+                }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1,
+            "initialization": true
         },
         {
             "id": "codelwaUwX",
@@ -380,7 +427,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 557
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codeiXI4Hu",
@@ -392,7 +441,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 156
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeZsp72T",
@@ -404,7 +455,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 233
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeyiu160",
@@ -416,7 +469,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 193
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "code0SVic5",
@@ -428,7 +483,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 174
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codexiOErG",
@@ -440,7 +497,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 164
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "code77FYkc",
@@ -452,20 +511,23 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 206
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "section2qVNos",
             "type": "section",
-            "title": "Communicating among languages",
+            "title": "Autotranslation: Communicating among languages",
             "level": 1,
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
-            "id": "markdownxQBZcY",
-            "type": "markdown",
-            "body": "Beaker provides a namespace (a collection of variables and their values) in the notebook.\n\nYou can use it to produce data in one language and then consume or process it in another.",
-            "mode": "preview"
+            "id": "textNi07gO",
+            "type": "text",
+            "body": "<div>Beaker provides a namespace (a collection of variables and their values) in the notebook.</div><div><br></div><div>You can use it to produce data in one language and then consume or process it in another.</div>",
+            "evaluatorReader": false
         },
         {
             "id": "codeMXyZnW",
@@ -478,7 +540,9 @@
                 "selectedType": "Hidden",
                 "outputArrived": false,
                 "elapsedTime": 168
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "code4NkMTF",
@@ -490,7 +554,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 197
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeuP2kh6",
@@ -501,7 +567,9 @@
             },
             "output": {
                 "selectedType": "Hidden"
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeeLdoVF",
@@ -513,26 +581,30 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 395
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "markdown6c1oNJ",
             "type": "markdown",
             "body": "The values are stored in the notebook including when it is saved to disk.\n\nThe format for interchange and storage is JSON.",
-            "mode": "preview"
+            "mode": "preview",
+            "evaluatorReader": false
         },
         {
             "id": "Sectionviqq24",
             "type": "section",
             "level": 1,
             "title": "Working with d3.js",
-            "collapsed": false
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
-            "id": "markdownmEE28X",
-            "type": "markdown",
-            "body": "This example loads some data using Python then builds a bar chart of the data using d3 in HTML and JavaScript cells.",
-            "mode": "preview"
+            "id": "textTF4Tr3",
+            "type": "text",
+            "body": "<div>This example loads some data using Python then builds a bar chart of the data using d3 in HTML and JavaScript cells.</div>",
+            "evaluatorReader": false
         },
         {
             "id": "codezCEI2n",
@@ -545,7 +617,9 @@
                 "selectedType": "Hidden",
                 "outputArrived": true,
                 "elapsedTime": 400
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
         },
         {
             "id": "codeyA37u9",
@@ -557,7 +631,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 96
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codetIF8Fx",
@@ -568,7 +644,9 @@
             },
             "output": {
                 "selectedType": "Hidden"
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 14
         }
     ],
     "namespace": {

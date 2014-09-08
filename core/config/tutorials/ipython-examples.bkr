@@ -61,7 +61,13 @@
             "collapsed": false,
             "evaluatorReader": false
         },
-	{
+        {
+            "id": "text7DlQga",
+            "type": "text",
+            "body": "IPython is the Python language with extensions for interactivity. &nbsp;Follow the instructions on BeakerNotebook.com for how to install IPython so Beaker can use it.",
+            "evaluatorReader": false
+        },
+        {
             "id": "codeqPMAfv",
             "type": "code",
             "evaluator": "IPython",

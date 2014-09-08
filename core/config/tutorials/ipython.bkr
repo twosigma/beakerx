@@ -1,0 +1,131 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "IPython Basics",
+            "collapsed": false,
+            "evaluatorReader": false
+        },
+        {
+            "id": "textAkq03u",
+            "type": "text",
+            "body": "IPython is the Python language with extensions for interactivity. &nbsp;Follow the instructions on BeakerNotebook.com for how to install IPython so Beaker can use it.",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeaaQ9rQ",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "# you an define your own functions with the \"def\" keyword\ndef secant(x):\n  return 1/cos(x)\n\nsecant(6.22)"
+            },
+            "output": {
+                "outputArrived": true,
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 42
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "code001",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "# add a question mark to the end of a function to get help on it\ncos?"
+            },
+            "output": {
+                "selectedType": "BeakerDisplay",
+                "outputArrived": false,
+                "elapsedTime": 28
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codejQBMxF",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "%%timeit x = range(1000)\nsecant(x)\n# magics like this one work"
+            },
+            "output": {
+                "outputArrived": true,
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 7187
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeG7urqI",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "from IPython.core.display import HTML\nhtml_text = HTML(\"generating <em>HTML</em> with <font size='+2'>IPython</font>\")\nhtml_text"
+            },
+            "output": {
+                "outputArrived": true,
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 61
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        }
+    ]
+}

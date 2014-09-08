@@ -1,0 +1,131 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "IPython Examples",
+            "collapsed": false,
+            "evaluatorReader": false
+        },
+        {
+            "id": "text7DlQga",
+            "type": "text",
+            "body": "IPython is the Python language with extensions for interactivity. &nbsp;Follow the instructions on BeakerNotebook.com for how to install IPython so Beaker can use it.",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeqPMAfv",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "import pandas\ndf = pandas.DataFrame([[1, 2], [1, 3], [4, 6]], columns=['A', 'B'])\n# cause the dataframe to be displayed as a table.\n# the value of only the last line is shown, and in python the value\n# of an assignment (like the previous line) has no value.\ndf"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "outputArrived": true,
+                "elapsedTime": 366
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+        {
+            "id": "codeK0EmdK",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "df['A']"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "outputArrived": true,
+                "elapsedTime": 434
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeDF97hS",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "df['A'].hist(figsize=(10,10))"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "outputArrived": true,
+                "elapsedTime": 761
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeAEuaJ8",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "plot([1,4,3,5,2])"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "outputArrived": true,
+                "elapsedTime": 458
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        }
+    ]
+}

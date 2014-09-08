@@ -1,0 +1,113 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "Sectionviqq24",
+            "type": "section",
+            "level": 1,
+            "title": "Working with d3.js",
+            "collapsed": false,
+            "evaluatorReader": false
+        },
+        {
+            "id": "textTF4Tr3",
+            "type": "text",
+            "body": "<div>This example loads some data using Python then builds a bar chart of the data using d3 in HTML and JavaScript cells.</div>",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codezCEI2n",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "import pandas\ndf = pandas.DataFrame([[1, 9], [1, 8], [4, 6]], columns=['A', 'B'])\nbeaker.set('df', df) # copy the dataframe into the notebook and make it accessible to the JS below\ndf"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "outputArrived": true,
+                "elapsedTime": 400
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
+            "id": "codeyA37u9",
+            "type": "code",
+            "evaluator": "Html",
+            "input": {
+                "body": "<div id=\"barchart1\">After running JS, chart will appear here</div>"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 96
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codetIF8Fx",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "var data = beaker.df.B;\n\nd3.select(\"#barchart1\")\n  \t\t.selectAll(\"div\")\n    \t.data(data)\n  \t\t.enter().append(\"div\")\n    \t.style(\"width\", function(d) { console.log(d);return d * 10 + \"px\"; })\n    \t.style(\"background-color\", function(d) { return \"#0000\" + d + \"0\" })\n    \t.style(\"color\", \"#FFFFFF\")\n    \t.style(\"text-align\", \"right\")\n    \t.style(\"padding\", \"3px\")    \n    \t.style(\"margin\", \"1px\")        \n        .text(function(d) { return d.toString(); });\n"
+            },
+            "output": {
+                "selectedType": "Hidden"
+            },
+            "evaluatorReader": true,
+            "lineCount": 14
+        }
+    ]
+}

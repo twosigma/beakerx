@@ -4,36 +4,61 @@
         {
             "name": "Html",
             "plugin": "Html",
-            "shellID": null
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
         },
         {
             "name": "Latex",
             "plugin": "Latex",
-            "shellID": null
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
         },
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "5B33CA48BB144009B7D85113F6193C52",
             "imports": "",
-            "supplementalClassPath": ""
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
         },
         {
             "name": "JavaScript",
             "plugin": "JavaScript",
-            "shellID": null,
             "jsSetting2": "",
-            "jsSetting1": ""
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
         },
         {
             "name": "R",
             "plugin": "R",
-            "shellID": "5ce9b0fe-c0b1-49e1-87d3-455cd4c9d143"
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
         },
         {
             "name": "Groovy",
             "plugin": "Groovy",
-            "shellID": "83b49d86-4f0b-4a4d-bdaf-19654cc6c0e1"
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
         }
     ],
     "cells": [
@@ -41,14 +66,15 @@
             "id": "section001",
             "type": "section",
             "level": 1,
-            "title": "Groovy basics",
-            "collapsed": false
+            "title": "Groovy Basics",
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
-            "id": "markdownWEsxB3",
-            "type": "markdown",
-            "body": "This notebook is a brief introduction to Groovy. It assumes a general understanding of Java.",
-            "mode": "preview"
+            "id": "textxxB2hY",
+            "type": "text",
+            "body": "Groovy is a script version of Java. &nbsp;You can use it to access the contents of any JAR, which you can include via the preferences in the Plugin Manager.<div>Groovy comes included with Beaker, so it should just work.</div>",
+            "evaluatorReader": false
         },
         {
             "id": "code001",
@@ -60,7 +86,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 62
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "codeapvWRa",
@@ -72,7 +100,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 138
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         },
         {
             "id": "code6Hw88v",
@@ -84,7 +114,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 46
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
         },
         {
             "id": "codeYA0hzd",
@@ -96,7 +128,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 66
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
         },
         {
             "id": "codeW8rmdq",
@@ -108,7 +142,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 82
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         },
         {
             "id": "codemxtCOw",
@@ -120,7 +156,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 73
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codevxLgiE",
@@ -132,7 +170,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 67
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeLgdRz3",
@@ -144,7 +184,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 75
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeHCnRSP",
@@ -156,7 +198,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 62
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "codeeMpGqR",
@@ -168,7 +212,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 80
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 8
         },
         {
             "id": "codei73N64",
@@ -180,7 +226,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 86
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 8
         },
         {
             "id": "codesK5YMS",
@@ -192,7 +240,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 97
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
         },
         {
             "id": "codeTJqURJ",
@@ -204,7 +254,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 112
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
         },
         {
             "id": "code9iHRwo",
@@ -216,7 +268,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 82
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
         },
         {
             "id": "code6vyHse",
@@ -228,7 +282,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 86
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
         },
         {
             "id": "codeLpzig0",
@@ -240,7 +296,9 @@
             "output": {
                 "selectedType": "Hidden",
                 "elapsedTime": 88
-            }
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
         }
     ]
 }

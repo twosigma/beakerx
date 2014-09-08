@@ -71,6 +71,12 @@
             "evaluatorReader": false
         },
         {
+            "id": "textmYM8o1",
+            "type": "text",
+            "body": "Groovy is a script version of Java. &nbsp;You can use it to access the contents of any JAR, which you can include via the preferences in the Plugin Manager.<div>Groovy comes included with Beaker, so it should just work.</div>",
+            "evaluatorReader": false
+        },
+        {
             "id": "codelwaUwX",
             "type": "code",
             "evaluator": "Groovy",

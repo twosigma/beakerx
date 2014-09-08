@@ -23,7 +23,7 @@ import java.util.List;
 abstract public class XYGraphics {
   private List<Number> xs;
   private List<Number> ys;
-  private boolean visible;
+  private boolean visible = true;
   private String displayName = "";
   private String yAxisName = null;
 
@@ -48,6 +48,10 @@ abstract public class XYGraphics {
     this.visible = visible;
   }
 
+  public Boolean getVisible() {
+    return this.visible;
+  }
+
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
   }
@@ -67,5 +71,6 @@ abstract public class XYGraphics {
     }
   }
 
+  abstract public void setColor(Paint color);
   abstract public Paint getColor();
 }

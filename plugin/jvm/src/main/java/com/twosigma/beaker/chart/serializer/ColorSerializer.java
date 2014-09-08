@@ -14,21 +14,22 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.chart.xychart.plotitem;
+package com.twosigma.beaker.chart.serializer;
 
-import java.awt.Paint;
+import java.awt.Color;
+import java.io.IOException;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 
-
-public class Stems extends XYGraphics {
+public class ColorSerializer extends JsonSerializer<Color> {
 
   @Override
-  public Paint getColor() {
-    return null;
-  }
+  public void serialize(Color color, JsonGenerator jgen, SerializerProvider sp)
+      throws IOException, JsonProcessingException {
 
-  @Override
-  public void setColor(Paint color) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    jgen.writeString(String.format("#%x", color.getRGB()).toUpperCase());
   }
 
 }

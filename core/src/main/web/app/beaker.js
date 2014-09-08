@@ -310,6 +310,10 @@
   Q.fcall(initPlugins)
       .then(setupBeakerConfigAndRun)
       .then(bootstrapBkApp)
+      .then(function() {
+        bkHelper.debug();
+        bkDebug.debugUI();
+      })
       .catch(function (err) {
         console.error(err.stack);
       });

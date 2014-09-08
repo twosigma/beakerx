@@ -15,6 +15,8 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.chart.xychart.Plot;
+import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import java.io.IOException;
 import javax.swing.ImageIcon;
@@ -35,8 +37,10 @@ public class SerializeUtils {
         jgen.writeObject(obj);
       } else if (obj instanceof ImageIcon) {
         jgen.writeObject(obj);
+      } else if (obj instanceof XYChart) {
+        jgen.writeObject((XYChart) obj);
       } else if (obj instanceof XYGraphics) {
-        jgen.writeObject((XYGraphics) obj);
+        jgen.writeObject(new Plot().add((XYGraphics) obj));
       } else {
         jgen.writeObject(obj.toString());
       }

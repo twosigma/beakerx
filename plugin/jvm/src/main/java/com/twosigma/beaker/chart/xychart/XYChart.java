@@ -30,29 +30,24 @@ abstract public class XYChart {
   private int initHeight = 480;
   private String title;
   private String xLabel;
-  private String yLabel;
+  private boolean showLegend = false;
   private boolean useToolTip = true;
   private final List<XYGraphics> xyGraphics = new ArrayList<>();
   private final List<ConstantLine> constantLines = new ArrayList<>();
   private final List<ConstantBand> constantBands = new ArrayList<>();
   private final List<Text> texts = new ArrayList<>();
+  private final YAxis yAxis = new YAxis();
   private final List<YAxis> yAxes = new ArrayList<>();
-  private double xLowerMargin;
-  private double xUpperMargin;
+  private double xLowerMargin = 0.05;
+  private double xUpperMargin = 0.05;
   private boolean xAutoRange = true;
   private double xLowerBound;
   private double xUpperBound;
-  private double yLowerMargin;
-  private double yUpperMargin;
-  private boolean yAutoRange = true;
-  private boolean yAutoRangeIncludesZero;
-  private double yLowerBound;
-  private double yUpperBound;
   private boolean logX = false;
-  private boolean logY = false;
   protected TimeZone timeZone;
 
   protected XYChart() {
+    yAxes.add(yAxis);
   }
 
   public XYChart setInitWidth(int w) {
@@ -60,14 +55,26 @@ abstract public class XYChart {
     return this;
   }
 
+  public Integer getInitWidth() {
+    return this.initWidth;
+  }
+
   public XYChart setInitHeight(int h) {
     this.initHeight = h;
     return this;
   }
 
+  public Integer getInitHeight() {
+    return this.initHeight;
+  }
+
   public XYChart setTitle(String title) {
     this.title = title;
     return this;
+  }
+
+  public String getTitle() {
+    return this.title;
   }
 
   public XYChart setXLabel(String xLabel) {
@@ -80,24 +87,40 @@ abstract public class XYChart {
     return this;
   }
 
+  public String getXLabel() {
+    return this.xLabel;
+  }
+
   public XYChart setYLabel(String yLabel) {
-    this.yLabel = yLabel;
+    yAxis.setLabel(yLabel);
     return this;
   }
 
   public XYChart setyLabel(String yLabel) {
-    this.yLabel = yLabel;
+    yAxis.setLabel(yLabel);
     return this;
   }
 
-  public XYChart setShowLegend(String t) {
-    this.yLabel = t;
+  public String getYLabel() {
+    return yAxis.getLabel();
+  }
+
+  public XYChart setShowLegend(boolean showLegend) {
+    this.showLegend = showLegend;
     return this;
+  }
+
+  public Boolean getShowLegend() {
+    return this.showLegend;
   }
 
   public XYChart setUseToolTip(boolean useToolTip) {
     this.useToolTip = useToolTip;
     return this;
+  }
+
+  public Boolean getUseToolTip() {
+    return this.useToolTip;
   }
 
   public XYChart add(XYGraphics graphics) {
@@ -109,6 +132,10 @@ abstract public class XYChart {
     return add(graphics);
   }
 
+  public List<XYGraphics> getGraphics() {
+    return this.xyGraphics;
+  }
+
   public XYChart add(ConstantLine constantLine) {
     this.constantLines.add(constantLine);
     return this;
@@ -116,6 +143,10 @@ abstract public class XYChart {
 
   public XYChart leftShift(ConstantLine constantLine) {
     return add(constantLine);
+  }
+
+  public List<ConstantLine> getConstantLines() {
+    return constantLines;
   }
 
   public XYChart add(ConstantBand constantBand) {
@@ -127,6 +158,10 @@ abstract public class XYChart {
     return add(constantBand);
   }
 
+  public List<ConstantBand> getConstantBands() {
+    return constantBands;
+  }
+
   public XYChart add(Text text) {
     this.texts.add(text);
     return this;
@@ -136,6 +171,10 @@ abstract public class XYChart {
     return add(text);
   }
 
+  public List<Text> getTexts() {
+    return this.texts;
+  }
+
   public XYChart add(YAxis yAxis) {
     this.yAxes.add(yAxis);
     return this;
@@ -143,6 +182,10 @@ abstract public class XYChart {
 
   public XYChart leftShift(YAxis yAxis) {
     return add(yAxis);
+  }
+
+  public List<YAxis> getYAxes() {
+    return this.yAxes;
   }
 
   public XYChart add(List items) {
@@ -176,6 +219,38 @@ abstract public class XYChart {
     return this.setXAutoRange(xAutoRange);
   }
 
+  public Boolean getXAutoRange() {
+    return this.xAutoRange;
+  }
+
+  public XYChart setXLowerMargin(double margin) {
+    this.xLowerMargin = margin;
+    return this;
+  }
+
+  public XYChart setxLowerMargin(double margin) {
+    this.xLowerMargin = margin;
+    return this;
+  }
+
+  public double getXLowerMargin() {
+    return this.xLowerMargin;
+  }
+
+  public XYChart setXUpperMargin(double margin) {
+    this.xUpperMargin = margin;
+    return this;
+  }
+
+  public XYChart setxUpperMargin(double margin) {
+    this.xUpperMargin = margin;
+    return this;
+  }
+
+  public double getXUpperMargin() {
+    return this.xUpperMargin;
+  }
+
   public XYChart setXBound(double lower, double upper) {
     this.xAutoRange = false;
     this.xLowerBound = lower;
@@ -200,6 +275,14 @@ abstract public class XYChart {
     return this.setXBound(bound);
   }
 
+  public Double getXLowerBound() {
+    return this.xLowerBound;
+  }
+
+  public Double getXUpperBound() {
+    return this.xUpperBound;
+  }
+
   public XYChart setYAutoRange(boolean yAutoRange) {
     this.xAutoRange = yAutoRange;
     return this;
@@ -209,8 +292,12 @@ abstract public class XYChart {
     return this.setYAutoRange(yAutoRange);
   }
 
+  public Boolean getYAutoRange() {
+    return this.yAxis.getAutoRange();
+  }
+
   public XYChart setYAutoRangeIncludesZero(boolean yAutoRangeIncludesZero) {
-    this.yAutoRangeIncludesZero = yAutoRangeIncludesZero;
+    this.yAxis.setAutoRangeIncludesZero(yAutoRangeIncludesZero);
     return this;
   }
 
@@ -218,10 +305,41 @@ abstract public class XYChart {
     return this.setYAutoRangeIncludesZero(yAutoRangeIncludesZero);
   }
 
+  public Boolean getYAutoRangeIncludesZero() {
+    return this.yAxis.getAutoRangeIncludesZero();
+  }
+
+  public XYChart setYLowerMargin(double margin) {
+    this.yAxis.setLowerMargin(margin);
+    return this;
+  }
+
+  public XYChart setyLowerMargin(double margin) {
+    this.yAxis.setLowerMargin(margin);
+    return this;
+  }
+
+  public double getYLowerMargin() {
+    return this.yAxis.getLowerMargin();
+  }
+
+  public XYChart setYUpperMargin(double margin) {
+    this.yAxis.setUpperMargin(margin);
+    return this;
+  }
+
+  public XYChart setyUpperMargin(double margin) {
+    this.yAxis.setUpperMargin(margin);
+    return this;
+  }
+
+  public double getYUpperMargin() {
+    return this.yAxis.getUpperMargin();
+  }
+
   public XYChart setYBound(double lower, double upper) {
-    this.yAutoRange = false;
-    this.yLowerBound = lower;
-    this.yUpperBound = upper;
+    this.yAxis.setAutoRange(false);
+    this.yAxis.setBound(lower, upper);
     return this;
   }
 
@@ -242,19 +360,39 @@ abstract public class XYChart {
     return this.setYBound(bound);
   }
 
+  public Double getYLowerBound() {
+    return this.yAxis.getLowerBound();
+  }
+
+  public Double getYUpperBound() {
+    return this.yAxis.getUpperBound();
+  }
+
   protected XYChart setLogX(boolean logX) {
     this.logX = logX;
     return this;
   }
 
+  public Boolean getLogX() {
+    return this.logX;
+  }
+
   public XYChart setLogY(boolean logY) {
-    this.logY = logY;
+    this.yAxis.setLog(logY);
     return this;
+  }
+
+  public Boolean getLogY() {
+    return this.yAxis.getLog();
   }
 
   protected XYChart setTimeZone(TimeZone timeZone) {
     this.timeZone = timeZone;
     return this;
+  }
+
+  public TimeZone getTimeZone() {
+    return this.timeZone;
   }
 
 }

@@ -26,4 +26,9 @@ public class Bars extends XYGraphics {
     return null;
   }
 
+  @Override
+  public void setColor(Paint color) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
 }

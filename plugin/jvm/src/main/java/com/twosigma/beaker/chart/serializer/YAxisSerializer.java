@@ -16,37 +16,28 @@
 
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.xychart.plotitem.Line;
-import java.awt.Color;
+import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-public class LineSerializer extends JsonSerializer<Line> {
+public class YAxisSerializer extends JsonSerializer<YAxis> {
 
   @Override
-  public void serialize(Line line, JsonGenerator jgen, SerializerProvider sp)
+  public void serialize(YAxis yAxis, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
-    jgen.writeObjectField("type", line.getClass().getSimpleName());
-    jgen.writeObjectField("x", line.getX());
-    jgen.writeObjectField("y", line.getY());
-    jgen.writeObjectField("visible", line.getVisible());
-    if (line.getColor() instanceof Color) {
-      jgen.writeObjectField("color", line.getColor());
-    }
-    if (line.getWidth() != null) {
-      jgen.writeObjectField("width", line.getWidth());
-    }
-    if (line.getStyle() != null) {
-      jgen.writeObjectField("style", line.getStyle().toString());
-    }
-    if (line.getInterpolation() != null) {
-      jgen.writeObjectField("interpolation", line.getInterpolation());
-    }
+    jgen.writeObjectField("type", yAxis.getClass().getSimpleName());
+    jgen.writeObjectField("auto_range", yAxis.getAutoRange());
+    jgen.writeObjectField("auto_range_includes_zero", yAxis.getAutoRangeIncludesZero());
+    jgen.writeObjectField("lower_margin", yAxis.getLowerMargin());
+    jgen.writeObjectField("upper_margin", yAxis.getUpperMargin());
+    jgen.writeObjectField("lower_bound", yAxis.getLowerBound());
+    jgen.writeObjectField("upper_bound", yAxis.getUpperBound());
+    jgen.writeObjectField("log", yAxis.getLog());
     jgen.writeEndObject();
   }
 

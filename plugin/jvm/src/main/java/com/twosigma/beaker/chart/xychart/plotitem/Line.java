@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
+import java.awt.Color;
 import java.awt.Paint;
 import java.util.List;
 
@@ -24,13 +25,82 @@ public class Line extends XYGraphics {
 
   private Paint color;
   private List<Paint> colors;
-  private Float width;
+  private Float width = 1.5f;
   private StrokeType style;
   private Integer interpolation;
 
+  public Line() {
+
+  }
+
+  public Line(List<Number> ys) {
+    super.setY(ys);
+  }
+
+  public Line(List<Number> xs, List<Number> ys) {
+    super.setX(xs);
+    super.setY(ys);
+  }
+
+  public void setColor(Object color) {
+    if (color instanceof Paint) {
+      this.color = (Paint) color;
+    } else if (color instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<Paint> temp = (List<Paint>) color;
+      setColors(temp);
+    } else {
+      throw new IllegalArgumentException(
+          "setColor take Paint or List of Paint");
+    }
+  }
+
+  @Override
+  public void setColor(Paint color) {
+    this.color = color;
+  }
+
+  private void setColors(List<Paint> colors) {
+    this.colors = colors;
+  }
+
+
   @Override
   public Paint getColor() {
-    return null;
+    return this.color;
+  }
+
+  public List<Paint> getColors() {
+    return this.colors;
+  }
+
+  public void setWidth(Float width) {
+    this.width = width;
+  }
+
+  public Float getWidth() {
+    return this.width;
+  }
+
+  public void setStyle(StrokeType style) {
+    this.style = style;
+  }
+
+  public StrokeType getStyle() {
+    return this.style;
+  }
+
+  public void setInterpolation(Integer interpolation) {
+    if (interpolation.intValue() < 0 || interpolation.intValue() > 2) {
+      throw new IllegalArgumentException(
+          "Line interpolation is limited to 0, 1, 2");
+    }
+
+    this.interpolation = interpolation;
+  }
+
+  public Integer getInterpolation() {
+    return this.interpolation;
   }
 
 }

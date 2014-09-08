@@ -13,37 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.jvm.object;
 
-import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
+package com.twosigma.beaker.chart.serializer;
+
+import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import java.io.IOException;
-import javax.swing.ImageIcon;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 
-public class SerializeUtils {
+public class LineSerializer extends JsonSerializer<Line> {
 
-  public static void writeObject(Object obj, JsonGenerator jgen)
+  @Override
+  public void serialize(Line line, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
 
-    try {
-      if (obj == null) {
-        jgen.writeObject("null");
-      } else if (obj instanceof TableDisplay) {
-        jgen.writeObject(obj);
-      } else if (obj instanceof OutputContainer) {
-        jgen.writeObject(obj);
-      } else if (obj instanceof ImageIcon) {
-        jgen.writeObject(obj);
-      } else if (obj instanceof XYGraphics) {
-        jgen.writeObject((XYGraphics) obj);
-      } else {
-        jgen.writeObject(obj.toString());
-      }
-    } catch (IOException e) {
-      System.err.println("Serialization error:");
-      System.err.println(e);
-    }
-
+    jgen.writeStartObject();
+    jgen.writeObjectField("type", line.getClass().getSimpleName());
+    jgen.writeObjectField("x", line.getX());
+    jgen.writeObjectField("y", line.getY());
+    jgen.writeEndObject();
   }
+
 }

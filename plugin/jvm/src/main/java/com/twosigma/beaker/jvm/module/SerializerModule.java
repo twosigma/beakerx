@@ -19,6 +19,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.chart.serializer.LineSerializer;
+import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.ImageIconSerializer;
@@ -74,6 +76,8 @@ public class SerializerModule
     module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
     module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
     module.addSerializer(ImageIcon.class, injector.getInstance(ImageIconSerializer.class));
+
+    module.addSerializer(Line.class, injector.getInstance(LineSerializer.class));
 
     mapper.registerModule(module);
 

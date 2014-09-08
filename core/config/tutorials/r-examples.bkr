@@ -20,17 +20,6 @@
             }
         },
         {
-            "name": "IPython",
-            "plugin": "IPython",
-            "imports": "",
-            "supplementalClassPath": "",
-            "view": {
-                "cm": {
-                    "mode": "python"
-                }
-            }
-        },
-        {
             "name": "JavaScript",
             "plugin": "JavaScript",
             "jsSetting2": "",

@@ -57,7 +57,7 @@
             "id": "section001",
             "type": "section",
             "level": 1,
-            "title": "Hello Beaker",
+            "title": "Hello Notebook",
             "collapsed": false,
             "evaluatorReader": false
         },
@@ -66,7 +66,7 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "# Click below, on the 2nd line, then type some Python code (eg \"1+2\"), then click \"Run\".\n"
+                "body": "# This is a code cell.\n# Click below, on the 3rd line, then type some Python code (eg \"1+2\"), then click \"Run\".\n"
             },
             "output": {
                 "selectedType": "BeakerDisplay",

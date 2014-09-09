@@ -55,8 +55,10 @@
       openNotebook: function(notebookUri, uriType, readOnly, format) {
         return bkCoreManager.openNotebook(notebookUri, uriType, readOnly, format);
       },
-      newSession: function() {
-        return bkCoreManager.newSession();
+      // Empty true means truly empty new session.
+      // otherwise use the default notebook.
+      newSession: function(empty) {
+        return bkCoreManager.newSession(empty);
       },
 
       // current app

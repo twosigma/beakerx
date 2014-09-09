@@ -177,8 +177,8 @@
       gotoControlPanel: function() {
         return this._beakerRootOp.gotoControlPanel();
       },
-      newSession: function() {
-        return this._beakerRootOp.newSession();
+      newSession: function(empty) {
+        return this._beakerRootOp.newSession(empty);
       },
       openSession: function(sessionId) {
         return this._beakerRootOp.openSession(sessionId);

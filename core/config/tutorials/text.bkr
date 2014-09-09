@@ -88,20 +88,20 @@
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "The usual tags work, like &lt;em&gt; for <em>emphasis</em>.",
+                "body": "<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>, and\n  &lt;img&gt; for images:<br/> <img src=\"../favicon.png\">\n</p>\n<p>\n  But can also create interactive elements:<br/>\n  <button class=\"btn\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n",
                 "hidden": true
             },
             "output": {
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "The usual tags work, like &lt;em&gt; for <em>emphasis</em>."
+                    "object": "<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>, and\n  &lt;img&gt; for images:<br/> <img src=\"../favicon.png\">\n</p>\n<p>\n  But can also create interactive elements:<br/>\n  <button class=\"btn\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n"
                 },
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 33
+                "elapsedTime": 6
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 11
         },
         {
             "id": "sectiongeXedC",
@@ -128,7 +128,7 @@
         {
             "id": "markdowngV91Gh",
             "type": "markdown",
-            "body": "Why use markdown?\n\n * It's good for making lists,\n * writing code documentation, and\n * everyone else is.\n\nClick on it to make it editable, click away on the background of the notebook to reformat and display.",
+            "body": "Why use [markdown](http://daringfireball.net/projects/markdown/syntax)?\n\n * It's good for making lists,\n * writing code documentation, and\n * everyone else is.\n\nClick on it to make it editable, click away on the background of the notebook to reformat and display.",
             "evaluatorReader": false,
             "mode": "preview"
         }

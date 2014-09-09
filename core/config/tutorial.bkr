@@ -42,26 +42,6 @@
                     "background": "#FFE0F0"
                 }
             }
-        },
-        {
-            "name": "R",
-            "plugin": "R",
-            "view": {
-                "cm": {
-                    "mode": "r",
-                    "background": "#C0CFF0"
-                }
-            }
-        },
-        {
-            "name": "Groovy",
-            "plugin": "Groovy",
-            "view": {
-                "cm": {
-                    "mode": "groovy",
-                    "background": "#E0FFE0"
-                }
-            }
         }
     ],
     "cells": [

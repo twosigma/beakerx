@@ -22,11 +22,13 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
+import com.twosigma.beaker.chart.serializer.CombinedPlotSerializer;
 import com.twosigma.beaker.chart.serializer.LineSerializer;
 import com.twosigma.beaker.chart.serializer.XYChartSerializer;
 import com.twosigma.beaker.chart.serializer.PointsSerializer;
 import com.twosigma.beaker.chart.serializer.StemsSerializer;
 import com.twosigma.beaker.chart.serializer.YAxisSerializer;
+import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.Area;
 import com.twosigma.beaker.chart.xychart.plotitem.Bars;
@@ -93,6 +95,7 @@ public class SerializerModule
 
     module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
     module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));
+    module.addSerializer(CombinedPlot.class, injector.getInstance(CombinedPlotSerializer.class));
     module.addSerializer(Line.class, injector.getInstance(LineSerializer.class));
     module.addSerializer(Points.class, injector.getInstance(PointsSerializer.class));
     module.addSerializer(Bars.class, injector.getInstance(BarsSerializer.class));

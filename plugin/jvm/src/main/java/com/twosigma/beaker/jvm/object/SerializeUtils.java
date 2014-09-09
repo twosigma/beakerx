@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
@@ -41,6 +42,8 @@ public class SerializeUtils {
         jgen.writeObject((XYChart) obj);
       } else if (obj instanceof XYGraphics) {
         jgen.writeObject(new Plot().add((XYGraphics) obj));
+      } else if (obj instanceof CombinedPlot) {
+        jgen.writeObject((CombinedPlot) obj);
       } else {
         jgen.writeObject(obj.toString());
       }

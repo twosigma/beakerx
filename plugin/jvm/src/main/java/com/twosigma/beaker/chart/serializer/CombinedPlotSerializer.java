@@ -46,7 +46,7 @@ public class CombinedPlotSerializer extends JsonSerializer<CombinedPlot> {
       jgen.writeObjectField("plot_type", subplots.get(0).getClass().getSimpleName());
     }
     jgen.writeObjectField("plots", subplots);
-    jgen.writeObjectField("weight", plot.getWeights());
+    jgen.writeObjectField("weights", plot.getWeights());
     jgen.writeObjectField("version", "groovy");
     jgen.writeEndObject();
   }

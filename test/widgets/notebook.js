@@ -28,14 +28,19 @@ module.exports = function() {
 
     setHeadline: function(text) {
       var _this   = this;
-      var elm     = _this.find(".bk-section-title");
 
-      return elm.click()
+      return this.click(".bk-section-title")
       .then(function() {
-        return elm.sendKeys(text);
-      }).then(function() {
-        return _this.click();
+        // Since this is a content-editable
+        // type, we have to do a bit of work
+        // to bypass the normal input filling.
+        return _this.find('.bk-section-title').then(function(el) {
+          return el.sendKeys(text);
+        });
       })
+      .then(function() {
+        return _this.click(".bk-section-title");
+      });
     },
 
     readHeadline: function() {

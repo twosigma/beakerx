@@ -24,9 +24,9 @@ define(function(require, exports, module) {
     {
       name: "New",
       action: function() {
-        bkHelper.newSession();
+        bkHelper.newSession(true);
       },
-      tooltip: "Open a new notebook with default languages (Evaluators)"
+      tooltip: "Open a new empty notebook, add the languages of your choice"
     },
     {
       name: "Open",

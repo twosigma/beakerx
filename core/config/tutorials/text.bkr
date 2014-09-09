@@ -1,0 +1,156 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "Text, Formatting, and Equations",
+            "collapsed": false,
+            "evaluatorReader": false
+        },
+        {
+            "id": "textHVCI1K",
+            "type": "text",
+            "body": "Beaker has four kinds of cell for text: markdown, LaTeX, HTML, and plain text.",
+            "evaluatorReader": false
+        },
+        {
+            "id": "sectionf7ibxJ",
+            "type": "section",
+            "title": "LaTeX for typeset display math",
+            "level": 4,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codegJITkE",
+            "type": "code",
+            "evaluator": "Latex",
+            "input": {
+                "body": "1 +  \\frac{q^2}{(1-q)}+\\frac{q^6}{(1-q)(1-q^2)}+\\cdots =\n\\prod_{j=0}^{\\infty}\\frac{1}{(1-q^{5j+2})(1-q^{5j+3})},\n\\quad\\quad \\text{for $|q|<1$}.",
+                "hidden": true
+            },
+            "output": {
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Latex",
+                    "object": "1 +  \\frac{q^2}{(1-q)}+\\frac{q^6}{(1-q)(1-q^2)}+\\cdots =\n\\prod_{j=0}^{\\infty}\\frac{1}{(1-q^{5j+2})(1-q^{5j+3})},\n\\quad\\quad \\text{for $|q|<1$}."
+                },
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 8
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "sectionvBaqkP",
+            "type": "section",
+            "title": "HTML including CSS",
+            "level": 4,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeB8fmAw",
+            "type": "code",
+            "evaluator": "Html",
+            "input": {
+                "body": "The usual tags work, like &lt;em&gt; for <em>emphasis</em>.",
+                "hidden": true
+            },
+            "output": {
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "The usual tags work, like &lt;em&gt; for <em>emphasis</em>."
+                },
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 33
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "sectiongeXedC",
+            "type": "section",
+            "title": "Plain Text",
+            "level": 4,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "textRX7EgD",
+            "type": "text",
+            "body": "Plain text<div>respects line breaks.</div>",
+            "evaluatorReader": false
+        },
+        {
+            "id": "sectionGqkeAJ",
+            "type": "section",
+            "title": "Markdown",
+            "level": 4,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdowngV91Gh",
+            "type": "markdown",
+            "body": "Why use markdown?\n\n * It's good for making lists,\n * writing code documentation, and\n * everyone else is.\n\nClick on it to make it editable, click away on the background of the notebook to reformat and display.",
+            "evaluatorReader": false,
+            "mode": "preview"
+        }
+    ]
+}

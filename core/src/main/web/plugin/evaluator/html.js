@@ -23,6 +23,10 @@ define(function(require, exports, module) {
   var Html = {
     pluginName: PLUGIN_NAME,
     cmMode: "htmlmixed",
+    bgColor: "#E3502B",
+    fgColor: "#FFFFFF",
+    borderColor: "",
+    shortName: "Ht",
     evaluate: function(code, modelOutput) {
       var startTime = new Date().getTime();
       return bkHelper.fcall(function() {

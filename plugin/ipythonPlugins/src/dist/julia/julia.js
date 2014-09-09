@@ -37,7 +37,7 @@ define(function(require, exports, module) {
     bgColor: "#6EAC5E",
     fgColor: "#FFFFFF",
     borderColor: "",
-    shortName: "Ju",
+    shortName: "Jl",
     newShell: function(shellID, cb) {
 
       var kernel = null;

@@ -186,6 +186,20 @@
             "type": "text",
             "body": "With just one click you can share your work with the public. &nbsp;The File&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→ Share to web menu copies your notebook to a Github gist, and then opens it with our sharing server. &nbsp;You can send that link to anyone, and they can view it without having to install Beaker. &nbsp;From that page, they can download the original notebook and open it in Beaker if they have it.</span><div><span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\"><br></span></div><div><span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">The three-dot menu for sections and code cells also has a Share item that applies to that subset of your notebook.</span></div>",
             "evaluatorReader": false
+        },
+        {
+            "id": "sectionBNiuvd",
+            "type": "section",
+            "title": "Multiple Notebooks and the browser",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "textadBg5q",
+            "type": "text",
+            "body": "Just like your web browser allows you to see many web pages at the same time, Beaker allows you to work on multiple notebooks simultaneously. &nbsp;Just command-click (or control-click) on the Beaker logo in the upper-left corner to create a new tab in your browser, and connect to Beaker's start page. &nbsp;Here you will find a list of the current editing sessions, just click on one to open it. &nbsp;You can also use the file menu to open an existing notebook, create a new one, or select one of your recently used notebooks.<div><br></div><div>If at any time you accidentally close all your windows, you can reconnect to the server with the URL http://127.0.0.1/beaker/.</div><div><br></div><div>During normal editing of notebooks, Beaker saves checkpoints of your work automatically to the folder&nbsp;~/.beaker/v1/var/sessionBackups.</div>",
+            "evaluatorReader": false
         }
     ],
     "namespace": {

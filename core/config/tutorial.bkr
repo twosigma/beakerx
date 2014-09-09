@@ -172,6 +172,20 @@
             "type": "text",
             "body": "<div>Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any number of cells including other sections. There are four levels of heading, so you can organize your notebook in a tree and hide the parts you don't need. &nbsp;Try clicking the +/- buttons to get a feel for how the hierarchy works. &nbsp;The View&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→ Show Hierarchy menu makes the Hierarchy visible, including auto-numbering the sections.</span></div><div><br></div><div>Each section has a three-dot menu on the right side of the screen with operations that pertain to it, including Sharing, running all the cells in it, &nbsp;and changing its header level.</div><div><br></div><div>You can add sections with the usual Insert Cell menu.</div>",
             "evaluatorReader": false
+        },
+        {
+            "id": "sectionzXF8eP",
+            "type": "section",
+            "title": "Sharing your results",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "textVwme1V",
+            "type": "text",
+            "body": "With just one click you can share your work with the public. &nbsp;The File&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→ Share to web menu copies your notebook to a Github gist, and then opens it with our sharing server. &nbsp;You can send that link to anyone, and they can view it without having to install Beaker. &nbsp;From that page, they can download the original notebook and open it in Beaker if they have it.</span><div><span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\"><br></span></div><div><span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">The three-dot menu for sections and code cells also has a Share item that applies to that subset of your notebook.</span></div>",
+            "evaluatorReader": false
         }
     ],
     "namespace": {

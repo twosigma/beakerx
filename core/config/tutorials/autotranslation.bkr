@@ -50,6 +50,15 @@
                     "mode": "r"
                 }
             }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
         }
     ],
     "cells": [
@@ -64,7 +73,7 @@
         {
             "id": "textNi07gO",
             "type": "text",
-            "body": "<div>Beaker provides a namespace (a collection of variables and their values) in the notebook.</div><div><br></div><div>You can use it to produce data in one language and then consume or process it in another.</div>",
+            "body": "<div>Beaker can autotranslate variables in one language to another. &nbsp;You can access this feature with the notebook namespace: a collection of variables and their values stored in the notebook. &nbsp;You can use this to produce data in one language, and consume or process it in another.</div><div><br></div><div>Because the namespace is in the notebook, the variable's values are preserved when you save a notebook to disk, or share it on the web. &nbsp;The format for data interchange is JSON.</div><div><br></div><div>The four languages that are supported are IPython, R, Groovy, and JavaScript.</div>",
             "evaluatorReader": false
         },
         {
@@ -72,12 +81,12 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "beaker.set('x', \"any value even a dict or data frame\")"
+                "body": "beaker.set('x', \"Strings work fine\")"
             },
             "output": {
-                "selectedType": "Hidden",
+                "selectedType": "BeakerDisplay",
                 "outputArrived": false,
-                "elapsedTime": 168
+                "elapsedTime": 24
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -90,21 +99,66 @@
                 "body": "beaker::get('x')"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 197
+                "selectedType": "Text",
+                "elapsedTime": 85
             },
             "evaluatorReader": true,
             "lineCount": 1
+        },
+        {
+            "id": "text8CJDEu",
+            "type": "text",
+            "body": "In JavaScript, you don't need to call a function, the variables are just properties of the \"beaker\" object:",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeGNNbIg",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": "beaker.x"
+            },
+            "output": {
+                "selectedType": "Text"
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "textqT83Q0",
+            "type": "text",
+            "body": "In Groovy, you can either call a function, or access the namespace as properties:",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeL7598T",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "beaker.get('x') + beaker.x"
+            },
+            "output": {
+                "selectedType": "Text",
+                "elapsedTime": 370
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "text9L6SMV",
+            "type": "text",
+            "body": "Nested data structures and arrays are supported:",
+            "evaluatorReader": false
         },
         {
             "id": "codeuP2kh6",
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "beaker.y = {a:1, b:2.2, c:\"three\"};"
+                "body": "beaker.y = {a:1, b:2.2, c:\"three\", d:[4, 5, 6]};"
             },
             "output": {
-                "selectedType": "Hidden"
+                "selectedType": "Text"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -114,21 +168,238 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "beaker.get('y')"
+                "body": "beaker.y"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 395
+                "selectedType": "Text",
+                "elapsedTime": 61
             },
             "evaluatorReader": true,
             "lineCount": 1
         },
         {
-            "id": "markdown6c1oNJ",
-            "type": "markdown",
-            "body": "The values are stored in the notebook including when it is saved to disk.\n\nThe format for interchange and storage is JSON.",
-            "mode": "preview",
+            "id": "sectionWXeHmf",
+            "type": "section",
+            "title": "Scalars in R",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "text3lTKGy",
+            "type": "text",
+            "body": "A quirk of the R language is that there are no scalars, everything is a vector. &nbsp;So \"10\" is really an array of length one, written \"[10]\" in most other languages:",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeEh6ibk",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "beaker::set('z', 12)"
+            },
+            "output": {
+                "selectedType": "Text",
+                "elapsedTime": 123
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeNydW3I",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "beaker.get('z')"
+            },
+            "output": {
+                "outputArrived": true,
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 59
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "textZQtpZU",
+            "type": "text",
+            "body": "To access it as a scalar, just index out the first element:",
+            "evaluatorReader": false
+        },
+        {
+            "id": "code3eQahz",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "beaker.z[0] * 2"
+            },
+            "output": {
+                "outputArrived": true,
+                "selectedType": "Text",
+                "elapsedTime": 103
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "textA2RUxj",
+            "type": "text",
+            "body": "In reverse, it has no problems translating scalars from other languages to R:",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeKBVTUw",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "beaker.zz = 13"
+            },
+            "output": {
+                "selectedType": "Text",
+                "elapsedTime": 69
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeOU5Hsk",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "beaker::get('zz')"
+            },
+            "output": {
+                "selectedType": "Text",
+                "elapsedTime": 71
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "text3rt18R",
+            "type": "text",
+            "body": "Maybe Beaker should autotranslate vectors of length one (\"atomic vectors\" the the parlance of R) to scalars, but we are worried about false positives (what if you really did want an atomic vector?). &nbsp;We are also concerned this would interfere with the reversibility of the process (if you translate from R to another language and then back, you should get the same value as you started with). &nbsp;Your feedback on this point is welcome.",
+            "evaluatorReader": false
+        },
+        {
+            "id": "section21LFDr",
+            "type": "section",
+            "title": "Data Frames",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "textRAPjY4",
+            "type": "text",
+            "body": "An important complex structure in R and Python's Pandas library is the Data Frame, essentially a table with named columns. &nbsp;They go through autotranslation like so:",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codetsCQ0F",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "import pandas\ndf = pandas.DataFrame(np.random.randn(6, 4), columns=list('ABCD'))\nbeaker.set('df', df)"
+            },
+            "output": {
+                "outputArrived": false,
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 43
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codej0d66h",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "beaker::get('df')"
+            },
+            "output": {
+                "selectedType": "Table",
+                "elapsedTime": 208
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "text8tNp2l",
+            "type": "text",
+            "body": "In languages without a Data Frame type, they show up as a dictionary of arrays:",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeKUuJGm",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "beaker.df"
+            },
+            "output": {
+                "selectedType": "Text",
+                "elapsedTime": 113
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "textT2NWWl",
+            "type": "text",
+            "body": "However, note that when autotranslating to IPython, a constructor needs to be called to get the right type:",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeIkZtDp",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "beaker::set('df2', data.frame(matrix(rnorm(20), nrow=10)))"
+            },
+            "output": {
+                "selectedType": "Table",
+                "elapsedTime": 181
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "code6gnRq1",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "beaker.get('df2')"
+            },
+            "output": {
+                "outputArrived": true,
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 70
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeNYJvKz",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": "pandas.DataFrame(beaker.get('df2'))"
+            },
+            "output": {
+                "outputArrived": true,
+                "selectedType": "Table",
+                "elapsedTime": 207
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "textJi6Elj",
+            "type": "text",
+            "body": "We are considering how to more automatically detect complex types, and also how to allow the user to define their own types. &nbsp;Again, your feedback is appreciated.",
             "evaluatorReader": false
         }
-    ]
+    ],
+    "namespace": {}
 }

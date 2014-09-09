@@ -1,3 +1,5 @@
+var Driver = require("selenium-webdriver");
+
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -21,7 +23,7 @@ module.exports = function() {
       return this.click(".close-session");
     },
     toObject: function() {
-      return $.all([
+      return Driver.Promise.all([
         this.read('.caption'),
         this.read('.open-date'),
       ]).then(function(data) {
@@ -37,9 +39,7 @@ module.exports = function() {
     root: '.notebook-dashboard-list',
     itemClass: this.Widgets.NotebookSessionRow,
     toHash: function() {
-      return $.map(this.items(), function(item) {
-        return item.toObject();
-      });
+      return this.invoke('toObject');
     }
   })
 }

@@ -16,7 +16,6 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import java.awt.Color;
 import java.awt.Paint;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class Line extends XYGraphics {
       setColors(temp);
     } else {
       throw new IllegalArgumentException(
-          "setColor take Paint or List of Paint");
+          "setColor takes Paint or List of Paint");
     }
   }
 

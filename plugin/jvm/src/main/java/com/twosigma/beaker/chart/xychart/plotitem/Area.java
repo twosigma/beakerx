@@ -17,18 +17,61 @@
 package com.twosigma.beaker.chart.xychart.plotitem;
 
 import java.awt.Paint;
+import java.util.List;
 
 
 public class Area extends XYGraphics {
 
-  @Override
-  public Paint getColor() {
-    return null;
+  private Paint color;
+  private Number baseBase = 0.0d;
+  private List<Number> bases = null;
+  private Integer interpolation;
+
+  public void setBase(Number base) {
+    if (base instanceof Number) {
+      this.baseBase = (Number) base;
+    } else if (base instanceof List) {
+      @SuppressWarnings("unchecked")
+      List<Number> temp = (List<Number>) base;
+      setBases(temp);
+    } else {
+      throw new IllegalArgumentException(
+          "setBase takes Number or List of Number");
+    }
+  }
+
+  private void setBases(List<Number> bases) {
+    this.bases = bases;
+  }
+
+  public Number getBase() {
+    return this.baseBase;
+  }
+
+  public List<Number> getBases() {
+    return this.bases;
   }
 
   @Override
   public void setColor(Paint color) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    this.color = color;
   }
 
+  @Override
+  public Paint getColor() {
+    return this.color;
+  }
+
+  public void setInterpolation(Integer interpolation) {
+    if (interpolation.intValue() < 0 || interpolation.intValue() > 1) {
+      throw new IllegalArgumentException(
+          "Area interpolation is limited to 0, 1");
+    }
+
+    this.interpolation = interpolation;
+  }
+
+  public Integer getInterpolation() {
+    return this.interpolation;
+  }
 }

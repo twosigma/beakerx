@@ -56,6 +56,10 @@ abstract public class XYGraphics {
     this.displayName = displayName;
   }
 
+  public String getDisplayName() {
+    return this.displayName;
+  }
+
   public void setYAxis(String yAxisName) {
     this.yAxisName = yAxisName;
   }

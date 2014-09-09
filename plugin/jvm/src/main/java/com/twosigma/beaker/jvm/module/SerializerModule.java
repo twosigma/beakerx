@@ -19,11 +19,13 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.chart.serializer.LineSerializer;
 import com.twosigma.beaker.chart.serializer.PlotSerializer;
 import com.twosigma.beaker.chart.serializer.YAxisSerializer;
 import com.twosigma.beaker.chart.xychart.Plot;
+import com.twosigma.beaker.chart.xychart.plotitem.Area;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
@@ -86,6 +88,7 @@ public class SerializerModule
     module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
     module.addSerializer(Plot.class, injector.getInstance(PlotSerializer.class));
     module.addSerializer(Line.class, injector.getInstance(LineSerializer.class));
+    module.addSerializer(Area.class, injector.getInstance(AreaSerializer.class));
     module.addSerializer(YAxis.class, injector.getInstance(YAxisSerializer.class));
 
     mapper.registerModule(module);

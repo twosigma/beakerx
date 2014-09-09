@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.serializer;
 
-import com.twosigma.beaker.chart.xychart.plotitem.Line;
+import com.twosigma.beaker.chart.xychart.plotitem.Area;
 import java.awt.Color;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
@@ -24,29 +24,32 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-public class LineSerializer extends JsonSerializer<Line> {
+/**
+ * AreaSerializer
+ *
+ */
+public class AreaSerializer extends JsonSerializer<Area> {
 
   @Override
-  public void serialize(Line line, JsonGenerator jgen, SerializerProvider sp)
+  public void serialize(Area area, JsonGenerator jgen, SerializerProvider sp)
       throws IOException, JsonProcessingException {
 
     jgen.writeStartObject();
-    jgen.writeObjectField("type", line.getClass().getSimpleName());
-    jgen.writeObjectField("x", line.getX());
-    jgen.writeObjectField("y", line.getY());
-    jgen.writeObjectField("visible", line.getVisible());
-    jgen.writeObjectField("display_name", line.getDisplayName());
-    if (line.getColor() instanceof Color) {
-      jgen.writeObjectField("color", line.getColor());
+    jgen.writeObjectField("type", area.getClass().getSimpleName());
+    jgen.writeObjectField("x", area.getX());
+    jgen.writeObjectField("y", area.getY());
+    jgen.writeObjectField("visible", area.getVisible());
+    jgen.writeObjectField("display_name", area.getDisplayName());
+    if (area.getColor() instanceof Color) {
+      jgen.writeObjectField("color", area.getColor());
     }
-    if (line.getWidth() != null) {
-      jgen.writeObjectField("width", line.getWidth());
+    if (area.getBases() != null) {
+      jgen.writeObjectField("bases", area.getBases());
+    } else {
+      jgen.writeObjectField("base", area.getBase());
     }
-    if (line.getStyle() != null) {
-      jgen.writeObjectField("style", line.getStyle().toString());
-    }
-    if (line.getInterpolation() != null) {
-      jgen.writeObjectField("interpolation", line.getInterpolation());
+    if (area.getInterpolation() != null) {
+      jgen.writeObjectField("interpolation", area.getInterpolation());
     }
     jgen.writeEndObject();
   }

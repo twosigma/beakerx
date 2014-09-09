@@ -18,6 +18,7 @@ package com.twosigma.beaker.chart.xychart;
 
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantBand;
 import com.twosigma.beaker.chart.xychart.plotitem.ConstantLine;
+import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beaker.chart.xychart.plotitem.Text;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
@@ -45,6 +46,7 @@ abstract public class XYChart {
   private double xUpperBound;
   private boolean logX = false;
   protected TimeZone timeZone;
+  private Crosshair crosshair;
 
   protected XYChart() {
     yAxes.add(yAxis);
@@ -395,4 +397,12 @@ abstract public class XYChart {
     return this.timeZone;
   }
 
+  public XYChart setCrosshair(Crosshair crosshair) {
+    this.crosshair = crosshair;
+    return this;
+  }
+
+  public Crosshair getCrosshair() {
+    return this.crosshair;
+  }
 }

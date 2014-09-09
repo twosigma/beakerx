@@ -77,6 +77,6 @@ abstract public class XYGraphics {
     }
   }
 
-  abstract public void setColor(Paint color);
+  abstract public void setColori(Paint color);
   abstract public Paint getColor();
 }

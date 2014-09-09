@@ -23,6 +23,7 @@ import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.chart.serializer.CombinedPlotSerializer;
+import com.twosigma.beaker.chart.serializer.CrosshairSerializer;
 import com.twosigma.beaker.chart.serializer.LineSerializer;
 import com.twosigma.beaker.chart.serializer.XYChartSerializer;
 import com.twosigma.beaker.chart.serializer.PointsSerializer;
@@ -32,6 +33,7 @@ import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.Area;
 import com.twosigma.beaker.chart.xychart.plotitem.Bars;
+import com.twosigma.beaker.chart.xychart.plotitem.Crosshair;
 import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
@@ -102,6 +104,7 @@ public class SerializerModule
     module.addSerializer(Stems.class, injector.getInstance(StemsSerializer.class));
     module.addSerializer(Area.class, injector.getInstance(AreaSerializer.class));
     module.addSerializer(YAxis.class, injector.getInstance(YAxisSerializer.class));
+    module.addSerializer(Crosshair.class, injector.getInstance(CrosshairSerializer.class));
 
     mapper.registerModule(module);
 

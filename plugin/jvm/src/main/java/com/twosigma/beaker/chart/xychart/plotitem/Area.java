@@ -27,7 +27,7 @@ public class Area extends XYGraphics {
   private List<Number> bases = null;
   private Integer interpolation;
 
-  public void setBase(Number base) {
+  public void setBase(Object base) {
     if (base instanceof Number) {
       this.baseBase = (Number) base;
     } else if (base instanceof List) {
@@ -53,7 +53,7 @@ public class Area extends XYGraphics {
   }
 
   @Override
-  public void setColor(Paint color) {
+  public void setColori(Paint color) {
     this.color = color;
   }
 

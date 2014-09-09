@@ -96,7 +96,7 @@ public class Bars extends XYGraphics {
   }
 
   @Override
-  public void setColor(Paint color) {
+  public void setColori(Paint color) {
     this.baseColor = color;
   }
 

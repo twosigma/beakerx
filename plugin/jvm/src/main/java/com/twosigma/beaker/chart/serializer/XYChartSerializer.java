@@ -52,7 +52,7 @@ public class XYChartSerializer extends JsonSerializer<XYChart> {
     int i = 0;
     for (XYGraphics g : xychart.getGraphics()) {
       if (g.getColor() == null) {
-        g.setColor(ColorPalette.getColor(i++));
+        g.setColori(ColorPalette.getColor(i++));
       }
     }
 
@@ -84,6 +84,7 @@ public class XYChartSerializer extends JsonSerializer<XYChart> {
     jgen.writeObjectField("log_x", xychart.getLogX());
     jgen.writeObjectField("log_y", xychart.getLogY());
     jgen.writeObjectField("time_zone", xychart.getTimeZone());
+    jgen.writeObjectField("crosshair", xychart.getCrosshair());
     jgen.writeEndObject();
   }
 

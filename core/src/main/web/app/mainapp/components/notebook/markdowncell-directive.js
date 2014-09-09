@@ -19,6 +19,55 @@
   var module = angular.module('bk.notebook');
 
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', function(bkSessionManager, bkHelper) {
+    var editor = null;
+
+    function initializeEditor(scope, element, attrs) {
+      var div = element.find("div").first().get()[0];
+      var options = {
+        basePath: 'vendor/epiceditor',
+        container: div,
+        file: {
+          defaultContent: scope.cellmodel.body
+        },
+        button: false,
+        clientSideStorage: false,
+        autogrow: {
+          minHeight: 50,
+          maxHeight: false,
+          scroll: true
+        }
+      };
+
+      editor = new EpicEditor(options).load();
+
+      editor.on('preview', function() {
+        scope.cellmodel.mode = "preview";
+      });
+      editor.on('edit', function() {
+        scope.cellmodel.mode = "edit";
+      });
+      editor.on('focus', function() {
+        scope.focused = true;
+      });
+      editor.on('blur', function() {
+        scope.focused = false;
+        editor.preview();
+      });
+      editor.on('preview-clicked', function() {
+        scope.edit();
+      });
+      editor.on('reflow', function(size) {
+        div.style.height = size.height;
+      });
+
+      editor.editorIframeDocument.addEventListener('keyup', function(e) {
+        scope.cellmodel.body = editor.getText();
+        scope.$apply();
+      });
+
+      editor.preview();
+    }
+
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/markdowncell"](),
@@ -28,53 +77,17 @@
         }
       },
       link: function(scope, element, attrs) {
-        var div = element.find("div").first().get()[0];
-        var options = {
-          basePath: 'vendor/epiceditor',
-          container: div,
-          file: {
-            defaultContent: scope.cellmodel.body
-          },
-          button: false,
-          clientSideStorage: false,
-          autogrow: {
-            minHeight: 50,
-            maxHeight: false,
-            scroll: true
-          }
-        };
-        var editor = new EpicEditor(options).load();
-        editor.on('preview', function() {
-          scope.cellmodel.mode = "preview";
-        });
-        editor.on('edit', function() {
-          scope.cellmodel.mode = "edit";
-        });
-        editor.on('focus', function() {
-          scope.focused = true;
-        });
-        editor.on('blur', function() {
-          scope.focused = false;
-          editor.preview();
-        });
-        editor.on('preview-clicked', function() {
-          scope.edit();
-        });
-        editor.on('reflow', function(size) {
-          div.style.height = size.height;
-        });
+        var args  = arguments;
+        var _this = this;
 
-        editor.editorIframeDocument.addEventListener('keyup', function(e) {
-          scope.cellmodel.body = editor.getText();
-          scope.$apply();
-        });
+        initializeEditor.apply(this, args);
 
         scope.edit = function() {
           if (bkHelper.isNotebookLocked()) {
             return
           }
 
-          editor.edit();
+          editor && editor.edit();
         }
 
         if (scope.cellmodel.mode === "preview") {
@@ -82,7 +95,7 @@
           // similar hack found in epic editor source:
           // epiceditor.js#L845
           setTimeout(function() {
-            editor.preview();
+            editor && editor.preview();
           }, 1000);
         }
         scope.$watch('cellmodel.body', function(newVal, oldVal) {
@@ -91,8 +104,13 @@
           }
         });
 
+        scope.$parent.$watch('index', function() {
+          editor && editor.unload();
+          initializeEditor.apply(_this, args);
+        });
+
         scope.$on('$destroy', function() {
-          editor.unload();
+          editor && editor.unload();
           EpicEditor._data.unnamedEditors = [];
         });
       }

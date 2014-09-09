@@ -93,7 +93,6 @@
   vertical-align: -2px;
 }
 
-html .modal {
-  max-height: 80%;
-  overflow: auto;
+.body-box {
+  border: solid 1px $cell-border;
 }

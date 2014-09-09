@@ -34,6 +34,10 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "python",
     background: "#EAEAFF",
+    bgColor: "#EEBD48",
+    fgColor: "#FFFFFF",
+    borderColor: "",
+    shortName: "Py",
     newShell: function(shellID, cb) {
 
       var kernel = null;

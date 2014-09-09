@@ -91,10 +91,12 @@
                       });
                     }
                   });
-                  evaluatorMenuItems.push({
-                    name: evaluator.pluginName,//TODO, this should be evaluator.settings.name
-                    items: actionItems
-                  });
+                  if (actionItems.length > 0) {
+                    evaluatorMenuItems.push({
+                      name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
+                      items: actionItems
+                    });
+                  }
                 }
               });
         };
@@ -207,6 +209,19 @@
               loadNotebookModelAndResetSession(
                   notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, true);
             });
+          },
+          emptyNotebook: function(sessionId) {
+            var notebookModel =
+              '{"beaker": "2", "evaluators": [{"name": "Html", "plugin": "Html"},' +
+              '{"name": "Latex", "plugin": "Latex"},' +
+              '{"name": "JavaScript", "plugin": "JavaScript"}], "cells": []}';
+            var notebookUri = null;
+            var uriType = null;
+            var readOnly = true;
+            var format = null;
+            notebookModel = bkNotebookVersionManager.open(notebookModel);
+            loadNotebookModelAndResetSession(
+              notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
           },
           defaultNotebook: function(sessionId) {
             bkUtils.getDefaultNotebook().then(function(notebookModel) {
@@ -446,6 +461,12 @@
             addEvaluator: function(settings) {
               addEvaluator(settings, true);
             },
+            removeEvaluator: function(plugin) {
+              bkEvaluatorManager.removeEvaluator(plugin);
+	      evaluatorMenuItems = _.reject(evaluatorMenuItems, function(item) {
+		      return item.name == plugin;
+		});
+            },
             getEvaluatorMenuItems: function() {
               return evaluatorMenuItems;
             },
@@ -676,9 +697,16 @@
         (function() {
           var sessionId = $routeParams.sessionId;
           var sessionRouteResolve = $route.current.$$route.resolve;
-          if ($route.current.locals.isNewSession) {
+          console.log("session routing resolution....");
+          var newSession = $route.current.locals.isNewSession;
+          console.log(newSession);
+          if (newSession) {
             delete sessionRouteResolve.isNewSession;
-            loadNotebook.defaultNotebook(sessionId);
+            if (newSession === "new") {
+              loadNotebook.defaultNotebook(sessionId);
+            } else {
+              loadNotebook.emptyNotebook(sessionId);
+            }
           } else if ($route.current.locals.isOpen) {
             delete sessionRouteResolve.isOpen;
             delete sessionRouteResolve.target;

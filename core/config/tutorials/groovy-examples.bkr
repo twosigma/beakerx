@@ -1,0 +1,158 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "Groovy Examples",
+            "collapsed": false,
+            "evaluatorReader": false
+        },
+        {
+            "id": "textmYM8o1",
+            "type": "text",
+            "body": "Groovy is a script version of Java. &nbsp;You can use it to access the contents of any JAR, which you can include via the preferences in the Plugin Manager.<div>Groovy comes included with Beaker, so it should just work.</div>",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codelwaUwX",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "def a = 1 //local variable\nb = 2 //global variable"
+            },
+            "output": {
+                "selectedType": "Text",
+                "elapsedTime": 98
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeiXI4Hu",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "a //error"
+            },
+            "output": {
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 83
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeZsp72T",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "b //this works"
+            },
+            "output": {
+                "selectedType": "Text",
+                "elapsedTime": 89
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeyiu160",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "//closure example\ntimesTwo = {x -> x*2}"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 193
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "code0SVic5",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "timesTwo(4)"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 174
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codexiOErG",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "timesTwo(\"Multiplying Strings!\")"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 164
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "code77FYkc",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "l = [1,2,3,4] //list\nm = [a:1, b:2] //map"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 206
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        }
+    ]
+}

@@ -1,0 +1,154 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "R Examples",
+            "collapsed": false,
+            "evaluatorReader": false
+        },
+        {
+            "id": "textwrxRTw",
+            "type": "text",
+            "body": "The R Project for Statistical Computing publishes GNU R. &nbsp;Follow the instructions on BeakerNotebook.com for how to install R so Beaker can use it.",
+            "evaluatorReader": false
+        },
+        {
+            "id": "code2uVtKX",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "# This cell is for the R language.  Try running \"hist(rnorm(100))\".\nhist(rnorm(100))"
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeY69oh7",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "hist(data)"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 309
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "code9i3xs2",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "DF = data.frame(x=c(\"b\",\"b\",\"b\",\"a\",\"a\"),v=rnorm(5))"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 523
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeZCInZV",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "library(ggplot2)\nqplot(1:10, data)"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 1249
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codezB5I5w",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "library(ggplot2)\ncde <- geom_histogram(position=\"fill\", binwidth = 500)\nggplot(diamonds, aes(x=price, fill=clarity)) + cde"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 1253
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "coden2V0oT",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "occur <- matrix(c(4,3,2),ncol=3,byrow=TRUE)\ncolnames(occur) <- c(\"A\",\"B\",\"C\")\noccur"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 126
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codenl0dfP",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "a <- c(\"Sometimes\",\"Sometimes\",\"Never\",\"Always\",\"Always\",\"Sometimes\",\"Sometimes\",\"Never\")\nb <- c(\"Maybe\",\"Maybe\",\"Yes\",\"Maybe\",\"Maybe\",\"No\",\"Yes\",\"No\")\nresults <- table(a,b)"
+            },
+            "output": {
+                "selectedType": "Hidden",
+                "elapsedTime": 146
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        }
+    ]
+}

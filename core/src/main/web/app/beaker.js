@@ -110,15 +110,21 @@
           return possible.charAt(Math.floor(Math.random() * possible.length));
         }).join('');
       };
+      var makeNewProvider = function(result) {
+        return function() {
+          var newSessionId = generateId();
+          sessionRouteResolve.isNewSession = function () {
+            return result;
+          };
+          return '/session/' + newSessionId;
+        };
+      };
       $routeProvider
           .when('/session/new', {
-            redirectTo: function() {
-              var newSessionId = generateId();
-              sessionRouteResolve.isNewSession = function() {
-                return true;
-              };
-              return '/session/' + newSessionId;
-            }
+            redirectTo: makeNewProvider("new")
+          })
+          .when('/session/empty', {
+            redirectTo: makeNewProvider("empty")
           })
           .when('/session/:sessionId', {
             template: JST["template/mainapp/app"](),
@@ -227,11 +233,15 @@
           }
           return $location.path("/open").search(routeParams);
         },
-        newSession: function() {
-          if ($location.$$path === "/session/new") {
+        newSession: function(empty) {
+          var name = "/session/new";
+          if (empty) {
+            name = "/session/empty";
+          }
+          if ($location.$$path === name) {
             return $route.reload();
           } else {
-            return $location.path("/session/new").search({});
+            return $location.path(name).search({});
           }
         },
         openSession: function(sessionId) {
@@ -265,7 +275,8 @@
     });
 
     beaker.run(function(bkEvaluatePluginManager) {
-      var defaultEvaluatorUrlMap = {// for known plugins, so we can refer to the plugin with either its name or URL
+      // for known plugins, so we can refer to the plugin with either its name or URL
+      var defaultEvaluatorUrlMap = {
         "Html": "./plugin/evaluator/html.js",
         "Latex": "./plugin/evaluator/latex.js",
         "JavaScript": "./plugin/evaluator/javaScript.js"

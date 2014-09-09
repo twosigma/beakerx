@@ -38,6 +38,7 @@
         $scope.evalTabOp = {
           newPluginNameOrUrl: "",
 	  showURL: false,
+	  showWarning: false,
           getAllEvaluators: function() {
             return bkEvaluatorManager.getAllEvaluators();
           },
@@ -81,18 +82,33 @@
           setNewPluginNameOrUrl: function(pluginNameOrUrl) {
             this.newPluginNameOrUrl = pluginNameOrUrl;
           },
-          addPlugin: function(name) {
+          togglePlugin: function(name) {
             var plugin = this.newPluginNameOrUrl;
 	    $scope.evalTabOp.showURL = false;
 	    if (name) {
 		plugin = name;
 	    }
-            var newEvaluatorObj = {
-              name: "",
-              plugin: plugin
-            };
-            bkSessionManager.addEvaluator(newEvaluatorObj);
-            bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
+            var status = this.getKnownEvaluatePlugins()[plugin];
+            if (status == "known") {
+              var newEvaluatorObj = {
+                name: "",
+                plugin: plugin
+              };
+              bkSessionManager.addEvaluator(newEvaluatorObj);
+              bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
+            } else {
+              // what happens if you remove a plugin that is loading?
+              // could just ignore, unless it's possible for plugins
+              // to try to load and fail, and get stuck loading.  then
+              // you would really want to be able to delete them.
+              // other states we should support: failed and exiting.
+              if (bkSessionManager.evaluatorUnused(plugin)) {
+                bkSessionManager.removeEvaluator(plugin);
+                bkCoreManager.getBkApp().removeEvaluator(plugin);
+              } else {
+		$scope.evalTabOp.showWarning = true;
+              }
+            }
           }
         };
 

@@ -32,7 +32,9 @@ abstract public class XYGraphics {
   }
 
   public List<Number> getX() {
-    generateXs();
+    if (xs == null) {
+      generateXs();
+    }
     return this.xs;
   }
 

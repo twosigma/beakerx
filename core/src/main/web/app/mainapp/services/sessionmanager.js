@@ -252,8 +252,21 @@
           _edited = true;
         }
       },
+      evaluatorUnused: function(plugin) {
+	var n = _.find(_notebookModel.get().cells, function (c) {
+	    return c.type == "code" && c.evaluator == plugin;
+	});
+	return !n;
+      },
       addEvaluator: function(evaluator) {
         _notebookModel.get().evaluators.push(evaluator);
+        _edited = true;
+      },
+      removeEvaluator: function(plugin) {
+        var model = _notebookModel.get();
+        model.evaluators = _.reject(model.evaluators, function(e) {
+          return e.plugin == plugin;
+        });
         _edited = true;
       },
       getNotebookCellOp: function() {

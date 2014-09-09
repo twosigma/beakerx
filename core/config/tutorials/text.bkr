@@ -20,17 +20,6 @@
             }
         },
         {
-            "name": "IPython",
-            "plugin": "IPython",
-            "imports": "",
-            "supplementalClassPath": "",
-            "view": {
-                "cm": {
-                    "mode": "python"
-                }
-            }
-        },
-        {
             "name": "JavaScript",
             "plugin": "JavaScript",
             "jsSetting2": "",
@@ -39,15 +28,6 @@
                 "cm": {
                     "mode": "javascript",
                     "background": "#FFE0F0"
-                }
-            }
-        },
-        {
-            "name": "R",
-            "plugin": "R",
-            "view": {
-                "cm": {
-                    "mode": "r"
                 }
             }
         }

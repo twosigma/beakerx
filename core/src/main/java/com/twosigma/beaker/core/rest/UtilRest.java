@@ -228,6 +228,12 @@ public class UtilRest {
           preferenceJsonObject);
       setAllowAnonymousTracking(isAllowTracking);
 
+      String isUseAdvancedMode = mergeBooleanSetting(
+          "advanced-mode",
+          configJsonObject,
+          preferenceJsonObject);
+      setUseAdvancedMode(isUseAdvancedMode);
+
       this.initPlugins.addAll(
           mergeListSetting("init", configJsonObject, preferenceJsonObject));
       this.controlPanelMenuPlugins.addAll(
@@ -283,6 +289,50 @@ public class UtilRest {
   @Path("isAllowAnonymousTracking")
   public Boolean isAllowAnonymousTracking() {
     return this.isAllowAnonymousTracking;
+  }
+
+
+  private Boolean isUseAdvancedMode = null;
+
+  @POST
+  @Path("setUseAdvancedMode")
+  public void setUseAdvancedMode(
+      @FormParam("advancedmode") String advancedMode) {
+
+    if (advancedMode == null) {
+      this.isUseAdvancedMode = null;
+    } else if (advancedMode.equals("true")) {
+      this.isUseAdvancedMode = Boolean.TRUE;
+    } else if (advancedMode.equals("false")) {
+      this.isUseAdvancedMode = Boolean.FALSE;
+    } else {
+      this.isUseAdvancedMode = null;
+    }
+    final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
+
+    // TODO, assume the url is a file path for now.
+    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
+    try {
+      ObjectMapper om = new ObjectMapper();
+      TypeReference readType = new TypeReference<HashMap<String, Object>>() {
+      };
+      Map<String, Object> prefs = om.readValue(preferenceFile.toFile(), readType);
+      Boolean oldValue = (Boolean) prefs.get("advanced-mode");
+      // If value changed, write it to the file too
+      if ((this.isUseAdvancedMode == null && oldValue != null)
+              || (this.isUseAdvancedMode != null && !(this.isUseAdvancedMode.equals(oldValue)))) {
+        prefs.put("advanced-mode", this.isUseAdvancedMode);
+        om.writerWithDefaultPrettyPrinter().writeValue(preferenceFile.toFile(), prefs);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @GET
+  @Path("isUseAdvancedMode")
+  public Boolean isUseAdvancedMode() {
+    return this.isUseAdvancedMode;
   }
 
   /* Init Plugins */

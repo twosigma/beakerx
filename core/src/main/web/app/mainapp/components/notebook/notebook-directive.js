@@ -275,6 +275,12 @@
           },
           shareMenu
         ];
+
+        bkUtils.httpGet("../beaker/rest/util/isUseAdvancedMode").success(function(isAdvanced) {
+          if (_impl._viewModel.isAdvancedMode() != (isAdvanced === "true")) {
+            _impl._viewModel.toggleAdvancedMode();
+          }
+        });
       },
       link: function (scope, element, attrs) {
         var div = element.find(".bkcell").first();

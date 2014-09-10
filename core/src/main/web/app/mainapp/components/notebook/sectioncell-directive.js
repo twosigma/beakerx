@@ -68,7 +68,7 @@
         $scope.cellview.menu.addItemToHead({
           name: "Delete section and all sub-sections",
           action: function() {
-            notebookCellOp.deleteSection($scope.cellmodel.id);
+            notebookCellOp.deleteSection($scope.cellmodel.id, true);
           }
         });
         $scope.cellview.menu.addItem({

@@ -514,9 +514,14 @@
           return bkMenuPluginManager.getMenus();
         };
         var keydownHandler = function(e) {
-          if (e.ctrlKey && (e.which === 83)) {
+          if (e.ctrlKey && (e.which === 83)) { // Ctrl + s
             e.preventDefault();
             _impl.saveNotebook();
+            return false;
+          } else if (e.ctrlKey && e.which === 90) { // Ctrl + z
+            bkUtils.fcall(function() {
+              bkSessionManager.undo();
+            });
             return false;
           }
         };

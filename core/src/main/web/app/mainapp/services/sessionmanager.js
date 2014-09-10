@@ -354,6 +354,9 @@
         } else {
           return this.getNotebookCellOp().getInitializationCells();
         }
+      },
+      undo: function() {
+        bkNotebookCellModelManager.undo();
       }
     };
   });

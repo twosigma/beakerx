@@ -15,14 +15,29 @@
  */
 
 module.exports = function() {
+  var World = this;
+
   this.Widgets.Cell = this.Widget.extend({
     root: 'bk-cell',
     toggleMenu: function() {
-      return this.click(".toggle-menu .cell-dropdown");
+      var _this = this;
+
+      return new World.Widgets.NotebookDebugger().close()
+      .then(function() {
+        return _this.click(".toggle-menu .cell-dropdown");
+      });
     },
 
     toggleInsetCellMenu: function() {
-      return this.click(".new-cell-menu .dropdown-toggle");
+      var _this = this;
+
+      return new World.Widgets.NotebookDebugger().close()
+      .then(function() {
+        return _this.hover('bk-new-cell-menu');
+      })
+      .then(function() {
+        return _this.click(".insert-cell-indicator");
+      });
     }
   })
 }

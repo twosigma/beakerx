@@ -27,11 +27,6 @@ As a researcher I should be able to edit the content of my notebook so that I ca
     When I set the headline to "Another brick in the Wall"
     Then I should see the headline "Another brick in the Wall"
 
-  Scenario: Evaluating javascript
-    Given The "JavaScript" editor is ready
-    And I evaluate "JavaScript" with "1+1"
-    Then I should see the "JavaScript" editor with the result "2"
-
   Scenario: Evaluating python
     Given The "IPython" editor is ready
     And I evaluate "IPython" with "1+1"

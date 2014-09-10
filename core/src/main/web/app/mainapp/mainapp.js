@@ -54,7 +54,8 @@
       bkCellMenuPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
-      bkEvaluateJobManager) {
+      bkEvaluateJobManager,
+      $location) {
     return {
       restrict: 'E',
       template: JST["template/mainapp/mainapp"](),
@@ -529,44 +530,50 @@
           bkUtils.removeConnectedStatusListener();
         };
 
-        // TODO, when use setLocation and leave from bkApp (e.g. to control panel),
-        // we should warn and cancel evals
-        /*var onLeave = function() {
-         if (bkEvaluateJobManager.isAnyInProgress()) {
-         bkHelper.show2ButtonModal(
-         "All in-progress and pending eval will be cancelled.",
-         "Warning!",
-         function() {
-         bkEvaluateJobManager.cancel();
-         }
-         );
-         }
-         };*/
-
         $scope.$on("$destroy", onDestroy);
         window.onbeforeunload = function(e) {
-          // TODO, we should warn users, but I can't find a way to properly perform cancel after
-          // warning
+          if (bkEvaluateJobManager.isAnyInProgress()) {
+            return "Some cells are still running. Leaving the page now will cause cancelling and result be lost";
+          }
+        };
+        window.unload = function() {
           bkEvaluateJobManager.cancel();
-
           onDestroy();
-
-//        if (bkEvaluateJobManager.isAnyInProgress()) {
-//          return "Are you sure? All in-progress and pending evaluation will be cancelled";
-//        }
         };
         startAutoBackup();
         $scope.gotoControlPanel = function(event) {
           if (bkUtils.isMiddleClick(event)) {
             window.open("./");
           } else {
-            bkSessionManager.backup().then(function() {
-              bkSessionManager.clear();
-              bkCoreManager.gotoControlPanel();
-            });
+            bkCoreManager.gotoControlPanel();
           }
         };
 
+        $scope.$on("$locationChangeStart", function(event, next, current) {
+          if (bkEvaluateJobManager.isAnyInProgress() && next.indexOf("force=yes") === -1) {
+            event.preventDefault();
+            bkCoreManager.show2ButtonModal(
+                "All in-progress and pending eval will be cancelled.",
+                "Warning!",
+                function() {
+                  bkSessionManager.backup().then(function() {
+                    bkSessionManager.clear();
+                    var routeParams = {force: "yes"};
+                    var splits = decodeURIComponent(next.split("#")[1]).split("?");
+                    var path = splits[0];
+                    var search = splits[1];
+                    if (search) {
+                      var vars = search.split('&').forEach(function(v) {
+                        var pair = v.split('=');
+                        routeParams[pair[0]] = pair[1];
+                      });
+                    }
+                    $location.path(path).search(routeParams);
+                  });
+                }
+            );
+          }
+        });
 
         $scope.promptToSave = (function() {
           var prompted = false;

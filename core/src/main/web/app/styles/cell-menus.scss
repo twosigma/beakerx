@@ -160,5 +160,12 @@ bk-new-cell-menu {
     &:hover {
         color: darken($green, 5%);
     }
+
+    b {
+        margin-left: 30px;
+        position: relative;
+        display: inline-block;
+        margin-top: 2px;
+    }
 }
 

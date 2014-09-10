@@ -40,6 +40,9 @@
           var newCell = newCellFactory.newCodeCell(evaluatorName);
           attachCell(newCell);
         };
+        $scope.showPluginManager = function() {
+          bkHelper.getBkNotebookViewModel().showEvaluators();
+        };
         $scope.newTextCell = function() {
           var newCell = newCellFactory.newTextCell();
           attachCell(newCell);

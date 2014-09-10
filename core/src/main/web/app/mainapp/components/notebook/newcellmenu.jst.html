@@ -24,8 +24,11 @@
     <li class="dropdown-submenu">
       <a tabindex="-1">Code cell</a>
       <ul class="dropdown-menu">
-          <li ng-repeat="(key, value) in getEvaluators()">
-              <a ng-click="newCodeCell(key)">{{key}}</a>
+        <li ng-repeat="(key, value) in getEvaluators()">
+          <a ng-click="newCodeCell(key)">{{key}}</a>
+        </li>
+        <li>
+           <a ng-click="showPluginManager()">Other languages...</a>
         </li>
       </ul>
     </li>

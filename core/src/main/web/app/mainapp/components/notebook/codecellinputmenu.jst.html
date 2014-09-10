@@ -24,10 +24,6 @@
   <ul class="dropdown-menu inputcellmenu" role="menu" aria-labelledby="dLabel">
     <li ng-repeat="(evaluatorName, evaluator) in getEvaluators()">
       <a tabindex="-1" href="#" ng-click="setEvaluator(evaluatorName)" eat-click>
-        <bk-language-logo
-            bg-color="{{evaluator.bgColor}}"
-            fg-color="{{evaluator.fgColor}}"
-            border-color="{{evaluator.borderColor}}">{{evaluator.shortName}}</bk-language-logo>
         {{evaluatorName}}
         <i class="fa fa-check" ng-show="getShowEvalIcon(evaluatorName)"></i>
       </a>

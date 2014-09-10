@@ -4,7 +4,7 @@
     "start": "pioneer"
   },
   "dependencies": {
-    "pioneer": "0.8.2",
+    "pioneer": "0.10.1",
     "selenium-webdriver": "^2.42.1"
   }
 }

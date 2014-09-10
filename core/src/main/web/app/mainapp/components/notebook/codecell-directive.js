@@ -80,6 +80,10 @@
           return $scope.cellmodel.output.result;
         }
 
+        $scope.backgroundClick = function() {
+	    console.log("backgroundClick");
+        }
+
         $scope.isShowOutput = function() {
           if ($scope.cellmodel.output.hidden === true) {
             return false;

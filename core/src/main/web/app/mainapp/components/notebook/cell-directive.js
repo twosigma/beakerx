@@ -126,7 +126,7 @@
         };
 
         $scope.deleteCell = function() {
-          notebookCellOp.delete($scope.cellmodel.id);
+          notebookCellOp.delete($scope.cellmodel.id, true);
         }
 
         $scope.moveCellUp = function() {

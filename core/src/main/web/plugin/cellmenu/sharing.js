@@ -23,9 +23,12 @@ define(function(require, exports, module) {
 
     var future = bkHelper.httpPost("../beaker/rest/publish/github",
                                    {type: "notebook", json: angular.toJson(scope.getShareData())})
-      .then(function (reply) {
-        window.open(reply.data);
-      });
+        .success(function(reply) {
+          window.open(reply.data);
+        })
+        .error(function(msg) {
+          bkHelper.show1ButtonModal(msg, "Publish Failed");
+        });
   };
   var plugin = function(scope) {
     return [

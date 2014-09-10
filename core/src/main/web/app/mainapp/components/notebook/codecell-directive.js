@@ -80,6 +80,30 @@
           return $scope.cellmodel.output.result;
         }
 
+        $scope.backgroundClick = function(event) {
+          if (!$scope.isShowInput()) {
+            return;
+          }
+          var top = $(event.delegateTarget).offset().top;
+          var outputElement = $(event.delegateTarget).children(".code-cell-output:first");
+          var bottom;
+          if (outputElement.length > 0) {
+            bottom = outputElement.offset().top;
+          } else {
+            bottom = top + $(event.delegateTarget).height();
+          }
+          // Even better would be to detect left/right and move to
+          // beginning or end of line, but we can live with this for now.
+          var cm = $scope.cm;
+          if (event.pageY < (top + bottom) / 2) {
+            cm.setCursor(0, 0);
+          } else {
+            cm.setCursor(cm.lineCount() - 1,
+                         cm.getLine(cm.lastLine()).length);
+          }
+          cm.focus();
+        }
+
         $scope.isShowOutput = function() {
           if ($scope.cellmodel.output.hidden === true) {
             return false;

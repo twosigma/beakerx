@@ -80,8 +80,23 @@
           return $scope.cellmodel.output.result;
         }
 
-        $scope.backgroundClick = function() {
-	    console.log("backgroundClick");
+        $scope.backgroundClick = function(event) {
+          // If input is hidden then ignore XXX
+          var top = $(event.delegateTarget).offset().top;
+          var outputElement = $(event.delegateTarget).children(".code-cell-output:first");
+          var bottom;
+          if (outputElement.length > 0) {
+            bottom = outputElement.offset().top;
+          } else {
+            bottom = top + $(event.delegateTarget).height();
+          }
+          // Even better would be to detect left/right and move to
+          // beginning or end of line, but we can live with this for now.
+          if (event.pageY < (top + bottom) / 2) {
+            console.log("move cursor to first char of first line");
+          } else {
+            console.log("move cursor to last char of last line");
+          }
         }
 
         $scope.isShowOutput = function() {

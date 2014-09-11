@@ -218,6 +218,15 @@
           return $scope.cellmodel.initialization;
         };
 
+        $scope.getElapsedTimeString = function() {
+          // Do not show anything if less than 20 ms
+          if ($scope.cellmodel.output.elapsedTime >= 200) {
+            return "("+bkUtils.formatTimeString($scope.cellmodel.output.elapsedTime)+")";
+          }
+
+          return ""
+        }
+
         $scope.cellmenu.addItem({
           name: "Initialization Cell",
           isChecked: function() {

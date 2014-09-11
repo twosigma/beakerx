@@ -180,24 +180,25 @@
                         bkCoreManager.gotoControlPanel();
                       });
                 }
-              }
-              var fileLoader = bkCoreManager.getFileLoader(target.type);
-              fileLoader.load(target.uri).then(function(fileContentAsString) {
-                var notebookModel = importer.import(fileContentAsString);
-                notebookModel = bkNotebookVersionManager.open(notebookModel);
-                loadNotebookModelAndResetSession(
-                    target.uri,
-                    target.type,
-                    target.readOnly,
-                    target.format,
-                    notebookModel, false, sessionId, false);
-              }).catch(function(data, status, headers, config) {
-                bkHelper.show1ButtonModal(data, "Open Failed", function() {
-                  bkCoreManager.gotoControlPanel();
+              } else {
+                var fileLoader = bkCoreManager.getFileLoader(target.type);
+                fileLoader.load(target.uri).then(function(fileContentAsString) {
+                  var notebookModel = importer.import(fileContentAsString);
+                  notebookModel = bkNotebookVersionManager.open(notebookModel);
+                  loadNotebookModelAndResetSession(
+                      target.uri,
+                      target.type,
+                      target.readOnly,
+                      target.format,
+                      notebookModel, false, sessionId, false);
+                }).catch(function(data, status, headers, config) {
+                  bkHelper.show1ButtonModal(data, "Open Failed", function() {
+                    bkCoreManager.gotoControlPanel();
+                  });
+                }).finally(function() {
+                  $scope.loading = false;
                 });
-              }).finally(function() {
-                $scope.loading = false;
-              });
+              }
             },
           fromSession: function(sessionId) {
             bkSession.load(sessionId).then(function(session) {

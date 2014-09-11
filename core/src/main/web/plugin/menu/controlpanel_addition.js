@@ -30,30 +30,6 @@ define(function(require, exports, module) {
           },
           tooltip: "Show the dialog for setting anonymous tracking permission"
         }]
-      },
-      {
-        parent: "Help",
-        items: [{
-          name: "Tutorial notebook",
-          action: function() {
-            bkHelper.openNotebook("config/tutorial.bkr", undefined, true);
-          },
-          tooltip: "Open the tutorial notebook"
-        },
-        {
-          name: "Report a bug or feature request",
-          action: function() {
-            window.open("https://github.com/twosigma/beaker-notebook/issues/new");
-          },
-          tooltip: "Log an issue in GitHub"
-        },
-        {
-          name: "Privacy policy",
-          action: function() {
-            window.open("http://beakernotebook.com/privacy");
-          },
-          tooltip: "Privacy policy on beakernotebook.com"
-        }]
       }
     ]);
   };

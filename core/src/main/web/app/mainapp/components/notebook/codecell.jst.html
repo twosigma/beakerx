@@ -36,7 +36,10 @@
     }">
         <ul class="cell-output-labels advanced-hide">
           <li ng-if="!isShowOutput()"><b> Output Hidden</b></li>
-          <li ng-if='cellmodel.output.result.innertype != "Error" && isShowOutput()'><b>Cell Output</b></li>
+          <li ng-if='cellmodel.output.result.innertype != "Error" && isShowOutput()'>
+            <b>Cell Output</b>
+            <small class='cell-run-time'>{{getElapsedTimeString()}}</small>
+          </li>
           <li class="error-title" ng-if='cellmodel.output.result.innertype == "Error" && isShowOutput()'><b>Error</b></li>
         </ul>
         <bk-code-cell-output

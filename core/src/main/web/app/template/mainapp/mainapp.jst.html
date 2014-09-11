@@ -24,7 +24,7 @@
         <img src="/beaker/app/images/beaker_icon@2x.png"></img>
         Beaker
       </a>
-      <span class="brand" ng-if="loading"><i class='fa fa-refresh fa-spin'></i></span>
+      <span class="brand" ng-if="loading"><i class='fa fa-refresh fa-spin text-white'></i></span>
       <ul class="sub-nav">
         <li class="dropdown" ng-repeat="m in getMenus()">
           <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
@@ -35,7 +35,7 @@
             ""}}</font></span>
         </li>
         <li class="pull-right" style="padding: 10px 54px; cursor: default;">
-          <span ng-show="disconnected" class="offline-label" ng-click="promptToSave()" eat-click>offline</span>
+          <span ng-show="isDisconnected()" class="offline-label" ng-click="promptToSave()" eat-click>{{getOffineMessage()}}</span>
         </li>
       </ul>
     </div>
@@ -47,7 +47,7 @@
 <div class="container notebook-container" style="width: 100%;">
   <div class="row-fluid">
     <div class="span12">
-      <bk-notebook set-bk-notebook="setBkNotebook(bkNotebook)"></bk-notebook>
+      <bk-notebook set-bk-notebook="setBkNotebook(bkNotebook)" is-loading="loading"></bk-notebook>
     </div>
   </div>
 

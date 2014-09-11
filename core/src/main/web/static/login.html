@@ -9,9 +9,13 @@
       <form action=/loginrest/login method=post>
         Password:
         <input type="password" name="password">
+	<input id="origin" type="hidden" name="origin">
         <input type="submit">
       </form>
 
     </font>
+    <script>
+      document.getElementById("origin").value = location.origin;
+    </script>
   </body>
 </html>

@@ -153,6 +153,10 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "javascript",
     background: "#FFE0F0",
+    bgColor: "#EFDB52",
+    fgColor: "#4A4A4A",
+    borderColor: "",
+    shortName: "JS",
     evaluate: function(code, modelOutput) {
       return bkHelper.fcall(function() {
         try {

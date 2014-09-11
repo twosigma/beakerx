@@ -36,12 +36,14 @@
     "bk.menuPluginManager",
     "bk.evaluatePluginManager",
     "bk.evaluatorManager",
-    "bk.evaluateJobManager"
+    "bk.evaluateJobManager",
+    "bk.notebookCellModelManager"
   ]);
   module.factory("bkDebug", function(
       $injector, angularUtils, bkEvaluateJobManager, bkCellMenuPluginManager, bkSessionManager,
       bkCoreManager, bkOutputLog, bkRecentMenu, bkSession, bkShare,
       bkTrack, bkUtils, cometdUtils, commonUtils, bkMenuPluginManager, bkEvaluatePluginManager,
+      bkNotebookCellModelManager,
       bkEvaluatorManager) {
     return {
       $injector: $injector,
@@ -61,6 +63,7 @@
       bkMenuPluginManager: bkMenuPluginManager,
       bkEvaluatePluginManager: bkEvaluatePluginManager,
       bkEvaluatorManager: bkEvaluatorManager,
+      bkNotebookCellModelManager: bkNotebookCellModelManager,
       debugUI: function() {
         bkHelper.getBkNotebookViewModel().toggleDebugging();
         bkHelper.refreshRootScope();

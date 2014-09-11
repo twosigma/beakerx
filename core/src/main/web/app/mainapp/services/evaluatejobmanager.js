@@ -50,7 +50,7 @@
           bkUtils.log("evaluate", {
             plugin: job.evaluator.pluginName,
             length: job.code.length });
-          return bkEvaluatorManager.getEvaluator(job.evaluatorId).evaluate(job.code, job.output);
+          return job.evaluator.evaluate(job.code, job.output);
         } else {
           if (job.retry > RETRY_MAX) {
             return bkUtils.fcall(function() {
@@ -135,14 +135,14 @@
       },
       isCancellable: function() {
         var currentJob = jobQueue.getCurrentJob();
-        return currentJob && currentJob.evaluator && currentJob.cancelExecution;
+        return !!(currentJob && currentJob.evaluator && currentJob.evaluator.cancelExecution);
       },
       cancel: function() {
         var currentJob = jobQueue.getCurrentJob();
 
         if (currentJob && currentJob.evaluator) {
-          if (currentJob.cancelExecution) {
-            currentJob.cancelExecution();
+          if (currentJob.evaluator.cancelExecution) {
+            currentJob.evaluator.cancelExecution();
           } else {
             throw "cancel is not supported for the current evaluator";
           }

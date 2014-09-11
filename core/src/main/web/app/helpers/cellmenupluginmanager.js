@@ -37,6 +37,9 @@
     return {
       reset: function() {
         var self = this;
+        for (var member in _cellMenuPlugins) {
+          delete _cellMenuPlugins[member];
+        }
         bkUtils.httpGet('../beaker/rest/util/getCellMenuPlugins')
             .success(function(menuUrls) {
               menuUrls.forEach(self.loadPlugin);

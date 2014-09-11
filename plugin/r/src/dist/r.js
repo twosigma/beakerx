@@ -66,6 +66,10 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "r",
     background: "#C0CFF0",
+    bgColor: "#8495BB",
+    fgColor: "#FFFFFF",
+    borderColor: "",
+    shortName: "R",
     newShell: function(shellID, cb) {
       if (!shellID) {
         shellID = "";
@@ -151,7 +155,14 @@ define(function(require, exports, module) {
         data: { shellID: self.settings.shellID }
       }).done(cb);
     },
+    interrupt: function() {
+      this.cancelExecution();
+    },
+    cancelExecution: function() {
+      bkHelper.httpPost(serviceBase + "/rest/rsh/interrupt", {shellID: this.settings.shellID});
+    },
     spec: {
+      interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
     },
     cometdUtil: cometdUtil
   };

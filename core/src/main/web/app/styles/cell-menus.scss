@@ -29,6 +29,15 @@
     }
 }
 
+bk-new-cell-menu {
+  .dropdown-toggle {
+    text-decoration: none;
+  }
+  .shift-right {
+    margin-left: 1px;
+  }
+}
+
 .dropdown-toggle {
     color:      #3f5264;
     font-size:  13px;
@@ -48,6 +57,12 @@
 .cell-menu-item {
     float:      right;
     cursor:     pointer;
+    height:     24px;
+    padding:    0 15px;
+}
+
+.cell-status-item {
+    float:      right;
     height:     24px;
     padding:    0 15px;
 }
@@ -132,9 +147,11 @@
 }
 
 .cell-evaluator-menu {
+    top:                -20px;
     color:              $green;
     cursor:             pointer;
     display:            inline-block;
+    position:           absolute;
     font-size:          12px;
     background:         url(/beaker/app/images/down@2x.png) no-repeat center right;
     padding-right:      13px;
@@ -142,6 +159,13 @@
 
     &:hover {
         color: darken($green, 5%);
+    }
+
+    b {
+        margin-left: 30px;
+        position: relative;
+        display: inline-block;
+        margin-top: 2px;
     }
 }
 

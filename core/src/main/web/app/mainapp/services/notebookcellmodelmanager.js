@@ -131,9 +131,13 @@
     var cells = [];
     var cellMap = {};
     var tagMap = {};
-    var recreateCellMap = function() {
+    var undoAction = {};
+    var recreateCellMap = function(doNotClearUndoAction) {
       cellMap = generateCellMap(cells);
       tagMap = generateTagMap(cellMap);
+      if (!doNotClearUndoAction) {
+        undoAction = undefined;
+      }
     };
     return {
       _getCellMap: function() {
@@ -198,9 +202,24 @@
         });
       },
       getAllCodeCells: function(id) {
+        if (!id) {
+          id = "root";
+        }
         return this.getAllDescendants(id).filter(function(cell) {
           return cell.type === "code";
         });
+      },
+      // find the first code cell starting with the startCell and scan
+      // using the direction, if the startCell is a code cell, it will be returned.
+      findCodeCell: function(startCellId, forward) {
+        var cell = this.getCell(startCellId);
+        while (cell) {
+          if (cell.type === "code") {
+            return cell;
+          }
+          cell = forward ? this.getNext(cell.id) : this.getPrev(cell.id);
+        }
+        return null;
       },
       insertBefore: function(id, cell) {
         var index = this.getIndex(id);
@@ -229,6 +248,16 @@
           cells.splice(index + 1, 0, cell);
         } else {
           throw "target cell " + id + " was not found";
+        }
+        recreateCellMap();
+      },
+      insertAt: function(index, cell) {
+        if (_.isArray(cell)) {
+          Array.prototype.splice.apply(cells, [index, 0].concat(cell));
+        } else if (_.isObject(cell)) {
+          cells.splice(index, 0, cell);
+        } else {
+          throw "unacceptable"
         }
         recreateCellMap();
       },
@@ -262,17 +291,33 @@
         }
         recreateCellMap();
       },
-      delete: function(id) {
+      undoableDelete: function() {
+        this.deleteUndo = {
+            type: "single",
+            index: this.getIndex(id),
+            cell: this.getCell(id)
+        };
+        this.delete(id);
+      },
+      delete: function(id, undoable) {
         // delete the cell,
         // note that if this is a section, its descendants are not deleted.
         // to delete a seciton with all its descendants use deleteSection instead.
         var index = this.getIndex(id);
         if (index !== -1) {
-          cells.splice(index, 1);
+          var deleted = cells.splice(index, 1);
+          if (undoable) {
+            var self = this;
+            undoAction = function() {
+              self.insertAt(index, deleted);
+            };
+            recreateCellMap(true);
+          } else {
+            recreateCellMap();
+          }
         }
-        recreateCellMap();
       },
-      deleteSection: function(id) {
+      deleteSection: function(id, undoable) {
         // delete the section cell as well as all its descendants
         var cell = this.getCell(id);
         if (!cell) {
@@ -283,9 +328,23 @@
         }
         var index = this.getIndex(id);
         var descendants = this.getAllDescendants(id);
-        cells.splice(index, descendants.length + 1);
-        recreateCellMap();
-        return [cell].concat(descendants);
+        var deleted = cells.splice(index, descendants.length + 1);
+        if (undoable) {
+          var self = this;
+          undoAction = function() {
+            self.insertAt(index, deleted);
+          };
+          recreateCellMap(true);
+        } else {
+          recreateCellMap();
+        }
+        return deleted;
+      },
+      undo: function() {
+        if (undoAction) {
+          undoAction.apply();
+          undoAction = undefined;
+        }
       },
       deleteAllOutputCells: function() {
         if (cells) {

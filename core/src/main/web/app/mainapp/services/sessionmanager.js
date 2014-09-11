@@ -160,6 +160,7 @@
         _sessionId = sessionId;
 
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
+        bkSession.backup(_sessionId, generateBackupData());
       },
       clear: function() {
         bkEvaluatorManager.reset();
@@ -221,6 +222,15 @@
       getSessionId: function() {
         return _sessionId;
       },
+      isSessionValid: function() {
+        if (!_sessionId) {
+          return bkUtils.newPromise("false");
+        } else {
+          return bkSession.getSessions().then(function(sessions) {
+            return _(sessions).chain().keys().contains(_sessionId).value();
+          });
+        }
+      },
       // TODO, move the following impl to a dedicated notebook model manager
       // but still expose it here
       setNotebookModelEdited: function(edited) {
@@ -242,8 +252,21 @@
           _edited = true;
         }
       },
+      evaluatorUnused: function(plugin) {
+	var n = _.find(_notebookModel.get().cells, function (c) {
+	    return c.type == "code" && c.evaluator == plugin;
+	});
+	return !n;
+      },
       addEvaluator: function(evaluator) {
         _notebookModel.get().evaluators.push(evaluator);
+        _edited = true;
+      },
+      removeEvaluator: function(plugin) {
+        var model = _notebookModel.get();
+        model.evaluators = _.reject(model.evaluators, function(e) {
+          return e.plugin == plugin;
+        });
         _edited = true;
       },
       getNotebookCellOp: function() {
@@ -331,6 +354,9 @@
         } else {
           return this.getNotebookCellOp().getInitializationCells();
         }
+      },
+      undo: function() {
+        bkNotebookCellModelManager.undo();
       }
     };
   });

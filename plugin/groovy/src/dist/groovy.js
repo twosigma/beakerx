@@ -66,6 +66,10 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "groovy",
     background: "#E0FFE0",
+    bgColor: "#6497A9",
+    fgColor: "#FFFFFF",
+    borderColor: "",
+    shortName: "Gr",
     newShell: function(shellId, cb) {
       if (!shellId) {
         shellId = "";
@@ -150,7 +154,12 @@ define(function(require, exports, module) {
         data: { shellId: self.settings.shellID }
       }).done(cb);
     },
+    updateClassPath: function (cb) {
+      bkHelper.httpPost(serviceBase + "/rest/groovysh/setClassPath", {
+        shellId: this.settings.shellID, classPath: this.settings.classPath}).success(cb);
+    },
     spec: {
+      classPath: {type: "settableString", action: "updateClassPath", name: "Class path (jar files, one per line)"}
     },
     cometdUtil: cometdUtil
   };
@@ -173,18 +182,21 @@ define(function(require, exports, module) {
           }
           settings.shellID = id;
           self.settings = settings;
-          if (bkHelper.hasSessionId()) {
-            var initCode = "import com.twosigma.beaker.NamespaceClient\n" +
-              "beaker = new NamespaceClient('" + bkHelper.getSessionId() + "')\n";
-            self.evaluate(initCode, {}).then(function () {
+          var cb = function() {
+            if (bkHelper.hasSessionId()) {
+              var initCode = "import com.twosigma.beaker.NamespaceClient\n" +
+                "beaker = new NamespaceClient('" + bkHelper.getSessionId() + "')\n";
+              self.evaluate(initCode, {}).then(function () {
+                if (doneCB) {
+                  doneCB(self);
+                }});
+            } else {
               if (doneCB) {
                 doneCB(self);
-              }});
-          } else {
-            if (doneCB) {
-              doneCB(self);
+              }
             }
-          }
+          };
+          self.updateClassPath(cb);
         };
         if (!settings.shellID) {
           settings.shellID = "";

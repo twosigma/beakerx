@@ -26,18 +26,31 @@ import java.io.InputStreamReader;
 public class ErrorGobbler extends Thread {
 
   private final InputStream inputStream;
+  private boolean expectingExtraLine;
 
   public ErrorGobbler(InputStream is) {
     inputStream = is;
+    expectingExtraLine = false;
+  }
+
+  // R has a very weird behavior: when a session process is
+  // interrupted the master issues an empty line to stderr.  No idea
+  // why or how to stop it, seems like a bug.  Use this to hide it.
+  public void expectExtraLine() {
+    expectingExtraLine = true;
   }
 
   @Override
   public void run() {
     try {
-      InputStreamReader isr = new InputStreamReader(inputStream);
+      InputStreamReader isr = new InputStreamReader(inputStream, "UTF-8");
       BufferedReader br = new BufferedReader(isr);
       String line = null;
       while ((line = br.readLine()) != null) {
+        if (expectingExtraLine && line.length() == 0) {
+          expectingExtraLine = false;
+          continue;
+        }
         System.err.println(line);
       }
     } catch (IOException ioe) {

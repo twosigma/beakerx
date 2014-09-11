@@ -1,9 +1,10 @@
 {
   "name": "beaker-tests",
   "scripts": {
-    "start": "pioneer --require util --require steps --require widgets -f pretty --driver=firefox --prevent-browser-reload"
+    "start": "pioneer"
   },
   "dependencies": {
-    "pioneer": "0.6.3"
+    "pioneer": "0.10.1",
+    "selenium-webdriver": "^2.42.1"
   }
 }

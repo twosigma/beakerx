@@ -30,6 +30,10 @@ define(function(require, exports, module) {
         pluginName: PLUGIN_NAME,
         cmMode: "javascript",
         background: "#dbecb5",
+        bgColor: "#8EC453",
+        fgColor: "#FFFFFF",
+        borderColor: "",
+        shortName: "N",
         newShell: function (shellID, cb) {
             var self = this;
 

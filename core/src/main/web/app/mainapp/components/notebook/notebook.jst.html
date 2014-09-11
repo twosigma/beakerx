@@ -23,14 +23,14 @@
       <bk-dropdown-menu menu-items="menuItems" submenu-classes="pull-left"></bk-dropdown-menu>
     </div>
   </div>
-  <bk-new-cell-menu ng-if="!isLocked()" class="base-menu-add" config="newCellMenuConfig"></bk-new-cell-menu>
-
+  <bk-new-cell-menu ng-show="!isLocked() && !isLoading" class="base-menu-add" config="newCellMenuConfig"></bk-new-cell-menu>
   <div ng-show="isShowingOutput()" class="outputlogbox"></div>
   <div ng-show="isShowingOutput()" class="outputlogcontainer">
+    <div class="outputloghandle"></div>
     <div class="btn-toolbar">
       <div class="btn-group alt-controls">
         <a class="beaker-btn small" ng-click="clearOutput()" >Clear</a>
-        <a class="beaker-btn small" ng-click="hideOutput()" >Hide</a>
+        <a class="beaker-btn small hide-output" ng-click="hideOutput()" >Hide</a>
       </div>
       <div class="btn-group" data-toggle="buttons-checkbox">
         <a class="beaker-btn" ng-class="{active: showStdOut}" ng-click="toggleStdOut()" >stdout</a>

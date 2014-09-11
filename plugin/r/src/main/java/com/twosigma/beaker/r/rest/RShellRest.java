@@ -19,10 +19,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
@@ -81,8 +83,10 @@ public class RShellRest {
   int getPortFromCore()
     throws IOException, ClientProtocolException
   {
-    String auth = encoder.encodeBase64String(("beaker:" + System.getenv("beaker_core_password")).getBytes());
-    String response = Request.Get("http://127.0.0.1:" + corePort + "/rest/plugin-services/getAvailablePort")
+    String password = System.getenv("beaker_core_password");
+    String auth = encoder.encodeBase64String(("beaker:" + password).getBytes("ASCII"));
+    String response = Request.Get("http://127.0.0.1:" + corePort +
+                                  "/rest/plugin-services/getAvailablePort")
       .addHeader("Authorization", "Basic " + auth)
       .execute().returnContent().asString();
     return Integer.parseInt(response);
@@ -101,31 +105,38 @@ public class RShellRest {
     return tmp.getAbsolutePath();
   }
 
+  private BufferedWriter openTemp(String location)
+    throws UnsupportedEncodingException, FileNotFoundException
+  {
+    // only in Java :(
+    return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(location), "ASCII"));
+  }
 
   String writeRserveScript(int port, String password)
     throws IOException
   {
     String pwlocation = makeTemp("BeakerRserve", ".pwd");
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(pwlocation))) {
-      bw.write("beaker " + password + "\n");
-      bw.close();
-    }
+    BufferedWriter bw = openTemp(pwlocation);
+    bw.write("beaker " + password + "\n");
+    bw.close();
+
     if (windows()) {
 	// R chokes on backslash in windows path, need to quote them
 	pwlocation = pwlocation.replace("\\", "\\\\");
     }
+
     String location = makeTemp("BeakerRserveScript", ".r");
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(location))) {
-      bw.write("library(Rserve)\n");
-      bw.write("run.Rserve(auth=\"required\", plaintext=\"enable\", port=" +
-               port + ", pwdfile=\"" + pwlocation + "\")\n");
-      bw.close();
-    }
+    bw = openTemp(location);
+    bw.write("library(Rserve)\n");
+    bw.write("run.Rserve(auth=\"required\", plaintext=\"enable\", port=" +
+             port + ", pwdfile=\"" + pwlocation + "\")\n");
+    bw.close();
+
     return location;
   }
 
   private RServer startRserve()
-    throws IOException, RserveException
+    throws IOException, RserveException, REXPMismatchException
   {
     int port = getPortFromCore();
     String pluginInstallDir = System.getProperty("user.dir");
@@ -146,7 +157,8 @@ public class RShellRest {
     environmentList.toArray(environmentArray);
 
     Process rServe = Runtime.getRuntime().exec(command, environmentArray);
-    BufferedReader rServeOutput = new BufferedReader(new InputStreamReader(rServe.getInputStream()));
+    BufferedReader rServeOutput =
+      new BufferedReader(new InputStreamReader(rServe.getInputStream(), "ASCII"));
     String line = null;
     while ((line = rServeOutput.readLine()) != null) {
       if (line.indexOf("(This session will block until Rserve is shut down)") >= 0) {
@@ -164,7 +176,8 @@ public class RShellRest {
 
     RConnection rconn = new RConnection("127.0.0.1", port);
     rconn.login("beaker", password);
-    return new RServer(rconn, handler, port, password);
+    int pid = rconn.eval("Sys.getpid()").asInteger();
+    return new RServer(rconn, handler, errorGobbler, port, password, pid);
   }
 
   // set the port used for communication with the Core server
@@ -177,7 +190,8 @@ public class RShellRest {
   @POST
   @Path("getShell")
   public String getShell(@FormParam("shellid") String shellId)
-                         throws InterruptedException, RserveException, IOException {
+    throws InterruptedException, RserveException, IOException, REXPMismatchException
+  {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
@@ -198,7 +212,6 @@ public class RShellRest {
       @FormParam("code") String code) throws InterruptedException, REXPMismatchException, IOException {
 
     boolean gotMismatch = false;
-    // System.out.println("evaluating, shellID = " + shellID + ", code = " + code);
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
     RServer server = getEvaluator(shellID);
@@ -243,7 +256,11 @@ public class RShellRest {
         con.eval("print(\"" + END_MAGIC + "\")");
       }
     } catch (RserveException e) {
-      obj.error(e.getMessage());
+      if (127 == e.getRequestReturnCode()) {
+        obj.error("Interrupted");
+      } else {
+        obj.error(e.getMessage());
+      }
     } catch (REXPMismatchException e) {
       gotMismatch = true;
     }
@@ -279,8 +296,21 @@ public class RShellRest {
   public void exit(@FormParam("shellID") String shellID) {
   }
 
+  @POST
+  @Path("interrupt")
+  public void interrupt(@FormParam("shellID") String shellID)
+    throws IOException
+  {
+    if (windows()) {
+      return;
+    }
+    RServer server = getEvaluator(shellID);
+    server.errorGobbler.expectExtraLine();
+    Runtime.getRuntime().exec("kill -SIGINT " + server.pid);
+  }
+
   private void newEvaluator(String id)
-          throws RserveException, IOException
+    throws RserveException, IOException, REXPMismatchException
   {
     RServer newRs;
     if (useMultipleRservers) {
@@ -291,8 +321,11 @@ public class RShellRest {
       }
       RConnection rconn = new RConnection("127.0.0.1", rServer.port);
       rconn.login("beaker", rServer.password);
-      newRs = new RServer(rconn, rServer.outputHandler, rServer.port, rServer.password);
+      int pid = rconn.eval("Sys.getpid()").asInteger();
+      newRs = new RServer(rconn, rServer.outputHandler, rServer.errorGobbler,
+                          rServer.port, rServer.password, pid);
     }
+    
     this.shells.put(id, newRs);
   }
 
@@ -393,13 +426,18 @@ public class RShellRest {
   private static class RServer {
     RConnection connection;
     ROutputHandler outputHandler;
+    ErrorGobbler errorGobbler;
     int port;
     String password;
-    public RServer(RConnection con, ROutputHandler handler, int port, String password) {
+    int pid;
+    public RServer(RConnection con, ROutputHandler handler, ErrorGobbler gobbler,
+                   int port, String password, int pid) {
       this.connection = con;
       this.outputHandler = handler;
+      this.errorGobbler = gobbler;
       this.port = port;
       this.password = password;
+      this.pid = pid;
     }
   }
 }

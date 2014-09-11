@@ -20,14 +20,18 @@ Beaker is a code notebook that allows you to analyze, visualize, and document da
 
 This page is for developers.  If you want to use or learn more about Beaker, see the [home page](http://beakernotebook.com).
 
-Beaker is currently in early beta release and is not yet production quality. We find it useful and we hope you do too, but there are bugs and the user interface and APIs are going to change. We love to improve it and we look forward to hearing your feedback.
-![screenshots](http://twosigma.github.io/beaker-notebook/images/bk4.png)
+Beaker is a work very much in progress. We find it useful and we hope you do too, but there are bugs and the user interface and APIs are going to change. We love to improve it and we look forward to hearing your feedback.
+
+![screenshots](http://twosigma.github.io/beaker-notebook/images/bk5.png)
 
 ##Language support
 
 We currently provide support for Python, R, Julia, Groovy, Ruby, JavaScript, HTML, Markdown, and LaTeX.
 
 Beaker has a plugin-based architecture, so additional languages are easily added.
+
+Beaker supports *autotranslation* of variables between languages.  For example, you can read and process some data in Python,
+model it with R, and then turn that into an interactive visualization with Javascript.
 
 ##Iterative exploration
 

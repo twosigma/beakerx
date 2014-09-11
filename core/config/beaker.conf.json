@@ -8,6 +8,7 @@
   "control-panel-menu-plugins": [
     "./plugin/menu/controlpanel.js",
     "./plugin/menu/controlpanel_addition.js",
+    "./plugin/menu/help.js",
     "./plugin/menu/file_ipython.js",
     "./plugin/menu/file_iruby.js"
   ],
@@ -18,6 +19,7 @@
     "./plugin/menu/file_iruby.js",
     "./plugin/menu/view.js",
     "./plugin/menu/notebook.js",
+    "./plugin/menu/evaluators.js",
     "./plugin/menu/run.js",
     "./plugin/menu/help.js"
   ],

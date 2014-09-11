@@ -177,8 +177,8 @@
       gotoControlPanel: function() {
         return this._beakerRootOp.gotoControlPanel();
       },
-      newSession: function() {
-        return this._beakerRootOp.newSession();
+      newSession: function(empty) {
+        return this._beakerRootOp.newSession(empty);
       },
       openSession: function(sessionId) {
         return this._beakerRootOp.openSession(sessionId);
@@ -217,17 +217,17 @@
             return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
           };
           fileChooserStrategy.treeViewfs.applyExtFilter = false;
-          var fileChooserTemplate = '<div class="modal-header">' +
+          var fileChooserTemplate = '<div class="modal-header fixed">' +
               '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
               '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
               '</div>' +
-              '<div class="modal-body">' +
+              '<div class="modal-body fixed">' +
               '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
               '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
               '  </tree-view>' +
               (pwd === homeDir ? '' : ('  <tree-view rooturi="' + pwd + '" fs="getStrategy().treeViewfs"></tree-view>')) +
               '</div>' +
-              '<div class="modal-footer">' +
+              '<div class="modal-footer fixed">' +
               '   <p><input id="saveAsFileInput"' +
               '             class="input-xxlarge"' +
               '             ng-model="getStrategy().input"' +

@@ -21,11 +21,13 @@
   }">
 
   <p class='depth-indicator'>{{getFullIndex()}}</p>
-  <div class="bkcell code-cell-area">
+  <div class="bkcell code-cell-area" ng-click="backgroundClick($event)">
     <div class="code-cell-input" ng-show="isShowInput()">
-        <bk-code-cell-input-menu></bk-code-cell-input-menu>
-        <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
-        <a href="#" class="evaluate-script advanced-hide" ng-click="evaluate()" eat-click>Run</a>
+        <bk-code-cell-input-menu ></bk-code-cell-input-menu>
+        <div ng-click="$event.stopPropagation()">
+	  <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
+	</div>
+        <a href="#" class="evaluate-script advanced-hide" ng-click="evaluate(); $event.stopPropagation();" eat-click>Run</a>
     </div>
     <div ng-if ="hasOutput()" class="code-cell-output" ng-class="{
       'no-output': isHiddenOutput(),
@@ -34,7 +36,10 @@
     }">
         <ul class="cell-output-labels advanced-hide">
           <li ng-if="!isShowOutput()"><b> Output Hidden</b></li>
-          <li ng-if='cellmodel.output.result.innertype != "Error" && isShowOutput()'><b>Cell Output</b></li>
+          <li ng-if='cellmodel.output.result.innertype != "Error" && isShowOutput()'>
+            <b>Cell Output</b>
+            <small class='cell-run-time'>{{getElapsedTimeString()}}</small>
+          </li>
           <li class="error-title" ng-if='cellmodel.output.result.innertype == "Error" && isShowOutput()'><b>Error</b></li>
         </ul>
         <bk-code-cell-output

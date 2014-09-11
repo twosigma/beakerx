@@ -49,7 +49,8 @@ bk-markdown-cell > div {
 }
 
 .bkcell.code-cell-area, .text-cell {
-    padding: 20px;
+    padding:     20px;
+    padding-top: 40px;
     border: solid 1px $cell-border;
 }
 
@@ -68,6 +69,10 @@ bk-section-cell, bk-text-cell {
     padding: 20px;
 }
 
+bk-text-cell div[contenteditable]{
+    margin-top: 5px;
+}
+
 .bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
     margin-top: -20px;
 }
@@ -77,10 +82,6 @@ bk-code-cell .code-cell-output {
     padding:    0 20px;
     position:   relative;
     border-top: solid 1px #CCC;
-
-    &.input-hidden {
-        margin-top: 35px;
-    }
 }
 
 .advanced-mode bk-code-cell .code-cell-output {
@@ -89,6 +90,10 @@ bk-code-cell .code-cell-output {
     &.no-output .cell-menu-item {
         display: none;
     }
+}
+
+.advanced-mode .bkcell.code-cell-area, .text-cell {
+    padding-top: 20px;
 }
 
 .advanced-mode .output-hidden .cell-menu-item {
@@ -128,4 +133,30 @@ bk-output-display pre {
 
 .code-cell-hidden {
     padding-top: 20px;
+}
+
+bk-cell .section > .toggle-menu {
+    margin-top: -4px;
+}
+
+bk-language-logo {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  span {
+    width: 20px;
+    height: 19px;
+    font-weight: bold;
+    font-family: $font-family-primary-bold;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 10px;
+    padding-top: 1px;
+  }
+}
+
+.cell-run-time {
+color: #BDBDBD;
 }

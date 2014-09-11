@@ -82,6 +82,9 @@
           },
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
+          },
+          prevCell: function() {
+            return $scope.cellmodel;
           }
         };
 
@@ -123,7 +126,7 @@
         };
 
         $scope.deleteCell = function() {
-          notebookCellOp.delete($scope.cellmodel.id);
+          notebookCellOp.delete($scope.cellmodel.id, true);
         }
 
         $scope.moveCellUp = function() {

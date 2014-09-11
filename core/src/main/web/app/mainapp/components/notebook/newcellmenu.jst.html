@@ -15,20 +15,25 @@
 -->
 <div class="dropdown new-cell-menu" ng-mouseover="mouseOver=true" ng-mouseleave="mouseOver=false">
   <a class="dropdown-toggle">
-    <div ng-click="moveMenu($event)" class="insert-cell-indicator" ng-class="mouseOver && 'expanded'">+ Insert Cell
+    <div ng-click="insertDefaultCodeCell($event)" class="insert-cell-indicator" ng-class="mouseOver && 'expanded'">Insert Cell
+    </div><div ng-click="moveMenu($event)" class="insert-cell-indicator shift-right" ng-class="mouseOver && 'expanded'">
+      <i class="fa fa-sort-down"></i>
     </div>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li class="dropdown-submenu">
-      <a tabindex="-1">New code cell</a>
+      <a tabindex="-1">Code cell</a>
       <ul class="dropdown-menu">
-          <li ng-repeat="(key, value) in getEvaluators()">
-              <a ng-click="newCodeCell(key)">{{key}}</a>
+        <li ng-repeat="(key, value) in getEvaluators()">
+          <a ng-click="newCodeCell(key)">{{key}}</a>
+        </li>
+        <li>
+           <a ng-click="showPluginManager()">Other languages...</a>
         </li>
       </ul>
     </li>
     <li class="dropdown-submenu">
-      <a tabindex="-1">New Section cell</a>
+      <a tabindex="-1">Section cell</a>
       <ul class="dropdown-menu">
         <li ng-repeat='level in getLevels()'>
           <a ng-click="newSectionCell(level)">H{{level}}</a>
@@ -36,10 +41,10 @@
       </ul>
     </li>
     <li>
-      <a tabindex="-1" ng-click="newTextCell()">New Text cell</a>
+      <a tabindex="-1" ng-click="newTextCell()">Text cell</a>
     </li>
     <li>
-      <a tabindex="-1" ng-click="newMarkdownCell()">New Markdown cell</a>
+      <a tabindex="-1" ng-click="newMarkdownCell()">Markdown cell</a>
     </li>
   </ul>
 </div>

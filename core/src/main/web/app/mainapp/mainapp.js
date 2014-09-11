@@ -45,6 +45,7 @@
   module.directive('bkMainApp', function(
       $route,
       $routeParams,
+      $timeout,
       bkUtils,
       bkCoreManager,
       bkSession,
@@ -53,7 +54,8 @@
       bkCellMenuPluginManager,
       bkNotebookVersionManager,
       bkEvaluatorManager,
-      bkEvaluateJobManager) {
+      bkEvaluateJobManager,
+      $location) {
     return {
       restrict: 'E',
       template: JST["template/mainapp/mainapp"](),
@@ -90,10 +92,12 @@
                       });
                     }
                   });
-                  evaluatorMenuItems.push({
-                    name: evaluator.pluginName,//TODO, this should be evaluator.settings.name
-                    items: actionItems
-                  });
+                  if (actionItems.length > 0) {
+                    evaluatorMenuItems.push({
+                      name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
+                      items: actionItems
+                    });
+                  }
                 }
               });
         };
@@ -176,24 +180,25 @@
                         bkCoreManager.gotoControlPanel();
                       });
                 }
-              }
-              var fileLoader = bkCoreManager.getFileLoader(target.type);
-              fileLoader.load(target.uri).then(function(fileContentAsString) {
-                var notebookModel = importer.import(fileContentAsString);
-                notebookModel = bkNotebookVersionManager.open(notebookModel);
-                loadNotebookModelAndResetSession(
-                    target.uri,
-                    target.type,
-                    target.readOnly,
-                    target.format,
-                    notebookModel, false, sessionId, false);
-              }).catch(function(data, status, headers, config) {
-                bkHelper.show1ButtonModal(data, "Open Failed", function() {
-                  bkCoreManager.gotoControlPanel();
+              } else {
+                var fileLoader = bkCoreManager.getFileLoader(target.type);
+                fileLoader.load(target.uri).then(function(fileContentAsString) {
+                  var notebookModel = importer.import(fileContentAsString);
+                  notebookModel = bkNotebookVersionManager.open(notebookModel);
+                  loadNotebookModelAndResetSession(
+                      target.uri,
+                      target.type,
+                      target.readOnly,
+                      target.format,
+                      notebookModel, false, sessionId, false);
+                }).catch(function(data, status, headers, config) {
+                  bkHelper.show1ButtonModal(data, "Open Failed", function() {
+                    bkCoreManager.gotoControlPanel();
+                  });
+                }).finally(function() {
+                  $scope.loading = false;
                 });
-              }).finally(function() {
-                $scope.loading = false;
-              });
+              }
             },
           fromSession: function(sessionId) {
             bkSession.load(sessionId).then(function(session) {
@@ -206,6 +211,19 @@
               loadNotebookModelAndResetSession(
                   notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, true);
             });
+          },
+          emptyNotebook: function(sessionId) {
+            var notebookModel =
+              '{"beaker": "2", "evaluators": [{"name": "Html", "plugin": "Html"},' +
+              '{"name": "Latex", "plugin": "Latex"},' +
+              '{"name": "JavaScript", "plugin": "JavaScript"}], "cells": []}';
+            var notebookUri = null;
+            var uriType = null;
+            var readOnly = true;
+            var format = null;
+            notebookModel = bkNotebookVersionManager.open(notebookModel);
+            loadNotebookModelAndResetSession(
+              notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
           },
           defaultNotebook: function(sessionId) {
             bkUtils.getDefaultNotebook().then(function(notebookModel) {
@@ -445,6 +463,12 @@
             addEvaluator: function(settings) {
               addEvaluator(settings, true);
             },
+            removeEvaluator: function(plugin) {
+              bkEvaluatorManager.removeEvaluator(plugin);
+	      evaluatorMenuItems = _.reject(evaluatorMenuItems, function(item) {
+		      return item.name == plugin;
+		});
+            },
             getEvaluatorMenuItems: function() {
               return evaluatorMenuItems;
             },
@@ -491,9 +515,14 @@
           return bkMenuPluginManager.getMenus();
         };
         var keydownHandler = function(e) {
-          if (e.ctrlKey && (e.which === 83)) {
+          if (e.ctrlKey && (e.which === 83)) { // Ctrl + s
             e.preventDefault();
             _impl.saveNotebook();
+            return false;
+          } else if (e.ctrlKey && e.which === 90) { // Ctrl + z
+            bkUtils.fcall(function() {
+              bkSessionManager.undo();
+            });
             return false;
           }
         };
@@ -507,44 +536,50 @@
           bkUtils.removeConnectedStatusListener();
         };
 
-        // TODO, when use setLocation and leave from bkApp (e.g. to control panel),
-        // we should warn and cancel evals
-        /*var onLeave = function() {
-         if (bkEvaluateJobManager.isAnyInProgress()) {
-         bkHelper.show2ButtonModal(
-         "All in-progress and pending eval will be cancelled.",
-         "Warning!",
-         function() {
-         bkEvaluateJobManager.cancel();
-         }
-         );
-         }
-         };*/
-
         $scope.$on("$destroy", onDestroy);
         window.onbeforeunload = function(e) {
-          // TODO, we should warn users, but I can't find a way to properly perform cancel after
-          // warning
+          if (bkEvaluateJobManager.isAnyInProgress()) {
+            return "Some cells are still running. Leaving the page now will cause cancelling and result be lost";
+          }
+        };
+        window.unload = function() {
           bkEvaluateJobManager.cancel();
-
           onDestroy();
-
-//        if (bkEvaluateJobManager.isAnyInProgress()) {
-//          return "Are you sure? All in-progress and pending evaluation will be cancelled";
-//        }
         };
         startAutoBackup();
         $scope.gotoControlPanel = function(event) {
           if (bkUtils.isMiddleClick(event)) {
             window.open("./");
           } else {
-            bkSessionManager.backup().then(function() {
-              bkSessionManager.clear();
-              bkCoreManager.gotoControlPanel();
-            });
+            bkCoreManager.gotoControlPanel();
           }
         };
 
+        $scope.$on("$locationChangeStart", function(event, next, current) {
+          if (bkEvaluateJobManager.isAnyInProgress() && next.indexOf("force=yes") === -1) {
+            event.preventDefault();
+            bkCoreManager.show2ButtonModal(
+                "All in-progress and pending eval will be cancelled.",
+                "Warning!",
+                function() {
+                  bkSessionManager.backup().then(function() {
+                    bkSessionManager.clear();
+                    var routeParams = {force: "yes"};
+                    var splits = decodeURIComponent(next.split("#")[1]).split("?");
+                    var path = splits[0];
+                    var search = splits[1];
+                    if (search) {
+                      var vars = search.split('&').forEach(function(v) {
+                        var pair = v.split('=');
+                        routeParams[pair[0]] = pair[1];
+                      });
+                    }
+                    $location.path(path).search(routeParams);
+                  });
+                }
+            );
+          }
+        });
 
         $scope.promptToSave = (function() {
           var prompted = false;
@@ -558,35 +593,96 @@
                 "Save current notebook as a file?",
                 "Disconnected",
                 function() {
-                  // "Not now", hijack all keypress events to prompt again
-                  window.addEventListener('keypress', $scope.promptToSave, true);
-                },
-                function() {
                   // "Save", save the notebook as a file on the client side
                   bkUtils.saveAsClientFile(
                       bkSessionManager.getSaveData().notebookModelAsString,
                       "notebook.bkr");
                 },
-                "Not now", "Save", "", "btn-primary"
+                function() {
+                  // "Not now", hijack all keypress events to prompt again
+                  window.addEventListener('keypress', $scope.promptToSave, true);
+                },
+                "Save", "Not now", "btn-primary", ""
             ).then(function() {
               prompted = false;
             });
           };
         })();
 
-        bkUtils.addConnectedStatusListener(function(msg) {
-          if (msg.successful !== !$scope.disconnected) {
-            var disconnected = !msg.successful;
-            $scope.$digest();
-            if (disconnected) {
-              $scope.disconnected = true;
-              $scope.promptToSave();
-            } else {
-              // we don't handle reconnect right now
+        var connectionManager = (function() {
+          var RECONNECT_TIMEOUT = 5000; // 5 seconds
+          var OFFLINE_MESSAGE = "offline";
+          var CONNECTING_MESSAGE = "reconnecting";
+          var reconnectTimeout = undefined;
+          var statusMessage = OFFLINE_MESSAGE;
+          var disconnected = false;
+          var indicateReconnectFailed = function() {
+            stopWaitingReconnect();
+            statusMessage = OFFLINE_MESSAGE;
+            bkUtils.disconnect(); // prevent further attempting to reconnect
+            $scope.promptToSave();
+          };
+          var waitReconnect = function() {
+            statusMessage = CONNECTING_MESSAGE;
+
+            // wait for 5 sceonds, if reconnect didn't happen, prompt to save
+            if (!reconnectTimeout) {
+              reconnectTimeout = $timeout(indicateReconnectFailed, RECONNECT_TIMEOUT);
             }
+            // if user attempts to interact within 5 second, also prompt to save
+            window.addEventListener('keypress', indicateReconnectFailed, true);
+          };
+          var stopWaitingReconnect = function() {
+            if (reconnectTimeout) {
+              $timeout.cancel(reconnectTimeout);
+              reconnectTimeout = undefined;
+            }
+            window.removeEventListener('keypress', indicateReconnectFailed, true);
+          };
+
+          return {
+            onDisconnected: function() {
+              disconnected = true;
+              waitReconnect();
+            },
+            onReconnected: function() {
+              bkSessionManager.isSessionValid().then(function(isValid) {
+                if (isValid) {
+                  stopWaitingReconnect();
+                  disconnected = false;
+                } else {
+                  indicateReconnectFailed();
+                }
+              });
+            },
+            getStatusMessage: function() {
+              return statusMessage;
+            },
+            isDisconnected: function() {
+              return disconnected;
+            }
+          };
+        })();
+
+        $scope.getOffineMessage = function() {
+          return connectionManager.getStatusMessage();
+        };
+        $scope.isDisconnected = function() {
+          return connectionManager.isDisconnected();
+        };
+
+        bkUtils.addConnectedStatusListener(function(msg) {
+          if (msg.successful !== !$scope.isDisconnected()) {
+            var disconnected = !msg.successful;
+            if (disconnected) {
+              connectionManager.onDisconnected();
+            } else {
+              connectionManager.onReconnected();
+            }
+            $scope.$digest();
           }
         });
-        $scope.$watch('disconnected', function(disconnected) {
+        $scope.$watch('isDisconnected()', function(disconnected) {
           if (disconnected) {
             stopAutoBackup();
           } else {
@@ -614,9 +710,16 @@
         (function() {
           var sessionId = $routeParams.sessionId;
           var sessionRouteResolve = $route.current.$$route.resolve;
-          if ($route.current.locals.isNewSession) {
+          console.log("session routing resolution....");
+          var newSession = $route.current.locals.isNewSession;
+          console.log(newSession);
+          if (newSession) {
             delete sessionRouteResolve.isNewSession;
-            loadNotebook.defaultNotebook(sessionId);
+            if (newSession === "new") {
+              loadNotebook.defaultNotebook(sessionId);
+            } else {
+              loadNotebook.emptyNotebook(sessionId);
+            }
           } else if ($route.current.locals.isOpen) {
             delete sessionRouteResolve.isOpen;
             delete sessionRouteResolve.target;

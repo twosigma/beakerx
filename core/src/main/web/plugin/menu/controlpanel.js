@@ -22,9 +22,9 @@ define(function(require, exports, module) {
   var fileMenuItems = [
     {
       name: "New",
-      tooltip: "Open a new notebook with default languages(Evaluators)",
+      tooltip: "Open a new empty notebook, add the languages of your choice",
       action: function() {
-        bkHelper.newSession();
+        bkHelper.newSession(true);
       }
     },
     {
@@ -51,7 +51,7 @@ define(function(require, exports, module) {
                   function(originalUrl) {
                     bkHelper.openNotebook(originalUrl);
                   },
-                  JST['opennotebook']({homedir: homeDir}),
+                  JST['template/opennotebook']({homedir: homeDir}),
                   bkHelper.getFileSystemFileChooserStrategy()
               );
             }

@@ -16,9 +16,15 @@
 
 module.exports = function() {
   this.When(/^I click the '(\d+)' cell menu$/, function(index) {
-    return new this.Widgets.Cell({
-      root: 'bk-section-cell bk-cell:nth-child('+index+')'
-    }).toggleMenu();
+    var _this = this;
+
+    return new this.Widgets.NotebookDebugger()
+    .close()
+    .then(function() {
+      return new _this.Widgets.Cell({
+        root: 'bk-section-cell bk-cell:nth-child('+index+')'
+      }).toggleMenu();
+    });
   });
 
   this.Then(/^I should see a open cell menu$/, function() {
@@ -26,7 +32,13 @@ module.exports = function() {
   });
 
   this.When(/^I toggle the cells input display$/, function() {
-    return new this.Widgets.CellMenu().toggleInputCell();
+    var _this = this;
+
+    return new this.Widgets.NotebookDebugger()
+    .close()
+    .then(function() {
+      return new _this.Widgets.CellMenu().toggleInputCell();
+    })
   });
 
   this.Then(/^I should not see cell '(\d+)' input$/, function(index) {

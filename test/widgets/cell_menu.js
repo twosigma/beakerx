@@ -18,10 +18,7 @@ module.exports = function() {
   this.Widgets.CellMenu = this.Widget.extend({
     root: '.dropdown.bkcellmenu.open',
     toggleInputCell: function() {
-      return this.driver.executeScript("return $('"+this.root+" li:contains(\"Show input cell\")')[0]")
-      .then(function(elm) {
-        return elm.click();
-      });
+      return this.click({text: "Show input cell"});
     }
   })
 }

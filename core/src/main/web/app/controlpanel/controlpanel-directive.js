@@ -57,7 +57,10 @@
 
         // actions for UI
         $scope.newNotebook = function() {
-          bkCoreManager.newSession();
+          bkCoreManager.newSession(false);
+        };
+        $scope.newEmptyNotebook = function() {
+          bkCoreManager.newSession(true);
         };
         $scope.openTutorial = function() {
           bkCoreManager.openNotebook("config/tutorial.bkr", undefined, true);

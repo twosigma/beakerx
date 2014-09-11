@@ -30,9 +30,13 @@
     font-size: 10px;
   }
 
+  &:focus {
+    outline: none;
+  }
+
   &:hover {
     text-decoration: none;
-    background: darken(#f1f1f1, 5%)
+    background: darken(#f1f1f1, 5%);
   }
 
   &.active {
@@ -41,9 +45,13 @@
     background: $highlight-blue;
 
     &:hover {
-      background: darken($highlight-blue, 5%)
+      background: darken($highlight-blue, 5%);
     }
   }
+}
+
+strong {
+  font-family: 'pt_sansbold';
 }
 
 .btn-group {
@@ -68,6 +76,10 @@
   color: limegreen;
 }
 
+.plugin-url.bkr {
+  font-size: 18px;
+}
+
 .plugin-loading {
   color: orange;
 }
@@ -83,4 +95,8 @@
 .plugin-status {
   font-size: 150%;
   vertical-align: -2px;
+}
+
+.body-box {
+  border: solid 1px $cell-border;
 }

@@ -81,8 +81,10 @@ public class RShellRest {
   int getPortFromCore()
     throws IOException, ClientProtocolException
   {
-    String auth = encoder.encodeBase64String(("beaker:" + System.getenv("beaker_core_password")).getBytes());
-    String response = Request.Get("http://127.0.0.1:" + corePort + "/rest/plugin-services/getAvailablePort")
+    String password = System.getenv("beaker_core_password");
+    String auth = encoder.encodeBase64String(("beaker:" + password).getBytes("ASCII"));
+    String response = Request.Get("http://127.0.0.1:" + corePort +
+                                  "/rest/plugin-services/getAvailablePort")
       .addHeader("Authorization", "Basic " + auth)
       .execute().returnContent().asString();
     return Integer.parseInt(response);

@@ -383,7 +383,7 @@
           newmodel.xAxis.type = "time";
         } else if (model.type === "NanoPlot"){  // TODO
         } else {
-          newmodel.xAxis = "linear";
+          newmodel.xAxis.type = "linear";
         }
 
         if (logy) {
@@ -591,10 +591,8 @@
             title : model.chart_title != null ? model.chart_title : model.title,
             margin : {},
             focus : {},
-            xAxis : {},
-            yAxis : {},
-            xAxisLabel : model.domain_axis_label,
-            yAxisLabel : model.y_label,
+            xAxis : { label : model.domain_axis_label },
+            yAxis : { label : model.y_label },
             showLegend : model.show_legend != null ? model.show_legend : false,
             useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
             initSize : {

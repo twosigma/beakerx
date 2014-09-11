@@ -19,10 +19,13 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
@@ -103,26 +106,33 @@ public class RShellRest {
     return tmp.getAbsolutePath();
   }
 
+  private BufferedWriter openTemp(String location)
+    throws UnsupportedEncodingException, FileNotFoundException
+  {
+    // only in Java :(
+    return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(location), "ASCII"));
+  }
 
   String writeRserveScript(int port, String password)
     throws IOException
   {
     String pwlocation = makeTemp("BeakerRserve", ".pwd");
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(pwlocation))) {
-      bw.write("beaker " + password + "\n");
-      bw.close();
-    }
+    BufferedWriter bw = openTemp(pwlocation);
+    bw.write("beaker " + password + "\n");
+    bw.close();
+
     if (windows()) {
 	// R chokes on backslash in windows path, need to quote them
 	pwlocation = pwlocation.replace("\\", "\\\\");
     }
+
     String location = makeTemp("BeakerRserveScript", ".r");
-    try (BufferedWriter bw = new BufferedWriter(new FileWriter(location))) {
-      bw.write("library(Rserve)\n");
-      bw.write("run.Rserve(auth=\"required\", plaintext=\"enable\", port=" +
-               port + ", pwdfile=\"" + pwlocation + "\")\n");
-      bw.close();
-    }
+    bw = openTemp(location);
+    bw.write("library(Rserve)\n");
+    bw.write("run.Rserve(auth=\"required\", plaintext=\"enable\", port=" +
+             port + ", pwdfile=\"" + pwlocation + "\")\n");
+    bw.close();
+
     return location;
   }
 

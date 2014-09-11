@@ -40,10 +40,9 @@ public class HttpProxyRest {
   @Path("load")
   @Produces(MediaType.TEXT_PLAIN)
   public String load(@QueryParam("url") String urlString) throws IOException {
-    //urlString = "https://raw.github.com/ethanwhite/progbio/master/ipynbs/ipython-notebook.ipynb";
     URL url = new URL(urlString);
     StringBuilder fullText;
-    try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
+    try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"))) {
       fullText = new StringBuilder();
       String inputLine;
       while ((inputLine = in.readLine()) != null) {

@@ -43,7 +43,7 @@ public class ErrorGobbler extends Thread {
   @Override
   public void run() {
     try {
-      InputStreamReader isr = new InputStreamReader(inputStream);
+      InputStreamReader isr = new InputStreamReader(inputStream, "UTF-8");
       BufferedReader br = new BufferedReader(isr);
       String line = null;
       while ((line = br.readLine()) != null) {

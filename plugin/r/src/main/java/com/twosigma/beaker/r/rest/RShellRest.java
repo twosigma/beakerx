@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -158,7 +157,8 @@ public class RShellRest {
     environmentList.toArray(environmentArray);
 
     Process rServe = Runtime.getRuntime().exec(command, environmentArray);
-    BufferedReader rServeOutput = new BufferedReader(new InputStreamReader(rServe.getInputStream()));
+    BufferedReader rServeOutput =
+      new BufferedReader(new InputStreamReader(rServe.getInputStream(), "ASCII"));
     String line = null;
     while ((line = rServeOutput.readLine()) != null) {
       if (line.indexOf("(This session will block until Rserve is shut down)") >= 0) {

@@ -1,33 +1,42 @@
 /*
-*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*         http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*/
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
-.plot-renderdiv {
+.plot-plotcontainer {
   background-color: #FEFEFE;
   border: 1px solid #BBBBBB;
+  position: relative;
+  border-collapse: initial;
 }
 
 .plot-label,
 .plot-test,
 .plot-xylabel,
 .plot-cursorlabel,
-.plot-constlabel {
+.plot-constlabel,
+.plot-tooltip,
+.plot-message-content,
+.plot-message-title {
   font-family: verdana, helvetica, arial, sans-serif;
 }
 
-.plot-const,
+.plot-resp {
+  pointer-events: auto;
+}
+
+.plot-constline,
 .plot-line {
   fill: none;
 }
@@ -46,24 +55,39 @@
 .plot-cursorlabel,
 .plot-constlabel {
   font-size: 0.75em;
-  font-weight: bold;
   color: white;
   padding: 1px 5px;
   pointer-events: none;
   position: absolute;
   width: auto;
   height: auto;
-  border-radius: 5px;
+  border-radius: 2px;
+  display: inline-table;
 }
 
-.plot-coord,
-.plot-coord-base {
+.plot-gridline,
+.plot-gridline-base {
   stroke-width: 1;
   pointer-events: none;
 }
-.plot-const,
+.plot-gridline {
+  stroke: #111111;
+  stroke-dasharray: 1, 1;
+  stroke-width: 1;
+  opacity: .5;
+}
+.plot-gridline-base {
+  stroke: #333333;
+  stroke-width: 3;
+  opacity: .75;
+}
+
+
+
+.plot-constline,
+.plot-constband,
 .plot-line,
-.plot-river,
+.plot-area,
 .plot-cursor {
   pointer-events: none;
 }
@@ -73,17 +97,10 @@
   pointer-events: auto;
 }
 
-.plot-coord {
-  stroke: #111111;
-  stroke-dasharray: 1, 1;
-  stroke-width: 1;
-  opacity: .5;
-}
-
-.plot-coord-base {
-  stroke: #333333;
-  stroke-width: 3;
-  opacity: .75;
+.plot-pointrect,
+.plot-pointcircle,
+.plot-pointdiamond {
+  /* to be added if needed */
 }
 
 .plot-locatebox {
@@ -103,10 +120,11 @@
 }
 
 .plot-legendbox {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   margin: 0px 5px;
   display: inline-block;
+  vertical-align: middle;
 }
 
 .plot-legendcheckbox {
@@ -114,35 +132,89 @@
   margin-right: 5px;
 }
 
+.plot-legendtext {
+  pointer-events: none;
+}
+
+.plot-legendlod {
+  width: 5px;
+  height: 5px;
+  border-radius : 5px;
+  margin: 0px 5px;
+  display: inline-block;
+}
+
+.plot-legendlodhint {
+  font-size: 0.7em;
+  vertical-align: middle;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.plot-legendlodauto {
+  font-size: 0.7em;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
 .plot-legendcontainer {
-  stroke: gray;
-  fill: #FEFEFE;
   position: absolute;
-  padding-left: 10px;
-  width: 150px;
-  height: auto;
+  padding: .25em;
   border: 1px solid #BBBBBB;
-  background-color: white;
-  list-style: none;
+  background-color: #FEFEFE;
+  border-collapse: initial; /* override the global table setting*/
 }
 
 .plot-coverbox {
   fill: #FEFEFE;
 }
 
-.plot-dot {
+.plot-respdot,
+.plot-respstem {
   fill: white;
-  stroke-width: 2;
+  fill-opacity: 0.75;
+  stroke-width: 1;
+  border-radius: 2.5px;
 }
 
 .plot-tooltip {
-  font-size: 0.9em;
-  font-weight: bold;
+  font-size: 0.8em;
   position: absolute;
-  width: auto;
-  height: auto;
-  border: 2px solid;
+  display: inline-table;
+  border: 1px solid;
   background-color: white;
-  border-radius: 5px;
-  padding: 1em;
+  padding: 0.8em;
+}
+
+.plot-message-content {
+  vertical-align: middle;
+}
+.plot-message-title {
+  font-weight: bold;
+}
+.plot-message {
+  min-width: 150px;
+  min-height: 50px;
+  font-size: 0.8em;
+  position: absolute;
+  border: 1px solid gray;
+  background-color: white;
+  padding: 0.8em;
+  display: inline-table;
+}
+
+.plot-lodbox {
+  stroke: black;
+  stroke-width: 1;
+}
+
+.plot-lodavg,
+.plot-lodavgline, {
+  pointer-events: none;
+}
+
+.plot-lodavgline {
+  fill: none;
+  stroke: black;
+  stroke-width: 1.5;
 }

@@ -17,7 +17,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils, plotConverter) {
+  var retfunc = function(bkUtils, plotFormatter) {
     return {
       standardizeModel : function(model) {
         var newmodel = {
@@ -34,15 +34,13 @@
         var width, height;
         var showLegend, useToolTip;
         if (version === "groovy") {
-          newmodel.xLabel = model.x_label;
-          newmodel.yLabel = model.y_label;
+          newmodel.xAxisLabel = model.x_label;
+          newmodel.yAxisLabel = model.y_label;
           width = model.init_width;
           height = model.init_height;
           showLegend = model.show_legend;
           useToolTip = model.use_tool_tip;
         } else if (version === "direct"){
-          newmodel.xLabel = model.xLabel;
-          newmodel.yLabel = model.yLabel;
           width = model.width;
           height = model.height;
           showLegend = model.showLegend;
@@ -52,9 +50,9 @@
         if (width == null) { width = 1200; }
         if (height == null) { height = 600; }
 
-        newmodel.initSize = {
-          "width" : width + "px",
-          "height" : height + "px"
+        newmodel.plotSize = {
+          "width" : width,
+          "height" : height
         };
 
         var plotType = model.plot_type;
@@ -63,7 +61,9 @@
         var sumweights = 0;
         var weights = model.weights == null ? [] : model.weights;
         for(var i = 0; i < model.plots.length; i++) {
-          if(weights[i] == null) { weights[i] = 1; }
+          if(weights[i] == null) {
+            weights[i] = 1;
+          }
           sumweights += weights[i];
         }
         var plots = model.plots;
@@ -75,15 +75,17 @@
           if (plotmodel.useToolTip == null) { plotmodel.useToolTip = useToolTip; }
 
           plotmodel.type = plotType;
-          var newplotmodel = plotConverter.standardizeModel(plotmodel);
+          var newplotmodel = plotFormatter.standardizeModel(plotmodel);
 
-          if(i < plots.length - 1) {  // turn off x coordinate labels
-            newplotmodel.xLabel = null;
-            newplotmodel.xCoordLabel = false;
+          if (i < plots.length - 1) {  // turn off x coordinate labels
+            newplotmodel.xAxis.axisLabel = null;
+            newplotmodel.xAxis.showGridlineLabels = false;
+          } else {
+            newplotmodel.xAxis.axisLabel = newmodel.xAxisLabel;
           }
 
-          newplotmodel.initSize.width = width + "px";
-          newplotmodel.initSize.height = height * weights[i] / sumweights + "px";
+          newplotmodel.plotSize.width = width;
+          newplotmodel.plotSize.height = height * weights[i] / sumweights;
 
           newmodel.plots.push(newplotmodel);
         }
@@ -91,5 +93,5 @@
       }
     };
   };
-  beaker.bkoFactory('combplotConverter', ["bkUtils", "plotConverter", retfunc]);
+  beaker.bkoFactory('combinedplotFormatter', ["bkUtils", "plotFormatter", retfunc]);
 })();

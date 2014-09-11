@@ -18,32 +18,25 @@
  * bkoPlot
  * This is the output display component for displaying xyChart
  */
+
 ( function() {
   'use strict';
-  var retfunc = function(plotUtils, plotConverter, bkCellMenuPluginManager) {
+  var retfunc = function(plotUtils, plotFormatter, plotFactory, bkCellMenuPluginManager) {
     var CELL_TYPE = "bko-plot";
     return {
       template :
           "<div id='plotTitle' class='plot-title'></div>" +
-          "<div id='plotContainer' class='plot-renderdiv' oncontextmenu='return false;'>" +
+          "<div id='plotContainer' class='plot-plotcontainer' oncontextmenu='return false;'>" +
           "<svg>"  +
           "<defs>" +
             "<filter id='svgfilter'>" +
-              "<feOffset result='offOut' in='SourceAlpha' dx='2' dy='2' />" +
-              "<feGaussianBlur result='blurOut' in='offOut' stdDeviation='1' />" +
+              "<feGaussianBlur result='blurOut' in='SourceGraphic' stdDeviation='1' />" +
               "<feBlend in='SourceGraphic' in2='blurOut' mode='normal' />" +
             "</filter>" +
           "</defs>" +
-          "<g id='maing'>" +
-            "<g id='coordg'></g>" +
-            "<g id='lineg'></g> <g id='barg'></g> <g id='riverg'></g> <g id='circleg'></g>" +
-            "<g id='stemg'></g> <g id='segg'></g> <g id='rectg'></g>" +
-            "<g id='pointrectg'></g> <g id='pointcircleg'></g> <g id='pointdiamondg'></g>" +
-            "<g id='textg'></g> <g id='labelg'></g> " +
-          "</g>" +
-          "<g id='interg'>" +
-            "<g id='dotg'></g>" +
-          "</g>" +
+          "<g id='gridg'></g>" +
+          "<g id='maing'></g>" +
+          "<g id='labelg'></g> " +
           "</svg>" +
           "</div>",
       controller : function($scope) {
@@ -65,6 +58,8 @@
           resize : function(event, ui) {
             scope.width = ui.size.width;
             scope.height = ui.size.height;
+            _(scope.plotSize).extend(ui.size);
+
             scope.jqsvg.css({"width": scope.width, "height": scope.height});
             scope.jqplottitle.css({"width": scope.width });
             scope.numIntervals = {
@@ -75,6 +70,7 @@
             scope.calcMapping(false);
             scope.emitSizeChange();
             scope.legendDone = false;
+            scope.legendResetPosition = true;
 
             scope.update();
           }
@@ -85,12 +81,15 @@
 
           element.find(".ui-icon-gripsmall-diagonal-se")
             .removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
-          scope.container = d3.select(element[0]).select("#plotContainer"); // hook container to use jquery interaction
+          // hook container to use jquery interaction
+          scope.container = d3.select(element[0]).select("#plotContainer");
           scope.jqcontainer = element.find("#plotContainer");
-          scope.jqcontainer.css(model.initSize);
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
           scope.jqsvg = element.find("svg");
-          scope.jqsvg.css(model.initSize);
+
+          var plotSize = scope.plotSize;
+          scope.jqcontainer.css(plotSize);
+          scope.jqsvg.css(plotSize);
 
           $(window).resize(function() {
             // update resize maxWidth when the browser window resizes
@@ -102,26 +101,15 @@
 
           // set title
           scope.jqplottitle = element.find("#plotTitle");
-          scope.jqplottitle.text(model.title).css("width", model.initSize.width);
+          scope.jqplottitle.text(model.title).css("width", plotSize.width);
 
           scope.maing = d3.select(element[0]).select("#maing");
-          scope.coordg = d3.select(element[0]).select("#coordg");
+          scope.gridg = d3.select(element[0]).select("#gridg");
           scope.labelg = d3.select(element[0]).select("#labelg");
-          scope.lineg = scope.maing.select("#lineg");
-          scope.barg = scope.maing.select("#barg");
-          scope.riverg = scope.maing.select("#riverg");
-          scope.stemg = scope.maing.select("#stemg");
-          scope.circleg = scope.maing.select("#circleg");
-          scope.pointrectg = scope.maing.select("#pointrectg");
-          scope.pointcircleg = scope.maing.select("#pointcircleg");
-          scope.pointdiamondg = scope.maing.select("#pointdiamondg");
-          scope.segg = scope.maing.select("#segg");
-          scope.rectg = scope.maing.select("#rectg");
-          scope.textg = scope.maing.select("#textg");
 
-          scope.interg = d3.select(element[0]).select("#interg");
-          scope.dotg = scope.interg.select("#dotg");
+          // set some constants
 
+          scope.renderFixed = 1;
           scope.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
             bottomLayoutMargin : 30,
             topLayoutMargin : 0,
@@ -150,22 +138,25 @@
             y : 75
           };
           scope.numIntervals = {
-            x: parseInt(model.initSize.width) / scope.intervalStepHint.x,
-            y: parseInt(model.initSize.height) / scope.intervalStepHint.y
+            x: parseInt(plotSize.width) / scope.intervalStepHint.x,
+            y: parseInt(plotSize.height) / scope.intervalStepHint.y
           };
           scope.locateBox = null;
-          scope.tips = {};
           scope.cursor = {
             x : -1,
             y : -1
           };
-          scope.showAllLines = true;
-          if (model.xAxis.getLabel() != null) {
-            scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * 2;
-          }
-          if (model.yAxis.getLabel() != null) {
+
+          var factor = 2.0;
+          if (model.xAxis.axisLabel == null) { factor -= 1.0; }
+          if (model.xAxis.showGridlineLabels === false) { factor -= 1.0; }
+          scope.layout.bottomLayoutMargin += scope.fonts.labelHeight * factor;
+
+          if (model.yAxis.axisLabel != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
           }
+          scope.legendResetPosition = true;
+
           scope.$watch("model.getFocus()", function(newFocus) {
             if (newFocus == null) { return; }
             scope.focus.xl = newFocus.xl;
@@ -181,8 +172,18 @@
             scope.jqsvg.css("width", newWidth );
             scope.calcMapping(false);
             scope.legendDone = false;
+            scope.legendResetPosition = true;
             scope.update();
           });
+        };
+
+        scope.emitZoomLevelChange = function() {
+          var data = scope.stdmodel.data;
+          for (var i = 0; i < data.length; i++) {
+            if (data[i].isLodItem === true) {
+              data[i].zoomLevelChanged(scope);
+            }
+          }
         };
 
         scope.emitSizeChange = function() {
@@ -191,598 +192,121 @@
           } // not stdmodel here
         };
         scope.calcRange = function() {
-          var ret = plotUtils.getInitFocus(scope.stdmodel);
-          scope.visibleData = ret.visibleData;
-          scope.initFocus = ret.initFocus;
-          scope.fixFocus(scope.initFocus);
+          var ret = plotUtils.getDefaultFocus(scope.stdmodel);
+          scope.visibleItem = ret.visibleItem;
+          scope.legendableItem = ret.legendableItem;
+          scope.defaultFocus = ret.defaultFocus;
+          scope.fixFocus(scope.defaultFocus);
         };
-        scope.initRange = function() {
-          var model = scope.stdmodel;
-          scope.vrange = {
-            xl : 0,
-            xr : 1,
-            yl : 0,
-            yr : 1,
-            xspan : 1,
-            yspan : 1
-          };  // visible range is mapped to [0,1] x [0,1]
-
-          scope.calcRange();
-          scope.focus = {};
-          _.extend(scope.focus, scope.initFocus);
-        };
-        scope.calcCoords = function() {
-          // prepare the coordinates
+        scope.calcGridlines = function() {
+          // prepare the gridlines
           var focus = scope.focus, model = scope.stdmodel;
-          model.xAxis.setCoords(focus.xl, focus.xr, scope.numIntervals.x);
-          model.yAxis.setCoords(focus.yl, focus.yr, scope.numIntervals.y);
+          model.xAxis.setGridlines(focus.xl, focus.xr, scope.numIntervals.x);
+          model.yAxis.setGridlines(focus.yl, focus.yr, scope.numIntervals.y);
         };
-        scope.renderCoords = function() {
+        scope.renderGridlines = function() {
           var focus = scope.focus, model = scope.stdmodel;
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
 
-          var xCoords = model.xAxis.getCoords();
-          for (var i = 0; i < xCoords.length; i++) {
-            var x = xCoords[i];
-            scope.rpipeCoords.push({
-              "id" : "coord_x_" + i,
-              "class" : "plot-coord",
+          var xGridlines = model.xAxis.getGridlines();
+          for (var i = 0; i < xGridlines.length; i++) {
+            var x = xGridlines[i];
+            scope.rpipeGridlines.push({
+              "id" : "gridline_x_" + i,
+              "class" : "plot-gridline",
               "x1" : mapX(x),
               "y1" : mapY(focus.yl),
               "x2" : mapX(x),
               "y2" : mapY(focus.yr)
             });
           }
-          var yCoords = model.yAxis.getCoords();
-          for (var i = 0; i < yCoords.length; i++) {
-            var y = yCoords[i];
-            scope.rpipeCoords.push({
-              "id" : "coord_y_" + i,
-              "class" : "plot-coord",
+          var yGridlines = model.yAxis.getGridlines();
+          for (var i = 0; i < yGridlines.length; i++) {
+            var y = yGridlines[i];
+            scope.rpipeGridlines.push({
+              "id" : "gridline_y_" + i,
+              "class" : "plot-gridline",
               "x1" : mapX(focus.xl),
               "y1" : mapY(y),
               "x2" : mapX(focus.xr),
               "y2" : mapY(y)
             });
           }
-          scope.rpipeCoords.push({
-            "id" : "coord_x_base",
-            "class" : "plot-coord-base",
+          scope.rpipeGridlines.push({
+            "id" : "gridline_x_base",
+            "class" : "plot-gridline-base",
             "x1" : mapX(focus.xl),
             "y1" : mapY(focus.yl),
             "x2" : mapX(focus.xr),
             "y2" : mapY(focus.yl)
           });
-          scope.rpipeCoords.push({
-            "id" : "coord_y_base",
-            "class" : "plot-coord-base",
+          scope.rpipeGridlines.push({
+            "id" : "gridline_y_base",
+            "class" : "plot-gridline-base",
             "x1" : mapX(focus.xl),
             "y1" : mapY(focus.yl),
             "x2" : mapX(focus.xl),
             "y2" : mapY(focus.yr)
           });
         };
-        scope.filterData = function() {
-          var focus = scope.focus, data = scope.stdmodel.data;
-          scope.fdata = [];
-          var fdata = scope.fdata;
-          for (var i = 0; i < data.length; i++) {
-            var eles = data[i].elements;
-            if (data[i].type === "constline" || data[i].type === "constband" ||
-                data[i].type === "text") {
-              fdata[i] = {
-                "leftIndex" : 0,
-                "rightIndex" : eles.length - 1
-              };
-              continue;
-            }
-            var l = plotUtils.upper_bound(eles, "x", focus.xl);
-            var r = plotUtils.upper_bound(eles, "x", focus.xr);
-
-            if ( data[i].type === "line" || data[i].type === "area") {
-              // cover one more point to the right for line and area
-              r++;
-            } else {
-              // skip the left side element
-              l++;
-            }
-
-            // truncate out-of-sight segment on x-axis
-            l = Math.max(l, 0);
-            r = Math.min(r, eles.length - 1);
-
-            if (l == r && eles[l].x < focus.xl) {
-              // all elements are to the left of the svg
-              l = 0;
-              r = -1;
-            }
-            fdata[i] = {
-              "leftIndex" : l,
-              "rightIndex" : r
-            };
-          }
-        };
         scope.renderData = function() {
-          var model = scope.stdmodel, data = scope.stdmodel.data, fdata = scope.fdata;
-          var focus = scope.focus, mapX = scope.data2scrX, mapY = scope.data2scrY;
-
-          var W = scope.jqsvg.width(), H = scope.jqsvg.height();
-          var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
-              tMargin = scope.layout.topLayoutMargin, rMargin = scope.layout.rightLayoutMargin;
-
+          var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
-            if (data[i].shown == false) {
-              continue;
+            data[i].render(scope);
+            if (data[i].isLodItem === true) {
+              scope.hasLodItem = true;
             }
-            var eles = data[i].elements;
-            if (data[i].type === "bar") {
-              var w = data[i].width, sw;
-              var reles = [];
-              for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j];
-                var x1 = mapX(p.x), x2 = mapX(p.x2);
-                if (x2 - x1 < 1) x2 = x1 + 1;
-                var y = p.y, y2 = p.y2;
-                y = mapY(y); y2 = mapY(y2);
-                sw = x2 - x1;
-                if (y > y2) { continue; } // prevent negative height
-                var bar = {
-                  "id" : "bar_" + i + "_" + j,
-                  "class" : "plot-resp",
-                  "x" : x1,
-                  "y" : y,
-                  "width" : sw,
-                  "height" : y2 - y,
-                  "fill" : p.color,
-                  "fill_opacity" : p.color_opacity,
-                  "stroke" : p.stroke,
-                  "stroke_width" : p.stroke_width,
-                  "stroke_opacity" : p.stroke_opacity,
-                  "tip_text" : p.tip_value,
-                  "tip_color" : data[i].color,
-                  "tip_x" : x1,
-                  "tip_y" : y
-                };
-                if (p.color != null) { bar.fill = p.color; }
-                if (p.fill_opacity != null) { bar.fill_opaicty = p.fill_opacity; }
-                if (p.stroke != null) { bar.stroke = p.stroke; }
-                if (p.stroke_opacity != null) { bar.stroke_opacity = p.stroke_opacity; }
-                reles.push(bar);
-              }
-              scope.rpipeBars.push({
-                "id" : "bar_" + i,
-                "class" : "plot-bar",
-                "fill" : data[i].color,
-                "fill_opacity": data[i].color_opacity,
-                "stroke": data[i].stroke,
-                "stroke_width": data[i].stroke_width,
-                "stroke_opacity": data[i].stroke_opacity,
-                "elements" : reles
-              });
-            } else if (data[i].type === "area") {
-              var pstr = "", skipped = false;
-              for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j];
-                var x = mapX(p.x), y = mapY(p.y);
-                if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
-                  skipped = true;
-                  break;
-                }
-                if (data[i].interpolation === "linear") {
-                  pstr += x + "," + y + " ";
-                } else if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
-                  var p2 = eles[j + 1];
-                  var x2 = mapX(p2.x);
-                  if (Math.abs(x2) > 1E6) {
-                    skipped = true;
-                    break;
-                  }
-                  pstr += x + "," + y + " " + x2 + "," + y + " ";
-                }
-              }
-              for (var j = fdata[i].rightIndex; j >= fdata[i].leftIndex; j--) {
-                var p = eles[j], x = mapX(p.x), y2 = p.y2 == null ? mapY(focus.yl) : mapY(p.y2);
-                if (Math.abs(y2) > 1E6) { // x is already checked above
-                  skipped = true;
-                  break;
-                }
-                if (data[i].interpolation === "linear") {
-                  pstr += x + "," + y2 + " ";
-                } else if (data[i].interpolation === "none" && j < fdata[i].rightIndex) {
-                  var p2 = eles[j + 1];
-                  var x2 = mapX(p2.x);
-                  pstr += x2 + "," + y2 + " " + x + "," + y2 + " ";
-                }
-              }
-              if (skipped === false) {
-                scope.rpipeRivers.push({
-                  "id" : "river_" + i,
-                  "class" : "plot-river",
-                  "fill" : data[i].color,
-                  "fill_opacity": data[i].color_opacity,
-                  "stroke": data[i].stroke,
-                  "stroke_width": data[i].stroke_width,
-                  "stroke_opacity": data[i].stroke_opacity,
-                  "elements" : pstr
-                });
-              } else {
-                console.error("data not shown due to too large coordinate");
-              }
-            } else if (data[i].type === "stem") {
-              var reles = [];
-              for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j];
-                var y2 = p.y2;
-                reles.push({
-                  "id" : "stem_" + i + "_" + j,
-                  "class" : "plot-resp",
-                  "x1" : mapX(p.x),
-                  "y1" : mapY(p.y),
-                  "x2" : mapX(p.x),
-                  "y2" : mapY(p.y2),
-                  "stroke": p.color,
-                  "stroke_opacity": p.color_opacity,
-                  "stroke_dasharray": p.stroke_dasharray,
-                  "stroke_width" : p.width,
-                  "tip_text": p.tip_value,
-                  "tip_color": data[i].color,
-                  "tip_x" : mapX(p.x),
-                  "tip_y" : mapY(p.y)
-                });
-                /*
-                if (data[i].style.search("bottom") != -1) {
-                  var y = y2;
-                  reles.push({
-                    "id" : "stem_b_" + i + "_" + j,
-                    "x1" : mapX(p.x) - 5,
-                    "y1" : mapY(y),
-                    "x2" : mapX(p.x) + 5,
-                    "y2" : mapY(y),
-                    "stroke": p.color,
-                    "stroke_opacity": p.color_opacity,
-                    "stroke_dasharray": p.stroke_dasharray,
-                    "stroke_width" : p.width
-                  });
-                }
-                if (data[i].style.search("top") != -1) {
-                  var y = p.y;
-                  reles.push({
-                    "id" : "stem_t_" + i + "_" + j,
-                    "x1" : mapX(p.x) - 5,
-                    "y1" : mapY(y),
-                    "x2" : mapX(p.x) + 5,
-                    "y2" : mapY(y),
-                    "stroke": p.color,
-                    "stroke_opacity": p.color_opacity,
-                    "stroke_dasharray": p.stroke_dasharray,
-                    "stroke_width" : p.width
-                  });
-                }
-                */
-              }
-              scope.rpipeStems.push({
-                "id" : "stem_" + i,
-                "class" : "plot-stem",
-                "stroke" : data[i].color,
-                "stroke_opacity": data[i].color_opacity,
-                "stroke_width": data[i].width,
-                "stroke_dasharray": data[i].stroke_dasharray,
-                "elements" : reles
-              });
-            } else if (data[i].type === "point") {
-              var reles = [];
-              for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j], s = p.size;
-                var x = mapX(p.x), y = mapY(p.y);
-                var ele = {
-                  "id" : "point_" + i + "_" + j,
-                  "class" : "plot-resp",
-                  "tip_text" : p.tip_value,
-                  "tip_color" : data[i].color,
-                  "tip_x" : x,
-                  "tip_y" : y
-                };
-                if (data[i].style === "circle") {
-                  _.extend(ele, {
-                    "cx" : x,
-                    "cy" : y,
-                    "r" : s
-                  });
-                } else if (data[i].style === "diamond") {
-                  var pstr = "";
-                  pstr += (x - s) + "," + (y    ) + " ";
-                  pstr += (x    ) + "," + (y - s) + " ";
-                  pstr += (x + s) + "," + (y    ) + " ";
-                  pstr += (x    ) + "," + (y + s) + " ";
-                  _.extend(ele, {
-                    "points" : pstr
-                  });
-                } else {
-                  _.extend(ele, {
-                    "x" : x - s / 2,
-                    "y" : y - s / 2,
-                    "width" : s,
-                    "height" : s
-                  });
-                }
-                if (p.color != null) ele.fill = p.color;
-                if (p.color_opacity != null) ele.fill_opacity = p.color_opacity;
-                if (p.stroke != null) ele.stroke = p.stroke;
-                if (p.stroke_opacity != null) ele.stroke_opacity = p.stroke_opacity;
-
-                reles.push(ele);
-              }
-              var pipe;
-              if (data[i].style === "diamond") { pipe = scope.rpipePointDiamonds; }
-              else if (data[i].style === "circle") { pipe = scope.rpipePointCircles; }
-              else pipe = scope.rpipePointRects;
-
-              pipe.push({
-                  "id" : "point_" + i,
-                  "class" : "plot-point",
-                  "fill" : data[i].color,
-                  "fill_opacity": data[i].color_opacity,
-                  "stroke": data[i].stroke,
-                  "stroke_width": data[i].stroke_width,
-                  "stroke_opacity": data[i].stroke_opacity,
-                  "elements" : reles
-              });
-            } else if (data[i].type === "constline") {
-              var reles = [];
-              for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var ele = eles[j];
-                var labelid = "constlabel_" + i + "_" + j;
-                if (ele.type === "x") {
-                  if (ele.x < focus.xl || ele.x > focus.xr) {
-                    scope.jqcontainer.find("#" + labelid).remove();
-                    continue;
-                  }
-                  var x = mapX(ele.x);
-                  reles.push({
-                    "id" : "constline_" + i + "_" + j,
-                    "x1" : x,
-                    "x2" : x,
-                    "y1" : mapY(focus.yl),
-                    "y2" : mapY(focus.yr),
-                    "stroke" : ele.color,
-                    "stroke_opacity" : ele.color_opacity,
-                    "stroke_width" : ele.width,
-                    "stroke_dasharray" : ele.stroke_dasharray
-                  });
-
-                  scope.jqcontainer.find("#" + labelid).remove();
-                  var label = $("<div id=" + labelid + " class='plot-constlabel'></div>")
-                    .appendTo(scope.jqcontainer)
-                    .text(plotUtils.getTipString(ele._x, model.xAxis));
-                  var w = label.outerWidth(), h = label.outerHeight();
-                  label.css({
-                    "left" : x - w / 2,
-                    "top" : H - bMargin - h - scope.labelPadding.y,
-                    "background-color" : data[i].color
-                  });
-                } else if (ele.type === "y") {
-                  if (ele.y < focus.yl || ele.y > focus.yr) {
-                    scope.jqcontainer.find("#" + labelid).remove();
-                    continue;
-                  }
-                  var y = mapY(ele.y);
-                  reles.push({
-                    "id" : "constline_" + i + "_" + j,
-                    "x1" : mapX(focus.xl),
-                    "x2" : mapX(focus.xr),
-                    "y1" : y,
-                    "y2" : y,
-                    "stroke" : ele.color,
-                    "stroke_opacity" : ele.color_opacity,
-                    "stroke_width" : ele.width,
-                    "stroke_dasharray" : ele.stroke_dasharray
-                  });
-                  scope.jqcontainer.find("#" + labelid).remove();
-                  var label = $("<div id=" + labelid + " class='plot-constlabel'></div>")
-                    .appendTo(scope.jqcontainer)
-                    .text(plotUtils.getTipString(ele._y, model.yAxis));
-                  var w = label.outerWidth(), h = label.outerHeight();
-                  label.css({
-                    "left" : lMargin + scope.labelPadding.x,
-                    "top" : y - h / 2,
-                    "background-color" : data[i].color
-                  });
-                }
-              }
-              scope.rpipeSegs.push({
-                "id" : "constline_" + i,
-                "class" : "plot-const",
-                "stroke" : data[i].color,
-                "stroke_opacity": data[i].color_opacity,
-                "stroke_width" : data[i].width,
-                "stroke_dasharray" : data[i].stroke_dasharray,
-                "elements" : reles
-              });
-            } else if (data[i].type === "constband") {
-              var reles = [];
-              for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j];
-                var ele = {
-                  "id": "constband_" + i + "_" + j
-                };
-                if (p.type === "x") {
-                  if (p.x > focus.xr || p.x2 < focus.xl) { continue; }
-                  var x = mapX(p.x), x2 = mapX(p.x2);
-                  x = Math.max(x, lMargin);
-                  x2 = Math.min(x2, W - rMargin);
-                  _.extend(ele, {
-                    "x" : x,
-                    "width" : x2 - x,
-                    "y" : tMargin,
-                    "height" : H - bMargin - tMargin,
-                    "opacity" : p.opacity
-                  });
-                } else if (p.type === "y") {
-                  if (p.y > focus.yr || p.y2 < focus.yl) { continue; }
-                  var y = mapY(p.y), y2 = mapY(p.y2); // after mapping, y1,y2 are reversed
-                  y = Math.min(y, H - bMargin);
-                  y2 = Math.max(y2, tMargin);
-                  _.extend(ele, {
-                    "id" : "const_" + i + "_" + j,
-                    "x" : lMargin,
-                    "width" : W - lMargin - rMargin,
-                    "y" : y,
-                    "height" : y2 - y,
-                    "opacity" : p.opacity
-                  });
-                }
-                reles.push(ele);
-              }
-              scope.rpipeRects.push({
-                "id" : "constband_" + i,
-                "class" : "plot-const",
-                "fill" : data[i].color,
-                "fill_opacity": data[i].color_opacity,
-                "stroke": data[i].stroke,
-                "stroke_opacity": data[i].stroke_opacity,
-                "stroke_width": data[i].stroke_width,
-                "elements" : reles
-              });
-            } else if (data[i].type === "text") {
-              var reles = [], dtf = "";
-              if (data[i].rotate != null){
-                dtf = "rotate(" +  data[i].rotate + ")";  // TODO check global rotation
-              }
-              var focus  = scope.focus;
-              for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j];
-                if (p.x < focus.xl || p.x > focus.xr || p.y < focus.yl || p.y > focus.yr) {
-                  continue; // text point out of sight
-                }
-                var x = mapX(p.x), y = mapY(p.y);
-                var tf = "";
-                if (p.rotate != null) {
-                  tf = "rotate(" + p.rotate + " " + x + " " + y + ")";
-                }
-                tf += "translate(" + x + "," + y + ")";
-                reles.push({
-                  "id" : "text_" + i + "_" + j,
-                  "text" : p.v,
-                  "transform" : tf,
-                  "fill" : p.color,
-                  "fill_opacity" : p.color_opacity
-                });
-              }
-              scope.rpipeUserTexts.push({
-                "id" : "text_" + i,
-                "class" : "plot-text",
-                "transform" : dtf,
-                "fill" : data[i].color,
-                "fill_opacity" : data[i].color_opacity,
-                "elements" : reles
-              });
-            } else { // standard line: solid, dash or dot
-              var pstr = "", skipped = false;
-              for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-                var p = eles[j];
-                if (j == fdata[i].leftIndex) pstr += "M";
-                else if (j == fdata[i].leftIndex + 1) {
-                  if (data[i].interpolation !== "curve") pstr += "L";
-                  else pstr += "C";
-                }
-                var x = mapX(p.x), y = mapY(p.y);
-                if (Math.abs(x) > 1E6 || Math.abs(y) > 1E6) {
-                  skipped = true;
-                  break;
-                }
-                var nxtp = x + "," + y + " ";
-
-                if (j < fdata[i].rightIndex) {
-                  if (data[i].interpolation === "none") {
-                    var p2 = eles[j + 1];
-                    nxtp += mapX(p.x) + "," + mapY(p.y) + " " + mapX(p2.x) + "," + mapY(p.y) + " ";
-                  } else if (data[i].interpolation === "curve") {
-                    // TODO curve implementation
-                  }
-                }
-                pstr += nxtp;
-              }
-              if (pstr.length > 0 && skipped === false) {
-                var line = {
-                  "id": "line_"+i,
-                  "class": "plot-line",
-                  "stroke": data[i].color,
-                  "stroke_opacity": data[i].color_opacity,
-                  "stroke_width": data[i].width,
-                  "stroke_dasharray": data[i].stroke_dasharray,
-                  "d": pstr
-                };
-                scope.rpipeLines.push(line);
-              } else if (skipped === true) {
-                console.error("data not shown due to too large coordinate");
-              }
+            if (data[i].isUnorderedItem === true) {
+              scope.hasUnorderedItem = true;
             }
           }
-        };
-        scope.renderDots = function() {
-          var data = scope.stdmodel.data, fdata = scope.fdata, numLines = data.length, focus = scope.focus;
-          var mapX = scope.data2scrX, mapY = scope.data2scrY;
-          for (var i = 0; i < numLines; i++) {
-            if (data[i].shown === false) {
-              continue;
-            }
-            if (data[i].type !== "line" && data[i].type !== "area") {
-              continue;
-            }
-
-            var eles = data[i].elements;
-            var reles = [];
-            for (var j = fdata[i].leftIndex; j <= fdata[i].rightIndex; j++) {
-              var p = {
-                "x" : mapX(eles[j].x),
-                "y" : mapY(eles[j].y)
-              };
-              if (plotUtils.outsideScr(scope, p.x, p.y)) { continue; }
-              var id = "dot_" + i + "_" + j;
-              reles.push({
-                "id" : id,
-                "class" : "plot-resp",
-                "isResp" : true,
-                "cx" : p.x,
-                "cy" : p.y,
-                "r" : 4,
-                "opacity" : scope.tips[id] == null ? 0 : 1,
-                "point" : _.omit(eles[j], "uniqid"),
-                "tip_text" : eles[j].tip_value,
-                "tip_color" : data[i].color,
-                "tip_x" : p.x,
-                "tip_y" : p.y
-              });
-            }
-            var wrapper = {
-              "id" : "linedots_" + i,
-              "class" : "plot-dot",
-              "stroke" : data[i].color == null ? "gray" : data[i].color,
-              "fill" : "white",
-              "elements" : reles
-            };
-            scope.rpipeDots.push(wrapper);
+          if (scope.hasLodItem === true && scope.showLodHint === true) {
+            scope.showLodHint = false;
+            //scope.state.flags.showLodHint = false;
+            scope.renderMessage("Level-of-Detail (LOD) is enabled",
+              [ "Some data items contain too many elements to be directly plotted.",
+              "Level-of-Detail (LOD) rendering is automatically enabled. " +
+              "LOD hint is displayed at the right of the item legend.",
+              "LOD by default runs in auto mode. In auto mode, " +
+              "LOD will be automatically turned off when you reach detailed enough zoom level.",
+              "To switch LOD type, left click the LOD hint. " +
+              "To turn off LOD, right click the LOD hint." ]);
+          }
+          if (scope.hasUnorderedItem === true && scope.showUnorderedHint === true) {
+            scope.showUnorderedHint = false;
+            //scope.state.flags.showUnorderedHint = false;
+            scope.renderMessage("Unordered line / area detected",
+              [ "The plot requires line and area elements to have x-monotonicity in order to apply " +
+              "truncation for performance optimization.",
+              "Line or area items are found with unordered x coordinates.",
+              "Truncation has been disabled to display correct result.",
+              "To enable truncation for better performance, please render x-monotonic line and area items." ]);
           }
         };
-        scope.prepareInteraction = function(id) {
+
+        scope.prepareInteraction = function() {
           var model = scope.stdmodel;
-          if (model.useToolTip != true) {
+          if (model.useToolTip === false) {
             return;
           }
-
-          var sel = scope.svg.selectAll(".plot-resp");
-          sel.on("mouseenter", function(d) {
-            return scope.tooltip(d);
-          }).on("mouseleave", function(d) {
-            return scope.untooltip(d);
-          }).on("click", function(d) {
-            return scope.toggleTooltip(d);
-          });
+          scope.svg.selectAll(".plot-resp")
+            .on('mouseenter', function(d) {
+              return scope.tooltip(d, d3.mouse(scope.svg[0][0]));
+            })
+            .on("mouseleave", function(d) {
+              return scope.untooltip(d);
+            })
+            .on("click", function(d) {
+              return scope.toggleTooltip(d);
+            });
         };
+
         scope.toggleTooltip = function(d) {
+          if (scope.zoomed === true) { return; } // prevent dragging and toggling at the same time
+
           var id = d.id, nv = !scope.tips[id];
           if (nv === true) {
-            scope.tooltip(d);
+            scope.tooltip(d, d3.mouse(scope.svg[0][0]));
           } else {
             scope.tips[id].sticking = !scope.tips[id].sticking;
             if (scope.tips[id].sticking === false) {
@@ -790,87 +314,89 @@
             }
           }
         };
-        scope.tooltip = function(d) {
+        scope.tooltip = function(d, mousePos) {
+
           if (scope.tips[d.id] != null) {
             return;
+          }
+          if (d.isresp === true) {
+            scope.jqsvg.find("#" + d.id).css("opacity", 1);
           }
           scope.tips[d.id] = {};
           _.extend(scope.tips[d.id], d);
           var d = scope.tips[d.id];
           d.sticking = false;
-          d.datax = scope.scr2dataX(d.tip_x);
-          d.datay = scope.scr2dataY(d.tip_y);
+          d.datax = scope.scr2dataX(mousePos[0] + 2);
+          d.datay = scope.scr2dataY(mousePos[1] + 2);
 
           scope.renderTips();
         };
+
         scope.untooltip = function(d) {
           if (scope.tips[d.id] == null) { return; }
           if (scope.tips[d.id].sticking === false){
             delete scope.tips[d.id];
             scope.jqcontainer.find("#tip_" + d.id).remove();
-            if (d.isResp === true) {
-              scope.jqsvg.find("#" + d.id).attr("opacity", 0);
+            if (d.isresp === true) {
+              scope.jqsvg.find("#" + d.id).css("opacity", 0);
             } else {
               scope.jqsvg.find("#" + d.id).removeAttr("filter");
             }
             scope.renderTips();
           }
         };
+
         scope.renderTips = function() {
+          var data = scope.stdmodel.data;
+          var focus = scope.focus;
           _.each(scope.tips, function(d) {
-            var p = {
-              "x" : scope.data2scrX(d.datax),
-              "y" : scope.data2scrY(d.datay)
-            };
-            d.scrx = p.x;
-            d.scry = p.y;
-            var tipdiv = scope.jqcontainer.find("#tip_" + d.id);
-            if (tipdiv.length > 0) {
-              var w = tipdiv.width(), h = tipdiv.height();
-              if (plotUtils.outsideScrBox(scope, p.x + d.objw + scope.fonts.tooltipWidth, p.y,
-                w, h)) {
-                tipdiv.remove();
-                return;
-              }
-            }
-            if (tipdiv.length == 0) {
+            var x = scope.data2scrX(d.datax),
+                y = scope.data2scrY(d.datay);
+            d.scrx = x;
+            d.scry = y;
+            var tipid = "tip_" + d.id;
+            var tipdiv = scope.jqcontainer.find("#" + tipid);
+
+            if (tipdiv.length === 0) {
+              var tiptext = data[d.idx].createTip(d.ele, d.g);
+
               tipdiv = $("<div></div>").appendTo(scope.jqcontainer)
-              .attr("id", "tip_" + d.id)
-              .attr("class", "plot-tooltip")
-              .css("border-color", d.tip_color == null ? "gray" : d.tip_color)
-              .append(d.tip_text).mousedown(function(e) {
-                if (e.which == 3) {
-                  if (d.isResp === true) {  // is line responsive dot
-                    scope.jqsvg.find("#" + d.id).attr("opacity", 0);
-                  } else {
-                    scope.jqsvg.find("#" + d.id).removeAttr("filter");
+                .attr("id", tipid)
+                .attr("class", "plot-tooltip")
+                .css("border-color", data[d.idx].tip_color)
+                .append(tiptext)
+                .on('mouseup', function(e) {
+                  if (e.which == 3) {
+                    delete scope.tips[d.id];
+                    if (d.isresp === true) {  // is interaction responsive element
+                      scope.jqsvg.find("#" + d.id).css("opacity", 0);
+                    } else {
+                      scope.jqsvg.find("#" + d.id).removeAttr("filter");
+                    }
+                    scope.interactMode = "remove";
+                    $(this).remove();
                   }
-                  delete scope.tips[d.id];
-                  $(this).remove();
-                }
-              });
+                });
             }
-            var objw = scope.jqsvg.find("#" + d.id).attr("width");
-            objw = objw == null ? 0 : parseFloat(objw);
-            d.objw = objw;
-            var w = tipdiv.width(), h = tipdiv.height();
-            if (plotUtils.outsideScrBox(scope, p.x + objw + scope.fonts.tooltipWidth, p.y, w, h)) {
+            var w = tipdiv.outerWidth(), h = tipdiv.outerHeight();
+            if (plotUtils.outsideScrBox(scope, x, y, w, h)) {
               tipdiv.remove();
               return;
             }
-            tipdiv.draggable({
-              stop : function(event, ui) {
-                d.scrx = ui.position.left - objw - scope.fonts.tooltipWidth;
-                d.scry = ui.position.top;
-                d.datax = scope.scr2dataX(d.scrx);
-                d.datay = scope.scr2dataY(d.scry);
-              }
-            });
+            tipdiv
+              .draggable({
+                stop : function(event, ui) {
+                  d.scrx = ui.position.left - scope.fonts.tooltipWidth;
+                  d.scry = ui.position.top;
+                  d.datax = scope.scr2dataX(d.scrx);
+                  d.datay = scope.scr2dataY(d.scry);
+                }
+              });
 
             tipdiv
-              .css("left", p.x + objw + scope.fonts.tooltipWidth)
-              .css("top", p.y);
-            if (d.isResp === true) {
+              .css("left", x + scope.fonts.tooltipWidth)
+              .css("top", y);
+            if (d.isresp === true) {
               scope.jqsvg.find("#" + d.id).attr("opacity", 1);
             } else {
               scope.jqsvg.find("#" + d.id)
@@ -878,61 +404,65 @@
             }
           });
         };
-        scope.renderLabels = function() {
+
+        scope.renderGridlineLabels = function() {
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
           var model = scope.stdmodel, ys = model.yScale;
-          var coords, labels;
-          coords = model.xAxis.getCoords();
-          labels = model.xAxis.getCoordLabels();
-          for (var i = 0; i < labels.length; i++) {
-            var x = coords[i];
-            scope.rpipeTexts.push({
-              "id" : "label_x_" + i,
-              "class" : "plot-label",
-              "text" : labels[i],
-              "x" : mapX(x),
-              "y" : mapY(scope.focus.yl) + scope.labelPadding.y,
-              "text-anchor" : "middle",
-              "dominant-baseline" : "hanging"
-            });
+          if (model.xAxis.showGridlineLabels !== false) {
+            var lines = model.xAxis.getGridlines(),
+                labels = model.xAxis.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var x = lines[i];
+              scope.rpipeTexts.push({
+                "id" : "label_x_" + i,
+                "class" : "plot-label",
+                "text" : labels[i],
+                "x" : mapX(x),
+                "y" : mapY(scope.focus.yl) + scope.labelPadding.y,
+                "text-anchor" : "middle",
+                "dominant-baseline" : "hanging"
+              });
+            }
           }
-          coords = model.yAxis.getCoords();
-          labels = model.yAxis.getCoordLabels();
-          for (var i = 0; i < labels.length; i++) {
-            var y = coords[i];
-            scope.rpipeTexts.push({
-              "id" : "label_y_" + i,
-              "class" : "plot-label",
-              "text" : labels[i],
-              //ys.type === "log" ? parseFloat(Math.pow(ys.base, y)).toFixed(2) : y,
-              "x" : mapX(scope.focus.xl) - scope.labelPadding.x,
-              "y" : mapY(y),
-              "text-anchor" : "end",
-              "dominant-baseline" : "central"
-            });
+          if (model.yAxis.showGridlineLabels !== false) {
+            lines = model.yAxis.getGridlines();
+            labels = model.yAxis.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var y = lines[i];
+              scope.rpipeTexts.push({
+                "id" : "label_y_" + i,
+                "class" : "plot-label",
+                "text" : labels[i],
+                "x" : mapX(scope.focus.xl) - scope.labelPadding.x,
+                "y" : mapY(y),
+                "text-anchor" : "end",
+                "dominant-baseline" : "central"
+              });
+            }
           }
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-          if (model.xAxis.getLabel() != null) {
+          if (model.xAxis.axisLabel != null) {
             scope.rpipeTexts.push({
               "id" : "xlabel",
               "class" : "plot-xylabel",
-              "text" : model.xAxis.getLabel(),
+              "text" : model.xAxis.axisLabel,
               "x" : lMargin + (scope.jqsvg.width() - lMargin) / 2,
               "y" : scope.jqsvg.height() - scope.fonts.labelHeight
             });
           }
-          if (model.yAxis.getLabel() != null) {
+          if (model.yAxis.axisLabel != null) {
             var x = scope.fonts.labelHeight * 2, y = (scope.jqsvg.height() - bMargin) / 2;
             scope.rpipeTexts.push({
               "id" : "ylabel",
               "class" : "plot-xylabel",
-              "text" : model.yAxis.getLabel(),
+              "text" : model.yAxis.axisLabel,
               "x" : x,
               "y" : y,
               "transform" : "rotate(-90 " + x + " " + y + ")"
             });
           }
         };
+
         scope.renderCursor = function(e) {
           var x = e.offsetX, y = e.offsetY;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
@@ -1002,87 +532,269 @@
             });
           }
         };
+
         scope.renderLegends = function() {
-          if (scope.stdmodel.showLegend == false || scope.legendDone == true)
-            return;
           // legend redraw is controlled by legendDone
-          var data = scope.stdmodel.data, numLines = data.length;
+          if (scope.legendableItem === 0 ||
+            scope.stdmodel.showLegend === false || scope.legendDone === true) { return; }
+
+          var data = scope.stdmodel.data;
           var margin = scope.layout.legendMargin;
 
           scope.jqcontainer.find("#legends").remove();
 
           scope.legendDone = true;
-          var legend = $("<ul></ul>").appendTo(scope.jqcontainer)
+          var legend = $("<table></table>").appendTo(scope.jqcontainer)
             .attr("id", "legends")
             .attr("class", "plot-legendcontainer")
-            .css({
-              "left" : scope.jqcontainer.width() + 10 ,
-              "top" : "0px"
+            .draggable({
+              stop : function(event, ui) {
+                scope.legendPosition = {
+                  "left" : ui.position.left,
+                  "top" : ui.position.top
+                };
+              }
             });
 
-          if (scope.visibleData > 1) {  // skip "All" check when there is only one line
-            var unit = $("<li></li>").appendTo(legend)
+          if (scope.legendResetPosition === true) {
+            scope.legendPosition = {
+              "left" : scope.jqcontainer.width() + 10,
+              "top" : 0
+            };
+            scope.legendResetPosition = false;
+          }
+          legend.css(scope.legendPosition);
+
+          if (scope.legendableItem > 1) {  // skip "All" check when there is only one line
+            var unit = $("<tr></tr>").appendTo(legend)
               .attr("id", "legend_all");
-            $("<input type='checkbox'></input>").appendTo(unit)
+            $("<input type='checkbox'></input>")
               .attr("id", "legendcheck_all")
               .attr("class", "plot-legendcheckbox")
-              .prop("checked", true)
+              .prop("checked", scope.showAllItems)
               .click(function(e) {
-                return scope.toggleLine(e);
-              });
-            $("<span></span>").appendTo(unit)
+                return scope.toggleVisibility(e);
+              })
+              .appendTo($("<td></td>").appendTo(unit));
+            $("<span></span>")
               .attr("id", "legendbox_all")
               .attr("class", "plot-legendbox")
-              .css("background-color", "none");
-            $("<span></span>").appendTo(unit)
+              .css("background-color", "none")
+              .appendTo($("<td></td>").appendTo(unit));
+            $("<span></span>")
               .attr("id", "legendtext_all")
               .attr("class", "plot-label")
-              .text("All");
+              .text("All")
+              .appendTo($("<td></td>").appendTo(unit));
+            $("<td></td>").appendTo(unit);
           }
 
           var content = "";
-          for (var i = 0; i < numLines; i++) {
-            if (data[i].type === "text" || data[i].type === "constline" || data[i].type === "constband") { continue; }
-            if (data[i].legend == null || data[i].legend === "") { continue; }
-            var unit = $("<li></li>").appendTo(legend)
+          for (var i = 0; i < data.length; i++) {
+            var dat = data[i];
+            if (dat.legend == null || dat.legend === "") { continue; }
+            var unit = $("<tr></tr>").appendTo(legend)
               .attr("id", "legend_" + i);
-            $("<input type='checkbox'></input>").appendTo(unit)
+            // checkbox
+            $("<input type='checkbox'></input>")
               .attr("id", "legendcheck_" + i)
               .attr("class", "plot-legendcheckbox")
-              .prop("checked", data[i].shown)
+              .prop("checked", dat.showItem)
               .click(function(e) {
-                return scope.toggleLine(e);
-              });
-            $("<span></span>").appendTo(unit)
+                return scope.toggleVisibility(e);
+              })
+              .appendTo($("<td></td>").appendTo(unit));
+
+            var clr = plotUtils.createColor(dat.color, dat.color_opacity),
+                st_clr = plotUtils.createColor(dat.stroke, dat.stroke_opacity);
+            var sty = dat.color == null ? "dotted " : "solid ";
+            // color box
+            $("<span></span>")
               .attr("id", "legendbox_" + i)
               .attr("class", "plot-legendbox")
-              .css("background-color", data[i].color == null? "none" : data[i].color);
-            $("<span></span>").appendTo(unit)
+              .attr("title", dat.color == null ? "Element-based colored item" : "")
+              .css("background-color",
+                dat.color == null ? "none" : clr)
+              .css("border",
+                dat.stroke != null ? "1px " + sty + st_clr :
+                (dat.color != null ? "1px " + sty + clr : "1px dotted gray"))
+              .appendTo($("<td></td>").appendTo(unit));
+            // legend text
+            $("<td></td>").appendTo(unit)
               .attr("id", "legendtext_" + i)
               .attr("class", "plot-label")
-              .text(data[i].legend);
+              .text(dat.legend);
+            var lodhint = $("<td></td>").appendTo(unit)
+                .attr("id", "hint_" + i);
+
+            if (dat.isLodItem === true) {
+              var light = $("<span></span>").appendTo(lodhint)
+                .attr("id", "light")
+                .attr("class", "plot-legendlod");
+              var type = $("<span></span>").appendTo(lodhint)
+                .attr("id", "type")
+                .attr("class", "plot-legendlodhint")
+                .css("min-width", "3em");
+              var auto = $("<span></span>").appendTo(lodhint)
+                .attr("id", "auto")
+                .attr("class", "plot-legendlodauto")
+                .css("min-width", "2em");
+              scope.setLodHint(dat);
+              lodhint.on('mousedown', {"dat" : dat}, function(e) {
+                var dat = e.data.dat;
+                e.stopPropagation();
+                if (e.which === 3) {
+                  if (dat.lodType === "off") { return; }
+                  scope.removePipe.push("msg_lodoff");
+                  scope.renderMessage("LOD is being turned off. Are you sure?",
+                    [ "You are trying to turning off LOD. Loading full resolution data is " +
+                    "going to take time and may potentially crash the browser.",
+                    "PROCEED (left click) / CANCEL (right click)"],
+                    "msg_lodoff",
+                    function() {
+                      dat.toggleLod(scope);
+
+                      scope.state.lodTypes[dat.index] = dat.lodType;  // update state
+
+                      scope.update();
+                      scope.setLodHint(dat);
+                    }, null);
+                }
+              });
+              type.on('mousedown', {"dat" : dat}, function(e) {
+                if (e.which === 3) { return; }
+                var dat = e.data.dat;
+                if (dat.lodType === "off") {
+                  dat.toggleLod(scope);
+                } else {
+                  dat.switchLodType(scope);
+                }
+
+                scope.state.lodTypes[dat.index] = dat.lodType;  // update state
+
+                dat.zoomLevelChanged(scope);
+                scope.update();
+                scope.setLodHint(dat);
+              });
+              auto.on('mousedown', {"dat" : dat}, function(e) {
+                if (e.which === 3) { return; }
+                var dat = e.data.dat;
+                if (dat.lodType === "off") return;
+                dat.toggleLodAuto(scope);
+
+                scope.state.lodAutos[dat.index] = dat.lodAuto; // update state
+
+                scope.update();
+                scope.setLodHint(dat);
+              });
+            } else {
+              $("<td></td>").appendTo(unit);
+            }
           }
-          legend.draggable();
         };
-        scope.toggleLine = function(e) {
+        scope.setLodHint = function(dat) {
+          var legend = scope.jqcontainer.find("#legends");
+          var hint = legend.find("#hint_" + dat.index);
+          var light = hint.find("#light"),
+              type = hint.find("#type"),
+              auto = hint.find("#auto");
+          // lod hint light
+          light.attr("title",
+            dat.lodOn === true ? "LOD is on" : "")
+          .css("background-color",
+            dat.lodOn === true ? "red" : "gray")
+          .css("border",
+            dat.lodOn === true ? "1px solid red" : "1px solid gray");
+          // lod hint text
+          type.css("color", dat.lodOn === true ? "red" : "gray")
+            .text(dat.lodType);
+          // lod auto hint
+          auto.css("color", dat.lodOn === true ? "red" : "gray")
+            .text(dat.lodType === "off" ? "" : (dat.lodAuto === true ? "auto" : "on"));
+        };
+        scope.toggleVisibility = function(e) {
           var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
           // id in the format "legendcheck_i"
           if (id == "all") {
-            scope.showAllLines = !scope.showAllLines;
+            scope.showAllItems = !scope.showAllItems;
+
+            scope.state.flags.showAllItems = scope.showAllItems; // update state flag
+
             for (var i = 0; i < data.length; i++) {
-              if (data[i].type === "constline" || data[i].type === "constband"
-                || data[i].type === "text") { continue; }
-              data[i].shown = scope.showAllLines;
-              scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].shown);
+              data[i].showItem = scope.showAllItems;
+
+              scope.state.showItems[i] = data[i].showItem; // update state flag
+
+              if (data[i].showItem === false) {
+                data[i].clearTips(scope);
+                if (data[i].isLodItem === true) {
+                  data[i].lodOn = false;
+                  scope.setLodHint(data[i]);
+                }
+              }
+              scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].showItem);
             }
             scope.calcRange();
             scope.update();
             return;
           }
-          data[id].shown = !data[id].shown;
+          data[id].showItem = !data[id].showItem;
+
+          scope.state.showItems[id] = data[id].showItem; // update state flag
+
+          if (data[id].showItem === false) {
+            data[id].clearTips(scope);
+            if (data[id].isLodItem === true) {
+              data[id].lodOn = false;
+              scope.setLodHint(data[id]);
+            }
+          }
           scope.calcRange();
           scope.update();
         };
+
+        scope.renderMessage = function(title, msgs, msgid, callbacky, callbackn) {
+          var message = $("<div></div>").appendTo(scope.jqcontainer)
+            .attr("id", msgid)
+            .attr("class", "plot-message")
+            .on('mousedown', function(e) {
+              if (e.which === 3) {
+                if (callbackn != null) {
+                  callbackn();
+                }
+              } else {
+                if (callbacky != null) {
+                  callbacky();
+                }
+              }
+              $(this).remove();
+            });
+
+          if (title != null && title != "") {
+            $("<div></div>").appendTo(message)
+              .attr("class", "plot-message-title")
+              .text(title);
+          }
+
+          var content = $("<div></div>").appendTo(message)
+              .attr("class", "plot-message-content");
+          if (typeof(msgs) === "string") {
+            msgs = [ msgs ];
+          }
+          for (var i = 0; i < msgs.length; i++) {
+            $("<div></div>").appendTo(content)
+              .text(msgs[i]);
+          }
+
+          var w = message.outerWidth(), h = message.outerHeight();
+          var lMargin = scope.layout.leftLayoutMargin,
+              bMargin = scope.layout.bottomLayoutMargin;
+          message.css({
+            "left" : (scope.jqcontainer.width() - lMargin) / 2 - w / 2 + lMargin,
+            "top" : (scope.jqcontainer.height() - bMargin) / 2 - h / 2,
+          });
+        };
+
         scope.renderCoverBox = function() {
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           plotUtils.replotSingleRect(scope.labelg, {
@@ -1146,7 +858,10 @@
           };
         };
         scope.mouseDown = function() {
-          if (d3.event.target.nodeName === "div") {
+          if (scope.interactMode === "other") {
+            return;
+          }
+          if (d3.event.target.nodeName.toLowerCase() === "div") {
             scope.interactMode = "other";
             scope.disableZoom();
             return;
@@ -1154,13 +869,18 @@
           scope.interactMode = d3.event.button == 0 ? "zoom" : "locate";
         };
         scope.mouseUp = function() {
+          if (scope.interactMode === "remove") {
+            scope.interactMode = "other";
+            return;
+          }
           if (scope.interactMode === "other") {
-            scope.enableZoom();
             scope.interactMode = "zoom";
           }
+          scope.enableZoom();
         };
         scope.zoomStart = function(d) {
           if (scope.interactMode === "other") { return; }
+          scope.zoomed = false;
           scope.lastx = scope.lasty = 0;
           scope.lastscale = 1.0;
           scope.zoomObj.scale(1.0);
@@ -1173,9 +893,7 @@
           _.extend(scope.mousep2, scope.mousep1);
         };
         scope.zooming = function(d) {
-          if (scope.interactMode === "other") {
-            return;
-          }
+          if (scope.interactMode === "other") { return; }
           if (scope.interactMode === "zoom") {
             // left click zoom
             var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
@@ -1187,32 +905,35 @@
             scope.lasty = d3trans[1];
             scope.lastscale = d3scale;
 
-            var focus = scope.focus, vrange = scope.vrange;
+            var focus = scope.focus;
             var mx = d3.mouse(scope.svg[0][0])[0], my = d3.mouse(scope.svg[0][0])[1];
+            if (Math.abs(mx - scope.mousep1.x) > 0 || Math.abs(my - scope.mousep1.y) > 0) {
+              scope.zoomed = true;
+            }
             if (ds == 1.0) {
               // translate only
-              var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan, vrange = scope.vrange;
-              if (focus.xl + tx >= vrange.xl && focus.xr + tx <= vrange.xr) {
+              var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan;
+              if (focus.xl + tx >= 0 && focus.xr + tx <= 1) {
                 focus.xl += tx;
                 focus.xr += tx;
               } else {
-                if (focus.xl + tx < vrange.xl) {
-                  focus.xl = vrange.xl;
+                if (focus.xl + tx < 0) {
+                  focus.xl = 0;
                   focus.xr = focus.xl + focus.xspan;
-                } else if (focus.xr + tx > vrange.xr) {
-                  focus.xr = vrange.xr;
+                } else if (focus.xr + tx > 1) {
+                  focus.xr = 1;
                   focus.xl = focus.xr - focus.xspan;
                 }
               }
-              if (focus.yl + ty >= vrange.yl && focus.yr + ty <= vrange.yr) {
+              if (focus.yl + ty >= 0 && focus.yr + ty <= 1) {
                 focus.yl += ty;
                 focus.yr += ty;
               } else {
-                if (focus.yl + ty < vrange.yl) {
-                  focus.yl = vrange.yl;
+                if (focus.yl + ty < 0) {
+                  focus.yl = 0;
                   focus.yr = focus.yl + focus.yspan;
-                } else if (focus.yr + ty > vrange.yr) {
-                  focus.yr = vrange.yr;
+                } else if (focus.yr + ty > 1) {
+                  focus.yr = 1;
                   focus.yl = focus.yr - focus.yspan;
                 }
               }
@@ -1226,13 +947,13 @@
                 var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym),
                     nyspan = nyr - nyl;
 
-                if (nyspan >= level.minSpanY && nyspan <= vrange.yspan * level.maxScaleY) {
+                if (nyspan >= level.minSpanY && nyspan <= level.maxScaleY) {
                   focus.yl = nyl;
                   focus.yr = nyr;
                   focus.yspan = nyspan;
                 } else {
-                  if (nyspan > vrange.yspan * level.maxScaleY) {
-                    focus.yr = focus.yl + vrange.yspan * level.maxScaleY;
+                  if (nyspan > level.maxScaleY) {
+                    focus.yr = focus.yl + level.maxScaleY;
                   } else if (nyspan < level.minSpanY) {
                     focus.yr = focus.yl + level.minSpanY;
                   }
@@ -1244,19 +965,20 @@
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
                 var nxl = xm - ds * (xm - focus.xl), nxr = xm + ds * (focus.xr - xm),
                     nxspan = nxr - nxl;
-                if (nxspan >= level.minSpanX && nxspan <= vrange.xspan * level.maxScaleX) {
+                if (nxspan >= level.minSpanX && nxspan <= level.maxScaleX) {
                   focus.xl = nxl;
                   focus.xr = nxr;
                   focus.xspan = nxspan;
                 } else {
-                  if (nxspan > vrange.yspan * level.maxScaleX) {
-                    focus.xr = focus.xl + vrange.xspan * level.maxScaleX;
+                  if (nxspan > level.maxScaleX) {
+                    focus.xr = focus.xl + level.maxScaleX;
                   } else if (nxspan < level.minSpanX) {
                     focus.xr = focus.xl + level.minSpanX;
                   }
                   focus.xspan = focus.xr - focus.xl;
                 }
               }
+              scope.emitZoomLevelChange();
               scope.fixFocus(focus);
             }
             scope.calcMapping(true);
@@ -1286,9 +1008,18 @@
             scope.interactMode = "zoom";
           }
           scope.jqsvg.css("cursor", "auto");
+
+          if (scope.zoomed === true) {
+            // save zoom hash for lod items
+            var data = scope.stdmodel.data;
+            for (var i = 0; i < data.length; i++) {
+              if (data[i].isLodItem === true) {
+                scope.state.zoomHashes[i] = data[i].zoomHash;
+              }
+            }
+          }
         };
         scope.fixFocus = function(focus) {
-          var vrange = scope.vrange;
           focus.xl = focus.xl < 0 ? 0 : focus.xl;
           focus.xr = focus.xr > 1 ? 1 : focus.xr;
           focus.yl = focus.yl < 0 ? 0 : focus.yl;
@@ -1299,7 +1030,7 @@
           if (focus.xl > focus.xr || focus.yl > focus.yr) {
             console.error("visible range specified does not match data range, " +
                 "enforcing visible range");
-            _.extend(focus, scope.initFocus);
+            _.extend(focus, scope.defaultFocus);
           }
         };
         scope.resetFocus = function() {
@@ -1307,20 +1038,22 @@
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           if (mx < lMargin && my < H - bMargin) {
-            _.extend(scope.focus, _.pick(scope.initFocus, "yl", "yr", "yspan"));
+            _.extend(scope.focus, _.pick(scope.defaultFocus, "yl", "yr", "yspan"));
           } else if (my > H - bMargin && mx > lMargin) {
-            _.extend(scope.focus, _.pick(scope.initFocus, "xl", "xr", "xspan"));
+            _.extend(scope.focus, _.pick(scope.defaultFocus, "xl", "xr", "xspan"));
           } else {
-            _.extend(scope.focus, scope.initFocus);
+            _.extend(scope.focus, scope.defaultFocus);
           }
           scope.fixFocus(scope.focus);
           scope.calcMapping(true);
+          scope.emitZoomLevelChange();
           scope.update();
         };
         scope.locateFocus = function() {
           var box = scope.locateBox;
-          if (box == null)
+          if (box == null) {
             return;
+          }
           var p1 = {
             "x" : scope.scr2dataXp(box.x),
             "y" : scope.scr2dataYp(box.y)
@@ -1343,23 +1076,13 @@
           focus.xspan = focus.xr - focus.xl;
           focus.yspan = focus.yr - focus.yl;
           scope.calcMapping(true);
+          scope.emitZoomLevelChange();
         };
         scope.resetSvg = function() {
           scope.jqcontainer.find(".plot-constlabel").remove();
 
-          scope.rpipeLines = [];
-          scope.rpipeCoords = [];
+          scope.rpipeGridlines = [];
           scope.rpipeTexts = [];
-          scope.rpipeRects = [];
-          scope.rpipeDots = [];
-          scope.rpipeBars = [];
-          scope.rpipeRivers = [];
-          scope.rpipeStems = [];
-          scope.rpipePointCircles = [];
-          scope.rpipePointRects = [];
-          scope.rpipePointDiamonds = [];
-          scope.rpipeSegs = [];
-          scope.rpipeUserTexts = [];
         };
         scope.enableZoom = function() {
           scope.svg.call(scope.zoomObj.on("zoomstart", function(d) {
@@ -1381,11 +1104,14 @@
           scope.svg.selectAll(".plot-cursor").remove();
           scope.jqcontainer.find(".plot-cursorlabel").remove();
         };
+
         scope.calcMapping = function(emitFocusUpdate) {
           // called every time after the focus is changed
           var focus = scope.focus;
-          var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
-              tMargin = scope.layout.topLayoutMargin, rMargin = scope.layout.rightLayoutMargin;
+          var lMargin = scope.layout.leftLayoutMargin,
+              bMargin = scope.layout.bottomLayoutMargin,
+              tMargin = scope.layout.topLayoutMargin,
+              rMargin = scope.layout.rightLayoutMargin;
           var model = scope.stdmodel;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
           if (emitFocusUpdate == true && scope.model.updateFocus != null) {
@@ -1394,31 +1120,128 @@
               "xr" : focus.xr
             });
           }
+          scope.data2scrY =
+            d3.scale.linear().domain([focus.yl, focus.yr]).range([H - bMargin, tMargin]);
+          scope.data2scrYp =
+            d3.scale.linear().domain([focus.yl, focus.yr]).range([1, 0]);
+          scope.scr2dataY =
+            d3.scale.linear().domain([tMargin, H - bMargin]).range([focus.yr, focus.yl]);
+          scope.scr2dataYp =
+            d3.scale.linear().domain([tMargin, H - bMargin]).range([1, 0]);
+          scope.data2scrX =
+            d3.scale.linear().domain([focus.xl, focus.xr]).range([lMargin, W - rMargin]);
+          scope.data2scrXp =
+            d3.scale.linear().domain([focus.xl, focus.xr]).range([0, 1]);
+          scope.scr2dataX =
+            d3.scale.linear().domain([lMargin, W-rMargin]).range([focus.xl, focus.xr]);
+          scope.scr2dataXp =
+            d3.scale.linear().domain([lMargin, W-rMargin]).range([0, 1]);
 
-          scope.data2scrY = d3.scale.linear().domain([focus.yl, focus.yr]).range([H - bMargin, tMargin]);
-          scope.data2scrYp = d3.scale.linear().domain([focus.yl, focus.yr]).range([1, 0]);
-          scope.scr2dataY = d3.scale.linear().domain([tMargin, H - bMargin]).range([focus.yr, focus.yl]);
-          scope.scr2dataYp = d3.scale.linear().domain([tMargin, H - bMargin]).range([1, 0]);
-          scope.data2scrX = d3.scale.linear().domain([focus.xl, focus.xr]).range([lMargin, W-rMargin]);
-          scope.data2scrXp = d3.scale.linear().domain([focus.xl, focus.xr]).range([0, 1]);
-          scope.scr2dataX = d3.scale.linear().domain([lMargin, W-rMargin]).range([focus.xl, focus.xr]);
-          scope.scr2dataXp = d3.scale.linear().domain([lMargin, W-rMargin]).range([0, 1]);
+          scope.data2scrXi = function(val) {
+            return Number(scope.data2scrX(val).toFixed(scope.renderFixed));
+          };
+          scope.data2scrYi = function(val) {
+            return Number(scope.data2scrY(val).toFixed(scope.renderFixed));
+          };
         };
+
         scope.standardizeData = function() {
           var model = scope.model.getCellModel();
-          scope.stdmodel = plotConverter.standardizeModel(model);
+          scope.stdmodel = plotFormatter.standardizeModel(model);
         };
+
+        scope.checkSavedState = function() {
+          var state = scope.model.getClientState();
+          if (state.savedState == null) {
+            // create new state
+            state.savedState = {};
+            // link scope elements to savedState in prepare function
+            scope.prepareSavedState(state.savedState);
+            scope.isPreviousState = false;
+          } else {
+            // just use the previous state
+            scope.applySavedState(state.savedState);
+            scope.isPreviousState = true;
+          }
+        };
+
+        scope.prepareSavedState = function(state) {
+          scope.state = state;
+          state.focus = {};
+          state.tips = {};
+          state.showItems = [];
+          state.lodTypes = [];
+          state.lodAutos = [];
+          state.zoomHashes = [];
+          var data = scope.stdmodel.data;
+          for (var i = 0; i < data.length; i++) {
+            state.showItems[i] = data[i].showItem;
+            if (data[i].isLodItem === true) {
+              state.lodTypes[i] = data[i].lodType;
+              state.lodAutos[i] = data[i].lodAuto;
+              state.zoomHashes[i] = data[i].zoomHash;
+            }
+          }
+          // list the flags to be stored
+          state.flags = {
+            showAllItems : scope.showAllItems
+            //showLodHint : scope.showLodHint,
+            //showUnorderedHint : scope.showUnorderedHint
+          };
+
+          state.plotSize = {};
+          _(state.plotSize).extend(scope.stdmodel.plotSize);
+          scope.plotSize = state.plotSize;
+        };
+
+        scope.applySavedState = function(state) {
+          scope.state = state;
+          var data = scope.stdmodel.data;
+          for (var i = 0; i < data.length; i++) {
+            data[i].showItem = state.showItems[i];
+            if (data[i].isLodItem === true) {
+              data[i].applyLodType(state.lodTypes[i]);
+              data[i].applyLodAuto(state.lodAutos[i]);
+              data[i].applyZoomHash(state.zoomHashes[i]);
+            }
+          }
+          _(state.flags).each(function(value, key) {
+            scope[key] = value;
+          });
+          scope.plotSize = state.plotSize;
+        };
+
+        scope.initFlags = function() {
+          scope.showAllItems = true;
+          scope.showLodHint = true;
+          scope.showUnorderedHint = true;
+        };
+
+        scope.clearRemovePipe = function() {
+          // some hints are set to be removed at the end of the next rendering cycle
+          for (var i = 0; i < scope.removePipe.length; i++) {
+            var id = scope.removePipe[i];
+            scope.jqcontainer.find("#" + id).remove();
+          }
+          scope.removePipe.length = 0;
+        };
+
         scope.init = function() {
 
           // first standardize data
           scope.standardizeData();
+          // init flags
+          scope.initFlags();
+          // see if previous state can be applied
+          scope.checkSavedState();
+
           // create layout elements
           scope.initLayout();
 
           scope.resetSvg();
           scope.zoomObj = d3.behavior.zoom();
           // set zoom object
-          scope.container.on("mousedown", function() {
+          scope.svg.on("mousedown", function() {
             return scope.mouseDown();
           }).on("mouseup", function() {
             return scope.mouseUp();
@@ -1426,49 +1249,52 @@
           scope.jqsvg.mousemove(function(e) {
             return scope.renderCursor(e);
           }).mouseleave(function(e) {
-            return scope.mouseleaveClear();
+            return scope.mouseleaveClear(e);
           });
           scope.enableZoom();
 
-          // init copies focus to initFocus, called only once, create axes
-          scope.initRange();
+
+          scope.calcRange();
+          if (scope.isPreviousState === false) {
+            // init copies focus to defaultFocus, called only once
+            _(scope.state.focus).extend(scope.defaultFocus);
+          }
+          // set focus to reference model's focus
+          scope.focus = scope.state.focus;
+          scope.tips = scope.state.tips;
 
           scope.calcMapping();
+
+          // init remove pipe
+          scope.removePipe = [];
+
           scope.update();
         };
 
         scope.update = function(first) {
           scope.resetSvg();
-          scope.filterData();
-          scope.calcCoords();
-          scope.renderCoords();
+          scope.calcGridlines();
+          scope.renderGridlines();
+          plotUtils.plotGridlines(scope);
+
+
           scope.renderData();
-          scope.renderDots();
-          scope.renderLabels();
-          plotUtils.plotCoords(scope);
-          plotUtils.plotRivers(scope);
-          plotUtils.plotBars(scope);
-          plotUtils.plotStems(scope);
-          plotUtils.plotLines(scope);
-          plotUtils.plotDots(scope);
-          plotUtils.plotPointCircles(scope);
-          plotUtils.plotPointRects(scope);
-          plotUtils.plotPointDiamonds(scope);
-          plotUtils.plotSegs(scope);
-          plotUtils.plotRects(scope);
-          plotUtils.plotUserTexts(scope);
+          scope.renderGridlineLabels();
+          scope.renderCoverBox(); // redraw
+          plotUtils.plotLabels(scope); // redraw
 
           scope.renderTips();
           scope.renderLocateBox(); // redraw
           scope.renderLegends(); // redraw
-          scope.renderCoverBox(); // redraw
-          plotUtils.plotLabels(scope); // redraw
 
           scope.prepareInteraction();
+
+          scope.clearRemovePipe();
         };
+
         scope.init(); // initialize
       }
     };
   };
-  beaker.bkoDirective("Plot", ["plotUtils", "plotConverter", "bkCellMenuPluginManager", retfunc]);
+  beaker.bkoDirective("Plot", ["plotUtils", "plotFormatter", "plotFactory", "bkCellMenuPluginManager", retfunc]);
 })();

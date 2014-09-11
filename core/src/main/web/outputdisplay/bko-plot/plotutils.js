@@ -3,55 +3,61 @@
     'use strict';
     var retfunc = function(bkUtils) {
     return {
-      months: ["Jan", "Feb", "Mar", "Apr", "May", "June",
-          "July", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      days: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-      updateDataRangeVal : function(range, dim, val) {
-        var dl = dim + "l", dr = dim + "r";
-        range[dl] = Math.min(range[dl], val);
-        range[dr] = Math.max(range[dr], val);
+      outsideScr: function(scope, x, y) {
+        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+        return x < 0 || x > W || y < 0 || y > H;
       },
-      updateDataRange : function(range, ele) {
-        if (ele.x != null) { this.updateDataRangeVal(range, "x", ele.x); }
-        if (ele.y != null) { this.updateDataRangeVal(range, "y", ele.y); }
-        if (ele.x2 != null) { this.updateDataRangeVal(range, "x", ele.x2); }
-        if (ele.y2 != null) { this.updateDataRangeVal(range, "y", ele.y2); }
+      outsideScrBox: function(scope, x, y, w, h) {
+        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
+        return x > W || x + w < 0 || y > H || y + h < 0;
+      },
+      updateRange : function(datarange, itemrange) {
+        if (itemrange.xl != null) { datarange.xl = Math.min(datarange.xl, itemrange.xl); }
+        if (itemrange.xr != null) { datarange.xr = Math.max(datarange.xr, itemrange.xr); }
+        if (itemrange.yl != null) { datarange.yl = Math.min(datarange.yl, itemrange.yl); }
+        if (itemrange.yr != null) { datarange.yr = Math.max(datarange.yr, itemrange.yr); }
       },
       getDataRange : function(data) { // data range is in [0,1] x [0,1]
         var datarange = {
-          xl: 1E100,
-          yl: 1E100,
-          xr: -1E100,
-          yr: -1E100
+          xl : Infinity,
+          xr : -Infinity,
+          yl : Infinity,
+          yr : -Infinity
         };
-        var visibleData = 0;
+        var visibleItem = 0, legendableItem = 0;
         for (var i = 0; i < data.length; i++) {
-          if (data[i].shown === false) { continue; }
-          visibleData++;
-          var eles = data[i].elements;
-          for (var j = 0; j < eles.length; j++) {
-            this.updateDataRange(datarange, eles[j]);
+          if (data[i].legend != null && data[i].legend != "") {
+            legendableItem++;
           }
+          if (data[i].showItem === false) { continue; }
+          visibleItem++;
+          var itemrange = data[i].getRange();
+          this.updateRange(datarange, itemrange);
         }
-        if (visibleData === 0) {
-          datarange.xl = datarange.yl = 0;
-          datarange.xr = datarange.yr = 1;
+        if (visibleItem === 0 || datarange.xl === Infinity) {
+          datarange.xl = 0;
+          datarange.xr = 1;
+        }
+        if (visibleItem === 0 || datarange.yl === Infinity) {
+          datarange.yl = 0;
+          datarange.yr = 1;
         }
         datarange.xspan = datarange.xr - datarange.xl;
         datarange.yspan = datarange.yr - datarange.yl;
         return {
           "datarange" : datarange,
-          "visibleData": visibleData
+          "visibleItem" : visibleItem,
+          "legendableItem" : legendableItem
         };
       },
-      getInitFocus : function(model) {
+      getDefaultFocus : function(model) {
         var ret = this.getDataRange(model.data);
         var range = ret.datarange, margin = model.margin;
         var focus = {
-          xl : model.focus.xl,
-          xr : model.focus.xr,
-          yl : model.focus.yl,
-          yr : model.focus.yr
+          xl : model.userFocus.xl,
+          xr : model.userFocus.xr,
+          yl : model.userFocus.yl,
+          yr : model.userFocus.yr
         };
         if (focus.xl == null) {
           focus.xl = range.xl - range.xspan * margin.left;
@@ -67,365 +73,16 @@
         }
         focus.xspan = focus.xr - focus.xl;
         focus.yspan = focus.yr - focus.yl;
-        return {
-          "initFocus" : focus,
-          "visibleData" : ret.visibleData
-        };
-      },
-      outsideScr: function(scope, x, y) {
-        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
-        return x < 0 || x > W || y < 0 || y > H;
-      },
-      outsideScrBox: function(scope, x, y, w, h) {
-        var W = scope.jqsvg.width(), H = scope.jqsvg.height();
-        return x > W || x + w < 0 || y > H || y + h < 0;
-      },
-      plotStems: function(scope) {
-        var pipe = scope.rpipeStems;
-        scope.stemg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
-        scope.stemg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
-        for (var i = 0; i < pipe.length; i++) {
-            scope.stemg.select("#" + pipe[i].id).selectAll("line")
-              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-            scope.stemg.select("#" + pipe[i].id).selectAll("line")
-              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
-              .attr("id", function(d) { return d.id; })
-              .attr("class", function(d) { return d.class; })
-              .style("stroke", function(d) { return d.stroke; })
-              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-              .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-              .style("stroke-width", function(d) { return d.stroke_width; });
-            scope.stemg.select("#" + pipe[i].id).selectAll("line")
-              .data(pipe[i].elements, function(d) { return d.id; })
-              .attr("x1", function(d) { return d.x1; })
-              .attr("x2", function(d) { return d.x2; })
-              .attr("y1", function(d) { return d.y1; })
-              .attr("y2", function(d) { return d.y2; });
-        }
-      },
-      plotLines: function(scope) {
-        var pipe = scope.rpipeLines;
-        scope.lineg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
-        scope.lineg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .style("stroke-width", function(d) { return d.stroke_width; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
-        for (var i = 0; i < pipe.length; i++) {
-            scope.lineg.select("#" + pipe[i].id).selectAll("path")
-              .data([{}]).enter().append("path");
-            scope.lineg.select("#" + pipe[i].id + " path")
-              .attr("d", pipe[i].d);
-        }
-      },
-      plotSegs: function(scope) {
-        var pipe = scope.rpipeSegs;
-        scope.segg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
-        scope.segg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-          .style("stroke-width", function(d) { return d.stroke_width; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
-        for (var i = 0; i < pipe.length; i++) {
-          scope.segg.select("#" + pipe[i].id).selectAll("line")
-            .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-          scope.segg.select("#" + pipe[i].id).selectAll("line")
-            .data(pipe[i].elements, function(d) { return d.id; }).enter().append("line")
-            .attr("id", function(d) { return d.id; })
-            .attr("class", function(d) { return d.class; })
-            .attr("x1", function(d) { return d.x1; })
-            .attr("x2", function(d) { return d.x2; })
-            .attr("y1", function(d) { return d.y1; })
-            .attr("y2", function(d) { return d.y2; })
-            .style("stroke", function(d) { return d.stroke; })
-            .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-            .style("stroke-dasharray", function(d) { return d.stroke_dasharray; })
-            .style("stroke-width", function(d) { return d.stroke_width; });
-          scope.segg.select("#" + pipe[i].id).selectAll("line")
-            .data(pipe[i].elements, function(d) { return d.id; })
-            .attr("x1", function(d) { return d.x1; })
-            .attr("x2", function(d) { return d.x2; })
-            .attr("y1", function(d) { return d.y1; })
-            .attr("y2", function(d) { return d.y2; });
-        }
-      },
-      plotRects: function(scope) {
-        var pipe = scope.rpipeRects;
-        scope.rectg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
-        scope.rectg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill-opacity", function(d) { return d.fill_opacity; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
-        for (var i = 0; i < pipe.length; i++) {
-            scope.rectg.select("#" + pipe[i].id).selectAll("rect")
-              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-            scope.rectg.select("#" + pipe[i].id).selectAll("rect")
-              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("rect")
-              .attr("id", function(d) { return d.id; })
-              .attr("class", function(d) { return d.class; })
-              .attr("x", function(d) { return d.x; })
-              .attr("y", function(d) { return d.y; })
-              .attr("width", function(d) { return d.width; })
-              .attr("height", function(d) { return d.height; })
-              .style("fill", function(d) { return d.fill; })
-              .style("fill-opacity", function(d) { return d.fill_opacity; })
-              .style("stroke", function(d) { return d.stroke; })
-              .style("stroke-opacity", function(d) { return d.stroke_opacity; });
-            scope.rectg.select("#" + pipe[i].id).selectAll("rect")
-              .data(pipe[i].elements, function(d) { return d.id; })
-              .attr("x", function(d) { return d.x; })
-              .attr("y", function(d) { return d.y; })
-              .attr("width", function(d) { return d.width; })
-              .attr("height", function(d) { return d.height; });
-        }
-      },
-      plotDots: function(scope) {
-        var pipe = scope.rpipeDots;
-        scope.dotg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
-        scope.dotg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .attr("stroke", function(d) { return d.stroke; })
-          //.style("opacity", function(d) { return d.opacity; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill-opacity", function(d) { return d.fill_opacity; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; });
-        for (var i = 0; i < pipe.length; i++) {
-            scope.dotg.select("#" + pipe[i].id).selectAll("circle")
-              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-            scope.dotg.select("#" + pipe[i].id).selectAll("circle")
-              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("circle")
-              .attr("id", function(d) { return d.id; })
-              .attr("class", function(d) { return d.class; })
-              .attr("cx", function(d) { return d.cx; })
-              .attr("cy", function(d) { return d.cy; })
-              .attr("r", function(d) { return d.r; })
-              //.attr("opacity", function(d) { return d.opacity; })
-              .style("fill", function(d) { return d.fill; })
-              .style("fill-opacity", function(d) { return d.fill_opacity; })
-              .style("stroke", function(d) { return d.stroke; })
-              .style("stroke-opacity", function(d) { return d.stroke_opacity; });
-            scope.dotg.select("#" + pipe[i].id).selectAll("circle")
-              .data(pipe[i].elements, function(d) { return d.id; })
-              .attr("cx", function(d) { return d.cx; })
-              .attr("cy", function(d) { return d.cy; })
-              .attr("opacity", function(d) { return d.opacity; });
-        }
-      },
-      plotPointCircles: function(scope) {
-        var pipe = scope.rpipePointCircles;
-        var svg = scope.pointcircleg;
-        svg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
-        svg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill-opacity", function(d) { return d.fill_opacity; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
-        for (var i = 0; i < pipe.length; i++) {
-            svg.select("#" + pipe[i].id).selectAll("circle")
-              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-            svg.select("#" + pipe[i].id).selectAll("circle")
-              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("circle")
-              .attr("id", function(d) { return d.id; })
-              .attr("class", function(d) { return d.class; })
-              .attr("cx", function(d) { return d.cx; })
-              .attr("cy", function(d) { return d.cy; })
-              .attr("r", function(d) { return d.r; })
-              .style("fill", function(d) { return d.fill; })
-              .style("fill-opacity", function(d) { return d.fill_opacity; })
-              .style("stroke", function(d) { return d.stroke; })
-              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-              .style("stroke-width", function(d) { return d.stroke_width; });
-            svg.select("#" + pipe[i].id).selectAll("circle")
-              .data(pipe[i].elements, function(d) { return d.id; })
-              .attr("cx", function(d) { return d.cx; })
-              .attr("cy", function(d) { return d.cy; });
-        }
-      },
-      plotPointDiamonds: function(scope) {
-        var pipe = scope.rpipePointDiamonds;
-        var svg = scope.pointdiamondg;
-        svg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
-        svg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill-opacity", function(d) { return d.fill_opacity; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
-        for (var i = 0; i < pipe.length; i++) {
-            svg.select("#" + pipe[i].id).selectAll("polygon")
-              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-            svg.select("#" + pipe[i].id).selectAll("polygon")
-              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("polygon")
-              .attr("id", function(d) { return d.id; })
-              .attr("class", function(d) { return d.class; })
-              .style("fill", function(d) { return d.fill; })
-              .style("fill-opacity", function(d) { return d.fill_opacity; })
-              .style("stroke", function(d) { return d.stroke; })
-              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-              .style("stroke-width", function(d) { return d.stroke_width; })
-              .attr("points", function(d) { return d.points; });
-            svg.select("#" + pipe[i].id).selectAll("polygon")
-              .data(pipe[i].elements, function(d) { return d.id; })
-              .attr("points", function(d) { return d.points; });
-        }
-      },
-      plotPointRects: function(scope) {
-        var pipe = scope.rpipePointRects;
-        var svg = scope.pointrectg;
-        svg.selectAll("g").data(pipe, function(d) { return d.id; }).exit().remove();
-        svg.selectAll("g").data(pipe, function(d) { return d.id; }).enter().append("g")
-            .attr("id", function(d) { return d.id; })
-            .attr("class", function(d) { return d.class; })
-            .style("fill", function(d) { return d.fill; })
-            .style("fill-opacity", function(d) { return d.fill_opacity; })
-            .style("stroke", function(d) { return d.stroke; })
-            .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-            .style("stroke-width", function(d) { return d.stroke_width; });
-        for (var i = 0; i < pipe.length; i++) {
-            svg.select("#" + pipe[i].id).selectAll("rect")
-              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-            svg.select("#" + pipe[i].id).selectAll("rect")
-              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("rect")
-              .attr("id", function(d) { return d.id; })
-              .attr("class", function(d) { return d.class; })
-              .attr("x", function(d) { return d.x; })
-              .attr("y", function(d) { return d.y; })
-              .attr("width", function(d) { return d.width; })
-              .attr("height", function(d) { return d.height; })
-              .style("fill", function(d) { return d.fill; })
-              .style("fill-opacity", function(d) { return d.fill_opacity; })
-              .style("stroke", function(d) { return d.stroke; })
-              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-              .style("stroke-width", function(d) { return d.stroke_width; });
-            svg.select("#" + pipe[i].id).selectAll("rect")
-              .data(pipe[i].elements, function(d) { return d.id; })
-              .attr("x", function(d) { return d.x; })
-              .attr("y", function(d) { return d.y; });
-        }
-      },
-      plotBars: function(scope) {
-        var pipe = scope.rpipeBars;
-        scope.barg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
-        scope.barg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill-opacity", function(d) { return d.fill_opacity; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
-        for (var i = 0; i < pipe.length; i++) {
-            scope.barg.select("#" + pipe[i].id).selectAll("rect")
-              .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-            scope.barg.select("#" + pipe[i].id).selectAll("rect")
-              .data(pipe[i].elements, function(d) { return d.id; }).enter().append("rect")
-              .attr("id", function(d) { return d.id; })
-              .attr("class", function(d) { return d.class; })
-              .attr("x", function(d) { return d.x; })
-              .attr("y", function(d) { return d.y; })
-              .attr("width", function(d) { return d.width; })
-              .attr("height", function(d) { return d.height; })
-              .style("fill", function(d) { return d.fill; })
-              .style("fill-opacity", function(d) { return d.fill_opacity; })
-              .style("stroke", function(d) { return d.stroke; })
-              .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-              .style("stroke-width", function(d) { return d.stroke_width; });
-            scope.barg.select("#" + pipe[i].id).selectAll("rect")
-              .data(pipe[i].elements, function(d) { return d.id; })
-              .attr("x", function(d) { return d.x; })
-              .attr("y", function(d) { return d.y; })
-              .attr("width", function(d) { return d.width; })
-              .attr("height", function(d) { return d.height; });
-        }
-      },
-      plotUserTexts: function(scope) {
-        var pipe = scope.rpipeUserTexts;
-        scope.textg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
-        scope.textg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill-opacity", function(d) { return d.fill_opacity; })
-          .attr("transform", function(d) { return d.transform; });
-        for (var i = 0; i < pipe.length; i++) {
-          scope.textg.select("#" + pipe[i].id).selectAll("text")
-            .data(pipe[i].elements, function(d) { return d.id; }).exit().remove();
-          scope.textg.select("#" + pipe[i].id).selectAll("text")
-            .data(pipe[i].elements, function(d) { return d.id; }).enter().append("text")
-            .attr("id", function(d) { return d.id; })
-            .attr("class", function(d) { return d.class; })
-            .style("fill", function(d) { return d.fill; })
-            .style("fill-opacity", function(d) { return d.fill_opacity; })
-            .attr("transform", function(d) { return d.transform; })
-            .text(function(d) { return d.text; });
-          scope.textg.select("#" + pipe[i].id).selectAll("text")
-            .data(pipe[i].elements, function(d) { return d.id; })
-            .attr("transform", function(d) { return d.transform; });
-        }
-      },
-      plotRivers: function(scope) {
-        var pipe = scope.rpipeRivers;
-        scope.riverg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).exit().remove();
-        scope.riverg.selectAll("g")
-          .data(pipe, function(d) { return d.id; }).enter().append("g")
-          .attr("id", function(d) { return d.id; })
-          .attr("class", function(d) { return d.class; })
-          .style("fill", function(d) { return d.fill; })
-          .style("fill-opacity", function(d) { return d.fill_opacity; })
-          .style("stroke", function(d) { return d.stroke; })
-          .style("stroke-opacity", function(d) { return d.stroke_opacity; })
-          .style("stroke-width", function(d) { return d.stroke_width; });
-        for (var i = 0; i < pipe.length; i++) {
-            scope.riverg.select("#" + pipe[i].id).selectAll("polygon")
-              .data([{}]).enter().append("polygon");
-            scope.riverg.select("#" + pipe[i].id+" polygon")
-              .attr("points", pipe[i].elements);
-        }
+        var result = {};
+        result.defaultFocus = focus;
+        _(result).extend(_.omit(ret, "datarange"));
+        return result;
       },
 
-      plotCoords: function(scope) {
-        var sel = scope.coordg.selectAll("line");
-        sel.data(scope.rpipeCoords, function(d) { return d.id; }).exit().remove();
-        sel.data(scope.rpipeCoords, function(d) { return d.id; }).enter().append("line")
+      plotGridlines: function(scope) {
+        var sel = scope.gridg.selectAll("line");
+        sel.data(scope.rpipeGridlines, function(d) { return d.id; }).exit().remove();
+        sel.data(scope.rpipeGridlines, function(d) { return d.id; }).enter().append("line")
           .attr("id", function(d) { return d.id; })
           .attr("class", function(d) { return d.class; })
           .attr("x1", function(d) { return d.x1; })
@@ -434,13 +91,12 @@
           .attr("y2", function(d) { return d.y2; })
           .style("stroke", function(d) { return d.stroke; })
           .style("stroke-dasharray", function(d) { return d.stroke_dasharray; });
-        sel.data(scope.rpipeCoords, function(d) { return d.id; })
+        sel.data(scope.rpipeGridlines, function(d) { return d.id; })
           .attr("x1", function(d) { return d.x1; })
           .attr("x2", function(d) { return d.x2; })
           .attr("y1", function(d) { return d.y1; })
           .attr("y2", function(d) { return d.y2; });
       },
-
       plotLabels: function(scope) {   // redraw
         var pipe = scope.rpipeTexts;
         scope.labelg.selectAll("text").remove();
@@ -451,8 +107,8 @@
           .attr("x", function(d) { return d.x; })
           .attr("y", function(d) { return d.y; })
           .attr("transform", function(d) { return d.transform; })
-          .attr("text-anchor", function(d) { return d["text-anchor"]; })
-          .attr("dominant-baseline", function(d) { return d["dominant-baseline"]; })
+          .style("text-anchor", function(d) { return d["text-anchor"]; })
+          .style("dominant-baseline", function(d) { return d["dominant-baseline"]; })
           .text(function(d) { return d.text; });
       },
       replotSingleCircle: function(scope, d) {
@@ -466,7 +122,7 @@
           .attr("r", function(d) { return d.r; })
           .style("fill", function(d) { return d.color; })
           .style("stroke", function(d) { return d.stroke; })
-          .attr("opacity", function(d) { return d.opacity; });
+          .style("opacity", function(d) { return d.opacity; });
       },
       replotSingleRect: function(svgElement, d) {
         svgElement.selectAll("#" + d.id).remove();
@@ -495,25 +151,231 @@
         while (s.length < 6) s = "0" + s;
         return "#" + s;
       },
-      getTipString : function(val, axis) {
-        var type = axis.getType();
-        if (type === "time") {
-          return moment(val).tz(axis.getTimezone()).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
+
+      randomString: function(len) {
+        var ret = "";
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for (var i = 0; i < len; i++ ) {
+          ret += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return ret;
+      },
+
+      colorToHex: function(color) {
+
+        var colors = {
+          "aliceblue" : "#f0f8ff",
+          "antiquewhite" : "#faebd7",
+          "aqua" : "#00ffff",
+          "aquamarine" : "#7fffd4",
+          "azure" : "#f0ffff",
+          "beige" : "#f5f5dc",
+          "bisque" : "#ffe4c4",
+          "black" : "#000000",
+          "blanchedalmond" : "#ffebcd",
+          "blue" : "#0000ff",
+          "blueviolet" : "#8a2be2",
+          "brown" : "#a52a2a",
+          "burlywood" : "#deb887",
+          "cadetblue" : "#5f9ea0",
+          "chartreuse" : "#7fff00",
+          "chocolate" : "#d2691e",
+          "coral" : "#ff7f50",
+          "cornflowerblue" : "#6495ed",
+          "cornsilk" : "#fff8dc",
+          "crimson" : "#dc143c",
+          "cyan" : "#00ffff",
+          "darkblue" : "#00008b",
+          "darkcyan" : "#008b8b",
+          "darkgoldenrod" : "#b8860b",
+          "darkgray" : "#a9a9a9",
+          "darkgreen" : "#006400",
+          "darkkhaki" : "#bdb76b",
+          "darkmagenta" : "#8b008b",
+          "darkolivegreen" : "#556b2f",
+          "darkorange" : "#ff8c00",
+          "darkorchid" : "#9932cc",
+          "darkred" : "#8b0000",
+          "darksalmon" : "#e9967a",
+          "darkseagreen" : "#8fbc8f",
+          "darkslateblue" : "#483d8b",
+          "darkslategray" : "#2f4f4f",
+          "darkturquoise" : "#00ced1",
+          "darkviolet" : "#9400d3",
+          "deeppink" : "#ff1493",
+          "deepskyblue" : "#00bfff",
+          "dimgray" : "#696969",
+          "dodgerblue" : "#1e90ff",
+          "firebrick" : "#b22222",
+          "floralwhite" : "#fffaf0",
+          "forestgreen" : "#228b22",
+          "fuchsia" : "#ff00ff",
+          "gainsboro" : "#dcdcdc",
+          "ghostwhite" : "#f8f8ff",
+          "gold" : "#ffd700",
+          "goldenrod" : "#daa520",
+          "gray" : "#808080",
+          "green" : "#008000",
+          "greenyellow" : "#adff2f",
+          "honeydew" : "#f0fff0",
+          "hotpink" : "#ff69b4",
+          "indianred " : "#cd5c5c",
+          "indigo" : "#4b0082",
+          "ivory" : "#fffff0",
+          "khaki" : "#f0e68c",
+          "lavender" : "#e6e6fa",
+          "lavenderblush" : "#fff0f5",
+          "lawngreen" : "#7cfc00",
+          "lemonchiffon" : "#fffacd",
+          "lightblue" : "#add8e6",
+          "lightcoral" : "#f08080",
+          "lightcyan" : "#e0ffff",
+          "lightgoldenrodyellow" : "#fafad2",
+          "lightgrey" : "#d3d3d3",
+          "lightgreen" : "#90ee90",
+          "lightpink" : "#ffb6c1",
+          "lightsalmon" : "#ffa07a",
+          "lightseagreen" : "#20b2aa",
+          "lightskyblue" : "#87cefa",
+          "lightslategray" : "#778899",
+          "lightsteelblue" : "#b0c4de",
+          "lightyellow" : "#ffffe0",
+          "lime" : "#00ff00",
+          "limegreen" : "#32cd32",
+          "linen" : "#faf0e6",
+          "magenta" : "#ff00ff",
+          "maroon" : "#800000",
+          "mediumaquamarine" : "#66cdaa",
+          "mediumblue" : "#0000cd",
+          "mediumorchid" : "#ba55d3",
+          "mediumpurple" : "#9370d8",
+          "mediumseagreen" : "#3cb371",
+          "mediumslateblue" : "#7b68ee",
+          "mediumspringgreen" : "#00fa9a",
+          "mediumturquoise" : "#48d1cc",
+          "mediumvioletred" : "#c71585",
+          "midnightblue" : "#191970",
+          "mintcream" : "#f5fffa",
+          "mistyrose" : "#ffe4e1",
+          "moccasin" : "#ffe4b5",
+          "navajowhite" : "#ffdead",
+          "navy" : "#000080",
+          "oldlace" : "#fdf5e6",
+          "olive" : "#808000",
+          "olivedrab" : "#6b8e23",
+          "orange" : "#ffa500",
+          "orangered" : "#ff4500",
+          "orchid" : "#da70d6",
+          "palegoldenrod" : "#eee8aa",
+          "palegreen" : "#98fb98",
+          "paleturquoise" : "#afeeee",
+          "palevioletred" : "#d87093",
+          "papayawhip" : "#ffefd5",
+          "peachpuff" : "#ffdab9",
+          "peru" : "#cd853f",
+          "pink" : "#ffc0cb",
+          "plum" : "#dda0dd",
+          "powderblue" : "#b0e0e6",
+          "purple" : "#800080",
+          "red" : "#ff0000",
+          "rosybrown" : "#bc8f8f",
+          "royalblue" : "#4169e1",
+          "saddlebrown" : "#8b4513",
+          "salmon" : "#fa8072",
+          "sandybrown" : "#f4a460",
+          "seagreen" : "#2e8b57",
+          "seashell" : "#fff5ee",
+          "sienna" : "#a0522d",
+          "silver" : "#c0c0c0",
+          "skyblue" : "#87ceeb",
+          "slateblue" : "#6a5acd",
+          "slategray" : "#708090",
+          "snow" : "#fffafa",
+          "springgreen" : "#00ff7f",
+          "steelblue" : "#4682b4",
+          "tan" : "#d2b48c",
+          "teal" : "#008080",
+          "thistle" : "#d8bfd8",
+          "tomato" : "#ff6347",
+          "turquoise" : "#40e0d0",
+          "violet" : "#ee82ee",
+          "wheat" : "#f5deb3",
+          "white" : "#ffffff",
+          "whitesmoke" : "#f5f5f5",
+          "yellow" : "#ffff00",
+          "yellowgreen" : "#9acd32"
+        };
+        if (typeof colors[color.toLowerCase()] != null)
+            return colors[color.toLowerCase()];
+        return null;
+      },
+
+      createColor : function(hexstr, opacity) {
+        if (hexstr == null) {
+          hexstr = "#000000";
+        }
+        if (hexstr[0] !== "#") {
+          hexstr = this.colorToHex(hexstr);
+        }
+        if (opacity == null) {
+          opacity = 1.0;
+        }
+        var r = parseInt(hexstr.substr(1,2), 16),
+            g = parseInt(hexstr.substr(3,2), 16),
+            b = parseInt(hexstr.substr(5,2), 16);
+            var str = "rgba(" + r + "," + g + "," + b + "," + opacity + ")";;
+        return "rgba(" + r + "," + g + "," + b + "," + opacity + ")";
+      },
+
+      getTipString : function(val, axis, fixed) {
+        if (axis.axisType === "time") {
+          return moment(val).tz(axis.axisTimezone).format("YYYY MMM DD ddd, HH:mm:ss .SSS");
         }
         if (typeof(val) === "number") {
-          val = val.toFixed(axis.getFixed());
+          if (fixed === true) {
+            // do nothing, keep full val
+          } else if (typeof(fixed) === "number"){
+            val = val.toFixed(fixed);
+          } else {
+            val = val.toFixed(axis.axisFixed);
+          }
         }
         return "" + val;
       },
-      getTipStringPercent : function(pct, axis) {
-        var val = axis.getValue(pct);
-        if (axis.getType() === "log") {
-          val = axis.axisPow(pct);
-          return val.toFixed(3);
-        }
-        return this.getTipString(val, axis);
-      }
 
+      getTipStringPercent : function(pct, axis, fixed) {
+        var val = axis.getValue(pct);
+        if (axis.axisType === "log") {
+          val = axis.axisPow(pct);
+          return this.getTipString(val, axis, fixed) + " (" + axis.getString(pct) + ")";
+        }
+        return this.getTipString(val, axis, fixed);
+      },
+
+      createTipString : function(obj) {
+        var txt = "";
+        _(obj).each(function(value, key) {
+          if (key == "title") {
+            txt += "<div style='font-weight:bold'>";
+          } else {
+            txt += "<div>";
+            txt += key + ": ";
+          }
+          txt += value;
+          txt += "</div>";
+        });
+        return txt;
+      },
+
+      rangeAssert : function(list) {
+        _(list).each(function(e, i){
+          if (Math.abs(e) > 1E6) {
+            console.error("data not shown due to too large coordinate");
+            return true;
+          }
+        });
+        return false;
+      }
     };
   };
   beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);

@@ -115,6 +115,7 @@
           return !(result === undefined || result === null);
         };
         $scope.evaluate = function() {
+          $scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluate($scope.cellmodel).
               catch(function(data) {
                 console.error(data);

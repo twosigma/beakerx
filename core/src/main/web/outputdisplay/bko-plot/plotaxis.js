@@ -18,7 +18,8 @@
   'use strict';
   var retfunc = function() {
     var PlotAxis = function(type) {
-      this.axisType = type == null ? "linear" : type; // linear, log, time, nanotime, category
+      this.type = "axis";
+      this.axisType = type == null ? "linear" : type; // linear, log, time, [nanotime, category]
       this.axisBase = 10;
       this.axisTime = 0;
       this.axisTimezone = "America/New_York";
@@ -29,12 +30,12 @@
       this.axisPctR = 1;
       this.axisPctSpan = 1;
       this.axisLabel = "";
-      this.axisCoords = [];
-      this.axisCoordLabels = [];
+      this.axisGridlines = [];
+      this.axisGridlineLabels = [];
       this.axisStep = 1;
       this.axisFixed = 0;
     };
-    PlotAxis.prototype.dateIntws = [
+    var dateIntws = [
       // milliseconds
       1, 5, 10, 50, 100, 500,
       // 1, 5, 10, 30, 60 seconds
@@ -53,11 +54,14 @@
     for (var i = 0; i < 18; i++) {
       var f = Math.max(6 - i, 0);
       numIntws = numIntws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs]);  // generate 1s, 5s
-      numFixs = numFixs.concat([f, f + 1, f]);
+      numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
       bs *= 10;
     }
+
+    PlotAxis.prototype.dateIntws = dateIntws;
     PlotAxis.prototype.numIntws = numIntws;
     PlotAxis.prototype.numFixs = numFixs;
+
     PlotAxis.prototype.axisPow = function(pct) {
       return Math.pow(this.axisBase, pct * this.axisValSpan + this.axisValL);
     };
@@ -78,7 +82,7 @@
       }
       this.axisValSpan = this.axisValR - this.axisValL;
     };
-    PlotAxis.prototype.setCoords = function(pl, pr, count) {
+    PlotAxis.prototype.setGridlines = function(pl, pr, count) {
       if (pr < pl) {
         console.error("cannot set right coord < left coord");
         return;
@@ -113,24 +117,19 @@
       this.axisFixed = f;
       var val = Math.ceil(this.getValue(pl) / w) * w,
           valr = this.getValue(pr);
-      var coords = [],
+      var lines = [],
           labels = [];
       while(val < valr) {
         var pct = this.getPercent(val);
         labels.push(this.getString(pct));
-        coords.push(pct);
+        lines.push(pct);
         val += w;
       }
-      this.axisCoords = coords;
-      this.axisCoordLabels = labels;
+      this.axisGridlines = lines;
+      this.axisGridlineLabels = labels;
     };
-    PlotAxis.prototype.getType = function() { return this.axisType; };
-    PlotAxis.prototype.getTimezone = function() { return this.axisTimezone; };
-    PlotAxis.prototype.getCoords = function() { return _.without(this.axisCoords); };
-    PlotAxis.prototype.getCoordLabels = function() { return _.without(this.axisCoordLabels); };
-    PlotAxis.prototype.getStep = function() { return this.axisStep; };
-    PlotAxis.prototype.getFixed = function() { return this.axisFixed; };
-    PlotAxis.prototype.getLabel = function() { return this.axisLabel; };
+    PlotAxis.prototype.getGridlines = function() { return _.without(this.axisGridlines); };
+    PlotAxis.prototype.getGridlineLabels = function() { return _.without(this.axisGridlineLabels); };
     PlotAxis.prototype.getPercent = function(val) {
       if (val < this.axisValL) { val = this.axisValL; }
       if (val > this.axisValR) { val = this.axisValR; }

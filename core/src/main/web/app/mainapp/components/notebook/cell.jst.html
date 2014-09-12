@@ -14,8 +14,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div ng-class="isLocked() && 'locked'" class="bkcell {{cellmodel.type}}">
-  <div ng-if="cellmodel.input.hidden && cellmodel.type=='code' && !isLocked()" class="mini-cell-stats advanced-hide">
+<div ng-class="{
+  locked: isLocked(),
+  'input-hidden': cellmodel.input.hidden
+  }" class="bkcell {{cellmodel.type}}">
+  <div ng-if="cellmodel.input.hidden && cellmodel.type=='code' && !isLocked()" class="mini-cell-stats advanced-hide" ng-class="{
+    'input-hidden': !cellmodel.isShowInput()
+  }">
     {{cellmodel.evaluator}} &nbsp;
     ({{cellmodel.lineCount}} lines)
   </div>

@@ -394,10 +394,12 @@
             "Ctrl-Alt-Up": function(cm) { // cell move up
               notebookCellOp.moveUp(scope.cellmodel.id);
               bkUtils.refreshRootScope();
+              cm.focus();
             },
             "Ctrl-Alt-Down": function(cm) { // cell move down
               notebookCellOp.moveDown(scope.cellmodel.id);
               bkUtils.refreshRootScope();
+              cm.focus();
             },
             "Ctrl-Alt-H": function(cm) { // cell hide
               scope.cellmodel.input.hidden = true;

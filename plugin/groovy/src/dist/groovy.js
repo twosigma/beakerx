@@ -166,7 +166,10 @@ define(function(require, exports, module) {
     },
     cometdUtil: cometdUtil
   };
-
+  var defaultImports = [
+    "java.awt.Color",
+    "com.twosigma.beaker.chart.xychart.*",
+    "com.twosigma.beaker.chart.xychart.plotitem.*"];
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
@@ -185,6 +188,11 @@ define(function(require, exports, module) {
           }
           settings.shellID = id;
           self.settings = settings;
+          var imports = [];
+          if ("imports" in self.settings) {
+            imports = self.settings.imports.split('\n');
+          }
+          self.settings.imports = _.union(imports, defaultImports).join('\n');
           var cb = function() {
             if (bkHelper.hasSessionId()) {
               var initCode = "import com.twosigma.beaker.NamespaceClient\n" +

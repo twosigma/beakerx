@@ -51,3 +51,13 @@ bk-code-cell-output {
   }
 }
 
+.advanced-mode bk-output-display[type="Html"] {
+  padding-top: 10px;
+  display: block;
+  top: 8px;
+  position: relative;
+}
+
+.advanced-mode bk-output-display.bkr {
+  min-height: 20px;
+}

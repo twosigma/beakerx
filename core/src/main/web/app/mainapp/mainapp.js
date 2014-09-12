@@ -370,6 +370,9 @@
             getNotebookModel: function() {
               return bkSessionManager.getRawNotebookModel();
             },
+            newNotebook: function() {
+		console.log("new notebook");
+            },
             saveNotebook: function() {
               saveStart();
               var thenable;
@@ -519,6 +522,11 @@
             e.preventDefault();
             _impl.saveNotebook();
             return false;
+// this is for the notebook lets start with control panel
+//          } else if (e.ctrlKey && e.which === 78) { // Ctrl + n
+//	    e.preventDefault();
+//	    _impl.newNotebook();
+//	    return false;
           } else if (e.ctrlKey && e.which === 90) { // Ctrl + z
             bkUtils.fcall(function() {
               bkSessionManager.undo();

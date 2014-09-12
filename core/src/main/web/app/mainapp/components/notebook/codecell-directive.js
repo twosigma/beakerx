@@ -81,7 +81,7 @@
         }
 
         $scope.backgroundClick = function(event) {
-          if (!$scope.isShowInput()) {
+          if (!$scope.isShowInput() || $(event.toElement).parents().hasClass("code-cell-output")) {
             return;
           }
           var top = $(event.delegateTarget).offset().top;

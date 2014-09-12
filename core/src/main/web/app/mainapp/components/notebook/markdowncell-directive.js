@@ -92,9 +92,9 @@
           // set timeout otherwise the height will be wrong.
           // similar hack found in epic editor source:
           // epiceditor.js#L845
-          setTimeout(function() {
+          $timeout(function() {
             editor && editor.preview();
-          }, 1000);
+          }, 0);
         }
         scope.$watch('cellmodel.body', function(newVal, oldVal) {
           if (newVal !== oldVal) {

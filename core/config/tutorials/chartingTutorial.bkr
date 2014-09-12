@@ -39,7 +39,8 @@
                     "mode": "groovy",
                     "background": "#E0FFE0"
                 }
-            }
+            },
+            "imports": "java.awt.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*"
         }
     ],
     "cells": [
@@ -68,19 +69,20 @@
             "output": {
                 "result": "[{time=1199232000000, open=108.99, close=104.69, high=108.99, low=104.17, volume=9503500}, {time=1199318400000, open=104.83, close=104.9, high=105.57, low=103.98, volume=7528900}, {time=1199404800000, open=103.95, close=101.13, high=103.95, low=100.48, volume=11034600}, {time=1199664000000, open=100.25, close=100.05, high=101.0, low=99.03, volume=12650400}, {time=1199750400000, open=100.05, close=97.59, high=100.38, low=97.17, volume=9434400}, {time=1199836800000, open=97.76, close=98.31, high=99.15, low=97.16, volume=10922100}, {time=1199923200000, open=97.39, close=99.92, high=100.86, low=97.15, volume=10634700}, {time=1200009600000, open=99.2, close=97.67, high=99.46, low=97.04, volume=8959900}, {time=1200268800000, open=105.01, close=102.93, high=105.59, low=101.33, volume=18009400}, {time=1200355200000, open=102.03, close=101.83, high=104.64, low=101.23, volume=11629500}, {time=1200441600000, open=100.14, close=101.63, high=102.86, low=100.14, volume=12681700}, {time=1200528000000, open=102.0, close=101.1, high=103.45, low=100.05, volume=11934000}, {time=1200614400000, open=106.72, close=103.4, high=106.72, low=102.5, volume=23871700}, {time=1200960000000, open=98.55, close=101.22, high=103.09, low=98.55, volume=15129500}, {time=1201046400000, open=99.63, close=106.1, high=106.34, low=98.5, volume=19588100}, {time=1201132800000, open=106.38, close=106.91, high=107.51, low=104.68, volume=13025700}, {time=1201219200000, open=107.79, close=104.52, high=107.79, low=104.1, volume=10025400}, {time=1201478400000, open=104.44, close=104.98, high=105.77, low=103.83, volume=7858500}, {time=1201564800000, open=105.5, close=106.1, high=106.8, low=104.6, volume=6616200}, {time=1201651200000, open=105.85, close=105.65, high=107.65, low=104.86, volume=7431100}, {time=1201737600000, open=104.21, close=107.11, high=107.97, low=103.7, volume=9054600}, {time=1201824000000, open=107.16, close=109.08, high=109.4, low=105.86, volume=8047100}, {time=1202083200000, open=108.67, close=107.93, high=109.0, low=107.23, volume=5985500}, {time=1202169600000, open=107.06, close=105.02, high=108.05, low=104.68, volume=9048900}, {time=1202256000000, open=105.05, close=103.59, high=106.49, low=103.58, volume=8265700}, {time=1202342400000, open=102.89, close=102.34, high=104.0, low=100.6, volume=11255800}, {time=1202428800000, open=102.19, close=103.27, high=103.67, low=102.07, volume=6085600}, {time=1202688000000, open=103.05, close=105.14, high=105.55, low=102.87, volume=6098300}, {time=1202774400000, open=105.16, close=106.53, high=107.33, low=104.7, volume=7650200}, {time=1202860800000, open=107.13, close=108.42, high=108.93, low=106.8, volume=6608200}, {time=1202947200000, open=107.94, close=106.13, high=108.5, low=105.5, volume=7340600}, {time=1203033600000, open=105.27, close=106.16, high=106.25, low=105.0, volume=6235600}, {time=1203379200000, open=106.94, close=105.0, high=107.62, low=104.64, volume=7376400}, {time=1203465600000, open=105.43, close=107.85, high=108.21, low=104.53, volume=7671000}, {time=1203552000000, open=108.1, close=106.93, high=109.6, low=106.43, volume=8328000}, {time=1203638400000, open=107.14, close=108.07, high=108.48, low=105.71, volume=7917200}, {time=1203897600000, open=107.43, close=110.08, high=110.32, low=107.43, volume=8158000}, {time=1203984000000, open=109.52, close=114.38, high=114.99, low=109.05, volume=18651500}, {time=1204070400000, open=113.84, close=116.46, high=116.63, low=112.91, volume=11854900}, {time=1204156800000, open=115.6, close=115.24, high=115.9, low=114.56, volume=7227200}, {time=1204243200000, open=114.04, close=113.86, high=115.14, low=113.35, volume=8475100}, {time=1204502400000, open=113.86, close=114.23, high=114.81, low=113.48, volume=6335700}, {time=1204588800000, open=113.4, close=115.71, high=115.72, low=112.75, volume=8593300}, {time=1204675200000, open=116.41, close=115.39, high=116.41, low=114.25, volume=8434200}, {time=1204761600000, open=115.06, close=112.52, high=115.15, low=112.25, volume=8018400}, {time=1204848000000, open=111.85, close=113.94, high=114.75, low=111.8, volume=8124900}, {time=1205107200000, open=113.12, close=114.01, high=115.99, low=113.12, volume=9747300}, {time=1205193600000, open=115.8, close=116.49, high=116.56, low=114.04, volume=10480600}, {time=1205280000000, open=116.44, close=117.07, high=118.0, low=115.11, volume=9083200}, {time=1205366400000, open=115.69, close=115.91, high=116.78, low=113.64, volume=9548900}, {time=1205452800000, open=116.07, close=115.23, high=116.52, low=112.69, volume=9734600}, {time=1205712000000, open=113.0, close=115.55, high=117.04, low=113.0, volume=9280300}, {time=1205798400000, open=116.6, close=118.41, high=118.43, low=113.81, volume=9966500}, {time=1205884800000, open=118.29, close=116.94, high=118.5, low=116.65, volume=9314400}, {time=1205971200000, open=117.09, close=118.33, high=118.48, low=116.65, volume=11417900}, {time=1206316800000, open=118.57, close=119.06, high=119.79, low=118.13, volume=8398000}, {time=1206403200000, open=119.1, close=117.97, high=119.1, low=117.15, volume=8443600}, {time=1206489600000, open=117.59, close=116.91, high=117.97, low=114.96, volume=9617100}, {time=1206576000000, open=116.02, close=115.52, high=116.2, low=114.51, volume=8437200}, {time=1206662400000, open=115.86, close=114.57, high=116.75, low=114.21, volume=6600900}, {time=1206921600000, open=114.15, close=115.14, high=115.87, low=113.34, volume=9707200}, {time=1207008000000, open=115.2, close=116.49, high=118.37, low=114.97, volume=11875400}, {time=1207094400000, open=116.84, close=114.81, high=116.88, low=113.98, volume=8007600}, {time=1207180800000, open=114.35, close=116.02, high=116.82, low=113.86, volume=7052900}, {time=1207267200000, open=116.05, close=115.76, high=116.58, low=114.6, volume=5733200}, {time=1207526400000, open=116.37, close=116.31, high=117.37, low=115.82, volume=6181200}, {time=1207612800000, open=115.72, close=116.27, high=116.88, low=115.28, volume=7283300}, {time=1207699200000, open=116.5, close=116.77, high=117.72, low=115.72, volume=6819100}, {time=1207785600000, open=116.93, close=118.78, high=119.22, low=116.88, volume=9149300}, {time=1207872000000, open=117.31, close=116.0, high=117.8, low=115.51, volume=9556800}, {time=1208131200000, open=116.2, close=117.28, high=117.94, low=115.95, volume=7745600}, {time=1208217600000, open=117.1, close=117.17, high=117.67, low=115.54, volume=8642000}, {time=1208304000000, open=118.15, close=120.47, high=120.47, low=117.17, volume=19317700}, {time=1208390400000, open=122.39, close=123.08, high=123.72, low=120.7, volume=18999100}, {time=1208476800000, open=123.92, close=124.4, high=125.0, low=123.15, volume=12490800}, {time=1208736000000, open=123.62, close=124.35, high=124.51, low=122.05, volume=6952800}, {time=1208822400000, open=123.87, close=123.67, high=124.35, low=123.01, volume=5417500}, {time=1208908800000, open=123.69, close=123.6, high=124.78, low=122.64, volume=7593300}, {time=1208995200000, open=123.38, close=124.19, high=124.9, low=122.73, volume=5996700}, {time=1209081600000, open=124.5, close=123.08, high=124.5, low=122.06, volume=6313400}, {time=1209340800000, open=122.61, close=121.69, high=123.05, low=121.64, volume=5605200}, {time=1209427200000, open=122.04, close=122.85, high=123.2, low=122.04, volume=7226000}, {time=1209513600000, open=123.34, close=120.7, high=123.5, low=120.5, volume=8128300}, {time=1209600000000, open=121.06, close=123.61, high=124.43, low=121.06, volume=8230200}, {time=1209686400000, open=123.3, close=123.18, high=124.0, low=121.76, volume=6916600}, {time=1209945600000, open=122.29, close=122.03, high=123.25, low=121.74, volume=6359300}, {time=1210032000000, open=121.5, close=122.82, high=123.34, low=120.78, volume=5910400}, {time=1210118400000, open=122.78, close=124.14, high=124.98, low=122.41, volume=11406800}, {time=1210204800000, open=124.2, close=124.92, high=125.17, low=123.7, volume=9794000}, {time=1210291200000, open=124.37, close=124.06, high=124.65, low=123.63, volume=5502900}, {time=1210550400000, open=123.82, close=125.24, high=125.99, low=123.56, volume=8666800}, {time=1210636800000, open=125.12, close=126.58, high=126.7, low=125.03, volume=9693400}, {time=1210723200000, open=126.52, close=127.52, high=128.83, low=126.2, volume=8888300}, {time=1210809600000, open=127.33, close=128.46, high=128.68, low=126.9, volume=7227900}, {time=1210896000000, open=128.46, close=127.82, high=128.48, low=126.8, volume=6372100}, {time=1211155200000, open=127.68, close=126.49, high=128.21, low=126.05, volume=6385200}, {time=1211241600000, open=126.05, close=125.18, high=126.05, low=124.45, volume=7017700}, {time=1211328000000, open=125.05, close=123.62, high=126.4, low=123.02, volume=8333900}, {time=1211414400000, open=123.55, close=124.7, high=125.35, low=123.55, volume=5031300}, {time=1211500800000, open=124.35, close=124.2, high=124.91, low=123.77, volume=4701500}, {time=1211846400000, open=124.01, close=127.32, high=127.38, low=124.0, volume=6989200}, {time=1211932800000, open=127.5, close=129.54, high=129.54, low=126.99, volume=9875600}, {time=1212019200000, open=128.76, close=129.71, high=129.99, low=128.66, volume=7561500}, {time=1212105600000, open=129.22, close=129.43, high=129.99, low=128.8, volume=8652900}, {time=1212364800000, open=128.49, close=127.36, high=129.37, low=126.7, volume=7599300}, {time=1212451200000, open=127.47, close=127.84, high=129.0, low=127.46, volume=7238200}, {time=1212537600000, open=127.87, close=127.55, high=128.5, low=126.45, volume=6432300}, {time=1212624000000, open=127.41, close=128.47, high=129.04, low=127.2, volume=6153300}, {time=1212710400000, open=127.77, close=124.94, high=128.14, low=124.74, volume=7886200}, {time=1212969600000, open=125.38, close=125.86, high=126.18, low=124.06, volume=5584000}, {time=1213056000000, open=124.88, close=125.94, high=126.72, low=124.63, volume=5384200}, {time=1213142400000, open=125.9, close=123.25, high=125.9, low=122.86, volume=7207200}, {time=1213228800000, open=123.85, close=123.85, high=125.09, low=123.13, volume=6748600}, {time=1213315200000, open=124.42, close=126.15, high=126.57, low=124.15, volume=6379600}, {time=1213574400000, open=125.46, close=126.71, high=127.14, low=124.65, volume=6280200}, {time=1213660800000, open=127.1, close=125.1, high=127.1, low=124.62, volume=5277900}, {time=1213747200000, open=124.55, close=124.16, high=125.43, low=123.7, volume=6614700}, {time=1213833600000, open=123.67, close=125.02, high=125.62, low=122.36, volume=7570200}, {time=1213920000000, open=124.81, close=122.74, high=125.02, low=122.5, volume=9624900}, {time=1214179200000, open=123.0, close=123.46, high=124.5, low=122.4, volume=5852300}, {time=1214265600000, open=123.08, close=123.46, high=124.25, low=121.9, volume=7552900}, {time=1214352000000, open=123.67, close=124.58, high=125.83, low=123.2, volume=7131500}, {time=1214438400000, open=123.43, close=121.13, high=123.82, low=120.76, volume=9710600}, {time=1214524800000, open=121.02, close=120.05, high=122.05, low=118.26, volume=11660400}, {time=1214784000000, open=120.03, close=118.53, high=120.22, low=118.15, volume=8439000}, {time=1214870400000, open=117.5, close=119.27, high=119.36, low=116.6, volume=10069400}, {time=1214956800000, open=118.41, close=119.1, high=120.55, low=118.12, volume=8093200}, {time=1215043200000, open=119.95, close=119.54, high=120.78, low=117.89, volume=6115200}, {time=1215388800000, open=119.62, close=121.5, high=122.64, low=119.62, volume=9131100}, {time=1215475200000, open=120.55, close=123.88, high=123.99, low=120.55, volume=9813300}, {time=1215561600000, open=124.21, close=120.4, high=124.5, low=120.4, volume=9506700}, {time=1215648000000, open=120.66, close=123.18, high=123.54, low=120.66, volume=10053600}, {time=1215734400000, open=121.8, close=122.12, high=123.74, low=120.57, volume=8841400}, {time=1215993600000, open=123.51, close=121.54, high=124.25, low=121.24, volume=8317400}, {time=1216080000000, open=121.0, close=123.2, high=124.5, low=119.9, volume=10710500}, {time=1216166400000, open=122.81, close=125.94, high=126.89, low=122.25, volume=9898800}, {time=1216252800000, open=126.39, close=126.52, high=126.96, low=124.0, volume=12298200}, {time=1216339200000, open=125.81, close=129.89, high=130.0, low=125.42, volume=18317800}, {time=1216598400000, open=129.83, close=128.66, high=129.9, low=127.64, volume=7779600}, {time=1216684800000, open=127.5, close=130.0, high=130.0, low=127.26, volume=11428600}, {time=1216771200000, open=129.78, close=129.52, high=130.33, low=128.29, volume=10230300}, {time=1216857600000, open=129.06, close=130.0, high=130.93, low=128.8, volume=8946300}, {time=1216944000000, open=129.0, close=128.53, high=129.9, low=128.0, volume=7565500}, {time=1217203200000, open=127.69, close=126.25, high=128.44, low=126.13, volume=6096800}, {time=1217289600000, open=126.54, close=127.66, high=128.17, low=126.25, volume=5979400}, {time=1217376000000, open=128.12, close=128.86, high=129.0, low=127.09, volume=5826100}, {time=1217462400000, open=128.1, close=127.98, high=129.5, low=127.74, volume=5857300}, {time=1217548800000, open=128.52, close=126.64, high=129.3, low=126.28, volume=4939700}, {time=1217808000000, open=126.77, close=127.56, high=128.1, low=126.25, volume=5994900}, {time=1217894400000, open=128.2, close=128.87, high=128.9, low=127.08, volume=6969900}, {time=1217980800000, open=128.45, close=129.16, high=129.5, low=127.75, volume=6253800}, {time=1218067200000, open=128.3, close=129.05, high=129.97, low=127.9, volume=6633500}, {time=1218153600000, open=128.5, close=128.81, high=129.88, low=127.63, volume=8561800}, {time=1218412800000, open=128.43, close=126.6, high=128.43, low=125.75, volume=7490400}, {time=1218499200000, open=126.01, close=125.22, high=126.5, low=124.4, volume=6996800}, {time=1218585600000, open=125.0, close=125.8, high=126.99, low=124.75, volume=5857800}, {time=1218672000000, open=125.01, close=126.94, high=128.25, low=124.8, volume=6813000}, {time=1218758400000, open=127.07, close=126.36, high=127.19, low=125.35, volume=5566200}, {time=1219017600000, open=126.49, close=124.59, high=127.0, low=123.68, volume=5970000}, {time=1219104000000, open=123.63, close=122.56, high=124.79, low=122.01, volume=9311600}, {time=1219190400000, open=123.5, close=122.51, high=123.97, low=122.01, volume=6871600}, {time=1219276800000, open=121.58, close=122.99, high=123.43, low=121.55, volume=6315000}, {time=1219363200000, open=123.3, close=124.93, high=125.35, low=122.8, volume=5989200}, {time=1219622400000, open=124.48, close=122.86, high=124.93, low=122.7, volume=5827400}, {time=1219708800000, open=122.58, close=122.5, high=122.85, low=121.5, volume=6218200}, {time=1219795200000, open=122.42, close=123.38, high=124.85, low=122.18, volume=5843800}, {time=1219881600000, open=124.06, close=124.58, high=125.45, low=123.58, volume=5448200}, {time=1219968000000, open=123.71, close=121.73, high=123.99, low=121.63, volume=7156000}, {time=1220313600000, open=122.87, close=118.41, high=124.0, low=117.9, volume=11749800}, {time=1220400000000, open=118.34, close=118.34, high=118.65, low=115.15, volume=11316600}, {time=1220486400000, open=117.99, close=115.0, high=118.9, low=114.9, volume=10133800}, {time=1220572800000, open=114.15, close=114.33, high=115.09, low=113.17, volume=8811400}, {time=1220832000000, open=118.0, close=117.29, high=118.28, low=115.14, volume=10452800}, {time=1220918400000, open=117.78, close=115.04, high=118.1, low=115.0, volume=8106300}, {time=1221004800000, open=116.4, close=118.04, high=119.95, low=116.1, volume=11852200}, {time=1221091200000, open=116.6, close=119.2, high=119.37, low=116.11, volume=9737400}, {time=1221177600000, open=118.66, close=118.97, high=119.28, low=116.82, volume=6635100}, {time=1221436800000, open=115.36, close=115.19, high=118.41, low=115.19, volume=9908300}, {time=1221523200000, open=113.73, close=116.05, high=117.64, low=113.32, volume=13673200}, {time=1221609600000, open=114.79, close=111.47, high=115.5, low=110.61, volume=12298000}, {time=1221696000000, open=112.91, close=115.12, high=118.59, low=111.04, volume=15995000}, {time=1221782400000, open=119.59, close=118.85, high=124.0, low=117.5, volume=14432600}, {time=1222041600000, open=118.45, close=116.21, high=120.14, low=116.02, volume=8844000}, {time=1222128000000, open=116.21, close=115.36, high=118.17, low=114.14, volume=8012800}, {time=1222214400000, open=116.93, close=116.46, high=118.17, low=114.26, volume=6574100}, {time=1222300800000, open=117.75, close=120.11, high=121.99, low=116.12, volume=6539200}, {time=1222387200000, open=117.21, close=119.42, high=121.01, low=117.01, volume=4760500}, {time=1222646400000, open=117.44, close=114.46, high=118.43, low=109.95, volume=9586700}, {time=1222732800000, open=115.83, close=116.96, high=116.96, low=111.81, volume=18991900}, {time=1222819200000, open=115.51, close=110.13, high=116.8, low=107.75, volume=13134400}, {time=1222905600000, open=108.48, close=104.74, high=109.97, low=103.04, volume=11458200}, {time=1222992000000, open=105.16, close=103.44, high=110.95, low=103.03, volume=9637900}, {time=1223251200000, open=101.21, close=100.62, high=103.0, low=96.6, volume=11521400}, {time=1223337600000, open=101.5, close=95.65, high=102.62, low=94.24, volume=11416100}, {time=1223424000000, open=91.51, close=90.55, high=97.48, low=89.98, volume=17980400}, {time=1223510400000, open=95.29, close=89.0, high=95.31, low=88.23, volume=21293600}, {time=1223596800000, open=87.41, close=87.75, high=91.66, low=83.51, volume=24637400}, {time=1223856000000, open=90.44, close=92.21, high=93.61, low=86.95, volume=17101600}, {time=1223942400000, open=96.42, close=93.6, high=99.0, low=92.0, volume=15114200}, {time=1224028800000, open=92.77, close=88.29, high=95.29, low=87.71, volume=11330800}, {time=1224115200000, open=89.38, close=91.52, high=92.0, low=84.35, volume=16271300}, {time=1224201600000, open=91.75, close=90.78, high=95.91, low=87.71, volume=15230700}, {time=1224460800000, open=92.21, close=92.51, high=93.31, low=89.33, volume=9747100}, {time=1224547200000, open=92.22, close=88.86, high=92.46, low=88.57, volume=9716400}, {time=1224633600000, open=87.0, close=83.6, high=87.59, low=80.8, volume=14198100}, {time=1224720000000, open=84.09, close=84.35, high=85.89, low=81.0, volume=12358000}, {time=1224806400000, open=79.27, close=82.07, high=84.31, low=78.82, volume=12287300}, {time=1225065600000, open=80.27, close=79.66, high=84.5, low=79.01, volume=11099100}, {time=1225152000000, open=81.4, close=87.28, high=87.61, low=79.52, volume=14205900}, {time=1225238400000, open=87.74, close=88.2, high=91.0, low=86.25, volume=12692000}, {time=1225324800000, open=91.01, close=90.69, high=92.4, low=88.9, volume=12033800}, {time=1225411200000, open=90.9, close=92.97, high=94.19, low=89.03, volume=10506300}, {time=1225670400000, open=92.64, close=92.68, high=94.67, low=92.17, volume=7686300}, {time=1225756800000, open=94.76, close=93.4, high=94.76, low=92.07, volume=10173000}, {time=1225843200000, open=92.93, close=89.94, high=93.4, low=89.7, volume=8706200}, {time=1225929600000, open=87.68, close=85.15, high=88.83, low=84.28, volume=12522000}, {time=1226016000000, open=85.78, close=86.27, high=86.71, low=84.25, volume=7927800}, {time=1226275200000, open=87.99, close=83.87, high=88.1, low=82.74, volume=9685100}, {time=1226361600000, open=83.25, close=82.74, high=84.29, low=80.25, volume=10013600}, {time=1226448000000, open=80.73, close=79.74, high=82.4, low=79.57, volume=11368400}, {time=1226534400000, open=79.62, close=84.21, high=84.39, low=75.4, volume=15103600}, {time=1226620800000, open=82.63, close=80.33, high=85.4, low=79.5, volume=12023700}, {time=1226880000000, open=79.4, close=77.48, high=79.74, low=77.16, volume=10315300}, {time=1226966400000, open=79.13, close=80.08, high=80.93, low=77.0, volume=13050600}, {time=1227052800000, open=79.93, close=75.97, high=81.0, low=75.73, volume=12606400}, {time=1227139200000, open=75.0, close=71.74, high=78.39, low=70.51, volume=17634700}, {time=1227225600000, open=72.74, close=74.88, high=76.98, low=69.5, volume=19804500}, {time=1227484800000, open=75.74, close=79.89, high=82.09, low=75.0, volume=15023200}, {time=1227571200000, open=81.37, close=80.65, high=82.4, low=78.22, volume=12519700}, {time=1227657600000, open=79.52, close=81.67, high=81.79, low=78.61, volume=8240600}, {time=1227830400000, open=81.0, close=81.6, high=81.9, low=80.1, volume=3908300}, {time=1228089600000, open=80.95, close=76.9, high=81.36, low=76.79, volume=10265000}, {time=1228176000000, open=77.8, close=79.84, high=80.0, low=76.14, volume=9305200}, {time=1228262400000, open=78.62, close=80.67, high=81.0, low=76.99, volume=9757800}, {time=1228348800000, open=80.03, close=77.44, high=80.83, low=76.18, volume=10914000}, {time=1228435200000, open=76.78, close=80.59, high=81.5, low=75.31, volume=11212000}, {time=1228694400000, open=82.57, close=84.86, high=85.88, low=81.73, volume=11177600}, {time=1228780800000, open=83.82, close=82.69, high=85.43, low=82.2, volume=9356400}, {time=1228867200000, open=83.95, close=82.86, high=84.99, low=81.83, volume=8187000}, {time=1228953600000, open=81.5, close=80.58, high=82.86, low=79.77, volume=10682400}, {time=1229040000000, open=78.68, close=82.2, high=82.94, low=78.06, volume=10381700}, {time=1229299200000, open=82.51, close=82.77, high=83.54, low=80.0, volume=8848200}, {time=1229385600000, open=83.11, close=86.4, high=86.84, low=82.87, volume=11559800}, {time=1229472000000, open=85.44, close=85.84, high=87.27, low=84.66, volume=8592000}, {time=1229558400000, open=85.77, close=84.0, high=86.64, low=82.96, volume=8029500}, {time=1229644800000, open=85.22, close=83.52, high=85.22, low=82.97, volume=13098600}, {time=1229904000000, open=83.27, close=81.99, high=83.45, low=80.32, volume=7083300}, {time=1229990400000, open=82.35, close=80.6, high=82.81, low=80.13, volume=6374400}, {time=1230076800000, open=80.55, close=80.52, high=81.22, low=79.92, volume=2415200}, {time=1230249600000, open=80.93, close=81.33, high=81.8, low=80.55, volume=3101300}, {time=1230508800000, open=81.72, close=81.25, high=81.72, low=79.68, volume=6062600}, {time=1230595200000, open=81.83, close=83.55, high=83.64, low=81.52, volume=5774400}, {time=1230681600000, open=83.5, close=84.16, high=85.0, low=83.5, volume=6667700}]",
                 "selectedType": "Text",
-                "elapsedTime": 211,
-                "hidden": true,
-                "state": {}
+                "elapsedTime": 247,
+                "state": {},
+                "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 16
+            "lineCount": 16,
+            "initialization": true
         },
         {
             "id": "code42QbvS",
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\ndef cplot = new CombinedPlot(title: \"IBM Price 2008\", xLabel: \"Time\", initWidth: 1000);\n\ndef priceChart = new TimePlot(xLabel: \"Time\", yLabel: \"Price\", useToolTip: true, showLegend: true, crosshair: new Crosshair(color: Color.gray, width: 2, style: StrokeType.DOT))\npriceChart << new Line(x: ibm2008.time, y: ibm2008.low, displayName: \"Low Price\", color: new Color(33, 87, 141))\npriceChart << new Line(x: ibm2008.time, y: ibm2008.high, displayName: \"High Price\", color: new Color(140, 29, 23))\npriceChart << new Points(x: ibm2008.time, y: ibm2008.low, displayName: \"Low Price Points\", color: new Color(33, 87, 141))\npriceChart << new Points(x: ibm2008.time, y: ibm2008.high, displayName: \"High Price Points\", color: new Color(140, 29, 23))\ncplot.add(priceChart, 3)\n\ndef volumeChart = new TimePlot(xLabel: \"Volume\", yAutoRangeIncludesZero: true, useToolTip: true, showLegend: false)\nvolumeChart << new Area(x: ibm2008.time, y: ibm2008.volume, displayName: \"Volume\", color: new Color(255, 153, 0, 128))\nvolumeChart << new Line(x: ibm2008.time, y: ibm2008.volume, color: Color.gray)\ncplot.add(volumeChart, 1)"
+                "body": "// start out with a complete demo.  then see below for feature-by-feature tutorial.\n// ibm2008 has the data, it is defined in the hidden cell above\ndef cplot = new CombinedPlot(title: \"IBM Price 2008\", xLabel: \"Time\", initWidth: 1000)\n\ndef priceChart = new TimePlot(xLabel: \"Time\", yLabel: \"Price\", useToolTip: true, showLegend: true,\n                              crosshair: new Crosshair(color: Color.gray, width: 2, style: StrokeType.DOT))\npriceChart << new Line(x: ibm2008.time, y: ibm2008.low, displayName: \"Low Price\", color: new Color(33, 87, 141))\npriceChart << new Line(x: ibm2008.time, y: ibm2008.high, displayName: \"High Price\", color: new Color(140, 29, 23))\npriceChart << new Points(x: ibm2008.time, y: ibm2008.low, displayName: \"Low Price Points\", color: new Color(33, 87, 141))\npriceChart << new Points(x: ibm2008.time, y: ibm2008.high, displayName: \"High Price Points\", color: new Color(140, 29, 23))\ncplot.add(priceChart, 3)\n\ndef volumeChart = new TimePlot(xLabel: \"Volume\", yAutoRangeIncludesZero: true, useToolTip: true, showLegend: false)\nvolumeChart << new Area(x: ibm2008.time, y: ibm2008.volume, displayName: \"Volume\", color: new Color(255, 153, 0, 128))\nvolumeChart << new Line(x: ibm2008.time, y: ibm2008.volume, color: Color.gray)\ncplot.add(volumeChart, 1)"
             },
             "output": {
                 "result": {
@@ -3296,7 +3298,7 @@
                     "version": "groovy"
                 },
                 "selectedType": "CombinedPlot",
-                "elapsedTime": 891,
+                "elapsedTime": 781,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -3379,7 +3381,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\np = new Plot()\np << new Line(x:[1000, 10000], y:[10000, 10000], width: 10, color: Color.orange)\np << new Line(x:[5500, 5500], y:[10000, 9999], width: 10, color: Color.orange)\np << new Line(x:[14000, 14000, 15002], y:[900, 901, 901], width: 1, color: Color.blue)\np << new Line(x:[14000, 15002, 15002], y:[900, 900, 899], width: 1, color: Color.blue)\np << new Line(x:[14000, 15002], y:[899, 899], width: 1, color: Color.blue)"
+                "body": "p = new Plot()\np << new Line(x:[1000, 10000], y:[10000, 10000], width: 10, color: Color.orange)\np << new Line(x:[5500, 5500], y:[10000, 9999], width: 10, color: Color.orange)\np << new Line(x:[14000, 14000, 15002], y:[900, 901, 901], width: 1, color: Color.blue)\np << new Line(x:[14000, 15002, 15002], y:[900, 900, 899], width: 1, color: Color.blue)\np << new Line(x:[14000, 15002], y:[899, 899], width: 1, color: Color.blue)"
             },
             "output": {
                 "result": {
@@ -3504,7 +3506,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 104,
+                "elapsedTime": 178,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -3537,7 +3539,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 10
+            "lineCount": 6
         },
         {
             "id": "section1v278n",
@@ -3566,7 +3568,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import com.twosigma.beaker.chart.xychart.*;\n\nnew Plot()"
+                "body": "new Plot()"
             },
             "output": {
                 "result": {
@@ -3611,7 +3613,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 86,
+                "elapsedTime": 160,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -3638,7 +3640,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 1
         },
         {
             "id": "sectionHRkjOo",
@@ -3653,7 +3655,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import com.twosigma.beaker.chart.xychart.*;\n\nnew Plot(title: \"My Chart\", xLabel: \"X Label\", yLabel: \"Y Label\")"
+                "body": "new Plot(title: \"My Chart\", xLabel: \"X Label\", yLabel: \"Y Label\")"
             },
             "output": {
                 "result": {
@@ -3698,7 +3700,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 92,
+                "elapsedTime": 150,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -3725,7 +3727,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 3
+            "lineCount": 1
         },
         {
             "id": "sectionNMpFLc",
@@ -3754,7 +3756,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\n// just provide lists of x's and y's\nnew Plot().add(new Line(x: [0, 1, 2, 3, 4, 5], y: [0, 1, 6, 5, 2, 8]))\n\n// Groovy range works\nnew Plot().add(new Line(x: (0..5), y: [0, 1, 6, 5, 2, 8]))\n\n// use '<<' left-shift to save some key strokes\nnew Plot() << new Line(x: (0..5), y: [0, 1, 6, 5, 2, 8])\n\n// the constructor of class Line is overloaded to take 1 or 2 lists\n// if an Line was returned, and empty plot is automatically generated\nnew Line((0..5), [0, 1, 6, 5, 2, 8])\n                        \n// if x is not provided, a default list of x values (0..5) will be used\nnew Line([0, 1, 6, 5, 2, 8])"
+                "body": "// just provide lists of x's and y's\nnew Plot().add(new Line(x: [0, 1, 2, 3, 4, 5], y: [0, 1, 6, 5, 2, 8]))\n\n// Groovy range works\nnew Plot().add(new Line(x: (0..5), y: [0, 1, 6, 5, 2, 8]))\n\n// use '<<' left-shift to save some key strokes\nnew Plot() << new Line(x: (0..5), y: [0, 1, 6, 5, 2, 8])\n\n// the constructor of class Line is overloaded to take 1 or 2 lists\n// if an Line was returned, and empty plot is automatically generated\nnew Line((0..5), [0, 1, 6, 5, 2, 8])\n                        \n// if x is not provided, a default list of x values (0..5) will be used\nnew Line([0, 1, 6, 5, 2, 8])"
             },
             "output": {
                 "result": {
@@ -3823,7 +3825,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 91,
+                "elapsedTime": 148,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -3852,7 +3854,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 18
+            "lineCount": 15
         },
         {
             "id": "textE6SAtM",
@@ -3865,7 +3867,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\ndef plot = new Plot(title: \"Setting line properties\")\ndef ys = [0, 1, 6, 5, 2, 8]\ndef ys2 = [0, 2, 7, 6, 3, 8]\nplot << new Line(y: ys, width: 15.0) // thick line behold the orange line\nplot << new Line(y: ys, width: 5.0, color: Color.orange)\nplot << new Line(y: ys, width: 2, color: new Color(33, 87, 141), style: StrokeType.DASH, interpolation: 0)\nplot << new Line(y: ys2, width: 2, color: new Color(212, 57, 59), style: StrokeType.DOT)"
+                "body": "def plot = new Plot(title: \"Setting line properties\")\ndef ys = [0, 1, 6, 5, 2, 8]\ndef ys2 = [0, 2, 7, 6, 3, 8]\nplot << new Line(y: ys, width: 15.0) // thick line behold the orange line\nplot << new Line(y: ys, width: 5.0, color: Color.orange)\nplot << new Line(y: ys, width: 2, color: new Color(33, 87, 141), style: StrokeType.DASH, interpolation: 0)\nplot << new Line(y: ys2, width: 2, color: new Color(212, 57, 59), style: StrokeType.DOT)"
             },
             "output": {
                 "result": {
@@ -4006,7 +4008,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 107,
+                "elapsedTime": 151,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -4038,7 +4040,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 11
+            "lineCount": 7
         },
         {
             "id": "sectionOkgmqA",
@@ -4059,7 +4061,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\ndef plot = new Plot();\ndef y1 = [1.5, 1, 6, 5, 2, 8]\ndef cs = [Color.black, Color.red, Color.orange, Color.green, Color.blue, Color.pink]\ndef ss = [StrokeType.SOLID, StrokeType.SOLID, StrokeType.DASH, StrokeType.DOT, StrokeType.DASHDOT, StrokeType.LONGDASH]\nplot << new Stems(y: y1, color: cs, style: ss, width: 3.5f)"
+                "body": "def plot = new Plot();\ndef y1 = [1.5, 1, 6, 5, 2, 8]\ndef cs = [Color.black, Color.red, Color.orange, Color.green, Color.blue, Color.pink]\ndef ss = [StrokeType.SOLID, StrokeType.SOLID, StrokeType.DASH, StrokeType.DOT, StrokeType.DASHDOT, StrokeType.LONGDASH]\nplot << new Stems(y: y1, color: cs, style: ss, width: 3.5f)"
             },
             "output": {
                 "result": {
@@ -4144,7 +4146,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 346,
+                "elapsedTime": 146,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -4173,7 +4175,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 9
+            "lineCount": 5
         },
         {
             "id": "textem0T7o",
@@ -4186,7 +4188,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\ndef plot = new Plot(title: \"Setting the base of Stems\")\ndef ys = [3, 5, 2, 3, 7]\ndef y2s = [2.5, -1.0, 3.5, 2.0, 3.0]\nplot << new Points(y: ys, color: Color.red)\nplot << new Stems(y: ys, color: Color.red, width: 1.5f, base: y2s)"
+                "body": "def plot = new Plot(title: \"Setting the base of Stems\")\ndef ys = [3, 5, 2, 3, 7]\ndef y2s = [2.5, -1.0, 3.5, 2.0, 3.0]\nplot << new Points(y: ys, color: Color.red)\nplot << new Stems(y: ys, color: Color.red, width: 1.5f, base: y2s)"
             },
             "output": {
                 "result": {
@@ -4285,7 +4287,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 141,
+                "elapsedTime": 147,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -4315,7 +4317,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 9
+            "lineCount": 5
         },
         {
             "id": "sectionGUyfdA",
@@ -4336,7 +4338,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\ndef plot = new Plot(title: \"Bars\")\ndef cs = [new Color(255, 0, 0, 128)] * 5 // transparent bars\ncs[3] = Color.red // set color of a single bar, solid colored bar\nplot << new Bars(x: (1..5), y: [3, 5, 2, 3, 7], color: cs, outlineColor: Color.black, width: 0.3)"
+                "body": "def plot = new Plot(title: \"Bars\")\ndef cs = [new Color(255, 0, 0, 128)] * 5 // transparent bars\ncs[3] = Color.red // set color of a single bar, solid colored bar\nplot << new Bars(x: (1..5), y: [3, 5, 2, 3, 7], color: cs, outlineColor: Color.black, width: 0.3)"
             },
             "output": {
                 "result": {
@@ -4411,7 +4413,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 127,
+                "elapsedTime": 218,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -4440,7 +4442,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 8
+            "lineCount": 4
         },
         {
             "id": "sectionI3JDTC",
@@ -4461,7 +4463,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\ndef plot = new Plot(title: \"Changing Point Size, Color, Shape\")\ndef y1 = [6, 7, 12, 11, 8, 14]\ndef y2 = y1.collect { it - 2 }\ndef y3 = y2.collect { it - 2 }\ndef y4 = y3.collect { it - 2 }\nplot << new Points(y: y1)\nplot << new Points(y: y2, shape: ShapeType.CIRCLE)\nplot << new Points(y: y3, size: 8.0, shape: ShapeType.DIAMOND)\nplot << new Points(y: y4, size: 12.0, color: Color.orange, outlineColor: Color.red)"
+                "body": "def plot = new Plot(title: \"Changing Point Size, Color, Shape\")\ndef y1 = [6, 7, 12, 11, 8, 14]\ndef y2 = y1.collect { it - 2 }\ndef y3 = y2.collect { it - 2 }\ndef y4 = y3.collect { it - 2 }\nplot << new Points(y: y1)\nplot << new Points(y: y2, shape: ShapeType.CIRCLE)\nplot << new Points(y: y3, size: 8.0, shape: ShapeType.DIAMOND)\nplot << new Points(y: y4, size: 12.0, color: Color.orange, outlineColor: Color.red)"
             },
             "output": {
                 "result": {
@@ -4643,7 +4645,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 13
+            "lineCount": 9
         },
         {
             "id": "textBXcmZ0",
@@ -4656,7 +4658,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\ndef plot = new Plot(title: \"Changing point properties with list\")\ndef cs = [Color.black, Color.red, Color.orange, Color.green, Color.blue, Color.pink]\ndef ss = [6.0, 9.0, 12.0, 15.0, 18.0, 21.0]\ndef fs = [false, false, false, true, false, false]\nplot << [new Points(y: [5] * 6, size: 12.0, color: cs),\n\t\t new Points(y: [4] * 6, size: 12.0, color: Color.gray, outlineColor: cs),\n\t\t new Points(y: [3] * 6, size: ss, color: Color.red),\n\t\t new Points(y: [2] * 6, size: 12.0, color: Color.black, fill: fs, outlineColor: Color.black)]"
+                "body": "def plot = new Plot(title: \"Changing point properties with list\")\ndef cs = [Color.black, Color.red, Color.orange, Color.green, Color.blue, Color.pink]\ndef ss = [6.0, 9.0, 12.0, 15.0, 18.0, 21.0]\ndef fs = [false, false, false, true, false, false]\nplot << [new Points(y: [5] * 6, size: 12.0, color: cs),\n\t\t new Points(y: [4] * 6, size: 12.0, color: Color.gray, outlineColor: cs),\n\t\t new Points(y: [3] * 6, size: ss, color: Color.red),\n\t\t new Points(y: [2] * 6, size: 12.0, color: Color.black, fill: fs, outlineColor: Color.black)]"
             },
             "output": {
                 "result": {
@@ -4834,7 +4836,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 141,
+                "elapsedTime": 152,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -4866,7 +4868,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 12
+            "lineCount": 8
         },
         {
             "id": "sectionwfn6YU",
@@ -4881,7 +4883,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\ndef plot = new Plot()\ndef y = [3, 5, 2, 3]\ndef x0 = [0, 1, 2, 3]\ndef x1 = [3, 4, 5, 6]\nplot << new Area(x: x0, y: y, color: new Color(128, 0, 128, 128))\nplot << new Line(x: x0, y: y, color: new Color(128, 0, 255), width: 3.0)\nplot << new Area(x: x1, y: y, color: new Color(255, 255, 0, 128), interpolation: 0)\nplot << new Line(x: x1, y: y, color: new Color(255, 255, 0), width: 3.0, interpolation: 0)"
+                "body": "def plot = new Plot()\ndef y = [3, 5, 2, 3]\ndef x0 = [0, 1, 2, 3]\ndef x1 = [3, 4, 5, 6]\nplot << new Area(x: x0, y: y, color: new Color(128, 0, 128, 128))\nplot << new Line(x: x0, y: y, color: new Color(128, 0, 255), width: 3.0)\nplot << new Area(x: x1, y: y, color: new Color(255, 255, 0, 128), interpolation: 0)\nplot << new Line(x: x1, y: y, color: new Color(255, 255, 0), width: 3.0, interpolation: 0)"
             },
             "output": {
                 "result": {
@@ -5005,7 +5007,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 169,
+                "elapsedTime": 147,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -5037,7 +5039,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 12
+            "lineCount": 8
         },
         {
             "id": "text8pHh6r",
@@ -5050,7 +5052,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\ndef p = new Plot()\np << new Line(y: [3, 6, 12, 24], displayName: \"Line 1\")\np << new Area(y: [4, 8, 16, 32], base: [2, 4, 8, 16], color: new Color(255, 0, 0, 50), displayName: \"error\") // setting 'base'"
+                "body": "def p = new Plot()\np << new Line(y: [3, 6, 12, 24], displayName: \"Line 1\")\np << new Area(y: [4, 8, 16, 32], base: [2, 4, 8, 16], color: new Color(255, 0, 0, 50), displayName: \"error\") // setting 'base'"
             },
             "output": {
                 "result": {
@@ -5139,7 +5141,7 @@
                     "crosshair": null
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 449,
+                "elapsedTime": 131,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -5169,7 +5171,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 7
+            "lineCount": 3
         },
         {
             "id": "section3cKrLr",
@@ -5190,7 +5192,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "import java.awt.Color;\nimport com.twosigma.beaker.chart.xychart.*;\nimport com.twosigma.beaker.chart.xychart.plotitem.*;\n\ndef ch = new Crosshair(color: new Color(255, 128, 5), width: 2, style: StrokeType.DOT)\ndef pp = new Plot(useToolTip: true, showLegend: true, crosshair: ch)\n//def pp = Plot(useToolTip: true, showLegend: false) // explicitly turn the legend off\npp << new Line(displayName: \"Line\", x: [1, 4, 6, 8, 10], y: [3, 6, 4, 5, 9], width: 3)\npp << new Bars(displayName: \"Bar\", x: (1..10), y: [1, 2, 3, 4, 3, 2, 1, 2, 3, 4], color: new Color(0, 0, 128, 160), outlineColor: Color.black, width: 0.5)\npp << new Points(displayName: \"\", x: [1, 4, 6, 8, 10], y: [3, 6, 4, 5, 9], color: new Color(128, 0, 0, 160), outlineColor: Color.black, size: 10) // not show in the legend box\n"
+                "body": "def ch = new Crosshair(color: new Color(255, 128, 5), width: 2, style: StrokeType.DOT)\ndef pp = new Plot(useToolTip: true, showLegend: true, crosshair: ch)\n//def pp = Plot(useToolTip: true, showLegend: false) // explicitly turn the legend off\npp << new Line(displayName: \"Line\", x: [1, 4, 6, 8, 10], y: [3, 6, 4, 5, 9], width: 3)\npp << new Bars(displayName: \"Bar\", x: (1..10), y: [1, 2, 3, 4, 3, 2, 1, 2, 3, 4], color: new Color(0, 0, 128, 160), outlineColor: Color.black, width: 0.5)\npp << new Points(displayName: \"\", x: [1, 4, 6, 8, 10], y: [3, 6, 4, 5, 9], color: new Color(128, 0, 0, 160), outlineColor: Color.black, size: 10) // not show in the legend box\n"
             },
             "output": {
                 "result": {
@@ -5319,7 +5321,7 @@
                     }
                 },
                 "selectedType": "Plot",
-                "elapsedTime": 243,
+                "elapsedTime": 153,
                 "state": {
                     "savedState": {
                         "focus": {
@@ -5350,7 +5352,7 @@
                 }
             },
             "evaluatorReader": true,
-            "lineCount": 11
+            "lineCount": 7
         }
     ]
 }

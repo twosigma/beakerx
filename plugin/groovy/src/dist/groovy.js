@@ -154,12 +154,15 @@ define(function(require, exports, module) {
         data: { shellId: self.settings.shellID }
       }).done(cb);
     },
-    updateClassPath: function (cb) {
-      bkHelper.httpPost(serviceBase + "/rest/groovysh/setClassPath", {
-        shellId: this.settings.shellID, classPath: this.settings.classPath}).success(cb);
+    updateShell: function (cb) {
+      bkHelper.httpPost(serviceBase + "/rest/groovysh/setShellOptions", {
+        shellId: this.settings.shellID,
+        classPath: this.settings.classPath,
+        imports: this.settings.imports}).success(cb);
     },
     spec: {
-      classPath: {type: "settableString", action: "updateClassPath", name: "Class path (jar files, one per line)"}
+      classPath: {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
+      imports: {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"}
     },
     cometdUtil: cometdUtil
   };
@@ -196,7 +199,7 @@ define(function(require, exports, module) {
               }
             }
           };
-          self.updateClassPath(cb);
+          self.updateShell(cb);
         };
         if (!settings.shellID) {
           settings.shellID = "";

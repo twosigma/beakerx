@@ -57,3 +57,7 @@ bk-code-cell-output {
   top: 8px;
   position: relative;
 }
+
+.advanced-mode bk-output-display.bkr {
+  min-height: 20px;
+}

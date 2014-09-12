@@ -18,6 +18,7 @@ package com.twosigma.beaker.groovy.rest;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import groovy.lang.GroovyShell;
+import groovy.lang.Binding;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,7 +32,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.CompilationFailedException;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 @Path("groovysh")
 @Produces(MediaType.APPLICATION_JSON)
@@ -40,6 +43,7 @@ public class GroovyShellRest {
 
   private final Map<String, GroovyShell> shells = new HashMap<>();
   private final Map<String, String> classPaths = new HashMap<>();
+  private final Map<String, String> imports = new HashMap<>();
 
   public GroovyShellRest() throws IOException {}
 
@@ -108,15 +112,17 @@ public class GroovyShellRest {
   }
 
   @POST
-  @Path("setClassPath")
-  public void setClassPath(
+  @Path("setShellOptions")
+  public void setShellOptions(
       @FormParam("shellId") String shellId,
-      @FormParam("classPath") String classPath) 
+      @FormParam("classPath") String classPath,
+      @FormParam("imports") String imports)
     throws MalformedURLException
   {
       this.classPaths.put(shellId, classPath);
+      this.imports.put(shellId, imports);
       // XXX it would be better to just create the GroovyShell with
-      // the desired classpath instead of creating and then changing
+      // the desired options instead of creating and then changing
       // (which requires creating a new one).
       newEvaluator(shellId);
   }
@@ -130,6 +136,7 @@ public class GroovyShellRest {
     if (null != classPath) {
       files = classPath.split("\n");
       int count = 0;
+      // should trim too
       for (int i = 0; i < files.length; i++) {
         if (!files[i].isEmpty()) {
           count++;
@@ -142,7 +149,23 @@ public class GroovyShellRest {
         }
       }
     }
-    this.shells.put(id, new GroovyShell(new URLClassLoader(urls)));
+    ImportCustomizer icz = new ImportCustomizer();
+    String importSetting = this.imports.get(id);
+    if (null != importSetting) {
+      String[] imports = importSetting.split("\n");
+      for (int i = 0; i < imports.length; i++) {
+        if (!imports[i].isEmpty()) {
+          // should trim too
+          if (imports[i].endsWith(".*")) {
+            icz.addStarImports(imports[i].substring(0, imports[i].length() - 2));
+          } else {
+            icz.addImports(imports[i]);
+          }
+        }
+      }
+    }
+    CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
+    this.shells.put(id, new GroovyShell(new URLClassLoader(urls), new Binding(), config));
   }
 
   private GroovyShell getEvaluator(String shellId) {

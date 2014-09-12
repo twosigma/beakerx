@@ -21,8 +21,8 @@
   }">
 
   <p class='depth-indicator'>{{getFullIndex()}}</p>
-  <div class="bkcell code-cell-area" ng-click="backgroundClick($event)">
-    <div class="code-cell-input" ng-show="isShowInput()">
+  <div class="bkcell code-cell-area">
+    <div class="code-cell-input" ng-show="isShowInput()" ng-click="backgroundClick($event)">
         <bk-code-cell-input-menu ></bk-code-cell-input-menu>
         <div ng-click="$event.stopPropagation()">
 	  <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>

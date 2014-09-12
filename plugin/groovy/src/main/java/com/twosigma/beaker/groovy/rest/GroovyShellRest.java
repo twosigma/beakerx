@@ -18,6 +18,7 @@ package com.twosigma.beaker.groovy.rest;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import groovy.lang.GroovyShell;
+import groovy.lang.Binding;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,7 +32,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.CompilationFailedException;
+import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 @Path("groovysh")
 @Produces(MediaType.APPLICATION_JSON)
@@ -142,7 +145,10 @@ public class GroovyShellRest {
         }
       }
     }
-    this.shells.put(id, new GroovyShell(new URLClassLoader(urls)));
+    ImportCustomizer icz = new ImportCustomizer();
+    icz.addImports("java.awt.Color");
+    CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
+    this.shells.put(id, new GroovyShell(new URLClassLoader(urls), new Binding(), config));
   }
 
   private GroovyShell getEvaluator(String shellId) {

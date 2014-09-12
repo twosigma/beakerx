@@ -70,7 +70,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String buildTime;
 
   private String hash(String password) {
-    return DigestUtils.shaHex(password + getPasswordSalt());
+    return DigestUtils.sha512Hex(password + getPasswordSalt());
   }
 
   @Inject

@@ -457,7 +457,7 @@
         if (_.isEmpty(cells)) {
           return false;
         }
-        return cells[cells.length - 1].id === id;
+        return _.last(cells).id === id;
       },
       appendAfter: function(id, cell) {
         if (this.isContainer(id) && !this.isEmpty(id)) {

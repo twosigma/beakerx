@@ -18,7 +18,67 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', function(bkSessionManager, bkHelper) {
+  module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
+
+    function initializeEditor(scope, element, attrs) {
+      var div = element.find("div").first().get()[0];
+      var options = {
+        basePath: 'vendor/epiceditor',
+        container: div,
+        file: {
+          defaultContent: scope.cellmodel.body
+        },
+        button: false,
+        clientSideStorage: false,
+        autogrow: {
+          minHeight: 50,
+          maxHeight: false,
+          scroll: true
+        }
+      };
+      if (scope.editor) {
+        scope.editor.removeListener("preview");
+        scope.editor.removeListener("edit");
+        scope.editor.removeListener("focus");
+        scope.editor.removeListener("blur");
+        scope.editor.removeListener("preview-clicked");
+        scope.editor.editorIframeDocument.removeEventListener('keyup');
+        if (!scope.editor.is('unloaded')) {
+          scope.editor.unload();
+        }
+      }
+
+      scope.editor = new EpicEditor(options).load();
+
+      scope.editor.on('preview', function() {
+        scope.cellmodel.mode = "preview";
+      });
+      scope.editor.on('edit', function() {
+        scope.cellmodel.mode = "edit";
+      });
+      scope.editor.on('focus', function() {
+        scope.focused = true;
+      });
+      scope.editor.on('blur', function() {
+        scope.focused = false;
+        scope.editor.preview();
+      });
+      scope.editor.on('preview-clicked', function() {
+        scope.edit();
+      });
+      scope.editor.on('reflow', function(size) {
+        div.style.height = size.height;
+      });
+
+      scope.editor.editorIframeDocument.addEventListener('keyup', function(e) {
+        scope.cellmodel.body = scope.editor.getText();
+        scope.$apply();
+      });
+
+      scope.editor.preview();
+      //return editor;
+    }
+
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/markdowncell"](),
@@ -28,62 +88,24 @@
         }
       },
       link: function(scope, element, attrs) {
-        var div = element.find("div").first().get()[0];
-        var options = {
-          basePath: 'vendor/epiceditor',
-          container: div,
-          file: {
-            defaultContent: scope.cellmodel.body
-          },
-          button: false,
-          clientSideStorage: false,
-          autogrow: {
-            minHeight: 50,
-            maxHeight: false,
-            scroll: true
-          }
-        };
-        var editor = new EpicEditor(options).load();
-        editor.on('preview', function() {
-          scope.cellmodel.mode = "preview";
-        });
-        editor.on('edit', function() {
-          scope.cellmodel.mode = "edit";
-        });
-        editor.on('focus', function() {
-          scope.focused = true;
-        });
-        editor.on('blur', function() {
-          scope.focused = false;
-          editor.preview();
-        });
-        editor.on('preview-clicked', function() {
-          scope.edit();
-        });
-        editor.on('reflow', function(size) {
-          div.style.height = size.height;
-        });
-
-        editor.editorIframeDocument.addEventListener('keyup', function(e) {
-          scope.cellmodel.body = editor.getText();
-          scope.$apply();
-        });
+        var args  = arguments;
+        var _this = this;
 
         scope.edit = function() {
           if (bkHelper.isNotebookLocked()) {
             return
           }
 
-          editor.edit();
+          scope.editor && scope.editor.edit();
         }
 
         if (scope.cellmodel.mode === "preview") {
           // set timeout otherwise the height will be wrong.
           // similar hack found in epic editor source:
           // epiceditor.js#L845
-          setTimeout(function() {
-            editor.preview();
-          }, 1000);
+          $timeout(function() {
+            scope.editor && scope.editor.preview();
+          }, 0);
         }
         scope.$watch('cellmodel.body', function(newVal, oldVal) {
           if (newVal !== oldVal) {
@@ -91,10 +113,25 @@
           }
         });
 
+        scope.$parent.$watch('index', function(newV, oldV) {
+          if (newV === oldV) {
+            return;
+          }
+
+          $timeout(function() {
+            initializeEditor(scope, element);
+          }, 0);
+        });
+
         scope.$on('$destroy', function() {
-          editor.unload();
+          if (scope.editor && !scope.editor.is('unloaded')) {
+            scope.editor.unload();
+          }
+
           EpicEditor._data.unnamedEditors = [];
         });
+
+        initializeEditor(scope, element);
       }
     };
   }]);

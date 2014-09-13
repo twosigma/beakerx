@@ -105,7 +105,7 @@
         };
 
 	var keydownHandler = function(e) {
-          if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + n
+          if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
 	      bkUtils.fcall(function() {
 		      $scope.newNotebook();
 		  });

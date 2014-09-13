@@ -370,9 +370,6 @@
             getNotebookModel: function() {
               return bkSessionManager.getRawNotebookModel();
             },
-            newNotebook: function() {
-		console.log("new notebook");
-            },
             saveNotebook: function() {
               saveStart();
               var thenable;

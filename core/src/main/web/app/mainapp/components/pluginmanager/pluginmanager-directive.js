@@ -35,6 +35,11 @@
         $scope.hideEvaluators = function() {
           return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel().hideEvaluators();
         };
+
+        $scope.getEvaluatorDetails = function(name) {
+          return bkEvaluatorManager.getEvaluator(name);
+        };
+
         $scope.evalTabOp = {
           newPluginNameOrUrl: "",
 	  showURL: false,

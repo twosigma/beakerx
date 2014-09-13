@@ -453,6 +453,12 @@
       isEmpty: function(id) {
         return this._getDecoratedCell(id).allDescendants.length === 0;
       },
+      isLast: function(id) {
+        if (_.isEmpty(cells)) {
+          return false;
+        }
+        return _.last(cells).id === id;
+      },
       appendAfter: function(id, cell) {
         if (this.isContainer(id) && !this.isEmpty(id)) {
           // add to tail

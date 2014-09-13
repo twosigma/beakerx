@@ -81,7 +81,7 @@
         }
 
         $scope.backgroundClick = function(event) {
-          if (!$scope.isShowInput()) {
+          if (!$scope.isShowInput() || $(event.toElement).parents().hasClass("code-cell-output")) {
             return;
           }
           var top = $(event.delegateTarget).offset().top;
@@ -390,6 +390,24 @@
                 completeSingle: true
               };
               CodeMirror.showHint(cm, getHints, options);
+            },
+            "Ctrl-Alt-Up": function(cm) { // cell move up
+              notebookCellOp.moveUp(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
+            "Ctrl-Alt-Down": function(cm) { // cell move down
+              notebookCellOp.moveDown(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
+            "Ctrl-Alt-H": function(cm) { // cell hide
+              scope.cellmodel.input.hidden = true;
+              bkUtils.refreshRootScope();
+            },
+            "Ctrl-Alt-D": function(cm) { // cell delete
+              notebookCellOp.delete(scope.cellmodel.id, true);
+              bkUtils.refreshRootScope();
             }
           }
         });

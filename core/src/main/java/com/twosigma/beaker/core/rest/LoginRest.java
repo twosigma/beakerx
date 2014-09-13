@@ -43,7 +43,7 @@ public class LoginRest {
   }
 
   private String hash(String password) {
-    return DigestUtils.shaHex(password + config.getPasswordSalt());
+    return DigestUtils.sha512Hex(password + config.getPasswordSalt());
   }
   
   @POST

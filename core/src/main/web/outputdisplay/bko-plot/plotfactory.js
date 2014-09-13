@@ -21,7 +21,7 @@
     PlotConstline, PlotConstband, PlotText,
     PlotLineLodLoader, PlotBarLodLoader, PlotStemLodLoader, PlotAreaLodLoader,
     PlotPointLodLoader) {
-    var lodthresh = 300;
+    var lodthresh = 1500;
     return {
       createPlotItem : function(item) {
         var size = item.elements.length;

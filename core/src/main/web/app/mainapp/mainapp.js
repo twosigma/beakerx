@@ -518,12 +518,7 @@
           return bkMenuPluginManager.getMenus();
         };
         var keydownHandler = function(e) {
-          if (e.ctrlKey && e.shiftKey && (e.which === 65)) { // Ctrl + Shift + a
-	      e.preventDefault();
-	      // how to call insertDefaultCodeCell from here?  move it?
-	      console.log('add cell');
-	      return false;
-          } else if (e.ctrlKey && (e.which === 83)) { // Ctrl + s
+          if (e.ctrlKey && !e.altKey && (e.which === 83)) { // Ctrl + s
             e.preventDefault();
             _impl.saveNotebook();
             return false;

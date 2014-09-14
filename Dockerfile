@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# to build: sudo docker build -t ubuntu/beaker .
+# to build: sudo docker build -t ubuntu/beaker . # consider "build --no-cache" to sync network deps
 # to run:   sudo docker run -p 8800:8800 -t ubuntu/beaker
 # results hosted at: https://registry.hub.docker.com/u/scottdraves/beaker/
 
@@ -53,19 +53,16 @@ RUN apt-get install -y oracle-java7-installer
 RUN apt-get install -y libzmq3-dbg libzmq3-dev libzmq3
 
 # Then IPython proper:
-RUN apt-get install -y python-pip
-RUN apt-get install -y python-dev
-RUN pip install ipython jinja2 tornado
-RUN pip install pyzmq
+RUN apt-get install -y python-pip python-dev python-yaml
+RUN pip install ipython jinja2 tornado pyzmq pandas 
 
 # And some useful libraries:
-RUN apt-get install -y python-matplotlib python-scipy python-pandas
+RUN apt-get install -y python-matplotlib python-scipy
 
 
 #######
 #  R  #
 #######
-
 
 RUN apt-get install -y r-base r-base-dev
 RUN Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"

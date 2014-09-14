@@ -58,7 +58,8 @@
                 "cm": {
                     "mode": "groovy"
                 }
-            }
+            },
+            "imports": "java.awt.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*"
         }
     ],
     "cells": [
@@ -86,7 +87,9 @@
             "output": {
                 "selectedType": "BeakerDisplay",
                 "outputArrived": false,
-                "elapsedTime": 24
+                "elapsedTime": 141,
+                "state": {},
+                "result": ""
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -100,7 +103,9 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 85
+                "elapsedTime": 547,
+                "state": {},
+                "result": "[1] \"Strings work fine\""
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -119,7 +124,9 @@
                 "body": "beaker.x"
             },
             "output": {
-                "selectedType": "Text"
+                "selectedType": "Text",
+                "state": {},
+                "result": "Strings work fine"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -139,7 +146,9 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 370
+                "elapsedTime": 190,
+                "state": {},
+                "result": "Strings work fineStrings work fine"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -158,7 +167,9 @@
                 "body": "beaker.y = {a:1, b:2.2, c:\"three\", d:[4, 5, 6]};"
             },
             "output": {
-                "selectedType": "Text"
+                "selectedType": "Text",
+                "state": {},
+                "result": "[object Object]"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -172,7 +183,8 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 61
+                "elapsedTime": 172,
+                "result": "{a=1, b=2.2, c=three, d=[4, 5, 6]}"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -200,7 +212,8 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 123
+                "elapsedTime": 149,
+                "result": "[1] 12"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -215,7 +228,12 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 59
+                "elapsedTime": 175,
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>[12]</pre></div>"
+                }
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -236,7 +254,8 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Text",
-                "elapsedTime": 103
+                "elapsedTime": 234,
+                "result": "24"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -256,7 +275,8 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 69
+                "elapsedTime": 173,
+                "result": "13"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -270,7 +290,8 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 71
+                "elapsedTime": 163,
+                "result": "[1] 13"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -305,7 +326,8 @@
             "output": {
                 "outputArrived": false,
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 43
+                "elapsedTime": 89,
+                "result": ""
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -319,7 +341,54 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 208
+                "elapsedTime": 365,
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "A",
+                        "C",
+                        "B",
+                        "D"
+                    ],
+                    "values": [
+                        [
+                            "0.28220340971372787",
+                            "0.43085936380483886",
+                            "1.9614586750233083",
+                            "-0.7381306383085108"
+                        ],
+                        [
+                            "-1.9243367410549208",
+                            "0.10153498883024875",
+                            "0.11145767774465923",
+                            "0.6547010050648912"
+                        ],
+                        [
+                            "1.618821573840643",
+                            "-1.7814115576939296",
+                            "2.217757218263953",
+                            "0.5016488308153809"
+                        ],
+                        [
+                            "2.072547104673738",
+                            "1.6178770342553912",
+                            "1.4521118588412085",
+                            "0.6980581864500834"
+                        ],
+                        [
+                            "0.48029247046506224",
+                            "-1.774550531346704",
+                            "-0.8520254202139345",
+                            "-0.5083840149436081"
+                        ],
+                        [
+                            "0.5668600201066758",
+                            "-1.4451300684805544",
+                            "-1.086323868993049",
+                            "-0.3318634868900252"
+                        ]
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -339,7 +408,8 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 113
+                "elapsedTime": 106,
+                "result": "{A=[0.28220340971372787, -1.9243367410549208, 1.618821573840643, 2.072547104673738, 0.48029247046506224, 0.5668600201066758], C=[0.43085936380483886, 0.10153498883024875, -1.7814115576939296, 1.6178770342553912, -1.774550531346704, -1.4451300684805544], B=[1.9614586750233083, 0.11145767774465923, 2.217757218263953, 1.4521118588412085, -0.8520254202139345, -1.086323868993049], D=[-0.7381306383085108, 0.6547010050648912, 0.5016488308153809, 0.6980581864500834, -0.5083840149436081, -0.3318634868900252]}"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -359,7 +429,56 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 181
+                "elapsedTime": 314,
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "X1",
+                        "X2"
+                    ],
+                    "values": [
+                        [
+                            "-0.05590240843488801",
+                            "-0.44213300690119095"
+                        ],
+                        [
+                            "0.7380142862809387",
+                            "-0.2157820674666561"
+                        ],
+                        [
+                            "0.7699764422335056",
+                            "0.20919204544235495"
+                        ],
+                        [
+                            "-0.9111323511122827",
+                            "-1.1196755014913036"
+                        ],
+                        [
+                            "-0.7685752419702321",
+                            "0.4550097063312087"
+                        ],
+                        [
+                            "-0.5602216458954504",
+                            "1.1390975751416974"
+                        ],
+                        [
+                            "0.5193314801131563",
+                            "0.42957799108452954"
+                        ],
+                        [
+                            "0.419595712000034",
+                            "-0.10069796647921754"
+                        ],
+                        [
+                            "0.245642937027161",
+                            "0.0636301444387005"
+                        ],
+                        [
+                            "0.1498506498318501",
+                            "-0.9487729000630281"
+                        ]
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -374,7 +493,12 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 70
+                "elapsedTime": 189,
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>{'X1': [-0.055902,\n  0.73801,\n  0.76998,\n  -0.91113,\n  -0.76858,\n  -0.56022,\n  0.51933,\n  0.4196,\n  0.24564,\n  0.14985],\n 'X2': [-0.44213,\n  -0.21578,\n  0.20919,\n  -1.1197,\n  0.45501,\n  1.1391,\n  0.42958,\n  -0.1007,\n  0.06363,\n  -0.94877]}</pre></div>"
+                }
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -389,7 +513,126 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Table",
-                "elapsedTime": 207
+                "elapsedTime": 502,
+                "result": {
+                    "type": "TableDisplay",
+                    "tableDisplayModel": {
+                        "columnNames": [
+                            "",
+                            "X1",
+                            "X2"
+                        ],
+                        "values": [
+                            [
+                                "0",
+                                "-0.055902",
+                                "-0.44213"
+                            ],
+                            [
+                                "1",
+                                " 0.738010",
+                                "-0.21578"
+                            ],
+                            [
+                                "2",
+                                " 0.769980",
+                                " 0.20919"
+                            ],
+                            [
+                                "3",
+                                "-0.911130",
+                                "-1.11970"
+                            ],
+                            [
+                                "4",
+                                "-0.768580",
+                                " 0.45501"
+                            ],
+                            [
+                                "5",
+                                "-0.560220",
+                                " 1.13910"
+                            ],
+                            [
+                                "6",
+                                " 0.519330",
+                                " 0.42958"
+                            ],
+                            [
+                                "7",
+                                " 0.419600",
+                                "-0.10070"
+                            ],
+                            [
+                                "8",
+                                " 0.245640",
+                                " 0.06363"
+                            ],
+                            [
+                                "9",
+                                " 0.149850",
+                                "-0.94877"
+                            ]
+                        ]
+                    },
+                    "columnNames": [
+                        "",
+                        "X1",
+                        "X2"
+                    ],
+                    "values": [
+                        [
+                            "0",
+                            "-0.055902",
+                            "-0.44213"
+                        ],
+                        [
+                            "1",
+                            " 0.738010",
+                            "-0.21578"
+                        ],
+                        [
+                            "2",
+                            " 0.769980",
+                            " 0.20919"
+                        ],
+                        [
+                            "3",
+                            "-0.911130",
+                            "-1.11970"
+                        ],
+                        [
+                            "4",
+                            "-0.768580",
+                            " 0.45501"
+                        ],
+                        [
+                            "5",
+                            "-0.560220",
+                            " 1.13910"
+                        ],
+                        [
+                            "6",
+                            " 0.519330",
+                            " 0.42958"
+                        ],
+                        [
+                            "7",
+                            " 0.419600",
+                            "-0.10070"
+                        ],
+                        [
+                            "8",
+                            " 0.245640",
+                            " 0.06363"
+                        ],
+                        [
+                            "9",
+                            " 0.149850",
+                            "-0.94877"
+                        ]
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -401,5 +644,81 @@
             "evaluatorReader": false
         }
     ],
-    "namespace": {}
+    "namespace": {
+        "x": "Strings work fine",
+        "y": {
+            "a": 1,
+            "b": 2.2,
+            "c": "three",
+            "d": [
+                4,
+                5,
+                6
+            ]
+        },
+        "z": [
+            12
+        ],
+        "zz": 13,
+        "df": {
+            "A": [
+                0.28220340971372787,
+                -1.9243367410549208,
+                1.618821573840643,
+                2.072547104673738,
+                0.48029247046506224,
+                0.5668600201066758
+            ],
+            "C": [
+                0.43085936380483886,
+                0.10153498883024875,
+                -1.7814115576939296,
+                1.6178770342553912,
+                -1.774550531346704,
+                -1.4451300684805544
+            ],
+            "B": [
+                1.9614586750233083,
+                0.11145767774465923,
+                2.217757218263953,
+                1.4521118588412085,
+                -0.8520254202139345,
+                -1.086323868993049
+            ],
+            "D": [
+                -0.7381306383085108,
+                0.6547010050648912,
+                0.5016488308153809,
+                0.6980581864500834,
+                -0.5083840149436081,
+                -0.3318634868900252
+            ]
+        },
+        "df2": {
+            "X1": [
+                -0.055902,
+                0.73801,
+                0.76998,
+                -0.91113,
+                -0.76858,
+                -0.56022,
+                0.51933,
+                0.4196,
+                0.24564,
+                0.14985
+            ],
+            "X2": [
+                -0.44213,
+                -0.21578,
+                0.20919,
+                -1.1197,
+                0.45501,
+                1.1391,
+                0.42958,
+                -0.1007,
+                0.06363,
+                -0.94877
+            ]
+        }
+    }
 }

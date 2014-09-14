@@ -27,7 +27,7 @@ sudo apt-get install -y nodejs # nodejs -v = 0.10.28
 # for R
 sudo add-apt-repository --yes ppa:marutter/rrutter
 sudo apt-get update
-sudo apt-get install -y r-base r-base-dev # R -v = 3.1.0
+sudo apt-get install -y r-base r-base-dev libcurl4-gnutls-dev # R -v = 3.1.0
 sudo Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')"

@@ -64,7 +64,7 @@ RUN apt-get install -y python-matplotlib python-scipy
 #  R  #
 #######
 
-RUN apt-get install -y r-base r-base-dev
+RUN apt-get install -y r-base r-base-dev libcurl4-gnutls-dev
 RUN Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"
 RUN Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"
 RUN Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')"

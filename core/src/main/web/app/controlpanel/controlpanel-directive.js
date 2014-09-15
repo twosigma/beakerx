@@ -104,6 +104,26 @@
           );
         };
 
+	var keydownHandler = function(e) {
+          if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
+	      bkUtils.fcall(function() {
+		      $scope.newNotebook();
+		  });
+	      return false;
+	  } else if (e.ctrlKey && (e.which === 78)) { // Ctrl + n
+	      bkUtils.fcall(function() {
+		      $scope.newEmptyNotebook();
+		  });
+	      return false;
+	  }
+	}
+	console.log('installing keydownHandler');
+	$(document).bind('keydown', keydownHandler);
+
+	var onDestroy = function() {
+	    $(document).unbind('keydown', keydownHandler);
+	}
+	$scope.$on("$destroy", onDestroy);
 
         // sessions list UI
         $scope.sessions = null;

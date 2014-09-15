@@ -27,7 +27,7 @@ sudo apt-get install -y nodejs # nodejs -v = 0.10.28
 # for R
 sudo add-apt-repository --yes ppa:marutter/rrutter
 sudo apt-get update
-sudo apt-get install -y r-base r-base-dev # R -v = 3.1.0
+sudo apt-get install -y r-base r-base-dev libcurl4-gnutls-dev # R -v = 3.1.0
 sudo Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')"
@@ -40,10 +40,10 @@ sudo apt-get update
 sudo apt-get install -y libzmq3-dbg libzmq3-dev libzmq3
 
 # ipython
-sudo apt-get install -y python-pip python-dev
-sudo pip install ipython jinja2 tornado # ipython -v = 1.2.0
-sudo pip install pyzmq
-sudo apt-get install -y python-matplotlib python-scipy python-pandas
+sudo apt-get install -y python-pip python-dev python-yaml
+sudo pip install ipython jinja2 tornado
+sudo pip install pyzmq python-pandas
+sudo apt-get install -y python-matplotlib python-scipy
 
 # ruby
 sudo apt-get install -y ruby1.9.1 ruby1.9.1-dev

@@ -156,7 +156,7 @@ define(function(require, exports, module) {
     bgColor: "#EFDB52",
     fgColor: "#4A4A4A",
     borderColor: "",
-    shortName: "JS",
+    shortName: "Js",
     evaluate: function(code, modelOutput) {
       return bkHelper.fcall(function() {
         try {

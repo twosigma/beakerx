@@ -61,7 +61,11 @@ task (bowerInstall, type: Exec) {
 }
 
 task (compileCss, type: Exec) {
-  commandLine 'npm', 'run-script', 'compile'
+  if (windows()) {
+    commandLine 'cmd', '/c', 'npm', 'run-script', 'compile'
+  } else {
+    commandLine 'npm', 'run-script', 'compile'
+  }
 }
 
 task (copyNginx, type: Exec) {

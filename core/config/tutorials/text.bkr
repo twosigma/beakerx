@@ -128,7 +128,7 @@
         {
             "id": "markdowngV91Gh",
             "type": "markdown",
-            "body": "Why use [markdown](http://daringfireball.net/projects/markdown/syntax)?\n\n * It's good for making lists,\n * writing code documentation, and\n * everyone else is.\n\nClick on it to make it editable, click away on the background of the notebook to reformat and display.",
+            "body": "Why use [markdown](http://daringfireball.net/projects/markdown/syntax)?\n\n * It's good for making *lists*,\n * writing `code documentation`, and\n * everyone else is.\n\nClick on it to make it editable, click away on the background of the notebook to reformat and display.",
             "evaluatorReader": false,
             "mode": "preview"
         }

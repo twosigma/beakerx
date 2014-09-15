@@ -272,6 +272,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
     return this.authCookie;
   }
 
+  /* When the hash can be stored in a file, need to generate salt randomly.
+     See github Issue #319 */
   @Override
   public String getPasswordSalt() {
     return ".beaker.N0tebook";

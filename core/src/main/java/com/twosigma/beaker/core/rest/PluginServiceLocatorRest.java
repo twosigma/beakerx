@@ -677,7 +677,9 @@ public class PluginServiceLocatorRest {
     if (null == pConfig) {
       return "";
     }
-    /* It's OK to return the password because the connection should be HTTPS */
+    /* It's OK to return the password because the connection should be
+       HTTPS and the request is authenticated so only our legit user
+       should be on the other side. */
     return pConfig.password;
   }
 

@@ -42,6 +42,10 @@ public class LoginRest {
     this.config = bkConfig;
   }
 
+  /* As it stands there is no need to hash the password because it is
+     never saved.  But we are planning on adding an option to read the
+     hash from a config file (github Issue #319), this code is really
+     a start on the implementation of that. */
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + config.getPasswordSalt());
   }

@@ -19,15 +19,6 @@ import sys
 
 port = sys.argv.pop()
 
-# default is to search PATH
-ipython_path = "iruby"
-
-for arg in sys.argv[1:]:
-    if arg.startswith("--path"):
-        ipython_path = arg[6:]
-    else:
-        sys.stderr.write("ignoring unrecognized option: " + arg + "\n")
-
-os.execlp(ipython_path, ipython_path, "notebook", "--pylab", "inline",
+os.execlp("iruby", "iruby", "notebook", "--pylab", "inline",
           "--NotebookApp.ip=127.0.0.1", "--NotebookApp.port=" + port,
           "--NotebookApp.open_browser=False")

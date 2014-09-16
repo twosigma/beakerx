@@ -9,14 +9,12 @@
     "./plugin/menu/controlpanel.js",
     "./plugin/menu/controlpanel_addition.js",
     "./plugin/menu/help.js",
-    "./plugin/menu/file_ipython.js",
-    "./plugin/menu/file_iruby.js"
+    "./plugin/menu/file_ipython.js"
   ],
   "notebook-app-menu-plugins":[
     "./plugin/menu/file.js",
     "./plugin/menu/file_filesys.js",
     "./plugin/menu/file_ipython.js",
-    "./plugin/menu/file_iruby.js",
     "./plugin/menu/view.js",
     "./plugin/menu/notebook.js",
     "./plugin/menu/evaluators.js",

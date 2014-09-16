@@ -18,7 +18,6 @@
     "./plugin/menu/view.js",
     "./plugin/menu/notebook.js",
     "./plugin/menu/evaluators.js",
-    "./plugin/menu/run.js",
     "./plugin/menu/help.js"
   ],
   "notebook-cell-menu-plugins": [

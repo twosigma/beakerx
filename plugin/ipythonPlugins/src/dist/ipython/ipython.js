@@ -250,7 +250,7 @@ define(function(require, exports, module) {
 	}});
       } else {
         kernel.complete(code, cpos, function(reply) {
-            cb(reply.content.matches, reply.matched_text);
+          cb(reply.content.matches, reply.content.matched_text);
 	});
       }
     },

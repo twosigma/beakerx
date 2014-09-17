@@ -83,13 +83,17 @@
             this.newPluginNameOrUrl = pluginNameOrUrl;
           },
           togglePlugin: function(name) {
+            console.log("togglePlugin");
             var plugin = this.newPluginNameOrUrl;
             var fromUrl = true;
+            console.log(plugin);
 	    $scope.evalTabOp.showURL = false;
 	    if (name) {
               plugin = name;
               fromUrl = false;
 	    }
+            console.log(plugin);
+            console.log(fromUrl);
             var status = this.getKnownEvaluatePlugins()[plugin];
             if (status == "known" || fromUrl) {
               var newEvaluatorObj = {

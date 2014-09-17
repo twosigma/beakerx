@@ -70,6 +70,7 @@
             showStatusMessage("");
           });
         };
+        var evaluatorMenuItems = [];
 
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
           // set shell id to null, so it won't try to find an existing shell with the id
@@ -91,6 +92,12 @@
                       });
                     }
                   });
+                  if (actionItems.length > 0) {
+                    evaluatorMenuItems.push({
+                      name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
+                      items: actionItems
+                    });
+                  }
                 }
               });
         };
@@ -119,6 +126,7 @@
             bkSessionManager.reset(
                 notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
             isExistingSession = !!isExistingSession;
+            evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
                 addEvaluator(notebookModel.evaluators[i], !isExistingSession);
@@ -457,6 +465,12 @@
             },
             removeEvaluator: function(plugin) {
               bkEvaluatorManager.removeEvaluator(plugin);
+	      evaluatorMenuItems = _.reject(evaluatorMenuItems, function(item) {
+		      return item.name == plugin;
+		});
+            },
+            getEvaluatorMenuItems: function() {
+              return evaluatorMenuItems;
             },
             getBkNotebookWidget: function() {
               return bkNotebookWidget;

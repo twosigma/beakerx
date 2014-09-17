@@ -710,9 +710,7 @@
         (function() {
           var sessionId = $routeParams.sessionId;
           var sessionRouteResolve = $route.current.$$route.resolve;
-          console.log("session routing resolution....");
           var newSession = $route.current.locals.isNewSession;
-          console.log(newSession);
           if (newSession) {
             delete sessionRouteResolve.isNewSession;
             if (newSession === "new") {

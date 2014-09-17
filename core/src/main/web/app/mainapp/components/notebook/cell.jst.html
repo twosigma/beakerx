@@ -21,10 +21,10 @@
   </div>
   <div class="toggle-menu">
     <bk-language-logo
+        ng-if="!cellmodel.input.hidden"
         bg-color="{{getEvaluator().bgColor}}"
         fg-color="{{getEvaluator().fgColor}}"
         border-color="{{getEvaluator().borderColor}}">{{getEvaluator().shortName}}</bk-language-logo>
-
     <div class="cell-menu-item cell-dropdown" ng-click="toggleCellMenu($event)" title="cell menu"></div>
     <div class="cell-menu-item move-cell-down advanced-hide" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && 'disabled'" title="move cell down"></div>
     <div class="cell-menu-item move-cell-up advanced-hide" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && 'disabled'" title="move cell up"></div>

@@ -367,9 +367,6 @@
                 var onResults = function(results, matched_text) {
                   var start = token.start;
                   var end = token.end;
-                  if (token.string === ".") {
-                    start += 1;
-                  }
                   if (matched_text) {
                     start += (cur.ch - token.start - matched_text.length);
                     end = start + matched_text.length;

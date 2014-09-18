@@ -3,61 +3,61 @@
     {
       "size" : "16x16",
       "idiom" : "mac",
-      "filename" : "beaker_icon16.png",
+      "filename" : "beaker_bug_white_on_blue16.png",
       "scale" : "1x"
     },
     {
       "size" : "16x16",
       "idiom" : "mac",
-      "filename" : "beaker_icon32.png",
+      "filename" : "beaker_bug_white_on_blue32.png",
       "scale" : "2x"
     },
     {
       "size" : "32x32",
       "idiom" : "mac",
-      "filename" : "beaker_icon32-1.png",
+      "filename" : "beaker_bug_white_on_blue32-1.png",
       "scale" : "1x"
     },
     {
       "size" : "32x32",
       "idiom" : "mac",
-      "filename" : "beaker_icon64.png",
+      "filename" : "beaker_bug_white_on_blue64.png",
       "scale" : "2x"
     },
     {
       "size" : "128x128",
       "idiom" : "mac",
-      "filename" : "beaker_icon128.png",
+      "filename" : "beaker_bug_white_on_blue128.png",
       "scale" : "1x"
     },
     {
       "size" : "128x128",
       "idiom" : "mac",
-      "filename" : "beaker_icon256.png",
+      "filename" : "beaker_bug_white_on_blue256.png",
       "scale" : "2x"
     },
     {
       "size" : "256x256",
       "idiom" : "mac",
-      "filename" : "beaker_icon256-1.png",
+      "filename" : "beaker_bug_white_on_blue256-1.png",
       "scale" : "1x"
     },
     {
       "size" : "256x256",
       "idiom" : "mac",
-      "filename" : "beaker_icon512.png",
+      "filename" : "beaker_bug_white_on_blue512.png",
       "scale" : "2x"
     },
     {
       "size" : "512x512",
       "idiom" : "mac",
-      "filename" : "beaker_icon512-1.png",
+      "filename" : "beaker_bug_white_on_blue512-1.png",
       "scale" : "1x"
     },
     {
       "size" : "512x512",
       "idiom" : "mac",
-      "filename" : "beaker_icon1024.png",
+      "filename" : "beaker_bug_white_on_blue1024.png",
       "scale" : "2x"
     }
   ],

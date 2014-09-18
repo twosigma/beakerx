@@ -312,7 +312,7 @@ public class PluginServiceLocatorRest {
       this.plugins.put(pluginId, pConfig);
 
       if (nginxRules.startsWith("ipython")) {
-        generateIPythonConfig(port, password);
+        generateIPythonConfig(pluginId, port, password);
       }
 
       // restart nginx to reload new config
@@ -528,18 +528,18 @@ public class PluginServiceLocatorRest {
     return hash;
   }
 
-  private void generateIPythonConfig(int port, String password)
+  private void generateIPythonConfig(String pluginId, int port, String password)
     throws IOException, InterruptedException
   {
     // Can probably determine exactly what is needed and then just
     // make the files ourselves but this is a safe way to get started.
-    String cmd = this.ipythonCmdBase + " --profile " + this.nginxServDir;
+    String cmd = this.ipythonCmdBase + " --profile " + this.nginxServDir + " " + pluginId;
     Runtime.getRuntime().exec(cmd).waitFor();
     String hash = hashIPythonPassword(password);
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));
     config = config.replace("%(hash)s", hash);
-    java.nio.file.Path targetFile = Paths.get(this.nginxServDir + "/profile_beaker_backend",
+    java.nio.file.Path targetFile = Paths.get(this.nginxServDir + "/profile_beaker_backend_" + pluginId,
                                               "ipython_notebook_config.py");
     writePrivateFile(targetFile, config);
   }
@@ -677,7 +677,9 @@ public class PluginServiceLocatorRest {
     if (null == pConfig) {
       return "";
     }
-    /* It's OK to return the password because the connection should be HTTPS */
+    /* It's OK to return the password because the connection should be
+       HTTPS and the request is authenticated so only our legit user
+       should be on the other side. */
     return pConfig.password;
   }
 

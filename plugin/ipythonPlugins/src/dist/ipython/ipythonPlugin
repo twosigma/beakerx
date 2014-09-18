@@ -24,21 +24,11 @@ if len(sys.argv) > 1:
     elif arg1 == "--hash":
         os.execlp("python", "python")
     elif arg1 == "--profile":
-        os.execlp("ipython", "ipython", "profile", "create", "beaker_backend", "--ipython-dir=" + sys.argv[2])
+        os.execlp("ipython", "ipython", "profile",
+                  "create", "beaker_backend_" + sys.argv[3],
+                  "--ipython-dir=" + sys.argv[2])
 
 port = sys.argv.pop()
-
-# default is to search PATH
-ipython_path = "ipython"
-
-# XXX use a real options processor lib
-for arg in sys.argv[1:]:
-    if arg.startswith("--path"):
-        ipython_path = arg[6:]
-    else:
-        sys.stderr.write("ignoring unrecognized option: " + arg + "\n")
-
-ipython_dir = os.environ["beaker_tmp_dir"]
 
 # set pythonpath to include this directory so we can import beaker.py
 plugin_dir = os.path.dirname(sys.argv.pop(0))
@@ -48,6 +38,7 @@ else:
     old_path = ''
 os.environ["PYTHONPATH"] = plugin_dir + old_path
 
-os.execlp(ipython_path, ipython_path, "notebook",
-          "--ipython-dir=" + ipython_dir, "--profile", "beaker_backend",
+os.execlp("ipython", "ipython", "notebook",
+          "--ipython-dir=" + os.environ["beaker_tmp_dir"],
+          "--profile", "beaker_backend_IPython",
           "--pylab", "inline")

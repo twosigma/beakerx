@@ -42,6 +42,13 @@ define(function(require, exports, module) {
       tooltip: 'Deletes all of the output cells.'
     },
     {
+      name: "Run all cells",
+      action: function() {
+        bkHelper.evaluate("root");
+      },
+      tooltip: "Run all cells"
+    },
+    {
       name: "Edit mode",
       items: [
         {

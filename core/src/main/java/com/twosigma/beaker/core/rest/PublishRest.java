@@ -59,7 +59,7 @@ public class PublishRest {
       response = Request.Post("https://api.github.com/gists")
       .useExpectContinue()
       .version(HttpVersion.HTTP_1_1)
-      .bodyString(body, ContentType.DEFAULT_TEXT)
+      .bodyString(body, ContentType.APPLICATION_JSON)
       .execute().returnContent().asString();
     } catch (Throwable t) {
       throw new GistPublishException(ExceptionUtils.getStackTrace(t));
@@ -73,7 +73,7 @@ public class PublishRest {
     }
     return "http://sharing.beakernotebook.com/gist/anonymous" + githubUrl.substring(slash);
   }
-  
+
   private static class GistPublishException extends WebApplicationException {
     public GistPublishException(String stackTrace) {
       super(Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR)

@@ -519,12 +519,16 @@ public class PluginServiceLocatorRest {
     Process proc = Runtime.getRuntime().exec(this.ipythonCmdBase + " --hash");
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
+    new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
     bw.write("from IPython.lib import passwd\n");
     // I have confirmed that this does not go into ipython history by experiment
     // but it would be nice if there were a way to make this explicit. XXX
     bw.write("print(passwd('" + password + "'))\n");
     bw.close();
     String hash = br.readLine();
+    if (null == hash) {
+      throw new RuntimeException("unable to get IPython hash");
+    }
     return hash;
   }
 

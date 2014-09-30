@@ -209,9 +209,9 @@ public class RShellRest {
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
       @FormParam("shellID") String shellID,
-      @FormParam("code") String code) throws InterruptedException, REXPMismatchException, IOException {
-
-    boolean gotMismatch = false;
+      @FormParam("code") String code) 
+    throws InterruptedException, REXPMismatchException, IOException
+  {
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
     RServer server = getEvaluator(shellID);
@@ -228,32 +228,29 @@ public class RShellRest {
     try {
       // direct graphical output
       con.eval("svg('" + file + "')");
-      String tryCode = "beaker_eval_=try({" + code + "\n},silent=TRUE)";
+      String tryCode = "beaker_eval_=withVisible(try({" + code + "\n},silent=TRUE))";
       REXP result = con.eval(tryCode);
 
       /*
        if (null != result)
-       System.out.println("result class = " + result.getClass().getName());
+         System.out.println("result class = " + result.getClass().getName());
        else
-       System.out.println("result = null");
-       */
+         System.out.println("result = null");
+      */
 
       if (null == result) {
         obj.finished("");
-      } else if (result.inherits("try-error")) {
-        String prefix = "Error in try({ : ";
-        String rs = result.asString();
-        if (rs.substring(0, prefix.length()).equals(prefix)) {
-          rs = rs.substring(prefix.length());
-        }
-        obj.error(rs);
+      } else if (isError(result, obj)) {
+      } else if (!isVisible(result, obj)) {
+        obj.finished("");
       } else if (isDataFrame(result, obj)) {
         // nothing
       } else {
         server.outputHandler.reset(obj);
-        con.eval("print(\"" + BEGIN_MAGIC + "\")");
-        con.eval("print(beaker_eval_)");
-        con.eval("print(\"" + END_MAGIC + "\")");
+        String finish = "print(\"" + BEGIN_MAGIC + "\")\n" +
+          "print(beaker_eval_$value)\n" +
+          "print(\"" + END_MAGIC + "\")\n";
+        con.eval(finish);
       }
     } catch (RserveException e) {
       if (127 == e.getRequestReturnCode()) {
@@ -261,8 +258,6 @@ public class RShellRest {
       } else {
         obj.error(e.getMessage());
       }
-    } catch (REXPMismatchException e) {
-      gotMismatch = true;
     }
 
     // flush graphical output
@@ -381,10 +376,39 @@ public class RShellRest {
     return false;
   }
 
+  private static boolean isError(REXP result, SimpleEvaluationObject obj) {
+    try {
+      REXP value = result.asList().at(0);
+      if (value.inherits("try-error")) {
+        String prefix = "Error in try({ : ";
+        String rs = value.asString();
+        if (rs.substring(0, prefix.length()).equals(prefix)) {
+          rs = rs.substring(prefix.length());
+        }
+        obj.error(rs);
+        return true;
+      }
+    } catch (REXPMismatchException e) {
+    }
+    return false;
+  }
+
+  private static boolean isVisible(REXP result, SimpleEvaluationObject obj) {
+    try {
+      int[] asInt = result.asList().at(1).asIntegers();
+      if (asInt.length == 1 && asInt[0] != 0) {
+        String[] names = result.asList().keys();
+        return true;
+      }
+    } catch (REXPMismatchException e) {
+    }
+    return false;
+  }
+
   private static boolean isDataFrame(REXP result, SimpleEvaluationObject obj) {
     TableDisplay table;
     try {
-      RList list = result.asList();
+      RList list = result.asList().at(0).asList();
       int cols = list.size();
       String[] names = list.keys();
       if (null == names) {

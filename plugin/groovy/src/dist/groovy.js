@@ -69,7 +69,7 @@ define(function(require, exports, module) {
     bgColor: "#6497A9",
     fgColor: "#FFFFFF",
     borderColor: "",
-    shortName: "Gr",
+    shortName: "Gv",
     newShell: function(shellId, cb) {
       if (!shellId) {
         shellId = "";

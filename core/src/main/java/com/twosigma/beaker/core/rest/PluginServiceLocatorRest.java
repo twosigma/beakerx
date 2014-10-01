@@ -614,7 +614,7 @@ public class PluginServiceLocatorRest {
       authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
       startPage = "login/login.html";
     } else {
-      listenSection = "listen 127.0.0.1:" + this.servPort + ";\n";
+      listenSection = "listen 0.0.0.0:" + this.servPort + ";\n";
       authCookieRule = "";
       startPage = "beaker/";
     }

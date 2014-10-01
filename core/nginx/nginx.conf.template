@@ -73,7 +73,7 @@ http {
     %(extra_rules)s
   }
   server {
-    listen 127.0.0.1:%(port_restart)s;
+    listen 0.0.0.0:%(port_restart)s;
 
     location = /restart.%(restart_id)s/present.html {
       alias html/present.html;

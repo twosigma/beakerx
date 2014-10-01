@@ -4,7 +4,7 @@ node_modules
 core/nginx/bin
 core/src/main/web/template/version.html
 shared/src/main/dist/
-core/src/main/dist/
+core/src/main/dist
 core/config/plugins/
 core/config/version
 core/config/build_time
@@ -17,6 +17,4 @@ nbproject/
 build.xml
 manifest.mf
 .DS_Store
-/core/src/main/web/app/app.css
 npm-debug.log
-core/src/main/web/app/templates.js

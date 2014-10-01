@@ -1,0 +1,14 @@
+{
+  "name": "big.js",
+  "homepage": "https://github.com/MikeMcl/big.js",
+  "version": "2.5.1",
+  "_release": "2.5.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.5.1",
+    "commit": "851f90aea187540bc4e1743ecc566427dbcf1497"
+  },
+  "_source": "git://github.com/MikeMcl/big.js.git",
+  "_target": "~2.5.1",
+  "_originalSource": "big.js"
+}

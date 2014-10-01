@@ -276,7 +276,7 @@ define(function(require, exports, module) {
           startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
           startedIndicatorStream: "stderr"
       }).success(function(ret) {
-        serviceBase = ret;
+        serviceBase = '..' + ret;
         var IPythonShell = function(settings, doneCB) {
           var self = this;
           var setShellIdCB = function(shellID) {

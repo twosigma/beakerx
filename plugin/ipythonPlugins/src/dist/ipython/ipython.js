@@ -34,6 +34,10 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "python",
     background: "#EAEAFF",
+    bgColor: "#EEBD48",
+    fgColor: "#FFFFFF",
+    borderColor: "",
+    shortName: "Py",
     newShell: function(shellID, cb) {
 
       var kernel = null;
@@ -246,7 +250,7 @@ define(function(require, exports, module) {
 	}});
       } else {
         kernel.complete(code, cpos, function(reply) {
-            cb(reply.content.matches, reply.matched_text);
+          cb(reply.content.matches, reply.content.matched_text);
 	});
       }
     },
@@ -286,9 +290,31 @@ define(function(require, exports, module) {
               settings.supplementalClassPath = "";
             }
             self.settings = settings;
-            if (doneCB) {
-              doneCB(self);
+            var finish = function () {
+              if (bkHelper.hasSessionId()) {
+                var initCode = "import beaker\n" +
+                  "beaker.set_session('" + bkHelper.getSessionId() + "')\n";
+                self.evaluate(initCode, {}).then(function () {
+                  if (doneCB) {
+                    doneCB(self);
+                  }});
+              } else {
+                if (doneCB) {
+                  doneCB(self);
+                }
+              }
+            };
+            var kernel = kernels[shellID];
+            var waitForKernel = function () {
+              if (kernel.shell_channel.readyState == 1 &&
+                  kernel.stdin_channel.readyState == 1 &&
+                  kernel.iopub_channel.readyState == 1) {
+                finish();
+              } else {
+                setTimeout(waitForKernel, 50);
+              }
             }
+            waitForKernel();
           };
           if (!settings.shellID) {
             settings.shellID = "";

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2014 TWO SIGMA INVESTMENTS, LLC
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,11 +27,22 @@
       reset: function() {
         evaluators = {};
       },
+      removeEvaluator: function(plugin) {
+        for (var key in evaluators) {
+          var e = evaluators[key];
+          if (e.pluginName == plugin) {
+            if (_.isFunction(e.exit)) {
+              e.exit();
+            }
+            delete evaluators[key];
+          }
+        }
+      },
       newEvaluator: function(evaluatorSettings) {
         loadingInProgressEvaluators.push(evaluatorSettings);
         return bkEvaluatePluginManager.getEvaluatorFactory(evaluatorSettings.plugin)
-            .then(function(facotry) {
-              return facotry.create(evaluatorSettings);
+            .then(function(factory) {
+              return factory.create(evaluatorSettings);
             })
             .then(function(evaluator) {
               if (_.isEmpty(evaluatorSettings.name)) {
@@ -49,7 +60,6 @@
                 evaluatorSettings.view.cm = {};
               }
               evaluatorSettings.view.cm.mode = evaluator.cmMode;
-              evaluatorSettings.view.cm.background = evaluator.background;
 
               evaluators[evaluatorSettings.name] = evaluator;
               return evaluator;
@@ -69,9 +79,8 @@
         return loadingInProgressEvaluators;
       },
       exitAndRemoveAllEvaluators: function() {
-        console.log(evaluators);
         _.each(evaluators, function(ev) {
-          if (ev && _.isFinite(ev.exit)) {
+          if (ev && _.isFunction(ev.exit)) {
             ev.exit();
           }
         });

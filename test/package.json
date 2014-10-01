@@ -1,9 +1,10 @@
 {
   "name": "beaker-tests",
   "scripts": {
-    "start": "dill --require util --require steps --require widgets -f pretty"
+    "start": "pioneer"
   },
   "dependencies": {
-    "dill": "^0.2.0"
+    "pioneer": "0.10.1",
+    "selenium-webdriver": "2.42.1"
   }
 }

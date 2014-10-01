@@ -30,6 +30,10 @@ define(function(require, exports, module) {
         pluginName: PLUGIN_NAME,
         cmMode: "javascript",
         background: "#dbecb5",
+        bgColor: "#8EC453",
+        fgColor: "#FFFFFF",
+        borderColor: "",
+        shortName: "N",
         newShell: function (shellID, cb) {
             var self = this;
 
@@ -63,6 +67,7 @@ define(function(require, exports, module) {
             checkNodeServerRunning();
         },
         evaluate: function (code, modelOutput) {
+          var deferred = Q.defer();
             var self = this;
             var progressObj = {
                 type: "BeakerDisplay",
@@ -81,13 +86,16 @@ define(function(require, exports, module) {
             }).done(function(ret) {
                 modelOutput.result = ret;
                 bkHelper.refreshRootScope();
+                deferred.resolve();
             }).fail(function(xhr, textStatus, error) {
                 modelOutput.result = {
                     type: "BeakerDisplay",
                     innertype: "Error",
                     object: xhr.responseText
                 };
+                deferred.resolve();
             });
+          return deferred.promise;
         },
         autocomplete: function (code, cpos, cb) {
             console.log("Autocomplete Called: Not implemented");

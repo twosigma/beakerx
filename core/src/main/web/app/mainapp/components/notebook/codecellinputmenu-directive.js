@@ -28,7 +28,7 @@
     } ;
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/codecellinputmenu.html",
+      template: JST["mainapp/components/notebook/codecellinputmenu"](),
       controller: function($scope) {
         $scope.getItemClass = function(item) {
           var result = [];
@@ -51,9 +51,6 @@
           var cellId = $scope.cellmodel.id;
           $scope.cellmodel.evaluator = evaluatorName;
           getBkNotebookWidget().getFocusable(cellId).focus();
-        };
-        $scope.run = function() {
-          $scope.evaluate();
         };
       }
     };

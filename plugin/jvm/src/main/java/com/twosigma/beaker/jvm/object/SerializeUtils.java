@@ -15,6 +15,10 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.chart.xychart.CombinedPlot;
+import com.twosigma.beaker.chart.xychart.Plot;
+import com.twosigma.beaker.chart.xychart.XYChart;
+import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 import org.codehaus.jackson.JsonGenerator;
@@ -34,6 +38,12 @@ public class SerializeUtils {
         jgen.writeObject(obj);
       } else if (obj instanceof ImageIcon) {
         jgen.writeObject(obj);
+      } else if (obj instanceof XYChart) {
+        jgen.writeObject((XYChart) obj);
+      } else if (obj instanceof XYGraphics) {
+        jgen.writeObject(new Plot().add((XYGraphics) obj));
+      } else if (obj instanceof CombinedPlot) {
+        jgen.writeObject((CombinedPlot) obj);
       } else {
         jgen.writeObject(obj.toString());
       }
@@ -41,6 +51,6 @@ public class SerializeUtils {
       System.err.println("Serialization error:");
       System.err.println(e);
     }
-    
+
   }
 }

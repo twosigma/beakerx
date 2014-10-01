@@ -19,5 +19,5 @@
  */
 (function() {
   "use strict";
-  var module = angular.module('bk.outputDisplay', []);
+  var module = angular.module('bk.outputDisplay', ['bk.utils']);
 })();

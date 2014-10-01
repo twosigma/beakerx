@@ -23,7 +23,7 @@
 
   var module = angular.module('bk.outputDisplay');
 
-  module.factory("bkOutputDisplayFactory", function($rootScope) {
+  module.factory("bkOutputDisplayFactory", function($rootScope, $sce) {
 
     var impls = {
       "Text": {
@@ -36,27 +36,24 @@
         }
       },
       "Warning": {
-        template: "<pre class='out_warning'>{{model.getCellModel().message}}</pre>"
+        template: "<div class='outline warning'></div> <pre class='out_warning'>{{model.getCellModel().message}}</pre>"
       },
       "Error": {
-        template: "<pre class='out_error' ng-hide='expanded'>" +
-            "<i class='fa fa-plus-square-o' ng-click='expanded=!expanded' ng-show='model.getCellModel()[1]'></i> " +
-            "<span></span>" + // first span
-            "</pre>" +
-            "<pre class='out_error' ng-show='expanded'>" +
-            "<i class='fa fa-minus-square-o' ng-click='expanded=!expanded'></i> " +
-            "<span></span>" + // last span
+        template: "<div class='outline error'></div><pre class='out_error'>" +
+            "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
+            "<span ng-bind-html='shortError'></span></pre>" +
+            "<pre ng-show='expanded'><span ng-bind-html='longError'></span>" +
             "</pre>",
         controller: function($scope, $element) {
           $scope.expanded = false;
+
           $scope.$watch('model.getCellModel()', function(cellModel) {
-            if (_.isArray(cellModel)) {
-              $element.find('span').first().html(cellModel[0]);
-              $element.find('span').last().html(cellModel[1]);
-            } else {
-              $element.find('span').first().html(cellModel);
-              $element.find('span').last().html("");
-            }
+            var outputs = $element.find('span');
+            var errors  = Array.prototype.concat(cellModel);
+
+            $scope.shortError   = $sce.trustAsHtml(errors[0]);
+            $scope.canExpand    = errors.length > 1;
+            $scope.longError    = $sce.trustAsHtml(errors.slice(1).join("\n"));
           });
         }
       },
@@ -121,8 +118,10 @@
       "html": ["Html"],
       "ImageIcon": ["Image", "Text"],
       "BeakerDisplay": ["BeakerDisplay", "Text"],
-      "Plot": ["Chart", "Text"],
-      "TimePlot": ["Chart", "Text"],
+      "Plot": ["Plot", "Chart", "Text"],
+      "TimePlot": ["Plot", "Chart", "Text"],
+      "NanoPlot": ["Plot", "Text"],
+      "CombinedPlot": ["CombinedPlot", "Text"],
       "HiddenOutputCell": ["Hidden"],
       "Warning": ["Warning"],
       "BeakerOutputContainerDisplay": ["OutputContainer", "Text"],
@@ -144,7 +143,6 @@
         return this.getImpl(type);
       },
       getImpl: function(type) {
-        //console.log("getImpl", type);
         if (type && impls[type]) {
           return impls[type];
         } else {
@@ -156,7 +154,6 @@
         if (index === -1) {
           index = types.indexOf("Text");
         }
-        //console.log('getDirectiveName', type, "bko" + index);
         return "bko" + index;
       },
       addOutputDisplayType: function(type, displays, index) {
@@ -190,7 +187,6 @@
           if (!result.type) {
             var ret = ["Text", "Html", "Latex"];
             if (isJSON(result)) {
-              //ret.splice(0, 0, "JSON", "Vega");
               ret.push("Json", "Vega");
             }
             if (isHTML(result)) {

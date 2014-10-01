@@ -1,0 +1,303 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+@import "styles/variables";
+@import "styles/fonts";
+@import "styles/ui";
+@import "styles/header";
+@import "styles/dropdowns";
+@import "styles/dashboard";
+@import "styles/notebook";
+@import "styles/cells";
+@import "styles/sections";
+@import "styles/animations";
+@import "styles/hierarchy";
+@import "styles/stdout";
+@import "styles/modal";
+
+root {
+    display: block;
+}
+
+html body {
+    margin: 10px;
+    padding-top: 60px;
+    font-family: $font-family-primary;
+}
+
+ul.cell-output-labels {
+    list-style: none;
+    margin: 0;
+}
+
+.notebook-container {
+    padding: 0 30px;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+.locked .cell-output-labels li {
+    padding-top: 0;
+}
+
+.cell-output-labels li {
+    display:    inline-block;
+    padding:    15px 15px 5px 0;
+    font-size:  13px;
+}
+
+.output_subarea {
+    background: transparent;
+    border: none;
+}
+
+.bkcell a.evaluate-script {
+    color:      black;
+    border:     solid 1px rgb(213, 213, 213);
+    display:    inline-block;
+    padding:    7px 26px;
+    font-size:  13px;
+    margin-top: 20px;
+    background: rgb(241, 241, 241);
+}
+
+.bkcell a.evaluate-script:hover {
+    text-decoration: none;
+}
+
+.bkcell .CodeMirror {
+    clear: both;
+}
+
+.CodeMirror-linenumber {
+    text-align: left;
+}
+
+.CodeMirror-gutters {
+    border:             none;
+    background-color:   transparent;
+}
+
+.CodeMirror {
+    height: auto;
+}
+
+.tschartcontainer {
+    width: 640px;
+    height: 480px;
+}
+
+a.disabled-link,
+a.disabled-link:visited,
+a.disabled-link:active,
+a.disabled-link:hover {
+    color: #aaa !important;
+}
+
+.Canvas {
+    font: 10pt Georgia;
+    background-color: #ECECEC;
+    color: #000000;
+    border: solid 1px #CECECE;
+}
+
+.ObjectBrace {
+    color: #00AA00;
+    font-weight: bold;
+}
+
+.ArrayBrace {
+    color: #0033FF;
+    font-weight: bold;
+}
+
+.PropertyName {
+    color: #CC0000;
+    font-weight: bold;
+}
+
+.String {
+    color: #007777;
+}
+
+.Number {
+    color: #AA00AA;
+}
+
+.Boolean {
+    color: #0000FF;
+}
+
+.Function {
+    color: #AA6633;
+    text-decoration: italic;
+}
+
+.Null {
+    color: #0000FF;
+}
+
+.Comma {
+    color: #000000;
+    font-weight: bold;
+}
+
+PRE.CodeContainer {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+PRE.CodeContainer img {
+    cursor: pointer;
+    border: none;
+    margin-bottom: -1px;
+}
+
+.display-none {
+    display: none;
+}
+
+.CodeMirror-fullscreen {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+input[type="text"].inputerror {
+    background-color: #FF9B9B;
+}
+
+input[type="text"].inputok {
+    background-color: #B7F0BE;
+}
+
+input[type="text"].inputsynced {
+    background-color: #FFFFFF;
+}
+
+span.red {
+    color: #FF0000;
+}
+
+.pushright {
+    padding-left: 12px;
+}
+
+.bk-treeview.ng-enter, .bk-treeview.ng-leave {
+    -webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.2s;
+    -moz-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.2s;
+    -o-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.2s;
+    transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.2s;
+}
+
+.bk-treeview.ng-enter {
+    opacity: 0;
+    height: 0%;
+}
+
+.bk-treeview.ng-enter-active {
+    opacity: 1;
+    height: 100%;
+}
+
+.bk-treeview.ng-leave {
+    height: 100%;
+    opacity: 1;
+}
+
+.bk-treeview.ng-leave-active {
+    height: 0%;
+    opacity: 0;
+}
+
+tree-node {
+    cursor: pointer;
+}
+
+table.dataTable tbody td {
+    padding: 2px 2px;
+    white-space: nowrap;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-left-color: gray;
+    border-right-color: gray;
+}
+
+.cursor_hand {
+    cursor: pointer;
+}
+
+.ui-widget {
+    font-size: 0.9em !important;
+}
+
+.text-white {
+    color: #FFFFFF;
+}
+
+/** TODO - where should this really go? here? */
+
+.bk-table-cell-selected {
+    background-color: rgb(216, 219, 220);
+}
+
+/**
+ * Ordering here matters because we'll be both
+ * selected and copied at the same time.
+ * See: http://www.w3.org/TR/CSS21/cascade.html#cascading-order rule #4.
+ */
+.bk-table-copied-cell {
+    /** Transition from the normal selection color.
+	From the example-excel-compatible-spreadsheet.html demo.
+	Seems to look cool. */
+    background-color: rgb(216, 219, 220);
+
+    /** to TS Light Teal */
+    background-color: rgb(205, 223, 214);
+
+    -webkit-transition: 0.5s background;
+}
+
+.CodeMirror-matchingbracket {
+    font-weight: bold;
+}
+
+/**
+ * Hack for the bootstrap bug where pull-left submenus might have a gap.
+ * Addresses BEAKER-433
+ */
+.dropdown-menu {
+    width: 250px;
+    margin-top: -1px;
+}
+
+.addeval {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.modal-large {
+    max-height: 800px;
+}
+
+.text-danger {
+    color: #a94442;
+}

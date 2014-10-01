@@ -22,9 +22,9 @@ define(function(require, exports, module) {
   var fileMenuItems = [
     {
       name: "New",
-      tooltip: "Open a new notebook with default languages(Evaluators)",
+      tooltip: "Open a new empty notebook, add the languages of your choice",
       action: function() {
-        bkHelper.newSession();
+        bkHelper.newSession(true);
       }
     },
     {
@@ -37,20 +37,6 @@ define(function(require, exports, module) {
 
   var menuItemsDeferred = bkHelper.newDeferred();
   bkHelper.getHomeDirectory().then(function(homeDir) {
-    var treeViewChooserTemplate = '<div class="modal-header">' +
-        '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
-        '</div>' +
-        '<div class="modal-body">' +
-        '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-        '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
-        '</div>' +
-        '<div class="modal-footer">' +
-        "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
-        '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
-        '   <span style="float:left;"><input type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter"> show .bkr files only</span>' +
-        '   <button ng-click="close()" class="btn">Cancel</button>' +
-        '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary">Open</button>' +
-        '</div>';
     var toAdd = [
       { parent: "File", items: fileMenuItems },
       {
@@ -65,7 +51,7 @@ define(function(require, exports, module) {
                   function(originalUrl) {
                     bkHelper.openNotebook(originalUrl);
                   },
-                  treeViewChooserTemplate,
+                  JST['template/opennotebook']({homedir: homeDir}),
                   bkHelper.getFileSystemFileChooserStrategy()
               );
             }

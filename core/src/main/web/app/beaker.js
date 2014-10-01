@@ -98,19 +98,52 @@
       'bk.evaluatePluginManager',
       'bk.controlPanel',
       'bk.mainApp',
-      'bk.debug'
+      'bk.helper'
     ]);
 
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
-      $routeProvider.when('/session/:sessionId', {
-        template: "<bk-main-app></bk-main-app>"
-      }).when('/open', {
-            template: "<bk-main-app></bk-main-app>"
-          }).when('/open/:uri', {
-            template: "<bk-main-app></bk-main-app>"
-          }).when('/control', {
-            template: "<bk-control-panel></bk-control-panel>"
+      var sessionRouteResolve = {};
+      var generateId = function() {
+        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        return _(_.range(6)).map(function() {
+          return possible.charAt(Math.floor(Math.random() * possible.length));
+        }).join('');
+      };
+      var makeNewProvider = function(result) {
+        return function() {
+          var newSessionId = generateId();
+          sessionRouteResolve.isNewSession = function () {
+            return result;
+          };
+          return '/session/' + newSessionId;
+        };
+      };
+      $routeProvider
+          .when('/session/new', {
+            redirectTo: makeNewProvider("new")
+          })
+          .when('/session/empty', {
+            redirectTo: makeNewProvider("empty")
+          })
+          .when('/session/:sessionId', {
+            template: JST["template/mainapp/app"](),
+            resolve: sessionRouteResolve
+          })
+          .when('/open', {
+            redirectTo: function(routeParams, path, search) {
+              var newSessionId = generateId();
+              sessionRouteResolve.isOpen = function() {
+                return true;
+              };
+              sessionRouteResolve.target = function() {
+                return search;
+              };
+              return '/session/' + newSessionId;
+            }
+          })
+          .when('/control', {
+            template: JST["template/dashboard/app"](),
           }).otherwise({
             redirectTo: "/control"
           });
@@ -174,22 +207,17 @@
       }
     });
 
-    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkDebug) {
+    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkHelper) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
         gotoControlPanel: function() {
-          return $location.path("/control");
+          return $location.path("/control").search({});
         },
         openNotebook: function(notebookUri, uriType, readOnly, format) {
           if (!notebookUri) {
             return;
           }
-
-          bkUtils.log("open", {
-            uri: notebookUri,
-            user: user
-          });
 
           var routeParams = {
             uri: notebookUri
@@ -205,15 +233,19 @@
           }
           return $location.path("/open").search(routeParams);
         },
-        newSession: function() {
-          if ($location.$$path === "/session/new") {
+        newSession: function(empty) {
+          var name = "/session/new";
+          if (empty) {
+            name = "/session/empty";
+          }
+          if ($location.$$path === name) {
             return $route.reload();
           } else {
-            return $location.path("/session/new");
+            return $location.path(name).search({});
           }
         },
         openSession: function(sessionId) {
-          return $location.path("session/" + sessionId);
+          return $location.path("session/" + sessionId).search({});
         }
       };
       bkCoreManager.init(beakerRootOp);
@@ -239,11 +271,12 @@
           $('.dropdown.open .dropdown-toggle').dropdown('toggle');
         }
       });
-      window.bkDebug = bkDebug;
+      window.bkHelper = bkHelper;
     });
 
     beaker.run(function(bkEvaluatePluginManager) {
-      var defaultEvaluatorUrlMap = {// for known plugins, so we can refer to the plugin with either its name or URL
+      // for known plugins, so we can refer to the plugin with either its name or URL
+      var defaultEvaluatorUrlMap = {
         "Html": "./plugin/evaluator/html.js",
         "Latex": "./plugin/evaluator/latex.js",
         "JavaScript": "./plugin/evaluator/javaScript.js"
@@ -260,6 +293,19 @@
           bkEvaluatePluginManager.addNameToUrlEntry(key, value);
         });
       }
+    });
+
+    beaker.run(function(bkUtils, $rootScope) {
+      bkUtils.getVersionInfo().then(function(versionInfo) {
+        window.beaker.version = versionInfo.version;
+        window.beaker.buildTime = versionInfo.buildTime;
+        $rootScope.getVersion = function() {
+          return window.beaker.version;
+        };
+        $rootScope.getBuildTime = function() {
+          return window.beaker.buildTime;
+        };
+      });
     });
   };
   var bootstrapBkApp = function() {

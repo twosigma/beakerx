@@ -46,11 +46,11 @@ public class Main {
   {
     java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
 
-    if (args.length != 2) {
-      System.out.println("usage: rPlugin <portListen> <portCore>");
+    if (args.length != 1) {
+      System.out.println("usage: rPlugin <portListen>");
     }
     final int port = Integer.parseInt(args[0]);
-    final int corePort = Integer.parseInt(args[1]);
+    final int corePort = Integer.parseInt(System.getenv("beaker_core_port"));
     WebAppConfigPref webAppPref = new DefaultWebAppConfigPref(port);
     Injector injector = Guice.createInjector(
         new DefaultWebServerConfigModule(webAppPref),

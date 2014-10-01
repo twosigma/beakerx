@@ -17,18 +17,22 @@
 import os
 import sys
 
-def setup_env():
-    if sys.platform == 'darwin':
-        os.environ["DYLD_LIBRARY_PATH"] = './nginx/bin'
-        jvms = os.listdir('/Library/Java/JavaVirtualMachines/')
-        if len(jvms) == 0:
-            os.environ['JAVA_HOME'] = '/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home'
-        return
-    return
-
 self_path = sys.argv.pop(0)
 os.chdir(os.path.dirname(self_path))
-setup_env()
 bin = './build/install/core/bin/core'
+
+# Wrap this in a login shell because on Mac when we are run from our
+# GUI launcher, no login shell has yet been created and so the user's
+# .bash_profile hasn't been read, and that's where anaconda sets up
+# the PATH.  Also, who knows what other settings they may have in
+# there and want.
+
+if sys.platform == 'darwin':
+    cmd = bin
+    quote = '\''
+    for arg in sys.argv:
+        cmd = cmd + ' ' + quote + arg + quote
+    os.execvp('bash', ['bash', '-cl', cmd])
+
 args = [bin] + sys.argv
 os.execvp(bin, args)

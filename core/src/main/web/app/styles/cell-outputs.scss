@@ -1,0 +1,63 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+bk-code-cell-output {
+  .toggle-menu.bkr {
+    top: 15px;
+  }
+
+  .ui-state-default {
+    background: rgb(235, 235, 235);
+  }
+
+  .slick-header-column, .slick-cell, .slick-headerrow-column {
+    text-align:   center;
+    font-family:  pt_sansregular;
+  }
+
+  .slick-header-column.ui-state-default {
+    height: 14px;
+  }
+
+  .slick-cell {
+    border-right-color: $cell-border;
+    border-right-style: solid;
+    border-bottom-color: $cell-border;
+
+    &.r0 {
+      border-left: solid 1px $cell-border;
+    }
+  }
+
+  .slick-column-name {
+    margin-left: -9px;
+  }
+
+  .slick-header-column:first-child {
+    border-left: solid 1px $cell-border;
+  }
+}
+
+.advanced-mode bk-output-display[type="Html"] {
+  padding-top: 10px;
+  display: block;
+  top: 8px;
+  position: relative;
+}
+
+.advanced-mode bk-output-display.bkr {
+  min-height: 20px;
+}

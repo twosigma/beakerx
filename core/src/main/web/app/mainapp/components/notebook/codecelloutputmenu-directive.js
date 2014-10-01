@@ -21,7 +21,7 @@
   module.directive('bkCodeCellOutputMenu', function(bkUtils) {
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/codecelloutputmenu.html",
+      template: JST["mainapp/components/notebook/codecelloutputmenu"](),
       scope: {
         model: '='
       },
@@ -63,23 +63,18 @@
         };
       },
       link: function(scope, element, attrs) {
-        var outputMenuDiv = element.parent('.bkcell');
-        outputMenuDiv.click(function(event) {
-          //click in the border or padding should trigger menu
-          if (bkUtils.getEventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
-            var menu = outputMenuDiv.find('.dropdown').last();
-            menu.css("top", event.clientY);
-            menu.css("left", event.clientX - 150);
-            menu.find('.dropdown-toggle').first().dropdown('toggle');
-            event.stopPropagation();
-          }
+        var output = element.parent('.bkcell');
+
+        scope.$on("$destroy", function () {
+          element.parent().parent().find(".cell-dropdown").off('click');
         });
-        outputMenuDiv.mousemove(function(event) {
-          if (bkUtils.getEventOffsetX(outputMenuDiv, event) >= outputMenuDiv.width()) {
-            outputMenuDiv.css('cursor', 'pointer');
-          } else {
-            outputMenuDiv.css('cursor', 'default');
-          }
+
+        element.parent().parent().find(".cell-dropdown").on('click', function(event) {
+          var menu = output.find('.dropdown').last();
+          menu.css("top", event.clientY);
+          menu.css("left", event.clientX - 250);
+          menu.find('.dropdown-toggle').first().dropdown('toggle');
+          event.stopPropagation();
         });
       }
     };

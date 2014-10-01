@@ -99,7 +99,6 @@
           enableColumnReorder: true,
           multiColumnSort: true,
           selectedCellCssClass: 'bk-table-cell-selected'
-          //forceFitColumns: true
         };
         var grid = new Slick.Grid(div, data, columns, options);
         grid.onSort.subscribe(function(e, args) {

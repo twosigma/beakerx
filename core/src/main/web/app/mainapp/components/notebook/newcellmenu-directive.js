@@ -20,9 +20,10 @@
 
   module.directive('bkNewCellMenu', function(
       bkUtils, bkSessionManager, bkEvaluatorManager) {
+    var cellOps = bkSessionManager.getNotebookCellOp();
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/newcellmenu.html",
+      template: JST["mainapp/components/notebook/newcellmenu"](),
       scope: { config: '=' },
       controller: function($scope) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
@@ -37,35 +38,63 @@
 
         $scope.newCodeCell = function(evaluatorName) {
           var newCell = newCellFactory.newCodeCell(evaluatorName);
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
+        };
+        $scope.showPluginManager = function() {
+          bkHelper.getBkNotebookViewModel().showEvaluators();
         };
         $scope.newTextCell = function() {
           var newCell = newCellFactory.newTextCell();
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
         };
         $scope.newMarkdownCell = function() {
           var newCell = newCellFactory.newMarkdownCell();
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
         };
 
         $scope.newSectionCell = function(level) {
           var newCell = newCellFactory.newSectionCell(level);
-          $scope.config.attachCell(newCell);
+          attachCell(newCell);
+        };
+
+        function attachCell(cell) {
+          bkSessionManager.setNotebookModelEdited(true);
+          if ($scope.config && $scope.config.attachCell) {
+            return $scope.config.attachCell(cell);
+          } else {
+            cellOps.insertLast(cell);
+          }
+        }
+
+        // get the last code cell in the notebook
+        var getLastCodeCell = function() {
+          return _.last(cellOps.getAllCodeCells());
+        };
+
+
+        $scope.insertDefaultCodeCell = function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          // by default, insert a code cell (and use the best evaluator with best guess)
+          // If a prev cell is given, first scan toward top of the notebook, and use the evaluator
+          // of the first code cell found. If not found, scan toward bottom, and use the evaluator
+          // of the first code cell found.
+          // If a prev cell is not given, use the very last code cell in the notebook.
+          // If there is no code cell in the notebook, use the first evaluator in the list
+          var prevCell = $scope.config && $scope.config.prevCell && $scope.config.prevCell();
+          var codeCell = (prevCell && cellOps.findCodeCell(prevCell.id))
+              || (prevCell && cellOps.findCodeCell(prevCell.id, true))
+              || getLastCodeCell();
+          var evaluatorName = codeCell ?
+              codeCell.evaluator : _.keys(bkEvaluatorManager.getAllEvaluators())[0];
+          $scope.newCodeCell(evaluatorName);
         };
       },
       link: function(scope, element, attrs) {
-        var hr = element.find('hr');
-        hr.mouseover(function(event) {
-          hr.animate({ opacity: 1.0 }, 100);
-          event.stopPropagation();
-        });
-        hr.mouseout(function(event) {
-          hr.animate({ opacity: 0.0 }, 200);
-          event.stopPropagation();
-        });
         scope.moveMenu = function(event) {
           var menu = element.find('.dropdown-menu').first();
-          menu.css("left", bkUtils.getEventOffsetX(hr, event));
+          menu.css("left", bkUtils.getEventOffsetX(0, event));
         };
       }
     };

@@ -177,8 +177,8 @@
       gotoControlPanel: function() {
         return this._beakerRootOp.gotoControlPanel();
       },
-      newSession: function() {
-        return this._beakerRootOp.newSession();
+      newSession: function(empty) {
+        return this._beakerRootOp.newSession(empty);
       },
       openSession: function(sessionId) {
         return this._beakerRootOp.openSession(sessionId);
@@ -204,7 +204,7 @@
               result = homeDir + "/"
             } else if (_.string.startsWith(result, '~/')) {
               result = result.replace('~', homeDir);
-            } else if (!_.string.startsWith(result, '/')) {
+            } else if (!_.string.startsWith(result, '/') && !result.match(/^\w+:\\/)) {
               result = pwd + "/" + result;
             }
             if (!_.string.endsWith(result, '.bkr')
@@ -217,17 +217,17 @@
             return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
           };
           fileChooserStrategy.treeViewfs.applyExtFilter = false;
-          var fileChooserTemplate = '<div class="modal-header">' +
+          var fileChooserTemplate = '<div class="modal-header fixed">' +
               '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
               '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
               '</div>' +
-              '<div class="modal-body">' +
+              '<div class="modal-body fixed">' +
               '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
               '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
               '  </tree-view>' +
               (pwd === homeDir ? '' : ('  <tree-view rooturi="' + pwd + '" fs="getStrategy().treeViewfs"></tree-view>')) +
               '</div>' +
-              '<div class="modal-footer">' +
+              '<div class="modal-footer fixed">' +
               '   <p><input id="saveAsFileInput"' +
               '             class="input-xxlarge"' +
               '             ng-model="getStrategy().input"' +
@@ -277,7 +277,6 @@
           keyboard: true,
           backdropClick: true,
           controller: 'modalDialogCtrl'
-          //templateUrl: template,
         };
 
         // XXX - template is sometimes a url now.
@@ -289,7 +288,7 @@
 
         modalDialogOp.setStrategy(strategy);
         var dd = $dialog.dialog(options);
-        dd.open().then(function(result) {
+        return dd.open().then(function(result) {
           dd.$scope.$destroy();
           if (callback) {
             callback(result);
@@ -410,7 +409,7 @@
   module.directive('fileActionDialog', function() {
     return {
       scope: { actionName: '@', inputId: '@', close: '=' },
-      templateUrl: "./app/template/fileActionDialog.html",
+      template: JST['template/fileactiondialog'](),
       link: function(scope, element, attrs) {
         element.find('input').focus();
       }

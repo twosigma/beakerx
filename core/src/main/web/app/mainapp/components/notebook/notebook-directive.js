@@ -37,9 +37,10 @@
     var CELL_TYPE = "notebook";
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/notebook.html",
+      template: JST["mainapp/components/notebook/notebook"](),
       scope: {
-        setBkNotebook: "&"
+        setBkNotebook: "&",
+        isLoading: "="
       },
       controller: function ($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
@@ -60,11 +61,26 @@
             isShowingOutput: function () {
               return this._showOutput;
             },
+            isLocked: function() {
+              return bkSessionManager.isNotebookLocked();
+            },
             isHideEvaluators: function () {
               return this._hideEvaluators;
             },
             hideEvaluators: function () {
               this._hideEvaluators = true;
+            },
+            toggleAdvancedMode: function() {
+              this._advancedMode = !this._advancedMode;
+            },
+            isAdvancedMode: function() {
+              return !!(this._advancedMode);
+            },
+            isHierarchyEnabled: function() {
+              return !!(this._hierarchyEnabled);
+            },
+            toggleHierarchyEnabled: function() {
+              this._hierarchyEnabled = !this._hierarchyEnabled;
             },
             toggleDebugging: function () {
               this._debugging = !this._debugging;
@@ -89,6 +105,7 @@
           },
           unregisterFocusable: function (cellId) {
             delete this._focusables[cellId];
+            this._focusables[cellId] = null;
           },
           getFocusable: function (cellId) {
             return this._focusables[cellId];
@@ -100,6 +117,7 @@
           },
           unregisterCM: function (cellId) {
             delete this._codeMirrors[cellId];
+            this._codeMirrors[cellId] = null;
           },
           _cmKeyMapMode: "default",
           setCMKeyMapMode: function (keyMapMode) {
@@ -114,6 +132,12 @@
         };
         $scope.setBkNotebook({bkNotebook: _impl});
 
+        $scope.getFullIndex = function() { return "1" }
+
+        $scope.isLocked = function() {
+          return _impl._viewModel.isLocked();
+        }
+
         $scope.isDebugging = function () {
           return _impl._viewModel.isDebugging();
         };
@@ -126,7 +150,8 @@
           return bkSessionManager.getRawNotebookModel();
         };
         $scope.clearOutput = function () {
-          $.ajax({type: "GET",
+          $.ajax({
+            type: "GET",
             datatype: "json",
             url: "../beaker/rest/outputlog/clear",
             data: {}});
@@ -135,56 +160,31 @@
         $scope.hideOutput = function () {
           _impl._viewModel.hideOutput();
         };
-        var margin = $(".outputlogstdout").position().top;
-        var outputLogHeight = 300;
-        var dragHeight;
-        var fixOutputLogPosition = function () {
-          $(".outputlogcontainer").css("top", window.innerHeight - outputLogHeight);
-          $(".outputlogcontainer").css("height", outputLogHeight);
-          $(".outputlogbox").css("height", outputLogHeight - margin - 5);
-          var width;
-          if ($scope.showStdOut && $scope.showStdErr) {
-            width = window.innerWidth / 2 - 20;
-            $(".outputlogerr").css("float", "right");
-            $(".outputlogerr").css("padding-left", "");
-            $(".outputlogerr").css("padding-right", 10);
-            $(".outputlogout").css("padding-left", 10);
-            $(".outputlogout").css("padding-right", "");
-          } else {
-            width = window.innerWidth - 20;
-            $(".outputlogerr").css("float", "left");
-            $(".outputlogerr").css("padding-left", 10);
-            $(".outputlogout").css("padding-left", 10);
-          }
-          $(".outputlogout").css("width", width);
-          $(".outputlogerr").css("width", width);
+
+        $scope.isAdvancedMode = function () {
+          return _impl._viewModel.isAdvancedMode();
         };
-        $(window).resize(fixOutputLogPosition);
-        $(".outputloghandle").drag("start", function () {
-          dragHeight = outputLogHeight;
-        });
-        $(".outputloghandle").drag(function (ev, dd) {
-          outputLogHeight = dragHeight - dd.deltaY;
-          if (outputLogHeight < 20) outputLogHeight = 20;
-          if (outputLogHeight > window.innerHeight - 50) outputLogHeight = window.innerHeight - 50;
-          fixOutputLogPosition();
-        });
+
+        $scope.isHierarchyEnabled = function () {
+          return _impl._viewModel.isHierarchyEnabled();
+        };
+
         $scope.showStdOut = true;
         $scope.showStdErr = true;
-        fixOutputLogPosition();
 
         $scope.toggleStdOut = function () {
           $scope.showStdOut = !$scope.showStdOut;
-          fixOutputLogPosition();
         };
+
         $scope.toggleStdErr = function () {
           $scope.showStdErr = !$scope.showStdErr;
-          fixOutputLogPosition();
         };
+
         bkOutputLog.getLog(function (res) {
           $scope.outputLog = res;
         });
-        bkOutputLog.subscribe(function (reply) {
+
+        $scope.unregisterOutputLog = bkOutputLog.subscribe(function (reply) {
           if (!_impl._viewModel.isShowingOutput()) {
             _impl._viewModel.toggleShowOutput();
           }
@@ -192,17 +192,50 @@
           $scope.$apply();
           // Scroll to bottom so this output is visible.
           $.each($('.outputlogbox'),
-              function (i, v) {
-                $(v).scrollTop(v.scrollHeight);
-              });
+                 function (i, v) {
+                   $(v).scrollTop(v.scrollHeight);
+                 });
         });
-
+        var margin = $(".outputlogstdout").position().top;
+        var outputLogHeight = 300;
+        var dragHeight;
+        var fixOutputLogPosition = function () {
+          $(".outputlogcontainer").css("top", window.innerHeight - outputLogHeight);
+          $(".outputlogcontainer").css("height", outputLogHeight);
+          $(".outputlogbox").css("height", outputLogHeight - margin - 5);
+        };
+        $scope.unregisters = [];
+        $(window).resize(fixOutputLogPosition);
+        $scope.unregisters.push(function() {
+          $(window).off("resize", fixOutputLogPosition);
+        });
+        var dragStartHandler = function () {
+          dragHeight = outputLogHeight;
+        };
+        var outputloghandle = $(".outputloghandle");
+        outputloghandle.drag("start", dragStartHandler);
+        $scope.unregisters.push(function() {
+          outputloghandle.off("dragstart", dragStartHandler);
+        });
+        var dragHandler = function (ev, dd) {
+          outputLogHeight = dragHeight - dd.deltaY;
+          if (outputLogHeight < 20) {
+            outputLogHeight = 20;
+          }
+          if (outputLogHeight > window.innerHeight - 80) {
+            outputLogHeight = window.innerHeight - 80;
+          }
+          fixOutputLogPosition();
+        };
+        outputloghandle.drag(dragHandler);
+        $scope.unregisters.push(function() {
+          outputloghandle.off("drag", dragHandler);
+        });
 
         $scope.getChildren = function () {
           // this is the root
           return notebookCellOp.getChildren("root");
         };
-
 
         $scope.getShareMenuPlugin = function () {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
@@ -242,6 +275,12 @@
           },
           shareMenu
         ];
+
+        bkUtils.httpGet("../beaker/rest/util/isUseAdvancedMode").success(function(isAdvanced) {
+          if (_impl._viewModel.isAdvancedMode() != (isAdvanced === "true")) {
+            _impl._viewModel.toggleAdvancedMode();
+          }
+        });
       },
       link: function (scope, element, attrs) {
         var div = element.find(".bkcell").first();
@@ -268,6 +307,13 @@
               div.removeClass("initcell");
             }
           }
+        });
+        scope.$on("$destroy", function() {
+          scope.setBkNotebook({bkNotebook: undefined});
+          scope.unregisterOutputLog();
+          _(scope.unregisters).each(function(unregister) {
+            unregister();
+          });
         });
       }
     };

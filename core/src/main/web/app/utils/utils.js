@@ -64,6 +64,9 @@
       findTable: function(elem) {
         return commonUtils.findTable(elem);
       },
+      saveAsClientFile: function(data, filename) {
+        return commonUtils.saveAsClientFile(data, filename);
+      },
 
       // wrap angularUtils
       refreshRootScope: function() {
@@ -98,6 +101,13 @@
       getHomeDirectory: function() {
         var deferred = angularUtils.newDeferred();
         this.httpGet("../beaker/rest/file-io/getHomeDirectory")
+            .success(deferred.resolve)
+            .error(deferred.reject);
+        return deferred.promise;
+      },
+      getVersionInfo: function() {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet("../beaker/rest/util/getVersionInfo")
             .success(deferred.resolve)
             .error(deferred.reject);
         return deferred.promise;
@@ -189,7 +199,13 @@
         return deferred.promise;
       },
       addConnectedStatusListener: function(cb) {
-        cometdUtils.addConnectedStatusListener(cb);
+        return cometdUtils.addConnectedStatusListener(cb);
+      },
+      removeConnectedStatusListener: function() {
+        return cometdUtils.removeConnectedStatusListener();
+      },
+      disconnect: function() {
+        return cometdUtils.disconnect();
       },
 
       // wrapper around requireJS

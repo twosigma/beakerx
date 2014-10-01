@@ -20,7 +20,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share']);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share', 'bk.debug']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare) {
+  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare, bkDebug) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -43,6 +43,10 @@
     };
 
     var bkHelper = {
+      // enable debug
+      debug: function() {
+        window.bkDebug = bkDebug;
+      },
 
       // beaker (root)
       gotoControlPanel: function() {
@@ -51,8 +55,10 @@
       openNotebook: function(notebookUri, uriType, readOnly, format) {
         return bkCoreManager.openNotebook(notebookUri, uriType, readOnly, format);
       },
-      newSession: function() {
-        return bkCoreManager.newSession();
+      // Empty true means truly empty new session.
+      // otherwise use the default notebook.
+      newSession: function(empty) {
+        return bkCoreManager.newSession(empty);
       },
 
       // current app
@@ -62,11 +68,24 @@
         }
         return "Unknown App";
       },
+      hasSessionId: function() {
+        if (getCurrentApp().getSessionId) {
+          return true;
+        }
+        return false;
+      },
       getSessionId: function() {
         if (getCurrentApp().getSessionId) {
           return getCurrentApp().getSessionId();
         } else {
           console.error("Current app doesn't support getSessionId");
+        }
+      },
+      getNotebookModel: function() {
+        if (getCurrentApp().getNotebookModel) {
+          return getCurrentApp().getNotebookModel();
+        } else {
+          console.error("Current app doesn't support getNotebookModel");
         }
       },
       closeNotebook: function() {
@@ -196,6 +215,9 @@
       newPromise: function(value) {
         return bkUtils.newPromise(value);
       },
+      all: function(promises) {
+        return bkUtils.all(promises);
+      },
       fcall: function(func) {
         return bkUtils.fcall(func);
       },
@@ -255,7 +277,7 @@
       // bkShare
       share: bkShare
     };
-    window.bkHelper = bkHelper; // TODO, we want to revisit the decision of making this global
+
     return bkHelper;
   });
 })();

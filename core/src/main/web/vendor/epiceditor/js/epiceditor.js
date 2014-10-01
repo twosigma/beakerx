@@ -562,7 +562,7 @@
                 '</div>'
 
     // The previewer is just an empty box for the generated HTML to go into
-    , previewer: '<div id="epiceditor-preview"></div>'
+    , previewer: '<!doctype HTML><div id="epiceditor-preview"></div>'
     , editor: '<!doctype HTML>'
     };
 
@@ -863,25 +863,28 @@
 
     // Sets up the NATIVE fullscreen editor/previewer for WebKit
     if (nativeFsWebkit) {
-      document.addEventListener('webkitfullscreenchange', function () {
+      self.webkitfullscreenchange_handler = function () {
         if (!document.webkitIsFullScreen && self._eeState.fullscreen) {
           self._exitFullscreen(fsElement);
         }
-      }, false);
+      };
+      document.addEventListener('webkitfullscreenchange', self.webkitfullscreenchange_handler, false);
     }
     else if (nativeFsMoz) {
-      document.addEventListener('mozfullscreenchange', function () {
+      self.mozfullscreenchange_handler = function () {
         if (!document.mozFullScreen && self._eeState.fullscreen) {
           self._exitFullscreen(fsElement);
         }
-      }, false);
+      };
+      document.addEventListener('mozfullscreenchange', self.mozfullscreenchange_handler, false);
     }
     else if (nativeFsW3C) {
-      document.addEventListener('fullscreenchange', function () {
+      self.fullscreenchange_handler = function () {
         if (document.fullscreenElement == null && self._eeState.fullscreen) {
           self._exitFullscreen(fsElement);
         }
-      }, false);
+      };
+      document.addEventListener('fullscreenchange', self.fullscreenchange_handler, false);
     }
 
     // TODO: Move utilBar stuff into a utilBar setup function (_setupUtilBar)
@@ -1018,6 +1021,21 @@
       });
     }
 
+    self.previewerIframeDocument.addEventListener('click', function(e) {
+      self.emit('preview-clicked');
+    });
+
+    self.editor.addEventListener('click', function (e) {
+      self.emit('editor-clicked');
+    });
+
+    self.editor.addEventListener('focus', function (e) {
+      self.emit('focus');
+    });
+    self.editor.addEventListener('blur', function (e) {
+      self.emit('blur');
+    });
+
     // Save the document every 100ms by default
     // TODO: Move into autosave setup function (_setupAutoSave)
     if (self.settings.file.autoSave) {
@@ -1035,13 +1053,13 @@
       self._setupTextareaSync();
     }
 
-    window.addEventListener('resize', function () {
+    self.onResize = function () {
       // If NOT webkit, and in fullscreen, we need to account for browser resizing
       // we don't care about webkit because you can't resize in webkit's fullscreen
       if (self.is('fullscreen')) {
         _applyStyles(self.iframeElement, {
           'width': window.outerWidth + 'px'
-        , 'height': window.innerHeight + 'px'
+          , 'height': window.innerHeight + 'px'
         });
 
         _applyStyles(self.element, {
@@ -1050,19 +1068,21 @@
 
         _applyStyles(self.previewerIframe, {
           'width': window.outerWidth / 2 + 'px'
-        , 'height': window.innerHeight + 'px'
+          , 'height': window.innerHeight + 'px'
         });
 
         _applyStyles(self.editorIframe, {
           'width': window.outerWidth / 2 + 'px'
-        , 'height': window.innerHeight + 'px'
+          , 'height': window.innerHeight + 'px'
         });
       }
       // Makes the editor support fluid width when not in fullscreen mode
       else if (!self.is('fullscreen')) {
         self.reflow();
       }
-    });
+    };
+
+    window.addEventListener('resize', self.onResize);
 
     // Set states before flipping edit and preview modes
     self._eeState.loaded = true;
@@ -1218,6 +1238,21 @@
     if (self._textareaSaveTimer) {
       window.clearInterval(self._textareaSaveTimer);
     }
+
+    if (self.webkitfullscreenchange_handler) {
+      document.removeEventListener('webkitfullscreenchange', self.webkitfullscreenchange_handler);
+    }
+    if (self.mozfullscreenchange_handler) {
+      document.removeEventListener('mozfullscreenchange', self.mozfullscreenchange_handler);
+    }
+    if (self.fullscreenchange_handler) {
+      document.removeEventListener("fullscreenchange", self.fullscreenchange_handler);
+    }
+
+    if (self.onResize) {
+      window.removeEventListener('resize', self.onResize);
+    }
+
 
     callback.call(this);
     self.emit('unload');

@@ -1,0 +1,76 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.outputlogbox {
+    overflow: auto;
+}
+
+.outputlog {
+    vertical-align: top;
+}
+
+.btn-toolbar {
+    padding:    10px;
+    text-align: center;
+}
+
+.alt-controls {
+    float: right;
+}
+
+.outputlogerr, .outputlogout {
+    float:      left;
+    width:      50%;
+    display:    block;
+    padding:    0 10px;
+    box-sizing: border-box;
+}
+
+.outputlogbox {
+    height:     200px;
+    overflow:   auto;
+}
+
+.output-label {
+    font-family: pt_sansbold;
+}
+
+.outputlogcontainer {
+    background-color: #eff2f8;
+    position: fixed;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    bottom: 0;
+    height: 300px;
+}
+
+.prelog {
+    border:         none;
+    margin:         0 auto;
+    padding:        0;
+    background:     transparent;
+    font-family:    monospace;
+    border-radius:  0;
+}
+
+.outputloghandle {
+    background: linear-gradient(#DDE0E6, #EFF2F8, #DDE0E6);
+    border: 1;
+    height: 10px;
+    width: 100%;
+    cursor: ns-resize;
+}

@@ -1,0 +1,187 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+@import "cell-menus";
+@import "cell-errors";
+@import "cell-outputs";
+
+.bkcell {
+    margin-bottom:  10px;
+
+    .CodeMirror {
+        background: transparent;
+    }
+}
+
+bk-markdown-cell > div {
+    border:      solid 1px $cell-border;
+    padding-top: 30px;
+
+    &.focused, &:hover {
+        border: solid 1px $highlight-blue;
+    }
+}
+
+.mini-cell-stats {
+    top: 22px;
+    left: 20px;
+    color: $font-grey;
+    position: absolute;
+    font-size: 12px;
+}
+.loading-state {
+    color: $font-grey;
+    font-size: 11px;
+    line-height: 25px;
+}
+
+.bkcell.code-cell-area, .text-cell {
+    padding:     20px;
+    padding-top: 40px;
+    border: solid 1px $cell-border;
+}
+
+.locked {
+    .bkcell.code-cell-area, .text-cell {
+        border: solid 1px transparent;
+    }
+}
+
+.bkcell bk-code-cell-input-menu .dropdown {
+    float:          left;
+    z-index:        99;
+    position:       relative;
+    padding-bottom: 20px;
+}
+
+bk-cell > .bkcell {
+    position: relative;
+}
+
+bk-section-cell, bk-text-cell {
+    padding: 20px;
+}
+
+bk-text-cell div[contenteditable]{
+    margin-top: 5px;
+}
+
+.bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
+    margin-top: -20px;
+}
+
+bk-code-cell .code-cell-output {
+    margin:     20px -20px -10px;
+    padding:    0 20px;
+    position:   relative;
+    border-top: solid 1px #CCC;
+}
+
+.advanced-mode bk-code-cell .code-cell-output {
+    margin-top: 20px;
+
+    &.no-output .cell-menu-item {
+        display: none;
+    }
+}
+
+.advanced-mode .bkcell.code-cell-area, .text-cell {
+    padding-top: 20px;
+}
+
+.advanced-mode .output-hidden .cell-menu-item {
+    display: none;
+}
+
+bk-code-cell .locked .code-cell-output {
+    border: none;
+    margin-top: 0;
+}
+
+bk-output-display .slickgrid {
+    padding-top: 10px;
+}
+
+bk-output-display pre {
+    border:     none;
+    margin:     0;
+    padding:    0;
+    background: transparent;
+}
+
+.base-menu-add .insert-cell-indicator {
+    padding: 8px 13px;
+}
+
+.insert-cell-indicator {
+    color:       #FFF;
+    cursor:      pointer;
+    display:     inline-block;
+    padding:     2px 5px 0;
+    font-size:   13px;
+    background:  $highlight-blue;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.code-cell-hidden {
+    padding-top: 20px;
+}
+
+bk-cell .section > .toggle-menu {
+    margin-top: -4px;
+}
+
+.toggle-menu {
+    bk-language-logo {
+        display: none;
+        position: relative;
+        top: 1px;
+        margin-right: 5px;
+    }
+}
+
+.advanced-mode {
+    bk-language-logo {
+        display: none;
+    }
+
+    .toggle-menu  bk-language-logo {
+        display: inline-block;
+    }
+}
+
+bk-language-logo {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  span {
+    width: 20px;
+    height: 19px;
+    font-weight: bold;
+    font-family: $font-family-primary-bold;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 10px;
+    padding-top: 1px;
+  }
+}
+
+.cell-run-time {
+color: #BDBDBD;
+}

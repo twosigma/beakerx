@@ -60,17 +60,31 @@ task (bowerInstall, type: Exec) {
   }
 }
 
+task (compileCss, type: Exec) {
+  if (windows()) {
+    commandLine 'cmd', '/c', 'npm', 'run-script', 'compile'
+  } else {
+    commandLine 'npm', 'run-script', 'compile'
+  }
+}
+
 task (copyNginx, type: Exec) {
-  commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx/bin'.split()
+  if (mac()) {
+    commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx/bin'.split()
+  } else if (windows()) {
+    def nginxLocation = 'cmd /c where nginx'.execute().text.trim()
+    commandLine 'cmd', '/c', 'xcopy', '/Y', '/Q', nginxLocation, 'nginx\\bin', '&', 'xcopy', '/Y', '/Q', nginxLocation + '\\..\\conf\\mime.types', 'nginx\\bin'
+  }
 }
 
 bowerInstall.dependsOn npmInstall
+
 run.dependsOn jar
-if (mac()) {
+if (mac() || windows()) {
   build.dependsOn copyNginx
   run.dependsOn copyNginx
   startScripts {
-    defaultJvmOpts=["-Dbeaker.nginx.bin.dir=" + "./nginx/bin"]
+    defaultJvmOpts=['-Dbeaker.nginx.bin.dir=' + './nginx/bin']
   }
 }
 

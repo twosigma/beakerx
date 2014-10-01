@@ -66,15 +66,19 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "r",
     background: "#C0CFF0",
+    bgColor: "#8495BB",
+    fgColor: "#FFFFFF",
+    borderColor: "",
+    shortName: "R",
     newShell: function(shellID, cb) {
       if (!shellID) {
         shellID = "";
       }
       bkHelper.httpPost(serviceBase + "/rest/rsh/getShell", { shellid: shellID })
-          .success(cb)
-          .error(function() {
-            console.log("failed to create shell", arguments);
-          });
+        .success(cb)
+        .error(function() {
+          console.log("failed to create shell", arguments);
+        });
     },
     evaluate: function(code, modelOutput) {
       var deferred = Q.defer();
@@ -151,7 +155,14 @@ define(function(require, exports, module) {
         data: { shellID: self.settings.shellID }
       }).done(cb);
     },
+    interrupt: function() {
+      this.cancelExecution();
+    },
+    cancelExecution: function() {
+      bkHelper.httpPost(serviceBase + "/rest/rsh/interrupt", {shellID: this.settings.shellID});
+    },
     spec: {
+      interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
     },
     cometdUtil: cometdUtil
   };
@@ -173,8 +184,18 @@ define(function(require, exports, module) {
           }
           settings.shellID = id;
           self.settings = settings;
-          if (doneCB) {
-            doneCB(self);
+          if (bkHelper.hasSessionId()) {
+            var initCode = "devtools::load_all(Sys.getenv('beaker_r_init'), " +
+              "quiet=TRUE, export_all=FALSE)\n" +
+              "beaker:::set_session('" + bkHelper.getSessionId() + "')\n";
+            self.evaluate(initCode, {}).then(function () {
+              if (doneCB) {
+                doneCB(self);
+              }});
+          } else {
+            if (doneCB) {
+              doneCB(self);
+            }
           }
         };
         if (!settings.shellID) {

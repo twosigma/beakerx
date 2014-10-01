@@ -29,34 +29,31 @@
   'use strict';
   var module = angular.module('bk.notebook');
 
-  module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager) {
+  module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager, bkEvaluatorManager) {
     return {
       restrict: 'E',
-      template: '<div class="bkcell">' +
-          '<div ng-if="isDebugging()">' +
-          '[Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}} ' +
-          '<a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>' +
-          '<a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()">show less</a>' +
-          '<div collapse="!isShowDebugInfo()">' +
-          '<pre>{{cellmodel | json}}</pre>' +
-          '</div>' +
-          '</div>' +
-          '<div ng-include="getTypeCellUrl()"></div>' +
-          '<bk-cell-menu items="cellview.menu.items"></bk-cell-menu>' +
-          '<bk-new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>' +
-          '</div>',
+      template: JST["mainapp/components/notebook/cell"](),
       scope: {
-        cellmodel: "="
+        cellmodel: "=",
+        index: "="
       },
-      controller: function($scope) {
+      controller: function($scope, $element) {
+        $scope.cellmodel.evaluatorReader = false;
+
         var getBkBaseViewModel = function() {
           return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel();
         };
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
+
         $scope.cellview = {
           showDebugInfo: false,
           menu: {
             items: [],
+            renameItem: function(opts)  {
+              _.findWhere(this.items,
+                {name: opts.name}
+              ).name = opts.newName;
+            },
             addItem: function(menuItem) {
               this.items.push(menuItem);
             },
@@ -71,16 +68,31 @@
             }
           }
         };
+
+        $scope.isLocked = function() {
+          return bkSessionManager.isNotebookLocked();
+        }
+
         $scope.newCellMenuConfig = {
           isShow: function() {
-            if (bkSessionManager.isNotebookLocked()) {
-              return false;
-            }
-            return !notebookCellOp.isContainer($scope.cellmodel.id);
+            return !bkSessionManager.isNotebookLocked()
+                && !notebookCellOp.isContainer($scope.cellmodel.id)
+                && !notebookCellOp.isLast($scope.cellmodel.id);
           },
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
+          },
+          prevCell: function() {
+            return $scope.cellmodel;
           }
+        };
+
+        $scope.getFullIndex = function() {
+          if ($scope.$parent.getNestedLevel) {
+            return $scope.$parent.getFullIndex() + "." + $scope.index;
+          }
+
+          return $scope.index+$scope.getNestedLevel();
         };
 
         $scope.toggleShowDebugInfo = function() {
@@ -103,36 +115,58 @@
         $scope.getParentId = function() {
           return $scope.$parent.$parent.cellmodel ? $scope.$parent.$parent.cellmodel.id : 'root';
         };
+
+        $scope.toggleCellInput = function() {
+          if ($scope.cellmodel.input.hidden) {
+            delete $scope.cellmodel.input.hidden;
+          } else {
+            $scope.cellmodel.input.hidden = true;
+          }
+        };
+
+        $scope.deleteCell = function() {
+          notebookCellOp.delete($scope.cellmodel.id, true);
+        }
+
+        $scope.getEvaluator = function() {
+          return bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
+        };
+
+        $scope.moveCellUp = function() {
+          notebookCellOp.moveSectionUp($scope.cellmodel.id);
+        }
+
+        $scope.moveCellDown = function() {
+          notebookCellOp.moveSectionDown($scope.cellmodel.id);
+        }
+
+        $scope.moveCellUpDisabled   = function(){return !notebookCellOp.isPossibleToMoveSectionUp($scope.cellmodel.id)};
+        $scope.moveCellDownDisabled = function(){return !notebookCellOp.isPossibleToMoveSectionDown($scope.cellmodel.id)};
+
         $scope.cellview.menu.addItem({
           name: "Delete cell",
-          action: function() {
-            notebookCellOp.delete($scope.cellmodel.id);
-          }
+          action: $scope.deleteCell
         });
+
         $scope.cellview.menu.addItem({
           name: "Move up",
-          disabled: function() {
-            return !notebookCellOp.isPossibleToMoveSectionUp($scope.cellmodel.id);
-          },
-          action: function() {
-            notebookCellOp.moveSectionUp($scope.cellmodel.id);
-          }
+          action: $scope.moveCellUp,
+          disabled: $scope.moveCellUpDisabled
         });
+
         $scope.cellview.menu.addItem({
           name: "Move down",
-          disabled: function() {
-            return !notebookCellOp.isPossibleToMoveSectionDown($scope.cellmodel.id);
-          },
-          action: function() {
-            notebookCellOp.moveSectionDown($scope.cellmodel.id);
-          }
+          action: $scope.moveCellDown,
+          disabled: $scope.moveCellDownDisabled
         });
+
         $scope.cellview.menu.addItem({
           name: "Cut",
           action: function() {
             notebookCellOp.cut($scope.cellmodel.id);
           }
         });
+
         $scope.cellview.menu.addItem({
           name: "Paste (append after)",
           disabled: function() {
@@ -148,24 +182,19 @@
         };
       },
       link: function(scope, element, attrs) {
-        var div = element.find(".bkcell").first();
-        div.click(function(event) {
-          //click in the border or padding should trigger menu
-          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
-            var menu = div.find('.bkcellmenu').last();
-            menu.css("top", event.clientY);
-            menu.css("left", event.clientX - 150);
-            menu.find('.dropdown-toggle').first().dropdown('toggle');
-            event.stopPropagation();
-          }
-        });
-        div.mousemove(function(event) {
-          if (bkUtils.getEventOffsetX(div, event) >= div.width()) {
-            div.css('cursor', 'pointer');
-          } else {
-            div.css('cursor', 'default');
-          }
-        });
+        scope.toggleCellMenu = function(event) {
+          element
+          .find(".bkcell").first()
+          .find('.bkcellmenu').last()
+           .css({
+            top: event.clientY + "px",
+            left: event.clientX - 250 + "px"
+          })
+          .find('.dropdown-toggle').first()
+          .dropdown('toggle');
+
+          event.stopPropagation()
+        };
       }
     };
   });

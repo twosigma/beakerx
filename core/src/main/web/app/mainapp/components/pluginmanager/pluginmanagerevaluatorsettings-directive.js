@@ -26,8 +26,7 @@
       $compile, bkSessionManager) {
     return {
       restrict: 'E',
-      template: '<div><accordion-group heading="{{evaluatorName}} (plugin: {{evaluator.settings.plugin}})">' +
-          '<div class="bbody"></div></accordion-group></div>',
+      template: JST["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"](),
       controller: function($scope) {
         $scope.set = function(val) {
           $scope.evaluator.perform(val);
@@ -42,10 +41,10 @@
             if (evaluator.spec[property].type === "settableString") {
               element.find('.bbody').append($compile(
                       "<div>" + name + ":<br><textarea ng-model='evaluator.settings." + property +
-                      "'></textarea><button ng-click='set(\"" + property +
+                      "'></textarea><button class='beaker-btn' ng-click='set(\"" + property +
                       "\")'>set</button></div>")(scope));
             } else if (evaluator.spec[property].type === "action") {
-              element.find('.bbody').append($compile("<div><button ng-click='evaluator.perform(\"" + property +
+              element.find('.bbody').append($compile("<div><button class='beaker-btn' ng-click='evaluator.perform(\"" + property +
                   "\")'>" + name + "</button></div>")(scope));
             }
           }

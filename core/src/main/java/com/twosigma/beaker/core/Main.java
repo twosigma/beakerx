@@ -22,6 +22,7 @@ import com.twosigma.beaker.core.module.SerializerModule;
 import com.twosigma.beaker.core.module.URLConfigModule;
 import com.twosigma.beaker.core.module.WebServerModule;
 import com.twosigma.beaker.core.module.config.DefaultBeakerConfigModule;
+import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.core.module.config.BeakerConfigPref;
 import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
@@ -31,7 +32,6 @@ import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -64,6 +64,8 @@ public class Main {
   private static final Integer PORT_BASE_START_DEFAULT = 8800;
   private static final Boolean OPEN_BROWSER_DEFAULT = Boolean.TRUE;
   private static final Boolean USE_HTTPS_DEFAULT = Boolean.FALSE;
+  private static final Boolean PUBLIC_SERVER_DEFAULT = Boolean.FALSE;
+  private static final Boolean NO_PASSWORD_DEFAULT = Boolean.FALSE;
   private static final Boolean USE_KERBEROS_DEFAULT = Boolean.FALSE;
   private static final Integer CLEAR_PORT_OFFSET = 1;
   private static final Integer BEAKER_SERVER_PORT_OFFSET = 2;
@@ -79,6 +81,9 @@ public class Main {
     opts.addOption(null, "port-base", true, "main port number to use, other ports are allocated starting here");
     opts.addOption(null, "default-notebook", true, "file name to find default notebook");
     opts.addOption(null, "plugin-option", true, "pass option on to plugin");
+    opts.addOption(null, "public-server", false, "allow connections from external computers");
+    opts.addOption(null, "no-password", false, "do not require a password from external connections " +
+                   "(warning: for advanced users only!)");
     CommandLine line = parser.parse(opts, args);
     if (line.hasOption("help")) {
       new HelpFormatter().printHelp("beaker.command", opts);
@@ -129,11 +134,14 @@ public class Main {
       parseBoolean(options.getOptionValue("open-browser")) : OPEN_BROWSER_DEFAULT;
     final Boolean useHttps = options.hasOption("use-https") ?
       parseBoolean(options.getOptionValue("use-https")) : USE_HTTPS_DEFAULT;
+    final Boolean publicServer = options.hasOption("public-server");
 
     // create preferences for beaker core from cli options and others
     // to be used by BeakerCoreConfigModule to initialize its config
     BeakerConfigPref beakerCorePref = createBeakerCoreConfigPref(
         useKerberos,
+        publicServer,
+        false,
         portBase,
         options.getOptionValue("default-notebook"),
         getPluginOptions(options));
@@ -154,36 +162,29 @@ public class Main {
     PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
     processStarter.start();
 
+    BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
+
     Server server = injector.getInstance(Server.class);
     server.start();
 
     // openBrower and show connection instruction message
-    final String initUrl = getInitUrl(useHttps, portBase, useKerberos);
+    final String initUrl = bkConfig.getBaseURL();
     if (openBrowser) {
       injector.getInstance(GeneralUtils.class).openUrl(initUrl);
-      System.out.println("\nConnecting to " + initUrl + "\n");
+      System.out.println("\nConnecting to " + initUrl);
     } else {
-      System.out.println("\nConnect to " + initUrl + "\n");
+      System.out.println("\nConnect to " + initUrl);
     }
-
-  }
-
-  private static String getInitUrl(Boolean useHttps, Integer portBase, Boolean useKerberos) throws UnknownHostException {
-    String initUrl;
-
-    final String localhostname = InetAddress.getLocalHost().getHostName();
-
-    if (useHttps) {
-      initUrl = "https://" + localhostname + ":" + portBase + "/beaker/";
-    } else {
-      initUrl = "http://" + (useKerberos ? (System.getProperty("user.name") + ".") : "")
-              + localhostname + ":" + (portBase + CLEAR_PORT_OFFSET) + "/beaker/";
+    if (publicServer) {
+      System.out.println("Submit this password: " + bkConfig.getPassword());
     }
-    return initUrl;
+    System.out.println("");
   }
 
   private static BeakerConfigPref createBeakerCoreConfigPref(
       final Boolean useKerberos,
+      final Boolean publicServer,
+      final Boolean noPasswordAllowed,
       final Integer portBase,
       final String defaultNotebookUrl,
       final Map<String, String> pluginOptions) {
@@ -197,6 +198,16 @@ public class Main {
       @Override
       public Integer getPortBase() {
         return portBase;
+      }
+
+      @Override
+      public Boolean getPublicServer() {
+        return publicServer;
+      }
+
+      @Override
+      public Boolean getNoPasswordAllowed() {
+        return noPasswordAllowed;
       }
 
       @Override
@@ -244,7 +255,8 @@ public class Main {
 
     ServerSocket ss = null;
     try {
-      ss = new ServerSocket(port);
+      InetAddress address = InetAddress.getByName("127.0.0.1");
+      ss = new ServerSocket(port, 1, address);
       ss.setReuseAddress(true);
       return true;
     } catch (IOException e) {

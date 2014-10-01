@@ -23,6 +23,10 @@ define(function(require, exports, module) {
   var Latex = {
     pluginName: PLUGIN_NAME,
     cmMode: "stex",
+    bgColor: "#FFFFFF",
+    fgColor: "#030303",
+    borderColor: "3D4444",
+    shortName: "La",
     evaluate: function(code, modelOutput) {
       var startTime = new Date().getTime();
       return bkHelper.fcall(function() {

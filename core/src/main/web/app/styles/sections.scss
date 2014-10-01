@@ -1,0 +1,74 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.depth-indicator {
+  display: none;
+  background: $green;
+  color: #FFF;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  height: 23px;
+  line-height: 25px;
+  margin: 0 10px;
+  padding: 0 10px;
+}
+
+.section > .toggle-menu {
+  .advanced-hide, .move-cell-up, .move-cell-down {
+    display: none;
+  }
+}
+
+.section0, .section1, .section2, .section3, .section4, .section5 {
+  color:        #47474A;
+  font-family:  $font-family-primary-bold;
+}
+
+.section-toggle {
+  color: $highlight-blue;
+  cursor: pointer;
+
+  font-size: 16px;
+  font-family: $font-family-primary-bold;
+  margin-right: 5px;
+  position: relative;
+  top: -2px;
+}
+
+.section0 {
+  font-size: 30px;
+}
+
+.section1 {
+  font-size: 26px;
+}
+
+.section2 {
+  font-size: 24px;
+}
+
+.section3 {
+  font-size: 22px;
+}
+
+.section4 {
+  font-size: 20px;
+}
+
+.section5 {
+  font-size: 18px;
+}

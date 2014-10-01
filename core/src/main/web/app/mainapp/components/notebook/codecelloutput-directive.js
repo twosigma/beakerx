@@ -27,7 +27,7 @@
       bkUtils, bkOutputDisplayFactory, bkEvaluatorManager) {
     return {
       restrict: "E",
-      templateUrl: "./app/mainapp/components/notebook/codecelloutput.html",
+      template: JST["mainapp/components/notebook/codecelloutput"](),
       scope: {
         model: "=",
         evaluatorId: "@"
@@ -37,6 +37,12 @@
 
         $scope.getOutputResult = function() {
           return $scope.model.result;
+        };
+        $scope.getOutputState = function() {
+          if ($scope.model.state == null) {
+            $scope.model.state = {};
+          }
+          return $scope.model.state;
         };
         $scope.applicableDisplays = [];
         $scope.$watch('getOutputResult()', function(result) {
@@ -53,6 +59,10 @@
             } else {
               return result;
             }
+          },
+          getClientState: function() {
+            var result = $scope.getOutputState();
+            return result;
           },
           resetShareMenuItems: function(newItems) {
             _shareMenuItems = newItems;
@@ -85,6 +95,22 @@
           return "";
         };
 
+        $scope.isShowOutput = function() {
+          return $scope.$parent.isShowOutput();
+        };
+
+        $scope.toggleExpansion = function() {
+          if ($scope.$parent.cellmodel.output.hidden) {
+            delete $scope.$parent.cellmodel.output.hidden;
+          } else {
+            $scope.$parent.cellmodel.output.hidden = true;
+          }
+        };
+
+        $scope.isExpanded = function() {
+          return !$scope.$parent.cellmodel.output.hidden;
+        };
+
         // to be used in output cell menu
         $scope.outputCellMenuModel = (function() {
           var _additionalMenuItems = [
@@ -92,6 +118,15 @@
               name: "Share",
               items: function() {
                 return _shareMenuItems;
+              }
+            },
+            {
+              name: "Toggle Cell Output",
+              isChecked: function() {
+                $scope.isExpanded();
+              },
+              action: function() {
+                $scope.toggleExpansion();
               }
             },
             {

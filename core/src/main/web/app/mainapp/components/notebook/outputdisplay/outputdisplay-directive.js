@@ -16,7 +16,17 @@
 (function() {
   "use strict";
   var module = angular.module('bk.outputDisplay');
-  module.directive('bkOutputDisplay', function($compile, $rootScope, bkOutputDisplayFactory) {
+  module.directive('bkOutputDisplay', function(
+      $compile, $rootScope, bkOutputDisplayFactory, bkUtils) {
+    var getResultType = function(model) {
+      if (model && model.getCellModel()) {
+        if (_.isString(model.getCellModel())) {
+          return "String";
+        } else {
+          return model.getCellModel().type;
+        }
+      }
+    };
     return {
       restrict: "E",
       template: "<div>OUTPUT</div>",
@@ -32,6 +42,13 @@
           }
           childScope = $rootScope.$new();
           childScope.model = scope.model;
+          var resultType = getResultType(scope.model);
+          if (resultType) {
+            bkUtils.log("outputDisplay", {
+              resultType: resultType,
+              displayType: type
+            });
+          }
           var directiveName = bkOutputDisplayFactory.getDirectiveName(type);
           element.html("<div " + directiveName + " model='model'></div>");
           $compile(element.contents())(childScope);
@@ -42,6 +59,11 @@
         scope.$on("outputDisplayFactoryUpdated", function(event, what) {
           if (what === "all" || what === scope.type) {
             refresh(scope.type);
+          }
+        });
+        scope.$on("$destroy", function () {
+          if (childScope) {
+            childScope.$destroy();
           }
         });
       }

@@ -32,19 +32,28 @@
     var CELL_TYPE = "code";
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/codecell.html",
+      template: JST["mainapp/components/notebook/codecell"](),
       scope: { cellmodel: "=", cellmenu: "="},
       controller: function($scope) {
         $scope.cellview = {
           inputMenu: [],
           displays: []
         };
-        var isLocked = function() {
+
+        $scope.getFullIndex = function() {
+          return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;
+        }
+
+        $scope.isLocked = function() {
           return bkSessionManager.isNotebookLocked();
-        };
+        }
+
+        $scope.isEmpty = function() {
+          return !($scope.cellmodel.output.result);
+        }
 
         $scope.isShowInput = function() {
-          if (isLocked()) {
+          if ($scope.isLocked()) {
             return false;
           }
           if ($scope.cellmodel.input.hidden === true) {
@@ -63,6 +72,38 @@
           }
         });
 
+        $scope.isHiddenOutput = function() {
+          return $scope.cellmodel.output.selectedType == 'Hidden';
+        }
+
+        $scope.hasOutput = function() {
+          return $scope.cellmodel.output.result;
+        }
+
+        $scope.backgroundClick = function(event) {
+          if (!$scope.isShowInput() || $(event.toElement).parents().hasClass("code-cell-output")) {
+            return;
+          }
+          var top = $(event.delegateTarget).offset().top;
+          var outputElement = $(event.delegateTarget).children(".code-cell-output:first");
+          var bottom;
+          if (outputElement.length > 0) {
+            bottom = outputElement.offset().top;
+          } else {
+            bottom = top + $(event.delegateTarget).height();
+          }
+          // Even better would be to detect left/right and move to
+          // beginning or end of line, but we can live with this for now.
+          var cm = $scope.cm;
+          if (event.pageY < (top + bottom) / 2) {
+            cm.setCursor(0, 0);
+          } else {
+            cm.setCursor(cm.lineCount() - 1,
+                         cm.getLine(cm.lastLine()).length);
+          }
+          cm.focus();
+        }
+
         $scope.isShowOutput = function() {
           if ($scope.cellmodel.output.hidden === true) {
             return false;
@@ -74,6 +115,7 @@
           return !(result === undefined || result === null);
         };
         $scope.evaluate = function() {
+          $scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluate($scope.cellmodel).
               catch(function(data) {
                 console.error(data);
@@ -115,9 +157,7 @@
         $scope.updateUI = function(evaluator) {
           if ($scope.cm && evaluator) {
             $scope.cm.setOption("mode", evaluator.cmMode);
-            var bg = evaluator.background ? evaluator.background : "white";
-            $($scope.cm.getWrapperElement()).css("background", bg);
-            $scope.evaluatorReader = true;
+            $scope.cellmodel.evaluatorReader = true;
           }
         };
         $scope.$watch("getEvaluator()", function(newValue, oldValue) {
@@ -179,6 +219,15 @@
           return $scope.cellmodel.initialization;
         };
 
+        $scope.getElapsedTimeString = function() {
+          // Do not show anything if less than 20 ms
+          if ($scope.cellmodel.output.elapsedTime >= 200) {
+            return "("+bkUtils.formatTimeString($scope.cellmodel.output.elapsedTime)+")";
+          }
+
+          return ""
+        }
+
         $scope.cellmenu.addItem({
           name: "Initialization Cell",
           isChecked: function() {
@@ -192,10 +241,6 @@
             }
             notebookCellOp.reset();
           }
-        });
-        $scope.$on("$destroy", function() {
-          $scope.bkNotebook.unregisterFocusable($scope.cellmodel.id);
-          $scope.bkNotebook.unregisterCM($scope.cellmodel.id);
         });
       },
       link: function(scope, element, attrs) {
@@ -222,13 +267,14 @@
           }
           cm.refresh();
         }
-
-        CodeMirror.on(window, "resize", function() {
+        var resizeHandler = function() {
           var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
           if (!showing)
             return;
           showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
-        });
+        };
+
+        CodeMirror.on(window, "resize", resizeHandler);
         var moveFocusDown = function() {
           // move focus to next code cell
           var thisCellId = scope.cellmodel.id;
@@ -321,9 +367,6 @@
                 var onResults = function(results, matched_text) {
                   var start = token.start;
                   var end = token.end;
-                  if (token.string === ".") {
-                    start += 1;
-                  }
                   if (matched_text) {
                     start += (cur.ch - token.start - matched_text.length);
                     end = start + matched_text.length;
@@ -344,6 +387,24 @@
                 completeSingle: true
               };
               CodeMirror.showHint(cm, getHints, options);
+            },
+            "Ctrl-Alt-Up": function(cm) { // cell move up
+              notebookCellOp.moveUp(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
+            "Ctrl-Alt-Down": function(cm) { // cell move down
+              notebookCellOp.moveDown(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
+            "Ctrl-Alt-H": function(cm) { // cell hide
+              scope.cellmodel.input.hidden = true;
+              bkUtils.refreshRootScope();
+            },
+            "Ctrl-Alt-D": function(cm) { // cell delete
+              notebookCellOp.delete(scope.cellmodel.id, true);
+              bkUtils.refreshRootScope();
             }
           }
         });
@@ -363,32 +424,19 @@
           }
         });
         // cellmodel.body <-- CodeMirror
-        scope.cm.on("change", function(cm, e) {
+        var changeHandler = function(cm, e) {
+          scope.cellmodel.lineCount = cm.lineCount();
           scope.cellmodel.input.body = cm.getValue();
           bkUtils.refreshRootScope();
-        });
+        };
+
+        scope.cm.on("change", changeHandler);
 
         var inputMenuDiv = element.find(".bkcell").first();
         scope.popupMenu = function(event) {
           var menu = inputMenuDiv.find('.dropdown').first();
-          var clicked = event && event.hasOwnProperty("clientY");
-          menu.css("top", clicked ? event.clientY : "");
-          menu.css("left", clicked ? event.clientX - 150 : "");
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
-        inputMenuDiv.click(function(event) {
-          if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
-            scope.popupMenu(event);
-            event.stopPropagation();
-          }
-        });
-        inputMenuDiv.mousemove(function(event) {
-          if (bkUtils.getEventOffsetX(inputMenuDiv, event) >= inputMenuDiv.width()) {
-            inputMenuDiv.css('cursor', 'pointer');
-          } else {
-            inputMenuDiv.css('cursor', 'default');
-          }
-        });
 
         if (scope.isInitializationCell()) {
           element.closest(".bkcell").addClass("initcell");
@@ -413,6 +461,14 @@
           var cells = [scope.cellmodel];
           return bkUtils.generateNotebook([evaluator], cells);
         };
+
+        scope.$on("$destroy", function() {
+          CodeMirror.off(window, "resize", resizeHandler);
+          CodeMirror.off("change", changeHandler);
+          scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
+          scope.bkNotebook.unregisterCM(scope.cellmodel.id);
+          scope.bkNotebook = null;
+        });
       }
     };
   });

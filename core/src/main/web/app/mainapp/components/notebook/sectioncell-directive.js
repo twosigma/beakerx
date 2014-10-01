@@ -27,8 +27,7 @@
     var CELL_TYPE = "section";
     return {
       restrict: 'E',
-      templateUrl: "./app/mainapp/components/notebook/sectioncell.html",
-      //scope: { cell: "=" },
+      template: JST["mainapp/components/notebook/sectioncell"](),
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         $scope.toggleShowChildren = function() {
@@ -60,10 +59,16 @@
             bkSessionManager.setNotebookModelEdited(true);
           }
         });
+
+        $scope.cellview.menu.renameItem({
+          name: "Delete cell",
+          newName: "Delete heading and keep contents"
+        });
+
         $scope.cellview.menu.addItemToHead({
           name: "Delete section and all sub-sections",
           action: function() {
-            notebookCellOp.deleteSection($scope.cellmodel.id);
+            notebookCellOp.deleteSection($scope.cellmodel.id, true);
           }
         });
         $scope.cellview.menu.addItem({
@@ -169,6 +174,9 @@
           },
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
+          },
+          prevCell: function() {
+            return $scope.cellmodel;
           }
         };
       },

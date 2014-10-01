@@ -84,7 +84,7 @@ public class PluginServiceLocatorRest {
     "  proxy_set_header Upgrade $http_upgrade;\n" +
     "  proxy_set_header Connection \"upgrade\";\n" +
     "  proxy_set_header Host 127.0.0.1:%(port)s;\n" +
-    "  proxy_set_header Origin \"$scheme://$host:%(port)s\";\n" +
+    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
     "}\n" +
     "location %(base_url)s/login {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/login;\n" +
@@ -95,7 +95,7 @@ public class PluginServiceLocatorRest {
     "}\n" +
     "location ~ %(base_url)s/kernels/[0-9a-f-]+/ {\n" +
     IPYTHON_RULES_BASE;
-  private static final String IPYTHON2_RULES = 
+  private static final String IPYTHON2_RULES =
     "location %(base_url)s/api/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;\n" +
     "}\n" +
@@ -113,11 +113,14 @@ public class PluginServiceLocatorRest {
   private final Map<String, String> nginxPluginRules;
   private final String pluginDir;
   private final String nginxCommand;
+  private String[] nginxEnv = null;
+  private final Boolean publicServer;
   private final Integer portBase;
   private final Integer servPort;
   private final Integer corePort;
   private final Integer restartPort;
   private final Integer reservedPortCount;
+  private final String authCookie;
   private final Map<String, String> pluginLocations;
   private final Map<String, List<String>> pluginArgs;
   private final Map<String, String[]> pluginEnvps;
@@ -127,6 +130,7 @@ public class PluginServiceLocatorRest {
 
   private final String nginxTemplate;
   private final String ipythonTemplate;
+  private final String ipythonCmdBase;
   private final Map<String, PluginConfig> plugins = new HashMap<>();
   private Process nginxProc;
   private int portSearchStart;
@@ -144,11 +148,13 @@ public class PluginServiceLocatorRest {
     this.nginxExtraRules = bkConfig.getNginxExtraRules();
     this.nginxPluginRules = bkConfig.getNginxPluginRules();
     this.pluginDir = bkConfig.getPluginDirectory();
+    this.publicServer = bkConfig.getPublicServer();
     this.portBase = bkConfig.getPortBase();
     this.servPort = this.portBase + 1;
     this.corePort = this.portBase + 2;
     this.restartPort = this.portBase + 3;
     this.reservedPortCount = bkConfig.getReservedPortCount();
+    this.authCookie = bkConfig.getAuthCookie();
     this.pluginLocations = bkConfig.getPluginLocations();
     this.pluginEnvps = bkConfig.getPluginEnvps();
     this.pluginArgs = new HashMap<>();
@@ -190,6 +196,29 @@ public class PluginServiceLocatorRest {
     });
 
     portSearchStart = this.portBase + this.reservedPortCount;
+
+    if (macosx()) {
+      List<String> envList = new ArrayList<>();
+      for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
+        envList.add(entry.getKey() + "=" + entry.getValue());
+      }
+      envList.add("DYLD_LIBRARY_PATH=./nginx/bin");
+      this.nginxEnv = new String[envList.size()];
+      envList.toArray(this.nginxEnv);
+    }
+
+    // Should pass pluginArgs too XXX.
+    String cmdBase = (this.pluginLocations.containsKey("IPython") ?
+                      this.pluginLocations.get("IPython") : (this.pluginDir + "/ipythonPlugins/ipython"))
+      + "/ipythonPlugin";
+    if (windows()) {
+      cmdBase = "python " + cmdBase;
+    }
+    this.ipythonCmdBase = cmdBase;
+  }
+
+  private boolean macosx() {
+    return System.getProperty("os.name").contains("Mac");
   }
 
   private boolean windows() {
@@ -207,7 +236,8 @@ public class PluginServiceLocatorRest {
   private void startReverseProxy() throws InterruptedException, IOException {
     generateNginxConfig();
     System.out.println("running nginx: " + this.nginxCommand);
-    Process proc = Runtime.getRuntime().exec(this.nginxCommand);
+
+    Process proc = Runtime.getRuntime().exec(this.nginxCommand, this.nginxEnv);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
   }
@@ -282,14 +312,14 @@ public class PluginServiceLocatorRest {
       this.plugins.put(pluginId, pConfig);
 
       if (nginxRules.startsWith("ipython")) {
-        generateIPythonConfig(port, password);
+        generateIPythonConfig(pluginId, port, password);
       }
 
       // restart nginx to reload new config
       String restartId = generateNginxConfig();
       String restartPath = "\"" + this.nginxServDir + "/restart_nginx\"";
       String restartCommand = this.nginxCommand + " -s reload";
-      Process restartproc = Runtime.getRuntime().exec(restartCommand);
+      Process restartproc = Runtime.getRuntime().exec(restartCommand, this.nginxEnv);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
 
@@ -298,6 +328,7 @@ public class PluginServiceLocatorRest {
           + "/restart." + restartId + "/present.html";
       try {
         spinCheck(url);
+        if (windows()) Thread.sleep(1000); // XXX unknown race condition
       } catch (Throwable t) {
         System.err.println("Nginx restart time out plugin =" + pluginId);
         throw new NginxRestartFailedException("nginx restart failed.\n"
@@ -342,7 +373,6 @@ public class PluginServiceLocatorRest {
       fullCommand += " " + StringUtils.join(extraArgs, " ");
     }
     fullCommand += " " + Integer.toString(pConfig.port);
-    fullCommand += " " + Integer.toString(corePort);
 
     String[] env = this.pluginEnvps.get(pluginId);
     List<String> envList = new ArrayList<>();
@@ -359,6 +389,7 @@ public class PluginServiceLocatorRest {
     }
     envList.add("beaker_plugin_password=" + password);
     envList.add("beaker_core_password=" + this.corePassword);
+    envList.add("beaker_core_port=" + corePort);
     envList.add("beaker_tmp_dir=" + this.nginxServDir);
     env = new String[envList.size()];
     envList.toArray(env);
@@ -457,8 +488,16 @@ public class PluginServiceLocatorRest {
   }
 
   private void writePrivateFile(java.nio.file.Path path, String contents)
-    throws IOException
+      throws IOException, InterruptedException
   {
+    if (windows()) {
+      String p = path.toString();
+      Thread.sleep(1000); // XXX unknown race condition
+      try (PrintWriter out = new PrintWriter(p)) {
+        out.print(contents);
+      }
+      return;
+    }
     if (Files.exists(path)) {
       Files.delete(path);
     }
@@ -474,37 +513,38 @@ public class PluginServiceLocatorRest {
     }
   }
 
-  private String hashIPythonPassword(String cmdBase, String password)
+  private String hashIPythonPassword(String password)
     throws IOException
   {
-    Process proc = Runtime.getRuntime().exec(cmdBase + " --hash");
+    Process proc = Runtime.getRuntime().exec(this.ipythonCmdBase + " --hash");
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
+    new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
     bw.write("from IPython.lib import passwd\n");
+    // I have confirmed that this does not go into ipython history by experiment
+    // but it would be nice if there were a way to make this explicit. XXX
     bw.write("print(passwd('" + password + "'))\n");
     bw.close();
     String hash = br.readLine();
+    if (null == hash) {
+      throw new RuntimeException("unable to get IPython hash");
+    }
     return hash;
   }
 
-  private void generateIPythonConfig(int port, String password)
+  private void generateIPythonConfig(String pluginId, int port, String password)
     throws IOException, InterruptedException
   {
     // Can probably determine exactly what is needed and then just
     // make the files ourselves but this is a safe way to get started.
-    // Should pass pluginArgs too XXX.
-    String cmdBase = (this.pluginLocations.containsKey("IPython") ?
-                      this.pluginLocations.get("IPython") : (this.pluginDir + "/ipythonPlugins/ipython"))
-      + "/ipythonPlugin";
-    String cmd = cmdBase + " --profile " + this.nginxServDir;
-        
+    String cmd = this.ipythonCmdBase + " --profile " + this.nginxServDir + " " + pluginId;
     Runtime.getRuntime().exec(cmd).waitFor();
-    String hash = hashIPythonPassword(cmdBase, password);
+    String hash = hashIPythonPassword(password);
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));
     config = config.replace("%(hash)s", hash);
-    java.nio.file.Path targetFile = Paths.get(this.nginxServDir,
-                                              "profile_beaker_backend/ipython_notebook_config.py");
+    java.nio.file.Path targetFile = Paths.get(this.nginxServDir + "/profile_beaker_backend_" + pluginId,
+                                              "ipython_notebook_config.py");
     writePrivateFile(targetFile, config);
   }
 
@@ -529,10 +569,12 @@ public class PluginServiceLocatorRest {
       Files.createDirectory(htmlDir);
       Files.copy(Paths.get(this.nginxStaticDir + "/50x.html"),
                  Paths.get(htmlDir.toString() + "/50x.html"));
+      Files.copy(Paths.get(this.nginxStaticDir + "/login.html"),
+                 Paths.get(htmlDir.toString() + "/login.html"));
       Files.copy(Paths.get(this.nginxStaticDir + "/present.html"),
                  Paths.get(htmlDir.toString() + "/present.html"));
-      //Files.copy(Paths.get(this.nginxStaticDir + "/favicon.ico"),
-      //           Paths.get(htmlDir.toString() + "/favicon.ico"));
+      Files.copy(Paths.get(this.nginxStaticDir + "/favicon.png"),
+                 Paths.get(htmlDir.toString() + "/favicon.png"));
     }
 
     String restartId = RandomStringUtils.random(12, false, true);
@@ -560,12 +602,32 @@ public class PluginServiceLocatorRest {
       pluginSection.append(nginxRule + "\n\n");
     }
     String auth = encoder.encodeBase64String(("beaker:" + this.corePassword).getBytes());
+    String listenSection;
+    String authCookieRule;
+    String startPage;
+    if (this.publicServer) {
+      listenSection = "listen " + this.portBase + " ssl;\n";
+      // XXX should allow name to be set by user in bkConfig
+      listenSection += "server_name " + InetAddress.getLocalHost().getHostName() + ";\n";
+      listenSection += "ssl_certificate " + this.nginxServDir + "/ssl_cert.pem;\n";
+      listenSection += "ssl_certificate_key " + this.nginxServDir + "/ssl_cert.pem;\n";
+      authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
+      startPage = "login/login.html";
+    } else {
+      listenSection = "listen 127.0.0.1:" + this.servPort + ";\n";
+      authCookieRule = "";
+      startPage = "beaker/";
+    }
     nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
     nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
     nginxConfig = nginxConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
     nginxConfig = nginxConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     nginxConfig = nginxConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     nginxConfig = nginxConfig.replace("%(port_clear)s", Integer.toString(this.servPort));
+    nginxConfig = nginxConfig.replace("%(listen_on)s", this.publicServer ? "*" : "127.0.0.1");
+    nginxConfig = nginxConfig.replace("%(listen_section)s", listenSection);
+    nginxConfig = nginxConfig.replace("%(auth_cookie_rule)s", authCookieRule);
+    nginxConfig = nginxConfig.replace("%(start_page)s", startPage);
     nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
@@ -603,7 +665,7 @@ public class PluginServiceLocatorRest {
       String cmd = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
       proc = Runtime.getRuntime().exec(cmd);
     } else {
-      proc = Runtime.getRuntime().exec("ipython --version");
+      proc = Runtime.getRuntime().exec(this.ipythonCmdBase + " --version");
     }
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     String line = br.readLine();
@@ -616,6 +678,12 @@ public class PluginServiceLocatorRest {
   public String getIPythonPassword(@QueryParam("pluginId") String pluginId)
   {
     PluginConfig pConfig = this.plugins.get(pluginId);
+    if (null == pConfig) {
+      return "";
+    }
+    /* It's OK to return the password because the connection should be
+       HTTPS and the request is authenticated so only our legit user
+       should be on the other side. */
     return pConfig.password;
   }
 
@@ -673,18 +741,14 @@ public class PluginServiceLocatorRest {
   private static boolean isPortAvailable(int port) {
 
     ServerSocket ss = null;
-    DatagramSocket ds = null;
     try {
-      ss = new ServerSocket(port);
+      InetAddress address = InetAddress.getByName("127.0.0.1");
+      ss = new ServerSocket(port, 1, address);
+      // ss = new ServerSocket(port);
       ss.setReuseAddress(true);
-      ds = new DatagramSocket(port);
-      ds.setReuseAddress(true);
       return true;
     } catch (IOException e) {
     } finally {
-      if (ds != null) {
-        ds.close();
-      }
       if (ss != null) {
         try {
           ss.close();

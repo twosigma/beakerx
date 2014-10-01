@@ -1,0 +1,64 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.hierarchy-mode {
+
+  .mini-cell-stats {
+    left: 104px;
+  }
+
+  .evaluator .depth-indicator, .text-cell .depth-indicator, bk-markdown-cell .depth-indicator {
+    left: 0;
+    position: absolute;
+  }
+
+  .text-cell .depth-indicator {
+    top: 0;
+  }
+
+  .bkcell.code-cell-area, .text-cell, .bk-markdown-cell, bk-markdown-cell > div {
+    margin-left: 84px;
+  }
+
+  .insert-cell-indicator {
+    margin-left: 4px;
+  }
+
+  .depth-indicator {
+    display: inline-block;
+  }
+
+  .section-children {
+    border-left:  solid 1px #e6e6e6;
+    margin-left:  10px;
+    padding-left: 54px;
+  }
+
+  .bk-section-title {
+    top: 5px;
+    position: relative;
+  }
+}
+
+.bkcell.code-cell-area, .text-cell {
+  transition: margin 500ms;
+}
+
+.section-children {
+  margin-left:  0;
+  padding-left: 0;
+  transition: all 500ms;
+}

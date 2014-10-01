@@ -4,26 +4,43 @@
         {
             "name": "Html",
             "plugin": "Html",
-            "shellID": null
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
         },
         {
             "name": "Latex",
             "plugin": "Latex",
-            "shellID": null
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
         },
         {
             "name": "IPython",
             "plugin": "IPython",
-            "shellID": "79723A1592B34F1A8E2ABA33E6132DE8",
             "imports": "",
-            "supplementalClassPath": ""
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
         },
         {
             "name": "JavaScript",
             "plugin": "JavaScript",
-            "shellID": null,
             "jsSetting2": "",
-            "jsSetting1": ""
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
         }
     ],
     "cells": [
@@ -31,32 +48,35 @@
             "id": "section001",
             "type": "section",
             "level": 1,
-            "title": "Basic form in Beaker",
-            "collapsed": false
+            "title": "Basic Form in Beaker",
+            "collapsed": false,
+            "evaluatorReader": false
         },
         {
-            "id": "markdownfXXQpg",
-            "type": "markdown",
-            "body": "This tutorial shows a basic example of creating a form with HTML and JavaScript, which causes some Python code to be run. Unlock the notebook with \"Notebook -> Lock\" to see the code.",
-            "mode": "preview"
+            "id": "textzJ0c4e",
+            "type": "text",
+            "body": "<div>This tutorial shows a basic example of creating a form with HTML and JavaScript, which causes some Python code to be run. Unlock the notebook with Notebook&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→</span>&nbsp;Lock menu above to see the code.</div>",
+            "evaluatorReader": false
         },
         {
             "id": "code001",
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<script>\n  //This function is called when the HTML button is pressed\n  function process_form() {\n    \n    //get values from the form using jQuery\n    var values = $('#values').val();\n    \n    //create a simple line of Groovy code that creates variables based on the form values\n    var pythonCode = \"values = \" + values;\n    \n    //run the Groovy string we just created\n\tbkHelper.evaluateCode(\"IPython\", pythonCode);   \n    \n    //now run all Groovy cells from the notebook\n    bkHelper.evaluate(\"IPython\")\n  }\n</script>\n\n<!--\nA simple HTML form with two inputs and a button\n-->\nValues: <input type='text' id='values' value='1,2,3,3,4,5,6,5,4,3,4,3,5'>\n<br />\n\n<button onclick='process_form()'>Get histogram</button>"
+                "body": "<script>\n  //This function is called when the HTML button is pressed\n  function process_form() {\n    \n    //get values from the form using jQuery\n    var values = $('#values').val();\n    \n    //create a simple line of Python code that creates variables based on the form values\n    var pythonCode = \"values = \" + values;\n    \n    //run the Python string we just created\n\tbkHelper.evaluateCode(\"IPython\", pythonCode);\n    \n    //now run all Python cells from the notebook\n    bkHelper.evaluate(\"IPython\")\n  }\n</script>\n\n<!--\nA simple HTML form with a text input and a button\n-->\nValues: <input type='text' id='values' value='1,2,3,3,4,5,6,5,4,3,4,3,5'>\n<br />\n\n<button onclick='process_form()'>Get histogram</button>"
             },
             "output": {
                 "selectedType": "BeakerDisplay",
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\n  //This function is called when the HTML button is pressed\n  function process_form() {\n    \n    //get values from the form using jQuery\n    var values = $('#values').val();\n    \n    //create a simple line of Groovy code that creates variables based on the form values\n    var pythonCode = \"values = \" + values;\n    \n    //run the Groovy string we just created\n\tbkHelper.evaluateCode(\"IPython\", pythonCode);   \n    \n    //now run all Groovy cells from the notebook\n    bkHelper.evaluate(\"IPython\")\n  }\n</script>\n\n<!--\nA simple HTML form with two inputs and a button\n-->\nValues: <input type='text' id='values' value='1,2,3,3,4,5,6,5,4,3,4,3,5'>\n<br />\n\n<button onclick='process_form()'>Get histogram</button>"
+                    "object": "<script>\n  //This function is called when the HTML button is pressed\n  function process_form() {\n    \n    //get values from the form using jQuery\n    var values = $('#values').val();\n    \n    //create a simple line of Python code that creates variables based on the form values\n    var pythonCode = \"values = \" + values;\n    \n    //run the Python string we just created\n\tbkHelper.evaluateCode(\"IPython\", pythonCode);\n    \n    //now run all Python cells from the notebook\n    bkHelper.evaluate(\"IPython\")\n  }\n</script>\n\n<!--\nA simple HTML form with a text input and a button\n-->\nValues: <input type='text' id='values' value='1,2,3,3,4,5,6,5,4,3,4,3,5'>\n<br />\n\n<button onclick='process_form()'>Get histogram</button>"
                 },
-                "elapsedTime": 5
+                "elapsedTime": 447
             },
-            "initialization": true
+            "initialization": true,
+            "evaluatorReader": true,
+            "lineCount": 25
         },
         {
             "id": "codesFCVGR",
@@ -66,10 +86,12 @@
                 "body": "hist(values)"
             },
             "output": {
-                "selectedType": "Hidden",
+                "selectedType": "BeakerDisplay",
                 "outputArrived": true,
-                "elapsedTime": 292
-            }
+                "elapsedTime": 294
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         }
     ],
     "locked": true

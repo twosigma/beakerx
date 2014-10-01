@@ -14,22 +14,17 @@
  *  limitations under the License.
  */
 
-def gitDescribe() {
-  return "git describe".execute().text.trim()
-}
-
-def versionHtml() {
-  def buildTime = new Date().format("yyyy-MM-dd HH:mm z")
-  return "<div>build time: " + buildTime + "<br>" + "version: " + gitDescribe() + "<br></div>\n"
-}
-
 def coreDir = file("../../../") // TODO, this can come from a property
 
-task writeVersion << {
-  new File(coreDir, 'src/main/web/template/version.html').write(versionHtml())
+def gitDescribe() {
+  def name = "git describe --all --long".execute().text.trim()
+  if (name.startsWith('heads/')) {
+    name = name.substring(6)
+  }
+  return name
 }
 
-  // XXX move all of this into makeDist python script
+// XXX move all of this into makeDist python script
 task makeDist(type: Exec) {
   def osName = System.properties['os.name']
   def platform = 'windows'
@@ -41,13 +36,14 @@ task makeDist(type: Exec) {
   }
   def zipName = 'beaker-notebook-' + gitDescribe() + '-' + platform
   if (platform == 'windows') {
-    commandLine 'cmd', '/c', '7za', 'a', 
-                zipName, 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
+    workingDir '../../..'
+    commandLine 'cmd', '/c', '7za', 'a',
+                (zipName + '.zip'), 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
                 'beaker.command.bat', '-xr!.~', '-xr!.gradle'
   } else {
     commandLine './makeDist', zipName
   }
 }
 
-makeDist.dependsOn(":writeVersion")
+
 makeDist.dependsOn(":dev:build")

@@ -24,26 +24,14 @@ define(function(require, exports, module) {
     {
       name: "New",
       action: function() {
-        bkHelper.newSession();
+        bkHelper.newSession(true);
       },
-      tooltip: "Open a new notebook with default languages (Evaluators)"
+      tooltip: "Open a new empty notebook, add the languages of your choice"
     },
     {
       name: "Open",
       autoReduce: true,
       items: []
-    },
-    {
-      name: "Save",
-      action: function() {
-        bkHelper.saveNotebook();
-      }
-    },
-    {
-      name: "Close",
-      action: function() {
-        bkHelper.closeNotebook();
-      }
     },
     {
       name: "Open recent",
@@ -52,15 +40,28 @@ define(function(require, exports, module) {
       }
     },
     {
-      name: "Control panel",
+      name: "Save",
       action: function() {
-        bkHelper.gotoControlPanel();
+        bkHelper.saveNotebook();
       }
     },
     {
       name: "Save As",
       autoReduce: true,
       items: []
+    },
+    {
+      name: "Share to Web",
+      action: function () {
+        bkHelper.shareNotebook();
+      },
+      tooltip: "Share the notebook to a public web page using an anonymous github gist"
+    },
+    {
+      name: "Close",
+      action: function() {
+        bkHelper.closeNotebook();
+      }
     }
   ];
 

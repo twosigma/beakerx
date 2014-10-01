@@ -1,3 +1,5 @@
+var Driver = require("selenium-webdriver");
+
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
@@ -16,37 +18,28 @@
 
 module.exports = function() {
   this.Widgets.NotebookSessionRow = this.Widget.extend({
-    root: '.session',
+    root: ".session",
     close: function() {
-      return this.find(".close-session").click();
+      return this.click(".close-session");
     },
     toObject: function() {
-      return $.all([
-        this.read('.id'),
-        this.read('.open-date'),
+      return Driver.Promise.all([
         this.read('.caption'),
-        this.read('.description'),
-        this.read('.edited'),
+        this.read('.open-date'),
       ]).then(function(data) {
         return {
-          "ID": data[0],
+          "Name": data[0],
           "Open Date": data[1],
-          "Name": data[2],
-          "Path": data[3],
-          "Edited": data[4],
-          "Operation": data[5],
         }
       });
     }
   });
 
   this.Widgets.OpenNotebooks = this.Widget.List.extend({
-    root: '.open-notebooks table',
+    root: '.notebook-dashboard-list',
     itemClass: this.Widgets.NotebookSessionRow,
     toHash: function() {
-      return $.map(this.items(), function(item) {
-        return item.toObject();
-      });
+      return this.invoke('toObject');
     }
   })
 }

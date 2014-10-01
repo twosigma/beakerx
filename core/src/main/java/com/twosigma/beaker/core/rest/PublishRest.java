@@ -19,12 +19,14 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.entity.ContentType;
@@ -52,11 +54,16 @@ public class PublishRest {
   {
     String files = "{\"Beaker Share\":{\"content\":\"" + JSONObject.escape(json) + "\"}}";
     String body = "{\"description\":\"Beaker Share\",\"public\":true,\"files\":" + files + "}\n";
-    String response = Request.Post("https://api.github.com/gists")
+    String response = null;
+    try {
+      response = Request.Post("https://api.github.com/gists")
       .useExpectContinue()
       .version(HttpVersion.HTTP_1_1)
-      .bodyString(body, ContentType.DEFAULT_TEXT)
+      .bodyString(body, ContentType.APPLICATION_JSON)
       .execute().returnContent().asString();
+    } catch (Throwable t) {
+      throw new GistPublishException(ExceptionUtils.getStackTrace(t));
+    }
     JSONObject parsed = (JSONObject) JSONValue.parse(response);
     String githubUrl = (String) parsed.get("html_url");
     int slash = githubUrl.lastIndexOf("/");
@@ -65,5 +72,14 @@ public class PublishRest {
       return githubUrl;
     }
     return "http://sharing.beakernotebook.com/gist/anonymous" + githubUrl.substring(slash);
+  }
+
+  private static class GistPublishException extends WebApplicationException {
+    public GistPublishException(String stackTrace) {
+      super(Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR)
+          .entity("<h1>Gist publish failed</h1><pre>" + stackTrace + "</pre>")
+          .type("text/plain")
+          .build());
+    }
   }
 }

@@ -13,110 +13,81 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-/**
- * 'Notebook' menu plugin
- * This creates the 'Notebook' menu which contains menu items for user interaction with the content
- * of the loading notebook.
- */
+
 define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
-      name: "Publish to web",
+      name: "Plugin manager...",
       action: function () {
-        bkHelper.shareNotebook();
+        bkHelper.getBkNotebookViewModel().showEvaluators();
       },
-      tooltip: "Share the notebook to a public web page using an anonymous github gist"
+      tooltip: "Show evaluators settings"
     },
     {
-      name: "Lock", action: function() {
-      bkHelper.toggleNotebookLocked();
-    },
+      name: "Lock",
+      action: function () {
+        bkHelper.toggleNotebookLocked();
+      },
       tooltip: "Lock notebook from further editing",
-      isChecked: function() {
+      isChecked: function () {
         return bkHelper.isNotebookLocked();
       }
     },
     {
-      name: "Show stdout/err", action: function() {
-      bkHelper.getBkNotebookViewModel().toggleShowOutput();
-    },
-      tooltip: "Show or hide the stdout and stderr.",
-      isChecked: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        if (notebookViewModel) {
-          return notebookViewModel.isShowingOutput();
-        }
-      }
-    },
-    // BEAKER-324 - delete all output button.
-    {
       name: 'Delete all output cells',
-      action: function() {
+      action: function () {
         bkHelper.deleteAllOutputCells();
       },
       tooltip: 'Deletes all of the output cells.'
+    },
+    {
+      name: "Run all cells",
+      action: function() {
+        bkHelper.evaluate("root");
+      },
+      tooltip: "Run all cells"
     },
     {
       name: "Edit mode",
       items: [
         {
           name: "Normal",
-          isChecked: function() {
+          isChecked: function () {
             return bkHelper.getInputCellKeyMapMode() === "default";
           },
-          action: function() {
+          action: function () {
             bkHelper.setInputCellKeyMapMode("default");
           }
         },
         {
           name: "Vim (limited support)",
-          isChecked: function() {
+          isChecked: function () {
             return bkHelper.getInputCellKeyMapMode() === "vim";
           },
-          action: function() {
+          action: function () {
             bkHelper.setInputCellKeyMapMode("vim");
           }
         },
         {
           name: "Emacs",
-          isChecked: function() {
+          isChecked: function () {
             return bkHelper.getInputCellKeyMapMode() === "emacs";
           },
-          action: function() {
+          action: function () {
             bkHelper.setInputCellKeyMapMode("emacs");
           }
         }
       ]
-    },
-    {
-      name: "Plugin manager...",
-      action: function() {
-        bkHelper.getBkNotebookViewModel().showEvaluators();
-      },
-      tooltip: "Show evaluators settings"
-    },
-    {
-      name: "Evaluate",
-      items: [
-        {
-          name: "All",
-          action: function() {
-            bkHelper.evaluate("root");
-          }
-        },
-        {
-          name: "Initialization Cells",
-          action: function() {
-            bkHelper.evaluate("initialization");
-          }
-        }
-      ],
-      tooltip: "Evaluate cells"
     }
   ];
-  var menuItemPromise = bkHelper.newPromise({items: menuItems, parent: "Notebook"});
-  exports.getMenuItems = function() {
+
+  var menuItemPromise = bkHelper.newPromise({
+    parent: "Notebook",
+    items: menuItems
+  });
+
+  exports.getMenuItems = function () {
     return menuItemPromise;
   };
 });

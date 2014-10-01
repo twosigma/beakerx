@@ -54,6 +54,12 @@ bk-markdown-cell > div {
     border: solid 1px $cell-border;
 }
 
+.locked {
+    .bkcell.code-cell-area, .text-cell {
+        border: solid 1px transparent;
+    }
+}
+
 .bkcell bk-code-cell-input-menu .dropdown {
     float:          left;
     z-index:        99;

@@ -39,6 +39,8 @@ http {
 
     %(listen_section)s
 
+    rewrite ^/beaker/[a-z0-9]+/(.*)$ /$1 last;
+
     # redirect server error pages to the static page /50x.html
     error_page   500 502 503 504  /50x.html;
     location = /50x.html {

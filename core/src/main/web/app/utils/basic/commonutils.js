@@ -118,32 +118,60 @@
             return null;
           }
 
+          // check if this table contains elements with colspan and/or rowspan
+          // the slockgrid template does not support them  (BEAKER-694)
+          var headerRows = $(elem).find('thead').find('tr');
+          for (var i = 0; i < headerRows.length; i++) {
+            var ch = headerRows[i].children;
+            for (var j=0; j<ch.length; j++) {
+              if (ch[j].getAttribute('colspan')>1 || ch[0].getAttribute('rowspan')>1) {
+                return null;
+              }
+            }
+          }
+          var valueRows = $(elem).find('tbody').find('tr');
+          for (var i = 0; i < valueRows.length; i++) {
+            var ch = valueRows[i].children;
+            for (var j=0; j<ch.length; j++) {
+              if (ch[j].getAttribute('colspan')>1 || ch[0].getAttribute('rowspan')>1) {
+                return null;
+              }
+            }
+          }
+
           // check if this is a table with multiple rows
           // currently the table displays can't handle multiple rows of header (BEAKER-416)
-          var headerRows = $(elem).find('thead').find('tr');
+          // added logic to collapse the two header rows  (BEAKER-694)
+          var cols = [];
           if (headerRows.length === 2) {
             //if there are two rows, allow tabledisplay as long as no column has values in both rows
             //this is because pandas renders dataframes with the index col header on a second row
             var row0 = headerRows.eq(0).find('th');
             var row1 = headerRows.eq(1).find('th');
-            var minLength = Math.min(row0.length, row1.length);
+            if (row0.length!=row1.length) {
+              return null;
+            }
+            for (var i = 0; i < row0.length; i++) {
+              var r0 = row0.eq(i);
+              var r1 = row1.eq(i);
 
-            for (var i = 0; i < minLength; i++) {
               //if any column has html in both rows, don't use tabledisplay
-              if (row0.eq(i).html() && row1.eq(i).html()) {
+              if (r0.html() && r1.html()) {
                 return null;
+              } else if (r0.html()) {
+	        cols.push(r0.html());
+	      } else {
+                cols.push(r1.html());
               }
             }
-
-          } else if (headerRows.length > 2) {
-            //if there are more than two header, forget about it
+          } else if (headerRows.length > 1) {
+            //if there are two or more header, forget about it
             return null;
-          }
+          } else {
+            cols = findColumnNames($(elem).find('thead')[0]);
+	  }
 
-
-          // also confirm use of thead?
-          var cols = findColumnNames(elem.children[0]);
-          var vals = findValues(elem.children[1]);
+          var vals = findValues($(elem).find('tbody')[0]);
           return {
             type: "TableDisplay",
             tableDisplayModel: {

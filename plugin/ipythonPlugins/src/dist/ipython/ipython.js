@@ -53,7 +53,7 @@ define(function(require, exports, module) {
         shellID = IPython.utils.uuid();
       }
 
-      var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
+      var base = _.string.startsWith(serviceBase, "/") ? serviceBase.slice(1) : serviceBase;
       bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
         .success(function(result) {
           bkHelper.httpPost(base + "/login?next=%2Fbeaker", {password: result})

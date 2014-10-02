@@ -54,6 +54,15 @@ __e( homedir ) +
 }
 return __p
 }})();
+(function() {(window["JST"] = window["JST"] || {})["template/dashboard/app"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<bk-control-panel class="bkr"></bk-control-panel>';
+
+}
+return __p
+}})();
 (function() {(window["JST"] = window["JST"] || {})["template/mainapp/app"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
@@ -68,15 +77,6 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
 __p += '\n<div class="navbar navbar-fixed-top bkr">\n  <div class="navbar-inner bkr">\n\n    \n    <div class="container pull-left bkr" style="margin-left: 10px; padding-left: 0px">\n      <span class="brand bkr" ng-if="loading"><i class="fa fa-refresh fa-spin text-white bkr"></i></span>\n      <ul class="sub-nav bkr">\n        <li class="dropdown bkr" ng-repeat="m in getMenus()">\n          <a href="#" id="drop2" role="button" class="dropdown-toggle bkr" data-toggle="dropdown">{{m.name}}</a>\n          <bk-dropdown-menu menu-items="m.items" class="bkr"></bk-dropdown-menu>\n        </li>\n        <li class="pull-right bkr" style="padding: 10px 54px; cursor: default">\n          <span class="bkr"><font color="#009AA6" class="bkr">{{message}}{{(message !== "" &amp;&amp; isEdited()) ? "|" : "" }}{{isEdited() ? "edited" :\n            ""}}</font></span>\n        </li>\n        <li class="pull-right bkr" style="padding: 10px 54px; cursor: default">\n          <span ng-show="isDisconnected()" class="offline-label bkr" ng-click="promptToSave()" eat-click="">{{getOffineMessage()}}</span>\n        </li>\n      </ul>\n    </div>\n  </div>\n</div>\n\n\n<div class="container notebook-container bkr" style="width: 100%">\n  <div class="row-fluid bkr">\n    <div class="span12 bkr">\n      <bk-notebook set-bk-notebook="setBkNotebook(bkNotebook)" is-loading="loading" class="bkr"></bk-notebook>\n    </div>\n  </div>\n\n  \n  <div style="height: 300px" class="bkr"></div>\n\n</div>\n\n\n<script type="text/ng-template" id="section-cell.html" class="bkr">\n  <bk-section-cell></bk-section-cell>\n</script>\n<script type="text/ng-template" id="text-cell.html" class="bkr">\n  <div class="text-cell">\n    <bk-text-cell></bk-text-cell>\n  </div>\n</script>\n<script type="text/ng-template" id="markdown-cell.html" class="bkr">\n  <bk-markdown-cell></bk-markdown-cell>\n</script>\n<script type="text/ng-template" id="code-cell.html" class="bkr">\n  <bk-code-cell cellmodel="cellmodel" cellmenu="cellview.menu" index="$index"></bk-code-cell>\n</script>';
-
-}
-return __p
-}})();
-(function() {(window["JST"] = window["JST"] || {})["template/dashboard/app"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '<bk-control-panel class="bkr"></bk-control-panel>';
 
 }
 return __p

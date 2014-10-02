@@ -23,7 +23,6 @@
   var module = angular.module('bk.bunsen', [
     'bk.core',
     'bk.share',
-    'bk.helper',
     'bk.sessionManager'
   ]);
   /**
@@ -31,7 +30,7 @@
    *
    */
 // bkBaseSessionModel
-  module.factory('bkBunsenHelper', function(bkCoreManager, bkShare, bkHelper, $dialog, $routeParams, $window, bkSessionManager) {
+  module.factory('bkBunsenHelper', function(bkCoreManager, bkShare, $dialog, $routeParams, $window, bkSessionManager) {
 
     var bunsenSave = function(notebook, operation) {
       $window.top.postMessage({projectId: $routeParams.projectId,

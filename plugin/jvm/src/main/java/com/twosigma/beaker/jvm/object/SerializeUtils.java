@@ -20,7 +20,6 @@ import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 import java.io.IOException;
-import javax.swing.ImageIcon;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 
@@ -35,8 +34,6 @@ public class SerializeUtils {
       } else if (obj instanceof TableDisplay) {
         jgen.writeObject(obj);
       } else if (obj instanceof OutputContainer) {
-        jgen.writeObject(obj);
-      } else if (obj instanceof ImageIcon) {
         jgen.writeObject(obj);
       } else if (obj instanceof XYChart) {
         jgen.writeObject((XYChart) obj);

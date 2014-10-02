@@ -126,11 +126,24 @@
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
                 if (r.test(notebookModel.evaluators[i].plugin)) {
-                  promptIfInsecure().then(function() {
+                  var plugList = "<ul>";
+                  for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+                    if (r.test(notebookModel.evaluators[i].plugin)) {
+                      plugList += "<li>"+notebookModel.evaluators[i].plugin;
+                    }
+                  }
+                  plugList += "</ul>";
+                  promptIfInsecure(plugList).then(function() {
                     // user accepted risk... do the loading
                     _loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, isExistingSession);
                   }, function() {
-                    console.log("press fail");
+                    // user denied risk... clear plugins with external URL and do the loading
+                    var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+                    for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+                      if (r.test(notebookModel.evaluators[i].plugin)) {
+                        notebookModel.evaluators[i].plugin="";
+                      }
+                    }
                     _loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, isExistingSession);
                   });
                   return;
@@ -140,10 +153,10 @@
             // no unsafe operation detected... do the loading
             _loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, isExistingSession);
           };
-          var promptIfInsecure = function() {
+          var promptIfInsecure = function(urlList) {
             var deferred = bkUtils.newDeferred();
             bkCoreManager.show2ButtonModal(
-                "WARNING: this notebook references external plugins. Loading these plugin is an unsafe operation.",
+                "WARNING: this notebook is asking to load the following plugins from external servers:<br/>" + urlList+ " <br/>",
                 "Do you want to continue?",
                 function() {
                   deferred.reject();

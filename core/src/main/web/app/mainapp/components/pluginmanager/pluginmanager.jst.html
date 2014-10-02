@@ -33,7 +33,7 @@
     </div>
     <div ng-show="evalTabOp.showSecurityWarning">
       <div class="modal-body error-title body-box">
-	<p>Warning: loading a plugin from an external URL is insecure.. do you want to continue?</p>
+	<p>Are you sure you want to load this plugin from an external URL?</p>
 	<button class="btn right" ng-click='evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=""'>Cancel</button>
 	<button class="btn right" ng-click='evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()'>OK</button>
       </div>

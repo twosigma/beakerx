@@ -47,46 +47,33 @@
               name = "";
               url = nameOrUrl;
             }
-            var r = new RegExp('^(?:[a-z]+:)?//', 'i');
-            if (r.test(url))
-            {
-              console.error("THIS IS IT");
-
-
-              deferred.reject("REJECTED: " + url);
-              return deferred.promise;
-            }
-            else
-            {
-              loadingInProgressPlugins.push({
-                name: name,
-                url: url
+            loadingInProgressPlugins.push({
+              name: name,
+              url: url
+            });
+            bkUtils.loadModule(url, name).then(function(ex) {
+              if (!_.isEmpty(ex.name)) {
+                plugins[ex.name] = ex;
+              }
+              if (!_.isEmpty(name) && name !== ex.name) {
+                plugins[name] = ex;
+              }
+              ex.getEvaluatorFactory().then(function(shellCreator) {
+                deferred.resolve(shellCreator);
               });
-              bkUtils.loadModule(url, name).then(function(ex) {
-                if (!_.isEmpty(ex.name)) {
-                  plugins[ex.name] = ex;
-                }
-                if (!_.isEmpty(name) && name !== ex.name) {
-                  plugins[name] = ex;
-                }
-                ex.getEvaluatorFactory().then(function(shellCreator) {
-                  deferred.resolve(shellCreator);
-                });
-                }, function(err) {
-                console.error(err);
-                if (_.isEmpty(name)) {
-                  deferred.reject("failed to load plugin: " + url);
-                } else {
-                  deferred.reject("failed to load plugin: " + name + " at " + url);
-                }
-              }).finally(function() {
-                loadingInProgressPlugins = _(loadingInProgressPlugins).filter(function(it) {
-                  return it.url !== url;
-                });
+              }, function(err) {
+              //console.error(err);
+              if (_.isEmpty(name)) {
+                deferred.reject("failed to load plugin: " + url);
+              } else {
+                deferred.reject("failed to load plugin: " + name + " at " + url);
+              }
+            }).finally(function() {
+              loadingInProgressPlugins = _(loadingInProgressPlugins).filter(function(it) {
+                return it.url !== url;
               });
-
-              return deferred.promise;
-            }
+            });
+            return deferred.promise;
           }
         },
         createEvaluatorThenExit: function(settings) {

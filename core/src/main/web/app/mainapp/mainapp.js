@@ -121,6 +121,41 @@
           var loadNotebookModelAndResetSession = function(
               notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
               isExistingSession) {
+            // check if the notebook has to load plugins from an external source
+            var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+            if (notebookModel && notebookModel.evaluators) {
+              for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+                if (r.test(notebookModel.evaluators[i].plugin)) {
+                  promptIfInsecure().then(function() {
+                    // user accepted risk... do the loading
+                    _loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, isExistingSession);
+                  }, function() {
+                    console.log("press fail");
+                    _loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, isExistingSession);
+                  });
+                  return;
+                }
+              }
+            }
+            // no unsafe operation detected... do the loading
+            _loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, isExistingSession);
+          };
+          var promptIfInsecure = function() {
+            var deferred = bkUtils.newDeferred();
+            bkCoreManager.show2ButtonModal(
+                "WARNING: this notebook references external plugins. Loading these plugin is an unsafe operation.",
+                "Do you want to continue?",
+                function() {
+                  deferred.reject();
+                },
+                function() {
+                  deferred.resolve();
+                }, "No, Cancel!", "Continue", "", "btn-danger");
+            return deferred.promise;
+          };
+          var _loadNotebookModelAndResetSession = function(
+              notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
+              isExistingSession) {
             $scope.loading = true;
             addScrollingHack();
             bkSessionManager.reset(

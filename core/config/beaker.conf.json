@@ -18,7 +18,6 @@
     "./plugin/menu/bunsen.js",
     "./plugin/menu/view.js",
     "./plugin/menu/notebook.js",
-    "./plugin/menu/evaluators.js",
     "./plugin/menu/help.js"
   ],
   "notebook-cell-menu-plugins": [

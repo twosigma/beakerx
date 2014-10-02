@@ -25,7 +25,6 @@
     'bk.cellMenuPluginManager',
     "bk.core",
     'bk.sessionManager',
-    "bk.helper",
     "bk.bunsen",
     "bk.outputLog",
     "bk.recentMenu",

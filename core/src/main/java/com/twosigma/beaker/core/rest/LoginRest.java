@@ -60,7 +60,7 @@ public class LoginRest {
     String cookie = config.getAuthCookie();
     if (password != null && origin != null &&
 	hash(password).equals(config.getPasswordHash())) {
-      return Response.seeOther(URI.create(origin + "/beaker/"))
+      return Response.ok()
         .cookie(new NewCookie("BeakerAuth", cookie, "/", null, null,
                               NewCookie.DEFAULT_MAX_AGE, true)).build();
     }

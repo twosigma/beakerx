@@ -33,12 +33,19 @@
           return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel().isHideEvaluators();
         };
         $scope.hideEvaluators = function() {
+          $scope.evalTabOp.showURL = false;
+          $scope.evalTabOp.showWarning = false;
+          $scope.evalTabOp.showSecurityWarning = false;
+          $scope.evalTabOp.forceLoad = false;
+          $scope.evalTabOp.newPluginNameOrUrl = "";
           return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel().hideEvaluators();
         };
         $scope.evalTabOp = {
           newPluginNameOrUrl: "",
 	  showURL: false,
 	  showWarning: false,
+          showSecurityWarning: false,
+          forceLoad: false,
           getAllEvaluators: function() {
             return bkEvaluatorManager.getAllEvaluators();
           },
@@ -91,13 +98,27 @@
               fromUrl = false;
 	    }
             var status = this.getKnownEvaluatePlugins()[plugin];
-            if (status == "known" || fromUrl) {
+            if (status == "known") {
               var newEvaluatorObj = {
                 name: "",
                 plugin: plugin
               };
               bkSessionManager.addEvaluator(newEvaluatorObj);
               bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
+            } if(fromUrl) {
+                var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+                if (!r.test(plugin) || $scope.evalTabOp.forceLoad) {
+                  var newEvaluatorObj = {
+                    name: "",
+                    plugin: plugin
+                  };
+                  $scope.evalTabOp.forceLoad = false;
+                  $scope.evalTabOp.newPluginNameOrUrl = "";
+                  bkSessionManager.addEvaluator(newEvaluatorObj);
+                  bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
+                } else {
+                  $scope.evalTabOp.showSecurityWarning = true;
+                }
             } else {
               // what happens if you remove a plugin that is loading?
               // could just ignore, unless it's possible for plugins

@@ -61,7 +61,7 @@
               ex.getEvaluatorFactory().then(function(shellCreator) {
                 deferred.resolve(shellCreator);
               });
-            }, function(err) {
+              }, function(err) {
               console.error(err);
               if (_.isEmpty(name)) {
                 deferred.reject("failed to load plugin: " + url);
@@ -73,7 +73,6 @@
                 return it.url !== url;
               });
             });
-
             return deferred.promise;
           }
         },

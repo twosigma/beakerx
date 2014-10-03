@@ -333,15 +333,42 @@
             "lineCount": 3
         },
         {
+            "id": "text8tNp2l",
+            "type": "text",
+            "body": "In languages without a Data Frame type, they show up as a dictionary of arrays:",
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeKUuJGm",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": "beaker.df"
+            },
+            "output": {
+                "selectedType": "Text",
+                "elapsedTime": 106,
+                "result": "{A=[0.28220340971372787, -1.9243367410549208, 1.618821573840643, 2.072547104673738, 0.48029247046506224, 0.5668600201066758], C=[0.43085936380483886, 0.10153498883024875, -1.7814115576939296, 1.6178770342553912, -1.774550531346704, -1.4451300684805544], B=[1.9614586750233083, 0.11145767774465923, 2.217757218263953, 1.4521118588412085, -0.8520254202139345, -1.086323868993049], D=[-0.7381306383085108, 0.6547010050648912, 0.5016488308153809, 0.6980581864500834, -0.5083840149436081, -0.3318634868900252]}"
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "textT2NWWl",
+            "type": "text",
+            "body": "When auto-translating a data frame to R and Python, you need to call the constructor to set the type of the result.",
+            "evaluatorReader": false
+        },
+        {
             "id": "codej0d66h",
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "beaker::get('df')"
+                "body": "data.frame(beaker::get('df'))"
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 365,
+                "elapsedTime": 257,
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -388,37 +415,11 @@
                             "-0.3318634868900252"
                         ]
                     ]
-                }
+                },
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 1
-        },
-        {
-            "id": "text8tNp2l",
-            "type": "text",
-            "body": "In languages without a Data Frame type, they show up as a dictionary of arrays:",
-            "evaluatorReader": false
-        },
-        {
-            "id": "codeKUuJGm",
-            "type": "code",
-            "evaluator": "Groovy",
-            "input": {
-                "body": "beaker.df"
-            },
-            "output": {
-                "selectedType": "Text",
-                "elapsedTime": 106,
-                "result": "{A=[0.28220340971372787, -1.9243367410549208, 1.618821573840643, 2.072547104673738, 0.48029247046506224, 0.5668600201066758], C=[0.43085936380483886, 0.10153498883024875, -1.7814115576939296, 1.6178770342553912, -1.774550531346704, -1.4451300684805544], B=[1.9614586750233083, 0.11145767774465923, 2.217757218263953, 1.4521118588412085, -0.8520254202139345, -1.086323868993049], D=[-0.7381306383085108, 0.6547010050648912, 0.5016488308153809, 0.6980581864500834, -0.5083840149436081, -0.3318634868900252]}"
-            },
-            "evaluatorReader": true,
-            "lineCount": 1
-        },
-        {
-            "id": "textT2NWWl",
-            "type": "text",
-            "body": "However, note that when autotranslating to IPython, a constructor needs to be called to get the right type:",
-            "evaluatorReader": false
         },
         {
             "id": "codeIkZtDp",
@@ -478,26 +479,6 @@
                             "-0.9487729000630281"
                         ]
                     ]
-                }
-            },
-            "evaluatorReader": true,
-            "lineCount": 1
-        },
-        {
-            "id": "code6gnRq1",
-            "type": "code",
-            "evaluator": "IPython",
-            "input": {
-                "body": "beaker.get('df2')"
-            },
-            "output": {
-                "outputArrived": true,
-                "selectedType": "BeakerDisplay",
-                "elapsedTime": 189,
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>{'X1': [-0.055902,\n  0.73801,\n  0.76998,\n  -0.91113,\n  -0.76858,\n  -0.56022,\n  0.51933,\n  0.4196,\n  0.24564,\n  0.14985],\n 'X2': [-0.44213,\n  -0.21578,\n  0.20919,\n  -1.1197,\n  0.45501,\n  1.1391,\n  0.42958,\n  -0.1007,\n  0.06363,\n  -0.94877]}</pre></div>"
                 }
             },
             "evaluatorReader": true,

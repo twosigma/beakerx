@@ -207,6 +207,7 @@ public class RShellRest {
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
       @FormParam("shellID") String shellID,
+      @FormParam("init") String initString,
       @FormParam("code") String code) 
     throws InterruptedException, REXPMismatchException, IOException
   {
@@ -214,6 +215,7 @@ public class RShellRest {
     obj.started();
     RServer server = getEvaluator(shellID);
     RConnection con = server.connection;
+    boolean init = initString != null && initString.equals("true");
 
     String file = windows() ? "rplot.svg" : makeTemp("rplot", ".svg");
     try {
@@ -225,16 +227,25 @@ public class RShellRest {
 
     try {
       // direct graphical output
-      con.eval("svg('" + file + "')");
-      String tryCode = "beaker_eval_=withVisible(try({" + code + "\n},silent=TRUE))";
+      String tryCode;
+      if (init) {
+        tryCode = code;
+      } else {
+        con.eval("do.call(svg,c(list('" + file + "'), beaker::saved_svg_options))");
+        tryCode = "beaker_eval_=withVisible(try({" + code + "\n},silent=TRUE))";
+      }
       REXP result = con.eval(tryCode);
+      if (init) {
+        obj.finished(result.asString());
+        return obj;
+      }
 
-      /*
-       if (null != result)
-         System.out.println("result class = " + result.getClass().getName());
-       else
-         System.out.println("result = null");
-      */
+      if (false) {
+        if (null != result)
+          System.out.println("result class = " + result.getClass().getName());
+        else
+          System.out.println("result = null");
+      }
 
       if (null == result) {
         obj.finished("");

@@ -156,14 +156,15 @@
           var promptIfInsecure = function(urlList) {
             var deferred = bkUtils.newDeferred();
             bkCoreManager.show2ButtonModal(
-                "WARNING: this notebook is asking to load the following plugins from external servers:<br/>" + urlList+ " <br/>",
-                "Do you want to continue?",
+                "This notebook is asking to load the following plugins from external servers:<br/>" + urlList+
+                    " <br/>How do you want to handle these external plugins?",
+                "Warning: external plugins detected",
                 function() {
                   deferred.reject();
                 },
                 function() {
                   deferred.resolve();
-                }, "No, Cancel!", "Continue", "", "btn-danger");
+                }, "Disable", "Load", "", "btn-danger");
             return deferred.promise;
           };
           var _loadNotebookModelAndResetSession = function(

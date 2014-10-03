@@ -107,16 +107,15 @@
               bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
             } if(fromUrl) {
                 var r = new RegExp('^(?:[a-z]+:)?//', 'i');
-                if (!r.test(plugin) || $scope.evalTabOp.forceLoad)
-                {
-                    var newEvaluatorObj = {
-                      name: "",
-                      plugin: plugin
-                    };
-                    $scope.evalTabOp.forceLoad = false;
-                    $scope.evalTabOp.newPluginNameOrUrl = "";
-                    bkSessionManager.addEvaluator(newEvaluatorObj);
-                    bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
+                if (!r.test(plugin) || $scope.evalTabOp.forceLoad) {
+                  var newEvaluatorObj = {
+                    name: "",
+                    plugin: plugin
+                  };
+                  $scope.evalTabOp.forceLoad = false;
+                  $scope.evalTabOp.newPluginNameOrUrl = "";
+                  bkSessionManager.addEvaluator(newEvaluatorObj);
+                  bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
                 } else {
                   $scope.evalTabOp.showSecurityWarning = true;
                 }

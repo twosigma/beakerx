@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import java.awt.Paint;
+import com.twosigma.beaker.chart.Color;
 
 /**
  * Crosshair
@@ -25,7 +25,7 @@ import java.awt.Paint;
 public class Crosshair {
   private StrokeType style;
   private Float width;
-  private Paint color;
+  private Color color;
 
   public Crosshair setStyle(StrokeType style) {
     this.style = style;
@@ -45,12 +45,12 @@ public class Crosshair {
     return this.width;
   }
 
-  public Crosshair setColor(Paint color) {
+  public Crosshair setColor(Color color) {
     this.color = color;
     return this;
   }
 
-  public Paint getColor() {
+  public Color getColor() {
     return this.color;
   }
 }

@@ -16,14 +16,14 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import java.awt.Paint;
+import com.twosigma.beaker.chart.Color;
 import java.util.List;
 
 
 public class Line extends XYGraphics {
 
-  private Paint color;
-  private List<Paint> colors;
+  private Color color;
+  private List<Color> colors;
   private Float width = 1.5f;
   private StrokeType style;
   private Integer interpolation;
@@ -42,34 +42,34 @@ public class Line extends XYGraphics {
   }
 
   public void setColor(Object color) {
-    if (color instanceof Paint) {
-      this.color = (Paint) color;
+    if (color instanceof Color) {
+      this.color = (Color) color;
     } else if (color instanceof List) {
       @SuppressWarnings("unchecked")
-      List<Paint> temp = (List<Paint>) color;
+      List<Color> temp = (List<Color>) color;
       setColors(temp);
     } else {
       throw new IllegalArgumentException(
-          "setColor takes Paint or List of Paint");
+          "setColor takes Color or List of Color");
     }
   }
 
   @Override
-  public void setColori(Paint color) {
+  public void setColori(Color color) {
     this.color = color;
   }
 
-  private void setColors(List<Paint> colors) {
+  private void setColors(List<Color> colors) {
     this.colors = colors;
   }
 
 
   @Override
-  public Paint getColor() {
+  public Color getColor() {
     return this.color;
   }
 
-  public List<Paint> getColors() {
+  public List<Color> getColors() {
     return this.colors;
   }
 

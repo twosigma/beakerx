@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import java.awt.Paint;
+import com.twosigma.beaker.chart.Color;
 import java.util.List;
 
 
@@ -26,10 +26,10 @@ public class Bars extends XYGraphics {
   private List<Number> widths;
   private Number baseBase = 0.0d;
   private List<Number> bases;
-  private Paint baseColor;
-  private List<Paint> colors;
-  private Paint baseOutlineColor;
-  private List<Paint> outlineColors;
+  private Color baseColor;
+  private List<Color> colors;
+  private Color baseOutlineColor;
+  private List<Color> outlineColors;
 
   public void setBase(Object base) {
     if (base instanceof Number) {
@@ -83,58 +83,58 @@ public class Bars extends XYGraphics {
   }
 
   public void setColor(Object color) {
-    if (color instanceof Paint) {
-      this.baseColor = (Paint) color;
+    if (color instanceof Color) {
+      this.baseColor = (Color) color;
     } else if (color instanceof List) {
       @SuppressWarnings("unchecked")
-      List<Paint> cs = (List<Paint>) color;
+      List<Color> cs = (List<Color>) color;
       setColors(cs);
     } else {
       throw new IllegalArgumentException(
-          "setColor takes Paint or List of Paint");
+          "setColor takes Color or List of Color");
     }
   }
 
   @Override
-  public void setColori(Paint color) {
+  public void setColori(Color color) {
     this.baseColor = color;
   }
 
-  private void setColors(List<Paint> colors) {
+  private void setColors(List<Color> colors) {
     this.colors = colors;
   }
 
   @Override
-  public Paint getColor() {
+  public Color getColor() {
     return this.baseColor;
   }
 
-  public List<Paint> getColors() {
+  public List<Color> getColors() {
     return this.colors;
   }
 
   public void setOutlineColor(Object color) {
-    if (color instanceof Paint) {
-      this.baseOutlineColor = (Paint) color;
+    if (color instanceof Color) {
+      this.baseOutlineColor = (Color) color;
     } else if (color instanceof List) {
       @SuppressWarnings("unchecked")
-      List<Paint> cs = (List<Paint>) color;
+      List<Color> cs = (List<Color>) color;
       setOutlineColors(cs);
     } else {
       throw new IllegalArgumentException(
-          "setOutlineColor takes Paint or List of Paint");
+          "setOutlineColor takes Color or List of Color");
     }
   }
 
-  private void setOutlineColors(List<Paint> colors) {
+  private void setOutlineColors(List<Color> colors) {
     this.outlineColors = colors;
   }
 
-  public Paint getOutlineColor() {
+  public Color getOutlineColor() {
     return this.baseOutlineColor;
   }
 
-  public List<Paint> getOutlineColors() {
+  public List<Color> getOutlineColors() {
     return this.outlineColors;
   }
 

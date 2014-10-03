@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import java.awt.Paint;
+import com.twosigma.beaker.chart.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +77,6 @@ abstract public class XYGraphics {
     }
   }
 
-  abstract public void setColori(Paint color);
-  abstract public Paint getColor();
+  abstract public void setColori(Color color);
+  abstract public Color getColor();
 }

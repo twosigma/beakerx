@@ -77,56 +77,56 @@ bk-new-cell-menu {
     background-color: $highlight-blue;
 
     &.delete-cell {
-        background-image: url(/beaker/app/images/trash_white@2x.png);
+        background-image: url(../images/trash_white@2x.png);
     }
 
     &.move-cell-up {
-        background-image: url(/beaker/app/images/up_white@2x.png);
+        background-image: url(../images/up_white@2x.png);
     }
 
     &.move-cell-down {
-        background-image: url(/beaker/app/images/down_white@2x.png);
+        background-image: url(../images/down_white@2x.png);
     }
 
     &.expand-contract {
-        background-image: url(/beaker/app/images/collapse_white@2x.png);
+        background-image: url(../images/collapse_white@2x.png);
         &.collapsed {
-            background-image: url(/beaker/app/images/expand_white@2x.png);
+            background-image: url(../images/expand_white@2x.png);
         }
     }
 
     &.cell-dropdown {
-        background-image: url(/beaker/app/images/menu_white@2x.png);
+        background-image: url(../images/menu_white@2x.png);
     }
 
 
     &.loading-state .loading-spinner {
-        background-image: url(/beaker/app/images/loading_white@2x.png);
+        background-image: url(../images/loading_white@2x.png);
     }
 }
 
 .delete-cell {
-    background: url(/beaker/app/images/trash@2x.png) no-repeat center;
+    background: url(../images/trash@2x.png) no-repeat center;
     background-size: 9px;
 }
 
 .move-cell-up {
-    background: url(/beaker/app/images/up@2x.png) no-repeat center;
+    background: url(../images/up@2x.png) no-repeat center;
     background-size: 8px;
 }
 
 .move-cell-down {
-    background: url(/beaker/app/images/down@2x.png) no-repeat center;
+    background: url(../images/down@2x.png) no-repeat center;
     background-size: 8px;
 }
 
 .expand-contract {
-    background: url(/beaker/app/images/collapse@2x.png) no-repeat center {
+    background: url(../images/collapse@2x.png) no-repeat center {
         size: 11px;
     }
 
     &.collapsed {
-        background-image: url(/beaker/app/images/expand@2x.png);
+        background-image: url(../images/expand@2x.png);
     }
 }
 
@@ -137,12 +137,12 @@ bk-new-cell-menu {
     height: 15px;
     display: inline-block;
     position: relative;
-    background-image: url(/beaker/app/images/loading@2x.png);
+    background-image: url(../images/loading@2x.png);
     background-size: cover;
 }
 
 .cell-dropdown {
-    background: url(/beaker/app/images/menu@2x.png) no-repeat center;
+    background: url(../images/menu@2x.png) no-repeat center;
     background-size: 3px;
 }
 
@@ -153,7 +153,7 @@ bk-new-cell-menu {
     display:            inline-block;
     position:           absolute;
     font-size:          12px;
-    background:         url(/beaker/app/images/down@2x.png) no-repeat center right;
+    background:         url(../images/down@2x.png) no-repeat center right;
     padding-right:      13px;
     background-size:    8px;
 

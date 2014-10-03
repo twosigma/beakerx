@@ -127,6 +127,7 @@ public class PluginServiceLocatorRest {
   private final OutputLogService outputLogService;
   private final Base64 encoder;
   private final String corePassword;
+  private final String urlHash;
 
   private final String nginxTemplate;
   private final String ipythonTemplate;
@@ -157,6 +158,7 @@ public class PluginServiceLocatorRest {
     this.authCookie = bkConfig.getAuthCookie();
     this.pluginLocations = bkConfig.getPluginLocations();
     this.pluginEnvps = bkConfig.getPluginEnvps();
+    this.urlHash = bkConfig.getHash();
     this.pluginArgs = new HashMap<>();
     this.outputLogService = outputLogService;
     this.encoder = new Base64();
@@ -306,7 +308,7 @@ public class PluginServiceLocatorRest {
     String password = RandomStringUtils.random(40, true, true);
     synchronized (this) {
       final int port = getNextAvailablePort(this.portSearchStart);
-      final String baseUrl = "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
+      final String baseUrl = "/" + urlHash + "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
       pConfig = new PluginConfig(port, nginxRules, baseUrl, password);
       this.portSearchStart = pConfig.port + 1;
       this.plugins.put(pluginId, pConfig);
@@ -432,7 +434,7 @@ public class PluginServiceLocatorRest {
   }
 
   private static Response buildResponse(String baseUrl, boolean created) {
-    baseUrl = ".." + baseUrl;
+    baseUrl = "../.." + baseUrl;
     return Response
         .status(created ? Response.Status.CREATED : Response.Status.OK)
         .entity(baseUrl)
@@ -631,6 +633,7 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
+    nginxConfig = nginxConfig.replace("%(urlhash)s", urlHash);
     java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
     writePrivateFile(targetFile, nginxConfig);
     return restartId;

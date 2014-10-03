@@ -68,6 +68,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Map<String, String[]> pluginEnvps;
   private final String version;
   private final String buildTime;
+  private final String hash;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
@@ -155,6 +156,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
     this.version = utils.readFile(this.installDir + "/config/version");
     this.buildTime = utils.readFile(this.installDir + "/config/build_time");
+    this.hash = utils.readFile(this.installDir + "/config/hash");
   }
 
   @Override
@@ -315,5 +317,10 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getBuildTime() {
     return this.buildTime;
+  }
+
+  @Override
+  public String getHash() {
+    return this.hash;
   }
 }

@@ -59,7 +59,7 @@
                     "mode": "groovy"
                 }
             },
-            "imports": "java.awt.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*"
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*"
         }
     ],
     "cells": [

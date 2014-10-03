@@ -18,7 +18,7 @@ package com.twosigma.beaker.chart.serializer;
 
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
-import java.awt.Color;
+import com.twosigma.beaker.chart.Color;
 import java.io.IOException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;

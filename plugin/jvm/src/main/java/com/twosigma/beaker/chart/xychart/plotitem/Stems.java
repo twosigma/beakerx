@@ -16,7 +16,7 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import java.awt.Paint;
+import com.twosigma.beaker.chart.Color;
 import java.util.List;
 
 
@@ -24,8 +24,8 @@ public class Stems extends XYGraphics {
 
   private Number baseBase;
   private List<Number> bases;
-  private Paint baseColor;
-  private List<Paint> colors;
+  private Color baseColor;
+  private List<Color> colors;
   private Float width = 1.5f;
   private StrokeType baseStyle = StrokeType.SOLID;
   private List<StrokeType> styles;
@@ -57,33 +57,33 @@ public class Stems extends XYGraphics {
   }
 
   public void setColor(Object color) {
-    if (color instanceof Paint) {
-      this.baseColor = (Paint) color;
+    if (color instanceof Color) {
+      this.baseColor = (Color) color;
     } else if (color instanceof List) {
       @SuppressWarnings("unchecked")
-      List<Paint> cs = (List<Paint>) color;
+      List<Color> cs = (List<Color>) color;
       setColors(cs);
     } else {
       throw new IllegalArgumentException(
-          "setColor takes Paint or List of Paint");
+          "setColor takes Color or List of Color");
     }
   }
 
   @Override
-  public void setColori(Paint color) {
+  public void setColori(Color color) {
     this.baseColor = color;
   }
 
-  private void setColors(List<Paint> colors) {
+  private void setColors(List<Color> colors) {
     this.colors = colors;
   }
 
   @Override
-  public Paint getColor() {
+  public Color getColor() {
     return this.baseColor;
   }
 
-  public List<Paint> getColors() {
+  public List<Color> getColors() {
     return this.colors;
   }
 

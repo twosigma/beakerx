@@ -36,13 +36,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import javax.swing.ImageIcon;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.imageio.ImageIO;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
@@ -267,7 +265,6 @@ public class RShellRest {
       obj.error("from dev.off(): " + e.getMessage());
     }
 
-    // addPngResults(file, obj);
     addSvgResults(file, obj);
 
     return obj;
@@ -358,20 +355,6 @@ public class RShellRest {
       } catch (IOException e) {
         System.out.println("IO error on " + name + " " + e);
       }
-    }
-    return false;
-  }
-
-  // should support multiple images? XXX
-  private static boolean addPngResults(String name, SimpleEvaluationObject obj) {
-    try {
-      File file = new File(name);
-      if (file.length() > 0) {
-        obj.finished(new ImageIcon(ImageIO.read(file)));
-        return true;
-      }
-    } catch (IOException e) {
-      System.out.println("IO error on " + name + " " + e);
     }
     return false;
   }

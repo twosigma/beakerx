@@ -16,13 +16,13 @@
 
 package com.twosigma.beaker.chart.xychart.plotitem;
 
-import java.awt.Paint;
+import com.twosigma.beaker.chart.Color;
 import java.util.List;
 
 
 public class Area extends XYGraphics {
 
-  private Paint color;
+  private Color color;
   private Number baseBase = 0.0d;
   private List<Number> bases = null;
   private Integer interpolation;
@@ -53,12 +53,12 @@ public class Area extends XYGraphics {
   }
 
   @Override
-  public void setColori(Paint color) {
+  public void setColori(Color color) {
     this.color = color;
   }
 
   @Override
-  public Paint getColor() {
+  public Color getColor() {
     return this.color;
   }
 

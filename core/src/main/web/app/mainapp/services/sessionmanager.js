@@ -319,7 +319,7 @@
             return {
               "id": id,
               "type": "text",
-              "body": "New <b>text</b> cell"
+              "body": ""
             };
           },
           newMarkdownCell: function(id) {

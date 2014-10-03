@@ -52,17 +52,17 @@ http {
     # nginx should probably serve the static content instead of
     # passing it on to jetty. XXX
 
-    location /%(urlhash)s/loginrest/ {
+    location /loginrest/ {
       proxy_pass http://127.0.0.1:%(port_beaker)s/rest/login/;
       proxy_set_header Authorization "Basic %(auth)s";
     }
 
-    location /%(urlhash)s/login/ {
+    location /login/ {
       alias html/;
     }
 
     location = / {
-      return 301 /%(start_page)s;
+      return 301 %(start_page)s;
     }
 
     location /%(urlhash)s/beaker {

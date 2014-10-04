@@ -50,9 +50,18 @@ def gitDescribe() {
   return name
 }
 
+def gitGetHash() {
+  def name = "git log --pretty=format:%h -n 1".execute().text.trim()
+  return name
+}
+
 task writeVersion << {
   new File(coreDir, 'config/version').write(gitDescribe());
+  new File(coreDir, 'config/hash').write(gitGetHash());
   new File(coreDir, 'config/build_time').write(new Date().format("yyyy-MM-dd HH:mm z"));
+  String contents = new File(coreDir, 'src/main/web/index_template.html' ).getText( 'UTF-8' );
+  contents = contents.replaceAll( 'URL-HASH-TO-REPLACE', gitGetHash() );
+  new File(coreDir, 'src/main/web/index.html' ).write( contents, 'UTF-8' );
 }
 
 clean.dependsOn(":core:clean")

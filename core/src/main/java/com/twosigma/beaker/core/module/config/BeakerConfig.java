@@ -169,4 +169,9 @@ public interface BeakerConfig {
    * @return
    */
   public String getBuildTime();
+  /**
+   * hash
+   * @return
+   */
+  public String getHash();
 }

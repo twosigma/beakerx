@@ -60,3 +60,9 @@ get <- function(var) {
   }
   return (res$value)
 }
+
+saved_svg_options = c()
+
+svg_options <- function(...) {
+  saved_svg_options <<- list(...)
+}

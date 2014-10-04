@@ -208,6 +208,11 @@
             var ele = {};
             ele.x = item.x[j];
             ele.y = item.y[j];
+
+            // discard NaN entries
+            if (ele.x === "NaN" || ele.y === "NaN")
+              continue;
+
             if (item.colors != null) {
               ele.color_opacity = parseInt(item.colors[j].substr(1,2), 16) / 255;
               ele.color = "#" + item.colors[j].substr(3);

@@ -68,6 +68,9 @@
             "input": {
                 "body": "// This is a Javascript cell.\n// Try \"alert(1+2);\"."
             },
+            "output": {
+                "selectedType": "Hidden"
+            },
             "evaluatorReader": true,
             "lineCount": 2
         },

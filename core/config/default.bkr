@@ -51,7 +51,7 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "# This is a code cell.\n# Click below, on the 3rd line, then type some Python code (eg \"1+2\"), then click \"Run\".\n"
+                "body": "# This is a Python code cell.\n# Click below, on the 3rd line, then type some Python code (eg \"1+2\"), then click \"Run\".\n"
             },
             "output": {
                 "selectedType": "BeakerDisplay",
@@ -66,7 +66,7 @@
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
-                "body": "//JavaScript - will turn pink when plugin loads successfully"
+                "body": "// This is a Javascript cell.\n// Try \"alert(1+2);\"."
             },
             "evaluatorReader": true,
             "lineCount": 2

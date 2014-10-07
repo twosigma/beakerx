@@ -139,7 +139,7 @@
               sessionRouteResolve.target = function() {
                 return search;
               };
-              return '/session/' + newSessionId;
+              return '/session/' + newSessionId + "?" + window.location.href.split("?")[1];
             }
           })
           .when('/control', {

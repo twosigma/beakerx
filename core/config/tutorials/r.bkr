@@ -64,8 +64,9 @@
                 "body": "#scalar\na = 1"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 80
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 77,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -78,8 +79,9 @@
                 "body": "#vector\nb = c(1,2,3)"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 51
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 49,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -92,8 +94,9 @@
                 "body": "#calling functions\nmean(x=b) #with arg name\nmean(b) #without arg name"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 53
+                "selectedType": "Text",
+                "elapsedTime": 67,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -106,8 +109,9 @@
                 "body": "#random data\nrnorm(10)"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 67
+                "selectedType": "Text",
+                "elapsedTime": 68,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -120,8 +124,9 @@
                 "body": "#help\nhelp(mean)"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 187
+                "selectedType": "Text",
+                "elapsedTime": 121,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -134,8 +139,9 @@
                 "body": "#example\nexample(mean)"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 440
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 86,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -204,8 +210,9 @@
                 "body": "#line plot\nplot(rnorm(100), type='l')"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 105
+                "selectedType": "Html",
+                "elapsedTime": 73,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -218,8 +225,9 @@
                 "body": "#scatterplot\nplot(rnorm(100))"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 94
+                "selectedType": "Html",
+                "elapsedTime": 177,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -232,11 +240,27 @@
                 "body": "#histogram\nhist(rnorm(100))"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 120
+                "selectedType": "Html",
+                "elapsedTime": 69,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
+        },
+        {
+            "id": "codeNE0SsQ",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": "# Set the options for plotting like this.\n\nsvg_options(width=10, height=3)\n\n# Note however that this function must be called from a different cell from the one that actually does the plotting.\n# We plan to improve this, see https://github.com/twosigma/beaker-notebook/issues/731"
+            },
+            "output": {
+                "state": {},
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 60
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
         },
         {
             "id": "codeIGQOy3",
@@ -246,8 +270,9 @@
                 "body": "#fancy charts with ggplot2\nlibrary(ggplot2)\ncde <- geom_histogram(position=\"fill\", binwidth = 500)\nggplot(diamonds, aes(x=price, fill=clarity)) + cde"
             },
             "output": {
-                "selectedType": "Hidden",
-                "elapsedTime": 2108
+                "selectedType": "Html",
+                "elapsedTime": 397,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 4

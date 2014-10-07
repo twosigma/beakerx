@@ -278,16 +278,19 @@
       // other JS utils
       updateDocumentModelFromDOM: function(id) {
           // 1) find the cell that contains elem
-          var elem = $( "#"+id ).closest( "bk-cell" );
+          var elem = $("#" + id).closest("bk-cell");
           if (elem === undefined) {
+            console.log("ERROR: cannot find referenced cell.");
             return;
           }
           var cellid = elem[0].getAttribute("cellid");
           if (cellid === undefined) {
+            console.log("ERROR: cannot find referenced cell.");
             return;
           }
           var body = elem.find( "bk-output-display[type='Html'] div div" );
           if (body === undefined) {
+            console.log("ERROR: cannot find referenced cell.");
             return;
           }
 
@@ -297,12 +300,15 @@
           // 3) set the result.object to that string.
           var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);          
           if (cell === undefined) {
+            console.log("ERROR: cannot find referenced cell.");
             return;
           }
 
           var res = cell.output.result;
           if (res.innertype === "Html") {
-              res.object = newOutput;
+            res.object = newOutput;
+          } else {
+            console.log("ERROR: the referenced cell type must be HTML.")
           }
       },
 

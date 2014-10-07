@@ -265,7 +265,7 @@
         return bkRecentMenu.getMenuItems();
       },
 
-      getNotebookCellManager: function () {
+      getNotebookCellManager: function() {
         return bkNotebookCellModelManager;
       },
       // general

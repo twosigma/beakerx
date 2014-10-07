@@ -297,12 +297,6 @@
             "lineCount": 1
         },
         {
-            "id": "text3rt18R",
-            "type": "text",
-            "body": "Maybe Beaker should autotranslate vectors of length one (\"atomic vectors\" the the parlance of R) to scalars, but we are worried about false positives (what if you really did want an atomic vector?). &nbsp;We are also concerned this would interfere with the reversibility of the process (if you translate from R to another language and then back, you should get the same value as you started with). &nbsp;Your feedback on this point is welcome.",
-            "evaluatorReader": false
-        },
-        {
             "id": "section21LFDr",
             "type": "section",
             "title": "Data Frames",

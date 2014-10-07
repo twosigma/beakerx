@@ -38,7 +38,7 @@
    *     instead
    */
   module.factory('bkCoreManager', function(
-      $dialog, bkUtils, bkRecentMenu, modalDialogOp) {
+      $dialog, bkUtils, bkRecentMenu, bkNotebookCellModelManager, modalDialogOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
@@ -265,6 +265,9 @@
         return bkRecentMenu.getMenuItems();
       },
 
+      getNotebookCellManager: function () {
+        return bkNotebookCellModelManager;
+      },
       // general
       showModalDialog: function(callback, template, strategy) {
         if (!template) {

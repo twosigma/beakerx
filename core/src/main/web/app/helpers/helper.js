@@ -280,17 +280,17 @@
           // 1) find the cell that contains elem
           var elem = $("#" + id).closest("bk-cell");
           if (elem === undefined) {
-            console.log("ERROR: cannot find referenced cell.");
+            console.log("ERROR: cannot find an Html cell containing the element"+id+".");
             return;
           }
           var cellid = elem[0].getAttribute("cellid");
           if (cellid === undefined) {
-            console.log("ERROR: cannot find referenced cell.");
+            console.log("ERROR: cannot find an Html cell containing the element"+id+".");
             return;
           }
           var body = elem.find( "bk-output-display[type='Html'] div div" );
           if (body === undefined) {
-            console.log("ERROR: cannot find referenced cell.");
+            console.log("ERROR: cannot find an Html cell containing the element"+id+".");
             return;
           }
 
@@ -300,7 +300,7 @@
           // 3) set the result.object to that string.
           var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);          
           if (cell === undefined) {
-            console.log("ERROR: cannot find referenced cell.");
+            console.log("ERROR: cannot find an Html cell containing the element"+id+".");
             return;
           }
 
@@ -308,7 +308,7 @@
           if (res.innertype === "Html") {
             res.object = newOutput;
           } else {
-            console.log("ERROR: the referenced cell type must be HTML.")
+            console.log("ERROR: cannot find an Html cell containing the element"+id+".");
           }
       },
 

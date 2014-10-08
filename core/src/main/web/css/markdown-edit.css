@@ -1,0 +1,12 @@
+html { padding:10px; }
+
+body {
+  border:0;
+	font-family: Helvetica,arial,freesans,clean,sans-serif;
+	font-size:13px;
+	padding-top:10px;
+	padding-bottom:10px;
+	line-height:1.6;
+  margin:0;
+  padding:0;
+}

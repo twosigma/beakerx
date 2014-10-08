@@ -65,6 +65,24 @@ http {
       return 301 %(start_page)s;
     }
 
+    location = /beaker/ {
+      proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
+      proxy_set_header Authorization "Basic %(auth)s";
+      %(auth_cookie_rule)s
+    }
+
+    location = /beaker {
+      proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
+      proxy_set_header Authorization "Basic %(auth)s";
+      %(auth_cookie_rule)s
+    }
+
+    location = /%(urlhash)s/beaker/ {
+      proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
+      proxy_set_header Authorization "Basic %(auth)s";
+      %(auth_cookie_rule)s
+    }
+
     location /%(urlhash)s/beaker {
       proxy_pass http://127.0.0.1:%(port_beaker)s/;
       proxy_set_header Authorization "Basic %(auth)s";
@@ -72,12 +90,6 @@ http {
     }
 
     location /%(urlhash)s/beaker/ {
-      proxy_pass http://127.0.0.1:%(port_beaker)s/;
-      proxy_set_header Authorization "Basic %(auth)s";
-      %(auth_cookie_rule)s
-    }
-
-    location /beaker/ {
       proxy_pass http://127.0.0.1:%(port_beaker)s/;
       proxy_set_header Authorization "Basic %(auth)s";
       %(auth_cookie_rule)s

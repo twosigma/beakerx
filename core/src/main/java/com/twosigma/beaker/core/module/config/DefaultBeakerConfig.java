@@ -323,4 +323,9 @@ public class DefaultBeakerConfig implements BeakerConfig {
   public String getHash() {
     return this.hash;
   }
+  
+  @Override
+  public String getMainPageFileName() {
+      return this.installDir + "/src/main/web/app/template/index_template.html";
+  }
 }

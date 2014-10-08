@@ -174,4 +174,10 @@ public interface BeakerConfig {
    * @return
    */
   public String getHash();
+  /**
+   * hash
+   * @return
+   */
+  public String getMainPageFileName();
+
 }

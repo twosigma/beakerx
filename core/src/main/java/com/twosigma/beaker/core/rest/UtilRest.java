@@ -390,4 +390,14 @@ public class UtilRest {
   public Set<String> getCellMenuPlugins() {
     return this.cellMenuPlugins;
   }
+  
+  @GET
+  @Path("getMainPage")
+  @Produces(MediaType.TEXT_HTML)
+  public String getMainPage(@Context HttpServletRequest request) {
+    String data = utils.readFile(bkConfig.getMainPageFileName());
+    data = data.replace("URL-HASH-TO-REPLACE", bkConfig.getHash());
+    return data;
+  }
+
 }

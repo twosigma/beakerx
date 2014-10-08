@@ -159,7 +159,7 @@
             "type": "code",
             "evaluator": "Groovy",
             "input": {
-                "body": "\"\" && true //empyt string is false"
+                "body": "\"\" && true //empty string is false"
             },
             "output": {
                 "selectedType": "Hidden",

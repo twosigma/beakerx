@@ -25,5 +25,5 @@
 </div>
 <bk-new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
 <div bk-show="isShowChildren()" class="section-children">
-  <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index"></bk-cell>
+  <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index" cellid="{{cell.id}}"></bk-cell>
 </div>

@@ -298,6 +298,7 @@ define(function(require, exports, module) {
 				  "except ImportError:\n" +
 				  "    import beaker\n" +
 				  "beaker.set_session('" + bkHelper.getSessionId() + "')\n");
+                initCode = "";
                 self.evaluate(initCode, {}).then(function () {
                   if (doneCB) {
                     doneCB(self);

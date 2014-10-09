@@ -98,7 +98,7 @@
               fromUrl = false;
 	    }
             var status = this.getKnownEvaluatePlugins()[plugin];
-            if (status == "known") {
+            if (status === "known") {
               var newEvaluatorObj = {
                 name: "",
                 plugin: plugin
@@ -119,7 +119,7 @@
                 } else {
                   $scope.evalTabOp.showSecurityWarning = true;
                 }
-            } else {
+            } else if (status === "active") {
               // what happens if you remove a plugin that is loading?
               // could just ignore, unless it's possible for plugins
               // to try to load and fail, and get stuck loading.  then

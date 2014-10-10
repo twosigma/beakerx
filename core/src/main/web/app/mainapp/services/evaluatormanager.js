@@ -40,27 +40,22 @@
       },
       newEvaluator: function(evaluatorSettings) {
         // HACK to fix older version of evaluator configuration
-        if (bkUtils.beginsWith(evaluatorSettings.name,"Html"))
-        {
+        if (bkUtils.beginsWith(evaluatorSettings.name,"Html")) {
           evaluatorSettings.name = "Html";
           evaluatorSettings.plugin = "Html";
         }
-        else if(bkUtils.beginsWith(evaluatorSettings.name,"Latex"))
-        {
+        else if(bkUtils.beginsWith(evaluatorSettings.name,"Latex")) {
           evaluatorSettings.name = "Latex";
           evaluatorSettings.plugin = "Latex";
         }
-        else if(bkUtils.beginsWith(evaluatorSettings.name,"JavaScript"))
-        {
+        else if(bkUtils.beginsWith(evaluatorSettings.name,"JavaScript")) {
           evaluatorSettings.name = "JavaScript";
           evaluatorSettings.plugin = "JavaScript";
         }
-        else if(evaluatorSettings.name === "Groovy")
-        {
+        else if(evaluatorSettings.name === "Groovy") {
           evaluatorSettings.name = evaluatorSettings.plugin;
         }            
-        else if(evaluatorSettings.name === "Python")
-        {
+        else if(evaluatorSettings.name === "Python") {
           evaluatorSettings.name = evaluatorSettings.plugin;
         }
         loadingInProgressEvaluators.push(evaluatorSettings);

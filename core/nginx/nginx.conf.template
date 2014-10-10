@@ -49,6 +49,17 @@ http {
       root   html;
     }
 
+    # in google chrome iframe do not inherit base tag and epiceditor uses iframes
+    location = /beaker/vendor/epiceditor/themes/base/epiceditor.css {
+        rewrite /beaker/vendor/epiceditor/themes/base/epiceditor.css /%(urlhash)s/beaker/vendor/epiceditor/themes/base/epiceditor.css;
+    }
+    location = /beaker/css/markdown-edit.css {
+        rewrite /beaker/css/markdown-edit.css /%(urlhash)s/beaker/css/markdown-edit.css;
+    }
+    location = /beaker/css/markdown-preview.css {
+        rewrite /beaker/css/markdown-preview.css /%(urlhash)s/beaker/css/markdown-preview.css;
+    }
+
     # nginx should probably serve the static content instead of
     # passing it on to jetty. XXX
 

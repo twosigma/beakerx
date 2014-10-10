@@ -176,6 +176,52 @@
                 notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
             isExistingSession = !!isExistingSession;
             evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
+
+              // HACK to fix older version of evaluator configuration
+            if (notebookModel && notebookModel.cells && notebookModel.evaluators) {
+              for (var i = 0; i < notebookModel.cells.length; ++i) {
+                if (notebookModel.cells[i].evaluator != undefined) {
+                  for (var j = 0; j < notebookModel.evaluators.length; ++j) {
+                    var name = notebookModel.evaluators[j].name;
+                    if (notebookModel.cells[i].evaluator === name) {
+                      var plugin = notebookModel.evaluators[j].plugin;
+                      if (bkUtils.beginsWith(name,"Html")) {
+                        notebookModel.cells[i].evaluator = "Html";
+                      } else if(bkUtils.beginsWith(name,"Latex")) {
+                        notebookModel.cells[i].evaluator = "Latex";
+                      } else if(bkUtils.beginsWith(name,"JavaScript")) {
+                        notebookModel.cells[i].evaluator = "JavaScript";
+                      } else if(name === "Groovy") {
+                        notebookModel.cells[i].evaluator = plugin;
+                      } else if(name === "Python") {
+                        notebookModel.cells[i].evaluator = plugin;
+                      }
+                      break;
+                    }
+                  }
+                }
+              }
+              for (var j = 0; j < notebookModel.evaluators.length; ++j) {
+                var name = notebookModel.evaluators[j].name;
+                var plugin = notebookModel.evaluators[j].plugin;
+                if (bkUtils.beginsWith(name,"Html")) {
+                  notebookModel.evaluators[j].name = "Html";
+                  notebookModel.evaluators[j].plugin = "Html";
+                } else if(bkUtils.beginsWith(name,"Latex")) {
+                  notebookModel.evaluators[j].name = "Latex";
+                  notebookModel.evaluators[j].plugin = "Latex";
+                } else if(bkUtils.beginsWith(name,"JavaScript")) {
+                  notebookModel.evaluators[j].name = "JavaScript";
+                  notebookModel.evaluators[j].plugin = "JavaScript";
+                } else if(name === "Groovy") {
+                  notebookModel.evaluators[j].name = plugin;
+                } else if(name === "Python") {
+                  notebookModel.evaluators[j].name = plugin;
+                }
+              }
+            }
+            // HACK END
+            
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
                 addEvaluator(notebookModel.evaluators[i], !isExistingSession);

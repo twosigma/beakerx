@@ -77,7 +77,10 @@
 
 	var addEvaluators = function(evarr, alwaysCreateNewEvaluator, func, stat) {
 	  if (evarr.length == 0) {
-	    func(stat);
+            showLoadingStatusMessage("Rendering Notebook...");
+	    setTimeout(function () {
+              func(stat);
+            }, 1);
 	    return;
 	  }
 	  var settings = evarr.shift();

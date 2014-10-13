@@ -276,35 +276,32 @@
 
 	    // this is used to load evaluators before rendering the page
             if (notebookModel && notebookModel.evaluators) {
-		addEvaluators(notebookModel.evaluators.slice(),  !isExistingSession,
-			      function(stat)
-			      {
-				  showLoadingStatusMessage("Rendering Notebook");
-				  bkSessionManager.setup(
-					      stat.notebookUri, stat.uriType, stat.readOnly, stat.format,
-					      stat.notebookModel, stat.edited, stat.sessionId);
-				  if (!stat.isExistingSession) {
-				      showLoadingStatusMessage("Initializing Notebook");
-				      bkUtils.log("open", {
-					      uri: stat.notebookUri,
-						  uriType: stat.uriType,
-						  format: stat.format,
-						  maxCellLevel: _(stat.notebookModel.cells).max(function(cell) {
-							  return cell.level;
-						      }).level,
-						  cellCount: stat.notebookModel.cells.length
-						  });
-				      bkHelper.evaluate("initialization");
-				  }
-				  stat.scope.loading = false;
-				  showLoadingStatusMessage("");
-			      },
-			      {
-				  notebookUri:notebookUri, uriType:uriType, readOnly:readOnly, format:format,
-				      notebookModel:notebookModel, edited:edited, sessionId:sessionId, scope:$scope,
-				      isExistingSession:isExistingSession }
-			      );
-		return;
+	      addEvaluators(notebookModel.evaluators.slice(),  !isExistingSession,
+			    function(stat) {
+			      bkSessionManager.setup(
+				stat.notebookUri, stat.uriType, stat.readOnly, stat.format,
+				stat.notebookModel, stat.edited, stat.sessionId);
+			      if (!stat.isExistingSession) {
+				bkUtils.log("open", {
+				  uri: stat.notebookUri,
+				  uriType: stat.uriType,
+				  format: stat.format,
+				  maxCellLevel: _(stat.notebookModel.cells).max(function(cell) {
+				    return cell.level;
+				  }).level,
+				  cellCount: stat.notebookModel.cells.length
+				});
+                                
+				bkHelper.evaluate("initialization");
+			      }
+			      stat.scope.loading = false;
+			    }, {
+			      notebookUri:notebookUri, uriType:uriType, readOnly:readOnly, format:format,
+			      notebookModel:notebookModel, edited:edited, sessionId:sessionId, scope:$scope,
+			      isExistingSession:isExistingSession
+                            }
+			   );
+	      return;
             }
 
 	    if (!isExistingSession) {

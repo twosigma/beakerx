@@ -177,7 +177,7 @@
             isExistingSession = !!isExistingSession;
             evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
 
-              // HACK to fix older version of evaluator configuration
+            // HACK to fix older version of evaluator configuration
             if (notebookModel && notebookModel.cells && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.cells.length; ++i) {
                 if (notebookModel.cells[i].evaluator != undefined) {
@@ -221,12 +221,7 @@
               }
             }
             // HACK END
-            
-            if (notebookModel && notebookModel.evaluators) {
-              for (var i = 0; i < notebookModel.evaluators.length; ++i) {
-                addEvaluator(notebookModel.evaluators[i], !isExistingSession);
-              }
-            }
+
             document.title = bkSessionManager.getNotebookTitle();
             if (!isExistingSession) {
               bkUtils.log("open", {
@@ -238,9 +233,18 @@
                 }).level,
                 cellCount: notebookModel.cells.length
               });
-              bkHelper.evaluate("initialization");
             }
-            $scope.loading = false;
+            setTimeout(function() {
+              if (notebookModel && notebookModel.evaluators) {
+                for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+                  addEvaluator(notebookModel.evaluators[i], !isExistingSession);
+                }
+              }
+              if (!isExistingSession) {
+                bkHelper.evaluate("initialization");
+              }
+              $scope.loading = false;
+            }, 1);
           };
           return {
             openUri: function(target, sessionId, retry, retryCountMax) {

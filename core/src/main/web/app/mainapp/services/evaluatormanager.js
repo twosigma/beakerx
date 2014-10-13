@@ -39,6 +39,8 @@
         }
       },
       newEvaluator: function(evaluatorSettings) {
+	    if(loadingInProgressEvaluators.indexOf(evaluatorSettings)>0)
+		return; // already loading...
         loadingInProgressEvaluators.push(evaluatorSettings);
         return bkEvaluatePluginManager.getEvaluatorFactory(evaluatorSettings.plugin)
             .then(function(factory) {

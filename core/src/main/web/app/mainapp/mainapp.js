@@ -75,45 +75,44 @@
         };
         var evaluatorMenuItems = [];
 
-	var addEvaluators = function(evarr, alwaysCreateNewEvaluator, func, stat)
-	{
-	    if(evarr.length==0)
-		{
-		    func(stat);
-		    return;
-		}
-	    var settings = evarr.shift();
-	    
+	var addEvaluators = function(evarr, alwaysCreateNewEvaluator, func, stat) {
+	  if (evarr.length == 0) {
+	    func(stat);
+	    return;
+	  }
+	  var settings = evarr.shift();
+	  
           if (alwaysCreateNewEvaluator) {
             settings.shellID = null;
           }
 
-	    showLoadingStatusMessage("Loading "+settings.name+" plugin");
+	  showLoadingStatusMessage("Starting " + settings.name + "...");
 
 	  return bkEvaluatorManager.newEvaluator(settings)
-              .then(function(evaluator) {
-                if (!_.isEmpty(evaluator.spec)) {
-                  var actionItems = [];
-                  _(evaluator.spec).each(function(value, key) {
-                    if (value.type === "action") {
-                      actionItems.push({
-                        name: value.name ? value.name : value.action,
-                        action: function() {
-                          evaluator.perform(key);
-                        }
-                      });
-                    }
-		      });
-                  if (actionItems.length > 0) {
-                    evaluatorMenuItems.push({
-                      name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
-                      items: actionItems
+            .then(function(evaluator) {
+              if (!_.isEmpty(evaluator.spec)) {
+                var actionItems = [];
+                _(evaluator.spec).each(function(value, key) {
+                  if (value.type === "action") {
+                    actionItems.push({
+                      name: value.name ? value.name : value.action,
+                      action: function() {
+                        evaluator.perform(key);
+                      }
                     });
                   }
+		});
+                if (actionItems.length > 0) {
+                  evaluatorMenuItems.push({
+                    name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
+                    items: actionItems
+                  });
                 }
-		addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
-	     }, function(evaluator) {
-		  addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat); });
+              }
+	      addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+	    }, function(evaluator) {
+	      addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+            });
 	}
 	
 

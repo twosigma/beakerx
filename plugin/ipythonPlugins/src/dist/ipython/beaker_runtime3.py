@@ -61,27 +61,17 @@ class Beaker:
         return result['value']
 
     def set_session(self, id):
-        print('set_session(%s)' % id)
         self.session_id = id
 
     def set(self, var, val):
         return self.set4(var, val, False, True)
 
-#    def __setattr__(self, name, value):
-#        print('setattr(%s)=%s' % (name, value))
-#        if 'session_id' == name:
-#            self.__dict__['session_id'] = value
-#            return
-#        return self.set(name, value)
+    def __setattr__(self, name, value):
+        print('setattr(%s)=%s' % (name, value))
+        if 'session_id' == name:
+            self.__dict__['session_id'] = value
+            return
+        return self.set(name, value)
 
     def __getattr__(self, name):
-        print('getattr(%s)' % name)
         return self.get(name)
-
-# This sequence replaces the module currently under definition with an
-# instance of the above class.  But first, we have to save a pointer
-# to the module in a global because if the module is garbage
-# collected, then all variables in it (in particular, the modules we
-# imported above) get cleared out to None.
-beaker_module = sys.modules[__name__]
-sys.modules[__name__] = Beaker()

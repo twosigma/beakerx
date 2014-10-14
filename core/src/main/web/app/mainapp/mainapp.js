@@ -80,7 +80,7 @@
             showLoadingStatusMessage("Rendering Notebook...");
 	    setTimeout(function () {
               func(stat);
-            }, 1);
+            }, 100);
 	    return;
 	  }
 	  var settings = evarr.shift();
@@ -222,8 +222,6 @@
             addScrollingHack();
             isExistingSession = !!isExistingSession;
             evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
-	    //bkSessionManager.reset(
-	    //			   notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
 
               // HACK to fix older version of evaluator configuration
             if (notebookModel && notebookModel.cells && notebookModel.evaluators) {
@@ -239,8 +237,8 @@
                         notebookModel.cells[i].evaluator = "Latex";
                       } else if(bkUtils.beginsWith(name,"JavaScript")) {
                         notebookModel.cells[i].evaluator = "JavaScript";
-                      } else if(name === "Groovy") {
-                        notebookModel.cells[i].evaluator = plugin;
+                      } else if(bkUtils.beginsWith(name,"Groovy")) {
+                        notebookModel.cells[i].evaluator = "Groovy";
                       } else if(name === "Python") {
                         notebookModel.cells[i].evaluator = plugin;
                       }
@@ -261,8 +259,9 @@
                 } else if(bkUtils.beginsWith(name,"JavaScript")) {
                   notebookModel.evaluators[j].name = "JavaScript";
                   notebookModel.evaluators[j].plugin = "JavaScript";
-                } else if(name === "Groovy") {
-                  notebookModel.evaluators[j].name = plugin;
+                } else if(bkUtils.beginsWith(name,"Groovy")) {
+                  notebookModel.evaluators[j].name = "Groovy";
+                  notebookModel.evaluators[j].plugin = "Groovy";
                 } else if(name === "Python") {
                   notebookModel.evaluators[j].name = plugin;
                 }
@@ -371,7 +370,6 @@
 		    showLoadingStatusMessage("");
                   });
                 }).finally(function() {
-			//	$scope.loading = false;
                 });
               }
             },

@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os, urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, json, pandas, yaml
+import os, json, pandas, yaml
+import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse
 
 # should be inner class to Beaker
 class DataFrameEncoder(json.JSONEncoder):
@@ -56,22 +57,17 @@ class Beaker:
             raise NameError('name \'' + var + '\' is not defined in notebook namespace')
         return result['value']
 
+    def set_session(self, id):
+        self.session_id = id
 
-beaker_instance = Beaker()
+    def set(self, var, val):
+        return self.set4(var, val, False, True)
 
-def set(var, val):
-    return beaker_instance.set4(var, val, False, True)
+    def __setattr__(self, name, value):
+        if 'session_id' == name:
+            self.__dict__['session_id'] = value
+            return
+        return self.set(name, value)
 
-# returns before the write completes
-def set_fast(var, val):
-    return beaker_instance.set4(var, val, False, False)
-
-# remove a var from the namespace
-def unset(var):
-    return beaker_instance.set4(var, None, True, True)
-
-def get(var):
-    return beaker_instance.get(var)
-
-def set_session(id):
-    beaker_instance.session_id = id
+    def __getattr__(self, name):
+        return self.get(name)

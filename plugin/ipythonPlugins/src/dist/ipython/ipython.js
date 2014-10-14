@@ -294,9 +294,10 @@ define(function(require, exports, module) {
             var finish = function () {
               if (bkHelper.hasSessionId()) {
 		  var initCode = ("try:\n"+
-				  "    import beaker3 as beaker\n" +
+				  "    import beaker_runtime3 as beaker_runtime\n" +
 				  "except ImportError:\n" +
-				  "    import beaker\n" +
+				  "    import beaker_runtime as beaker_runtime\n" +
+                                  "beaker = beaker_runtime.Beaker()\n" +
 				  "beaker.set_session('" + bkHelper.getSessionId() + "')\n");
                 self.evaluate(initCode, {}).then(function () {
                   if (doneCB) {

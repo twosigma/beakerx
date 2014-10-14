@@ -197,10 +197,6 @@
         return cometdUtils.disconnect();
       },
 
-      beginsWith: function(haystack, needle) {
-        return (haystack.substr(0, needle.length) === needle);
-      },
-
       // wrapper around requireJS
       moduleMap: {},
       loadModule: function(url, name) {

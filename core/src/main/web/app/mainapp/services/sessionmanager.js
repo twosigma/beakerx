@@ -162,25 +162,6 @@
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
         bkSession.backup(_sessionId, generateBackupData());
       },
-      setup: function(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
-
-        // check inputs
-        if (!sessionId) {
-          sessionId = bkUtils.generateId(6);
-        }
-
-        // reset
-        _uriType = uriType;
-        _readOnly = readOnly;
-        _format = format;
-        _notebookUri.set(notebookUri);
-        _notebookModel.set(notebookModel);
-        _edited = !!edited;
-        _sessionId = sessionId;
-
-        bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
-        bkSession.backup(_sessionId, generateBackupData());
-      },
       clear: function() {
         bkEvaluatorManager.reset();
         bkNotebookNamespaceModelManager.clear(_sessionId);

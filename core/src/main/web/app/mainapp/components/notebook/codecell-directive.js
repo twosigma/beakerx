@@ -138,10 +138,12 @@
             return;
           }
           if (evaluator.autocomplete) {
-            evaluator.autocomplete($scope.cellmodel.input.body, cpos, onResults);
+            evaluator.autocomplete(
+                $scope.cellmodel.input.body,
+                cpos, onResults);
           } else if (evaluator.autocomplete2) {
-            // dead code? XXX
-            evaluator.autocomplete2($scope.cm, null, onResults);
+            evaluator.autocomplete2(
+                $scope.cm, null, onResults);
           }
         };
 
@@ -362,12 +364,9 @@
                 var token = getToken(editor, cur);
                 var cursorPos = editor.indexFromPos(cur);
                 // We might want this defined by the plugin.
-                var onResults = function(results, matched_text, dotFix) {
+                var onResults = function(results, matched_text) {
                   var start = token.start;
                   var end = token.end;
-                  if (dotFix && token.string === ".") {
-                    start += 1;
-                  }
                   if (matched_text) {
                     start += (cur.ch - token.start - matched_text.length);
                     end = start + matched_text.length;

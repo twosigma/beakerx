@@ -17,6 +17,7 @@
     "bootstrap": "2.3.2",
     "font-awesome": "4.0.3",
     "requirejs": "2.1.11",
-    "big.js": "~2.5.1"
+    "big.js": "~2.5.1",
+    "angular-datatables": ""
   }
 }

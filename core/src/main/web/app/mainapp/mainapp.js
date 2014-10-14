@@ -273,6 +273,7 @@
 	    document.title = bkSessionManager.getNotebookTitle();
 	    bkSessionManager.backup();
 	    bkSessionManager.clear();
+            sessionId = bkSessionManager.setSessionId(sessionId);
 
 	    // this is used to load evaluators before rendering the page
             if (notebookModel && notebookModel.evaluators) {
@@ -296,6 +297,7 @@
 			      }
 			      stat.scope.loading = false;
 			    }, {
+                              // these values should be captured by the closure, so no need for this object
 			      notebookUri:notebookUri, uriType:uriType, readOnly:readOnly, format:format,
 			      notebookModel:notebookModel, edited:edited, sessionId:sessionId, scope:$scope,
 			      isExistingSession:isExistingSession

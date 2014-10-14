@@ -162,6 +162,13 @@
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
         bkSession.backup(_sessionId, generateBackupData());
       },
+      setSessionId: function(sessionId) {
+        if (!sessionId) {
+          sessionId = bkUtils.generateId(6);
+        }
+        _sessionId = sessionId;
+        return _sessionId;
+      },
       setup: function(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
 
         // check inputs

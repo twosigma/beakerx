@@ -22,7 +22,7 @@
   beaker.bkoDirective('Table', ["bkCellMenuPluginManager", "bkDatatables", "bkUtils", function(bkCellMenuPluginManager, bkDatatables, bkUtils) {
     var CELL_TYPE = "bko-tabledisplay";
     return {
-      template: '<table datatable="" cellspacing="0" dt-options="dtOptions" dt-columns="dtColumns" class="compact row-border hover"></table>',
+      template: '<table datatable="" cellspacing="0" dt-options="dtOptions" dt-columns="dtColumns" class="compact row-border stripe hover"></table>',
       controller: function($scope) {
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
@@ -56,11 +56,12 @@
           ])
           .withTableToolsOption('sRowSelect', 'os')
           .withOption('scrollX', true)
+          .withDOM('<"bko-table-top">rt<"bko-table-bottom"lp><"bko-table-bottom2"TC><"bko-table-clear">')
           .withOption('searching', false);
         if (data.length > 25) {
           scope.dtOptions.withPaginationType('simple_numbers')
           .withDisplayLength(25)           
-	  .withOption('lengthMenu', [[25, 50, 100, -1], [25, 50, 100, "All"]]);
+	  .withOption('lengthMenu', [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]);
         } else {
           scope.dtOptions.withOption('paging', false);
 	  scope.dtOptions.withOption('scrollY', 350);

@@ -301,3 +301,20 @@ table.dataTable tbody td {
 .text-danger {
     color: #a94442;
 }
+
+.bko-table-top {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.bko-table-bottom {
+    padding-top: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.bko-table-bottom2 {
+    padding-top: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+}

@@ -22,7 +22,7 @@
   beaker.bkoDirective('Table', ["bkCellMenuPluginManager", "bkDatatables", "bkUtils", function(bkCellMenuPluginManager, bkDatatables, bkUtils) {
     var CELL_TYPE = "bko-tabledisplay";
     return {
-      template: '<table datatable="" dt-options="dtOptions" dt-columns="dtColumns" class="compact row-border hover"></table>',
+      template: '<table datatable="" cellspacing="0" dt-options="dtOptions" dt-columns="dtColumns" class="compact row-border hover"></table>',
       controller: function($scope) {
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
@@ -42,7 +42,7 @@
             deferred.resolve(data);
             return deferred.promise; })
           .withColReorder()
-          .withColVis()
+	  .withColVis()
           .withTableTools('vendor/TableTools-2.2.3/swf/copy_csv_xls_pdf.swf')
           .withTableToolsButtons([
             'select_all',
@@ -55,18 +55,45 @@
             }
           ])
           .withTableToolsOption('sRowSelect', 'os')
-          .withOption('responsive', true)
+          .withOption('scrollX', true)
           .withOption('searching', false);
-        if (data.length > 15) {
+        if (data.length > 25) {
           scope.dtOptions.withPaginationType('simple_numbers')
-          .withDisplayLength(10);            
+          .withDisplayLength(25)           
+	  .withOption('lengthMenu', [[25, 50, 100, -1], [25, 50, 100, "All"]]);
         } else {
           scope.dtOptions.withOption('paging', false);
+	  scope.dtOptions.withOption('scrollY', 350);
+	  scope.dtOptions.withOption('scrollCollapse', true);
         }
         scope.dtColumns = [ ];
         for (var i = 0; i < columns.length; i++) {
-          scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i]));
-        }
+	    if(columns[i] === "time") {
+		if(scope.model.getCellModel().timeStrings) {
+		    scope.timeStrings = scope.model.getCellModel().timeStrings;
+		    scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
+					 .renderWith(function(data, type, full, meta)
+						     {
+							 return scope.timeStrings[meta.row];
+						     }));
+		} else {
+		    scope.tz = scope.model.getCellModel().timeZone;
+		    scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
+					 .renderWith(function(value,type,full,meta)
+						     {
+							 var nano = value % 1000;
+							 var micro = (value / 1000) % 1000;
+							 var milli = value / 1000 / 1000;
+							 var time = moment(milli);
+							 var tz = scope.tz;
+							 if (tz)
+							     time.tz(tz);
+							 return time.format("YYYYMMDD HH:mm:ss.SSS");
+						     }));
+		}
+	    } else
+		scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i]));
+	}
       }
     };
   }]);

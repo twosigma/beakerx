@@ -59,7 +59,7 @@
       },
       getEventOffsetX: function(elem, event) { // offsetX is not defined in firefox
         var x = event.offsetX;
-        if (_.isUndefined(x) && !_.isUndefined(elem.offset)) {
+        if (_.isUndefined(x)) {
           x = event.pageX - elem.offset().left;
         }
         return x;

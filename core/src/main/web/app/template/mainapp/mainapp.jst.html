@@ -25,7 +25,8 @@
         Beaker
       </a>
       <span class="brand" ng-if="loading"><i class='fa fa-refresh fa-spin text-white'></i></span>
-      <ul class="sub-nav">
+      <div class="text-white loadingmsg" ng-if="loading">{{loadingmsg}}</div>
+      <ul class="sub-nav" ng-if="!loading">
         <li class="dropdown" ng-repeat="m in getMenus()">
           <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
           <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>

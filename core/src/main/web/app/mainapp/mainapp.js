@@ -64,6 +64,9 @@
         var showStatusMessage = function(message) {
           $scope.message = message;
         };
+        var showLoadingStatusMessage = function(message) {
+          $scope.loadingmsg = message;
+        };
         var showTransientStatusMessage = function(message) {
           showStatusMessage(message);
           bkUtils.delay(500).then(function() {
@@ -71,6 +74,50 @@
           });
         };
         var evaluatorMenuItems = [];
+
+	var addEvaluators = function(evarr, alwaysCreateNewEvaluator, func, stat) {
+	  if (evarr.length == 0) {
+            showLoadingStatusMessage("Rendering Notebook...");
+	    setTimeout(function () {
+              func(stat);
+            }, 100);
+	    return;
+	  }
+	  var settings = evarr.shift();
+	  
+          if (alwaysCreateNewEvaluator) {
+            settings.shellID = null;
+          }
+
+	  showLoadingStatusMessage("Starting " + settings.name + "...");
+
+	  return bkEvaluatorManager.newEvaluator(settings)
+            .then(function(evaluator) {
+              if (!_.isEmpty(evaluator.spec)) {
+                var actionItems = [];
+                _(evaluator.spec).each(function(value, key) {
+                  if (value.type === "action") {
+                    actionItems.push({
+                      name: value.name ? value.name : value.action,
+                      action: function() {
+                        evaluator.perform(key);
+                      }
+                    });
+                  }
+		});
+                if (actionItems.length > 0) {
+                  evaluatorMenuItems.push({
+                    name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
+                    items: actionItems
+                  });
+                }
+              }
+	      addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+	    }, function(evaluator) {
+	      addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+            });
+	}
+	
 
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
           // set shell id to null, so it won't try to find an existing shell with the id
@@ -91,7 +138,7 @@
                         }
                       });
                     }
-                  });
+		      });
                   if (actionItems.length > 0) {
                     evaluatorMenuItems.push({
                       name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
@@ -99,7 +146,7 @@
                     });
                   }
                 }
-              });
+	     });
         };
 
         var loadNotebook = (function() {
@@ -171,9 +218,8 @@
               notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
               isExistingSession) {
             $scope.loading = true;
+            showLoadingStatusMessage("Loading notebook");
             addScrollingHack();
-            bkSessionManager.reset(
-                notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
             isExistingSession = !!isExistingSession;
             evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
 
@@ -191,8 +237,8 @@
                         notebookModel.cells[i].evaluator = "Latex";
                       } else if(bkUtils.beginsWith(name,"JavaScript")) {
                         notebookModel.cells[i].evaluator = "JavaScript";
-                      } else if(name === "Groovy") {
-                        notebookModel.cells[i].evaluator = plugin;
+                      } else if(bkUtils.beginsWith(name,"Groovy")) {
+                        notebookModel.cells[i].evaluator = "Groovy";
                       } else if(name === "Python") {
                         notebookModel.cells[i].evaluator = plugin;
                       }
@@ -213,34 +259,64 @@
                 } else if(bkUtils.beginsWith(name,"JavaScript")) {
                   notebookModel.evaluators[j].name = "JavaScript";
                   notebookModel.evaluators[j].plugin = "JavaScript";
-                } else if(name === "Groovy") {
-                  notebookModel.evaluators[j].name = plugin;
+                } else if(bkUtils.beginsWith(name,"Groovy")) {
+                  notebookModel.evaluators[j].name = "Groovy";
+                  notebookModel.evaluators[j].plugin = "Groovy";
                 } else if(name === "Python") {
                   notebookModel.evaluators[j].name = plugin;
                 }
               }
             }
             // HACK END
-            
+
+	    document.title = bkSessionManager.getNotebookTitle();
+	    bkSessionManager.backup();
+	    bkSessionManager.clear();
+
+	    // this is used to load evaluators before rendering the page
             if (notebookModel && notebookModel.evaluators) {
-              for (var i = 0; i < notebookModel.evaluators.length; ++i) {
-                addEvaluator(notebookModel.evaluators[i], !isExistingSession);
-              }
+	      addEvaluators(notebookModel.evaluators.slice(),  !isExistingSession,
+			    function(stat) {
+			      bkSessionManager.setup(
+				stat.notebookUri, stat.uriType, stat.readOnly, stat.format,
+				stat.notebookModel, stat.edited, stat.sessionId);
+			      if (!stat.isExistingSession) {
+				bkUtils.log("open", {
+				  uri: stat.notebookUri,
+				  uriType: stat.uriType,
+				  format: stat.format,
+				  maxCellLevel: _(stat.notebookModel.cells).max(function(cell) {
+				    return cell.level;
+				  }).level,
+				  cellCount: stat.notebookModel.cells.length
+				});
+                                
+				bkHelper.evaluate("initialization");
+			      }
+			      stat.scope.loading = false;
+			    }, {
+			      notebookUri:notebookUri, uriType:uriType, readOnly:readOnly, format:format,
+			      notebookModel:notebookModel, edited:edited, sessionId:sessionId, scope:$scope,
+			      isExistingSession:isExistingSession
+                            }
+			   );
+	      return;
             }
-            document.title = bkSessionManager.getNotebookTitle();
-            if (!isExistingSession) {
-              bkUtils.log("open", {
-                uri: notebookUri,
-                uriType: uriType,
-                format: format,
-                maxCellLevel: _(notebookModel.cells).max(function(cell) {
-                  return cell.level;
-                }).level,
-                cellCount: notebookModel.cells.length
-              });
-              bkHelper.evaluate("initialization");
-            }
-            $scope.loading = false;
+
+	    if (!isExistingSession) {
+		bkUtils.log("open", {
+			uri: notebookUri,
+			uriType: uriType,
+			format: format,
+			maxCellLevel: _(notebookModel.cells).max(function(cell) {
+				return cell.level;
+			    }).level,
+			cellCount: notebookModel.cells.length
+		    });
+		bkHelper.evaluate("initialization");
+	    }
+	    $scope.loading = false;
+	    showLoadingStatusMessage("");
           };
           return {
             openUri: function(target, sessionId, retry, retryCountMax) {
@@ -249,6 +325,7 @@
                 return;
               }
               $scope.loading = true;
+	      showLoadingStatusMessage("Opening URI");
               if (retryCountMax === undefined) {
                 retryCountMax = 100;
               }
@@ -289,9 +366,10 @@
                 }).catch(function(data, status, headers, config) {
                   bkHelper.show1ButtonModal(data, "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
+		    $scope.loading = false;
+		    showLoadingStatusMessage("");
                   });
                 }).finally(function() {
-                  $scope.loading = false;
                 });
               }
             },
@@ -556,7 +634,7 @@
               });
             },
             addEvaluator: function(settings) {
-              addEvaluator(settings, true);
+              return addEvaluator(settings, true);
             },
             removeEvaluator: function(plugin) {
               bkEvaluatorManager.removeEvaluator(plugin);
@@ -785,9 +863,8 @@
           }
         });
 
-        showStatusMessage("");
+        showLoadingStatusMessage("");
         $scope.loading = true;
-
         // ensure an existing session is cleared so that the empty notebook model
         // makes the UI is blank immediately (instead of showing leftover from a previous session)
         bkSessionManager.clear();

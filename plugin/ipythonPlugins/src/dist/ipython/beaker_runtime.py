@@ -68,11 +68,3 @@ class Beaker:
 
     def __getattr__(self, name):
         return self.get(name)
-
-# This sequence replaces the module currently under definition with an
-# instance of the above class.  But first, we have to save a pointer
-# to the module in a global because if the module is garbage
-# collected, then all variables in it (in particular, the modules we
-# imported above) get cleared out to None.
-beaker_module = sys.modules[__name__]
-sys.modules[__name__] = Beaker()

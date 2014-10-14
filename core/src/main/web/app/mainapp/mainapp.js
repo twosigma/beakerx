@@ -34,8 +34,7 @@
     'bk.evaluatorManager',
     'bk.evaluateJobManager',
     'bk.notebook',
-    'bk.pluginManager',
-    'bk.datatables'
+    'bk.pluginManager'
   ]);
 
   /**

@@ -28,8 +28,6 @@ class DataFrameEncoder(json.JSONEncoder):
 
 class Beaker:
     """Runtime support for Python code in Beaker."""
-    __package__ = None
-    __name__ = 'beaker'
     session_id = ''
     core_url = '127.0.0.1:' + os.environ['beaker_core_port']
     password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
@@ -49,7 +47,6 @@ class Beaker:
             raise NameError(reply)
   
     def get(self, var):
-        print('get(%s)' % var)
         req = urllib.request.Request('http://' + self.core_url + '/rest/namespace/get?' + 
                                      urllib.parse.urlencode({
                     'name': var,
@@ -67,7 +64,6 @@ class Beaker:
         return self.set4(var, val, False, True)
 
     def __setattr__(self, name, value):
-        print('setattr(%s)=%s' % (name, value))
         if 'session_id' == name:
             self.__dict__['session_id'] = value
             return

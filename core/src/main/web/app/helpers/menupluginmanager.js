@@ -31,7 +31,7 @@
       if (existingItem) {
         existingItem.priority = existingItem.priority ? existingItem.priority : DEFAULT_PRIORITY;
         newItem.priority = newItem.priority ? newItem.priority : DEFAULT_PRIORITY;
-        if (newItem.priority > existingItem.priority) {
+        if (newItem.priority >= existingItem.priority) {
           // replace in place
           itemsList.splice(itemsList.indexOf(existingItem), 1, newItem);
         } else {
@@ -77,7 +77,8 @@
           name: plugin.parent,
           items: [],
           index: pluginIndex,
-          secondaryIndex: secondaryIndex
+          secondaryIndex: secondaryIndex,
+          sortorder: plugin.sortorder
         };
         menus[pluginIndex + '_' + secondaryIndex + '_' + parentMenu.name] = parentMenu;
       } else {
@@ -91,6 +92,14 @@
 
       if (!plugin.submenu) {
         utils.addMenuItems(parentMenu, plugin.items);
+        if (! _.isFunction(parentMenu.items)) {
+          parentMenu.items.sort(function(a,b) {
+            if (a.sortorder !== undefined && b.sortorder !== undefined) {
+              return a.sortorder>b.sortorder;
+            }
+            return a.sortorder !== undefined;
+          });
+        }
       } else {
         var subMenu = _.find(parentMenu.items, function(it) {
           return it.name === plugin.submenu;
@@ -99,9 +108,18 @@
           subMenu = {
             name: plugin.submenu,
             type: "submenu",
-            items: []
+            items: [],
+            sortorder: plugin.submenusortorder
           };
           parentMenu.items.push(subMenu);
+          if (! _.isFunction(parentMenu.items)) {
+            parentMenu.items.sort(function(a,b) {
+              if (a.sortorder !== undefined && b.sortorder !== undefined) {
+                return a.sortorder>b.sortorder;
+              }
+              return a.sortorder !== undefined;
+            });
+          }
         } else {
           subMenu.disabled = false;
           subMenu.type = "submenu";
@@ -110,6 +128,14 @@
           }
         }
         utils.addMenuItems(subMenu, plugin.items);
+        if (! _.isFunction(subMenu.items)) {
+          subMenu.items.sort(function(a,b) {
+            if (a.sortorder !== undefined && b.sortorder !== undefined) {
+              return a.sortorder>b.sortorder;
+            }
+            return a.sortorder !== undefined;
+          });
+        }
       }
     };
 

@@ -23,6 +23,7 @@ define(function(require, exports, module) {
   var fileMenuItems = [
     {
       name: "New",
+      sortorder: 100,
       action: function() {
         bkHelper.newSession(true);
       },
@@ -30,28 +31,31 @@ define(function(require, exports, module) {
     },
     {
       name: "Open",
-      autoReduce: true,
-      items: []
+      sortorder: 110
     },
     {
       name: "Open recent",
+      sortorder: 120,
       items: function() {
         return bkHelper.getRecentMenuItems();
       }
     },
     {
       name: "Save",
+      sortorder: 130,
       action: function() {
         bkHelper.saveNotebook();
       }
     },
     {
       name: "Save As",
+      sortorder: 140,
       autoReduce: true,
       items: []
     },
     {
       name: "Share to Web",
+      sortorder: 150,
       action: function () {
         bkHelper.shareNotebook();
       },
@@ -59,6 +63,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Close",
+      sortorder: 160,
       action: function() {
         bkHelper.closeNotebook();
       }

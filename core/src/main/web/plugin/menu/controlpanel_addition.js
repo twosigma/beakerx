@@ -25,6 +25,7 @@ define(function(require, exports, module) {
         parent: "Settings",
         items: [{
           name: "Set anonymous tracking permission",
+          sortorder: 100,
           action: function() {
             bkHelper.showAnonymousTrackingDialog();
           },

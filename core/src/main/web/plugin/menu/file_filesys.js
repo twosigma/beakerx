@@ -30,6 +30,7 @@ define(function(require, exports, module) {
             name: "Open... (.bkr)",
             reducedName: "Open...",
             tooltip: "Open a bkr notebook file",
+            sortorder: 100,
             action: function() {
               bkHelper.showModalDialog(
                   bkHelper.openNotebook,
@@ -48,6 +49,7 @@ define(function(require, exports, module) {
             name: "Save as... (file)",
             reducedName: "Save as...",
             tooltip: "Save a file from file system",
+            sortorder: 100,
             action: function() {
               bkHelper.showDefaultSavingFileChooser().then(function(ret) {
                 if (ret.uri) {

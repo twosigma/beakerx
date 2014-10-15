@@ -23,12 +23,14 @@ define(function(require, exports, module) {
   var menuItems = [
     {
       name: "Start Page",
+      sortorder: 100,
       action: function() {
         bkHelper.gotoControlPanel();
       }
     },
     {
       name: 'Show Hierarchy',
+      sortorder: 110,
       isChecked: function() {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
         return notebookViewModel.isHierarchyEnabled();
@@ -40,6 +42,7 @@ define(function(require, exports, module) {
     },
     {
       name: 'Advanced Mode',
+      sortorder: 120,
       isChecked: function() {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
         return notebookViewModel.isAdvancedMode();
@@ -54,6 +57,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Show stdout/err",
+      sortorder: 130,
       action: function() {
         bkHelper.getBkNotebookViewModel().toggleShowOutput();
       },

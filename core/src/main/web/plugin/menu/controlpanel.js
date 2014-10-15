@@ -23,15 +23,21 @@ define(function(require, exports, module) {
     {
       name: "New",
       tooltip: "Open a new empty notebook, add the languages of your choice",
+      sortorder: 100,
       action: function() {
         bkHelper.newSession(true);
       }
     },
     {
       name: "Open recent",
+      sortorder: 120,
       items: function() {
         return bkHelper.getRecentMenuItems();
       }
+    },
+    {
+      name: "Open",
+      sortorder: 110
     }
   ];
 
@@ -42,10 +48,12 @@ define(function(require, exports, module) {
       {
         parent: "File",
         submenu: "Open",
+        submenusortorder: 110,
         items: [
           {
             name: "Open... (.bkr)",
             tooltip: "Open a bkr notebook file",
+            sortorder: 100,
             action: function() {
               bkHelper.showModalDialog(
                   function(originalUrl) {
@@ -57,23 +65,6 @@ define(function(require, exports, module) {
             }
           }
         ]
-      },
-      {
-        parent: "Help",
-        items: [{
-          name: "About Beaker",
-          action: function() {
-            bkHelper.showModalDialog(undefined, "app/template/about.html");
-          },
-          tooltip: "Basic information about this application"
-        },
-        {
-          name: "Keyboard shortcuts",
-          action: function() {
-            window.open("./keyboardShortcuts.html");
-          },
-          tooltip: "Show keyboard shortcuts"
-        }]
       }
     ];
     menuItemsDeferred.resolve(toAdd);

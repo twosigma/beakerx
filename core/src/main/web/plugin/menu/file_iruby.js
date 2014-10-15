@@ -183,6 +183,7 @@ define(function(require, exports, module) {
             name: "Open... IRuby (.ipynb)",
             reducedName: "Open...",
             tooltip: "Open a IRuby notebook from file system and convert it to Beaker notebook",
+            sortorder: 120,
             action: function() {
               bkHelper.showModalDialog(
                   function(originalUrl) {

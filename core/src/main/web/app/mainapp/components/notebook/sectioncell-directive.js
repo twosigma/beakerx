@@ -49,6 +49,9 @@
           $scope.cellmodel.title = newTitle;
           bkUtils.refreshRootScope();
         };
+        $scope.$watch('cellmodel.collapsed', function(nu, old) {
+          if (nu!=old) bkBunsenHelper.resizeIFrame();
+        });
         $scope.$watch('cellmodel.title', function(newVal, oldVal) {
           if (newVal !== oldVal) {
             bkSessionManager.setNotebookModelEdited(true);

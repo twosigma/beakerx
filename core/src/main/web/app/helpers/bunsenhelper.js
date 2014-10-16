@@ -30,7 +30,7 @@
    *
    */
 // bkBaseSessionModel
-  module.factory('bkBunsenHelper', function(bkCoreManager, bkShare, $dialog, $routeParams, $window, bkSessionManager) {
+  module.factory('bkBunsenHelper', function(bkCoreManager, bkShare, $dialog, $routeParams, $window, $timeout, bkSessionManager) {
 
     var bunsenSave = function(notebook, operation) {
       $window.top.postMessage({projectId: $routeParams.projectId,
@@ -48,6 +48,15 @@
 
       userId: function() {
         return $routeParams.userId;
+      },
+
+      resizeIFrame: function() {
+        $timeout(function() {
+          $window.top.postMessage({height: $('html').outerHeight(),
+                                   notebookId: $routeParams.notebookId,
+                                   operation: 'resize'},
+                                  $routeParams.bunsenUiUrl);
+        });
       },
 
       saveNotebook: function() {

@@ -122,6 +122,7 @@
           } else {
             $scope.cellmodel.input.hidden = true;
           }
+          bunsenHelper.resizeIFrame();
         };
 
         $scope.deleteCell = function() {

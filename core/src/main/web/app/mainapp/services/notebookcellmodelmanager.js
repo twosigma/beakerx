@@ -138,6 +138,7 @@
       if (!doNotClearUndoAction) {
         undoAction = undefined;
       }
+      bkBunsenHelper.resizeIFrame();
     };
     return {
       _getCellMap: function() {

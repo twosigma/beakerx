@@ -22,37 +22,6 @@ define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
-      name: "Start Page",
-      action: function() {
-        bkHelper.gotoControlPanel();
-      }
-    },
-    {
-      name: 'Show Hierarchy',
-      isChecked: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        return notebookViewModel.isHierarchyEnabled();
-      },
-      action: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        notebookViewModel.toggleHierarchyEnabled();
-      }
-    },
-    {
-      name: 'Advanced Mode',
-      isChecked: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        return notebookViewModel.isAdvancedMode();
-      },
-      action: function() {
-        var notebookViewModel = bkHelper.getBkNotebookViewModel();
-        notebookViewModel.toggleAdvancedMode();
-        bkHelper.httpPost("../beaker/rest/util/setUseAdvancedMode", {
-          advancedmode: notebookViewModel.isAdvancedMode()
-        });
-      }
-    },
-    {
       name: "Show stdout/err",
       action: function() {
         bkHelper.getBkNotebookViewModel().toggleShowOutput();

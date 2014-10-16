@@ -51,45 +51,37 @@
           scope.stdmodel = combinedplotFormatter.standardizeModel(model);
         };
 
-        scope.prepareSavedState = function(state, states) {
-          scope.state = state;
+        scope.prepareSavedState = function(state) {
           state.focus = scope.calcRange();
-          scope.states = states;
-          // create a state for each plot
-          var plots = scope.stdmodel.plots;
-          for (var i = 0; i < plots.length; i++) {
-            states.push({});
-          }
-          state.width = scope.stdmodel.plotSize.width;
-          scope.width = state.width;
+          scope.width = scope.stdmodel.plotSize.width;
         };
 
-        scope.applySavedState = function(state, states) {
+        scope.applySavedState = function(state) {
           scope.state = state;
-          scope.states = states;
           scope.width = state.width;
         };
 
         scope.preparePlotModels = function() {
           var models = [];
           var plots = scope.stdmodel.plots;
-          var states = scope.states;
-
+          
+          // create a plot model and a saved state for each plot
           for (var i = 0; i < plots.length; i++) {
 
             var plotmodel = plots[i];
             plotmodel.plotIndex = i;
-            models.push({
+            var pl = {
               model : plotmodel,
+              state : { },
               getCellModel : function() {
                 return this.model;
               },
               getDumpState: function() {
-                var result = scope.model.savedstate.subplot[this.model.plotIndex];
-                return result;
+                return this.state;
               },
               setDumpState: function(s) {
-                scope.model.savedstate.subplot[this.model.plotIndex] = s;
+                this.state = s;
+                scope.model.setDumpState(scope.dumpState());
               },
               resetShareMenuItems : function() {
               },
@@ -99,19 +91,18 @@
               updateFocus : function(focus) {
                 scope.focus = {};
                 _(scope.focus).extend(focus);
-                scope.state.focus = scope.focus; // reference is changed
                 scope.$apply();
               },
               updateWidth : function(width) {
                 scope.width = width;
-                scope.state.width = width;
                 scope.jqplottitle.css("width", width);
                 scope.$apply();
               },
               getWidth : function() {
                 return scope.width;
               }
-            });
+            };
+            models.push(pl);
           }
           scope.models = models;
         };
@@ -131,25 +122,38 @@
           };
         };
 
+        scope.dumpState = function() {
+          var ret = { };
+          ret.focus = scope.focus;
+          ret.width = scope.width;
+          ret.subplots = [];
+          for (var i = 0; i < scope.models.length; i++) {
+            ret.subplots.push(scope.models[i].state);
+          }
+          return ret;
+        };
+        
         scope.init = function() {
           scope.standardizeData();
-          scope.prepareSavedState();
           scope.preparePlotModels();
           scope.initLayout();
+          scope.calcRange();
 
           var savedstate = scope.model.getDumpState();
-          if (savedstate.plotSize !== undefined) {
-              console.log("LOAD IN BKO plot!!!");
-            scope.loadState(savedstate);
-            scope.calcRange();
-          } else {
-              console.log("SALVO IN BKO init!!!");
+          if (savedstate.subplots !== undefined) {
+            for (var i = 0; i < scope.models.length; i++) {
+              scope.models[i].state = savedstate.subplots[i];
+            }
+            scope.width = savedstate.width;
+            scope.focus = savedstate.focus;
+          } else if(scope.models !== undefined) {
+            scope.focus = scope.calcRange();
+            for (var i = 0; i < scope.models.length; i++) {
+              scope.models[i].state = { };
+            }
             scope.model.setDumpState(scope.dumpState());
           }
 
-
-          // call this after the plot models are prepared so as to update focus
-          scope.focus = scope.state.focus;
         };
         
         scope.getDumpState = function() {
@@ -159,9 +163,11 @@
         scope.init();
         
         scope.$watch('getDumpState()', function(result) {
-          if (result === undefined) {
-            console.log("SALVO IN BKO plot!!!");
-            scope.model.setDumpState("salvato bko-plot");
+          if (result.subplots === undefined && scope.models !== undefined) {
+            for (var i = 0; i < scope.models.length; i++) {
+              scope.models[i].state = { };
+            }
+            scope.model.setDumpState(scope.dumpState());
           }
         });
 

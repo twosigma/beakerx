@@ -1157,9 +1157,11 @@
           var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
             data[i].lodOn = state.lodOn[i];
-            data[i].applyLodType(state.lodType[i]);
-            data[i].applyLodAuto(state.lodAuto[i]);
-            data[i].applyZoomHash(state.zoomHash[i]);
+            if (state.lodOn[i]) {
+              data[i].applyLodType(state.lodType[i]);
+              data[i].applyLodAuto(state.lodAuto[i]);
+              data[i].applyZoomHash(state.zoomHash[i]);
+            }
             data[i].showItem = state.showItem[i];
           }
           scope.visibleItem = state.visibleItem;
@@ -1260,10 +1262,9 @@
         scope.init(); // initialize
                 
         scope.$watch('getDumpState()', function(result) {
-            if (result.plotSize === undefined) {
-              console.log("SALVO IN BKO plot!!!");
-              scope.model.setDumpState(scope.dumpState());
-            }
+          if (result.plotSize === undefined) {
+            scope.model.setDumpState(scope.dumpState());
+          }
         });
       }
     };

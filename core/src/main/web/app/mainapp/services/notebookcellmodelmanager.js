@@ -355,6 +355,15 @@
           });
         }
       },
+      dumpDisplayStatus: function() {
+        if (cells) {
+          _.each(cells, function(cell) {
+            if (cell.output) {
+              cell.output.state = { };
+            }
+          });
+        }
+      },
       shiftSegment: function(segBegin, segLength, offset) {
         if (offset === 0) {
           return;

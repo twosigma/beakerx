@@ -38,18 +38,12 @@
         $scope.getOutputResult = function() {
           return $scope.model.result;
         };
-        $scope.getOutputState = function() {
-          if ($scope.model.state == null) {
-            $scope.model.state = {};
-          }
-          return $scope.model.state;
-        };
         $scope.applicableDisplays = [];
         $scope.$watch('getOutputResult()', function(result) {
           $scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(result);
           $scope.model.selectedType = $scope.applicableDisplays[0];
         });
-
+        
         // to be used in bkOutputDisplay
         $scope.outputDisplayModel = {
           getCellModel: function() {
@@ -60,9 +54,12 @@
               return result;
             }
           },
-          getClientState: function() {
-            var result = $scope.getOutputState();
+          getDumpState: function() {
+            var result = $scope.model.state;
             return result;
+          },
+          setDumpState: function(s) {
+            $scope.model.state = s;
           },
           resetShareMenuItems: function(newItems) {
             _shareMenuItems = newItems;

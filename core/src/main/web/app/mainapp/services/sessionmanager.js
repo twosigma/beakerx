@@ -236,6 +236,10 @@
       isSavable: function() {
         return _notebookUri && !_readOnly;
       },
+      dumpDisplayStatus: function() {
+        this.getNotebookCellOp().dumpDisplayStatus();
+        return true;
+      },
       getSaveData: function() {
         return generateSaveData();
       },

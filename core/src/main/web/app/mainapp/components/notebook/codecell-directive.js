@@ -349,6 +349,9 @@
             "Ctrl-Enter": function(cm) {
               scope.evaluate();
             },
+            "Cmd-Enter": function(cm) {
+              scope.evaluate();
+            },
             "Shift-Enter": function(cm) {
               scope.evaluate();
               moveFocusDown();
@@ -389,7 +392,48 @@
               };
               CodeMirror.showHint(cm, getHints, options);
             },
+            "Cmd-Space": function(cm) {
+              var getToken = function(editor, cur) {
+                return editor.getTokenAt(cur);
+              };
+              var getHints = function(editor, showHintCB, options) {
+                var cur = editor.getCursor();
+                var token = getToken(editor, cur);
+                var cursorPos = editor.indexFromPos(cur);
+                // We might want this defined by the plugin.
+                var onResults = function(results, matched_text, dotFix) {
+                  var start = token.start;
+                  var end = token.end;
+                  if (dotFix && token.string === ".") {
+                    start += 1;
+                  }
+                  if (matched_text) {
+                    start += (cur.ch - token.start - matched_text.length);
+                    end = start + matched_text.length;
+                  }
+                  showHintCB({
+                    list: _.uniq(results),
+                    from: CodeMirror.Pos(cur.line, start),
+                    to: CodeMirror.Pos(cur.line, end)
+                  });
+                };
+                scope.autocomplete(cursorPos, onResults);
+              };
+
+              var options = {
+                async: true,
+                closeOnUnfocus: true,
+                alignWithWord: true,
+                completeSingle: true
+              };
+              CodeMirror.showHint(cm, getHints, options);
+            },
             "Ctrl-Alt-Up": function(cm) { // cell move up
+              notebookCellOp.moveUp(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
+            "Cmd-Alt-Up": function(cm) { // cell move up
               notebookCellOp.moveUp(scope.cellmodel.id);
               bkUtils.refreshRootScope();
               cm.focus();
@@ -399,11 +443,24 @@
               bkUtils.refreshRootScope();
               cm.focus();
             },
+            "Cmd-Alt-Down": function(cm) { // cell move down
+              notebookCellOp.moveDown(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
             "Ctrl-Alt-H": function(cm) { // cell hide
               scope.cellmodel.input.hidden = true;
               bkUtils.refreshRootScope();
             },
+            "Cmd-Alt-H": function(cm) { // cell hide
+              scope.cellmodel.input.hidden = true;
+              bkUtils.refreshRootScope();
+            },
             "Ctrl-Alt-D": function(cm) { // cell delete
+              notebookCellOp.delete(scope.cellmodel.id, true);
+              bkUtils.refreshRootScope();
+            },
+            "Cmd-Alt-D": function(cm) { // cell delete
               notebookCellOp.delete(scope.cellmodel.id, true);
               bkUtils.refreshRootScope();
             }

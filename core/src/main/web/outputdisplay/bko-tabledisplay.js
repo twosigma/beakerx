@@ -36,6 +36,10 @@
         var data = scope.model.getCellModel().values;
         var columns = scope.model.getCellModel().columnNames;
        
+        scope.getDumpState = function() {
+          return scope.model.getDumpState();
+        };
+
         scope.dtOptions = bkDatatables.DTOptionsBuilder
           .fromFnPromise(function() {
             var deferred = bkUtils.newDeferred();
@@ -67,34 +71,57 @@
 	  scope.dtOptions.withOption('scrollY', 350);
 	  scope.dtOptions.withOption('scrollCollapse', true);
         }
+        
+        scope.state = {};
+        var savedstate = scope.model.getDumpState();
+        if (savedstate !== undefined && savedstate.tablestate !== undefined) {
+          scope.state = savedstate.tablestate;
+        }
+        scope.dtOptions.withOption('stateSave', true);
+        scope.dtOptions.withOption('stateSaveCallback',
+            function (settings, data) {
+              scope.state = data;
+        });
+
+        scope.dtOptions.withOption('stateLoadCallback',
+            function (settings) {
+              return scope.state;
+        });
+        
         scope.dtColumns = [ ];
         for (var i = 0; i < columns.length; i++) {
-	    if(columns[i] === "time") {
-		if(scope.model.getCellModel().timeStrings) {
-		    scope.timeStrings = scope.model.getCellModel().timeStrings;
-		    scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
-					 .renderWith(function(data, type, full, meta)
-						     {
-							 return scope.timeStrings[meta.row];
-						     }));
-		} else {
-		    scope.tz = scope.model.getCellModel().timeZone;
-		    scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
-					 .renderWith(function(value,type,full,meta)
-						     {
-							 var nano = value % 1000;
-							 var micro = (value / 1000) % 1000;
-							 var milli = value / 1000 / 1000;
-							 var time = moment(milli);
-							 var tz = scope.tz;
-							 if (tz)
-							     time.tz(tz);
-							 return time.format("YYYYMMDD HH:mm:ss.SSS");
-						     }));
-		}
-	    } else
-		scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i]));
+	  if(columns[i] === "time") {
+            if(scope.model.getCellModel().timeStrings) {
+              scope.timeStrings = scope.model.getCellModel().timeStrings;
+              scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
+                             .renderWith(function(data, type, full, meta)
+                               {
+                                 return scope.timeStrings[meta.row];
+                               }));
+            } else {
+              scope.tz = scope.model.getCellModel().timeZone;
+              scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
+                             .renderWith(function(value,type,full,meta)
+                              {
+                                var nano = value % 1000;
+                                var micro = (value / 1000) % 1000;
+                                var milli = value / 1000 / 1000;
+                                var time = moment(milli);
+                                var tz = scope.tz;
+                                if (tz)
+                                time.tz(tz);
+                                  return time.format("YYYYMMDD HH:mm:ss.SSS");
+                              }));
+            }
+          } else
+            scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i]));
 	}
+        
+        scope.$watch('getDumpState()', function(result) {
+          if (result !== undefined && result.tablestate === undefined) {
+            scope.model.setDumpState({ tablestate : scope.state});
+          }
+        });
       }
     };
   }]);

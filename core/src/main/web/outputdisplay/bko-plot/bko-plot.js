@@ -1260,7 +1260,7 @@
         };
         
         scope.init(); // initialize
-                
+
         scope.$watch('getDumpState()', function(result) {
           if (result.plotSize === undefined) {
             scope.model.setDumpState(scope.dumpState());

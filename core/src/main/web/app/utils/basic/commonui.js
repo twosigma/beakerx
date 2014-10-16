@@ -70,9 +70,9 @@
         var expression = attrs.bkShow;
         scope.$watch(expression, function(newValue, oldValue) {
           if (newValue) {
-            element.stop(true, true).slideDown(200);
+            element.show();
           } else {
-            element.stop(true, true).slideUp(200);
+            element.hide();
           }
         });
       }
@@ -84,9 +84,9 @@
         var expression = attrs.bkHide;
         scope.$watch(expression, function(newValue, oldValue) {
           if (newValue) {
-            element.stop(true, true).slideUp(200);
+            element.hide();
           } else {
-            element.stop(true, true).slideDown(200);
+            element.show();
           }
         });
       }

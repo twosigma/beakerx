@@ -123,7 +123,7 @@ define(function(require, exports, module) {
             // Server returns path relative to the root of the nginx location..
             // But to work with Bunsen routing we want it to be relative to the
             // path that was used to load Beaker UI.
-            serviceBase = '..' + ret;
+            serviceBase = ret;
             var NodeShell = function (settings, doneCB) {
                 var self = this;
                 var setShellIdCB = function (id) {

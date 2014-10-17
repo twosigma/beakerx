@@ -695,11 +695,33 @@
             e.preventDefault();
             _impl.saveNotebook();
             return false;
-          } else if (e.ctrlKey && e.which === 90) { // Ctrl + z
-            bkUtils.fcall(function() {
-              bkSessionManager.undo();
-            });
+          } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83)) { // Cmd + s
+            e.preventDefault();
+            _impl.saveNotebook();
             return false;
+          } else if (e.target.nodeName !== "TEXTAREA") {
+            if (e.ctrlKey && e.which === 90) { // Ctrl + z
+              bkUtils.fcall(function() {
+                bkSessionManager.undo();
+              });
+              return false;
+            } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 90)) { // Cmd + z
+              bkUtils.fcall(function() {
+                bkSessionManager.undo();
+              });
+              return false;
+            } else if (e.ctrlKey && e.which === 89) { // Ctrl + z
+              bkUtils.fcall(function() {
+                bkSessionManager.redo();
+              });
+              return false;
+            } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 89)) { // Cmd + z
+              bkUtils.fcall(function() {
+                bkSessionManager.redo();
+              });
+              return false;
+            }
+          // TODO implement global redo
           }
         };
         $(document).bind('keydown', keydownHandler);

@@ -132,11 +132,17 @@
     var cellMap = {};
     var tagMap = {};
     var undoAction = {};
+    var undoAction2 = {};
+    var redoAction = {};
+    var redoAction2 = {};
     var recreateCellMap = function(doNotClearUndoAction) {
       cellMap = generateCellMap(cells);
       tagMap = generateTagMap(cellMap);
       if (!doNotClearUndoAction) {
         undoAction = undefined;
+        undoAction2 = undefined;
+        redoAction = undefined;
+        redoAction2 = undefined;
       }
     };
     return {
@@ -251,7 +257,7 @@
         }
         recreateCellMap();
       },
-      insertAt: function(index, cell) {
+      insertAt: function(index, cell,doNotClearUndoAction) {
         if (_.isArray(cell)) {
           Array.prototype.splice.apply(cells, [index, 0].concat(cell));
         } else if (_.isObject(cell)) {
@@ -259,7 +265,7 @@
         } else {
           throw "unacceptable"
         }
-        recreateCellMap();
+        recreateCellMap(doNotClearUndoAction);
       },
       moveUp: function(id) {
         var index = this.getIndex(id);
@@ -309,7 +315,13 @@
           if (undoable) {
             var self = this;
             undoAction = function() {
-              self.insertAt(index, deleted);
+              self.insertAt(index, deleted, true);
+            };
+            undoAction2 = undefined;
+            redoAction = undefined;
+            redoAction2 = function() {
+              cells.splice(index, 1);
+              recreateCellMap(true);
             };
             recreateCellMap(true);
           } else {
@@ -332,7 +344,13 @@
         if (undoable) {
           var self = this;
           undoAction = function() {
-            self.insertAt(index, deleted);
+            self.insertAt(index, deleted, true);
+          };
+          undoAction2 = undefined;
+          redoAction = undefined;
+          redoAction2 = function() {
+            cells.splice(index, descendants.length + 1);
+            recreateCellMap(true);
           };
           recreateCellMap(true);
         } else {
@@ -343,8 +361,20 @@
       undo: function() {
         if (undoAction) {
           undoAction.apply();
+          redoAction = redoAction2;
+          redoAction2 = undefined;
+          undoAction2 = undoAction;
           undoAction = undefined;
-        }
+        } else console.log("no undo");
+      },
+      redo: function() {
+        if(redoAction) {
+          redoAction.apply();
+          redoAction2 = redoAction;
+          undoAction = undoAction2;
+          undoAction2 = undefined;
+          redoAction = undefined;
+        } else console.log("no redo");
       },
       deleteAllOutputCells: function() {
         if (cells) {

@@ -710,6 +710,16 @@
                 bkSessionManager.undo();
               });
               return false;
+            } else if (e.ctrlKey && e.which === 89) { // Ctrl + z
+              bkUtils.fcall(function() {
+                bkSessionManager.redo();
+              });
+              return false;
+            } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 89)) { // Cmd + z
+              bkUtils.fcall(function() {
+                bkSessionManager.redo();
+              });
+              return false;
             }
           // TODO implement global redo
           }

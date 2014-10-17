@@ -383,6 +383,9 @@
       },
       undo: function() {
         bkNotebookCellModelManager.undo();
+      },
+      redo: function() {
+        bkNotebookCellModelManager.redo();
       }
     };
   });

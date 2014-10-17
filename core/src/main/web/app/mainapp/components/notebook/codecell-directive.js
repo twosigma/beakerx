@@ -332,10 +332,19 @@
             }
           },
           extraKeys: {
+            "Ctrl-S": "save",
+            "Cmd-S": "save",
             "Shift-Ctrl-A": function(cm) {
               scope.appendCodeCell();
             },
+            "Shift-Cmd-A": function(cm) {
+              scope.appendCodeCell();
+            },
             "Shift-Ctrl-E": function(cm) {
+              scope.popupMenu();
+              element.find(".inputcellmenu").find('li').find('a')[0].focus();
+            },
+            "Shift-Cmd-E": function(cm) {
               scope.popupMenu();
               element.find(".inputcellmenu").find('li').find('a')[0].focus();
             },
@@ -479,6 +488,7 @@
               newVal = "";
             }
             scope.cm.setValue(newVal);
+            scope.cm.clearHistory();
           }
         });
         // cellmodel.body <-- CodeMirror

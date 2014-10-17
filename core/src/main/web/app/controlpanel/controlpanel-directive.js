@@ -106,15 +106,25 @@
 
 	var keydownHandler = function(e) {
           if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
-	      bkUtils.fcall(function() {
-		      $scope.newNotebook();
-		  });
-	      return false;
+	    bkUtils.fcall(function() {
+                   $scope.newNotebook();
+            });
+	    return false;
 	  } else if (e.ctrlKey && (e.which === 78)) { // Ctrl + n
-	      bkUtils.fcall(function() {
-		      $scope.newEmptyNotebook();
-		  });
-	      return false;
+	    bkUtils.fcall(function() {
+                   $scope.newEmptyNotebook();
+             });
+	    return false;
+	  } else if (e.metaKey && !e.ctrlKey && e.shiftKey && (e.which === 78)) { // Cmd + Shift + n
+	    bkUtils.fcall(function() {
+                   $scope.newNotebook();
+            });
+            return false;
+	  } else if (e.metaKey && !e.ctrlKey && (e.which === 78)) { // Cmd + n
+            bkUtils.fcall(function() {
+                   $scope.newEmptyNotebook();
+            });
+            return false;
 	  }
 	}
 	console.log('installing keydownHandler');

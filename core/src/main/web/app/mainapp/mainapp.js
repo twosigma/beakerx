@@ -441,12 +441,6 @@
             return deferred.promise;
           };
 
-          var saveDoNotOverwrite = function(uri, uriType) {
-            var fileSaver = bkCoreManager.getFileSaver(uriType);
-            var content = bkSessionManager.getSaveData().notebookModelAsString;
-            return fileSaver.save(uri, content);
-          };
-
           var promptIfOverwrite = function(uri) {
             var deferred = bkUtils.newDeferred();
             bkCoreManager.show2ButtonModal(
@@ -464,8 +458,10 @@
           var saveAlwaysOverwrite = function(uri, uriType) {
             var deferred = bkUtils.newDeferred();
             var fileSaver = bkCoreManager.getFileSaver(uriType);
-            var content = bkSessionManager.getSaveData().notebookModelAsString;
-            fileSaver.save(uri, content, true).then(function() {
+            bkSessionManager.dumpDisplayStatus();
+            $timeout(function() {
+              var content = bkSessionManager.getSaveData().notebookModelAsString;
+              return fileSaver.save(uri, content, true)}, 1).then(function() {
               deferred.resolve({uri: uri, uriType: uriType});
             }, function(reason) {
               deferred.reject(reason);
@@ -474,7 +470,12 @@
           };
 
           var _savePromptIfOverwrite = function(deferred, uri, uriType) {
-            saveDoNotOverwrite(uri, uriType).then(function() {
+            var fileSaver = bkCoreManager.getFileSaver(uriType);
+            bkSessionManager.dumpDisplayStatus();
+            $timeout(function() {
+              var content = bkSessionManager.getSaveData().notebookModelAsString;
+              return fileSaver.save(uri, content);
+            }, 1).then(function() {
               deferred.resolve({uri: uri, uriType: uriType}); // file save succeed
             }, function (reason) {
               if (reason === "exists") {
@@ -550,8 +551,19 @@
               saveStart();
               var thenable;
               if (bkSessionManager.isSavable()) {
-                var saveData = bkSessionManager.getSaveData();
-                thenable = saveAlwaysOverwrite(saveData.notebookUri, saveData.uriType);
+                bkSessionManager.dumpDisplayStatus();
+                thenable = $timeout(function() {
+                  var saveData = bkSessionManager.getSaveData();
+                  var deferred = bkUtils.newDeferred();
+                  var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
+                  var content = saveData.notebookModelAsString;
+                  fileSaver.save(saveData.notebookUri, content, true).then(function() {
+                    deferred.resolve({uri: saveData.notebookUri, uriType: saveData.uriType});
+                    }, function(reason) {
+                    deferred.reject(reason);
+                  });
+                  return deferred.promise;
+                }, 1);
               } else {
                 thenable = savePromptChooseUri();
               }
@@ -695,11 +707,33 @@
             e.preventDefault();
             _impl.saveNotebook();
             return false;
-          } else if (e.ctrlKey && e.which === 90) { // Ctrl + z
-            bkUtils.fcall(function() {
-              bkSessionManager.undo();
-            });
+          } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83)) { // Cmd + s
+            e.preventDefault();
+            _impl.saveNotebook();
             return false;
+          } else if (e.target.nodeName !== "TEXTAREA") {
+            if (e.ctrlKey && e.which === 90) { // Ctrl + z
+              bkUtils.fcall(function() {
+                bkSessionManager.undo();
+              });
+              return false;
+            } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 90)) { // Cmd + z
+              bkUtils.fcall(function() {
+                bkSessionManager.undo();
+              });
+              return false;
+            } else if (e.ctrlKey && e.which === 89) { // Ctrl + z
+              bkUtils.fcall(function() {
+                bkSessionManager.redo();
+              });
+              return false;
+            } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 89)) { // Cmd + z
+              bkUtils.fcall(function() {
+                bkSessionManager.redo();
+              });
+              return false;
+            }
+          // TODO implement global redo
           }
         };
         $(document).bind('keydown', keydownHandler);
@@ -770,9 +804,12 @@
                 "Disconnected",
                 function() {
                   // "Save", save the notebook as a file on the client side
-                  bkUtils.saveAsClientFile(
+                  bkSessionManager.dumpDisplayStatus();
+                  $timeout(function() {
+                    bkUtils.saveAsClientFile(
                       bkSessionManager.getSaveData().notebookModelAsString,
                       "notebook.bkr");
+                  }, 1);
                 },
                 function() {
                   // "Not now", hijack all keypress events to prompt again

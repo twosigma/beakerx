@@ -75,6 +75,9 @@
       toPrettyJson: function(jsObj) {
         return angularUtils.toPrettyJson(jsObj);
       },
+      fromPrettyJson: function(jString) {
+        return angularUtils.fromPrettyJson(jString);
+      },
       httpGet: function(url, data) {
         return angularUtils.httpGet(url, data);
       },

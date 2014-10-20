@@ -31,9 +31,32 @@
       toPrettyJson: function(angularBoundJsObj) {
         function cleanup(key, value) {
           if (key === '$$hashKey') return undefined;
+          if (key === "body" && typeof value === "string") {
+            return value.split("\n");
+          }
           return value;
         };
         return JSON.stringify(angularBoundJsObj, cleanup, 4) + "\n";
+      },
+      removeStringArrays: function(th,obj) {
+        $.each(obj, function(key, value) {
+          if ($.isPlainObject(value) && value.body !== undefined && $.isArray(value.body)) {
+            console.log("replace it");
+            var separator = '\n';
+            var str = value.body.join([separator]);
+            value.body = str;
+            return true;
+          }
+          if (value !== null && ($.isPlainObject(value) || $.isArray(value))) {
+            th.removeStringArrays(th,value);
+          }
+          return true;
+        });  
+      },
+      fromPrettyJson: function(jsonString) {
+          var ret = angular.fromJson(jsonString);
+          this.removeStringArrays(this,ret);
+          return ret;
       },
       httpGet: function(url, data) {
         return $http({method: "GET", url: url, params: data});

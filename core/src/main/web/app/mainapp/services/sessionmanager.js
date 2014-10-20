@@ -86,9 +86,6 @@
         toJson: function() {
           return angular.toJson(_v);
         },
-        toPrettyJson: function() {
-          return bkUtils.toPrettyJson(_v);
-        },
         toCleanPrettyJson: function() {
           //strip out the shell IDs
           var shellIds = _(_v.evaluators).map(function(evaluator) {

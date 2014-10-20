@@ -123,7 +123,15 @@ public class FileIORest {
   @Produces(MediaType.TEXT_PLAIN)
   public String load(@QueryParam("path") String path) throws IOException {
     path = removePrefix(path);
-    
+    if (Files.exists(Paths.get(path))) {
+      try {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
+      } catch (Throwable t) {
+        throw new FileOpenException(ExceptionUtils.getStackTrace(t));
+      }
+    }
+
     for(String s : this.searchDirs) {
       String npath = s + "/" + path; 
       if (Files.exists(Paths.get(npath))) {

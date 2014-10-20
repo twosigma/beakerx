@@ -30,6 +30,11 @@ public interface BeakerConfig {
    */
   public String getInstallDirectory();
   /**
+   * The Beaker file load search directories
+   * @return
+   */
+  public String [] getFileSearchDirs();
+  /**
    * where to search for plugin executables and starting scripts
    * @return
    */

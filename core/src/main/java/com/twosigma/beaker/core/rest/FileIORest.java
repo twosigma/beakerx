@@ -18,6 +18,7 @@ package com.twosigma.beaker.core.rest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
+import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.File;
 import java.io.IOException;
@@ -63,10 +64,12 @@ public class FileIORest {
   }
 
   private final GeneralUtils utils;
+  private final String [] searchDirs;
 
   @Inject
-  private FileIORest(GeneralUtils utils) {
+  private FileIORest(BeakerConfig bkConfig, GeneralUtils utils) {
     this.utils = utils;
+    this.searchDirs = bkConfig.getFileSearchDirs();
   }
 
   @GET
@@ -120,15 +123,19 @@ public class FileIORest {
   @Produces(MediaType.TEXT_PLAIN)
   public String load(@QueryParam("path") String path) throws IOException {
     path = removePrefix(path);
-    if (!Files.exists(Paths.get(path))) {
-      throw new FileDoesntExistException(path + " was not found");
+    
+    for(String s : this.searchDirs) {
+      String npath = s + "/" + path; 
+      if (Files.exists(Paths.get(npath))) {
+        try {
+          byte[] encoded = Files.readAllBytes(Paths.get(npath));
+          return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
+        } catch (Throwable t) {
+          throw new FileOpenException(ExceptionUtils.getStackTrace(t));
+        }
+      }
     }
-    try {
-      byte[] encoded = Files.readAllBytes(Paths.get(path));
-      return StandardCharsets.UTF_8.decode(ByteBuffer.wrap(encoded)).toString();
-    } catch (Throwable t) {
-      throw new FileOpenException(ExceptionUtils.getStackTrace(t));
-    }
+    throw new FileDoesntExistException(path + " was not found");
   }
 
   private static final String FILE_PREFIX = "file:";

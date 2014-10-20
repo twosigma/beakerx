@@ -117,8 +117,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
     if (prefDefaultNotebookUrl != null) {
       this.defaultNotebookUrl = prefDefaultNotebookUrl;
     } else {
-      utils.ensureFileHasContent(mainDefaultNotebookPath, defaultDefaultNotebookPath);
-      this.defaultNotebookUrl = mainDefaultNotebookPath;
+      File f = new File(mainDefaultNotebookPath);
+      if(f.exists())
+        this.defaultNotebookUrl = mainDefaultNotebookPath;
+      else
+        this.defaultNotebookUrl = defaultDefaultNotebookPath;
     }
 
     String varDir = this.dotDir + "/var";

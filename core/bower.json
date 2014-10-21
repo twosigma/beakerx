@@ -18,6 +18,6 @@
     "font-awesome": "4.0.3",
     "requirejs": "2.1.11",
     "big.js": "~2.5.1",
-    "angular-datatables": ""
+    "angular-datatables": "0.2.0"
   }
 }

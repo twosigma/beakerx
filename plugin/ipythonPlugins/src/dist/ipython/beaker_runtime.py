@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os, urllib, urllib2, json, pandas, yaml
+import os, urllib, urllib2, json, pandas, yaml, numpy
 
 # should be inner class to Beaker
 class DataFrameEncoder(json.JSONEncoder):
@@ -23,6 +23,10 @@ class DataFrameEncoder(json.JSONEncoder):
             return obj.to_dict(outtype='list')
         if type(obj) == pandas.core.series.Series:
             return obj.to_dict()
+        if isinstance(obj, numpy.ndarray) and obj.ndim == 1:
+            return obj.tolist()
+        if isinstance(obj, numpy.generic):
+            return obj.item()
         return json.JSONEncoder.default(self, obj)
 
 class Beaker:

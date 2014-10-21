@@ -41,15 +41,6 @@
                     "background": "#FFE0F0"
                 }
             }
-        },
-        {
-            "name": "R",
-            "plugin": "R",
-            "view": {
-                "cm": {
-                    "mode": "r"
-                }
-            }
         }
     ],
     "cells": [

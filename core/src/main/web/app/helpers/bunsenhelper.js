@@ -75,28 +75,7 @@
         }
 
         bunsenSave(serializedNotebook, action);
-      },
-
-      saveNotebookAs: function(callback, template) {
-        var options = {
-          backdrop: true,
-          keyboard: true,
-          backdropClick: true,
-          controller: 'modalDialogCtrl',
-          templateUrl: 'template/saveBunsenFile.html'
-        };
-
-        $dialog.dialog(options)
-          .open()
-          .then(function(newName) {
-            var serializedNotebook = {
-              data: bkSessionManager.getSaveData().notebookModelAsString,
-              name: newName
-            };
-            bunsenSave(serializedNotebook, 'create');
-          });
       }
-
     };
     console.log("bunsenhelper making it global");
     window.bkBunsenHelper = bkBunsenHelper; // TODO, we want to revisit the decision of making this global

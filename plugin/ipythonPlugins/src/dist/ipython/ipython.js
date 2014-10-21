@@ -56,7 +56,6 @@ define(function(require, exports, module) {
       var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
       bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
         .success(function(result) {
-        console.log("base is "+base);
           bkHelper.httpPost(base + "/login?next=%2E", {password: result})
             .success(function(result) {
               if (ipyVersion1) {

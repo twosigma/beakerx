@@ -671,6 +671,7 @@ public class PluginServiceLocatorRest {
       proc = Runtime.getRuntime().exec(this.ipythonCmdBase + " --version");
     }
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+    new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-version", null, null).start();
     String line = br.readLine();
     return line;
   }

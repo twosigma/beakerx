@@ -42,6 +42,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 public class DefaultBeakerConfig implements BeakerConfig {
 
   private final String installDir;
+  private final String [] searchDirs;
   private final String pluginDir;
   private final String dotDir;
   private final String nginxDir;
@@ -80,6 +81,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
   {
 
     this.installDir = System.getProperty("user.dir");
+    this.searchDirs = new String [1];
+    this.searchDirs[0] = this.installDir;
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
     this.reservedPortCount = 4;
@@ -114,8 +117,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
     if (prefDefaultNotebookUrl != null) {
       this.defaultNotebookUrl = prefDefaultNotebookUrl;
     } else {
-      utils.ensureFileHasContent(mainDefaultNotebookPath, defaultDefaultNotebookPath);
-      this.defaultNotebookUrl = mainDefaultNotebookPath;
+      File f = new File(mainDefaultNotebookPath);
+      if(f.exists())
+        this.defaultNotebookUrl = mainDefaultNotebookPath;
+      else
+        this.defaultNotebookUrl = defaultDefaultNotebookPath;
     }
 
     String varDir = this.dotDir + "/var";
@@ -162,6 +168,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getInstallDirectory() {
     return this.installDir;
+  }
+
+  @Override
+  public String [] getFileSearchDirs() {
+    return this.searchDirs;
   }
 
   @Override

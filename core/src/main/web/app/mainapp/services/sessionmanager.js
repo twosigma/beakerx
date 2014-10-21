@@ -86,9 +86,6 @@
         toJson: function() {
           return angular.toJson(_v);
         },
-        toPrettyJson: function() {
-          return bkUtils.toPrettyJson(_v);
-        },
         toCleanPrettyJson: function() {
           //strip out the shell IDs
           var shellIds = _(_v.evaluators).map(function(evaluator) {
@@ -235,6 +232,15 @@
       },
       isSavable: function() {
         return _notebookUri && !_readOnly;
+      },
+      /*
+       * This function triggers all display implementations to save the current output status.
+       * This save is asynchronous and happens in the current digest loop.
+       * Users must schedule a timeout to execute code that requires the dumped state.
+       */
+      dumpDisplayStatus: function() {
+        this.getNotebookCellOp().dumpDisplayStatus();
+        return true;
       },
       getSaveData: function() {
         return generateSaveData();
@@ -383,6 +389,9 @@
       },
       undo: function() {
         bkNotebookCellModelManager.undo();
+      },
+      redo: function() {
+        bkNotebookCellModelManager.redo();
       }
     };
   });

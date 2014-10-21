@@ -49,6 +49,14 @@ http {
       root   html;
     }
 
+    location = /html/%(urlhash)s/ {
+      root   html;
+    }
+
+    location = /%(urlhash)s/html/ {
+      root   html;
+    }
+
     # in google chrome iframe do not inherit base tag and epiceditor uses iframes
     location = /beaker/vendor/epiceditor/themes/base/epiceditor.css {
         rewrite /beaker/vendor/epiceditor/themes/base/epiceditor.css /%(urlhash)s/beaker/vendor/epiceditor/themes/base/epiceditor.css;

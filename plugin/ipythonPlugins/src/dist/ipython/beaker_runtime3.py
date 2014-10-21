@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os, json, pandas, yaml
+import os, json, pandas, yaml, numpy
 import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse
 
 # should be inner class to Beaker

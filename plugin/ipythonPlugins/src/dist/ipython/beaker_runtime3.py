@@ -24,6 +24,10 @@ class DataFrameEncoder(json.JSONEncoder):
             return obj.to_dict(outtype='list')
         if type(obj) == pandas.core.series.Series:
             return obj.to_dict()
+        if isinstance(obj, numpy.ndarray) and obj.ndim == 1:
+            return obj.tolist()
+        if isinstance(obj, numpy.generic):
+            return obj.item()
         return json.JSONEncoder.default(self, obj)
 
 class Beaker:

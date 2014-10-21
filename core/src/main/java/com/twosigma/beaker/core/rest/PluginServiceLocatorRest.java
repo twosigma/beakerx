@@ -112,7 +112,8 @@ public class PluginServiceLocatorRest {
   private final String nginxExtraRules;
   private final Map<String, String> nginxPluginRules;
   private final String pluginDir;
-  private final String nginxCommand;
+  private final String [] nginxCommand;
+  private final String [] nginxRestartCommand;
   private String[] nginxEnv = null;
   private final Boolean publicServer;
   private final Integer portBase;
@@ -171,21 +172,33 @@ public class PluginServiceLocatorRest {
                             "c.NotebookApp.port = %(port)s\n" +
                             "c.NotebookApp.open_browser = False\n" +
                             "c.NotebookApp.password = u'%(hash)s'\n");
-    String cmd = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
-    if (windows()) {
-      cmd += (" -p \"" + this.nginxServDir + "\"");
-      cmd += (" -c \"" + this.nginxServDir + "/conf/nginx.conf\"");
-    } else {
-      cmd += (" -p " + this.nginxServDir);
-      cmd += (" -c " + this.nginxServDir + "/conf/nginx.conf");
-    }
-    this.nginxCommand = cmd;
+    this.nginxCommand = new String[7];
+    
+    this.nginxCommand[0] = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
+    this.nginxCommand[1] = "-p";
+    this.nginxCommand[2] = this.nginxServDir;
+    this.nginxCommand[3] = "-c";
+    this.nginxCommand[4] = this.nginxServDir + "/conf/nginx.conf";
+    this.nginxCommand[5] = "-g";
+    this.nginxCommand[6] = "error_log stderr;";
+    
+    this.nginxRestartCommand = new String [9];
+    this.nginxRestartCommand[0] = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
+    this.nginxRestartCommand[1] = "-p";
+    this.nginxRestartCommand[2] = this.nginxServDir;
+    this.nginxRestartCommand[3] = "-c";
+    this.nginxRestartCommand[4] = this.nginxServDir + "/conf/nginx.conf";
+    this.nginxRestartCommand[5] = "-g";
+    this.nginxRestartCommand[6] = "error_log stderr;";
+    this.nginxRestartCommand[7] = "-s";
+    this.nginxRestartCommand[8] = "reload";
+    
     this.corePassword = webServerConfig.getPassword();
 
-    // record plugin options from cli and to pass through to individual plugins
-    for (Map.Entry<String, String> e: bkConfig.getPluginOptions().entrySet()) {
-      addPluginArgs(e.getKey(), e.getValue());
-    }
+      // record plugin options from cli and to pass through to individual plugins
+    bkConfig.getPluginOptions().entrySet().stream().forEach((e) -> {
+        addPluginArgs(e.getKey(), e.getValue());
+    });
 
     // Add shutdown hook
     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -237,8 +250,7 @@ public class PluginServiceLocatorRest {
 
   private void startReverseProxy() throws InterruptedException, IOException {
     generateNginxConfig();
-    System.out.println("running nginx: " + this.nginxCommand);
-
+    System.out.println("starting nginx instance (" + this.nginxDir +")");
     Process proc = Runtime.getRuntime().exec(this.nginxCommand, this.nginxEnv);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
@@ -297,7 +309,7 @@ public class PluginServiceLocatorRest {
       @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
       @QueryParam("waitfor") String waitfor)
       throws InterruptedException, IOException {
-
+      
     PluginConfig pConfig = this.plugins.get(pluginId);
     if (pConfig != null && pConfig.isStarted()) {
       System.out.println("plugin service " + pluginId +
@@ -319,9 +331,7 @@ public class PluginServiceLocatorRest {
 
       // restart nginx to reload new config
       String restartId = generateNginxConfig();
-      String restartPath = "\"" + this.nginxServDir + "/restart_nginx\"";
-      String restartCommand = this.nginxCommand + " -s reload";
-      Process restartproc = Runtime.getRuntime().exec(restartCommand, this.nginxEnv);
+      Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
 
@@ -338,7 +348,7 @@ public class PluginServiceLocatorRest {
             + "message=" + t.getMessage());
       }
     }
-
+     
     String fullCommand = command;
     String baseCommand;
     String args;
@@ -375,7 +385,7 @@ public class PluginServiceLocatorRest {
       fullCommand += " " + StringUtils.join(extraArgs, " ");
     }
     fullCommand += " " + Integer.toString(pConfig.port);
-
+          
     String[] env = this.pluginEnvps.get(pluginId);
     List<String> envList = new ArrayList<>();
     if (env != null) {
@@ -416,10 +426,12 @@ public class PluginServiceLocatorRest {
         }
       }
     }
+     
     startGobblers(proc, pluginId, recordOutput ? this.outputLogService : null, waitfor);
 
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);
+
     return buildResponse(pConfig.getBaseUrl(), true);
   }
 

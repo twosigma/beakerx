@@ -76,7 +76,25 @@ return __p
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '\n<div class="navbar navbar-fixed-top bkr">\n  <div class="navbar-inner bkr">\n\n    \n    <div class="container pull-left bkr" style="margin-left: 10px; padding-left: 0px">\n      <span class="brand bkr" ng-if="loading"><i class="fa fa-refresh fa-spin text-white bkr"></i></span>\n      <ul class="sub-nav bkr">\n        <li class="dropdown bkr" ng-repeat="m in getMenus()">\n          <a href="#" id="drop2" role="button" class="dropdown-toggle bkr" data-toggle="dropdown">{{m.name}}</a>\n          <bk-dropdown-menu menu-items="m.items" class="bkr"></bk-dropdown-menu>\n        </li>\n        <li class="pull-right bkr" style="padding: 10px 54px; cursor: default">\n          <span class="bkr"><font color="#009AA6" class="bkr">{{message}}{{(message !== "" &amp;&amp; isEdited()) ? "|" : "" }}{{isEdited() ? "edited" :\n            ""}}</font></span>\n        </li>\n        <li class="pull-right bkr" style="padding: 10px 54px; cursor: default">\n          <span ng-show="isDisconnected()" class="offline-label bkr" ng-click="promptToSave()" eat-click="">{{getOffineMessage()}}</span>\n        </li>\n      </ul>\n    </div>\n  </div>\n</div>\n\n\n<div class="container notebook-container bkr" style="width: 100%">\n  <div class="row-fluid bkr">\n    <div class="span12 bkr">\n      <bk-notebook set-bk-notebook="setBkNotebook(bkNotebook)" is-loading="loading" class="bkr"></bk-notebook>\n    </div>\n  </div>\n\n  \n  <div style="height: 300px" class="bkr"></div>\n\n</div>\n\n\n<script type="text/ng-template" id="section-cell.html" class="bkr">\n  <bk-section-cell></bk-section-cell>\n</script>\n<script type="text/ng-template" id="text-cell.html" class="bkr">\n  <div class="text-cell">\n    <bk-text-cell></bk-text-cell>\n  </div>\n</script>\n<script type="text/ng-template" id="markdown-cell.html" class="bkr">\n  <bk-markdown-cell></bk-markdown-cell>\n</script>\n<script type="text/ng-template" id="code-cell.html" class="bkr">\n  <bk-code-cell cellmodel="cellmodel" cellmenu="cellview.menu" index="$index"></bk-code-cell>\n</script>';
+__p += '\n<div class="navbar navbar-fixed-top bkr">\n  <div class="navbar-inner bkr">\n\n    \n    <div class="container pull-left bkr" style="margin-left: 10px; padding-left: 0px">\n      <span class="brand bkr" ng-if="loading"><i class="fa fa-refresh fa-spin text-white bkr"></i></span>\n      <ul class="sub-nav bkr">\n        <li class="dropdown bkr" ng-repeat="m in getMenus()">\n          <a href="#" id="drop2" role="button" class="dropdown-toggle bkr" data-toggle="dropdown">{{m.name}}</a>\n          <bk-dropdown-menu menu-items="m.items" class="bkr"></bk-dropdown-menu>\n        </li>\n        <li class="pull-right bkr" style="padding: 0 47px; cursor: default">\n          <span class="bkr"><font color="#009AA6" class="bkr">{{message}}{{(message !== "" &amp;&amp; isEdited()) ? "|" : "" }}{{isEdited() ? "edited" :\n            ""}}</font></span>\n        </li>\n        <li class="pull-right bkr" style="padding: 0 47px; cursor: default">\n          <span ng-show="isDisconnected()" class="offline-label bkr" ng-click="promptToSave()" eat-click="">{{getOffineMessage()}}</span>\n        </li>\n      </ul>\n    </div>\n  </div>\n</div>\n\n\n<div class="container notebook-container bkr" style="width: 100%">\n  <div class="row-fluid bkr">\n    <div class="span12 bkr">\n      <bk-notebook set-bk-notebook="setBkNotebook(bkNotebook)" is-loading="loading" class="bkr"></bk-notebook>\n    </div>\n  </div>\n\n  \n  <div style="height: 300px" class="bkr"></div>\n\n</div>\n\n\n<script type="text/ng-template" id="section-cell.html" class="bkr">\n  <bk-section-cell></bk-section-cell>\n</script>\n<script type="text/ng-template" id="text-cell.html" class="bkr">\n  <div class="text-cell">\n    <bk-text-cell></bk-text-cell>\n  </div>\n</script>\n<script type="text/ng-template" id="markdown-cell.html" class="bkr">\n  <bk-markdown-cell></bk-markdown-cell>\n</script>\n<script type="text/ng-template" id="code-cell.html" class="bkr">\n  <bk-code-cell cellmodel="cellmodel" cellmenu="cellview.menu" index="$index"></bk-code-cell>\n</script>';
+
+}
+return __p
+}})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n<div modal="!isHideEvaluators()" close="hideEvaluators()" class="bkr">\n  <div class="modal-header bkr">\n    <h3 class="bkr">Plugin Manager</h3>\n  </div>\n  <div class="modal-body modal-large bkr">\n    <button class="beaker-btn bkr" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()">\n      <span ng-show="pluginStatus==\'active\'" class="plugin-active plugin-status bkr">●</span>\n      <span ng-show="pluginStatus==\'loading\'" class="plugin-loading plugin-status bkr">●</span>\n      <span ng-show="pluginStatus==\'known\'" class="plugin-known plugin-status bkr">●</span>\n          {{pluginName}}\n    </button><button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="beaker-btn bkr">\n      <span class="plugin-invisible plugin-url bkr">●</span> From URL...\n    </button>\n    <p class="bkr"><br class="bkr"></p>\n    <div ng-show="evalTabOp.showURL" class="input-append addeval bkr">\n      <input type="text" bk-enter="evalTabOp.togglePlugin()" ng-model="evalTabOp.newPluginNameOrUrl" class="bkr">\n      <button class="btn bkr" ng-click="evalTabOp.togglePlugin()">Add Plugin from URL</button>\n    </div>\n    <div ng-show="evalTabOp.showWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n\t<p class="bkr">Cannot remove plugin currently used by a code cell in the notebook.<br class="bkr">\n\t  Delete those cells and try again.</p>\n\t<button class="btn right bkr" ng-click="evalTabOp.showWarning = false">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <tabs class="bkr">\n      <pane ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" class="bkr">\n        <bk-plugin-manager-evaluator-settings class="bkr">\n        </bk-plugin-manager-evaluator-settings>\n      </pane>\n    </tabs>\n  </div>\n  <div class="modal-footer bkr">\n    <button class="beaker-btn active bkr" ng-click="hideEvaluators()">Close</button>\n  </div>\n</div>';
+
+}
+return __p
+}})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n\n\n<div class="bbody bkr"></div>';
 
 }
 return __p
@@ -176,24 +194,6 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
 __p += '\n\n<p class="depth-indicator bkr">{{getFullIndex()}}</p>\n<div contenteditable="true" class="bkr"></div>';
-
-}
-return __p
-}})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n<div modal="!isHideEvaluators()" close="hideEvaluators()" class="bkr">\n  <div class="modal-header bkr">\n    <h3 class="bkr">Plugin Manager</h3>\n  </div>\n  <div class="modal-body modal-large bkr">\n    <button class="beaker-btn bkr" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()">\n      <span ng-show="pluginStatus==\'active\'" class="plugin-active plugin-status bkr">●</span>\n      <span ng-show="pluginStatus==\'loading\'" class="plugin-loading plugin-status bkr">●</span>\n      <span ng-show="pluginStatus==\'known\'" class="plugin-known plugin-status bkr">●</span>\n          {{pluginName}}\n    </button><button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="beaker-btn bkr">\n      <span class="plugin-invisible plugin-url bkr">●</span> From URL...\n    </button>\n    <p class="bkr"><br class="bkr"></p>\n    <div ng-show="evalTabOp.showURL" class="input-append addeval bkr">\n      <input type="text" bk-enter="evalTabOp.togglePlugin()" ng-model="evalTabOp.newPluginNameOrUrl" class="bkr">\n      <button class="btn bkr" ng-click="evalTabOp.togglePlugin()">Add Plugin from URL</button>\n    </div>\n    <div ng-show="evalTabOp.showWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n\t<p class="bkr">Cannot remove plugin currently used by a code cell in the notebook.<br class="bkr">\n\t  Delete those cells and try again.</p>\n\t<button class="btn right bkr" ng-click="evalTabOp.showWarning = false">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <tabs class="bkr">\n      <pane ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" class="bkr">\n        <bk-plugin-manager-evaluator-settings class="bkr">\n        </bk-plugin-manager-evaluator-settings>\n      </pane>\n    </tabs>\n  </div>\n  <div class="modal-footer bkr">\n    <button class="beaker-btn active bkr" ng-click="hideEvaluators()">Close</button>\n  </div>\n</div>';
-
-}
-return __p
-}})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n\n\n<div class="bbody bkr"></div>';
 
 }
 return __p

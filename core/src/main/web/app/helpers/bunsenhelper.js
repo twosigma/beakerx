@@ -59,35 +59,23 @@
         });
       },
 
-      saveNotebook: function() {
-        var saveData = bkSessionManager.getSaveData();
+      saveNotebook: function(newName) {
+        var saveData = bkSessionManager.getSaveData().notebookModelAsString;
+        var action = 'update';
         var serializedNotebook = {
-          data: saveData.notebookModelAsString,
+          data: saveData,
           id: $routeParams.notebookId
         };
-        bunsenSave(serializedNotebook, 'update');
-      },
-
-      saveNotebookAs: function(callback, template) {
-        var options = {
-          backdrop: true,
-          keyboard: true,
-          backdropClick: true,
-          controller: 'modalDialogCtrl',
-          templateUrl: 'template/saveBunsenFile.html'
-        };
-
-        $dialog.dialog(options)
-          .open()
-          .then(function(newName) {
-            var serializedNotebook = {
-              data: bkSessionManager.getSaveData().notebookModelAsString,
-              name: newName
-            };
-            bunsenSave(serializedNotebook, 'create');
+        if (newName) {
+          action = 'create';
+          _.extend(serializedNotebook, {
+            id: null,
+            name: newName
           });
-      }
+        }
 
+        bunsenSave(serializedNotebook, action);
+      }
     };
     console.log("bunsenhelper making it global");
     window.bkBunsenHelper = bkBunsenHelper; // TODO, we want to revisit the decision of making this global

@@ -13,8 +13,6 @@
     "./plugin/menu/bunsen.js"
   ],
   "notebook-app-menu-plugins":[
-    "./plugin/menu/bunsen.js",
-    "./plugin/menu/view.js"
   ],
   "notebook-cell-menu-plugins": [
     "./plugin/cellmenu/sharing.js"

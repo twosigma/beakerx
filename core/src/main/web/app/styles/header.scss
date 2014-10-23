@@ -36,15 +36,12 @@ html .navbar {
 .sub-nav {
     display: block;
     clear: both;
-    background: #eff2f8;
     margin: 0;
     position: relative;
     left: -10px;
     width: 100%;
     padding: 0 35px;
     height: 39px;
-    box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
-    -webkit-box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
 }
 
 .sub-nav > li {
@@ -81,9 +78,10 @@ html .navbar a.brand, html .navbar .nav > li > a {
 }
 
 .navbar-fixed-top .navbar-inner {
-    background:         #3f5264;
+    background:         transparent;
     box-shadow:         none;
     -webkit-box-shadow: none;
+    border-width: 0;
 }
 
 .navbar .nav > li > a:hover {

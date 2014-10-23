@@ -40,5 +40,4 @@ os.environ["PYTHONPATH"] = plugin_dir + old_path
 
 os.execlp("ipython", "ipython", "notebook",
           "--ipython-dir=" + os.environ["beaker_tmp_dir"],
-          "--profile", "beaker_backend_IPython",
-          "--pylab", "inline")
+          "--profile", "beaker_backend_IPython")

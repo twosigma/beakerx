@@ -103,6 +103,8 @@
               scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
                              .renderWith(function(value,type,full,meta)
                               {
+				  if(typeof value =='string')
+				      return value;
                                 var nano = value % 1000;
                                 var micro = (value / 1000) % 1000;
                                 var milli = value / 1000 / 1000;

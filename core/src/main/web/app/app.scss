@@ -177,6 +177,8 @@ PRE.CodeContainer img {
     left: 0;
     width: 100%;
     z-index: 9999;
+    background: white !important;
+    color: black;
 }
 
 input[type="text"].inputerror {

@@ -16,7 +16,7 @@
 <div ng-class="{'advanced-mode': isAdvancedMode(), 'hierarchy-mode': isHierarchyEnabled()}">
   <div class="bkcell">
     <bk-plugin-manager></bk-plugin-manager>
-    <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index">
+    <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index" cellid="{{cell.id}}">
     </bk-cell>
     <div class="dropdown bkcellmenu" style="position: fixed; z-index: 99">
       <a class="dropdown-toggle" data-toggle="dropdown"></a>

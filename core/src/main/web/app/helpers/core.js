@@ -38,7 +38,7 @@
    *     instead
    */
   module.factory('bkCoreManager', function(
-      $dialog, bkUtils, bkRecentMenu, modalDialogOp) {
+      $dialog, bkUtils, bkRecentMenu, bkNotebookCellModelManager, modalDialogOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
@@ -92,10 +92,10 @@
       import: function(notebookJson) {
         var notebookModel;
         try {
-          notebookModel = angular.fromJson(notebookJson);
+          notebookModel = bkUtils.fromPrettyJson(notebookJson);
           // TODO, to be removed. Addressing loading a corrupted notebook.
           if (angular.isString(notebookModel)) {
-            notebookModel = angular.fromJson(notebookModel);
+            notebookModel = bkUtils.fromPrettyJson(notebookModel);
             bkUtils.log("corrupted-notebook", { notebookUri: enhancedNotebookUri });
           }
         } catch (e) {
@@ -265,6 +265,9 @@
         return bkRecentMenu.getMenuItems();
       },
 
+      getNotebookCellManager: function() {
+        return bkNotebookCellModelManager;
+      },
       // general
       showModalDialog: function(callback, template, strategy) {
         if (!template) {

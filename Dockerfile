@@ -59,7 +59,6 @@ RUN pip install ipython jinja2 tornado pyzmq pandas
 # And some useful libraries:
 RUN apt-get install -y python-matplotlib python-scipy
 
-
 #######
 #  R  #
 #######
@@ -76,7 +75,7 @@ RUN Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')"
 ###########
 
 RUN apt-get install -y julia
-RUN julia --eval 'Pkg.add("IJulia")' 
+RUN julia --eval 'Pkg.add("IJulia")'
 RUN julia --eval 'Pkg.add("Gadfly")'
 
 ##########
@@ -103,8 +102,16 @@ RUN npm config --global set cache /home/beaker/.npm && \
 
 RUN useradd beaker --create-home
 ADD . /home/beaker/src
-RUN chown -R beaker:beaker /home/beaker
 ENV HOME /home/beaker
+
+# Run these again. When they ran above, they installed in ~root but we
+# need to find them in ~beaker.  Unfortunately we can't run just once
+# here because in addition to those files, they also run some apt-gets
+# which need to go as root.
+RUN su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'"
+RUN su -m beaker -c "julia --eval 'Pkg.add(\"Gadfly\")'"
+
+RUN chown -R beaker:beaker /home/beaker
 RUN su -m beaker -c "cd /home/beaker/src  && gradle build"
 EXPOSE 8800
 WORKDIR /home/beaker/src

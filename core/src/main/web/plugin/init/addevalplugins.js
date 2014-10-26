@@ -18,7 +18,7 @@
   window.bkInit.getEvaluatorUrlMap = function() {
     return {
       "IPython": "./plugins/eval/ipythonPlugins/ipython/ipython.js",
-      "IRuby": "./plugins/eval/ipythonPlugins/iruby/iruby.js",
+      // "IRuby": "./plugins/eval/ipythonPlugins/iruby/iruby.js",
       "Julia": "./plugins/eval/ipythonPlugins/julia/julia.js",
       "Groovy": "./plugins/eval/groovy/groovy.js",
       "R": "./plugins/eval/r/r.js",

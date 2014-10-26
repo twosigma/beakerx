@@ -42,6 +42,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 public class DefaultBeakerConfig implements BeakerConfig {
 
   private final String installDir;
+  private final String [] searchDirs;
   private final String pluginDir;
   private final String dotDir;
   private final String nginxDir;
@@ -68,6 +69,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Map<String, String[]> pluginEnvps;
   private final String version;
   private final String buildTime;
+  private final String hash;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
@@ -79,6 +81,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
   {
 
     this.installDir = System.getProperty("user.dir");
+    this.searchDirs = new String [1];
+    this.searchDirs[0] = this.installDir;
     this.useKerberos = pref.getUseKerberos();
     this.portBase = pref.getPortBase();
     this.reservedPortCount = 4;
@@ -113,8 +117,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
     if (prefDefaultNotebookUrl != null) {
       this.defaultNotebookUrl = prefDefaultNotebookUrl;
     } else {
-      utils.ensureFileHasContent(mainDefaultNotebookPath, defaultDefaultNotebookPath);
-      this.defaultNotebookUrl = mainDefaultNotebookPath;
+      File f = new File(mainDefaultNotebookPath);
+      if(f.exists())
+        this.defaultNotebookUrl = mainDefaultNotebookPath;
+      else
+        this.defaultNotebookUrl = defaultDefaultNotebookPath;
     }
 
     String varDir = this.dotDir + "/var";
@@ -155,11 +162,17 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
     this.version = utils.readFile(this.installDir + "/config/version");
     this.buildTime = utils.readFile(this.installDir + "/config/build_time");
+    this.hash = utils.readFile(this.installDir + "/config/hash");
   }
 
   @Override
   public String getInstallDirectory() {
     return this.installDir;
+  }
+
+  @Override
+  public String [] getFileSearchDirs() {
+    return this.searchDirs;
   }
 
   @Override
@@ -272,6 +285,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
     return this.authCookie;
   }
 
+  /* When the hash can be stored in a file, need to generate salt randomly.
+     See github Issue #319 */
   @Override
   public String getPasswordSalt() {
     return ".beaker.N0tebook";
@@ -313,5 +328,15 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getBuildTime() {
     return this.buildTime;
+  }
+
+  @Override
+  public String getHash() {
+    return this.hash;
+  }
+  
+  @Override
+  public String getMainPageFileName() {
+      return this.installDir + "/src/main/web/app/template/index_template.html";
   }
 }

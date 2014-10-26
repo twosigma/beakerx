@@ -178,6 +178,8 @@ PRE.CodeContainer img {
     left: 0;
     width: 100%;
     z-index: 9999;
+    background: white !important;
+    color: black;
 }
 
 input[type="text"].inputerror {
@@ -301,4 +303,21 @@ table.dataTable tbody td {
 
 .text-danger {
     color: #a94442;
+}
+
+.bko-table-top {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.bko-table-bottom {
+    padding-top: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.bko-table-bottom2 {
+    padding-top: 10px;
+    overflow: hidden;
+    white-space: nowrap;
 }

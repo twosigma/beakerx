@@ -40,14 +40,12 @@ import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
-import com.twosigma.beaker.jvm.object.ImageIconSerializer;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
-import java.awt.Color;
-import javax.swing.ImageIcon;
+import com.twosigma.beaker.chart.Color;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -68,7 +66,6 @@ public class SerializerModule
     bind(TableDisplay.Serializer.class);
     bind(OutputContainer.Serializer.class);
     bind(StringObject.Serializer.class);
-    bind(ImageIconSerializer.class);
   }
 
   @Provides
@@ -93,7 +90,6 @@ public class SerializerModule
     module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
     module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
     module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
-    module.addSerializer(ImageIcon.class, injector.getInstance(ImageIconSerializer.class));
 
     module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
     module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));

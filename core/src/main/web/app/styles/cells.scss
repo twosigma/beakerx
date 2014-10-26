@@ -19,7 +19,7 @@
 @import "cell-outputs";
 
 .bkcell {
-    margin-bottom:  10px;
+    margin-bottom:  6px;
 
     .CodeMirror {
         background: transparent;
@@ -52,6 +52,12 @@ bk-markdown-cell > div {
     padding:     20px;
     padding-top: 40px;
     border: solid 1px $cell-border;
+}
+
+.locked {
+    .bkcell.code-cell-area, .text-cell {
+        border: solid 1px transparent;
+    }
 }
 
 .bkcell bk-code-cell-input-menu .dropdown {
@@ -137,6 +143,25 @@ bk-output-display pre {
 
 bk-cell .section > .toggle-menu {
     margin-top: -4px;
+}
+
+.toggle-menu {
+    bk-language-logo {
+        display: none;
+        position: relative;
+        top: 1px;
+        margin-right: 5px;
+    }
+}
+
+.advanced-mode {
+    bk-language-logo {
+        display: none;
+    }
+
+    .toggle-menu  bk-language-logo {
+        display: inline-block;
+    }
 }
 
 bk-language-logo {

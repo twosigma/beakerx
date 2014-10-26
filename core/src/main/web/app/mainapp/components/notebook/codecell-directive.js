@@ -138,12 +138,10 @@
             return;
           }
           if (evaluator.autocomplete) {
-            evaluator.autocomplete(
-                $scope.cellmodel.input.body,
-                cpos, onResults);
+            evaluator.autocomplete($scope.cellmodel.input.body, cpos, onResults);
           } else if (evaluator.autocomplete2) {
-            evaluator.autocomplete2(
-                $scope.cm, null, onResults);
+            // dead code? XXX
+            evaluator.autocomplete2($scope.cm, null, onResults);
           }
         };
 
@@ -334,10 +332,19 @@
             }
           },
           extraKeys: {
+            "Ctrl-S": "save",
+            "Cmd-S": "save",
             "Shift-Ctrl-A": function(cm) {
               scope.appendCodeCell();
             },
+            "Shift-Cmd-A": function(cm) {
+              scope.appendCodeCell();
+            },
             "Shift-Ctrl-E": function(cm) {
+              scope.popupMenu();
+              element.find(".inputcellmenu").find('li').find('a')[0].focus();
+            },
+            "Shift-Cmd-E": function(cm) {
               scope.popupMenu();
               element.find(".inputcellmenu").find('li').find('a')[0].focus();
             },
@@ -349,6 +356,9 @@
               setFullScreen(cm, !isFullScreen(cm));
             },
             "Ctrl-Enter": function(cm) {
+              scope.evaluate();
+            },
+            "Cmd-Enter": function(cm) {
               scope.evaluate();
             },
             "Shift-Enter": function(cm) {
@@ -364,10 +374,46 @@
                 var token = getToken(editor, cur);
                 var cursorPos = editor.indexFromPos(cur);
                 // We might want this defined by the plugin.
-                var onResults = function(results, matched_text) {
+                var onResults = function(results, matched_text, dotFix) {
                   var start = token.start;
                   var end = token.end;
-                  if (token.string === ".") {
+                  if (dotFix && token.string === ".") {
+                    start += 1;
+                  }
+                  if (matched_text) {
+                    start += (cur.ch - token.start - matched_text.length);
+                    end = start + matched_text.length;
+                  }
+                  showHintCB({
+                    list: _.uniq(results),
+                    from: CodeMirror.Pos(cur.line, start),
+                    to: CodeMirror.Pos(cur.line, end)
+                  });
+                };
+                scope.autocomplete(cursorPos, onResults);
+              };
+
+              var options = {
+                async: true,
+                closeOnUnfocus: true,
+                alignWithWord: true,
+                completeSingle: true
+              };
+              CodeMirror.showHint(cm, getHints, options);
+            },
+            "Cmd-Space": function(cm) {
+              var getToken = function(editor, cur) {
+                return editor.getTokenAt(cur);
+              };
+              var getHints = function(editor, showHintCB, options) {
+                var cur = editor.getCursor();
+                var token = getToken(editor, cur);
+                var cursorPos = editor.indexFromPos(cur);
+                // We might want this defined by the plugin.
+                var onResults = function(results, matched_text, dotFix) {
+                  var start = token.start;
+                  var end = token.end;
+                  if (dotFix && token.string === ".") {
                     start += 1;
                   }
                   if (matched_text) {
@@ -396,7 +442,17 @@
               bkUtils.refreshRootScope();
               cm.focus();
             },
+            "Cmd-Alt-Up": function(cm) { // cell move up
+              notebookCellOp.moveUp(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
             "Ctrl-Alt-Down": function(cm) { // cell move down
+              notebookCellOp.moveDown(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
+            "Cmd-Alt-Down": function(cm) { // cell move down
               notebookCellOp.moveDown(scope.cellmodel.id);
               bkUtils.refreshRootScope();
               cm.focus();
@@ -405,7 +461,15 @@
               scope.cellmodel.input.hidden = true;
               bkUtils.refreshRootScope();
             },
+            "Cmd-Alt-H": function(cm) { // cell hide
+              scope.cellmodel.input.hidden = true;
+              bkUtils.refreshRootScope();
+            },
             "Ctrl-Alt-D": function(cm) { // cell delete
+              notebookCellOp.delete(scope.cellmodel.id, true);
+              bkUtils.refreshRootScope();
+            },
+            "Cmd-Alt-D": function(cm) { // cell delete
               notebookCellOp.delete(scope.cellmodel.id, true);
               bkUtils.refreshRootScope();
             }
@@ -424,6 +488,7 @@
               newVal = "";
             }
             scope.cm.setValue(newVal);
+            scope.cm.clearHistory();
           }
         });
         // cellmodel.body <-- CodeMirror

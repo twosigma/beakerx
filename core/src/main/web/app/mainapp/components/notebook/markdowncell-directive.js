@@ -25,6 +25,10 @@
       var options = {
         basePath: 'vendor/epiceditor',
         container: div,
+        theme: {
+          editor: '../../../css/markdown-edit.css',
+          preview: '../../../css/markdown-preview.css'  
+        },
         file: {
           defaultContent: scope.cellmodel.body
         },

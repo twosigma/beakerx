@@ -34,7 +34,8 @@
     'bk.evaluatorManager',
     'bk.evaluateJobManager',
     'bk.notebook',
-    'bk.pluginManager'
+    'bk.pluginManager',
+    'bk.datatables'
   ]);
 
   /**
@@ -64,6 +65,9 @@
         var showStatusMessage = function(message) {
           $scope.message = message;
         };
+        var showLoadingStatusMessage = function(message) {
+          $scope.loadingmsg = message;
+        };
         var showTransientStatusMessage = function(message) {
           showStatusMessage(message);
           bkUtils.delay(500).then(function() {
@@ -71,6 +75,50 @@
           });
         };
         var evaluatorMenuItems = [];
+
+	var addEvaluators = function(evarr, alwaysCreateNewEvaluator, func, stat) {
+	  if (evarr.length == 0) {
+            showLoadingStatusMessage("Rendering Notebook...");
+	    setTimeout(function () {
+              func(stat);
+            }, 100);
+	    return;
+	  }
+	  var settings = evarr.shift();
+	  
+          if (alwaysCreateNewEvaluator) {
+            settings.shellID = null;
+          }
+
+	  showLoadingStatusMessage("Starting " + settings.name + "...");
+
+	  return bkEvaluatorManager.newEvaluator(settings)
+            .then(function(evaluator) {
+              if (!_.isEmpty(evaluator.spec)) {
+                var actionItems = [];
+                _(evaluator.spec).each(function(value, key) {
+                  if (value.type === "action") {
+                    actionItems.push({
+                      name: value.name ? value.name : value.action,
+                      action: function() {
+                        evaluator.perform(key);
+                      }
+                    });
+                  }
+		});
+                if (actionItems.length > 0) {
+                  evaluatorMenuItems.push({
+                    name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
+                    items: actionItems
+                  });
+                }
+              }
+	      addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+	    }, function(evaluator) {
+	      addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+            });
+	}
+	
 
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
           // set shell id to null, so it won't try to find an existing shell with the id
@@ -91,7 +139,7 @@
                         }
                       });
                     }
-                  });
+		      });
                   if (actionItems.length > 0) {
                     evaluatorMenuItems.push({
                       name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
@@ -99,7 +147,7 @@
                     });
                   }
                 }
-              });
+	     });
         };
 
         var loadNotebook = (function() {
@@ -121,31 +169,157 @@
           var loadNotebookModelAndResetSession = function(
               notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
               isExistingSession) {
-            $scope.loading = true;
-            addScrollingHack();
-            bkSessionManager.reset(
-                notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId);
-            isExistingSession = !!isExistingSession;
-            evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
+            // check if the notebook has to load plugins from an external source
+            var r = new RegExp('^(?:[a-z]+:)?//', 'i');
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
-                addEvaluator(notebookModel.evaluators[i], !isExistingSession);
+                if (r.test(notebookModel.evaluators[i].plugin)) {
+                  var plugList = "<ul>";
+                  for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+                    if (r.test(notebookModel.evaluators[i].plugin)) {
+                      plugList += "<li>"+notebookModel.evaluators[i].plugin;
+                    }
+                  }
+                  plugList += "</ul>";
+                  promptIfInsecure(plugList).then(function() {
+                    // user accepted risk... do the loading
+                    _loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, isExistingSession);
+                  }, function() {
+                    // user denied risk... clear plugins with external URL and do the loading
+                    var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+                    for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+                      if (r.test(notebookModel.evaluators[i].plugin)) {
+                        notebookModel.evaluators[i].plugin="";
+                      }
+                    }
+                    _loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, isExistingSession);
+                  });
+                  return;
+                }
               }
             }
-            document.title = bkSessionManager.getNotebookTitle();
-            if (!isExistingSession) {
-              bkUtils.log("open", {
-                uri: notebookUri,
-                uriType: uriType,
-                format: format,
-                maxCellLevel: _(notebookModel.cells).max(function(cell) {
-                  return cell.level;
-                }).level,
-                cellCount: notebookModel.cells.length
-              });
-              bkHelper.evaluate("initialization");
+            // no unsafe operation detected... do the loading
+            _loadNotebookModelAndResetSession(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, isExistingSession);
+          };
+          var promptIfInsecure = function(urlList) {
+            var deferred = bkUtils.newDeferred();
+            bkCoreManager.show2ButtonModal(
+                "This notebook is asking to load the following plugins from external servers:<br/>" + urlList+
+                    " <br/>How do you want to handle these external plugins?",
+                "Warning: external plugins detected",
+                function() {
+                  deferred.reject();
+                },
+                function() {
+                  deferred.resolve();
+                }, "Disable", "Load", "", "btn-danger");
+            return deferred.promise;
+          };
+          var _loadNotebookModelAndResetSession = function(
+              notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
+              isExistingSession) {
+            $scope.loading = true;
+            showLoadingStatusMessage("Loading notebook");
+            addScrollingHack();
+            isExistingSession = !!isExistingSession;
+            evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
+
+              // HACK to fix older version of evaluator configuration
+            if (notebookModel && notebookModel.cells && notebookModel.evaluators) {
+              for (var i = 0; i < notebookModel.cells.length; ++i) {
+                if (notebookModel.cells[i].evaluator != undefined) {
+                  for (var j = 0; j < notebookModel.evaluators.length; ++j) {
+                    var name = notebookModel.evaluators[j].name;
+                    if (notebookModel.cells[i].evaluator === name) {
+                      var plugin = notebookModel.evaluators[j].plugin;
+                      if (bkUtils.beginsWith(name,"Html")) {
+                        notebookModel.cells[i].evaluator = "Html";
+                      } else if(bkUtils.beginsWith(name,"Latex")) {
+                        notebookModel.cells[i].evaluator = "Latex";
+                      } else if(bkUtils.beginsWith(name,"JavaScript")) {
+                        notebookModel.cells[i].evaluator = "JavaScript";
+                      } else if(bkUtils.beginsWith(name,"Groovy")) {
+                        notebookModel.cells[i].evaluator = "Groovy";
+                      } else if(name === "Python") {
+                        notebookModel.cells[i].evaluator = plugin;
+                      }
+                      break;
+                    }
+                  }
+                }
+              }
+              for (var j = 0; j < notebookModel.evaluators.length; ++j) {
+                var name = notebookModel.evaluators[j].name;
+                var plugin = notebookModel.evaluators[j].plugin;
+                if (bkUtils.beginsWith(name,"Html")) {
+                  notebookModel.evaluators[j].name = "Html";
+                  notebookModel.evaluators[j].plugin = "Html";
+                } else if(bkUtils.beginsWith(name,"Latex")) {
+                  notebookModel.evaluators[j].name = "Latex";
+                  notebookModel.evaluators[j].plugin = "Latex";
+                } else if(bkUtils.beginsWith(name,"JavaScript")) {
+                  notebookModel.evaluators[j].name = "JavaScript";
+                  notebookModel.evaluators[j].plugin = "JavaScript";
+                } else if(bkUtils.beginsWith(name,"Groovy")) {
+                  notebookModel.evaluators[j].name = "Groovy";
+                  notebookModel.evaluators[j].plugin = "Groovy";
+                } else if(name === "Python") {
+                  notebookModel.evaluators[j].name = plugin;
+                }
+              }
             }
-            $scope.loading = false;
+            // HACK END
+
+	    document.title = bkSessionManager.getNotebookTitle();
+	    bkSessionManager.backup();
+	    bkSessionManager.clear();
+            sessionId = bkSessionManager.setSessionId(sessionId);
+
+	    // this is used to load evaluators before rendering the page
+            if (notebookModel && notebookModel.evaluators) {
+	      addEvaluators(notebookModel.evaluators.slice(),  !isExistingSession,
+			    function(stat) {
+			      bkSessionManager.setup(
+				stat.notebookUri, stat.uriType, stat.readOnly, stat.format,
+				stat.notebookModel, stat.edited, stat.sessionId);
+			      if (!stat.isExistingSession) {
+				bkUtils.log("open", {
+				  uri: stat.notebookUri,
+				  uriType: stat.uriType,
+				  format: stat.format,
+				  maxCellLevel: _(stat.notebookModel.cells).max(function(cell) {
+				    return cell.level;
+				  }).level,
+				  cellCount: stat.notebookModel.cells.length
+				});
+                                
+				bkHelper.evaluate("initialization");
+			      }
+			      stat.scope.loading = false;
+			    }, {
+                              // these values should be captured by the closure, so no need for this object
+			      notebookUri:notebookUri, uriType:uriType, readOnly:readOnly, format:format,
+			      notebookModel:notebookModel, edited:edited, sessionId:sessionId, scope:$scope,
+			      isExistingSession:isExistingSession
+                            }
+			   );
+	      return;
+            }
+
+	    if (!isExistingSession) {
+		bkUtils.log("open", {
+			uri: notebookUri,
+			uriType: uriType,
+			format: format,
+			maxCellLevel: _(notebookModel.cells).max(function(cell) {
+				return cell.level;
+			    }).level,
+			cellCount: notebookModel.cells.length
+		    });
+		bkHelper.evaluate("initialization");
+	    }
+	    $scope.loading = false;
+	    showLoadingStatusMessage("");
           };
           return {
             openUri: function(target, sessionId, retry, retryCountMax) {
@@ -154,6 +328,7 @@
                 return;
               }
               $scope.loading = true;
+	      showLoadingStatusMessage("Opening URI");
               if (retryCountMax === undefined) {
                 retryCountMax = 100;
               }
@@ -194,9 +369,10 @@
                 }).catch(function(data, status, headers, config) {
                   bkHelper.show1ButtonModal(data, "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
+		    $scope.loading = false;
+		    showLoadingStatusMessage("");
                   });
                 }).finally(function() {
-                  $scope.loading = false;
                 });
               }
             },
@@ -265,12 +441,6 @@
             return deferred.promise;
           };
 
-          var saveDoNotOverwrite = function(uri, uriType) {
-            var fileSaver = bkCoreManager.getFileSaver(uriType);
-            var content = bkSessionManager.getSaveData().notebookModelAsString;
-            return fileSaver.save(uri, content);
-          };
-
           var promptIfOverwrite = function(uri) {
             var deferred = bkUtils.newDeferred();
             bkCoreManager.show2ButtonModal(
@@ -288,8 +458,10 @@
           var saveAlwaysOverwrite = function(uri, uriType) {
             var deferred = bkUtils.newDeferred();
             var fileSaver = bkCoreManager.getFileSaver(uriType);
-            var content = bkSessionManager.getSaveData().notebookModelAsString;
-            fileSaver.save(uri, content, true).then(function() {
+            bkSessionManager.dumpDisplayStatus();
+            $timeout(function() {
+              var content = bkSessionManager.getSaveData().notebookModelAsString;
+              return fileSaver.save(uri, content, true)}, 1).then(function() {
               deferred.resolve({uri: uri, uriType: uriType});
             }, function(reason) {
               deferred.reject(reason);
@@ -298,7 +470,12 @@
           };
 
           var _savePromptIfOverwrite = function(deferred, uri, uriType) {
-            saveDoNotOverwrite(uri, uriType).then(function() {
+            var fileSaver = bkCoreManager.getFileSaver(uriType);
+            bkSessionManager.dumpDisplayStatus();
+            $timeout(function() {
+              var content = bkSessionManager.getSaveData().notebookModelAsString;
+              return fileSaver.save(uri, content);
+            }, 1).then(function() {
               deferred.resolve({uri: uri, uriType: uriType}); // file save succeed
             }, function (reason) {
               if (reason === "exists") {
@@ -374,8 +551,19 @@
               saveStart();
               var thenable;
               if (bkSessionManager.isSavable()) {
-                var saveData = bkSessionManager.getSaveData();
-                thenable = saveAlwaysOverwrite(saveData.notebookUri, saveData.uriType);
+                bkSessionManager.dumpDisplayStatus();
+                thenable = $timeout(function() {
+                  var saveData = bkSessionManager.getSaveData();
+                  var deferred = bkUtils.newDeferred();
+                  var fileSaver = bkCoreManager.getFileSaver(saveData.uriType);
+                  var content = saveData.notebookModelAsString;
+                  fileSaver.save(saveData.notebookUri, content, true).then(function() {
+                    deferred.resolve({uri: saveData.notebookUri, uriType: saveData.uriType});
+                    }, function(reason) {
+                    deferred.reject(reason);
+                  });
+                  return deferred.promise;
+                }, 1);
               } else {
                 thenable = savePromptChooseUri();
               }
@@ -461,7 +649,7 @@
               });
             },
             addEvaluator: function(settings) {
-              addEvaluator(settings, true);
+              return addEvaluator(settings, true);
             },
             removeEvaluator: function(plugin) {
               bkEvaluatorManager.removeEvaluator(plugin);
@@ -519,11 +707,33 @@
             e.preventDefault();
             _impl.saveNotebook();
             return false;
-          } else if (e.ctrlKey && e.which === 90) { // Ctrl + z
-            bkUtils.fcall(function() {
-              bkSessionManager.undo();
-            });
+          } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 83)) { // Cmd + s
+            e.preventDefault();
+            _impl.saveNotebook();
             return false;
+          } else if (e.target.nodeName !== "TEXTAREA") {
+            if (e.ctrlKey && e.which === 90) { // Ctrl + z
+              bkUtils.fcall(function() {
+                bkSessionManager.undo();
+              });
+              return false;
+            } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 90)) { // Cmd + z
+              bkUtils.fcall(function() {
+                bkSessionManager.undo();
+              });
+              return false;
+            } else if (e.ctrlKey && e.which === 89) { // Ctrl + z
+              bkUtils.fcall(function() {
+                bkSessionManager.redo();
+              });
+              return false;
+            } else if (e.metaKey && !e.ctrlKey && !e.altKey && (e.which === 89)) { // Cmd + z
+              bkUtils.fcall(function() {
+                bkSessionManager.redo();
+              });
+              return false;
+            }
+          // TODO implement global redo
           }
         };
         $(document).bind('keydown', keydownHandler);
@@ -594,9 +804,12 @@
                 "Disconnected",
                 function() {
                   // "Save", save the notebook as a file on the client side
-                  bkUtils.saveAsClientFile(
+                  bkSessionManager.dumpDisplayStatus();
+                  $timeout(function() {
+                    bkUtils.saveAsClientFile(
                       bkSessionManager.getSaveData().notebookModelAsString,
                       "notebook.bkr");
+                  }, 1);
                 },
                 function() {
                   // "Not now", hijack all keypress events to prompt again
@@ -690,9 +903,8 @@
           }
         });
 
-        showStatusMessage("");
+        showLoadingStatusMessage("");
         $scope.loading = true;
-
         // ensure an existing session is cleared so that the empty notebook model
         // makes the UI is blank immediately (instead of showing leftover from a previous session)
         bkSessionManager.clear();

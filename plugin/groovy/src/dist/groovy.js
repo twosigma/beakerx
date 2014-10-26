@@ -69,7 +69,7 @@ define(function(require, exports, module) {
     bgColor: "#6497A9",
     fgColor: "#FFFFFF",
     borderColor: "",
-    shortName: "Gr",
+    shortName: "Gv",
     newShell: function(shellId, cb) {
       if (!shellId) {
         shellId = "";
@@ -167,7 +167,7 @@ define(function(require, exports, module) {
     cometdUtil: cometdUtil
   };
   var defaultImports = [
-    "java.awt.Color",
+    "com.twosigma.beaker.chart.Color",
     "com.twosigma.beaker.chart.xychart.*",
     "com.twosigma.beaker.chart.xychart.plotitem.*"];
   var shellReadyDeferred = bkHelper.newDeferred();

@@ -73,7 +73,6 @@
                 return it.url !== url;
               });
             });
-
             return deferred.promise;
           }
         },

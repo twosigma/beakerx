@@ -19,6 +19,7 @@ define(function(require, exports, module) {
   var menuItems = [
     {
       name: "Plugin manager...",
+      sortorder: 100,
       action: function () {
         bkHelper.getBkNotebookViewModel().showEvaluators();
       },
@@ -26,6 +27,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Lock",
+      sortorder: 110,
       action: function () {
         bkHelper.toggleNotebookLocked();
       },
@@ -36,16 +38,37 @@ define(function(require, exports, module) {
     },
     {
       name: 'Delete all output cells',
+      sortorder: 120,
       action: function () {
         bkHelper.deleteAllOutputCells();
       },
       tooltip: 'Deletes all of the output cells.'
     },
     {
+      name: "Run all cells",
+      sortorder: 130,
+      action: function() {
+        bkHelper.evaluate("root");
+      },
+      tooltip: "Run all cells"
+    },
+    {
       name: "Edit mode",
+      sortorder: 140
+    }
+  ];
+  var toAdd = [
+    {
+      parent: "Notebook",
+      items: menuItems
+    },
+    {
+      parent: "Notebook",
+      submenu: "Edit mode",
       items: [
         {
           name: "Normal",
+          sortorder: 100,
           isChecked: function () {
             return bkHelper.getInputCellKeyMapMode() === "default";
           },
@@ -55,6 +78,7 @@ define(function(require, exports, module) {
         },
         {
           name: "Vim (limited support)",
+          sortorder: 120,
           isChecked: function () {
             return bkHelper.getInputCellKeyMapMode() === "vim";
           },
@@ -64,6 +88,7 @@ define(function(require, exports, module) {
         },
         {
           name: "Emacs",
+          sortorder: 110,
           isChecked: function () {
             return bkHelper.getInputCellKeyMapMode() === "emacs";
           },
@@ -75,10 +100,7 @@ define(function(require, exports, module) {
     }
   ];
 
-  var menuItemPromise = bkHelper.newPromise({
-    parent: "Notebook",
-    items: menuItems
-  });
+  var menuItemPromise = bkHelper.newPromise(toAdd);
 
   exports.getMenuItems = function () {
     return menuItemPromise;

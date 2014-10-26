@@ -56,7 +56,7 @@ define(function(require, exports, module) {
       var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
       bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
         .success(function(result) {
-          bkHelper.httpPost(base + "/login?next=%2Fbeaker", {password: result})
+          bkHelper.httpPost(base + "/login?next=%2E", {password: result})
             .success(function(result) {
               if (ipyVersion1) {
                 self.kernel = new IPython.Kernel(base + "/kernels/");
@@ -250,7 +250,7 @@ define(function(require, exports, module) {
 	}});
       } else {
         kernel.complete(code, cpos, function(reply) {
-            cb(reply.content.matches, reply.matched_text);
+          cb(reply.content.matches, reply.content.matched_text);
 	});
       }
     },
@@ -292,8 +292,22 @@ define(function(require, exports, module) {
             self.settings = settings;
             var finish = function () {
               if (bkHelper.hasSessionId()) {
-                var initCode = "import beaker\n" +
-                  "beaker.set_session('" + bkHelper.getSessionId() + "')\n";
+		  var initCode = ("%matplotlib inline\n" +
+                                  "import numpy\n" +
+                                  "import matplotlib\n" +
+                                  "from matplotlib import pylab, mlab, pyplot\n" +
+                                  "np = numpy\n" +
+                                  "plt = pyplot\n" +
+                                  "from IPython.display import display\n" +
+                                  "from IPython.core.pylabtools import figsize, getfigs\n" +
+                                  "from pylab import *\n" +
+                                  "from numpy import *\n" +
+                                  "try:\n"+
+				  "    import beaker_runtime3 as beaker_runtime\n" +
+				  "except ImportError:\n" +
+				  "    import beaker_runtime as beaker_runtime\n" +
+                                  "beaker = beaker_runtime.Beaker()\n" +
+				  "beaker.set_session('" + bkHelper.getSessionId() + "')\n");
                 self.evaluate(initCode, {}).then(function () {
                   if (doneCB) {
                     doneCB(self);

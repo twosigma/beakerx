@@ -127,6 +127,7 @@ public class PluginServiceLocatorRest {
   private final OutputLogService outputLogService;
   private final Base64 encoder;
   private final String corePassword;
+  private final String urlHash;
 
   private final String nginxTemplate;
   private final String ipythonTemplate;
@@ -157,6 +158,7 @@ public class PluginServiceLocatorRest {
     this.authCookie = bkConfig.getAuthCookie();
     this.pluginLocations = bkConfig.getPluginLocations();
     this.pluginEnvps = bkConfig.getPluginEnvps();
+    this.urlHash = bkConfig.getHash();
     this.pluginArgs = new HashMap<>();
     this.outputLogService = outputLogService;
     this.encoder = new Base64();
@@ -306,13 +308,13 @@ public class PluginServiceLocatorRest {
     String password = RandomStringUtils.random(40, true, true);
     synchronized (this) {
       final int port = getNextAvailablePort(this.portSearchStart);
-      final String baseUrl = "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
+      final String baseUrl = "/" + urlHash + "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
       pConfig = new PluginConfig(port, nginxRules, baseUrl, password);
       this.portSearchStart = pConfig.port + 1;
       this.plugins.put(pluginId, pConfig);
 
       if (nginxRules.startsWith("ipython")) {
-        generateIPythonConfig(port, password);
+        generateIPythonConfig(pluginId, port, password);
       }
 
       // restart nginx to reload new config
@@ -432,7 +434,7 @@ public class PluginServiceLocatorRest {
   }
 
   private static Response buildResponse(String baseUrl, boolean created) {
-    baseUrl = ".." + baseUrl;
+    baseUrl = "../.." + baseUrl;
     return Response
         .status(created ? Response.Status.CREATED : Response.Status.OK)
         .entity(baseUrl)
@@ -519,27 +521,31 @@ public class PluginServiceLocatorRest {
     Process proc = Runtime.getRuntime().exec(this.ipythonCmdBase + " --hash");
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
+    new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
     bw.write("from IPython.lib import passwd\n");
     // I have confirmed that this does not go into ipython history by experiment
     // but it would be nice if there were a way to make this explicit. XXX
     bw.write("print(passwd('" + password + "'))\n");
     bw.close();
     String hash = br.readLine();
+    if (null == hash) {
+      throw new RuntimeException("unable to get IPython hash");
+    }
     return hash;
   }
 
-  private void generateIPythonConfig(int port, String password)
+  private void generateIPythonConfig(String pluginId, int port, String password)
     throws IOException, InterruptedException
   {
     // Can probably determine exactly what is needed and then just
     // make the files ourselves but this is a safe way to get started.
-    String cmd = this.ipythonCmdBase + " --profile " + this.nginxServDir;
+    String cmd = this.ipythonCmdBase + " --profile " + this.nginxServDir + " " + pluginId;
     Runtime.getRuntime().exec(cmd).waitFor();
     String hash = hashIPythonPassword(password);
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));
     config = config.replace("%(hash)s", hash);
-    java.nio.file.Path targetFile = Paths.get(this.nginxServDir + "/profile_beaker_backend",
+    java.nio.file.Path targetFile = Paths.get(this.nginxServDir + "/profile_beaker_backend_" + pluginId,
                                               "ipython_notebook_config.py");
     writePrivateFile(targetFile, config);
   }
@@ -627,6 +633,7 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
+    nginxConfig = nginxConfig.replace("%(urlhash)s", urlHash);
     java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
     writePrivateFile(targetFile, nginxConfig);
     return restartId;
@@ -664,6 +671,7 @@ public class PluginServiceLocatorRest {
       proc = Runtime.getRuntime().exec(this.ipythonCmdBase + " --version");
     }
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+    new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-version", null, null).start();
     String line = br.readLine();
     return line;
   }
@@ -677,7 +685,9 @@ public class PluginServiceLocatorRest {
     if (null == pConfig) {
       return "";
     }
-    /* It's OK to return the password because the connection should be HTTPS */
+    /* It's OK to return the password because the connection should be
+       HTTPS and the request is authenticated so only our legit user
+       should be on the other side. */
     return pConfig.password;
   }
 

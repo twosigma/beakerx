@@ -10,29 +10,29 @@
 	<string>Beaker</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>0892FD02-43BC-47B5-8149-0360CC8EDD68</key>
+		<key>8F6F36B0806F9F48076035B7D33BEE55EB7659F9</key>
 		<string>https://github.com/twosigma/beaker-notebook.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>launcher/Beaker/Beaker.xcodeproj/project.xcworkspace</string>
+	<string>launcher/mac/Beaker.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>0892FD02-43BC-47B5-8149-0360CC8EDD68</key>
+		<key>8F6F36B0806F9F48076035B7D33BEE55EB7659F9</key>
 		<string>../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/twosigma/beaker-notebook.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>0892FD02-43BC-47B5-8149-0360CC8EDD68</string>
+	<string>8F6F36B0806F9F48076035B7D33BEE55EB7659F9</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>0892FD02-43BC-47B5-8149-0360CC8EDD68</string>
+			<string>8F6F36B0806F9F48076035B7D33BEE55EB7659F9</string>
 			<key>IDESourceControlWCCName</key>
 			<string>beaker-notebook</string>
 		</dict>

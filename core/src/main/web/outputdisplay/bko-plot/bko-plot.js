@@ -262,7 +262,6 @@
           }
           if (scope.hasLodItem === true && scope.showLodHint === true) {
             scope.showLodHint = false;
-            //scope.state.flags.showLodHint = false;
             scope.renderMessage("Level-of-Detail (LOD) is enabled",
               [ "Some data items contain too many elements to be directly plotted.",
               "Level-of-Detail (LOD) rendering is automatically enabled. " +
@@ -274,7 +273,6 @@
           }
           if (scope.hasUnorderedItem === true && scope.showUnorderedHint === true) {
             scope.showUnorderedHint = false;
-            //scope.state.flags.showUnorderedHint = false;
             scope.renderMessage("Unordered line / area detected",
               [ "The plot requires line and area elements to have x-monotonicity in order to apply " +
               "truncation for performance optimization.",
@@ -653,9 +651,6 @@
                     "msg_lodoff",
                     function() {
                       dat.toggleLod(scope);
-
-                      scope.state.lodTypes[dat.index] = dat.lodType;  // update state
-
                       scope.update();
                       scope.setLodHint(dat);
                     }, null);
@@ -669,9 +664,6 @@
                 } else {
                   dat.switchLodType(scope);
                 }
-
-                scope.state.lodTypes[dat.index] = dat.lodType;  // update state
-
                 dat.zoomLevelChanged(scope);
                 scope.update();
                 scope.setLodHint(dat);
@@ -681,9 +673,6 @@
                 var dat = e.data.dat;
                 if (dat.lodType === "off") return;
                 dat.toggleLodAuto(scope);
-
-                scope.state.lodAutos[dat.index] = dat.lodAuto; // update state
-
                 scope.update();
                 scope.setLodHint(dat);
               });
@@ -717,14 +706,9 @@
           // id in the format "legendcheck_i"
           if (id == "all") {
             scope.showAllItems = !scope.showAllItems;
-
-            scope.state.flags.showAllItems = scope.showAllItems; // update state flag
-
+            
             for (var i = 0; i < data.length; i++) {
               data[i].showItem = scope.showAllItems;
-
-              scope.state.showItems[i] = data[i].showItem; // update state flag
-
               if (data[i].showItem === false) {
                 data[i].clearTips(scope);
                 if (data[i].isLodItem === true) {
@@ -739,8 +723,6 @@
             return;
           }
           data[id].showItem = !data[id].showItem;
-
-          scope.state.showItems[id] = data[id].showItem; // update state flag
 
           if (data[id].showItem === false) {
             data[id].clearTips(scope);
@@ -1008,16 +990,6 @@
             scope.interactMode = "zoom";
           }
           scope.jqsvg.css("cursor", "auto");
-
-          if (scope.zoomed === true) {
-            // save zoom hash for lod items
-            var data = scope.stdmodel.data;
-            for (var i = 0; i < data.length; i++) {
-              if (data[i].isLodItem === true) {
-                scope.state.zoomHashes[i] = data[i].zoomHash;
-              }
-            }
-          }
         };
         scope.fixFocus = function(focus) {
           focus.xl = focus.xl < 0 ? 0 : focus.xl;
@@ -1150,65 +1122,52 @@
           scope.stdmodel = plotFormatter.standardizeModel(model);
         };
 
-        scope.checkSavedState = function() {
-          var state = scope.model.getClientState();
-          if (state.savedState == null) {
-            // create new state
-            state.savedState = {};
-            // link scope elements to savedState in prepare function
-            scope.prepareSavedState(state.savedState);
-            scope.isPreviousState = false;
-          } else {
-            // just use the previous state
-            scope.applySavedState(state.savedState);
-            scope.isPreviousState = true;
-          }
-        };
+        scope.dumpState = function() {
+          var state = {};
 
-        scope.prepareSavedState = function(state) {
-          scope.state = state;
-          state.focus = {};
-          state.tips = {};
-          state.showItems = [];
-          state.lodTypes = [];
-          state.lodAutos = [];
-          state.zoomHashes = [];
+          state.showAllItems = scope.showAllItems;
+          state.plotSize = scope.plotSize;
+          state.zoomed = scope.zoomed;
+          state.focus = scope.focus;
+          
+          state.lodOn = [];
+          state.lodType = [];
+          state.lodAuto = [];
+          state.zoomHash = [];
+          state.showItem = [];
           var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
-            state.showItems[i] = data[i].showItem;
-            if (data[i].isLodItem === true) {
-              state.lodTypes[i] = data[i].lodType;
-              state.lodAutos[i] = data[i].lodAuto;
-              state.zoomHashes[i] = data[i].zoomHash;
-            }
+            state.lodOn[i] = data[i].lodType;
+            state.lodType[i] = data[i].lodType;
+            state.lodAuto[i] = data[i].lodAuto;
+            state.zoomHash[i] = data[i].zoomHash;
+            state.showItem[i] = data[i].showItem;
           }
-          // list the flags to be stored
-          state.flags = {
-            showAllItems : scope.showAllItems
-            //showLodHint : scope.showLodHint,
-            //showUnorderedHint : scope.showUnorderedHint
-          };
-
-          state.plotSize = {};
-          _(state.plotSize).extend(scope.stdmodel.plotSize);
-          scope.plotSize = state.plotSize;
+          state.visibleItem = scope.visibleItem;
+          state.legendableItem = scope.legendableItem;
+          state.defaultFocus = scope.defaultFocus;
+          return state;
         };
 
-        scope.applySavedState = function(state) {
-          scope.state = state;
+        scope.loadState = function(state) {
+          scope.showAllItems = state.showAllItems;
+          scope.plotSize = state.plotSize;
+          scope.zoomed = state.zoomed;
+          scope.focus = state.focus;
           var data = scope.stdmodel.data;
           for (var i = 0; i < data.length; i++) {
-            data[i].showItem = state.showItems[i];
-            if (data[i].isLodItem === true) {
-              data[i].applyLodType(state.lodTypes[i]);
-              data[i].applyLodAuto(state.lodAutos[i]);
-              data[i].applyZoomHash(state.zoomHashes[i]);
+            data[i].lodOn = state.lodOn[i];
+            if (state.lodOn[i]) {
+              data[i].applyLodType(state.lodType[i]);
+              data[i].applyLodAuto(state.lodAuto[i]);
+              data[i].applyZoomHash(state.zoomHash[i]);
             }
+            data[i].showItem = state.showItem[i];
           }
-          _(state.flags).each(function(value, key) {
-            scope[key] = value;
-          });
-          scope.plotSize = state.plotSize;
+          scope.visibleItem = state.visibleItem;
+          scope.legendableItem = state.legendableItem;
+          scope.defaultFocus = state.defaultFocus;
+          scope.fixFocus(scope.defaultFocus);
         };
 
         scope.initFlags = function() {
@@ -1232,14 +1191,20 @@
           scope.standardizeData();
           // init flags
           scope.initFlags();
+          
           // see if previous state can be applied
-          scope.checkSavedState();
+          scope.focus = {};
+          scope.tips = {};
+          scope.plotSize = {};
+          
+          _(scope.plotSize).extend(scope.stdmodel.plotSize);
 
           // create layout elements
           scope.initLayout();
 
           scope.resetSvg();
           scope.zoomObj = d3.behavior.zoom();
+
           // set zoom object
           scope.svg.on("mousedown", function() {
             return scope.mouseDown();
@@ -1252,22 +1217,23 @@
             return scope.mouseleaveClear(e);
           });
           scope.enableZoom();
-
-
           scope.calcRange();
-          if (scope.isPreviousState === false) {
-            // init copies focus to defaultFocus, called only once
-            _(scope.state.focus).extend(scope.defaultFocus);
-          }
-          // set focus to reference model's focus
-          scope.focus = scope.state.focus;
-          scope.tips = scope.state.tips;
-
-          scope.calcMapping();
+          
+          // init copies focus to defaultFocus, called only once
+          _(scope.focus).extend(scope.defaultFocus);
 
           // init remove pipe
           scope.removePipe = [];
 
+	  if(scope.model.getDumpState !== undefined) {
+	      var savedstate = scope.model.getDumpState();
+	      if (savedstate.plotSize !== undefined) {
+		  scope.loadState(savedstate);
+	      } else {
+		  scope.model.setDumpState(scope.dumpState());
+	      }
+	  }
+          scope.calcMapping();
           scope.update();
         };
 
@@ -1276,7 +1242,6 @@
           scope.calcGridlines();
           scope.renderGridlines();
           plotUtils.plotGridlines(scope);
-
 
           scope.renderData();
           scope.renderGridlineLabels();
@@ -1291,8 +1256,22 @@
 
           scope.clearRemovePipe();
         };
+        
+	if(scope.model.getDumpState !== undefined) {
+	    scope.getDumpState = function() {
+		return scope.model.getDumpState();
+	    };
+        }
 
         scope.init(); // initialize
+
+	if(scope.model.getDumpState !== undefined) {
+	    scope.$watch('getDumpState()', function(result) {
+		    if (result.plotSize === undefined) {
+			scope.model.setDumpState(scope.dumpState());
+		    }
+		});
+	}
       }
     };
   };

@@ -51,55 +51,39 @@
           scope.stdmodel = combinedplotFormatter.standardizeModel(model);
         };
 
-        scope.checkSavedState = function() {
-          var state = scope.model.getClientState();
-
-          if (state.savedState == null) {
-            scope.isPreviousState = false;
-            state.savedState = {};
-            state.savedStates = [];
-            scope.prepareSavedState(state.savedState, state.savedStates);
-          } else {
-            scope.isPreviousState = true;
-            scope.applySavedState(state.savedState, state.savedStates);
-          }
-        };
-
-        scope.prepareSavedState = function(state, states) {
-          scope.state = state;
+        scope.prepareSavedState = function(state) {
           state.focus = scope.calcRange();
-          scope.states = states;
-          // create a state for each plot
-          var plots = scope.stdmodel.plots;
-          for (var i = 0; i < plots.length; i++) {
-            states.push({});
-          }
-          state.width = scope.stdmodel.plotSize.width;
-          scope.width = state.width;
+          scope.width = scope.stdmodel.plotSize.width;
         };
 
-        scope.applySavedState = function(state, states) {
+        scope.applySavedState = function(state) {
           scope.state = state;
-          scope.states = states;
           scope.width = state.width;
         };
 
         scope.preparePlotModels = function() {
           var models = [];
           var plots = scope.stdmodel.plots;
-          var states = scope.states;
-
+          
+          // create a plot model and a saved state for each plot
           for (var i = 0; i < plots.length; i++) {
 
             var plotmodel = plots[i];
             plotmodel.plotIndex = i;
-            models.push({
+            var pl = {
               model : plotmodel,
+              state : { },
               getCellModel : function() {
                 return this.model;
               },
-              getClientState : function() {
-                return states[this.model.plotIndex];
+              getDumpState: function() {
+                return this.state;
+              },
+              setDumpState: function(s) {
+                this.state = s;
+		if(scope.model.setDumpState !== undefined) {
+		    scope.model.setDumpState(scope.dumpState());
+		}
               },
               resetShareMenuItems : function() {
               },
@@ -109,19 +93,18 @@
               updateFocus : function(focus) {
                 scope.focus = {};
                 _(scope.focus).extend(focus);
-                scope.state.focus = scope.focus; // reference is changed
                 scope.$apply();
               },
               updateWidth : function(width) {
                 scope.width = width;
-                scope.state.width = width;
                 scope.jqplottitle.css("width", width);
                 scope.$apply();
               },
               getWidth : function() {
                 return scope.width;
               }
-            });
+            };
+            models.push(pl);
           }
           scope.models = models;
         };
@@ -141,17 +124,60 @@
           };
         };
 
+        scope.dumpState = function() {
+          var ret = { };
+          ret.focus = scope.focus;
+          ret.width = scope.width;
+          ret.subplots = [];
+          for (var i = 0; i < scope.models.length; i++) {
+            ret.subplots.push(scope.models[i].state);
+          }
+          return ret;
+        };
+        
         scope.init = function() {
           scope.standardizeData();
-          scope.checkSavedState();
           scope.preparePlotModels();
           scope.initLayout();
+          scope.calcRange();
 
-          // call this after the plot models are prepared so as to update focus
-          scope.focus = scope.state.focus;
+	  if(scope.model.getDumpState !== undefined) {
+            var savedstate = scope.model.getDumpState();
+            if (savedstate.subplots !== undefined) {
+	      for (var i = 0; i < scope.models.length; i++) {
+		scope.models[i].state = savedstate.subplots[i];
+	      }
+	      scope.width = savedstate.width;
+	      scope.focus = savedstate.focus;
+	    } else if(scope.models !== undefined) {
+	      scope.focus = scope.calcRange();
+	      for (var i = 0; i < scope.models.length; i++) {
+		scope.models[i].state = { };
+	      }
+	      scope.model.setDumpState(scope.dumpState());
+	    }
+	  }
         };
+        
+	if(scope.model.getDumpState !== undefined) {
+	  scope.getDumpState = function() {
+	    return scope.model.getDumpState();
+	  };
+	}
 
         scope.init();
+        
+	if(scope.model.getDumpState !== undefined) {
+          scope.$watch('getDumpState()', function(result) {
+            if (result.subplots === undefined && scope.models !== undefined) {
+              for (var i = 0; i < scope.models.length; i++) {
+                scope.models[i].state = { };
+	      }
+	      scope.model.setDumpState(scope.dumpState());
+	    }
+	  });
+	}
+
       }
     };
   };

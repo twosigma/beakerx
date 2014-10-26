@@ -80,7 +80,7 @@ define(function(require, exports, module) {
           console.log("failed to create shell", arguments);
         });
     },
-    evaluate: function(code, modelOutput) {
+    evaluate: function(code, modelOutput, init) {
       var deferred = Q.defer();
       var self = this;
       var progressObj = {
@@ -96,7 +96,7 @@ define(function(require, exports, module) {
         type: "POST",
         datatype: "json",
         url: serviceBase + "/rest/rsh/evaluate",
-        data: {shellID: self.settings.shellID, code: code}
+        data: {shellID: self.settings.shellID, code: code, init: !!init}
       }).done(function(ret) {
             var onUpdatableResultUpdate = function(update) {
               modelOutput.result = update;
@@ -188,7 +188,7 @@ define(function(require, exports, module) {
             var initCode = "devtools::load_all(Sys.getenv('beaker_r_init'), " +
               "quiet=TRUE, export_all=FALSE)\n" +
               "beaker:::set_session('" + bkHelper.getSessionId() + "')\n";
-            self.evaluate(initCode, {}).then(function () {
+            self.evaluate(initCode, {}, true).then(function () {
               if (doneCB) {
                 doneCB(self);
               }});

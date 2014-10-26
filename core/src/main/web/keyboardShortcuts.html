@@ -23,16 +23,70 @@
   <link rel="stylesheet" href="vendor/bower_components/bootstrap/docs/assets/css/bootstrap-responsive.css">
   <script src="vendor/bower_components/jquery/jquery.js"></script>
   <script src="vendor/bower_components/bootstrap/docs/assets/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+  <!--
+    function decide_display() {
+       if (navigator.appVersion.indexOf("Mac")!=-1) {
+         document.getElementById("windows").style.display = 'none';
+         document.getElementById("mac").style.display = 'block';
+       } else {
+         document.getElementById("windows").style.display = 'block';
+         document.getElementById("mac").style.display = 'none';
+       }
+    }
+  //-->
+  </script>
 </head>
-<body>
-  <div class="container">
+<body onload="decide_display()">
+
+  <div class="container" id="windows">
     <h1>Beaker Keyboard Shortcuts</h1>
 
-    <h2>Input cell</h2>
+    <h3>On input cells</h3>
     <table class="table">
       <tbody>
       <tr>
-        <td><em>Evaluation:</em></td>
+        <td><em>Cell editing</em></td>
+        <td>Ctrl-C</td>
+        <td>Copy</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Ctrl-X</td>
+        <td>Cut</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Ctrl-V</td>
+        <td>Paste</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Ctrl-Z</td>
+        <td>Undo</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Ctrl-Y</td>
+        <td>Redo</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Ctrl-Space</td>
+        <td>Code auto-complete</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Alt-F11</td>
+        <td>Toggle fullscreen editor</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Esc</td>
+        <td>Exit fullscreen editor</td>
+      </tr>
+      <tr>
+        <td><em>Cell Evaluation:</em></td>
         <td>Ctrl-Enter</td>
         <td>Evaluate</td>
       </tr>
@@ -42,12 +96,7 @@
         <td>Evaluate and move focus to next cell.</td>
       </tr>
       <tr>
-        <td><em>Autocomplete:</em></td>
-        <td>Ctrl-Space</td>
-        <td>Code complete</td>
-      </tr>
-      <tr>
-        <td><em>Notebook:</em></td>
+        <td><em>Notebook editing:</em></td>
         <td>Ctrl-Shift-A</td>
         <td>Add a new code cell</td>
       </tr>
@@ -60,11 +109,6 @@
         <td></td>
         <td>Ctrl-S</td>
         <td>Save notebook</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>Ctrl-Z</td>
-        <td>Undo (works on cell deletion only)</td>
       </tr>
       <tr>
         <td></td>
@@ -87,17 +131,7 @@
         <td>Hide cell</td>
       </tr>
       <tr>
-        <td><em>Fullscreen:</em></td>
-        <td>Alt-F11</td>
-        <td>Toggle fullscreen</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>Esc</td>
-        <td>Exit fullscreen</td>
-      </tr>
-      <tr>
-        <td><em>Navigation:</em></td>
+        <td><em>Cell navigation:</em></td>
         <td>Alt-Down (or Alt-J)</td>
         <td>Move focus to next code cell</td>
       </tr>
@@ -106,8 +140,12 @@
         <td>Alt-Up (or Alt-K)</td>
         <td>Move focus to previous code cell</td>
       </tr>
+    </table>
+    <h3>On the Start Page</h3>
+    <table class="table">
+      <tbody>
       <tr>
-        <td><em>On the Start Page</em></td>
+        <td></td>
         <td>Ctrl-N</td>
         <td>Create new empty notebook</td>
       </tr>
@@ -119,5 +157,125 @@
       </tbody>
     </table>
   </div>
+    
+  <div class="container" id="mac">
+    <h1>Beaker Keyboard Shortcuts</h1>
+
+    <h3>On input cells</h3>
+    <table class="table">
+      <tbody>
+      <tr>
+        <td><em>Cell editing</em></td>
+        <td>&#x2318;-C</td>
+        <td>Copy</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-X</td>
+        <td>Cut</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-V</td>
+        <td>Paste</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-Z</td>
+        <td>Undo</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-Y</td>
+        <td>Redo</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-Space</td>
+        <td>Code auto-complete</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Alt-F11</td>
+        <td>Toggle fullscreen editor</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Esc</td>
+        <td>Exit fullscreen editor</td>
+      </tr>
+      <tr>
+        <td><em>Cell Evaluation:</em></td>
+        <td>&#x2318;-Enter</td>
+        <td>Evaluate</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Shift-Enter</td>
+        <td>Evaluate and move focus to next cell.</td>
+      </tr>
+      <tr>
+        <td><em>Notebook editing:</em></td>
+        <td>&#x2318;-Shift-A</td>
+        <td>Add a new code cell</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-Shift-E</td>
+        <td>Pop up evaluator selector</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-S</td>
+        <td>Save notebook</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-Alt-Up</td>
+        <td>Move cell up</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-Alt-Down</td>
+        <td>Move cell down</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-Alt-D</td>
+        <td>Delete cell</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-Alt-Hide</td>
+        <td>Hide cell</td>
+      </tr>
+      <tr>
+        <td><em>Cell navigation:</em></td>
+        <td>Alt-Down (or Alt-J)</td>
+        <td>Move focus to next code cell</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>Alt-Up (or Alt-K)</td>
+        <td>Move focus to previous code cell</td>
+      </tr>
+    </table>
+    <h3>On the Start Page</h3>
+    <table class="table">
+      <tbody>
+      <tr>
+        <td></td>
+        <td>&#x2318;-N</td>
+        <td>Create new empty notebook</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>&#x2318;-Shift-N</td>
+        <td>Create new default notebook</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+    
 </body>
 </html>

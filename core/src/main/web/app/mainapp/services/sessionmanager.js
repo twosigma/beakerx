@@ -86,9 +86,6 @@
         toJson: function() {
           return angular.toJson(_v);
         },
-        toPrettyJson: function() {
-          return bkUtils.toPrettyJson(_v);
-        },
         toCleanPrettyJson: function() {
           //strip out the shell IDs
           var shellIds = _(_v.evaluators).map(function(evaluator) {
@@ -162,6 +159,32 @@
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
         bkSession.backup(_sessionId, generateBackupData());
       },
+      setSessionId: function(sessionId) {
+        if (!sessionId) {
+          sessionId = bkUtils.generateId(6);
+        }
+        _sessionId = sessionId;
+        return _sessionId;
+      },
+      setup: function(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
+
+        // check inputs
+        if (!sessionId) {
+          sessionId = bkUtils.generateId(6);
+        }
+
+        // reset
+        _uriType = uriType;
+        _readOnly = readOnly;
+        _format = format;
+        _notebookUri.set(notebookUri);
+        _notebookModel.set(notebookModel);
+        _edited = !!edited;
+        _sessionId = sessionId;
+
+        bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
+        bkSession.backup(_sessionId, generateBackupData());
+      },
       clear: function() {
         bkEvaluatorManager.reset();
         bkNotebookNamespaceModelManager.clear(_sessionId);
@@ -209,6 +232,15 @@
       },
       isSavable: function() {
         return _notebookUri && !_readOnly;
+      },
+      /*
+       * This function triggers all display implementations to save the current output status.
+       * This save is asynchronous and happens in the current digest loop.
+       * Users must schedule a timeout to execute code that requires the dumped state.
+       */
+      dumpDisplayStatus: function() {
+        this.getNotebookCellOp().dumpDisplayStatus();
+        return true;
       },
       getSaveData: function() {
         return generateSaveData();
@@ -319,7 +351,7 @@
             return {
               "id": id,
               "type": "text",
-              "body": "New <b>text</b> cell"
+              "body": ""
             };
           },
           newMarkdownCell: function(id) {
@@ -357,6 +389,9 @@
       },
       undo: function() {
         bkNotebookCellModelManager.undo();
+      },
+      redo: function() {
+        bkNotebookCellModelManager.redo();
       }
     };
   });

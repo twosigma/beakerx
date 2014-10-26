@@ -36,6 +36,14 @@
       <input type="text" bk-enter='evalTabOp.togglePlugin()' ng-model="evalTabOp.newPluginNameOrUrl"></input>
       <button class="btn" ng-click='evalTabOp.togglePlugin()'>Add Plugin from URL</button>
     </div>
+    <div ng-show="evalTabOp.showSecurityWarning">
+      <div class="modal-body error-title body-box">
+	<p>Are you sure you want to load this plugin from an external URL?</p>
+	<button class="btn right" ng-click='evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=""'>Cancel</button>
+	<button class="btn right" ng-click='evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()'>OK</button>
+      </div>
+      <p><br/></p>
+    </div>
     <div ng-show="evalTabOp.showWarning">
       <div class="modal-body error-title body-box">
 	<p>Cannot remove plugin currently used by a code cell in the notebook.<br/>

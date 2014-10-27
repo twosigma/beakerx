@@ -339,4 +339,22 @@ public class DefaultBeakerConfig implements BeakerConfig {
   public String getMainPageFileName() {
       return this.installDir + "/src/main/web/app/template/index_template.html";
   }
+  
+  @Override
+  public String getGistServerUrl() {
+    String s = System.getenv("BEAKER_GIST_SERVER");
+    if (s == null) {
+      s = "https://api.github.com/gists";
+    }
+    return s;
+  }
+
+  @Override
+  public String getSharingServerUrl() {
+    String s = System.getenv("BEAKER_SHARING_SERVER");
+    if (s == null) {
+      s = "http://sharing.beakernotebook.com/gist/anonymous";
+    }
+    return s;      
+  }
 }

@@ -46,8 +46,8 @@
         bkCoreManager: bkCoreManager
       },
 
-      userId: function() {
-        return $routeParams.userId;
+      userToken: function() {
+        return $routeParams.userToken;
       },
 
       resizeIFrame: function() {

@@ -155,7 +155,7 @@
         if (new URL(logicalUrl).hostname == window.location.hostname) {
           var loadingUrl = logicalUrl;
           var queryParams = {};
-          var headers = { 'Authorization' : window.bkBunsenHelper.userId() };
+          var headers = { 'User-Token' : window.bkBunsenHelper.userToken() };
         }
         else {
           var loadingUrl = "../beaker/rest/http-proxy/load";

@@ -42,7 +42,7 @@
         };
 
         $scope.getEvaluatorDetails = function(name) {
-          return bkEvaluatorManager.getEvaluator(name);
+          return bkEvaluatorManager.getVisualParams(name);
         };
 
         $scope.evalTabOp = {

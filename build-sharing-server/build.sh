@@ -43,6 +43,7 @@ cp -r $VENDIR/mathjax                                     outdir/static/vendor/
 cp $VENDIR/TableTools-2.2.3/swf/*                         outdir/static/vendor/TableTools-2.2.3/swf/
 cp $VENDIR/epiceditor/themes/base/epiceditor.css          outdir/static/vendor/epiceditor/themes/base/
 touch outdir/static/app/main.js
+cp src/app/beaker_notebook.html outdir/template/
 
 # copy css file for notebook sharing
 

@@ -143,7 +143,7 @@
 
 	  if(scope.model.getDumpState !== undefined) {
             var savedstate = scope.model.getDumpState();
-            if (savedstate.subplots !== undefined) {
+            if (savedstate !== undefined && savedstate.subplots !== undefined) {
 	      for (var i = 0; i < scope.models.length; i++) {
 		scope.models[i].state = savedstate.subplots[i];
 	      }
@@ -169,7 +169,7 @@
         
 	if(scope.model.getDumpState !== undefined) {
           scope.$watch('getDumpState()', function(result) {
-            if (result.subplots === undefined && scope.models !== undefined) {
+            if (result !== undefined && result.subplots === undefined && scope.models !== undefined) {
               for (var i = 0; i < scope.models.length; i++) {
                 scope.models[i].state = { };
 	      }

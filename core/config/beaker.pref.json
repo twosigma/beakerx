@@ -1,6 +1,4 @@
 {
-  "pref-format": "1",
-  "gist_server" : "https://api.github.com/gists",
-  "sharing_server" : "http://sharing.beakernotebook.com/gist/anonymous"
+  "pref-format": "1"
 }
 

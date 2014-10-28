@@ -1227,7 +1227,7 @@
 
 	  if(scope.model.getDumpState !== undefined) {
 	      var savedstate = scope.model.getDumpState();
-	      if (savedstate.plotSize !== undefined) {
+	      if (savedstate !== undefined && savedstate.plotSize !== undefined) {
 		  scope.loadState(savedstate);
 	      } else {
 		  scope.model.setDumpState(scope.dumpState());
@@ -1267,7 +1267,7 @@
 
 	if(scope.model.getDumpState !== undefined) {
 	    scope.$watch('getDumpState()', function(result) {
-		    if (result.plotSize === undefined) {
+		    if (result !== undefined && result.plotSize === undefined) {
 			scope.model.setDumpState(scope.dumpState());
 		    }
 		});

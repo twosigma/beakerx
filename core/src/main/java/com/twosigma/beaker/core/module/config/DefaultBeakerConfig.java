@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 /**
  * DefaultBeakerConfig
@@ -70,6 +72,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String version;
   private final String buildTime;
   private final String hash;
+  private final String gist_server;
+  private final String sharing_server;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
@@ -111,6 +115,19 @@ public class DefaultBeakerConfig implements BeakerConfig {
     utils.ensureFileHasContent(preferenceFile, defaultPreferenceFile);
     this.preferenceFileUrl = preferenceFile;
 
+    String content = utils.readFile(this.preferenceFileUrl);
+    
+    JSONObject obj = (JSONObject)JSONValue.parse(content);
+    if (obj.get("gist_server") != null)
+        this.gist_server = (String)obj.get("gist_server");
+    else
+        this.gist_server = "https://api.github.com/gists";
+        
+    if (obj.get("sharing_server") != null)
+        this.sharing_server = (String)obj.get("sharing_server");
+    else
+        this.sharing_server = "http://sharing.beakernotebook.com/gist/anonymous";
+    
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
     final String mainDefaultNotebookPath = this.dotDir + "/config/default.bkr";
     final String defaultDefaultNotebookPath = this.installDir + "/config/default.bkr";
@@ -338,5 +355,15 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getMainPageFileName() {
       return this.installDir + "/src/main/web/app/template/index_template.html";
+  }
+  
+  @Override
+  public String getGistServerUrl() {
+    return this.gist_server;
+  }
+
+  @Override
+  public String getSharingServerUrl() {
+    return this.sharing_server;      
   }
 }

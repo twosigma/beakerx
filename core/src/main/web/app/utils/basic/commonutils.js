@@ -124,7 +124,7 @@
           for (var i = 0; i < headerRows.length; i++) {
             var ch = headerRows[i].children;
             for (var j=0; j<ch.length; j++) {
-              if (ch[j].getAttribute('colspan')>1 || ch[0].getAttribute('rowspan')>1) {
+              if (ch[j].getAttribute('colspan')>1 || ch[j].getAttribute('rowspan')>1) {
                 return null;
               }
             }
@@ -133,7 +133,7 @@
           for (var i = 0; i < valueRows.length; i++) {
             var ch = valueRows[i].children;
             for (var j=0; j<ch.length; j++) {
-              if (ch[j].getAttribute('colspan')>1 || ch[0].getAttribute('rowspan')>1) {
+              if (ch[j].getAttribute('colspan')>1 || ch[j].getAttribute('rowspan')>1) {
                 return null;
               }
             }
@@ -148,21 +148,24 @@
             //this is because pandas renders dataframes with the index col header on a second row
             var row0 = headerRows.eq(0).find('th');
             var row1 = headerRows.eq(1).find('th');
-            if (row0.length!=row1.length) {
-              return null;
+	    var min = row0.length;
+            if (min>row1.length) {
+		min = row1.length;
             }
-            for (var i = 0; i < row0.length; i++) {
+            for (var i = 0; i < min; i++) {
               var r0 = row0.eq(i);
               var r1 = row1.eq(i);
 
               //if any column has html in both rows, don't use tabledisplay
-              if (r0.html() && r1.html()) {
+              if (r0 !== undefined && r1 != undefined && r0.html() && r1.html()) {
                 return null;
-              } else if (r0.html()) {
+              } else if (r0 !== undefined && r0.html()) {
 	        cols.push(r0.html());
-	      } else {
+	      } else if (r1 !== undefined && r1.html()) {
                 cols.push(r1.html());
-              }
+              } else {
+		cols.push("");
+	      }
             }
           } else if (headerRows.length > 1) {
             //if there are two or more header, forget about it

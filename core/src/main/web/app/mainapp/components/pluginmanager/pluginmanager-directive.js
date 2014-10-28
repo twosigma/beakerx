@@ -40,6 +40,11 @@
           $scope.evalTabOp.newPluginNameOrUrl = "";
           return bkCoreManager.getBkApp().getBkNotebookWidget().getViewModel().hideEvaluators();
         };
+
+        $scope.getEvaluatorDetails = function(name) {
+          return bkEvaluatorManager.getVisualParams(name);
+        };
+
         $scope.evalTabOp = {
           newPluginNameOrUrl: "",
 	  showURL: false,

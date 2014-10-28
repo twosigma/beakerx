@@ -292,7 +292,17 @@ define(function(require, exports, module) {
             self.settings = settings;
             var finish = function () {
               if (bkHelper.hasSessionId()) {
-		  var initCode = ("try:\n"+
+		  var initCode = ("%matplotlib inline\n" +
+                                  "import numpy\n" +
+                                  "import matplotlib\n" +
+                                  "from matplotlib import pylab, mlab, pyplot\n" +
+                                  "np = numpy\n" +
+                                  "plt = pyplot\n" +
+                                  "from IPython.display import display\n" +
+                                  "from IPython.core.pylabtools import figsize, getfigs\n" +
+                                  "from pylab import *\n" +
+                                  "from numpy import *\n" +
+                                  "try:\n"+
 				  "    import beaker_runtime3 as beaker_runtime\n" +
 				  "except ImportError:\n" +
 				  "    import beaker_runtime as beaker_runtime\n" +

@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.core.rest;
 
+import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
@@ -42,8 +43,13 @@ import org.json.simple.JSONValue;
 @Singleton
 public class PublishRest {
 
+  private final String gistUrl;
+  private final String sharingUrl;
+  
   @Inject
-  public PublishRest() {
+  public PublishRest(BeakerConfig bkConfig) {
+    this.gistUrl = bkConfig.getGistServerUrl();
+    this.sharingUrl = bkConfig.getSharingServerUrl();
   }
 
   @POST
@@ -56,7 +62,7 @@ public class PublishRest {
     String body = "{\"description\":\"Beaker Share\",\"public\":true,\"files\":" + files + "}\n";
     String response = null;
     try {
-      response = Request.Post("https://api.github.com/gists")
+      response = Request.Post(this.gistUrl)
       .useExpectContinue()
       .version(HttpVersion.HTTP_1_1)
       .bodyString(body, ContentType.APPLICATION_JSON)
@@ -71,7 +77,7 @@ public class PublishRest {
       System.err.println("no slash found in github url: " + githubUrl);
       return githubUrl;
     }
-    return "http://sharing.beakernotebook.com/gist/anonymous" + githubUrl.substring(slash);
+    return this.sharingUrl + githubUrl.substring(slash);
   }
 
   private static class GistPublishException extends WebApplicationException {

@@ -180,9 +180,19 @@ public interface BeakerConfig {
    */
   public String getHash();
   /**
-   * hash
+   * main page file name
    * @return
    */
   public String getMainPageFileName();
+  /**
+   * gist server url for notebook sharing
+   * @return
+   */
+  public String getGistServerUrl();
+  /**
+   * sharing server url for shared notebook display
+   * @return
+   */
+  public String getSharingServerUrl();
 
 }

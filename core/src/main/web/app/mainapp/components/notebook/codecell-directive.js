@@ -77,7 +77,7 @@
         }
 
         $scope.hasOutput = function() {
-          return $scope.cellmodel.output.result;
+          return $scope.cellmodel.output.result != undefined;
         }
 
         $scope.backgroundClick = function(event) {

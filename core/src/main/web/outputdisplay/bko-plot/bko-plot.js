@@ -1225,12 +1225,14 @@
           // init remove pipe
           scope.removePipe = [];
 
-          var savedstate = scope.model.getDumpState();
-          if (savedstate.plotSize !== undefined) {
-            scope.loadState(savedstate);
-          } else {
-            scope.model.setDumpState(scope.dumpState());
-          }
+	  if(scope.model.getDumpState !== undefined) {
+	      var savedstate = scope.model.getDumpState();
+	      if (savedstate !== undefined && savedstate.plotSize !== undefined) {
+		  scope.loadState(savedstate);
+	      } else {
+		  scope.model.setDumpState(scope.dumpState());
+	      }
+	  }
           scope.calcMapping();
           scope.update();
         };
@@ -1255,17 +1257,21 @@
           scope.clearRemovePipe();
         };
         
-        scope.getDumpState = function() {
-          return scope.model.getDumpState();
-        };
-        
+	if(scope.model.getDumpState !== undefined) {
+	    scope.getDumpState = function() {
+		return scope.model.getDumpState();
+	    };
+        }
+
         scope.init(); // initialize
 
-        scope.$watch('getDumpState()', function(result) {
-          if (result.plotSize === undefined) {
-            scope.model.setDumpState(scope.dumpState());
-          }
-        });
+	if(scope.model.getDumpState !== undefined) {
+	    scope.$watch('getDumpState()', function(result) {
+		    if (result !== undefined && result.plotSize === undefined) {
+			scope.model.setDumpState(scope.dumpState());
+		    }
+		});
+	}
       }
     };
   };

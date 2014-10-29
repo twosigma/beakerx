@@ -582,7 +582,7 @@ public class PluginServiceLocatorRest {
 
     if (Files.notExists(confDir)) {
       confDir.toFile().mkdirs();
-      Files.copy(Paths.get(this.nginxDir + "/bin/mime.types"),
+      Files.copy(Paths.get(this.nginxDir + "/mime.types"),
                  Paths.get(confDir.toString() + "/mime.types"));
     }
     if (Files.notExists(logDir)) {

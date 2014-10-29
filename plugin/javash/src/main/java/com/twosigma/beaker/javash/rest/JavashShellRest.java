@@ -17,6 +17,7 @@ package com.twosigma.beaker.javash.rest;
 
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.javash.utils.JavaShell;
 //import groovy.lang.GroovyShell;
 //import groovy.lang.Binding;
 import java.io.IOException;
@@ -41,9 +42,9 @@ import javax.ws.rs.core.MediaType;
 @Singleton
 public class JavashShellRest {
 
-  //private final Map<String, JavaShell> shells = new HashMap<>();
-  private final Map<String, String> classPaths = new HashMap<>();
-  private final Map<String, String> imports = new HashMap<>();
+  private final Map<String, JavaShell> shells = new HashMap<>();
+  //private final Map<String, String> classPaths = new HashMap<>();
+  //private final Map<String, String> imports = new HashMap<>();
 
   public JavashShellRest() throws IOException {}
 
@@ -54,14 +55,11 @@ public class JavashShellRest {
     throws InterruptedException, MalformedURLException
   {
     // if the shell doesnot already exist, create a new shell
-    // if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
-    //   shellId = UUID.randomUUID().toString();
-    //   newEvaluator(shellId);
-    //   return shellId;
-    // }
-
-    System.err.println("getShell "+shellId);
-    
+    if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
+      shellId = UUID.randomUUID().toString();
+      this.shells.put(shellId, new JavaShell(shellId));
+      return shellId;
+    }
     return shellId;
   }
 
@@ -73,17 +71,16 @@ public class JavashShellRest {
 
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
-    //GroovyShell shell = getEvaluator(shellId);
-    // Object result;
-    //try {
-    //  result = shell.evaluate(code);
-    // } catch (Exception e) {
-    //  obj.error(e);
-    //  return obj;
-    // }
-    //obj.finished(result);
-    System.err.println("evaluate on "+shellId+" code: \""+code+"\"");
-    obj.finished("done");
+    if(!this.shells.containsKey(shellId)) {
+      obj.error("Cannot find shell");
+      return obj;
+    }
+    try {
+      this.shells.get(shellId).evaluate(obj, code);
+    } catch (Exception e) {
+      obj.error(e.toString());
+      return obj;
+    }
     return obj;
   }
 
@@ -93,26 +90,38 @@ public class JavashShellRest {
       @FormParam("shellId") String shellId,
       @FormParam("code") String code,
       @FormParam("caretPosition") int caretPosition) throws InterruptedException {
-   System.err.println("autocomplete on "+shellId+" pos: "+caretPosition+" code: \""+code+"\"");
-    return null;
+    if(!this.shells.containsKey(shellId)) {
+      return null;
+    }
+    return this.shells.get(shellId).autocomplete(code, caretPosition);
   }
 
   @POST
   @Path("exit")
   public void exit(@FormParam("shellId") String shellId) {
-    System.err.println("exit on "+shellId);
+    if(!this.shells.containsKey(shellId)) {
+      return;
+    }
+    this.shells.get(shellId).exit();
+    this.shells.remove(shellId);
   }
 
   @POST
   @Path("cancelExecution")
   public void cancelExecution(@FormParam("shellId") String shellId) {
-    System.err.println("cancel on "+shellId);
+    if(!this.shells.containsKey(shellId)) {
+      return;
+    }
+    this.shells.get(shellId).cancelExecution();
   }
 
   @POST
   @Path("killAllThreads")
   public void killAllThreads(@FormParam("shellId") String shellId) {
-    System.err.println("kill on "+shellId);
+    if(!this.shells.containsKey(shellId)) {
+      return;
+    }
+    this.shells.get(shellId).killAllThreads();
   }
 
   @POST
@@ -130,61 +139,10 @@ public class JavashShellRest {
       @FormParam("outdir") String outDir)
     throws MalformedURLException
   {
-    System.err.println("setotions on "+shellId);
-    System.err.println("   classp "+classPath);
-    System.err.println("   imports "+imports); 
-    System.err.println("   outdir "+outDir); 
-       
-      this.classPaths.put(shellId, classPath);
-      this.imports.put(shellId, imports);
-      // XXX it would be better to just create the GroovyShell with
-      // the desired options instead of creating and then changing
-      // (which requires creating a new one).
-      //newEvaluator(shellId);
+    if(!this.shells.containsKey(shellId)) {
+      return;
+    }
+    this.shells.get(shellId).setShellOptions(classPath, imports, outDir);
   }
 
-  private void newEvaluator(String id)
-    throws MalformedURLException
-  {
-    // String classPath = this.classPaths.get(id);
-    // String[] files = {};
-    // URL[] urls = {};
-    // if (null != classPath) {
-    //   files = classPath.split("\n");
-    //   int count = 0;
-    //   // should trim too
-    //   for (int i = 0; i < files.length; i++) {
-    //     if (!files[i].isEmpty()) {
-    //       count++;
-    //     }
-    //   }
-    //   urls = new URL[count];
-    //   for (int i = 0; i < files.length; i++) {
-    //     if (!files[i].isEmpty()) {
-    //       urls[i] = new URL("file://" + files[i]);
-    //     }
-    //   }
-    // }
-    // ImportCustomizer icz = new ImportCustomizer();
-    // String importSetting = this.imports.get(id);
-    // if (null != importSetting) {
-    //   String[] imports = importSetting.split("\n");
-    //   for (int i = 0; i < imports.length; i++) {
-    //     if (!imports[i].isEmpty()) {
-    //       // should trim too
-    //       if (imports[i].endsWith(".*")) {
-    //         icz.addStarImports(imports[i].substring(0, imports[i].length() - 2));
-    //       } else {
-    //         icz.addImports(imports[i]);
-    //       }
-    //     }
-    //   }
-    // }
-    // CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
-    // this.shells.put(id, new GroovyShell(new URLClassLoader(urls), new Binding(), config));
-  }
-
-  //  private GroovyShell getEvaluator(String shellId) {
-  //  return this.shells.get(shellId);
-  //}
 }

@@ -37,7 +37,7 @@
           bkBunsenHelper.saveNotebook(e.data.name);
           break;
         case 'showStdoutStderr':
-          bkHelper.getBkNotebookViewModel().toggleShowOutput();
+          bkHelper.getBkNotebookViewModel().showOutput();
           break;
       }
     }

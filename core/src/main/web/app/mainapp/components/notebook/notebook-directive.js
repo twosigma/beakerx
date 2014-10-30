@@ -56,6 +56,9 @@
             toggleShowOutput: function () {
               this._showOutput = !this._showOutput;
             },
+            showOutput: function() {
+              this._showOutput = true;
+            },
             hideOutput: function () {
               this._showOutput = false;
             },

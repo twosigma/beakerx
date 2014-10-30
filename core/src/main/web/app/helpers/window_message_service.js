@@ -17,20 +17,33 @@
 ;(function(app) {
   var module = angular.module('bk.bunsen');
 
-  module.service('bkWindowMessageService', ['$window', '$location', 'bkHelper', function($window, $location) {
+  module.service('bkWindowMessageService', [
+    '$window',
+    '$rootScope',
+    '$location',
+    'bkHelper',
+    function(
+      $window,
+      $rootScope,
+      $location,
+      bkHelper
+    )
+  {
     function receiveWindowMessage(e) {
       if (new URL(event.origin).hostname !== $location.host()) {
         throw "message received from unauthorized host " + event.origin.host;
       }
 
-      switch (e.data.action) {
-        case 'save':
-          bkBunsenHelper.saveNotebook(e.data.name);
-          break;
-        case 'showStdoutStderr':
-          bkHelper.getBkNotebookViewModel().toggleShowOutput();
-          break;
-      }
+      $rootScope.$apply(function() {
+        switch (e.data.action) {
+          case 'save':
+            bkBunsenHelper.saveNotebook(e.data.name);
+            break;
+          case 'showStdoutStderr':
+            bkHelper.getBkNotebookViewModel().showOutput();
+            break;
+        }
+      });
     }
 
     $window.addEventListener('message', receiveWindowMessage, false);

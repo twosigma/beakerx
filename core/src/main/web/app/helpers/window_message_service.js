@@ -17,7 +17,16 @@
 ;(function(app) {
   var module = angular.module('bk.bunsen');
 
-  module.service('bkWindowMessageService', ['$window', '$location', 'bkHelper', function($window, $location) {
+  module.service('bkWindowMessageService', [
+    '$window',
+    '$location',
+    'bkHelper',
+    function(
+      $window,
+      $location,
+      bkHelper
+    )
+  {
     function receiveWindowMessage(e) {
       if (new URL(event.origin).hostname !== $location.host()) {
         throw "message received from unauthorized host " + event.origin.host;

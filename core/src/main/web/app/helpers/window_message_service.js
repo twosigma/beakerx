@@ -19,10 +19,12 @@
 
   module.service('bkWindowMessageService', [
     '$window',
+    '$rootScope',
     '$location',
     'bkHelper',
     function(
       $window,
+      $rootScope,
       $location,
       bkHelper
     )
@@ -32,14 +34,16 @@
         throw "message received from unauthorized host " + event.origin.host;
       }
 
-      switch (e.data.action) {
-        case 'save':
-          bkBunsenHelper.saveNotebook(e.data.name);
-          break;
-        case 'showStdoutStderr':
-          bkHelper.getBkNotebookViewModel().showOutput();
-          break;
-      }
+      $rootScope.$apply(function() {
+        switch (e.data.action) {
+          case 'save':
+            bkBunsenHelper.saveNotebook(e.data.name);
+            break;
+          case 'showStdoutStderr':
+            bkHelper.getBkNotebookViewModel().showOutput();
+            break;
+        }
+      });
     }
 
     $window.addEventListener('message', receiveWindowMessage, false);

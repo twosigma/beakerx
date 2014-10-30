@@ -18,7 +18,7 @@ package com.twosigma.beaker.javash.rest;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.javash.utils.JavaShell;
-//import groovy.lang.GroovyShell;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 //import groovy.lang.Binding;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -33,6 +33,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.lang.reflect.Constructor;
 //import org.codehaus.groovy.control.CompilerConfiguration;
 //import org.codehaus.groovy.control.CompilationFailedException;
 //import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -57,7 +58,9 @@ public class JavashShellRest {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
-      this.shells.put(shellId, new JavaShell(shellId));
+      DynamicClassLoader d = new DynamicClassLoader();
+      JavaShell js = new JavaShell(shellId, d);
+      this.shells.put(shellId, js);
       return shellId;
     }
     return shellId;
@@ -137,7 +140,7 @@ public class JavashShellRest {
       @FormParam("classPath") String classPath,
       @FormParam("imports") String imports,
       @FormParam("outdir") String outDir)
-    throws MalformedURLException
+    throws MalformedURLException, IOException
   {
     if(!this.shells.containsKey(shellId)) {
       return;

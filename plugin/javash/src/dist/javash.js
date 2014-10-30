@@ -19,7 +19,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
-  var PLUGIN_NAME = "JavaSh";
+  var PLUGIN_NAME = "Java";
   var COMMAND = "javash/javashPlugin";
 
   var serviceBase = null;
@@ -198,8 +198,8 @@ define(function(require, exports, module) {
           self.settings.imports = _.union(imports, defaultImports).join('\n');
           var cb = function() {
             if (bkHelper.hasSessionId()) {
-              var initCode = "import com.twosigma.beaker.NamespaceClient\n" +
-                "NamespaceClient.setBeakerClient('" + bkHelper.getSessionId() + "')\n";
+              var initCode = "import com.twosigma.beaker.NamespaceClient;\n" +
+                "NamespaceClient.setBeakerClient(\"" + bkHelper.getSessionId() + "\");\n";
               self.evaluate(initCode, {}).then(function () {
                 if (doneCB) {
                   doneCB(self);

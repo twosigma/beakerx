@@ -18,10 +18,8 @@ package com.twosigma.beaker.javash.rest;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.javash.utils.JavaShell;
-//import groovy.lang.Binding;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +29,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.lang.reflect.Constructor;
-//import org.codehaus.groovy.control.CompilerConfiguration;
-//import org.codehaus.groovy.control.CompilationFailedException;
-//import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 @Path("javash")
 @Produces(MediaType.APPLICATION_JSON)
@@ -127,7 +121,6 @@ public class JavashShellRest {
   @POST
   @Path("resetEnvironment")
   public void resetEnvironment(@FormParam("shellId") String shellId) {
-    System.err.println("reset on "+shellId);
   }
 
   @POST

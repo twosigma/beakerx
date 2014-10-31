@@ -20,17 +20,14 @@ import org.xeustechnologies.jcl.ProxyClassLoader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import org.xeustechnologies.jcl.exception.JclException;
-import org.xeustechnologies.jcl.exception.ResourceNotFoundException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.xeustechnologies.jcl.JarClassLoader;
 
 public class DynamicClassLoader {
@@ -39,8 +36,6 @@ public class DynamicClassLoader {
     private final DynamicLoaderProxy dlp = new DynamicLoaderProxy();
     private SubClassLoader subLoader;
     private final JarClassLoader parent;
-    
-    
     
     public DynamicClassLoader(String dir) {
         classes = Collections.synchronizedMap( new HashMap<String, Class>() );
@@ -56,13 +51,19 @@ public class DynamicClassLoader {
         subLoader = new SubClassLoader(parent);
     }
 
-    public void add(String s) {
+    public void add(Object s) {
         parent.add(s);
+    }
+    
+    public void addAll(List sources) {
+        parent.addAll(sources);
     }
     
     public Class<?> loadClass(String n) throws ClassNotFoundException {
         return parent.loadClass(n);
     }
+    
+    public ClassLoader getLoader() { return parent; }
     
     class SubClassLoader extends ClassLoader {
         public SubClassLoader(ClassLoader p) {
@@ -95,19 +96,16 @@ public class DynamicClassLoader {
 
             result = classes.get( className );
             if (result != null) {
-                System.err.println("class "+className+" found in cache.");
                 return result;
             }
 
             classBytes = loadClassBytes( className );
             if (classBytes == null) {
-                System.err.println("class "+className+" load class bytes failed.");
                 return null;
             }
 
             result = subLoader.my_defineClass( className, classBytes, 0, classBytes.length );
             if (result == null) {
-                System.err.println("class "+className+" define class failed.");
                 return null;
             }
 
@@ -124,37 +122,27 @@ public class DynamicClassLoader {
                 subLoader.my_resolveClass( result );
 
             classes.put( className, result );
-            System.err.println("class "+className+" loaded.");
             return result;
         }
 
         @Override
         public InputStream loadResource(String name) {
-            System.err.println("load Resource "+name);
-            //byte[] arr = classpathResources.getResource( name );
-            //if (arr != null) {
-            //    return new ByteArrayInputStream( arr );
-            //}
-
+            byte[] arr = loadClassBytes( name );
+            if (arr != null) {
+                return new ByteArrayInputStream( arr );
+            }
             return null;
         }
 
         @Override
         public URL findResource(String name) {
-            System.err.println("find Resource "+name);
-            //URL url = classpathResources.getResourceURL( name );
-            //if (url != null) {
-            //    return url;
-            //}
-
             return null;
         }
     }
     
     
     protected byte[] loadClassBytes(String className) {
-        String path = dirPath + "/" + className.replace(".", "/") + ".class";
-        
+        String path = dirPath + File.separator + className.replace(".", File.separator) + ".class";
         System.err.println("path is "+path);
         
         File f = new File(path);

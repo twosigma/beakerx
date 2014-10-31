@@ -17,6 +17,7 @@ package com.twosigma.beaker.groovy.rest;
 
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 import groovy.lang.GroovyShell;
 import groovy.lang.Binding;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Arrays;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -44,7 +46,9 @@ public class GroovyShellRest {
   private final Map<String, GroovyShell> shells = new HashMap<>();
   private final Map<String, String> classPaths = new HashMap<>();
   private final Map<String, String> imports = new HashMap<>();
-
+  private final Map<String, String> outDirs = new HashMap<>();
+  private final Map<String, DynamicClassLoader> loaders = new HashMap<>();
+  
   public GroovyShellRest() throws IOException {}
 
   @POST
@@ -68,6 +72,8 @@ public class GroovyShellRest {
       @FormParam("shellId") String shellId,
       @FormParam("code") String code) throws InterruptedException {
 
+    if(this.loaders.containsKey(shellId) && this.loaders.get(shellId)!=null)
+        this.loaders.get(shellId).clearCache();
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
     GroovyShell shell = getEvaluator(shellId);
@@ -116,11 +122,13 @@ public class GroovyShellRest {
   public void setShellOptions(
       @FormParam("shellId") String shellId,
       @FormParam("classPath") String classPath,
-      @FormParam("imports") String imports)
+      @FormParam("imports") String imports,
+      @FormParam("outdir") String outdir)
     throws MalformedURLException
   {
       this.classPaths.put(shellId, classPath);
       this.imports.put(shellId, imports);
+      this.outDirs.put(shellId, outdir);
       // XXX it would be better to just create the GroovyShell with
       // the desired options instead of creating and then changing
       // (which requires creating a new one).
@@ -165,7 +173,17 @@ public class GroovyShellRest {
       }
     }
     CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
-    this.shells.put(id, new GroovyShell(new URLClassLoader(urls), new Binding(), config));
+    String od = this.outDirs.get(id);
+    ClassLoader cl;
+    this.loaders.put(id,null);
+    if(od!=null && !od.isEmpty()) {
+        DynamicClassLoader dl = new DynamicClassLoader(od);
+        dl.addAll(Arrays.asList(urls));
+        cl = dl.getLoader();
+        this.loaders.put(id,dl);
+    } else
+        cl = new URLClassLoader(urls);
+    this.shells.put(id, new GroovyShell(cl, new Binding(), config));
   }
 
   private GroovyShell getEvaluator(String shellId) {

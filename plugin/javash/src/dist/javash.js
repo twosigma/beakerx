@@ -66,7 +66,7 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "text/x-java",
     background: "#E0FFE0",
-    bgColor: "#6497A9",
+    bgColor: "#EB0000",
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Jv",
@@ -162,9 +162,9 @@ define(function(require, exports, module) {
         outdir: this.settings.outdir}).success(cb);
     },
     spec: {
+      outdir: {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
       classPath: {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
-      imports: {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
-      outdir: {type: "settableString", action: "updateShell", name: "Class compiler out directory"},
+      imports: {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"}
     },
     cometdUtil: cometdUtil
   };

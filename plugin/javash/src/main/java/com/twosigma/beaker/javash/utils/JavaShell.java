@@ -57,10 +57,6 @@ public class JavaShell {
       try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     }
     
-    System.err.println("   classp "+classPath);
-    System.err.println("   imports "+imports); 
-    System.err.println("   outdir "+outDir);
-    
     loader=new DynamicClassLoader(outDir);
     for(String pt : classPath)
       loader.add(pt);
@@ -85,8 +81,6 @@ public class JavaShell {
     // normalize and analyse code
     code = normalizeCode(code);
     
-    System.err.println("normalized code is:\n"+code+"\n");
-
     String [] codev = code.split("\n");
     int ci = 0;
     
@@ -97,7 +91,6 @@ public class JavaShell {
     if(m.matches()) {
         pname = m.group(1);
         ci++;
-        System.err.println("package "+pname);
     }
     javaSourceCode.append("package ");
     javaSourceCode.append(pname);
@@ -115,7 +108,6 @@ public class JavaShell {
         String impstr = m.group(1);
         ci++;
         m = p.matcher(codev[ci]);
-        System.err.println("import "+impstr);
         
         javaSourceCode.append("import ");
         javaSourceCode.append(impstr);
@@ -132,7 +124,6 @@ public class JavaShell {
         for(; ci<codev.length; ci++)
           javaSourceCode.append(codev[ci]);    
 
-        System.err.println("evaluation code: \n"+javaSourceCode.toString()+"\n");
         compilationUnit.addJavaSource(pname+"."+cname, javaSourceCode.toString());
         try {
           javaSourceCompiler.compile(compilationUnit);
@@ -153,14 +144,13 @@ public class JavaShell {
         javaSourceCode.append("}\n");
         javaSourceCode.append("}\n");
 
-        System.err.println("evaluation code: \n"+javaSourceCode.toString()+"\n");
-
         compilationUnit.addJavaSource(pname+".Foo", javaSourceCode.toString());
         try {
           loader.clearCache();
           javaSourceCompiler.compile(compilationUnit);
           javaSourceCompiler.persistCompiledClasses(compilationUnit);
           Class fooClass = loader.loadClass(pname+".Foo");
+          @SuppressWarnings("unchecked")
           Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
           Object o = mth.invoke(null, (Object[])null);
           if(ret.equals("Object")) {

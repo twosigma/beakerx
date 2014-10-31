@@ -158,9 +158,11 @@ define(function(require, exports, module) {
       bkHelper.httpPost(serviceBase + "/rest/groovysh/setShellOptions", {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
-        imports: this.settings.imports}).success(cb);
+        imports: this.settings.imports,
+        outdir: this.settings.outdir}).success(cb);
     },
     spec: {
+      outdir: {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
       classPath: {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
       imports: {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"}
     },

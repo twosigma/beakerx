@@ -40,8 +40,8 @@ http {
 
     # redirect server error pages to the static page /50x.html and serve them directly from static html directory
     error_page   500 502 503 504  /static/50x.html;
-    location = /static/ {
-      root   %(static_dir)s/static/;
+    location /static/ {
+      alias %(static_dir)s/static/;
     }
 
     # in google chrome iframe do not inherit base tag and epiceditor uses iframes

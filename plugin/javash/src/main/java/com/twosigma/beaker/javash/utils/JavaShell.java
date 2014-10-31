@@ -33,12 +33,13 @@ public class JavaShell {
   private List<String> imports;
   private String outDir;
   private final JavaSourceCompiler javaSourceCompiler;
-  
+  private JarClassLoader jcl;
+  private DynamicLoader loader;
+    
   public JavaShell(String id) {
     shellId = id;
     javaSourceCompiler = new JavaSourceCompilerImpl();
     packageId = "com.twosigma.beaker.javash.bkr"+shellId.split("-")[0];
-    //jcl = new JarClassLoader();
   }
 
   public String getShellId() { return shellId; }
@@ -61,7 +62,25 @@ public class JavaShell {
     System.err.println("   classp "+classPath);
     System.err.println("   imports "+imports); 
     System.err.println("   outdir "+outDir);
-    //for(String p : classPath)
+    
+    
+    jcl=new JarClassLoader();
+    for(String pt : classPath)
+      jcl.add(pt);
+ 
+    jcl.getLocalLoader().setOrder(2); // if not found look in local class loader
+    jcl.getCurrentLoader().setOrder(3); // if not found look in current class loader
+    jcl.getParentLoader().setOrder(4); // if not found look in parent class loader
+    jcl.getThreadLoader().setOrder(5); // if not found look in thread context class loader
+    jcl.getSystemLoader().setOrder(6); // Look in system class loader first
+
+    // A custom class loader that extends org.xeustechnologies.jcl.ProxyClassLoader
+    loader=new DynamicLoader(jcl, outDir);
+    loader.getProxy().setOrder(6);
+    jcl.addLoader(loader.getProxy()); //Add custom loader
+
+    
+//for(String p : classPath)
     //  jcl.add(p);
     //jcl.add(outDir);
   }
@@ -173,17 +192,14 @@ public class JavaShell {
           javaSourceCode.append(codev[ci]);
         javaSourceCode.append("}\n");
         javaSourceCode.append("}\n");
-        
+
         System.err.println("evaluation code: \n"+javaSourceCode.toString()+"\n");
-    
+
         compilationUnit.addJavaSource(pname+".Foo", javaSourceCode.toString());
         try {
+          loader.clearCache();
           javaSourceCompiler.compile(compilationUnit);
           javaSourceCompiler.persistCompiledClasses(compilationUnit);
-          JarClassLoader jcl=new JarClassLoader();
-          for(String pt : classPath)
-            jcl.add(pt);
-          jcl.add(outDir);
           Class fooClass = jcl.loadClass(pname+".Foo");
           Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
           Object o = mth.invoke(null, (Object[])null);

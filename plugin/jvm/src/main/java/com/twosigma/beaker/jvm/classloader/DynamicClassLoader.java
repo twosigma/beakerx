@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.javash.utils;
+package com.twosigma.beaker.jvm.classloader;
 
 
 import org.xeustechnologies.jcl.ProxyClassLoader;
@@ -31,21 +31,39 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.xeustechnologies.jcl.JarClassLoader;
 
-class DynamicLoader {
+public class DynamicClassLoader {
     protected final Map<String, Class> classes;
     private final String dirPath;
     private final DynamicLoaderProxy dlp = new DynamicLoaderProxy();
     private SubClassLoader subLoader;
-    private final ClassLoader parent;
+    private final JarClassLoader parent;
     
-    public DynamicLoader(ClassLoader p, String dir) {
+    
+    
+    public DynamicClassLoader(String dir) {
         classes = Collections.synchronizedMap( new HashMap<String, Class>() );
         dirPath = dir;
-        parent = p;
-        subLoader = new SubClassLoader(p);
+        parent = new JarClassLoader();
+        parent.getLocalLoader().setOrder(2);
+        parent.getCurrentLoader().setOrder(3);
+        parent.getParentLoader().setOrder(4); 
+        parent.getThreadLoader().setOrder(5);
+        parent.getSystemLoader().setOrder(6);
+        getProxy().setOrder(6);
+        parent.addLoader(getProxy());
+        subLoader = new SubClassLoader(parent);
     }
 
+    public void add(String s) {
+        parent.add(s);
+    }
+    
+    public Class<?> loadClass(String n) throws ClassNotFoundException {
+        return parent.loadClass(n);
+    }
+    
     class SubClassLoader extends ClassLoader {
         public SubClassLoader(ClassLoader p) {
             super(p);

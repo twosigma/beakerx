@@ -24,7 +24,7 @@ import java.lang.reflect.*;
 import java.nio.file.*;
 import java.util.regex.*;
 import java.io.File;
-import org.xeustechnologies.jcl.JarClassLoader;
+import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 
 public class JavaShell {
   private final String shellId;
@@ -33,8 +33,7 @@ public class JavaShell {
   private List<String> imports;
   private String outDir;
   private final JavaSourceCompiler javaSourceCompiler;
-  private JarClassLoader jcl;
-  private DynamicLoader loader;
+  private DynamicClassLoader loader;
     
   public JavaShell(String id) {
     shellId = id;
@@ -49,7 +48,6 @@ public class JavaShell {
   public void exit() { }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
-    //jcl = new JarClassLoader();
     classPath = Arrays.asList(cp.split("\\s+"));
     imports = Arrays.asList(in.split("\\s+"));
     outDir = od;
@@ -63,57 +61,20 @@ public class JavaShell {
     System.err.println("   imports "+imports); 
     System.err.println("   outdir "+outDir);
     
-    
-    jcl=new JarClassLoader();
+    loader=new DynamicClassLoader(outDir);
     for(String pt : classPath)
-      jcl.add(pt);
- 
-    jcl.getLocalLoader().setOrder(2); // if not found look in local class loader
-    jcl.getCurrentLoader().setOrder(3); // if not found look in current class loader
-    jcl.getParentLoader().setOrder(4); // if not found look in parent class loader
-    jcl.getThreadLoader().setOrder(5); // if not found look in thread context class loader
-    jcl.getSystemLoader().setOrder(6); // Look in system class loader first
-
-    // A custom class loader that extends org.xeustechnologies.jcl.ProxyClassLoader
-    loader=new DynamicLoader(jcl, outDir);
-    loader.getProxy().setOrder(6);
-    jcl.addLoader(loader.getProxy()); //Add custom loader
-
-    
-//for(String p : classPath)
-    //  jcl.add(p);
-    //jcl.add(outDir);
+      loader.add(pt);
   }
 
 
-  /*
-   * 1) check if the code contains package declaration
-   *   -> YES -> write package declaration to out code -> remove everything before and including the package declaration
-   *   -> NO -> write default package declaration to out code
-   * 2) add default imports to out code
-   * 3) check if code contains import statements
-   *    -> YES -> add imports to out code -> remove everything before and including the last import
-   * 5) check if code contains a class declaration
-   *   -> NO -> wrap code in default class
-   *         -> execute code
-   *   -> YES -> compile code
-   *
-   *
-   * "(^|\\n)\\s*package\\s+([a-zA-Z]\\w*)(\\.[a-zA-Z]\\w*)*;"
-   *
-   */
-
-
-
-  
   public void evaluate(SimpleEvaluationObject seo, String code) {
     Pattern p;
     Matcher m;
     String pname = packageId;
     JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(outDir));
     
+    // build the compiler class path
     String classpath = System.getProperty("java.class.path");
-
     String[] classpathEntries = classpath.split(File.pathSeparator);
     if(classpathEntries!=null && classpathEntries.length>0)
         compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
@@ -121,6 +82,7 @@ public class JavaShell {
       compilationUnit.addClassPathEntries(classPath);
     compilationUnit.addClassPathEntry(outDir);
 
+    // normalize and analyse code
     code = normalizeCode(code);
     
     System.err.println("normalized code is:\n"+code+"\n");
@@ -163,11 +125,9 @@ public class JavaShell {
     p = Pattern.compile("(?:^|.*\\s+)class\\s+([a-zA-Z]\\w*).*");
     m = p.matcher(codev[ci]);
     if(m.matches()) {
-        System.err.println("pippo");
         // this is a class definition
         
         String cname = m.group(1);
-        System.err.println("CLASS DEFINITION!!!! "+cname);
         
         for(; ci<codev.length; ci++)
           javaSourceCode.append(codev[ci]);    
@@ -200,7 +160,7 @@ public class JavaShell {
           loader.clearCache();
           javaSourceCompiler.compile(compilationUnit);
           javaSourceCompiler.persistCompiledClasses(compilationUnit);
-          Class fooClass = jcl.loadClass(pname+".Foo");
+          Class fooClass = loader.loadClass(pname+".Foo");
           Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
           Object o = mth.invoke(null, (Object[])null);
           if(ret.equals("Object")) {

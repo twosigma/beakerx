@@ -18,12 +18,10 @@ package com.twosigma.beaker.javash.rest;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.javash.utils.JavaShell;
-import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 //import groovy.lang.Binding;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +56,7 @@ public class JavashShellRest {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
-      DynamicClassLoader d = new DynamicClassLoader();
-      JavaShell js = new JavaShell(shellId, d);
+      JavaShell js = new JavaShell(shellId);
       this.shells.put(shellId, js);
       return shellId;
     }

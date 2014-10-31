@@ -24,7 +24,7 @@ import java.lang.reflect.*;
 import java.nio.file.*;
 import java.util.regex.*;
 import java.io.File;
-import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
+import org.xeustechnologies.jcl.JarClassLoader;
 
 public class JavaShell {
   private final String shellId;
@@ -33,13 +33,13 @@ public class JavaShell {
   private List<String> imports;
   private String outDir;
   private final JavaSourceCompiler javaSourceCompiler;
-  private final DynamicClassLoader dcl;
+  private JarClassLoader jcl;
   
-  public JavaShell(String id, DynamicClassLoader d) {
+  public JavaShell(String id) {
     shellId = id;
     javaSourceCompiler = new JavaSourceCompilerImpl();
     packageId = "com.twosigma.beaker.javash.bkr"+shellId.split("-")[0];
-    dcl = d;
+    //jcl = new JarClassLoader();
   }
 
   public String getShellId() { return shellId; }
@@ -49,16 +49,22 @@ public class JavaShell {
   public void exit() { }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
+    //jcl = new JarClassLoader();
     classPath = Arrays.asList(cp.split("\\s+"));
     imports = Arrays.asList(in.split("\\s+"));
     outDir = od;
     if(outDir==null || outDir.isEmpty()) {
       outDir = Files.createTempDirectory(FileSystems.getDefault().getPath(System.getProperty("java.io.tmpdir")),"javash"+shellId).toString();
+    } else {
+      try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     }
     
     System.err.println("   classp "+classPath);
     System.err.println("   imports "+imports); 
-    System.err.println("   outdir "+outDir); 
+    System.err.println("   outdir "+outDir);
+    //for(String p : classPath)
+    //  jcl.add(p);
+    //jcl.add(outDir);
   }
 
 
@@ -89,6 +95,7 @@ public class JavaShell {
     JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(outDir));
     
     String classpath = System.getProperty("java.class.path");
+
     String[] classpathEntries = classpath.split(File.pathSeparator);
     if(classpathEntries!=null && classpathEntries.length>0)
         compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
@@ -150,9 +157,8 @@ public class JavaShell {
         System.err.println("evaluation code: \n"+javaSourceCode.toString()+"\n");
         compilationUnit.addJavaSource(pname+"."+cname, javaSourceCode.toString());
         try {
-          ClassLoader cl=javaSourceCompiler.compile(compilationUnit);
+          javaSourceCompiler.compile(compilationUnit);
           javaSourceCompiler.persistCompiledClasses(compilationUnit);
-          dcl.addSpecificClassLoader(pname+"."+cname,cl);
           seo.finished("...compiled");
         } catch(Exception e) { seo.error("ERROR:\n"+e.toString()); }    
     } else {
@@ -175,6 +181,7 @@ public class JavaShell {
         try {
           ClassLoader classLoader;
           classLoader=javaSourceCompiler.compile(compilationUnit);
+          javaSourceCompiler.persistCompiledClasses(compilationUnit);
           Class fooClass = classLoader.loadClass(pname+".Foo");
           Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
           Object o = mth.invoke(null, (Object[])null);
@@ -184,7 +191,6 @@ public class JavaShell {
               seo.finished("...done");
           }
         } catch(Exception e) { seo.error("ERROR:\n"+e.toString()); }    
-
     }
     
    }

@@ -33,7 +33,6 @@ public class JavaShell {
   private List<String> imports;
   private String outDir;
   private final JavaSourceCompiler javaSourceCompiler;
-  private JarClassLoader jcl;
   
   public JavaShell(String id) {
     shellId = id;
@@ -179,10 +178,13 @@ public class JavaShell {
     
         compilationUnit.addJavaSource(pname+".Foo", javaSourceCode.toString());
         try {
-          ClassLoader classLoader;
-          classLoader=javaSourceCompiler.compile(compilationUnit);
+          javaSourceCompiler.compile(compilationUnit);
           javaSourceCompiler.persistCompiledClasses(compilationUnit);
-          Class fooClass = classLoader.loadClass(pname+".Foo");
+          JarClassLoader jcl=new JarClassLoader();
+          for(String pt : classPath)
+            jcl.add(pt);
+          jcl.add(outDir);
+          Class fooClass = jcl.loadClass(pname+".Foo");
           Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
           Object o = mth.invoke(null, (Object[])null);
           if(ret.equals("Object")) {

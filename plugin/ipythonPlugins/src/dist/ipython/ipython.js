@@ -343,6 +343,7 @@ define(function(require, exports, module) {
         shellReadyDeferred.resolve(IPythonShell);
       }).error(function() {
         console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+        shellReadyDeferred.reject("failed to locate plugin service");
       });
     };
     var onFail = function() {
@@ -386,7 +387,8 @@ define(function(require, exports, module) {
           return deferred.promise;
         }
       };
-    });
+    },
+    function(err) { return err; });
   };
 
   exports.name = PLUGIN_NAME;

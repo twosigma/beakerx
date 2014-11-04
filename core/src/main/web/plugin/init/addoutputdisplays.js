@@ -16,16 +16,28 @@
 (function() {
   "use strict";
   window.bkInit.getOutputDisplayCssList = [
-      "outputdisplay/bko-plot/bko-plot.css",
-      "outputdisplay/bko-plot/bko-combinedplot.css"
-      ];
+       // required for plot and combined plot output display
+       "outputdisplay/bko-plot/bko-plot.css",
+       "outputdisplay/bko-plot/bko-combinedplot.css"
+     ];
   window.bkInit.getOutputDisplayJsList = [
+      "vendor/bower_components/d3/d3.js",
+
       "outputdisplay/bko-chart.js",
+
       "outputdisplay/bko-tabledisplay.js",
+      
       "outputdisplay/bko-image.js",
+      
       "outputdisplay/bko-latex.js",
+      
       "outputdisplay/bko-progress.js",
+      
+      "vendor/vega/vega.js",
+      "vendor/vega/d3.geo.projection.min.js",
+      "vendor/vega/d3.layout.cloud.js",
       "outputdisplay/bko-vega.js",
+
       "outputdisplay/bko-plot/plotutils.js",
       "outputdisplay/bko-plot/plotsampler.js",
       "outputdisplay/bko-plot/plotitems/auxes/plotauxbox.js",

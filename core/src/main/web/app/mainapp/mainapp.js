@@ -76,49 +76,49 @@
         };
         var evaluatorMenuItems = [];
 
-	var addEvaluators = function(evarr, alwaysCreateNewEvaluator, func, stat) {
-	  if (evarr.length == 0) {
+        var addEvaluators = function(evarr, alwaysCreateNewEvaluator, func, stat) {
+          if (evarr.length == 0) {
             showLoadingStatusMessage("Rendering Notebook...");
-	    setTimeout(function () {
+            setTimeout(function () {
               func(stat);
             }, 100);
-	    return;
-	  }
-	  var settings = evarr.shift();
-	  
+            return;
+          }
+          var settings = evarr.shift();
+
           if (alwaysCreateNewEvaluator) {
             settings.shellID = null;
           }
 
-	  showLoadingStatusMessage("Starting " + settings.name + "...");
+          showLoadingStatusMessage("Starting " + settings.name + "...");
 
-	  return bkEvaluatorManager.newEvaluator(settings)
-            .then(function(evaluator) {
-              if (!_.isEmpty(evaluator.spec)) {
-                var actionItems = [];
-                _(evaluator.spec).each(function(value, key) {
-                  if (value.type === "action") {
-                    actionItems.push({
-                      name: value.name ? value.name : value.action,
-                      action: function() {
-                        evaluator.perform(key);
-                      }
-                    });
-                  }
-		});
-                if (actionItems.length > 0) {
-                  evaluatorMenuItems.push({
-                    name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
-                    items: actionItems
+          return bkEvaluatorManager.newEvaluator(settings)
+          .then(function(evaluator) {
+            if (!_.isEmpty(evaluator.spec)) {
+              var actionItems = [];
+              _(evaluator.spec).each(function(value, key) {
+                if (value.type === "action") {
+                  actionItems.push({
+                    name: value.name ? value.name : value.action,
+                        action: function() {
+                          evaluator.perform(key);
+                        }
                   });
                 }
+              });
+              if (actionItems.length > 0) {
+                evaluatorMenuItems.push({
+                  name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
+                  items: actionItems
+                });
               }
-	      addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
-	    }, function(evaluator) {
-	      addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
-            });
-	}
-	
+            }
+            addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+          }, function(evaluator) {
+            addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+          });
+        }
+
 
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
           // set shell id to null, so it won't try to find an existing shell with the id

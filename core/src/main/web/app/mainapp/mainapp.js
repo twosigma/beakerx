@@ -93,32 +93,32 @@
           showLoadingStatusMessage("Starting " + settings.name + "...");
 
           return bkEvaluatorManager.newEvaluator(settings)
-          .then(function(evaluator) {
-            if (!_.isEmpty(evaluator.spec)) {
-              var actionItems = [];
-              _(evaluator.spec).each(function(value, key) {
-                if (value.type === "action") {
-                  actionItems.push({
-                    name: value.name ? value.name : value.action,
-                        action: function() {
-                          evaluator.perform(key);
-                        }
+            .then(function(evaluator) {
+              if (evaluator !== undefined && !_.isEmpty(evaluator.spec)) {
+                var actionItems = [];
+                _(evaluator.spec).each(function(value, key) {
+                  if (value.type === "action") {
+                    actionItems.push({
+                      name: value.name ? value.name : value.action,
+                          action: function() {
+                            evaluator.perform(key);
+                          }
+                    });
+                  }
+                });
+                if (actionItems.length > 0) {
+                  evaluatorMenuItems.push({
+                    name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
+                    items: actionItems
                   });
                 }
-              });
-              if (actionItems.length > 0) {
-                evaluatorMenuItems.push({
-                  name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
-                  items: actionItems
-                });
               }
-            }
-            addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
-          }, function(evaluator) {
-            addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
-          });
+              addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+            }, function(evaluator) {
+              addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+            });
         }
-
+	
 
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
           // set shell id to null, so it won't try to find an existing shell with the id

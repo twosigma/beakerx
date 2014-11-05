@@ -45,6 +45,8 @@
             var deferred = bkUtils.newDeferred();
             plugins[nameOrUrl].getEvaluatorFactory().then(function(shellCreator) {
               deferred.resolve(shellCreator);
+            }, function(err) {
+              deferred.reject(err);
             });
             return deferred.promise;
           } else {
@@ -70,8 +72,27 @@
               }
               ex.getEvaluatorFactory().then(function(shellCreator) {
                 deferred.resolve(shellCreator);
+              }, function(err) {
+                if (!_.isEmpty(ex.name)) {
+                  delete plugins[ex.name];
+                }
+                if (!_.isEmpty(name) && name !== ex.name) {
+                  delete plugins[name];
+                }
+                console.error(err);
+                if (_.isEmpty(name)) {
+                  deferred.reject("failed to load plugin: " + url);
+                } else {
+                  deferred.reject("failed to load plugin: " + name + " at " + url);
+                }
               });
             }, function(err) {
+              if (!_.isEmpty(ex.name)) {
+                delete plugins[ex.name];
+              }
+              if (!_.isEmpty(name) && name !== ex.name) {
+                delete plugins[name];
+              }
               console.error(err);
               if (_.isEmpty(name)) {
                 deferred.reject("failed to load plugin: " + url);

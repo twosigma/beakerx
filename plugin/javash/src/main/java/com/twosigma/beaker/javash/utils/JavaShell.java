@@ -64,7 +64,7 @@ public class JavaShell {
     imports = Arrays.asList(in.split("\\s+"));
     outDir = od;
     if(outDir==null || outDir.isEmpty()) {
-      outDir = Files.createTempDirectory(FileSystems.getDefault().getPath(System.getProperty("java.io.tmpdir")),"javash"+shellId).toString();
+      outDir = Files.createTempDirectory(FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir")),"javash"+shellId).toString();
     } else {
       try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     }

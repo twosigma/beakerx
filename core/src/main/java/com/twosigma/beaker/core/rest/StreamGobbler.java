@@ -79,7 +79,8 @@ public class StreamGobbler extends Thread {
       while ((line = br.readLine()) != null) {
     	// HACK to remove useless messages from Java plugin.
     	// These come from third party libraries....
-    	if (line.matches(".*(version 'RELEASE_6' from.*|compile)")) continue;
+      	if (line.matches(".*(version 'RELEASE_6' from|compile).*")) continue;
+    	if (line.matches("^\\s*$")) continue;
     	  
         if (pw != null) {
           pw.println(line);

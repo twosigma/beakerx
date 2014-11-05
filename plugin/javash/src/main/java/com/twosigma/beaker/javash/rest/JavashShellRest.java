@@ -36,8 +36,6 @@ import javax.ws.rs.core.MediaType;
 public class JavashShellRest {
 
   private final Map<String, JavaShell> shells = new HashMap<>();
-  //private final Map<String, String> classPaths = new HashMap<>();
-  //private final Map<String, String> imports = new HashMap<>();
 
   public JavashShellRest() throws IOException {}
 

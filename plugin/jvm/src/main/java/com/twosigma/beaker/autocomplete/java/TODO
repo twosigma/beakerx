@@ -1,0 +1,6 @@
+Still missing completion for:
+* local method declaration
+
+The current implementation:
+* ignores the scope.
+* ignores the package (does not have visibility of other classes in the same package)

@@ -16,15 +16,23 @@
 package com.twosigma.beaker.javash.utils;
 import java.util.List;
 import java.util.Arrays;
+
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+
 import java.io.IOException;
+
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
+
 import java.lang.reflect.*;
 import java.nio.file.*;
 import java.util.regex.*;
 import java.io.File;
+
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
+import com.twosigma.beaker.autocomplete.ClasspathScanner;
+import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
+import com.twosigma.beaker.autocomplete.java.JavaAutocomplete;
 
 public class JavaShell {
   private final String shellId;
@@ -34,11 +42,15 @@ public class JavaShell {
   private String outDir;
   private final JavaSourceCompiler javaSourceCompiler;
   private DynamicClassLoader loader;
+  private ClasspathScanner cps;
+  private JavaAutocomplete jac;
     
   public JavaShell(String id) {
     shellId = id;
     javaSourceCompiler = new JavaSourceCompilerImpl();
     packageId = "com.twosigma.beaker.javash.bkr"+shellId.split("-")[0];
+    cps = new ClasspathScanner();
+    jac = new JavaAutocomplete(cps);
   }
 
   public String getShellId() { return shellId; }
@@ -56,10 +68,18 @@ public class JavaShell {
     } else {
       try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     }
-    
+
+    String cpp = "";
     loader=new DynamicClassLoader(outDir);
-    for(String pt : classPath)
+    for(String pt : classPath) {
       loader.add(pt);
+      cpp += pt;
+      cp += File.pathSeparator;
+    }
+    cpp += File.pathSeparator;
+    cpp += System.getProperty("java.class.path");
+    cps = new ClasspathScanner(cpp);
+    jac = new JavaAutocomplete(cps);
   }
 
 
@@ -164,8 +184,7 @@ public class JavaShell {
    }
 
   public List<String> autocomplete(String code, int caretPosition) {
-    // DIPO HERE update?
-    return null;
+	  return jac.doAutocomplete(code, caretPosition);
   }
 
 

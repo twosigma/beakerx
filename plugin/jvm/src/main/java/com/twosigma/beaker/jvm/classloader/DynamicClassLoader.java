@@ -143,7 +143,6 @@ public class DynamicClassLoader {
     
     protected byte[] loadClassBytes(String className) {
         String path = dirPath + File.separator + className.replace(".", File.separator) + ".class";
-        System.err.println("path is "+path);
         
         File f = new File(path);
         if (f.exists()) {

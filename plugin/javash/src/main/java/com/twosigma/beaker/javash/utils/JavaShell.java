@@ -148,7 +148,7 @@ public class JavaShell {
         try {
           javaSourceCompiler.compile(compilationUnit);
           javaSourceCompiler.persistCompiledClasses(compilationUnit);
-          seo.finished("...compiled");
+          seo.finished(null);
         } catch(Exception e) { seo.error("ERROR:\n"+e.toString()); }    
     } else {
         String ret = "void";
@@ -176,7 +176,7 @@ public class JavaShell {
           if(ret.equals("Object")) {
               seo.finished(o);
           } else {
-              seo.finished("...done");
+              seo.finished(null);
           }
         } catch(Exception e) { seo.error("ERROR:\n"+e.toString()); }    
     }

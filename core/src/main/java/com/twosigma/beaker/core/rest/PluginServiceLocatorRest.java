@@ -415,6 +415,10 @@ public class PluginServiceLocatorRest {
           break;
         }
       }
+      if (null == line) {
+        throw new PluginServiceNotFoundException("plugin service: "
+                                                 + pluginId + " failed to start");
+      }
     }
     startGobblers(proc, pluginId, recordOutput ? this.outputLogService : null, waitfor);
 

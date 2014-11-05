@@ -42,8 +42,12 @@ public class Main {
     WebApplicationImplLogger.setLevel(java.util.logging.Level.WARNING);
   }
 
+  private static boolean windows() {
+    return System.getProperty("os.name").contains("Windows");
+  }
+
   private static void testRserve() {
-    String[] command = {"Rscript", "/dev/null"};
+    String[] command = {"Rscript", windows() ? "nul" : "/dev/null"};
     try {
       Runtime.getRuntime().exec(command).waitFor();
     } catch (Exception e) {

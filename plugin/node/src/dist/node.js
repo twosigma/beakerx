@@ -145,7 +145,7 @@ define(function(require, exports, module) {
             NodeShell.prototype = nodeProto;
             shellReadyDeferred.resolve(NodeShell);
         }).error(function () {
-            alert('fail');
+            shellReadyDeferred.reject("failed to locate plugin service");
             console.log("process start failed", arguments);
         });
     };
@@ -162,7 +162,8 @@ define(function(require, exports, module) {
           return deferred.promise;
         }
       };
-    });
+    },
+    function(err) { return err; });
   };
 
     exports.name = PLUGIN_NAME;

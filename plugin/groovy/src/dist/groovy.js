@@ -222,6 +222,7 @@ define(function(require, exports, module) {
       shellReadyDeferred.resolve(GroovyShell);
     }).error(function() {
       console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+      shellReadyDeferred.reject("failed to locate plugin service");
     });
   };
   init();
@@ -237,7 +238,8 @@ define(function(require, exports, module) {
           return deferred.promise;
         }
       };
-    });
+    },
+    function(err) { return err; });
   };
 
   exports.name = PLUGIN_NAME;

@@ -76,36 +76,36 @@
         };
         var evaluatorMenuItems = [];
 
-	var addEvaluators = function(evarr, alwaysCreateNewEvaluator, func, stat) {
-	  if (evarr.length == 0) {
+        var addEvaluators = function(evarr, alwaysCreateNewEvaluator, func, stat) {
+          if (evarr.length == 0) {
             showLoadingStatusMessage("Rendering Notebook...");
-	    setTimeout(function () {
+            setTimeout(function () {
               func(stat);
             }, 100);
-	    return;
-	  }
-	  var settings = evarr.shift();
-	  
+            return;
+          }
+          var settings = evarr.shift();
+
           if (alwaysCreateNewEvaluator) {
             settings.shellID = null;
           }
 
-	  showLoadingStatusMessage("Starting " + settings.name + "...");
+          showLoadingStatusMessage("Starting " + settings.name + "...");
 
-	  return bkEvaluatorManager.newEvaluator(settings)
+          return bkEvaluatorManager.newEvaluator(settings)
             .then(function(evaluator) {
-              if (!_.isEmpty(evaluator.spec)) {
+              if (evaluator !== undefined && !_.isEmpty(evaluator.spec)) {
                 var actionItems = [];
                 _(evaluator.spec).each(function(value, key) {
                   if (value.type === "action") {
                     actionItems.push({
                       name: value.name ? value.name : value.action,
-                      action: function() {
-                        evaluator.perform(key);
-                      }
+                          action: function() {
+                            evaluator.perform(key);
+                          }
                     });
                   }
-		});
+                });
                 if (actionItems.length > 0) {
                   evaluatorMenuItems.push({
                     name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
@@ -113,13 +113,12 @@
                   });
                 }
               }
-	      addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
-	    }, function(evaluator) {
-	      addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+              addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
+            }, function(evaluator) {
+              addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
             });
-	}
+        }
 	
-
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
           // set shell id to null, so it won't try to find an existing shell with the id
           if (alwaysCreateNewEvaluator) {
@@ -127,27 +126,27 @@
           }
 
           bkEvaluatorManager.newEvaluator(settings)
-              .then(function(evaluator) {
-                if (!_.isEmpty(evaluator.spec)) {
-                  var actionItems = [];
-                  _(evaluator.spec).each(function(value, key) {
-                    if (value.type === "action") {
-                      actionItems.push({
-                        name: value.name ? value.name : value.action,
-                        action: function() {
-                          evaluator.perform(key);
-                        }
-                      });
-                    }
-		      });
-                  if (actionItems.length > 0) {
-                    evaluatorMenuItems.push({
-                      name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
-                      items: actionItems
+            .then(function(evaluator) {
+              if (evaluator !== undefined && !_.isEmpty(evaluator.spec)) {
+                var actionItems = [];
+                _(evaluator.spec).each(function(value, key) {
+                  if (value.type === "action") {
+                    actionItems.push({
+                      name: value.name ? value.name : value.action,
+                          action: function() {
+                            evaluator.perform(key);
+                          }
                     });
                   }
+                });
+                if (actionItems.length > 0) {
+                  evaluatorMenuItems.push({
+                    name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
+                    items: actionItems
+                  });
                 }
-	     });
+              }
+            });
         };
 
         var loadNotebook = (function() {
@@ -270,56 +269,53 @@
             }
             // HACK END
 
-	    document.title = bkSessionManager.getNotebookTitle();
-	    bkSessionManager.backup();
-	    bkSessionManager.clear();
+            document.title = bkSessionManager.getNotebookTitle();
+            bkSessionManager.backup();
+            bkSessionManager.clear();
             sessionId = bkSessionManager.setSessionId(sessionId);
 
-	    // this is used to load evaluators before rendering the page
+            // this is used to load evaluators before rendering the page
             if (notebookModel && notebookModel.evaluators) {
-	      addEvaluators(notebookModel.evaluators.slice(),  !isExistingSession,
-			    function(stat) {
-			      bkSessionManager.setup(
-				stat.notebookUri, stat.uriType, stat.readOnly, stat.format,
-				stat.notebookModel, stat.edited, stat.sessionId);
-			      if (!stat.isExistingSession) {
-				bkUtils.log("open", {
-				  uri: stat.notebookUri,
-				  uriType: stat.uriType,
-				  format: stat.format,
-				  maxCellLevel: _(stat.notebookModel.cells).max(function(cell) {
-				    return cell.level;
-				  }).level,
-				  cellCount: stat.notebookModel.cells.length
-				});
+              addEvaluators(notebookModel.evaluators.slice(),  !isExistingSession, function(stat) {
+                bkSessionManager.setup(stat.notebookUri, stat.uriType, stat.readOnly, stat.format,
+                    stat.notebookModel, stat.edited, stat.sessionId);
+                if (!stat.isExistingSession) {
+                  bkUtils.log("open", {
+                    uri: stat.notebookUri,
+                    uriType: stat.uriType,
+                    format: stat.format,
+                    maxCellLevel: _(stat.notebookModel.cells).max(function(cell) {
+                      return cell.level;
+                    }).level,
+                    cellCount: stat.notebookModel.cells.length
+                  });
                                 
-				bkHelper.evaluate("initialization");
-			      }
-			      stat.scope.loading = false;
-			    }, {
-                              // these values should be captured by the closure, so no need for this object
-			      notebookUri:notebookUri, uriType:uriType, readOnly:readOnly, format:format,
-			      notebookModel:notebookModel, edited:edited, sessionId:sessionId, scope:$scope,
-			      isExistingSession:isExistingSession
-                            }
-			   );
-	      return;
+                  bkHelper.evaluate("initialization");
+                }
+                stat.scope.loading = false;
+              }, {
+                // these values should be captured by the closure, so no need for this object
+                notebookUri:notebookUri, uriType:uriType, readOnly:readOnly, format:format,
+                notebookModel:notebookModel, edited:edited, sessionId:sessionId, scope:$scope,
+                isExistingSession:isExistingSession
+              });
+              return;
             }
 
-	    if (!isExistingSession) {
-		bkUtils.log("open", {
-			uri: notebookUri,
-			uriType: uriType,
-			format: format,
-			maxCellLevel: _(notebookModel.cells).max(function(cell) {
-				return cell.level;
-			    }).level,
-			cellCount: notebookModel.cells.length
-		    });
-		bkHelper.evaluate("initialization");
-	    }
-	    $scope.loading = false;
-	    showLoadingStatusMessage("");
+            if (!isExistingSession) {
+              bkUtils.log("open", {
+                uri: notebookUri,
+                uriType: uriType,
+                format: format,
+                maxCellLevel: _(notebookModel.cells).max(function(cell) {
+                  return cell.level;
+                }).level,
+                cellCount: notebookModel.cells.length
+              });
+              bkHelper.evaluate("initialization");
+            }
+            $scope.loading = false;
+            showLoadingStatusMessage("");
           };
           return {
             openUri: function(target, sessionId, retry, retryCountMax) {
@@ -328,7 +324,7 @@
                 return;
               }
               $scope.loading = true;
-	      showLoadingStatusMessage("Opening URI");
+              showLoadingStatusMessage("Opening URI");
               if (retryCountMax === undefined) {
                 retryCountMax = 100;
               }

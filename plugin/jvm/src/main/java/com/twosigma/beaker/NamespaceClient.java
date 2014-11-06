@@ -96,4 +96,11 @@ public class NamespaceClient {
     }
     return binding.getValue();
   }
+
+  private static NamespaceClient nsClient = null;
+
+  public static NamespaceClient getBeaker() { return nsClient; }
+
+  public static void setBeakerClient(String s) { nsClient = new NamespaceClient(s); }
+  
 }

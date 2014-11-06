@@ -1,0 +1,76 @@
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.ut; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 61
+EXPECT: util
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 64
+EXPECT: zip stream logging regex concurrent spi prefs function jar ArrayPrefixHelpers ArraysParallelSortHelpers Base64 Calendar Comparators ConcurrentModificationException Currency DoubleSummaryStatistics DualPivotQuicksort DuplicateFormatFlagsException EmptyStackException EnumMap EnumSet FormatFlagsConversionMismatchException Formattable FormattableFlags Formatter FormatterClosedException GregorianCalendar IllegalFormatCodePointException IllegalFormatConversionException IllegalFormatException IllegalFormatFlagsException IllegalFormatPrecisionException IllegalFormatWidthException IllformedLocaleException InputMismatchException IntSummaryStatistics InvalidPropertiesFormatException JapaneseImperialCalendar JumboEnumSet LocaleISOData LongSummaryStatistics MissingFormatArgumentException MissingFormatWidthException NoSuchElementException Observable Observer Optional OptionalDouble OptionalInt OptionalLong PrimitiveIterator PropertyPermission PropertyPermissionCollection RandomAccessSubList RegularEnumSet Scanner ServiceConfigurationError SimpleTimeZone Spliterator Spliterators SplittableRandom StringJoiner SubList TaskQueue Timer TimerTask TimerThread TooManyListenersException Tripwire UUID UnknownFormatConversionException UnknownFormatFlagsException WeakHashMap Vector TreeSet TreeMap TimeZone TimSort StringTokenizer Stack SortedSet SortedMap Set ServiceLoader ResourceBundle RandomAccess Random Queue PropertyResourceBundle Properties PriorityQueue Objects NavigableSet NavigableMap MissingResourceException Map Locale ListResourceBundle ListIterator List LinkedList LinkedHashSet LinkedHashMap Iterator IdentityHashMap Hashtable HashSet HashMap EventObject EventListenerProxy EventListener Enumeration Dictionary Deque Date Comparator ComparableTimSort Collections Collection BitSet Arrays ArrayList ArrayDeque AbstractSet AbstractSequentialList AbstractQueue AbstractMap AbstractList AbstractCollection
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Da; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 66
+EXPECT: Date
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; publ class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 74
+EXPECT: public
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; publ class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 75
+EXPECT: 
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Da data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 101
+EXPECT: Date
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { d = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 149
+EXPECT: data
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.; System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 181
+EXPECT: equals(aObject) toString() hashCode() clone() compareTo(aDate) compareTo(aObject) parse(aString) before(aDate) after(aDate) setTime(along) getTime() from(aInstant) getYear() getMonth() getDate() getHours() getMinutes() getSeconds() UTC(aint,aint,aint,aint,aint,aint) setYear(aint) setMonth(aint) setDate(aint) getDay() setHours(aint) setMinutes(aint) setSeconds(aint) toLocaleString() toGMTString() getTimezoneOffset() toInstant() wait(along,aint) wait(along) wait() getClass() notify() notifyAll()
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.ge; System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 183
+EXPECT: getTime() getYear() getMonth() getDate() getHours() getMinutes() getSeconds() getDay() getTimezoneOffset() getClass()
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getClass().; System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 192
+EXPECT: forName(aString) forName(aString,aboolean,aClassLoader) toString() isAssignableFrom(aClass) isInstance(aObject) getModifiers() isInterface() isArray() isPrimitive() getSuperclass() getComponentType() getName() toGenericString() newInstance() isAnnotation() isSynthetic() getClassLoader() getTypeParameters() getGenericSuperclass() getPackage() getInterfaces() getGenericInterfaces() getSigners() getEnclosingMethod() getEnclosingConstructor() getDeclaringClass() getEnclosingClass() getSimpleName() getTypeName() getCanonicalName() isAnonymousClass() isLocalClass() isMemberClass() getClasses() getFields() getMethods() getConstructors() getField(aString) getMethod(aString,aClass;) getConstructor(aClass;) getDeclaredClasses() getDeclaredFields() getDeclaredMethods() getDeclaredConstructors() getDeclaredField(aString) getDeclaredMethod(aString,aClass;) getDeclaredConstructor(aClass;) getResourceAsStream(aString) getResource(aString) getProtectionDomain() desiredAssertionStatus() isEnum() getEnumConstants() cast(aObject) asSubclass(aClass) getAnnotation(aClass) isAnnotationPresent(aClass) getAnnotationsByType(aClass) getAnnotations() getDeclaredAnnotation(aClass) getDeclaredAnnotationsByType(aClass) getDeclaredAnnotations() getAnnotatedSuperclass() getAnnotatedInterfaces() wait(along,aint) wait(along) wait() equals(aObject) hashCode() getClass() notify() notifyAll()
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getClass().ge; System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 194
+EXPECT: getModifiers() getSuperclass() getComponentType() getName() getClassLoader() getTypeParameters() getGenericSuperclass() getPackage() getInterfaces() getGenericInterfaces() getSigners() getEnclosingMethod() getEnclosingConstructor() getDeclaringClass() getEnclosingClass() getSimpleName() getTypeName() getCanonicalName() getClasses() getFields() getMethods() getConstructors() getField(aString) getMethod(aString,aClass;) getConstructor(aClass;) getDeclaredClasses() getDeclaredFields() getDeclaredMethods() getDeclaredConstructors() getDeclaredField(aString) getDeclaredMethod(aString,aClass;) getDeclaredConstructor(aClass;) getResourceAsStream(aString) getResource(aString) getProtectionDomain() getEnumConstants() getAnnotation(aClass) getAnnotationsByType(aClass) getAnnotations() getDeclaredAnnotation(aClass) getDeclaredAnnotationsByType(aClass) getDeclaredAnnotations() getAnnotatedSuperclass() getAnnotatedInterfaces() getClass()
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System. ; } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 199
+EXPECT: in out err exit(aint) runFinalization() runFinalizersOnExit(aboolean) setProperty(aString,aString) getProperty(aString) getProperty(aString,aString) identityHashCode(aObject) currentTimeMillis() nanoTime() arraycopy(aObject,aint,aObject,aint,aint) getSecurityManager() loadLibrary(aString) mapLibraryName(aString) load(aString) lineSeparator() setIn(aInputStream) setOut(aPrintStream) setErr(aPrintStream) console() inheritedChannel() setSecurityManager(aSecurityManager) getProperties() setProperties(aProperties) clearProperty(aString) getenv(aString) getenv() gc() wait(along,aint) wait(along) wait() equals(aObject) toString() hashCode() getClass() notify() notifyAll()
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.pr ; } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 205
+EXPECT: println(adouble) println(afloat) println(along) println(aObject) println(aString) println(a[C) println() println(aboolean) println(achar) println(aint) print(aboolean) print(along) print(adouble) print(afloat) print(aObject) print(aString) print(a[C) print(achar) print(aint) printf(aString,aObject;) printf(aLocale,aString,aObject;)
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date. ; } }
+CURSOR: 312
+EXPECT: equals(aObject) toString() hashCode() clone() compareTo(aDate) compareTo(aObject) parse(aString) before(aDate) after(aDate) setTime(along) getTime() from(aInstant) getYear() getMonth() getDate() getHours() getMinutes() getSeconds() UTC(aint,aint,aint,aint,aint,aint) setYear(aint) setMonth(aint) setDate(aint) getDay() setHours(aint) setMinutes(aint) setSeconds(aint) toLocaleString() toGMTString() getTimezoneOffset() toInstant() wait(along,aint) wait(along) wait() getClass() notify() notifyAll()
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public lo getTime(String s) { return Date.parse(s); } }
+CURSOR: 277
+EXPECT: long
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } p long getTime(String s) { return Date.parse(s); } }
+CURSOR: 269
+EXPECT: public private protected
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 325
+EXPECT: 
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Da(); intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 161
+EXPECT: Date
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new D ; intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 160
+EXPECT: Date
+

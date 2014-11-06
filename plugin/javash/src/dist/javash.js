@@ -14,13 +14,13 @@
  *  limitations under the License.
  */
 /**
- * Groovy eval plugin
- * For creating and config evaluators that evaluate Groovy code and update code cell results.
+ * Java eval plugin
+ * For creating and config evaluators that compile and/or evaluate Java code and update code cell results.
  */
 define(function(require, exports, module) {
   'use strict';
-  var PLUGIN_NAME = "Groovy";
-  var COMMAND = "groovy/groovyPlugin";
+  var PLUGIN_NAME = "Java";
+  var COMMAND = "javash/javashPlugin";
 
   var serviceBase = null;
   var subscriptions = {};
@@ -62,19 +62,19 @@ define(function(require, exports, module) {
       cometd.addListener("/meta/connect", cb);
     }
   };
-  var Groovy = {
+  var JavaSh = {
     pluginName: PLUGIN_NAME,
-    cmMode: "groovy",
+    cmMode: "text/x-java",
     background: "#E0FFE0",
-    bgColor: "#6497A9",
+    bgColor: "#EB0000",
     fgColor: "#FFFFFF",
     borderColor: "",
-    shortName: "Gv",
+    shortName: "Jv",
     newShell: function(shellId, cb) {
       if (!shellId) {
         shellId = "";
       }
-      bkHelper.httpPost(serviceBase + "/rest/groovysh/getShell", { shellId: shellId })
+      bkHelper.httpPost(serviceBase + "/rest/javash/getShell", { shellId: shellId })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
@@ -95,7 +95,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/groovysh/evaluate",
+        url: serviceBase + "/rest/javash/evaluate",
         data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
         var onUpdatableResultUpdate = function(update) {
@@ -139,7 +139,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/groovysh/autocomplete",
+        url: serviceBase + "/rest/javash/autocomplete",
         data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
         cb(x);
@@ -150,12 +150,12 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/groovysh/exit",
+        url: serviceBase + "/rest/javash/exit",
         data: { shellId: self.settings.shellID }
       }).done(cb);
     },
     updateShell: function (cb) {
-      bkHelper.httpPost(serviceBase + "/rest/groovysh/setShellOptions", {
+      bkHelper.httpPost(serviceBase + "/rest/javash/setShellOptions", {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
         imports: this.settings.imports,
@@ -171,7 +171,8 @@ define(function(require, exports, module) {
   var defaultImports = [
     "com.twosigma.beaker.chart.Color",
     "com.twosigma.beaker.chart.xychart.*",
-    "com.twosigma.beaker.chart.xychart.plotitem.*"];
+    "com.twosigma.beaker.chart.xychart.plotitem.*",
+    "com.twosigma.beaker.NamespaceClient"];
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
@@ -182,11 +183,11 @@ define(function(require, exports, module) {
     }).success(function(ret) {
       serviceBase = ret;
       cometdUtil.init();
-      var GroovyShell = function(settings, doneCB) {
+      var JavaShell = function(settings, doneCB) {
         var self = this;
         var setShellIdCB = function(id) {
           if (id !== settings.shellID) {
-            // console.log("A new Groovy shell was created.");
+            // console.log("A new Java shell was created.");
           }
           settings.shellID = id;
           self.settings = settings;
@@ -197,8 +198,8 @@ define(function(require, exports, module) {
           self.settings.imports = _.union(imports, defaultImports).join('\n');
           var cb = function() {
             if (bkHelper.hasSessionId()) {
-              var initCode = "import com.twosigma.beaker.NamespaceClient\n" +
-                "beaker = new NamespaceClient('" + bkHelper.getSessionId() + "')\n";
+              var initCode = "import com.twosigma.beaker.NamespaceClient;\n" +
+                "NamespaceClient.setBeakerClient(\"" + bkHelper.getSessionId() + "\");\n";
               self.evaluate(initCode, {}).then(function () {
                 if (doneCB) {
                   doneCB(self);
@@ -220,11 +221,10 @@ define(function(require, exports, module) {
           this[action]();
         };
       };
-      GroovyShell.prototype = Groovy;
-      shellReadyDeferred.resolve(GroovyShell);
+      JavaShell.prototype = JavaSh;
+      shellReadyDeferred.resolve(JavaShell);
     }).error(function() {
       console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
-      shellReadyDeferred.reject("failed to locate plugin service");
     });
   };
   init();
@@ -240,8 +240,7 @@ define(function(require, exports, module) {
           return deferred.promise;
         }
       };
-    },
-    function(err) { return err; });
+    });
   };
 
   exports.name = PLUGIN_NAME;

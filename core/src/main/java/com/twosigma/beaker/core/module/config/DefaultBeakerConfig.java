@@ -182,10 +182,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
     this.version = utils.readFile(this.installDir + "/config/version");
     this.buildTime = utils.readFile(this.installDir + "/config/build_time");
-    String hash = utils.readFile(this.installDir + "/config/hash");
-    if (hash == null)
-    	hash = UUID.randomUUID().toString();
-    this.hash = hash;
+    this.hash = utils.readFile(this.installDir + "/config/hash");
   }
 
   @Override

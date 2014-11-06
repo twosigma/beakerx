@@ -19,16 +19,19 @@ describe('beaker landing menu test', function() {
 
   it('File menu should have 3 items', function () {
     mainmenu.get(0).click();
+    browser.waitForAngular();
     expect(submenu.count()).toEqual(3);
   });
 
   it('Settings menu should have 1 item', function () {
     mainmenu.get(1).click();
+    browser.waitForAngular();
     expect(submenu.count()).toEqual(1);
   });
 
   it('Help menu should have 4 items', function () {
     mainmenu.get(2).click();
+    browser.waitForAngular();
     expect(submenu.count()).toEqual(4);
   });
 

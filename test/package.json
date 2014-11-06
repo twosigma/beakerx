@@ -1,10 +1,8 @@
 {
-  "name": "beaker-tests",
-  "scripts": {
-    "start": "pioneer"
-  },
+  "name": "beakertests",
+  "version": "0.0.0",
+  "private": true,
   "dependencies": {
-    "pioneer": "0.10.1",
-    "selenium-webdriver": "2.42.1"
+    "protractor": ""
   }
 }

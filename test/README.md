@@ -1,20 +1,21 @@
 Beaker Testing
 ==========
-Enclosed are a set of integration tests powered off of https://github.com/mojotech/dill.js. Dill.js provides a useful abstraction layer between the browser and your test implementation through combining selenium + cucumber + chai-as-promised.
+Enclosed are a set of tests powered by protractor.
 
 ### Installing
 
-* Install node via http://nodejs.org/
-* Download chromedriver via https://code.google.com/p/selenium/wiki/ChromeDriver, put it in your PATH
-* Run `$ npm install`
+* just execute './runner'
 
 ### Running the tests
 
-* Start the beaker server.
-* In a new window run `$ npm start`
-
-> you can override beakers root location by setting an `env` var of BASE_PATH
+* just execute './runner'
 
 ### Implementing new tests
-* Create a new feature file in features/ folder
-* Run the tests and follow the instructions to implement the new step definitions.
+* Create a new test file in tests/ folder
+* Add the new file path to protractorConf.js
+
+### Manual run of the tests (for new test development)
+
+* start beaker in one shell
+* run './node_modules/protractor/bin/webdriver-manager start' in a second shell
+* run './node_modules/protractor/bin/protractor protractorConf.js ' in a third shell

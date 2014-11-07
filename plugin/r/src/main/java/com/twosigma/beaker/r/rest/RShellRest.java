@@ -383,6 +383,7 @@ public class RShellRest {
         return true;
       }
     } catch (REXPMismatchException e) {
+    } catch (NullPointerException e) {
     }
     return false;
   }
@@ -395,6 +396,7 @@ public class RShellRest {
         return true;
       }
     } catch (REXPMismatchException e) {
+    } catch (NullPointerException e) {
     }
     return false;
   }
@@ -434,6 +436,8 @@ public class RShellRest {
         values.add(row);
       }
       table = new TableDisplay(values, Arrays.asList(names), classes);
+    } catch (NullPointerException e) {
+      return false;
     } catch (REXPMismatchException e) {
       return false;
     }

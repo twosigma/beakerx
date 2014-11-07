@@ -19,6 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.core.rest.StreamGobbler;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,8 @@ import java.net.InetAddress;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.simple.JSONObject;

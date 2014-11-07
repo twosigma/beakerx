@@ -62,6 +62,7 @@ define(function(require, exports, module) {
       cometd.addListener("/meta/connect", cb);
     }
   };
+  var GroovyCancelFunction = null;
   var Groovy = {
     pluginName: PLUGIN_NAME,
     cmMode: "groovy",
@@ -98,6 +99,19 @@ define(function(require, exports, module) {
         url: serviceBase + "/rest/groovysh/evaluate",
         data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
+        GroovyCancelFunction = function () {
+          $.ajax({
+            type: "POST",
+            datatype: "json",
+            url: serviceBase + "/rest/groovysh/cancelExecution",
+            data: {shellId: self.settings.shellID}
+          }).done(function (ret) {
+            console.log("done cancelExecution",ret);
+          });
+          deferred.reject("cancelled by user");
+          progressObj.message = "cancelling...";
+          modelOutput.result = progressObj;
+        }
         var onUpdatableResultUpdate = function(update) {
           modelOutput.result = update;
           bkHelper.refreshRootScope();
@@ -132,7 +146,18 @@ define(function(require, exports, module) {
           cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
         }
       });
+      deferred.promise.finally(function () {
+        GroovyCancelFunction = null;
+      });
       return deferred.promise;
+    },
+    interrupt: function() {
+      this.cancelExecution();
+    },
+    cancelExecution: function () {
+      if (GroovyCancelFunction) {
+        GroovyCancelFunction();
+      }
     },
     autocomplete: function(code, cpos, cb) {
       var self = this;
@@ -162,9 +187,9 @@ define(function(require, exports, module) {
         outdir: this.settings.outdir}).success(cb);
     },
     spec: {
-      outdir: {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
+      outdir:    {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
       classPath: {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
-      imports: {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"}
+      imports:   {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"}
     },
     cometdUtil: cometdUtil
   };

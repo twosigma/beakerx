@@ -17,7 +17,7 @@ package com.twosigma.beaker.javash.rest;
 
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
-import com.twosigma.beaker.javash.utils.JavaShell;
+import com.twosigma.beaker.javash.utils.JavaEvaluator;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ import javax.ws.rs.core.MediaType;
 @Singleton
 public class JavashShellRest {
 
-  private final Map<String, JavaShell> shells = new HashMap<>();
+  private final Map<String, JavaEvaluator> shells = new HashMap<>();
 
   public JavashShellRest() throws IOException {}
 
@@ -45,10 +45,10 @@ public class JavashShellRest {
   public String getShell(@FormParam("shellId") String shellId) 
     throws InterruptedException, MalformedURLException
   {
-    // if the shell doesnot already exist, create a new shell
+    // if the shell does not already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
-      JavaShell js = new JavaShell(shellId);
+      JavaEvaluator js = new JavaEvaluator(shellId);
       this.shells.put(shellId, js);
       return shellId;
     }

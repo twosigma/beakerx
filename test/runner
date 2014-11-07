@@ -17,22 +17,28 @@
 import os
 import sys
 import subprocess
+import time
+import urllib2
 
-# XXX don't run any tests until they are fixed
-sys.exit(0)
-
-# XXX should wait until servers finish initialization
-
-beaker = subprocess.Popen(["../core/beaker.command"])
-
-selenium = subprocess.Popen(["java", "-jar",
-                             "server/selenium-server-standalone-2.42.2.jar"])
-
+# make sure everything is properly installed
 os.system("npm install")
-result = os.system("npm start")
+os.system("node_modules/protractor/bin/webdriver-manager update");
+
+with open(os.devnull, "w") as fnull:
+  webcontrol = subprocess.Popen(["node_modules/protractor/bin/webdriver-manager","start"], stdout = fnull, stderr = fnull);
+
+beaker = subprocess.Popen(["../core/beaker.command","-open-browser","false"])
+
+time.sleep(10);
+
+result = os.system("./node_modules/protractor/bin/protractor protractorConf.js");
 
 beaker.terminate()
-selenium.terminate()
+
+webcontrol.terminate();
+response = urllib2.urlopen('http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer')
+html = response.read()
+
 
 if result:
-    sys.exit(1)
+    sys.exit(20)

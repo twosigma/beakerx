@@ -42,13 +42,27 @@ public class Main {
     WebApplicationImplLogger.setLevel(java.util.logging.Level.WARNING);
   }
 
+  private static boolean windows() {
+    return System.getProperty("os.name").contains("Windows");
+  }
+
+  private static void testRserve() {
+    String[] command = {"Rscript", windows() ? "nul" : "/dev/null"};
+    try {
+      Runtime.getRuntime().exec(command).waitFor();
+    } catch (Exception e) {
+      System.out.println(e);
+      System.exit(1);
+    }
+  }
+
   public static void main(String[] args) throws Exception
   {
     java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
-
     if (args.length != 1) {
       System.out.println("usage: rPlugin <portListen>");
     }
+    testRserve();
     final int port = Integer.parseInt(args[0]);
     final int corePort = Integer.parseInt(System.getenv("beaker_core_port"));
     WebAppConfigPref webAppPref = new DefaultWebAppConfigPref(port);

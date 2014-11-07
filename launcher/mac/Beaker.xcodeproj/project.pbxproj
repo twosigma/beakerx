@@ -15,20 +15,8 @@
 		427559E6195B401F0054E850 /* BeakerDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 427559E4195B401F0054E850 /* BeakerDocument.xib */; };
 		427559E9195B401F0054E850 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 427559E7195B401F0054E850 /* MainMenu.xib */; };
 		427559EB195B401F0054E850 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 427559EA195B401F0054E850 /* Images.xcassets */; };
-		427559F2195B40200054E850 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 427559F1195B40200054E850 /* XCTest.framework */; };
-		427559F3195B40200054E850 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 427559CF195B401F0054E850 /* Cocoa.framework */; };
 		4DBC5FC01960EE3C0017B91B /* BeakerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DBC5FBF1960EE3C0017B91B /* BeakerAppDelegate.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		427559F4195B40200054E850 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 427559C4195B401F0054E850 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 427559CB195B401F0054E850;
-			remoteInfo = Beaker;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		422E6994195E2E2E00522EF6 /* beaker.command */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = beaker.command; sourceTree = "<group>"; };
@@ -4281,7 +4269,6 @@
 		427559E5195B401F0054E850 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/BeakerDocument.xib; sourceTree = "<group>"; };
 		427559E8195B401F0054E850 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		427559EA195B401F0054E850 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		427559F0195B40200054E850 /* BeakerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BeakerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		427559F1195B40200054E850 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		4DBC5FBE1960EE3C0017B91B /* BeakerAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeakerAppDelegate.h; sourceTree = "<group>"; };
 		4DBC5FBF1960EE3C0017B91B /* BeakerAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeakerAppDelegate.m; sourceTree = "<group>"; };
@@ -4293,15 +4280,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				427559D0195B401F0054E850 /* Cocoa.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		427559ED195B40200054E850 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				427559F3195B40200054E850 /* Cocoa.framework in Frameworks */,
-				427559F2195B40200054E850 /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17700,7 +17678,6 @@
 			isa = PBXGroup;
 			children = (
 				427559CC195B401F0054E850 /* Beaker.app */,
-				427559F0195B40200054E850 /* BeakerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -17773,24 +17750,6 @@
 			productReference = 427559CC195B401F0054E850 /* Beaker.app */;
 			productType = "com.apple.product-type.application";
 		};
-		427559EF195B40200054E850 /* BeakerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 42755A03195B40200054E850 /* Build configuration list for PBXNativeTarget "BeakerTests" */;
-			buildPhases = (
-				427559EC195B40200054E850 /* Sources */,
-				427559ED195B40200054E850 /* Frameworks */,
-				427559EE195B40200054E850 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				427559F5195B40200054E850 /* PBXTargetDependency */,
-			);
-			name = BeakerTests;
-			productName = BeakerTests;
-			productReference = 427559F0195B40200054E850 /* BeakerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -17800,11 +17759,6 @@
 				CLASSPREFIX = Beaker;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Two Sigma Open Source";
-				TargetAttributes = {
-					427559EF195B40200054E850 = {
-						TestTargetID = 427559CB195B401F0054E850;
-					};
-				};
 			};
 			buildConfigurationList = 427559C7195B401F0054E850 /* Build configuration list for PBXProject "Beaker" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -17820,7 +17774,6 @@
 			projectRoot = "";
 			targets = (
 				427559CB195B401F0054E850 /* Beaker */,
-				427559EF195B40200054E850 /* BeakerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -17835,13 +17788,6 @@
 				427559E6195B401F0054E850 /* BeakerDocument.xib in Resources */,
 				427559E0195B401F0054E850 /* Credits.rtf in Resources */,
 				427559E9195B401F0054E850 /* MainMenu.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		427559EE195B40200054E850 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17874,22 +17820,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		427559EC195B40200054E850 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		427559F5195B40200054E850 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 427559CB195B401F0054E850 /* Beaker */;
-			targetProxy = 427559F4195B40200054E850 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		427559D8195B401F0054E850 /* InfoPlist.strings */ = {
@@ -18051,46 +17982,6 @@
 			};
 			name = Release;
 		};
-		42755A04195B40200054E850 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Beaker.app/Contents/MacOS/Beaker";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Beaker/Beaker-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "BeakerTests/BeakerTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		42755A05195B40200054E850 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Beaker.app/Contents/MacOS/Beaker";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Beaker/Beaker-Prefix.pch";
-				INFOPLIST_FILE = "BeakerTests/BeakerTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -18108,15 +17999,6 @@
 			buildConfigurations = (
 				42755A01195B40200054E850 /* Debug */,
 				42755A02195B40200054E850 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		42755A03195B40200054E850 /* Build configuration list for PBXNativeTarget "BeakerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				42755A04195B40200054E850 /* Debug */,
-				42755A05195B40200054E850 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -32,7 +32,7 @@ dependencies {
   provided group: 'com.sun.jersey', name: 'jersey-server', version: '1.17.1'
   provided group: 'com.sun.jersey', name: 'jersey-core', version: '1.17.1'
   provided group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.3.1'
-  provided group: 'org.xeustechnologies', name: 'jcl-core', version: '2.5'
+  compile group: 'org.xeustechnologies', name: 'jcl-core', version: '2.5'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.3'
   provided project(':shared')
 }

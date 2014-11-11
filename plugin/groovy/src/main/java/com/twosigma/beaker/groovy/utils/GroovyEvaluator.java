@@ -23,19 +23,17 @@ import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
 public class GroovyEvaluator {
-  private final String shellId;
-  private List<String> classPath;
-  private List<String> imports;
-  private String outDir;
-  private ClasspathScanner cps;
-  private GroovyShell shell;
+  protected final String shellId;
+  protected List<String> classPath;
+  protected List<String> imports;
+  protected String outDir;
+  protected ClasspathScanner cps;
+  protected boolean exit;
+  protected boolean updateLoader;
+  protected final ThreadGroup myThreadGroup;
+  protected workerThread myWorker;
 
-  private boolean exit;
-  private boolean updateLoader;
-  private final ThreadGroup myThreadGroup;
-  private final workerThread myWorker;
-
-  private class jobDescriptor {
+  protected class jobDescriptor {
     String codeToBeExecuted;
     SimpleEvaluationObject outputObject;
 
@@ -45,8 +43,8 @@ public class GroovyEvaluator {
     }
   }
 
-  private final Semaphore syncObject = new Semaphore(0, true);
-  private final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
+  protected final Semaphore syncObject = new Semaphore(0, true);
+  protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   public GroovyEvaluator(String id) {
     shellId = id;
@@ -56,6 +54,10 @@ public class GroovyEvaluator {
     exit = false;
     updateLoader = false;
     myThreadGroup = new ThreadGroup("tg"+shellId);
+    startWorker();
+  }
+
+  protected void startWorker() {
     myWorker = new workerThread(myThreadGroup);
     myWorker.start();
   }
@@ -97,6 +99,8 @@ public class GroovyEvaluator {
     cpp += File.pathSeparator;
     cpp += System.getProperty("java.class.path");
     cps = new ClasspathScanner(cpp);
+
+    updateLoader=true;
   }
   
   public void evaluate(SimpleEvaluationObject seo, String code) {
@@ -109,8 +113,9 @@ public class GroovyEvaluator {
     return null;
   }
 
-  private class workerThread extends Thread {
-    private DynamicClassLoader loader = null;
+  protected class workerThread extends Thread {
+    protected DynamicClassLoader loader = null;
+    protected GroovyShell shell;
 
     public workerThread(ThreadGroup tg) {
       super(tg, "worker");
@@ -129,8 +134,9 @@ public class GroovyEvaluator {
           syncObject.acquire();
           
           // check if we must create or update class loader
-          if(loader==null || updateLoader) {
+          if(updateLoader) {
             shell = null;
+	    updateLoader=false;
           }
           
           // get next job descriptor
@@ -159,7 +165,7 @@ public class GroovyEvaluator {
       }
     }
       
-    private void newEvaluator() throws MalformedURLException
+    protected ClassLoader newClassLoader() throws MalformedURLException
     {
       URL[] urls = {};
       if (!classPath.isEmpty()) {
@@ -169,6 +175,19 @@ public class GroovyEvaluator {
           urls[i] = new URL("file://" + classPath.get(i));
         }
       }
+      loader = null;
+      ClassLoader cl;
+      if(outDir!=null && !outDir.isEmpty()) {
+        loader = new DynamicClassLoader(outDir);
+        loader.addAll(Arrays.asList(urls));
+        cl = loader.getLoader();
+      } else
+        cl = new URLClassLoader(urls);
+      return cl;
+    }
+
+    protected void newEvaluator() throws MalformedURLException
+    {
       ImportCustomizer icz = new ImportCustomizer();
 
       if (!imports.isEmpty()) {
@@ -182,15 +201,7 @@ public class GroovyEvaluator {
         }
       }
       CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
-      loader = null;
-      ClassLoader cl;
-      if(outDir!=null && !outDir.isEmpty()) {
-        DynamicClassLoader dl = new DynamicClassLoader(outDir);
-        dl.addAll(Arrays.asList(urls));
-        cl = dl.getLoader();
-      } else
-        cl = new URLClassLoader(urls);
-      shell = new GroovyShell(cl, new Binding(), config);
+      shell = new GroovyShell(newClassLoader(), new Binding(), config);
     }
   } 
 }

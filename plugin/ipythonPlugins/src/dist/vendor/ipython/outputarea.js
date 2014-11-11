@@ -10,14 +10,14 @@
 //============================================================================
 
 /**
- * @module IPython
- * @namespace IPython
+ * @module IPython1
+ * @namespace IPython1
  * @submodule OutputArea
  */
-var IPython = (function (IPython) {
+var IPython1 = (function (IPython1) {
     "use strict";
 
-    var utils = IPython.utils;
+    var utils = IPython1.utils;
 
     /**
      * @class OutputArea
@@ -99,7 +99,7 @@ var IPython = (function (IPython) {
 
         this.element.resize(function () {
             // FIXME: Firefox on Linux misbehaves, so automatic scrolling is disabled
-            if ( IPython.utils.browser[0] === "Firefox" ) {
+            if ( IPython1.utils.browser[0] === "Firefox" ) {
                 return;
             }
             // maybe scroll output,
@@ -594,7 +594,7 @@ var IPython = (function (IPython) {
         container.parent().remove();
         // replace with plaintext version in stdout
         this.append_output(content, false);
-        $([IPython.events]).trigger('send_input_reply.Kernel', value);
+        $([IPython1.events]).trigger('send_input_reply.Kernel', value);
     }
 
 
@@ -698,8 +698,8 @@ var IPython = (function (IPython) {
     };
 
 
-    IPython.OutputArea = OutputArea;
+    IPython1.OutputArea = OutputArea;
 
-    return IPython;
+    return IPython1;
 
-}(IPython));
+}(IPython1));

@@ -100,7 +100,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
       this.nginxBinDir = ""; // assuming nginx is available in PATH
     }
     this.nginxServDir = utils.createTempDirectory(this.dotDir, "nginx");
-    this.nginxStaticDir = this.installDir + File.separator + "src"+File.separator+"main"+File.separator+"web";
+    this.nginxStaticDir = this.installDir + "/src/main/web";
     this.nginxExtraRules = "";
     this.nginxPluginRules = new HashMap<>();
 

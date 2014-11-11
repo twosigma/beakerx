@@ -1,6 +1,6 @@
 worker_processes  4;
 daemon off;
-error_log  %(nginx_dir)s%(path_separator)slogs%(path_separator)snginx.log error;
+error_log  %(nginx_dir)s/logs/nginx.log error;
 pid nginx.pid;
 
 events {
@@ -11,7 +11,7 @@ http {
   include mime.types;
 
   # turn this on for debugging
-  #access_log %(nginx_dir)s%(path_separator)slogs%(path_separator)saccess.log;
+  #access_log %(nginx_dir)s/logs/access.log;
   access_log off;
   
   sendfile on;
@@ -41,7 +41,7 @@ http {
     # redirect server error pages to the static page /50x.html and serve them directly from static html directory
     error_page   500 502 503 504  /static/50x.html;
     location /static/ {
-      alias %(static_dir)s%(path_separator)sstatic%(path_separator)s;
+      alias %(static_dir)s/static/;
     }
 
     # in google chrome iframe do not inherit base tag and epiceditor uses iframes
@@ -61,7 +61,7 @@ http {
       proxy_set_header Authorization "Basic %(auth)s";
     }
     location /login/ {
-      alias %(static_dir)s%(path_separator)sstatic%(path_separator)s;
+      alias %(static_dir)s/static/;
     }
 
     # redirect to the starting page
@@ -107,7 +107,7 @@ http {
     listen 127.0.0.1:%(port_restart)s;
 
     location = /restart.%(restart_id)s/present.html {
-      alias  %(static_dir)s%(path_separator)sstatic%(path_separator)spresent.html;
+      alias  %(static_dir)s/static/present.html;
     }
   }
 }

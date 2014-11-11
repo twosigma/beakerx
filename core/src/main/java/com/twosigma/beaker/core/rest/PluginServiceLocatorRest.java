@@ -647,9 +647,8 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
     nginxConfig = nginxConfig.replace("%(urlhash)s", urlHash);
-    nginxConfig = nginxConfig.replace("%(static_dir)s", this.nginxStaticDir);
+    nginxConfig = nginxConfig.replace("%(static_dir)s", this.nginxStaticDir.replaceAll("\\\\", "/"));
     nginxConfig = nginxConfig.replace("%(nginx_dir)s", this.nginxServDir);
-    nginxConfig = nginxConfig.replace("%(path_separator)s", File.separator);
     java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
     writePrivateFile(targetFile, nginxConfig);
     return restartId;

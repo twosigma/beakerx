@@ -8,9 +8,9 @@
 //============================================================================
 // Utilities
 //============================================================================
-IPython.namespace('IPython.utils');
+IPython1.namespace('IPython1.utils');
 
-IPython.utils = (function (IPython) {
+IPython1.utils = (function (IPython1) {
 
     //============================================================================
     // Cross-browser RegEx Split
@@ -386,5 +386,5 @@ IPython.utils = (function (IPython) {
         browser : browser    
     };
 
-}(IPython));
+}(IPython1));
 

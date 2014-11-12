@@ -77,6 +77,7 @@ public class PluginServiceLocatorRest {
     "  proxy_pass http://127.0.0.1:%(port)s/;\n" +
     "  proxy_set_header Authorization \"Basic %(auth)s\";\n" +
     "}\n";
+
   private static final String IPYTHON_RULES_BASE =
     "  rewrite ^%(base_url)s/(.*)$ /$1 break;\n" +
     "  proxy_pass http://127.0.0.1:%(port)s;\n" +
@@ -89,12 +90,14 @@ public class PluginServiceLocatorRest {
     "location %(base_url)s/login {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/login;\n" +
     "}\n";
+
   private static final String IPYTHON1_RULES =
     "location %(base_url)s/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/kernels;\n" +
     "}\n" +
     "location ~ %(base_url)s/kernels/[0-9a-f-]+/ {\n" +
     IPYTHON_RULES_BASE;
+
   private static final String IPYTHON2_RULES =
     "location %(base_url)s/api/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;\n" +
@@ -112,7 +115,8 @@ public class PluginServiceLocatorRest {
   private final String nginxExtraRules;
   private final Map<String, String> nginxPluginRules;
   private final String pluginDir;
-  private final String nginxCommand;
+  private final String [] nginxCommand;
+  private final String [] nginxRestartCommand;
   private String[] nginxEnv = null;
   private final Boolean publicServer;
   private final Integer portBase;
@@ -170,15 +174,27 @@ public class PluginServiceLocatorRest {
                             "c.NotebookApp.port = %(port)s\n" +
                             "c.NotebookApp.open_browser = False\n" +
                             "c.NotebookApp.password = u'%(hash)s'\n");
-    String cmd = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
-    if (windows()) {
-      cmd += (" -p \"" + this.nginxServDir + "\"");
-      cmd += (" -c \"" + this.nginxServDir + "/conf/nginx.conf\"");
-    } else {
-      cmd += (" -p " + this.nginxServDir);
-      cmd += (" -c " + this.nginxServDir + "/conf/nginx.conf");
-    }
-    this.nginxCommand = cmd;
+    this.nginxCommand = new String[7];
+    
+    this.nginxCommand[0] = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
+    this.nginxCommand[1] = "-p";
+    this.nginxCommand[2] = this.nginxServDir;
+    this.nginxCommand[3] = "-c";
+    this.nginxCommand[4] = this.nginxServDir + "/conf/nginx.conf";
+    this.nginxCommand[5] = "-g";
+    this.nginxCommand[6] = "error_log stderr;";
+    
+    this.nginxRestartCommand = new String [9];
+    this.nginxRestartCommand[0] = this.nginxBinDir + (this.nginxBinDir.isEmpty() ? "nginx" : "/nginx");
+    this.nginxRestartCommand[1] = "-p";
+    this.nginxRestartCommand[2] = this.nginxServDir;
+    this.nginxRestartCommand[3] = "-c";
+    this.nginxRestartCommand[4] = this.nginxServDir + "/conf/nginx.conf";
+    this.nginxRestartCommand[5] = "-g";
+    this.nginxRestartCommand[6] = "error_log stderr;";
+    this.nginxRestartCommand[7] = "-s";
+    this.nginxRestartCommand[8] = "reload";
+    
     this.corePassword = webServerConfig.getPassword();
 
     // record plugin options from cli and to pass through to individual plugins
@@ -198,6 +214,7 @@ public class PluginServiceLocatorRest {
 
     portSearchStart = this.portBase + this.reservedPortCount;
 
+    // on MacOS add library search path
     if (macosx()) {
       List<String> envList = new ArrayList<>();
       for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
@@ -238,8 +255,7 @@ public class PluginServiceLocatorRest {
 
   private void startReverseProxy() throws InterruptedException, IOException {
     generateNginxConfig();
-    System.out.println("running nginx: " + this.nginxCommand);
-
+    System.out.println("starting nginx instance (" + this.nginxDir +")");
     Process proc = Runtime.getRuntime().exec(this.nginxCommand, this.nginxEnv);
     startGobblers(proc, "nginx", null, null);
     this.nginxProc = proc;
@@ -247,7 +263,6 @@ public class PluginServiceLocatorRest {
 
   private void shutdown() {
     StreamGobbler.shuttingDown();
-
     if (windows()) {
       new WinProcess(this.nginxProc).killRecursively();
     } else {
@@ -298,7 +313,7 @@ public class PluginServiceLocatorRest {
       @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
       @QueryParam("waitfor") String waitfor)
       throws InterruptedException, IOException {
-
+      
     PluginConfig pConfig = this.plugins.get(pluginId);
     if (pConfig != null && pConfig.isStarted()) {
       System.out.println("plugin service " + pluginId +
@@ -307,7 +322,16 @@ public class PluginServiceLocatorRest {
     }
 
     String password = RandomStringUtils.random(40, true, true);
+    Process proc = null;
+    String restartId = "";
+
+    /*
+     * Only one plugin can be started at a given time since we need to find a free port.
+     * We serialize starting of plugins and we parallelize nginx configuration reload with the actual plugin
+     * evaluator start.
+     */
     synchronized (this) {
+      // find a port to use for proxypass between nginx and the plugin
       final int port = getNextAvailablePort(this.portSearchStart);
       final String baseUrl = "/" + urlHash + "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
       pConfig = new PluginConfig(port, nginxRules, baseUrl, password);
@@ -318,94 +342,76 @@ public class PluginServiceLocatorRest {
         generateIPythonConfig(pluginId, port, password, command);
       }
 
-      // restart nginx to reload new config
-      String restartId = generateNginxConfig();
-      String restartPath = "\"" + this.nginxServDir + "/restart_nginx\"";
-      String restartCommand = this.nginxCommand + " -s reload";
-      Process restartproc = Runtime.getRuntime().exec(restartCommand, this.nginxEnv);
+      // reload nginx config
+      restartId = generateNginxConfig();
+      Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
-
-      // spin until restart is done
-      String url = "http://127.0.0.1:" + this.restartPort
-          + "/restart." + restartId + "/present.html";
-      try {
-        spinCheck(url);
-        if (windows()) Thread.sleep(1000); // XXX unknown race condition
-      } catch (Throwable t) {
-        System.err.println("Nginx restart time out plugin =" + pluginId);
-        throw new NginxRestartFailedException("nginx restart failed.\n"
-            + "url=" + url + "\n"
-            + "message=" + t.getMessage());
+    
+      String fullCommand = command;
+      String baseCommand;
+      String args;
+      int space = command.indexOf(' ');
+      if (space > 0) {
+        baseCommand = command.substring(0, space);
+        args = command.substring(space); // include space
+      } else {
+        baseCommand = command;
+        args = " ";
       }
-    }
-
-    String fullCommand = command;
-    String baseCommand;
-    String args;
-    int space = command.indexOf(' ');
-    if (space > 0) {
-      baseCommand = command.substring(0, space);
-      args = command.substring(space); // include space
-    } else {
-      baseCommand = command;
-      args = " ";
-    }
-    if (Files.notExists(Paths.get(baseCommand))) {
-      if (this.pluginLocations.containsKey(pluginId)) {
-        fullCommand = this.pluginLocations.get(pluginId) + "/" + baseCommand;
-      }
-      if (Files.notExists(Paths.get(fullCommand))) {
-        fullCommand = this.pluginDir + "/" + baseCommand;
+      if (Files.notExists(Paths.get(baseCommand))) {
+        if (this.pluginLocations.containsKey(pluginId)) {
+          fullCommand = this.pluginLocations.get(pluginId) + "/" + baseCommand;
+        }
         if (Files.notExists(Paths.get(fullCommand))) {
-          throw new PluginServiceNotFoundException(
-              "plugin service: " + pluginId + " not found"
-              + " and fail to start it with: " + command);
+          fullCommand = this.pluginDir + "/" + baseCommand;
+          if (Files.notExists(Paths.get(fullCommand))) {
+            throw new PluginServiceNotFoundException("plugin service: " + pluginId + " not found" + " and fail to start it with: " + command);
+          }
         }
       }
-    }
-
-    if (windows()) {
-      fullCommand = "\"" + fullCommand + "\"";
-    } else {
-      fullCommand += args; // XXX should be in windows too?
-    }
-
-    List<String> extraArgs = this.pluginArgs.get(pluginId);
-    if (extraArgs != null) {
-      fullCommand += " " + StringUtils.join(extraArgs, " ");
-    }
-    fullCommand += " " + Integer.toString(pConfig.port);
-
-    String[] env = this.pluginEnvps.get(pluginId);
-    List<String> envList = new ArrayList<>();
-    if (env != null) {
-      for (int i = 0; i < env.length; i++) {
-        if (!internalEnvar(env[i]))
-          envList.add(env[i]);
+      
+      if (windows()) {
+        fullCommand = "\"" + fullCommand + "\"";
+      } else {
+        fullCommand += args; // XXX should be in windows too?
       }
-    } else {
-      for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
-        if (!internalEnvar(entry.getKey() + "="))
-          envList.add(entry.getKey() + "=" + entry.getValue());
+
+      List<String> extraArgs = this.pluginArgs.get(pluginId);
+      if (extraArgs != null) {
+        fullCommand += " " + StringUtils.join(extraArgs, " ");
       }
-    }
-    envList.add("beaker_plugin_password=" + password);
-    envList.add("beaker_core_password=" + this.corePassword);
-    envList.add("beaker_core_port=" + corePort);
-    envList.add("beaker_tmp_dir=" + this.nginxServDir);
-    env = new String[envList.size()];
-    envList.toArray(env);
+      fullCommand += " " + Integer.toString(pConfig.port);
+          
+      String[] env = this.pluginEnvps.get(pluginId);
+      List<String> envList = new ArrayList<>();
+      if (env != null) {
+        for (int i = 0; i < env.length; i++) {
+          if (!internalEnvar(env[i]))
+            envList.add(env[i]);
+        }
+      } else {
+        for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
+          if (!internalEnvar(entry.getKey() + "="))
+            envList.add(entry.getKey() + "=" + entry.getValue());
+        }
+      }
+      envList.add("beaker_plugin_password=" + password);
+      envList.add("beaker_core_password=" + this.corePassword);
+      envList.add("beaker_core_port=" + corePort);
+      envList.add("beaker_tmp_dir=" + this.nginxServDir);
+      env = new String[envList.size()];
+      envList.toArray(env);
 
-    if (windows()) {
-      fullCommand = "python " + fullCommand;
+      if (windows()) {
+        fullCommand = "python " + fullCommand;
+      }
+      System.out.println("Running: " + fullCommand);
+      proc = Runtime.getRuntime().exec(fullCommand, env);
     }
-    System.out.println("Running: " + fullCommand);
-    Process proc = Runtime.getRuntime().exec(fullCommand, env);
-
+    
     if (startedIndicator != null && !startedIndicator.isEmpty()) {
-      InputStream is = startedIndicatorStream.equals("stderr") ?
-          proc.getErrorStream() : proc.getInputStream();
+      InputStream is = startedIndicatorStream.equals("stderr") ? proc.getErrorStream() : proc.getInputStream();
       InputStreamReader ir = new InputStreamReader(is);
       BufferedReader br = new BufferedReader(ir);
       String line = "";
@@ -421,10 +427,28 @@ public class PluginServiceLocatorRest {
                                                  + pluginId + " failed to start");
       }
     }
+
     startGobblers(proc, pluginId, recordOutput ? this.outputLogService : null, waitfor);
+
+    // check that nginx did actually restart
+    String url = "http://127.0.0.1:" + this.restartPort + "/restart." + restartId + "/present.html";
+    try {
+      spinCheck(url);
+      if (windows()) Thread.sleep(1000); // XXX unknown race condition
+    } catch (Throwable t) {
+      System.err.println("Nginx restart time out plugin =" + pluginId);
+      this.plugins.remove(pluginId);
+      if (windows()) {
+        new WinProcess(proc).killRecursively();
+      } else {
+        proc.destroy(); // send SIGTERM
+      }
+      throw new NginxRestartFailedException("nginx restart failed.\n" + "url=" + url + "\n" + "message=" + t.getMessage());
+    }   
 
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);
+
     return buildResponse(pConfig.getBaseUrl(), true);
   }
 
@@ -562,28 +586,17 @@ public class PluginServiceLocatorRest {
     java.nio.file.Path confDir = Paths.get(this.nginxServDir, "conf");
     java.nio.file.Path logDir = Paths.get(this.nginxServDir, "logs");
     java.nio.file.Path nginxClientTempDir = Paths.get(this.nginxServDir, "client_temp");
-    java.nio.file.Path htmlDir = Paths.get(this.nginxServDir, "html");
 
     if (Files.notExists(confDir)) {
       confDir.toFile().mkdirs();
+      Files.copy(Paths.get(this.nginxDir + "/mime.types"),
+                 Paths.get(confDir.toString() + "/mime.types"));
     }
     if (Files.notExists(logDir)) {
       logDir.toFile().mkdirs();
     }
     if (Files.notExists(nginxClientTempDir)) {
       nginxClientTempDir.toFile().mkdirs();
-    }
-
-    if (Files.notExists(htmlDir)) {
-      Files.createDirectory(htmlDir);
-      Files.copy(Paths.get(this.nginxStaticDir + "/50x.html"),
-                 Paths.get(htmlDir.toString() + "/50x.html"));
-      Files.copy(Paths.get(this.nginxStaticDir + "/login.html"),
-                 Paths.get(htmlDir.toString() + "/login.html"));
-      Files.copy(Paths.get(this.nginxStaticDir + "/present.html"),
-                 Paths.get(htmlDir.toString() + "/present.html"));
-      Files.copy(Paths.get(this.nginxStaticDir + "/favicon.png"),
-                 Paths.get(htmlDir.toString() + "/favicon.png"));
     }
 
     String restartId = RandomStringUtils.random(12, false, true);
@@ -641,6 +654,8 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
     nginxConfig = nginxConfig.replace("%(urlhash)s", urlHash);
+    nginxConfig = nginxConfig.replace("%(static_dir)s", this.nginxStaticDir.replaceAll("\\\\", "/"));
+    nginxConfig = nginxConfig.replace("%(nginx_dir)s", this.nginxServDir.replaceAll("\\\\", "/"));
     java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
     writePrivateFile(targetFile, nginxConfig);
     return restartId;

@@ -1,10 +1,6 @@
-worker_processes  1;
+worker_processes  4;
 daemon off;
-
-#debug level logging is quite voluminous
-#error_log  /tmp/nginx.log  debug;
-error_log  stderr  error;
-
+error_log  %(nginx_dir)s/logs/nginx.log error;
 pid nginx.pid;
 
 events {
@@ -12,41 +8,40 @@ events {
 }
 
 http {
-
-  default_type  application/octet-stream;
-  types_hash_max_size 2048;
+  include mime.types;
 
   # turn this on for debugging
-  #access_log access.log;
+  #access_log %(nginx_dir)s/logs/access.log;
   access_log off;
-
+  
   sendfile on;
+  tcp_nopush on;
 
   # i tried setting to 0 and removing the keepalive timer from the ipython client.
   # but it did not fix the problem.
   #keepalive_timeout  0;
   keepalive_timeout  1000;
-  proxy_read_timeout 1000000;
 
-  client_max_body_size 100M;
-  client_body_temp_path "client_temp";
-  proxy_temp_path "client_temp";
-  fastcgi_temp_path "client_temp";
-  uwsgi_temp_path "client_temp";
-  scgi_temp_path "client_temp";
+  proxy_connect_timeout   90;
+  proxy_send_timeout      90;
+  proxy_read_timeout      1000000;
+  proxy_buffers           32 4k;
+  client_max_body_size    100M;
+  client_body_buffer_size 128k;  
+  client_body_temp_path   "client_temp";
+  proxy_temp_path         "client_temp";
+  fastcgi_temp_path       "client_temp";
+  uwsgi_temp_path         "client_temp";
+  scgi_temp_path          "client_temp";
 
   server {
 
     %(listen_section)s
 
-    # redirect server error pages to the static page /50x.html
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
-      root   html;
-    }
-
-    location = /%(urlhash)s/50x.html {
-      root   html;
+    # redirect server error pages to the static page /50x.html and serve them directly from static html directory
+    error_page   500 502 503 504  /static/50x.html;
+    location /static/ {
+      alias %(static_dir)s/static/;
     }
 
     # in google chrome iframe do not inherit base tag and epiceditor uses iframes
@@ -60,50 +55,49 @@ http {
         rewrite /beaker/css/markdown-preview.css /%(urlhash)s/beaker/css/markdown-preview.css;
     }
 
-    # nginx should probably serve the static content instead of
-    # passing it on to jetty. XXX
-
+    # login and loginrest are used for the public server option
     location /loginrest/ {
       proxy_pass http://127.0.0.1:%(port_beaker)s/rest/login/;
       proxy_set_header Authorization "Basic %(auth)s";
     }
-
     location /login/ {
-      alias html/;
+      alias %(static_dir)s/static/;
     }
 
+    # redirect to the starting page
     location = / {
       return 301 %(start_page)s;
     }
-
-    location = /beaker/ {
-      proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
-      proxy_set_header Authorization "Basic %(auth)s";
-      %(auth_cookie_rule)s
-    }
-
     location = /beaker {
+      return 301 %(start_page)s;
+    }
+
+    # this is the main beaker index page - auto generated via rest call
+    location = /beaker/ {
+      %(auth_cookie_rule)s
       proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
       proxy_set_header Authorization "Basic %(auth)s";
-      %(auth_cookie_rule)s
     }
+    # this one should not be needed XXX
+    #location = /%(urlhash)s/beaker/ {
+    #  proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
+    #  proxy_set_header Authorization "Basic %(auth)s";
+    #  %(auth_cookie_rule)s
+    #}
 
-    location = /%(urlhash)s/beaker/ {
-      proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
-      proxy_set_header Authorization "Basic %(auth)s";
-      %(auth_cookie_rule)s
-    }
-
-    location /%(urlhash)s/beaker {
-      proxy_pass http://127.0.0.1:%(port_beaker)s/;
-      proxy_set_header Authorization "Basic %(auth)s";
-      %(auth_cookie_rule)s
-    }
-
+    # this serves the actual (static) content
     location /%(urlhash)s/beaker/ {
-      proxy_pass http://127.0.0.1:%(port_beaker)s/;
-      proxy_set_header Authorization "Basic %(auth)s";
       %(auth_cookie_rule)s
+      rewrite ^/%(urlhash)s/beaker/(.*)$ /$1 break;
+      root %(static_dir)s/;
+      try_files $uri @dopass;
+    }
+
+    # forward all other urls 
+    location @dopass {
+      %(auth_cookie_rule)s
+      proxy_pass http://127.0.0.1:%(port_beaker)s;
+      proxy_set_header Authorization "Basic %(auth)s";
     }
 
     %(plugin_section)s
@@ -113,7 +107,7 @@ http {
     listen 127.0.0.1:%(port_restart)s;
 
     location = /restart.%(restart_id)s/present.html {
-      alias html/present.html;
+      alias  %(static_dir)s/static/present.html;
     }
   }
 }

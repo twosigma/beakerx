@@ -135,7 +135,6 @@ public class PluginServiceLocatorRest {
 
   private final String nginxTemplate;
   private final String ipythonTemplate;
-  private final String ipythonCmdBase;
   private final Map<String, PluginConfig> plugins = new HashMap<>();
   private Process nginxProc;
   private int portSearchStart;
@@ -225,15 +224,17 @@ public class PluginServiceLocatorRest {
       this.nginxEnv = new String[envList.size()];
       envList.toArray(this.nginxEnv);
     }
+  }
 
-    // Should pass pluginArgs too XXX.
-    String cmdBase = (this.pluginLocations.containsKey("IPython") ?
-                      this.pluginLocations.get("IPython") : (this.pluginDir + "/ipythonPlugins/ipython"))
-      + "/ipythonPlugin";
-    if (windows()) {
-      cmdBase = "python " + cmdBase;
-    }
-    this.ipythonCmdBase = cmdBase;
+  private String pythonBaseCommand(String pluginId, String command) {
+      // Should pass pluginArgs too XXX?
+      String base = this.pluginLocations.containsKey(pluginId) ?
+	  this.pluginLocations.get(pluginId) : this.pluginDir;
+      base += "/" + command;
+      if (windows()) {
+        base = "python " + base;
+      }
+      return base;
   }
 
   private boolean macosx() {
@@ -338,7 +339,7 @@ public class PluginServiceLocatorRest {
       this.plugins.put(pluginId, pConfig);
 
       if (nginxRules.startsWith("ipython")) {
-        generateIPythonConfig(pluginId, port, password);
+        generateIPythonConfig(pluginId, port, password, command);
       }
 
       // reload nginx config
@@ -543,10 +544,11 @@ public class PluginServiceLocatorRest {
     }
   }
 
-  private String hashIPythonPassword(String password)
+  private String hashIPythonPassword(String password, String pluginId, String command)
     throws IOException
   {
-    Process proc = Runtime.getRuntime().exec(this.ipythonCmdBase + " --hash");
+    String cmdBase = pythonBaseCommand(pluginId, command);
+    Process proc = Runtime.getRuntime().exec(cmdBase + " --hash");
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
@@ -562,14 +564,15 @@ public class PluginServiceLocatorRest {
     return hash;
   }
 
-  private void generateIPythonConfig(String pluginId, int port, String password)
+  private void generateIPythonConfig(String pluginId, int port, String password, String command)
     throws IOException, InterruptedException
   {
     // Can probably determine exactly what is needed and then just
     // make the files ourselves but this is a safe way to get started.
-    String cmd = this.ipythonCmdBase + " --profile " + this.nginxServDir + " " + pluginId;
+    String cmd = pythonBaseCommand(pluginId, command) + " --profile " +
+        this.nginxServDir + " " + pluginId;
     Runtime.getRuntime().exec(cmd).waitFor();
-    String hash = hashIPythonPassword(password);
+    String hash = hashIPythonPassword(password, pluginId, command);
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));
     config = config.replace("%(hash)s", hash);
@@ -651,8 +654,8 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
     nginxConfig = nginxConfig.replace("%(urlhash)s", urlHash);
-    nginxConfig = nginxConfig.replace("%(static_dir)s", this.nginxStaticDir);
-    nginxConfig = nginxConfig.replace("%(nginx_dir)s", this.nginxServDir);
+    nginxConfig = nginxConfig.replace("%(static_dir)s", this.nginxStaticDir.replaceAll("\\\\", "/"));
+    nginxConfig = nginxConfig.replace("%(nginx_dir)s", this.nginxServDir.replaceAll("\\\\", "/"));
     java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
     writePrivateFile(targetFile, nginxConfig);
     return restartId;
@@ -678,7 +681,8 @@ public class PluginServiceLocatorRest {
   @GET
   @Path("getIPythonVersion")
   @Produces(MediaType.APPLICATION_JSON)
-  public String getIPythonVersion()
+  public String getIPythonVersion(@QueryParam("pluginId") String pluginId,
+                                  @QueryParam("command") String command)
       throws IOException
   {
     Process proc;
@@ -687,7 +691,7 @@ public class PluginServiceLocatorRest {
       String cmd = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
       proc = Runtime.getRuntime().exec(cmd);
     } else {
-      proc = Runtime.getRuntime().exec(this.ipythonCmdBase + " --version");
+      proc = Runtime.getRuntime().exec(pythonBaseCommand(pluginId, command) + " --version");
     }
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-version", null, null).start();

@@ -18,17 +18,17 @@ import os
 import sys
 import subprocess
 
-backend = '' # XXX or whatever you gave to 'conda create'
-backend = backend.strip()
-if backend == '':
-    backend = "deactivate"
-else:
-    backend = "activate " + backend
+#backend = '' # XXX or whatever you gave to 'conda create'
+#backend = backend.strip()
+#if backend == '':
+#    backend = "deactivate"
+#else:
+#    backend = "activate " + backend
 
-p = subprocess.Popen(["sh", "-c", "source " + backend + ' ; echo $PATH'], stdout=subprocess.PIPE)
-out, err = p.communicate()
+#p = subprocess.Popen(["sh", "-c", "source " + backend + ' ; echo $PATH'], stdout=subprocess.PIPE)
+#out, err = p.communicate()
 
-os.environ["PATH"] = out.strip()
+#os.environ["PATH"] = out.strip()
 
 if len(sys.argv) > 1:
     arg1 = sys.argv[1]
@@ -53,4 +53,4 @@ os.environ["PYTHONPATH"] = plugin_dir + old_path
 
 os.execlp("ipython", "ipython", "notebook",
           "--ipython-dir=" + os.environ["beaker_tmp_dir"],
-          "--profile", "beaker_backend_IPython")
+          "--profile", "beaker_backend_Python3")

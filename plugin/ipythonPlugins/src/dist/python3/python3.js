@@ -21,13 +21,12 @@
 define(function(require, exports, module) {
   'use strict';
 
-  var PLUGIN_NAME = "IPython";
-  var COMMAND = "ipythonPlugins/ipython/ipythonPlugin";
+  var PLUGIN_NAME = "Python3";
+  var COMMAND = "ipythonPlugins/python3/python3Plugin";
   var kernels = {};
   var _theCancelFunction = null;
   var serviceBase = null;
   var ipyVersion1 = false;
-  var myPython = null;
   var now = function() {
     return new Date().getTime();
   };
@@ -51,7 +50,7 @@ define(function(require, exports, module) {
         return;
       }
       if (_.isEmpty(shellID)) {
-        shellID = myPython.utils.uuid();
+        shellID = IPython.utils.uuid();
       }
 
       var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
@@ -60,7 +59,7 @@ define(function(require, exports, module) {
           bkHelper.httpPost(base + "/login?next=%2E", {password: result})
             .success(function(result) {
               if (ipyVersion1) {
-                self.kernel = new myPython.Kernel(base + "/kernels/");
+                self.kernel = new IPython.Kernel(base + "/kernels/");
                 kernels[shellID] = self.kernel;
                 self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
               } else {
@@ -78,13 +77,13 @@ define(function(require, exports, module) {
                   data: JSON.stringify(model),
                   dataType : "json",
                   success : function (data, status, xhr) {
-                    self.kernel = new myPython.Kernel(base + "/api/kernels");
+                    self.kernel = new IPython.Kernel(base + "/api/kernels");
                     kernels[shellID] = self.kernel;
                     // the data.id is the session id but it is not used yet
                     self.kernel._kernel_started({id: data.kernel.id});
                   }
                 };
-                var url = myPython.utils.url_join_encode(serviceBase, 'api/sessions/');
+                var url = IPython.utils.url_join_encode(serviceBase, 'api/sessions/');
                 $.ajax(url, ajaxsettings);
               }
             });
@@ -173,7 +172,7 @@ define(function(require, exports, module) {
           msg = msg.content;
         }
         var result = _(msg.payload).map(function(payload) {
-          return myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(payload.text));
+          return IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(payload.text));
         }).join("");
         if (!_.isEmpty(result)) {
           setOutputResult("<pre>" + result + "</pre>");
@@ -197,7 +196,7 @@ define(function(require, exports, module) {
         modelOutput.outputArrived = true;
         if (type === "pyerr") {
           var trace = _.reduce(content.traceback, function(memo, line) {
-            return  memo + "<br>" + myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(line));
+            return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
           }, content.evalue);
           modelOutput.result = {
             type: "BeakerDisplay",
@@ -212,7 +211,7 @@ define(function(require, exports, module) {
           appendToResult("");
         } else {
           var elem = $(document.createElement("div"));
-          var oa = new myPython.OutputArea(elem);
+          var oa = new IPython.OutputArea(elem);
           // twiddle the mime types? XXX
           if (ipyVersion1) {
             oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
@@ -271,7 +270,6 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
-      myPython = ipyVersion1 ? IPython1 : IPython;
       bkHelper.locatePluginService(PLUGIN_NAME, {
           command: COMMAND,
           nginxRules: ipyVersion1 ? "ipython1" : "ipython2",

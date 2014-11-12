@@ -108,6 +108,10 @@ if (hasProperty('includeDepsInJar')) {
   build.dependsOn jar
   jar {
     // need to remove META-INF/*.SF to use this.
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    from {
+       configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+      exclude "META-INF/*.SF"
+    }
   }
 }

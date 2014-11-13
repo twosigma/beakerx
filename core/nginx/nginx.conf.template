@@ -35,7 +35,8 @@ http {
   scgi_temp_path          "client_temp";
 
   server {
-
+    autoindex off;
+    
     %(listen_section)s
 
     # redirect server error pages to the static page /50x.html and serve them directly from static html directory
@@ -78,12 +79,9 @@ http {
       proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
       proxy_set_header Authorization "Basic %(auth)s";
     }
-    # this one should not be needed XXX
-    #location = /%(urlhash)s/beaker/ {
-    #  proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/getMainPage;
-    #  proxy_set_header Authorization "Basic %(auth)s";
-    #  %(auth_cookie_rule)s
-    #}
+    location = /%(urlhash)s/beaker/ {
+      return 301 %(start_page)s;
+    }
 
     # this serves the actual (static) content
     location /%(urlhash)s/beaker/ {

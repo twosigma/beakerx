@@ -634,11 +634,11 @@ public class PluginServiceLocatorRest {
       listenSection += "ssl_certificate " + this.nginxServDir + "/ssl_cert.pem;\n";
       listenSection += "ssl_certificate_key " + this.nginxServDir + "/ssl_cert.pem;\n";
       authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
-      startPage = "login/login.html";
+      startPage = "/login/login.html";
     } else {
       listenSection = "listen 127.0.0.1:" + this.servPort + ";\n";
       authCookieRule = "";
-      startPage = "beaker/";
+      startPage = "/beaker/";
     }
     nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
     nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);

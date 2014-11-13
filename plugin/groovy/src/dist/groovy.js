@@ -108,15 +108,16 @@ define(function(require, exports, module) {
           }).done(function (ret) {
             console.log("done cancelExecution",ret);
           });
-          deferred.reject("cancelled by user");
           progressObj.message = "cancelling...";
           modelOutput.result = progressObj;
+          console.log("cancelling");
         }
         var onUpdatableResultUpdate = function(update) {
           modelOutput.result = update;
           bkHelper.refreshRootScope();
         };
         var onEvalStatusUpdate = function(evaluation) {
+          console.log("onEvalStatusUpdate "+evaluation.status);
           modelOutput.result.status = evaluation.status;
           if (evaluation.status === "FINISHED") {
             cometdUtil.unsubscribe(evaluation.update_id);

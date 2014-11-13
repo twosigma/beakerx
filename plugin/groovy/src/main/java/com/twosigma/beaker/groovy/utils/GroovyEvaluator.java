@@ -69,6 +69,11 @@ public class GroovyEvaluator {
   }
 
   public void cancelExecution() {
+    System.out.println("cancelling");
+    myThreadGroup.interrupt();
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException e) { }
     myThreadGroup.interrupt();
   }
 
@@ -137,7 +142,7 @@ public class GroovyEvaluator {
           // check if we must create or update class loader
           if(updateLoader) {
             shell = null;
-	    updateLoader=false;
+            updateLoader=false;
           }
           
           // get next job descriptor
@@ -155,6 +160,7 @@ public class GroovyEvaluator {
           result = shell.evaluate(j.codeToBeExecuted);
           j.outputObject.finished(result);
         } catch(Exception e) {
+          System.out.println("got exception "+e.toString());
           if(j!=null && j.outputObject != null) {
             if (e instanceof InterruptedException || e instanceof InvocationTargetException) {
               j.outputObject.error("... cancelled!");

@@ -19,10 +19,15 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.HashMap;
+
 import com.google.common.collect.HashBiMap;
 import com.google.inject.Singleton;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.BayeuxServer.SubscriptionListener;
 import org.cometd.bayeux.server.LocalSession;
@@ -143,7 +148,8 @@ public class UpdateManager implements SubscriptionListener {
     }
     // now age objects
     long ctime =  System.currentTimeMillis() - 1000+60; // 1 minute
-    for (String id2 :  agingIdToObject.keySet()) {
+    Set<String> keys = new HashSet<String>(agingIdToObject.keySet());
+    for (String id2 :  keys) {
 	if( agingIdToObject.get(id2).time<ctime) {
 	    agingIdToObject.remove(id2);
 	}

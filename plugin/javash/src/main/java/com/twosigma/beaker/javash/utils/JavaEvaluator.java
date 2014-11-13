@@ -98,10 +98,11 @@ public class JavaEvaluator {
       imports = Arrays.asList(in.split("\\s+"));
 
     outDir = od;
-    if(outDir==null || outDir.isEmpty()) {
-      outDir = Files.createTempDirectory(FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir")),"javash"+shellId).toString();
-    } else {
+    if(outDir!=null && !outDir.isEmpty()) {
+	outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
       try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+    } else {
+      outDir = Files.createTempDirectory(FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir")),"javash"+shellId).toString();
     }
 
     String cpp = "";

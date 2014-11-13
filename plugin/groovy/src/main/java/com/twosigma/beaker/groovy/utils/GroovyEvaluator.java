@@ -88,6 +88,7 @@ public class GroovyEvaluator {
       imports = Arrays.asList(in.split("\\s+"));
     outDir = od;
     if(outDir!=null && !outDir.isEmpty()) {
+	outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
       try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     }
 

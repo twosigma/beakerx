@@ -18,13 +18,11 @@ package com.twosigma.beaker.autocomplete.groovy;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-
 import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
@@ -33,6 +31,7 @@ import com.twosigma.beaker.autocomplete.ClasspathScanner;
 public class GroovyAutocomplete {
 	AutocompleteRegistry registry;
 	private ClasspathScanner cps;
+	private List<String> imports;
 	
 	public GroovyAutocomplete(ClasspathScanner _cps) {
 	  this(_cps,GroovyCompletionTypes.NUM_TYPES);
@@ -58,6 +57,7 @@ public class GroovyAutocomplete {
 				registry.addCandidate(c);
 			}
 		}
+		imports = new ArrayList<String>();
 	}
 	
 	/*
@@ -71,6 +71,10 @@ public class GroovyAutocomplete {
 	  
 	}
 	
+	public void addImport(String imp) {
+	  imports.add(imp);
+	}	  
+
 	private void setup(AutocompleteRegistry r) {
 		AutocompleteCandidate c;
 		
@@ -247,12 +251,46 @@ public class GroovyAutocomplete {
 		moreSetup(cu);
 	}
 	
+	private void addDefaultImports(ClassUtils cu) {
+	  for(String imp : imports) {
+        // this imports using '*'
+        if(imp.endsWith(".*")) {
+            String st = imp.substring(0, imp.length()-2);
+            String [] txtv = st.split("\\.");
+            AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
+            registry.addCandidate(c);
+            List<String> cls = cps.getClasses(st);
+            if(cls!=null) {
+                c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
+                AutocompleteCandidate l = c.findLeaf();
+                for ( String s : cls) {
+                    l.addChildren(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
+                    registry.addCandidate(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
+                    cu.defineClassShortName(s, st+"."+s);
+                }
+                registry.addCandidate(c);
+            }
+        } else {
+          String [] txtv = imp.split("\\.");
+          AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv, txtv.length-1);
+          registry.addCandidate(c);
+          c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
+          registry.addCandidate(c);
+          c = new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, txtv[txtv.length-1]);
+          registry.addCandidate(c);
+          cu.defineClassShortName(txtv[txtv.length-1], imp);
+        }
+      }
+	}
+	
 	public List<String> doAutocomplete(String txt, int cur) {
 		ClassUtils cu = new ClassUtils();
 		setup(cu);
 		registry.clearForType(GroovyCompletionTypes.CUSTOM_TYPE);
 		registry.clearForType(GroovyCompletionTypes.FIELD);
 		registry.clearForType(GroovyCompletionTypes.NAME);
+		addDefaultImports(cu);
+		
 		Lexer lexer = new GroovyLexer(new ANTLRInputStream(txt));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -295,6 +333,12 @@ public class GroovyAutocomplete {
 		  }
 		}
 		
+		if(txt.charAt(cur-1)=='.') {
+		  for(int idx=0; idx<ret.size(); idx++) {
+		    ret.set(idx, "."+ret.get(idx));
+		  }
+		}
+
 		// this shows the GUI
 		//t.inspect(parser);
 		return ret;

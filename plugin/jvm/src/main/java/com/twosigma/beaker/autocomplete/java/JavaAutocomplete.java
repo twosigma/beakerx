@@ -34,7 +34,8 @@ import com.twosigma.beaker.autocomplete.groovy.GroovyCompletionTypes;
 public class JavaAutocomplete {
 	AutocompleteRegistry registry;
 	private ClasspathScanner cps;
-	
+	private List<String> imports;
+
 	public JavaAutocomplete(ClasspathScanner _cps) {
 	  this(_cps,JavaCompletionTypes.NUM_TYPES);
 	}
@@ -59,6 +60,7 @@ public class JavaAutocomplete {
 				registry.addCandidate(c);
 			}
 		}
+		imports = new ArrayList<String>();
 	}
 	
 	/*
@@ -70,6 +72,42 @@ public class JavaAutocomplete {
 	
 	protected void moreSetup(ClassUtils cu) {    
 	  
+	}
+	
+	public void addImport(String imp) {
+	  imports.add(imp);
+	}     
+
+    private void addDefaultImports(ClassUtils cu) {
+      for(String imp : imports) {
+        // this imports using '*'
+        if(imp.endsWith(".*")) {
+            String st = imp.substring(0, imp.length()-2);
+            String [] txtv = st.split("\\.");
+            AutocompleteCandidate c = new AutocompleteCandidate(JavaCompletionTypes.PACKAGE_NAME, txtv);
+            registry.addCandidate(c);
+            List<String> cls = cps.getClasses(st);
+            if(cls!=null) {
+                c = new AutocompleteCandidate(JavaCompletionTypes.FQ_TYPE, txtv);
+                AutocompleteCandidate l = c.findLeaf();
+                for ( String s : cls) {
+                    l.addChildren(new AutocompleteCandidate(JavaCompletionTypes.CUSTOM_TYPE, s));
+                    registry.addCandidate(new AutocompleteCandidate(JavaCompletionTypes.CUSTOM_TYPE, s));
+                    cu.defineClassShortName(s, st+"."+s);
+                }
+                registry.addCandidate(c);
+            }
+          } else {
+          String [] txtv = imp.split("\\.");
+          AutocompleteCandidate c = new AutocompleteCandidate(JavaCompletionTypes.PACKAGE_NAME, txtv, txtv.length-1);
+          registry.addCandidate(c);
+          c = new AutocompleteCandidate(JavaCompletionTypes.FQ_TYPE, txtv);
+          registry.addCandidate(c);
+          c = new AutocompleteCandidate(JavaCompletionTypes.CUSTOM_TYPE, txtv[txtv.length-1]);
+          registry.addCandidate(c);
+          cu.defineClassShortName(txtv[txtv.length-1], imp);
+        }
+      }
 	}
 	
 	private void setup(AutocompleteRegistry r) {
@@ -264,6 +302,8 @@ public class JavaAutocomplete {
 		registry.clearForType(JavaCompletionTypes.CUSTOM_TYPE);
 		registry.clearForType(JavaCompletionTypes.FIELD);
 		registry.clearForType(JavaCompletionTypes.NAME);
+		addDefaultImports(cu);
+		
 		Lexer lexer = new JavaLexer(new ANTLRInputStream(txt));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -288,24 +328,29 @@ public class JavaAutocomplete {
 			q.addAll(extractor3.getQuery());
 		List<String> ret = registry.searchCandidates(q);
 
-	      if(ret.isEmpty()) {
-	          q.clear();
-	          for (int i=cur-1; i>=0; i--) {
-	            if(Character.isWhitespace(txt.charAt(i))) {
-	              String tx = txt.substring(i+1, cur).trim();
-	              if(!txt.isEmpty()) {
-    	              if(tx.contains(".")) {
-    	                q.add(cu.expandExpression(tx, registry));
-    	              } else {
-    	                q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
-    	              }
-    	              ret = registry.searchCandidates(q);
-  	              }
-	              break;
-	            }
-	          }
-	        }
+		if(ret.isEmpty()) {
+		  q.clear();
+		  for (int i=cur-1; i>=0; i--) {
+		    if(Character.isWhitespace(txt.charAt(i))) {
+		      String tx = txt.substring(i+1, cur).trim();
+		      if(!txt.isEmpty()) {
+		        if(tx.contains(".")) {
+		          q.add(cu.expandExpression(tx, registry));
+		        } else {
+		          q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
+		        }
+		        ret = registry.searchCandidates(q);
+		      }
+		      break;
+		    }
+		  }
+		}
 
+		if(txt.charAt(cur-1)=='.') {
+		  for(int idx=0; idx<ret.size(); idx++) {
+		    ret.set(idx, "."+ret.get(idx));
+		  }
+		}
 		// this shows the GUI
 		//t.inspect(parser);
 		return ret;

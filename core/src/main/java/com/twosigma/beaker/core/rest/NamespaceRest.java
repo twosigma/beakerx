@@ -18,6 +18,7 @@ package com.twosigma.beaker.core.rest;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.JsonParser.Feature;
 import java.io.IOException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,6 +37,7 @@ import javax.ws.rs.core.MediaType;
 public class NamespaceRest {
 
   private String legalNamePattern = "[a-zA-Z_][a-zA-Z0-9_]*";
+  private ObjectMapper mapper = new ObjectMapper().configure(Feature.ALLOW_NON_NUMERIC_NUMBERS, true);
 
   @Inject
   private NamespaceService namespaceService;
@@ -61,7 +63,7 @@ public class NamespaceRest {
       return("name is illegal for notebook namespace: \'" + name + "\'");
     }
     if (null != value) {
-      parsedValue = new ObjectMapper().readValue(value, Object.class);
+      parsedValue = mapper.readValue(value, Object.class);
       unset = false;
     }
     this.namespaceService.set(session, name, parsedValue, unset, sync);

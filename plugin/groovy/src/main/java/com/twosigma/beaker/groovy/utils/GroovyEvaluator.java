@@ -69,6 +69,11 @@ public class GroovyEvaluator {
   }
 
   public void cancelExecution() {
+    System.out.println("cancelling");
+    myThreadGroup.interrupt();
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException e) { }
     myThreadGroup.interrupt();
   }
 
@@ -88,6 +93,7 @@ public class GroovyEvaluator {
       imports = Arrays.asList(in.split("\\s+"));
     outDir = od;
     if(outDir!=null && !outDir.isEmpty()) {
+	outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
       try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     }
 
@@ -136,7 +142,7 @@ public class GroovyEvaluator {
           // check if we must create or update class loader
           if(updateLoader) {
             shell = null;
-	    updateLoader=false;
+            updateLoader=false;
           }
           
           // get next job descriptor
@@ -154,6 +160,7 @@ public class GroovyEvaluator {
           result = shell.evaluate(j.codeToBeExecuted);
           j.outputObject.finished(result);
         } catch(Exception e) {
+          System.out.println("got exception "+e.toString());
           if(j!=null && j.outputObject != null) {
             if (e instanceof InterruptedException || e instanceof InvocationTargetException) {
               j.outputObject.error("... cancelled!");

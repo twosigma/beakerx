@@ -18,10 +18,16 @@ package com.twosigma.beaker.jvm.updater;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.HashMap;
+
 import com.google.common.collect.HashBiMap;
 import com.google.inject.Singleton;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.BayeuxServer.SubscriptionListener;
 import org.cometd.bayeux.server.LocalSession;
@@ -33,16 +39,27 @@ public class UpdateManager implements SubscriptionListener {
 
   private static final Pattern PATTERN = Pattern.compile("^/object_update/((\\w|-)+)$");
 
+    private class agingData {
+	Object payload;
+	long time;
+	String id;
+	Updater updater;
+    };
+
   private final HashBiMap<String, Object> idToObject;
+  private final HashMap<String, agingData> agingIdToObject;
+  private final HashMap<String, Updater> updaters;
   private final LocalSession localSession;
   private final List<UpdaterFactory> updaterFactories;
 
   public UpdateManager(BayeuxServer bayeuxServer) {
     bayeuxServer.addListener(this);
-    this.localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
-    this.localSession.handshake();
-    this.idToObject = HashBiMap.<String, Object>create();
-    this.updaterFactories = new ArrayList<>();
+    localSession = bayeuxServer.newLocalSession(this.getClass().getCanonicalName());
+    localSession.handshake();
+    idToObject = HashBiMap.<String, Object>create();
+    agingIdToObject = new HashMap<String, agingData>();
+    updaters = new  HashMap<String, Updater>();
+    updaterFactories = new ArrayList<>();
   }
 
   public void addUpdaterFactory(UpdaterFactory updaterFactory) {
@@ -53,6 +70,17 @@ public class UpdateManager implements SubscriptionListener {
     if (idToObject.containsValue(obj)) {
       return idToObject.inverse().get(obj);
     }
+    // check if it is an 'old' object
+    for (agingData v : agingIdToObject.values()) {
+      if(v.payload.equals(obj)) {
+        agingIdToObject.remove(v.id);
+	idToObject.put(v.id, v.payload);
+	if(v.updater!=null)
+	  updaters.put(v.id, v.updater);
+        return v.id;
+      }
+    }
+
     String id = UUID.randomUUID().toString();
     this.idToObject.put(id, obj);
     return id;
@@ -74,8 +102,28 @@ public class UpdateManager implements SubscriptionListener {
     }
     if (this.idToObject.containsKey(id)) {
       Object obj = this.idToObject.get(id);
-      Updater updater = getUpdater(session, this.localSession, channel.getId(), obj);
+      Updater updater;
+      if ( updaters.containsKey(id))
+	updater = updaters.get(id);
+      else {
+	updater = getUpdater(session, this.localSession, channel.getId(), obj);
+	updaters.put(id,updater);
+      }
       updater.deliverUpdate(obj);
+    } else if(agingIdToObject.containsKey(id)) {
+	idToObject.put(id, agingIdToObject.get(id).payload);
+	if(agingIdToObject.get(id).updater != null)
+	    updaters.put(id, agingIdToObject.get(id).updater);
+	agingIdToObject.remove(id);
+	Object obj = this.idToObject.get(id);
+	Updater updater;
+	if ( updaters.containsKey(id))
+	  updater = updaters.get(id);
+	else {
+	  updater = getUpdater(session, this.localSession, channel.getId(), obj);
+	  updaters.put(id,updater);
+	}
+	updater.deliverUpdate(obj);
     } else {
       System.out.println("Client is trying to subscribe to nonexisting object " + id);
     }
@@ -87,7 +135,25 @@ public class UpdateManager implements SubscriptionListener {
     if (id == null) {
       return;
     }
-    this.idToObject.remove(id);
+
+    if(this.idToObject.containsKey(id)) {
+	agingData d = new agingData();
+	d.payload = idToObject.get(id);
+	d.id = id;
+	d.time = System.currentTimeMillis();
+	d.updater = updaters.get(id);
+	agingIdToObject.put(id,d);
+	idToObject.remove(id);
+	updaters.remove(id);
+    }
+    // now age objects
+    long ctime =  System.currentTimeMillis() - 1000+60; // 1 minute
+    Set<String> keys = new HashSet<String>(agingIdToObject.keySet());
+    for (String id2 :  keys) {
+	if( agingIdToObject.get(id2).time<ctime) {
+	    agingIdToObject.remove(id2);
+	}
+    }
   }
 
   private Updater getUpdater(ServerSession session, LocalSession localSession, String channelId, Object updatingObject) {

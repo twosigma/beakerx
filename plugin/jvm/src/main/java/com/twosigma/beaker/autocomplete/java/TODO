@@ -1,5 +1,3 @@
-Still missing completion for:
-* local method declaration
 
 The current implementation:
 * ignores the scope.

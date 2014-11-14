@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package com.twosigma.beaker.autocomplete.java;
 
 import java.util.ArrayList;
@@ -110,7 +126,7 @@ import com.twosigma.beaker.autocomplete.java.JavaParser.VariableDeclaratorsConte
 import com.twosigma.beaker.autocomplete.java.JavaParser.VariableInitializerContext;
 import com.twosigma.beaker.autocomplete.java.JavaParser.VariableModifierContext;
 
-public class AbstractListener implements JavaListener {
+public class JavaAbstractListener implements JavaListener {
 
 	protected List<AutocompleteCandidate> query;
 	
@@ -124,7 +140,7 @@ public class AbstractListener implements JavaListener {
 	
 	public List<AutocompleteCandidate> getQuery() { return query; }
 	
-	public AbstractListener() {
+	public JavaAbstractListener() {
 	}
 
 	@Override

@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package com.twosigma.beaker.autocomplete.java;
 
 import java.util.ArrayList;
@@ -13,13 +29,18 @@ import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
+import com.twosigma.beaker.autocomplete.groovy.GroovyCompletionTypes;
 
 public class JavaAutocomplete {
 	AutocompleteRegistry registry;
 	private ClasspathScanner cps;
 	
 	public JavaAutocomplete(ClasspathScanner _cps) {
-		registry = new AutocompleteRegistry(JavaCompletionTypes.NUM_TYPES);	
+	  this(_cps,JavaCompletionTypes.NUM_TYPES);
+	}
+	
+	public JavaAutocomplete(ClasspathScanner _cps, int num) {
+		registry = new AutocompleteRegistry(num);	
 		setup(registry);
 		cps = _cps;
 		
@@ -38,7 +59,17 @@ public class JavaAutocomplete {
 				registry.addCandidate(c);
 			}
 		}
-
+	}
+	
+	/*
+	 * These are meant to be extended by personalized plugin versions.
+	 */
+	protected void moreSetup(AutocompleteRegistry r) {
+	  
+	}
+	
+	protected void moreSetup(ClassUtils cu) {    
+	  
 	}
 	
 	private void setup(AutocompleteRegistry r) {
@@ -65,8 +96,13 @@ public class JavaAutocomplete {
 		r.addCandidate(c);
 		c = new AutocompleteCandidate(JavaCompletionTypes.TOPLEVEL, "protected");
 		r.addCandidate(c);
-		c = new AutocompleteCandidate(JavaCompletionTypes.TOPLEVEL, "static");
-		r.addCandidate(c);
+        c = new AutocompleteCandidate(JavaCompletionTypes.TOPLEVEL, "static");
+        r.addCandidate(c);
+
+        c = new AutocompleteCandidate(JavaCompletionTypes.CLASSLEVEL, "extends");
+        r.addCandidate(c);
+        c = new AutocompleteCandidate(JavaCompletionTypes.CLASSLEVEL, "implements");
+        r.addCandidate(c);
 
 		c = new AutocompleteCandidate(JavaCompletionTypes.BLOCKLEVEL, "if");
 		r.addCandidate(c);
@@ -117,6 +153,60 @@ public class JavaAutocomplete {
 		r.addCandidate(c);
 		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "double");
 		r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Boolean");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Byte");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Character");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Double");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Float");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Integer");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Long");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Math");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Number");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Object");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Package");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Process");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "ProcessBuilder");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Runtime");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "RuntimePermission");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "SecurityManager");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Short");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "StackTraceElement");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "StrictMath");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "String");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "StringBuffer");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "StringBuilder");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "System");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Thread");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "ThreadGroup");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Throwable");
+        r.addCandidate(c);
+		c = new AutocompleteCandidate(JavaCompletionTypes.TYPE, "Void");
+        r.addCandidate(c);		
 		
 		c = new AutocompleteCandidate(JavaCompletionTypes.MEMBERDELC, "public");
 		r.addCandidate(c);
@@ -130,11 +220,16 @@ public class JavaAutocomplete {
 		r.addCandidate(c);
 		c = new AutocompleteCandidate(JavaCompletionTypes.MEMBERDELC, "static");
 		r.addCandidate(c);
+
+		c = new AutocompleteCandidate(JavaCompletionTypes.NEW, "new");
+		r.addCandidate(c);
+		
+		moreSetup(r);
 	}
 		
 	private void setup(ClassUtils cu) {	
 		cu.defineClassShortName("Boolean", "java.lang.Boolean");
-		cu.defineClassShortName("Byte	", "java.lang.Byte");
+		cu.defineClassShortName("Byte", "java.lang.Byte");
 		cu.defineClassShortName("Character", "java.lang.Character");
 		cu.defineClassShortName("Double", "java.lang.Double");
 		cu.defineClassShortName("Float", "java.lang.Float");
@@ -160,6 +255,7 @@ public class JavaAutocomplete {
 		cu.defineClassShortName("ThreadGroup", "java.lang.ThreadGroup");
 		cu.defineClassShortName("Throwable", "java.lang.Throwable");
 		cu.defineClassShortName("Void", "java.lang.Void");
+		moreSetup(cu);
 	}
 	
 	public List<String> doAutocomplete(String txt, int cur) {
@@ -180,9 +276,9 @@ public class JavaAutocomplete {
 		ParseTreeWalker walker = new ParseTreeWalker();
 		List<AutocompleteCandidate> q = new ArrayList<AutocompleteCandidate>();
 					
-		ImportDeclarationCompletion extractor = new ImportDeclarationCompletion(txt,cur,registry,cps,cu);
-		NameBuilder extractor2 = new NameBuilder(registry,cu );
-		NodeCompletion extractor3 = new NodeCompletion(txt,cur, registry, cu);
+		JavaImportDeclarationCompletion extractor = new JavaImportDeclarationCompletion(txt,cur,registry,cps,cu);
+		JavaNameBuilder extractor2 = new JavaNameBuilder(registry,cu );
+		JavaNodeCompletion extractor3 = new JavaNodeCompletion(txt,cur, registry, cu);
 		walker.walk(extractor, t);
 		if(extractor.getQuery()!=null)
 			q.addAll(extractor.getQuery());
@@ -191,6 +287,24 @@ public class JavaAutocomplete {
 		if(extractor3.getQuery()!=null)
 			q.addAll(extractor3.getQuery());
 		List<String> ret = registry.searchCandidates(q);
+
+	      if(ret.isEmpty()) {
+	          q.clear();
+	          for (int i=cur-1; i>=0; i--) {
+	            if(Character.isWhitespace(txt.charAt(i))) {
+	              String tx = txt.substring(i+1, cur).trim();
+	              if(!txt.isEmpty()) {
+    	              if(tx.contains(".")) {
+    	                q.add(cu.expandExpression(tx, registry));
+    	              } else {
+    	                q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
+    	              }
+    	              ret = registry.searchCandidates(q);
+  	              }
+	              break;
+	            }
+	          }
+	        }
 
 		// this shows the GUI
 		//t.inspect(parser);

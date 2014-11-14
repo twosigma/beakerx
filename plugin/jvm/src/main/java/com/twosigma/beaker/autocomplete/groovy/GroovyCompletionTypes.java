@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.autocomplete.java;
+package com.twosigma.beaker.autocomplete.groovy;
 
-public class JavaCompletionTypes {
+public class GroovyCompletionTypes {
 	public static final int
 	PACKAGE_NAME=0,
 	TYPE=1,

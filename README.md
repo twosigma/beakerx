@@ -24,11 +24,13 @@ This page is for developers.  If you want to use or learn more about Beaker, see
 
 ![screenshots](http://twosigma.github.io/beaker-notebook/images/bk6.png)
 
-#Build and run instructions
+#Build, test, and run instructions
 
 [![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
 
 Developers, see the page for your platform for how to build from source: [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run), [Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run), [Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run)
+
+Run `test/runner` to run the end-to-end tests.
 
 ##Language support
 

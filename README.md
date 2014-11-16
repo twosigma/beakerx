@@ -30,7 +30,7 @@ This page is for developers.  If you want to use or learn more about Beaker, see
 
 Developers, see the page for your platform for how to build from source: [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run), [Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run), [Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run)
 
-Run `test/runner` to run the end-to-end tests.
+Run `cd test; ./runner` to run the end-to-end tests.
 
 ##Language support
 

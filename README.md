@@ -20,6 +20,10 @@ Beaker is a code notebook that allows you to analyze, visualize, and document da
 
 This page is for developers.  If you want to use or learn more about Beaker, see the [home page](http://beakernotebook.com).
 
+#Screenshots
+
+![screenshots](http://twosigma.github.io/beaker-notebook/images/bk6.png)
+
 #Build and run instructions
 
 [![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)

@@ -154,7 +154,6 @@ public class GroovyEvaluator {
           // check if we must create or update class loader
           if(updateLoader) {
             shell = null;
-            updateLoader=false;
           }
           
           // get next job descriptor
@@ -162,7 +161,10 @@ public class GroovyEvaluator {
           if(j==null)
             continue;
 
-          if (shell==null) newEvaluator();
+          if (shell==null) {
+            updateLoader=false;
+            newEvaluator();
+          }
         
           if(loader!=null)
             loader.clearCache();
@@ -171,8 +173,7 @@ public class GroovyEvaluator {
           Object result;
           result = shell.evaluate(j.codeToBeExecuted);
           j.outputObject.finished(result);
-        } catch(Exception e) {
-          System.out.println("got exception "+e.toString());
+        } catch(Throwable e) {
           if(j!=null && j.outputObject != null) {
             if (e instanceof InterruptedException || e instanceof InvocationTargetException) {
               j.outputObject.error("... cancelled!");

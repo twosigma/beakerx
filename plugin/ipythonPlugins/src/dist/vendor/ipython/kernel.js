@@ -371,7 +371,12 @@ var IPython = (function (IPython) {
                 cache : false,
                 type : "DELETE"
             };
-            $.ajax(this.kernel_url, settings);
+            var url = this.kernel_url;
+            var slash = url.lastIndexOf("/");
+            if (slash >= 0) {
+              url = url.substring(0, slash + 1) + "kill/" + url.substring(slash + 1, url.length);
+            }
+            $.ajax(url, settings);
         };
     };
 

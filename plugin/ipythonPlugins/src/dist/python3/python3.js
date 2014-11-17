@@ -21,8 +21,8 @@
 define(function(require, exports, module) {
   'use strict';
 
-  var PLUGIN_NAME = "IPython";
-  var COMMAND = "ipythonPlugins/ipython/ipythonPlugin";
+  var PLUGIN_NAME = "Python3";
+  var COMMAND = "ipythonPlugins/python3/python3Plugin";
   var kernels = {};
   var _theCancelFunction = null;
   var serviceBase = null;
@@ -53,10 +53,10 @@ define(function(require, exports, module) {
         shellID = IPython.utils.uuid();
       }
 
-      var base = _.string.startsWith(serviceBase, "/") ? serviceBase.slice(1) : serviceBase;
+      var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
       bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
         .success(function(result) {
-          bkHelper.httpPost(base + "/login", {password: result})
+          bkHelper.httpPost(base + "/login?next=%2E", {password: result})
             .success(function(result) {
               if (ipyVersion1) {
                 self.kernel = new IPython.Kernel(base + "/kernels/");
@@ -297,8 +297,22 @@ define(function(require, exports, module) {
             self.settings = settings;
             var finish = function () {
               if (bkHelper.hasSessionId()) {
-                var initCode = "import beaker\n" +
-                  "beaker.set_session('" + bkHelper.getSessionId() + "')\n";
+		  var initCode = ("%matplotlib inline\n" +
+                                  "import numpy\n" +
+                                  "import matplotlib\n" +
+                                  "from matplotlib import pylab, mlab, pyplot\n" +
+                                  "np = numpy\n" +
+                                  "plt = pyplot\n" +
+                                  "from IPython.display import display\n" +
+                                  "from IPython.core.pylabtools import figsize, getfigs\n" +
+                                  "from pylab import *\n" +
+                                  "from numpy import *\n" +
+                                  "try:\n"+
+				  "    import beaker_runtime3 as beaker_runtime\n" +
+				  "except ImportError:\n" +
+				  "    import beaker_runtime as beaker_runtime\n" +
+                                  "beaker = beaker_runtime.Beaker()\n" +
+				  "beaker.set_session('" + bkHelper.getSessionId() + "')\n");
                 self.evaluate(initCode, {}).then(function () {
                   if (doneCB) {
                     doneCB(self);
@@ -334,13 +348,15 @@ define(function(require, exports, module) {
         shellReadyDeferred.resolve(IPythonShell);
       }).error(function() {
         console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+        shellReadyDeferred.reject("failed to locate plugin service");
       });
     };
     var onFail = function() {
       console.log("failed to load ipython libs");
     };
 
-    bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonVersion")
+    bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonVersion",
+                     {pluginId: PLUGIN_NAME, command: COMMAND})
       .success(function(result) {
         var backendVersion = result;
         if (backendVersion[0] == "1") {
@@ -377,7 +393,8 @@ define(function(require, exports, module) {
           return deferred.promise;
         }
       };
-    });
+    },
+    function(err) { return err; });
   };
 
   exports.name = PLUGIN_NAME;

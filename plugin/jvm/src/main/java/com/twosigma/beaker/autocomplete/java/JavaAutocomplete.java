@@ -335,7 +335,7 @@ public class JavaAutocomplete {
 		      String tx = txt.substring(i+1, cur).trim();
 		      if(!txt.isEmpty()) {
 		        if(tx.contains(".")) {
-		          q.add(cu.expandExpression(tx, registry));
+		          q.add(cu.expandExpression(tx, registry, cu.DO_ALL));
 		        } else {
 		          q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
 		        }

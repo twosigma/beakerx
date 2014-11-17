@@ -81,7 +81,22 @@ public class GroovyEvaluator {
 
   public void resetEnvironment() {
     cancelExecution();
+
+    String cpp = "";
+    for(String pt : classPath) {
+      cpp += pt;
+      cpp += File.pathSeparator;
+    }
+    cpp += File.pathSeparator;
+    cpp += System.getProperty("java.class.path");
+    cps = new ClasspathScanner(cpp);
+    gac = new GroovyAutocomplete(cps);
+    
+    for(String st : imports)
+      gac.addImport(st);
+
     updateLoader=true;
+    syncObject.release();
   } 
 
   public void exit() {
@@ -100,25 +115,10 @@ public class GroovyEvaluator {
       imports = Arrays.asList(in.split("\\s+"));
     outDir = od;
     if(outDir!=null && !outDir.isEmpty()) {
-	outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
+      outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
       try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     }
-
-    String cpp = "";
-    for(String pt : classPath) {
-      cpp += pt;
-      cpp += File.pathSeparator;
-    }
-    cpp += File.pathSeparator;
-    cpp += System.getProperty("java.class.path");
-    cps = new ClasspathScanner(cpp);
-    gac = new GroovyAutocomplete(cps);
-    
-    for(String st : imports)
-      gac.addImport(st);
-
-    updateLoader=true;
-    syncObject.release();
+    resetEnvironment();
   }
   
   public void evaluate(SimpleEvaluationObject seo, String code) {

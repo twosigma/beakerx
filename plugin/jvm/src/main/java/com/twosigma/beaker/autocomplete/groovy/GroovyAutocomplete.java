@@ -18,11 +18,13 @@ package com.twosigma.beaker.autocomplete.groovy;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
 import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
@@ -80,6 +82,7 @@ public class GroovyAutocomplete {
 		
 		c = new AutocompleteCandidate(GroovyCompletionTypes.INITIAL, "package");
 		r.addCandidate(c);
+		
 		c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "import");
 		r.addCandidate(c);
 		c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "class");
@@ -88,46 +91,47 @@ public class GroovyAutocomplete {
 		r.addCandidate(c);
 		c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "interface");
 		r.addCandidate(c);
+		c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "def");
+		r.addCandidate(c);
+        c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "assert");
+        r.addCandidate(c);
+        c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "if");
+        r.addCandidate(c);
+        c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "switch");
+        r.addCandidate(c);
+        c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "while");
+        r.addCandidate(c);
+        c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "for");
+        r.addCandidate(c);
+        c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "try");
+        r.addCandidate(c);
+        c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "extends");
+        r.addCandidate(c);
+        c = new AutocompleteCandidate(GroovyCompletionTypes.TOPLEVEL, "implements");
+        r.addCandidate(c);
 
         c = new AutocompleteCandidate(GroovyCompletionTypes.CLASSLEVEL, "extends");
         r.addCandidate(c);
         c = new AutocompleteCandidate(GroovyCompletionTypes.CLASSLEVEL, "implements");
         r.addCandidate(c);
-
         
-        
-        
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "if");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "for");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "while");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "do");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "else");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "try");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "catch");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "switch");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "return");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "throw");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "break");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "continue");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "synchronized");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "finally");
-//		r.addCandidate(c);
-//		c = new AutocompleteCandidate(GroovyCompletionTypes.BLOCKLEVEL, "default");
-//		r.addCandidate(c);
-
+		c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "any");
+		r.addCandidate(c);
+		c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "collect");
+		r.addCandidate(c);
+		c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "each");
+		r.addCandidate(c);
+		c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "eachWithIndex");
+		r.addCandidate(c);
+		c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "every");
+		r.addCandidate(c);
+		c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "find");
+		r.addCandidate(c);
+		c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "findAll");
+		r.addCandidate(c);
+		c = new AutocompleteCandidate(GroovyCompletionTypes.STDFUNCS, "findIndexOf");
+		r.addCandidate(c);
+		
 		c = new AutocompleteCandidate(GroovyCompletionTypes.TYPE, "int");
 		r.addCandidate(c);
 		c = new AutocompleteCandidate(GroovyCompletionTypes.TYPE, "float");
@@ -322,7 +326,7 @@ public class GroovyAutocomplete {
               String tx = txt.substring(i+1, cur).trim();
               if(!txt.isEmpty()) {
                   if(tx.contains(".")) {
-                    q.add(cu.expandExpression(tx, registry));
+                    q.add(cu.expandExpression(tx, registry, cu.DO_ALL));
                   } else {
                     q.add(new AutocompleteCandidate(GroovyCompletionTypes.NAME, tx));
                   }
@@ -340,7 +344,8 @@ public class GroovyAutocomplete {
 		}
 
 		// this shows the GUI
-		//t.inspect(parser);
+		if(GroovyCompletionTypes.debug)
+		  t.inspect(parser);
 		return ret;
 	}
 	

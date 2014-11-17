@@ -16,15 +16,20 @@
 
 package com.twosigma.beaker.autocomplete.groovy;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+
 import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
 import com.twosigma.beaker.autocomplete.groovy.GroovyParser.AssignmentExpressionContext;
+import com.twosigma.beaker.autocomplete.groovy.GroovyParser.ClassNameExpressionContext;
 import com.twosigma.beaker.autocomplete.groovy.GroovyParser.DeclarationRuleContext;
 import com.twosigma.beaker.autocomplete.groovy.GroovyParser.ExpressionContext;
+import com.twosigma.beaker.autocomplete.groovy.GroovyParser.ListConstructorContext;
+import com.twosigma.beaker.autocomplete.groovy.GroovyParser.MapConstructorContext;
+import com.twosigma.beaker.autocomplete.groovy.GroovyParser.NewInstanceRuleContext;
 import com.twosigma.beaker.autocomplete.groovy.GroovyParser.PathExpressionContext;
 import com.twosigma.beaker.autocomplete.groovy.GroovyParser.TypeDeclarationContext;
-import com.twosigma.beaker.autocomplete.java.JavaCompletionTypes;
 
 public class GroovyNameBuilder extends GroovyAbstractListener{
   private AutocompleteRegistry registry;
@@ -44,24 +49,40 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
       if(!ctx.getChild(1).getText().contains(".")) {
         if(ctx.getChild(3).getChild(0) instanceof PathExpressionContext) {
           String typpen = ctx.getChild(3).getChild(0).getText().trim();
-          AutocompleteCandidate c = new AutocompleteCandidate(JavaCompletionTypes.NAME, ctx.getChild(1).getText());
+          AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(1).getText());
           registry.addCandidate(c);
-          //System.out.println("define variable of type "+ctx.getChild(1).getText()+" "+typpen);
+          if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(1).getText()+" "+typpen);
           if(classUtils.getVariableType(typpen)!=null) {
-              classUtils.defineVariable(ctx.getChild(1).getText(), classUtils.getVariableType(typpen));
+            classUtils.defineVariable(ctx.getChild(1).getText(), classUtils.getVariableType(typpen));
+          }
+        } else if(ctx.getChild(3).getChild(0) instanceof NewInstanceRuleContext) {
+          ParseTree t = findChildrenByType(ctx.getChild(3).getChild(0),ClassNameExpressionContext.class);
+          if(t!=null) {
+            String ttype = t.getText().trim();
+            AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(1).getText());
+            registry.addCandidate(c);
+            if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(1).getText()+" "+ttype);
+            if(ttype!=null)
+              classUtils.defineVariable(ctx.getChild(1).getText(), ttype);
           }
         } else {
-          //System.out.println(((ExpressionContext)ctx.getChild(3)).getStart().getType());
-          
+          if(GroovyCompletionTypes.debug) System.out.println(((ExpressionContext)ctx.getChild(3)).getStart().getType());
+
           String typpen = null;
-          switch(((ExpressionContext)ctx.getChild(3)).getStart().getType()) {
-          case GroovyLexer.STRING: typpen="String"; break;
-          case GroovyLexer.INTEGER: typpen="Integer"; break;
-          case GroovyLexer.DECIMAL: typpen="Double"; break;
+          if(ctx.getChild(3) instanceof ListConstructorContext)
+            typpen="Array";
+          else if(ctx.getChild(3) instanceof MapConstructorContext)
+            typpen="Map";
+          else {
+            switch(((ExpressionContext)ctx.getChild(3)).getStart().getType()) {
+            case GroovyLexer.STRING: typpen="String"; break;
+            case GroovyLexer.INTEGER: typpen="Integer"; break;
+            case GroovyLexer.DECIMAL: typpen="Double"; break;
+            }
           }
-          AutocompleteCandidate c = new AutocompleteCandidate(JavaCompletionTypes.NAME, ctx.getChild(1).getText());
+          AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(1).getText());
           registry.addCandidate(c);
-          //System.out.println("define variable of type "+ctx.getChild(1).getText()+" "+typpen);
+          if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(1).getText()+" "+typpen);
           if(typpen!=null)
             classUtils.defineVariable(ctx.getChild(1).getText(), typpen);
         }
@@ -77,14 +98,24 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
       
       if(ctx.getChild(2).getChild(0) instanceof PathExpressionContext) {
         String typpen = ctx.getChild(2).getChild(0).getText().trim();
-        AutocompleteCandidate c = new AutocompleteCandidate(JavaCompletionTypes.NAME, ctx.getChild(0).getText());
+        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
         registry.addCandidate(c);
-        //System.out.println("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
+        if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
         if(classUtils.getVariableType(typpen)!=null) {
             classUtils.defineVariable(ctx.getChild(0).getText(), classUtils.getVariableType(typpen));
         }
+      } else if(ctx.getChild(2).getChild(0) instanceof NewInstanceRuleContext) {
+        ParseTree t = findChildrenByType(ctx.getChild(2).getChild(0),ClassNameExpressionContext.class);
+        if(t!=null) {
+          String ttype = t.getText().trim();
+          AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
+          registry.addCandidate(c);
+          if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(0).getText()+" "+ttype);
+          if(ttype!=null)
+            classUtils.defineVariable(ctx.getChild(0).getText(), ttype);
+        }
       } else {
-        //System.out.println(((ExpressionContext)ctx.getChild(2)).getStart().getType());
+        if(GroovyCompletionTypes.debug) System.out.println(((ExpressionContext)ctx.getChild(2)).getStart().getType());
         
         String typpen = null;
         switch(((ExpressionContext)ctx.getChild(2)).getStart().getType()) {
@@ -92,9 +123,9 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
         case GroovyLexer.INTEGER: typpen="Integer"; break;
         case GroovyLexer.DECIMAL: typpen="Double"; break;
         }
-        AutocompleteCandidate c = new AutocompleteCandidate(JavaCompletionTypes.NAME, ctx.getChild(0).getText());
+        AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, ctx.getChild(0).getText());
         registry.addCandidate(c);
-        //System.out.println("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
+        if(GroovyCompletionTypes.debug) System.out.println("define variable of type "+ctx.getChild(0).getText()+" "+typpen);
         if(typpen!=null)
           classUtils.defineVariable(ctx.getChild(0).getText(), typpen);
       }
@@ -102,5 +133,16 @@ public class GroovyNameBuilder extends GroovyAbstractListener{
     }
 
   }
+  
+  private ParseTree findChildrenByType(ParseTree parseTree, Class<?> classtype) {
+    for(int i=0; i<parseTree.getChildCount(); i++) {
+      ParseTree chl = parseTree.getChild(i);
+      if(chl.getClass().equals(classtype)) {
+        return chl;
+      }
+    }
+    return null;
+  }
+
   
 }

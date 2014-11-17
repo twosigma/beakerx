@@ -23,7 +23,7 @@ public class GrammarPredicates {
 
   public static boolean isClassName(TokenStream _input) {
     try {
-      int i=0;
+      int i=1;
       Token token = _input.LT(i);
       while (token!=null && i < _input.size() && _input.LT(i+1).getType() == GroovyParser.DOT) {
         i = i + 2;
@@ -31,7 +31,6 @@ public class GrammarPredicates {
       }
       if(token==null)
         return false;
-      System.out.println("token is "+token.getText());
       // TODO here
       return Character.isUpperCase(Character.codePointAt(token.getText(), 0));
     } catch(Exception e) {

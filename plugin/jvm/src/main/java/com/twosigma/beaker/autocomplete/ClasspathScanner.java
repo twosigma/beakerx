@@ -55,7 +55,7 @@ public class ClasspathScanner {
 		for (String path : paths) {
 			file = new File(path);
 			if (file.exists()) {
-				findClasses(file, file, false);
+				findClasses(file, file, true);
 			}
 		}
 	}

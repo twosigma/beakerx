@@ -8,4 +8,5 @@ key2 = "pippero"
 field = 34.6
 run(key,field)
 key2.toUpperCase()
-
+timesTwo = {x -> x*2}
+timesTwo(5)

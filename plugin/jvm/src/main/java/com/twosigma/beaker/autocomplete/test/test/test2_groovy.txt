@@ -1,0 +1,31 @@
+SRCFIL: test/groovy/test_groovy3.groovy
+CURSOR: 2@18
+EXPECT: Plot
+
+SRCFIL: test/groovy/test_groovy3.groovy
+CURSOR: 2@24
+EXPECT: title
+
+SRCFIL: test/groovy/test_groovy3.groovy
+CURSOR: 4@15
+EXPECT: collect
+
+SRCFIL: test/groovy/test_groovy3.groovy
+CURSOR: 7@4
+EXPECT: plot
+
+SRCFIL: test/groovy/test_groovy3.groovy
+CURSOR: 7@16
+EXPECT: Points
+
+SRCFIL: test/groovy/test_groovy3.groovy
+CURSOR: 12@2
+EXPECT: def
+
+SRCFIL: test/groovy/test_groovy3.groovy
+CURSOR: 19@3
+EXPECT: assert
+
+SRCFIL: test/groovy/test_groovy3.groovy
+CURSOR: 10@24
+EXPECT: y1 y2 y3 y4

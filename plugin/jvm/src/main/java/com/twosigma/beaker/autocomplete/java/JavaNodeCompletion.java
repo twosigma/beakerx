@@ -73,7 +73,7 @@ public class JavaNodeCompletion extends JavaAbstractListener {
 				} else {
 					BlockStatementContext bs = (BlockStatementContext)arg0.getParent();
 					if(bs.getChildCount()>1) {
-						addQuery(classUtils.expandExpression(bs.getText(), registry));
+						addQuery(classUtils.expandExpression(bs.getText(), registry, classUtils.DO_ALL));
 					}
 				}
 			}
@@ -81,7 +81,7 @@ public class JavaNodeCompletion extends JavaAbstractListener {
 				// we are the rightmost child of the expression
 				ParseTree chld = arg0.getParent().getChild(arg0.getParent().getChildCount()-1);
 				if(!chld.equals(arg0)) return;
-				addQuery(classUtils.expandExpression(arg0.getParent().getText(), registry));
+				addQuery(classUtils.expandExpression(arg0.getParent().getText(), registry, classUtils.DO_NON_STATIC));
 			}
             else if(arg0.getParent() instanceof TypeDeclarationContext &&
                 arg0.getParent().getParent()!=null &&
@@ -172,7 +172,7 @@ public class JavaNodeCompletion extends JavaAbstractListener {
 				}
 			} else {
 				//System.out.println("EXP: "+ctx.getStart().getStartIndex()+" "+ctx.getStart().getStopIndex()+" "+ctx.getText());
-				addQuery(classUtils.expandExpression(ctx.getText(), registry));
+				addQuery(classUtils.expandExpression(ctx.getText(), registry, classUtils.DO_ALL));
 			}
 		}
 	}

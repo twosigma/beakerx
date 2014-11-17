@@ -57,7 +57,7 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
         String st = ctx.getText();
         if(st.startsWith("import"))
           st = st.substring(6).trim();
-        //System.out.println("wants next package name for "+st);
+        if(GroovyCompletionTypes.debug) System.out.println("wants next package name for "+st);
         String [] txtv = (st+"X").split("\\.");
         txtv[txtv.length-1] = "";
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
@@ -69,7 +69,7 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
         String st = ctx.getText();
         if(st.startsWith("import"))
           st = st.substring(6).trim();
-        //System.out.println("wants to finish package name for "+st);
+        if(GroovyCompletionTypes.debug) System.out.println("wants to finish package name for "+st);
         String [] txtv = st.split("\\.");
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
         addQuery(c);
@@ -81,12 +81,13 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
       String st = ctx.getText();
       if(st.startsWith("import"))
         st = st.substring(6).trim();
-      //System.out.println("adding import for "+st);
+      if(GroovyCompletionTypes.debug) System.out.println("adding import for "+st);
       // is this imports using '*' ?
       if (st.endsWith(".*")) {
         String [] txtv = st.split("\\.");
         AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.PACKAGE_NAME, txtv);
         registry.addCandidate(c);
+        st = st.substring(0,st.length()-2);
         List<String> cls = cps.getClasses(st);
         if(cls!=null) {
           c = new AutocompleteCandidate(GroovyCompletionTypes.FQ_TYPE, txtv);
@@ -95,6 +96,7 @@ public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
             l.addChildren(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
             registry.addCandidate(new AutocompleteCandidate(GroovyCompletionTypes.CUSTOM_TYPE, s));
             classUtils.defineClassShortName(s, st+"."+s);
+            if(GroovyCompletionTypes.debug)  System.out.println("define "+s+" "+st+"."+s);
           }
           registry.addCandidate(c);
         }

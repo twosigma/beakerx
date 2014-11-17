@@ -20,44 +20,29 @@ Beaker is a code notebook that allows you to analyze, visualize, and document da
 
 This page is for developers.  If you want to use or learn more about Beaker, see the [home page](http://beakernotebook.com).
 
-Beaker is a work very much in progress. We find it useful and we hope you do too, but there are bugs and the user interface and APIs are going to change. We love to improve it and we look forward to hearing your feedback.
+#Screenshots
 
-![screenshots](http://twosigma.github.io/beaker-notebook/images/bk5.png)
+![screenshots](http://twosigma.github.io/beaker-notebook/images/bk6.png)
+
+#Build, test, and run instructions
+
+[![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
+
+Developers, see the page for your platform for how to build from source: [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run), [Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run), [Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run)
+
+Run `cd test; ./runner` to run the end-to-end tests.
 
 ##Language support
 
 We currently provide support for Python, R, Julia, Groovy, Ruby, JavaScript, HTML, Markdown, and LaTeX.
 
-Beaker has a plugin-based architecture, so additional languages are easily added.
-
 Beaker supports *autotranslation* of variables between languages.  For example, you can read and process some data in Python,
 model it with R, and then turn that into an interactive visualization with Javascript.
 
-##Iterative exploration
+##Architecture
 
-The notebook format is based on blocks of code called cells. Cells can be added anywhere in the notebook and can be edited and run independently from each other. This makes an ideal environment for iterative exploration of data and coding ideas.
+Beaker's architecture and the organization of the source is code is covered in the [Architecture wiki](https://github.com/twosigma/beaker-notebook/wiki/Architecture).
 
-##Visualizations
-
-Visualizations created with libraries like ggplot2 and matplotlib will appear directly in the notebook along with your code.
-
-##Inline documentation
-
-The inclusion of markup languages like HTML, Markdown, and LaTeX means that you can document your work right alongside your code.
-
-##Organization
-
-Beaker provides several features to help your organize your notebooks, for your own convenience or for sharing your work with colleagues.
-
-These features include: collapsible nested sections with headers, lock notebook (hide all code and disable editing), toggle visibility of code and output on individual cells, initialization cells (run automatically on notebook load), and delete all output.
-
-##Notebook viewer
-
-We provide a notebook viewer that can render any notebook accessible from the web. We also provide a one-click action to save a copy of your notebook to a GitHub Gist and generate a notebook viewer link.
-
-The viewer is, of course, open source. This means you can install a copy on your private cloud to view notebooks you don't want to share with the whole world
-
-##Plugin-based architecture
 Beaker was designed from the beginning with flexibility in mind. All of the core functionality including language evaluation, menu items, and output displays are built using plugins. This means that any language or feature you want to add to Beaker can work just as well as everything we've included by default.
 
 Plugins are written in JavaScript and have the option to start a process on the back end server. For anything that uses only JavaScript, you can simply provide your users with the URL for the plugin, which they can load directly from the UI.
@@ -67,10 +52,3 @@ Plugin specifications: [Evaluator plugins](https://github.com/twosigma/beaker-no
 ##Open source
 Beaker's full source code and documentation is available under the Apache 2.0 license.  Beaker's sharing feature uses a server with its own [repository](https://github.com/twosigma/beaker-sharing-server).
 
-#Build and run instructions
-
-[![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
-
-Users should download Beaker from [BeakerNotebook.com](http://beakernotebook.com)
-
-Developers, see the page for your platform for how to build from source: [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run), [Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run), [Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run)

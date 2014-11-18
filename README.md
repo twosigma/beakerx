@@ -26,8 +26,6 @@ This page is for developers.  If you want to use or learn more about Beaker, see
 
 #Build, test, and run instructions
 
-[![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
-
 See the page for your platform for how to build from source:
 [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run),
 [Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run),
@@ -35,6 +33,8 @@ See the page for your platform for how to build from source:
 We use gradle to compile the project.
 
 Say `cd test; ./runner` to run the end-to-end tests with Protractor.
+
+[![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
 
 ##Language support
 

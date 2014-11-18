@@ -399,7 +399,12 @@ var IPython = (function (IPython) {
                 cache : false,
                 type : "DELETE"
             };
-            $.ajax(utils.url_join_encode(this.kernel_url), settings);
+            var url = utils.url_join_encode(this.kernel_url);
+            var slash = url.lastIndexOf("/");
+            if (slash >= 0) {
+              url = url.substring(0, slash + 1) + "kill/" + url.substring(slash + 1, url.length);
+            }
+            $.ajax(url, settings);
         }
     };
 

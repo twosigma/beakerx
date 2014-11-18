@@ -64,7 +64,6 @@
           } else {
             cellOps.insertLast(cell);
           }
-          bkBunsenHelper.resizeIFrame();
         }
 
         // get the last code cell in the notebook

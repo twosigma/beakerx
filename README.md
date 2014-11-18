@@ -53,17 +53,6 @@ The architecture and the organization of the source is code is covered
 in the [Architecture
 wiki](https://github.com/twosigma/beaker-notebook/wiki/Architecture).
 
-Beaker was designed from the beginning with flexibility in mind. All
-of the core functionality including language evaluation, menu items,
-and output displays are built using plugins. This means that any
-language or feature you want to add to Beaker can work just as well as
-everything we've included by default.
-
-Plugins are written in JavaScript and have the option to start a
-process on the back end server. For anything that uses only
-JavaScript, you can simply provide your users with the URL for the
-plugin, which they can load directly from the UI.
-
 Plugin specifications: [Evaluator
 plugins](https://github.com/twosigma/beaker-notebook/wiki/Eval-plugin-spec),
 [Menu

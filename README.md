@@ -38,7 +38,7 @@ Say `cd test; ./runner` to run the end-to-end tests with Protractor.
 
 ##Language support
 
-We currently provide support for Python, R, Julia, Groovy, Ruby, JavaScript, HTML, Markdown, and LaTeX.
+We currently provide support for Python, R, Julia, Groovy, Ruby, Java, JavaScript, HTML, Markdown, and LaTeX.
 
 Beaker supports *autotranslation* of variables between languages.  For
 example, you can read and process some data in Python, model it with

@@ -40,13 +40,26 @@
     $scope.toggleInitCell = function() {
       $scope.initializationCell = !$scope.initializationCell;
     };
-    $scope.close = function(){
+    $scope.saveDisabled = function() {
+      return !(( this.getNameError() === '' ) && ( this.getTagError() === '' ));
+    };
+    $scope.getNameError = function() {
+      if($scope.dscope.id === $scope.cellName)
+        return '';
+      return bkCoreManager.getNotebookCellManager().canRenameCell($scope.cellName);
+    };
+    $scope.getTagError = function() {
+      return bkCoreManager.getNotebookCellManager().canSetUserTags($scope.cellTags);
+    };
+    $scope.close = function() {
       dialog.close('close');
     };
-    $scope.save = function(){
-      dscope.initialization = $scope.initializationCell;
-      dscope.tags = $scope.cellTags;
-      bkCoreManager.getNotebookCellManager().renameCell(dscope.id,$scope.cellName);
+    $scope.save = function() {
+      if($scope.saveDisabled())
+        return;
+      $scope.dscope.initialization = $scope.initializationCell;
+      $scope.dscope.tags = $scope.cellTags;
+      bkCoreManager.getNotebookCellManager().renameCell($scope.dscope.id,$scope.cellName);
       dialog.close('save');
     };
 }]);

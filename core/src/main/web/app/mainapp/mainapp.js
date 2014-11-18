@@ -625,13 +625,15 @@
                   if (toEval === "initialization") {
                     // in this case toEval is going to be an array of cellModels
                     toEval = bkSessionManager.notebookModelGetInitializationCells();
+                  } else if(cellOp.hasUserTag(toEval)) {
+                    // this is a user tag for a cell
+                    // in this case toEval is going to be an array of cellModels
+                    toEval = cellOp.getCellsWithUserTag(toEval);
                   } else {
-                    console.log(toEval);
                     // assume it is a evaluator name,
                     // in this case toEval is going to be an array of cellModels
                     toEval = cellOp.getCellsWithEvaluator(toEval);
                   }
-                  // TODO, we want to support user tagging cell in the future
                 }
               }
               if (!_.isArray(toEval)) {

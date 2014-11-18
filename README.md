@@ -26,30 +26,43 @@ This page is for developers.  If you want to use or learn more about Beaker, see
 
 #Build, test, and run instructions
 
+See the page for your platform for how to build from source:
+[Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run),
+[Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run),
+[Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run).
+We use gradle to compile the project.
+
+Say `cd test; ./runner` to run the end-to-end tests with Protractor.
+
 [![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
-
-Developers, see the page for your platform for how to build from source: [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run), [Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run), [Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run)
-
-Run `cd test; ./runner` to run the end-to-end tests.
 
 ##Language support
 
-We currently provide support for Python, R, Julia, Groovy, Ruby, JavaScript, HTML, Markdown, and LaTeX.
+We currently provide support for Python, R, Julia, Groovy, Ruby, Java, JavaScript, HTML, Markdown, and LaTeX.
 
-Beaker supports *autotranslation* of variables between languages.  For example, you can read and process some data in Python,
-model it with R, and then turn that into an interactive visualization with Javascript.
+Beaker supports *autotranslation* of variables between languages.  For
+example, you can read and process some data in Python, model it with
+R, and then turn that into an interactive visualization with
+Javascript.
 
 ##Architecture
 
-Beaker's architecture and the organization of the source is code is covered in the [Architecture wiki](https://github.com/twosigma/beaker-notebook/wiki/Architecture).
+Beaker is primarily composed of a Java server and a Javascript client.
+There are plugins for each language, and interaction plugins as well.
+The architecture and the organization of the source is code is covered
+in the [Architecture
+wiki](https://github.com/twosigma/beaker-notebook/wiki/Architecture).
 
-Beaker was designed from the beginning with flexibility in mind. All of the core functionality including language evaluation, menu items, and output displays are built using plugins. This means that any language or feature you want to add to Beaker can work just as well as everything we've included by default.
-
-Plugins are written in JavaScript and have the option to start a process on the back end server. For anything that uses only JavaScript, you can simply provide your users with the URL for the plugin, which they can load directly from the UI.
-
-Plugin specifications: [Evaluator plugins](https://github.com/twosigma/beaker-notebook/wiki/Eval-plugin-spec), [Menu plugins](https://github.com/twosigma/beaker-notebook/wiki/Menu-plugin-spec), [Output display plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
+Plugin specifications: [Evaluator
+plugins](https://github.com/twosigma/beaker-notebook/wiki/Eval-plugin-spec),
+[Menu
+plugins](https://github.com/twosigma/beaker-notebook/wiki/Menu-plugin-spec),
+[Output display
+plugins](https://github.com/twosigma/beaker-notebook/wiki/OutputDisplay-spec)
 
 ##Open source
-Beaker's full source code and documentation is available under the Apache 2.0 license.  Beaker's sharing feature uses a server with its own [repository](https://github.com/twosigma/beaker-sharing-server).
+Beaker's full source code and documentation is available under the
+Apache 2.0 license.  Beaker's sharing feature uses a server with its
+own [repository](https://github.com/twosigma/beaker-sharing-server).
 
 

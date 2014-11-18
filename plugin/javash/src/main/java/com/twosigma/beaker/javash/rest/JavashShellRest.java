@@ -119,6 +119,10 @@ public class JavashShellRest {
   @POST
   @Path("resetEnvironment")
   public void resetEnvironment(@FormParam("shellId") String shellId) {
+    if(!this.shells.containsKey(shellId)) {
+      return;
+    }
+    this.shells.get(shellId).resetEnvironment();
   }
 
   @POST

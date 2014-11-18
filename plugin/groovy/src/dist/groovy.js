@@ -117,7 +117,6 @@ define(function(require, exports, module) {
           bkHelper.refreshRootScope();
         };
         var onEvalStatusUpdate = function(evaluation) {
-          console.log("onEvalStatusUpdate "+evaluation.status);
           modelOutput.result.status = evaluation.status;
           if (evaluation.status === "FINISHED") {
             cometdUtil.unsubscribe(evaluation.update_id);
@@ -160,6 +159,26 @@ define(function(require, exports, module) {
         GroovyCancelFunction();
       }
     },
+    resetEnvironment: function () {
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: serviceBase + "/rest/groovysh/resetEnvironment",
+        data: {shellId: this.settings.shellID}
+      }).done(function (ret) {
+        console.log("done resetEnvironment",ret);
+      });
+    },
+    killAllThreads: function () {
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: serviceBase + "/rest/groovysh/killAllThreads",
+        data: {shellId: this.settings.shellID}
+      }).done(function (ret) {
+        console.log("done killAllThreads",ret);
+      });
+    },
     autocomplete: function(code, cpos, cb) {
       var self = this;
       $.ajax({
@@ -190,7 +209,9 @@ define(function(require, exports, module) {
     spec: {
       outdir:    {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
       classPath: {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
-      imports:   {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"}
+      imports:   {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
+      resetEnv:  {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+      killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },
     cometdUtil: cometdUtil
   };

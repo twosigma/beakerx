@@ -21,6 +21,7 @@ repositories {
 
 configurations {
   provided
+  antlr
   compile.extendsFrom provided
 }
 
@@ -34,9 +35,66 @@ dependencies {
   provided group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.3.1'
   compile group: 'org.xeustechnologies', name: 'jcl-core', version: '2.5'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.3'
+  antlr group : 'org.antlr', name :'antlr4', version: '4.3'
   provided project(':shared')
 }
 
+def findFilesOfType(dir,endsWith){
+    def collection = []
+    dir.eachFileRecurse(groovy.io.FileType.FILES) {
+        if(it.name.endsWith(endsWith)){
+            collection.add(it.absolutePath)
+        }
+    }
+    return collection
+}
+def getAntlrArgs(){
+    def listener = false
+    def visitor = false
+    def arg = []
+    if(project.hasProperty("listener")){
+        listener = project.listener
+    }
+    if(project.hasProperty("visitor")){
+        visitor = project.visitor
+    }
+    if(listener) {
+        arg.add("-listener")
+    }else {
+        arg.add("-no-listener")
+    }
+    if(visitor) {
+        arg.add("-visitor")
+    }else{
+        arg.add("-no-visitor")
+    }
+    def g4s = project.findFilesOfType(file('src'),".g4")
+    arg += g4s
+    println "Antlr args" + arg
+    return arg
+}
+task antlr4_java(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["Java.g4", "-o", "../java/com/twosigma/beaker/autocomplete/java","-listener", "-no-visitor", "-package", "com.twosigma.beaker.autocomplete.java", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+task antlr4_groovy_lexer(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["GroovyLexer.g4", "-o", "../java/com/twosigma/beaker/autocomplete/groovy","-listener", "-no-visitor", "-package", "com.twosigma.beaker.autocomplete.groovy", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+task antlr4_groovy_parser(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["GroovyParser.g4", "-o", "../java/com/twosigma/beaker/autocomplete/groovy","-listener", "-no-visitor", "-package", "com.twosigma.beaker.autocomplete.groovy", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+
+compileJava.dependsOn antlr4_java
+compileJava.dependsOn antlr4_groovy_lexer
+compileJava.dependsOn antlr4_groovy_parser
 
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'

@@ -14,13 +14,18 @@
  *  limitations under the License.
  */
 package com.twosigma.beaker.javash.utils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
+
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+
 import java.io.IOException;
+
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
+
 import java.lang.reflect.*;
 import java.nio.file.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -33,19 +38,19 @@ import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.autocomplete.java.JavaAutocomplete;
 
 public class JavaEvaluator {
-  private final String shellId;
-  private final String packageId;
-  private List<String> classPath;
-  private List<String> imports;
-  private String outDir;
-  private ClasspathScanner cps;
-  private JavaAutocomplete jac;
-  private boolean exit;
-  private boolean updateLoader;
-  private final ThreadGroup myThreadGroup;
-  private final workerThread myWorker;
+  protected final String shellId;
+  protected final String packageId;
+  protected List<String> classPath;
+  protected List<String> imports;
+  protected String outDir;
+  protected ClasspathScanner cps;
+  protected JavaAutocomplete jac;
+  protected boolean exit;
+  protected boolean updateLoader;
+  protected final ThreadGroup myThreadGroup;
+  protected workerThread myWorker;
   
-  private class jobDescriptor {
+  protected class jobDescriptor {
     String codeToBeExecuted;
     SimpleEvaluationObject outputObject;
     
@@ -55,8 +60,8 @@ public class JavaEvaluator {
     }
   }
   
-  private final Semaphore syncObject = new Semaphore(0, true);
-  private final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
+  protected final Semaphore syncObject = new Semaphore(0, true);
+  protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   public JavaEvaluator(String id) {
     shellId = id;
@@ -68,6 +73,10 @@ public class JavaEvaluator {
     exit = false;
     updateLoader = false;
     myThreadGroup = new ThreadGroup("tg"+shellId);
+    startWorker();
+  }
+
+  protected void startWorker() {
     myWorker = new workerThread(myThreadGroup);
     myWorker.start();
   }
@@ -77,8 +86,16 @@ public class JavaEvaluator {
   public void killAllThreads() {
     cancelExecution();
   }
+
+  public void resetEnvironment() {
+    cancelExecution();
+  }
   
   public void cancelExecution() {
+    myThreadGroup.interrupt();
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException e) { }
     myThreadGroup.interrupt();
   }
   
@@ -115,6 +132,9 @@ public class JavaEvaluator {
     cps = new ClasspathScanner(cpp);
     jac = new JavaAutocomplete(cps);
 
+    for(String st : imports)
+      jac.addImport(st);
+    
     // signal thread to create loader
     updateLoader = true;
     syncObject.release();
@@ -127,10 +147,43 @@ public class JavaEvaluator {
   }
 
   public List<String> autocomplete(String code, int caretPosition) {
-    return jac.doAutocomplete(code, caretPosition);
+    List<String> ret = jac.doAutocomplete(code, caretPosition);
+    
+    if(!ret.isEmpty())
+      return ret;
+    
+    // this is a code sniplet... 
+    String [] codev = code.split("\n");
+    int insert = 0;
+    while(insert < codev.length) {
+      if(!codev[insert].contains("package") && !codev[insert].contains("import") && !codev[insert].trim().isEmpty())
+        break;
+      insert++;
+    }
+     
+    final String CODE_TO_INSERT = "public class Foo { public static void beakerRun() { \n";
+      
+    StringBuilder sb = new StringBuilder();
+    for ( int i=0; i<insert; i++) {
+      sb.append(codev[i]);
+      sb.append('\n');
+    }
+      
+    if(caretPosition>=sb.length()) {
+      caretPosition += CODE_TO_INSERT.length();
+    }
+    sb.append(CODE_TO_INSERT);
+    for ( int i=insert; i<codev.length; i++) {
+      sb.append(codev[i]);
+      sb.append('\n');
+    }
+      
+    String out = sb.toString();
+            
+    return jac.doAutocomplete(sb.toString(), caretPosition);    
   }
 
-  private class workerThread extends Thread {
+  protected class workerThread extends Thread {
   
     public workerThread(ThreadGroup tg) {
       super(tg, "worker");
@@ -282,7 +335,7 @@ public class JavaEvaluator {
      * 3) remove empty lines
      */
   
-    private String normalizeCode(String code)
+    protected String normalizeCode(String code)
     {
       String c1 = code.replaceAll("\r\n","\n").replaceAll("(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*)","");
       StringBuilder c2 = new StringBuilder();

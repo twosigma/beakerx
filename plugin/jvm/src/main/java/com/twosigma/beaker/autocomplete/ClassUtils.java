@@ -1,7 +1,24 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package com.twosigma.beaker.autocomplete;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -14,6 +31,11 @@ public class ClassUtils {
 	private ClassLoader loader;
 	private Map<String, String> typeMap;
 	private Map<String, String> classToTypeMap;
+	
+    public final int DO_STATIC = 0;
+    public final int DO_NON_STATIC = 1;
+    public final int DO_ALL = 2;
+	
 	
 	public ClassUtils(ClassLoader l) {
 		loader = l;
@@ -36,6 +58,10 @@ public class ClassUtils {
 		typeMap.put(name, type);
 	}
 	
+	public String getVariableType(String name) {
+	  return typeMap.get(name);
+	}
+	
 	public void defineClassShortName(String name, String fqname) {
 		classToTypeMap.put(name, fqname);
 	}
@@ -47,7 +73,7 @@ public class ClassUtils {
 		} catch(Exception e) { return null; }
 	}
 	
-	public AutocompleteCandidate expandExpression(String txt, AutocompleteRegistry registry) {
+	public AutocompleteCandidate expandExpression(String txt, AutocompleteRegistry registry, int type) {
 		if(!txt.contains("."))
 			return null;
 		
@@ -90,7 +116,11 @@ public class ClassUtils {
 						field = field.substring(0, field.indexOf('('));
 						Method[] mtn = cl.getMethods();
 						for(int j=0; j<mtn.length; j++) {
-							if(mtn[j].getName().equals(field)) {
+							if(mtn[j].getName().equals(field) && Modifier.isPublic(mtn[j].getModifiers()) &&
+							    ((Modifier.isStatic(mtn[j].getModifiers()) && (type != DO_NON_STATIC)) ||
+							     (!Modifier.isStatic(mtn[j].getModifiers()) && (type != DO_STATIC)))
+							    ) {
+							  
 								ntype = mtn[j].getReturnType().getCanonicalName();
 								break;
 							}
@@ -98,7 +128,10 @@ public class ClassUtils {
 					} else {
 						Field[] flds = cl.getFields();
 						for ( Field f : flds) {
-							if(f.getName().equals(field)) {
+							if(f.getName().equals(field) && Modifier.isPublic(f.getModifiers()) &&
+                                ((Modifier.isStatic(f.getModifiers()) && (type != DO_NON_STATIC)) ||
+                                    (!Modifier.isStatic(f.getModifiers()) && (type != DO_STATIC)))
+                                   ) {
 								ntype = f.getType().getCanonicalName();
 								break;
 							}
@@ -125,27 +158,35 @@ public class ClassUtils {
 				
 				if(fl!=null) {
 					for (Field f : fl) {
-						AutocompleteCandidate c2 = new AutocompleteCandidate(JavaCompletionTypes.FIELD, f.getName());
-						l.addChildren(c2);
+                      if(Modifier.isPublic(f.getModifiers()) &&
+                          ((Modifier.isStatic(f.getModifiers()) && (type != DO_NON_STATIC)) ||
+                              (!Modifier.isStatic(f.getModifiers()) && (type != DO_STATIC))) ) {
+                        AutocompleteCandidate c2 = new AutocompleteCandidate(JavaCompletionTypes.FIELD, f.getName());
+                        l.addChildren(c2);
+                      }
 					}
 				}
 				if(mt != null) {
 					for (Method mm : mt) {
-						String mtn = mm.getName();
-						Class<?>[] pt = mm.getParameterTypes();
-						if(pt!=null) {
-							mtn += "(";
-							for(int id=0; id<pt.length; id++) {
-								if(id>0) mtn += ",";
-								int idx = pt[id].getName().lastIndexOf('.');
-								if(idx<0) idx=0; else idx++;
-								mtn += "a"+pt[id].getName().substring(idx);
-							}
-							mtn += ")";
-						} else
-							mtn += "()";
-						AutocompleteCandidate c2 = new AutocompleteCandidate(JavaCompletionTypes.FIELD, mtn);
-						l.addChildren(c2);
+					  if(Modifier.isPublic(mm.getModifiers()) &&
+					      ((Modifier.isStatic(mm.getModifiers()) && (type != DO_NON_STATIC)) ||
+					          (!Modifier.isStatic(mm.getModifiers()) && (type != DO_STATIC))) ) {
+  						String mtn = mm.getName();
+  						Class<?>[] pt = mm.getParameterTypes();
+  						if(pt!=null) {
+  							mtn += "(";
+  							for(int id=0; id<pt.length; id++) {
+  								if(id>0) mtn += ",";
+  								int idx = pt[id].getName().lastIndexOf('.');
+  								if(idx<0) idx=0; else idx++;
+  								mtn += "a"+pt[id].getName().substring(idx);
+  							}
+  							mtn += ")";
+  						} else
+  							mtn += "()";
+  						AutocompleteCandidate c2 = new AutocompleteCandidate(JavaCompletionTypes.FIELD, mtn);
+  						l.addChildren(c2);
+					  }
 					}
 				}
 				

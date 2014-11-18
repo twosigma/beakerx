@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.autocomplete.java;
+package com.twosigma.beaker.autocomplete.groovy;
 
-public class JavaCompletionTypes {
+public class GroovyCompletionTypes {
 	public static final int
 	PACKAGE_NAME=0,
 	TYPE=1,
@@ -24,11 +24,14 @@ public class JavaCompletionTypes {
 	CUSTOM_TYPE=3,
 	INITIAL=4,
 	TOPLEVEL=5,
-	BLOCKLEVEL=6,
+	STDFUNCS=6,
 	NAME=7,
 	FIELD=8,
 	MEMBERDELC=9,
 	CLASSLEVEL=10,
 	NEW=11,
 	NUM_TYPES=12;
+	
+	
+	public static final boolean debug = false;
 }

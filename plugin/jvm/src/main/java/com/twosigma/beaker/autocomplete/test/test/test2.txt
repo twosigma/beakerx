@@ -1,0 +1,35 @@
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; private long intero; public Test2() { data = new Date(); Integer i; String k, j = ""; j.st ; intero = data.getTime(); System.out.println("pippero"); } public long getIntero() { return intero; } public long getTime(String s) { return Date.parse(s); } }
+CURSOR: 200
+EXPECT: startsWith(aString) startsWith(aString,aint)
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public abs
+CURSOR: 80
+EXPECT: abstract
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public cla
+CURSOR: 80
+EXPECT: class
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public abstract cla
+CURSOR: 89
+EXPECT: class
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 exten
+CURSOR: 94
+EXPECT: extends
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { public Test2() { } public vo
+CURSOR: 119
+EXPECT: void
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { public Test2() { } public Str
+CURSOR: 120
+EXPECT: StrictMath String StringBuffer StringBuilder
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { public Test2() { data = n
+CURSOR: 116
+EXPECT: new
+
+SOURCE: package com.twosigma.beaker.autocomplete.test; import java.util.Date; public class Test2 { private Date data; public Test2() { data = new Date(); } public int getDate() { return data.getTime(); System.out.println("pippero"); } public long print() { int a = get
+CURSOR: 260
+EXPECT: getDate

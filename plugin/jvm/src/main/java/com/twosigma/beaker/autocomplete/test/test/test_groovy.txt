@@ -1,0 +1,59 @@
+SRCFIL: test/groovy/test_groovy_full.groovy
+CURSOR: 0@4
+EXPECT: package
+
+SRCFIL: test/groovy/test_groovy_full.groovy
+CURSOR: 0@17
+EXPECT: 
+
+SRCFIL: test/groovy/test_groovy_full.groovy
+CURSOR: 1@3
+EXPECT: import implements
+
+SOURCE: 1+1
+CURSOR: 3
+EXPECT:
+
+SRCFIL: test/groovy/test_groovy_full.groovy
+CURSOR: 1@15
+EXPECT: util
+
+SRCFIL: test/groovy/test_groovy_full.groovy
+CURSOR: 1@18
+EXPECT: .zip .stream .logging .regex .concurrent .spi .prefs .function .jar .ArrayPrefixHelpers .ArraysParallelSortHelpers .Base64 .Calendar .Comparators .ConcurrentModificationException .Currency .DoubleSummaryStatistics .DualPivotQuicksort .DuplicateFormatFlagsException .EmptyStackException .EnumMap .EnumSet .FormatFlagsConversionMismatchException .Formattable .FormattableFlags .Formatter .FormatterClosedException .GregorianCalendar .IllegalFormatCodePointException .IllegalFormatConversionException .IllegalFormatException .IllegalFormatFlagsException .IllegalFormatPrecisionException .IllegalFormatWidthException .IllformedLocaleException .InputMismatchException .IntSummaryStatistics .InvalidPropertiesFormatException .JapaneseImperialCalendar .JumboEnumSet .LocaleISOData .LongSummaryStatistics .MissingFormatArgumentException .MissingFormatWidthException .NoSuchElementException .Observable .Observer .Optional .OptionalDouble .OptionalInt .OptionalLong .PrimitiveIterator .PropertyPermission .PropertyPermissionCollection .RandomAccessSubList .RegularEnumSet .Scanner .ServiceConfigurationError .SimpleTimeZone .Spliterator .Spliterators .SplittableRandom .StringJoiner .SubList .TaskQueue .Timer .TimerTask .TimerThread .TooManyListenersException .Tripwire .UUID .UnknownFormatConversionException .UnknownFormatFlagsException .WeakHashMap .Vector .TreeSet .TreeMap .TimeZone .TimSort .StringTokenizer .Stack .SortedSet .SortedMap .Set .ServiceLoader .ResourceBundle .RandomAccess .Random .Queue .PropertyResourceBundle .Properties .PriorityQueue .Objects .NavigableSet .NavigableMap .MissingResourceException .Map .Locale .ListResourceBundle .ListIterator .List .LinkedList .LinkedHashSet .LinkedHashMap .Iterator .IdentityHashMap .Hashtable .HashSet .HashMap .EventObject .EventListenerProxy .EventListener .Enumeration .Dictionary .Deque .Date .Comparator .ComparableTimSort .Collections .Collection .BitSet .Arrays .ArrayList .ArrayDeque .AbstractSet .AbstractSequentialList .AbstractQueue .AbstractMap .AbstractList .AbstractCollection
+
+SRCFIL: test/groovy/test_groovy_full.groovy
+CURSOR: 8@3
+EXPECT: class
+
+SRCFIL: test/groovy/test_groovy_full.groovy
+CURSOR: 8@17
+EXPECT: 
+
+SRCFIL: test/groovy/test_groovy_full.groovy
+CURSOR: 8@33
+EXPECT: extends
+
+SRCFIL: test/groovy/test_groovy2.groovy
+CURSOR: 4@12
+EXPECT: context
+
+SRCFIL: test/groovy/test_groovy2.groovy
+CURSOR: 4@22
+EXPECT: 
+
+SRCFIL: test/groovy/test_groovy2.groovy
+CURSOR: 8@6
+EXPECT: key key2
+
+SRCFIL: test/groovy/test_groovy2.groovy
+CURSOR: 8@12
+EXPECT: field
+
+SRCFIL: test/groovy/test_groovy2.groovy
+CURSOR: 9@8
+EXPECT: toString() toLowerCase(aLocale) toLowerCase() toUpperCase() toUpperCase(aLocale) toCharArray()
+
+SRCFIL: test/groovy/test_groovy2.groovy
+CURSOR: 11@5
+EXPECT: timesTwo

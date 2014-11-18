@@ -223,7 +223,7 @@
             return "("+bkUtils.formatTimeString($scope.cellmodel.output.elapsedTime)+")";
           }
 
-          return ""
+          return "";
         }
 
         $scope.cellmenu.addItem({
@@ -240,6 +240,15 @@
             notebookCellOp.reset();
           }
         });
+
+        $scope.cellmenu.addItem({
+          name: "Cell Options",
+          action: function() {
+            bkCoreManager.show1ButtonModal('msgBody', 'msgHeader', function cb(r) {console.log("options"); } , 'btnText', 'btnClass');
+            
+          }
+        });
+
       },
       link: function(scope, element, attrs) {
         scope.showDebug = false;

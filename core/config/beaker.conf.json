@@ -10,6 +10,7 @@
     "./plugin/menu/controlpanel.js",
     "./plugin/menu/controlpanel_addition.js",
     "./plugin/menu/file_ipython.js",
+    "./plugin/menu/debug.js",
     "./plugin/menu/help.js"
   ],
   "notebook-app-menu-plugins":[
@@ -18,7 +19,8 @@
     "./plugin/menu/file_ipython.js",
     "./plugin/menu/view.js",
     "./plugin/menu/notebook.js",
-    "./plugin/menu/help.js"
+    "./plugin/menu/help.js",
+    "./plugin/menu/debug.js"
   ],
   "notebook-cell-menu-plugins": [
     "./plugin/cellmenu/sharing.js"

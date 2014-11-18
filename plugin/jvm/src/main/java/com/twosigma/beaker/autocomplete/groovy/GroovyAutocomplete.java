@@ -219,9 +219,7 @@ public class GroovyAutocomplete {
 //		r.addCandidate(c);
 
 		c = new AutocompleteCandidate(GroovyCompletionTypes.NEW, "new");
-		r.addCandidate(c);
-		
-		moreSetup(r);
+		r.addCandidate(c);		
 	}
 		
 	private void setup(ClassUtils cu) {	
@@ -252,7 +250,6 @@ public class GroovyAutocomplete {
 		cu.defineClassShortName("ThreadGroup", "java.lang.ThreadGroup");
 		cu.defineClassShortName("Throwable", "java.lang.Throwable");
 		cu.defineClassShortName("Void", "java.lang.Void");
-		moreSetup(cu);
 	}
 	
 	private void addDefaultImports(ClassUtils cu) {
@@ -294,8 +291,12 @@ public class GroovyAutocomplete {
 		registry.clearForType(GroovyCompletionTypes.FIELD);
 		registry.clearForType(GroovyCompletionTypes.NAME);
 		addDefaultImports(cu);
+		moreSetup(cu);
+		moreSetup(registry);
 		
 		Lexer lexer = new GroovyLexer(new ANTLRInputStream(txt));
+		lexer.removeErrorListeners();
+
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 
 		// Create a parser that reads from the scanner
@@ -322,7 +323,7 @@ public class GroovyAutocomplete {
 		if(ret.isEmpty()) {
 		  q.clear();
 		  for (int i=cur-1; i>=0; i--) {
-		    if(Character.isWhitespace(txt.charAt(i))) {
+		      if(i<txt.length() && Character.isWhitespace(txt.charAt(i))) {
               String tx = txt.substring(i+1, cur).trim();
               if(!txt.isEmpty()) {
                   if(tx.contains(".")) {
@@ -337,12 +338,6 @@ public class GroovyAutocomplete {
 		  }
 		}
 		
-		if(txt.charAt(cur-1)=='.') {
-		  for(int idx=0; idx<ret.size(); idx++) {
-		    ret.set(idx, "."+ret.get(idx));
-		  }
-		}
-
 		// this shows the GUI
 		if(GroovyCompletionTypes.debug)
 		  t.inspect(parser);

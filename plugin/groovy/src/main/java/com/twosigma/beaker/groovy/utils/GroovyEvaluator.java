@@ -51,7 +51,7 @@ public class GroovyEvaluator {
   public GroovyEvaluator(String id) {
     shellId = id;
     cps = new ClasspathScanner();
-    gac = new GroovyAutocomplete(cps);
+    gac = createGroovyAutocomplete(cps);
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
     exit = false;
@@ -64,6 +64,11 @@ public class GroovyEvaluator {
     myWorker = new workerThread(myThreadGroup);
     myWorker.start();
   }
+
+    protected GroovyAutocomplete createGroovyAutocomplete(ClasspathScanner c)
+    {
+	return new GroovyAutocomplete(c);
+    }
 
   public String getShellId() { return shellId; }
 
@@ -90,7 +95,7 @@ public class GroovyEvaluator {
     cpp += File.pathSeparator;
     cpp += System.getProperty("java.class.path");
     cps = new ClasspathScanner(cpp);
-    gac = new GroovyAutocomplete(cps);
+    gac = createGroovyAutocomplete(cps);
     
     for(String st : imports)
       gac.addImport(st);

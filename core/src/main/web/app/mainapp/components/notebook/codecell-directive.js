@@ -244,8 +244,8 @@
         $scope.cellmenu.addItem({
           name: "Cell Options",
           action: function() {
-            bkCoreManager.show1ButtonModal('msgBody', 'msgHeader', function cb(r) {console.log("options"); } , 'btnText', 'btnClass');
-            
+            bkCoreManager.showFullModalDialog(function cb(r) { } ,
+                'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
           }
         });
 

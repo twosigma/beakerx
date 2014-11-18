@@ -527,6 +527,19 @@
           this.appendAfter(destinationId, this.clipboard);
           this.clipboard = null;
         }
+      },
+      canRenameCell: function(oldid, newid) {
+        if(oldid === newid) return true;
+        if(cellMap[newid] !== undefined) return false;
+        return true;
+      },
+      renameCell: function(oldid, newid) {
+        if(!this.canRenameCell(oldid,newid)) return;
+        var idx = this.getIndex(oldid);
+        if(idx>=0) {
+          cells[idx].id = newid;
+          recreateCellMap();
+        }
       }
     };
   });

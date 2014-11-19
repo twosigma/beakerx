@@ -298,6 +298,18 @@
             event.stopPropagation();
           }
         });
+
+        scope.$watch(
+          function() {
+            return div.height();
+          },
+          function(newValue, oldValue) {
+            if (newValue != oldValue) {
+              bkBunsenHelper.resizeIFrame();
+            }
+          }
+        );
+
         if (scope.isInitializationCell()) {
           div.addClass("initcell");
         } else {

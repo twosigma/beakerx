@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.autocomplete.groovy;
+package com.twosigma.beaker.groovy.autocomplete;
 
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -23,11 +23,11 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.ClassNameExpressionContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.CommandExpressionStatementContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.CompilationUnitContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.PathExpressionContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.StatementContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.ClassNameExpressionContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.CommandExpressionStatementContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.CompilationUnitContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.PathExpressionContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.StatementContext;
 
 public class GroovyNodeCompletion extends GroovyAbstractListener {
   private AutocompleteRegistry registry;

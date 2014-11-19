@@ -1,21 +1,17 @@
-package com.twosigma.beaker.autocomplete.test;
+package com.twosigma.beaker.javash.autocomplete.test;
 
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
-import com.twosigma.beaker.autocomplete.groovy.GroovyAutocomplete;
+import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 
-class TestGroovy {
+class TestJava {
 
 	public static boolean profile = false;
 	public static boolean notree = false;
@@ -69,46 +65,16 @@ class TestGroovy {
 		 
 			String source=null, expect=null;
 			int cursor = 0;
-			boolean isfile = false;
 			
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				if(line.startsWith("#"))
-				  continue;
-				else if(line.startsWith("SOURCE: ")) {
-				  source = line.substring(8);
-				  isfile = false;
-				} else if(line.startsWith("SRCFIL: ")) {
-				  source = readFile(line.substring(8));
-				  isfile = true;
-				} else if(line.startsWith("CURSOR: ")) {
-				  String l = line.substring(8);
-				  if(l.contains("@") && isfile) {
-				    String [] vl = l.split("@");
-				    int lin = Integer.parseInt(vl[0].trim());
-				    int cha = Integer.parseInt(vl[1].trim());
-				    int pos = 0;
-				    if(lin>0) {
-    				    pos = source.indexOf('\n', 0);
-    				    while (--lin > 0 && pos != -1)
-    				        pos = source.indexOf('\n', pos+1);
-				    }
-				    if(pos != -1) {
-				      cursor = cha+pos;
-				      if(cursor>source.length()) cursor=source.length();
-                      source = source.substring(0, cursor);
-                      //System.out.println("--> '"+source+"' "+cursor);
-				    } else {
-				      System.out.println("ERROR computing cursor");
-				      cursor = 0;
-				    }
-				  } else {
-    				  cursor = Integer.parseInt(line.substring(8));
-    				  if(isfile)
-    				    source = source.substring(0, cursor);
-    				  //System.out.println("--> '"+source+"' "+cursor);
-				  }
-				} else if(line.startsWith("EXPECT: ")) {
+					continue;
+				else if(line.startsWith("SOURCE: "))
+					source = line.substring(8);
+				else if(line.startsWith("CURSOR: "))
+					cursor = Integer.parseInt(line.substring(8));
+				else if(line.startsWith("EXPECT: ")) {
 					expect = line.substring(8);
 					String result = parseFile(source,cursor,cps);
 					if(!expect.equals(result))
@@ -127,7 +93,7 @@ class TestGroovy {
 	public static String parseFile(String f, int cursor, ClasspathScanner cps) {
 		String res = "";
 			
-		GroovyAutocomplete jac = new GroovyAutocomplete(cps);
+		JavaAutocomplete jac = new JavaAutocomplete(cps);
 				
 		List<String> ret = jac.doAutocomplete(f, cursor);
 		for(String s : ret ) {
@@ -136,16 +102,4 @@ class TestGroovy {
 		
 		return res.trim();
 	}
-	
-	static String readFile(String path) 
-	  {
-	    byte[] encoded;
-        try {
-          encoded = Files.readAllBytes(Paths.get(path));
-          return new String(encoded, Charset.defaultCharset());
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-        return null;
-	  }
 }

@@ -19,7 +19,7 @@ import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
-import com.twosigma.beaker.autocomplete.groovy.GroovyAutocomplete;
+import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 

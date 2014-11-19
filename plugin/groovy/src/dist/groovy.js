@@ -187,7 +187,7 @@ define(function(require, exports, module) {
         url: serviceBase + "/rest/groovysh/autocomplete",
         data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
-        cb(x);
+        cb(x, undefined, true);
       });
     },
     exit: function(cb) {
@@ -216,6 +216,7 @@ define(function(require, exports, module) {
     cometdUtil: cometdUtil
   };
   var defaultImports = [
+    "com.twosigma.beaker.NamespaceClient",
     "com.twosigma.beaker.chart.Color",
     "com.twosigma.beaker.chart.xychart.*",
     "com.twosigma.beaker.chart.xychart.plotitem.*"];

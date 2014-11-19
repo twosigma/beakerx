@@ -24,13 +24,25 @@ mainClassName = 'com.twosigma.beaker.javash.Main'
 
 configurations {
   provided
+  antlr
   compile.extendsFrom provided
 }
 
 dependencies {
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.3'
+  antlr group : 'org.antlr', name :'antlr4', version: '4.3'
   provided project(':plugin:jvm')
   compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
 }
+
+task antlr4_java(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["Java.g4", "-o", "../java/com/twosigma/beaker/javash/autocomplete","-listener", "-no-visitor", "-package", "com.twosigma.beaker.javash.autocomplete", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+
+compileJava.dependsOn antlr4_java
 
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'

@@ -167,7 +167,7 @@ define(function(require, exports, module) {
         url: serviceBase + "/rest/javash/autocomplete",
         data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
-        cb(x);
+        cb(x, undefined, true);
       });
     },
     exit: function(cb) {

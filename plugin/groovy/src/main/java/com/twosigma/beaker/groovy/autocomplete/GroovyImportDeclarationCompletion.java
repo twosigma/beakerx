@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.autocomplete.groovy;
+package com.twosigma.beaker.groovy.autocomplete;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.ImportStatementContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.ImportStatementContext;
 
 public class GroovyImportDeclarationCompletion extends GroovyAbstractListener {
 

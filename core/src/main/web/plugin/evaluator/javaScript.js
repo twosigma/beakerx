@@ -181,7 +181,7 @@ define(function(require, exports, module) {
             return e.getTokenAt(cur);
           },
           options);
-      cb(ret);
+      cb(ret,undefined,true);
     },
     updateJsSetting1: function() {
       //console.log("dummy Setting#1", this.settings.pySetting1);

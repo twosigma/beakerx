@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class ClassUtils {
 
-  private ClassLoader loader;
+  protected ClassLoader loader;
   private Map<String, String> typeMap;
   private Map<String, String> classToTypeMap;
 
@@ -156,7 +156,7 @@ public class ClassUtils {
 
         if(fl!=null) {
           for (Field f : fl) {
-            if(Modifier.isPublic(f.getModifiers()) &&
+            if(!f.getName().contains("$") && Modifier.isPublic(f.getModifiers()) &&
                 ((Modifier.isStatic(f.getModifiers()) && (type != DO_NON_STATIC)) ||
                     (!Modifier.isStatic(f.getModifiers()) && (type != DO_STATIC))) ) {
               AutocompleteCandidate c2 = new AutocompleteCandidate(GenericCompletionTypes.FIELD, f.getName());
@@ -166,7 +166,7 @@ public class ClassUtils {
         }
         if(mt != null) {
           for (Method mm : mt) {
-            if(Modifier.isPublic(mm.getModifiers()) &&
+            if(!mm.getName().contains("$") && Modifier.isPublic(mm.getModifiers()) &&
                 ((Modifier.isStatic(mm.getModifiers()) && (type != DO_NON_STATIC)) ||
                     (!Modifier.isStatic(mm.getModifiers()) && (type != DO_STATIC))) ) {
               String mtn = mm.getName();

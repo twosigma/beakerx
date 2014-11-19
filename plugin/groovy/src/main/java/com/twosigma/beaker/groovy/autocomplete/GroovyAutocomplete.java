@@ -28,20 +28,19 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
-import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.groovy.autocomplete.GroovyLexer;
 import com.twosigma.beaker.groovy.autocomplete.GroovyParser;
 
 public class GroovyAutocomplete {
   AutocompleteRegistry registry;
-  private ClasspathScanner cps;
+  private GroovyClasspathScanner cps;
   private List<String> imports;
 
-  public GroovyAutocomplete(ClasspathScanner _cps) {
+  public GroovyAutocomplete(GroovyClasspathScanner _cps) {
     this(_cps,GroovyCompletionTypes.NUM_TYPES);
   }
 
-  public GroovyAutocomplete(ClasspathScanner _cps, int num) {
+  public GroovyAutocomplete(GroovyClasspathScanner _cps, int num) {
     registry = new AutocompleteRegistry(num);	
     setup(registry);
     cps = _cps;
@@ -304,10 +303,10 @@ public class GroovyAutocomplete {
     }
   }
 
-  protected ClassUtils createClassUtils() { return new ClassUtils(); }
+  protected ClassUtils createClassUtils(ClassLoader l) { return new GroovyClassUtils(cps, l); }
 
-  public List<String> doAutocomplete(String txt, int cur) {
-    ClassUtils cu = createClassUtils();
+  public List<String> doAutocomplete(String txt, int cur, ClassLoader l) {
+    ClassUtils cu = createClassUtils(l);
     setup(cu, registry);
     registry.clearForType(GroovyCompletionTypes.CUSTOM_TYPE);
     registry.clearForType(GroovyCompletionTypes.FIELD);
@@ -360,6 +359,14 @@ public class GroovyAutocomplete {
       }
     }
 
+    if(txt.charAt(cur-1)=='.') {
+      for(int i=0; i<ret.size(); i++) {
+        String s = ret.get(i);
+        if(s.startsWith("."))
+          ret.set(i, s.substring(1));
+      }
+    }
+    
     // this shows the GUI
     if(GroovyCompletionTypes.debug)
       t.inspect(parser);

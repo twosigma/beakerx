@@ -1,7 +1,7 @@
 package com.twosigma.beaker.groovy.autocomplete.test;
 
-import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
+import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,7 +28,7 @@ class TestGroovy {
 	public static boolean quiet = false;
 
 	public static void main(String[] args) {
-		ClasspathScanner cps = new ClasspathScanner();
+		GroovyClasspathScanner cps = new GroovyClasspathScanner();
 		
 		List<String> inputFiles = new ArrayList<String>();
 		try {
@@ -59,7 +59,7 @@ class TestGroovy {
 		}
 	}
 
-	public static void doFiles(List<String> files, ClasspathScanner cps) throws Exception {
+	public static void doFiles(List<String> files, GroovyClasspathScanner cps) throws Exception {
 		long parserStart = System.currentTimeMillis();
 		for (String f : files) {
 			File ff = new File(f);
@@ -124,12 +124,12 @@ class TestGroovy {
 		System.out.println("Total lexer+parser time " + (parserStop - parserStart) + "ms.");
 	}
 
-	public static String parseFile(String f, int cursor, ClasspathScanner cps) {
+	public static String parseFile(String f, int cursor, GroovyClasspathScanner cps) {
 		String res = "";
 			
 		GroovyAutocomplete jac = new GroovyAutocomplete(cps);
 				
-		List<String> ret = jac.doAutocomplete(f, cursor);
+		List<String> ret = jac.doAutocomplete(f, cursor, null);
 		for(String s : ret ) {
 			res += s + " ";
 		}

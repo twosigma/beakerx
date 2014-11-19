@@ -18,9 +18,8 @@ import java.util.concurrent.Semaphore;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
-import com.twosigma.beaker.autocomplete.ClasspathScanner;
 import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
-import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
+import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
 public class GroovyEvaluator {
@@ -28,7 +27,7 @@ public class GroovyEvaluator {
   protected List<String> classPath;
   protected List<String> imports;
   protected String outDir;
-  protected ClasspathScanner cps;
+  protected GroovyClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
   protected final ThreadGroup myThreadGroup;
@@ -50,7 +49,7 @@ public class GroovyEvaluator {
 
   public GroovyEvaluator(String id) {
     shellId = id;
-    cps = new ClasspathScanner();
+    cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
@@ -65,7 +64,7 @@ public class GroovyEvaluator {
     myWorker.start();
   }
 
-    protected GroovyAutocomplete createGroovyAutocomplete(ClasspathScanner c)
+    protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c)
     {
 	return new GroovyAutocomplete(c);
     }
@@ -94,7 +93,7 @@ public class GroovyEvaluator {
     }
     cpp += File.pathSeparator;
     cpp += System.getProperty("java.class.path");
-    cps = new ClasspathScanner(cpp);
+    cps = new GroovyClasspathScanner(cpp);
     gac = createGroovyAutocomplete(cps);
     
     for(String st : imports)
@@ -133,12 +132,13 @@ public class GroovyEvaluator {
   }
 
   public List<String> autocomplete(String code, int caretPosition) {    
-    return gac.doAutocomplete(code, caretPosition);
+    return gac.doAutocomplete(code, caretPosition,loader!=null ? loader.getLoader() : null);
   }
 
+  protected GroovyDynamicClassLoader loader = null;
+  protected GroovyShell shell;
+
   protected class workerThread extends Thread {
-    protected DynamicClassLoader loader = null;
-    protected GroovyShell shell;
 
     public workerThread(ThreadGroup tg) {
       super(tg, "worker");
@@ -196,18 +196,15 @@ public class GroovyEvaluator {
       if (!classPath.isEmpty()) {
         urls = new URL[classPath.size()];
         for (int i = 0; i < classPath.size(); i++) {
-          System.out.println("url is '"+classPath.get(i)+"'");
           urls[i] = new URL("file://" + classPath.get(i));
         }
       }
       loader = null;
       ClassLoader cl;
-      if(outDir!=null && !outDir.isEmpty()) {
-        loader = new DynamicClassLoader(outDir);
-        loader.addAll(Arrays.asList(urls));
-        cl = loader.getLoader();
-      } else
-        cl = new URLClassLoader(urls);
+
+      loader = new GroovyDynamicClassLoader(outDir);
+      loader.addAll(Arrays.asList(urls));
+      cl = loader.getLoader();
       return cl;
     }
 

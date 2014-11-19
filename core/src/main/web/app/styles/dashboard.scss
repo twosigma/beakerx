@@ -14,8 +14,10 @@
  *  limitations under the License.
  */
 
-.dashboard.container {
+.dashboard.container-fluid {
   padding: 30px 0;
+  margin: 0 auto;
+  max-width: 980px;
 
   .new-notebook {
     margin:   20px 0;

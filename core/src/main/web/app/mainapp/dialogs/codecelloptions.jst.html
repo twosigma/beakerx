@@ -17,9 +17,19 @@
   <h1>Code Cell Options</h1>
 </div>
 <div class="modal-body">
-  <p>Cell Id: <input ng-model="cellName"><span class="help-inline" style="color:red">{{getNameError()}}</span></p>
-  <p>Cell Tags: <input ng-model="cellTags"><span class="help-inline" style="color:red">{{getTagError()}}</span></p>
-  <p>Initialization Cell: <input type="checkbox" ng-model="initializationCell"></input></p>
+  <p>
+  <table style="border-spacing:3">
+  <tr>
+  <td style="text-align:right"><b>Cell Id:</b></td><td><input ng-model="cellName"></td><td><span class="help-inline" style="color:red">{{getNameError()}}</span></td>
+  </tr>
+  <tr>
+  <td style="text-align:right"><b>Cell Tags:</b></td><td><input ng-model="cellTags"></td><td><span class="help-inline" style="color:red">{{getTagError()}}</span></td>
+  </tr>
+  <tr>
+  <td style="text-align:right"><b>Initialization Cell:</b></td><td><input type="checkbox" ng-model="initializationCell"></input></td><td></td>
+  </tr>
+  </table>
+  </p>
 </div>
 <div class="modal-footer">
   <button ng-click="close()" class="btn" id="btn-cancel">Cancel</button>

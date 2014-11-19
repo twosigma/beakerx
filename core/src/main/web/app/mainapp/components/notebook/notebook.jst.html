@@ -37,7 +37,7 @@
         <a class="beaker-btn" ng-class="{active: showStdErr}" ng-click="toggleStdErr()" >stderr</a>
       </div>
     </div>
-    <div class="outputlogout" ng-show="showStdOut">
+    <div class="outputlogout" ng-show="showStdOut" ng-class="!showStdErr && 'single'">
       <label class="output-label">stdout:</label>
       <div class="outputlogbox outputlogstdout">
         <div ng-repeat="line in outputLog track by $index">
@@ -47,7 +47,7 @@
         </div>
       </div>
     </div>
-    <div class="outputlogerr" ng-show="showStdErr">
+    <div class="outputlogerr" ng-show="showStdErr" ng-class="!showStdOut && 'single'">
       <label class="output-label">stderr:</label>
       <div class="outputlogbox">
         <div ng-repeat="line in outputLog track by $index">

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.autocomplete.java;
+package com.twosigma.beaker.javash.autocomplete;
 
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -22,15 +22,15 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
-import com.twosigma.beaker.autocomplete.java.JavaParser.BlockStatementContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.ClassBodyContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.ClassBodyDeclarationContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.CompilationUnitContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.CreatedNameContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.ExpressionContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.MemberDeclarationContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.TypeContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.TypeDeclarationContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.BlockStatementContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.ClassBodyContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.ClassBodyDeclarationContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.CompilationUnitContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.CreatedNameContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.ExpressionContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.MemberDeclarationContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.TypeContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.TypeDeclarationContext;
 
 public class JavaNodeCompletion extends JavaAbstractListener {
 	private AutocompleteRegistry registry;

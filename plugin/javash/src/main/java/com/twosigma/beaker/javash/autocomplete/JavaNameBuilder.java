@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.autocomplete.java;
+package com.twosigma.beaker.javash.autocomplete;
 
 import java.util.List;
 
@@ -23,15 +23,15 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
-import com.twosigma.beaker.autocomplete.java.JavaParser.ClassOrInterfaceTypeContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.FieldDeclarationContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.LocalVariableDeclarationContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.MethodDeclarationContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.PrimitiveTypeContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.TypeContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.VariableDeclaratorContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.VariableDeclaratorIdContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.VariableDeclaratorsContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.ClassOrInterfaceTypeContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.FieldDeclarationContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.LocalVariableDeclarationContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.MethodDeclarationContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.PrimitiveTypeContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.TypeContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.VariableDeclaratorContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.VariableDeclaratorIdContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.VariableDeclaratorsContext;
 
 public class JavaNameBuilder extends JavaAbstractListener {
 	

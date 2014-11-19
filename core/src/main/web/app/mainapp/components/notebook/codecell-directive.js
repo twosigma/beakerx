@@ -140,7 +140,7 @@
           if (evaluator.autocomplete) {
             evaluator.autocomplete($scope.cellmodel.input.body, cpos, onResults);
           } else if (evaluator.autocomplete2) {
-            // dead code? XXX
+            // used by JavaScript evaluator
             evaluator.autocomplete2($scope.cm, null, onResults);
           }
         };

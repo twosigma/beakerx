@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.autocomplete.java;
+package com.twosigma.beaker.javash.autocomplete;
 
 import java.util.List;
 
@@ -22,8 +22,8 @@ import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
-import com.twosigma.beaker.autocomplete.java.JavaParser.ImportDeclarationContext;
-import com.twosigma.beaker.autocomplete.java.JavaParser.QualifiedNameContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.ImportDeclarationContext;
+import com.twosigma.beaker.javash.autocomplete.JavaParser.QualifiedNameContext;
 
 public class JavaImportDeclarationCompletion extends JavaAbstractListener {
 	

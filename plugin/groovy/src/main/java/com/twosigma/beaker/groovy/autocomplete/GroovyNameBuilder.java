@@ -14,22 +14,23 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.autocomplete.groovy;
+package com.twosigma.beaker.groovy.autocomplete;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import com.twosigma.beaker.autocomplete.AutocompleteCandidate;
 import com.twosigma.beaker.autocomplete.AutocompleteRegistry;
 import com.twosigma.beaker.autocomplete.ClassUtils;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.AssignmentExpressionContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.ClassNameExpressionContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.DeclarationRuleContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.ExpressionContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.ListConstructorContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.MapConstructorContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.NewInstanceRuleContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.PathExpressionContext;
-import com.twosigma.beaker.autocomplete.groovy.GroovyParser.TypeDeclarationContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyLexer;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.AssignmentExpressionContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.ClassNameExpressionContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.DeclarationRuleContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.ExpressionContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.ListConstructorContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.MapConstructorContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.NewInstanceRuleContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.PathExpressionContext;
+import com.twosigma.beaker.groovy.autocomplete.GroovyParser.TypeDeclarationContext;
 
 public class GroovyNameBuilder extends GroovyAbstractListener{
   private AutocompleteRegistry registry;

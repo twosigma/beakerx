@@ -32,22 +32,24 @@ import org.xeustechnologies.jcl.JarClassLoader;
 
 public class DynamicClassLoader {
     protected final Map<String, Class> classes;
-    private final String dirPath;
-    private final DynamicLoaderProxy dlp = new DynamicLoaderProxy();
-    private SubClassLoader subLoader;
-    private final JarClassLoader parent;
+    protected final String dirPath;
+    protected final DynamicLoaderProxy dlp = new DynamicLoaderProxy();
+    protected SubClassLoader subLoader;
+    protected final JarClassLoader parent;
     
     public DynamicClassLoader(String dir) {
         classes = Collections.synchronizedMap( new HashMap<String, Class>() );
         dirPath = dir;
         parent = new JarClassLoader();
-        parent.getLocalLoader().setOrder(2);
-        parent.getCurrentLoader().setOrder(3);
-        parent.getParentLoader().setOrder(4); 
-        parent.getThreadLoader().setOrder(5);
-        parent.getSystemLoader().setOrder(6);
-        getProxy().setOrder(6);
-        parent.addLoader(getProxy());
+        parent.getLocalLoader().setOrder(20);
+        parent.getCurrentLoader().setOrder(30);
+        parent.getParentLoader().setOrder(40); 
+        parent.getThreadLoader().setOrder(50);
+        parent.getSystemLoader().setOrder(60);
+        if(dir!=null && !dir.isEmpty()) {
+          getProxy().setOrder(10);
+          parent.addLoader(getProxy());
+        }
         subLoader = new SubClassLoader(parent);
     }
 

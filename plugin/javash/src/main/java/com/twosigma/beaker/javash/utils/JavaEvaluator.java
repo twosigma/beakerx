@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
+import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
 import java.io.IOException;
@@ -35,7 +36,6 @@ import java.io.File;
 
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 import com.twosigma.beaker.autocomplete.ClasspathScanner;
-import com.twosigma.beaker.autocomplete.java.JavaAutocomplete;
 
 public class JavaEvaluator {
   protected final String shellId;

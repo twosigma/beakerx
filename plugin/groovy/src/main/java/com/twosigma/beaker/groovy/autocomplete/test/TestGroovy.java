@@ -1,16 +1,21 @@
-package com.twosigma.beaker.autocomplete.test;
+package com.twosigma.beaker.groovy.autocomplete.test;
 
-import com.twosigma.beaker.autocomplete.ClasspathScanner;
-import com.twosigma.beaker.autocomplete.java.JavaAutocomplete;
+import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
+import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 
-class TestJava {
+class TestGroovy {
 
 	public static boolean profile = false;
 	public static boolean notree = false;
@@ -23,7 +28,7 @@ class TestJava {
 	public static boolean quiet = false;
 
 	public static void main(String[] args) {
-		ClasspathScanner cps = new ClasspathScanner();
+		GroovyClasspathScanner cps = new GroovyClasspathScanner();
 		
 		List<String> inputFiles = new ArrayList<String>();
 		try {
@@ -54,7 +59,7 @@ class TestJava {
 		}
 	}
 
-	public static void doFiles(List<String> files, ClasspathScanner cps) throws Exception {
+	public static void doFiles(List<String> files, GroovyClasspathScanner cps) throws Exception {
 		long parserStart = System.currentTimeMillis();
 		for (String f : files) {
 			File ff = new File(f);
@@ -64,16 +69,46 @@ class TestJava {
 		 
 			String source=null, expect=null;
 			int cursor = 0;
+			boolean isfile = false;
 			
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				if(line.startsWith("#"))
-					continue;
-				else if(line.startsWith("SOURCE: "))
-					source = line.substring(8);
-				else if(line.startsWith("CURSOR: "))
-					cursor = Integer.parseInt(line.substring(8));
-				else if(line.startsWith("EXPECT: ")) {
+				  continue;
+				else if(line.startsWith("SOURCE: ")) {
+				  source = line.substring(8);
+				  isfile = false;
+				} else if(line.startsWith("SRCFIL: ")) {
+				  source = readFile(line.substring(8));
+				  isfile = true;
+				} else if(line.startsWith("CURSOR: ")) {
+				  String l = line.substring(8);
+				  if(l.contains("@") && isfile) {
+				    String [] vl = l.split("@");
+				    int lin = Integer.parseInt(vl[0].trim());
+				    int cha = Integer.parseInt(vl[1].trim());
+				    int pos = 0;
+				    if(lin>0) {
+    				    pos = source.indexOf('\n', 0);
+    				    while (--lin > 0 && pos != -1)
+    				        pos = source.indexOf('\n', pos+1);
+				    }
+				    if(pos != -1) {
+				      cursor = cha+pos;
+				      if(cursor>source.length()) cursor=source.length();
+                      source = source.substring(0, cursor);
+                      //System.out.println("--> '"+source+"' "+cursor);
+				    } else {
+				      System.out.println("ERROR computing cursor");
+				      cursor = 0;
+				    }
+				  } else {
+    				  cursor = Integer.parseInt(line.substring(8));
+    				  if(isfile)
+    				    source = source.substring(0, cursor);
+    				  //System.out.println("--> '"+source+"' "+cursor);
+				  }
+				} else if(line.startsWith("EXPECT: ")) {
 					expect = line.substring(8);
 					String result = parseFile(source,cursor,cps);
 					if(!expect.equals(result))
@@ -89,16 +124,28 @@ class TestJava {
 		System.out.println("Total lexer+parser time " + (parserStop - parserStart) + "ms.");
 	}
 
-	public static String parseFile(String f, int cursor, ClasspathScanner cps) {
+	public static String parseFile(String f, int cursor, GroovyClasspathScanner cps) {
 		String res = "";
 			
-		JavaAutocomplete jac = new JavaAutocomplete(cps);
+		GroovyAutocomplete jac = new GroovyAutocomplete(cps);
 				
-		List<String> ret = jac.doAutocomplete(f, cursor);
+		List<String> ret = jac.doAutocomplete(f, cursor, null);
 		for(String s : ret ) {
 			res += s + " ";
 		}
 		
 		return res.trim();
 	}
+	
+	static String readFile(String path) 
+	  {
+	    byte[] encoded;
+        try {
+          encoded = Files.readAllBytes(Paths.get(path));
+          return new String(encoded, Charset.defaultCharset());
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        return null;
+	  }
 }

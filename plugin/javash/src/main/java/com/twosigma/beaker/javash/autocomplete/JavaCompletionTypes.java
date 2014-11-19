@@ -14,21 +14,20 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.autocomplete.java;
+package com.twosigma.beaker.javash.autocomplete;
 
-public class JavaCompletionTypes {
+import com.twosigma.beaker.autocomplete.GenericCompletionTypes;
+
+public class JavaCompletionTypes extends GenericCompletionTypes {
 	public static final int
-	PACKAGE_NAME=0,
-	TYPE=1,
-	FQ_TYPE=2,
-	CUSTOM_TYPE=3,
-	INITIAL=4,
-	TOPLEVEL=5,
-	BLOCKLEVEL=6,
-	NAME=7,
-	FIELD=8,
-	MEMBERDELC=9,
-	CLASSLEVEL=10,
-	NEW=11,
-	NUM_TYPES=12;
+	TYPE=GenericCompletionTypes.NUM_TYPES+0,
+	FQ_TYPE=GenericCompletionTypes.NUM_TYPES+1,
+	CUSTOM_TYPE=GenericCompletionTypes.NUM_TYPES+2,
+	INITIAL=GenericCompletionTypes.NUM_TYPES+3,
+	TOPLEVEL=GenericCompletionTypes.NUM_TYPES+4,
+	BLOCKLEVEL=GenericCompletionTypes.NUM_TYPES+5,
+	MEMBERDELC=GenericCompletionTypes.NUM_TYPES+6,
+	CLASSLEVEL=GenericCompletionTypes.NUM_TYPES+7,
+	NEW=GenericCompletionTypes.NUM_TYPES+8,
+	NUM_TYPES=GenericCompletionTypes.NUM_TYPES+9;
 }

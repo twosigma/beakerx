@@ -229,7 +229,7 @@
               '</div>' +
               '<div class="modal-footer fixed">' +
               '   <p><input id="saveAsFileInput"' +
-              '             class="input-xxlarge"' +
+              '             class="input-block-level"' +
               '             ng-model="getStrategy().input"' +
               '             ng-keypress="getStrategy().close($event, close)"' +
               '             focus-start /></p>' +

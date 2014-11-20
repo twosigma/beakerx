@@ -30,8 +30,8 @@
     )
   {
     function receiveWindowMessage(e) {
-      if (new URL(event.origin).hostname !== $location.host()) {
-        throw "message received from unauthorized host " + event.origin.host;
+      if (new URL(e.origin).hostname !== $location.host()) {
+        throw "message received from unauthorized host " + e.origin.host;
       }
 
       $rootScope.$apply(function() {

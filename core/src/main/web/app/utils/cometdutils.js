@@ -22,7 +22,8 @@
   var module = angular.module('bk.cometdUtils', []);
   module.factory('cometdUtils', function () {
     $.cometd.unregisterTransport("websocket");
-    $.cometd.init("cometd");
+    $.cometd.configure({url: "cometd", maxBackoff: 5000});
+    $.cometd.handshake();
     var _statusListener;
     return {
       addConnectedStatusListener: function (cb) {

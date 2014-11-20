@@ -32,7 +32,7 @@
           <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
         </li>
         <li class="pull-right" style="padding: 10px 54px; cursor: default;">
-          <span><font color="#009AA6">{{message}}{{(message !== "" && isEdited()) ? "|" : "" }}{{isEdited() ? "edited" :
+          <span><font color="#009AA6">{{message}}{{(message && isEdited()) ? " | " : "" }}{{isEdited() ? "edited" :
             ""}}</font></span>
         </li>
         <li class="pull-right" style="padding: 10px 54px; cursor: default;">

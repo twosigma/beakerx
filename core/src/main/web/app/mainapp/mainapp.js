@@ -118,7 +118,7 @@
               addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
             });
         }
-	
+
 
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
           // set shell id to null, so it won't try to find an existing shell with the id
@@ -292,7 +292,7 @@
 				  }).level,
 				  cellCount: stat.notebookModel.cells.length
 				});
-                                
+
 				bkHelper.evaluate("initialization");
 			      }
 			      stat.scope.loading = false;

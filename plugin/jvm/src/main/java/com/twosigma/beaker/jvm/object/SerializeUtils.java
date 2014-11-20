@@ -15,11 +15,14 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.Plot;
 import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
+
 import java.io.IOException;
+
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 
@@ -41,6 +44,8 @@ public class SerializeUtils {
         jgen.writeObject(new Plot().add((XYGraphics) obj));
       } else if (obj instanceof CombinedPlot) {
         jgen.writeObject((CombinedPlot) obj);
+      } else if(obj instanceof BeakerProgressUpdate) {
+        jgen.writeObject(obj);
       } else {
         jgen.writeObject(obj.toString());
       }

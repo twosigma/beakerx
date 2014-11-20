@@ -75,7 +75,7 @@ define(function(require, exports, module) {
       if (!shellId) {
         shellId = "";
       }
-      bkHelper.httpPost(serviceBase + "/rest/groovysh/getShell", { shellId: shellId })
+      bkHelper.httpPost(serviceBase + "/rest/groovysh/getShell", { shellId: shellId, sessionId: bkHelper.getSessionId() })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
@@ -108,15 +108,15 @@ define(function(require, exports, module) {
           }).done(function (ret) {
             console.log("done cancelExecution",ret);
           });
-          progressObj.message = "cancelling...";
+          progressObj.object.message = "cancelling...";
           modelOutput.result = progressObj;
-          console.log("cancelling");
         }
         var onUpdatableResultUpdate = function(update) {
           modelOutput.result = update;
           bkHelper.refreshRootScope();
         };
         var onEvalStatusUpdate = function(evaluation) {
+          console.log("onEvalStatusUpdate() "+evaluation.status+" "+evaluation.result);
           modelOutput.result.status = evaluation.status;
           if (evaluation.status === "FINISHED") {
             cometdUtil.unsubscribe(evaluation.update_id);
@@ -136,8 +136,26 @@ define(function(require, exports, module) {
             modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
             deferred.resolve();
           } else if (evaluation.status === "RUNNING") {
-            progressObj.object.message = "evaluating ...";
-            modelOutput.result = progressObj;
+            
+            if(evaluation.result !== undefined) {
+              if(evaluation.result === Object(evaluation.result)) {
+                if(evaluation.result.progressBar !== undefined && evaluation.result.message !== undefined) {
+                  progressObj.object.message = evaluation.result.message;
+                  progressObj.object.progressBar = evaluation.result.progressBar;
+                  modelOutput.result = progressObj;
+                } else {
+                  console.log("object set");
+                  modelOutput.result = evaluation.result;
+                }
+              }
+              else {
+                progressObj.object.message = evaluation.result;
+                modelOutput.result = progressObj;
+              }
+            } else {
+              progressObj.object.message = "evaluating ...";
+              modelOutput.result = progressObj;
+            }
           }
           bkHelper.refreshRootScope();
         };
@@ -217,6 +235,7 @@ define(function(require, exports, module) {
   };
   var defaultImports = [
     "com.twosigma.beaker.NamespaceClient",
+    "com.twosigma.beaker.BeakerProgressUpdate",
     "com.twosigma.beaker.chart.Color",
     "com.twosigma.beaker.chart.xychart.*",
     "com.twosigma.beaker.chart.xychart.plotitem.*"];
@@ -246,7 +265,7 @@ define(function(require, exports, module) {
           var cb = function() {
             if (bkHelper.hasSessionId()) {
               var initCode = "import com.twosigma.beaker.NamespaceClient\n" +
-                "beaker = new NamespaceClient('" + bkHelper.getSessionId() + "')\n";
+                "beaker = NamespaceClient.getBeaker('" + bkHelper.getSessionId() + "')\n";
               self.evaluate(initCode, {}).then(function () {
                 if (doneCB) {
                   doneCB(self);

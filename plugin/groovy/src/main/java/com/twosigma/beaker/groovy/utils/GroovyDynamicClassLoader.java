@@ -1,10 +1,12 @@
 package com.twosigma.beaker.groovy.utils;
 
 import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyResourceLoader;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ public class GroovyDynamicClassLoader extends DynamicClassLoader {
   
   public GroovyDynamicClassLoader(String dir) {
     super(dir);
-    glp.setOrder(5);
+    glp.setOrder(70);
     parent.addLoader(glp);
   }
 
@@ -42,6 +44,7 @@ public class GroovyDynamicClassLoader extends DynamicClassLoader {
     }
   }
 
+  @SuppressWarnings("rawtypes")
   public void addAll(List sources) {
     parent.addAll(sources);
     for(Object o : sources) {
@@ -69,9 +72,8 @@ public class GroovyDynamicClassLoader extends DynamicClassLoader {
         enabled = true;
     }
     @Override
-    public Class loadClass(String className, boolean resolveIt) {
-      Class result = null;
-      byte[] classBytes;
+    public Class<?> loadClass(String className, boolean resolveIt) {
+      Class<?> result = null;
       
       result = classes.get( className );
       if (result != null) {
@@ -85,13 +87,28 @@ public class GroovyDynamicClassLoader extends DynamicClassLoader {
         if(f.exists()) {
 
           try {
-            if(gloader==null)
+            setEnabled(false);
+            if(gloader==null) {
               gloader = new GroovyClassLoader(getLoader());
+              gloader.setResourceLoader(new GroovyResourceLoader() {
+                public URL loadGroovySource(final String fname) throws MalformedURLException {
+                  for(String p : paths) {
+                    String tpath = p + File.separator + className.replace(".", File.separator) + ".groovy";
+
+                    File f = new File(tpath);
+                    if(f.exists()) {
+                      return new URL("file://" + tpath);
+                    }
+                  }
+                  return null;
+                }
+              });
+            }
             Class<?> groovyClass = gloader.parseClass(new File(tpath));
+            setEnabled(true);
             return groovyClass;
           } catch(Exception e) { e.printStackTrace(); }
-
-          
+          setEnabled(true);          
         }
       }
       return null;
@@ -99,11 +116,17 @@ public class GroovyDynamicClassLoader extends DynamicClassLoader {
     
     @Override
     public InputStream loadResource(String name) {
-        byte[] arr = loadClassBytes( name );
-        if (arr != null) {
-            return new ByteArrayInputStream( arr );
+      for(String p : paths) {
+        String tpath = p + File.separator + name.replace(".", File.separator) + ".groovy";
+
+        File f = new File(tpath);
+        if(f.exists()) {
+          try {
+            return new FileInputStream(f);
+          } catch(Exception e) { }
         }
-        return null;
+      }
+      return null;
     }
 
     @Override

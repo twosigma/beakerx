@@ -26,7 +26,9 @@
       "outputdisplay/bko-chart.js",
 
       "outputdisplay/bko-tabledisplay.js",
-      
+
+      "outputdisplay/bko-testcontainer.js",
+
       "outputdisplay/bko-image.js",
       
       "outputdisplay/bko-latex.js",

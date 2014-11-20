@@ -21,9 +21,10 @@
   beaker.bkoDirective("Progress", ["$interval", "bkEvaluateJobManager", "bkUtils", function(
       $interval, bkEvaluateJobManager, bkUtils) {
     return {
-      template: "<div ng-if='elapsed > 200'> <i class='fa fa-cog fa-spin fa-lg'></i> " +
+      template: "<table><tr><td><div ng-if='hasMessage()'> {{getMessage()}}</div></td><td><div ng-if='elapsed > 200'> <i class='fa fa-cog fa-spin fa-lg'></i> " +
           "<span> Elapsed: {{getElapsedTime()}} </span>" +
-          "<i class='fa fa-times-circle fa-lg text-danger cursor_hand' ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i> </div>",
+          "<i class='fa fa-times-circle fa-lg text-danger cursor_hand' ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i> </div></td>" +
+          "<td><div ng-if='hasProgressBar()'> Progress: {{getProgressBar()}} %</div></td></table>",
       link: function(scope, element, attrs) {
         scope.elapsed = 0;
         var computeElapsed = function() {
@@ -42,6 +43,18 @@
         }, 100);
         scope.getElapsedTime = function() {
           return bkUtils.formatTimeString(scope.elapsed);
+        };
+        scope.getMessage = function() {
+          return scope.model.getCellModel().message;
+        };
+        scope.hasMessage = function() {
+          return scope.model.getCellModel().message !== undefined;
+        };
+        scope.getProgressBar = function() {
+          return scope.model.getCellModel().progressBar;
+        };
+        scope.hasProgressBar = function() {
+          return scope.model.getCellModel().progressBar >= 0;
         };
         scope.cancel = function() {
           bkEvaluateJobManager.cancel();

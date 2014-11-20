@@ -18,12 +18,14 @@ package com.twosigma.beaker.javash.rest;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.javash.utils.JavaEvaluator;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -42,13 +44,14 @@ public class JavashShellRest {
   @POST
   @Path("getShell")
   @Produces(MediaType.TEXT_PLAIN)
-  public String getShell(@FormParam("shellId") String shellId) 
+  public String getShell(@FormParam("shellId") String shellId,
+      @FormParam("sessionId") String sessionId) 
     throws InterruptedException, MalformedURLException
   {
     // if the shell does not already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
-      JavaEvaluator js = new JavaEvaluator(shellId);
+      JavaEvaluator js = new JavaEvaluator(shellId,sessionId);
       this.shells.put(shellId, js);
       return shellId;
     }

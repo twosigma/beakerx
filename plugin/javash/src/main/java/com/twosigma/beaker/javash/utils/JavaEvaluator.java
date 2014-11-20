@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
@@ -39,6 +40,7 @@ import com.twosigma.beaker.autocomplete.ClasspathScanner;
 
 public class JavaEvaluator {
   protected final String shellId;
+  protected final String sessionId;
   protected final String packageId;
   protected List<String> classPath;
   protected List<String> imports;
@@ -63,8 +65,9 @@ public class JavaEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  public JavaEvaluator(String id) {
+  public JavaEvaluator(String id, String sId) {
     shellId = id;
+    sessionId = sId;
     packageId = "com.twosigma.beaker.javash.bkr"+shellId.split("-")[0];
     cps = new ClasspathScanner();
     jac = new JavaAutocomplete(cps);
@@ -199,6 +202,7 @@ public class JavaEvaluator {
       JavaSourceCompiler javaSourceCompiler;
   
       javaSourceCompiler = new JavaSourceCompilerImpl();
+      NamespaceClient nc =null;
       
       while(!exit) {
         try {
@@ -220,6 +224,9 @@ public class JavaEvaluator {
   
           j.outputObject.started();
           
+          nc = NamespaceClient.getBeaker(sessionId);
+          nc.setOutputObj(j.outputObject);
+
           Pattern p;
           Matcher m;
           String pname = packageId;
@@ -324,8 +331,14 @@ public class JavaEvaluator {
               j.outputObject.error(e.getMessage());
             }          
           }
+        } finally {
+          if(nc!=null) {
+            nc.setOutputObj(null);
+            nc = null;
+          }
         }
       }
+      
     }
     
     /*

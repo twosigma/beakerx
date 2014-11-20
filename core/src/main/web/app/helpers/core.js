@@ -306,7 +306,7 @@
         btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'active';
         var template = "<div class='modal-header'>" +
             "<button class='close' ng-click='close()'>Close</button>" +
-            "<h3>" + msgHeader + "</h3>" +
+            "<h1>" + msgHeader + "</h1>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
@@ -335,7 +335,7 @@
         okBtnClass = okBtnClass ? _.isArray(okBtnClass) ? okBtnClass.join(' ') : okBtnClass : '';
         cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : '';
         var template = "<div class='modal-header'>" +
-            "<h3>" + msgHeader + "</h3>" +
+            "<h1>" + msgHeader + "</h1>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
@@ -368,7 +368,7 @@
         noBtnClass = noBtnClass ? _.isArray(noBtnClass) ? noBtnClass.join(' ') : noBtnClass : '';
         cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : '';
         var template = "<div class='modal-header'>" +
-            "<h3>" + msgHeader + "</h3>" +
+            "<h1>" + msgHeader + "</h1>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +

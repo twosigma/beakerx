@@ -18,12 +18,12 @@ define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
-      name: "Plugin manager...",
+      name: "Language manager...",
       sortorder: 100,
       action: function () {
         bkHelper.getBkNotebookViewModel().showEvaluators();
       },
-      tooltip: "Show evaluators settings"
+      tooltip: "Show available languages and edit their settings"
     },
     {
       name: "Lock",

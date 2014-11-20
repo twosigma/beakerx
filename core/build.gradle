@@ -70,7 +70,7 @@ task (compileCss, type: Exec) {
 
 task (copyNginx, type: Exec) {
   if (mac()) {
-    def brewLocation = 'which brew'.execute().text.split(/bin.brew$/)[0].trim()
+    def brewLocation = 'which brew'.execute().text[0..-10]
     commandLine 'cp', '-f', brewLocation + 'lib/libpcre.1.dylib', brewLocation + 'bin/nginx', brewLocation + 'etc/nginx/mime.types', 'nginx/bin'
   } else if (windows()) {
     def nginxLocation = 'cmd /c where nginx'.execute().text.trim()

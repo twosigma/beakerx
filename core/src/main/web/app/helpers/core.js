@@ -234,8 +234,8 @@
               '             ng-keypress="getStrategy().close($event, close)"' +
               '             focus-start /></p>' +
               '   <span style="float:left;">{{getStrategy().getResult()}}</span>' +
-              '   <button ng-click="close()" class="btn">Cancel</button>' +
-              '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary"' +
+              '   <button ng-click="close()" class="beaker-btn">Cancel</button>' +
+              '   <button ng-click="close(getStrategy().getResult())" class="beaker-btn active"' +
               '           ng-disabled="getStrategy().getSaveBtnDisabled()" >Save</button>' +
               '</div>';
           var fileChooserResultHandler = function (chosenFilePath) {
@@ -303,14 +303,14 @@
           msgHeader = "Oops...";
         }
         btnText = btnText ? btnText : "Close";
-        btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
+        btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'active';
         var template = "<div class='modal-header'>" +
             "<button class='close' ng-click='close()'>Close</button>" +
             "<h3>" + msgHeader + "</h3>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='btn " + btnClass +"' ng-click='close(\"OK\")'>" + btnText + "</button>" +
+            "   <button class='beaker-btn " + btnClass +"' ng-click='close(\"OK\")'>" + btnText + "</button>" +
             "</div>";
         return this.showModalDialog(callback, template);
       },
@@ -339,8 +339,8 @@
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='Yes btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
-            "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
+            "   <button class='Yes beaker-btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
+            "   <button class='Cancel beaker-btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },
@@ -372,9 +372,9 @@
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='Yes btn " + yesBtnClass +"' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
-            "   <button class='No btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
-            "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
+            "   <button class='Yes beaker-btn " + yesBtnClass +"' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
+            "   <button class='No beaker-btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
+            "   <button class='Cancel beaker-btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },

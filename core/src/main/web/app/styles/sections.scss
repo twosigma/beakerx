@@ -33,7 +33,9 @@
   }
 }
 
-.section0, .section1, .section2, .section3, .section4, .section5 {
+.section0, .section1, .section2, .section3, .section4, .section5,
+.modal-header h1
+{
   color:        #47474A;
   font-family:  $font-family-primary-bold;
 }
@@ -71,4 +73,10 @@
 
 .section5 {
   font-size: 18px;
+}
+
+.modal-header h1 {
+  font-size: 14px;
+  line-height: 14px;
+  margin: 0;
 }

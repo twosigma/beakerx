@@ -203,8 +203,8 @@ define(function(require, exports, module) {
                       '     <input type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">' +
                       '     <span ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .ipynb files only</span>' +
                       '   </span>' +
-                      '   <button ng-click="close()" class="btn">Cancel</button>' +
-                      '   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary">Open</button>' +
+                      '   <button ng-click="close()" class="beaker-btn">Cancel</button>' +
+                      '   <button ng-click="close(getStrategy().getResult())" class="beaker-btn active">Open</button>' +
                       '</div>', // template
                   strategy
               );

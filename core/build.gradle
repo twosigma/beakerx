@@ -70,7 +70,8 @@ task (compileCss, type: Exec) {
 
 task (copyNginx, type: Exec) {
   if (mac()) {
-    commandLine 'cp -f /usr/local/lib/libpcre.1.dylib /usr/local/bin/nginx /usr/local/etc/nginx/mime.types nginx/bin'.split()
+    def brewLocation = 'which brew'.execute().text[0..-10]
+    commandLine 'cp', '-f', brewLocation + 'lib/libpcre.1.dylib', brewLocation + 'bin/nginx', brewLocation + 'etc/nginx/mime.types', 'nginx/bin'
   } else if (windows()) {
     def nginxLocation = 'cmd /c where nginx'.execute().text.trim()
     commandLine 'cmd', '/c', 'xcopy', '/Y', '/Q', nginxLocation, 'nginx\\bin', '&', 'xcopy', '/Y', '/Q', nginxLocation + '\\..\\conf\\mime.types', 'nginx\\bin'

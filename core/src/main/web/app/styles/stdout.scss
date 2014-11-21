@@ -37,6 +37,10 @@
     display:    block;
     padding:    0 10px;
     box-sizing: border-box;
+    &.single {
+        float: none;
+        width: auto;
+    }
 }
 
 .outputlogbox {

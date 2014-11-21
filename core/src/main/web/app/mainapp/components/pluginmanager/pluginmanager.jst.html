@@ -15,14 +15,14 @@
 -->
 <div modal="!isHideEvaluators()" close='hideEvaluators()'>
   <div class="modal-header">
-    <h3>Plugin Manager</h3>
+    <h1>Language Manager</h1>
   </div>
   <div class="modal-body modal-large plugin-mananger">
     <button class="beaker-btn" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()">
       <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
       <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
       <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
-      <bk-language-logo 
+      <bk-language-logo
           bg-color="{{getEvaluatorDetails(pluginName).bgColor}}"
           fg-color="{{getEvaluatorDetails(pluginName).fgColor}}"
           border-color="{{getEvaluatorDetails(pluginName).borderColor}}">{{getEvaluatorDetails(pluginName).shortName}}</bk-language-logo>

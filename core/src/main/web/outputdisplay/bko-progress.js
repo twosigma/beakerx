@@ -61,7 +61,7 @@
           return scope.model.getCellModel().payload !== undefined && scope.model.getCellModel().payload.type !== undefined;
         };
         scope.getPayloadType = function() {
-          if(scope.hasPayload())
+          if (scope.hasPayload())
             return scope.model.getCellModel().payload.type;
           return undefined;
         };
@@ -107,7 +107,7 @@
 
         scope.refresh = function(type) {
           scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(scope.getOutputResult());
-          if(scope.model.selectedType !== scope.applicableDisplays[0])
+          if (scope.model.selectedType !== scope.applicableDisplays[0])
             scope.model.selectedType = scope.applicableDisplays[0];
         };
         scope.getOutputDisplayType = function() {
@@ -120,7 +120,7 @@
           return type;
         };
         scope.$watch('getPayload()', function() {
-          if(scope.hasPayload())
+          if (scope.hasPayload())
             scope.refresh();
         });
       }

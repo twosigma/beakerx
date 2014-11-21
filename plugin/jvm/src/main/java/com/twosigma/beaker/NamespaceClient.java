@@ -103,56 +103,56 @@ public class NamespaceClient {
   }
 
   public synchronized void showProgressUpdate(String s) {
-    if(seo != null) {
+    if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(s);
       seo.update(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(int i) {
-    if(seo != null) {
+    if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(i);
       seo.update(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(String s, int i) {
-    if(seo != null) {
+    if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(s,i);
       seo.update(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(String s, Object p) {
-    if(seo != null) {
+    if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(s,p);
       seo.update(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(Object p) {
-    if(seo != null) {
+    if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(p);
       seo.update(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(int i, Object p) {
-    if(seo != null) {
+    if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(i,p);
       seo.update(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(String s, int i, Object p) {
-    if(seo != null) {
+    if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(s,i,p);
       seo.update(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(BeakerProgressUpdate o) {
-    if(seo != null)
+    if (seo != null)
       seo.update(o);
   }
 
@@ -161,13 +161,13 @@ public class NamespaceClient {
   private static String currentSession;
   
   public synchronized static NamespaceClient getBeaker() {
-    if(currentSession!=null)
+    if (currentSession!=null)
       return nsClients.get(currentSession);
     return null;
     }
 
   public synchronized  static NamespaceClient getBeaker(String s) {
-    if(!nsClients.containsKey(s))
+    if (!nsClients.containsKey(s))
       nsClients.put(s, new NamespaceClient(s));
     currentSession = s;
     return nsClients.get(currentSession);

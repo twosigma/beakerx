@@ -90,8 +90,8 @@
 
         scope.dtColumns = [ ];
         for (var i = 0; i < columns.length; i++) {
-          if(columns[i] === "time") {
-            if(scope.model.getCellModel().timeStrings) {
+          if (columns[i] === "time") {
+            if (scope.model.getCellModel().timeStrings) {
               scope.timeStrings = scope.model.getCellModel().timeStrings;
               scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
                   .renderWith(function(data, type, full, meta)
@@ -103,7 +103,7 @@
               scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
                   .renderWith(function(value,type,full,meta)
                       {
-                    if(typeof value =='string')
+                    if (typeof value =='string')
                       return value;
                     var nano = value % 1000;
                     var micro = (value / 1000) % 1000;

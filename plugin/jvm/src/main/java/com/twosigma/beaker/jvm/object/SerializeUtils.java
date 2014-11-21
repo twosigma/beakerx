@@ -44,7 +44,7 @@ public class SerializeUtils {
         jgen.writeObject(new Plot().add((XYGraphics) obj));
       } else if (obj instanceof CombinedPlot) {
         jgen.writeObject((CombinedPlot) obj);
-      } else if(obj instanceof BeakerProgressUpdate) {
+      } else if (obj instanceof BeakerProgressUpdate) {
         jgen.writeObject(obj);
       } else {
         try {

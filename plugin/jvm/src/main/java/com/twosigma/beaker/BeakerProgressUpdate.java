@@ -81,7 +81,7 @@ public class BeakerProgressUpdate {
         jgen.writeStartObject();
         jgen.writeObjectField("message", value.message);
         jgen.writeObjectField("progressBar", value.progressBar);
-        if(value.payload!=null) {
+        if (value.payload!=null) {
           try {
             jgen.writeObjectField("payload", value.payload);
           } catch(Throwable e) {

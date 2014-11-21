@@ -17,8 +17,6 @@
 @mixin error_state($color) {
   color:    $color;
   padding:  10px 0;
-  z-index:  1;
-  position: relative;
 }
 
 .outline {
@@ -36,6 +34,11 @@
 
   &.warning {
     border: solid 1px $warning_yellow;
+  }
+
+  & ~ * {
+    position: relative;
+    z-index: 1;
   }
 }
 

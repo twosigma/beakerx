@@ -16,34 +16,35 @@
 
 package com.twosigma.beaker;
 
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.shared.NamespaceBinding;
+
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Form;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 
 public class NamespaceClient {
 
-  private Base64 encoder;
   private String session;
   private ObjectMapper mapper;
   private String auth;
   private String urlBase;
+  private SimpleEvaluationObject seo;
 
-  public NamespaceClient(String session) {
-    this.encoder = new Base64();
+  private NamespaceClient(String session) {
     this.mapper = new ObjectMapper();
     this.session = session;
     String account = "beaker:" + System.getenv("beaker_core_password");
-    this.auth = "Basic " + encoder.encodeBase64String(account.getBytes());
-    this.urlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") +
-      "/rest/namespace";
+    this.auth = "Basic " + Base64.encodeBase64String(account.getBytes());
+    this.urlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/namespace";
   }
 
   public Object set4(String name, Object value, Boolean unset, Boolean sync)
@@ -97,10 +98,80 @@ public class NamespaceClient {
     return binding.getValue();
   }
 
-  private static NamespaceClient nsClient = null;
+  public synchronized void setOutputObj(SimpleEvaluationObject o) {
+    seo = o;
+  }
 
-  public static NamespaceClient getBeaker() { return nsClient; }
+  public synchronized void showProgressUpdate(String s) {
+    if (seo != null) {
+      BeakerProgressUpdate bpu = new BeakerProgressUpdate(s);
+      seo.update(bpu);
+    }
+  }
 
-  public static void setBeakerClient(String s) { nsClient = new NamespaceClient(s); }
+  public synchronized void showProgressUpdate(int i) {
+    if (seo != null) {
+      BeakerProgressUpdate bpu = new BeakerProgressUpdate(i);
+      seo.update(bpu);
+    }
+  }
+
+  public synchronized void showProgressUpdate(String s, int i) {
+    if (seo != null) {
+      BeakerProgressUpdate bpu = new BeakerProgressUpdate(s,i);
+      seo.update(bpu);
+    }
+  }
+
+  public synchronized void showProgressUpdate(String s, Object p) {
+    if (seo != null) {
+      BeakerProgressUpdate bpu = new BeakerProgressUpdate(s,p);
+      seo.update(bpu);
+    }
+  }
+
+  public synchronized void showProgressUpdate(Object p) {
+    if (seo != null) {
+      BeakerProgressUpdate bpu = new BeakerProgressUpdate(p);
+      seo.update(bpu);
+    }
+  }
+
+  public synchronized void showProgressUpdate(int i, Object p) {
+    if (seo != null) {
+      BeakerProgressUpdate bpu = new BeakerProgressUpdate(i,p);
+      seo.update(bpu);
+    }
+  }
+
+  public synchronized void showProgressUpdate(String s, int i, Object p) {
+    if (seo != null) {
+      BeakerProgressUpdate bpu = new BeakerProgressUpdate(s,i,p);
+      seo.update(bpu);
+    }
+  }
+
+  public synchronized void showProgressUpdate(BeakerProgressUpdate o) {
+    if (seo != null)
+      seo.update(o);
+  }
+
+  private static Map<String,NamespaceClient> nsClients = new HashMap<String,NamespaceClient>();
+
+  private static String currentSession;
+  
+  public synchronized static NamespaceClient getBeaker() {
+    if (currentSession!=null)
+      return nsClients.get(currentSession);
+    return null;
+    }
+
+  public synchronized  static NamespaceClient getBeaker(String s) {
+    if (!nsClients.containsKey(s))
+      nsClients.put(s, new NamespaceClient(s));
+    currentSession = s;
+    return nsClients.get(currentSession);
+  }
+
   
 }

@@ -26,7 +26,10 @@
       "outputdisplay/bko-chart.js",
 
       "outputdisplay/bko-tabledisplay.js",
-      
+
+      // enable this to use the example object container output display
+      //"outputdisplay/bko-testcontainer.js",
+
       "outputdisplay/bko-image.js",
       
       "outputdisplay/bko-latex.js",

@@ -40,7 +40,7 @@
       link : function(scope, element, attrs) {
         scope.initLayout = function() {
           var model = scope.stdmodel;
-          if(model.title != null) {
+          if (model.title != null) {
             scope.jqplottitle = element.find("#combplotTitle");
             scope.jqplottitle.text(model.title).css("width", scope.width);
           }
@@ -81,9 +81,9 @@
               },
               setDumpState: function(s) {
                 this.state = s;
-		if(scope.model.setDumpState !== undefined) {
-		    scope.model.setDumpState(scope.dumpState());
-		}
+                if (scope.model.setDumpState !== undefined) {
+                  scope.model.setDumpState(scope.dumpState());
+                }
               },
               resetShareMenuItems : function() {
               },
@@ -141,42 +141,49 @@
           scope.initLayout();
           scope.calcRange();
 
-	  if(scope.model.getDumpState !== undefined) {
+          if (scope.model.getDumpState !== undefined) {
             var savedstate = scope.model.getDumpState();
             if (savedstate !== undefined && savedstate.subplots !== undefined) {
-	      for (var i = 0; i < scope.models.length; i++) {
-		scope.models[i].state = savedstate.subplots[i];
-	      }
-	      scope.width = savedstate.width;
-	      scope.focus = savedstate.focus;
-	    } else if(scope.models !== undefined) {
-	      scope.focus = scope.calcRange();
-	      for (var i = 0; i < scope.models.length; i++) {
-		scope.models[i].state = { };
-	      }
-	      scope.model.setDumpState(scope.dumpState());
-	    }
-	  }
+              for (var i = 0; i < scope.models.length; i++) {
+                scope.models[i].state = savedstate.subplots[i];
+              }
+              scope.width = savedstate.width;
+              scope.focus = savedstate.focus;
+            } else if (scope.models !== undefined) {
+              scope.focus = scope.calcRange();
+              for (var i = 0; i < scope.models.length; i++) {
+                scope.models[i].state = { };
+              }
+              scope.model.setDumpState(scope.dumpState());
+            }
+          }
         };
-        
-	if(scope.model.getDumpState !== undefined) {
-	  scope.getDumpState = function() {
-	    return scope.model.getDumpState();
-	  };
-	}
+
+        if (scope.model.getDumpState !== undefined) {
+          scope.getDumpState = function() {
+            return scope.model.getDumpState();
+          };
+        }
 
         scope.init();
-        
-	if(scope.model.getDumpState !== undefined) {
+
+        if (scope.model.getDumpState !== undefined) {
           scope.$watch('getDumpState()', function(result) {
             if (result !== undefined && result.subplots === undefined && scope.models !== undefined) {
               for (var i = 0; i < scope.models.length; i++) {
                 scope.models[i].state = { };
-	      }
-	      scope.model.setDumpState(scope.dumpState());
-	    }
-	  });
-	}
+              }
+              scope.model.setDumpState(scope.dumpState());
+            }
+          });
+        }
+
+        scope.getCellModel = function() {
+          return scope.model.getCellModel();
+        };
+        scope.$watch('getCellModel()', function() {
+          scope.init();
+        });
 
       }
     };

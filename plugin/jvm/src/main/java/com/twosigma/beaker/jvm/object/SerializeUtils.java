@@ -47,7 +47,11 @@ public class SerializeUtils {
       } else if(obj instanceof BeakerProgressUpdate) {
         jgen.writeObject(obj);
       } else {
-        jgen.writeObject(obj.toString());
+        try {
+          jgen.writeObject(obj);
+        } catch(Throwable e) {
+          jgen.writeObject(obj.toString());
+        }
       }
     } catch (IOException e) {
       System.err.println("Serialization error:");

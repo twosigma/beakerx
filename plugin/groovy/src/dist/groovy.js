@@ -116,7 +116,6 @@ define(function(require, exports, module) {
           bkHelper.refreshRootScope();
         };
         var onEvalStatusUpdate = function(evaluation) {
-          console.log("onEvalStatusUpdate() "+evaluation.status+" "+evaluation.result);
           modelOutput.result.status = evaluation.status;
           if (evaluation.status === "FINISHED") {
             cometdUtil.unsubscribe(evaluation.update_id);
@@ -136,25 +135,16 @@ define(function(require, exports, module) {
             modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
             deferred.resolve();
           } else if (evaluation.status === "RUNNING") {
-            
             if(evaluation.result !== undefined) {
               if(evaluation.result === Object(evaluation.result)) {
-                if(evaluation.result.progressBar !== undefined && evaluation.result.message !== undefined) {
-                  progressObj.object.message = evaluation.result.message;
-                  progressObj.object.progressBar = evaluation.result.progressBar;
-                  modelOutput.result = progressObj;
-                } else {
-                  console.log("object set");
-                  modelOutput.result = evaluation.result;
-                }
-              }
-              else {
-                progressObj.object.message = evaluation.result;
-                modelOutput.result = progressObj;
+                modelOutput.result.object.message = evaluation.result.message;
+                modelOutput.result.object.progressBar = evaluation.result.progressBar;
+                modelOutput.result.object.payload = evaluation.result.payload;
+              } else {
+                modelOutput.result.object.message = evaluation.result;
               }
             } else {
-              progressObj.object.message = "evaluating ...";
-              modelOutput.result = progressObj;
+              modelOutput.result.object.message = "evaluating ...";
             }
           }
           bkHelper.refreshRootScope();

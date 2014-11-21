@@ -136,8 +136,17 @@ define(function(require, exports, module) {
             modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
             deferred.resolve();
           } else if (evaluation.status === "RUNNING") {
-            progressObj.object.message = "evaluating ...";
-            modelOutput.result = progressObj;
+            if(evaluation.result !== undefined) {
+              if(evaluation.result === Object(evaluation.result)) {
+                modelOutput.result.object.message = evaluation.result.message;
+                modelOutput.result.object.progressBar = evaluation.result.progressBar;
+                modelOutput.result.object.payload = evaluation.result.payload;
+              } else {
+                modelOutput.result.object.message = evaluation.result;
+              }
+            } else {
+              modelOutput.result.object.message = "evaluating ...";
+            }
           }
           bkHelper.refreshRootScope();
         };

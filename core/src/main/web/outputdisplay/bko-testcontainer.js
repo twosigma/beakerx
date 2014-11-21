@@ -21,7 +21,7 @@
   beaker.bkoDirective('TestContainer', ["bkCellMenuPluginManager", "bkUtils", function(bkCellMenuPluginManager, bkUtils) {
     var CELL_TYPE = "bko-testcontainer";
     return {
-      template: '<div>TEST CONTAINER</div>',
+      template: '<div>TEST CONTAINER {{getStuff()}}</div>',
       controller: function($scope) {
         $scope.getStuff = function() {
           return $scope.state;
@@ -39,4 +39,5 @@
       }
     };
   }]);
+  beaker.registerOutputDisplay("TestContainer", ["TestContainer", "Text"]);
 })();

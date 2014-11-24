@@ -33,6 +33,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
@@ -633,10 +634,16 @@ public class PluginServiceLocatorRest {
     String listenSection;
     String authCookieRule;
     String startPage;
+    String hostName = null;
+    try {
+      // XXX should allow name to be set by user in bkConfig
+      hostName = InetAddress.getLocalHost().getHostName();
+    } catch (UnknownHostException e) {
+      System.err.println("warning: UnknownHostException from InetAddress.getLocalHost().getHostName(), ignored");
+    }
     if (this.publicServer) {
       listenSection = "listen " + this.portBase + " ssl;\n";
-      // XXX should allow name to be set by user in bkConfig
-      listenSection += "server_name " + InetAddress.getLocalHost().getHostName() + ";\n";
+      listenSection += "server_name " + hostName + ";\n";
       listenSection += "ssl_certificate " + this.nginxServDir + "/ssl_cert.pem;\n";
       listenSection += "ssl_certificate_key " + this.nginxServDir + "/ssl_cert.pem;\n";
       authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
@@ -648,7 +655,7 @@ public class PluginServiceLocatorRest {
     }
     nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
     nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
-    nginxConfig = nginxConfig.replace("%(host)s", InetAddress.getLocalHost().getHostName());
+    nginxConfig = nginxConfig.replace("%(host)s", hostName);
     nginxConfig = nginxConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     nginxConfig = nginxConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));
     nginxConfig = nginxConfig.replace("%(port_clear)s", Integer.toString(this.servPort));

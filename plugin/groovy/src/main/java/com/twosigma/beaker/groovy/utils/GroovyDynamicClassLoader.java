@@ -93,7 +93,7 @@ public class GroovyDynamicClassLoader extends DynamicClassLoader {
               gloader.setResourceLoader(new GroovyResourceLoader() {
                 public URL loadGroovySource(final String fname) throws MalformedURLException {
                   for(String p : paths) {
-                    String tpath = p + File.separator + className.replace(".", File.separator) + ".groovy";
+                    String tpath = p + File.separator + fname.replace(".", File.separator) + ".groovy";
 
                     File f = new File(tpath);
                     if(f.exists()) {

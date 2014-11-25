@@ -32,7 +32,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path("groovysh")
+@Path("scalash")
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class ScalaShellRest {
@@ -48,6 +48,8 @@ public class ScalaShellRest {
       @FormParam("sessionId") String sessionId) 
     throws InterruptedException, MalformedURLException
   {
+	  System.out.println("getShell: "+shellId+" "+sessionId);
+
 	  // if the shell does not already exist, create a new shell
 	  if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
 	      shellId = UUID.randomUUID().toString();
@@ -63,6 +65,8 @@ public class ScalaShellRest {
   public SimpleEvaluationObject evaluate(@FormParam("shellId") String shellId,
       @FormParam("code") String code) throws InterruptedException {
 
+	  System.out.println("Evaluate: "+shellId+" "+code);
+	  
 	  SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
 	  obj.started();
 	  if(!this.shells.containsKey(shellId)) {

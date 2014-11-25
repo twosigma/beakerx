@@ -64,13 +64,17 @@ public class WebServerModule extends AbstractModule {
     cm.setConstraint(constraint);
     cm.setPathSpec("/*");
     ConstraintSecurityHandler csh = new ConstraintSecurityHandler();
-    csh.setAuthenticator(new BasicAuthenticator());
-    csh.setRealmName("SecureRealm");
-    csh.addConstraintMapping(cm);
-    HashLoginService loginService = new HashLoginService();
-    loginService.putUser("beaker", Credential.getCredential(password),
-                         new String[]{"user"});
-    csh.setLoginService(loginService);
+    try {
+	    if(Credential.getCredential(password)!=null) {
+		    csh.setAuthenticator(new BasicAuthenticator());
+		    csh.setRealmName("SecureRealm");
+		    csh.addConstraintMapping(cm);
+		    HashLoginService loginService = new HashLoginService();
+		    loginService.putUser("beaker", Credential.getCredential(password),
+		                         new String[]{"user"});
+		    csh.setLoginService(loginService);
+	    }
+    } catch(Exception e) { e.printStackTrace(); csh = new ConstraintSecurityHandler(); }
     return csh;
   }
 

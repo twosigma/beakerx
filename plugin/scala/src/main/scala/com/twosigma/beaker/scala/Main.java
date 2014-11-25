@@ -48,7 +48,7 @@ public class Main {
     java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
 
     if (args.length != 1) {
-      System.out.println("usage: groovyPlugin <portListen>");
+      System.out.println("usage: scalaPlugin <portListen>");
     }
     final int port = Integer.parseInt(args[0]);
     WebAppConfigPref webAppPref = new DefaultWebAppConfigPref(port);

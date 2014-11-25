@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
+import com.twosigma.beaker.scala.util.ScalaEvaluatorGlue;
+
 //import scala.tools.nsc.interpreter.IMain;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -21,7 +23,7 @@ public class ScalaEvaluator {
   protected List<String> classPath;
   protected List<String> imports;
   protected String outDir;
-  //protected GroovyClasspathScanner cps;
+  //protected ScalaClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
   protected final ThreadGroup myThreadGroup;
@@ -59,10 +61,10 @@ public class ScalaEvaluator {
     myWorker.start();
   }
 
-//  protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c)
-//  {
-//	return new GroovyAutocomplete(c);
-//  }
+  //  protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c)
+  //  {
+  //	return new GroovyAutocomplete(c);
+  //  }
 
   public String getShellId() { return shellId; }
 
@@ -81,18 +83,18 @@ public class ScalaEvaluator {
   public void resetEnvironment() {
     cancelExecution();
 
-    String cpp = "";
-    for(String pt : classPath) {
-      cpp += pt;
-      cpp += File.pathSeparator;
-    }
-    cpp += File.pathSeparator;
-    cpp += System.getProperty("java.class.path");
-//    cps = new GroovyClasspathScanner(cpp);
-//    gac = createGroovyAutocomplete(cps);
-//    
-//    for(String st : imports)
-//      gac.addImport(st);
+    //    String cpp = "";
+    //    for(String pt : classPath) {
+    //      cpp += pt;
+    //      cpp += File.pathSeparator;
+    //    }
+    //    cpp += File.pathSeparator;
+    //    cpp += System.getProperty("java.class.path");
+    //    cps = new ScalaClasspathScanner(cpp);
+    //    gac = createGroovyAutocomplete(cps);
+    //    
+    //    for(String st : imports)
+    //      gac.addImport(st);
 
     updateLoader=true;
     syncObject.release();
@@ -104,11 +106,11 @@ public class ScalaEvaluator {
   }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
-    if(cp.isEmpty())
+    if(cp==null || cp.isEmpty())
       classPath.clear();
     else
       classPath = Arrays.asList(cp.split("[\\s]+"));
-    if (in.isEmpty())
+    if (imports==null || in.isEmpty())
       imports.clear();
     else
       imports = Arrays.asList(in.split("\\s+"));
@@ -119,72 +121,77 @@ public class ScalaEvaluator {
     }
     resetEnvironment();
   }
-  
+
   public void evaluate(SimpleEvaluationObject seo, String code) {
     // send job to thread
     jobQueue.add(new jobDescriptor(code,seo));
     syncObject.release();
   }
 
-//  public List<String> autocomplete(String code, int caretPosition) {    
-//    return gac.doAutocomplete(code, caretPosition,loader!=null ? loader.getLoader() : null);
-//  }
+  //  public List<String> autocomplete(String code, int caretPosition) {    
+  //    return gac.doAutocomplete(code, caretPosition,loader!=null ? loader.getLoader() : null);
+  //  }
 
-//  protected ScalaDynamicClassLoader loader = null;
-//  protected GroovyShell shell;
+  protected ScalaDynamicClassLoader loader = null;
+  protected ScalaEvaluatorGlue shell;
 
   protected class workerThread extends Thread {
 
     public workerThread(ThreadGroup tg) {
       super(tg, "worker");
     }
-    
+
     /*
      * This thread performs all the evaluation
      */
-    
+
     public void run() {
       jobDescriptor j = null;
       NamespaceClient nc = null;
-      
+
       while(!exit) {
         try {
           // wait for work
           syncObject.acquire();
-          
+
           // check if we must create or update class loader
           if(updateLoader) {
-//            shell = null;
+            shell = null;
           }
-          
+
           // get next job descriptor
           j = jobQueue.poll();
           if(j==null)
             continue;
 
-//          if (shell==null) {
-//            updateLoader=false;
-//            newEvaluator();
-//          }
-        
-//          if(loader!=null)
-//            loader.clearCache();
+          System.out.println("1");
+
+          if (shell==null) {
+            updateLoader=false;
+            System.out.println("2");
+            newEvaluator();
+            System.out.println("3");
+          }
+
+          if(loader!=null)
+            loader.clearCache();
 
           j.outputObject.started();
 
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
-          
-//          Object result;
-//          result = shell.evaluate(j.codeToBeExecuted);
-//          j.outputObject.finished(result);
+          shell.evaluate(j.outputObject, j.codeToBeExecuted);
+          j=null;
         } catch(Throwable e) {
           if(j!=null && j.outputObject != null) {
             if (e instanceof InterruptedException || e instanceof InvocationTargetException) {
               j.outputObject.error("... cancelled!");
+              e.printStackTrace();
             } else {
               j.outputObject.error(e.getMessage());
-            }          
+            }
+          } else {
+            e.printStackTrace();
           }
         } finally {
           if(nc!=null) {
@@ -194,7 +201,7 @@ public class ScalaEvaluator {
         }
       }
     }
-      
+
     protected ClassLoader newClassLoader() throws MalformedURLException
     {
       URL[] urls = {};
@@ -202,34 +209,34 @@ public class ScalaEvaluator {
         urls = new URL[classPath.size()];
         for (int i = 0; i < classPath.size(); i++) {
           urls[i] = new URL("file://" + classPath.get(i));
+          System.out.println(urls[i].toString());
         }
       }
-//      loader = null;
-//      ClassLoader cl;
-//
-//      loader = new ScalaDynamicClassLoader(outDir);
-//      loader.addAll(Arrays.asList(urls));
-//      cl = loader.getLoader();
-//      return cl;
-      return null;
+      loader = null;
+      ClassLoader cl;
+      loader = new ScalaDynamicClassLoader(outDir);
+      loader.addAll(Arrays.asList(urls));
+      cl = loader.getLoader();
+      System.out.println("8");
+      return cl;
     }
 
     protected void newEvaluator() throws MalformedURLException
     {
-//      ImportCustomizer icz = new ImportCustomizer();
-//
-//      if (!imports.isEmpty()) {
-//        for (int i = 0; i < imports.size(); i++) {
-//          // should trim too
-//          if (imports.get(i).endsWith(".*")) {
-//            icz.addStarImports(imports.get(i).substring(0, imports.get(i).length() - 2));
-//          } else {
-//            icz.addImports(imports.get(i));
-//          }
-//        }
-//      }
-//      CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
-//      shell = new GroovyShell(newClassLoader(), new Binding(), config);
+      shell = new ScalaEvaluatorGlue(newClassLoader(), System.getProperty("java.class.path"));
+
+      if (!imports.isEmpty()) {
+        for (int i = 0; i < imports.size(); i++) {
+          String imp = imports.get(i).trim();
+          if (imp.startsWith("import "))
+            imp = imp.substring(7).trim();
+          if (imp.endsWith(".*"))
+            imp = imp.substring(0,imp.length()-1) + "_";
+          System.out.println("importing '"+imp+"'");
+          if(!shell.addImport(imp))
+            System.err.println("ERROR: cannot add import '"+imp+"'");
+        }
+      }
     }
   }
 

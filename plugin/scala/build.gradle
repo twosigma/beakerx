@@ -14,12 +14,14 @@
  *  limitations under the License.
  */
 apply plugin: 'java'
+apply plugin: 'scala'
 
 repositories {
   mavenCentral()
 }
 
 apply plugin:'application'
+
 mainClassName = 'com.twosigma.beaker.scala.Main'
 
 configurations {
@@ -29,7 +31,13 @@ configurations {
 
 dependencies {
   provided project(':plugin:jvm')
-  provided group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.0'
+  compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.4'
+  testCompile group: 'com.sun.jersey', name: 'jersey-client', version: '1.17.1'
+  testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-core', version: '1.17.1'
+  testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-external', version: '1.17.1'
+  testCompile group: 'org.cometd.java', name: 'cometd-java-client', version: '2.7.0'
+  testCompile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+  
 //  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.3'
 //  antlr group : 'org.antlr', name :'antlr4', version: '4.3'
 }
@@ -49,10 +57,20 @@ dependencies {
 //compileJava.dependsOn antlr4_groovy_lexer
 //compileJava.dependsOn antlr4_groovy_parser
 
+compileScala
+//compileScala.dependsOn.remove("compileJava")
+
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'
   options.compilerArgs << '-Xlint:unchecked'
 }
+
+test {
+	jvmArgs = [ "-Djersey.test.port=34561" ]
+	//workingDir = "../../core/config/plugins/eval/scala"
+}
+
+test.dependsOn installApp
 
 if (hasProperty('evalPluginDir')) {
   installApp.into new File(evalPluginDir, 'scala')

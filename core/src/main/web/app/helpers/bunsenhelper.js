@@ -46,10 +46,6 @@
         bkCoreManager: bkCoreManager
       },
 
-      userToken: function() {
-        return $routeParams.userToken;
-      },
-
       resizeIFrame: function() {
         $timeout(function() {
           $window.top.postMessage({height: $('html').outerHeight(),

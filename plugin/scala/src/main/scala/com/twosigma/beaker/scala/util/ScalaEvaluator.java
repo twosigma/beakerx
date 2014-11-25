@@ -164,13 +164,9 @@ public class ScalaEvaluator {
           if(j==null)
             continue;
 
-          System.out.println("1");
-
           if (shell==null) {
             updateLoader=false;
-            System.out.println("2");
             newEvaluator();
-            System.out.println("3");
           }
 
           if(loader!=null)
@@ -190,8 +186,6 @@ public class ScalaEvaluator {
             } else {
               j.outputObject.error(e.getMessage());
             }
-          } else {
-            e.printStackTrace();
           }
         } finally {
           if(nc!=null) {
@@ -217,7 +211,6 @@ public class ScalaEvaluator {
       loader = new ScalaDynamicClassLoader(outDir);
       loader.addAll(Arrays.asList(urls));
       cl = loader.getLoader();
-      System.out.println("8");
       return cl;
     }
 
@@ -228,14 +221,20 @@ public class ScalaEvaluator {
       if (!imports.isEmpty()) {
         for (int i = 0; i < imports.size(); i++) {
           String imp = imports.get(i).trim();
-          if (imp.startsWith("import "))
-            imp = imp.substring(7).trim();
+          if (imp.startsWith("import"))
+            imp = imp.substring(6).trim();
           if (imp.endsWith(".*"))
             imp = imp.substring(0,imp.length()-1) + "_";
-          System.out.println("importing '"+imp+"'");
-          if(!shell.addImport(imp))
-            System.err.println("ERROR: cannot add import '"+imp+"'");
+          if(!imp.isEmpty()) {
+            if(!shell.addImport(imp))
+              System.err.println("ERROR: cannot add import '"+imp+"'");
+          }
         }
+      }
+      
+      String r = shell.evaluate2("var beaker = NamespaceClient.getBeaker(\""+sessionId+"\")");
+      if(r!=null && !r.isEmpty()) {
+        System.err.println("ERROR setting beaker: "+r);
       }
     }
   }

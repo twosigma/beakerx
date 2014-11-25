@@ -66,8 +66,9 @@ compileJava {
 }
 
 test {
-	jvmArgs = [ "-Djersey.test.port=34561" ]
-	//workingDir = "../../core/config/plugins/eval/scala"
+	jvmArgs = [ "-Djersey.test.port=34561", "-Dbeaker.test.dir=../../core/config/plugins/eval/scala" ]
+	// to debug add: , "-Dbeaker.test.debug=true"
+	testLogging.showStandardStreams = true
 }
 
 test.dependsOn installApp

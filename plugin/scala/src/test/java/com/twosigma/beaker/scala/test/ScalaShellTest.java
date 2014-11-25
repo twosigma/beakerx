@@ -2,14 +2,13 @@ package com.twosigma.beaker.scala.test;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
 import org.cometd.bayeux.Message;
-import org.cometd.bayeux.client.ClientSession;
 import org.cometd.bayeux.client.ClientSessionChannel;
 import org.cometd.client.BayeuxClient;
 import org.cometd.client.transport.LongPollingTransport;
@@ -33,6 +32,12 @@ public class ScalaShellTest extends JerseyTest {
 	private static Process process;
 	private static BayeuxClient  client;
 	private static final Queue<String> sharedQ = new LinkedList<String>();
+	private static WebResource webResource;
+	private static final JSONParser p = new JSONParser();
+	private static final Form form = new Form();
+	private static ClientResponse response;
+    private static String shellId;
+    private static boolean debug;
 	
     public ScalaShellTest() throws Exception {
         super("");
@@ -41,13 +46,21 @@ public class ScalaShellTest extends JerseyTest {
     
     @BeforeClass
     public static void initialize() throws Exception {
-    	//thePort = Integer.parseInt(System.getProperty("jersey.test.port"));
-    	//String cmd = "bin/scala "+thePort;
-    	//System.out.println("starting: "+cmd);
-    	//process = Runtime.getRuntime().exec(cmd);
-    	//Thread.sleep(4000);
+      debug = System.getProperty("beaker.test.debug") != null;
       
+      thePort = Integer.parseInt(System.getProperty("jersey.test.port"));
+      String directory = System.getProperty("beaker.test.dir");
       
+      ProcessBuilder builder = new ProcessBuilder("bin/scala", (new Integer(thePort)).toString());
+      if(debug) {
+        builder.redirectOutput(new File("scala_test_out.txt"));
+        builder.redirectError(new File("scala_test_err.txt"));
+      }
+      builder.directory(new File(directory));
+      process = builder.start(); // throws IOException
+
+      Thread.sleep(4000);
+            
       // Create (and eventually set up) Jetty's HttpClient:
       HttpClient httpClient = new HttpClient();
       httpClient.start();
@@ -62,9 +75,9 @@ public class ScalaShellTest extends JerseyTest {
       boolean handshaken = client.waitFor(1000, BayeuxClient.State.CONNECTED);
       if (handshaken)
       {
-        System.out.println("SUCCESS");
+        if(debug)  System.out.println("Cometd connection successful");
       } else {
-        System.out.println("FAILURE");
+        if(debug)  System.out.println("Cometd connection succesful");
       }
     }
     
@@ -81,124 +94,83 @@ public class ScalaShellTest extends JerseyTest {
     
     @AfterClass
     public static void terminate() {
-    	//process.destroy();
+      process.destroy();
     }
 
+    private static void evaluateTask(String code, String expect) throws ParseException {
+      form.clear();
+      form.add("shellId", shellId);
+      form.add("code", code);
+
+      response = webResource.path("/rest/scalash/evaluate").post(ClientResponse.class, form);
+      checkResponse (200);
+      String result = response.getEntity(String.class);
+
+      JSONObject ro = (JSONObject)p.parse(result);
+      String id = (String) ro.get("update_id");
+      if(debug) System.out.println("Subscribing to "+id);
+      client.getChannel("/object_update/"+id).subscribe(new ChannelListener());
+      boolean completed = false;
+      String status = "";
+      
+      while(!completed) {
+        synchronized (sharedQ) {
+          //waiting condition - wait until Queue is not empty
+          while (sharedQ.size() == 0) {
+              try {
+                  sharedQ.wait();
+              } catch (InterruptedException ex) {
+                  ex.printStackTrace();
+              }
+          }
+          String msg = sharedQ.poll();
+          if(debug) System.out.println("received update "+msg);
+          ro = (JSONObject)p.parse(msg);
+          status = (String) ((JSONObject)ro.get("data")).get("status");
+          if(!status.equals("RUNNING")) {
+            completed = true;
+            result = ((JSONObject)ro.get("data")).get("result").toString();
+            client.getChannel("/object_update/"+id).unsubscribe();
+          }
+        }
+      }
+      
+      if(expect!=null)
+        assertEquals(result,expect);
+      assertEquals(status,"FINISHED");
+    }
+    
+    private static void checkResponse(int code) {
+      assertEquals("Failed : HTTP error code : " + response.getStatus() + " "+ response.getHeaders(), code, response.getStatus());
+    }
+    
     
     @Test
     public void testHelloWorld() throws InterruptedException, ParseException {
-        WebResource webResource = resource();
-        JSONParser p = new JSONParser();
-
-        Form form = new Form();
+        webResource = resource();
+        
         form.add("shellId", "my_shell_id");
         form.add("sessionId", "my_session");
          
-        ClientResponse response = webResource.path("/rest/scalash/getShell").post(ClientResponse.class, form);
-        if (response.getStatus() != 200) {
-			throw new RuntimeException("Failed : HTTP error code : "
-			     + response.getStatus() + " "+ response.getHeaders());
-		}
- 
-		String shellId = response.getEntity(String.class);
-		System.out.println("New shell ID :"+shellId);
+        response = webResource.path("/rest/scalash/getShell").post(ClientResponse.class, form);
+        checkResponse (200);
         
-		form.clear();
-		form.add("shellId", shellId);
-		form.add("code", "1+1");
-	
-		response = webResource.path("/rest/scalash/evaluate").post(ClientResponse.class, form);
-        if (response.getStatus() != 200) {
-			throw new RuntimeException("Failed : HTTP error code : "
-			     + response.getStatus() + " "+ response.getHeaders());
-		}
-        String result = response.getEntity(String.class);
-        //System.out.println("Result :"+result);
-
-        JSONObject ro = (JSONObject)p.parse(result);
-        String id = (String) ro.get("update_id");
-        System.out.println("Subscribing to "+id);
-        client.getChannel("/object_update/"+id).subscribe(new ChannelListener());
-        boolean completed = false;
-        String status = "";
-        
-        while(!completed) {
-          synchronized (sharedQ) {
-            //waiting condition - wait until Queue is not empty
-            while (sharedQ.size() == 0) {
-                try {
-                    sharedQ.wait();
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            String msg = sharedQ.poll();
-            System.out.println("receive "+msg);
-            ro = (JSONObject)p.parse(msg);
-            status = (String) ((JSONObject)ro.get("data")).get("status");
-            if(!status.equals("RUNNING")) {
-              completed = true;
-              result = ((JSONObject)ro.get("data")).get("result").toString();
-              client.getChannel("/object_update/"+id).unsubscribe();
-            }
-          }
-        }
-        
-        assertEquals(result,"2");
-        assertEquals(status,"FINISHED");
-  
+		shellId = response.getEntity(String.class);
+		if(debug) System.out.println("New shell ID :"+shellId);
+		
         form.clear();
         form.add("shellId", shellId);
         form.add("classPath", "");
         form.add("imports", "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\nimport com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*");
         
         response = webResource.path("/rest/scalash/setShellOptions").post(ClientResponse.class, form);
-        if (response.getStatus() != 204) {
-            throw new RuntimeException("Failed : HTTP error code : "
-                 + response.getStatus() + " "+ response.getHeaders());
-        }
+        checkResponse (204);
 
-        form.clear();
-        form.add("shellId", shellId);
-        form.add("code", "3+1");
-    
-        response = webResource.path("/rest/scalash/evaluate").post(ClientResponse.class, form);
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Failed : HTTP error code : "
-                 + response.getStatus() + " "+ response.getHeaders());
-        }
-        result = response.getEntity(String.class);
-        
-        ro = (JSONObject)p.parse(result);
-        id = (String) ro.get("update_id");
-        System.out.println("Subscribing to "+id);
-        client.getChannel("/object_update/"+id).subscribe(new ChannelListener());
-        completed = false;
-        status = "";
-        
-        while(!completed) {
-          synchronized (sharedQ) {
-            //waiting condition - wait until Queue is not empty
-            while (sharedQ.size() == 0) {
-                try {
-                    sharedQ.wait();
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            String msg = sharedQ.poll();
-            ro = (JSONObject)p.parse(msg);
-            status = (String) ((JSONObject)ro.get("data")).get("status");
-            if(!status.equals("RUNNING")) {
-              completed = true;
-              result = ((JSONObject)ro.get("data")).get("result").toString();
-              client.getChannel("/object_update/"+id).unsubscribe();
-           }
-          }
-        }
-        
-        assertEquals("4",result);
-        assertEquals("FINISHED",status);
+        evaluateTask("1+1","2");
 
+        evaluateTask("56+56","112");
+
+        evaluateTask("3*4","12");
+        
     }
 }

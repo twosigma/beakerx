@@ -48,8 +48,6 @@ public class ScalaShellRest {
       @FormParam("sessionId") String sessionId) 
     throws InterruptedException, MalformedURLException
   {
-	  System.out.println("getShell: "+shellId+" "+sessionId);
-
 	  // if the shell does not already exist, create a new shell
 	  if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
 	      shellId = UUID.randomUUID().toString();
@@ -64,9 +62,6 @@ public class ScalaShellRest {
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(@FormParam("shellId") String shellId,
       @FormParam("code") String code) throws InterruptedException {
-
-	  System.out.println("Evaluate: "+shellId+" "+code);
-	  
 	  SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
 	  obj.started();
 	  if(!this.shells.containsKey(shellId)) {

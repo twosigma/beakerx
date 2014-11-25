@@ -35,6 +35,7 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String) {
   }
   
   def addImport(name : String): Boolean = {
+    baos.reset();
       try {
       interpreter.interpret("import "+name) match {
         case Success => true;
@@ -45,12 +46,25 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String) {
     }
   }
   
+  def evaluate2(code: String): String = {
+    baos.reset();
+    try {
+      interpreter.interpret(code) match {
+        case Success => "";
+        case _ => baos.toString();
+      }
+    } catch {
+      case ex: Throwable => ex.toString();
+    }
+  }
+  
   def evaluate(out: SimpleEvaluationObject, code: String) {
+    baos.reset();
     out.started();
     try {
       interpreter.interpret(code) match {
         case Success => out.finished(getOut.asInstanceOf[java.lang.Object]);
-        case _ => out.error("ERROR");
+        case _ => out.error(baos.toString());
       }
     } catch {
       case ex: Throwable => out.error(ex);

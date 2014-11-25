@@ -582,79 +582,18 @@
           }
         });
 
-        $scope.promptToSave = (function() {
-          var prompted = false;
-          return function() {
-            if (prompted) { // prevent prompting multiple at the same time
-              return;
-            }
-            prompted = true;
-            bkCoreManager.show2ButtonModal(
-                "Beaker server disconnected. Further edits will not be saved.<br>" +
-                "Save current notebook as a file?",
-                "Disconnected",
-                function() {
-                  // "Save", save the notebook as a file on the client side
-                  bkUtils.saveAsClientFile(
-                      bkSessionManager.getSaveData().notebookModelAsString,
-                      "notebook.bkr");
-                },
-                function() {
-                  // "Not now", hijack all keypress events to prompt again
-                  window.addEventListener('keypress', $scope.promptToSave, true);
-                },
-                "Save", "Not now", "btn-primary", ""
-            ).then(function() {
-              prompted = false;
-            });
-          };
-        })();
-
         var connectionManager = (function() {
-          var RECONNECT_TIMEOUT = 5000; // 5 seconds
           var OFFLINE_MESSAGE = "offline";
           var CONNECTING_MESSAGE = "reconnecting";
-          var reconnectTimeout = undefined;
           var statusMessage = OFFLINE_MESSAGE;
           var disconnected = false;
-          var indicateReconnectFailed = function() {
-            stopWaitingReconnect();
-            statusMessage = OFFLINE_MESSAGE;
-            bkUtils.disconnect(); // prevent further attempting to reconnect
-            $scope.promptToSave();
-          };
-          var waitReconnect = function() {
-            statusMessage = CONNECTING_MESSAGE;
-
-            // wait for 5 sceonds, if reconnect didn't happen, prompt to save
-            if (!reconnectTimeout) {
-              reconnectTimeout = $timeout(indicateReconnectFailed, RECONNECT_TIMEOUT);
-            }
-            // if user attempts to interact within 5 second, also prompt to save
-            window.addEventListener('keypress', indicateReconnectFailed, true);
-          };
-          var stopWaitingReconnect = function() {
-            if (reconnectTimeout) {
-              $timeout.cancel(reconnectTimeout);
-              reconnectTimeout = undefined;
-            }
-            window.removeEventListener('keypress', indicateReconnectFailed, true);
-          };
-
           return {
             onDisconnected: function() {
+              statusMessage = CONNECTING_MESSAGE;
               disconnected = true;
-              waitReconnect();
             },
             onReconnected: function() {
-              bkSessionManager.isSessionValid().then(function(isValid) {
-                if (isValid) {
-                  stopWaitingReconnect();
-                  disconnected = false;
-                } else {
-                  indicateReconnectFailed();
-                }
-              });
+              disconnected = false;
             },
             getStatusMessage: function() {
               return statusMessage;

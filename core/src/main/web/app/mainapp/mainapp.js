@@ -499,6 +499,7 @@
               document.title = document.title.substring(1, document.title.length - 1);
             }
           }
+          bkBunsenHelper.setNotebookEdited(edited);
         });
 
         var intervalID = null;

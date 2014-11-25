@@ -59,6 +59,17 @@
         });
       },
 
+      setNotebookEdited: function(edited) {
+        $window.top.postMessage(
+          {
+            notebookId: $routeParams.notebookId,
+            operation: 'edited',
+            value: bkSessionManager.isNotebookModelEdited()
+          },
+          $routeParams.bunsenUiUrl
+        );
+      },
+
       saveNotebook: function(newName) {
         var saveData = bkSessionManager.getSaveData().notebookModelAsString;
         var action = 'update';

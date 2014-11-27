@@ -119,6 +119,9 @@
           return '/session/' + newSessionId;
         };
       };
+      var makeSessionUrl = function(sessionId) {
+        return '/session/' + sessionId + "?" + window.location.href.split("?")[1];
+      };
       $routeProvider
           .when('/session/new', {
             redirectTo: makeNewProvider("new")
@@ -139,7 +142,18 @@
               sessionRouteResolve.target = function() {
                 return search;
               };
-              return '/session/' + newSessionId + "?" + window.location.href.split("?")[1];
+	      return makeSessionUrl(newSessionId);
+            }
+          })
+          .when('/edit/:notebookId', {
+            redirectTo: function(routeParams, path, search) {
+              sessionRouteResolve.editingById = function() {
+                return routeParams.notebookId;
+              };
+              sessionRouteResolve.target = function() {
+                return search;
+              };
+              return makeSessionUrl(routeParams.notebookId);
             }
           })
           .when('/control', {

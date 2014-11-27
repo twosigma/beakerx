@@ -33,6 +33,7 @@
   module.factory('bkBunsenHelper', function(bkCoreManager, bkShare, $dialog, $routeParams, $window, $timeout, bkSessionManager) {
 
     var bunsenSave = function(notebook, operation) {
+      bkSessionManager.backup();
       $window.top.postMessage({projectId: $routeParams.projectId,
                                notebook: notebook,
                                operation: operation},
@@ -58,7 +59,7 @@
       setNotebookEdited: function(edited) {
         $window.top.postMessage(
           {
-            notebookId: $routeParams.notebookId,
+            notebookId: $routeParams.sessionId,
             operation: 'edited',
             value: bkSessionManager.isNotebookModelEdited()
           },
@@ -71,7 +72,7 @@
         var action = 'update';
         var serializedNotebook = {
           data: saveData,
-          id: $routeParams.notebookId
+          id: $routeParams.sessionId
         };
         if (newName) {
           action = 'create';

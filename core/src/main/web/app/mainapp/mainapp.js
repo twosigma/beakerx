@@ -148,6 +148,18 @@
             }
             $scope.loading = false;
           };
+
+	  function loadFromRetrievedSession(session, id) {
+            var notebookUri = session.notebookUri;
+            var uriType = session.uriType;
+            var readOnly = session.readOnly;
+            var format = session.format;
+            var notebookModel = angular.fromJson(session.notebookModelJson);
+            var edited = session.edited;
+            loadNotebookModelAndResetSession(
+              notebookUri, uriType, readOnly, format, notebookModel, edited, id, true);
+	  }
+
           return {
             openUri: function(target, sessionId, retry, retryCountMax) {
               if (!target.uri) {
@@ -203,14 +215,7 @@
             },
           fromSession: function(sessionId) {
             bkSession.load(sessionId).then(function(session) {
-              var notebookUri = session.notebookUri;
-              var uriType = session.uriType;
-              var readOnly = session.readOnly;
-              var format = session.format;
-              var notebookModel = angular.fromJson(session.notebookModelJson);
-              var edited = session.edited;
-              loadNotebookModelAndResetSession(
-                  notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId, true);
+              loadFromRetrievedSession(session, sessionId);
             });
           },
           emptyNotebook: function(sessionId) {
@@ -235,6 +240,20 @@
               notebookModel = bkNotebookVersionManager.open(notebookModel);
               loadNotebookModelAndResetSession(
                   notebookUri, uriType, readOnly, format, notebookModel, false, sessionId, false);
+            });
+          },
+          byNotebookId: function(notebookId, target) {
+            bkSession.load(notebookId).then(function(session) {
+              var serializedModel = session.notebookModelJson;
+              if (serializedModel && serializedModel != "") {
+		loadFromRetrievedSession(session, notebookId);
+              }
+              else {
+                loadNotebook.openUri(target, notebookId, true);
+              }
+            }, function(err) {
+              console.warn("Can't reach session recovery interface; attempting to load original notebook URI");
+              loadNotebook.openUri(target, notebookId, true);
             });
           }
         };
@@ -665,7 +684,15 @@
             var target = $route.current.locals.target;
             var retry = true;
             loadNotebook.openUri(target, sessionId, retry);
-          } else {
+          }
+          else if ($route.current.locals.editingById) {
+            var target = $route.current.locals.target;
+            var notebookId = $route.current.locals.editingById;
+            delete sessionRouteResolve.target;
+            delete sessionRouteResolve.editingById;
+            loadNotebook.byNotebookId(notebookId, target);
+          }
+          else {
             loadNotebook.fromSession(sessionId);
           }
         })();

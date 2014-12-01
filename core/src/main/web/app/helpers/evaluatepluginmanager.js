@@ -30,7 +30,7 @@
       var _loadInProgress = undefined;
 
       var loadEvaluator = function(ev) {
-        bkHelper.showStatus("Loading "+ev.name);
+        bkHelper.showStatus("Loading plugin "+ev.name);
         console.log("loading "+ev.url+" "+ev.name);
         return bkUtils.loadModule(ev.url, ev.name);        
       };
@@ -64,6 +64,7 @@
           .then(_loadInProgress.resolve,  _loadInProgress.reject)
           .finally(function () {
             console.log("completed 3 "+_loadInProgress.name);
+            bkHelper.clrStatus("Loading plugin "+_loadInProgress.name)
             _loadInProgress = undefined;
           })
           .then(doNext);
@@ -128,7 +129,6 @@
               url: url,
               resolve: function(ex) {
                 console.log("loadJob.resolve()");
-                bkHelper.showStatus("");
                 if (!_.isEmpty(ex.name)) {
                   plugins[ex.name] = ex;
                 }
@@ -174,11 +174,7 @@
       },
       createEvaluatorThenExit: function(settings) {
         var theShell;
-        return this.getEvaluatorFactory(settings.plugin)
-        .then(function(factory) {
-          var evaluator = factory.create(settings);
-          return evaluator;
-        })
+        return this.getEvaluatorFactoryAndShell(settings)
         .then(function(evaluator) {
           if (evaluator.exit) {
             evaluator.exit();

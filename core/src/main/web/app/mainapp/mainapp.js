@@ -67,59 +67,32 @@
         };
         var showLoadingStatusMessage = function(message) {
           $scope.loadingmsg = message;
+          if (message !== "")
+            $scope.loading = true;
+          else
+            $scope.loading = false;
         };
+        var clrLoadingStatusMessage = function(message) {
+          if ($scope.loadingmsg === message) {
+            $scope.loadingmsg = "";
+            $scope.loading = false;
+          }
+        }
         var showTransientStatusMessage = function(message) {
-          showStatusMessage(message);
-          bkUtils.delay(500).then(function() {
-            showStatusMessage("");
-          });
+          $scope.loadingmsg = message;
+          if (message !== "") {
+            $scope.loading = true;
+            bkUtils.delay(500).then(function() {
+              if ($scope.loadingmsg === message) {
+                $scope.loadingmsg = "";
+                $scope.loading = false;
+              }
+            });
+          } else
+            $scope.loading = false;
         };
         var evaluatorMenuItems = [];
-
-        var addEvaluators = function(evarr, alwaysCreateNewEvaluator, func, stat) {
-          if (evarr.length == 0) {
-            showLoadingStatusMessage("Rendering Notebook...");
-            setTimeout(function () {
-              func(stat);
-            }, 100);
-            return;
-          }
-          var settings = evarr.shift();
-
-          if (alwaysCreateNewEvaluator) {
-            settings.shellID = null;
-          }
-
-          showLoadingStatusMessage("Starting " + settings.name + "...");
-
-          return bkEvaluatorManager.newEvaluator(settings)
-          .then(function(evaluator) {
-            if (evaluator !== undefined && !_.isEmpty(evaluator.spec)) {
-              var actionItems = [];
-              _(evaluator.spec).each(function(value, key) {
-                if (value.type === "action") {
-                  actionItems.push({
-                    name: value.name ? value.name : value.action,
-                        action: function() {
-                          evaluator.perform(key);
-                        }
-                  });
-                }
-              });
-              if (actionItems.length > 0) {
-                evaluatorMenuItems.push({
-                  name: evaluator.pluginName, // TODO, this should be evaluator.settings.name
-                  items: actionItems
-                });
-              }
-            }
-            addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
-          }, function(evaluator) {
-            addEvaluators(evarr, alwaysCreateNewEvaluator, func, stat);
-          });
-        }
-
-
+        
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
           // set shell id to null, so it won't try to find an existing shell with the id
           if (alwaysCreateNewEvaluator) {
@@ -218,8 +191,9 @@
           var _loadNotebookModelAndResetSession = function(
               notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
               isExistingSession) {
-            $scope.loading = true;
+
             showLoadingStatusMessage("Loading notebook");
+            
             addScrollingHack();
             isExistingSession = !!isExistingSession;
             evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
@@ -275,6 +249,10 @@
             bkSessionManager.clear();
             sessionId = bkSessionManager.setSessionId(sessionId);
 
+            bkSessionManager.setup(
+                notebookUri, uriType, readOnly, format,
+                notebookModel, edited, sessionId);
+
             // this is used to load evaluators before rendering the page
             if (notebookModel && notebookModel.evaluators) {
               var promises = _(notebookModel.evaluators).map(function(ev) {
@@ -282,9 +260,6 @@
               });
               bkUtils.all(promises).then(function() {
                 console.log("loaded EVERYTHING!!!");
-                bkSessionManager.setup(
-                    notebookUri, uriType, readOnly, format,
-                    notebookModel, edited, sessionId);
                 if (!isExistingSession) {
                   bkUtils.log("open", {
                     uri: notebookUri,
@@ -298,8 +273,8 @@
 
                   bkHelper.evaluate("initialization");
                 }
-                $scope.loading = false;
               });
+              clrLoadingStatusMessage("Loading notebook");
               return;
             }
 
@@ -315,8 +290,7 @@
               });
               bkHelper.evaluate("initialization");
             }
-            $scope.loading = false;
-            showLoadingStatusMessage("");
+            clrLoadingStatusMessage("Loading notebook");
           };
           return {
             openUri: function(target, sessionId, retry, retryCountMax) {
@@ -324,7 +298,6 @@
                 bkCoreManager.show1ButtonModal("Failed to open notebook, notebookUri is empty");
                 return;
               }
-              $scope.loading = true;
               showLoadingStatusMessage("Opening URI");
               if (retryCountMax === undefined) {
                 retryCountMax = 100;
@@ -346,6 +319,7 @@
                     loadNotebook.openUri(target, retry, retryCountMax);
                   }, 100);
                 } else {
+                  clrLoadingStatusMessage("Opening URI");
                   bkCoreManager.show1ButtonModal("Failed to open " + target.uri
                       + " because format " + target.format
                       + " was not recognized.", "Open Failed", function() {
@@ -366,10 +340,9 @@
                 }).catch(function(data, status, headers, config) {
                   bkHelper.show1ButtonModal(data, "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
-                    $scope.loading = false;
-                    showLoadingStatusMessage("");
                   });
                 }).finally(function() {
+                  clrLoadingStatusMessage("Opening URI");
                 });
               }
             },
@@ -547,6 +520,9 @@
             showStatus: function(message) {
               showLoadingStatusMessage(message);
             },
+            clrStatus: function(message) {
+              clrLoadingStatusMessage(message);
+            },
             showTransientStatus: function(message) {
               showTransientStatusMessage(message);
             },
@@ -648,11 +624,12 @@
             },
             evaluateCode: function(evaluator, code) {
               // TODO, this isn't able to give back the evaluate result right now.
+              var outcontainer = { };
               return bkEvaluateJobManager.evaluate({
                 evaluator: evaluator,
                 input: { body: code },
-                output: {}
-              });
+                output: outcontainer
+              }).then(function() { return outcontainer; }, function() { return undefined; });
             },
             addEvaluator: function(settings) {
               return addEvaluator(settings, true);
@@ -909,8 +886,6 @@
           }
         });
 
-        showLoadingStatusMessage("");
-        $scope.loading = true;
         // ensure an existing session is cleared so that the empty notebook model
         // makes the UI is blank immediately (instead of showing leftover from a previous session)
         bkSessionManager.clear();

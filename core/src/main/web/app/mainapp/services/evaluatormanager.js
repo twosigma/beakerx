@@ -73,6 +73,11 @@
 	      }
 	      evaluatorSettings.view.cm.mode = evaluator.cmMode;
 	      evaluators[evaluatorSettings.name] = evaluator;
+	      if ( evaluatorSettings.deferred !== undefined ) {
+	        console.log (" wake up evaluator");
+	        evaluatorSettings.deferred.resolve(evaluator);
+	        delete evaluatorSettings.deferred;
+	      }
 	      deferred.resolve(evaluator);
 	      console.log("completed 4 "+evaluatorSettings);
 	    })
@@ -85,6 +90,23 @@
       getEvaluator: function(evaluatorId) {
         return evaluators[evaluatorId];
       },
+      waitEvaluator: function(evaluatorId) {
+        var deferred = bkUtils.newDeferred();
+        if (evaluators[evaluatorId] !== undefined) {
+          deferred.resolve(evaluators[evaluatorId]);
+        } else {
+          var i;
+          for ( i = 0; i < loadingInProgressEvaluators.length; i ++ ) {
+            loadingInProgressEvaluators[i].deferred = deferred;
+            break;
+          }
+          if (i === loadingInProgressEvaluators.length) {
+            deferred.resolve(undefined);
+          }
+        }
+        return deferred.promise;
+      },
+      
       getVisualParams: function(name) {
         if (evaluators[name] === undefined)
           return bkEvaluatePluginManager.getVisualParams(name);

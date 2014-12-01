@@ -47,24 +47,20 @@
       var evaluateJob = function(job) {
         job.evaluator = bkEvaluatorManager.getEvaluator(job.evaluatorId);
         if (job.evaluator) {
+          console.log("run now");
           bkUtils.log("evaluate", {
             plugin: job.evaluator.pluginName,
             length: job.code.length });
           return job.evaluator.evaluate(job.code, job.output);
-        } else {
-          if (job.retry > RETRY_MAX) {
-            return bkUtils.fcall(function() {
-              var err = job.evaluatorId + " failed to start";
-              job.output.result = errorMessage(err);
-              throw new Error(err);
-            });
-          }
-          job.retry++;
-          job.output.result = MESSAGE_WAITING_FOR_EVALUTOR_INIT;
-          return bkUtils.delay(RETRY_DELAY).then(function () {
-            return evaluateJob(job);
-          });
         }
+        console.log("run later");
+        job.output.result = MESSAGE_WAITING_FOR_EVALUTOR_INIT;
+        return bkEvaluatorManager.waitEvaluator(job.evaluatorId)
+          .then(function(ev) {
+            console.log("run later and now");
+            job.evaluator = ev;
+            job.evaluator = bkEvaluatorManager.getEvaluator(job.evaluatorId);
+          } );
       };
 
       var doNext = function() {

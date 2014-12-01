@@ -158,6 +158,13 @@
           console.error("Current app doesn't support showStatus");
         }
       },
+      clrStatus: function(message) {
+        if (getCurrentApp().clrStatus) {
+          return getCurrentApp().clrStatus(message);
+        } else {
+          console.error("Current app doesn't support clrStatus");
+        }
+      },
       showTransientStatus: function(message) {
         if (getCurrentApp().showTransientStatus) {
           return getCurrentApp().showTransientStatus(message);
@@ -234,6 +241,9 @@
       },
       fcall: function(func) {
         return bkUtils.fcall(func);
+      },
+      timeout: function(func, ms) {
+        return bkUtils.timeout(func,ms);
       },
       getHomeDirectory: function() {
         return bkUtils.getHomeDirectory();

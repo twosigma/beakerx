@@ -380,7 +380,10 @@ define(function(require, exports, module) {
                              "./plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js"
                             ], onSuccess, onFail);
         }
-      });
+      }).error(function() {
+        console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+        shellReadyDeferred.reject("failed to locate plugin service");
+      });;
   };
   init();
 

@@ -151,6 +151,20 @@
           console.error("Current app doesn't support showAnonymousTrackingDialog");
         }
       },
+      showStatus: function(message) {
+        if (getCurrentApp().showStatus) {
+          return getCurrentApp().showStatus(message);
+        } else {
+          console.error("Current app doesn't support showStatus");
+        }
+      },
+      showTransientStatus: function(message) {
+        if (getCurrentApp().showTransientStatus) {
+          return getCurrentApp().showTransientStatus(message);
+        } else {
+          console.error("Current app doesn't support showTransientStatus");
+        }
+      },
 
       // bk-notebook
       shareNotebook: function() {

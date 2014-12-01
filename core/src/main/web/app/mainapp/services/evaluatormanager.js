@@ -21,10 +21,18 @@
   var module = angular.module('bk.evaluatorManager', ['bk.utils', 'bk.evaluatePluginManager']);
 
   module.factory('bkEvaluatorManager', function (bkUtils, bkEvaluatePluginManager) {
+
     var evaluators = {};
     var loadingInProgressEvaluators = [];
     return {
-      reset: function() {
+      reset: function() {        
+        for (var key in evaluators) {
+          var e = evaluators[key];
+          if (_.isFunction(e.exit)) {
+            e.exit();
+          }
+          delete evaluators[key];
+        }
         evaluators = {};
       },
       removeEvaluator: function(plugin) {
@@ -39,44 +47,40 @@
         }
       },
       newEvaluator: function(evaluatorSettings) {
-	    if(loadingInProgressEvaluators.indexOf(evaluatorSettings)>0)
-	      return; // already loading...
-	    loadingInProgressEvaluators.push(evaluatorSettings);
-        return bkEvaluatePluginManager.getEvaluatorFactory(evaluatorSettings.plugin)
-            .then(function(factory) {
-              if(factory !== undefined && factory.create !== undefined)
-                return factory.create(evaluatorSettings);
-              else
-                return undefined;
-            }, function(err) {
-              return undefined;
-            })
-            .then(function(evaluator) {
-              if(evaluator === undefined)
-                return undefined;
-              if (_.isEmpty(evaluatorSettings.name)) {
-                if (!evaluators[evaluator.pluginName]) {
-                  evaluatorSettings.name = evaluator.pluginName;
-                } else {
-                  evaluatorSettings.name = evaluator.pluginName + "_" + bkUtils.generateId(6);
-                }
-              }
+        console.log("new evaluator "+evaluatorSettings);
+        if(loadingInProgressEvaluators.indexOf(evaluatorSettings)==0)
+	      loadingInProgressEvaluators.push(evaluatorSettings);
+	    var deferred = bkUtils.newDeferred();
+	    bkEvaluatePluginManager.getEvaluatorFactoryAndShell(evaluatorSettings)
+	    .then(function(evaluator) {
+	      if(evaluator === undefined) {
+	        deferred.reject("cannot create evaluator factory");
+	        return;
+	      }
+	      if (_.isEmpty(evaluatorSettings.name)) {
+	        if (!evaluators[evaluator.pluginName]) {
+	          evaluatorSettings.name = evaluator.pluginName;
+	        } else {
+	          evaluatorSettings.name = evaluator.pluginName + "_" + bkUtils.generateId(6);
+	        }
+	      }
 
-              if (!evaluatorSettings.view) {
-                evaluatorSettings.view = {};
-              }
-              if (!evaluatorSettings.view.cm) {
-                evaluatorSettings.view.cm = {};
-              }
-              evaluatorSettings.view.cm.mode = evaluator.cmMode;
-
-              evaluators[evaluatorSettings.name] = evaluator;
-              return evaluator;
-            })
-            .finally(function() {
-              var index = loadingInProgressEvaluators.indexOf(evaluatorSettings);
-              loadingInProgressEvaluators.splice(index, 1);
-            });
+	      if (!evaluatorSettings.view) {
+	        evaluatorSettings.view = {};
+	      }
+	      if (!evaluatorSettings.view.cm) {
+	        evaluatorSettings.view.cm = {};
+	      }
+	      evaluatorSettings.view.cm.mode = evaluator.cmMode;
+	      evaluators[evaluatorSettings.name] = evaluator;
+	      deferred.resolve(evaluator);
+	      console.log("completed 4 "+evaluatorSettings);
+	    })
+	    .finally(function() {
+	      var index = loadingInProgressEvaluators.indexOf(evaluatorSettings);
+	      loadingInProgressEvaluators.splice(index, 1);
+	    });
+        return deferred.promise;
       },
       getEvaluator: function(evaluatorId) {
         return evaluators[evaluatorId];

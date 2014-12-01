@@ -75,7 +75,7 @@ define(function(require, exports, module) {
       if (!shellId) {
         shellId = "";
       }
-      bkHelper.httpPost(serviceBase + "/rest/javash/getShell", { shellId: shellId })
+      bkHelper.httpPost(serviceBase + "/rest/javash/getShell", { shellId: shellId, sessionId: bkHelper.getSessionId() })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
@@ -136,8 +136,17 @@ define(function(require, exports, module) {
             modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
             deferred.resolve();
           } else if (evaluation.status === "RUNNING") {
-            progressObj.object.message = "evaluating ...";
-            modelOutput.result = progressObj;
+            if(evaluation.result !== undefined) {
+              if(evaluation.result === Object(evaluation.result)) {
+                modelOutput.result.object.message = evaluation.result.message;
+                modelOutput.result.object.progressBar = evaluation.result.progressBar;
+                modelOutput.result.object.payload = evaluation.result.payload;
+              } else {
+                modelOutput.result.object.message = evaluation.result;
+              }
+            } else {
+              modelOutput.result.object.message = "evaluating ...";
+            }
           }
           bkHelper.refreshRootScope();
         };
@@ -195,6 +204,7 @@ define(function(require, exports, module) {
   };
   var defaultImports = [
     "com.twosigma.beaker.chart.Color",
+    "com.twosigma.beaker.BeakerProgressUpdate",
     "com.twosigma.beaker.chart.xychart.*",
     "com.twosigma.beaker.chart.xychart.plotitem.*",
     "com.twosigma.beaker.NamespaceClient"];
@@ -224,7 +234,7 @@ define(function(require, exports, module) {
           var cb = function() {
             if (bkHelper.hasSessionId()) {
               var initCode = "import com.twosigma.beaker.NamespaceClient;\n" +
-                "NamespaceClient.setBeakerClient(\"" + bkHelper.getSessionId() + "\");\n";
+                "NamespaceClient.getBeaker(\"" + bkHelper.getSessionId() + "\");\n";
               self.evaluate(initCode, {}).then(function () {
                 if (doneCB) {
                   doneCB(self);

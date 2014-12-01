@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,12 +17,14 @@ import java.util.concurrent.Semaphore;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
 public class GroovyEvaluator {
   protected final String shellId;
+  protected final String sessionId;
   protected List<String> classPath;
   protected List<String> imports;
   protected String outDir;
@@ -47,8 +48,9 @@ public class GroovyEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  public GroovyEvaluator(String id) {
+  public GroovyEvaluator(String id, String sId) {
     shellId = id;
+    sessionId = sId;
     cps = new GroovyClasspathScanner();
     gac = createGroovyAutocomplete(cps);
     classPath = new ArrayList<String>();
@@ -64,10 +66,10 @@ public class GroovyEvaluator {
     myWorker.start();
   }
 
-    protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c)
-    {
+  protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c)
+  {
 	return new GroovyAutocomplete(c);
-    }
+  }
 
   public String getShellId() { return shellId; }
 
@@ -150,6 +152,7 @@ public class GroovyEvaluator {
     
     public void run() {
       jobDescriptor j = null;
+      NamespaceClient nc = null;
       
       while(!exit) {
         try {
@@ -175,6 +178,10 @@ public class GroovyEvaluator {
             loader.clearCache();
 
           j.outputObject.started();
+
+          nc = NamespaceClient.getBeaker(sessionId);
+          nc.setOutputObj(j.outputObject);
+          
           Object result;
           result = shell.evaluate(j.codeToBeExecuted);
           j.outputObject.finished(result);
@@ -185,6 +192,11 @@ public class GroovyEvaluator {
             } else {
               j.outputObject.error(e.getMessage());
             }          
+          }
+        } finally {
+          if(nc!=null) {
+            nc.setOutputObj(null);
+            nc = null;
           }
         }
       }

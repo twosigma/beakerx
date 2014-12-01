@@ -35,43 +35,43 @@
       link: function(scope, element, attrs) {
         var data = scope.model.getCellModel().values;
         var columns = scope.model.getCellModel().columnNames;
-       
+
         scope.getDumpState = function() {
           return scope.model.getDumpState();
         };
 
         scope.dtOptions = bkDatatables.DTOptionsBuilder
-          .fromFnPromise(function() {
-            var deferred = bkUtils.newDeferred();
-            deferred.resolve(data);
-            return deferred.promise; })
+        .fromFnPromise(function() {
+          var deferred = bkUtils.newDeferred();
+          deferred.resolve(data);
+          return deferred.promise; })
           .withColReorder()
-	  .withColVis()
+          .withColVis()
           .withTableTools('vendor/TableTools-2.2.3/swf/copy_csv_xls_pdf.swf')
           .withTableToolsButtons([
-            'select_all',
-            'select_none',
-            'copy',
-            {
-              'sExtends': 'collection',
-              'sButtonText': 'Save',
-              'aButtons': ['csv', 'xls', 'pdf']
-            }
-          ])
-          .withTableToolsOption('sRowSelect', 'os')
-          .withOption('scrollX', true)
-          .withDOM('<"bko-table-top">rt<"bko-table-bottom"lp><"bko-table-bottom2"TC><"bko-table-clear">')
-          .withOption('searching', false);
+                                  'select_all',
+                                  'select_none',
+                                  'copy',
+                                  {
+                                    'sExtends': 'collection',
+                                    'sButtonText': 'Save',
+                                    'aButtons': ['csv', 'xls', 'pdf']
+                                  }
+                                  ])
+                                  .withTableToolsOption('sRowSelect', 'os')
+                                  .withOption('scrollX', true)
+                                  .withDOM('<"bko-table-top">rt<"bko-table-bottom"lp><"bko-table-bottom2"TC><"bko-table-clear">')
+                                  .withOption('searching', false);
         if (data.length > 25) {
           scope.dtOptions.withPaginationType('simple_numbers')
           .withDisplayLength(25)           
-	  .withOption('lengthMenu', [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]);
+          .withOption('lengthMenu', [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]);
         } else {
           scope.dtOptions.withOption('paging', false);
-	  scope.dtOptions.withOption('scrollY', 350);
-	  scope.dtOptions.withOption('scrollCollapse', true);
+          scope.dtOptions.withOption('scrollY', 350);
+          scope.dtOptions.withOption('scrollCollapse', true);
         }
-        
+
         scope.state = {};
         var savedstate = scope.model.getDumpState();
         if (savedstate !== undefined && savedstate.tablestate !== undefined) {
@@ -80,45 +80,45 @@
         scope.dtOptions.withOption('stateSave', true);
         scope.dtOptions.withOption('stateSaveCallback',
             function (settings, data) {
-              scope.state = data;
+          scope.state = data;
         });
 
         scope.dtOptions.withOption('stateLoadCallback',
             function (settings) {
-              return scope.state;
+          return scope.state;
         });
-        
+
         scope.dtColumns = [ ];
         for (var i = 0; i < columns.length; i++) {
-	  if(columns[i] === "time") {
-            if(scope.model.getCellModel().timeStrings) {
+          if (columns[i] === "time") {
+            if (scope.model.getCellModel().timeStrings) {
               scope.timeStrings = scope.model.getCellModel().timeStrings;
               scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
-                             .renderWith(function(data, type, full, meta)
-                               {
-                                 return scope.timeStrings[meta.row];
-                               }));
+                  .renderWith(function(data, type, full, meta)
+                      {
+                    return scope.timeStrings[meta.row];
+                      }));
             } else {
               scope.tz = scope.model.getCellModel().timeZone;
               scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
-                             .renderWith(function(value,type,full,meta)
-                              {
-				  if(typeof value =='string')
-				      return value;
-                                var nano = value % 1000;
-                                var micro = (value / 1000) % 1000;
-                                var milli = value / 1000 / 1000;
-                                var time = moment(milli);
-                                var tz = scope.tz;
-                                if (tz)
-                                time.tz(tz);
-                                  return time.format("YYYYMMDD HH:mm:ss.SSS");
-                              }));
+                  .renderWith(function(value,type,full,meta)
+                      {
+                    if (typeof value =='string')
+                      return value;
+                    var nano = value % 1000;
+                    var micro = (value / 1000) % 1000;
+                    var milli = value / 1000 / 1000;
+                    var time = moment(milli);
+                    var tz = scope.tz;
+                    if (tz)
+                      time.tz(tz);
+                    return time.format("YYYYMMDD HH:mm:ss.SSS");
+                      }));
             }
           } else
             scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i]));
-	}
-        
+        }
+
         scope.$watch('getDumpState()', function(result) {
           if (result !== undefined && result.tablestate === undefined) {
             scope.model.setDumpState({ tablestate : scope.state});

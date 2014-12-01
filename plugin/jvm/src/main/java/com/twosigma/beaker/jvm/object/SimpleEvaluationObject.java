@@ -61,6 +61,13 @@ public class SimpleEvaluationObject extends Observable {
     notifyObservers();
   }
 
+  public synchronized void update(Object upd) {
+    this.status = EvaluationStatus.RUNNING;
+    this.result = new EvaluationResult(upd);
+    setChanged();
+    notifyObservers();
+  }
+
   @JsonProperty("expression")
   public String getExpression() {
     return this.expression;

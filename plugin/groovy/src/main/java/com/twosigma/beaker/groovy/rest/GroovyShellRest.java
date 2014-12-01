@@ -42,13 +42,14 @@ public class GroovyShellRest {
   @POST
   @Path("getShell")
   @Produces(MediaType.TEXT_PLAIN)
-  public String getShell(@FormParam("shellId") String shellId) 
+  public String getShell(@FormParam("shellId") String shellId,
+      @FormParam("sessionId") String sessionId) 
     throws InterruptedException, MalformedURLException
   {
 	  // if the shell does not already exist, create a new shell
 	  if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
 	      shellId = UUID.randomUUID().toString();
-	      GroovyEvaluator js = new GroovyEvaluator(shellId);
+	      GroovyEvaluator js = new GroovyEvaluator(shellId,sessionId);
 	      this.shells.put(shellId, js);
 	      return shellId;
 	  }

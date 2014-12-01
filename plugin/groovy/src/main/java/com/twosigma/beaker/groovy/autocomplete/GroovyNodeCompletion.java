@@ -85,7 +85,7 @@ public class GroovyNodeCompletion extends GroovyAbstractListener {
         CommandExpressionStatementContext st = (CommandExpressionStatementContext) findParentNode(ctx,CommandExpressionStatementContext.class);
         if(st!=null && st.getParent()!=null) {
           ParseTree left = findLeftSibling(st);
-          if(left.getText().trim().equals("class")) {
+          if(left!=null && left.getText().trim().equals("class")) {
             AutocompleteCandidate c = new AutocompleteCandidate(GroovyCompletionTypes.CLASSLEVEL, ctx.getText());
             addQuery(c);
           }

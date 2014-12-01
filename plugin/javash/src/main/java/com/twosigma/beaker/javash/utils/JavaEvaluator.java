@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
@@ -39,6 +40,7 @@ import com.twosigma.beaker.autocomplete.ClasspathScanner;
 
 public class JavaEvaluator {
   protected final String shellId;
+  protected final String sessionId;
   protected final String packageId;
   protected List<String> classPath;
   protected List<String> imports;
@@ -63,8 +65,9 @@ public class JavaEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  public JavaEvaluator(String id) {
+  public JavaEvaluator(String id, String sId) {
     shellId = id;
+    sessionId = sId;
     packageId = "com.twosigma.beaker.javash.bkr"+shellId.split("-")[0];
     cps = new ClasspathScanner();
     jac = new JavaAutocomplete(cps);
@@ -105,7 +108,7 @@ public class JavaEvaluator {
   }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
-    if(cp.isEmpty())
+    if (cp.isEmpty())
       classPath.clear();
     else
       classPath = Arrays.asList(cp.split("[\\s]+"));
@@ -115,7 +118,7 @@ public class JavaEvaluator {
       imports = Arrays.asList(in.split("\\s+"));
 
     outDir = od;
-    if(outDir!=null && !outDir.isEmpty()) {
+    if (outDir!=null && !outDir.isEmpty()) {
 	outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
       try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     } else {
@@ -149,14 +152,14 @@ public class JavaEvaluator {
   public List<String> autocomplete(String code, int caretPosition) {
     List<String> ret = jac.doAutocomplete(code, caretPosition);
     
-    if(!ret.isEmpty())
+    if (!ret.isEmpty())
       return ret;
     
     // this is a code sniplet... 
     String [] codev = code.split("\n");
     int insert = 0;
     while(insert < codev.length) {
-      if(!codev[insert].contains("package") && !codev[insert].contains("import") && !codev[insert].trim().isEmpty())
+      if (!codev[insert].contains("package") && !codev[insert].contains("import") && !codev[insert].trim().isEmpty())
         break;
       insert++;
     }
@@ -169,7 +172,7 @@ public class JavaEvaluator {
       sb.append('\n');
     }
       
-    if(caretPosition>=sb.length()) {
+    if (caretPosition>=sb.length()) {
       caretPosition += CODE_TO_INSERT.length();
     }
     sb.append(CODE_TO_INSERT);
@@ -199,6 +202,7 @@ public class JavaEvaluator {
       JavaSourceCompiler javaSourceCompiler;
   
       javaSourceCompiler = new JavaSourceCompilerImpl();
+      NamespaceClient nc =null;
       
       while(!exit) {
         try {
@@ -206,7 +210,7 @@ public class JavaEvaluator {
           syncObject.acquire();
           
           // check if we must create or update class loader
-          if(loader==null || updateLoader) {
+          if (loader==null || updateLoader) {
             loader=new DynamicClassLoader(outDir);
             for(String pt : classPath) {
               loader.add(pt);
@@ -215,11 +219,14 @@ public class JavaEvaluator {
           
           // get next job descriptor
           j = jobQueue.poll();
-          if(j==null)
+          if (j==null)
             continue;
   
           j.outputObject.started();
           
+          nc = NamespaceClient.getBeaker(sessionId);
+          nc.setOutputObj(j.outputObject);
+
           Pattern p;
           Matcher m;
           String pname = packageId;
@@ -229,9 +236,9 @@ public class JavaEvaluator {
           // build the compiler class path
           String classpath = System.getProperty("java.class.path");
           String[] classpathEntries = classpath.split(File.pathSeparator);
-          if(classpathEntries!=null && classpathEntries.length>0)
+          if (classpathEntries!=null && classpathEntries.length>0)
             compilationUnit.addClassPathEntries(Arrays.asList(classpathEntries));
-          if(!classPath.isEmpty())
+          if (!classPath.isEmpty())
             compilationUnit.addClassPathEntries(classPath);
           compilationUnit.addClassPathEntry(outDir);
         
@@ -245,7 +252,7 @@ public class JavaEvaluator {
           p = Pattern.compile("\\s*package\\s+((?:[a-zA-Z]\\w*)(?:\\.[a-zA-Z]\\w*)*);.*");
           m = p.matcher(codev[ci]);
         
-          if(m.matches()) {
+          if (m.matches()) {
             pname = m.group(1);
             ci++;
           }
@@ -273,7 +280,7 @@ public class JavaEvaluator {
         
           p = Pattern.compile("(?:^|.*\\s+)class\\s+([a-zA-Z]\\w*).*");
           m = p.matcher(codev[ci]);
-          if(m.matches()) {
+          if (m.matches()) {
             // this is a class definition
         
             String cname = m.group(1);
@@ -289,7 +296,7 @@ public class JavaEvaluator {
             } catch(Exception e) { j.outputObject.error("ERROR:\n"+e.toString()); }    
           } else {
             String ret = "void";
-            if(codev[codev.length-1].matches("(^|.*\\s+)return\\s+.*"))
+            if (codev[codev.length-1].matches("(^|.*\\s+)return\\s+.*"))
               ret = "Object";
             // this is an expression evaluation
             javaSourceCode.append("public class Foo {\n");
@@ -309,7 +316,7 @@ public class JavaEvaluator {
             Class<?> fooClass = loader.loadClass(pname+".Foo");
             Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
             Object o = mth.invoke(null, (Object[])null);
-            if(ret.equals("Object")) {
+            if (ret.equals("Object")) {
               j.outputObject.finished(o);
             } else {
               j.outputObject.finished(null);
@@ -317,15 +324,21 @@ public class JavaEvaluator {
           }
           j = null;
         } catch(Exception e) {
-          if(j!=null && j.outputObject != null) {
+          if (j!=null && j.outputObject != null) {
             if (e instanceof InterruptedException || e instanceof InvocationTargetException) {
               j.outputObject.error("... cancelled!");
             } else {
               j.outputObject.error(e.getMessage());
             }          
           }
+        } finally {
+          if (nc!=null) {
+            nc.setOutputObj(null);
+            nc = null;
+          }
         }
       }
+      
     }
     
     /*
@@ -346,15 +359,15 @@ public class JavaEvaluator {
         char c = c1.charAt(i);
         switch(c) {
         case '"':
-          if(!insq && i>0 && c1.charAt(i-1)!='\\')
+          if (!insq && i>0 && c1.charAt(i-1)!='\\')
             indq = !indq;
           break;
         case '\'':
-          if(!indq && i>0 && c1.charAt(i-1)!='\\')
+          if (!indq && i>0 && c1.charAt(i-1)!='\\')
             insq = !insq;
           break;
         case ';':
-          if(!indq && !insq) {
+          if (!indq && !insq) {
             c2.append(c);
             c = '\n';
           }

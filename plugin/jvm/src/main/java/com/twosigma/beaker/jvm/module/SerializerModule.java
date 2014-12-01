@@ -19,6 +19,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
@@ -43,9 +44,11 @@ import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.jvm.object.TestContainer;
 import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.chart.Color;
+
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -65,7 +68,10 @@ public class SerializerModule
     bind(EvaluationResult.Serializer.class);
     bind(TableDisplay.Serializer.class);
     bind(OutputContainer.Serializer.class);
+    // enable this to use the example object container
+    //bind(TestContainer.Serializer.class);
     bind(StringObject.Serializer.class);
+    bind(BeakerProgressUpdate.Serializer.class);
   }
 
   @Provides
@@ -89,7 +95,10 @@ public class SerializerModule
     module.addSerializer(EvaluationResult.class, injector.getInstance(EvaluationResult.Serializer.class));
     module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
     module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
+    // enable this to use the example object container
+    //module.addSerializer(TestContainer.class, injector.getInstance(TestContainer.Serializer.class));
     module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
+    module.addSerializer(BeakerProgressUpdate.class, injector.getInstance(BeakerProgressUpdate.Serializer.class));
 
     module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
     module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));

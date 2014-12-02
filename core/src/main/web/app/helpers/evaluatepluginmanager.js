@@ -31,7 +31,6 @@
 
       var loadEvaluator = function(ev) {
         bkHelper.showStatus("Loading plugin "+ev.name);
-        console.log("loading "+ev.url+" "+ev.name);
         return bkUtils.loadModule(ev.url, ev.name);        
       };
       var doNext = function() {        
@@ -40,20 +39,16 @@
         }
         _loadInProgress = _queue.shift();
         if (_loadInProgress) {
-          console.log("do next on "+_loadInProgress.name);
           if (plugins[_loadInProgress.name] || plugins[_loadInProgress.url]) { // plugin code already loaded
-            console.log("already loaded bis "+_loadInProgress.name);
             if (plugins[_loadInProgress.name]) {
               _loadInProgress.resolve(plugins[_loadInProgress.name])
               .finally(function () {
-                console.log("completed 1 "+_loadInProgress.name);
                 _loadInProgress = undefined;
               })
               .then(doNext);
             } else {
               _loadInProgress.resolve(plugins[_loadInProgress.url])
               .finally(function () {
-                console.log("completed 2 "+_loadInProgress.name);
                 _loadInProgress = undefined;
               })
               .then(doNext);
@@ -63,7 +58,6 @@
           return loadEvaluator(_loadInProgress)
           .then(_loadInProgress.resolve,  _loadInProgress.reject)
           .finally(function () {
-            console.log("completed 3 "+_loadInProgress.name);
             bkHelper.clrStatus("Loading plugin "+_loadInProgress.name)
             _loadInProgress = undefined;
           })
@@ -98,14 +92,11 @@
       getEvaluatorFactoryAndShell: function(evaluatorSettings) {
         var nameOrUrl = evaluatorSettings.plugin;
         if (plugins[nameOrUrl]) { // plugin code already loaded
-          console.log("already loaded");
           var deferred = bkUtils.newDeferred();
           plugins[nameOrUrl].getEvaluatorFactory().then(function(factory) {
             if (factory !== undefined && factory.create !== undefined) {
-              console.log("calling create for "+name)
-              return factory.create(evaluatorSettings).then(function(ev) { console.log("calling create finished for "+name);  deferred.resolve(ev); });
+              return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
             } else {
-              console.log("no factory for plugin "+name);
               deferred.reject("no factory for evaluator plugin");
             }
           }, function(err) {
@@ -128,7 +119,6 @@
               name: name,
               url: url,
               resolve: function(ex) {
-                console.log("loadJob.resolve()");
                 if (!_.isEmpty(ex.name)) {
                   plugins[ex.name] = ex;
                 }
@@ -138,8 +128,7 @@
                 return ex.getEvaluatorFactory()
                   .then(function(factory) {
                     if (factory !== undefined && factory.create !== undefined) {
-                      console.log("calling create for "+name);
-                      return factory.create(evaluatorSettings).then(function(ev) { console.log("calling create finished for "+name); deferred.resolve(ev); });
+                      return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
                     } else
                       deferred.reject("no factory for evaluator plugin");
                   }, function(err) {
@@ -159,7 +148,6 @@
               },
               reject: function(err) {
                 bkHelper.showTransientStatus("Failed loading plugin "+name+": "+err);
-                console.log("loadJob.reject()");
                 console.error(err);
                 if (_.isEmpty(name)) {
                   deferred.reject("failed to load plugin: " + url);

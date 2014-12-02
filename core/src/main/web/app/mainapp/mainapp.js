@@ -509,6 +509,8 @@
             }
           };
 
+          var evalCodeId = 0;
+          
           return {
             name: "bkNotebookApp",
             getSessionId: function() {
@@ -616,6 +618,10 @@
                   }
                 }
               }
+              if (toEval === undefined || (!_.isArray(toEval) && toEval.length === 0)) {
+                showTransientStatusMessage("ERROR: cannot find anything to evaluate");
+                return "cannot find anything to evaluate";
+              }
               if (!_.isArray(toEval)) {
                 return bkEvaluateJobManager.evaluate(toEval);
               } else {
@@ -623,13 +629,16 @@
               }
             },
             evaluateCode: function(evaluator, code) {
-              // TODO, this isn't able to give back the evaluate result right now.
               var outcontainer = { };
-              return bkEvaluateJobManager.evaluate({
+              var deferred = bkHelper.newDeferred();
+              evalCodeId++;
+              bkEvaluateJobManager.evaluate({
+                id: "onTheFlyCell_"+evalCodeId,
                 evaluator: evaluator,
                 input: { body: code },
                 output: outcontainer
-              }).then(function() { return outcontainer; }, function() { return undefined; });
+              }).then(function() { deferred.resolve(outcontainer.result); }, function() { deferred.reject(); });
+              return deferred.promise;
             },
             addEvaluator: function(settings) {
               return addEvaluator(settings, true);

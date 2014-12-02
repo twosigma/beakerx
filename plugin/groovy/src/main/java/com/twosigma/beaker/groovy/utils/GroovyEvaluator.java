@@ -21,6 +21,7 @@ import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
 public class GroovyEvaluator {
   protected final String shellId;
@@ -31,7 +32,7 @@ public class GroovyEvaluator {
   protected GroovyClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
-  protected final ThreadGroup myThreadGroup;
+  protected final BeakerCellExecutor executor;
   protected workerThread myWorker;
   protected GroovyAutocomplete gac;
 
@@ -57,12 +58,12 @@ public class GroovyEvaluator {
     imports = new ArrayList<String>();
     exit = false;
     updateLoader = false;
-    myThreadGroup = new ThreadGroup("tg"+shellId);
+    executor = new BeakerCellExecutor("groovy");
     startWorker();
   }
 
   protected void startWorker() {
-    myWorker = new workerThread(myThreadGroup);
+    myWorker = new workerThread();
     myWorker.start();
   }
 
@@ -74,19 +75,15 @@ public class GroovyEvaluator {
   public String getShellId() { return shellId; }
 
   public void killAllThreads() {
-    cancelExecution();
+    executor.killAllThreads();
   }
 
   public void cancelExecution() {
-    myThreadGroup.interrupt();
-    try {
-      Thread.sleep(100);
-    } catch (InterruptedException e) { }
-    myThreadGroup.interrupt();
+    executor.cancelExecution();
   }
 
   public void resetEnvironment() {
-    cancelExecution();
+    executor.killAllThreads();
 
     String cpp = "";
     for(String pt : classPath) {
@@ -108,13 +105,14 @@ public class GroovyEvaluator {
   public void exit() {
     exit = true;
     cancelExecution();
+    syncObject.release();
   }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
     if(cp.isEmpty())
       classPath.clear();
     else
-      classPath = Arrays.asList(cp.split("[\\s]+"));
+      classPath = Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"));
     if (in.isEmpty())
       imports.clear();
     else
@@ -142,8 +140,8 @@ public class GroovyEvaluator {
 
   protected class workerThread extends Thread {
 
-    public workerThread(ThreadGroup tg) {
-      super(tg, "worker");
+    public workerThread() {
+      super("groovy worker");
     }
     
     /*
@@ -181,18 +179,16 @@ public class GroovyEvaluator {
 
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
-          
-          Object result;
-          result = shell.evaluate(j.codeToBeExecuted);
-          j.outputObject.finished(result);
-        } catch(Throwable e) {
-          if(j!=null && j.outputObject != null) {
-            if (e instanceof InterruptedException || e instanceof InvocationTargetException) {
-              j.outputObject.error("... cancelled!");
-            } else {
-              j.outputObject.error(e.getMessage());
-            }          
+
+          if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject))) {
+            j.outputObject.error("... cancelled!");
           }
+          if(nc!=null) {
+            nc.setOutputObj(null);
+            nc = null;
+          }
+        } catch(Throwable e) {
+          e.printStackTrace();
         } finally {
           if(nc!=null) {
             nc.setOutputObj(null);
@@ -202,6 +198,33 @@ public class GroovyEvaluator {
       }
     }
       
+    protected class MyRunnable implements Runnable {
+
+      protected final String theCode;
+      protected final SimpleEvaluationObject theOutput;
+
+      public MyRunnable(String code, SimpleEvaluationObject out) {
+        theCode = code;
+        theOutput = out;
+      }
+      
+      @Override
+      public void run() {
+        Object result;
+        try {
+          result = shell.evaluate(theCode);
+          theOutput.finished(result);              
+        } catch(Throwable e) {
+          if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
+            theOutput.error("... cancelled!");
+          } else {
+            theOutput.error(e.getMessage());
+          }
+        }
+      }
+      
+    };
+    
     protected ClassLoader newClassLoader() throws MalformedURLException
     {
       URL[] urls = {};

@@ -573,7 +573,7 @@
         return '';
       },
       renameCell: function(oldid, newid) {
-        if(!this.canRenameCell(newid)) return;
+        if(this.canRenameCell(newid) !== '') return;
         var idx = this.getIndex(oldid);
         if(idx>=0) {
           cells[idx].id = newid;

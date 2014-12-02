@@ -47,7 +47,6 @@
         }
       },
       newEvaluator: function(evaluatorSettings) {
-        console.log("new evaluator "+evaluatorSettings);
         if(loadingInProgressEvaluators.indexOf(evaluatorSettings)==0)
 	      loadingInProgressEvaluators.push(evaluatorSettings);
 	    var deferred = bkUtils.newDeferred();
@@ -74,12 +73,10 @@
 	      evaluatorSettings.view.cm.mode = evaluator.cmMode;
 	      evaluators[evaluatorSettings.name] = evaluator;
 	      if ( evaluatorSettings.deferred !== undefined ) {
-	        console.log (" wake up evaluator");
 	        evaluatorSettings.deferred.resolve(evaluator);
 	        delete evaluatorSettings.deferred;
 	      }
 	      deferred.resolve(evaluator);
-	      console.log("completed 4 "+evaluatorSettings);
 	    })
 	    .finally(function() {
 	      var index = loadingInProgressEvaluators.indexOf(evaluatorSettings);

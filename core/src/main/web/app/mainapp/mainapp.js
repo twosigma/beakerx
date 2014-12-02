@@ -259,7 +259,6 @@
                 return addEvaluator(ev, !isExistingSession);
               });
               bkUtils.all(promises).then(function() {
-                console.log("loaded EVERYTHING!!!");
                 if (!isExistingSession) {
                   bkUtils.log("open", {
                     uri: notebookUri,

@@ -149,6 +149,8 @@ define(function(require, exports, module) {
     return getCompletions(token, context, keywords, options);
   }
 
+  var JavascriptCancelFunction = null;
+
   var JavaScript_0 = {
     pluginName: PLUGIN_NAME,
     cmMode: "javascript",
@@ -158,23 +160,115 @@ define(function(require, exports, module) {
     borderColor: "",
     shortName: "Js",
     evaluate: function(code, modelOutput) {
-      return bkHelper.fcall(function() {
-        try {
-          var beaker = bkHelper.getNotebookModel().namespace; // this is visible to JS code in cell
-          if (undefined === beaker) {
-            bkHelper.getNotebookModel().namespace = {};
-            beaker = bkHelper.getNotebookModel().namespace;
+        var deferred = bkHelper.newDeferred();
+        bkHelper.timeout(function () {
+          try {
+            var beaker = bkHelper.getNotebookModel().namespace; // this is visible to JS code in cell
+            if (undefined === beaker) {
+              bkHelper.getNotebookModel().namespace = {};
+              beaker = bkHelper.getNotebookModel().namespace;
+            }
+            var progressObj = {
+                type: "BeakerDisplay",
+                innertype: "Progress",
+                object: {
+                  message: "evaluating ...",
+                  startTime: new Date().getTime()
+                }
+              };
+            modelOutput.result = progressObj;
+            bkHelper.refreshRootScope();
+            
+            beaker._beaker_model_output_result = modelOutput.result;
+            beaker.showProgressUpdate = function (a,b,c) {
+              if ( a === undefined)
+                return;
+              if ( typeof a === 'string' )
+                beaker._beaker_model_output_result.object.message = a;
+              else if ( typeof a === 'number' )
+                beaker._beaker_model_output_result.object.progressBar = a;
+              else if ( a !== null )
+                beaker._beaker_model_output_result.object.payload = a;
+
+              if ( typeof b === 'string' )
+                beaker._beaker_model_output_result.object.message = b;
+              else if ( typeof b === 'number' )
+                beaker._beaker_model_output_result.object.progressBar = b;
+              else if ( b !== null )
+                beaker._beaker_model_output_result.object.payload = b;
+
+              if ( typeof c === 'string' )
+                beaker._beaker_model_output_result.object.message = c;
+              else if ( typeof c === 'number' )
+                beaker._beaker_model_output_result.object.progressBar = c;
+              else if ( c !== null )
+                beaker._beaker_model_output_result.object.payload = c;
+            };
+            
+            var output = eval(code);
+            if ( typeof output === 'object' ) {
+              if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {
+                output = output.promise;
+              }
+              if(typeof output.then === 'function') {
+                JavascriptCancelFunction = function () {
+                  modelOutput.result = {
+                      type: "BeakerDisplay",
+                      innertype: "Error",
+                      object: "cancelled..."
+                  };
+                  modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
+                  JavascriptCancelFunction = null;
+                  if ( typeof output.reject === 'function') {
+                    output.reject();
+                    output = undefined;
+                  } else {
+                    deferred.reject();
+                  }
+                }
+                output.then(function(o) {
+                  modelOutput.result = "" + o; // See Issue #396            
+                  deferred.resolve(o);
+                  delete beaker._beaker_model_output_result;
+                }, function(e) {
+                  modelOutput.result = {
+                      type: "BeakerDisplay",
+                      innertype: "Error",
+                      object: "" + e
+                  };
+                  deferred.reject(e);
+                  delete beaker._beaker_model_output_result;
+                });
+              } else {
+                modelOutput.result = "" + output; // See Issue #396            
+                deferred.resolve(output);
+                delete beaker._beaker_model_output_result;
+              }
+            } else {
+              modelOutput.result = "" + output; // See Issue #396            
+              deferred.resolve(output);
+              delete beaker._beaker_model_output_result;
+            }
+          } catch (err) {
+            modelOutput.result = {
+                type: "BeakerDisplay",
+                innertype: "Error",
+                object: "" + err
+            };
+            deferred.reject(err);
           }
-          modelOutput.result = "" + eval(code); // See Issue #396
-        } catch (err) {
-          modelOutput.result = {
-            type: "BeakerDisplay",
-            innertype: "Error",
-            object: "" + err
-          };
+        }, 0);
+        return deferred.promise;
+      },
+      interrupt: function() {
+        this.cancelExecution();
+      },
+      cancelExecution: function () {
+        if (JavascriptCancelFunction) {
+          JavascriptCancelFunction();
         }
-      });
-    },
+      },
+
     autocomplete2: function(editor, options, cb) {
       var ret = scriptHint(editor, javascriptKeywords,
           function(e, cur) {
@@ -192,6 +286,10 @@ define(function(require, exports, module) {
     updateAll: function() {
       this.updateJsSetting1();
       this.updateJsSetting2();
+    },
+    exit: function(cb) {
+      this.cancelExecution();
+      JavascriptCancelFunction = null;
     },
     spec: {
     }

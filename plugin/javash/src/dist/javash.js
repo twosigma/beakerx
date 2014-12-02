@@ -108,8 +108,7 @@ define(function(require, exports, module) {
           }).done(function (ret) {
             console.log("done cancelExecution",ret);
           });
-          deferred.reject("cancelled by user");
-          progressObj.message = "cancelling...";
+          progressObj.object.message = "cancelling...";
           modelOutput.result = progressObj;
         }
         var onUpdatableResultUpdate = function(update) {
@@ -168,6 +167,26 @@ define(function(require, exports, module) {
         JavaShCancelFunction();
       }
     },
+    resetEnvironment: function () {
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: serviceBase + "/rest/javash/resetEnvironment",
+        data: {shellId: this.settings.shellID}
+      }).done(function (ret) {
+        console.log("done resetEnvironment",ret);
+      });
+    },
+    killAllThreads: function () {
+      $.ajax({
+        type: "POST",
+        datatype: "json",
+        url: serviceBase + "/rest/javash/killAllThreads",
+        data: {shellId: this.settings.shellID}
+      }).done(function (ret) {
+        console.log("done killAllThreads",ret);
+      });
+    },
     autocomplete: function(code, cpos, cb) {
       var self = this;
       $.ajax({
@@ -198,7 +217,9 @@ define(function(require, exports, module) {
     spec: {
       outdir:    {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
       classPath: {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
-      imports:   {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"}
+      imports:   {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
+      resetEnv:  {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+      killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
     },
     cometdUtil: cometdUtil
   };
@@ -260,6 +281,7 @@ define(function(require, exports, module) {
       shellReadyDeferred.resolve(JavaShell);
     }).error(function() {
       console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
+      shellReadyDeferred.reject("failed to locate plugin service");
     });
   };
   init();
@@ -275,7 +297,8 @@ define(function(require, exports, module) {
           return deferred.promise;
         }
       };
-    });
+    },
+    function(err) { return err; });
   };
 
   exports.name = PLUGIN_NAME;

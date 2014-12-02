@@ -146,7 +146,7 @@ define(function(require, exports, module) {
           });
     },
     exit: function(cb) {
-
+      this.cancelExecution();
       var self = this;
       $.ajax({
         type: "POST",

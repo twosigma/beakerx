@@ -256,6 +256,8 @@ define(function(require, exports, module) {
     },
     exit: function(cb) {
       console.log("ipython exit");
+      this.cancelExecution();
+      _theCancelFunction = null;
       var kernel = kernels[this.settings.shellID];
       kernel.kill();
     },

@@ -181,6 +181,8 @@ define(function(require, exports, module) {
     },
     exit: function(cb) {
       var self = this;
+      this.cancelExecution();
+      JavaShCancelFunction = null;
       $.ajax({
         type: "POST",
         datatype: "json",

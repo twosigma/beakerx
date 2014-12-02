@@ -27,8 +27,6 @@
     };
 
     var jobQueue = (function() {
-      var RETRY_MAX = 120;
-      var RETRY_DELAY = 500; // ms
       var errorMessage = function(msg) {
         return {
           type: "BeakerDisplay",
@@ -43,6 +41,7 @@
 
       var _queue = [];
       var _jobInProgress = undefined;
+      var stack = {};
 
       var evaluateJob = function(job) {
         job.evaluator = bkEvaluatorManager.getEvaluator(job.evaluatorId);
@@ -51,28 +50,36 @@
             plugin: job.evaluator.pluginName,
             length: job.code.length });
           return job.evaluator.evaluate(job.code, job.output);
-        } else {
-          if (job.retry > RETRY_MAX) {
-            return bkUtils.fcall(function() {
-              var err = job.evaluatorId + " failed to start";
-              job.output.result = errorMessage(err);
-              throw new Error(err);
-            });
-          }
-          job.retry++;
-          job.output.result = MESSAGE_WAITING_FOR_EVALUTOR_INIT;
-          return bkUtils.delay(RETRY_DELAY).then(function () {
-            return evaluateJob(job);
-          });
         }
+        job.output.result = MESSAGE_WAITING_FOR_EVALUTOR_INIT;
+        return bkEvaluatorManager.waitEvaluator(job.evaluatorId)
+          .then(function(ev) {
+            job.evaluator = ev;
+            return job.evaluator.evaluate(job.code, job.output);
+          } );
       };
 
       var doNext = function() {
         if (_jobInProgress) {
-          return;
+          // look for cells with this as a parent
+          var i, filter = true;
+          for ( i=0; i<_queue.length; i++) {
+            if (_queue[i].parent === _jobInProgress.cellId ) {
+              _jobInProgress = _queue[i];
+              _queue.splice(i,1);
+              filter = false;
+              break;
+            }
+          }
+          if ( filter )
+            return;
+        } else {
+          _jobInProgress = _queue.shift();
         }
-        _jobInProgress = _queue.shift();
+        
         if (_jobInProgress) {
+          bkHelper.showStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
+          stack[_jobInProgress.cellId] = _jobInProgress;
           return evaluateJob(_jobInProgress)
               .then(_jobInProgress.resolve, function(err) {
                 // empty result of all pending cells
@@ -85,7 +92,13 @@
                 _jobInProgress.reject(err);
               })
               .finally(function () {
-                _jobInProgress = undefined;
+                bkHelper.clrStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
+                delete stack[_jobInProgress.cellId];
+                if (_jobInProgress.parent !== undefined && stack[_jobInProgress.parent] !== undefined) {
+                  _jobInProgress = stack[_jobInProgress.parent];
+                  bkHelper.showStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
+                } else
+                  _jobInProgress = undefined;
               })
               .then(doNext);
         }
@@ -102,15 +115,31 @@
         empty: function() {
           _jobInProgress = undefined;
           _queue.splice(0, _queue.length);
+          stack = { };
+        },
+        isRunning: function(n) {
+          return stack[n] !== undefined;
         }
       };
     })();
 
     return {
       evaluate: function(cell) {
+        var currentJob = jobQueue.getCurrentJob();
+        return this.evaluate2(cell, currentJob !== undefined ? currentJob.cellId : undefined);
+      },      
+      evaluate2: function(cell, parent) {
         var deferred = bkUtils.newDeferred();
+        if (jobQueue.isRunning(cell.id)) {
+          bkHelper.showTransientStatus("ERROR: restart blocked for cell "+cell.id);
+          console.log("RESTART PROHIBITED for cell "+cell.id);
+          // prevent self restart
+          deferred.resolve();
+          return deferred.promise;
+        }
         setOutputCellText(cell, "pending");
         var evalJob = {
+          parent: parent,
           cellId: cell.id,
           evaluatorId: cell.evaluator,
           code: cell.input.body,
@@ -128,8 +157,9 @@
       },
       evaluateAll: function(cells) {
         var self = this;
+        var currentJob = jobQueue.getCurrentJob();
         var promises = _(cells).map(function(cell) {
-          self.evaluate(cell);
+          return self.evaluate2(cell, currentJob !== undefined ? currentJob.cellId : undefined);
         });
         return bkUtils.all(promises);
       },

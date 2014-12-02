@@ -20,111 +20,160 @@
   'use strict';
   var module = angular.module('bk.evaluatePluginManager', ['bk.utils']);
   module.factory('bkEvaluatePluginManager', function(bkUtils) {
-      var nameToUrlMap = {};
-      var nameToVisualParams = {};
-      var plugins = {};
-      var loadingInProgressPlugins = [];
-      return {
-        getKnownEvaluatorPlugins: function() {
-          return nameToUrlMap;
-        },
-        addNameToUrlEntry: function(name, url) {
-          if ( typeof url === 'string' ) {
-            nameToUrlMap[name] = url;
-          } else {
-            nameToUrlMap[name] = url.url;
-            delete url.url;
-            nameToVisualParams[name] = url;
-          }
-        },
-        getVisualParams: function(name) {
-            return nameToVisualParams[name];
-        },
-        getEvaluatorFactory: function(nameOrUrl) {
-          if (plugins[nameOrUrl]) {
-            var deferred = bkUtils.newDeferred();
-            plugins[nameOrUrl].getEvaluatorFactory().then(function(shellCreator) {
-              deferred.resolve(shellCreator);
-            }, function(err) {
-              deferred.reject(err);
-            });
-            return deferred.promise;
-          } else {
-            var deferred = bkUtils.newDeferred();
-            var name, url;
-            if (nameToUrlMap[nameOrUrl]) {
-              name = nameOrUrl;
-              url = nameToUrlMap[nameOrUrl];
+    var nameToUrlMap = {};
+    var nameToVisualParams = {};
+    var plugins = {};
+    var loadingInProgressPlugins = [];
+    
+    var evaluatorLoadQueue = (function() {
+      var _queue = [];
+      var _loadInProgress = undefined;
+
+      var loadEvaluator = function(ev) {
+        bkHelper.showStatus("Loading plugin "+ev.name);
+        return bkUtils.loadModule(ev.url, ev.name);        
+      };
+      var doNext = function() {        
+        if (_loadInProgress) {
+          return;
+        }
+        _loadInProgress = _queue.shift();
+        if (_loadInProgress) {
+          if (plugins[_loadInProgress.name] || plugins[_loadInProgress.url]) { // plugin code already loaded
+            if (plugins[_loadInProgress.name]) {
+              _loadInProgress.resolve(plugins[_loadInProgress.name])
+              .finally(function () {
+                _loadInProgress = undefined;
+              })
+              .then(doNext);
             } else {
-              name = "";
-              url = nameOrUrl;
+              _loadInProgress.resolve(plugins[_loadInProgress.url])
+              .finally(function () {
+                _loadInProgress = undefined;
+              })
+              .then(doNext);
             }
-            loadingInProgressPlugins.push({
+            return;
+          }
+          return loadEvaluator(_loadInProgress)
+          .then(_loadInProgress.resolve,  _loadInProgress.reject)
+          .finally(function () {
+            bkHelper.clrStatus("Loading plugin " + _loadInProgress.name)
+            _loadInProgress = undefined;
+          })
+          .then(doNext);
+        }
+      };
+
+      return {
+        add: function(evl) {
+          _queue.push(evl);
+          bkUtils.fcall(doNext);
+        }
+      };
+    })();
+
+    return {
+      getKnownEvaluatorPlugins: function() {
+        return nameToUrlMap;
+      },
+      addNameToUrlEntry: function(name, url) {
+        if ( typeof url === 'string' ) {
+          nameToUrlMap[name] = url;
+        } else {
+          nameToUrlMap[name] = url.url;
+          delete url.url;
+          nameToVisualParams[name] = url;
+        }
+      },
+      getVisualParams: function(name) {
+        return nameToVisualParams[name];
+      },
+      getEvaluatorFactoryAndShell: function(evaluatorSettings) {
+        var nameOrUrl = evaluatorSettings.plugin;
+        if (plugins[nameOrUrl]) { // plugin code already loaded
+          var deferred = bkUtils.newDeferred();
+          plugins[nameOrUrl].getEvaluatorFactory().then(function(factory) {
+            if (factory !== undefined && factory.create !== undefined) {
+              return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
+            } else {
+              deferred.reject("no factory for evaluator plugin");
+            }
+          }, function(err) {
+            console.log(err);
+            deferred.reject(err);
+          });
+          return deferred.promise;
+        } else {
+          var deferred = bkUtils.newDeferred();
+          var name, url;
+          if (nameToUrlMap[nameOrUrl]) {
+            name = nameOrUrl;
+            url = nameToUrlMap[nameOrUrl];
+          } else {
+            name = "";
+            url = nameOrUrl;
+          }
+                
+          var loadJob = {
               name: name,
-              url: url
-            });
-            bkUtils.loadModule(url, name).then(function(ex) {
-              if (!_.isEmpty(ex.name)) {
-                plugins[ex.name] = ex;
-              }
-              if (!_.isEmpty(name) && name !== ex.name) {
-                plugins[name] = ex;
-              }
-              ex.getEvaluatorFactory().then(function(shellCreator) {
-                deferred.resolve(shellCreator);
-              }, function(err) {
+              url: url,
+              resolve: function(ex) {
                 if (!_.isEmpty(ex.name)) {
-                  delete plugins[ex.name];
+                  plugins[ex.name] = ex;
                 }
                 if (!_.isEmpty(name) && name !== ex.name) {
-                  delete plugins[name];
+                  plugins[name] = ex;
                 }
+                return ex.getEvaluatorFactory()
+                  .then(function(factory) {
+                    if (factory !== undefined && factory.create !== undefined) {
+                      return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
+                    } else
+                      deferred.reject("no factory for evaluator plugin");
+                  }, function(err) {
+                    if (!_.isEmpty(ex.name)) {
+                      delete plugins[ex.name];
+                    }
+                    if (!_.isEmpty(name) && name !== ex.name) {
+                      delete plugins[name];
+                    }
+                    console.error(err);
+                    if (_.isEmpty(name)) {
+                      deferred.reject("failed to load plugin: " + url);
+                    } else {
+                      deferred.reject("failed to load plugin: " + name + " at " + url);
+                    }
+                  });
+              },
+              reject: function(err) {
+                bkHelper.showTransientStatus("Failed loading plugin "+name+": "+err);
                 console.error(err);
                 if (_.isEmpty(name)) {
                   deferred.reject("failed to load plugin: " + url);
                 } else {
                   deferred.reject("failed to load plugin: " + name + " at " + url);
                 }
-              });
-            }, function(err) {
-              if (!_.isEmpty(ex.name)) {
-                delete plugins[ex.name];
               }
-              if (!_.isEmpty(name) && name !== ex.name) {
-                delete plugins[name];
-              }
-              console.error(err);
-              if (_.isEmpty(name)) {
-                deferred.reject("failed to load plugin: " + url);
-              } else {
-                deferred.reject("failed to load plugin: " + name + " at " + url);
-              }
-            }).finally(function() {
-              loadingInProgressPlugins = _(loadingInProgressPlugins).filter(function(it) {
-                return it.url !== url;
-              });
-            });
-            return deferred.promise;
-          }
-        },
-        createEvaluatorThenExit: function(settings) {
-          var theShell;
-          return this.getEvaluatorFactory(settings.plugin)
-              .then(function(factory) {
-                var evaluator = factory.create(settings);
-                return evaluator;
-              })
-              .then(function(evaluator) {
-                if (evaluator.exit) {
-                  evaluator.exit();
-                }
-              })
-              .then(function() {
-                _(plugins).filter(function(aShell) {
-                  return aShell !== theShell;
-                });
-              });
+          };
+          evaluatorLoadQueue.add(loadJob);
+          return deferred.promise;
         }
-      };
-    });
+      },
+      createEvaluatorThenExit: function(settings) {
+        var theShell;
+        return this.getEvaluatorFactoryAndShell(settings)
+        .then(function(evaluator) {
+          if (evaluator.exit) {
+            evaluator.exit();
+          }
+        })
+        .then(function() {
+          _(plugins).filter(function(aShell) {
+            return aShell !== theShell;
+          });
+        });
+      }
+    };
+  });
 })();

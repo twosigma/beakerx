@@ -58,7 +58,7 @@
           return loadEvaluator(_loadInProgress)
           .then(_loadInProgress.resolve,  _loadInProgress.reject)
           .finally(function () {
-            bkHelper.clrStatus("Loading plugin "+_loadInProgress.name)
+            bkHelper.clrStatus("Loading plugin " + _loadInProgress.name)
             _loadInProgress = undefined;
           })
           .then(doNext);

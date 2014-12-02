@@ -26,13 +26,6 @@
     var loadingInProgressEvaluators = [];
     return {
       reset: function() {        
-        for (var key in evaluators) {
-          var e = evaluators[key];
-          if (_.isFunction(e.exit)) {
-            e.exit();
-          }
-          delete evaluators[key];
-        }
         evaluators = {};
       },
       removeEvaluator: function(plugin) {
@@ -47,7 +40,7 @@
         }
       },
       newEvaluator: function(evaluatorSettings) {
-        if(loadingInProgressEvaluators.indexOf(evaluatorSettings)==0)
+        if (loadingInProgressEvaluators.indexOf(evaluatorSettings) === -1)
 	      loadingInProgressEvaluators.push(evaluatorSettings);
 	    var deferred = bkUtils.newDeferred();
 	    bkEvaluatePluginManager.getEvaluatorFactoryAndShell(evaluatorSettings)
@@ -94,8 +87,10 @@
         } else {
           var i;
           for ( i = 0; i < loadingInProgressEvaluators.length; i ++ ) {
-            loadingInProgressEvaluators[i].deferred = deferred;
-            break;
+            if (loadingInProgressEvaluators[i].name === evaluatorId) {
+              loadingInProgressEvaluators[i].deferred = deferred;
+              break;
+            }
           }
           if (i === loadingInProgressEvaluators.length) {
             deferred.resolve(undefined);
@@ -110,28 +105,28 @@
         var v = { };
         var e = evaluators[name];
         var f = bkEvaluatePluginManager.getVisualParams(name);
-        if(e.bgColor !== undefined)
+        if (e.bgColor !== undefined)
           v.bgColor = e.bgColor;
         else if (f !== undefined && f.bgColor !== undefined)
           v.bgColor = f.bgColor;
         else
           v.bgColor = "";
-      
-        if(e.fgColor !== undefined)
+
+        if (e.fgColor !== undefined)
           v.fgColor = e.fgColor;
         else if (f !== undefined && f.fgColor !== undefined)
           v.fgColor = f.fgColor;
         else
           v.fgColor = "";
-      
-        if(e.borderColor !== undefined)
+
+        if (e.borderColor !== undefined)
           v.borderColor = e.borderColor;
         else if (f !== undefined && f.borderColor !== undefined)
           v.borderColor = f.borderColor;
         else
           v.borderColor = "";
 
-        if(e.shortName !== undefined)
+        if (e.shortName !== undefined)
           v.shortName = e.shortName;
         else if (f !== undefined && f.shortName !== undefined)
           v.shortName = f.shortName;

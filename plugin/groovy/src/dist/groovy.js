@@ -200,6 +200,8 @@ define(function(require, exports, module) {
     },
     exit: function(cb) {
       var self = this;
+      this.cancelExecution();
+      GroovyCancelFunction = null;
       $.ajax({
         type: "POST",
         datatype: "json",

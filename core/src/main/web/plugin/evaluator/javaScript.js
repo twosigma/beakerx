@@ -287,6 +287,10 @@ define(function(require, exports, module) {
       this.updateJsSetting1();
       this.updateJsSetting2();
     },
+    exit: function(cb) {
+      this.cancelExecution();
+      JavascriptCancelFunction = null;
+    },
     spec: {
     }
   };

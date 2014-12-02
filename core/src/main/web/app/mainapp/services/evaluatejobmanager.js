@@ -27,8 +27,6 @@
     };
 
     var jobQueue = (function() {
-      var RETRY_MAX = 120;
-      var RETRY_DELAY = 500; // ms
       var errorMessage = function(msg) {
         return {
           type: "BeakerDisplay",
@@ -57,7 +55,7 @@
         return bkEvaluatorManager.waitEvaluator(job.evaluatorId)
           .then(function(ev) {
             job.evaluator = ev;
-            job.evaluator = bkEvaluatorManager.getEvaluator(job.evaluatorId);
+            return job.evaluator.evaluate(job.code, job.output);
           } );
       };
 
@@ -80,7 +78,7 @@
         }
         
         if (_jobInProgress) {
-          bkHelper.showStatus("Evaluating "+_jobInProgress.evaluatorId+" cell "+_jobInProgress.cellId);
+          bkHelper.showStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
           stack[_jobInProgress.cellId] = _jobInProgress;
           return evaluateJob(_jobInProgress)
               .then(_jobInProgress.resolve, function(err) {
@@ -94,11 +92,11 @@
                 _jobInProgress.reject(err);
               })
               .finally(function () {
-                bkHelper.clrStatus("Evaluating "+_jobInProgress.evaluatorId+" cell "+_jobInProgress.cellId);
+                bkHelper.clrStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
                 delete stack[_jobInProgress.cellId];
                 if (_jobInProgress.parent !== undefined && stack[_jobInProgress.parent] !== undefined) {
                   _jobInProgress = stack[_jobInProgress.parent];
-                  bkHelper.showStatus("Evaluating "+_jobInProgress.evaluatorId+" cell "+_jobInProgress.cellId);
+                  bkHelper.showStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
                 } else
                   _jobInProgress = undefined;
               })

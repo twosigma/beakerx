@@ -568,14 +568,17 @@
         return "";
       },
       canRenameCell: function(newid) {
-        if(cellMap[newid] !== undefined) return "ERROR: Cell '"+newid+"' already exists.";
-        if(tagMap.usertags[newid] !== undefined) return "ERROR: The name '"+newid+"' is already used as a tag."
+        if (cellMap[newid] !== undefined)
+          return "ERROR: Cell '"+newid+"' already exists.";
+        if (tagMap.usertags[newid] !== undefined)
+          return "ERROR: The name '"+newid+"' is already used as a tag."
         return '';
       },
       renameCell: function(oldid, newid) {
-        if(this.canRenameCell(newid) !== '') return;
+        if (this.canRenameCell(newid) !== '')
+          return;
         var idx = this.getIndex(oldid);
-        if(idx>=0) {
+        if (idx >= 0) {
           cells[idx].id = newid;
           recreateCellMap();
         }

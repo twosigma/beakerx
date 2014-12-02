@@ -29,7 +29,7 @@
   'use strict';
   var module = angular.module('bk.core');
 
-  module.controller('CodeCellOptionsController', ['$scope', 'dialog', 'dscope', 'bkCoreManager', function($scope, dialog, dscope, bkCoreManager){
+  module.controller('CodeCellOptionsController', ['$scope', 'dialog', 'dscope', 'bkCoreManager', function($scope, dialog, dscope, bkCoreManager) {
     $scope.dscope = dscope;
     $scope.initializationCell = dscope.initialization;
     $scope.cellName = dscope.id;
@@ -55,7 +55,7 @@
       dialog.close('close');
     };
     $scope.save = function() {
-      if($scope.saveDisabled())
+      if ($scope.saveDisabled())
         return;
       $scope.dscope.initialization = $scope.initializationCell;
       $scope.dscope.tags = $scope.cellTags;

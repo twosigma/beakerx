@@ -67,29 +67,21 @@
         };
         var showLoadingStatusMessage = function(message) {
           $scope.loadingmsg = message;
-          if (message !== "")
-            $scope.loading = true;
-          else
-            $scope.loading = false;
         };
         var clrLoadingStatusMessage = function(message) {
           if ($scope.loadingmsg === message) {
             $scope.loadingmsg = "";
-            $scope.loading = false;
           }
         }
         var showTransientStatusMessage = function(message) {
           $scope.loadingmsg = message;
           if (message !== "") {
-            $scope.loading = true;
             bkUtils.delay(500).then(function() {
               if ($scope.loadingmsg === message) {
                 $scope.loadingmsg = "";
-                $scope.loading = false;
               }
             });
-          } else
-            $scope.loading = false;
+          }
         };
         var evaluatorMenuItems = [];
         
@@ -193,6 +185,7 @@
               isExistingSession) {
 
             showLoadingStatusMessage("Loading notebook");
+            $scope.loading = true;
             
             addScrollingHack();
             isExistingSession = !!isExistingSession;
@@ -274,6 +267,7 @@
                 }
               });
               clrLoadingStatusMessage("Loading notebook");
+              $scope.loading = false;
               return;
             }
 
@@ -290,6 +284,7 @@
               bkHelper.evaluate("initialization");
             }
             clrLoadingStatusMessage("Loading notebook");
+            $scope.loading = false;
           };
           return {
             openUri: function(target, sessionId, retry, retryCountMax) {
@@ -297,6 +292,7 @@
                 bkCoreManager.show1ButtonModal("Failed to open notebook, notebookUri is empty");
                 return;
               }
+              $scope.loading = true;
               showLoadingStatusMessage("Opening URI");
               if (retryCountMax === undefined) {
                 retryCountMax = 100;
@@ -319,6 +315,7 @@
                   }, 100);
                 } else {
                   clrLoadingStatusMessage("Opening URI");
+                  $scope.loading = false;
                   bkCoreManager.show1ButtonModal("Failed to open " + target.uri
                       + " because format " + target.format
                       + " was not recognized.", "Open Failed", function() {
@@ -342,6 +339,7 @@
                   });
                 }).finally(function() {
                   clrLoadingStatusMessage("Opening URI");
+                  $scope.loading = false;
                 });
               }
             },

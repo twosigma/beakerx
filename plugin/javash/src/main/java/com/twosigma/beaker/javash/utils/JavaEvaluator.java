@@ -25,6 +25,8 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
@@ -325,7 +327,7 @@ public class JavaEvaluator {
                 nc.setOutputObj(null);
                 nc = null;
               }
-            } catch(Exception e) { j.outputObject.error("ERROR:\n"+e.toString()); }    
+            } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); }    
           }
           j = null;
         } catch(Throwable e) {
@@ -354,7 +356,6 @@ public class JavaEvaluator {
       
       @Override
       public void run() {
-        Object result;
         try {
           
           Object o = theMth.invoke(null, (Object[])null);
@@ -364,10 +365,15 @@ public class JavaEvaluator {
             theOutput.finished(null);
           }          
         } catch(Throwable e) {
-          if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
+          if (e instanceof InvocationTargetException)
+            e = ((InvocationTargetException)e).getTargetException();
+          if ((e instanceof InterruptedException) || (e instanceof ThreadDeath)) {
             theOutput.error("... cancelled!");
           } else {
-            theOutput.error(e.getMessage());
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            theOutput.error(sw.toString());
           }
         }
       }

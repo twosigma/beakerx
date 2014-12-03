@@ -5,6 +5,8 @@ import groovy.lang.GroovyShell;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -213,12 +215,15 @@ public class GroovyEvaluator {
         Object result;
         try {
           result = shell.evaluate(theCode);
-          theOutput.finished(result);              
+          theOutput.finished(result);
         } catch(Throwable e) {
           if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
             theOutput.error("... cancelled!");
           } else {
-            theOutput.error(e.getMessage());
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            theOutput.error(sw.toString());
           }
         }
       }

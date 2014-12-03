@@ -56,7 +56,9 @@
         {
             "id": "textikdMvQ",
             "type": "text",
-            "body": "Beaker is based on the idea of the lab notebook, brought to life in your web browser. Each Beaker notebook is a place for recording the written ideas, data, images, spreadsheets, diagrams, equations, and especially code, that one produces in the course of research. &nbsp;With Beaker notebooks you can analyze, visualize, and document data and science, using multiple programming languages.<div><br></div><div>This tutorial covers the basics of interacting with code cells and notebooks. &nbsp;There are more tutorials on a variety of languages and topics, linked from the list below.</div>",
+            "body": [
+                "Beaker is based on the idea of the lab notebook, brought to life in your web browser. Each Beaker notebook is a place for recording the written ideas, data, images, spreadsheets, diagrams, equations, and especially code, that one produces in the course of research. &nbsp;With Beaker notebooks you can analyze, visualize, and document data and science, using multiple programming languages.<div><br></div><div>This tutorial covers the basics of interacting with code cells and notebooks. &nbsp;There are more tutorials on a variety of languages and topics, linked from the list below.</div>"
+            ],
             "evaluatorReader": false
         },
         {
@@ -64,21 +66,102 @@
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<style>\n  .tut-cell {\n    border:1px solid lightgray;\n    padding: 10px;\n  }\n  .tut-row {\n    padding: 10px;\n  }\n</style>\n<div class=\"row-fluid\">\n\n  <div class=\"span4\">\n\n    <h4>Languages</h4>\n\n    <p>Beaker supports: Python (IPython), R, Groovy, Julia, JavaScript, Ruby,\n       Node, Markdown, HTML, LaTeX, and plain text.</p>\n    <p>\n      However, Python, R, Groovy, and JavaScript are the languages we use every day.\n      Julia, Node, and Ruby are still experimental.\n    </p>\n\n    <h4>Navigation Tip</h4>\n\n    <p>Clicking one of the links to the tutorials on the right navigates\n        your web browser to the that notebook.\n        You can use the browser's \"Back\" button to return to this page, or use \n        the <strong>Help &#8594; Tutorial</strong> menu again.</p>\n    <p>This tutorial is itself a notebook.  For example, this section is an\n      HTML cell, and you can show its input code by cliking the expanding arrows\n      icon in the row in the upper-right corner of the cell. </p>\n  </div>  \n  \n  <div class=\"span4\">\n    <h2>More tutorials</h2>\n    <h4>Demos and Examples in</h4>\n    \n    <table>\n      <tr><td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&readOnly=true\">IPython</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&readOnly=true\">R</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true\">Groovy</a></td>\n      <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&readOnly=true\">Java</a></td>\n      </tr>\n    </table>\n    <h4>Basics and Fundamentals of</h4>\n    <table><tr>\n        <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython.bkr&readOnly=true\">IPython</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr.bkr&readOnly=true\">R</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr&readOnly=true\">Groovy</a></td>\n      </tr>\n    </table>\n    \n    <h4>Additional tutorials</h4>\n    <ul>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftext.bkr&readOnly=true\">Text, Formatting, and Equations</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fautotranslation.bkr&readOnly=true\">Autotranslation: Communicating among Languages</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true\">Interactive Charts</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FlevelsOfDetail.bkr&readOnly=true\">Charts with Levels of Detail</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fd3.bkr&readOnly=true\">Working with d3.js</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fform.bkr&readOnly=true\">Basic forms in Beaker</a>                                                                                                                             \n    </ul>\n    \n  </div>\n  <div class=\"span3\">\n    \n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.  Plugins can also easily extend the menus and output media types.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n    <h4>Learn more</h4>\n    <p>On the web at: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n  </div>\n</div>",
+                "body": [
+                    "<style>",
+                    "  .tut-cell {",
+                    "    border:1px solid lightgray;",
+                    "    padding: 10px;",
+                    "  }",
+                    "  .tut-row {",
+                    "    padding: 10px;",
+                    "  }",
+                    "</style>",
+                    "<div class=\"row-fluid\">",
+                    "",
+                    "  <div class=\"span4\">",
+                    "",
+                    "    <h4>Languages</h4>",
+                    "",
+                    "    <p>Beaker supports: Python (IPython), R, Groovy, Julia, JavaScript, Ruby,",
+                    "       Node, Markdown, HTML, LaTeX, and plain text.</p>",
+                    "    <p>",
+                    "      However, Python, R, Groovy, and JavaScript are the languages we use every day.",
+                    "      Julia, Node, and Ruby are still experimental.",
+                    "    </p>",
+                    "",
+                    "    <h4>Navigation Tip</h4>",
+                    "",
+                    "    <p>Clicking one of the links to the tutorials on the right navigates",
+                    "        your web browser to the that notebook.",
+                    "        You can use the browser's \"Back\" button to return to this page, or use ",
+                    "        the <strong>Help &#8594; Tutorial</strong> menu again.</p>",
+                    "    <p>This tutorial is itself a notebook.  For example, this section is an",
+                    "      HTML cell, and you can show its input code by cliking the expanding arrows",
+                    "      icon in the row in the upper-right corner of the cell. </p>",
+                    "  </div>  ",
+                    "  ",
+                    "  <div class=\"span4\">",
+                    "    <h2>More tutorials</h2>",
+                    "    <h4>Demos and Examples in</h4>",
+                    "    ",
+                    "    <table>",
+                    "      <tr><td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&readOnly=true\">IPython</a></td>",
+                    "          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&readOnly=true\">R</a></td>",
+                    "          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true\">Groovy</a></td>",
+                    "      <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&readOnly=true\">Java</a></td>",
+                    "      </tr>",
+                    "    </table>",
+                    "    <h4>Basics and Fundamentals of</h4>",
+                    "    <table><tr>",
+                    "        <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython.bkr&readOnly=true\">IPython</a></td>",
+                    "          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr.bkr&readOnly=true\">R</a></td>",
+                    "          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr&readOnly=true\">Groovy</a></td>",
+                    "      </tr>",
+                    "    </table>",
+                    "    ",
+                    "    <h4>Additional tutorials</h4>",
+                    "    <ul>",
+                    "    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftext.bkr&readOnly=true\">Text, Formatting, and Equations</a>",
+                    "    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fautotranslation.bkr&readOnly=true\">Autotranslation: Communicating among Languages</a>",
+                    "    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true\">Interactive Charts</a>",
+                    "    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FlevelsOfDetail.bkr&readOnly=true\">Charts with Levels of Detail</a>",
+                    "    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fd3.bkr&readOnly=true\">Working with d3.js</a>",
+                    "    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fform.bkr&readOnly=true\">Basic forms in Beaker</a>                                                                                                                             ",
+                    "    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FprogressUpdate.bkr&readOnly=true\">Asynchronous Progress Reporting</a>                                                                                                                             ",
+                    "    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FadvancedJS.bkr&readOnly=true\">Notebook Control via JavaScript</a>                                                                                                                             ",
+                    "    </ul>",
+                    "    ",
+                    "  </div>",
+                    "  <div class=\"span3\">",
+                    "    ",
+                    "    <h4>Plugins</h4>",
+                    "",
+                    "\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.  Plugins can also easily extend the menus and output media types.</p>",
+                    "    ",
+                    "    <h4>Open source</h4>",
+                    "",
+                    "\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    ",
+                    "    ",
+                    "    <h4>Learn more</h4>",
+                    "    <p>On the web at: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>",
+                    "    ",
+                    "  </div>",
+                    "</div>"
+                ],
                 "hidden": true
             },
             "output": {
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 56,
+                "elapsedTime": 44,
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<style>\n  .tut-cell {\n    border:1px solid lightgray;\n    padding: 10px;\n  }\n  .tut-row {\n    padding: 10px;\n  }\n</style>\n<div class=\"row-fluid\">\n\n  <div class=\"span4\">\n\n    <h4>Languages</h4>\n\n    <p>Beaker supports: Python (IPython), R, Groovy, Julia, JavaScript, Ruby,\n       Node, Markdown, HTML, LaTeX, and plain text.</p>\n    <p>\n      However, Python, R, Groovy, and JavaScript are the languages we use every day.\n      Julia, Node, and Ruby are still experimental.\n    </p>\n\n    <h4>Navigation Tip</h4>\n\n    <p>Clicking one of the links to the tutorials on the right navigates\n        your web browser to the that notebook.\n        You can use the browser's \"Back\" button to return to this page, or use \n        the <strong>Help &#8594; Tutorial</strong> menu again.</p>\n    <p>This tutorial is itself a notebook.  For example, this section is an\n      HTML cell, and you can show its input code by cliking the expanding arrows\n      icon in the row in the upper-right corner of the cell. </p>\n  </div>  \n  \n  <div class=\"span4\">\n    <h2>More tutorials</h2>\n    <h4>Demos and Examples in</h4>\n    \n    <table>\n      <tr><td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&readOnly=true\">IPython</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&readOnly=true\">R</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true\">Groovy</a></td>\n      <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&readOnly=true\">Java</a></td>\n      </tr>\n    </table>\n    <h4>Basics and Fundamentals of</h4>\n    <table><tr>\n        <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython.bkr&readOnly=true\">IPython</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr.bkr&readOnly=true\">R</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr&readOnly=true\">Groovy</a></td>\n      </tr>\n    </table>\n    \n    <h4>Additional tutorials</h4>\n    <ul>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftext.bkr&readOnly=true\">Text, Formatting, and Equations</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fautotranslation.bkr&readOnly=true\">Autotranslation: Communicating among Languages</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true\">Interactive Charts</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FlevelsOfDetail.bkr&readOnly=true\">Charts with Levels of Detail</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fd3.bkr&readOnly=true\">Working with d3.js</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fform.bkr&readOnly=true\">Basic forms in Beaker</a>                                                                                                                             \n    </ul>\n    \n  </div>\n  <div class=\"span3\">\n    \n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.  Plugins can also easily extend the menus and output media types.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n    <h4>Learn more</h4>\n    <p>On the web at: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n  </div>\n</div>"
+                    "object": "<style>\n  .tut-cell {\n    border:1px solid lightgray;\n    padding: 10px;\n  }\n  .tut-row {\n    padding: 10px;\n  }\n</style>\n<div class=\"row-fluid\">\n\n  <div class=\"span4\">\n\n    <h4>Languages</h4>\n\n    <p>Beaker supports: Python (IPython), R, Groovy, Julia, JavaScript, Ruby,\n       Node, Markdown, HTML, LaTeX, and plain text.</p>\n    <p>\n      However, Python, R, Groovy, and JavaScript are the languages we use every day.\n      Julia, Node, and Ruby are still experimental.\n    </p>\n\n    <h4>Navigation Tip</h4>\n\n    <p>Clicking one of the links to the tutorials on the right navigates\n        your web browser to the that notebook.\n        You can use the browser's \"Back\" button to return to this page, or use \n        the <strong>Help &#8594; Tutorial</strong> menu again.</p>\n    <p>This tutorial is itself a notebook.  For example, this section is an\n      HTML cell, and you can show its input code by cliking the expanding arrows\n      icon in the row in the upper-right corner of the cell. </p>\n  </div>  \n  \n  <div class=\"span4\">\n    <h2>More tutorials</h2>\n    <h4>Demos and Examples in</h4>\n    \n    <table>\n      <tr><td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython-examples.bkr&readOnly=true\">IPython</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr-examples.bkr&readOnly=true\">R</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy-examples.bkr&readOnly=true\">Groovy</a></td>\n      <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FjavaTutorial.bkr&readOnly=true\">Java</a></td>\n      </tr>\n    </table>\n    <h4>Basics and Fundamentals of</h4>\n    <table><tr>\n        <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fipython.bkr&readOnly=true\">IPython</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fr.bkr&readOnly=true\">R</a></td>\n          <td class=\"tut-cell\"><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fgroovy.bkr&readOnly=true\">Groovy</a></td>\n      </tr>\n    </table>\n    \n    <h4>Additional tutorials</h4>\n    <ul>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Ftext.bkr&readOnly=true\">Text, Formatting, and Equations</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fautotranslation.bkr&readOnly=true\">Autotranslation: Communicating among Languages</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FchartingTutorial.bkr&readOnly=true\">Interactive Charts</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FlevelsOfDetail.bkr&readOnly=true\">Charts with Levels of Detail</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fd3.bkr&readOnly=true\">Working with d3.js</a>\n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2Fform.bkr&readOnly=true\">Basic forms in Beaker</a>                                                                                                                             \n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FprogressUpdate.bkr&readOnly=true\">Asynchronous Progress Reporting</a>                                                                                                                             \n    \t<li><a href=\"/beaker/#/open?uri=file:config%2Ftutorials%2FadvancedJS.bkr&readOnly=true\">Notebook Control via JavaScript</a>                                                                                                                             \n    </ul>\n    \n  </div>\n  <div class=\"span3\">\n    \n    <h4>Plugins</h4>\n\n\t<p>All of the languages available in Beaker are added via plugins, so if we've missed your favorite language, you can create a plugin, and it will be treated as a first-class citizen.  Plugins can also easily extend the menus and output media types.</p>\n    \n    <h4>Open source</h4>\n\n\t<p>Beaker's full source code and documentation is available on <a href='https://github.com/twosigma/beaker-notebook'>GitHub</a> under the Apache 2.0 license.</p>    \n    \n    <h4>Learn more</h4>\n    <p>On the web at: <a href='http://beakernotebook.com'>http://BeakerNotebook.com</a>\n    \n  </div>\n</div>"
                 },
                 "state": {}
             },
             "evaluatorReader": true,
-            "lineCount": 77
+            "lineCount": 80
         },
         {
             "id": "Section8EWbZ9",
@@ -91,7 +174,9 @@
         {
             "id": "textKDdmxf",
             "type": "text",
-            "body": "Below is some IPython code. To run it, move your cursor into the cell, click, and then press CTRL-ENTER or click on the \"Run\" button.<div><br></div><div>The output from running a cell appears right below the input.</div>",
+            "body": [
+                "Below is some IPython code. To run it, move your cursor into the cell, click, and then press CTRL-ENTER or click on the \"Run\" button.<div><br></div><div>The output from running a cell appears right below the input.</div>"
+            ],
             "evaluatorReader": false
         },
         {
@@ -99,12 +184,16 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "a = 1\na"
+                "body": [
+                    "a = 1",
+                    "a"
+                ]
             },
             "output": {
                 "selectedType": "BeakerDisplay",
                 "outputArrived": true,
-                "elapsedTime": 119
+                "elapsedTime": 119,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -112,7 +201,9 @@
         {
             "id": "textmEdrvq",
             "type": "text",
-            "body": "And here's a basic histogram from matplotlib:",
+            "body": [
+                "And here's a basic histogram from matplotlib:"
+            ],
             "evaluatorReader": false
         },
         {
@@ -120,12 +211,15 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "hist([1,2,2])"
+                "body": [
+                    "hist([1,2,2])"
+                ]
             },
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": true,
-                "elapsedTime": 364
+                "elapsedTime": 364,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -149,7 +243,9 @@
         {
             "id": "textJwyp0v",
             "type": "text",
-            "body": "<div>Move your cursor to the area below this text. You'll see a blue bar appear with the text 'Insert Cell.' Click on that bar and add a new IPython cell. &nbsp;It uses the language of the previous code cell in the notebook, which in this case is IPython.</div><div><br></div><div>If you want to create a cell of a different language or type, then click on the right side of the bar on the triangle.</div><div><br></div><div>Click into the new cell and press CTRL-SHIFT-A. This will create a new cell of the same type.</div>",
+            "body": [
+                "<div>Move your cursor to the area below this text. You'll see a blue bar appear with the text 'Insert Cell.' Click on that bar and add a new IPython cell. &nbsp;It uses the language of the previous code cell in the notebook, which in this case is IPython.</div><div><br></div><div>If you want to create a cell of a different language or type, then click on the right side of the bar on the triangle.</div><div><br></div><div>Click into the new cell and press CTRL-SHIFT-A. This will create a new cell of the same type.</div>"
+            ],
             "evaluatorReader": false
         },
         {
@@ -163,7 +259,9 @@
         {
             "id": "textOYea2S",
             "type": "text",
-            "body": "<div>Move your cursor into a code cell. Pressing the UP and DOWN arrow keys will move your cursor from line to line within the cell, and then from cell to cell if you keep going over the edge.</div><div><br></div><div>Pressing CTRL-SHIFT-E within a code cell will allow you to change the cell's language.</div><div><br></div><div>In the top-right corner of the cell are some icons with common operations including deleting, moving the cell up and down, and three dots for a menu with more actions. &nbsp;Code cells have toggles to hide or show the input and output areas.</div>",
+            "body": [
+                "<div>Move your cursor into a code cell. Pressing the UP and DOWN arrow keys will move your cursor from line to line within the cell, and then from cell to cell if you keep going over the edge.</div><div><br></div><div>Pressing CTRL-SHIFT-E within a code cell will allow you to change the cell's language.</div><div><br></div><div>In the top-right corner of the cell are some icons with common operations including deleting, moving the cell up and down, and three dots for a menu with more actions. &nbsp;Code cells have toggles to hide or show the input and output areas.</div>"
+            ],
             "evaluatorReader": false
         },
         {
@@ -177,7 +275,9 @@
         {
             "id": "textMULqPW",
             "type": "text",
-            "body": "<div>Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any number of cells including other sections. There are four levels of heading, so you can organize your notebook in a tree and hide the parts you don't need. &nbsp;Try clicking the +/- buttons to get a feel for how the hierarchy works. &nbsp;The View&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→ Show Hierarchy menu makes the Hierarchy visible, including auto-numbering the sections.</span></div><div><br></div><div>Each section has a three-dot menu on the right side of the screen with operations that pertain to it, including Sharing, running all the cells in it, &nbsp;and changing its header level.</div><div><br></div><div>You can add sections with the usual Insert Cell menu.</div>",
+            "body": [
+                "<div>Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any number of cells including other sections. There are four levels of heading, so you can organize your notebook in a tree and hide the parts you don't need. &nbsp;Try clicking the +/- buttons to get a feel for how the hierarchy works. &nbsp;The View&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→ Show Hierarchy menu makes the Hierarchy visible, including auto-numbering the sections.</span></div><div><br></div><div>Each section has a three-dot menu on the right side of the screen with operations that pertain to it, including Sharing, running all the cells in it, &nbsp;and changing its header level.</div><div><br></div><div>You can add sections with the usual Insert Cell menu.</div>"
+            ],
             "evaluatorReader": false
         },
         {
@@ -191,7 +291,9 @@
         {
             "id": "textVwme1V",
             "type": "text",
-            "body": "With just one click you can share your work with the public. &nbsp;The File&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→ Share to web menu copies your notebook to a Github gist, and then opens it with our sharing server. &nbsp;You can send that link to anyone, and they can view it without having to install Beaker. &nbsp;From that page, they can download the original notebook and open it in Beaker if they have it.</span><div><span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\"><br></span></div><div><span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">The three-dot menu for sections and code cells also has a Share item that applies to that subset of your notebook.</span></div>",
+            "body": [
+                "With just one click you can share your work with the public. &nbsp;The File&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→ Share to web menu copies your notebook to a Github gist, and then opens it with our sharing server. &nbsp;You can send that link to anyone, and they can view it without having to install Beaker. &nbsp;From that page, they can download the original notebook and open it in Beaker if they have it.</span><div><span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\"><br></span></div><div><span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">The three-dot menu for sections and code cells also has a Share item that applies to that subset of your notebook.</span></div>"
+            ],
             "evaluatorReader": false
         },
         {
@@ -205,7 +307,9 @@
         {
             "id": "textadBg5q",
             "type": "text",
-            "body": "Just like your web browser allows you to see many web pages at the same time, Beaker allows you to work on multiple notebooks simultaneously. &nbsp;Just command-click (or control-click) on the Beaker logo in the upper-left corner to create a new tab in your browser, and connect to Beaker's start page. &nbsp;Here you will find a list of the current editing sessions, just click on one to open it. &nbsp;You can also use the file menu to open an existing notebook, create a new one, or select one of your recently used notebooks.<div><br></div><div>Beaker keeps track of all notebook editing sessions even if you close all browser windows on them. &nbsp;If you lose your browser window, just reconnect to the start page, normally at &nbsp;http://127.0.0.1/beaker/ and find your session in the list.</div><div><br></div><div>During normal editing of notebooks, Beaker saves checkpoints of your work automatically to the folder&nbsp;~/.beaker/v1/var/sessionBackups.</div>",
+            "body": [
+                "Just like your web browser allows you to see many web pages at the same time, Beaker allows you to work on multiple notebooks simultaneously. &nbsp;Just command-click (or control-click) on the Beaker logo in the upper-left corner to create a new tab in your browser, and connect to Beaker's start page. &nbsp;Here you will find a list of the current editing sessions, just click on one to open it. &nbsp;You can also use the file menu to open an existing notebook, create a new one, or select one of your recently used notebooks.<div><br></div><div>Beaker keeps track of all notebook editing sessions even if you close all browser windows on them. &nbsp;If you lose your browser window, just reconnect to the start page, normally at &nbsp;http://127.0.0.1/beaker/ and find your session in the list.</div><div><br></div><div>During normal editing of notebooks, Beaker saves checkpoints of your work automatically to the folder&nbsp;~/.beaker/v1/var/sessionBackups.</div>"
+            ],
             "evaluatorReader": false
         }
     ],

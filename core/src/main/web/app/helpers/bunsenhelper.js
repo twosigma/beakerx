@@ -47,6 +47,13 @@
         bkCoreManager: bkCoreManager
       },
 
+      closeIframe: function() {
+        $timeout(function() {
+          $window.top.postMessage({operation: 'close'},
+                                  $routeParams.bunsenUiUrl);
+        });
+      },
+
       resizeIFrame: function() {
         $timeout(function() {
           $window.top.postMessage({height: $('html').outerHeight(),

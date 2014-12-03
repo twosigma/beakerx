@@ -26,6 +26,10 @@ app.post('/shell', function(request, response){
     response.send(JSON.stringify(returnObject));
 });
 
+app.post('/exit', function(request, response){
+    response.send('ok (but exit is a noop for node plugin)');
+});
+
 app.post('/evaluate', function(request, response){
     var shellID = request.body.shellID;
     var code =  decodeURIComponent(request.body.code);

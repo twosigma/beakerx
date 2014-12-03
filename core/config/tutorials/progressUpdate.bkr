@@ -1,0 +1,464 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        },
+        {
+            "name": "Java",
+            "plugin": "Java",
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient",
+            "view": {
+                "cm": {
+                    "mode": "text/x-java"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionlbYwkU",
+            "type": "section",
+            "title": "Progress Update Reporting",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownNDNa2O",
+            "type": "markdown",
+            "body": [
+                "Beaker supports sending asynchronous status updates from code cells to keep the user informed about the computation progress.",
+                "",
+                "These updates can contain a text message and/or a completion percentage and/or a partial output object, such as a plot or a table. The language that support this feature so far are:",
+                "",
+                "* Groovy",
+                "",
+                "* JavaScript",
+                "",
+                "* Java",
+                "",
+                "To output a progress report you can use the showProgressUpdate function, available through the beaker object; for example in groovy you can write:",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codeXnQmyX",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def messages = [\"starting\",",
+                    "                \"started\",",
+                    "                \"begin\",",
+                    "                \"middle\",",
+                    "                \"about to finish\"];",
+                    "",
+                    "for ( int i = 0 ; i<5; i++) {",
+                    "\tbeaker.showProgressUpdate(messages[i], i*20)",
+                    "\tsleep(2500)",
+                    "}",
+                    "sleep(2500)",
+                    "\"finished\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "finished",
+                "selectedType": "Text",
+                "elapsedTime": 15534
+            },
+            "evaluatorReader": true,
+            "lineCount": 12
+        },
+        {
+            "id": "markdownnmVudy",
+            "type": "markdown",
+            "body": [
+                "In JavaScript you can write:",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codeOw6722",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var d = bkHelper.newDeferred();",
+                    "var count = 0;",
+                    "",
+                    "var operation = function() {",
+                    "  count+=10;",
+                    "  if (count<50)",
+                    "\t  beaker.showProgressUpdate(\"working\",count);",
+                    "  else",
+                    "\t  beaker.showProgressUpdate(\"still working\",count);",
+                    "\tif(count>=100) {",
+                    "      d.resolve(\"FINISHED (finally)\");",
+                    "    }",
+                    "  else {",
+                    "    bkHelper.timeout(operation,1500);",
+                    "  }",
+                    "}",
+                    "",
+                    "bkHelper.timeout(operation,1500);",
+                    "",
+                    "d"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "FINISHED (finally)",
+                "selectedType": "Text"
+            },
+            "evaluatorReader": true,
+            "lineCount": 20
+        },
+        {
+            "id": "markdownzCBhZP",
+            "type": "markdown",
+            "body": [
+                "And finally in Java:",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codefgkSlJ",
+            "type": "code",
+            "evaluator": "Java",
+            "input": {
+                "body": [
+                    "import java.util.List;",
+                    "import java.util.ArrayList;",
+                    "",
+                    "Plot p = new Plot();",
+                    "p.setTitle(\"this is a Java plot\");",
+                    "Bars b = new Bars();",
+                    "List<Number> yList = new ArrayList<Number>();",
+                    "",
+                    "String [] messages = new String [5];",
+                    "messages[0] = \"starting\";",
+                    "messages[1] = \"started\";",
+                    "messages[2] = \"begin\";",
+                    "messages[3] = \"middle\";",
+                    "messages[4] = \"about to finish\";",
+                    "",
+                    "int count = 0;",
+                    "",
+                    "while(count < 5) {",
+                    "  try {",
+                    "    Thread.sleep(2500);",
+                    "  } catch(Exception e) { }",
+                    "  yList.clear();",
+                    "  yList.add(2*count);",
+                    "  yList.add(10/(count+1));",
+                    "  yList.add(4*count);",
+                    "  yList.add(40/(count+1));",
+                    "",
+                    "  b.setY(yList);",
+                    "  b.setWidth(0.5);",
+                    "  p.add(b);",
+                    "  NamespaceClient.getBeaker().showProgressUpdate(messages[count],count*20,p);",
+                    "  count ++;",
+                    "}",
+                    "",
+                    "yList.clear();",
+                    "yList.add(2*count);",
+                    "yList.add(10/count);",
+                    "yList.add(4*count);",
+                    "yList.add(40/count);",
+                    "",
+                    "b.setY(yList);",
+                    "b.setWidth(0.5);",
+                    "p.add(b);",
+                    "",
+                    "return p;"
+                ]
+            },
+            "output": {
+                "state": {
+                    "showAllItems": true,
+                    "plotSize": {
+                        "width": 640,
+                        "height": 480
+                    },
+                    "focus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    },
+                    "lodOn": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodType": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "lodAuto": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "zoomHash": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "showItem": [
+                        true,
+                        true,
+                        true,
+                        true,
+                        true,
+                        true
+                    ],
+                    "visibleItem": 6,
+                    "legendableItem": 0,
+                    "defaultFocus": {
+                        "xl": 0.4738095238095238,
+                        "xr": 0.5261904761904762,
+                        "yl": 0.4738095238095238,
+                        "yr": 0.5261904761904762,
+                        "xspan": 0.05238095238095242,
+                        "yspan": 0.05238095238095242
+                    }
+                },
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": "this is a Java plot",
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": false,
+                    "use_tool_tip": true,
+                    "graphics_list": [
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null
+                        },
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null
+                        },
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null
+                        },
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null
+                        },
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null
+                        },
+                        {
+                            "type": "Bars",
+                            "x": [
+                                0,
+                                1,
+                                2,
+                                3
+                            ],
+                            "y": [
+                                10,
+                                2,
+                                20,
+                                8
+                            ],
+                            "visible": true,
+                            "display_name": "",
+                            "base": 0,
+                            "width": 0.5,
+                            "color": "#FFC0504D",
+                            "outline_color": null
+                        }
+                    ],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "auto_range": true,
+                            "auto_range_includes_zero": true,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "log": false
+                        }
+                    ],
+                    "x_auto_range": true,
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": true,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_x": false,
+                    "log_y": false,
+                    "time_zone": null,
+                    "crosshair": null
+                },
+                "selectedType": "Plot",
+                "elapsedTime": 13119
+            },
+            "evaluatorReader": true,
+            "lineCount": 45
+        }
+    ],
+    "namespace": {}
+}

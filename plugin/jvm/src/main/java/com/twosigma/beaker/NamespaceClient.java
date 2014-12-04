@@ -18,6 +18,7 @@ package com.twosigma.beaker;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.shared.NamespaceBinding;
+import com.twosigma.beaker.shared.json.serializer.StringObject;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -276,28 +277,28 @@ public class NamespaceClient {
     return null;
   }
   
-  public boolean setCodeCellBody(String name, String body) throws ClientProtocolException, IOException {
+  public String setCodeCellBody(String name, String body) throws ClientProtocolException, IOException {
     Form form = Form.form().add("name", name).add("body", body).add("session", this.session);
     String reply = Request.Post(ctrlUrlBase + "/setCodeCellBody")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    return mapper.readValue(reply, Boolean.class);
+    return mapper.readValue(reply, StringObject.class).getText();
   }
 
-  public boolean setCodeCellEvaluator(String name, String evaluator)  throws ClientProtocolException, IOException {
+  public String setCodeCellEvaluator(String name, String evaluator)  throws ClientProtocolException, IOException {
     Form form = Form.form().add("name", name).add("evaluator", evaluator).add("session", this.session);
     String reply = Request.Post(ctrlUrlBase + "/setCodeCellEvaluator")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    return mapper.readValue(reply, Boolean.class);
+    return mapper.readValue(reply, StringObject.class).getText();
   }
   
-  public boolean setCodeCellTags(String name, String tags) throws ClientProtocolException, IOException {
+  public String setCodeCellTags(String name, String tags) throws ClientProtocolException, IOException {
     Form form = Form.form().add("name", name).add("tags", tags).add("session", this.session);
     String reply = Request.Post(ctrlUrlBase + "/setCodeCellTags")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    return mapper.readValue(reply, Boolean.class);
+    return mapper.readValue(reply, StringObject.class).getText();
   }
   
 }

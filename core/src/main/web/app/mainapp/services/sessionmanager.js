@@ -133,9 +133,7 @@
     };
 
     var _subscriptions = {};
-    var connectcontrol = function(sessionId) {
-      console.log("connectcontrol "+sessionId);
-      
+    var connectcontrol = function(sessionId) {      
       _subscriptions[sessionId] =
           $.cometd.subscribe("/notebookctrl/" + sessionId, function(req) {
             try {

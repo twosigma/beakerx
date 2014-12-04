@@ -582,6 +582,9 @@
           cells[idx].id = newid;
           recreateCellMap();
         }
+      },
+      rebuildMaps: function() {
+        recreateCellMap(true);
       }
     };
   });

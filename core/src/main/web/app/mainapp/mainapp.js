@@ -781,6 +781,7 @@
               if ( cell.input === undefined || cell.input.body === undefined )
                 return "Error: cell "+name+" is not code cell";
               cell.evaluator = evaluator;
+              cellOp.rebuildMaps();
               return "";
             },
             // set a code cell tags
@@ -792,6 +793,7 @@
                 return "Error: cell "+name+" is not code cell";
               var cell  = cellOp.getCell(name);
               cell.tags = tags;
+              cellOp.rebuildMaps();
               return ""
             }
           };

@@ -176,12 +176,9 @@ public class NotebookControlService {
       System.err.println("channel not found for session " + session);
       return null;
     }
-    try {
     channel.publish(this.localSession, data, null);
     NotebookControlReply reply = getHandoff(session).take(); // blocks
     return reply.getValue();
-    } catch (Exception e) { e.printStackTrace(); }
-    return null;
   }
 
   public Object setCodeCellBody(String session, String name, String body) throws InterruptedException {

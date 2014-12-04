@@ -17,6 +17,7 @@ package com.twosigma.beaker.core.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.shared.json.serializer.StringObject;
 
 import java.io.IOException;
 
@@ -110,35 +111,35 @@ public class NotebookControlRest {
   
   @POST
   @Path("setCodeCellBody")
-  public Object setCodeCellBody(
+  public StringObject setCodeCellBody(
       @FormParam("session") String session, 
       @FormParam("name") String name,
       @FormParam("body") String body)
     throws IOException, InterruptedException
   {
-    return notebookCtrlService.setCodeCellBody(session, name,body);
+    return new StringObject(notebookCtrlService.setCodeCellBody(session, name,body).toString());
   }
 
   @POST
   @Path("setCodeCellEvaluator")
-  public Object setCodeCellEvaluator(
+  public StringObject setCodeCellEvaluator(
       @FormParam("session") String session, 
       @FormParam("name") String name,
       @FormParam("evaluator") String evaluator)
     throws IOException, InterruptedException
   {
-    return notebookCtrlService.setCodeCellEvaluator(session, name,evaluator);
+    return new StringObject(notebookCtrlService.setCodeCellEvaluator(session, name,evaluator).toString());
   }
 
   @POST
   @Path("setCodeCellTags")
-  public Object setCodeCellTags(
+  public StringObject setCodeCellTags(
       @FormParam("session") String session, 
       @FormParam("name") String name,
       @FormParam("tags") String tags)
     throws IOException, InterruptedException
   {
-    return notebookCtrlService.setCodeCellTags(session, name,tags);
+    return new StringObject(notebookCtrlService.setCodeCellTags(session, name,tags).toString());
   }
 
 }

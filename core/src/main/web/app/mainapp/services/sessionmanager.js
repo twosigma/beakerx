@@ -285,10 +285,10 @@
         }
       },
       evaluatorUnused: function(plugin) {
-	var n = _.find(_notebookModel.get().cells, function (c) {
-	    return c.type == "code" && c.evaluator == plugin;
-	});
-	return !n;
+        var n = _.find(_notebookModel.get().cells, function (c) {
+          return c.type == "code" && c.evaluator == plugin;
+        });
+        return !n;
       },
       addEvaluator: function(evaluator) {
         _notebookModel.get().evaluators.push(evaluator);

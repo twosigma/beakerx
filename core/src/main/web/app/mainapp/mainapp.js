@@ -583,8 +583,7 @@
             },
             evaluate: function(toEval) {
               var cellOp = bkSessionManager.getNotebookCellOp();
-              // toEval can be a tagName (string), which is for now either "initialization" or the
-              // name of an evaluator, user defined tags is not supported yet.
+              // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag
               // or a cellID (string)
               // or a cellModel
               // or an array of cellModels
@@ -657,6 +656,143 @@
             },
             isNotebookLocked: function() {
               return bkSessionManager.isNotebookLocked();
+            },
+            // return the names of all enabled evaluators
+            getEvaluators: function() {
+              var evals = bkEvaluatorManager.getAllEvaluators();
+              var ret = [];
+              for (var key in evals) {
+                if (evals.hasOwnProperty(key)) {
+                  ret.push(key);
+                }
+              }
+              return ret;
+            },
+            // get (a subset of) code cells
+            getCodeCells: function(filter) {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              // filter can be a tagName (string), either "initialization", name of an evaluator or user defined tag
+              // or a cellID (string)
+              if (!filter) {
+                // get all code cells
+                filter = cellOp.getAllCodeCells();
+              } else if (typeof filter !== "string")
+                return [];
+              else if (cellOp.hasCell(filter)) {
+                // this is a cellID
+                if (cellOp.isContainer(filter)) {
+                  // this is a section cell or root cell
+                  // in this case toEval is going to be an array of cellModels
+                  filter = cellOp.getAllCodeCells(filter);
+                } else {
+                  // single cell, just get the cell model from cellID
+                  filter = cellOp.getCell(filter);
+                }
+              } else {
+                // not a cellID
+                if (filter === "initialization") {
+                  // in this case toEval is going to be an array of cellModels
+                  filter = bkSessionManager.notebookModelGetInitializationCells();
+                } else if(cellOp.hasUserTag(filter)) {
+                  // this is a user tag for a cell
+                  // in this case toEval is going to be an array of cellModels
+                  filter = cellOp.getCellsWithUserTag(filter);
+                } else {
+                  // assume it is a evaluator name,
+                  // in this case toEval is going to be an array of cellModels
+                  filter = cellOp.getCellsWithEvaluator(filter);
+                }
+              }
+              if (filter === undefined || (!_.isArray(filter) && filter.length === 0)) {
+                return [];
+              }
+              var ret = [];
+              
+              if (_.isArray(filter)) {
+                var i;
+                for ( i = 0 ; i < filter.length ; i++ ) {
+                  var cell = filter[i];
+                  var o = {};
+                  o.cellId = cell.id;
+                  o.evaluatorId = cell.evaluator;
+                  o.code = cell.input.body;
+                  o.tags = cell.tags;
+                  if (cell.output !== undefined && cell.output.result !== undefined) {
+                    if (cell.output.result.type !== undefined) {
+                      if (cell.output.result.type === 'BeakerDisplay') {
+                        o.outputtype = cell.output.result.innertype;
+                        if (cell.output.result.object !== undefined) {
+                          if (typeof cell.output.result.object === 'string') {
+                            o.output = cell.output.result.object;
+                          } else {
+                            o.output = JSON.stringify(cell.output.result.object);
+                          }                        
+                        }
+                      } else {
+                        o.outputtype = cell.output.result.type;
+                        o.output = JSON.stringify(cell.output.result);
+                      }
+                    } else {
+                      o.outputtype = typeof cell.output.result;
+                      if (typeof cell.output.result === 'string') {
+                        o.output = cell.output.result;
+                      } else {
+                        o.output = JSON.stringify(cell.output.result);
+                      }
+                    }
+                  }
+                  ret.push(o);
+                }
+              } else {
+                var o = {};
+                o.cellId = filter.id;
+                o.evaluatorId = filter.evaluator;
+                o.code = filter.input.body;
+                o.output = filter.output;      
+                o.tags = filter.tags;
+                ret.push(o);
+              }
+              return ret;
+            },
+            // set a code cell body
+            setCodeCellBody: function(name, code) {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              if (!cellOp.hasCell(name))
+                return "Error: cell "+name+" does not exist";
+              if (cellOp.isContainer(name))
+                return "Error: cell "+name+" is not code cell";
+              var cell  = cellOp.getCell(name);
+              if ( cell.input === undefined || cell.input.body === undefined )
+                return "Error: cell "+name+" is not code cell";
+              cell.input.body = code;
+              return "";
+            },
+            // set a code cell evaluator
+            setCodeCellEvaluator: function(name, evaluator) {
+              var evals = this.getEvaluators();
+              if ( evals.indexOf(evaluator)==-1 )
+                return "Error: evaluator "+evaluator+" does not exist";
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              if (!cellOp.hasCell(name))
+                return "Error: cell "+name+" does not exist";
+              if (cellOp.isContainer(name))
+                return "Error: cell "+name+" is not code cell";
+              var cell  = cellOp.getCell(name);
+              if ( cell.input === undefined || cell.input.body === undefined )
+                return "Error: cell "+name+" is not code cell";
+              cell.evaluator = evaluator;
+              return "";
+            },
+            // set a code cell tags
+            setCodeCellTags: function(name, tags) {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              if (!cellOp.hasCell(name))
+                return "Error: cell "+name+" does not exist";
+              if (cellOp.isContainer(name))
+                return "Error: cell "+name+" is not code cell";
+              var cell  = cellOp.getCell(name);
+              cell.tags = tags;
+              return ""
             }
           };
         })();

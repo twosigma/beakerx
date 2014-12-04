@@ -18,6 +18,8 @@ package com.twosigma.beaker;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.shared.NamespaceBinding;
+
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.ClientProtocolException;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
@@ -202,7 +205,15 @@ public class NamespaceClient {
     String reply = Request.Post(ctrlUrlBase + "/evaluate")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    return mapper.readValue(reply, Object.class);
+    Object ret = null;    
+    try { ret = mapper.readValue(reply, Object.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
+    if (ret == null)
+      try { ret = mapper.readValue(reply, Boolean.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
+    if (ret == null)
+      try { ret = mapper.readValue(reply, String.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
+    if (ret == null)
+      try { ret = mapper.readValue(reply, Integer.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
+    return ret;
   }
 
   public Object evaluateCode(String evaluator, String code) throws ClientProtocolException, IOException {
@@ -211,7 +222,15 @@ public class NamespaceClient {
     String reply = Request.Post(ctrlUrlBase + "/evaluateCode")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    return mapper.readValue(reply, Object.class);
+    Object ret = null;
+    try { ret = mapper.readValue(reply, Object.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
+    if (ret == null)
+      try { ret = mapper.readValue(reply, Boolean.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
+    if (ret == null)
+      try { ret = mapper.readValue(reply, String.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
+    if (ret == null)
+      try { ret = mapper.readValue(reply, Integer.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
+    return ret;
   }
 
   public boolean showStatus(String msg) throws ClientProtocolException, IOException {

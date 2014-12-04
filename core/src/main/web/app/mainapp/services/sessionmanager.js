@@ -138,7 +138,6 @@
       
       _subscriptions[sessionId] =
           $.cometd.subscribe("/notebookctrl/" + sessionId, function(req) {
-            console.log("GOT CONTROL REQUEST "+JSON.stringify(req));
             try {
               var name = "bkHelper."+req.data.method;
               var numargs = req.data.numargs;
@@ -159,20 +158,21 @@
                   publish = false;
                   reply2.value.then(function(res) {
                     reply2.value=res;
-                    console.log("delay reply is :"+JSON.stringify(reply2));
                     $.cometd.publish("/service/notebookctrl/receive", JSON.stringify(reply2));
+                  }, function(err) {
+                    reply2.value=err;
+                    $.cometd.publish("/service/notebookctrl/receive", JSON.stringify(reply2));                    
                   });
                 }
               }
               else if (reply2.value === undefined)
                 reply2.value = true;
               if (publish) {
-                console.log("reply is :"+JSON.stringify(reply2));
                 $.cometd.publish("/service/notebookctrl/receive", JSON.stringify(reply2));
               }
             } catch (err) {
-              console.log("ERROR: "+err);
-              $.cometd.publish("/service/notebookctrl/receive", JSON.stringify( { session: sessionId, value: "false" } ));
+              console.log("CATCH "+err);
+              $.cometd.publish("/service/notebookctrl/receive", JSON.stringify( { session: sessionId, value: false } ));
             }
           });
       };

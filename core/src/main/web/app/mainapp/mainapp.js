@@ -633,7 +633,7 @@
                 evaluator: evaluator,
                 input: { body: code },
                 output: outcontainer
-              }).then(function() { deferred.resolve(outcontainer.result); }, function() { deferred.reject(); });
+              }).then(function() { deferred.resolve(outcontainer.result); }, function(err) { deferred.reject(err); });
               return deferred.promise;
             },
             addEvaluator: function(settings) {

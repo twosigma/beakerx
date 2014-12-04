@@ -100,6 +100,9 @@
                     });
                   }
                 }
+                // ensure that if page is refreshed now,
+                // the evaluator process is not leaked.
+                bkSessionManager.backup();
               });
         };
 

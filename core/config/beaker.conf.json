@@ -9,8 +9,7 @@
     "./plugin/menu/controlpanel.js",
     "./plugin/menu/controlpanel_addition.js",
     "./plugin/menu/help.js",
-    "./plugin/menu/file_ipython.js",
-    "./plugin/menu/bunsen.js"
+    "./plugin/menu/file_ipython.js"
   ],
   "notebook-app-menu-plugins":[
   ],

@@ -413,7 +413,7 @@
               var self = this;
               var closeSession = function() {
                 bkSessionManager.close().then(function() {
-                  bkCoreManager.gotoControlPanel();
+                  bkBunsenHelper.closeIframe();
                 });
               };
               if (bkSessionManager.isNotebookModelEdited() === false) {

@@ -90,12 +90,18 @@ public class PluginServiceLocatorRest {
     "  proxy_pass http://127.0.0.1:%(port)s/login;\n" +
     "}\n";
   private static final String IPYTHON1_RULES =
+    "location %(base_url)s/kernels/kill/ {\n" +
+    "  proxy_pass http://127.0.0.1:%(port)s/kernels/;\n" +
+    "}\n" +
     "location %(base_url)s/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/kernels;\n" +
     "}\n" +
     "location ~ %(base_url)s/kernels/[0-9a-f-]+/ {\n" +
     IPYTHON_RULES_BASE;
   private static final String IPYTHON2_RULES =
+    "location %(base_url)s/api/kernels/kill/ {\n" +
+    "  proxy_pass http://127.0.0.1:%(port)s/api/kernels/;\n" +
+    "}\n" +
     "location %(base_url)s/api/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;\n" +
     "}\n" +

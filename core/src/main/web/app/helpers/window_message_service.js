@@ -39,6 +39,9 @@
           case 'save':
             bkBunsenHelper.saveNotebook(e.data.name);
             break;
+          case 'close':
+            bkHelper.closeNotebook();
+            break;
           case 'showStdoutStderr':
             bkHelper.getBkNotebookViewModel().showOutput();
             break;

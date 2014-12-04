@@ -269,6 +269,9 @@
         });
         _edited = true;
       },
+      reconnectEvaluators: function() {
+        return bkEvaluatorManager.reconnectEvaluators();
+      },
       getNotebookCellOp: function() {
         return bkNotebookCellModelManager;
       },

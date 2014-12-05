@@ -72,13 +72,13 @@ public class NotebookControlRest {
   }
 
   @POST
-  @Path("clrStatus")
-  public Object clrStatus(
+  @Path("clearStatus")
+  public Object clearStatus(
       @FormParam("session") String session, 
       @FormParam("msg") String msg)
     throws IOException, InterruptedException
   {
-    return notebookCtrlService.clrStatus(session, msg);
+    return notebookCtrlService.clearStatus(session, msg);
   }
 
   @POST

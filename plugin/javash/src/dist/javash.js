@@ -84,7 +84,7 @@ define(function(require, exports, module) {
     evaluate: function(code, modelOutput) {
       var deferred = Q.defer();
       
-      if (GroovyCancelFunction) {
+      if (JavaShCancelFunction) {
         deferred.reject("An evaluation is already in progress");
         return deferred.promise;
       }

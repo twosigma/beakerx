@@ -158,11 +158,11 @@
           console.error("Current app doesn't support showStatus");
         }
       },
-      clrStatus: function(message) {
-        if (getCurrentApp().clrStatus) {
-          return getCurrentApp().clrStatus(message);
+      clearStatus: function(message) {
+        if (getCurrentApp().clearStatus) {
+          return getCurrentApp().clearStatus(message);
         } else {
-          console.error("Current app doesn't support clrStatus");
+          console.error("Current app doesn't support clearStatus");
         }
       },
       showTransientStatus: function(message) {

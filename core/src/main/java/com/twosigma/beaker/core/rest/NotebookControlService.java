@@ -122,9 +122,9 @@ public class NotebookControlService {
     return reply.getValue();
   }
 
-  public Object clrStatus(String session, String msg) throws InterruptedException {
+  public Object clearStatus(String session, String msg) throws InterruptedException {
     Map<String, Object> data = new HashMap<String, Object>(1);
-    data.put("method", "clrStatus");
+    data.put("method", "clearStatus");
     data.put("numargs", 1);
     data.put("arg0", msg);
     ServerChannel channel = getChannel(session);

@@ -242,9 +242,9 @@ public class NamespaceClient {
     return mapper.readValue(reply, Boolean.class);
   }
 
-  public boolean clrStatus(String msg) throws ClientProtocolException, IOException {
+  public boolean clearStatus(String msg) throws ClientProtocolException, IOException {
     Form form = Form.form().add("msg", msg).add("session", this.session);
-    String reply = Request.Post(ctrlUrlBase + "/clrStatus")
+    String reply = Request.Post(ctrlUrlBase + "/clearStatus")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
     return mapper.readValue(reply, Boolean.class);

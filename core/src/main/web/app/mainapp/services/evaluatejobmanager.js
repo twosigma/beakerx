@@ -94,7 +94,7 @@
                 _jobInProgress.reject(err);
               })
               .finally(function () {
-                bkHelper.clrStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
+                bkHelper.clearStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
                 delete stack[_jobInProgress.cellId];
                 if (_jobInProgress.parent !== undefined && stack[_jobInProgress.parent] !== undefined) {
                   _jobInProgress = stack[_jobInProgress.parent];

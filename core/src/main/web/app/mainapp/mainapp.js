@@ -519,7 +519,7 @@
             showStatus: function(message) {
               showLoadingStatusMessage(message);
             },
-            clrStatus: function(message) {
+            clearStatus: function(message) {
               clrLoadingStatusMessage(message);
             },
             showTransientStatus: function(message) {

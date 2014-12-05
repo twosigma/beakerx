@@ -44,6 +44,7 @@ public class NamespaceClient {
   private String urlBase;
   private String ctrlUrlBase;
   private SimpleEvaluationObject seo;
+  private Class<?> [] oclasses;
 
   private NamespaceClient(String session) {
     this.mapper = new ObjectMapper();
@@ -52,6 +53,12 @@ public class NamespaceClient {
     this.auth = "Basic " + Base64.encodeBase64String(account.getBytes());
     this.urlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/namespace";
     this.ctrlUrlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/notebookctrl";
+    oclasses = new Class<?>[4];
+    
+    oclasses[0] = Object.class;
+    oclasses[1] = Boolean.class;
+    oclasses[2] = Integer.class;
+    oclasses[3] = String.class;
   }
 
   /*
@@ -201,20 +208,29 @@ public class NamespaceClient {
    * notebook control
    */
 
+  private Object deserializeObject(String reply) throws ClientProtocolException, IOException  {
+    
+    Object ret = null;    
+    int idx = 0;
+    
+    while(ret==null && idx<oclasses.length) {   
+      try {
+        ret = mapper.readValue(reply, oclasses[idx++]);
+      } catch(JsonParseException e)
+      { 
+      } catch(EOFException e2)
+      {
+      }
+    }
+    return ret;
+  }
+  
   public Object evaluate(String filter) throws ClientProtocolException, IOException {
     Form form = Form.form().add("filter", filter).add("session", this.session);
     String reply = Request.Post(ctrlUrlBase + "/evaluate")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    Object ret = null;    
-    try { ret = mapper.readValue(reply, Object.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
-    if (ret == null)
-      try { ret = mapper.readValue(reply, Boolean.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
-    if (ret == null)
-      try { ret = mapper.readValue(reply, String.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
-    if (ret == null)
-      try { ret = mapper.readValue(reply, Integer.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
-    return ret;
+    return deserializeObject(reply);
   }
 
   public Object evaluateCode(String evaluator, String code) throws ClientProtocolException, IOException {
@@ -223,39 +239,29 @@ public class NamespaceClient {
     String reply = Request.Post(ctrlUrlBase + "/evaluateCode")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    Object ret = null;
-    try { ret = mapper.readValue(reply, Object.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
-    if (ret == null)
-      try { ret = mapper.readValue(reply, Boolean.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
-    if (ret == null)
-      try { ret = mapper.readValue(reply, String.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
-    if (ret == null)
-      try { ret = mapper.readValue(reply, Integer.class); } catch(JsonParseException e) { } catch(EOFException e2) { }
-    return ret;
+    return deserializeObject(reply);
   }
 
-  public boolean showStatus(String msg) throws ClientProtocolException, IOException {
-    Form form = Form.form().add("msg", msg).add("session", this.session);
-    String reply = Request.Post(ctrlUrlBase + "/showStatus")
-        .addHeader("Authorization", auth).bodyForm(form.build())
+  private boolean runBooleanRequest(String urlfragment, Form postdata) throws ClientProtocolException, IOException {
+    String reply = Request.Post(ctrlUrlBase +urlfragment)
+        .addHeader("Authorization", auth).bodyForm(postdata.build())
         .execute().returnContent().asString();
     return mapper.readValue(reply, Boolean.class);
+  }
+  
+  public boolean showStatus(String msg) throws ClientProtocolException, IOException {
+    Form form = Form.form().add("msg", msg).add("session", this.session);
+    return runBooleanRequest("/showStatus",form);
   }
 
   public boolean clearStatus(String msg) throws ClientProtocolException, IOException {
     Form form = Form.form().add("msg", msg).add("session", this.session);
-    String reply = Request.Post(ctrlUrlBase + "/clearStatus")
-        .addHeader("Authorization", auth).bodyForm(form.build())
-        .execute().returnContent().asString();
-    return mapper.readValue(reply, Boolean.class);
+    return runBooleanRequest("/clearStatus",form);
   }
 
   public boolean showTransientStatus(String msg) throws ClientProtocolException, IOException {
     Form form = Form.form().add("msg", msg).add("session", this.session);
-    String reply = Request.Post(ctrlUrlBase + "/showTransientStatus")
-        .addHeader("Authorization", auth).bodyForm(form.build())
-        .execute().returnContent().asString();
-    return mapper.readValue(reply, Boolean.class);
+    return runBooleanRequest("/showTransientStatus",form);
   }
 
   public List<String> getEvaluators() throws ClientProtocolException, IOException {
@@ -271,34 +277,29 @@ public class NamespaceClient {
     String reply = Request.Get(ctrlUrlBase + "/getCodeCells?" + args)
         .addHeader("Authorization", auth)
         .execute().returnContent().asString();
-    try {
     return mapper.readValue(reply, new TypeReference<List<BeakerCodeCell>>(){});
-    } catch(Exception e) { e.printStackTrace(); }
-    return null;
+  }
+  
+  private String runStringRequest(String urlfragment, Form postdata) throws ClientProtocolException, IOException {
+    String reply = Request.Post(ctrlUrlBase + urlfragment)
+        .addHeader("Authorization", auth).bodyForm(postdata.build())
+        .execute().returnContent().asString();
+    return mapper.readValue(reply, StringObject.class).getText();
   }
   
   public String setCodeCellBody(String name, String body) throws ClientProtocolException, IOException {
     Form form = Form.form().add("name", name).add("body", body).add("session", this.session);
-    String reply = Request.Post(ctrlUrlBase + "/setCodeCellBody")
-        .addHeader("Authorization", auth).bodyForm(form.build())
-        .execute().returnContent().asString();
-    return mapper.readValue(reply, StringObject.class).getText();
+    return runStringRequest("/setCodeCellBody", form);
   }
 
   public String setCodeCellEvaluator(String name, String evaluator)  throws ClientProtocolException, IOException {
     Form form = Form.form().add("name", name).add("evaluator", evaluator).add("session", this.session);
-    String reply = Request.Post(ctrlUrlBase + "/setCodeCellEvaluator")
-        .addHeader("Authorization", auth).bodyForm(form.build())
-        .execute().returnContent().asString();
-    return mapper.readValue(reply, StringObject.class).getText();
+    return runStringRequest("/setCodeCellEvaluator", form);
   }
   
   public String setCodeCellTags(String name, String tags) throws ClientProtocolException, IOException {
     Form form = Form.form().add("name", name).add("tags", tags).add("session", this.session);
-    String reply = Request.Post(ctrlUrlBase + "/setCodeCellTags")
-        .addHeader("Authorization", auth).bodyForm(form.build())
-        .execute().returnContent().asString();
-    return mapper.readValue(reply, StringObject.class).getText();
+    return runStringRequest("/setCodeCellTags", form);
   }
   
 }

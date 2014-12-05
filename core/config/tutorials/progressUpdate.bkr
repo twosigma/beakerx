@@ -97,8 +97,8 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "BeakerDisplay",
-                "elapsedTime": 13411
+                "selectedType": "Text",
+                "elapsedTime": 9582
             },
             "evaluatorReader": true,
             "lineCount": 12
@@ -120,7 +120,7 @@
             "evaluator": "JavaScript",
             "input": {
                 "body": [
-                    "var d = bkHelper.newDeferred();",
+                    "var d = beaker.newDeferred();",
                     "var count = 0;",
                     "",
                     "var operation = function() {",
@@ -133,11 +133,11 @@
                     "      d.resolve(\"FINISHED (finally)\");",
                     "    }",
                     "  else {",
-                    "    bkHelper.timeout(operation,1500);",
+                    "    beaker.timeout(operation,1500);",
                     "  }",
                     "}",
                     "",
-                    "bkHelper.timeout(operation,1500);",
+                    "beaker.timeout(operation,1500);",
                     "",
                     "d"
                 ]
@@ -246,29 +246,29 @@
             "evaluator": "JavaScript",
             "input": {
                 "body": [
-                    "var d = bkHelper.newDeferred();",
+                    "var d = beaker.newDeferred();",
                     "var count = 0;",
                     "",
                     "var operation = function() {",
                     "  if (count<50)",
-                    "\t  bkHelper.clearStatus(\"working at \"+count);",
+                    "\t  beaker.clearStatus(\"working at \"+count);",
                     "  else",
-                    "\t  bkHelper.clearStatus(\"still working at \"+count);",
+                    "\t  beaker.clearStatus(\"still working at \"+count);",
                     "  count+=10;",
                     "  if (count<50)",
-                    "\t  bkHelper.showStatus(\"working at \"+count);",
+                    "\t  beaker.showStatus(\"working at \"+count);",
                     "  else",
-                    "\t  bkHelper.showStatus(\"still working at \"+count);",
+                    "\t  beaker.showStatus(\"still working at \"+count);",
                     "\tif(count>=100) {",
-                    "      bkHelper.clearStatus(\"still working at \"+count);",
+                    "      beaker.clearStatus(\"still working at \"+count);",
                     "      d.resolve(\"FINISHED (finally)\");",
                     "    }",
                     "  else {",
-                    "    bkHelper.timeout(operation,1500);",
+                    "    beaker.timeout(operation,1500);",
                     "  }",
                     "}",
                     "",
-                    "bkHelper.timeout(operation,1500);",
+                    "beaker.timeout(operation,1500);",
                     "",
                     "d"
                 ]

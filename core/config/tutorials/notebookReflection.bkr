@@ -1,0 +1,139 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionDDj4qT",
+            "type": "section",
+            "title": "Notebook reflection API",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownsmvpfy",
+            "type": "markdown",
+            "body": [
+                "Beaker provides an API that allows to programmatically access (and modify) the notebook from a JavaScript or JVM based language cell.",
+                "",
+                "At the moment this API allows only basic changes of code cells. The functions provided are:",
+                "",
+                "* getEvaluators() - returns a list of all loaded language plugin names",
+                "",
+                "* getCodeCells(filter) - returns a list of Objects containing information about all code cells matching the filter, which can be empty (for all code cells), a cell name, a tag name or a language plugin name.",
+                "",
+                "* setCodeCellBody(name,code) - allows to programmatically change the code inside another cell.",
+                "",
+                "* setCodeCellEvaluator(name, eval) - allows to change the language plugin used to evaluate a code cell.",
+                "",
+                "* setCodeCellTags(name, tags) - allows to change the tags associated with a named cell.",
+                "",
+                "Execute the following two cells to see how this works",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codeQi2Ect",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// this call returns all code cells that have the tag 'mytag'",
+                    "JSON.stringify(beaker.getCodeCells('mytag'))"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text"
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "code8FSM5W",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// change the following cell type",
+                    "beaker.setCodeCellEvaluator('celltochange','Html')",
+                    "// set a new body",
+                    "beaker.setCodeCellBody('celltochange','<h1>This is the new content</h1>')",
+                    "// execute it",
+                    "beaker.evaluate('celltochange')",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "elapsedTime": 7493
+            },
+            "evaluatorReader": true,
+            "lineCount": 7,
+            "tags": "mytag"
+        },
+        {
+            "id": "celltochange",
+            "type": "code",
+            "evaluator": "Latex",
+            "input": {
+                "body": [
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 29
+            },
+            "evaluatorReader": true,
+            "tags": "mytag",
+            "lineCount": 1
+        }
+    ],
+    "namespace": {}
+}

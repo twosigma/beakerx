@@ -205,6 +205,26 @@ define(function(require, exports, module) {
                 beaker._beaker_model_output_result.object.payload = c;
             };
             
+            beaker.showStatus = bkHelper.showStatus;
+            beaker.clearStatus = bkHelper.clearStatus;
+            beaker.showTransientStatus = bkHelper.showTransientStatus;
+            beaker.getEvaluators = bkHelper.getEvaluators;
+            beaker.getCodeCells = bkHelper.getCodeCells;
+            beaker.setCodeCellBody = bkHelper.setCodeCellBody;
+            beaker.setCodeCellEvaluator = bkHelper.setCodeCellEvaluator;
+            beaker.setCodeCellTags = bkHelper.setCodeCellTags;
+            beaker.evaluate = bkHelper.evaluate;
+            beaker.evaluateCode = bkHelper.evaluateCode;
+            beaker.loadJS = bkHelper.loadJS;
+            beaker.loadCSS = bkHelper.loadCSS;
+            beaker.loadList = bkHelper.loadList;
+            beaker.httpGet = bkHelper.httpGet;
+            beaker.httpPost = bkHelper.httpPost;
+            beaker.newDeferred = bkHelper.newDeferred;
+            beaker.newPromise = bkHelper.newPromise;
+            beaker.all = bkHelper.all;
+            beaker.timeout = bkHelper.timeout;
+
             var output = eval(code);
             if ( typeof output === 'object' ) {
               if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {

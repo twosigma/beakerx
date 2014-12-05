@@ -57,9 +57,16 @@
     $scope.save = function() {
       if ($scope.saveDisabled())
         return;
+      var reb = false;
       $scope.dscope.initialization = $scope.initializationCell;
-      $scope.dscope.tags = $scope.cellTags;
-      bkCoreManager.getNotebookCellManager().renameCell($scope.dscope.id,$scope.cellName);
+      if ($scope.dscope.tags !== $scope.cellTags) {
+        $scope.dscope.tags = $scope.cellTags;
+        reb = true;
+      }
+      if ($scope.dscope.id !== $scope.cellName)
+        bkCoreManager.getNotebookCellManager().renameCell($scope.dscope.id,$scope.cellName);
+      else if(reb)
+        bkCoreManager.getNotebookCellManager().rebuildMaps()
       dialog.close('save');
     };
 }]);

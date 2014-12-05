@@ -55,7 +55,9 @@
         return bkEvaluatorManager.waitEvaluator(job.evaluatorId)
           .then(function(ev) {
             job.evaluator = ev;
-            return job.evaluator.evaluate(job.code, job.output);
+            if (ev !== undefined)
+              return job.evaluator.evaluate(job.code, job.output);
+            return "cannot find evaluator for "+job.evaluatorId;
           } );
       };
 
@@ -92,7 +94,7 @@
                 _jobInProgress.reject(err);
               })
               .finally(function () {
-                bkHelper.clrStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
+                bkHelper.clearStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
                 delete stack[_jobInProgress.cellId];
                 if (_jobInProgress.parent !== undefined && stack[_jobInProgress.parent] !== undefined) {
                   _jobInProgress = stack[_jobInProgress.parent];
@@ -127,7 +129,7 @@
       evaluate: function(cell) {
         var currentJob = jobQueue.getCurrentJob();
         return this.evaluate2(cell, currentJob !== undefined ? currentJob.cellId : undefined);
-      },      
+      },
       evaluate2: function(cell, parent) {
         var deferred = bkUtils.newDeferred();
         if (jobQueue.isRunning(cell.id)) {

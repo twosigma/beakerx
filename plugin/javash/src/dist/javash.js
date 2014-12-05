@@ -83,6 +83,12 @@ define(function(require, exports, module) {
     },
     evaluate: function(code, modelOutput) {
       var deferred = Q.defer();
+      
+      if (JavaShCancelFunction) {
+        deferred.reject("An evaluation is already in progress");
+        return deferred.promise;
+      }
+
       var self = this;
       var progressObj = {
           type: "BeakerDisplay",

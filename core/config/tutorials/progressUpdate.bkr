@@ -67,13 +67,7 @@
             "body": [
                 "Beaker supports sending asynchronous status updates from code cells to keep the user informed about the computation progress.",
                 "",
-                "These updates can contain a text message and/or a completion percentage and/or a partial output object, such as a plot or a table. The language that support this feature so far are:",
-                "",
-                "* Groovy",
-                "",
-                "* JavaScript",
-                "",
-                "* Java",
+                "These updates can contain a text message and/or a completion percentage and/or a partial output object, such as a plot or a table. The language that support this feature so far are JavaScript and all JVM based languages.",
                 "",
                 "To output a progress report you can use the showProgressUpdate function, available through the beaker object; for example in groovy you can write:",
                 ""
@@ -95,17 +89,16 @@
                     "",
                     "for ( int i = 0 ; i<5; i++) {",
                     "\tbeaker.showProgressUpdate(messages[i], i*20)",
-                    "\tsleep(2500)",
+                    "\tsleep(1500)",
                     "}",
-                    "sleep(2500)",
+                    "sleep(1500)",
                     "\"finished\""
                 ]
             },
             "output": {
                 "state": {},
-                "result": "finished",
                 "selectedType": "Text",
-                "elapsedTime": 15534
+                "elapsedTime": 9582
             },
             "evaluatorReader": true,
             "lineCount": 12
@@ -115,6 +108,7 @@
             "type": "markdown",
             "body": [
                 "In JavaScript you can write:",
+                "",
                 ""
             ],
             "evaluatorReader": false,
@@ -126,7 +120,7 @@
             "evaluator": "JavaScript",
             "input": {
                 "body": [
-                    "var d = bkHelper.newDeferred();",
+                    "var d = beaker.newDeferred();",
                     "var count = 0;",
                     "",
                     "var operation = function() {",
@@ -139,18 +133,17 @@
                     "      d.resolve(\"FINISHED (finally)\");",
                     "    }",
                     "  else {",
-                    "    bkHelper.timeout(operation,1500);",
+                    "    beaker.timeout(operation,1500);",
                     "  }",
                     "}",
                     "",
-                    "bkHelper.timeout(operation,1500);",
+                    "beaker.timeout(operation,1500);",
                     "",
                     "d"
                 ]
             },
             "output": {
                 "state": {},
-                "result": "FINISHED (finally)",
                 "selectedType": "Text"
             },
             "evaluatorReader": true,
@@ -161,6 +154,7 @@
             "type": "markdown",
             "body": [
                 "And finally in Java:",
+                "",
                 ""
             ],
             "evaluatorReader": false,
@@ -220,244 +214,72 @@
                 ]
             },
             "output": {
-                "state": {
-                    "showAllItems": true,
-                    "plotSize": {
-                        "width": 640,
-                        "height": 480
-                    },
-                    "focus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    },
-                    "lodOn": [
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                    ],
-                    "lodType": [
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                    ],
-                    "lodAuto": [
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                    ],
-                    "zoomHash": [
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                    ],
-                    "showItem": [
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        true
-                    ],
-                    "visibleItem": 6,
-                    "legendableItem": 0,
-                    "defaultFocus": {
-                        "xl": 0.4738095238095238,
-                        "xr": 0.5261904761904762,
-                        "yl": 0.4738095238095238,
-                        "yr": 0.5261904761904762,
-                        "xspan": 0.05238095238095242,
-                        "yspan": 0.05238095238095242
-                    }
-                },
-                "result": {
-                    "type": "Plot",
-                    "init_width": 640,
-                    "init_height": 480,
-                    "chart_title": "this is a Java plot",
-                    "domain_axis_label": null,
-                    "y_label": "",
-                    "show_legend": false,
-                    "use_tool_tip": true,
-                    "graphics_list": [
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null
-                        },
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null
-                        },
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null
-                        },
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null
-                        },
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null
-                        },
-                        {
-                            "type": "Bars",
-                            "x": [
-                                0,
-                                1,
-                                2,
-                                3
-                            ],
-                            "y": [
-                                10,
-                                2,
-                                20,
-                                8
-                            ],
-                            "visible": true,
-                            "display_name": "",
-                            "base": 0,
-                            "width": 0.5,
-                            "color": "#FFC0504D",
-                            "outline_color": null
-                        }
-                    ],
-                    "constant_lines": [],
-                    "constant_bands": [],
-                    "texts": [],
-                    "rangeAxes": [
-                        {
-                            "type": "YAxis",
-                            "auto_range": true,
-                            "auto_range_includes_zero": true,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
-                            "lower_bound": 0,
-                            "upper_bound": 0,
-                            "log": false
-                        }
-                    ],
-                    "x_auto_range": true,
-                    "x_lower_margin": 0.05,
-                    "x_upper_margin": 0.05,
-                    "x_lower_bound": 0,
-                    "x_upper_bound": 0,
-                    "y_auto_range": true,
-                    "y_auto_range_includes_zero": true,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
-                    "y_lower_bound": 0,
-                    "y_upper_bound": 0,
-                    "log_x": false,
-                    "log_y": false,
-                    "time_zone": null,
-                    "crosshair": null
-                },
+                "state": {},
                 "selectedType": "Plot",
                 "elapsedTime": 13119
             },
             "evaluatorReader": true,
             "lineCount": 45
+        },
+        {
+            "id": "markdownjrQufg",
+            "type": "markdown",
+            "body": [
+                "You can also output a status message to the top Beaker bar, so the user can see it even if the notebook is scrolled away from the cell under evaluation.",
+                "The API provides you with the following functions:",
+                "",
+                "* showStatus(message) - puts the message on the top bar",
+                "",
+                "* clearStatus(message) - removes the message from the top bar. NOTE: if some other operation changed the status message, the new message will stay on the bar.",
+                "",
+                "* showTransientStatus(message) - displays the message for a brief time.",
+                "",
+                "An example in JavaScript is the following:",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codeJg1qDx",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var d = beaker.newDeferred();",
+                    "var count = 0;",
+                    "",
+                    "var operation = function() {",
+                    "  if (count<50)",
+                    "\t  beaker.clearStatus(\"working at \"+count);",
+                    "  else",
+                    "\t  beaker.clearStatus(\"still working at \"+count);",
+                    "  count+=10;",
+                    "  if (count<50)",
+                    "\t  beaker.showStatus(\"working at \"+count);",
+                    "  else",
+                    "\t  beaker.showStatus(\"still working at \"+count);",
+                    "\tif(count>=100) {",
+                    "      beaker.clearStatus(\"still working at \"+count);",
+                    "      d.resolve(\"FINISHED (finally)\");",
+                    "    }",
+                    "  else {",
+                    "    beaker.timeout(operation,1500);",
+                    "  }",
+                    "}",
+                    "",
+                    "beaker.timeout(operation,1500);",
+                    "",
+                    "d"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "elapsedTime": 22718
+            },
+            "evaluatorReader": true,
+            "lineCount": 25
         }
     ],
     "namespace": {}

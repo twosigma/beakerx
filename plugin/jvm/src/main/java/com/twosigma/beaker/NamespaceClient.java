@@ -18,17 +18,22 @@ package com.twosigma.beaker;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.shared.NamespaceBinding;
+import com.twosigma.beaker.shared.json.serializer.StringObject;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.ClientProtocolException;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 
 public class NamespaceClient {
@@ -37,7 +42,9 @@ public class NamespaceClient {
   private ObjectMapper mapper;
   private String auth;
   private String urlBase;
+  private String ctrlUrlBase;
   private SimpleEvaluationObject seo;
+  private Class<?> [] oclasses;
 
   private NamespaceClient(String session) {
     this.mapper = new ObjectMapper();
@@ -45,8 +52,49 @@ public class NamespaceClient {
     String account = "beaker:" + System.getenv("beaker_core_password");
     this.auth = "Basic " + Base64.encodeBase64String(account.getBytes());
     this.urlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/namespace";
+    this.ctrlUrlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/notebookctrl";
+    oclasses = new Class<?>[4];
+    
+    oclasses[0] = Object.class;
+    oclasses[1] = Boolean.class;
+    oclasses[2] = Integer.class;
+    oclasses[3] = String.class;
   }
 
+  /*
+   *  this is meant to be used by the runtime
+   */
+  
+  public synchronized void setOutputObj(SimpleEvaluationObject o) {
+    seo = o;
+  }
+
+  /*
+   * per-session singleton: one instance of this object for each session
+   */
+  
+  private static Map<String,NamespaceClient> nsClients = new HashMap<String,NamespaceClient>();
+
+  private static String currentSession;
+  
+  public synchronized static NamespaceClient getBeaker() {
+    if (currentSession!=null)
+      return nsClients.get(currentSession);
+    return null;
+    }
+
+  public synchronized  static NamespaceClient getBeaker(String s) {
+    if (!nsClients.containsKey(s))
+      nsClients.put(s, new NamespaceClient(s));
+    currentSession = s;
+    return nsClients.get(currentSession);
+  }
+
+  
+  /*
+   *  get and set beaker shared data
+   */
+  
   public Object set4(String name, Object value, Boolean unset, Boolean sync)
     throws ClientProtocolException, IOException
   {
@@ -98,10 +146,10 @@ public class NamespaceClient {
     return binding.getValue();
   }
 
-  public synchronized void setOutputObj(SimpleEvaluationObject o) {
-    seo = o;
-  }
-
+  /*
+   * progress reporting
+   */
+  
   public synchronized void showProgressUpdate(String s) {
     if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(s);
@@ -156,22 +204,102 @@ public class NamespaceClient {
       seo.update(o);
   }
 
-  private static Map<String,NamespaceClient> nsClients = new HashMap<String,NamespaceClient>();
+  /*
+   * notebook control
+   */
 
-  private static String currentSession;
-  
-  public synchronized static NamespaceClient getBeaker() {
-    if (currentSession!=null)
-      return nsClients.get(currentSession);
-    return null;
+  private Object deserializeObject(String reply) throws ClientProtocolException, IOException  {
+    
+    Object ret = null;    
+    int idx = 0;
+    
+    while(ret==null && idx<oclasses.length) {   
+      try {
+        ret = mapper.readValue(reply, oclasses[idx++]);
+      } catch(JsonParseException e)
+      { 
+      } catch(EOFException e2)
+      {
+      }
     }
-
-  public synchronized  static NamespaceClient getBeaker(String s) {
-    if (!nsClients.containsKey(s))
-      nsClients.put(s, new NamespaceClient(s));
-    currentSession = s;
-    return nsClients.get(currentSession);
+    return ret;
+  }
+  
+  public Object evaluate(String filter) throws ClientProtocolException, IOException {
+    Form form = Form.form().add("filter", filter).add("session", this.session);
+    String reply = Request.Post(ctrlUrlBase + "/evaluate")
+        .addHeader("Authorization", auth).bodyForm(form.build())
+        .execute().returnContent().asString();
+    return deserializeObject(reply);
   }
 
+  public Object evaluateCode(String evaluator, String code) throws ClientProtocolException, IOException {
+    Form form = Form.form().add("evaluator", evaluator)
+        .add("code", code).add("session", this.session);
+    String reply = Request.Post(ctrlUrlBase + "/evaluateCode")
+        .addHeader("Authorization", auth).bodyForm(form.build())
+        .execute().returnContent().asString();
+    return deserializeObject(reply);
+  }
+
+  private boolean runBooleanRequest(String urlfragment, Form postdata) throws ClientProtocolException, IOException {
+    String reply = Request.Post(ctrlUrlBase +urlfragment)
+        .addHeader("Authorization", auth).bodyForm(postdata.build())
+        .execute().returnContent().asString();
+    return mapper.readValue(reply, Boolean.class);
+  }
+  
+  public boolean showStatus(String msg) throws ClientProtocolException, IOException {
+    Form form = Form.form().add("msg", msg).add("session", this.session);
+    return runBooleanRequest("/showStatus",form);
+  }
+
+  public boolean clearStatus(String msg) throws ClientProtocolException, IOException {
+    Form form = Form.form().add("msg", msg).add("session", this.session);
+    return runBooleanRequest("/clearStatus",form);
+  }
+
+  public boolean showTransientStatus(String msg) throws ClientProtocolException, IOException {
+    Form form = Form.form().add("msg", msg).add("session", this.session);
+    return runBooleanRequest("/showTransientStatus",form);
+  }
+
+  public List<String> getEvaluators() throws ClientProtocolException, IOException {
+    String args = "session=" + URLEncoder.encode(this.session, "ISO-8859-1");
+    String reply = Request.Get(ctrlUrlBase + "/getEvaluators?" + args)
+        .addHeader("Authorization", auth)
+        .execute().returnContent().asString();
+    return mapper.readValue(reply, new TypeReference<List<String>>(){});
+  }
+  
+  public List<BeakerCodeCell> getCodeCells(String filter) throws ClientProtocolException, IOException {
+    String args = "session=" + URLEncoder.encode(this.session, "ISO-8859-1") + (filter!=null ? "&filter=" + URLEncoder.encode(filter, "ISO-8859-1") : "");
+    String reply = Request.Get(ctrlUrlBase + "/getCodeCells?" + args)
+        .addHeader("Authorization", auth)
+        .execute().returnContent().asString();
+    return mapper.readValue(reply, new TypeReference<List<BeakerCodeCell>>(){});
+  }
+  
+  private String runStringRequest(String urlfragment, Form postdata) throws ClientProtocolException, IOException {
+    String reply = Request.Post(ctrlUrlBase + urlfragment)
+        .addHeader("Authorization", auth).bodyForm(postdata.build())
+        .execute().returnContent().asString();
+    return mapper.readValue(reply, StringObject.class).getText();
+  }
+  
+  public String setCodeCellBody(String name, String body) throws ClientProtocolException, IOException {
+    Form form = Form.form().add("name", name).add("body", body).add("session", this.session);
+    return runStringRequest("/setCodeCellBody", form);
+  }
+
+  public String setCodeCellEvaluator(String name, String evaluator)  throws ClientProtocolException, IOException {
+    Form form = Form.form().add("name", name).add("evaluator", evaluator).add("session", this.session);
+    return runStringRequest("/setCodeCellEvaluator", form);
+  }
+  
+  public String setCodeCellTags(String name, String tags) throws ClientProtocolException, IOException {
+    Form form = Form.form().add("name", name).add("tags", tags).add("session", this.session);
+    return runStringRequest("/setCodeCellTags", form);
+  }
   
 }

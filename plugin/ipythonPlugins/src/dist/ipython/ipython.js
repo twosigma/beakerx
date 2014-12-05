@@ -119,10 +119,6 @@ define(function(require, exports, module) {
       bkHelper.fcall(spin);
     },
     evaluate: function(code, modelOutput) {
-      if (_theCancelFunction) {
-        throw "multiple evaluation at the same time is not supported";
-      }
-
       // utils
       var emptyOutputResult = function() {
         modelOutput.result = "";
@@ -149,6 +145,12 @@ define(function(require, exports, module) {
 
       // begin
       var deferred = bkHelper.newDeferred();
+
+      if (_theCancelFunction) {
+        deferred.reject("An evaluation is already in progress");
+        return deferred.promise;
+      }
+
       var self = this;
       var startTime = new Date().getTime();
       var kernel = kernels[self.settings.shellID];

@@ -158,11 +158,11 @@
           console.error("Current app doesn't support showStatus");
         }
       },
-      clrStatus: function(message) {
-        if (getCurrentApp().clrStatus) {
-          return getCurrentApp().clrStatus(message);
+      clearStatus: function(message) {
+        if (getCurrentApp().clearStatus) {
+          return getCurrentApp().clearStatus(message);
         } else {
-          console.error("Current app doesn't support clrStatus");
+          console.error("Current app doesn't support clearStatus");
         }
       },
       showTransientStatus: function(message) {
@@ -172,7 +172,41 @@
           console.error("Current app doesn't support showTransientStatus");
         }
       },
-
+      getEvaluators: function() {
+        if (getCurrentApp().getEvaluators) {
+          return getCurrentApp().getEvaluators();
+        } else {
+          console.error("Current app doesn't support getEvaluators");
+        }
+      },
+      getCodeCells: function(filter) {
+        if (getCurrentApp().getCodeCells) {
+          return getCurrentApp().getCodeCells(filter);
+        } else {
+          console.error("Current app doesn't support getCodeCells");
+        }
+      },
+      setCodeCellBody: function(name, code) {
+        if (getCurrentApp().setCodeCellBody) {
+          return getCurrentApp().setCodeCellBody(name,code);
+        } else {
+          console.error("Current app doesn't support setCodeCellBody");
+        }
+      },
+      setCodeCellEvaluator: function(name, evaluator) {
+        if (getCurrentApp().setCodeCellEvaluator) {
+          return getCurrentApp().setCodeCellEvaluator(name, evaluator);
+        } else {
+          console.error("Current app doesn't support setCodeCellEvaluator");
+        }      
+      },
+      setCodeCellTags: function(name, tags) {
+        if (getCurrentApp().setCodeCellTags) {
+          return getCurrentApp().setCodeCellTags(name, tags);
+        } else {
+          console.error("Current app doesn't support setCodeCellTags");
+        }      
+      },
       // bk-notebook
       shareNotebook: function() {
         var bkNotebook = getBkNotebookWidget();

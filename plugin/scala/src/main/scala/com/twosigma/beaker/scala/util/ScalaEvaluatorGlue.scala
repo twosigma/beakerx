@@ -1,12 +1,21 @@
 package com.twosigma.beaker.scala.util;
 
 import java.util.concurrent.ArrayBlockingQueue;
-import scala.tools.nsc.interpreter.IMain;
+//import scala.tools.nsc.interpreter.IMain;
 import scala.tools.nsc.Settings;
 import scala.tools.nsc.interpreter.Results.Error;
 import scala.tools.nsc.interpreter.Results.Success;
+//import scala.tools.nsc.interpreter.{JLineCompletion, IMain}
+//import scala.tools.nsc.interpreter.Completion.Candidates
+import scala.tools._ 
+    import nsc.interpreter.{Completion, CompletionAware, IMain, 
+JLineCompletion, JLineDelimiter, JList, Parsed, Results, IR} 
+    import Completion.{Candidates, ScalaCompleter} 
 
+import jline.console.completer.{Completer, ArgumentCompleter} 
+import java.util.ArrayList;
 import com.twosigma.beaker.jvm.`object`.SimpleEvaluationObject;
+import scala.collection.JavaConversions._
 
 case class ResetState(val state: String);
 
@@ -19,11 +28,27 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String) {
   }
   private val baos = new java.io.ByteArrayOutputStream();
   
+  private def scalaToJline(tc: ScalaCompleter): Completer = new Completer {
+    def complete(_buf: String, cursor: Int, candidates: JList[CharSequence]): Int = {
+      val buf   = if (_buf == null) "" else _buf
+      val Candidates(newCursor, newCandidates) = tc.complete(buf, cursor)
+      newCandidates foreach (candidates add _)
+      newCursor
+    }
+  }
+  
   var interpreter = {
     var i = new IMain(settings, new java.io.PrintWriter(baos));
     i.setContextClassLoader();
     i;
   }
+  
+  val completer = {
+    var c = new JLineCompletion(interpreter);
+    var b: ArgumentCompleter =new ArgumentCompleter(new JLineDelimiter, scalaToJline(c.completer));
+    b.setStrict(false);
+    b;
+  } 
   
   private def getOut: Any = {
     val lvo = interpreter.valueOfTerm(interpreter.mostRecentVar);
@@ -71,4 +96,13 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String) {
     }
   }
   
+  def autocomplete(buf: String, len : Integer): ArrayList[CharSequence] = {
+    System.out.println("autocomplete "+buf+" "+len);
+    val maybes = new java.util.ArrayList[CharSequence];
+    completer.complete(buf,  len, maybes);
+  System.out.println("done"); 
+    System.out.println(maybes);
+    maybes.foreach { println }
+    maybes;
+  }
 }

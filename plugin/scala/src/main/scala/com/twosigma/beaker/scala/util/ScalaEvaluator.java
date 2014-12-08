@@ -129,9 +129,18 @@ public class ScalaEvaluator {
     syncObject.release();
   }
 
-  //  public List<String> autocomplete(String code, int caretPosition) {    
-  //    return gac.doAutocomplete(code, caretPosition,loader!=null ? loader.getLoader() : null);
-  //  }
+  public List<String> autocomplete(String code, int caretPosition) {    
+    if(shell != null) {
+      ArrayList<CharSequence> ret = shell.autocomplete(code, caretPosition);
+      ArrayList<String> r2 = new ArrayList<String>();
+      for(CharSequence c : ret)
+        r2.add(c.toString());
+      return r2;
+    }
+    System.out.println("shell is null");
+    return null;
+    //return gac.doAutocomplete(code, caretPosition,loader!=null ? loader.getLoader() : null);
+  }
 
   protected ScalaDynamicClassLoader loader = null;
   protected ScalaEvaluatorGlue shell;

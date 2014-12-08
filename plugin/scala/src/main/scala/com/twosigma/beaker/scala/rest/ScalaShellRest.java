@@ -86,8 +86,7 @@ public class ScalaShellRest {
 	    if(!this.shells.containsKey(shellId)) {
 	        return null;
 	      }
-//	      return this.shells.get(shellId).autocomplete(code, caretPosition);
-	    return null;
+	    return this.shells.get(shellId).autocomplete(code, caretPosition);
   }
 
   @POST

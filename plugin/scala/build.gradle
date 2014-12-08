@@ -32,6 +32,8 @@ configurations {
 dependencies {
   provided project(':plugin:jvm')
   compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.4'
+  compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.4'
+  compile group: 'jline', name: 'jline', version: '2.12'
   testCompile group: 'com.sun.jersey', name: 'jersey-client', version: '1.17.1'
   testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-core', version: '1.17.1'
   testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-external', version: '1.17.1'
@@ -58,7 +60,6 @@ dependencies {
 //compileJava.dependsOn antlr4_groovy_parser
 
 compileScala
-//compileScala.dependsOn.remove("compileJava")
 
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'
@@ -66,7 +67,7 @@ compileJava {
 }
 
 test {
-	jvmArgs = [ "-Djersey.test.port=34561", "-Dbeaker.test.dir=../../core/config/plugins/eval/scala" ]
+	jvmArgs = [ "-Djersey.test.port=34561", "-Dbeaker.test.dir=../../core/config/plugins/eval/scala", "-Dbeaker.test.debug=true" ]
 	// to debug add: , "-Dbeaker.test.debug=true"
 	testLogging.showStandardStreams = true
 }

@@ -144,6 +144,21 @@ public class ScalaShellTest extends JerseyTest {
       assertEquals("Failed : HTTP error code : " + response.getStatus() + " "+ response.getHeaders(), code, response.getStatus());
     }
     
+    private static void autocomplete(String code, String expect) throws ParseException {
+      form.clear();
+      form.add("shellId", shellId);
+      form.add("code", code.substring(0, code.length()));
+      form.add("caretPosition",code.length());
+
+      response = webResource.path("/rest/scalash/autocomplete").post(ClientResponse.class, form);
+      System.out.println("response is "+response.getStatus());
+      //checkResponse (200);
+      if(response.getStatus()==200) {
+        String result = response.getEntity(String.class);
+        System.out.println("received"+result);
+      }
+    }
+    
     
     @Test
     public void testHelloWorld() throws InterruptedException, ParseException {
@@ -171,6 +186,10 @@ public class ScalaShellTest extends JerseyTest {
         evaluateTask("56+56","112");
 
         evaluateTask("3*4","12");
+        
+        autocomplete("var s = new Str", "");
+        autocomplete("var s = new String();\ns.", "");
+        autocomplete("var s = new String();\ns.co", "");
         
     }
 }

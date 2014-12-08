@@ -223,7 +223,7 @@
             return "("+bkUtils.formatTimeString($scope.cellmodel.output.elapsedTime)+")";
           }
 
-          return ""
+          return "";
         }
 
         $scope.cellmenu.addItem({
@@ -240,6 +240,15 @@
             notebookCellOp.reset();
           }
         });
+
+        $scope.cellmenu.addItem({
+          name: "Cell Options",
+          action: function() {
+            bkCoreManager.showFullModalDialog(function cb(r) { } ,
+                'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
+          }
+        });
+
       },
       link: function(scope, element, attrs) {
         scope.showDebug = false;

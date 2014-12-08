@@ -30,6 +30,9 @@ import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.HashMap;
@@ -123,6 +126,23 @@ public class Main {
     return result;
   }
 
+  private static void writePID(BeakerConfig bkConfig)
+    throws FileNotFoundException
+  {
+
+    String name = ManagementFactory.getRuntimeMXBean().getName();
+    int at = name.indexOf("@");
+    if (at > 0) {
+      String pid = name.substring(0, at);
+      String dir = bkConfig.getNginxServDirectory();
+      PrintWriter out = new PrintWriter(dir + "/pid");
+      out.print(pid);
+      out.close();
+    } else {
+      System.err.println("warning, could not determine PID");
+    }
+  }
+
   public static void main(String[] args) throws Exception {
     CommandLine options = parseCommandLine(args);
 
@@ -163,6 +183,8 @@ public class Main {
     processStarter.start();
 
     BeakerConfig bkConfig = injector.getInstance(BeakerConfig.class);
+
+    writePID(bkConfig);
 
     Server server = injector.getInstance(Server.class);
     server.start();

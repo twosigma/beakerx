@@ -1,0 +1,272 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionUlfnWB",
+            "type": "section",
+            "title": "Notebook Control API",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownRJMPdg",
+            "type": "markdown",
+            "body": [
+                "JavaScript cell evaluation can use asynchronous callbacks to retrieve resources and perform other operations. Beaker supports this through the use of deferred object and promises.",
+                "If a cell returns a deferred or a promise object, the client will wait for it to be resolved or rejected before considering the cell evaluation complete.",
+                "For example the following code uses deferred and promises and timeouts to simulate long running asynchronous operations:",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codetdETS1",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// create a deferred object - this will be resolved once we finish computing",
+                    "var d = beaker.newDeferred();",
+                    "var count = 0;",
+                    "",
+                    "// this function is executed every 500 mSeconds",
+                    "var operation = function() {",
+                    "  count+=5;",
+                    "  beaker.showProgressUpdate(count);",
+                    "  if(count>=100) {",
+                    "    // once we reach 100 stop execution and resolve the deferred",
+                    "     d.resolve(\"FINISHED finally\");",
+                    "  }",
+                    "  else {",
+                    "    beaker.timeout(operation,500);",
+                    "  }",
+                    "}",
+                    "",
+                    "// start the async computation",
+                    "beaker.timeout(operation,500);",
+                    "// return the deferred object",
+                    "d"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text"
+            },
+            "evaluatorReader": true,
+            "lineCount": 21
+        },
+        {
+            "id": "markdownQGj4kS",
+            "type": "markdown",
+            "body": [
+                "You can control other notebook cells from a JavaScript code cell by using the beaker object. Supported operations include:",
+                "",
+                "* evaluating a single named cell",
+                "",
+                "* evaluate all cells written in a language",
+                "",
+                "* evaluating tagged cells",
+                "",
+                "* evaluating \"on the fly\" code in any language and fetch the output result",
+                "",
+                "All these operations return a promise that will be fulfilled once the computation is finished. For example this code evaluates a groovy expression and processes its result.",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codeaZA46g",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// ask the groovy plugin to evaluate an expression",
+                    "var d = beaker.newDeferred();",
+                    "// this operation is async and returns a promise",
+                    "beaker.evaluateCode(\"Groovy\",\"1+3\").then(",
+                    "  function (r) {",
+                    "    // when we receive the result to more computation on it and resolve the deferred",
+                    "    d.resolve(r*5);",
+                    "  }",
+                    ")",
+                    "// return a deferred object - it will be resolved (with the result) once we get it back from groovy",
+                    "d"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "elapsedTime": 7189
+            },
+            "evaluatorReader": true,
+            "lineCount": 11
+        },
+        {
+            "id": "markdownApqMJ6",
+            "type": "markdown",
+            "body": [
+                "Code cells are assigned an internal name when created, but you can set a specific name by using the \"Cell Options\" menu. You can also tag cells with space separated keywords to create groups of cells.",
+                "",
+                "The following example will execute all cells (in any language) that are tagged with \"mytag\":",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codezSGiYV",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// ask the system to evaluate every cell with the tag 'mytag'",
+                    "// this is an async call that returns a promise",
+                    "beaker.evaluate(\"mytag\").then(function() {",
+                    "\treturn \"finished\";",
+                    "})",
+                    "// scroll below to see the evaluated cells"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text"
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+        {
+            "id": "markdownuCSID2",
+            "type": "markdown",
+            "body": [
+                "The same functionality are available to JVM based languages through the use of the 'beaker' object. For example in Groovy you can ask the system to evaluate a JavaScript expression 'on the fly' and retrieve its result.",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codesHGHnD",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "beaker.evaluateCode(\"JavaScript\",\"123*123\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "elapsedTime": 1083
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "markdownJnC26D",
+            "type": "markdown",
+            "body": [
+                "IMPORTANT: while you start the evaluation of JavaScript cells and code from a a JavaScript cell, this is _not_ _supported_ in Groovy or other JVM languages: only one cell can be in execution at any given time.",
+                "If you need parallel execution of code you should use the language specific threading.",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codePLMc93",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "\"this cell is also evaluated\""
+                ]
+            },
+            "output": {
+                "selectedType": "Text",
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "lineCount": 1,
+            "tags": "mytag"
+        },
+        {
+            "id": "codeQSVv2P",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "\"this cell is NOT evaluated - it is not tagged 'mytag'\""
+                ]
+            },
+            "output": {
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "code3FNleS",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "\"this cell is evaluated\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "elapsedTime": 80
+            },
+            "evaluatorReader": true,
+            "lineCount": 1,
+            "tags": "mytag"
+        }
+    ],
+    "namespace": {}
+}

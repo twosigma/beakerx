@@ -1,0 +1,286 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        },
+        {
+            "name": "Java",
+            "plugin": "Java",
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient",
+            "view": {
+                "cm": {
+                    "mode": "text/x-java"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionlbYwkU",
+            "type": "section",
+            "title": "Progress Update Reporting",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownNDNa2O",
+            "type": "markdown",
+            "body": [
+                "Beaker supports sending asynchronous status updates from code cells to keep the user informed about the computation progress.",
+                "",
+                "These updates can contain a text message and/or a completion percentage and/or a partial output object, such as a plot or a table. The language that support this feature so far are JavaScript and all JVM based languages.",
+                "",
+                "To output a progress report you can use the showProgressUpdate function, available through the beaker object; for example in groovy you can write:",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codeXnQmyX",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def messages = [\"starting\",",
+                    "                \"started\",",
+                    "                \"begin\",",
+                    "                \"middle\",",
+                    "                \"about to finish\"];",
+                    "",
+                    "for ( int i = 0 ; i<5; i++) {",
+                    "\tbeaker.showProgressUpdate(messages[i], i*20)",
+                    "\tsleep(1500)",
+                    "}",
+                    "sleep(1500)",
+                    "\"finished\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "elapsedTime": 9582
+            },
+            "evaluatorReader": true,
+            "lineCount": 12
+        },
+        {
+            "id": "markdownnmVudy",
+            "type": "markdown",
+            "body": [
+                "In JavaScript you can write:",
+                "",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codeOw6722",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var d = beaker.newDeferred();",
+                    "var count = 0;",
+                    "",
+                    "var operation = function() {",
+                    "  count+=10;",
+                    "  if (count<50)",
+                    "\t  beaker.showProgressUpdate(\"working\",count);",
+                    "  else",
+                    "\t  beaker.showProgressUpdate(\"still working\",count);",
+                    "\tif(count>=100) {",
+                    "      d.resolve(\"FINISHED (finally)\");",
+                    "    }",
+                    "  else {",
+                    "    beaker.timeout(operation,1500);",
+                    "  }",
+                    "}",
+                    "",
+                    "beaker.timeout(operation,1500);",
+                    "",
+                    "d"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text"
+            },
+            "evaluatorReader": true,
+            "lineCount": 20
+        },
+        {
+            "id": "markdownzCBhZP",
+            "type": "markdown",
+            "body": [
+                "And finally in Java:",
+                "",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codefgkSlJ",
+            "type": "code",
+            "evaluator": "Java",
+            "input": {
+                "body": [
+                    "import java.util.List;",
+                    "import java.util.ArrayList;",
+                    "",
+                    "Plot p = new Plot();",
+                    "p.setTitle(\"this is a Java plot\");",
+                    "Bars b = new Bars();",
+                    "List<Number> yList = new ArrayList<Number>();",
+                    "",
+                    "String [] messages = new String [5];",
+                    "messages[0] = \"starting\";",
+                    "messages[1] = \"started\";",
+                    "messages[2] = \"begin\";",
+                    "messages[3] = \"middle\";",
+                    "messages[4] = \"about to finish\";",
+                    "",
+                    "int count = 0;",
+                    "",
+                    "while(count < 5) {",
+                    "  try {",
+                    "    Thread.sleep(2500);",
+                    "  } catch(Exception e) { }",
+                    "  yList.clear();",
+                    "  yList.add(2*count);",
+                    "  yList.add(10/(count+1));",
+                    "  yList.add(4*count);",
+                    "  yList.add(40/(count+1));",
+                    "",
+                    "  b.setY(yList);",
+                    "  b.setWidth(0.5);",
+                    "  p.add(b);",
+                    "  NamespaceClient.getBeaker().showProgressUpdate(messages[count],count*20,p);",
+                    "  count ++;",
+                    "}",
+                    "",
+                    "yList.clear();",
+                    "yList.add(2*count);",
+                    "yList.add(10/count);",
+                    "yList.add(4*count);",
+                    "yList.add(40/count);",
+                    "",
+                    "b.setY(yList);",
+                    "b.setWidth(0.5);",
+                    "p.add(b);",
+                    "",
+                    "return p;"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Plot",
+                "elapsedTime": 13119
+            },
+            "evaluatorReader": true,
+            "lineCount": 45
+        },
+        {
+            "id": "markdownjrQufg",
+            "type": "markdown",
+            "body": [
+                "You can also output a status message to the top Beaker bar, so the user can see it even if the notebook is scrolled away from the cell under evaluation.",
+                "The API provides you with the following functions:",
+                "",
+                "* showStatus(message) - puts the message on the top bar",
+                "",
+                "* clearStatus(message) - removes the message from the top bar. NOTE: if some other operation changed the status message, the new message will stay on the bar.",
+                "",
+                "* showTransientStatus(message) - displays the message for a brief time.",
+                "",
+                "An example in JavaScript is the following:",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "codeJg1qDx",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var d = beaker.newDeferred();",
+                    "var count = 0;",
+                    "",
+                    "var operation = function() {",
+                    "  if (count<50)",
+                    "\t  beaker.clearStatus(\"working at \"+count);",
+                    "  else",
+                    "\t  beaker.clearStatus(\"still working at \"+count);",
+                    "  count+=10;",
+                    "  if (count<50)",
+                    "\t  beaker.showStatus(\"working at \"+count);",
+                    "  else",
+                    "\t  beaker.showStatus(\"still working at \"+count);",
+                    "\tif(count>=100) {",
+                    "      beaker.clearStatus(\"still working at \"+count);",
+                    "      d.resolve(\"FINISHED (finally)\");",
+                    "    }",
+                    "  else {",
+                    "    beaker.timeout(operation,1500);",
+                    "  }",
+                    "}",
+                    "",
+                    "beaker.timeout(operation,1500);",
+                    "",
+                    "d"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "elapsedTime": 22718
+            },
+            "evaluatorReader": true,
+            "lineCount": 25
+        }
+    ],
+    "namespace": {}
+}

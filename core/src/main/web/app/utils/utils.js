@@ -99,6 +99,9 @@
       delay: function(ms) {
         return angularUtils.delay(ms);
       },
+      timeout: function(func,ms) {
+        return angularUtils.timeout(func,ms);
+      },
 
       // beaker server involved utils
       getHomeDirectory: function() {

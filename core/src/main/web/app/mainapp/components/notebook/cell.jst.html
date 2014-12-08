@@ -35,12 +35,12 @@
     </div>
   </div>
   <div ng-if="isDebugging()">
-  [Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}}
-  <a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>
-  <a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()">show less</a>
-  <div collapse="!isShowDebugInfo()">
-    <pre>{{cellmodel | json}}</pre>
-  </div>
+    [Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}}
+    <a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>
+    <a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()">show less</a>
+    <div collapse="!isShowDebugInfo()">
+      <pre>{{cellmodel | json}}</pre>
+    </div>
   </div>
   <div ng-include="getTypeCellUrl()"></div>
   <bk-cell-menu items="cellview.menu.items"></bk-cell-menu>

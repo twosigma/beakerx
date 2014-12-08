@@ -39,25 +39,7 @@ dependencies {
   testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-external', version: '1.17.1'
   testCompile group: 'org.cometd.java', name: 'cometd-java-client', version: '2.7.0'
   testCompile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
-  
-//  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.3'
-//  antlr group : 'org.antlr', name :'antlr4', version: '4.3'
 }
-
-//task antlr4_groovy_lexer(type: JavaExec) {
-//    main = "org.antlr.v4.Tool"
-//    workingDir = "src/main/antlr4/"
-//    args = ["GroovyLexer.g4", "-o", "../java/com/twosigma/beaker/groovy/autocomplete","-listener", "-no-visitor", "-package", "com.twosigma.beaker.groovy.autocomplete", "-encoding", "UTF-8" ]
-//    classpath =  configurations.antlr
-//}
-//task antlr4_groovy_parser(type: JavaExec) {
-//    main = "org.antlr.v4.Tool"
-//    workingDir = "src/main/antlr4/"
-//    args = ["GroovyParser.g4", "-o", "../java/com/twosigma/beaker/groovy/autocomplete","-listener", "-no-visitor", "-package", "com.twosigma.beaker.groovy.autocomplete", "-encoding", "UTF-8" ]
-//    classpath =  configurations.antlr
-//}
-//compileJava.dependsOn antlr4_groovy_lexer
-//compileJava.dependsOn antlr4_groovy_parser
 
 compileScala
 

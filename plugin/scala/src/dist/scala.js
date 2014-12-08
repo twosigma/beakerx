@@ -67,7 +67,7 @@ define(function(require, exports, module) {
     pluginName: PLUGIN_NAME,
     cmMode: "text/x-scala",
     background: "#FFDC65",
-    bgColor: "#6497A9",
+    bgColor: "#B41703",
     fgColor: "#FFFFFF",
     borderColor: "",
     shortName: "Sc",

@@ -1,12 +1,9 @@
 package com.twosigma.beaker.scala.util;
 
 import java.util.concurrent.ArrayBlockingQueue;
-//import scala.tools.nsc.interpreter.IMain;
 import scala.tools.nsc.Settings;
 import scala.tools.nsc.interpreter.Results.Error;
 import scala.tools.nsc.interpreter.Results.Success;
-//import scala.tools.nsc.interpreter.{JLineCompletion, IMain}
-//import scala.tools.nsc.interpreter.Completion.Candidates
 import scala.tools._ 
     import nsc.interpreter.{Completion, CompletionAware, IMain, 
 JLineCompletion, JLineDelimiter, JList, Parsed, Results, IR} 

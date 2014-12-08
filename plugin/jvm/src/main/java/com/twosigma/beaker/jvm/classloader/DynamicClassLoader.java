@@ -17,6 +17,7 @@ package com.twosigma.beaker.jvm.classloader;
 
 
 import org.xeustechnologies.jcl.ProxyClassLoader;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,20 +25,25 @@ import java.util.List;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
+
 import org.xeustechnologies.jcl.exception.JclException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import org.xeustechnologies.jcl.JarClassLoader;
 
 public class DynamicClassLoader {
-    protected final Map<String, Class> classes;
+    @SuppressWarnings("rawtypes")
+	protected final Map<String, Class> classes;
     protected final String dirPath;
     protected final DynamicLoaderProxy dlp = new DynamicLoaderProxy();
     protected SubClassLoader subLoader;
     protected final JarClassLoader parent;
     
-    public DynamicClassLoader(String dir) {
+    @SuppressWarnings("rawtypes")
+	public DynamicClassLoader(String dir) {
         classes = Collections.synchronizedMap( new HashMap<String, Class>() );
         dirPath = dir;
         parent = new JarClassLoader();
@@ -57,7 +63,7 @@ public class DynamicClassLoader {
         parent.add(s);
     }
     
-    public void addAll(List sources) {
+	public void addAll(List<?> sources) {
         parent.addAll(sources);
     }
     
@@ -71,13 +77,13 @@ public class DynamicClassLoader {
         public SubClassLoader(ClassLoader p) {
             super(p);
         }
-        public Class my_defineClass(String s, byte [] b, int a, int x) {
+        public Class<?> my_defineClass(String s, byte [] b, int a, int x) {
             return defineClass(s,b,a,x);
         }
         public void my_definePackage(String n) {
             definePackage( n, null, null, null, null, null, null, null );
         }
-        public void my_resolveClass(Class r) {
+        public void my_resolveClass(Class<?> r) {
             resolveClass(r);
         }
     }
@@ -92,8 +98,8 @@ public class DynamicClassLoader {
         }
 
         @Override
-        public Class loadClass(String className, boolean resolveIt) {
-            Class result = null;
+        public Class<?> loadClass(String className, boolean resolveIt) {
+            Class<?> result = null;
             byte[] classBytes;
 
             result = classes.get( className );

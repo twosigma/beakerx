@@ -17,6 +17,7 @@ package com.twosigma.beaker.core.module;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.twosigma.beaker.core.rest.NotebookControlRest;
 import com.twosigma.beaker.core.rest.OutputLogService;
 import com.twosigma.beaker.core.rest.NamespaceService;
 import com.twosigma.beaker.core.rest.FileIORest;
@@ -30,7 +31,9 @@ import com.twosigma.beaker.core.rest.PluginServiceLocatorRest;
 import com.twosigma.beaker.core.rest.PublishRest;
 import com.twosigma.beaker.core.rest.UtilRest;
 import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
+
 import java.util.HashMap;
+
 import org.cometd.server.JacksonJSONContextServer;
 
 /**
@@ -74,6 +77,7 @@ public class URLConfigModule extends ServletModule {
     bind(FileIORest.class);
     bind(HttpProxyRest.class);
     bind(OutputLogRest.class);
+    bind(NotebookControlRest.class);
     bind(NamespaceRest.class);
     bind(SessionBackupRest.class);
     bind(RecentMenuRest.class);

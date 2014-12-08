@@ -116,9 +116,31 @@
           evaluatorMap.add(codeCell.raw.evaluator, codeCell.raw);
         });
 
+    // user tags
+    var userTagsMap = {};
+    userTagsMap.add = function(key, value) {
+      if (!this[key]) {
+        this[key] = [];
+      }
+      this[key].push(value);
+    };
+    _(cellMap).chain()
+    .filter(function(cell) {
+      return cell.raw && cell.raw.type === "code" && cell.raw.tags !== undefined && cell.raw.tags !== '';
+    })
+    .each(function(codeCell) {
+      var re = /\s+/;
+      var tags = codeCell.raw.tags.split(re);
+      var i;
+      for (i=0; i<tags.length; i++)
+        userTagsMap.add(tags[i], codeCell.raw);
+    });
+
+    
     return {
       initialization: initializationCells,
-      evaluator: evaluatorMap
+      evaluator: evaluatorMap,
+      usertags: userTagsMap
     };
   };
 
@@ -514,6 +536,12 @@
       getCellsWithEvaluator: function(evaluator) {
         return tagMap.evaluator[evaluator];
       },
+      hasUserTag: function(t) {
+        return tagMap.usertags[t] !== undefined;
+      },
+      getCellsWithUserTag: function(t) {
+        return tagMap.usertags[t];
+      },
       clipboard: null,
       cut: function(id) {
         if (this.clipboard) {
@@ -527,6 +555,36 @@
           this.appendAfter(destinationId, this.clipboard);
           this.clipboard = null;
         }
+      },
+      canSetUserTags: function(tags) {
+        var re = /\s+/;
+        if (tags !== undefined) {
+          var tgs = tags.split(re);
+          var i;
+          for(i=0; i<tgs.length; i++) {
+            if(cellMap[tgs[i]] !== undefined) return "ERROR: The name '"+tgs[i]+"' is already used as a cell name.";
+          }
+        }
+        return "";
+      },
+      canRenameCell: function(newid) {
+        if (cellMap[newid] !== undefined)
+          return "ERROR: Cell '"+newid+"' already exists.";
+        if (tagMap.usertags[newid] !== undefined)
+          return "ERROR: The name '"+newid+"' is already used as a tag."
+        return '';
+      },
+      renameCell: function(oldid, newid) {
+        if (this.canRenameCell(newid) !== '')
+          return;
+        var idx = this.getIndex(oldid);
+        if (idx >= 0) {
+          cells[idx].id = newid;
+          recreateCellMap();
+        }
+      },
+      rebuildMaps: function() {
+        recreateCellMap(true);
       }
     };
   });

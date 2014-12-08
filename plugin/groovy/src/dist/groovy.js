@@ -83,6 +83,12 @@ define(function(require, exports, module) {
     },
     evaluate: function(code, modelOutput) {
       var deferred = Q.defer();
+      
+      if (GroovyCancelFunction) {
+        deferred.reject();
+        return deferred.promise;
+      }
+      
       var self = this;
       var progressObj = {
         type: "BeakerDisplay",
@@ -200,6 +206,8 @@ define(function(require, exports, module) {
     },
     exit: function(cb) {
       var self = this;
+      this.cancelExecution();
+      GroovyCancelFunction = null;
       $.ajax({
         type: "POST",
         datatype: "json",

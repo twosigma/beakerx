@@ -132,6 +132,56 @@
       };
     };
 
+    var _subscriptions = {};
+    var connectcontrol = function(sessionId) {      
+      _subscriptions[sessionId] =
+          $.cometd.subscribe("/notebookctrl/" + sessionId, function(req) {
+            try {
+              var name = "bkHelper."+req.data.method;
+              var numargs = req.data.numargs;
+              var args = [];
+              var i;
+              for ( i = 0; i < numargs; i++ ) {
+                args.push( req.data["arg"+i] );
+              }
+              var publish = true;
+              var reply2 = { session: sessionId };
+              reply2.value = eval(name).apply(this, args);
+              if(typeof reply2.value === 'object') {
+                if(typeof reply2.value.promise === 'object' && typeof reply2.value.promise.then === 'function') {
+                  reply2.value = reply2.value.promise;
+                }
+                if(typeof reply2.value.then === 'function') {
+                  // must wait for result to be ready
+                  publish = false;
+                  reply2.value.then(function(res) {
+                    reply2.value=res;
+                    $.cometd.publish("/service/notebookctrl/receive", JSON.stringify(reply2));
+                  }, function(err) {
+                    reply2.value=err;
+                    $.cometd.publish("/service/notebookctrl/receive", JSON.stringify(reply2));                    
+                  });
+                }
+              }
+              else if (reply2.value === undefined)
+                reply2.value = true;
+              if (publish) {
+                $.cometd.publish("/service/notebookctrl/receive", JSON.stringify(reply2));
+              }
+            } catch (err) {
+              console.log("CATCH "+err);
+              $.cometd.publish("/service/notebookctrl/receive", JSON.stringify( { session: sessionId, value: false } ));
+            }
+          });
+      };
+      
+      var disconnectcontrol = function(sessionId) {
+        if (sessionId) {
+          $.cometd.unsubscribe(_subscriptions[sessionId]);
+          delete _subscriptions[sessionId];
+        }
+      };
+    
     return {
       reset: function(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
 
@@ -140,6 +190,9 @@
           bkSession.backup(_sessionId, generateBackupData());
         }
 
+        if (_sessionId)
+          disconnectcontrol(_sessionId);
+        
         bkEvaluatorManager.reset();
 
         // check inputs
@@ -157,6 +210,7 @@
         _sessionId = sessionId;
 
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
+        connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
       },
       setSessionId: function(sessionId) {
@@ -183,9 +237,11 @@
         _sessionId = sessionId;
 
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
+        connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
       },
       clear: function() {
+        disconnectcontrol(_sessionId);
         bkEvaluatorManager.reset();
         bkNotebookNamespaceModelManager.clear(_sessionId);
         _notebookUri.reset();
@@ -285,10 +341,10 @@
         }
       },
       evaluatorUnused: function(plugin) {
-	var n = _.find(_notebookModel.get().cells, function (c) {
-	    return c.type == "code" && c.evaluator == plugin;
-	});
-	return !n;
+        var n = _.find(_notebookModel.get().cells, function (c) {
+          return c.type == "code" && c.evaluator == plugin;
+        });
+        return !n;
       },
       addEvaluator: function(evaluator) {
         _notebookModel.get().evaluators.push(evaluator);

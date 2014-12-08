@@ -22,8 +22,11 @@ import java.util.Arrays;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import org.abstractmeta.toolbox.compilation.compiler.JavaSourceCompiler;
 import org.abstractmeta.toolbox.compilation.compiler.impl.JavaSourceCompilerImpl;
@@ -49,8 +52,8 @@ public class JavaEvaluator {
   protected JavaAutocomplete jac;
   protected boolean exit;
   protected boolean updateLoader;
-  protected final ThreadGroup myThreadGroup;
   protected workerThread myWorker;
+  protected final BeakerCellExecutor executor;
   
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -75,43 +78,44 @@ public class JavaEvaluator {
     imports = new ArrayList<String>();
     exit = false;
     updateLoader = false;
-    myThreadGroup = new ThreadGroup("tg"+shellId);
+    executor = new BeakerCellExecutor("javash");
     startWorker();
   }
 
   protected void startWorker() {
-    myWorker = new workerThread(myThreadGroup);
+    myWorker = new workerThread();
     myWorker.start();
   }
 
   public String getShellId() { return shellId; }
 
   public void killAllThreads() {
-    cancelExecution();
+    executor.killAllThreads();
+  }
+
+  public void cancelExecution() {
+    executor.cancelExecution();
   }
 
   public void resetEnvironment() {
-    cancelExecution();
+    executor.killAllThreads();
+    
+    // signal thread to create loader
+    updateLoader = true;
+    syncObject.release();
   }
-  
-  public void cancelExecution() {
-    myThreadGroup.interrupt();
-    try {
-      Thread.sleep(100);
-    } catch (InterruptedException e) { }
-    myThreadGroup.interrupt();
-  }
-  
+    
   public void exit() {
     exit = true;
     cancelExecution();
+    syncObject.release();
   }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
     if (cp.isEmpty())
       classPath.clear();
     else
-      classPath = Arrays.asList(cp.split("[\\s]+"));
+      classPath = Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"));
     if (in.isEmpty())
       imports.clear();
     else
@@ -180,16 +184,14 @@ public class JavaEvaluator {
       sb.append(codev[i]);
       sb.append('\n');
     }
-      
-    String out = sb.toString();
-            
+  
     return jac.doAutocomplete(sb.toString(), caretPosition);    
   }
 
   protected class workerThread extends Thread {
   
-    public workerThread(ThreadGroup tg) {
-      super(tg, "worker");
+    public workerThread() {
+      super("javash worker");
     }
     
     /*
@@ -311,26 +313,25 @@ public class JavaEvaluator {
             compilationUnit.addJavaSource(pname+".Foo", javaSourceCode.toString());
   
             loader.clearCache();
-            javaSourceCompiler.compile(compilationUnit);
-            javaSourceCompiler.persistCompiledClasses(compilationUnit);
-            Class<?> fooClass = loader.loadClass(pname+".Foo");
-            Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
-            Object o = mth.invoke(null, (Object[])null);
-            if (ret.equals("Object")) {
-              j.outputObject.finished(o);
-            } else {
-              j.outputObject.finished(null);
-            }
+            try {
+              javaSourceCompiler.compile(compilationUnit);
+              
+              javaSourceCompiler.persistCompiledClasses(compilationUnit);
+              Class<?> fooClass = loader.loadClass(pname+".Foo");
+              Method mth = fooClass.getDeclaredMethod("beakerRun", (Class[]) null);
+              
+              if (!executor.executeTask(new MyRunnable(mth, j.outputObject, ret.equals("Object")))) {
+                j.outputObject.error("... cancelled!");
+              }
+              if(nc!=null) {
+                nc.setOutputObj(null);
+                nc = null;
+              }
+            } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); }    
           }
           j = null;
-        } catch(Exception e) {
-          if (j!=null && j.outputObject != null) {
-            if (e instanceof InterruptedException || e instanceof InvocationTargetException) {
-              j.outputObject.error("... cancelled!");
-            } else {
-              j.outputObject.error(e.getMessage());
-            }          
-          }
+        } catch(Throwable e) {
+          e.printStackTrace();
         } finally {
           if (nc!=null) {
             nc.setOutputObj(null);
@@ -340,6 +341,45 @@ public class JavaEvaluator {
       }
       
     }
+    
+    protected class MyRunnable implements Runnable {
+
+      protected final SimpleEvaluationObject theOutput;
+      protected final Method theMth;
+      protected final boolean retObject;
+
+      public MyRunnable(Method mth, SimpleEvaluationObject out, boolean ro) {
+        theMth = mth;
+        theOutput = out;
+        retObject = ro;
+      }
+      
+      @Override
+      public void run() {
+        try {
+          
+          Object o = theMth.invoke(null, (Object[])null);
+          if (retObject) {
+            theOutput.finished(o);
+          } else {
+            theOutput.finished(null);
+          }          
+        } catch(Throwable e) {
+          if (e instanceof InvocationTargetException)
+            e = ((InvocationTargetException)e).getTargetException();
+          if ((e instanceof InterruptedException) || (e instanceof ThreadDeath)) {
+            theOutput.error("... cancelled!");
+          } else {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            theOutput.error(sw.toString());
+          }
+        }
+      }
+
+    };
+
     
     /*
      * This function does:

@@ -26,23 +26,27 @@ import org.codehaus.jackson.map.SerializerProvider;
  */
 public class StringObject {
 
-  private final String string;
+  private String text;
 
+  public StringObject() { }
+  
   public StringObject(String s) {
-    this.string = s;
+    this.text = s;
   }
 
   public String getText() {
-    return this.string;
+    return this.text;
   }
 
+  public void setText(String s) { text=s; }
+  
   public static class Serializer extends JsonSerializer<StringObject> {
 
     @Override
     public void serialize(StringObject value, JsonGenerator jgen, SerializerProvider provider)
         throws IOException, JsonProcessingException {
       jgen.writeStartObject();
-      jgen.writeObjectField("value", value.getText());
+      jgen.writeObjectField("text", value.getText());
       jgen.writeEndObject();
     }
   }

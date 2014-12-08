@@ -97,6 +97,9 @@
         }, 0);
         return deferred.promise;
       },
+      timeout: function (func, ms) {
+        $timeout(func, ms);
+      },
       delay: function(ms) {
         var deferred = $q.defer();
         $timeout(function() {

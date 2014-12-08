@@ -55,44 +55,95 @@
         {
             "id": "textzJ0c4e",
             "type": "text",
-            "body": "<div>This tutorial shows a basic example of creating a form with HTML and JavaScript, which causes some Python code to be run. Unlock the notebook with Notebook&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→</span>&nbsp;Lock menu above to see the code.</div>",
+            "body": [
+                "<div>This tutorial shows a basic example of creating a form with HTML and JavaScript, which causes some Python code to be run. Unlock the notebook with Notebook&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→</span>&nbsp;Lock menu above to see the code.</div>"
+            ],
             "evaluatorReader": false
+        },
+        {
+            "id": "codeWM5oaA",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// define the processing function and store it in the notebook namespace",
+                    "",
+                    "beaker.process_form = function() {",
+                    "  //get values from the form using jQuery",
+                    "  var values = $('#values').val();",
+                    "    ",
+                    "  //create a simple line of Python code that creates variables based on the form values",
+                    "  var pythonCode = \"values = \" + values;",
+                    "    ",
+                    "  //run the Python string we just created",
+                    "  beaker.evaluateCode(\"IPython\", pythonCode).then(function(res) {",
+                    "    // once we know that the evaluator is done we run a named Python cell",
+                    "    beaker.evaluate(\"theOutput\");",
+                    "  });",
+                    "}",
+                    "\"\""
+                ],
+                "hidden": true
+            },
+            "output": {
+                "state": {},
+                "result": "",
+                "selectedType": "Hidden"
+            },
+            "evaluatorReader": true,
+            "lineCount": 16,
+            "initialization": true
         },
         {
             "id": "code001",
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<script>\n  //This function is called when the HTML button is pressed\n  function process_form() {\n    \n    //get values from the form using jQuery\n    var values = $('#values').val();\n    \n    //create a simple line of Python code that creates variables based on the form values\n    var pythonCode = \"values = \" + values;\n    \n    //run the Python string we just created\n\tbkHelper.evaluateCode(\"IPython\", pythonCode);\n    \n    //now run all Python cells from the notebook\n    bkHelper.evaluate(\"IPython\")\n  }\n</script>\n\n<!--\nA simple HTML form with a text input and a button\n-->\nValues: <input type='text' id='values' value='1,2,3,3,4,5,6,5,4,3,4,3,5'>\n<br />\n\n<button onclick='process_form()'>Get histogram</button>"
+                "body": [
+                    "",
+                    "<!--",
+                    "A simple HTML form with a text input and a button",
+                    "-->",
+                    "Values: <input type='text' id='values' value='1,2,3,3,4,5,6,5,4,3,4,3,5'>",
+                    "<br />",
+                    "",
+                    "<button onclick='beaker.process_form()'>Get histogram</button>"
+                ],
+                "hidden": true
             },
             "output": {
                 "selectedType": "BeakerDisplay",
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\n  //This function is called when the HTML button is pressed\n  function process_form() {\n    \n    //get values from the form using jQuery\n    var values = $('#values').val();\n    \n    //create a simple line of Python code that creates variables based on the form values\n    var pythonCode = \"values = \" + values;\n    \n    //run the Python string we just created\n\tbkHelper.evaluateCode(\"IPython\", pythonCode);\n    \n    //now run all Python cells from the notebook\n    bkHelper.evaluate(\"IPython\")\n  }\n</script>\n\n<!--\nA simple HTML form with a text input and a button\n-->\nValues: <input type='text' id='values' value='1,2,3,3,4,5,6,5,4,3,4,3,5'>\n<br />\n\n<button onclick='process_form()'>Get histogram</button>"
+                    "object": "<script>\nvar beaker = bkHelper.getNotebookModel().namespace;\nbeaker.showProgressUpdate = function (a,b,c) { };\nbeaker.showStatus = bkHelper.showStatus;\nbeaker.clearStatus = bkHelper.clearStatus;\nbeaker.showTransientStatus = bkHelper.showTransientStatus;\nbeaker.getEvaluators = bkHelper.getEvaluators;\nbeaker.getCodeCells = bkHelper.getCodeCells;\nbeaker.setCodeCellBody = bkHelper.setCodeCellBody;\nbeaker.setCodeCellEvaluator = bkHelper.setCodeCellEvaluator;\nbeaker.setCodeCellTags = bkHelper.setCodeCellTags;\nbeaker.evaluate = bkHelper.evaluate;\nbeaker.evaluateCode = bkHelper.evaluateCode;\nbeaker.loadJS = bkHelper.loadJS;\nbeaker.loadList = bkHelper.loadList;\nbeaker.httpGet = bkHelper.httpGet;\nbeaker.httpPost = bkHelper.httpPost;\nbeaker.newDeferred = bkHelper.newDeferred;\nbeaker.newPromise = bkHelper.newPromise;\nbeaker.all = bkHelper.all;\nbeaker.timeout = bkHelper.timeout;\n</script>\n\n<!--\nA simple HTML form with a text input and a button\n-->\nValues: <input type='text' id='values' value='1,2,3,3,4,5,6,5,4,3,4,3,5'>\n<br />\n\n<button onclick='beaker.process_form()'>Get histogram</button>"
                 },
-                "elapsedTime": 447
+                "elapsedTime": 18,
+                "state": {}
             },
             "initialization": true,
             "evaluatorReader": true,
-            "lineCount": 25
+            "lineCount": 8
         },
         {
-            "id": "codesFCVGR",
+            "id": "theOutput",
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "hist(values)"
+                "body": [
+                    "hist(values)"
+                ]
             },
             "output": {
                 "selectedType": "BeakerDisplay",
                 "outputArrived": true,
-                "elapsedTime": 294
+                "elapsedTime": 205,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 1
         }
     ],
+    "namespace": {},
     "locked": true
 }

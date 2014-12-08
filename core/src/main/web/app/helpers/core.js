@@ -380,6 +380,28 @@
       },
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();
+      },
+      showFullModalDialog: function(callback, template, controller, dscope) {
+        var options = {
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          controller: controller,
+          resolve: { dscope: function(){ return dscope; } }
+        };
+
+        if (template.indexOf('http:') !== 0) {
+          options.templateUrl = template;
+        } else {
+          options.template = template;
+        }
+        var dd = $dialog.dialog(options);
+        return dd.open().then(function(result) {
+          dd.$scope.$destroy();
+          if (callback) {
+            callback(result);
+          }
+        });
       }
     };
     return bkCoreManager;

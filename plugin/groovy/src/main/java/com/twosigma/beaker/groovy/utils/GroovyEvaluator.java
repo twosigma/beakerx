@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -122,8 +123,11 @@ public class GroovyEvaluator {
     outDir = od;
     if(outDir!=null && !outDir.isEmpty()) {
       outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
-      try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+    } else {
+      outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
     }
+    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+
     resetEnvironment();
   }
   

@@ -123,11 +123,11 @@ public class JavaEvaluator {
 
     outDir = od;
     if (outDir!=null && !outDir.isEmpty()) {
-	outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
-      try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+      outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
     } else {
-      outDir = Files.createTempDirectory(FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir")),"javash"+shellId).toString();
+      outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
     }
+    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
 
     String cpp = "";
     for(String pt : classPath) {

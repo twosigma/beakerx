@@ -616,6 +616,7 @@
               disconnected = true;
             },
             onReconnected: function() {
+              bkSessionManager.reconnectEvaluators();
               disconnected = false;
             },
             getStatusMessage: function() {

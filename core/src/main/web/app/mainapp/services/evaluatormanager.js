@@ -78,6 +78,13 @@
       getLoadingEvaluators: function() {
         return loadingInProgressEvaluators;
       },
+      reconnectEvaluators: function() {
+        _.each(evaluators, function(ev) {
+          if (ev && _.isFunction(ev.reconnect)) {
+            ev.reconnect();
+          }
+        });
+      },
       exitAndRemoveAllEvaluators: function() {
         _.each(evaluators, function(ev) {
           if (ev && _.isFunction(ev.exit)) {

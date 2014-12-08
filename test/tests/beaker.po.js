@@ -14,14 +14,9 @@
  *  limitations under the License.
  */
 
-exports.config = {
-  seleniumAddress: 'http://localhost:4444/wd/hub',
-  capabilities: {
-    browserName: 'firefox'
-  },
-  specs: [
-          'tests/landingpageTime.js',
-          'tests/landingpageMenu.js',
-          'tests/language-manager.js'
-  ]
-}
+var BeakerPageObject = function () {
+  this.baseURL = 'http://localhost:8801/';
+  this.mainmenu = element.all(by.repeater('m in getMenus()'));
+  this.submenu = element.all(by.repeater('item in getMenuItems() | isHidden')).filter(function(e,i) { return e.isDisplayed(); });
+};
+module.exports = BeakerPageObject;

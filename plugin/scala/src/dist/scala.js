@@ -65,7 +65,7 @@ define(function(require, exports, module) {
   var ScalaCancelFunction = null;
   var Scala = {
     pluginName: PLUGIN_NAME,
-    cmMode: "test/x-scala",
+    cmMode: "text/x-scala",
     background: "#FFDC65",
     bgColor: "#6497A9",
     fgColor: "#FFFFFF",
@@ -195,7 +195,7 @@ define(function(require, exports, module) {
         url: serviceBase + "/rest/scalash/autocomplete",
         data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
-        cb(x, undefined, true);
+        cb(x, undefined, false);
       });
     },
     exit: function(cb) {

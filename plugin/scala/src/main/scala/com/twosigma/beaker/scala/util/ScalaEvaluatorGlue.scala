@@ -97,12 +97,8 @@ class ScalaEvaluatorGlue(val cl: ClassLoader, var cp: String) {
   }
   
   def autocomplete(buf: String, len : Integer): ArrayList[CharSequence] = {
-    System.out.println("autocomplete "+buf+" "+len);
     val maybes = new java.util.ArrayList[CharSequence];
     completer.complete(buf,  len, maybes);
-  System.out.println("done"); 
-    System.out.println(maybes);
-    maybes.foreach { println }
     maybes;
   }
 }

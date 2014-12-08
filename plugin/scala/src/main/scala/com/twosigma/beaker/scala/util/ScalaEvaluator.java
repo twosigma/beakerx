@@ -15,9 +15,7 @@ import java.util.concurrent.Semaphore;
 
 import com.twosigma.beaker.scala.util.ScalaEvaluatorGlue;
 
-//import scala.tools.nsc.interpreter.IMain;
 import com.twosigma.beaker.NamespaceClient;
-import com.twosigma.beaker.groovy.utils.GroovyEvaluator.workerThread.MyRunnable;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
@@ -61,7 +59,7 @@ public class ScalaEvaluator {
   }
 
   protected void startWorker() {
-    myWorker = new workerThread(myThreadGroup);
+    myWorker = new workerThread();
     myWorker.start();
   }
 
@@ -98,6 +96,9 @@ public class ScalaEvaluator {
 
     updateLoader=true;
     syncObject.release();
+    try {
+      newAutoCompleteEvaluator();
+    } catch(MalformedURLException e) { }
   } 
 
   public void exit() {
@@ -130,20 +131,25 @@ public class ScalaEvaluator {
   }
 
   public List<String> autocomplete(String code, int caretPosition) {    
-    if(shell != null) {
-      ArrayList<CharSequence> ret = shell.autocomplete(code, caretPosition);
+    if(acshell != null) {
+      String [] sv = code.substring(0, caretPosition).split("\n");
+      for ( int i=0; i<sv.length-1; i++) {
+        acshell.evaluate2(sv[i]);
+        caretPosition -= sv[i].length()+1;
+      }
+      ArrayList<CharSequence> ret = acshell.autocomplete(sv[sv.length-1], caretPosition);
       ArrayList<String> r2 = new ArrayList<String>();
       for(CharSequence c : ret)
         r2.add(c.toString());
       return r2;
     }
-    System.out.println("shell is null");
     return null;
-    //return gac.doAutocomplete(code, caretPosition,loader!=null ? loader.getLoader() : null);
   }
 
   protected ScalaDynamicClassLoader loader = null;
   protected ScalaEvaluatorGlue shell;
+  protected ScalaDynamicClassLoader acloader = null;
+  protected ScalaEvaluatorGlue acshell;
 
   protected class workerThread extends Thread {
 
@@ -233,7 +239,6 @@ public class ScalaEvaluator {
       
     };
 
-    
     protected ClassLoader newClassLoader() throws MalformedURLException
     {
       URL[] urls = {};
@@ -277,5 +282,49 @@ public class ScalaEvaluator {
     }
   }
 
+  
+  protected ClassLoader newAutoCompleteClassLoader() throws MalformedURLException
+  {
+    URL[] urls = {};
+    if (!classPath.isEmpty()) {
+      urls = new URL[classPath.size()];
+      for (int i = 0; i < classPath.size(); i++) {
+        urls[i] = new URL("file://" + classPath.get(i));
+        System.out.println(urls[i].toString());
+      }
+    }
+    acloader = null;
+    ClassLoader cl;
+    acloader = new ScalaDynamicClassLoader(outDir);
+    acloader.addAll(Arrays.asList(urls));
+    cl = acloader.getLoader();
+    return cl;
+  }
+
+  protected void newAutoCompleteEvaluator() throws MalformedURLException
+  {
+    acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(), System.getProperty("java.class.path"));
+
+    if (!imports.isEmpty()) {
+      for (int i = 0; i < imports.size(); i++) {
+        String imp = imports.get(i).trim();
+        if (imp.startsWith("import"))
+          imp = imp.substring(6).trim();
+        if (imp.endsWith(".*"))
+          imp = imp.substring(0,imp.length()-1) + "_";
+        if(!imp.isEmpty()) {
+          if(!acshell.addImport(imp))
+            System.err.println("ERROR: cannot add import '"+imp+"'");
+        }
+      }
+    }
+    
+    String r = acshell.evaluate2("var beaker = NamespaceClient.getBeaker(\""+sessionId+"\")");
+    if(r!=null && !r.isEmpty()) {
+      System.err.println("ERROR setting beaker: "+r);
+    }
+  }
+
+  
 }
 

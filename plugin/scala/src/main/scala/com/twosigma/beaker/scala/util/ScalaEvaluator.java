@@ -1,3 +1,19 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package com.twosigma.beaker.scala.util;
 
 import java.io.File;
@@ -25,12 +41,10 @@ public class ScalaEvaluator {
   protected List<String> classPath;
   protected List<String> imports;
   protected String outDir;
-  //protected ScalaClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
   protected final BeakerCellExecutor executor;
   protected workerThread myWorker;
-  //protected GroovyAutocomplete gac;
 
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -48,8 +62,6 @@ public class ScalaEvaluator {
   public ScalaEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
-    //cps = new GroovyClasspathScanner();
-    //gac = createGroovyAutocomplete(cps);
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
     exit = false;
@@ -63,11 +75,6 @@ public class ScalaEvaluator {
     myWorker.start();
   }
 
-  //  protected GroovyAutocomplete createGroovyAutocomplete(GroovyClasspathScanner c)
-  //  {
-  //	return new GroovyAutocomplete(c);
-  //  }
-
   public String getShellId() { return shellId; }
 
   public void killAllThreads() {
@@ -80,20 +87,6 @@ public class ScalaEvaluator {
 
   public void resetEnvironment() {
     executor.killAllThreads();
-
-    //    String cpp = "";
-    //    for(String pt : classPath) {
-    //      cpp += pt;
-    //      cpp += File.pathSeparator;
-    //    }
-    //    cpp += File.pathSeparator;
-    //    cpp += System.getProperty("java.class.path");
-    //    cps = new ScalaClasspathScanner(cpp);
-    //    gac = createGroovyAutocomplete(cps);
-    //    
-    //    for(String st : imports)
-    //      gac.addImport(st);
-
     updateLoader=true;
     syncObject.release();
     try {
@@ -325,6 +318,5 @@ public class ScalaEvaluator {
     }
   }
 
-  
 }
 

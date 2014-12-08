@@ -1,6 +1,6 @@
 // http://stackoverflow.com/questions/24232511/how-can-i-set-up-common-functions-that-are-available-for-my-test-suites-with-pro
 
-describe('ipython test', function () {
+describe('language manager test', function () {
 
   it('should load', function() {
     browser.get('http://localhost:8801/');
@@ -36,5 +36,7 @@ describe('ipython test', function () {
     element(by.id('language-manager-close-button')).click();
     expect(element.all(by.className('plugin-manager')).count()).toEqual(0);
   });
+
+  
 
 });

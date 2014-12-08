@@ -6,6 +6,6 @@ exports.config = {
   specs: [
           // 'tests/landingpageTime.js',
           // 'tests/landingpageMenu.js',
-          'tests/ipython.js'
+          'tests/language-manager.js'
   ]
 }

@@ -294,7 +294,7 @@ public class JavaEvaluator {
             try {
               javaSourceCompiler.compile(compilationUnit);
               javaSourceCompiler.persistCompiledClasses(compilationUnit);
-              j.outputObject.finished(null);
+              j.outputObject.finished(pname+"."+cname);
             } catch(Exception e) { j.outputObject.error("ERROR:\n"+e.toString()); }    
           } else {
             String ret = "void";

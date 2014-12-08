@@ -93,14 +93,13 @@ public class ScalaDynamicClassLoader extends DynamicClassLoader {
       }
 
       for(String p : paths) {     
-        String tpath = p + File.separator + className.replace(".", File.separator) + ".groovy";
+        String tpath = p + File.separator + className.replace(".", File.separator) + ".scala";
 
         File f = new File(tpath);
         if(f.exists()) {
-
           try {
             setEnabled(false);
-            System.out.println("Should load scala file "+tpath);
+            System.out.println("ERROR: NOT IMPLEMENTED: Should load scala file "+tpath);
             setEnabled(true);
             return null;
           } catch(Exception e) { e.printStackTrace(); }

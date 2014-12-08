@@ -2,6 +2,8 @@ package com.twosigma.beaker.scala.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,7 +17,9 @@ import com.twosigma.beaker.scala.util.ScalaEvaluatorGlue;
 
 //import scala.tools.nsc.interpreter.IMain;
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.groovy.utils.GroovyEvaluator.workerThread.MyRunnable;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
 public class ScalaEvaluator {
   protected final String shellId;
@@ -26,7 +30,7 @@ public class ScalaEvaluator {
   //protected ScalaClasspathScanner cps;
   protected boolean exit;
   protected boolean updateLoader;
-  protected final ThreadGroup myThreadGroup;
+  protected final BeakerCellExecutor executor;
   protected workerThread myWorker;
   //protected GroovyAutocomplete gac;
 
@@ -52,7 +56,7 @@ public class ScalaEvaluator {
     imports = new ArrayList<String>();
     exit = false;
     updateLoader = false;
-    myThreadGroup = new ThreadGroup("tg"+shellId);
+    executor = new BeakerCellExecutor("scala");
     startWorker();
   }
 
@@ -69,19 +73,15 @@ public class ScalaEvaluator {
   public String getShellId() { return shellId; }
 
   public void killAllThreads() {
-    cancelExecution();
+    executor.killAllThreads();
   }
 
   public void cancelExecution() {
-    myThreadGroup.interrupt();
-    try {
-      Thread.sleep(100);
-    } catch (InterruptedException e) { }
-    myThreadGroup.interrupt();
+    executor.cancelExecution();
   }
 
   public void resetEnvironment() {
-    cancelExecution();
+    executor.killAllThreads();
 
     //    String cpp = "";
     //    for(String pt : classPath) {
@@ -103,6 +103,7 @@ public class ScalaEvaluator {
   public void exit() {
     exit = true;
     cancelExecution();
+    syncObject.release();
   }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
@@ -137,8 +138,8 @@ public class ScalaEvaluator {
 
   protected class workerThread extends Thread {
 
-    public workerThread(ThreadGroup tg) {
-      super(tg, "worker");
+    public workerThread() {
+      super("scala worker");
     }
 
     /*
@@ -176,17 +177,15 @@ public class ScalaEvaluator {
 
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
-          shell.evaluate(j.outputObject, j.codeToBeExecuted);
-          j=null;
-        } catch(Throwable e) {
-          if(j!=null && j.outputObject != null) {
-            if (e instanceof InterruptedException || e instanceof InvocationTargetException) {
-              j.outputObject.error("... cancelled!");
-              e.printStackTrace();
-            } else {
-              j.outputObject.error(e.getMessage());
-            }
+          if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject))) {
+            j.outputObject.error("... cancelled!");
           }
+          if(nc!=null) {
+            nc.setOutputObj(null);
+            nc = null;
+          }
+        } catch(Throwable e) {
+          e.printStackTrace();
         } finally {
           if(nc!=null) {
             nc.setOutputObj(null);
@@ -196,6 +195,36 @@ public class ScalaEvaluator {
       }
     }
 
+    protected class MyRunnable implements Runnable {
+
+      protected final String theCode;
+      protected final SimpleEvaluationObject theOutput;
+
+      public MyRunnable(String code, SimpleEvaluationObject out) {
+        theCode = code;
+        theOutput = out;
+      }
+      
+      @Override
+      public void run() {
+        Object result;
+        try {
+          shell.evaluate(theOutput, theCode);
+        } catch(Throwable e) {
+          if (e instanceof InterruptedException || e instanceof InvocationTargetException || e instanceof ThreadDeath) {
+            theOutput.error("... cancelled!");
+          } else {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            theOutput.error(sw.toString());
+          }
+        }
+      }
+      
+    };
+
+    
     protected ClassLoader newClassLoader() throws MalformedURLException
     {
       URL[] urls = {};

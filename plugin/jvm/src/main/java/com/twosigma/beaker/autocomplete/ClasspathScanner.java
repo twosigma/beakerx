@@ -61,12 +61,14 @@ public class ClasspathScanner {
   }
 
   private boolean findClasses(File root, File file, boolean includeJars) {
-    if (file.isDirectory()) {
-      for (File child : file.listFiles()) {
-        if (!findClasses(root, child, includeJars)) {
-          return false;
+    if (file!=null && file.isDirectory()) {
+      File[] lf = file.listFiles();
+      if (lf != null)
+        for (File child : lf) {
+          if (!findClasses(root, child, includeJars)) {
+            return false;
+          }
         }
-      }
     } else {
       if (file.getName().toLowerCase().endsWith(".jar") && includeJars) {
         JarFile jar = null;

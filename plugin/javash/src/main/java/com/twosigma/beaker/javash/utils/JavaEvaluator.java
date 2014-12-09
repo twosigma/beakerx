@@ -113,11 +113,11 @@ public class JavaEvaluator {
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
     if (cp.isEmpty())
-      classPath.clear();
+      classPath = new ArrayList<String>();
     else
       classPath = Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"));
     if (in.isEmpty())
-      imports.clear();
+      imports = new ArrayList<String>();
     else
       imports = Arrays.asList(in.split("\\s+"));
 

@@ -250,9 +250,6 @@ define(function(require, exports, module) {
       var GroovyShell = function(settings, doneCB) {
         var self = this;
         var setShellIdCB = function(id) {
-          if (id !== settings.shellID) {
-            // console.log("A new Groovy shell was created.");
-          }
           settings.shellID = id;
           self.settings = settings;
           var imports = [];
@@ -261,17 +258,8 @@ define(function(require, exports, module) {
           }
           self.settings.imports = _.union(imports, defaultImports).join('\n');
           var cb = function() {
-            if (bkHelper.hasSessionId()) {
-              var initCode = "import com.twosigma.beaker.NamespaceClient\n" +
-                "beaker = NamespaceClient.getBeaker('" + bkHelper.getSessionId() + "')\n";
-              self.evaluate(initCode, {}).then(function () {
-                if (doneCB) {
-                  doneCB(self);
-                }});
-            } else {
-              if (doneCB) {
-                doneCB(self);
-              }
+            if (doneCB) {
+              doneCB(self);
             }
           };
           self.updateShell(cb);

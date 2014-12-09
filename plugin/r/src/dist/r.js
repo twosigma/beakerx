@@ -62,6 +62,7 @@ define(function(require, exports, module) {
       cometd.addListener("/meta/connect", cb);
     }
   };
+  var RCancelFunction = null;
   var R = {
     pluginName: PLUGIN_NAME,
     cmMode: "r",
@@ -74,7 +75,7 @@ define(function(require, exports, module) {
       if (!shellID) {
         shellID = "";
       }
-      bkHelper.httpPost(serviceBase + "/rest/rsh/getShell", { shellid: shellID })
+      bkHelper.httpPost(serviceBase + "/rest/rsh/getShell", { shellid: shellID, sessionId: bkHelper.getSessionId() })
         .success(cb)
         .error(function() {
           console.log("failed to create shell", arguments);
@@ -82,6 +83,12 @@ define(function(require, exports, module) {
     },
     evaluate: function(code, modelOutput, init) {
       var deferred = Q.defer();
+      
+      if (RCancelFunction) {
+        deferred.reject("An evaluation is already in progress");
+        return deferred.promise;
+      }
+
       var self = this;
       var progressObj = {
         type: "BeakerDisplay",
@@ -92,12 +99,25 @@ define(function(require, exports, module) {
         }
       };
       modelOutput.result = progressObj;
+      RCancelFunction = function () {
+        $.ajax({
+          type: "POST",
+          datatype: "json",
+          url: serviceBase + "/rest/rsh/interrupt",
+          data: {shellID: self.settings.shellID}
+        }).done(function (ret) {
+          console.log("done cancelExecution",ret);
+        });
+        progressObj.object.message = "cancelling...";
+        modelOutput.result = progressObj;
+      }
       $.ajax({
         type: "POST",
         datatype: "json",
         url: serviceBase + "/rest/rsh/evaluate",
         data: {shellID: self.settings.shellID, code: code, init: !!init}
       }).done(function(ret) {
+
             var onUpdatableResultUpdate = function(update) {
               modelOutput.result = update;
               bkHelper.refreshRootScope();
@@ -132,6 +152,9 @@ define(function(require, exports, module) {
               cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
             }
           });
+      deferred.promise.finally(function () {
+        RCancelFunction = null;
+      });
       return deferred.promise;
     },
     autocomplete: function(code, cpos, cb) {
@@ -147,6 +170,7 @@ define(function(require, exports, module) {
     },
     exit: function(cb) {
       this.cancelExecution();
+      RCancelFunction = null;
       var self = this;
       $.ajax({
         type: "POST",
@@ -159,10 +183,14 @@ define(function(require, exports, module) {
       this.cancelExecution();
     },
     cancelExecution: function() {
-      bkHelper.httpPost(serviceBase + "/rest/rsh/interrupt", {shellID: this.settings.shellID});
+      if (RCancelFunction) {
+        RCancelFunction();
+      }
     },
     spec: {
-      interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
+      resetEnv:  {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+      killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
+//      interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
     },
     cometdUtil: cometdUtil
   };
@@ -179,23 +207,10 @@ define(function(require, exports, module) {
       var RShell = function(settings, doneCB) {
         var self = this;
         var setShellIdCB = function(id) {
-          if (id !== settings.shellID) {
-            // console.log("A new R shell was created.");
-          }
           settings.shellID = id;
           self.settings = settings;
-          if (bkHelper.hasSessionId()) {
-            var initCode = "devtools::load_all(Sys.getenv('beaker_r_init'), " +
-              "quiet=TRUE, export_all=FALSE)\n" +
-              "beaker:::set_session('" + bkHelper.getSessionId() + "')\n";
-            self.evaluate(initCode, {}, true).then(function () {
-              if (doneCB) {
-                doneCB(self);
-              }});
-          } else {
-            if (doneCB) {
-              doneCB(self);
-            }
+          if (doneCB) {
+            doneCB(self);
           }
         };
         if (!settings.shellID) {

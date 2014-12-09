@@ -113,11 +113,11 @@ public class GroovyEvaluator {
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
     if(cp.isEmpty())
-      classPath.clear();
+      classPath = new ArrayList<String>();
     else
       classPath = Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"));
     if (in.isEmpty())
-      imports.clear();
+      imports = new ArrayList<String>();
     else
       imports = Arrays.asList(in.split("\\s+"));
     outDir = od;
@@ -176,6 +176,15 @@ public class GroovyEvaluator {
           if (shell==null) {
             updateLoader=false;
             newEvaluator();
+            nc = NamespaceClient.getBeaker(sessionId);
+
+            // initialize interpreter
+            String initCode = "import com.twosigma.beaker.NamespaceClient\n" +
+                "beaker = NamespaceClient.getBeaker('" + sessionId + "')\n";
+            try {
+              shell.evaluate(initCode);
+            } catch(Throwable e) {
+            }
           }
         
           if(loader!=null)

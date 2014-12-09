@@ -25,11 +25,14 @@ os.system("npm install")
 os.system("node_modules/protractor/bin/webdriver-manager update");
 
 with open(os.devnull, "w") as fnull:
-  webcontrol = subprocess.Popen(["node_modules/protractor/bin/webdriver-manager","start"], stdout = fnull, stderr = fnull);
+    webcontrol = subprocess.Popen(["node_modules/protractor/bin/webdriver-manager", "start"], stdout=fnull, stderr=fnull);
 
-beaker = subprocess.Popen(["../core/beaker.command","-open-browser","false"])
+beaker = subprocess.Popen(["../core/beaker.command", "-open-browser", "false"], stdout=subprocess.PIPE)
 
-time.sleep(10);
+for line in iter(beaker.stdout.readline, ''):
+    print(">>>" + line.strip())
+    if line.startswith('Connect to '):
+        break
 
 result = os.system("./node_modules/protractor/bin/protractor protractorConf.js");
 

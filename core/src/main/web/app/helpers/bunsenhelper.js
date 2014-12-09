@@ -57,7 +57,6 @@
       resizeIFrame: function() {
         $timeout(function() {
           $window.top.postMessage({height: $('html').outerHeight(),
-                                   notebookId: $routeParams.notebookId,
                                    operation: 'resize'},
                                   $routeParams.bunsenUiUrl);
         });

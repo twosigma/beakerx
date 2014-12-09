@@ -187,13 +187,13 @@ public class RShellRest {
 
   @POST
   @Path("getShell")
-  public String getShell(@FormParam("shellid") String shellId)
+  public String getShell(@FormParam("shellid") String shellId, @FormParam("sessionId") String sessionId)
     throws InterruptedException, RserveException, IOException, REXPMismatchException
   {
     // if the shell doesnot already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
-      newEvaluator(shellId);
+      newEvaluator(shellId,sessionId);
       return shellId;
     }
     return shellId;
@@ -312,7 +312,7 @@ public class RShellRest {
     Runtime.getRuntime().exec("kill -SIGINT " + server.pid);
   }
 
-  private void newEvaluator(String id)
+  private void newEvaluator(String id, String sessionId)
     throws RserveException, IOException, REXPMismatchException
   {
     RServer newRs;
@@ -325,11 +325,18 @@ public class RShellRest {
       RConnection rconn = new RConnection("127.0.0.1", rServer.port);
       rconn.login("beaker", rServer.password);
       int pid = rconn.eval("Sys.getpid()").asInteger();
-      newRs = new RServer(rconn, rServer.outputHandler, rServer.errorGobbler,
-                          rServer.port, rServer.password, pid);
+      newRs = new RServer(rconn, rServer.outputHandler, rServer.errorGobbler, rServer.port, rServer.password, pid);
     }
-    
+    newRs.sessionId = sessionId;
     this.shells.put(id, newRs);
+    
+    RConnection con = newRs.connection;
+    try {
+      String initCode = "devtools::load_all(Sys.getenv('beaker_r_init'), " +
+          "quiet=TRUE, export_all=FALSE)\n" +
+          "beaker:::set_session('" + sessionId + "')\n";
+      REXP result = con.eval(initCode);
+    } catch(Exception e) { e.printStackTrace(); }
   }
 
   private RServer getEvaluator(String shellID) {
@@ -452,6 +459,7 @@ public class RShellRest {
     int port;
     String password;
     int pid;
+    String sessionId;
     public RServer(RConnection con, ROutputHandler handler, ErrorGobbler gobbler,
                    int port, String password, int pid) {
       this.connection = con;

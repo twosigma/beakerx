@@ -318,6 +318,7 @@ public class ScalaEvaluator {
     if(r!=null && !r.isEmpty()) {
       System.err.println("ERROR setting beaker: "+r);
     }
+    
   }
 
 }

@@ -264,6 +264,10 @@ define(function(require, exports, module) {
       var kernel = kernels[this.settings.shellID];
       kernel.kill();
     },
+    reconnect: function() {
+      var kernel = kernels[this.settings.shellID];
+      kernel.restart();
+    },
     interrupt: function() {
       this.cancelExecution();
     },

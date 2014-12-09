@@ -990,6 +990,7 @@
                 if (isValid) {
                   stopWaitingReconnect();
                   disconnected = false;
+                  bkSessionManager.reconnectEvaluators();
                 } else {
                   indicateReconnectFailed();
                 }

@@ -89,7 +89,12 @@ public class NamespaceClient {
     currentSession = s;
     return nsClients.get(currentSession);
   }
-
+ 
+  public synchronized static void delBeaker(String sessionId) {
+    nsClients.remove(sessionId);
+    currentSession = null;
+  }
+ 
   
   /*
    *  get and set beaker shared data
@@ -301,5 +306,5 @@ public class NamespaceClient {
     Form form = Form.form().add("name", name).add("tags", tags).add("session", this.session);
     return runStringRequest("/setCodeCellTags", form);
   }
-  
+ 
 }

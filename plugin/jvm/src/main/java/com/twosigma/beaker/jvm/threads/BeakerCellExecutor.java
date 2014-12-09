@@ -27,8 +27,10 @@ public class BeakerCellExecutor {
   }
   
   public void reset() {
+    theLock.lock();
     thrFactory = new BeakerSingleThreadFactory(thrGroup, prefix);
     worker = Executors.newSingleThreadExecutor(thrFactory);
+    theLock.unlock();
   }
   
   public boolean executeTask(Runnable tsk) {
@@ -77,8 +79,8 @@ public class BeakerCellExecutor {
           try {  Thread.sleep(100);  } catch (Throwable t) { }
         }
       }
-      theLock.unlock();
     }
+    theLock.unlock();
     
     // reset executor service
     reset();

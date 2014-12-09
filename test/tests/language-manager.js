@@ -17,10 +17,10 @@
 var BeakerPageObject = require('./beaker.po.js');
 describe('language manager test', function () {
 
-  beakerPageObject = new BeakerPageObject();
+  beakerPO = new BeakerPageObject();
 
   it('should load', function() {
-    browser.get(beakerPageObject.baseURL);
+    browser.get(beakerPO.baseURL);
     browser.waitForAngular();
   });
 

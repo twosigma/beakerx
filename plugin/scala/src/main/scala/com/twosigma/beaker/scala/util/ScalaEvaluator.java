@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +31,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 import com.twosigma.beaker.scala.util.ScalaEvaluatorGlue;
-
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
@@ -102,18 +102,20 @@ public class ScalaEvaluator {
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
     if(cp==null || cp.isEmpty())
-      classPath.clear();
+      classPath = new ArrayList<String>();
     else
       classPath = Arrays.asList(cp.split("[\\s]+"));
     if (imports==null || in.isEmpty())
-      imports.clear();
+      imports = new ArrayList<String>();
     else
       imports = Arrays.asList(in.split("\\s+"));
     outDir = od;
     if(outDir!=null && !outDir.isEmpty()) {
       outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
-      try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+    } else {
+      outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
     }
+    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     resetEnvironment();
   }
 

@@ -25,6 +25,7 @@ public class BeakerCodeCell {
   private String code;
   private String outputtype;
   private String output;
+  private String tags;
   
   public BeakerCodeCell() { }
 
@@ -33,11 +34,13 @@ public class BeakerCodeCell {
   public String getcode() { return code; }
   public String getoutputtype() { return outputtype; }
   public String getoutput() { return output; }
+  public String gettags() { return tags; }
 
   public void setcellId(String s) { cellId = s; }
   public void setevaluatorId(String s) { evaluatorId = s; }
   public void setcode(String s) { code = s; }
   public void setoutputtype(String s) { outputtype = s; }
   public void setoutput(String s) { output = s; }
+  public void settags(String s) { tags = s; }
   
 }

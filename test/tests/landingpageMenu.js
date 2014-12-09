@@ -35,19 +35,19 @@ describe('beaker landing menu test', function() {
 
   it('File menu should have 3 items', function () {
     beakerPO.mainmenu.get(0).click();
-    browser.actions().mouseDown().mouseUp().perform();
+    beakerPO.sync();
     expect(beakerPO.submenu.count()).toEqual(3);
   });
 
   it('Settings menu should have 1 item', function () {
     beakerPO.mainmenu.get(1).click();
-    browser.actions().mouseDown().mouseUp().perform();
+    beakerPO.sync();
     expect(beakerPO.submenu.count()).toEqual(1);
   });
 
   it('Help menu should have 4 items', function () {
     beakerPO.mainmenu.get(2).click();
-    browser.actions().mouseDown().mouseUp().perform();
+    beakerPO.sync();
     expect(beakerPO.submenu.count()).toEqual(4);
   });
 

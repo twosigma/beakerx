@@ -18,5 +18,8 @@ var BeakerPageObject = function () {
   this.baseURL = 'http://localhost:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
   this.submenu = element.all(by.repeater('item in getMenuItems() | isHidden')).filter(function(e,i) { return e.isDisplayed(); });
+  this.sync = function () {
+    browser.actions().mouseDown().mouseUp().perform();
+  };
 };
 module.exports = BeakerPageObject;

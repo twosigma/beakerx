@@ -19,6 +19,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
@@ -72,6 +73,7 @@ public class SerializerModule
     //bind(TestContainer.Serializer.class);
     bind(StringObject.Serializer.class);
     bind(BeakerProgressUpdate.Serializer.class);
+    bind(BeakerCodeCell.Serializer.class);
   }
 
   @Provides
@@ -99,6 +101,7 @@ public class SerializerModule
     //module.addSerializer(TestContainer.class, injector.getInstance(TestContainer.Serializer.class));
     module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
     module.addSerializer(BeakerProgressUpdate.class, injector.getInstance(BeakerProgressUpdate.Serializer.class));
+    module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
 
     module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
     module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));
@@ -122,7 +125,7 @@ public class SerializerModule
     mapper.disable(SerializationConfig.Feature.AUTO_DETECT_GETTERS);
     mapper.disable(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS);
     mapper.disable(SerializationConfig.Feature.AUTO_DETECT_FIELDS);
-
+    
     return mapper;
   }
 

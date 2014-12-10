@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.jvm.object;
 
+import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.Plot;
@@ -22,6 +23,9 @@ import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
@@ -46,12 +50,30 @@ public class SerializeUtils {
         jgen.writeObject((CombinedPlot) obj);
       } else if (obj instanceof BeakerProgressUpdate) {
         jgen.writeObject(obj);
-      } else {
-        try {
-          jgen.writeObject(obj);
-        } catch(Throwable e) {
+      } else if (obj instanceof BeakerCodeCell) {
+        jgen.writeObject(obj);
+      } else if (obj instanceof Collection<?>) {
+        Collection<?> c = (Collection<?>) obj;
+        jgen.writeStartArray();
+        for(Object o : c)
+          writeObject(o, jgen);
+        jgen.writeEndArray();
+      } else if (obj instanceof Map<?,?>) {
+        Map<?,?> m = (Map<?,?>) obj;
+
+        Set<?> kset = m.keySet();
+        if (kset.size()==0 || !(kset.iterator().next() instanceof String))
           jgen.writeObject(obj.toString());
+        else {
+          jgen.writeStartObject();
+          for (Object k : kset) {
+            jgen.writeFieldName(k.toString());
+            writeObject(m.get(k),jgen);
+          }
+          jgen.writeEndObject();
         }
+      } else {
+        jgen.writeObject(obj.toString());
       }
     } catch (IOException e) {
       System.err.println("Serialization error:");

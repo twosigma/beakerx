@@ -43,7 +43,6 @@ public class EvaluationResult {
 
       Object obj = evalResult.getValue();
       SerializeUtils.writeObject(obj, jgen);
-
     }
   }
 }

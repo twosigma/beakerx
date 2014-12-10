@@ -21,10 +21,10 @@
   </div>
   <div class="toggle-menu">
     <div class="cell-menu-item cell-dropdown" ng-click="toggleCellMenu($event, 'bkcellmenu')" title="cell menu"></div>
-    <div class="cell-menu-item move-cell-down advanced-hide" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && 'disabled'" title="move cell down"></div>
-    <div class="cell-menu-item move-cell-up advanced-hide" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && 'disabled'" title="move cell up"></div>
-    <div class="cell-menu-item delete-cell advanced-hide" ng-click="deleteCell()" title="delete cell"></div>
-    <div class="cell-menu-item expand-contract advanced-hide" ng-if="cellmodel.type=='code'" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden && 'collapsed'" title="hide/show cell input"></div>
+    <div class="cell-menu-item move-cell-down" ng-click="moveCellDown()" ng-class="moveCellDownDisabled() && 'disabled'" title="move cell down"></div>
+    <div class="cell-menu-item move-cell-up" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && 'disabled'" title="move cell up"></div>
+    <div class="cell-menu-item delete-cell" ng-click="deleteCell()" title="delete cell"></div>
+    <div class="cell-menu-item expand-contract" ng-if="cellmodel.type=='code'" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden && 'collapsed'" title="hide/show cell input"></div>
     <a class="cell-evaluator-menu" ng-if="isCodeCell()" ng-click="toggleCellMenu($event, 'bk-code-cell-input')">
       <bk-language-logo
           bg-color="{{getEvaluator().bgColor}}"

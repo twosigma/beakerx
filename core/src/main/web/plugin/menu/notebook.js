@@ -23,7 +23,8 @@ define(function(require, exports, module) {
       action: function () {
         bkHelper.getBkNotebookViewModel().showEvaluators();
       },
-      tooltip: "Show available languages and edit their settings"
+      tooltip: "Show available languages and edit their settings",
+      id: "language-manager-menuitem"
     },
     {
       name: "Lock",
@@ -34,7 +35,8 @@ define(function(require, exports, module) {
       tooltip: "Lock notebook from further editing",
       isChecked: function () {
         return bkHelper.isNotebookLocked();
-      }
+      },
+      id: "lock-menuitem"
     },
     {
       name: 'Delete all output cells',
@@ -42,7 +44,8 @@ define(function(require, exports, module) {
       action: function () {
         bkHelper.deleteAllOutputCells();
       },
-      tooltip: 'Deletes all of the output cells.'
+      tooltip: 'Deletes all of the output cells.',
+      id: "delete-all-menuitem"
     },
     {
       name: "Run all cells",
@@ -60,6 +63,7 @@ define(function(require, exports, module) {
   var toAdd = [
     {
       parent: "Notebook",
+      id: "notebook-menu",
       items: menuItems
     },
     {

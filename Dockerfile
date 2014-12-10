@@ -32,6 +32,7 @@ RUN add-apt-repository -y ppa:staticfloat/juliareleases
 RUN add-apt-repository -y ppa:staticfloat/julia-deps 
 RUN add-apt-repository -y ppa:chris-lea/node.js
 RUN add-apt-repository -y ppa:cwchien/gradle
+RUN add-apt-repository -y ppa:nginx/stable
 
 RUN apt-get update
 

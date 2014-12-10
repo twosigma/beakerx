@@ -146,6 +146,10 @@ public class JavaEvaluator {
     if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
       return;
 
+    currentClassPath = cp;
+    currentImports = in;
+    outDir = od;
+
     if (cp.isEmpty())
       classPath = new ArrayList<String>();
     else
@@ -155,7 +159,6 @@ public class JavaEvaluator {
     else
       imports = Arrays.asList(in.split("\\s+"));
 
-    outDir = od;
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
 
     resetEnvironment();

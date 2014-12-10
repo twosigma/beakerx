@@ -52,6 +52,11 @@ bk-new-cell-menu {
     right:      20px;
     z-index:    10;
     position:   absolute;
+
+    .dropdown-menu {
+        right: 0;
+        left: auto;
+    }
 }
 
 .cell-menu-item {
@@ -159,6 +164,18 @@ bk-new-cell-menu {
 
     &:hover {
         color: darken($green, 5%);
+    }
+
+    .toggle-menu & {
+        top: 1px;
+        right: 8px;
+        height: 19px;
+        position: relative;
+        display: none;
+
+        .advanced-mode & {
+            display: inline-block;
+        }
     }
 
     b {

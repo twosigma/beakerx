@@ -25,6 +25,12 @@
     <div class="cell-menu-item move-cell-up advanced-hide" ng-click="moveCellUp()" ng-class="moveCellUpDisabled() && 'disabled'" title="move cell up"></div>
     <div class="cell-menu-item delete-cell advanced-hide" ng-click="deleteCell()" title="delete cell"></div>
     <div class="cell-menu-item expand-contract advanced-hide" ng-if="cellmodel.type=='code'" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden && 'collapsed'" title="hide/show cell input"></div>
+    <a class="cell-evaluator-menu" ng-if="isCodeCell()" ng-click="toggleCellMenu($event, 'bk-code-cell-input')">
+      <bk-language-logo
+          bg-color="{{getEvaluator().bgColor}}"
+          fg-color="{{getEvaluator().fgColor}}"
+          border-color="{{getEvaluator().borderColor}}">{{getEvaluator().shortName}}</bk-language-logo>
+    </a>
     <div class="cell-status-item loading-state advanced-hide" ng-if="cellmodel.type=='code' && !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}}
       <div class="loading-spinner rotating"></div>
     </div>
@@ -38,6 +44,7 @@
     </div>
   </div>
   <div ng-include="getTypeCellUrl()"></div>
+  <bk-code-cell-input-menu class="advanced-only"></bk-code-cell-input-menu>
   <bk-cell-menu items="cellview.menu.items"></bk-cell-menu>
   <bk-new-cell-menu config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
 </div>

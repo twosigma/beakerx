@@ -17,8 +17,8 @@
   <div class="modal-header">
     <h1>Language Manager</h1>
   </div>
-  <div class="modal-body modal-large plugin-mananger">
-    <button class="beaker-btn" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()">
+  <div class="modal-body modal-large plugin-manager">
+    <button class="beaker-btn" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()" id="{{pluginName}}-button">
       <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
       <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
       <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
@@ -60,6 +60,6 @@
     </tabs>
   </div>
   <div class="modal-footer">
-    <button class="beaker-btn active" ng-click='hideEvaluators()'>Close</button>
+    <button class="beaker-btn active" ng-click='hideEvaluators()' id='language-manager-close-button'>Close</button>
   </div>
 </div>

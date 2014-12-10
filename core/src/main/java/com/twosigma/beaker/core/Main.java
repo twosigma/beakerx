@@ -136,7 +136,7 @@ public class Main {
       String pid = name.substring(0, at);
       String dir = bkConfig.getNginxServDirectory();
       PrintWriter out = new PrintWriter(dir + "/pid");
-      out.print(pid);
+      out.println(pid);
       out.close();
     } else {
       System.err.println("warning, could not determine PID");

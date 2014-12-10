@@ -45,6 +45,8 @@ public class ScalaEvaluator {
   protected boolean updateLoader;
   protected final BeakerCellExecutor executor;
   protected workerThread myWorker;
+  protected String currentClassPath;
+  protected String currentImports;
 
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -66,6 +68,10 @@ public class ScalaEvaluator {
     imports = new ArrayList<String>();
     exit = false;
     updateLoader = false;
+    currentClassPath = "";
+    currentImports = "";
+    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
+    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     executor = new BeakerCellExecutor("scala");
     startWorker();
   }
@@ -101,6 +107,20 @@ public class ScalaEvaluator {
   }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
+    if (od==null || od.isEmpty()) {
+      od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
+    } else {
+      od = od.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
+    }
+    
+    // check if we are not changing anything
+    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
+      return;
+
+    currentClassPath = cp;
+    currentImports = in;
+    outDir = od;
+
     if(cp==null || cp.isEmpty())
       classPath = new ArrayList<String>();
     else
@@ -109,13 +129,9 @@ public class ScalaEvaluator {
       imports = new ArrayList<String>();
     else
       imports = Arrays.asList(in.split("\\s+"));
-    outDir = od;
-    if(outDir!=null && !outDir.isEmpty()) {
-      outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
-    } else {
-      outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
-    }
+
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+    
     resetEnvironment();
   }
 
@@ -203,6 +219,7 @@ public class ScalaEvaluator {
           }
         }
       }
+      NamespaceClient.delBeaker(sessionId);
     }
 
     protected class MyRunnable implements Runnable {
@@ -270,6 +287,9 @@ public class ScalaEvaluator {
         }
       }
       
+      // ensure object is created
+      NamespaceClient.getBeaker(sessionId);
+
       String r = shell.evaluate2("var beaker = NamespaceClient.getBeaker(\""+sessionId+"\")");
       if(r!=null && !r.isEmpty()) {
         System.err.println("ERROR setting beaker: "+r);
@@ -314,6 +334,9 @@ public class ScalaEvaluator {
       }
     }
     
+    // ensure object is created
+    NamespaceClient.getBeaker(sessionId);
+
     String r = acshell.evaluate2("var beaker = NamespaceClient.getBeaker(\""+sessionId+"\")");
     if(r!=null && !r.isEmpty()) {
       System.err.println("ERROR setting beaker: "+r);

@@ -28,7 +28,7 @@
       <div class="text-white loadingmsg" ng-if="loading || loadingmsg!==''">{{loadingmsg}}</div>
       <ul class="sub-nav" ng-if="!loading">
         <li class="dropdown" ng-repeat="m in getMenus()">
-          <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
+          <a href="#" role="button" class="dropdown-toggle" id="{{m.id}}" data-toggle="dropdown">{{m.name}}</a>
           <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
         </li>
         <li class="pull-right" style="padding: 10px 54px; cursor: default;">

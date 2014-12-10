@@ -38,6 +38,8 @@ public class GroovyEvaluator {
   protected final BeakerCellExecutor executor;
   protected workerThread myWorker;
   protected GroovyAutocomplete gac;
+  protected String currentClassPath;
+  protected String currentImports;
 
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -61,6 +63,10 @@ public class GroovyEvaluator {
     imports = new ArrayList<String>();
     exit = false;
     updateLoader = false;
+    currentClassPath = "";
+    currentImports = "";
+    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
+    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     executor = new BeakerCellExecutor("groovy");
     startWorker();
   }
@@ -112,6 +118,20 @@ public class GroovyEvaluator {
   }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
+    if (od==null || od.isEmpty()) {
+      od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
+    } else {
+      od = od.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
+    }
+    
+    // check if we are not changing anything
+    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
+      return;
+  
+    currentClassPath = cp;
+    currentImports = in;
+    outDir = od;
+    
     if(cp.isEmpty())
       classPath = new ArrayList<String>();
     else
@@ -120,12 +140,7 @@ public class GroovyEvaluator {
       imports = new ArrayList<String>();
     else
       imports = Arrays.asList(in.split("\\s+"));
-    outDir = od;
-    if(outDir!=null && !outDir.isEmpty()) {
-      outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
-    } else {
-      outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
-    }
+
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
 
     resetEnvironment();
@@ -176,15 +191,6 @@ public class GroovyEvaluator {
           if (shell==null) {
             updateLoader=false;
             newEvaluator();
-            nc = NamespaceClient.getBeaker(sessionId);
-
-            // initialize interpreter
-            String initCode = "import com.twosigma.beaker.NamespaceClient\n" +
-                "beaker = NamespaceClient.getBeaker('" + sessionId + "')\n";
-            try {
-              shell.evaluate(initCode);
-            } catch(Throwable e) {
-            }
           }
         
           if(loader!=null)
@@ -211,6 +217,7 @@ public class GroovyEvaluator {
           }
         }
       }
+      NamespaceClient.delBeaker(sessionId);
     }
       
     protected class MyRunnable implements Runnable {
@@ -240,7 +247,6 @@ public class GroovyEvaluator {
           }
         }
       }
-      
     };
     
     protected ClassLoader newClassLoader() throws MalformedURLException
@@ -277,6 +283,16 @@ public class GroovyEvaluator {
       }
       CompilerConfiguration config = new CompilerConfiguration().addCompilationCustomizers(icz);
       shell = new GroovyShell(newClassLoader(), new Binding(), config);
+      
+      // ensure object is created
+      NamespaceClient.getBeaker(sessionId);
+
+      // initialize interpreter
+      String initCode = "import com.twosigma.beaker.NamespaceClient\n" +
+          "beaker = NamespaceClient.getBeaker('" + sessionId + "')\n";
+      try {
+        shell.evaluate(initCode);
+      } catch(Throwable e) { }
     }
   }
 

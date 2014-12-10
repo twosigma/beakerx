@@ -54,6 +54,8 @@ public class JavaEvaluator {
   protected boolean updateLoader;
   protected workerThread myWorker;
   protected final BeakerCellExecutor executor;
+  protected String currentClassPath;
+  protected String currentImports;
   
   protected class jobDescriptor {
     String codeToBeExecuted;
@@ -73,11 +75,15 @@ public class JavaEvaluator {
     sessionId = sId;
     packageId = "com.twosigma.beaker.javash.bkr"+shellId.split("-")[0];
     cps = new ClasspathScanner();
-    jac = new JavaAutocomplete(cps);
+    jac = createJavaAutocomplete(cps);
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
     exit = false;
     updateLoader = false;
+    currentClassPath = "";
+    currentImports = "";
+    outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
+    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     executor = new BeakerCellExecutor("javash");
     startWorker();
   }
@@ -85,6 +91,11 @@ public class JavaEvaluator {
   protected void startWorker() {
     myWorker = new workerThread();
     myWorker.start();
+  }
+
+  protected JavaAutocomplete createJavaAutocomplete(ClasspathScanner c)
+  {
+    return new JavaAutocomplete(c);
   }
 
   public String getShellId() { return shellId; }
@@ -99,6 +110,19 @@ public class JavaEvaluator {
 
   public void resetEnvironment() {
     executor.killAllThreads();
+   
+    String cpp = "";
+    for(String pt : classPath) {
+      cpp += pt;
+      cpp += File.pathSeparator;
+    }
+    cpp += File.pathSeparator;
+    cpp += System.getProperty("java.class.path");
+    cps = new ClasspathScanner(cpp);
+    jac = createJavaAutocomplete(cps);
+    
+    for(String st : imports)
+      jac.addImport(st);
     
     // signal thread to create loader
     updateLoader = true;
@@ -112,6 +136,20 @@ public class JavaEvaluator {
   }
 
   public void setShellOptions(String cp, String in, String od) throws IOException {
+    if (od==null || od.isEmpty()) {
+      od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
+    } else {
+      od = od.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
+    }
+    
+    // check if we are not changing anything
+    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
+      return;
+
+    currentClassPath = cp;
+    currentImports = in;
+    outDir = od;
+
     if (cp.isEmpty())
       classPath = new ArrayList<String>();
     else
@@ -121,30 +159,9 @@ public class JavaEvaluator {
     else
       imports = Arrays.asList(in.split("\\s+"));
 
-    outDir = od;
-    if (outDir!=null && !outDir.isEmpty()) {
-      outDir = outDir.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
-    } else {
-      outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
-    }
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
 
-    String cpp = "";
-    for(String pt : classPath) {
-      cpp += pt;
-      cpp += File.pathSeparator;
-    }
-    cpp += File.pathSeparator;
-    cpp += System.getProperty("java.class.path");
-    cps = new ClasspathScanner(cpp);
-    jac = new JavaAutocomplete(cps);
-
-    for(String st : imports)
-      jac.addImport(st);
-    
-    // signal thread to create loader
-    updateLoader = true;
-    syncObject.release();
+    resetEnvironment();
   }
 
   public void evaluate(SimpleEvaluationObject seo, String code) {
@@ -304,7 +321,7 @@ public class JavaEvaluator {
             javaSourceCode.append("public class Foo {\n");
             javaSourceCode.append("public static ");
             javaSourceCode.append(ret);
-            javaSourceCode.append(" beakerRun() throws InterruptedException {\n");
+            javaSourceCode.append(" beakerRun() throws Exception {\n");
             for(; ci<codev.length; ci++)
               javaSourceCode.append(codev[ci]);
             javaSourceCode.append("}\n");
@@ -339,7 +356,7 @@ public class JavaEvaluator {
           }
         }
       }
-      
+      NamespaceClient.delBeaker(sessionId);
     }
     
     protected class MyRunnable implements Runnable {

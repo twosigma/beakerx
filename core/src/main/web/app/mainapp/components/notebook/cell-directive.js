@@ -128,6 +128,10 @@
           notebookCellOp.delete($scope.cellmodel.id, true);
         }
 
+        $scope.getEvaluators = function() {
+          return bkEvaluatorManager.getAllEvaluators();
+        };
+
         $scope.getEvaluator = function() {
           return bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
         };
@@ -176,17 +180,23 @@
             notebookCellOp.paste($scope.cellmodel.id);
           }
         });
+
         $scope.getTypeCellUrl = function() {
           var type = $scope.cellmodel.type;
           return type + "-cell.html";
         };
+
+        $scope.isCodeCell = function() {
+          return $scope.cellmodel.type == 'code';
+        };
       },
       link: function(scope, element, attrs) {
-        scope.toggleCellMenu = function(event) {
+        scope.toggleCellMenu = function(event, dropdownClass) {
           element
           .find(".bkcell").first()
-          .find('.bkcellmenu').last()
-           .css({
+          .find('.' + dropdownClass).last()
+          .css({
+            position: 'fixed',
             top: event.clientY + "px",
             left: event.clientX - 250 + "px"
           })

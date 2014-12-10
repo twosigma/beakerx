@@ -18,6 +18,14 @@
   display: none;
 }
 
+.advanced-only {
+  display: none;
+
+  .advanced-mode & {
+    display: block;
+  }
+}
+
 .advanced-mode {
   .advanced-hide {
     display: none !important;

@@ -127,6 +127,10 @@ public class GroovyEvaluator {
     // check if we are not changing anything
     if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
       return;
+  
+    currentClassPath = cp;
+    currentImports = in;
+    outDir = od;
     
     if(cp.isEmpty())
       classPath = new ArrayList<String>();
@@ -137,7 +141,6 @@ public class GroovyEvaluator {
     else
       imports = Arrays.asList(in.split("\\s+"));
 
-    outDir = od;
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
 
     resetEnvironment();

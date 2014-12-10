@@ -183,11 +183,12 @@
         };
       },
       link: function(scope, element, attrs) {
-        scope.toggleCellMenu = function(event) {
+        scope.toggleCellMenu = function(event, dropdownClass) {
           element
           .find(".bkcell").first()
-          .find('.bkcellmenu').last()
+          .find('.' + dropdownClass).last()
           .css({
+            position: 'fixed',
             top: event.clientY + "px",
             left: event.clientX - 250 + "px"
           })

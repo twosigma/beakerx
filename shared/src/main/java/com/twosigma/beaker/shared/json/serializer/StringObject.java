@@ -46,7 +46,7 @@ public class StringObject {
     public void serialize(StringObject value, JsonGenerator jgen, SerializerProvider provider)
         throws IOException, JsonProcessingException {
       jgen.writeStartObject();
-      jgen.writeObjectField("text", value.getText());
+      jgen.writeStringField("text", value.getText());
       jgen.writeEndObject();
     }
   }

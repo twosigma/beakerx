@@ -16,9 +16,13 @@
 
 package com.twosigma.beaker;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
+import java.io.IOException;
 
-@JsonAutoDetect
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
+
 public class BeakerCodeCell {
   private String cellId;
   private String evaluatorId;
@@ -42,5 +46,26 @@ public class BeakerCodeCell {
   public void setoutputtype(String s) { outputtype = s; }
   public void setoutput(String s) { output = s; }
   public void settags(String s) { tags = s; }
+  
+  public static class Serializer extends JsonSerializer<BeakerCodeCell> {
+
+    @Override
+    public void serialize(BeakerCodeCell value,
+        JsonGenerator jgen,
+        SerializerProvider provider)
+        throws IOException, JsonProcessingException {
+
+      synchronized (value) {
+        jgen.writeStartObject();
+        jgen.writeStringField("cellId", value.cellId);
+        jgen.writeStringField("evaluatorId", value.evaluatorId);
+        jgen.writeStringField("code", value.code);
+        jgen.writeStringField("outputtype", value.outputtype);
+        jgen.writeStringField("output", value.output);
+        jgen.writeStringField("tags", value.tags);
+        jgen.writeEndObject();
+      }
+    }
+  }
   
 }

@@ -31,9 +31,9 @@ configurations {
 
 dependencies {
   provided project(':plugin:jvm')
-  compile group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.4'
-  compile group: 'org.scala-lang', name: 'scala-library', version: '2.11.4'
-  compile group: 'jline', name: 'jline', version: '2.12'
+  provided group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.4'
+  provided group: 'org.scala-lang', name: 'scala-library', version: '2.11.4'
+  provided group: 'jline', name: 'jline', version: '2.12'
   testCompile group: 'com.sun.jersey', name: 'jersey-client', version: '1.17.1'
   testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-core', version: '1.17.1'
   testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-external', version: '1.17.1'

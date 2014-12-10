@@ -23,6 +23,8 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
+import com.twosigma.beaker.jvm.object.SerializeUtils;
+
 public class BeakerProgressUpdate {
 
   public final String message;
@@ -95,14 +97,11 @@ public class BeakerProgressUpdate {
 
       synchronized (value) {
         jgen.writeStartObject();
-        jgen.writeObjectField("message", value.message);
-        jgen.writeObjectField("progressBar", value.progressBar);
+        jgen.writeStringField("message", value.message);
+        jgen.writeNumberField("progressBar", value.progressBar);
         if (value.payload!=null) {
-          try {
-            jgen.writeObjectField("payload", value.payload);
-          } catch(Throwable e) {
-            jgen.writeObjectField("payload", value.payload.toString());
-          }
+          jgen.writeFieldName("payload");
+          SerializeUtils.writeObject(value.payload, jgen);
         }
         jgen.writeEndObject();
       }

@@ -71,7 +71,7 @@ public class GroovyAutocomplete {
   }
 
   protected void moreSetup(ClassUtils cu) {    
-
+    cu.defineVariable("beaker", "com.twosigma.beaker.NamespaceClient");
   }
 
   public void addImport(String imp) {
@@ -206,6 +206,9 @@ public class GroovyAutocomplete {
     c = new AutocompleteCandidate(GroovyCompletionTypes.TYPE, "Void");
     r.addCandidate(c);		
 
+    c = new AutocompleteCandidate(GroovyCompletionTypes.TYPE, "NamespaceClient");
+    r.addCandidate(c);      
+
     c = new AutocompleteCandidate(GroovyCompletionTypes.NEW, "new");
     r.addCandidate(c);		
   }
@@ -239,6 +242,7 @@ public class GroovyAutocomplete {
     cu.defineClassShortName("ThreadGroup", "java.lang.ThreadGroup");
     cu.defineClassShortName("Throwable", "java.lang.Throwable");
     cu.defineClassShortName("Void", "java.lang.Void");
+    cu.defineClassShortName("NamespaceClient", "com.twosigma.beaker.NamespaceClient");
     
     AutocompleteCandidate c;
     c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, "Boolean"); registry.addCandidate(c);      
@@ -268,6 +272,8 @@ public class GroovyAutocomplete {
     c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, "ThreadGroup"); registry.addCandidate(c);      
     c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, "Throwable"); registry.addCandidate(c);      
     c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, "Void"); registry.addCandidate(c);      
+    c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, "NamespaceClient"); registry.addCandidate(c);      
+    c = new AutocompleteCandidate(GroovyCompletionTypes.NAME, "beaker"); registry.addCandidate(c);      
     
   }
 

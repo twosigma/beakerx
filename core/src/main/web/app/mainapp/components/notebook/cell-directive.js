@@ -176,6 +176,7 @@
             notebookCellOp.paste($scope.cellmodel.id);
           }
         });
+
         $scope.getTypeCellUrl = function() {
           var type = $scope.cellmodel.type;
           return type + "-cell.html";
@@ -186,7 +187,7 @@
           element
           .find(".bkcell").first()
           .find('.bkcellmenu').last()
-           .css({
+          .css({
             top: event.clientY + "px",
             left: event.clientX - 250 + "px"
           })

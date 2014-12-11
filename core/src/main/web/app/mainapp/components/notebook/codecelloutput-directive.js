@@ -71,6 +71,9 @@
                 return evaluator.cometdUtil;
               }
             }
+          },
+          getEvaluatorId: function() {
+            return $scope.evaluatorId;
           }
         };
 

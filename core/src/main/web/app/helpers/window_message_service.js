@@ -40,7 +40,7 @@
             bkBunsenHelper.saveNotebook(e.data.name);
             break;
           case 'close':
-            bkHelper.closeNotebook();
+            bkHelper.closeNotebook(true);
             break;
           case 'showStdoutStderr':
             bkHelper.getBkNotebookViewModel().showOutput();

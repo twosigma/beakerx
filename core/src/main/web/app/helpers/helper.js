@@ -88,9 +88,9 @@
           console.error("Current app doesn't support getNotebookModel");
         }
       },
-      closeNotebook: function() {
+      closeNotebook: function(force) {
         if (getCurrentApp().closeNotebook) {
-          return getCurrentApp().closeNotebook();
+          return getCurrentApp().closeNotebook(force);
         } else {
           console.error("Current app doesn't support closeNotebook");
         }

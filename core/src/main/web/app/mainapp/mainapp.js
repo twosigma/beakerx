@@ -412,14 +412,14 @@
               saveStart();
               return savePromptIfOverwrite(notebookUri, uriType).then(saveDone, saveFailed);
             },
-            closeNotebook: function() {
+            closeNotebook: function(force) {
               var self = this;
               var closeSession = function() {
                 bkSessionManager.close().then(function() {
                   bkBunsenHelper.closeIframe();
                 });
               };
-              if (bkSessionManager.isNotebookModelEdited() === false) {
+              if (force || bkSessionManager.isNotebookModelEdited() === false) {
                 closeSession();
               } else {
                 var notebookTitle = bkSessionManager.getNotebookTitle();

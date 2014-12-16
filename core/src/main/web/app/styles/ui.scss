@@ -101,3 +101,15 @@ strong {
 .body-box {
   border: solid 1px $cell-border;
 }
+
+.folder-icon {
+  position: relative;
+  display: inline-block;
+
+  width: 16px;
+  height: 13px;
+  top: 2px;
+  margin-right: 11px;
+  background-repeat: no-repeat;
+  background-image: url(../images/folder.svg);
+}

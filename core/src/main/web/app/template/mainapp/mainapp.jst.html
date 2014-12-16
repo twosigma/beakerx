@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="navbar navbar-fixed-top">
+<div class="navbar navbar-fixed-top navbar-inverse">
   <div class="navbar-inner">
 
     <!-- BEAKER-426 - styling here is meant to override the bootstrap settings of -20 margin, +20 padding.
@@ -24,6 +24,7 @@
         <img src="app/images/beaker_icon@2x.png"></img>
         Beaker
       </a>
+      <p class="navbar-text left">{{filename()}}</p>
       <span class="brand" ng-if="loading || loadingmsg!==''"><i class='fa fa-refresh fa-spin text-white'></i></span>
       <div class="text-white loadingmsg" ng-if="loading || loadingmsg!==''">{{loadingmsg}}</div>
       <ul class="sub-nav" ng-if="!loading">

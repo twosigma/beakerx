@@ -106,11 +106,7 @@
         };
         $scope.getIcon = function() {
           if ($scope.data.type === "directory") {
-            if ($scope.data.children.length) {
-              return 'icon-folder-open';
-            } else {
-              return 'icon-folder-close';
-            }
+            return 'folder-icon';
           }
           if ($scope.data.type === "application/prs.twosigma.beaker.notebook+json") {
             return 'icon-book';

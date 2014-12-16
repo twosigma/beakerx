@@ -84,7 +84,7 @@
           }
         };
         var evaluatorMenuItems = [];
-        
+
         var addEvaluator = function(settings, alwaysCreateNewEvaluator) {
           // set shell id to null, so it won't try to find an existing shell with the id
           if (alwaysCreateNewEvaluator) {
@@ -186,7 +186,7 @@
 
             showLoadingStatusMessage("Loading notebook");
             $scope.loading = true;
-            
+
             addScrollingHack();
             isExistingSession = !!isExistingSession;
             evaluatorMenuItems.splice(0, evaluatorMenuItems.length);
@@ -507,7 +507,7 @@
           };
 
           var evalCodeId = 0;
-          
+
           return {
             name: "bkNotebookApp",
             getSessionId: function() {
@@ -707,7 +707,7 @@
                 return [];
               }
               var ret = [];
-              
+
               if (_.isArray(filter)) {
                 var i;
                 for ( i = 0 ; i < filter.length ; i++ ) {
@@ -726,7 +726,7 @@
                             o.output = cell.output.result.object;
                           } else {
                             o.output = JSON.stringify(cell.output.result.object);
-                          }                        
+                          }
                         }
                       } else {
                         o.outputtype = cell.output.result.type;
@@ -748,7 +748,7 @@
                 o.cellId = filter.id;
                 o.evaluatorId = filter.evaluator;
                 o.code = filter.input.body;
-                o.output = filter.output;      
+                o.output = filter.output;
                 o.tags = filter.tags;
                 ret.push(o);
               }
@@ -890,6 +890,10 @@
           } else {
             bkCoreManager.gotoControlPanel();
           }
+        };
+
+        $scope.filename = function() {
+          return bkSessionManager.getNotebookTitle();
         };
 
         $scope.$on("$locationChangeStart", function(event, next, current) {

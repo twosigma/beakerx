@@ -24,6 +24,7 @@
         <img src="app/images/beaker_icon@2x.png"></img>
         Beaker
       </a>
+      <p class="navbar-text left">{{filename()}}</p>
       <span class="brand" ng-if="loading || loadingmsg!==''"><i class='fa fa-refresh fa-spin text-white'></i></span>
       <div class="text-white loadingmsg" ng-if="loading || loadingmsg!==''">{{loadingmsg}}</div>
       <ul class="sub-nav" ng-if="!loading">

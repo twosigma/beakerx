@@ -43,7 +43,7 @@
           $scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(result);
           $scope.model.selectedType = $scope.applicableDisplays[0];
         });
-        
+
         // to be used in bkOutputDisplay
         $scope.outputDisplayModel = {
           getCellModel: function() {

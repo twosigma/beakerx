@@ -64,7 +64,7 @@
                                   .withOption('searching', false);
         if (data.length > 25) {
           scope.dtOptions.withPaginationType('simple_numbers')
-          .withDisplayLength(25)           
+          .withDisplayLength(25)
           .withOption('lengthMenu', [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]);
         } else {
           scope.dtOptions.withOption('paging', false);

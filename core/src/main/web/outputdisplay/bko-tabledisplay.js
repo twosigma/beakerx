@@ -119,6 +119,10 @@
             scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i]));
         }
 
+        scope.$on('expand', function() {
+          scope.dtOptions.dirty = true;
+        });
+
         scope.$watch('getDumpState()', function(result) {
           if (result !== undefined && result.tablestate === undefined) {
             scope.model.setDumpState({ tablestate : scope.state});

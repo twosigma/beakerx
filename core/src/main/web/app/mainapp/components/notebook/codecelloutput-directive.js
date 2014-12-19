@@ -102,6 +102,7 @@
         $scope.toggleExpansion = function() {
           if ($scope.$parent.cellmodel.output.hidden) {
             delete $scope.$parent.cellmodel.output.hidden;
+            $scope.$broadcast('expand');
           } else {
             $scope.$parent.cellmodel.output.hidden = true;
           }

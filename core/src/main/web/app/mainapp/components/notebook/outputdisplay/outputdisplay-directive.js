@@ -17,7 +17,7 @@
   "use strict";
   var module = angular.module('bk.outputDisplay');
   module.directive('bkOutputDisplay', function(
-      $compile, $rootScope, bkOutputDisplayFactory, bkUtils) {
+      $compile, bkOutputDisplayFactory, bkUtils) {
     var getResultType = function(model) {
       if (model && model.getCellModel()) {
         if (_.isString(model.getCellModel())) {
@@ -40,7 +40,7 @@
           if (childScope) {
             childScope.$destroy();
           }
-          childScope = $rootScope.$new();
+          childScope = scope.$new();
           childScope.model = scope.model;
           var resultType = getResultType(scope.model);
           if (resultType) {

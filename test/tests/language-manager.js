@@ -54,6 +54,15 @@ describe('language manager test', function () {
     expect(element.all(by.className('plugin-manager')).count()).toEqual(0);
   });
 
-  
+  it('add cell', function () {
+    element(by.id('insert-cell')).click();
+    expect(element(by.id('run-cell-button')).isDisplayed()).toBe(true);
+  });
+
+  it('set cell language to python', function () {
+    element(by.id('cell-evaluator-menu')).click();
+    element(by.id('IPython-menuitem')).click();
+    expect(element(by.css('#cell-evaluator-menu b')).getText()).toEqual("IPython");
+  });
 
 });

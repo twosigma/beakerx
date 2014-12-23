@@ -27,7 +27,7 @@
         <div ng-click="$event.stopPropagation()">
 	  <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
 	</div>
-        <a href="#" class="evaluate-script advanced-hide" ng-click="evaluate(); $event.stopPropagation();" eat-click>Run</a>
+        <a href="#" class="evaluate-script advanced-hide" ng-click="evaluate(); $event.stopPropagation();" id="run-cell-button" eat-click>Run</a>
     </div>
     <div ng-if ="hasOutput()" class="code-cell-output" ng-class="{
       'no-output': isHiddenOutput(),

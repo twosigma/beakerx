@@ -65,4 +65,10 @@ describe('language manager test', function () {
     expect(element(by.css('#cell-evaluator-menu b')).getText()).toEqual("IPython");
   });
 
+  it('enter code and evaluate', function () {
+    browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("type(sys.version)")');
+    element(by.id('run-cell-button')).click();
+    expect(element(by.css('bk-output-display pre')).getText()).toMatch("str");
+  });
+
 });

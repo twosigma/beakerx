@@ -14,4 +14,4 @@ REM See the License for the specific language governing permissions and
 REM limitations under the License.
 
 @echo off
-build\install\core\bin\core
+build\install\core\bin\core %*

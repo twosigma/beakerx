@@ -25,23 +25,24 @@ describe('language manager test', function () {
   });
 
   it('open a new notebook', function() {
-    element(by.id('new-empty-notebook')).click();
+    beakerPO.newEmptyNotebook.click();
     expect(browser.getTitle()).toEqual('New Notebook');
   });
 
   it('open language manager', function () {
-    element(by.id('notebook-menu')).click();
-    element(by.id('language-manager-menuitem')).click();
-    expect(element(by.className('plugin-manager')).isDisplayed()).toBe(true);
+    beakerPO.notebookMenu.click();
+    beakerPO.languageManagerMenuItem.click();
+    expect(beakerPO.languageManager.isDisplayed()).toBe(true);
   });
 
   it('load ipython', function () {
-    expect(element(by.css('#IPython-button .plugin-known')).isDisplayed()).toBe(true);
-    expect(element(by.css('#IPython-button .plugin-active')).isDisplayed()).toBe(false);
-    element(by.id('IPython-button')).click();
+    expect(beakerPO.languageManagerButtonKnown('IPython').isDisplayed()).toBe(true);
+    expect(beakerPO.languageManagerButtonActive('IPython').isDisplayed()).toBe(false);
+    beakerPO.languageManagerButton('IPython').click();
+    // Abstract this into beakerPO XXX
     browser.wait(function () {
       var deferred = protractor.promise.defer();
-      element(by.css('#IPython-button .plugin-active')).isDisplayed()
+      beakerPO.languageManagerButtonActive('IPython').isDisplayed()
         .then(function (result) {
           deferred.fulfill(result);
         });
@@ -50,25 +51,25 @@ describe('language manager test', function () {
   });
 
   it('close language manager', function () {
-    element(by.id('language-manager-close-button')).click();
+    beakerPO.languageManagerCloseButton.click();
     expect(element.all(by.className('plugin-manager')).count()).toEqual(0);
   });
 
   it('add cell', function () {
-    element(by.id('insert-cell')).click();
-    expect(element(by.id('run-cell-button')).isDisplayed()).toBe(true);
+    beakerPO.insertCellButton.click();
+    expect(beakerPO.runCellButton.isDisplayed()).toBe(true);
   });
 
   it('set cell language to python', function () {
-    element(by.id('cell-evaluator-menu')).click();
-    element(by.id('IPython-menuitem')).click();
-    expect(element(by.css('#cell-evaluator-menu b')).getText()).toEqual("IPython");
+    beakerPO.cellEvaluatorMenu.click();
+    beakerPO.cellEvaluatorMenuItem('IPython').click();
+    expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual("IPython");
   });
 
   it('enter code and evaluate', function () {
-    browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("type(sys.version)")');
-    element(by.id('run-cell-button')).click();
-    expect(element(by.css('bk-output-display pre')).getText()).toMatch("str");
+    beakerPO.setCellInput("type(sys.version)");
+    beakerPO.runCellButton.click();
+    expect(beakerPO.cellOutput.getText()).toMatch("str");
   });
 
 });

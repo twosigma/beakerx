@@ -17,9 +17,35 @@
 var BeakerPageObject = function () {
   this.baseURL = 'http://localhost:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
-  this.submenu = element.all(by.repeater('item in getMenuItems() | isHidden')).filter(function(e,i) { return e.isDisplayed(); });
+  this.submenu = element.all(by.repeater('item in getMenuItems() | isHidden'))
+    .filter(function(e,i) { return e.isDisplayed(); });
   this.sync = function () {
     browser.actions().mouseDown().mouseUp().perform();
   };
+  this.newEmptyNotebook = element(by.id('new-empty-notebook'));
+  this.notebookMenu = element(by.id('notebook-menu'));
+  this.languageManagerMenuItem = element(by.id('language-manager-menuitem'));
+  this.languageManager = element(by.className('plugin-manager'));
+  this.languageManagerButtonKnown = function(language) {
+    return element(by.css('#' + language + '-button .plugin-known'));
+  };
+  this.languageManagerButtonActive = function(language) {
+    return element(by.css('#' + language + '-button .plugin-active'));
+  };
+  this.languageManagerButton = function(language) {
+    return element(by.id(language + '-button'));
+  };
+  this.languageManagerCloseButton = element(by.id('language-manager-close-button'));
+  this.insertCellButton = element(by.id('insert-cell'));
+  this.runCellButton = element(by.id('run-cell-button'));
+  this.cellEvaluatorMenu = element(by.id('cell-evaluator-menu'));
+  this.cellEvaluatorMenuItem = function (language) {
+    return element(by.id(language + '-menuitem'));
+  };
+  this.cellEvaluatorDisplay = element(by.css('#cell-evaluator-menu b'));
+  this.setCellInput = function (code) {
+    browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
+  };
+  this.cellOutput = element(by.css('bk-output-display pre'));
 };
 module.exports = BeakerPageObject;

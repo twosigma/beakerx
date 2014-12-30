@@ -36,8 +36,6 @@ http {
   scgi_temp_path "client_temp";
 
   server {
-    auth_basic "Restricted";
-    auth_basic_user_file /etc/nginx/.htpasswd;
 
     %(listen_section)s
 

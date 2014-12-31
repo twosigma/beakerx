@@ -107,6 +107,13 @@ strong {
   display: inline-block;
 }
 
+.new-folder.bk-icon {
+  background-repeat: no-repeat;
+  background-image: url(../images/new_folder.svg);
+  width: 20px;
+  height: 17px;
+}
+
 .folder-icon {
   @extend .bk-icon;
   width: 16px;

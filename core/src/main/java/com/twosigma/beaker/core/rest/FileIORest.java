@@ -133,7 +133,7 @@ public class FileIORest {
     }
 
     for(String s : this.searchDirs) {
-      String npath = s + "/" + path; 
+      String npath = s + "/" + path;
       if (Files.exists(Paths.get(npath))) {
         try {
           byte[] encoded = Files.readAllBytes(Paths.get(npath));

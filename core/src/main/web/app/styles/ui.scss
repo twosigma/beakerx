@@ -102,10 +102,13 @@ strong {
   border: solid 1px $cell-border;
 }
 
-.folder-icon {
+.bk-icon {
   position: relative;
   display: inline-block;
+}
 
+.folder-icon {
+  @extend .bk-icon;
   width: 16px;
   height: 13px;
   top: 2px;

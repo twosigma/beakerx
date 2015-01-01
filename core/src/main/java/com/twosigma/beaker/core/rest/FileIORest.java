@@ -87,6 +87,20 @@ public class FileIORest {
   }
 
   @POST
+  @Path("createDirectory")
+  public void createDirectory(
+      @FormParam("path") String path) throws IOException {
+    if (Files.exists(Paths.get(path))) {
+      throw new FileAlreadyExistsException();
+    }
+    try {
+      new File(path).mkdirs();
+    } catch (Throwable t) {
+      throw new DirectoryCreationException(ExceptionUtils.getStackTrace(t));
+    }
+  }
+
+  @POST
   @Path("save")
   public void save(
       @FormParam("path") String path,
@@ -133,7 +147,7 @@ public class FileIORest {
     }
 
     for(String s : this.searchDirs) {
-      String npath = s + "/" + path; 
+      String npath = s + "/" + path;
       if (Files.exists(Paths.get(npath))) {
         try {
           byte[] encoded = Files.readAllBytes(Paths.get(npath));
@@ -214,6 +228,16 @@ public class FileIORest {
     }
     return ret;
   }
+
+  private static class DirectoryCreationException extends WebApplicationException {
+    public DirectoryCreationException(String stackTrace) {
+      super(Response.status(Responses.PRECONDITION_FAILED)
+          .entity("<h1>Directory Creation Failed</h1><pre>" + stackTrace + "</pre>")
+          .type("text/plain")
+          .build());
+    }
+  }
+
   private static class FileSaveException extends WebApplicationException {
     public FileSaveException(String stackTrace) {
       super(Response.status(Responses.PRECONDITION_FAILED)

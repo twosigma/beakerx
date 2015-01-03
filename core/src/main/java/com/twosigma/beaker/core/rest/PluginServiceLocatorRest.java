@@ -634,7 +634,7 @@ public class PluginServiceLocatorRest {
     String listenSection;
     String authCookieRule;
     String startPage;
-    String hostName = null;
+    String hostName = "none"; // XXX hack
     try {
       // XXX should allow name to be set by user in bkConfig
       hostName = InetAddress.getLocalHost().getHostName();

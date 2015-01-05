@@ -43,7 +43,7 @@
           $scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(result);
           $scope.model.selectedType = $scope.applicableDisplays[0];
         });
-        
+
         // to be used in bkOutputDisplay
         $scope.outputDisplayModel = {
           getCellModel: function() {
@@ -102,6 +102,7 @@
         $scope.toggleExpansion = function() {
           if ($scope.$parent.cellmodel.output.hidden) {
             delete $scope.$parent.cellmodel.output.hidden;
+            $scope.$broadcast('expand');
           } else {
             $scope.$parent.cellmodel.output.hidden = true;
           }

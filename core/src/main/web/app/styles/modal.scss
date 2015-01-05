@@ -56,3 +56,13 @@ html {
     width: 100%;
   }
 }
+
+#saveAsFileInput {
+  width: calc(100% - 40px);
+}
+
+.new-folder {
+  cursor: pointer;
+  margin-left: 8px;
+  margin-top: 6px;
+}

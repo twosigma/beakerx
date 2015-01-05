@@ -213,6 +213,14 @@
             }
             return result;
           };
+          fileChooserStrategy.newFolder = function(path) {
+            var self = this;
+            this.showSpinner = true;
+            bkUtils.httpPost("../beaker/rest/file-io/createDirectory", {path: path})
+                .complete(function (list) {
+                  self.showSpinner = false;
+                });
+          };
           fileChooserStrategy.getSaveBtnDisabled = function() {
             return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
           };
@@ -229,10 +237,12 @@
               '</div>' +
               '<div class="modal-footer fixed">' +
               '   <p><input id="saveAsFileInput"' +
-              '             class="input-block-level"' +
+              '             class="left"' +
               '             ng-model="getStrategy().input"' +
               '             ng-keypress="getStrategy().close($event, close)"' +
-              '             focus-start /></p>' +
+              '             focus-start />' +
+              '      <i class="new-folder bk-icon" data-toggle="tooltip" title="Make new directory ({{getStrategy().input}})" ng-click="getStrategy().newFolder(getStrategy().input)"></i>' +
+              '   </p>' +
               '   <span style="float:left;">{{getStrategy().getResult()}}</span>' +
               '   <button ng-click="close()" class="beaker-btn">Cancel</button>' +
               '   <button ng-click="close(getStrategy().getResult())" class="beaker-btn active"' +

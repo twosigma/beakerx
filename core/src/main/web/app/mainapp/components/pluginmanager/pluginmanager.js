@@ -18,13 +18,13 @@
  * This is the module for the UI that shows the list of evaluators and their corresponding
  * settings panel.
  */
-(function() {
-  'use strict';
-  var module = angular.module('bk.pluginManager', [
-    'bk.core',
-    'bk.sessionManager',
-    'bk.menuPluginManager',
-    'bk.evaluatePluginManager',
-    'bk.evaluatorManager'
-  ]);
-})();
+//(function() {
+//  'use strict';
+//  var module = angular.module('bk.pluginManager', [
+//    'bk.core',
+//    'bk.sessionManager',
+//    'bk.menuPluginManager',
+//    'bk.evaluatePluginManager',
+//    'bk.evaluatorManager'
+//  ]);
+//})();

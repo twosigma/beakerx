@@ -332,7 +332,10 @@
           };
         });
       },
-
+      showLanguageManager: function() {
+        return bkCoreManager.showLanguageManager();
+      },
+      
       // other JS utils
       updateDocumentModelFromDOM: function(id) {
           // 1) find the cell that contains elem

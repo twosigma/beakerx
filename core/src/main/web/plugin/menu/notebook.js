@@ -21,7 +21,7 @@ define(function(require, exports, module) {
       name: "Language manager...",
       sortorder: 100,
       action: function () {
-        bkHelper.getBkNotebookViewModel().showEvaluators();
+        bkHelper.showLanguageManager();
       },
       tooltip: "Show available languages and edit their settings",
       id: "language-manager-menuitem"

@@ -41,7 +41,7 @@
           attachCell(newCell);
         };
         $scope.showPluginManager = function() {
-          bkHelper.getBkNotebookViewModel().showEvaluators();
+          bkHelper.showLanguageManager($scope);
         };
         $scope.newTextCell = function() {
           var newCell = newCellFactory.newTextCell();

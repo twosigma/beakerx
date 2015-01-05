@@ -20,7 +20,8 @@
 
 (function() {
   'use strict';
-  var module = angular.module('bk.pluginManager');
+
+  var module = angular.module('bk.core');
 
   module.directive('bkPluginManagerEvaluatorSettings', function(
       $compile, bkSessionManager) {

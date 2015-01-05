@@ -38,7 +38,7 @@
    *     instead
    */
   module.factory('bkCoreManager', function(
-      $dialog, bkUtils, bkRecentMenu, bkNotebookCellModelManager, modalDialogOp) {
+      $modal, bkUtils, bkRecentMenu, bkNotebookCellModelManager, modalDialogOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
@@ -300,9 +300,8 @@
         }
 
         modalDialogOp.setStrategy(strategy);
-        var dd = $dialog.dialog(options);
-        return dd.open().then(function(result) {
-          dd.$scope.$destroy();
+        var dd = $modal.open(options);
+        return dd.result.then(function(result) {
           if (callback) {
             callback(result);
           }
@@ -405,13 +404,25 @@
         } else {
           options.template = template;
         }
-        var dd = $dialog.dialog(options);
-        return dd.open().then(function(result) {
+        var dd = $modal.open(options);
+        return dd.result.then(function(result) {
           dd.$scope.$destroy();
           if (callback) {
             callback(result);
           }
-        });
+        }, function() { dd.$scope.$destroy(); });
+      },
+      showLanguageManager: function() {
+        var options = {
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          controller: 'pluginManagerCtrl',
+          template: JST['mainapp/components/pluginmanager/pluginmanager']()
+        };
+
+        var dd = $modal.open(options);
+        return dd.result;
       }
     };
     return bkCoreManager;
@@ -429,12 +440,12 @@
     };
   });
 
-  module.controller('modalDialogCtrl', function($scope, dialog, modalDialogOp) {
+  module.controller('modalDialogCtrl', function($scope, $modalInstance, modalDialogOp) {
     $scope.getStrategy = function() {
       return modalDialogOp.getStrategy();
     };
     $scope.close = function(result) {
-      dialog.close(result);
+      $modalInstance.close(result);
     };
   });
 

@@ -13,7 +13,7 @@
     "underscore.string": "2.3.3",
     "codemirror": "4.7.0",
     "q": "0.9.7",
-    "angular-bootstrap": "0.3.0",
+    "angular-bootstrap": "0.5.0",
     "bootstrap": "2.3.2",
     "font-awesome": "4.0.3",
     "requirejs": "2.1.11",

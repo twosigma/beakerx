@@ -46,12 +46,8 @@
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
         var _impl = {
           _viewModel: {
-            _hideEvaluators: true,
             _debugging: false,
             _showOutput: false,
-            showEvaluators: function () {
-              this._hideEvaluators = false;
-            },
             toggleShowOutput: function () {
               this._showOutput = !this._showOutput;
             },
@@ -63,12 +59,6 @@
             },
             isLocked: function() {
               return bkSessionManager.isNotebookLocked();
-            },
-            isHideEvaluators: function () {
-              return this._hideEvaluators;
-            },
-            hideEvaluators: function () {
-              this._hideEvaluators = true;
             },
             toggleAdvancedMode: function() {
               this._advancedMode = !this._advancedMode;

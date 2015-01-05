@@ -29,7 +29,7 @@
   'use strict';
   var module = angular.module('bk.core');
 
-  module.controller('CodeCellOptionsController', ['$scope', 'dialog', 'dscope', 'bkCoreManager', function($scope, dialog, dscope, bkCoreManager) {
+  module.controller('CodeCellOptionsController', ['$scope', '$modalInstance', 'dscope', 'bkCoreManager', function($scope, $modalInstance, dscope, bkCoreManager) {
     $scope.dscope = dscope;
     $scope.initializationCell = dscope.initialization;
     $scope.cellName = dscope.id;
@@ -52,7 +52,7 @@
       return bkCoreManager.getNotebookCellManager().canSetUserTags($scope.cellTags);
     };
     $scope.close = function() {
-      dialog.close('close');
+      $modalInstance.close('close');
     };
     $scope.save = function() {
       if ($scope.saveDisabled())
@@ -67,7 +67,7 @@
         bkCoreManager.getNotebookCellManager().renameCell($scope.dscope.id,$scope.cellName);
       else if(reb)
         bkCoreManager.getNotebookCellManager().rebuildMaps()
-      dialog.close('save');
+      $modalInstance.close('save');
     };
 }]);
 

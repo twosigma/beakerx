@@ -76,8 +76,8 @@ public class SerializeUtils {
         jgen.writeObject(obj.toString());
       }
     } catch (IOException e) {
-      System.err.println("Serialization error:");
       System.err.println(e);
+      jgen.writeObject("null");
     }
 
   }

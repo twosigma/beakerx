@@ -288,7 +288,7 @@ table.dataTable tbody td {
  * Addresses BEAKER-433
  */
 .dropdown-menu {
-    width: 250px;
+    /* width: 250px; REMOVED due to datepicker widget wrong size in angular-ui 0.8.0 */
     margin-top: -1px;
 }
 

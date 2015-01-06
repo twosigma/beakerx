@@ -109,6 +109,13 @@
           console.error("Current app doesn't support saveNotebookAs");
         }
       },
+      hasCodeCell: function(toEval) {
+        if (getCurrentApp().evaluate) {
+          return getCurrentApp().hasCodeCell(toEval);
+        } else {
+          return false;
+        }
+      },
       evaluate: function(toEval) {
         if (getCurrentApp().evaluate) {
           return getCurrentApp().evaluate(toEval);
@@ -300,7 +307,7 @@
         return bkCoreManager.getRecentMenuItems();
       },
       showModalDialog: function(callback, template, strategy) {
-        return bkCoreManager.showModalDialog(callback, template, strategy);
+        return bkCoreManager.showModalDialog(callback, template, strategy).result;
       },
       show1ButtonModal: function(msgBody, msgHeader, callback) {
         return bkCoreManager.show1ButtonModal(msgBody, msgHeader, callback);

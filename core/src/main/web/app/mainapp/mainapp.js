@@ -34,7 +34,6 @@
                                              'bk.evaluatorManager',
                                              'bk.evaluateJobManager',
                                              'bk.notebook',
-                                             //'bk.pluginManager',
                                              'bk.datatables'
                                              ]);
 
@@ -246,6 +245,11 @@
                 notebookUri, uriType, readOnly, format,
                 notebookModel, edited, sessionId);
 
+            var mustwait;
+            if (!isExistingSession && bkHelper.hasCodeCell("initialization")) {
+              mustwait = bkCoreManager.show0ButtonModal("This notebook has initialization cells... waiting for their completion.", "Please Wait");
+            }
+            
             // this is used to load evaluators before rendering the page
             if (notebookModel && notebookModel.evaluators) {
               var promises = _(notebookModel.evaluators).map(function(ev) {
@@ -263,7 +267,7 @@
                     cellCount: notebookModel.cells.length
                   });
 
-                  bkHelper.evaluate("initialization");
+                  bkHelper.evaluate("initialization").then(function () { if(mustwait !== undefined) mustwait.close(); });
                 }
               });
               clrLoadingStatusMessage("Loading notebook");
@@ -281,7 +285,7 @@
                 }).level,
                 cellCount: notebookModel.cells.length
               });
-              bkHelper.evaluate("initialization");
+              bkHelper.evaluate("initialization").then(function () { if(mustwait !== undefined) mustwait.close(); });
             }
             clrLoadingStatusMessage("Loading notebook");
             $scope.loading = false;
@@ -580,6 +584,44 @@
                     null, "Save", "Don't save"
                 );
               }
+            },
+            hasCodeCell: function(toEval) {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag
+              // or a cellID (string)
+              // or a cellModel
+              // or an array of cellModels
+              if (typeof toEval === "string") {
+                if (cellOp.hasCell(toEval)) {
+                  // this is a cellID
+                  if (cellOp.isContainer(toEval)) {
+                    // this is a section cell or root cell
+                    // in this case toEval is going to be an array of cellModels
+                    toEval = cellOp.getAllCodeCells(toEval);
+                  } else {
+                    // single cell, just get the cell model from cellID
+                    toEval = cellOp.getCell(toEval);
+                  }
+                } else {
+                  // not a cellID
+                  if (toEval === "initialization") {
+                    // in this case toEval is going to be an array of cellModels
+                    toEval = bkSessionManager.notebookModelGetInitializationCells();
+                  } else if(cellOp.hasUserTag(toEval)) {
+                    // this is a user tag for a cell
+                    // in this case toEval is going to be an array of cellModels
+                    toEval = cellOp.getCellsWithUserTag(toEval);
+                  } else {
+                    // assume it is a evaluator name,
+                    // in this case toEval is going to be an array of cellModels
+                    toEval = cellOp.getCellsWithEvaluator(toEval);
+                  }
+                }
+              }
+              if (toEval === undefined || (_.isArray(toEval) && toEval.length === 0)) {
+                return false;
+              }
+              return true;
             },
             evaluate: function(toEval) {
               var cellOp = bkSessionManager.getNotebookCellOp();

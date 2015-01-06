@@ -301,11 +301,22 @@
 
         modalDialogOp.setStrategy(strategy);
         var dd = $modal.open(options);
-        return dd.result.then(function(result) {
+        dd.result.then(function(result) {
           if (callback) {
             callback(result);
           }
         });
+        return dd;
+      },
+      show0ButtonModal: function(msgBody, msgHeader) {
+        if (!msgHeader) {
+          msgHeader = "Oops...";
+        }
+        var template = "<div class='modal-header'>" +
+            "<h1>" + msgHeader + "</h1>" +
+            "</div>" +
+            "<div class='modal-body'><p>" + msgBody + "</p></div>" ;
+        return this.showModalDialog(null, template);
       },
       show1ButtonModal: function(msgBody, msgHeader, callback, btnText, btnClass) {
         if (!msgHeader) {
@@ -314,7 +325,6 @@
         btnText = btnText ? btnText : "Close";
         btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'active';
         var template = "<div class='modal-header'>" +
-            "<button class='close' ng-click='close()'>Close</button>" +
             "<h1>" + msgHeader + "</h1>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
@@ -406,11 +416,10 @@
         }
         var dd = $modal.open(options);
         return dd.result.then(function(result) {
-          dd.$scope.$destroy();
           if (callback) {
             callback(result);
           }
-        }, function() { dd.$scope.$destroy(); });
+        });
       },
       showLanguageManager: function() {
         var options = {

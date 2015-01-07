@@ -270,16 +270,14 @@
     </head>
     <body>
         <div id='menubar' class="navbar navbar-fixed-top"  ng-controller="navBarCtrl">
-            <div class="navbar-inner">
-                <div class="container-fluid">
-                    <div class="nav-collapse collapse">
-                        <a class="brand" href="http://beakernotebook.com">
-                            <img src="images/beaker_icon@2x.png"></img>
-                            Beaker - The data scientist's laboratory
-                        </a>
-                        <button ng-if="isGist" class="btn pull-right" ng-click="openGist()">Open gist</button>
-                        <button class="btn pull-right" ng-click="download()">Download notebook</button>
-                    </div>
+            <div class="container-fluid">
+                <div class="nav-collapse collapse">
+                    <a class="brand" href="http://beakernotebook.com">
+                        <img src="images/beaker_icon@2x.png"></img>
+                        Beaker - The data scientist's laboratory
+                    </a>
+                    <button ng-if="isGist" class="btn pull-right" ng-click="openGist()">Open gist</button>
+                    <button class="btn pull-right" ng-click="download()">Download notebook</button>
                 </div>
             </div>
         </div>

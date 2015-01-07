@@ -14,34 +14,26 @@
     limitations under the License.
 -->
 <div class="navbar navbar-fixed-top navbar-inverse">
-  <div class="navbar-inner">
-
-    <!-- BEAKER-426 - styling here is meant to override the bootstrap settings of -20 margin, +20 padding.
-           TODO - is there a more bootstrappy way to achieve left-alignment of the navbar and the rows?
-        -->
-    <div class="container pull-left" style="margin-left: 10px; padding-left: 0px;">
-      <a class="brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
-        <img src="app/images/beaker_icon@2x.png"></img>
-        Beaker
-      </a>
-      <p class="navbar-text left">{{filename()}}</p>
-      <span class="brand" ng-if="loading || loadingmsg!==''"><i class='fa fa-refresh fa-spin text-white'></i></span>
-      <div class="text-white loadingmsg" ng-if="loading || loadingmsg!==''">{{loadingmsg}}</div>
-      <ul class="sub-nav" ng-if="!loading">
-        <li class="dropdown" ng-repeat="m in getMenus()">
-          <a href="#" role="button" class="dropdown-toggle" id="{{m.id}}" data-toggle="dropdown">{{m.name}}</a>
-          <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
-        </li>
-        <li class="pull-right" style="padding: 10px 54px; cursor: default;">
-          <span><font color="#009AA6">{{message}}{{(message && isEdited()) ? " | " : "" }}{{isEdited() ? "edited" :
-            ""}}</font></span>
-        </li>
-        <li class="pull-right" style="padding: 10px 54px; cursor: default;">
-          <span ng-show="isDisconnected()" class="offline-label" ng-click="promptToSave()" eat-click>{{getOffineMessage()}}</span>
-        </li>
-      </ul>
-    </div>
-  </div>
+  <a class="brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
+    <img src="app/images/beaker_icon@2x.png"></img>
+    Beaker
+  </a>
+  <p class="navbar-text left">{{filename()}}</p>
+  <span class="brand" ng-if="loading || loadingmsg!==''"><i class='fa fa-refresh fa-spin text-white'></i></span>
+  <div class="text-white loadingmsg" ng-if="loading || loadingmsg!==''">{{loadingmsg}}</div>
+  <ul class="sub-nav" ng-if="!loading">
+    <li class="dropdown" ng-repeat="m in getMenus()">
+      <a href="#" role="button" class="dropdown-toggle" id="{{m.id}}" data-toggle="dropdown">{{m.name}}</a>
+      <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
+    </li>
+    <li class="pull-right" style="padding: 10px 54px; cursor: default;">
+      <span><font color="#009AA6">{{message}}{{(message && isEdited()) ? " | " : "" }}{{isEdited() ? "edited" :
+        ""}}</font></span>
+    </li>
+    <li class="pull-right" style="padding: 10px 54px; cursor: default;">
+      <span ng-show="isDisconnected()" class="offline-label" ng-click="promptToSave()" eat-click>{{getOffineMessage()}}</span>
+    </li>
+  </ul>
 </div>
 
 <!-- Set the outer container to 100% so the fluid rows fill it.

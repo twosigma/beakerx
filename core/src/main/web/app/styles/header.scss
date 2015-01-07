@@ -15,17 +15,13 @@
  */
 
 html .navbar {
-    .container {
-        width: 100%;
-    }
-
-    .navbar-inner:after {
-        display: none;
-    }
+    background: #3f5264;
 
     .brand {
         padding: 10px 23px 7px;
-        margin-left: 7px;
+        margin-left: 17px;
+        height: auto;
+        font-size: 20px;
         img {
             margin-top: -7px;
             height: 22px;
@@ -43,7 +39,7 @@ html .navbar {
     background: #eff2f8;
     margin: 0;
     position: relative;
-    left: -10px;
+    top: 1px;
     width: 100%;
     padding: 0 35px;
     height: 39px;
@@ -82,22 +78,4 @@ html .navbar {
 html .navbar a.brand, html .navbar .nav > li > a {
     color: #FFF;
     text-shadow: none;
-}
-
-.navbar-fixed-top .navbar-inner {
-    background:         #3f5264;
-    box-shadow:         none;
-    -webkit-box-shadow: none;
-}
-
-.navbar .nav > li > a:hover {
-    color: #FFF;
-}
-
-.navbar .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle {
-    background: transparent;
-}
-
-.navbar .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle {
-    color: #FFF;
 }

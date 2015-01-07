@@ -14,7 +14,7 @@
     limitations under the License.
 -->
 <div class="navbar navbar-fixed-top">
-  <a class="brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
+  <a class="navbar-brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
     <img src="app/images/beaker_icon@2x.png"></img>
     Beaker
   </a>
@@ -29,8 +29,8 @@
   </ul>
 </div>
 <div class="dashboard container-fluid">
-  <div class="row-fluid">
-    <div class="span12">
+  <div class="row">
+    <div class="col-md-12">
 
       <h1>Beaker <small>The data scientist's laboratory</small></h1>
 
@@ -50,7 +50,7 @@
     </div>
   </div>
   <div class="row" ng-show="isAllowAnonymousTracking == null">
-    <div class="span6 well">
+    <div class="col-md-6 well">
       <p>
         <b>Track anonymous usage info?</b>
       </p>

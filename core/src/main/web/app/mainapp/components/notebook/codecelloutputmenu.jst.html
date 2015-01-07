@@ -21,7 +21,7 @@
       <ul class="dropdown-menu dropdown-menu-250px">
         <li ng-repeat="d in model.getApplicableDisplays()">
           <a tabindex="-1" href="#" ng-click="model.setSelectedDisplay(d)" eat-click>
-            <i class="icon-ok" ng-show="d === model.getSelectedDisplay()"></i>{{ d }}
+            <i class="glyphicon glyphicon-ok" ng-show="d === model.getSelectedDisplay()"></i>{{ d }}
           </a>
         </li>
       </ul>

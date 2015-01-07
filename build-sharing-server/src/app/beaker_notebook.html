@@ -23,7 +23,7 @@
   <link rel="shortcut icon" href="favicon.png" />
   <link rel="stylesheet" href="vendor/bower_components/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="app/dist/vendor.css">
-  <link rel="stylesheet" href="vendor/bower_components/bootstrap/docs/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="vendor/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="vendor/bower_components/angular-datatables/dist/datatables.bootstrap.css">
   <link rel="stylesheet" href="vendor/bower_components/datatables/media/css/jquery.dataTables.css">
   <link rel="stylesheet" href="vendor/ColVis-1.1.1/css/dataTables.colVis.min.css">
@@ -77,7 +77,7 @@
   <script src="vendor/jquery.event.drag/jquery.event.drag.js"></script>
   <script src="vendor/jquery-ui/js/jquery-ui.custom.min.js"></script>
   <script src="vendor/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-  <script src="vendor/bower_components/bootstrap/docs/assets/js/bootstrap.min.js"></script>
+  <script src="vendor/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="vendor/vega/vega.js"></script>
   <script src="vendor/vega/d3.geo.projection.min.js"></script>
   <script src="vendor/vega/d3.layout.cloud.js"></script>
@@ -272,7 +272,7 @@
         <div id='menubar' class="navbar navbar-fixed-top"  ng-controller="navBarCtrl">
             <div class="container-fluid">
                 <div class="nav-collapse collapse">
-                    <a class="brand" href="http://beakernotebook.com">
+                    <a class="navbar-brand" href="http://beakernotebook.com">
                         <img src="images/beaker_icon@2x.png"></img>
                         Beaker - The data scientist's laboratory
                     </a>
@@ -282,8 +282,8 @@
             </div>
         </div>
         <div class="container notebook-container" style="width: 100%;">
-            <div class="row-fluid">
-                <div class="span12">
+            <div class="row">
+                <div class="col-md-12">
                     <bk-notebook></bk-notebook>
                 </div>
             </div>

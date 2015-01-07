@@ -17,7 +17,7 @@
 html .navbar {
     background: #3f5264;
 
-    .brand {
+    .navbar-brand {
         padding: 10px 23px 7px;
         margin-left: 17px;
         height: auto;
@@ -75,7 +75,7 @@ html .navbar {
     }
 }
 
-html .navbar a.brand, html .navbar .nav > li > a {
+html .navbar a.navbar-brand, html .navbar-nav > li > a {
     color: #FFF;
     text-shadow: none;
 }

@@ -35,36 +35,36 @@
     $scope.cellName = dscope.id;
     $scope.cellTags = dscope.tags;
     $scope.isInitCell = function() {
-      return $scope.initializationCell;
+      return this.initializationCell;
     };
     $scope.toggleInitCell = function() {
-      $scope.initializationCell = !$scope.initializationCell;
+      this.initializationCell = !this.initializationCell;
     };
     $scope.saveDisabled = function() {
       return !(( this.getNameError() === '' ) && ( this.getTagError() === '' ));
     };
     $scope.getNameError = function() {
-      if($scope.dscope.id === $scope.cellName)
+      if(this.dscope.id === this.cellName)
         return '';
-      return bkCoreManager.getNotebookCellManager().canRenameCell($scope.cellName);
+      return bkCoreManager.getNotebookCellManager().canRenameCell(this.cellName);
     };
     $scope.getTagError = function() {
-      return bkCoreManager.getNotebookCellManager().canSetUserTags($scope.cellTags);
+      return bkCoreManager.getNotebookCellManager().canSetUserTags(this.cellTags);
     };
     $scope.close = function() {
       $modalInstance.close('close');
     };
     $scope.save = function() {
-      if ($scope.saveDisabled())
+      if (this.saveDisabled())
         return;
       var reb = false;
-      $scope.dscope.initialization = $scope.initializationCell;
-      if ($scope.dscope.tags !== $scope.cellTags) {
-        $scope.dscope.tags = $scope.cellTags;
+      this.dscope.initialization = this.initializationCell;
+      if (this.dscope.tags !== this.cellTags) {
+        this.dscope.tags = this.cellTags;
         reb = true;
       }
-      if ($scope.dscope.id !== $scope.cellName)
-        bkCoreManager.getNotebookCellManager().renameCell($scope.dscope.id,$scope.cellName);
+      if (this.dscope.id !== this.cellName)
+        bkCoreManager.getNotebookCellManager().renameCell(this.dscope.id,this.cellName);
       else if(reb)
         bkCoreManager.getNotebookCellManager().rebuildMaps()
       $modalInstance.close('save');

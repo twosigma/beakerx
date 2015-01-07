@@ -96,20 +96,32 @@
         };
 
         $scope.isShowOutput = function() {
-          return $scope.$parent.isShowOutput();
+          if ($scope.$parent !== undefined && $scope.$parent.isShowOutput !== undefined)
+            return $scope.$parent.isShowOutput();
+          return true;
+        };
+
+        $scope.isShowMenu = function() {
+          if ($scope.$parent !== undefined && $scope.$parent.isShowMenu !== undefined)
+            return $scope.$parent.isShowMenu();
+          return true;
         };
 
         $scope.toggleExpansion = function() {
-          if ($scope.$parent.cellmodel.output.hidden) {
-            delete $scope.$parent.cellmodel.output.hidden;
-            $scope.$broadcast('expand');
-          } else {
-            $scope.$parent.cellmodel.output.hidden = true;
+          if ($scope.$parent.cellmodel !== undefined && $scope.$parent.cellmodel.output !== undefined) {
+            if ($scope.$parent.cellmodel.output.hidden) {
+              delete $scope.$parent.cellmodel.output.hidden;
+              $scope.$broadcast('expand');
+            } else {
+              $scope.$parent.cellmodel.output.hidden = true;
+            }
           }
         };
 
         $scope.isExpanded = function() {
-          return !$scope.$parent.cellmodel.output.hidden;
+          if ($scope.$parent.cellmodel !== undefined && $scope.$parent.cellmodel.output !== undefined)
+            return !$scope.$parent.cellmodel.output.hidden;
+          return true;
         };
 
         // to be used in output cell menu

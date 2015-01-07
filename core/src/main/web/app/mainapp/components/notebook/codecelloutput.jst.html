@@ -15,8 +15,8 @@
   limitations under the License.
 -->
 <div class="toggle-menu">
-  <div class="cell-menu-item cell-dropdown" title="cell output menu"></div>
-  <div class="cell-menu-item expand-contract advanced-hide" ng-click="toggleExpansion()" ng-class="!isExpanded() && 'collapsed'" title="hide/show cell output"></div>
+  <div class="cell-menu-item cell-dropdown" title="cell output menu" ng-show="isShowMenu()"></div>
+  <div class="cell-menu-item expand-contract advanced-hide" ng-click="toggleExpansion()" ng-class="!isExpanded() && 'collapsed'" title="hide/show cell output" ng-show="isShowMenu()"></div>
 </div>
 <div class="bkcell">
   <bk-output-display ng-show="isShowOutput()"

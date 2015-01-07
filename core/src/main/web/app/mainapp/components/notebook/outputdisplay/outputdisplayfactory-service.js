@@ -91,6 +91,7 @@
               result: it
             };
           });
+          $scope.isShowMenu = function() { return false; };
         }
       }
     };

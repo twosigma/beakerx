@@ -15,6 +15,7 @@
  */
 
 html .navbar {
+    min-height: 38px;
     background: #3f5264;
 
     .navbar-brand {
@@ -31,6 +32,11 @@ html .navbar {
     .loadingmsg {
         margin-top: 10px;
     }
+}
+
+.navbar-text {
+    margin-top: 9px;
+    margin-bottom: 8px;
 }
 
 .sub-nav {

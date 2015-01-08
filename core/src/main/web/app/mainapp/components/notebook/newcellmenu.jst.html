@@ -13,10 +13,12 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="dropdown new-cell-menu" ng-mouseover="mouseOver=true" ng-mouseleave="mouseOver=false">
+<div class="dropdown new-cell-menu">
   <a class="dropdown-toggle">
-    <div ng-click="insertDefaultCodeCell($event)" class="insert-cell-indicator" ng-class="mouseOver && 'expanded'" id="insert-cell">Insert Cell
-    </div><div ng-click="moveMenu($event)" class="insert-cell-indicator shift-right" ng-class="mouseOver && 'expanded'">
+    <div ng-click="insertDefaultCodeCell($event)" class="insert-cell-indicator" id="insert-cell">
+      Insert Cell
+    </div>
+    <div ng-click="moveMenu($event)" class="insert-cell-indicator shift-right">
       <i class="fa fa-sort-down"></i>
     </div>
   </a>

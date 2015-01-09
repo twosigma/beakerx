@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "jquery": "2.0.3",
-    "angular": "1.2.6",
+    "angular": "1.2.28",
     "angular-route": "1.2.6",
     "angular-animate": "1.2.6",
     "angular-mocks": "1.2.6",

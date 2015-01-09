@@ -104,9 +104,9 @@
       restrict: 'E',
       template: '<ul class="dropdown-menu dropdown-menu-250px" role="menu" aria-labelledby="dropdownMenu">' +
           '<li ng-repeat="item in getMenuItems() | isHidden" ng-class="getItemClass(item)">' +
-          '<a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item)" ' + 
+          '<a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item)" ' +
           '  id="{{item.id}}" title="{{item.tooltip}}" eat-click>' +
-          '<i class="icon-ok" ng-show="isMenuItemChecked(item)"> </i> ' +
+          '<i class="glyphicon glyphicon-ok" ng-show="isMenuItemChecked(item)"> </i> ' +
           '{{getName(item)}}' +
           '</a>' +
         // XXX - the submenu needs to be hacked to be as wide as the parent
@@ -114,7 +114,7 @@
           '<ul class="dropdown-menu dropdown-menu-250px">' +
           '<li ng-repeat="subitem in getSubItems(item) | isHidden" ng-class="getItemClass(subitem)">' +
           '<a href="#"  tabindex="-1" ng-click="runAction(subitem)" ng-class="getAClass(subitem)" title="{{subitem.tooltip}}" eat-click>' +
-          '<i class="icon-ok" ng-show="isMenuItemChecked(subitem)"> </i> ' +
+          '<i class="glyphicon glyphicon-ok" ng-show="isMenuItemChecked(subitem)"> </i> ' +
           '{{getName(subitem)}}' +
           '</a>' +
           '</li>' +

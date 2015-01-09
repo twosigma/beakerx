@@ -109,11 +109,11 @@
             return 'folder-icon';
           }
           if ($scope.data.type === "application/prs.twosigma.beaker.notebook+json") {
-            return 'icon-book';
+            return 'glyphicon glyphicon-book';
           } else if ($scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
             return $scope.fs.getIcon($scope.data.type);
           } else {
-            return 'icon-th';
+            return 'glyphicon glyphicon-th';
           }
         };
 

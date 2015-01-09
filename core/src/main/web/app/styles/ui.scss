@@ -51,8 +51,22 @@
   }
 }
 
+label, input, button, select, textarea {
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 20px;
+}
+
 strong {
   font-family: 'pt_sansbold';
+}
+
+.form-control {
+  border-radius: 0;
+}
+
+.nav {
+  margin-bottom: 20px;
 }
 
 .btn-group {

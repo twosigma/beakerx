@@ -88,14 +88,14 @@
             "type": "code",
             "evaluator": "Html",
             "input": {
-                "body": "<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But can also create interactive elements:<br/>\n  <button class=\"btn\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n",
+                "body": "<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But can also create interactive elements:<br/>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n",
                 "hidden": true
             },
             "output": {
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But can also create interactive elements:<br/>\n  <button class=\"btn\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n"
+                    "object": "<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But can also create interactive elements:<br/>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n"
                 },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 12,

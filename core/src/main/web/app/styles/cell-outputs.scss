@@ -61,3 +61,7 @@ bk-code-cell-output {
 .advanced-mode bk-output-display.bkr {
   min-height: 20px;
 }
+
+.markdown-wrapper, .dataTables_scrollBody {
+  box-sizing: content-box;
+}

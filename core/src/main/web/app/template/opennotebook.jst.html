@@ -14,14 +14,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div class="modal-header fixed">
+<div class="modal-header">
    <h1>{{ getStrategy().title || 'Open'}}<span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>
 </div>
-<div class="modal-body fixed">
+<div class="modal-body">
    <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>
    <tree-view rooturi="<%- homedir %>" fs="getStrategy().treeViewfs"></tree-view>
 </div>
-<div class="modal-footer fixed">
+<div class="modal-footer">
    <div class=text-left>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>
    <p><input id="openFileInput" class="form-control" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>
    <span style="float:left;" ng-if="getStrategy().ext === undefined">

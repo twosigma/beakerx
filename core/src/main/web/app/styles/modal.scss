@@ -1,5 +1,5 @@
 html {
-  .modal {
+  .modal-content {
     max-height: 80%;
     overflow: hidden;
     border-width: 5px 0 0;
@@ -32,6 +32,8 @@ html {
 
   .modal-body {
     padding: 0 25px;
+    max-height: 400px;
+    overflow-y: auto;
   }
 
   .modal-body.fixed {
@@ -41,6 +43,7 @@ html {
   }
 
   .modal-footer {
+    margin-top: 0;
     background-color: white;
     box-shadow: none;
     border-radius: 0;
@@ -50,6 +53,8 @@ html {
   }
 
   .modal-footer.fixed {
+    padding-top: 14px;
+    padding-bottom: 15px;
     box-sizing: border-box;
     position: absolute;
     bottom: 0;

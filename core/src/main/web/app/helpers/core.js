@@ -225,29 +225,7 @@
             return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
           };
           fileChooserStrategy.treeViewfs.applyExtFilter = false;
-          var fileChooserTemplate = '<div class="modal-header">' +
-              '  <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">' +
-              '  <i class="fa fa-refresh fa-spin"></i></span></h1>' +
-              '</div>' +
-              '<div class="modal-body">' +
-              '  <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-              '  <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs">' +
-              '  </tree-view>' +
-              (pwd === homeDir ? '' : ('  <tree-view rooturi="' + pwd + '" fs="getStrategy().treeViewfs"></tree-view>')) +
-              '</div>' +
-              '<div class="modal-footer">' +
-              '   <p><input id="saveAsFileInput"' +
-              '             class="left"' +
-              '             ng-model="getStrategy().input"' +
-              '             ng-keypress="getStrategy().close($event, close)"' +
-              '             focus-start />' +
-              '      <i class="new-folder bk-icon" data-toggle="tooltip" title="Make new directory ({{getStrategy().input}})" ng-click="getStrategy().newFolder(getStrategy().input)"></i>' +
-              '   </p>' +
-              '   <span style="float:left;">{{getStrategy().getResult()}}</span>' +
-              '   <button ng-click="close()" class="beaker-btn">Cancel</button>' +
-              '   <button ng-click="close(getStrategy().getResult())" class="beaker-btn active"' +
-              '           ng-disabled="getStrategy().getSaveBtnDisabled()" >Save</button>' +
-              '</div>';
+          var fileChooserTemplate = JST['template/savenotebook']({homedir: homeDir, pwd: pwd });
           var fileChooserResultHandler = function (chosenFilePath) {
             deferred.resolve({
               uri: chosenFilePath,

@@ -68,6 +68,20 @@
         open: function(path) {
           newStrategy.input = path;
         },
+        setOrderBy: function(options) {
+          newStrategy.treeViewfs.orderBy = options.orderBy;
+          newStrategy.treeViewfs.orderReverse = options.reverse;
+        },
+        getOrderBy: function() {
+          var prettyNames = {
+            uri: 'Name',
+            modified: 'Date Modified'
+          }
+
+          return prettyNames[newStrategy.treeViewfs.orderBy];
+        },
+        orderBy: 'uri',
+        orderReverse: false,
         showSpinner: false,
         applyExtFilter: true,
         extFilter: ['bkr'],

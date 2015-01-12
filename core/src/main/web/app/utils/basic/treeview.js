@@ -42,7 +42,7 @@
       scope: {rooturi: "@", fs: "="},
       controller: function($scope) {
         if (!$templateCache.get('treeNodeChildren.html')) {
-          $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children | fileFilter:fs.filter' data='d' fs='fs'></tree-node>");
+          $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children | fileFilter:fs.filter | orderBy:fs.orderBy:fs.orderReverse' data='d' fs='fs'></tree-node>");
         }
 
         $scope.root = {
@@ -93,6 +93,7 @@
                   $scope.data.children.push({
                     type: c.type,
                     uri: c.uri,
+                    modified: c.modified,
                     displayName: c.displayName,
                     children: []
                   });

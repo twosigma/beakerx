@@ -222,6 +222,7 @@ public class FileIORest {
       if (!cf.isHidden()) {
         Map<String, Object> map = new HashMap<>();
         map.put("uri", cf.getPath());
+        map.put("modified", cf.lastModified());
         map.put("type", cf.isDirectory() ? "directory" : getMimeTypeForFileName(cf.getPath()));
         ret.add(map);
       }

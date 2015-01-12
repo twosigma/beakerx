@@ -59,7 +59,7 @@ define(function(require, exports, module) {
                   function(originalUrl) {
                     bkHelper.openNotebook(originalUrl);
                   },
-                  JST['template/opennotebook']({homedir: homeDir}),
+                  JST['template/opennotebook']({homedir: homeDir, extension: '.bkr'}),
                   bkHelper.getFileSystemFileChooserStrategy()
               );
             }

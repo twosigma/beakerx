@@ -26,7 +26,7 @@
    <p><input id="openFileInput" class="form-control" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>
    <span style="float:left;" ng-if="getStrategy().ext === undefined">
      <input type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">
-     <span ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .bkr files only</span>
+     <span ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show ${ extension } files only</span>
    </span>
    <button ng-click="close()" class="beaker-btn">Cancel</button>
    <button ng-click="close(getStrategy().getResult())" class="beaker-btn active">{{ getStrategy().closebtn || 'Open'}}</button>

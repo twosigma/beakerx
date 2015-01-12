@@ -605,6 +605,31 @@
           }
         });
 
+        $scope.promptToRefresh = (function() {
+          var prompted = false;
+          return function() {
+            if (prompted) { // prevent prompting multiple at the same time
+              return;
+            }
+            prompted = true;
+            bkCoreManager.show2ButtonModal(
+                "Beaker server crashed. All running cells were interrupted.<br>" +
+                "Please refresh the page to continue.",
+                "Error",
+                function() {
+                  window.top.location.reload();
+                },
+                function() {
+                  // "Not now", hijack all keypress events to prompt again
+                  window.addEventListener('keypress', $scope.promptToRefresh, true);
+                },
+                "Refresh", "Not now", "btn-primary", ""
+            ).then(function() {
+              prompted = false;
+            });
+          };
+        })();
+
         var connectionManager = (function() {
           var OFFLINE_MESSAGE = "offline";
           var CONNECTING_MESSAGE = "reconnecting";
@@ -616,8 +641,18 @@
               disconnected = true;
             },
             onReconnected: function() {
-              bkSessionManager.reconnectEvaluators();
-              disconnected = false;
+              bkSessionManager.isSessionValid()
+              .then(function(isValid) {
+                if (isValid) {
+                  // reconnecting after a network failure
+                  bkSessionManager.reconnectEvaluators();
+                  disconnected = false;
+                } else {
+                  // reconnecting after a server crash
+                  statusMessage = OFFLINE_MESSAGE;
+                  $scope.promptToRefresh();
+                }
+              });
             },
             getStatusMessage: function() {
               return statusMessage;

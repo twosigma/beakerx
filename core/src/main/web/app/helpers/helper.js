@@ -289,6 +289,12 @@
       getHomeDirectory: function() {
         return bkUtils.getHomeDirectory();
       },
+      saveFile: function(path, contentAsJson, overwrite) {
+        return bkUtils.saveFile(path, contentAsJson, overwrite);
+      },
+      loadFile: function(path) {
+        return bkUtils.loadFile(path);
+      },
 
       // utils (bkCore)
       setNotebookImporter: function(format, importer) {
@@ -324,7 +330,21 @@
       getFileSystemFileChooserStrategy: function() {
         return bkCoreManager.getFileSystemFileChooserStrategy();
       },
-
+      selectFile: function(callback, title, extension, closebtn) {
+          var strategy = bkCoreManager.getFileSystemFileChooserStrategy();
+          strategy.treeViewfs.extFilter = [ extension ];
+          strategy.ext = extension;
+          strategy.title = title;
+          strategy.closebtn = closebtn;
+          return bkUtils.getHomeDirectory().then(
+                  function(homeDir) {
+                      return bkCoreManager.showModalDialog(
+                              callback,
+                              JST['template/opennotebook']({homedir: homeDir}),
+                              strategy);
+                  });
+      },
+      
       // eval utils
       locatePluginService: function(id, locator) {
         return bkUtils.httpGet("../beaker/rest/plugin-services/" + id,

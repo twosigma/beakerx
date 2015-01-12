@@ -34,7 +34,7 @@ define(function(require, exports, module) {
             action: function() {
               bkHelper.showModalDialog(
                   bkHelper.openNotebook,
-                  JST['template/opennotebook']({homedir: homeDir}),
+                  JST['template/opennotebook']({homedir: homeDir, extension: '.bkr'}),
                   bkHelper.getFileSystemFileChooserStrategy()
               );
             }

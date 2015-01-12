@@ -189,23 +189,7 @@ define(function(require, exports, module) {
                   function(originalUrl) {
                     bkHelper.openNotebook(originalUrl, null, true, IRUBY_PATH_PREFIX);
                   },
-                  '<div class="modal-header fixed">' +
-                      '   <h1>Open <span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>' +
-                      '</div>' +
-                      '<div class="modal-body fixed">' +
-                      '   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>' +
-                      '   <tree-view rooturi="' + homeDir + '" fs="getStrategy().treeViewfs"></tree-view>' +
-                      '</div>' +
-                      '<div class="modal-footer fixed">' +
-                      "   <div class='text-left'>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>" +
-                      '   <p><input id="openFileInput" class="input-xxlarge" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>' +
-                      '   <span style="float:left;">' +
-                      '     <input type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">' +
-                      '     <span ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show .ipynb files only</span>' +
-                      '   </span>' +
-                      '   <button ng-click="close()" class="beaker-btn">Cancel</button>' +
-                      '   <button ng-click="close(getStrategy().getResult())" class="beaker-btn active">Open</button>' +
-                      '</div>', // template
+                  JST['template/opennotebook']({homedir: homeDir, extension: '.ipynb'}),
                   strategy
               );
             }

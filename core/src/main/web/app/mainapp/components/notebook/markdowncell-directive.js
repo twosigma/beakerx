@@ -27,7 +27,7 @@
         container: div,
         theme: {
           editor: '../../../css/markdown-edit.css',
-          preview: '../../../css/markdown-preview.css'  
+          preview: '../../../css/markdown-preview.css'
         },
         file: {
           defaultContent: scope.cellmodel.body
@@ -40,13 +40,18 @@
           scroll: true
         }
       };
+      var saveToScope = function() {
+        scope.cellmodel.body = scope.editor.getText();
+        scope.$apply();
+      };
+
       if (scope.editor) {
         scope.editor.removeListener("preview");
         scope.editor.removeListener("edit");
         scope.editor.removeListener("focus");
         scope.editor.removeListener("blur");
         scope.editor.removeListener("preview-clicked");
-        scope.editor.editorIframeDocument.removeEventListener('keyup');
+        scope.editor.editorIframeDocument.removeEventListener('keyup', saveToScope);
         if (!scope.editor.is('unloaded')) {
           scope.editor.unload();
         }
@@ -74,10 +79,7 @@
         div.style.height = size.height;
       });
 
-      scope.editor.editorIframeDocument.addEventListener('keyup', function(e) {
-        scope.cellmodel.body = scope.editor.getText();
-        scope.$apply();
-      });
+      scope.editor.editorIframeDocument.addEventListener('keyup', saveToScope);
 
       scope.editor.preview();
       //return editor;

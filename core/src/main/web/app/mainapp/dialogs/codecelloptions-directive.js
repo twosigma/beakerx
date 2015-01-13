@@ -43,6 +43,9 @@
     $scope.saveDisabled = function() {
       return !(( this.getNameError() === '' ) && ( this.getTagError() === '' ));
     };
+    $scope.isError = function() {
+      return !!$scope.getNameError() || !!$scope.getTagError();
+    };
     $scope.getNameError = function() {
       if(this.dscope.id === this.cellName)
         return '';

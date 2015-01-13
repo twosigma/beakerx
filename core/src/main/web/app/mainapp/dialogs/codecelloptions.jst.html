@@ -17,21 +17,30 @@
   <h1>Code Cell Options</h1>
 </div>
 <div class="modal-body">
-  <p>
-  <table style="border-spacing:3">
-  <tr>
-  <td style="text-align:right"><b>Cell Id:</b></td><td><input ng-model="cellName"></td><td><span class="help-inline" style="color:red">{{getNameError()}}</span></td>
-  </tr>
-  <tr>
-  <td style="text-align:right"><b>Cell Tags:</b></td><td><input ng-model="cellTags"></td><td><span class="help-inline" style="color:red">{{getTagError()}}</span></td>
-  </tr>
-  <tr>
-  <td style="text-align:right"><b>Initialization Cell:</b></td><td><input type="checkbox" ng-model="initializationCell"></input></td><td></td>
-  </tr>
-  </table>
-  </p>
+  <div class="form-horizontal">
+    <div class="form-group">
+      <label for="cell-id" class="control-label col-sm-2">Id</label>
+      <div ng-class="isError() ? 'col-sm-7' : 'col-sm-10'"><input id="cell-id" class="form-control" ng-model="cellName"></div>
+      <div class="col-sm-3" ng-if="isError()"><span class="help-inline" style="color:red">{{getNameError()}}</span></div>
+    </div>
+    <div class="form-group">
+      <label for="cell-tags" class="control-label col-sm-2">Tags</label>
+      <div ng-class="isError() ? 'col-sm-7' : 'col-sm-10'"><input id="cell-tags" class="form-control"  ng-model="cellTags"></div>
+      <div class="col-sm-3" ng-if="isError()"><span class="help-inline" style="color:red">{{getTagError()}}</span></div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="initializationCell" />
+            Initialization Cell
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="modal-footer">
-  <button ng-click="close()" class="btn btn-default" id="btn-cancel">Cancel</button>
-  <button ng-click="save()" class="btn btn-primary" ng-class="saveDisabled() && 'disabled'">Save</button>
+  <button ng-click="close()" class="beaker-btn" id="btn-cancel">Cancel</button>
+  <button ng-click="save()" class="beaker-btn active" ng-class="saveDisabled() && 'disabled'">Save</button>
 </div>

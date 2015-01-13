@@ -311,36 +311,39 @@
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
           lineNumbers: true,
           matchBrackets: true,
-          onKeyEvent: function(cm, event) {
-            if (event.type === "keydown") {
-              if (event.keyCode === 38) {
-                if ($('.CodeMirror-hint').length > 0) {
-                  //codecomplete is up, skip
-                  return;
-                }
-                if (cm.getCursor().line === 0 && event.shiftKey === false) {
-                  moveFocusUp();
-                }
-              } else if (event.keyCode === 40) {
-                if ($('.CodeMirror-hint').length > 0) {
-                  //codecomplete is up, skip
-                  return;
-                }
-                if (cm.getCursor().line === cm.doc.size - 1 && event.shiftKey === false) {
-                  moveFocusDown();
-                }
-              } else if (event.keyCode === 27) { // ESC
-                if (cm.state.vim && cm.state.vim.insertMode) {
-                  return;
-                } else {
-                  if (isFullScreen(cm)) {
-                    setFullScreen(cm, false);
-                  }
+          extraKeys: {
+            "Up" : function(cm) {
+              if ($('.CodeMirror-hint').length > 0) {
+                //codecomplete is up, skip
+                return;
+              }
+              if (cm.getCursor().line === 0) {
+                moveFocusUp();
+              } else {
+                cm.execCommand("goLineUp");
+              }
+            },
+            "Down" : function(cm) {
+              if ($('.CodeMirror-hint').length > 0) {
+                //codecomplete is up, skip
+                return;
+              }
+              if (cm.getCursor().line === cm.doc.size - 1) {
+                moveFocusDown();
+              } else {
+                cm.execCommand("goLineDown");
+              }
+            },
+            "Esc" : function(cm) {
+              cm.execCommand("singleSelection");
+              if (cm.state.vim && cm.state.vim.insertMode) {
+                return;
+              } else {
+                if (isFullScreen(cm)) {
+                  setFullScreen(cm, false);
                 }
               }
-            }
-          },
-          extraKeys: {
+            },
             "Ctrl-S": "save",
             "Cmd-S": "save",
             "Shift-Ctrl-A": function(cm) {
@@ -402,13 +405,18 @@
                 scope.autocomplete(cursorPos, onResults);
               };
 
-              var options = {
-                async: true,
-                closeOnUnfocus: true,
-                alignWithWord: true,
-                completeSingle: true
-              };
-              CodeMirror.showHint(cm, getHints, options);
+              if (cm.getOption('mode') === 'htmlmixed' || cm.getOption('mode') === 'javascript') {
+                console.log("using code mirror");
+                cm.execCommand("autocomplete");
+              } else {
+                var options = {
+                  async: true,
+                  closeOnUnfocus: true,
+                  alignWithWord: true,
+                  completeSingle: true
+                };
+                CodeMirror.showHint(cm, getHints, options);
+              }
             },
             "Cmd-Space": function(cm) {
               var getToken = function(editor, cur) {
@@ -438,13 +446,18 @@
                 scope.autocomplete(cursorPos, onResults);
               };
 
-              var options = {
-                async: true,
-                closeOnUnfocus: true,
-                alignWithWord: true,
-                completeSingle: true
-              };
-              CodeMirror.showHint(cm, getHints, options);
+              if (cm.getOption('mode') === 'htmlmixed' || cm.getOption('mode') === 'javascript') {
+                console.log("using code mirror");
+                cm.execCommand("autocomplete");
+              } else {
+                var options = {
+                  async: true,
+                  closeOnUnfocus: true,
+                  alignWithWord: true,
+                  completeSingle: true
+                };
+                CodeMirror.showHint(cm, getHints, options);
+              }
             },
             "Ctrl-Alt-Up": function(cm) { // cell move up
               notebookCellOp.moveUp(scope.cellmodel.id);

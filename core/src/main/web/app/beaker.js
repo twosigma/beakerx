@@ -47,7 +47,8 @@
       } else {
         this.toBeAddedToOutputDisplayType[type] = displays;
       }
-    }
+    },
+    postHelperHooks: []
   };
 
   var initPlugins = function() {
@@ -322,6 +323,9 @@
         }
       });
       window.bkHelper = bkHelper;
+      for (var i in window.beaker.postHelperHooks) {
+        window.beaker.postHelperHooks[i]();
+      }
     });
 
     beaker.run(function(bkEvaluatePluginManager) {

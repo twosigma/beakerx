@@ -16,7 +16,7 @@ function handleError(e) {
 gulp.task("compileScss", function() {
   gulp.src(Path.join(rootPath, "**.scss"))
   .pipe(sass().on('error', handleError))
-//  .pipe(minifyCSS())
+  .pipe(minifyCSS())
   .pipe(gulp.dest(buildPath))
 });
 

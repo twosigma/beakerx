@@ -302,6 +302,7 @@
           while (prevCell) {
             if (scope.bkNotebook.getFocusable(prevCell.id)) {
               scope.bkNotebook.getFocusable(prevCell.id).focus();
+              window.scrollBy(0,-150);
               break;
             } else {
               prevCell = notebookCellOp.getPrev(prevCell.id);

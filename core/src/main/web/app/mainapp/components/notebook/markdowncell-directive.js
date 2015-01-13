@@ -40,6 +40,10 @@
           scroll: true
         }
       };
+      var saveToScope = function() {
+        scope.cellmodel.body = scope.editor.getText();
+        scope.$apply();
+      };
 
       if (scope.editor) {
         scope.editor.removeListener("preview");
@@ -75,10 +79,7 @@
         div.style.height = size.height;
       });
 
-      scope.editor.editorIframeDocument.addEventListener('keyup', function(e) {
-        scope.cellmodel.body = scope.editor.getText();
-        scope.$apply();
-      });
+      scope.editor.editorIframeDocument.addEventListener('keyup', saveToScope);
 
       scope.editor.preview();
       //return editor;

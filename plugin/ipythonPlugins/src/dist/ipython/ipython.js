@@ -158,7 +158,7 @@ define(function(require, exports, module) {
         type: "BeakerDisplay",
         innertype: "Progress",
         object: {
-          message: "evaluating ...",
+          message: "running...",
           startTime: startTime
         }
       };

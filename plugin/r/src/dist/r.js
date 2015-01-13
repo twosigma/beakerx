@@ -142,7 +142,7 @@ define(function(require, exports, module) {
                 modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
                 deferred.resolve();
               } else if (evaluation.status === "RUNNING") {
-                progressObj.object.message = "evaluating ...";
+                progressObj.object.message = "running...";
                 modelOutput.result = progressObj;
               }
               bkHelper.refreshRootScope();

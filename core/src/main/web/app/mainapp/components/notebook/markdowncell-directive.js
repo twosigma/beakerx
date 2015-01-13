@@ -51,7 +51,7 @@
         scope.editor.removeListener("focus");
         scope.editor.removeListener("blur");
         scope.editor.removeListener("preview-clicked");
-        scope.editor.editorIframeDocument.removeEventListener('keyup');
+        scope.editor.editorIframeDocument.removeEventListener('keyup', saveToScope);
         if (!scope.editor.is('unloaded')) {
           scope.editor.unload();
         }

@@ -150,7 +150,7 @@ define(function(require, exports, module) {
                 modelOutput.result.object.message = evaluation.result;
               }
             } else {
-              modelOutput.result.object.message = "evaluating ...";
+              modelOutput.result.object.message = "running...";
             }
           }
           bkHelper.refreshRootScope();

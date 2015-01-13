@@ -27,7 +27,7 @@
         container: div,
         theme: {
           editor: '../../../css/markdown-edit.css',
-          preview: '../../../css/markdown-preview.css'  
+          preview: '../../../css/markdown-preview.css'
         },
         file: {
           defaultContent: scope.cellmodel.body
@@ -40,6 +40,7 @@
           scroll: true
         }
       };
+
       if (scope.editor) {
         scope.editor.removeListener("preview");
         scope.editor.removeListener("edit");

@@ -72,7 +72,8 @@ bk-cell > .bkcell {
 }
 
 bk-section-cell, bk-text-cell {
-    padding: 20px;
+    display: block;
+    padding: 20px 0;
 }
 
 bk-text-cell div[contenteditable]{

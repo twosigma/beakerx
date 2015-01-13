@@ -35,7 +35,7 @@
     };
   });
 
-  treeView.directive("treeView", function($templateCache) {
+  treeView.directive("treeView", function($templateCache, $rootScope) {
     return {
       restrict: 'E',
       template: "<tree-node data='root' fs='fs' displayname='{{ rooturi }}'></tree-node>",
@@ -45,11 +45,17 @@
           $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children | fileFilter:fs.filter | orderBy:fs.orderBy:fs.orderReverse' data='d' fs='fs'></tree-node>");
         }
 
-        $scope.root = {
-          type: "directory",
-          uri: $scope.rooturi,
-          children: []
-        };
+        $rootScope.treeView = $rootScope.treeView || {};
+
+        if (! $rootScope.treeView[$scope.rooturi]) {
+          $rootScope.treeView[$scope.rooturi] = {
+            type: "directory",
+            uri: $scope.rooturi,
+            children: []
+          };
+        }
+
+        $scope.root = $rootScope.treeView[$scope.rooturi];
       }
     };
   });

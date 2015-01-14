@@ -283,14 +283,6 @@ table.dataTable tbody td {
     font-weight: bold;
 }
 
-/**
- * Hack for the bootstrap bug where pull-left submenus might have a gap.
- * Addresses BEAKER-433
- */
-.dropdown-menu {
-    margin-top: -1px;
-}
-
 .dropdown-menu-250px {
     width: 250px;
     margin-top: -1px;

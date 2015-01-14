@@ -21,11 +21,7 @@
   beaker.bkoDirective("Progress", ["$interval", "$compile", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
       $interval, $compile, bkEvaluateJobManager, bkUtils, bkOutputDisplayFactory) {
     return {
-      template: "<div><table><tr><td><div ng-if='hasMessage()'> {{getMessage()}}</div></td><td><div ng-if='elapsed > 200'> <i class='fa fa-cog fa-spin fa-lg'></i> " +
-          "<span> Elapsed: {{getElapsedTime()}} </span>" +
-          "<i class='fa fa-times-circle fa-lg text-danger cursor_hand' ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i> </div></td>" +
-          "<td><div ng-if='hasProgressBar()'> Progress: {{getProgressBar()}} %</div></td></table></div>" +
-          "<bk-output-display ng-if='hasPayload()' model='outputDisplayModel' type='{{getOutputDisplayType()}}'></bk-output-display>",
+      template: JST['mainapp/components/notebook/output-progress'],
       link: function(scope, element, attrs) {
         scope.elapsed = 0;
         var computeElapsed = function() {

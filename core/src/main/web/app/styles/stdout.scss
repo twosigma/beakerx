@@ -25,10 +25,13 @@
 .btn-toolbar {
     padding:    10px;
     text-align: center;
+    .btn-group {
+        float: none;
+    }
 }
 
 .alt-controls {
-    float: right;
+    float: right !important;
 }
 
 .outputlogerr, .outputlogout {

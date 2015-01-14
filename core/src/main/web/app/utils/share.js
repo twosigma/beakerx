@@ -57,6 +57,9 @@
         getSharableUrl_CodeCell: function(uri) {
           return _sharingService.getSharableUrl_CodeCell(uri);
         },
+        getSharableUrl_Table: function(uri) {
+          return _sharingService.getSharableUrl_Table(uri);
+        },
         getSharableUrl_Notebook: function(uri) {
           return _sharingService.getSharableUrl_Notebook(uri);
         }

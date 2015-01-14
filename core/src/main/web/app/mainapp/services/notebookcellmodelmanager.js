@@ -136,7 +136,6 @@
         userTagsMap.add(tags[i], codeCell.raw);
     });
 
-    
     return {
       initialization: initializationCells,
       evaluator: evaluatorMap,

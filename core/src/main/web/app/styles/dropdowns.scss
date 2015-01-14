@@ -40,12 +40,12 @@
     margin-left: -1px;
     border-radius: 0;
     -webkit-border-radius: 0;
+  }
 
-    &.left {
-      left: -100%;
-      margin-left: 0;
-      margin-right: -1px;
-    }
+  &.drop-left > .dropdown-menu {
+    left: -100%;
+    margin-left: 0;
+    margin-right: -1px;
   }
 
   > a:after {

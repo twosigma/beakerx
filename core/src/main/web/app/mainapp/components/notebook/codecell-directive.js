@@ -21,6 +21,7 @@
   module.directive('bkCodeCell', function(
       bkUtils,
       bkEvaluatorManager,
+      bkEvaluateJobManager,
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager) {
@@ -79,6 +80,16 @@
         $scope.hasOutput = function() {
           return $scope.cellmodel.output.result != undefined;
         }
+
+        $scope.cancelJob = function($event) {
+          $event.stopPropagation();
+
+          bkEvaluateJobManager.cancel();
+        };
+
+        $scope.isJobCancellable = function() {
+          return bkEvaluateJobManager.isCancellable();
+        };
 
         $scope.backgroundClick = function(event) {
           if (!$scope.isShowInput() || $(event.toElement).parents().hasClass("code-cell-output")) {

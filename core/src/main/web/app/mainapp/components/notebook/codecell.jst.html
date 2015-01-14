@@ -29,10 +29,11 @@
       </div>
       <a href="#"
          class="evaluate-script advanced-hide"
-         ng-click="evaluate($event)"
+         ng-class="{'cancel': isJobCancellable()}"
+         ng-click="isJobCancellable() ? cancelJob($event) : evaluate($event)"
          id="run-cell-button"
          eat-click>
-        Run
+        {{ isJobCancellable() ? 'Stop' : 'Run' }}
       </a>
     </div>
     <div ng-if ="hasOutput()" class="code-cell-output" ng-class="{

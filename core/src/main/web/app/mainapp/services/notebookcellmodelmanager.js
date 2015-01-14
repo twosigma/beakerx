@@ -136,7 +136,6 @@
         userTagsMap.add(tags[i], codeCell.raw);
     });
 
-    
     return {
       initialization: initializationCells,
       evaluator: evaluatorMap,
@@ -149,7 +148,7 @@
     oldArray.splice.apply(oldArray, args);
   };
 
-  module.factory("bkNotebookCellModelManager", function() {
+  module.factory("bkNotebookCellModelManager", function($timeout) {
     var cells = [];
     var cellMap = {};
     var tagMap = {};
@@ -166,6 +165,18 @@
         redoAction = undefined;
         redoAction2 = undefined;
       }
+      // TODO: Optimize this function so it doesn't destroy the page scroll and require
+      // this hack below.
+      //
+      // Most likely because of the nested nature of the cell map and the cells in the
+      // DOM that reflect that cell map, when one changes something at the base of the
+      // tree (like adding a new section cell
+      // [https://github.com/twosigma/beaker-notebook/issues/672]), it not only takes an
+      // eternity, but randomly scrolls to ~65% of the document.
+      var currentPosition = $(window).scrollTop();
+      $timeout(function() {
+        $('html, body').scrollTop(currentPosition);
+      });
     };
     return {
       _getCellMap: function() {

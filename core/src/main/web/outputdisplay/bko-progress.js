@@ -80,7 +80,7 @@
         scope.getOutputResult = function() {
           return scope.model.getCellModel().payload;
         };
-        
+
         scope.modelstate = {};
         scope.outputDisplayModel = {
             getCellModel: function() {

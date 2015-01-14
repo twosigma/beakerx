@@ -114,7 +114,9 @@
           }
           return !(result === undefined || result === null);
         };
-        $scope.evaluate = function() {
+        $scope.evaluate = function($event) {
+          $event.stopPropagation();
+
           $scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluate($scope.cellmodel).
               catch(function(data) {

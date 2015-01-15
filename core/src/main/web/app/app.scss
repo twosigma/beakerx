@@ -53,12 +53,6 @@ ul.cell-output-labels {
     padding-top: 0;
 }
 
-.cell-output-labels li {
-    display:    inline-block;
-    padding:    15px 15px 5px 0;
-    font-size:  13px;
-}
-
 .output_subarea {
     background: transparent;
     border: none;
@@ -279,9 +273,12 @@ table.dataTable tbody td {
     font-weight: bold;
 }
 
-.dropdown-menu-250px {
-    width: 250px;
+.dropdown-menu {
     margin-top: -1px;
+}
+
+.dropdown-menu-250px .dropdown-menu {
+    width: 250px;
 }
 
 .addeval {

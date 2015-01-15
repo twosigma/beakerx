@@ -73,6 +73,7 @@
           var menu = output.find('.dropdown').last();
           menu.css("top", event.clientY);
           menu.css("left", event.clientX - 250);
+          menu.addClass('dropdown-menu-250px'); // due to the hardcoded 250 above
           menu.find('.dropdown-toggle').first().dropdown('toggle');
           event.stopPropagation();
         });

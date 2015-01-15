@@ -49,9 +49,12 @@ bk-markdown-cell > div {
 }
 
 .bkcell.code-cell-area, .text-cell {
-    padding:     20px;
-    padding-top: 40px;
     border: solid 1px $cell-border;
+}
+
+.text-cell {
+    padding: 20px;
+    padding-top: 40px;
 }
 
 .locked {
@@ -84,23 +87,44 @@ bk-text-cell div[contenteditable]{
     margin-top: -20px;
 }
 
-bk-code-cell .code-cell-output {
-    margin:     20px -20px -10px;
-    padding:    0 20px;
-    position:   relative;
-    border-top: solid 1px #CCC;
-}
+.code-cell-area {
+    .code-cell-input {
+        padding: 40px 20px 20px;
 
-.advanced-mode bk-code-cell .code-cell-output {
-    margin-top: 20px;
+        .advanced-mode & {
+            padding-top: 20px;
 
-    &.no-output .cell-menu-item {
-        display: none;
+            &.input-hidden {
+                padding-top: 40px;
+            }
+        }
+
+        &.input-hidden .code-cell-input-content {
+            display: none;
+        }
     }
-}
 
-.advanced-mode .bkcell.code-cell-area, .text-cell {
-    padding-top: 20px;
+    .code-cell-output {
+        padding: 20px;
+        position: relative;
+        border-top: solid 1px #CCC;
+
+        .out_error {
+            padding-bottom: 0;
+
+            .advanced-mode & {
+                padding-top: 0;
+            }
+        }
+
+        .advanced-mode &.no-output .cell-menu-item {
+            display: none;
+        }
+
+        .bkcell {
+            margin-bottom: 0;
+        }
+    }
 }
 
 .advanced-mode .output-hidden .cell-menu-item {

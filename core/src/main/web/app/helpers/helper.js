@@ -340,7 +340,7 @@
                   function(homeDir) {
                       return bkCoreManager.showModalDialog(
                               callback,
-                              JST['template/opennotebook']({homedir: homeDir}),
+                              JST['template/opennotebook']({homedir: homeDir, extension: extension}),
                               strategy);
                   });
       },

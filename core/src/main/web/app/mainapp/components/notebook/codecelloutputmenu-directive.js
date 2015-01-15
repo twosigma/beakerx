@@ -39,7 +39,7 @@
             var subItems = $scope.getSubItems(item);
             if (subItems.length > 0) {
               result.push("dropdown-submenu");
-              result.push("pull-left");
+              result.push("drop-left");
             } else {
               result.push("display-none");
             }

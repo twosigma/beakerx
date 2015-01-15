@@ -22,18 +22,20 @@
 
   <p class='depth-indicator'>{{getFullIndex()}}</p>
   <div class="bkcell code-cell-area" ng-click="backgroundClick($event)">
-    <div class="code-cell-input" ng-show="isShowInput()">
-      <bk-code-cell-input-menu ></bk-code-cell-input-menu>
-      <div ng-click="$event.stopPropagation()">
-        <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
+    <div class="code-cell-input" ng-class="{'input-hidden': cellmodel.input.hidden}">
+      <div class="code-cell-input-content">
+        <bk-code-cell-input-menu></bk-code-cell-input-menu>
+        <div ng-click="$event.stopPropagation()">
+          <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
+        </div>
+        <a href="#"
+           class="evaluate-script advanced-hide"
+           ng-click="evaluate($event)"
+           id="run-cell-button"
+           eat-click>
+          {{ isJobCancellable() ? 'Stop' : 'Run' }}
+        </a>
       </div>
-      <a href="#"
-         class="evaluate-script advanced-hide"
-         ng-click="evaluate($event)"
-         id="run-cell-button"
-         eat-click>
-        Run
-      </a>
     </div>
     <div ng-if ="hasOutput()" class="code-cell-output" ng-class="{
       'no-output': isHiddenOutput(),

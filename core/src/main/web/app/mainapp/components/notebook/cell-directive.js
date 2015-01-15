@@ -200,6 +200,7 @@
             top: event.clientY + "px",
             left: event.clientX - 250 + "px"
           })
+          .addClass('dropdown-menu-250px') // due to the hardcoded 250 above
           .find('.dropdown-toggle').first()
           .dropdown('toggle');
 

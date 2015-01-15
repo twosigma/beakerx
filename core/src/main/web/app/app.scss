@@ -273,9 +273,12 @@ table.dataTable tbody td {
     font-weight: bold;
 }
 
-.dropdown-menu-250px {
-    width: 250px;
+.dropdown-menu {
     margin-top: -1px;
+}
+
+.dropdown-menu-250px .dropdown-menu {
+    width: 250px;
 }
 
 .addeval {

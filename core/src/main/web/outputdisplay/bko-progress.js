@@ -18,8 +18,8 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective("Progress", ["$interval", "$compile", "bkUtils", "bkOutputDisplayFactory", function(
-      $interval, $compile, bkUtils, bkOutputDisplayFactory) {
+  beaker.bkoDirective("Progress", ["$interval", "$compile", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
+      $interval, $compile, bkEvaluateJobManager, bkUtils, bkOutputDisplayFactory) {
     return {
       template: JST['mainapp/components/notebook/output-progress'],
       link: function(scope, element, attrs) {
@@ -63,6 +63,12 @@
         };
         scope.getPayload = function() {
           return scope.model.getCellModel().payload;
+        };
+        scope.cancel = function() {
+          bkEvaluateJobManager.cancel();
+        };
+        scope.isCancellable = function() {
+          return bkEvaluateJobManager.isCancellable();
         };
         scope.$on("$destroy", function() {
           $interval.cancel(intervalPromise);

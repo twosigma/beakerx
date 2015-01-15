@@ -8,6 +8,7 @@
         <div ng-if='elapsed > 200'>
           <i class='fa fa-cog fa-spin fa-lg'></i>
           <span> Elapsed: {{getElapsedTime()}} </span>
+          <i class='fa fa-times-circle fa-lg text-danger cursor_hand' ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
         </div>
       </td>
       <td>

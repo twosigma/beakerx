@@ -21,6 +21,7 @@
   module.directive('bkCodeCell', function(
       bkUtils,
       bkEvaluatorManager,
+      bkEvaluateJobManager,
       bkCellMenuPluginManager,
       bkSessionManager,
       bkCoreManager) {
@@ -80,6 +81,16 @@
           return $scope.cellmodel.output.result != undefined;
         }
 
+        $scope.cancelJob = function($event) {
+          $event.stopPropagation();
+
+          bkEvaluateJobManager.cancel();
+        };
+
+        $scope.isJobCancellable = function() {
+          return bkEvaluateJobManager.isCancellable();
+        };
+
         $scope.backgroundClick = function(event) {
           if (!$scope.isShowInput() || $(event.toElement).parents().hasClass("code-cell-output")) {
             return;
@@ -114,7 +125,9 @@
           }
           return !(result === undefined || result === null);
         };
-        $scope.evaluate = function() {
+        $scope.evaluate = function($event) {
+          $event.stopPropagation();
+
           $scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluate($scope.cellmodel).
               catch(function(data) {

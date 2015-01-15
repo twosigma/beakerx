@@ -34,8 +34,7 @@ root {
 }
 
 html body {
-    margin: 10px;
-    padding-top: 60px;
+    padding-top: 125px;
     font-family: $font-family-primary;
 }
 
@@ -73,10 +72,13 @@ ul.cell-output-labels {
     font-size:  13px;
     margin-top: 20px;
     background: rgb(241, 241, 241);
-}
-
-.bkcell a.evaluate-script:hover {
     text-decoration: none;
+
+    &.cancel {
+        background-color: #D06363;
+        border-color: #8E2323;
+        color: white;
+    }
 }
 
 .bkcell .CodeMirror {

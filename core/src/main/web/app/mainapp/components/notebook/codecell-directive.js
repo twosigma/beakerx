@@ -115,7 +115,7 @@
           return !(result === undefined || result === null);
         };
         $scope.evaluate = function($event) {
-          $event.stopPropagation();
+          if ($event) $event.stopPropagation();
 
           $scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluate($scope.cellmodel).

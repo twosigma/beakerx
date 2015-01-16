@@ -13,26 +13,23 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="dropdown" style="position: fixed; z-index: 99">
-  <a class="dropdown-toggle" data-toggle="dropdown"></a>
-  <ul class="dropdown-menu dropdown-menu-form" role="menu" aria-labelledby="dLabel">
-    <li class="dropdown-submenu drop-left">
-      <a tabindex="-1">Displays ({{model.getSelectedDisplay()}})</a>
-      <ul class="dropdown-menu">
-        <li ng-repeat="d in model.getApplicableDisplays()">
-          <a tabindex="-1" href="#" ng-click="model.setSelectedDisplay(d)" eat-click>
-            <i class="glyphicon glyphicon-ok" ng-show="d === model.getSelectedDisplay()"></i>{{ d }}
-          </a>
-        </li>
-      </ul>
-    </li>
-    <li ng-repeat="item in model.getAdditionalMenuItems()" class="{{getItemClass(item)}}">
-      <a tabindex="-1" ng-click="item.action()">{{getItemName(item)}}</a>
-      <ul class="dropdown-menu">
-        <li ng-repeat='subitem in getSubItems(item)'>
-          <a ng-click="subitem.action()" class="{{getSubmenuItemClass(subitem)}}" title="{{subitem.tooltip}}">{{subitem.name}}</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
+<ul class="dropdown-menu dropdown-menu-form" role="menu" aria-labelledby="dLabel">
+  <li class="dropdown-submenu drop-left">
+    <a tabindex="-1">Displays ({{model.getSelectedDisplay()}})</a>
+    <ul class="dropdown-menu">
+      <li ng-repeat="d in model.getApplicableDisplays()">
+        <a tabindex="-1" href="#" ng-click="model.setSelectedDisplay(d)" eat-click>
+          <i class="glyphicon glyphicon-ok" ng-show="d === model.getSelectedDisplay()"></i>{{ d }}
+        </a>
+      </li>
+    </ul>
+  </li>
+  <li ng-repeat="item in model.getAdditionalMenuItems()" class="{{getItemClass(item)}}">
+    <a tabindex="-1" ng-click="item.action()">{{getItemName(item)}}</a>
+    <ul class="dropdown-menu">
+      <li ng-repeat='subitem in getSubItems(item)'>
+        <a ng-click="subitem.action()" class="{{getSubmenuItemClass(subitem)}}" title="{{subitem.tooltip}}">{{subitem.name}}</a>
+      </li>
+    </ul>
+  </li>
+</ul>

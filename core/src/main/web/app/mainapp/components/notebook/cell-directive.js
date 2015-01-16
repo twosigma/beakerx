@@ -189,23 +189,6 @@
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';
         };
-      },
-      link: function(scope, element, attrs) {
-        scope.toggleCellMenu = function(event, dropdownClass) {
-          element
-          .find(".bkcell").first()
-          .find('.' + dropdownClass).last()
-          .css({
-            position: 'fixed',
-            top: event.clientY + "px",
-            left: event.clientX - 250 + "px"
-          })
-          .addClass('dropdown-menu-250px') // due to the hardcoded 250 above
-          .find('.dropdown-toggle').first()
-          .dropdown('toggle');
-
-          event.stopPropagation()
-        };
       }
     };
   });

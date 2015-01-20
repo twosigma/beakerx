@@ -120,6 +120,7 @@
           dropdown.prependTo('body');
           dropdown.css('visibility', 'visible');
 
+          element.on('click', '.dropdown-toggle', hideDropdown);
           $(document).on('click.bs.dropdown.data-api', hideDropdown);
         };
 
@@ -129,6 +130,7 @@
           .css('visibility', 'hidden')
           .appendTo(element);
 
+          element.on('click', '.dropdown-toggle', showDropdown);
           $(document).off('click.bs.dropdown.data-api', hideDropdown);
         };
 

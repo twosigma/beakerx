@@ -236,7 +236,6 @@
             }
             // HACK END
 
-            document.title = bkSessionManager.getNotebookTitle();
             bkSessionManager.backup();
             bkSessionManager.clear();
             sessionId = bkSessionManager.setSessionId(sessionId);
@@ -249,7 +248,7 @@
             if (!isExistingSession && bkHelper.hasCodeCell("initialization")) {
               mustwait = bkCoreManager.show0ButtonModal("This notebook has initialization cells... waiting for their completion.", "Please Wait");
             }
-            
+
             // this is used to load evaluators before rendering the page
             if (notebookModel && notebookModel.evaluators) {
               var promises = _(notebookModel.evaluators).map(function(ev) {
@@ -497,7 +496,6 @@
           var saveDone = function(ret) {
             bkSessionManager.setNotebookModelEdited(false);
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
-            document.title = bkSessionManager.getNotebookTitle();
             showTransientStatusMessage("Saved");
           };
 
@@ -842,19 +840,27 @@
         })();
         bkCoreManager.setBkAppImpl(_impl);
 
+        var setDocumentTitle = function() {
+          var edited = $scope.isEdited(),
+              filename = $scope.filename(),
+              title;
+
+          title = filename;
+          if (edited) title = '*' + title;
+
+          document.title = title;
+        };
+
         $scope.isEdited = function() {
           return bkSessionManager.isNotebookModelEdited();
         };
         $scope.$watch('isEdited()', function(edited, oldValue) {
-          if (edited) {
-            if (document.title[0] !== '*') {
-              document.title = "*" + document.title;
-            }
-          } else {
-            if (document.title[0] === '*') {
-              document.title = document.title.substring(1, document.title.length - 1);
-            }
-          }
+          if (edited === oldValue) return;
+          setDocumentTitle();
+        });
+        $scope.$watch('filename()', function(newVal, oldVal) {
+          if (newVal === oldVal) return;
+          setDocumentTitle();
         });
 
         var intervalID = null;

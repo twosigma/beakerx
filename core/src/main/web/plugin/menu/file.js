@@ -22,7 +22,7 @@ define(function(require, exports, module) {
   'use strict';
   var fileMenuItems = [
     {
-      name: "New",
+      name: "New Notebook",
       sortorder: 100,
       action: function() {
         bkHelper.newSession(true);

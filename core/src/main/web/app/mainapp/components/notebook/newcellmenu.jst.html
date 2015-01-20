@@ -15,8 +15,8 @@
 -->
 <div class="dropdown new-cell-menu">
   <a class="dropdown-toggle" data-toggle="dropdown">
-    <div ng-click="insertDefaultCodeCell($event)" class="insert-cell-indicator" id="insert-cell">
-      Insert Cell
+    <div ng-click="newCodeCell(defaultEvaluator(), $event)" class="insert-cell-indicator" id="insert-cell">
+      Insert {{defaultEvaluator()}} Cell
     </div>
     <div ng-click="moveMenu($event)" class="insert-cell-indicator shift-right">
       <i class="fa fa-sort-down"></i>

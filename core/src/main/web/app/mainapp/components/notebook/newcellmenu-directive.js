@@ -36,7 +36,12 @@
           return levels;
         };
 
-        $scope.newCodeCell = function(evaluatorName) {
+        $scope.newCodeCell = function(evaluatorName, $event) {
+          if ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+          }
+
           var newCell = newCellFactory.newCodeCell(evaluatorName);
           attachCell(newCell);
         };
@@ -57,25 +62,7 @@
           attachCell(newCell);
         };
 
-        function attachCell(cell) {
-          bkSessionManager.setNotebookModelEdited(true);
-          if ($scope.config && $scope.config.attachCell) {
-            return $scope.config.attachCell(cell);
-          } else {
-            cellOps.insertLast(cell);
-          }
-        }
-
-        // get the last code cell in the notebook
-        var getLastCodeCell = function() {
-          return _.last(cellOps.getAllCodeCells());
-        };
-
-
-        $scope.insertDefaultCodeCell = function(event) {
-          event.preventDefault();
-          event.stopPropagation();
-
+        $scope.defaultEvaluator = function() {
           // by default, insert a code cell (and use the best evaluator with best guess)
           // If a prev cell is given, first scan toward top of the notebook, and use the evaluator
           // of the first code cell found. If not found, scan toward bottom, and use the evaluator
@@ -88,7 +75,22 @@
               || getLastCodeCell();
           var evaluatorName = codeCell ?
               codeCell.evaluator : _.keys(bkEvaluatorManager.getAllEvaluators())[0];
-          $scope.newCodeCell(evaluatorName);
+
+          return evaluatorName;
+        };
+
+        function attachCell(cell) {
+          bkSessionManager.setNotebookModelEdited(true);
+          if ($scope.config && $scope.config.attachCell) {
+            return $scope.config.attachCell(cell);
+          } else {
+            cellOps.insertLast(cell);
+          }
+        }
+
+        // get the last code cell in the notebook
+        var getLastCodeCell = function() {
+          return _.last(cellOps.getAllCodeCells());
         };
       },
       link: function(scope, element, attrs) {

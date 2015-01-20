@@ -27,7 +27,7 @@
                                           'bkEvaluatorManager', function($scope, $modalInstance, bkCoreManager,bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
                                               bkEvaluatorManager) {
 
-         
+
     $scope.doClose = function() {
       $scope.evalTabOp.showURL = false;
       $scope.evalTabOp.showWarning = false;
@@ -136,7 +136,7 @@
           }
         }
     };
-        
+
     $scope.menuTabOp = {
         newMenuPluginUrl: "./plugin/menu/debug.js",
         addMenuPlugin: function () {
@@ -149,6 +149,6 @@
           return bkMenuPluginManager.getLoadingPlugins();
         }
     };
-    
+
   }]);
 })();

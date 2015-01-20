@@ -205,14 +205,14 @@
           return getCurrentApp().setCodeCellEvaluator(name, evaluator);
         } else {
           console.error("Current app doesn't support setCodeCellEvaluator");
-        }      
+        }
       },
       setCodeCellTags: function(name, tags) {
         if (getCurrentApp().setCodeCellTags) {
           return getCurrentApp().setCodeCellTags(name, tags);
         } else {
           console.error("Current app doesn't support setCodeCellTags");
-        }      
+        }
       },
       // bk-notebook
       shareNotebook: function() {
@@ -344,7 +344,7 @@
                               strategy);
                   });
       },
-      
+
       // eval utils
       locatePluginService: function(id, locator) {
         return bkUtils.httpGet("../beaker/rest/plugin-services/" + id,
@@ -362,7 +362,7 @@
       showLanguageManager: function() {
         return bkCoreManager.showLanguageManager();
       },
-      
+
       // other JS utils
       updateDocumentModelFromDOM: function(id) {
           // 1) find the cell that contains elem
@@ -384,7 +384,7 @@
 
           // 2) convert that part of the DOM to a string
           var newOutput = body[0].innerHTML;
-          
+
           // 3) set the result.object to that string.
           var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);          
           if (cell === undefined) {

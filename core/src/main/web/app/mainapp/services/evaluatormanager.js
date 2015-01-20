@@ -25,7 +25,7 @@
     var evaluators = {};
     var loadingInProgressEvaluators = [];
     return {
-      reset: function() {        
+      reset: function() {
         evaluators = {};
       },
       removeEvaluator: function(plugin) {
@@ -98,7 +98,7 @@
         }
         return deferred.promise;
       },
-      
+
       getVisualParams: function(name) {
         if (evaluators[name] === undefined)
           return bkEvaluatePluginManager.getVisualParams(name);

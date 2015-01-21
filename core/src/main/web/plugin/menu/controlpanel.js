@@ -21,7 +21,7 @@ define(function(require, exports, module) {
 
   var fileMenuItems = [
     {
-      name: "New",
+      name: "New Notebook",
       tooltip: "Open a new empty notebook, add the languages of your choice",
       sortorder: 100,
       action: function() {

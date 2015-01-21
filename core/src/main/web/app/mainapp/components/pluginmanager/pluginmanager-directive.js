@@ -23,8 +23,8 @@
 
   var module = angular.module('bk.core');
 
-  module.controller('pluginManagerCtrl', ['$scope', '$modalInstance', 'bkCoreManager', 'bkSessionManager', 'bkMenuPluginManager', 'bkEvaluatePluginManager',
-                                          'bkEvaluatorManager', function($scope, $modalInstance, bkCoreManager,bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
+  module.controller('pluginManagerCtrl', ['$scope', '$rootScope', '$modalInstance', 'bkCoreManager', 'bkSessionManager', 'bkMenuPluginManager', 'bkEvaluatePluginManager',
+                                          'bkEvaluatorManager', function($scope, $rootScope, $modalInstance, bkCoreManager,bkSessionManager, bkMenuPluginManager, bkEvaluatePluginManager,
                                               bkEvaluatorManager) {
 
 
@@ -121,6 +121,9 @@
             $scope.evalTabOp.newPluginNameOrUrl = "";
             bkSessionManager.addEvaluator(newEvaluatorObj);
             bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
+            $rootScope.$broadcast('languageAdded', {
+              evaluator: plugin
+            });
           } else {
             $scope.evalTabOp.showSecurityWarning = true;
           }

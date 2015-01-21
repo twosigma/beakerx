@@ -22,13 +22,15 @@
       <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
       <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
       <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
-      <bk-language-logo
-          bg-color="{{getEvaluatorDetails(pluginName).bgColor}}"
-          fg-color="{{getEvaluatorDetails(pluginName).fgColor}}"
-          border-color="{{getEvaluatorDetails(pluginName).borderColor}}">{{getEvaluatorDetails(pluginName).shortName}}</bk-language-logo>
+      <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}"
+                        fg-color="{{getEvaluatorDetails(pluginName).fgColor}}"
+                        border-color="{{getEvaluatorDetails(pluginName).borderColor}}">
+        {{getEvaluatorDetails(pluginName).shortName}}
+      </bk-language-logo>
 
       {{pluginName}}
-    </button><button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="beaker-btn">
+    </button>
+    <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="beaker-btn">
       <span class="plugin-invisible plugin-url">&#x25cf;</span> From URL...
     </button>
     <p><br/></p>
@@ -38,24 +40,23 @@
     </div>
     <div ng-show="evalTabOp.showSecurityWarning">
       <div class="modal-body error-title body-box">
-	<p>Are you sure you want to load this plugin from an external URL?</p>
-	<button class="btn btn-default right" ng-click='evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=""'>Cancel</button>
-	<button class="btn btn-default right" ng-click='evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()'>OK</button>
+        <p>Are you sure you want to load this plugin from an external URL?</p>
+        <button class="btn btn-default right" ng-click='evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=""'>Cancel</button>
+        <button class="btn btn-default right" ng-click='evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()'>OK</button>
       </div>
       <p><br/></p>
     </div>
     <div ng-show="evalTabOp.showWarning">
       <div class="modal-body error-title body-box">
-	<p>Cannot remove plugin currently used by a code cell in the notebook.<br/>
-	  Delete those cells and try again.</p>
-	<button class="btn btn-default right" ng-click='evalTabOp.showWarning = false'>OK</button>
+        <p>Cannot remove plugin currently used by a code cell in the notebook.<br/>
+        Delete those cells and try again.</p>
+        <button class="btn btn-default right" ng-click='evalTabOp.showWarning = false'>OK</button>
       </div>
       <p><br/></p>
     </div>
     <tabset>
       <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}">
-        <bk-plugin-manager-evaluator-settings>
-        </bk-plugin-manager-evaluator-settings>
+        <bk-plugin-manager-evaluator-settings></bk-plugin-manager-evaluator-settings>
       </tab>
     </tabset>
   </div>

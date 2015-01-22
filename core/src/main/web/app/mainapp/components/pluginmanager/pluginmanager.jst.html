@@ -19,9 +19,7 @@
   </div>
   <div class="modal-body modal-large plugin-manager">
     <button class="beaker-btn" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getKnownEvaluatePlugins()" id="{{pluginName}}-button">
-      <span ng-show="pluginStatus=='active'" class="plugin-active plugin-status">&#x25cf;</span>
-      <span ng-show="pluginStatus=='loading'" class="plugin-loading plugin-status">&#x25cf;</span>
-      <span ng-show="pluginStatus=='known'" class="plugin-known plugin-status">&#x25cf;</span>
+      <span ng-class="'plugin-' + pluginStatus" class="plugin-status">&#x25cf;</span>
       <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}"
                         fg-color="{{getEvaluatorDetails(pluginName).fgColor}}"
                         border-color="{{getEvaluatorDetails(pluginName).borderColor}}">

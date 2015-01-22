@@ -64,7 +64,7 @@
       getLoadingEvaluators: function() {
         return bkEvaluatorManager.getLoadingEvaluators();
       },
-      getKnownEvaluatePlugins: function(name) {
+      getEvaluatorStatuses: function(name) {
         var knownPlugins = bkEvaluatePluginManager.getKnownEvaluatorPlugins();
         var activePlugins = bkEvaluatorManager.getAllEvaluators();
         var loadingPlugins = bkEvaluatorManager.getLoadingEvaluators();
@@ -99,7 +99,7 @@
           plugin = name;
           fromUrl = false;
         }
-        var status = this.getKnownEvaluatePlugins()[plugin];
+        var status = this.getEvaluatorStatuses()[plugin];
         if (status === "known") {
           var newEvaluatorObj = {
             name: "",

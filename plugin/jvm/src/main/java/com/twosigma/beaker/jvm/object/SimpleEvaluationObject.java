@@ -17,12 +17,17 @@ package com.twosigma.beaker.jvm.object;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.twosigma.beaker.jvm.threads.BeakerOutputHandler;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
+
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
-
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
@@ -33,37 +38,81 @@ import org.codehaus.jackson.map.SerializerProvider;
 public class SimpleEvaluationObject extends Observable {
 
   private EvaluationStatus status;
-  private EvaluationResult result;
+  private List<Object> result;
+  private EvaluationResult lastres;
   private final String expression;
+  private int outputstatus;
 
   public SimpleEvaluationObject(String expression) {
     this.expression = expression;
     this.status = EvaluationStatus.QUEUED;
+    this.outputstatus = 0;
+    this.result = new ArrayList<Object>();
   }
 
   public synchronized void started() {
+    BeakerStdOutErrHandler.setOutputHandler(getStdOutputHandler(), getStdErrorHandler());
+    this.outputstatus = 1;
     this.status = EvaluationStatus.RUNNING;
     setChanged();
     notifyObservers();
   }
 
   public synchronized void finished(Object result) {
+    BeakerStdOutErrHandler.clrOutputHandler();
     this.status = EvaluationStatus.FINISHED;
-    this.result = new EvaluationResult(result);
+    this.outputstatus = 2;
+    if (lastres == null) {
+      this.lastres = new EvaluationResult(result);
+      this.result.add(lastres);
+    } else {
+      for (int i=0; i<this.result.size(); i++) {
+        if (this.result.get(i) instanceof EvaluationResult) {
+          this.lastres = new EvaluationResult(result);
+          this.result.set(i,lastres);          
+          break;
+        }
+      }
+    }
     setChanged();
     notifyObservers();
   }
 
   public synchronized void error(Object result) {
+    BeakerStdOutErrHandler.clrOutputHandler();
     this.status = EvaluationStatus.ERROR;
-    this.result = new EvaluationResult(result);
+    this.outputstatus = 2;
+    if (lastres == null) {
+      this.lastres = new EvaluationResult(result);
+      this.result.add(lastres);
+    } else {
+      for (int i=0; i<this.result.size(); i++) {
+        if (this.result.get(i) instanceof EvaluationResult) {
+          this.lastres = new EvaluationResult(result);
+          this.result.set(i,lastres);          
+          break;
+        }
+      }
+    }
     setChanged();
     notifyObservers();
   }
 
   public synchronized void update(Object upd) {
     this.status = EvaluationStatus.RUNNING;
-    this.result = new EvaluationResult(upd);
+    this.outputstatus = 2;
+    if (lastres == null) {
+      this.lastres = new EvaluationResult(result);
+      this.result.add(lastres);
+    } else {
+      for (int i=0; i<this.result.size(); i++) {
+        if (this.result.get(i) instanceof EvaluationResult) {
+          this.lastres = new EvaluationResult(result);
+          this.result.set(i,lastres);          
+          break;
+        }
+      }
+    }
     setChanged();
     notifyObservers();
   }
@@ -79,7 +128,7 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   @JsonProperty("result")
-  public synchronized EvaluationResult getResult() {
+  public synchronized List<Object> getResult() {
     return this.result;
   }
 
@@ -118,4 +167,69 @@ public class SimpleEvaluationObject extends Observable {
 
     }
   }
+
+  public class SimpleOutputHandler implements BeakerOutputHandler {
+    
+    @Override
+    public void write(int b) {
+      byte [] ba = new byte[1];
+      ba[0] = (byte) b;
+      appendOutput(new String(ba));
+    }
+
+    @Override
+    public void write(byte[] b) {
+      appendOutput(new String(b));
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) {
+      appendOutput(new String(b,off,len));
+    }
+  }
+  
+  public class SimpleErrorHandler implements BeakerOutputHandler {
+    
+    @Override
+    public void write(int b) {
+      byte [] ba = new byte[1];
+      ba[0] = (byte) b;
+      appendError(new String(ba));
+    }
+
+    @Override
+    public void write(byte[] b) {
+      appendError(new String(b));
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) {
+      appendError(new String(b,off,len));
+    }
+
+  }
+
+  public BeakerOutputHandler getStdOutputHandler() {
+    return new SimpleOutputHandler();
+  }
+
+  public BeakerOutputHandler getStdErrorHandler() {
+    return new SimpleErrorHandler();
+  }
+  
+  public void appendOutput(String s) {
+    if (this.outputstatus!=3) {
+      this.outputstatus=3;
+      this.result.add(s);
+    } else {
+      String st = (String) this.result.get(this.result.size()-1) + s;
+      this.result.set(this.result.size()-1, st);
+    }
+  }
+
+  public void appendError(String s) {
+    BeakerStdOutErrHandler.out().println("ERROR: '"+s+"'");
+  }
+
+
 }

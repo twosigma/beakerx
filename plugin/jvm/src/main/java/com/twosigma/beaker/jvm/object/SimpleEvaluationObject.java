@@ -49,17 +49,20 @@ public class SimpleEvaluationObject extends Observable {
   }
   
   private EvaluationStatus status;
-  private List<Object> result;
+  private List<Object> outputdata;
   private final String expression;
+  private EvaluationResult payload;
+  private boolean payload_changed;
   private String message;
   private int progressBar;
   private BeakerOutputHandler stdout;
   private BeakerOutputHandler stderr;
 
-  public SimpleEvaluationObject(String expression) {
-    this.expression = expression;
-    this.status = EvaluationStatus.QUEUED;
-    this.result = new ArrayList<Object>();
+  public SimpleEvaluationObject(String e) {
+    expression = e;
+    status = EvaluationStatus.QUEUED;
+    outputdata = new ArrayList<Object>();
+    payload_changed = true;
   }
 
   public synchronized void started() {
@@ -68,39 +71,29 @@ public class SimpleEvaluationObject extends Observable {
     setChanged();
     notifyObservers();
   }
-
-  private void saveResult(Object result) {
-    int i;
-    for (i=0; i<this.result.size(); i++) {
-      if (this.result.get(i) instanceof EvaluationResult) {
-        this.result.set(i,new EvaluationResult(result));          
-        break;
-      }
-    }
-    if (i==this.result.size()) {
-      this.result.add(new EvaluationResult(result));   
-    }    
-  }
   
-  public synchronized void finished(Object result) {
+  public synchronized void finished(Object r) {
     clrOutputHandler();
     this.status = EvaluationStatus.FINISHED;
-    saveResult(result);
+    payload = new EvaluationResult(r);
+    payload_changed = true;
     setChanged();
     notifyObservers();
   }
 
-  public synchronized void error(Object result) {
+  public synchronized void error(Object r) {
     clrOutputHandler();
     this.status = EvaluationStatus.ERROR;
-    saveResult(result);
+    payload = new EvaluationResult(r);
+    payload_changed = true;
     setChanged();
     notifyObservers();
   }
 
-  public synchronized void update(Object upd) {
+  public synchronized void update(Object r) {
     this.status = EvaluationStatus.RUNNING;
-    saveResult(upd);
+    payload = new EvaluationResult(r);
+    payload_changed = true;
     setChanged();
     notifyObservers();
   }
@@ -109,35 +102,49 @@ public class SimpleEvaluationObject extends Observable {
     this.status = EvaluationStatus.RUNNING;
     this.message = upd.message;
     this.progressBar = upd.progressBar;
-    if (upd.payload != null)
-    saveResult(upd.payload);
+    if (upd.payload != null) {
+      payload = new EvaluationResult(upd.payload);
+      payload_changed = true;
+    }
     setChanged();
     notifyObservers();
   }
 
   @JsonProperty("expression")
   public String getExpression() {
-    return this.expression;
+    return expression;
   }
 
   @JsonProperty("status")
   public synchronized EvaluationStatus getStatus() {
-    return this.status;
+    return status;
   }
 
-  @JsonProperty("result")
-  public synchronized List<Object> getResult() {
-    return this.result;
+  @JsonProperty("payload")
+  public synchronized EvaluationResult getPayload() {
+    payload_changed = false;
+    return payload;
+  }
+
+  public synchronized boolean getPayloadChanged() {
+    return payload_changed;
+  }
+  
+  @JsonProperty("outputdata")
+  public synchronized List<Object> getOutputdata() {
+    List<Object> o = new ArrayList<Object>(outputdata);
+    outputdata.clear();
+    return o;
   }
 
   @JsonProperty("message")
   public synchronized String getMessage() {
-    return this.message;
+    return message;
   }
 
   @JsonProperty("progressBar")
   public synchronized int getProgressBar() {
-    return this.progressBar;
+    return progressBar;
   }
 
   public static enum EvaluationStatus {
@@ -173,9 +180,14 @@ public class SimpleEvaluationObject extends Observable {
           jgen.writeStringField("message", value.getMessage());
         if ( value.getProgressBar() > 0 )
           jgen.writeNumberField("progressBar", value.getProgressBar());
-
-        jgen.writeArrayFieldStart("results");
-        for (Object o : value.getResult()) {
+        if (value.getPayloadChanged()) {
+          EvaluationResult o = value.getPayload();
+          if (o != null)
+            jgen.writeObjectField("payload", o);
+        }
+        
+        jgen.writeArrayFieldStart("outputdata");
+        for (Object o : value.getOutputdata()) {
           if (o instanceof EvaluationStdOutput) {
             jgen.writeStartObject();
             jgen.writeStringField("type", "BeakerStandardOutput");
@@ -188,8 +200,6 @@ public class SimpleEvaluationObject extends Observable {
             jgen.writeStringField("value", ((EvaluationStdError)o).payload );
             jgen.writeEndObject();
           }
-          else
-            jgen.writeObject(o);
         }        
         jgen.writeEndArray();
         jgen.writeEndObject();
@@ -239,32 +249,32 @@ public class SimpleEvaluationObject extends Observable {
 
   }
 
-  public BeakerOutputHandler getStdOutputHandler() {
+  public synchronized BeakerOutputHandler getStdOutputHandler() {
     if (stdout == null)
       stdout = new SimpleOutputHandler();
     return stdout;
   }
 
-  public BeakerOutputHandler getStdErrorHandler() {
+  public synchronized BeakerOutputHandler getStdErrorHandler() {
     if (stderr == null)
       stderr = new SimpleErrorHandler();
     return stderr;
   }
   
-  public void appendOutput(String s) {
-    if (this.result.size() == 0 || !(this.result.get(this.result.size()-1) instanceof EvaluationStdOutput)) {
-      this.result.add(new EvaluationStdOutput(s));
+  public synchronized void appendOutput(String s) {
+    if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdOutput)) {
+      outputdata.add(new EvaluationStdOutput(s));
     } else {
-      EvaluationStdOutput st = (EvaluationStdOutput) this.result.get(this.result.size()-1);
+      EvaluationStdOutput st = (EvaluationStdOutput) outputdata.get(outputdata.size()-1);
       st.payload += s;
     }
   }
 
-  public void appendError(String s) {
-    if (this.result.size() == 0 || !(this.result.get(this.result.size()-1) instanceof EvaluationStdError)) {
-      this.result.add(new EvaluationStdError(s));
+  public synchronized void appendError(String s) {
+    if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdError)) {
+      outputdata.add(new EvaluationStdError(s));
     } else {
-      EvaluationStdError st = (EvaluationStdError) this.result.get(this.result.size()-1);
+      EvaluationStdError st = (EvaluationStdError) outputdata.get(outputdata.size()-1);
       st.payload += s;
     }
   }

@@ -411,62 +411,84 @@
             innertype: "Progress",
             object: {
               message: "submitting ...",
-              startTime: new Date().getTime()
+              startTime: new Date().getTime(),
+              outputdata: [],
+              payload: undefined
             }
           };
           modelOutput.result = progressObj;
       },
+      
       setupCancellingOutput: function(modelOutput) {
         if (modelOutput.result.type !== "BeakerDisplay" || modelOutput.result.innertype !== "Progress")
           setupProgressOutput(modelOutput);
         modelOutput.result.object.message = "cancelling ...";
       },
-      receiveEvaluationUpdate: function(modelOutput, evaluation, cometdUtil) {
+      
+      receiveEvaluationUpdate: function(modelOutput, evaluation, cometdUtil) {        
         modelOutput.result.status = evaluation.status;
+        
+        // append text output (if any)
+        if (evaluation.outputdata !== undefined && evaluation.outputdata.length>0) {
+          var idx;
+          for (idx=0; idx<evaluation.outputdata.length>0; idx++) {
+            modelOutput.result.object.outputdata.push({ result : evaluation.outputdata[idx] });
+          }
+        }
+        
+        // now update payload (if needed)
+        if (evaluation.payload !== undefined) {
+          modelOutput.result.object.payload = evaluation.payload;
+        }
         
         if (evaluation.status === "FINISHED") {
           cometdUtil.unsubscribe(evaluation.update_id);
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime; 
-          
-          if (evaluation.results.length == 1) {
-            modelOutput.result = evaluation.results[0];
-            if (modelOutput.result.update_id) {
+          if (modelOutput.result.object.outputdata.length === 0) {
+            // fallback to single display
+            modelOutput.result = modelOutput.result.object.payload;
+            if (modelOutput.result !== undefined && modelOutput.result.update_id) {
               var onUpdatableSingleResultUpdate = function(update) {
                 modelOutput.result = update;
                 bkHelper.refreshRootScope();
               };
               cometdUtil.subscribe(modelOutput.result.update_id, onUpdatableSingleResultUpdate);
-            }
+            }   
           } else {
-            modelOutput.result = { "type": "OutputContainer", "items" : evaluation.results };
-            var idx;
-            for (idx = 0; idx < modelOutput.result.items.length; idx ++) {
-              if (modelOutput.result.items[idx].update_id) {
+            // build output container
+            var items = modelOutput.result.object.outputdata.map(function (it) { return it.result; });
+            if ( modelOutput.result.object.payload !== undefined) {              
+              items.push(modelOutput.result.object.payload);
+              if (modelOutput.result.object.payload !== undefined && modelOutput.result.object.payload.update_id) {
+                var idx = items.length-1;
                 var onUpdatableResultUpdate = function(update) {
                   modelOutput.result.items[idx] = update;
                   bkHelper.refreshRootScope();
                 };
-                cometdUtil.subscribe(modelOutput.result.items[idx].update_id, onUpdatableResultUpdate);
-              }
-            }          
+                cometdUtil.subscribe(modelOutput.result.object.payload.update_id, onUpdatableResultUpdate);
+              }   
+            }
+            modelOutput.result = { "type": "OutputContainer", "items" : items };
           }
-          
+
         } else if (evaluation.status === "ERROR") {
           cometdUtil.unsubscribe(evaluation.update_id);
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;          
-          
-          if (evaluation.results.length == 1) {
+
+          if (modelOutput.result.object.outputdata.length === 0) {
             modelOutput.result = {
               type: "BeakerDisplay",
               innertype: "Error",
-              object: evaluation.results[0]
+              object: evaluation.payload
             };
           } else {
-            modelOutput.result = {
-                type: "BeakerDisplay",
-                innertype: "Error",
-                object: { "type": "OutputContainer", "items" : evaluation.results }
-              };
+            var items = modelOutput.result.object.outputdata.map(function (it) { return it.result; });
+            items.push({
+              type: "BeakerDisplay",
+              innertype: "Error",
+              object: evaluation.payload
+            });
+            modelOutput.result = { "type": "OutputContainer", "items" : items };            
           }
           
         } else if (evaluation.status === "RUNNING") {
@@ -474,15 +496,7 @@
             modelOutput.result.object.message     = "running...";
           else
             modelOutput.result.object.message     = evaluation.message;
-          modelOutput.result.object.progressBar = evaluation.progressBar;
-          
-          if(evaluation.results !== undefined) {
-            if (evaluation.results.length === 1) {
-              modelOutput.result.object.payload = evaluation.results[0];
-            } else {
-              modelOutput.result.object.payload = { "type": "OutputContainer", "items" : evaluation.results };
-            }
-          }
+          modelOutput.result.object.progressBar   = evaluation.progressBar;
         }
         
         return (evaluation.status === "FINISHED" || evaluation.status === "ERROR");

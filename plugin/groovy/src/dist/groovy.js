@@ -136,7 +136,7 @@ define(function(require, exports, module) {
             modelOutput.result = {
               type: "BeakerDisplay",
               innertype: "Error",
-              object: evaluation.result
+              object: evaluation.result.split('\n')
             };
             modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
             deferred.resolve();

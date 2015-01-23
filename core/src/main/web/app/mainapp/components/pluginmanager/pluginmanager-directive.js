@@ -64,7 +64,7 @@
       getLoadingEvaluators: function() {
         return bkEvaluatorManager.getLoadingEvaluators();
       },
-      getKnownEvaluatePlugins: function(name) {
+      getEvaluatorStatuses: function(name) {
         var knownPlugins = bkEvaluatePluginManager.getKnownEvaluatorPlugins();
         var activePlugins = bkEvaluatorManager.getAllEvaluators();
         var loadingPlugins = bkEvaluatorManager.getLoadingEvaluators();
@@ -92,53 +92,38 @@
         this.newPluginNameOrUrl = pluginNameOrUrl;
       },
       togglePlugin: function(name) {
-        var plugin = this.newPluginNameOrUrl;
-        var fromUrl = true;
-        $scope.evalTabOp.showURL = false;
-        if (name) {
-          plugin = name;
-          fromUrl = false;
-        }
-        var status = this.getKnownEvaluatePlugins()[plugin];
-        if (status === "known") {
-          var newEvaluatorObj = {
-            name: "",
-            plugin: plugin
-          };
-          bkSessionManager.addEvaluator(newEvaluatorObj);
-          bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
-          $rootScope.$broadcast('languageAdded', {
-            evaluator: plugin
-          });
-        } if(fromUrl) {
-          var r = new RegExp('^(?:[a-z]+:)?//', 'i');
-          if (!r.test(plugin) || $scope.evalTabOp.forceLoad) {
-            var newEvaluatorObj = {
-              name: "",
-              plugin: plugin
-            };
+        var plugin = name || this.newPluginNameOrUrl;
+        var fromUrl = name ? false : true;
+        var status = this.getEvaluatorStatuses()[plugin];
+
+        if (!fromUrl && !_.contains(['active', 'known'], status)) return;
+        // for now, if the plugin isn't from a URL or active or known
+        // (namely loading) return.
+        // TODO: other states we should support: failed and exiting.
+
+        if (status === 'active') {
+          // turn off evaluator if on
+          if (!bkSessionManager.evaluatorUnused(plugin)) {
+            return $scope.evalTabOp.showWarning = true;
+          }
+
+          bkSessionManager.removeEvaluator(plugin);
+          bkCoreManager.getBkApp().removeEvaluator(plugin);
+        } else {
+          // otherwise, turn on evaluator
+          if (fromUrl) {
+            var r = new RegExp('^(?:[a-z]+:)?//', 'i');
+            if (r.test(plugin) && !$scope.evalTabOp.forceLoad) {
+              return $scope.evalTabOp.showSecurityWarning = true;
+            }
+
             $scope.evalTabOp.forceLoad = false;
             $scope.evalTabOp.newPluginNameOrUrl = "";
-            bkSessionManager.addEvaluator(newEvaluatorObj);
-            bkCoreManager.getBkApp().addEvaluator(newEvaluatorObj);
-            $rootScope.$broadcast('languageAdded', {
-              evaluator: plugin
-            });
-          } else {
-            $scope.evalTabOp.showSecurityWarning = true;
           }
-        } else if (status === "active") {
-          // what happens if you remove a plugin that is loading?
-          // could just ignore, unless it's possible for plugins
-          // to try to load and fail, and get stuck loading.  then
-          // you would really want to be able to delete them.
-          // other states we should support: failed and exiting.
-          if (bkSessionManager.evaluatorUnused(plugin)) {
-            bkSessionManager.removeEvaluator(plugin);
-            bkCoreManager.getBkApp().removeEvaluator(plugin);
-          } else {
-            $scope.evalTabOp.showWarning = true;
-          }
+
+          bkSessionManager.addEvaluator({ name: '', plugin: plugin });
+          bkCoreManager.getBkApp().addEvaluator({ name: '', plugin: plugin });
+          $rootScope.$broadcast('languageAdded', { evaluator: plugin });
         }
       }
     };

@@ -14,73 +14,86 @@
  *  limitations under the License.
  */
 
-html .navbar {
-    min-height: 38px;
-    background: #3f5264;
+/*
+ *   BOOTSTRAP OVERRIDES
+ *   If we switch to bootstrap compilation with variables,
+ *   this should be able to be killed.
+ */
 
-    .navbar-brand {
-        padding: 10px 23px 7px;
-        margin-left: 17px;
-        height: auto;
-        font-size: 20px;
-        img {
-            margin-top: -7px;
-            height: 22px;
-        }
-    }
+$navbar-height: 38px;
+$navbar-default-link-color: #3f5264;
+$navbar-default-link-hover-color: #fff;
+$navbar-default-link-hover-bg: #39a9ed;
+$line-height-computed: 20px;
+$navbar-padding-vertical: ($navbar-height - $line-height-computed) / 2;
 
-    .loadingmsg {
-        margin-top: 10px;
-    }
+.navbar {
+  border-radius: 0;
+  min-height: $navbar-height;
 }
 
 .navbar-text {
-    margin-top: 9px;
-    margin-bottom: 8px;
+  margin-top: (($navbar-height - $line-height-computed) / 2);
+  margin-bottom: (($navbar-height - $line-height-computed) / 2);
 }
 
-.sub-nav {
-    display: block;
-    clear: both;
-    background: #eff2f8;
-    margin: 0;
-    position: relative;
-    top: 1px;
-    width: 100%;
-    padding: 0 35px;
-    box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
-    -webkit-box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
+.navbar-nav > li > a {
+  padding-top: (($navbar-height - $line-height-computed) / 2);
+  padding-bottom: (($navbar-height - $line-height-computed) / 2);
 }
 
-.sub-nav > li {
-    margin-right: 20px;
-    display: block;
-    float: left;
-
-    &.pull-right { float: right; }
-
-    > a.dropdown-toggle {
-        padding: 10px;
-        text-decoration: none;
-
-        &:hover {
-            color: #fff;
-            background: $highlight-blue;
-        }
-    }
-
-    .dropdown-toggle {
-        display: block;
-        padding: 10px 5px;
-    }
-
-    span.offline-label {
-        color: #FF0000;
-        cursor: pointer;
-    }
+.navbar-brand {
+  height: $navbar-height;
+  padding-top: $navbar-padding-vertical;
+  padding-bottom: $navbar-padding-vertical;
 }
 
-html .navbar a.navbar-brand, html .navbar-nav > li > a {
-    color: #FFF;
-    text-shadow: none;
+.navbar-inverse {
+  background: #3f5264;
+}
+
+.navbar-default {
+  background: #eff2f8;
+  box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
+  -webkit-box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
+
+  .navbar-nav {
+    > li > a, > .open > a {
+      color: $navbar-default-link-color;
+
+      &:hover,
+      &:focus {
+        color: $navbar-default-link-hover-color;
+        background-color: $navbar-default-link-hover-bg;
+      }
+    }
+  }
+}
+
+/*
+ *   End BOOTSTRAP OVERRIDES
+ */
+
+.navbar {
+  border-width: 0;
+}
+
+header {
+  .navbar {
+    padding-left: 35px;
+    padding-right: 35px;
+    margin-bottom: 0;
+  }
+
+  .navbar-brand {
+    color: #fff !important;
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 7px;
+
+    img {
+      height: 22px;
+      margin-top: -7px;
+    }
+  }
 }

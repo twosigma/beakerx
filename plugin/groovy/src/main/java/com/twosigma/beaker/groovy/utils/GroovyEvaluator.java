@@ -204,7 +204,6 @@ public class GroovyEvaluator {
           if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject))) {
             j.outputObject.error("... cancelled!");
           }
-          BeakerStdOutErrHandler.clrOutputHandler();
           
           if(nc!=null) {
             nc.setOutputObj(null);
@@ -235,6 +234,7 @@ public class GroovyEvaluator {
       @Override
       public void run() {
         Object result;
+        theOutput.setOutputHandler();
         try {
           result = shell.evaluate(theCode);
           theOutput.finished(result);
@@ -248,6 +248,7 @@ public class GroovyEvaluator {
             theOutput.error(sw.toString());
           }
         }
+        theOutput.clrOutputHandler();
       }
     };
     

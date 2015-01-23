@@ -19,6 +19,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.twosigma.beaker.jvm.module.SerializerModule;
 import com.twosigma.beaker.jvm.module.WebServerModule;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.beaker.scala.module.URLConfigModule;
 import com.twosigma.beaker.shared.module.GuiceCometdModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
@@ -62,5 +63,6 @@ public class Main {
     Server server = injector.getInstance(Server.class);
     server.start();
     System.out.println("Server started");
+    BeakerStdOutErrHandler.init();
   }
 }

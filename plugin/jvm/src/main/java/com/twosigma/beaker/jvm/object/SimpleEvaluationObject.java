@@ -17,6 +17,7 @@ package com.twosigma.beaker.jvm.object;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.jvm.threads.BeakerOutputHandler;
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
@@ -37,82 +38,79 @@ import org.codehaus.jackson.map.SerializerProvider;
  */
 public class SimpleEvaluationObject extends Observable {
 
+  public class EvaluationStdOutput {
+    public String payload;
+    public EvaluationStdOutput(String s) { payload = s; }
+  }
+
+  public class EvaluationStdError {
+    public String payload;
+    public EvaluationStdError(String s) { payload = s; }
+  }
+  
   private EvaluationStatus status;
   private List<Object> result;
-  private EvaluationResult lastres;
   private final String expression;
-  private int outputstatus;
+  private String message;
+  private int progressBar;
+  private BeakerOutputHandler stdout;
+  private BeakerOutputHandler stderr;
 
   public SimpleEvaluationObject(String expression) {
     this.expression = expression;
     this.status = EvaluationStatus.QUEUED;
-    this.outputstatus = 0;
     this.result = new ArrayList<Object>();
   }
 
   public synchronized void started() {
-    BeakerStdOutErrHandler.setOutputHandler(getStdOutputHandler(), getStdErrorHandler());
-    this.outputstatus = 1;
+    setOutputHandler();
     this.status = EvaluationStatus.RUNNING;
     setChanged();
     notifyObservers();
   }
 
-  public synchronized void finished(Object result) {
-    BeakerStdOutErrHandler.clrOutputHandler();
-    this.status = EvaluationStatus.FINISHED;
-    this.outputstatus = 2;
-    if (lastres == null) {
-      this.lastres = new EvaluationResult(result);
-      this.result.add(lastres);
-    } else {
-      for (int i=0; i<this.result.size(); i++) {
-        if (this.result.get(i) instanceof EvaluationResult) {
-          this.lastres = new EvaluationResult(result);
-          this.result.set(i,lastres);          
-          break;
-        }
+  private void saveResult(Object result) {
+    int i;
+    for (i=0; i<this.result.size(); i++) {
+      if (this.result.get(i) instanceof EvaluationResult) {
+        this.result.set(i,new EvaluationResult(result));          
+        break;
       }
     }
+    if (i==this.result.size()) {
+      this.result.add(new EvaluationResult(result));   
+    }    
+  }
+  
+  public synchronized void finished(Object result) {
+    clrOutputHandler();
+    this.status = EvaluationStatus.FINISHED;
+    saveResult(result);
     setChanged();
     notifyObservers();
   }
 
   public synchronized void error(Object result) {
-    BeakerStdOutErrHandler.clrOutputHandler();
+    clrOutputHandler();
     this.status = EvaluationStatus.ERROR;
-    this.outputstatus = 2;
-    if (lastres == null) {
-      this.lastres = new EvaluationResult(result);
-      this.result.add(lastres);
-    } else {
-      for (int i=0; i<this.result.size(); i++) {
-        if (this.result.get(i) instanceof EvaluationResult) {
-          this.lastres = new EvaluationResult(result);
-          this.result.set(i,lastres);          
-          break;
-        }
-      }
-    }
+    saveResult(result);
     setChanged();
     notifyObservers();
   }
 
   public synchronized void update(Object upd) {
     this.status = EvaluationStatus.RUNNING;
-    this.outputstatus = 2;
-    if (lastres == null) {
-      this.lastres = new EvaluationResult(result);
-      this.result.add(lastres);
-    } else {
-      for (int i=0; i<this.result.size(); i++) {
-        if (this.result.get(i) instanceof EvaluationResult) {
-          this.lastres = new EvaluationResult(result);
-          this.result.set(i,lastres);          
-          break;
-        }
-      }
-    }
+    saveResult(upd);
+    setChanged();
+    notifyObservers();
+  }
+
+  public synchronized void structuredUpdate(BeakerProgressUpdate upd) {
+    this.status = EvaluationStatus.RUNNING;
+    this.message = upd.message;
+    this.progressBar = upd.progressBar;
+    if (upd.payload != null)
+    saveResult(upd.payload);
     setChanged();
     notifyObservers();
   }
@@ -130,6 +128,16 @@ public class SimpleEvaluationObject extends Observable {
   @JsonProperty("result")
   public synchronized List<Object> getResult() {
     return this.result;
+  }
+
+  @JsonProperty("message")
+  public synchronized String getMessage() {
+    return this.message;
+  }
+
+  @JsonProperty("progressBar")
+  public synchronized int getProgressBar() {
+    return this.progressBar;
   }
 
   public static enum EvaluationStatus {
@@ -161,7 +169,29 @@ public class SimpleEvaluationObject extends Observable {
         jgen.writeObjectField("update_id", id);
         jgen.writeObjectField("expression", value.getExpression());
         jgen.writeObjectField("status", value.getStatus());
-        jgen.writeObjectField("result", value.getResult());
+        if (value.getMessage() != null)
+          jgen.writeStringField("message", value.getMessage());
+        if ( value.getProgressBar() > 0 )
+          jgen.writeNumberField("progressBar", value.getProgressBar());
+
+        jgen.writeArrayFieldStart("results");
+        for (Object o : value.getResult()) {
+          if (o instanceof EvaluationStdOutput) {
+            jgen.writeStartObject();
+            jgen.writeStringField("type", "BeakerStandardOutput");
+            jgen.writeStringField("value", ((EvaluationStdOutput)o).payload );
+            jgen.writeEndObject();
+          }
+          else if (o instanceof EvaluationStdError) {
+            jgen.writeStartObject();
+            jgen.writeStringField("type", "BeakerStandardError");
+            jgen.writeStringField("value", ((EvaluationStdError)o).payload );
+            jgen.writeEndObject();
+          }
+          else
+            jgen.writeObject(o);
+        }        
+        jgen.writeEndArray();
         jgen.writeEndObject();
       }
 
@@ -210,26 +240,41 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   public BeakerOutputHandler getStdOutputHandler() {
-    return new SimpleOutputHandler();
+    if (stdout == null)
+      stdout = new SimpleOutputHandler();
+    return stdout;
   }
 
   public BeakerOutputHandler getStdErrorHandler() {
-    return new SimpleErrorHandler();
+    if (stderr == null)
+      stderr = new SimpleErrorHandler();
+    return stderr;
   }
   
   public void appendOutput(String s) {
-    if (this.outputstatus!=3) {
-      this.outputstatus=3;
-      this.result.add(s);
+    if (this.result.size() == 0 || !(this.result.get(this.result.size()-1) instanceof EvaluationStdOutput)) {
+      this.result.add(new EvaluationStdOutput(s));
     } else {
-      String st = (String) this.result.get(this.result.size()-1) + s;
-      this.result.set(this.result.size()-1, st);
+      EvaluationStdOutput st = (EvaluationStdOutput) this.result.get(this.result.size()-1);
+      st.payload += s;
     }
   }
 
   public void appendError(String s) {
-    BeakerStdOutErrHandler.out().println("ERROR: '"+s+"'");
+    if (this.result.size() == 0 || !(this.result.get(this.result.size()-1) instanceof EvaluationStdError)) {
+      this.result.add(new EvaluationStdError(s));
+    } else {
+      EvaluationStdError st = (EvaluationStdError) this.result.get(this.result.size()-1);
+      st.payload += s;
+    }
   }
 
+  public void setOutputHandler() {
+    BeakerStdOutErrHandler.setOutputHandler(getStdOutputHandler(), getStdErrorHandler());
+  }
+
+  public void clrOutputHandler() {
+    BeakerStdOutErrHandler.clrOutputHandler();
+  }
 
 }

@@ -401,7 +401,92 @@
       },
 
       // bkShare
-      share: bkShare
+      share: bkShare,
+      
+      // language plugin utilities
+      
+      setupProgressOutput: function(modelOutput) {
+        var progressObj = {
+            type: "BeakerDisplay",
+            innertype: "Progress",
+            object: {
+              message: "submitting ...",
+              startTime: new Date().getTime()
+            }
+          };
+          modelOutput.result = progressObj;
+      },
+      setupCancellingOutput: function(modelOutput) {
+        if (modelOutput.result.type !== "BeakerDisplay" || modelOutput.result.innertype !== "Progress")
+          setupProgressOutput(modelOutput);
+        modelOutput.result.object.message = "cancelling ...";
+      },
+      receiveEvaluationUpdate: function(modelOutput, evaluation, cometdUtil) {
+        modelOutput.result.status = evaluation.status;
+        
+        if (evaluation.status === "FINISHED") {
+          cometdUtil.unsubscribe(evaluation.update_id);
+          modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime; 
+          
+          if (evaluation.results.length == 1) {
+            modelOutput.result = evaluation.results[0];
+            if (modelOutput.result.update_id) {
+              var onUpdatableSingleResultUpdate = function(update) {
+                modelOutput.result = update;
+                bkHelper.refreshRootScope();
+              };
+              cometdUtil.subscribe(modelOutput.result.update_id, onUpdatableSingleResultUpdate);
+            }
+          } else {
+            modelOutput.result = { "type": "OutputContainer", "items" : evaluation.results };
+            var idx;
+            for (idx = 0; idx < modelOutput.result.items.length; idx ++) {
+              if (modelOutput.result.items[idx].update_id) {
+                var onUpdatableResultUpdate = function(update) {
+                  modelOutput.result.items[idx] = update;
+                  bkHelper.refreshRootScope();
+                };
+                cometdUtil.subscribe(modelOutput.result.items[idx].update_id, onUpdatableResultUpdate);
+              }
+            }          
+          }
+          
+        } else if (evaluation.status === "ERROR") {
+          cometdUtil.unsubscribe(evaluation.update_id);
+          modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;          
+          
+          if (evaluation.results.length == 1) {
+            modelOutput.result = {
+              type: "BeakerDisplay",
+              innertype: "Error",
+              object: evaluation.results[0]
+            };
+          } else {
+            modelOutput.result = {
+                type: "BeakerDisplay",
+                innertype: "Error",
+                object: { "type": "OutputContainer", "items" : evaluation.results }
+              };
+          }
+          
+        } else if (evaluation.status === "RUNNING") {
+          if (evaluation.message === undefined)
+            modelOutput.result.object.message     = "running...";
+          else
+            modelOutput.result.object.message     = evaluation.message;
+          modelOutput.result.object.progressBar = evaluation.progressBar;
+          
+          if(evaluation.results !== undefined) {
+            if (evaluation.results.length === 1) {
+              modelOutput.result.object.payload = evaluation.results[0];
+            } else {
+              modelOutput.result.object.payload = { "type": "OutputContainer", "items" : evaluation.results };
+            }
+          }
+        }
+        
+        return (evaluation.status === "FINISHED" || evaluation.status === "ERROR");
+      }
     };
 
     return bkHelper;

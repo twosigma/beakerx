@@ -234,6 +234,7 @@ public class ScalaEvaluator {
       
       @Override
       public void run() {
+        theOutput.setOutputHandler();
         Object result;
         try {
           shell.evaluate(theOutput, theCode);
@@ -247,6 +248,7 @@ public class ScalaEvaluator {
             theOutput.error(sw.toString());
           }
         }
+        theOutput.setOutputHandler();
       }
       
     };

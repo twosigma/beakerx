@@ -158,55 +158,55 @@ public class NamespaceClient {
   public synchronized void showProgressUpdate(String s) {
     if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(s);
-      seo.update(bpu);
+      seo.structuredUpdate(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(int i) {
     if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(i);
-      seo.update(bpu);
+      seo.structuredUpdate(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(String s, int i) {
     if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(s,i);
-      seo.update(bpu);
+      seo.structuredUpdate(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(String s, Object p) {
     if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(s,p);
-      seo.update(bpu);
+      seo.structuredUpdate(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(Object p) {
     if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(p);
-      seo.update(bpu);
+      seo.structuredUpdate(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(int i, Object p) {
     if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(i,p);
-      seo.update(bpu);
+      seo.structuredUpdate(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(String s, int i, Object p) {
     if (seo != null) {
       BeakerProgressUpdate bpu = new BeakerProgressUpdate(s,i,p);
-      seo.update(bpu);
+      seo.structuredUpdate(bpu);
     }
   }
 
   public synchronized void showProgressUpdate(BeakerProgressUpdate o) {
     if (seo != null)
-      seo.update(o);
+      seo.structuredUpdate(o);
   }
 
   /*

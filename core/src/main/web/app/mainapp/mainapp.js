@@ -1083,6 +1083,8 @@
           }
         });
 
+        setDocumentTitle();
+
         // ensure an existing session is cleared so that the empty notebook model
         // makes the UI is blank immediately (instead of showing leftover from a previous session)
         bkSessionManager.clear();

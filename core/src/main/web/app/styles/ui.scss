@@ -51,6 +51,14 @@
   }
 }
 
+.text-danger {
+  color: #a94442 !important;
+}
+
+.text-success {
+  color: #3c763d !important;
+}
+
 label, input, button, select, textarea {
   font-size: 14px;
   font-weight: normal;
@@ -73,7 +81,7 @@ strong {
   border-radius: 0;
 }
 
-.nav {
+.nav-tabs.nav {
   margin-bottom: 20px;
 }
 

@@ -13,21 +13,26 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="navbar navbar-fixed-top">
-  <a class="navbar-brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
-    <img src="app/images/beaker_icon@2x.png"></img>
-    Beaker
-  </a>
-  <ul class="sub-nav clearfix">
-    <li class="dropdown" ng-repeat="m in getMenus()">
-      <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
-      <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
-    </li>
-    <li class="pull-right" style="padding: 10px 54px 10px; cursor: default;">
-      <span ng-show="disconnected"><font color="red">offline</font></span>
-    </li>
-  </ul>
-</div>
+<header class="navbar-fixed-top">
+  <div class="navbar navbar-inverse">
+    <a class="navbar-brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
+      <img src="app/images/beaker_icon@2x.png" />
+      Beaker
+    </a>
+  </div>
+  <div class="navbar navbar-default">
+    <ul class="nav navbar-nav">
+      <li class="dropdown" ng-repeat="m in getMenus()">
+        <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
+        <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
+      </li>
+      <p ng-if="disconnected" class="navbar-text text-danger right">
+        offline
+      </p>
+    </ul>
+  </div>
+</header>
+
 <div class="dashboard container-fluid">
   <div class="row">
     <div class="col-md-12">

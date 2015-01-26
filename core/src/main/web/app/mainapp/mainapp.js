@@ -61,9 +61,6 @@
       template: JST["template/mainapp/mainapp"](),
       scope: {},
       controller: function($scope) {
-        var showStatusMessage = function(message) {
-          $scope.message = message;
-        };
         var showLoadingStatusMessage = function(message) {
           $scope.loadingmsg = message;
         };
@@ -491,7 +488,7 @@
           };
 
           var saveStart = function() {
-            showStatusMessage("Saving");
+            showLoadingStatusMessage("Saving");
           };
           var saveDone = function(ret) {
             bkSessionManager.setNotebookModelEdited(false);

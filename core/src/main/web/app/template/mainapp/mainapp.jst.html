@@ -35,7 +35,7 @@
       </li>
     </ul>
     <p class="navbar-text text-success right">
-      {{message}}{{(message && isEdited()) ? " | " : "" }}{{isEdited() ? "edited" : ""}}
+      {{isEdited() && "edited"}}
     </p>
     <p ng-if="isDisconnected()" class="navbar-text right">
       <a href="javascript:;" class="navbar-link text-danger" ng-click="promptToSave()" eat-click>{{getOffineMessage()}}</a>

@@ -432,7 +432,7 @@
         if (evaluation.outputdata !== undefined && evaluation.outputdata.length>0) {
           var idx;
           for (idx=0; idx<evaluation.outputdata.length>0; idx++) {
-            modelOutput.result.object.outputdata.push({ result : evaluation.outputdata[idx] });
+            modelOutput.result.object.outputdata.push(evaluation.outputdata[idx]);
           }
         }
         
@@ -441,56 +441,55 @@
           modelOutput.result.object.payload = evaluation.payload;
         }
         
+        if (modelOutput.result.object.payload === undefined) {
+          if (modelOutput.result.object.outputdata.length > 0) {
+            modelOutput.result.object.payload = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : undefined };
+          }
+        } else if (modelOutput.result.object.payload.type === "Results") {
+          modelOutput.result.object.payload.outputdata = modelOutput.result.object.outputdata;
+        } else if (modelOutput.result.object.outputdata.length > 0) {
+          modelOutput.result.object.payload = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : modelOutput.result.object.payload };
+        }
+        
         if (evaluation.status === "FINISHED") {
           cometdUtil.unsubscribe(evaluation.update_id);
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime; 
           if (modelOutput.result.object.outputdata.length === 0) {
-            // fallback to single display
-            modelOutput.result = modelOutput.result.object.payload;
-            if (modelOutput.result !== undefined && modelOutput.result.update_id) {
+            // single output display
+            modelOutput.result = evaluation.payload;
+            if (modelOutput.result !== undefined && modelOutput.result.update_id !== undefined) {
               var onUpdatableSingleResultUpdate = function(update) {
                 modelOutput.result = update;
                 bkHelper.refreshRootScope();
               };
               cometdUtil.subscribe(modelOutput.result.update_id, onUpdatableSingleResultUpdate);
-            }   
-          } else {
-            // build output container
-            var items = modelOutput.result.object.outputdata.map(function (it) { return it.result; });
-            if ( modelOutput.result.object.payload !== undefined) {              
-              items.push(modelOutput.result.object.payload);
-              if (modelOutput.result.object.payload !== undefined && modelOutput.result.object.payload.update_id) {
-                var idx = items.length-1;
-                var onUpdatableResultUpdate = function(update) {
-                  modelOutput.result.items[idx] = update;
-                  bkHelper.refreshRootScope();
-                };
-                cometdUtil.subscribe(modelOutput.result.object.payload.update_id, onUpdatableResultUpdate);
-              }   
             }
-            modelOutput.result = { "type": "OutputContainer", "items" : items };
+          } else {
+            // wrapper display with standard output and error
+            modelOutput.result = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : evaluation.payload };
+            // build output container
+            if (modelOutput.result.payload !== undefined && modelOutput.result.payload.update_id !== undefined) {
+              var onUpdatableResultUpdate = function(update) {
+                modelOutput.result.payload = update;
+                bkHelper.refreshRootScope();
+              };
+              cometdUtil.subscribe(modelOutput.result.payload.update_id, onUpdatableResultUpdate);
+            }
           }
-
         } else if (evaluation.status === "ERROR") {
           cometdUtil.unsubscribe(evaluation.update_id);
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;          
-
           if (modelOutput.result.object.outputdata.length === 0) {
+            // single output display
             modelOutput.result = {
               type: "BeakerDisplay",
               innertype: "Error",
               object: evaluation.payload
             };
           } else {
-            var items = modelOutput.result.object.outputdata.map(function (it) { return it.result; });
-            items.push({
-              type: "BeakerDisplay",
-              innertype: "Error",
-              object: evaluation.payload
-            });
-            modelOutput.result = { "type": "OutputContainer", "items" : items };            
+            // wrapper display with standard output and error
+            modelOutput.result = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : { type: "BeakerDisplay", innertype: "Error", object: evaluation.payload } };
           }
-          
         } else if (evaluation.status === "RUNNING") {
           if (evaluation.message === undefined)
             modelOutput.result.object.message     = "running...";

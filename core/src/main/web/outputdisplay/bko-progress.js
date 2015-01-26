@@ -54,7 +54,7 @@
           return scope.model.getCellModel().progressBar >= 0;
         };
         scope.hasPayload = function() {
-          return scope.model.getCellModel().payload !== undefined && scope.model.getCellModel().payload.type !== undefined;
+          return scope.model.getCellModel().payload !== undefined;
         };
         scope.getPayloadType = function() {
           if (scope.hasPayload())
@@ -63,9 +63,6 @@
         };
         scope.getPayload = function() {
           return scope.model.getCellModel().payload;
-        };
-        scope.getOutputdata = function() {
-          return scope.model.getCellModel().outputdata;
         };
         scope.cancel = function() {
           bkEvaluateJobManager.cancel();

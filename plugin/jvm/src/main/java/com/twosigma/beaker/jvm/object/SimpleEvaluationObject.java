@@ -57,12 +57,16 @@ public class SimpleEvaluationObject extends Observable {
   private int progressBar;
   private BeakerOutputHandler stdout;
   private BeakerOutputHandler stderr;
+  private String buildingout;
+  private String buildingerr;
 
   public SimpleEvaluationObject(String e) {
     expression = e;
     status = EvaluationStatus.QUEUED;
     outputdata = new ArrayList<Object>();
     payload_changed = true;
+    buildingout = "";
+    buildingerr = "";
   }
 
   public synchronized void started() {
@@ -190,13 +194,13 @@ public class SimpleEvaluationObject extends Observable {
         for (Object o : value.getOutputdata()) {
           if (o instanceof EvaluationStdOutput) {
             jgen.writeStartObject();
-            jgen.writeStringField("type", "BeakerStandardOutput");
+            jgen.writeStringField("type", "out");
             jgen.writeStringField("value", ((EvaluationStdOutput)o).payload );
             jgen.writeEndObject();
           }
           else if (o instanceof EvaluationStdError) {
             jgen.writeStartObject();
-            jgen.writeStringField("type", "BeakerStandardError");
+            jgen.writeStringField("type", "err");
             jgen.writeStringField("value", ((EvaluationStdError)o).payload );
             jgen.writeEndObject();
           }
@@ -262,20 +266,60 @@ public class SimpleEvaluationObject extends Observable {
   }
   
   public synchronized void appendOutput(String s) {
-    if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdOutput)) {
-      outputdata.add(new EvaluationStdOutput(s));
-    } else {
-      EvaluationStdOutput st = (EvaluationStdOutput) outputdata.get(outputdata.size()-1);
-      st.payload += s;
-    }
+    buildingout += s;
+    if (s.contains("\n")) {
+      String add;
+      if (s.endsWith("\n")) {
+        add = buildingout;
+        buildingout = "";
+      } else {
+        add = buildingout.substring(0, buildingout.lastIndexOf('\n')+1);
+        buildingout = buildingout.substring(buildingout.lastIndexOf('\n')+1);
+      }
+      if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdOutput)) {
+        outputdata.add(new EvaluationStdOutput(add));
+      } else {
+        EvaluationStdOutput st = (EvaluationStdOutput) outputdata.get(outputdata.size()-1);
+        st.payload += add;
+      }   
+      setChanged();
+      notifyObservers();
+    }    
   }
 
   public synchronized void appendError(String s) {
-    if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdError)) {
-      outputdata.add(new EvaluationStdError(s));
-    } else {
-      EvaluationStdError st = (EvaluationStdError) outputdata.get(outputdata.size()-1);
-      st.payload += s;
+    buildingerr += s;
+    if (s.contains("\n")) {
+      String add;
+      if (s.endsWith("\n")) {
+        add = buildingerr;
+        buildingerr = "";
+      } else {
+        add = buildingerr.substring(0, buildingerr.lastIndexOf('\n')+1);
+        buildingerr = buildingerr.substring(buildingerr.lastIndexOf('\n')+1);
+      }
+
+      /*
+       * HACK to remove annoying stderr messages from third party libraries
+       */
+      if ((add.contains("org.antlr.v4.runtime.misc.NullUsageProcessor") && add.contains("'RELEASE_6'")) ||
+          (add.contains("JavaSourceCompilerImpl compile"))) {
+        String [] v = add.split("\n");
+        add = "";
+        for(String s2 : v)
+          if (!s2.contains("org.antlr.v4.runtime.misc.NullUsageProcessor") && !s2.contains("JavaSourceCompilerImpl compile"))
+            add += s2 + "\n";
+      }
+      if (!add.isEmpty()) {
+        if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdError)) {
+          outputdata.add(new EvaluationStdError(add));
+        } else {
+          EvaluationStdError st = (EvaluationStdError) outputdata.get(outputdata.size()-1);
+          st.payload += add;
+        }
+        setChanged();
+        notifyObservers();
+      }
     }
   }
 

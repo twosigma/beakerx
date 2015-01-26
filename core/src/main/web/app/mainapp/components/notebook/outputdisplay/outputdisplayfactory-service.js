@@ -35,24 +35,6 @@
             };
           }
         },
-        "BeakerStandardOutput": {
-          template: "<strong>Standard Output</strong><pre>{{getText()}}</pre>",
-          controller: function($scope) {
-            $scope.getText = function() {
-              var model = $scope.model.getCellModel();
-              return (model && model.value) ? model.value : model;
-            };
-          }
-        },
-        "BeakerStandardError": {
-          template: "<strong class='out_error'>Standard Error</strong><pre class='out_error'>{{getText()}}</pre>",
-          controller: function($scope) {
-            $scope.getText = function() {
-              var model = $scope.model.getCellModel();
-              return (model && model.value) ? model.value : model;
-            };
-          }
-        },
       "Warning": {
         template: "<div class='outline warning'></div> <pre class='out_warning'>{{model.getCellModel().message}}</pre>"
       },
@@ -145,9 +127,7 @@
       "Warning": ["Warning"],
       "BeakerOutputContainerDisplay": ["OutputContainer", "Text"],
       "OutputContainerCell": ["OutputContainer", "Text"],
-      "OutputContainer": ["OutputContainer", "Text"],
-      "BeakerStandardOutput": ["BeakerStandardOutput", "Text"],
-      "BeakerStandardError": ["BeakerStandardError", "Text"]
+      "OutputContainer": ["OutputContainer", "Text"]
     };
     var factory = {
       add: function(type, impl) {

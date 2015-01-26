@@ -1,21 +1,17 @@
-<div>
-  <table>
-    <tr>
-      <td>
-        <div ng-if='hasMessage()'> {{getMessage()}}</div>
-      </td>
-      <td>
-        <div ng-if='elapsed > 200'>
-          <i class='fa fa-cog fa-spin fa-lg'></i>
-          <span> Elapsed: {{getElapsedTime()}} </span>
-          <i class='fa fa-times-circle fa-lg text-danger cursor_hand' ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
-        </div>
-      </td>
-      <td>
-        <div ng-if='hasProgressBar()'> Progress: {{getProgressBar()}} %</div>
-      </td>
-    </tr>
-  </table>
+<div ng-if='elapsed > 200' class='row' style='width:50%'>
+  <div class='col-sm-4'>
+      <i class='fa fa-cog fa-spin fa-lg'></i>
+      <span> Elapsed: {{getElapsedTime()}} </span>
+      <i class='fa fa-times-circle fa-lg text-danger cursor_hand' ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
+  </div>
+  <div class="progress" ng-if='hasProgressBar()' class='col-sm-8'>
+	  <div class="progress-bar" role="progressbar" aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getProgressBar()}}%;">
+	    {{getProgressBar()}} %
+	  </div>
+  </div>
 </div>
-<bk-code-cell-output ng-repeat="i in getOutputdata()" model="i"> </bk-code-cell-output>
+<div ng-if='hasMessage()' class='row'>
+  <div class='col-sm-8'> {{getMessage()}}</div>
+</div>
+<br ng-if='hasPayload()'/>
 <bk-code-cell-output ng-if='hasPayload()' model='outputDisplayModel'></bk-code-cell-output>

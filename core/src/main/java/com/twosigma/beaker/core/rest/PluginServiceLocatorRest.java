@@ -38,6 +38,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.EnumSet;
 import java.util.List;
@@ -354,41 +355,25 @@ public class PluginServiceLocatorRest {
       Process restartproc = Runtime.getRuntime().exec(this.nginxRestartCommand, this.nginxEnv);
       startGobblers(restartproc, "restart-nginx-" + pluginId, null, null);
       restartproc.waitFor();
-    
-      String fullCommand = command;
-      String baseCommand;
+
+      ArrayList<String> fullCommand =
+        new ArrayList<String>(Arrays.asList(command.split("\\s+")));
       String args;
-      int space = command.indexOf(' ');
-      if (space > 0) {
-        baseCommand = command.substring(0, space);
-        args = command.substring(space); // include space
-      } else {
-        baseCommand = command;
-        args = " ";
-      }
-      if (Files.notExists(Paths.get(baseCommand))) {
-        if (this.pluginLocations.containsKey(pluginId)) {
-          fullCommand = this.pluginLocations.get(pluginId) + "/" + baseCommand;
-        }
-        if (Files.notExists(Paths.get(fullCommand))) {
-          fullCommand = this.pluginDir + "/" + baseCommand;
-          if (Files.notExists(Paths.get(fullCommand))) {
-            throw new PluginServiceNotFoundException("plugin service: " + pluginId + " not found" + " and fail to start it with: " + command);
-          }
-        }
-      }
-      
-      if (windows()) {
-        fullCommand = "\"" + fullCommand + "\"";
-      } else {
-        fullCommand += args; // XXX should be in windows too?
+
+      fullCommand.set(0, (this.pluginLocations.containsKey(pluginId) ?
+                          this.pluginLocations.get(pluginId) : this.pluginDir)
+                      + "/" + fullCommand.get(0));
+      if (Files.notExists(Paths.get(fullCommand.get(0)))) {
+        throw new PluginServiceNotFoundException("plugin service " + pluginId + " not found at "
+                                                 + command);
       }
 
       List<String> extraArgs = this.pluginArgs.get(pluginId);
       if (extraArgs != null) {
-        fullCommand += " " + StringUtils.join(extraArgs, " ");
+        fullCommand.addAll(extraArgs);
       }
-      fullCommand += " " + Integer.toString(pConfig.port);
+
+      fullCommand.add(Integer.toString(pConfig.port));
           
       String[] env = this.pluginEnvps.get(pluginId);
       List<String> envList = new ArrayList<>();
@@ -411,14 +396,18 @@ public class PluginServiceLocatorRest {
       envList.toArray(env);
 
       if (windows()) {
-        fullCommand = "python " + fullCommand;
+        fullCommand.add(0, "python");
       }
-      System.out.println("Running: " + fullCommand);
-      proc = Runtime.getRuntime().exec(fullCommand, env);
+      System.out.println("Running");
+      for (int i = 0; i < fullCommand.size(); i++) {
+        System.out.println(i + ": " + fullCommand.get(i));
+      }
+      proc = Runtime.getRuntime().exec(fullCommand.toArray(new String[fullCommand.size()]), env);
     }
     
     if (startedIndicator != null && !startedIndicator.isEmpty()) {
-      InputStream is = startedIndicatorStream.equals("stderr") ? proc.getErrorStream() : proc.getInputStream();
+      InputStream is = startedIndicatorStream.equals("stderr") ?
+        proc.getErrorStream() : proc.getInputStream();
       InputStreamReader ir = new InputStreamReader(is);
       BufferedReader br = new BufferedReader(ir);
       String line = "";

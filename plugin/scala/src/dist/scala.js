@@ -84,15 +84,8 @@ define(function(require, exports, module) {
       evaluate: function(code, modelOutput) {
         var deferred = Q.defer();
         var self = this;
-        var progressObj = {
-            type: "BeakerDisplay",
-            innertype: "Progress",
-            object: {
-              message: "submitting ...",
-              startTime: new Date().getTime()
-            }
-        };
-        modelOutput.result = progressObj;
+        bkHelper.setupProgressOutput(modelOutput);
+        
         $.ajax({
           type: "POST",
           datatype: "json",

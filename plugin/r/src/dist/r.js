@@ -90,15 +90,8 @@ define(function(require, exports, module) {
       }
 
       var self = this;
-      var progressObj = {
-        type: "BeakerDisplay",
-        innertype: "Progress",
-        object: {
-          message: "submitting ...",
-          startTime: new Date().getTime()
-        }
-      };
-      modelOutput.result = progressObj;
+      bkHelper.setupProgressOutput(modelOutput);
+      
       RCancelFunction = function () {
         $.ajax({
           type: "POST",
@@ -108,8 +101,7 @@ define(function(require, exports, module) {
         }).done(function (ret) {
           console.log("done cancelExecution",ret);
         });
-        progressObj.object.message = "cancelling...";
-        modelOutput.result = progressObj;
+        bkHelper.setupCancellingOutput(modelOutput);
       }
       $.ajax({
         type: "POST",
@@ -117,41 +109,18 @@ define(function(require, exports, module) {
         url: serviceBase + "/rest/rsh/evaluate",
         data: {shellID: self.settings.shellID, code: code, init: !!init}
       }).done(function(ret) {
-
-            var onUpdatableResultUpdate = function(update) {
-              modelOutput.result = update;
-              bkHelper.refreshRootScope();
-            };
-            var onEvalStatusUpdate = function(evaluation) {
-              modelOutput.result.status = evaluation.status;
-              if (evaluation.status === "FINISHED") {
-                cometdUtil.unsubscribe(evaluation.update_id);
-                modelOutput.result = evaluation.result;
-                if (evaluation.result.update_id) {
-                  cometdUtil.subscribe(evaluation.result.update_id, onUpdatableResultUpdate);
-                }
-                modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
-                deferred.resolve();
-              } else if (evaluation.status === "ERROR") {
-                cometdUtil.unsubscribe(evaluation.update_id);
-                modelOutput.result = {
-                  type: "BeakerDisplay",
-                  innertype: "Error",
-                  object: evaluation.result
-                };
-                modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
-                deferred.resolve();
-              } else if (evaluation.status === "RUNNING") {
-                progressObj.object.message = "running...";
-                modelOutput.result = progressObj;
-              }
-              bkHelper.refreshRootScope();
-            };
-            onEvalStatusUpdate(ret);
-            if (ret.update_id) {
-              cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
-            }
-          });
+        var onEvalStatusUpdate = function(evaluation) {
+          if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, cometdUtil)) {
+            cometdUtil.unsubscribe(evaluation.update_id);
+            deferred.resolve();
+          }
+          bkHelper.refreshRootScope();
+        };
+        onEvalStatusUpdate(ret);
+        if (ret.update_id) {
+          cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
+        }
+      });
       deferred.promise.finally(function () {
         RCancelFunction = null;
       });

@@ -373,8 +373,8 @@ public class JavaEvaluator {
       
       @Override
       public void run() {
-        try {
-          
+        theOutput.setOutputHandler();
+        try {          
           Object o = theMth.invoke(null, (Object[])null);
           if (retObject) {
             theOutput.finished(o);
@@ -393,6 +393,7 @@ public class JavaEvaluator {
             theOutput.error(sw.toString());
           }
         }
+        theOutput.clrOutputHandler();
       }
 
     };

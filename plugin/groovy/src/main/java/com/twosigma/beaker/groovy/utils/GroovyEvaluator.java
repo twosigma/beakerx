@@ -40,6 +40,7 @@ import com.twosigma.beaker.groovy.autocomplete.GroovyAutocomplete;
 import com.twosigma.beaker.groovy.autocomplete.GroovyClasspathScanner;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 
 public class GroovyEvaluator {
   protected final String shellId;
@@ -210,15 +211,15 @@ public class GroovyEvaluator {
         
           if(loader!=null)
             loader.clearCache();
-
-          j.outputObject.started();
-
+          
           nc = NamespaceClient.getBeaker(sessionId);
           nc.setOutputObj(j.outputObject);
+          j.outputObject.started();
 
           if (!executor.executeTask(new MyRunnable(j.codeToBeExecuted, j.outputObject))) {
             j.outputObject.error("... cancelled!");
           }
+          
           if(nc!=null) {
             nc.setOutputObj(null);
             nc = null;
@@ -248,6 +249,7 @@ public class GroovyEvaluator {
       @Override
       public void run() {
         Object result;
+        theOutput.setOutputHandler();
         try {
           result = shell.evaluate(theCode);
           theOutput.finished(result);
@@ -261,6 +263,7 @@ public class GroovyEvaluator {
             theOutput.error(sw.toString());
           }
         }
+        theOutput.clrOutputHandler();
       }
     };
     

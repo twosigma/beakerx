@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+
 /**
  * ErrorGobbler that takes a stream from a evaluator process and write to outputLog
  */
@@ -27,7 +29,8 @@ public class ErrorGobbler extends Thread {
 
   private final InputStream inputStream;
   private boolean expectingExtraLine;
-
+  private SimpleEvaluationObject dest;
+  
   public ErrorGobbler(InputStream is) {
     inputStream = is;
     expectingExtraLine = false;
@@ -38,6 +41,10 @@ public class ErrorGobbler extends Thread {
   // why or how to stop it, seems like a bug.  Use this to hide it.
   public void expectExtraLine() {
     expectingExtraLine = true;
+  }
+
+  public void reset(SimpleEvaluationObject dest) {
+    this.dest = dest;
   }
 
   @Override
@@ -51,7 +58,10 @@ public class ErrorGobbler extends Thread {
           expectingExtraLine = false;
           continue;
         }
-        System.err.println(line);
+        if (this.dest != null)
+          this.dest.appendError(line+"\n");
+        else
+          System.err.println(line);
       }
     } catch (IOException ioe) {
       ioe.printStackTrace();

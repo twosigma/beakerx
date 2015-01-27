@@ -55,7 +55,7 @@ public class ROutputHandler extends Thread {
       while ((line = br.readLine()) != null) {
         if (line.indexOf(this.beginMagic) >= 0) {
           this.recording = true;
-        } else if (line.indexOf(this.endMagic) >= 0) {
+        } else if ((line.indexOf(this.endMagic) >= 0) && this.dest!=null) {
           this.dest.finished(this.captured);
           this.dest = null;
           this.captured = null;
@@ -66,6 +66,8 @@ public class ROutputHandler extends Thread {
           } else {
             this.captured = this.captured + "\n" + line;
           }
+        } else if (this.dest!= null) {
+          this.dest.appendOutput(line+"\n");
         } else {
           System.out.println(line);
         }

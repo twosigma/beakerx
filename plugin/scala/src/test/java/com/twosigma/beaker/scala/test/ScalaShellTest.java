@@ -129,7 +129,9 @@ public class ScalaShellTest extends JerseyTest {
           status = (String) ((JSONObject)ro.get("data")).get("status");
           if(!status.equals("RUNNING")) {
             completed = true;
-            result = ((JSONObject)ro.get("data")).get("result").toString();
+            Object o = ((JSONObject)ro.get("data")).get("payload");
+            if ( o!=null)
+              result = o.toString();
             client.getChannel("/object_update/"+id).unsubscribe();
           }
         }

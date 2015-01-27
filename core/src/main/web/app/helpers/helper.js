@@ -489,6 +489,9 @@
             else
               evaluation.payload = modelOutput.result.object.payload;
           }
+          if (evaluation.payload !== undefined && $.type(evaluation.payload)=='string') {
+            evaluation.payload = evaluation.payload.split('\n');
+          }
           if (cometdUtil !== undefined) cometdUtil.unsubscribe(evaluation.update_id);
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;          
           if (modelOutput.result.object.outputdata.length === 0) {

@@ -452,7 +452,13 @@
         }
         
         if (evaluation.status === "FINISHED") {
-          cometdUtil.unsubscribe(evaluation.update_id);
+          if (evaluation.payload === undefined) {
+              if (modelOutput.result.object.payload !== undefined && modelOutput.result.object.payload.type === "Results")
+                  evaluation.payload = modelOutput.result.object.payload.payload;
+              else
+                  evaluation.payload = modelOutput.result.object.payload;
+          }
+          if (cometdUtil !== undefined) cometdUtil.unsubscribe(evaluation.update_id);
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime; 
           if (modelOutput.result.object.outputdata.length === 0) {
             // single output display
@@ -462,7 +468,7 @@
                 modelOutput.result = update;
                 bkHelper.refreshRootScope();
               };
-              cometdUtil.subscribe(modelOutput.result.update_id, onUpdatableSingleResultUpdate);
+              if (cometdUtil !== undefined) cometdUtil.subscribe(modelOutput.result.update_id, onUpdatableSingleResultUpdate);
             }
           } else {
             // wrapper display with standard output and error
@@ -473,11 +479,17 @@
                 modelOutput.result.payload = update;
                 bkHelper.refreshRootScope();
               };
-              cometdUtil.subscribe(modelOutput.result.payload.update_id, onUpdatableResultUpdate);
+              if (cometdUtil !== undefined) cometdUtil.subscribe(modelOutput.result.payload.update_id, onUpdatableResultUpdate);
             }
           }
         } else if (evaluation.status === "ERROR") {
-          cometdUtil.unsubscribe(evaluation.update_id);
+          if (evaluation.payload === undefined) {
+            if (modelOutput.result.object.payload !== undefined && modelOutput.result.object.payload.type === "Results")
+              evaluation.payload = modelOutput.result.object.payload.payload;
+            else
+              evaluation.payload = modelOutput.result.object.payload;
+          }
+          if (cometdUtil !== undefined) cometdUtil.unsubscribe(evaluation.update_id);
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;          
           if (modelOutput.result.object.outputdata.length === 0) {
             // single output display

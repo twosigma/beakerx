@@ -1,17 +1,19 @@
-<div ng-if='elapsed > 200' class='row' style='width:50%'>
-  <div class='col-sm-4'>
+<div ng-if='elapsed > 200' class='row'>
+  <div class='col-sm-2'>
       <i class='fa fa-cog fa-spin fa-lg'></i>
-      <span> Elapsed: {{getElapsedTime()}} </span>
+      <span> &nbsp; Elapsed: {{getElapsedTime()}} &nbsp; </span>
       <i class='fa fa-times-circle fa-lg text-danger cursor_hand' ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
   </div>
-  <div class="progress" ng-if='hasProgressBar()' class='col-sm-8'>
-	  <div class="progress-bar" role="progressbar" aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getProgressBar()}}%;">
-	    {{getProgressBar()}} %
+  <div class='col-sm-2' ng-if='hasProgressBar()'>
+	  <div class="progress">
+		  <div class="progress-bar" role="progressbar" aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getProgressBar()}}%;">
+		    {{getProgressBar()}} %
+		  </div>
 	  </div>
   </div>
+  <div ng-if='hasMessage()' class='col-sm-8'> {{getMessage()}}</div>
 </div>
-<div ng-if='hasMessage()' class='row'>
-  <div class='col-sm-8'> {{getMessage()}}</div>
+<div ng-if='hasPayload()' >
+  <hr>
+  <bk-code-cell-output model='outputDisplayModel'></bk-code-cell-output>
 </div>
-<br ng-if='hasPayload()'/>
-<bk-code-cell-output ng-if='hasPayload()' model='outputDisplayModel'></bk-code-cell-output>

@@ -425,7 +425,9 @@
         modelOutput.result.object.message = "cancelling ...";
       },
       
-      receiveEvaluationUpdate: function(modelOutput, evaluation, cometdUtil) {        
+      receiveEvaluationUpdate: function(modelOutput, evaluation, cometdUtil) {       
+        var maxNumOfLines = 200;
+        
         modelOutput.result.status = evaluation.status;
         
         // append text output (if any)
@@ -433,6 +435,25 @@
           var idx;
           for (idx=0; idx<evaluation.outputdata.length>0; idx++) {
             modelOutput.result.object.outputdata.push(evaluation.outputdata[idx]);
+          }
+          var cnt = 0;
+          for (idx=0; idx<modelOutput.result.object.outputdata.length; idx++) {
+            cnt += modelOutput.result.object.outputdata[idx].value.split(/\n/).length;
+          }
+          if (cnt > maxNumOfLines) {
+            cnt -= maxNumOfLines;
+            while(cnt > 0) {
+              var l = modelOutput.result.object.outputdata[0].value.split(/\n/).length;
+              if (l<=cnt) {
+                modelOutput.result.object.outputdata.splice(0,1);
+                cnt -= l;
+              } else {
+                var a = modelOutput.result.object.outputdata[0].value.split(/\n/);
+                a.splice(0,cnt);
+                modelOutput.result.object.outputdata[0].value = a.join('\n');
+                cnt = 0;
+              }
+            }
           }
         }
         

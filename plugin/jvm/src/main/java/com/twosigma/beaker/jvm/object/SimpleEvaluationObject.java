@@ -38,6 +38,8 @@ import org.codehaus.jackson.map.SerializerProvider;
  */
 public class SimpleEvaluationObject extends Observable {
 
+  private static final int OUTPUT_QUEUE_SIZE = 30;
+  
   public class EvaluationStdOutput {
     public String payload;
     public EvaluationStdOutput(String s) { payload = s; }
@@ -50,6 +52,7 @@ public class SimpleEvaluationObject extends Observable {
   
   private EvaluationStatus status;
   private List<Object> outputdata;
+  private int outputdataCount;
   private final String expression;
   private EvaluationResult payload;
   private boolean payload_changed;
@@ -64,6 +67,7 @@ public class SimpleEvaluationObject extends Observable {
     expression = e;
     status = EvaluationStatus.QUEUED;
     outputdata = new ArrayList<Object>();
+    outputdataCount = 0;
     payload_changed = true;
     buildingout = "";
     buildingerr = "";
@@ -138,6 +142,7 @@ public class SimpleEvaluationObject extends Observable {
   public synchronized List<Object> getOutputdata() {
     List<Object> o = new ArrayList<Object>(outputdata);
     outputdata.clear();
+    outputdataCount = 0;
     return o;
   }
 
@@ -264,8 +269,22 @@ public class SimpleEvaluationObject extends Observable {
       stderr = new SimpleErrorHandler();
     return stderr;
   }
+
+  public void appendOutput(String s) {
+    if (getSize() > OUTPUT_QUEUE_SIZE) {
+      try { Thread.sleep(500); } catch (InterruptedException e) { }
+    }
+    if (getSize() > OUTPUT_QUEUE_SIZE) {
+      try { Thread.sleep(500); } catch (InterruptedException e) { }
+    }
+    doAppendOutput(s);
+  }
   
-  public synchronized void appendOutput(String s) {
+  private synchronized int getSize() {
+    return outputdataCount;
+  }
+  
+  private synchronized void doAppendOutput(String s) {
     buildingout += s;
     if (s.contains("\n")) {
       String add;
@@ -281,13 +300,27 @@ public class SimpleEvaluationObject extends Observable {
       } else {
         EvaluationStdOutput st = (EvaluationStdOutput) outputdata.get(outputdata.size()-1);
         st.payload += add;
-      }   
+      }
+      for(int i = 0; i < add.length(); i++) {
+        if (add.charAt(i) == '\n')
+          outputdataCount ++;
+      }
       setChanged();
       notifyObservers();
     }    
   }
 
-  public synchronized void appendError(String s) {
+  public void appendError(String s) {
+    if (getSize() > OUTPUT_QUEUE_SIZE) {
+      try { Thread.sleep(500); } catch (InterruptedException e) { }
+    }
+    if (getSize() > OUTPUT_QUEUE_SIZE) {
+      try { Thread.sleep(500); } catch (InterruptedException e) { }
+    }
+    doAppendError(s);
+  }
+
+  private synchronized void doAppendError(String s) {
     buildingerr += s;
     if (s.contains("\n")) {
       String add;
@@ -316,6 +349,10 @@ public class SimpleEvaluationObject extends Observable {
         } else {
           EvaluationStdError st = (EvaluationStdError) outputdata.get(outputdata.size()-1);
           st.payload += add;
+        }
+        for(int i = 0; i < add.length(); i++) {
+          if (add.charAt(i) == '\n')
+            outputdataCount ++;
         }
         setChanged();
         notifyObservers();

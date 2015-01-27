@@ -34,7 +34,7 @@ task makeDist(type: Exec) {
   if (osName.startsWith('Linux')) {
     platform = 'ubuntu'
   }
-  def zipName = 'beaker-notebook-' + gitDescribe() + '-' + platform
+  def zipName = 'beaker-notebook-' + gitDescribe().replace('/', '-') + '-' + platform
   if (platform == 'windows') {
     workingDir '../../..'
     commandLine 'cmd', '/c', '7za', 'a',

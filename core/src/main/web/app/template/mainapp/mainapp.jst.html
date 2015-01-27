@@ -13,28 +13,35 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="navbar navbar-fixed-top navbar-inverse">
-  <a class="navbar-brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
-    <img src="app/images/beaker_icon@2x.png"></img>
-    Beaker
-  </a>
-  <p class="navbar-text left">{{filename()}}</p>
-  <span class="navbar-text" ng-if="loading || loadingmsg!==''"><i class='fa fa-refresh fa-spin text-white'></i></span>
-  <div class="navbar-text text-white loadingmsg" ng-if="loading || loadingmsg!==''">{{loadingmsg}}</div>
-  <ul class="sub-nav clearfix" ng-if="!loading">
-    <li class="dropdown" ng-repeat="m in getMenus()">
-      <a href="#" role="button" class="dropdown-toggle" id="{{m.id}}" data-toggle="dropdown">{{m.name}}</a>
-      <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
-    </li>
-    <li class="pull-right" style="padding: 10px 54px; cursor: default;">
-      <span><font color="#009AA6">{{message}}{{(message && isEdited()) ? " | " : "" }}{{isEdited() ? "edited" :
-        ""}}</font></span>
-    </li>
-    <li class="pull-right" style="padding: 10px 54px; cursor: default;">
-      <span ng-show="isDisconnected()" class="offline-label" ng-click="promptToSave()" eat-click>{{getOffineMessage()}}</span>
-    </li>
-  </ul>
-</div>
+<header class="navbar-fixed-top">
+  <div class="navbar navbar-inverse">
+    <a class="navbar-brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
+      <img src="app/images/beaker_icon@2x.png" />
+      Beaker
+    </a>
+    <p class="navbar-text left">{{filename()}}</p>
+    <span class="navbar-text" ng-if="loading || !!loadingmsg">
+      <i class='fa fa-refresh fa-spin text-white'></i>
+    </span>
+    <div class="navbar-text text-white loadingmsg" ng-if="loading || !!loadingmsg">
+      {{loadingmsg}}
+    </div>
+  </div>
+  <div class="navbar navbar-default">
+    <ul class="nav navbar-nav">
+      <li class="dropdown" ng-repeat="m in getMenus()">
+        <a href="#" role="button" class="dropdown-toggle" id="{{m.id}}" data-toggle="dropdown">{{m.name}}</a>
+        <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
+      </li>
+    </ul>
+    <p class="navbar-text text-success right">
+      {{isEdited() && "edited"}}
+    </p>
+    <p ng-if="isDisconnected()" class="navbar-text right">
+      <a href="javascript:;" class="navbar-link text-danger" ng-click="promptToSave()" eat-click>{{getOffineMessage()}}</a>
+    </p>
+  </div>
+</header>
 
 <!-- Set the outer container to 100% so the fluid rows fill it.
      I think this is not needed if we update to bootstrap v3. -->

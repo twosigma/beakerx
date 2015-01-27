@@ -38,11 +38,11 @@ var BeakerPageObject = function () {
   this.languageManagerCloseButton = element(by.id('language-manager-close-button'));
   this.insertCellButton = element(by.id('insert-cell'));
   this.runCellButton = element(by.id('run-cell-button'));
-  this.cellEvaluatorMenu = element(by.id('cell-evaluator-menu'));
+  this.cellEvaluatorMenu = element(by.css('.code-cell-area .cell-evaluator-menu'));
   this.cellEvaluatorMenuItem = function (language) {
-    return element(by.id(language + '-menuitem'));
+    return element(by.css('.code-cell-area #' + language + '-menuitem'));
   };
-  this.cellEvaluatorDisplay = element(by.css('#cell-evaluator-menu b'));
+  this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
   this.setCellInput = function (code) {
     browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
   };

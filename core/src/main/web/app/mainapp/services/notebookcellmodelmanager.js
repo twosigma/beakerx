@@ -148,7 +148,7 @@
     oldArray.splice.apply(oldArray, args);
   };
 
-  module.factory("bkNotebookCellModelManager", function($timeout) {
+  module.factory("bkNotebookCellModelManager", function($timeout, $rootScope) {
     var cells = [];
     var cellMap = {};
     var tagMap = {};
@@ -177,6 +177,7 @@
       $timeout(function() {
         $('html, body').scrollTop(currentPosition);
       });
+      $rootScope.$broadcast('cellMapRecreated');
     };
     return {
       _getCellMap: function() {

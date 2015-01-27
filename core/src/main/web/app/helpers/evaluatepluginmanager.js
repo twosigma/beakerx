@@ -24,16 +24,16 @@
     var nameToVisualParams = {};
     var plugins = {};
     var loadingInProgressPlugins = [];
-    
+
     var evaluatorLoadQueue = (function() {
       var _queue = [];
       var _loadInProgress = undefined;
 
       var loadEvaluator = function(ev) {
         bkHelper.showStatus("Loading plugin "+ev.name);
-        return bkUtils.loadModule(ev.url, ev.name);        
+        return bkUtils.loadModule(ev.url, ev.name);
       };
-      var doNext = function() {        
+      var doNext = function() {
         if (_loadInProgress) {
           return;
         }
@@ -114,7 +114,7 @@
             name = "";
             url = nameOrUrl;
           }
-                
+
           var loadJob = {
               name: name,
               url: url,

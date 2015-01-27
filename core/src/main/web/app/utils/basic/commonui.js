@@ -99,6 +99,50 @@
       });
     }
   });
+  module.directive('dropdownPromoted', function() {
+    // Is your dropdown being covered by its ancestors siblings?
+    // Promote that shiz, and prepend it to the body so it doesn't
+    // ever get bullied again.
+    return {
+      restrict: 'C',
+      link: function(scope, element, attrs) {
+        var dropdown = element.find('.dropdown-menu').first();
+        var toggle = element.find('.dropdown-toggle').first();
+
+        var showDropdown = function() {
+          var togglePosition = toggle.offset();
+
+          dropdown.show().css({
+            top: togglePosition.top + 'px',
+            left: togglePosition.left - dropdown.outerWidth() + 'px',
+          });
+
+          dropdown.prependTo('body');
+          dropdown.css('visibility', 'visible');
+
+          element.on('click', '.dropdown-toggle', hideDropdown);
+          $(document).on('click.bs.dropdown.data-api', hideDropdown);
+        };
+
+        var hideDropdown = function() {
+          dropdown
+          .hide()
+          .css('visibility', 'hidden')
+          .appendTo(element);
+
+          element.on('click', '.dropdown-toggle', showDropdown);
+          $(document).off('click.bs.dropdown.data-api', hideDropdown);
+        };
+
+        element.on('click', '.dropdown-toggle', showDropdown);
+
+        scope.$on('$destroy', function() {
+          hideDropdown();
+          element.off('click');
+        });
+      }
+    }
+  });
   module.directive('bkDropdownMenu', function() {
     return {
       restrict: 'E',

@@ -36,13 +36,13 @@ describe('language manager test', function () {
   });
 
   it('load ipython', function () {
-    expect(beakerPO.languageManagerButtonKnown('IPython').isDisplayed()).toBe(true);
-    expect(beakerPO.languageManagerButtonActive('IPython').isDisplayed()).toBe(false);
+    expect(beakerPO.languageManagerButtonKnown('IPython').isPresent()).toBe(true);
+    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(false);
     beakerPO.languageManagerButton('IPython').click();
     // Abstract this into beakerPO XXX
     browser.wait(function () {
       var deferred = protractor.promise.defer();
-      beakerPO.languageManagerButtonActive('IPython').isDisplayed()
+      beakerPO.languageManagerButtonActive('IPython').isPresent()
         .then(function (result) {
           deferred.fulfill(result);
         });

@@ -30,6 +30,11 @@
   margin-right: 5px;
 }
 
+.dropdown-promoted > .dropdown-menu {
+  position: fixed;
+  visibility: hidden;
+}
+
 .dropdown-submenu {
   position: relative;
 
@@ -43,7 +48,8 @@
   }
 
   &.drop-left > .dropdown-menu {
-    left: -100%;
+    left: auto;
+    right: 100%;
     margin-left: 0;
     margin-right: -1px;
   }

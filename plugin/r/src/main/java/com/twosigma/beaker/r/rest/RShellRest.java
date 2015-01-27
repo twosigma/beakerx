@@ -217,6 +217,9 @@ public class RShellRest {
     RConnection con = server.connection;
     boolean init = initString != null && initString.equals("true");
 
+    server.outputHandler.reset(obj);
+    server.errorGobbler.reset(obj);
+
     String file = windows() ? "rplot.svg" : makeTemp("rplot", ".svg");
     try {
       java.nio.file.Path p = java.nio.file.Paths.get(file);
@@ -255,7 +258,6 @@ public class RShellRest {
       } else if (isDataFrame(result, obj)) {
         // nothing
       } else {
-        server.outputHandler.reset(obj);
         String finish = "print(\"" + BEGIN_MAGIC + "\")\n" +
           "print(beaker_eval_$value)\n" +
           "print(\"" + END_MAGIC + "\")\n";
@@ -277,6 +279,9 @@ public class RShellRest {
     }
 
     addSvgResults(file, obj);
+    
+    server.outputHandler.reset(null);
+    server.errorGobbler.reset(null);
 
     return obj;
   }

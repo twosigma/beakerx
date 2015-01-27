@@ -54,7 +54,7 @@
           return scope.model.getCellModel().progressBar >= 0;
         };
         scope.hasPayload = function() {
-          return scope.model.getCellModel().payload !== undefined && scope.model.getCellModel().payload.type !== undefined;
+          return scope.model.getCellModel().payload !== undefined;
         };
         scope.getPayloadType = function() {
           if (scope.hasPayload())
@@ -77,47 +77,14 @@
           return scope.model.getCellModel().payload;
         };
 
-        scope.modelstate = {};
-        scope.outputDisplayModel = {
-            getCellModel: function() {
-              var result = scope.getPayload();
-              if (result && result.type === "BeakerDisplay") {
-                return result.object;
-              } else {
-                return result;
-              }
-            },
-            getDumpState: function() {
-              var result = scope.modelstate;
-              return result;
-            },
-            setDumpState: function(s) {
-              scope.modelstate = s;
-            },
-            getOutputDisplayType: function() {
-              return scope.getOutputDisplayType();
-            },
-            resetShareMenuItems: function () {
-            }
-          };
-
-        scope.refresh = function(type) {
-          scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(scope.getOutputResult());
-          if (scope.model.selectedType !== scope.applicableDisplays[0])
-            scope.model.selectedType = scope.applicableDisplays[0];
-        };
-        scope.getOutputDisplayType = function() {
-          var type = scope.model.selectedType;
-          // if BeakerDisplay, use the inner type instead
-          if (type === "BeakerDisplay") {
-            var result = scope.getOutputResult();
-            type = result ? result.innertype : "Hidden";
-          }
-          return type;
-        };
+        scope.isShowMenu = function() { return false; };
+        
         scope.$watch('getPayload()', function() {
-          if (scope.hasPayload())
-            scope.refresh();
+          if (scope.hasPayload()) {
+            scope.outputDisplayModel = {
+                result : scope.getPayload()
+            };
+          }
         });
       }
     };

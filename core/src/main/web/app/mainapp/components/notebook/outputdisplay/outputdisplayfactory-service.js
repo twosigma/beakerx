@@ -26,15 +26,15 @@
   module.factory("bkOutputDisplayFactory", function($rootScope, $sce) {
 
     var impls = {
-      "Text": {
-        template: "<pre>{{getText()}}</pre>",
-        controller: function($scope) {
-          $scope.getText = function() {
-            var model = $scope.model.getCellModel();
-            return (model && model.text) ? model.text : model;
-          };
-        }
-      },
+        "Text": {
+          template: "<pre>{{getText()}}</pre>",
+          controller: function($scope) {
+            $scope.getText = function() {
+              var model = $scope.model.getCellModel();
+              return (model && model.text) ? model.text : model;
+            };
+          }
+        },
       "Warning": {
         template: "<div class='outline warning'></div> <pre class='out_warning'>{{model.getCellModel().message}}</pre>"
       },
@@ -96,7 +96,7 @@
       }
     };
 
-    var types = ["Text", "Warning", "Error", "Html", "OutputContainer"];
+    var types = ["Text", "BeakerStandardOutput", "BeakerStandardError", "Warning", "Error", "Html", "OutputContainer"];
     var refresh = function(what, scope) {
       if (!what) {
         what = "all";

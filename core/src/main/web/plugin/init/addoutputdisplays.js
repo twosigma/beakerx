@@ -35,7 +35,9 @@
       "outputdisplay/bko-latex.js",
       
       "outputdisplay/bko-progress.js",
-      
+
+      "outputdisplay/bko-results.js",
+
       "vendor/vega/vega.js",
       "vendor/vega/d3.geo.projection.min.js",
       "vendor/vega/d3.layout.cloud.js",

@@ -118,32 +118,9 @@ define(function(require, exports, module) {
       bkHelper.fcall(spin);
     },
     evaluate: function(code, modelOutput) {
-      // utils
-      var emptyOutputResult = function() {
-        modelOutput.result = "";
-      };
-      var ensureOutputIsHtml = function() {
-        if (!modelOutput.result ||
-            modelOutput.result.type !== "BeakerDisplay" ||
-            modelOutput.result.innertype !== "Html") {
-          modelOutput.result = {
-            type: "BeakerDisplay",
-            innertype: "Html",
-            object: ""
-          };
-        }
-      }
-      var setOutputResult = function(result) {
-        ensureOutputIsHtml();
-        modelOutput.result.object = result;
-      };
-      var appendToResult = function(txtToAppend) {
-        ensureOutputIsHtml();
-        modelOutput.result.object += txtToAppend;
-      };
-
       // begin
       var deferred = bkHelper.newDeferred();
+      
       if (_theCancelFunction) {
         deferred.reject("An evaluation is already in progress");
         return deferred.promise;
@@ -151,39 +128,37 @@ define(function(require, exports, module) {
       var self = this;
       var startTime = new Date().getTime();
       var kernel = kernels[self.settings.shellID];
-      var progressObj = {
-        type: "BeakerDisplay",
-        innertype: "Progress",
-        object: {
-          message: "running...",
-          startTime: startTime
-        }
-      };
-      modelOutput.result = progressObj;
-      modelOutput.outputArrived = false;
+      bkHelper.setupProgressOutput(modelOutput);
+
       _theCancelFunction = function() {
         var kernel = kernels[self.settings.shellID];
         kernel.interrupt();
-        deferred.reject("cancelled by user");
-        modelOutput.result = "canceling ...";
+        bkHelper.setupCancellingOutput(modelOutput);
       };
       var execute_reply = function(msg) {
+        // this is called when processing is completed
         if (!ipyVersion1) {
           msg = msg.content;
         }
         var result = _(msg.payload).map(function(payload) {
           return IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(payload.text));
         }).join("");
+        var evaluation = { };
+        if (msg.status === "error")
+          evaluation.status = "ERROR";
+        else
+          evaluation.status = "FINISHED";
+
         if (!_.isEmpty(result)) {
-          setOutputResult("<pre>" + result + "</pre>");
-        } else if (!modelOutput.outputArrived) {
-          emptyOutputResult();
+          evaluation.payload = "<pre>" + result + "</pre>";
         }
-        modelOutput.elapsedTime = now() - startTime;
-        deferred.resolve();
-        bkHelper.refreshRootScope();
+        if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation)) {
+          deferred.resolve();
+        }
+        bkHelper.refreshRootScope();          
       }
       var output = function output(a0, a1) {
+        // this is called to write output
         var type;
         var content;
         if (ipyVersion1) {
@@ -193,22 +168,21 @@ define(function(require, exports, module) {
           type = a0.msg_type;
           content = a0.content;
         }
-        modelOutput.outputArrived = true;
+        var evaluation = { };
+        evaluation.status = "RUNNING";
+
         if (type === "pyerr") {
           var trace = _.reduce(content.traceback, function(memo, line) {
             return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
           }, content.evalue);
-          modelOutput.result = {
-            type: "BeakerDisplay",
-            innertype: "Error",
-            object: (content.ename === "KeyboardInterrupt") ? "Interrupted" : [content.evalue, trace]
-          };
+          evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [content.evalue, trace];
         } else if (type === "stream") {
-          var json = JSON.stringify({evaluator: "ipython",
-                                     type: content.name,
-                                     line: content.data});
-          $.cometd.publish("/service/outputlog/put", json);
-          appendToResult("");
+          evaluation.outputdata = [];
+          if (content.name === "stderr") {
+            evaluation.outputdata.push( { type : 'out', value : content.data } );
+          } else {
+            evaluation.outputdata.push( { type : 'err', value : content.data } );
+          }
         } else {
           var elem = $(document.createElement("div"));
           var oa = new IPython.OutputArea(elem);
@@ -220,13 +194,12 @@ define(function(require, exports, module) {
           }
           var table = bkHelper.findTable(elem[0]);
           if (table) {
-            modelOutput.result = table;
+            evaluation.payload = table;
           } else {
-            appendToResult(elem.html());
+            evaluation.payload = elem.html();
           }
         }
-        modelOutput.elapsedTime = now() - startTime;
-        deferred.resolve();
+        bkHelper.receiveEvaluationUpdate(modelOutput, evaluation);
         bkHelper.refreshRootScope();
       };
       var callbacks = ipyVersion1 ? {

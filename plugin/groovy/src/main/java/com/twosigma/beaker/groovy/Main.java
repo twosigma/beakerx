@@ -20,11 +20,14 @@ import com.google.inject.Injector;
 import com.twosigma.beaker.groovy.module.URLConfigModule;
 import com.twosigma.beaker.jvm.module.SerializerModule;
 import com.twosigma.beaker.jvm.module.WebServerModule;
+import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.beaker.shared.module.GuiceCometdModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
+
 import java.util.logging.Logger;
+
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -60,5 +63,6 @@ public class Main {
     Server server = injector.getInstance(Server.class);
     server.start();
     System.out.println("Server started");
+    BeakerStdOutErrHandler.init();
   }
 }

@@ -78,6 +78,8 @@
         };
 
         $scope.getOutputDisplayType = function() {
+          if ($scope.model === undefined)
+              return "Text";
           var type = $scope.model.selectedType;
           // if BeakerDisplay, use the inner type instead
           if (type === "BeakerDisplay") {

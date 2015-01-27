@@ -90,15 +90,7 @@ define(function(require, exports, module) {
       }
       
       var self = this;
-      var progressObj = {
-        type: "BeakerDisplay",
-        innertype: "Progress",
-        object: {
-          message: "submitting ...",
-          startTime: new Date().getTime()
-        }
-      };
-      modelOutput.result = progressObj;
+      bkHelper.setupProgressOutput(modelOutput);
       $.ajax({
         type: "POST",
         datatype: "json",
@@ -114,44 +106,12 @@ define(function(require, exports, module) {
           }).done(function (ret) {
             console.log("done cancelExecution",ret);
           });
-          progressObj.object.message = "cancelling...";
-          modelOutput.result = progressObj;
+          bkHelper.setupCancellingOutput(modelOutput);
         }
-        var onUpdatableResultUpdate = function(update) {
-          modelOutput.result = update;
-          bkHelper.refreshRootScope();
-        };
         var onEvalStatusUpdate = function(evaluation) {
-          modelOutput.result.status = evaluation.status;
-          if (evaluation.status === "FINISHED") {
+          if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, cometdUtil)) {
             cometdUtil.unsubscribe(evaluation.update_id);
-            modelOutput.result = evaluation.result;
-            if (evaluation.result.update_id) {
-              cometdUtil.subscribe(evaluation.result.update_id, onUpdatableResultUpdate);
-            }
-            modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
             deferred.resolve();
-          } else if (evaluation.status === "ERROR") {
-            cometdUtil.unsubscribe(evaluation.update_id);
-            modelOutput.result = {
-              type: "BeakerDisplay",
-              innertype: "Error",
-              object: evaluation.result.split('\n')
-            };
-            modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
-            deferred.resolve();
-          } else if (evaluation.status === "RUNNING") {
-            if(evaluation.result !== undefined) {
-              if(evaluation.result === Object(evaluation.result)) {
-                modelOutput.result.object.message = evaluation.result.message;
-                modelOutput.result.object.progressBar = evaluation.result.progressBar;
-                modelOutput.result.object.payload = evaluation.result.payload;
-              } else {
-                modelOutput.result.object.message = evaluation.result;
-              }
-            } else {
-              modelOutput.result.object.message = "running...";
-            }
           }
           bkHelper.refreshRootScope();
         };

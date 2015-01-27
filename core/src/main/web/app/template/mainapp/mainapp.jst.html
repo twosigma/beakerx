@@ -34,9 +34,7 @@
         <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
       </li>
     </ul>
-    <p class="navbar-text text-success right">
-      {{isEdited() && "edited"}}
-    </p>
+    <p ng-if="isEdited()" class="navbar-text text-success right">edited</p>
     <p ng-if="isDisconnected()" class="navbar-text right">
       <a href="javascript:;" class="navbar-link text-danger" ng-click="promptToSave()" eat-click>{{getOffineMessage()}}</a>
     </p>

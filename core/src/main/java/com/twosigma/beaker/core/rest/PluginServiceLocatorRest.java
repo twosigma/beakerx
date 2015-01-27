@@ -147,6 +147,10 @@ public class PluginServiceLocatorRest {
   private Process nginxProc;
   private int portSearchStart;
 
+  private static String[] listToArray(List<String> lst) {
+    return lst.toArray(new String[lst.size()]);
+  }
+
   @Inject
   private PluginServiceLocatorRest(
       BeakerConfig bkConfig,
@@ -234,15 +238,16 @@ public class PluginServiceLocatorRest {
     }
   }
 
-  private String pythonBaseCommand(String pluginId, String command) {
-      // Should pass pluginArgs too XXX?
-      String base = this.pluginLocations.containsKey(pluginId) ?
-	  this.pluginLocations.get(pluginId) : this.pluginDir;
-      base += "/" + command;
-      if (windows()) {
-        base = "python " + base;
-      }
-      return base;
+  private List<String> pythonBaseCommand(String pluginId, String command) {
+    // Should pass pluginArgs too XXX?
+    List<String> result = new ArrayList<String>();
+    String base = this.pluginLocations.containsKey(pluginId) ?
+      this.pluginLocations.get(pluginId) : this.pluginDir;
+    result.add(base + "/" + command);
+    if (windows()) {
+      result.add(0, "python");
+    }
+    return result;
   }
 
   private boolean macosx() {
@@ -402,7 +407,7 @@ public class PluginServiceLocatorRest {
       for (int i = 0; i < fullCommand.size(); i++) {
         System.out.println(i + ": " + fullCommand.get(i));
       }
-      proc = Runtime.getRuntime().exec(fullCommand.toArray(new String[fullCommand.size()]), env);
+      proc = Runtime.getRuntime().exec(listToArray(fullCommand), env);
     }
     
     if (startedIndicator != null && !startedIndicator.isEmpty()) {
@@ -543,8 +548,9 @@ public class PluginServiceLocatorRest {
   private String hashIPythonPassword(String password, String pluginId, String command)
     throws IOException
   {
-    String cmdBase = pythonBaseCommand(pluginId, command);
-    Process proc = Runtime.getRuntime().exec(cmdBase + " --hash");
+    List<String> cmdBase = pythonBaseCommand(pluginId, command);
+    cmdBase.add("--hash");
+    Process proc = Runtime.getRuntime().exec(listToArray(cmdBase));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
@@ -565,9 +571,11 @@ public class PluginServiceLocatorRest {
   {
     // Can probably determine exactly what is needed and then just
     // make the files ourselves but this is a safe way to get started.
-    String cmd = pythonBaseCommand(pluginId, command) + " --profile " +
-        this.nginxServDir + " " + pluginId;
-    Runtime.getRuntime().exec(cmd).waitFor();
+    List<String> cmd = pythonBaseCommand(pluginId, command);
+    cmd.add("--profile");
+    cmd.add(this.nginxServDir);
+    cmd.add(pluginId);
+    Runtime.getRuntime().exec(listToArray(cmd)).waitFor();
     String hash = hashIPythonPassword(password, pluginId, command);
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));
@@ -688,12 +696,14 @@ public class PluginServiceLocatorRest {
       throws IOException
   {
     Process proc;
+    List<String> cmd = pythonBaseCommand(pluginId, command);
+    cmd.add("--version");
     if (windows()) {
       // XXX use ipythonPlugin --version, like generateIPythonConfig does
-      String cmd = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
-      proc = Runtime.getRuntime().exec(cmd);
+      String cmd2 = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
+      proc = Runtime.getRuntime().exec(cmd2);
     } else {
-      proc = Runtime.getRuntime().exec(pythonBaseCommand(pluginId, command) + " --version");
+      proc = Runtime.getRuntime().exec(listToArray(cmd));
     }
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-version", null, null).start();

@@ -42,7 +42,7 @@ http {
     # redirect server error pages to the static page /50x.html and serve them directly from static html directory
     error_page   500 502 503 504  /static/50x.html;
     location /static/ {
-      alias %(static_dir)s/static/;
+      alias "%(static_dir)s/static/";
     }
 
     # in google chrome iframe do not inherit base tag and epiceditor uses iframes
@@ -62,7 +62,7 @@ http {
       proxy_set_header Authorization "Basic %(auth)s";
     }
     location /login/ {
-      alias %(static_dir)s/static/;
+      alias "%(static_dir)s/static/";
     }
 
     # redirect to the starting page
@@ -87,7 +87,7 @@ http {
     location /%(urlhash)s/beaker/ {
       %(auth_cookie_rule)s
       rewrite ^/%(urlhash)s/beaker/(.*)$ /$1 break;
-      root %(static_dir)s/;
+      root "%(static_dir)s/";
       try_files $uri @dopass;
     }
 
@@ -105,7 +105,7 @@ http {
     listen 127.0.0.1:%(port_restart)s;
 
     location = /restart.%(restart_id)s/present.html {
-      alias  %(static_dir)s/static/present.html;
+      alias  "%(static_dir)s/static/present.html";
     }
   }
 }

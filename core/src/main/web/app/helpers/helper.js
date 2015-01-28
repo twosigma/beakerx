@@ -386,7 +386,7 @@
           var newOutput = body[0].innerHTML;
 
           // 3) set the result.object to that string.
-          var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);          
+          var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);
           if (cell === undefined) {
             console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
             return;
@@ -402,9 +402,9 @@
 
       // bkShare
       share: bkShare,
-      
+
       // language plugin utilities
-      
+
       setupProgressOutput: function(modelOutput) {
         var progressObj = {
             type: "BeakerDisplay",
@@ -418,18 +418,18 @@
           };
           modelOutput.result = progressObj;
       },
-      
+
       setupCancellingOutput: function(modelOutput) {
         if (modelOutput.result.type !== "BeakerDisplay" || modelOutput.result.innertype !== "Progress")
           setupProgressOutput(modelOutput);
         modelOutput.result.object.message = "cancelling ...";
       },
-      
-      receiveEvaluationUpdate: function(modelOutput, evaluation, cometdUtil) {       
+
+      receiveEvaluationUpdate: function(modelOutput, evaluation, cometdUtil) {
         var maxNumOfLines = 200;
-        
+
         modelOutput.result.status = evaluation.status;
-        
+
         // append text output (if any)
         if (evaluation.outputdata !== undefined && evaluation.outputdata.length>0) {
           var idx;
@@ -456,12 +456,12 @@
             }
           }
         }
-        
+
         // now update payload (if needed)
         if (evaluation.payload !== undefined) {
           modelOutput.result.object.payload = evaluation.payload;
         }
-        
+
         if (modelOutput.result.object.payload === undefined) {
           if (modelOutput.result.object.outputdata.length > 0) {
             modelOutput.result.object.payload = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : undefined };
@@ -471,7 +471,7 @@
         } else if (modelOutput.result.object.outputdata.length > 0) {
           modelOutput.result.object.payload = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : modelOutput.result.object.payload };
         }
-        
+
         if (evaluation.status === "FINISHED") {
           if (evaluation.payload === undefined) {
               if (modelOutput.result.object.payload !== undefined && modelOutput.result.object.payload.type === "Results")
@@ -480,7 +480,7 @@
                   evaluation.payload = modelOutput.result.object.payload;
           }
           if (cometdUtil !== undefined) cometdUtil.unsubscribe(evaluation.update_id);
-          modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime; 
+          modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;
           if (modelOutput.result.object.outputdata.length === 0) {
             // single output display
             modelOutput.result = evaluation.payload;
@@ -514,7 +514,7 @@
             evaluation.payload = evaluation.payload.split('\n');
           }
           if (cometdUtil !== undefined) cometdUtil.unsubscribe(evaluation.update_id);
-          modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;          
+          modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;
           if (modelOutput.result.object.outputdata.length === 0) {
             // single output display
             modelOutput.result = {
@@ -533,7 +533,7 @@
             modelOutput.result.object.message     = evaluation.message;
           modelOutput.result.object.progressBar   = evaluation.progressBar;
         }
-        
+
         return (evaluation.status === "FINISHED" || evaluation.status === "ERROR");
       }
     };

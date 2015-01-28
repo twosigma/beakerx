@@ -56,6 +56,11 @@ define(function(require, exports, module) {
       }
     },
     {
+      name: 'Collapse All Sections',
+      sortorder: 125,
+      action: bkHelper.collapseAllSections
+    },
+    {
       name: "Show stdout/err",
       sortorder: 130,
       action: function() {

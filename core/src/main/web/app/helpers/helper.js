@@ -88,6 +88,13 @@
           console.error("Current app doesn't support getNotebookModel");
         }
       },
+      collapseAllSections: function() {
+        if (getCurrentApp().collapseAllSections) {
+          return getCurrentApp().collapseAllSections();
+        } else {
+          console.error("Current app doesn't support collapseAllSections");
+        }
+      },
       closeNotebook: function() {
         if (getCurrentApp().closeNotebook) {
           return getCurrentApp().closeNotebook();

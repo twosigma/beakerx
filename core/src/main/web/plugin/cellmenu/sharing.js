@@ -20,14 +20,17 @@
 define(function(require, exports, module) {
   "use strict";
   var publishToWeb = function(scope) {
+    bkHelper.showStatus('Sharing to Web');
     bkHelper.httpPost("../beaker/rest/publish/github", {
       type: "notebook",
       json: angular.toJson(scope.getShareData())
     })
     .success(function(reply) {
+      bkHelper.clearStatus('Sharing to Web');
       window.open(reply);
     })
     .error(function(msg) {
+      bkHelper.clearStatus('Sharing to Web');
       bkHelper.show1ButtonModal(msg, "Publish Failed");
     });
   };

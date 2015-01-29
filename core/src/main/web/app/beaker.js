@@ -144,6 +144,7 @@
 
     var beaker = angular.module('beaker', [
       'ngRoute',
+      'ngStorage',
       'bk.core',
       'bk.evaluatePluginManager',
       'bk.controlPanel',

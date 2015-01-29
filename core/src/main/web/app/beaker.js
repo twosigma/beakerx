@@ -90,7 +90,7 @@
         });
     return deferred.promise;
   };
-  
+
   var initOutputDisplay = function()
   {
     var deferred = Q.defer();
@@ -118,7 +118,7 @@
       }, failure);
     }
 
-    
+
     if (window.bkInit && window.bkInit.getOutputDisplayCssList) {
       for ( var i = 0; i < window.bkInit.getOutputDisplayCssList.length; i++) {
         var url = window.bkInit.getOutputDisplayCssList[i];
@@ -139,7 +139,7 @@
       deferred.resolve();
     return deferred.promise;
   }
-  
+
   var setupBeakerConfigAndRun = function() {
 
     var beaker = angular.module('beaker', [
@@ -151,7 +151,7 @@
       'bk.helper'
     ]);
 
-    
+
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
       var sessionRouteResolve = {};

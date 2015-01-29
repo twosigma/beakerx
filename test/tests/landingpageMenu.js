@@ -17,7 +17,7 @@
 var BeakerPageObject = require('./beaker.po.js');
 describe('beaker landing menu test', function() {
   var beakerPO = new BeakerPageObject();
-  
+
   it('should load', function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
@@ -28,15 +28,15 @@ describe('beaker landing menu test', function() {
     expect(beakerPO.mainmenu.count()).toEqual(3);
     expect(beakerPO.mainmenu.getText()).toEqual(['File', 'Settings', 'Help']);
   });
-  
+
   it('should have no menu displayed', function () {
     expect(beakerPO.submenu.count()).toEqual(0);
   });
 
-  it('File menu should have 3 items', function () {
+  it('File menu should have 4 items', function () {
     beakerPO.mainmenu.get(0).click();
     beakerPO.sync();
-    expect(beakerPO.submenu.count()).toEqual(3);
+    expect(beakerPO.submenu.count()).toEqual(4);
   });
 
   it('Settings menu should have 1 item', function () {

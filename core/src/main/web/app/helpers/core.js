@@ -39,7 +39,10 @@
    */
   module.factory('bkCoreManager', function(
       $modal,
+      $rootScope,
       $document,
+      $location,
+      $sessionStorage,
       bkUtils,
       bkRecentMenu,
       bkNotebookCellModelManager,
@@ -157,6 +160,27 @@
       }
     };
 
+    var importInput = function() {
+      var $input,
+          endpoint = '../beaker/fileupload';
+
+      if (($input = $('input#import-notebook')).length) return $input;
+
+      $input = $('<input type="file" name="file" id="import-notebook" ' +
+                 'data-url="' + endpoint + '" ' +
+                 'style="display: none"/>')
+                .prependTo('body');
+
+      $input.fileupload({
+        dataType: 'json',
+        done: function(e, data) {
+          bkCoreManager.importNotebook(data.result);
+        }
+      });
+
+      return $input;
+    };
+
     var bkCoreManager = {
 
       setNotebookImporter: function(format, importer) {
@@ -204,6 +228,19 @@
       },
       openNotebook: function(notebookUri, uriType, readOnly, format) {
         this._beakerRootOp.openNotebook(notebookUri, uriType, readOnly, format);
+      },
+      addImportInput: function() {
+        importInput();
+      },
+      importNotebookDialog: function() {
+        importInput().click();
+      },
+      importNotebook: function(notebook) {
+        $sessionStorage.importedNotebook = notebook;
+
+        return $rootScope.$apply(function() {
+          $location.path("/session/import").search({});
+        });
       },
       showDefaultSavingFileChooser: function(initPath) {
         var self = this;

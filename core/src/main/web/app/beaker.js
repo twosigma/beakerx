@@ -178,6 +178,14 @@
           .when('/session/empty', {
             redirectTo: makeNewProvider("empty")
           })
+          .when('/session/import', {
+            redirectTo: function() {
+              sessionRouteResolve.isImport = function() {
+                return true;
+              };
+              return '/session/' + generateId();
+            }
+          })
           .when('/session/:sessionId', {
             template: JST["template/mainapp/app"](),
             resolve: sessionRouteResolve
@@ -322,6 +330,24 @@
         if (e.which === 27) {
           $('.dropdown.open .dropdown-toggle').dropdown('toggle');
         }
+      });
+      bkCoreManager.addImportInput();
+      $document.bind('drop dragover', function (e) {
+        e.preventDefault();
+      });
+      var counter = 0;
+      $document.bind('dragenter', function (e) {
+        counter++;
+        $('body').addClass('dragover');
+      });
+      $document.bind('dragleave', function (e) {
+        counter--;
+        if (counter === 0) {
+          $('body').removeClass('dragover');
+        }
+      });
+      $document.bind('drop', function() {
+        $('body').removeClass('dragover');
       });
       window.bkHelper = bkHelper;
       for (var i in window.beaker.postHelperHooks) {

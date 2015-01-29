@@ -41,7 +41,7 @@
         };
 
         $scope.getFullIndex = function() {
-          return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;
+          return $scope.$parent.$parent.$parent.getFullIndex() + "." + ($scope.$parent.index + 1);
         }
 
         $scope.isLocked = function() {

@@ -38,7 +38,7 @@
    *     instead
    */
   module.factory('bkCoreManager', function(
-      $modal, bkUtils, bkRecentMenu, bkNotebookCellModelManager, modalDialogOp) {
+      $modal, $document, bkUtils, bkRecentMenu, bkNotebookCellModelManager, modalDialogOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
@@ -284,6 +284,18 @@
           controller: 'modalDialogCtrl'
         };
 
+        var attachSubmitListener = function() {
+          $document.on('keydown.modal', function(e) {
+            if (e.which === 13) {
+              $('.modal .modal-submit').click();
+            }
+          });
+        };
+
+        var removeSubmitListener = function() {
+          $document.off('keydown.modal');
+        };
+
         // XXX - template is sometimes a url now.
         if (template.indexOf('app/template/') === 0) {
           options.templateUrl = template;
@@ -293,11 +305,19 @@
 
         modalDialogOp.setStrategy(strategy);
         var dd = $modal.open(options);
+
+        attachSubmitListener();
+
         dd.result.then(function(result) {
+          removeSubmitListener();
+
           if (callback) {
             callback(result);
           }
+        }).catch(function() {
+          removeSubmitListener();
         });
+
         return dd;
       },
       show0ButtonModal: function(msgBody, msgHeader) {

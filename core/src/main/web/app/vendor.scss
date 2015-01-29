@@ -16,5 +16,10 @@
 
 @import "../vendor/bower_components/codemirror/lib/codemirror.css";
 @import "../vendor/bower_components/codemirror/addon/hint/show-hint.css";
+
+.CodeMirror-hints {
+  z-index: 150;
+}
+
 @import "../vendor/slickgrid/slick.grid.css";
 @import "../vendor/jquery-ui/css/smoothness/jquery-ui.custom.css";

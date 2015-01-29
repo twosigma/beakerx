@@ -90,7 +90,7 @@
       template: JST["mainapp/components/notebook/markdowncell"](),
       controller: function($scope) {
         $scope.getFullIndex = function() {
-          return $scope.$parent.$parent.$parent.getFullIndex() + "." + $scope.$parent.index;
+          return $scope.$parent.$parent.$parent.getFullIndex() + "." + ($scope.$parent.index + 1);
         }
       },
       link: function(scope, element, attrs) {

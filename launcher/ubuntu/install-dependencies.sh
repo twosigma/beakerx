@@ -43,6 +43,7 @@ sudo apt-get install -y libzmq3-dbg libzmq3-dev libzmq3
 sudo apt-get install -y python-pip python-dev python-yaml
 sudo pip install ipython jinja2 tornado pyzmq
 sudo apt-get install -y python-matplotlib python-scipy python-pandas
+# replace python-pandas with pandas from pip?
 
 # ruby
 sudo apt-get install -y ruby1.9.1 ruby1.9.1-dev

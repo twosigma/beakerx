@@ -38,7 +38,12 @@
    *     instead
    */
   module.factory('bkCoreManager', function(
-      $modal, $document, bkUtils, bkRecentMenu, bkNotebookCellModelManager, modalDialogOp) {
+      $modal,
+      $document,
+      bkUtils,
+      bkRecentMenu,
+      bkNotebookCellModelManager,
+      modalDialogOp) {
 
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;

@@ -559,7 +559,7 @@
               var self = this;
               if (bkEvaluateJobManager.isAnyInProgress() ) {
                 bkCoreManager.show2ButtonModal(
-                    "All in-progress and pending eval will be cancelled.",
+                    "All running and pending cells will be cancelled.",
                     "Warning!",
                     function() {
                       bkEvaluateJobManager.cancelAll().then(function() {
@@ -966,7 +966,7 @@
           if (bkEvaluateJobManager.isAnyInProgress() && next.indexOf("force=yes") === -1) {
             event.preventDefault();
             bkCoreManager.show2ButtonModal(
-                "All in-progress and pending eval will be cancelled.",
+                "All running and pending cells will be cancelled.",
                 "Warning!",
                 function() {
                   bkEvaluateJobManager.cancelAll().then(function() {

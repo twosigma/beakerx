@@ -557,7 +557,7 @@
                 this.initialized = true;
               }
             },
-            fini: function() {
+            destroy: function() {
               if (this.initialized) {
                 this.cometd.removeListener(this.hlistener);
                 var k;

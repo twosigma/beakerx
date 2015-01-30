@@ -21,48 +21,10 @@ define(function(require, exports, module) {
   'use strict';
   var PLUGIN_NAME = "Scala";
   var COMMAND = "scala/scalaPlugin";
-
   var serviceBase = null;
-  var subscriptions = {};
-
-  var cometd = new $.Cometd();
-  var initialized = false;
-  var cometdUtil = {
-      init: function() {
-        if (!initialized) {
-          cometd.unregisterTransport("websocket");
-          cometd.init(serviceBase + "/cometd");
-          initialized = true;
-        }
-      },
-      subscribe: function(update_id, callback) {
-        if (!update_id) {
-          return;
-        }
-        if (subscriptions[update_id]) {
-          cometd.unsubscribe(subscriptions[update_id]);
-          subscriptions[update_id] = null;
-        }
-        var cb = function(ret) {
-          callback(ret.data);
-        };
-        var s = cometd.subscribe('/object_update/' + update_id, cb);
-        subscriptions[update_id] = s;
-      },
-      unsubscribe: function(update_id) {
-        if (!update_id) {
-          return;
-        }
-        if (subscriptions[update_id]) {
-          cometd.unsubscribe(subscriptions[update_id]);
-          subscriptions[update_id] = null;
-        }
-      },
-      addStatusListener: function(cb) {
-        cometd.addListener("/meta/connect", cb);
-      }
-  };
+  var cometdUtil = bkHelper.getUpdateService();
   var ScalaCancelFunction = null;
+
   var Scala = {
       pluginName: PLUGIN_NAME,
       cmMode: "text/x-scala",
@@ -104,7 +66,7 @@ define(function(require, exports, module) {
             bkHelper.setupCancellingOutput(modelOutput);
           }
           var onEvalStatusUpdate = function(evaluation) {
-            if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, cometdUtil)) {
+            if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
               cometdUtil.unsubscribe(evaluation.update_id);
               deferred.resolve();
             }
@@ -176,10 +138,10 @@ define(function(require, exports, module) {
           outdir: this.settings.outdir}).success(cb);
       },
       spec: {
-        outdir:    {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
-        classPath: {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
-        imports:   {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
-        resetEnv:  {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+        outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},
+        classPath:   {type: "settableString", action: "updateShell", name: "Class path (jar files, one per line)"},
+        imports:     {type: "settableString", action: "updateShell", name: "Imports (classes, one per line)"},
+        resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
         killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
       },
       cometdUtil: cometdUtil
@@ -191,6 +153,7 @@ define(function(require, exports, module) {
                         "com.twosigma.beaker.chart.xychart.*",
                         "com.twosigma.beaker.chart.xychart.plotitem.*"];
   var shellReadyDeferred = bkHelper.newDeferred();
+  
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
       command: COMMAND,
@@ -199,7 +162,16 @@ define(function(require, exports, module) {
       recordOutput: "true"
     }).success(function(ret) {
       serviceBase = ret;
-      cometdUtil.init();
+      if (window.languageServiceBase == undefined) {
+        window.languageServiceBase = {};
+      }
+      window.languageServiceBase[PLUGIN_NAME] = serviceBase + '/rest/scalash';
+      if (window.languageUpdateService == undefined) {
+        window.languageUpdateService = {};
+      }
+      window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
+      cometdUtil.init(PLUGIN_NAME, serviceBase);
+
       var scalashell = function(settings, doneCB) {
         var self = this;
         var setShellIdCB = function(id) {

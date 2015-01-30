@@ -21,48 +21,10 @@ define(function(require, exports, module) {
   'use strict';
   var PLUGIN_NAME = "R";
   var COMMAND = "r/rPlugin";
-
   var serviceBase = null;
-  var subscriptions = {};
-
-  var cometd = new $.Cometd();
-  var initialized = false;
-  var cometdUtil = {
-    init: function() {
-      if (!initialized) {
-        cometd.unregisterTransport("websocket");
-        cometd.init(serviceBase + "/cometd");
-        initialized = true;
-      }
-    },
-    subscribe: function(update_id, callback) {
-      if (!update_id) {
-        return;
-      }
-      if (subscriptions[update_id]) {
-        cometd.unsubscribe(subscriptions[update_id]);
-        subscriptions[update_id] = null;
-      }
-      var cb = function(ret) {
-        callback(ret.data);
-      };
-      var s = cometd.subscribe('/object_update/' + update_id, cb);
-      subscriptions[update_id] = s;
-    },
-    unsubscribe: function(update_id) {
-      if (!update_id) {
-        return;
-      }
-      if (subscriptions[update_id]) {
-        cometd.unsubscribe(subscriptions[update_id]);
-        subscriptions[update_id] = null;
-      }
-    },
-    addStatusListener: function(cb) {
-      cometd.addListener("/meta/connect", cb);
-    }
-  };
+  var cometdUtil = bkHelper.getUpdateService();
   var RCancelFunction = null;
+  
   var R = {
     pluginName: PLUGIN_NAME,
     cmMode: "r",
@@ -72,9 +34,8 @@ define(function(require, exports, module) {
     borderColor: "",
     shortName: "R",
     newShell: function(shellID, cb) {
-      if (!shellID) {
+      if (!shellID)
         shellID = "";
-      }
       bkHelper.httpPost(serviceBase + "/rest/rsh/getShell", { shellid: shellID, sessionId: bkHelper.getSessionId() })
         .success(cb)
         .error(function() {
@@ -110,7 +71,7 @@ define(function(require, exports, module) {
         data: {shellID: self.settings.shellID, code: code, init: !!init}
       }).done(function(ret) {
         var onEvalStatusUpdate = function(evaluation) {
-          if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, cometdUtil)) {
+          if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
             cometdUtil.unsubscribe(evaluation.update_id);
             deferred.resolve();
           }
@@ -157,13 +118,13 @@ define(function(require, exports, module) {
       }
     },
     spec: {
-      resetEnv:  {type: "action", action: "resetEnvironment", name: "Reset Environment" },
+      resetEnv:    {type: "action", action: "resetEnvironment", name: "Reset Environment" },
       killAllThr:  {type: "action", action: "killAllThreads", name: "Kill All Threads" }
-//      interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
     },
     cometdUtil: cometdUtil
   };
   var shellReadyDeferred = bkHelper.newDeferred();
+  
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
@@ -172,7 +133,16 @@ define(function(require, exports, module) {
         recordOutput: "true"
     }).success(function(ret) {
       serviceBase = ret;
-      cometdUtil.init();
+      if (window.languageServiceBase == undefined) {
+        window.languageServiceBase = {};
+      }
+      window.languageServiceBase[PLUGIN_NAME] = serviceBase + '/rest/rsh';
+      if (window.languageUpdateService == undefined) {
+        window.languageUpdateService = {};
+      }
+      window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
+      cometdUtil.init(PLUGIN_NAME, serviceBase);
+
       var RShell = function(settings, doneCB) {
         var self = this;
         var setShellIdCB = function(id) {

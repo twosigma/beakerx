@@ -557,6 +557,20 @@
             },
             closeNotebook: function() {
               var self = this;
+              if (bkEvaluateJobManager.isAnyInProgress() ) {
+                bkCoreManager.show2ButtonModal(
+                    "All running and pending cells will be cancelled.",
+                    "Warning!",
+                    function() {
+                      bkEvaluateJobManager.cancelAll().then(function() {
+                        self._closeNotebook();
+                      }
+                    ) });
+              } else
+                self._closeNotebook();
+            },
+            _closeNotebook: function() {
+              var self = this;
               var closeSession = function() {
                 bkSessionManager.close().then(function() {
                   bkCoreManager.gotoControlPanel();
@@ -952,22 +966,24 @@
           if (bkEvaluateJobManager.isAnyInProgress() && next.indexOf("force=yes") === -1) {
             event.preventDefault();
             bkCoreManager.show2ButtonModal(
-                "All in-progress and pending eval will be cancelled.",
+                "All running and pending cells will be cancelled.",
                 "Warning!",
                 function() {
-                  bkSessionManager.backup().then(function() {
-                    bkSessionManager.clear();
-                    var routeParams = {force: "yes"};
-                    var splits = decodeURIComponent(next.split("#")[1]).split("?");
-                    var path = splits[0];
-                    var search = splits[1];
-                    if (search) {
-                      var vars = search.split('&').forEach(function(v) {
-                        var pair = v.split('=');
-                        routeParams[pair[0]] = pair[1];
-                      });
-                    }
-                    $location.path(path).search(routeParams);
+                  bkEvaluateJobManager.cancelAll().then(function() {
+                    bkSessionManager.backup().then(function() {
+                      bkSessionManager.clear();
+                      var routeParams = {force: "yes"};
+                      var splits = decodeURIComponent(next.split("#")[1]).split("?");
+                      var path = splits[0];
+                      var search = splits[1];
+                      if (search) {
+                        var vars = search.split('&').forEach(function(v) {
+                          var pair = v.split('=');
+                          routeParams[pair[0]] = pair[1];
+                        });
+                      }
+                      $location.path(path).search(routeParams);
+                    })
                   });
                 }
             );

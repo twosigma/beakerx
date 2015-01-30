@@ -94,6 +94,8 @@
                 _jobInProgress.reject(err);
               })
               .finally(function () {
+                if (_jobInProgress.cancel_deferred)
+                  _jobInProgress.cancel_deferred.resolve();
                 bkHelper.clearStatus("Evaluating " + _jobInProgress.evaluatorId + " cell " + _jobInProgress.cellId);
                 delete stack[_jobInProgress.cellId];
                 if (_jobInProgress.parent !== undefined && stack[_jobInProgress.parent] !== undefined) {
@@ -118,6 +120,9 @@
           _jobInProgress = undefined;
           _queue.splice(0, _queue.length);
           stack = { };
+        },
+        clear: function() {
+          _queue.splice(0, _queue.length);
         },
         isRunning: function(n) {
           return stack[n] !== undefined;
@@ -171,14 +176,33 @@
       },
       cancel: function() {
         var currentJob = jobQueue.getCurrentJob();
-
+        var deferred = bkUtils.newDeferred();
+        
         if (currentJob && currentJob.evaluator) {
           if (currentJob.evaluator.cancelExecution) {
+            currentJob.cancel_deferred = deferred;
             currentJob.evaluator.cancelExecution();
-          } else {
-            throw "cancel is not supported for the current evaluator";
+            return deferred.promise;
           }
         }
+        deferred.resolve();
+        return deferred.promise;
+      },
+      cancelAll: function() {
+        console.log('cancell all');
+        var currentJob = jobQueue.getCurrentJob();
+        var deferred = bkUtils.newDeferred();
+
+        jobQueue.clear();
+        if (currentJob && currentJob.evaluator) {
+          if (currentJob.evaluator.cancelExecution) {
+            currentJob.cancel_deferred = deferred;
+            currentJob.evaluator.cancelExecution();
+            return deferred.promise;
+          }
+        }
+        deferred.resolve();
+        return deferred.promise;
       },
       isAnyInProgress: function() {
         return !!jobQueue.getCurrentJob();

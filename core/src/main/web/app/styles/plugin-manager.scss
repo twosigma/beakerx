@@ -8,4 +8,22 @@
       position: relative;
     }
   }
+
+  .languages {
+    margin-bottom: 20px;
+
+    button {
+      float: left;
+      width: 24%;
+      margin-right: 1%;
+      margin-bottom: 1%;
+      padding-left: 12px;
+      padding-right: 12px;
+      text-align: left;
+
+      &:nth-child(4n) {
+        margin-right: 0;
+      }
+    }
+  }
 }

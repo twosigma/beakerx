@@ -152,7 +152,7 @@ define(function(require, exports, module) {
           if (!_.isEmpty(result)) {
             evaluation.payload = "<pre>" + result + "</pre>";
           }
-          if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation)) {
+          if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation,  PLUGIN_NAME, self.settings.shellID)) {
             deferred.resolve();
           }
           bkHelper.refreshRootScope();          
@@ -200,7 +200,7 @@ define(function(require, exports, module) {
               evaluation.payload = elem.html();
             }
           }
-          bkHelper.receiveEvaluationUpdate(modelOutput, evaluation);
+          bkHelper.receiveEvaluationUpdate(modelOutput, evaluation,  PLUGIN_NAME, self.settings.shellID);
           bkHelper.refreshRootScope();
         };
         var callbacks = ipyVersion1 ? {

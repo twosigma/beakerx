@@ -45,7 +45,7 @@ import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
-import com.twosigma.beaker.jvm.object.TestContainer;
+import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
 import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.chart.Color;
@@ -67,6 +67,7 @@ public class SerializerModule
   protected void configure() {
     bind(SimpleEvaluationObject.Serializer.class);
     bind(EvaluationResult.Serializer.class);
+    bind(UpdatableEvaluationResult.Serializer.class);
     bind(TableDisplay.Serializer.class);
     bind(OutputContainer.Serializer.class);
     // enable this to use the example object container
@@ -95,6 +96,7 @@ public class SerializerModule
 
     module.addSerializer(SimpleEvaluationObject.class, injector.getInstance(SimpleEvaluationObject.Serializer.class));
     module.addSerializer(EvaluationResult.class, injector.getInstance(EvaluationResult.Serializer.class));
+    module.addSerializer(UpdatableEvaluationResult.class, injector.getInstance(UpdatableEvaluationResult.Serializer.class));
     module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
     module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
     // enable this to use the example object container

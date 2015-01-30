@@ -50,6 +50,8 @@ public class SerializeUtils {
         jgen.writeObject((CombinedPlot) obj);
       } else if (obj instanceof BeakerProgressUpdate) {
         jgen.writeObject(obj);
+      } else if (obj instanceof UpdatableEvaluationResult) {
+        jgen.writeObject(obj);
       } else if (obj instanceof BeakerCodeCell) {
         jgen.writeObject(obj);
       } else if (obj instanceof Collection<?>) {

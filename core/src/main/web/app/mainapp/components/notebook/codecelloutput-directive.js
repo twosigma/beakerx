@@ -38,9 +38,36 @@
         $scope.getOutputResult = function() {
           return $scope.model.result;
         };
+        $scope.$on('$destroy', function () {
+          if ($scope.subscribedTo) {
+            if ($scope.model.pluginName && window.languageUpdateService && window.languageUpdateService[$scope.model.pluginName]) {
+              window.languageUpdateService[$scope.model.pluginName].unsubscribe($scope.subscribedTo);
+            }
+          }          
+        });
         $scope.applicableDisplays = [];
         $scope.$watch('getOutputResult()', function(result) {
-          $scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(result);
+          if ($scope.subscribedTo && $scope.subscribedTo !== result.update_id) {
+            if ($scope.model.pluginName && window.languageUpdateService && window.languageUpdateService[$scope.model.pluginName]) {
+              window.languageUpdateService[$scope.model.pluginName].unsubscribe($scope.subscribedTo);
+            }
+            $scope.subscribedTo = null;
+          }
+          if (!$scope.subscribedTo && result.update_id) {
+            if ($scope.model.pluginName && window.languageUpdateService && window.languageUpdateService[$scope.model.pluginName]) {
+              var onUpdatableResultUpdate = function(update) {
+                $scope.model.result = update;
+                bkHelper.refreshRootScope();
+              };
+              window.languageUpdateService[$scope.model.pluginName].subscribe(result.update_id, onUpdatableResultUpdate);
+              $scope.subscribedTo = result.update_id;
+            }
+          }
+          
+          if (result !== undefined && result.type === "UpdatableEvaluationResult")
+            $scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(result.payload);
+          else
+            $scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(result);
           $scope.model.selectedType = $scope.applicableDisplays[0];
         });
 
@@ -50,6 +77,8 @@
             var result = $scope.getOutputResult();
             if (result && result.type === "BeakerDisplay") {
               return result.object;
+            } else if (result && result.type === "UpdatableEvaluationResult") {
+                return result.payload;
             } else {
               return result;
             }
@@ -81,7 +110,7 @@
           if ($scope.model === undefined)
               return "Text";
           var type = $scope.model.selectedType;
-          // if BeakerDisplay, use the inner type instead
+          // if BeakerDisplay or UpdatableEvaluationResult, use the inner type instead
           if (type === "BeakerDisplay") {
             var result = $scope.getOutputResult();
             type = result ? result.innertype : "Hidden";

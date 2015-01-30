@@ -432,10 +432,14 @@
         modelOutput.result.object.message = "cancelling ...";
       },
 
-      receiveEvaluationUpdate: function(modelOutput, evaluation, cometdUtil) {
+      receiveEvaluationUpdate: function(modelOutput, evaluation, pluginName, shellId) {
         var maxNumOfLines = 200;
 
         modelOutput.result.status = evaluation.status;
+
+        // save information to handle updatable results in displays
+        modelOutput.pluginName = pluginName;
+        modelOutput.shellId = shellId;
 
         // append text output (if any)
         if (evaluation.outputdata !== undefined && evaluation.outputdata.length>0) {
@@ -481,34 +485,20 @@
 
         if (evaluation.status === "FINISHED") {
           if (evaluation.payload === undefined) {
-              if (modelOutput.result.object.payload !== undefined && modelOutput.result.object.payload.type === "Results")
-                  evaluation.payload = modelOutput.result.object.payload.payload;
-              else
-                  evaluation.payload = modelOutput.result.object.payload;
+            if (modelOutput.result.object.payload !== undefined && modelOutput.result.object.payload.type === "Results")
+              evaluation.payload = modelOutput.result.object.payload.payload;
+            else
+              evaluation.payload = modelOutput.result.object.payload;
           }
-          if (cometdUtil !== undefined) cometdUtil.unsubscribe(evaluation.update_id);
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;
+
           if (modelOutput.result.object.outputdata.length === 0) {
             // single output display
             modelOutput.result = evaluation.payload;
-            if (modelOutput.result !== undefined && modelOutput.result.update_id !== undefined) {
-              var onUpdatableSingleResultUpdate = function(update) {
-                modelOutput.result = update;
-                bkHelper.refreshRootScope();
-              };
-              if (cometdUtil !== undefined) cometdUtil.subscribe(modelOutput.result.update_id, onUpdatableSingleResultUpdate);
-            }
           } else {
             // wrapper display with standard output and error
             modelOutput.result = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : evaluation.payload };
             // build output container
-            if (modelOutput.result.payload !== undefined && modelOutput.result.payload.update_id !== undefined) {
-              var onUpdatableResultUpdate = function(update) {
-                modelOutput.result.payload = update;
-                bkHelper.refreshRootScope();
-              };
-              if (cometdUtil !== undefined) cometdUtil.subscribe(modelOutput.result.payload.update_id, onUpdatableResultUpdate);
-            }
           }
         } else if (evaluation.status === "ERROR") {
           if (evaluation.payload === undefined) {
@@ -520,8 +510,8 @@
           if (evaluation.payload !== undefined && $.type(evaluation.payload)=='string') {
             evaluation.payload = evaluation.payload.split('\n');
           }
-          if (cometdUtil !== undefined) cometdUtil.unsubscribe(evaluation.update_id);
           modelOutput.elapsedTime = new Date().getTime() - modelOutput.result.object.startTime;
+          
           if (modelOutput.result.object.outputdata.length === 0) {
             // single output display
             modelOutput.result = {
@@ -542,6 +532,74 @@
         }
 
         return (evaluation.status === "FINISHED" || evaluation.status === "ERROR");
+      },
+      getUpdateService: function() {
+        var cometdUtil = {
+            initialized: false,
+            subscriptions: { },
+            init: function(pluginName, serviceBase) {
+              if (!this.initialized) {
+                this.cometd = new $.Cometd();
+                this.cometd.unregisterTransport("websocket");
+                this.cometd.init(serviceBase + "/cometd");
+                this.hlistener = this.cometd.addListener('/meta/handshake', function(message) {
+                  if (window.bkDebug) console.log(pluginName+'/meta/handshake');
+                  if (message.successful) {
+                    this.cometd.batch(function() {
+                      var k;
+                      for (k in Object.keys(this.subscriptions))
+                      {
+                        this.subscriptions[k] = this.cometd.resubscribe(this.subscriptions[k]);
+                      }
+                    });
+                  }
+                });
+                this.initialized = true;
+              }
+            },
+            fini: function() {
+              if (this.initialized) {
+                this.cometd.removeListener(this.hlistener);
+                var k;
+                for (k in Object.keys(this.subscriptions))
+                {
+                  this.cometd.unsubscribe(this.subscriptions[k]);
+                }
+              }
+              this.initialized = true;
+              this.cometd = null;
+              this.subscriptions = { };
+            },
+            subscribe: function(update_id, callback) {
+              if (!update_id)
+                return;
+              if (window.bkDebug) console.log('subscribe to '+update_id)
+              if (this.subscriptions[update_id]) {
+                this.cometd.unsubscribe(this.subscriptions[update_id]);
+                this.subscriptions[update_id] = null;
+              }
+              var cb = function(ret) {
+                callback(ret.data);
+              };
+              var s = this.cometd.subscribe('/object_update/' + update_id, cb);
+              this.subscriptions[update_id] = s;
+            },
+            unsubscribe: function(update_id) {
+              if (!update_id)
+                return;
+              if (window.bkDebug) console.log('unsubscribe from '+update_id)
+              if (this.subscriptions[update_id]) {
+                this.cometd.unsubscribe(this.subscriptions[update_id]);
+                this.subscriptions[update_id] = null;
+              }
+            },
+            issubscribed: function(update_id) {
+              if (!update_id)
+                return false;
+              return this.subscriptions[update_id] !== null;
+            }
+        };
+        return cometdUtil;
       }
     };
 

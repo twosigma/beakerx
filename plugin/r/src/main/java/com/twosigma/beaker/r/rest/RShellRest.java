@@ -34,6 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.util.Set;
 import java.util.UUID;
 import javax.ws.rs.FormParam;
@@ -351,15 +353,41 @@ public class RShellRest {
     return this.shells.get(shellID);
   }
 
-  // R SVG has ids that need to be made globally unique.  Plus we
-  // remove the xml version string, and any blank data attributes,
-  // since these just cause errors on chrome's console.
+  // Remove the xml version string, and any blank data attributes,
+  // since these just cause errors on chrome's console.  Then expand
+  // all symbol/use elements manually.  This is because there is a
+  // disagreement between firefox and chrome on how to interpret how
+  // CSS applies to the resulting hidden DOM elements.  See github
+  // Issue #987.  Finally, remove all definitions since they have been
+  // expanded and are no longer needed.  This is done with hackey
+  // string matching instead of truly parsing the XML.
   private String fixSvgResults(String xml) {
+    Pattern pat = Pattern.compile("<use xlink:href=\"#([^\"]+)\" x=\"([^\"]+)\" y=\"([^\"]+)\"/>");
     String unique = "b" + Integer.toString(svgUniqueCounter++);
-    xml = xml.replace("id=\"glyph", "id=\"" + unique + "glyph");
-    xml = xml.replace("xlink:href=\"#glyph", "xlink:href=\"#" + unique + "glyph");
     xml = xml.replace("d=\"\"", "");
     xml = xml.replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n", "");
+    
+    while (true) {
+      Matcher matcher = pat.matcher(xml);
+      if (!matcher.find()) {
+        break;
+      }
+      String expansion = "<g transform=\"translate(" + matcher.group(2) + "," + matcher.group(3) + ")\">\n";
+      String glyph = matcher.group(1);
+      int gi = xml.indexOf(glyph);
+      int pathStart = xml.indexOf("<path", gi);
+      int pathStop = xml.indexOf("/>", pathStart);
+      String path = xml.substring(pathStart, pathStop + 2);
+      expansion = expansion + path + "</g>\n";
+      xml = xml.substring(0, matcher.start()) + expansion + xml.substring(matcher.end());
+    }
+
+    int defsStart = xml.indexOf("<defs>");
+    if (defsStart >= 0) {
+      int defsStop = xml.indexOf("</defs>");
+      xml = xml.substring(0, defsStart) + xml.substring(defsStop + 7);
+    }
+    
     return xml;
   }
 

@@ -14,6 +14,12 @@
  *  limitations under the License.
  */
 
+/*
+ * Disable Bootstrap's mobile responsive by basically making the media queries
+ * think anything larger than 3px is a desktop screen.
+ */
+$screen-xs: 1px; $screen-sm: 2px; $screen-md: 3px;
+
 $font-family-primary: 'pt_sansregular', Helvetica, sans-serif;
 $font-family-primary-bold: 'pt_sansbold', Helvetica, sans-serif;
 

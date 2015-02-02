@@ -39,7 +39,6 @@
           });
         };
         $scope.parse = function() {
-          console.log("parse", $scope.model.getCellModel());
           parse($scope.model.getCellModel());
         };
       }

@@ -75,7 +75,15 @@
             scope.update();
           }
         });
-
+        
+        scope.resizeFunction = function() {
+          // update resize maxWidth when the browser window resizes
+          var width = element.width();
+          scope.jqcontainer.resizable({
+            maxWidth : width
+          });
+        };
+        
         scope.initLayout = function() {
           var model = scope.stdmodel;
 
@@ -91,13 +99,7 @@
           scope.jqcontainer.css(plotSize);
           scope.jqsvg.css(plotSize);
 
-          $(window).resize(function() {
-            // update resize maxWidth when the browser window resizes
-            var width = element.width();
-            scope.jqcontainer.resizable({
-              maxWidth : width
-            });
-          });
+          $(window).resize(scope.resizeFunction);
 
           // set title
           scope.jqplottitle = element.find("#plotTitle");
@@ -1279,6 +1281,12 @@
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
+        
+        scope.$on('$destroy', function() {     
+          $(window).off('resize',scope.resizeFunction);
+          scope.svg.selectAll("*").remove();
+        });
+        
       }
     };
   };

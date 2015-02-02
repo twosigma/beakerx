@@ -35,21 +35,17 @@
         };
       },
       link: function(scope, element, attrs) {
-        var evaluator = scope.evaluator;
-        for (var property in evaluator.spec) {
-          if (evaluator.spec.hasOwnProperty(property)) {
-            var name = evaluator.spec[property].hasOwnProperty('name') ? evaluator.spec[property].name : property;
-            if (evaluator.spec[property].type === "settableString") {
-              element.find('.bbody').append($compile(
-                      "<div>" + name + ":<br><textarea ng-model='evaluator.settings." + property +
-                      "'></textarea><button class='beaker-btn' ng-click='set(\"" + property +
-                      "\")'>set</button></div>")(scope));
-            } else if (evaluator.spec[property].type === "action") {
-              element.find('.bbody').append($compile("<div><button class='beaker-btn' ng-click='evaluator.perform(\"" + property +
-                  "\")'>" + name + "</button></div>")(scope));
-            }
-          }
-        }
+        var spec = _.map(scope.evaluator.spec, function(value, key) {
+          return _.extend({ name: key, key: key }, value);
+        });
+
+        scope.properties = _.filter(spec, function(option) {
+          return option.type === "settableString";
+        });
+
+        scope.actions = _.filter(spec, function(option) {
+          return option.type === "action";
+        });
       }
     };
   });

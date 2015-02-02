@@ -124,6 +124,18 @@
           }
         };
 
+        $scope.evaluate = function($event) {
+          if ($event) $event.stopPropagation();
+
+          $scope.cellmodel.output.state = {};
+
+          bkCoreManager.getBkApp()
+            .evaluate($scope.cellmodel)
+            .catch(function(data) {
+              console.error(data);
+            });
+        };
+
         $scope.deleteCell = function() {
           notebookCellOp.delete($scope.cellmodel.id, true);
         }

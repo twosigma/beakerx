@@ -27,3 +27,19 @@
     }
   }
 }
+
+.language-option {
+  textarea {
+    resize: vertical;
+  }
+
+  &.property {
+    .set {
+      margin-top: 10px;
+    }
+  }
+
+  &.action {
+    margin-bottom: 10px;
+  }
+}

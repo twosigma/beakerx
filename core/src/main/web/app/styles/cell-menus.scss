@@ -59,6 +59,7 @@ bk-new-cell-menu {
     cursor:     pointer;
     height:     24px;
     padding:    0 15px;
+    position: relative;
 }
 
 .cell-status-item {
@@ -103,6 +104,25 @@ bk-new-cell-menu {
     &.loading-state .loading-spinner {
         background-image: url(../images/loading_white@2x.png);
     }
+}
+
+.cell-menu-item.evaluate {
+  &:after {
+    display: block;
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 6px solid #999;
+    position: absolute;
+    top: 8px;
+    left: 13px;
+  }
+
+  &:hover:after {
+    border-left-color: white;
+  }
 }
 
 .delete-cell {
@@ -169,7 +189,11 @@ bk-new-cell-menu {
         display: none;
 
         .advanced-mode & {
+            right: 0;
+            padding-right: 0;
             display: inline-block;
+            background: none;
+            margin-left: 5px;
         }
     }
 

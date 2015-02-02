@@ -41,6 +41,11 @@ define(function(require, exports, module) {
       }
     },
     {
+      name: "Import",
+      sortorder: 125,
+      action: bkHelper.importNotebookDialog
+    },
+    {
       name: "Save",
       sortorder: 130,
       action: function() {

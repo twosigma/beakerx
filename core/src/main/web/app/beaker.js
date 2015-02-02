@@ -90,7 +90,7 @@
         });
     return deferred.promise;
   };
-  
+
   var initOutputDisplay = function()
   {
     var deferred = Q.defer();
@@ -118,7 +118,7 @@
       }, failure);
     }
 
-    
+
     if (window.bkInit && window.bkInit.getOutputDisplayCssList) {
       for ( var i = 0; i < window.bkInit.getOutputDisplayCssList.length; i++) {
         var url = window.bkInit.getOutputDisplayCssList[i];
@@ -139,11 +139,12 @@
       deferred.resolve();
     return deferred.promise;
   }
-  
+
   var setupBeakerConfigAndRun = function() {
 
     var beaker = angular.module('beaker', [
       'ngRoute',
+      'ngStorage',
       'bk.core',
       'bk.evaluatePluginManager',
       'bk.controlPanel',
@@ -151,7 +152,7 @@
       'bk.helper'
     ]);
 
-    
+
     // setup routing. the template is going to replace ng-view
     beaker.config(function($routeProvider) {
       var sessionRouteResolve = {};
@@ -176,6 +177,14 @@
           })
           .when('/session/empty', {
             redirectTo: makeNewProvider("empty")
+          })
+          .when('/session/import', {
+            redirectTo: function() {
+              sessionRouteResolve.isImport = function() {
+                return true;
+              };
+              return '/session/' + generateId();
+            }
           })
           .when('/session/:sessionId', {
             template: JST["template/mainapp/app"](),
@@ -321,6 +330,24 @@
         if (e.which === 27) {
           $('.dropdown.open .dropdown-toggle').dropdown('toggle');
         }
+      });
+      bkCoreManager.addImportInput();
+      $document.bind('drop dragover', function (e) {
+        e.preventDefault();
+      });
+      var counter = 0;
+      $document.bind('dragenter', function (e) {
+        counter++;
+        $('body').addClass('dragover');
+      });
+      $document.bind('dragleave', function (e) {
+        counter--;
+        if (counter === 0) {
+          $('body').removeClass('dragover');
+        }
+      });
+      $document.bind('drop', function() {
+        $('body').removeClass('dragover');
       });
       window.bkHelper = bkHelper;
       for (var i in window.beaker.postHelperHooks) {

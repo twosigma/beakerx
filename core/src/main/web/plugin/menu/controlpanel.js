@@ -38,6 +38,11 @@ define(function(require, exports, module) {
     {
       name: "Open",
       sortorder: 110
+    },
+    {
+      name: "Import",
+      sortorder: 130,
+      action: bkHelper.importNotebookDialog
     }
   ];
 

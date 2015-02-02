@@ -17,6 +17,7 @@ package com.twosigma.beaker.core.module;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.twosigma.beaker.core.module.FileUploadServlet;
 import com.twosigma.beaker.core.rest.NotebookControlRest;
 import com.twosigma.beaker.core.rest.OutputLogService;
 import com.twosigma.beaker.core.rest.NamespaceService;
@@ -57,6 +58,8 @@ public class URLConfigModule extends ServletModule {
         put("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
       }
     });
+
+    serve("/fileupload").with(FileUploadServlet.class);
 
     final String pluginsWebDir = System.getProperty("user.dir") + "/config/plugins";
     serve("/plugins/*").with(new StaticResourceServlet(pluginsWebDir),

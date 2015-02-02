@@ -169,7 +169,11 @@ bk-new-cell-menu {
         display: none;
 
         .advanced-mode & {
+            right: 0;
+            padding-right: 0;
             display: inline-block;
+            background: none;
+            margin-left: 5px;
         }
     }
 

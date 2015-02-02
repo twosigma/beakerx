@@ -28,6 +28,10 @@
           var now = new Date().getTime();
           var start = scope.model.getCellModel().startTime;
           scope.elapsed = now - start;
+          if (!(scope.$$phase || scope.$root.$$phase)) {
+            // we don't execute the $interval within $apply so we have to manually refresh it. This refreshes only this scope.
+            scope.$digest();
+          }
         };
         var intervalPromise = $interval(function() {
           computeElapsed();
@@ -35,9 +39,9 @@
             $interval.cancel(intervalPromise);
             intervalPromise = $interval(function() {
               computeElapsed();
-            }, 1000);
+            }, 1000, 0, false);
           }
-        }, 100);
+        }, 100, 0, false);
         scope.getElapsedTime = function() {
           return bkUtils.formatTimeString(scope.elapsed);
         };

@@ -41,8 +41,7 @@
         scope.initLayout = function() {
           var model = scope.stdmodel;
           if (model.title != null) {
-            scope.jqplottitle = element.find("#combplotTitle");
-            scope.jqplottitle.text(model.title).css("width", scope.width);
+            element.find("#combplotTitle").text(model.title).css("width", scope.width);
           }
         };
 
@@ -97,7 +96,7 @@
               },
               updateWidth : function(width) {
                 scope.width = width;
-                scope.jqplottitle.css("width", width);
+                element.find("#combplotTitle").css("width", width);
                 scope.$apply();
               },
               getWidth : function() {

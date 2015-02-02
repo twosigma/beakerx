@@ -56,6 +56,11 @@ define(function(require, exports, module) {
       tooltip: "Run all cells"
     },
     {
+      name: 'Collapse All Sections',
+      sortorder: 135,
+      action: bkHelper.collapseAllSections
+    },
+    {
       name: "Edit mode",
       sortorder: 140
     }

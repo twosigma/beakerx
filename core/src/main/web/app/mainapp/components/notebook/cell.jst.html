@@ -31,6 +31,7 @@
     <div class="dropdown dropdown-promoted advanced-only" ng-if="isCodeCell()" style="float: right;">
       <bk-code-cell-input-menu></bk-code-cell-input-menu>
     </div>
+    <div class="cell-menu-item evaluate advanced-only" ng-click="evaluate($event)" ng-if="isCodeCell()" title="run cell"></div>
     <div class="cell-status-item loading-state advanced-hide" ng-if="cellmodel.type=='code' && !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}}
       <div class="loading-spinner rotating"></div>
     </div>

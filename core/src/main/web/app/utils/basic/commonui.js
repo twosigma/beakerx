@@ -290,9 +290,9 @@
   module.directive('bkLanguageLogo', function() {
     return {
       restrict: "E",
-      transclude: true,
-      template: "<span ng-style='style' ng-transclude></span>",
+      template: "<span ng-style='style'>{{name}}</span>",
       scope: {
+        name: "@",
         bgColor: "@",
         fgColor: "@",
         borderColor: "@"

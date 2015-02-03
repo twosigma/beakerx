@@ -19,5 +19,5 @@
  */
 (function() {
   "use strict";
-  var module = angular.module('bk.outputDisplay', ['bk.utils']);
+  var module = angular.module('bk.outputDisplay', ['bk.utils',  'ngAnimate', 'ngTouch', 'ui.grid', 'ui.grid.moveColumns', 'ui.grid.pinning', 'ui.grid.selection', 'ui.grid.resizeColumns', 'ui.grid.cellNav', 'ui.grid.exporter']);
 })();

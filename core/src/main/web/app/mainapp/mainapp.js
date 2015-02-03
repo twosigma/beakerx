@@ -64,20 +64,28 @@
       controller: function($scope) {
         var showLoadingStatusMessage = function(message) {
           $scope.loadingmsg = message;
+          if (!($scope.$$phase || $scope.$root.$$phase))
+            $scope.$digest();
         };
         var clrLoadingStatusMessage = function(message) {
           if ($scope.loadingmsg === message) {
             $scope.loadingmsg = "";
+            if (!($scope.$$phase || $scope.$root.$$phase))
+              $scope.$digest();
           }
         }
         var showTransientStatusMessage = function(message) {
           $scope.loadingmsg = message;
+          if (!($scope.$$phase || $scope.$root.$$phase))
+            $scope.$digest();
           if (message !== "") {
-            bkUtils.delay(500).then(function() {
+            $timeout(function() {
               if ($scope.loadingmsg === message) {
                 $scope.loadingmsg = "";
+                if (!($scope.$$phase || $scope.$root.$$phase))
+                  $scope.$digest();
               }
-            });
+            }, 500, 0, false);
           }
         };
         var evaluatorMenuItems = [];

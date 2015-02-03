@@ -120,7 +120,7 @@
           $scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluate($scope.cellmodel).
               catch(function(data) {
-                console.error(data);
+                console.log("ERROR: "+data);
               });
         };
         var editedListener = function(newValue, oldValue) {

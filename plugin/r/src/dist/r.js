@@ -42,7 +42,7 @@ define(function(require, exports, module) {
           console.log("failed to create shell", arguments);
         });
     },
-    evaluate: function(code, modelOutput, init) {
+    evaluate: function(code, modelOutput, refreshObj) {
       var deferred = Q.defer();
       
       if (RCancelFunction) {
@@ -68,14 +68,17 @@ define(function(require, exports, module) {
         type: "POST",
         datatype: "json",
         url: serviceBase + "/rest/rsh/evaluate",
-        data: {shellID: self.settings.shellID, code: code, init: !!init}
+        data: {shellID: self.settings.shellID, code: code }
       }).done(function(ret) {
         var onEvalStatusUpdate = function(evaluation) {
           if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
             cometdUtil.unsubscribe(evaluation.update_id);
             deferred.resolve();
           }
-          bkHelper.refreshRootScope();
+          if (refreshObj !== undefined)
+            refreshObj.outputRefreshed();
+          else
+            bkHelper.refreshRootScope();
         };
         onEvalStatusUpdate(ret);
         if (ret.update_id) {

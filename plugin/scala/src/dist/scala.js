@@ -43,7 +43,7 @@ define(function(require, exports, module) {
           console.log("failed to create shell", arguments);
         });
       },
-      evaluate: function(code, modelOutput) {
+      evaluate: function(code, modelOutput, refreshObj) {
         var deferred = Q.defer();
         var self = this;
         bkHelper.setupProgressOutput(modelOutput);
@@ -70,7 +70,10 @@ define(function(require, exports, module) {
               cometdUtil.unsubscribe(evaluation.update_id);
               deferred.resolve();
             }
-            bkHelper.refreshRootScope();
+            if (refreshObj !== undefined)
+              refreshObj.outputRefreshed();
+            else
+              bkHelper.refreshRootScope();
           };
           onEvalStatusUpdate(ret);
           if (ret.update_id) {

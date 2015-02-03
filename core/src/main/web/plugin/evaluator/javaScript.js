@@ -159,7 +159,7 @@ define(function(require, exports, module) {
     fgColor: "#4A4A4A",
     borderColor: "",
     shortName: "Js",
-    evaluate: function(code, modelOutput) {
+    evaluate: function(code, modelOutput, refreshObj) {
         var deferred = bkHelper.newDeferred();
         bkHelper.timeout(function () {
           try {
@@ -177,7 +177,10 @@ define(function(require, exports, module) {
                 }
               };
             modelOutput.result = progressObj;
-            bkHelper.refreshRootScope();
+            if (refreshObj !== undefined)
+              refreshObj.outputRefreshed();
+            else
+              bkHelper.refreshRootScope();
             
             beaker._beaker_model_output_result = modelOutput.result;
             beaker.showProgressUpdate = function (a,b,c) {

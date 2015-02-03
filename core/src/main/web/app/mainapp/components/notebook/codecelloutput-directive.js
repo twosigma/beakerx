@@ -24,17 +24,18 @@
   var module = angular.module('bk.notebook');
 
   module.directive('bkCodeCellOutput', function(
-      bkUtils, bkOutputDisplayFactory, bkEvaluatorManager) {
+      bkUtils, bkOutputDisplayFactory, bkEvaluatorManager, bkEvaluateJobManager) {
     return {
       restrict: "E",
       template: JST["mainapp/components/notebook/codecelloutput"](),
       scope: {
         model: "=",
-        evaluatorId: "@"
+        evaluatorId: "@",
+        cellId: "@"
       },
       controller: function($scope) {
         var _shareMenuItems = [];
-
+        
         $scope.getOutputResult = function() {
           return $scope.model.result;
         };
@@ -43,7 +44,9 @@
             if ($scope.model.pluginName && window.languageUpdateService && window.languageUpdateService[$scope.model.pluginName]) {
               window.languageUpdateService[$scope.model.pluginName].unsubscribe($scope.subscribedTo);
             }
-          }          
+          }
+          if ($scope.cellId !== undefined)
+            bkEvaluateJobManager.deRegisterOutputCell($scope.cellId);
         });
         $scope.applicableDisplays = [];
         $scope.$watch('getOutputResult()', function(result) {
@@ -199,6 +202,13 @@
             }
           };
         })();
+        
+        $scope.outputRefreshed = function() {
+          if (!($scope.$$phase || $scope.$root.$$phase))
+            $scope.$digest();
+        }
+        if ( $scope.cellId !== undefined )
+          bkEvaluateJobManager.registerOutputCell($scope.cellId, $scope);
       }
     };
   });

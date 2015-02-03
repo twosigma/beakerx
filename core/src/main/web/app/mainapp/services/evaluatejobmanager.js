@@ -17,7 +17,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.evaluateJobManager', ['bk.utils', 'bk.evaluatorManager']);
-  module.factory('bkEvaluateJobManager', function(bkUtils, bkEvaluatorManager) {
+  module.factory('bkEvaluateJobManager', function(bkUtils, bkEvaluatorManager, $timeout) {
 
     var setOutputCellText = function(cell, text) {
       if (!cell.output) {
@@ -26,6 +26,8 @@
       cell.output.result = text;
     };
 
+    var outputMap = { };
+    
     var jobQueue = (function() {
       var errorMessage = function(msg) {
         return {
@@ -49,14 +51,14 @@
           bkUtils.log("evaluate", {
             plugin: job.evaluator.pluginName,
             length: job.code.length });
-          return job.evaluator.evaluate(job.code, job.output);
+          return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId]);
         }
         job.output.result = MESSAGE_WAITING_FOR_EVALUTOR_INIT;
         return bkEvaluatorManager.waitEvaluator(job.evaluatorId)
           .then(function(ev) {
             job.evaluator = ev;
             if (ev !== undefined)
-              return job.evaluator.evaluate(job.code, job.output);
+              return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId]);
             return "cannot find evaluator for "+job.evaluatorId;
           } );
       };
@@ -105,6 +107,8 @@
                   _jobInProgress = undefined;
               })
               .then(doNext);
+        } else {
+          $timeout(function() { bkHelper.refreshRootScope(); }, 0);
         }
       };
 
@@ -189,7 +193,6 @@
         return deferred.promise;
       },
       cancelAll: function() {
-        console.log('cancell all');
         var currentJob = jobQueue.getCurrentJob();
         var deferred = bkUtils.newDeferred();
 
@@ -209,7 +212,17 @@
       },
       reset: function() {
         jobQueue.empty();
-      }
+      },
+      registerOutputCell: function(id, out) {
+        outputMap[id] = out;
+      },
+      deRegisterOutputCell: function(id) {
+        delete outputMap[id];
+      },
+      getOutputCell: function(id) {
+        return outputMap[id];
+      },
+
     };
   });
 

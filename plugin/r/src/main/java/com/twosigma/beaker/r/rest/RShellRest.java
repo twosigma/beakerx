@@ -209,7 +209,6 @@ public class RShellRest {
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
       @FormParam("shellID") String shellID,
-      @FormParam("init") String initString,
       @FormParam("code") String code) 
     throws InterruptedException, REXPMismatchException, IOException
   {
@@ -217,7 +216,6 @@ public class RShellRest {
     obj.started();
     RServer server = getEvaluator(shellID);
     RConnection con = server.connection;
-    boolean init = initString != null && initString.equals("true");
 
     server.outputHandler.reset(obj);
     server.errorGobbler.reset(obj);
@@ -233,17 +231,9 @@ public class RShellRest {
     try {
       // direct graphical output
       String tryCode;
-      if (init) {
-        tryCode = code;
-      } else {
-        con.eval("do.call(svg,c(list('" + file + "'), beaker::saved_svg_options))");
-        tryCode = "beaker_eval_=withVisible(try({" + code + "\n},silent=TRUE))";
-      }
+      con.eval("do.call(svg,c(list('" + file + "'), beaker::saved_svg_options))");
+      tryCode = "beaker_eval_=withVisible(try({" + code + "\n},silent=TRUE))";
       REXP result = con.eval(tryCode);
-      if (init) {
-        obj.finished(result.asString());
-        return obj;
-      }
 
       if (false) {
         if (null != result)

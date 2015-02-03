@@ -117,7 +117,7 @@ define(function(require, exports, module) {
       };
       bkHelper.fcall(spin);
     },
-    evaluate: function(code, modelOutput) {
+    evaluate: function(code, modelOutput, refreshObj) {
       // begin
       var deferred = bkHelper.newDeferred();
       
@@ -155,7 +155,10 @@ define(function(require, exports, module) {
         if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation,  PLUGIN_NAME, self.settings.shellID)) {
           deferred.resolve();
         }
-        bkHelper.refreshRootScope();          
+        if (refreshObj !== undefined)
+          refreshObj.outputRefreshed();
+        else
+          bkHelper.refreshRootScope();     
       }
       var output = function output(a0, a1) {
         // this is called to write output
@@ -200,7 +203,10 @@ define(function(require, exports, module) {
           }
         }
         bkHelper.receiveEvaluationUpdate(modelOutput, evaluation,  PLUGIN_NAME, self.settings.shellID);
-        bkHelper.refreshRootScope();
+        if (refreshObj !== undefined)
+          refreshObj.outputRefreshed();
+        else
+          bkHelper.refreshRootScope();
       };
       var callbacks = ipyVersion1 ? {
         execute_reply: execute_reply,

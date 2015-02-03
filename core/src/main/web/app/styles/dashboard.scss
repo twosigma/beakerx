@@ -19,9 +19,17 @@
   max-width: 980px;
 
   .new-notebook {
-    margin:   20px 0;
-    display:  inline-block;
+    margin-top: 40px;
+    margin-bottom: 60px;
   }
+}
+
+.faux-drop-zone {
+  font-style: italic;
+  border: 2px dashed $cell-border;
+  border-radius: 5px;
+  padding: 7px 19px;
+  text-align: center;
 }
 
 .open-notebook-headline {

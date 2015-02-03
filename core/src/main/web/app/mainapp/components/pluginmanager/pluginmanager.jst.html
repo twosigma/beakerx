@@ -19,7 +19,7 @@
   </div>
   <div class="modal-body modal-large plugin-manager">
     <div class="languages clearfix">
-      <button class="beaker-btn" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" id="{{pluginName}}-button">
+      <button class="btn btn-default language-icon-button" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" id="{{pluginName}}-button">
         <span ng-class="'plugin-' + pluginStatus" class="plugin-status">&#x25cf;</span>
         <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}"
                           name="{{getEvaluatorDetails(pluginName).shortName}}"
@@ -29,7 +29,7 @@
 
         {{pluginName}}
       </button>
-      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="beaker-btn">
+      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default">
         From URL...
       </button>
     </div>
@@ -60,6 +60,6 @@
     </tabset>
   </div>
   <div class="modal-footer">
-    <button class="beaker-btn active" ng-click='doClose()' id='language-manager-close-button'>Close</button>
+    <button class="btn btn-primary" ng-click='doClose()' id='language-manager-close-button'>Close</button>
   </div>
 </div>

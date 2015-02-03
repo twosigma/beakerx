@@ -1039,7 +1039,7 @@
                   // "Not now", hijack all keypress events to prompt again
                   window.addEventListener('keypress', $scope.promptToSave, true);
                 },
-                "Save", "Not now", "active", ""
+                "Save", "Not now", "btn-primary", ""
             ).then(function() {
               prompted = false;
             });

@@ -143,21 +143,6 @@ bk-output-display pre {
     background: transparent;
 }
 
-.base-menu-add .insert-cell-indicator {
-    padding: 8px 13px;
-}
-
-.insert-cell-indicator {
-    color:       #FFF;
-    cursor:      pointer;
-    display:     inline-block;
-    padding:     2px 5px 0;
-    font-size:   13px;
-    background:  $highlight-blue;
-    font-weight: bold;
-    white-space: nowrap;
-}
-
 .code-cell-hidden {
     padding-top: 20px;
 }

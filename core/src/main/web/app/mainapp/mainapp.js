@@ -61,7 +61,7 @@
       restrict: 'E',
       template: JST["template/mainapp/mainapp"](),
       scope: {},
-      controller: function($scope) {
+      controller: function($scope, $timeout) {
         var showLoadingStatusMessage = function(message) {
           $scope.loadingmsg = message;
           if (!($scope.$$phase || $scope.$root.$$phase))
@@ -134,7 +134,11 @@
               window.scrollTo(0, 0);
               window.removeEventListener('scroll', listener, false);
             };
-            window.addEventListener('scroll', listener, false);
+
+            $timeout(function() {
+              window.scrollTo(0, 0);
+              window.addEventListener('scroll', listener, false);
+            });
           };
           var loadNotebookModelAndResetSession = function(
               notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,

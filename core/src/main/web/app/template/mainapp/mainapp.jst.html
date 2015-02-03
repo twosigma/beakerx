@@ -19,7 +19,7 @@
       <img src="app/images/beaker_icon@2x.png" />
       Beaker
     </a>
-    <p class="navbar-text left">{{filename()}}</p>
+    <p class="navbar-text">{{filename()}}</p>
     <span class="navbar-text" ng-if="loading || !!loadingmsg">
       <i class='fa fa-refresh fa-spin text-white'></i>
     </span>
@@ -34,8 +34,8 @@
         <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
       </li>
     </ul>
-    <p ng-if="isEdited()" class="navbar-text text-success right">edited</p>
-    <p ng-if="isDisconnected()" class="navbar-text right">
+    <p ng-if="isEdited()" class="navbar-text text-success pull-right">edited</p>
+    <p ng-if="isDisconnected()" class="navbar-text pull-right">
       <a href="javascript:;" class="navbar-link text-danger" ng-click="promptToSave()" eat-click>{{getOffineMessage()}}</a>
     </p>
   </div>

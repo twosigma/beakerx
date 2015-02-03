@@ -13,15 +13,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="dropdown new-cell-menu">
-  <a class="dropdown-toggle" data-toggle="dropdown">
-    <div ng-click="newCodeCell(defaultEvaluator(), $event)" class="insert-cell-indicator" id="insert-cell">
-      Insert {{defaultEvaluator()}} Cell
-    </div>
-    <div ng-click="moveMenu($event)" class="insert-cell-indicator shift-right">
-      <i class="fa fa-sort-down"></i>
-    </div>
-  </a>
+<div class="btn-group new-cell">
+  <button ng-click="newCodeCell(defaultEvaluator())" class="btn btn-primary insert-cell" ng-class="size && 'btn-'+size" id="insert-cell">
+    Insert {{defaultEvaluator()}} Cell
+  </button>
+  <button class="btn btn-primary dropdown-toggle" ng-class="size && 'btn-'+size" data-toggle="dropdown">
+    <i class="fa fa-sort-down"></i>
+  </button>
   <ul class="dropdown-menu" role="menu">
     <li class="dropdown-submenu">
       <a tabindex="-1">Code cell</a>

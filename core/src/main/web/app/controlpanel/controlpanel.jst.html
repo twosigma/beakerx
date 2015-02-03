@@ -49,8 +49,19 @@
         <bk-control-panel-session-item class="open-notebooks"></bk-control-panel-session-item>
       </div>
 
-      <a class='beaker-btn new-notebook' ng-click="newNotebook()">New Default Notebook</a>
-      <a class='beaker-btn new-notebook right' ng-click="newEmptyNotebook()" id="new-empty-notebook">New Empty Notebook</a>
+      <div class="row new-notebook">
+        <div class="col-xs-3">
+          <a class='beaker-btn text-center btn-block' ng-click="newNotebook()">New Default Notebook</a>
+        </div>
+        <div class="col-xs-3">
+          <a class='beaker-btn text-center btn-block' ng-click="newEmptyNotebook()" id="new-empty-notebook">New Empty Notebook</a>
+        </div>
+        <div class="col-xs-6">
+          <div class="faux-drop-zone">
+            Or drag a .bkr file anywhere on this page to import
+          </div>
+        </div>
+      </div>
 
     </div>
   </div>

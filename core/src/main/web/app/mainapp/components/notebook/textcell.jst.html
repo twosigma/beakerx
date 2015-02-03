@@ -15,4 +15,4 @@
 -->
 
 <p class='depth-indicator'>{{getFullIndex()}}</p>
-<div contenteditable='true' style="min-height: 14px; min-width: 14px;"></div>
+<div contenteditable="{{ isEditable() ? true : false }}" style="min-height: 14px; min-width: 14px;"></div>

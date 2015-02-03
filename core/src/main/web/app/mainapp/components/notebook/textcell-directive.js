@@ -25,7 +25,11 @@
       controller: function($scope) {
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + ($scope.$parent.index + 1);
-        }
+        };
+
+        $scope.isEditable = function() {
+          return !bkHelper.isNotebookLocked();
+        };
       },
       link: function(scope, element, attrs) {
         var titleElement = $(element.find("div").first());

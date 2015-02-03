@@ -28,12 +28,12 @@
     <div class="outputloghandle"></div>
     <div class="btn-toolbar">
       <div class="btn-group alt-controls">
-        <a class="beaker-btn small" ng-click="clearOutput()" >Clear</a>
-        <a class="beaker-btn small hide-output" ng-click="hideOutput()" >Hide</a>
+        <a class="btn btn-default btn-sm" ng-click="clearOutput()" >Clear</a>
+        <a class="btn btn-default btn-sm hide-output" ng-click="hideOutput()" >Hide</a>
       </div>
       <div class="btn-group" data-toggle="buttons-checkbox">
-        <a class="beaker-btn" ng-class="{active: showStdOut}" ng-click="toggleStdOut()" >stdout</a>
-        <a class="beaker-btn" ng-class="{active: showStdErr}" ng-click="toggleStdErr()" >stderr</a>
+        <a class="btn" ng-class="showStdOut ? 'btn-primary' : 'btn-default'" ng-click="toggleStdOut($event)" >stdout</a>
+        <a class="btn" ng-class="showStdErr ? 'btn-primary' : 'btn-default'" ng-click="toggleStdErr($event)" >stderr</a>
       </div>
     </div>
     <div class="outputlogout" ng-show="showStdOut" ng-class="!showStdErr && 'single'">

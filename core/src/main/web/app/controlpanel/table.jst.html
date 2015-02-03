@@ -22,9 +22,7 @@
         {{getDescription(session)}}
       </div>
     </div>
-    <div class='btn-group pull-right'>
-      <a class='mid beaker-btn close-session' ng-click='close(session)'>Close</a>
-    </div>
+    <a class='btn btn-default btn-sm pull-right close-session' ng-click='close(session)'>Close</a>
     <div class='open-date light pull-right'>
       <span>Opened on</span>
       {{session.openedDate | date:'medium'}}

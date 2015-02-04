@@ -324,11 +324,6 @@
       },
       // general
       showModalDialog: function(callback, template, strategy) {
-        if (!template) {
-          // use default template
-          template = "./app/template/openmenumodal.html";
-        }
-
         var options = {
           backdrop: true,
           keyboard: true,

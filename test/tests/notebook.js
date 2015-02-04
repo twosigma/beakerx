@@ -15,33 +15,42 @@
  */
 
 var BeakerPageObject = require('./beaker.po.js');
-describe('language manager test', function () {
+describe('notebook', function () {
 
   beakerPO = new BeakerPageObject();
 
   beforeAll(function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
-    beakerPO.newEmptyNotebook.click();
   });
 
-  it('open language manager', function () {
+  it('should load', function() {
+    beakerPO.newEmptyNotebook.click();
+    expect(browser.getTitle()).toEqual('New Notebook');
+  });
+
+  it('add cell', function () {
+    beakerPO.insertCellButton.click();
+    expect(beakerPO.runCellButton.isDisplayed()).toBe(true);
+  });
+
+  it('set cell language to python', function () {
+    /* load iPython */
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
-    expect(beakerPO.languageManager.isDisplayed()).toBe(true);
-  });
-
-  it('load ipython', function () {
-    expect(beakerPO.languageManagerButtonKnown('IPython').isPresent()).toBe(true);
-    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(false);
     beakerPO.languageManagerButton('IPython').click();
     beakerPO.waitForPlugin('IPython');
-    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(true);
+    beakerPO.languageManagerCloseButton.click();
+
+    beakerPO.cellEvaluatorMenu.click();
+    beakerPO.cellEvaluatorMenuItem('IPython').click();
+    expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual("IPython");
   });
 
-  it('close language manager', function () {
-    beakerPO.languageManagerCloseButton.click();
-    expect(element.all(by.className('plugin-manager')).count()).toEqual(0);
+  it('enter code and evaluate', function () {
+    beakerPO.setCellInput("type(sys.version)");
+    beakerPO.runCellButton.click();
+    expect(beakerPO.cellOutput.getText()).toMatch("str");
   });
 
 });

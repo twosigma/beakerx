@@ -35,15 +35,8 @@ describe('language manager test', function () {
     expect(beakerPO.languageManagerButtonKnown('IPython').isPresent()).toBe(true);
     expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(false);
     beakerPO.languageManagerButton('IPython').click();
-    // Abstract this into beakerPO XXX
-    browser.wait(function () {
-      var deferred = protractor.promise.defer();
-      beakerPO.languageManagerButtonActive('IPython').isPresent()
-        .then(function (result) {
-          deferred.fulfill(result);
-        });
-      return deferred.promise;
-    });
+    beakerPO.waitForPlugin('IPython');
+    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(true);
   });
 
   it('close language manager', function () {

@@ -24,6 +24,16 @@ var BeakerPageObject = function () {
   };
   this.newEmptyNotebook = element(by.id('new-empty-notebook'));
   this.notebookMenu = element(by.id('notebook-menu'));
+  this.waitForPlugin = function(plugin) {
+    browser.wait(function () {
+      var deferred = protractor.promise.defer();
+      this.languageManagerButtonActive(plugin).isPresent()
+        .then(function (result) {
+          deferred.fulfill(result);
+        });
+      return deferred.promise;
+    }.bind(this));
+  };
   this.languageManagerMenuItem = element(by.id('language-manager-menuitem'));
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {

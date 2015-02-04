@@ -15,7 +15,7 @@
  */
 
 var BeakerPageObject = require('./beaker.po.js');
-describe('language manager test', function () {
+describe('language manager', function () {
 
   beakerPO = new BeakerPageObject();
 
@@ -25,13 +25,13 @@ describe('language manager test', function () {
     beakerPO.newEmptyNotebook.click();
   });
 
-  it('open language manager', function () {
+  it('can be opened', function () {
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
     expect(beakerPO.languageManager.isDisplayed()).toBe(true);
   });
 
-  it('load ipython', function () {
+  it('can load iPython', function () {
     expect(beakerPO.languageManagerButtonKnown('IPython').isPresent()).toBe(true);
     expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(false);
     beakerPO.languageManagerButton('IPython').click();
@@ -39,7 +39,7 @@ describe('language manager test', function () {
     expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(true);
   });
 
-  it('close language manager', function () {
+  it('can be closed', function () {
     beakerPO.languageManagerCloseButton.click();
     expect(element.all(by.className('plugin-manager')).count()).toEqual(0);
   });

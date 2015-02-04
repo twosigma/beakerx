@@ -24,17 +24,17 @@ describe('notebook', function () {
     browser.waitForAngular();
   });
 
-  it('should load', function() {
+  it('can load', function() {
     beakerPO.newEmptyNotebook.click();
     expect(browser.getTitle()).toEqual('New Notebook');
   });
 
-  it('add cell', function () {
+  it('can add a cell', function () {
     beakerPO.insertCellButton.click();
     expect(beakerPO.runCellButton.isDisplayed()).toBe(true);
   });
 
-  it('set cell language to python', function () {
+  it('can set a cell language to Python', function () {
     /* load iPython */
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
@@ -47,7 +47,7 @@ describe('notebook', function () {
     expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual("IPython");
   });
 
-  it('enter code and evaluate', function () {
+  it('can enter code into a cell and evaluate it', function () {
     beakerPO.setCellInput("type(sys.version)");
     beakerPO.runCellButton.click();
     expect(beakerPO.cellOutput.getText()).toMatch("str");

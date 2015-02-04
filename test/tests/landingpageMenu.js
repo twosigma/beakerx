@@ -19,8 +19,13 @@ describe('beaker landing menu test', function() {
   var beakerPO = new BeakerPageObject();
 
   it('should load', function() {
+    var start = new Date().getTime();
     browser.get(beakerPO.baseURL);
-    browser.waitForAngular();
+    browser.waitForAngular().then(function() {
+      var stop = new Date().getTime();
+      var len = stop-start;
+      console.log("Loading time: "+len+" milliSeconds");
+    });
   });
 
   it('should have title and menu', function() {

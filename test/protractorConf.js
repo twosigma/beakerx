@@ -20,7 +20,6 @@ exports.config = {
     browserName: 'firefox'
   },
   specs: [
-          'tests/landingpageTime.js',
           'tests/landingpageMenu.js',
           'tests/language-manager.js'
   ]

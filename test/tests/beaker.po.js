@@ -25,15 +25,15 @@ var BeakerPageObject = function () {
     browser.actions().mouseDown().mouseUp().perform();
   };
 
-  this.newEmptyNotebook = element(by.id('new-empty-notebook'));
-  
-  this.fileMenu = element(by.id('file-menu'));
-  this.viewMenu = element(by.id('view-menu'));
-  this.notebookMenu = element(by.id('notebook-menu'));
-  this.helpMenu = element(by.id('help-menu'));
+  this.newEmptyNotebook = element(by.className('new-empty-notebook'));
 
-  this.languageManagerMenuItem = element(by.id('language-manager-menuitem'));
-  this.closeMenuItem = element(by.id('close-menuitem'));
+  this.fileMenu = element(by.className('file-menu'));
+  this.viewMenu = element(by.className('view-menu'));
+  this.notebookMenu = element(by.className('notebook-menu'));
+  this.helpMenu = element(by.className('help-menu'));
+
+  this.languageManagerMenuItem = element(by.className('language-manager-menuitem'));
+  this.closeMenuItem = element(by.className('close-menuitem'));
 
   this.codeCell = function(index) {
     return _.extend(element.all(by.css('.bkcell.code')).get(index),
@@ -52,25 +52,26 @@ var BeakerPageObject = function () {
 
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {
-    return element(by.css('#' + language + '-button .plugin-known'));
+    return element(by.css('.plugin-manager .' + language + ' .plugin-known'));
   };
   this.languageManagerButtonActive = function(language) {
-    return element(by.css('#' + language + '-button .plugin-active'));
+    return element(by.css('.plugin-manager .' + language + ' .plugin-active'));
   };
   this.languageManagerButton = function(language) {
-    return element(by.id(language + '-button'));
+    return element(by.css('.plugin-manager .' + language));
   };
-  this.languageManagerCloseButton = element(by.id('language-manager-close-button'));
-  this.insertCellButton = element(by.id('insert-cell'));
-  this.runCellButton = element(by.id('run-cell-button'));
 
-  this.modalDialogYesButton = element(by.id('modal-dialog-yes'));
-  this.modalDialogNoButton = element(by.id('modal-dialog-no'));
-  this.modalDialogCancelButton = element(by.id('modal-dialog-cancel'));
+  this.languageManagerCloseButton = element(by.className('language-manager-close-button'));
+  this.insertCellButton = element(by.className('insert-cell'));
+  this.evaluateButton = element(by.className('evaluate-script'));
+
+  this.modalDialogYesButton = element(by.css('.modal .yes'));
+  this.modalDialogNoButton = element(by.css('.modal .no'));
+  this.modalDialogCancelButton = element(by.css('.modal .cancel'));
 
   this.cellEvaluatorMenu = element(by.css('.code-cell-area .cell-evaluator-menu'));
   this.cellEvaluatorMenuItem = function (language) {
-    return element(by.css('.code-cell-area #' + language + '-menuitem'));
+    return element(by.css('.code-cell-area .' + language + '-menuitem'));
   };
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
   this.setCellInput = function (code) {

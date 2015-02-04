@@ -25,7 +25,7 @@
   </a>
   <ul class="dropdown-menu inputcellmenu" role="menu" aria-labelledby="dLabel">
     <li ng-repeat="(evaluatorName, evaluator) in getEvaluators()">
-      <a tabindex="-1" href="#" ng-click="setEvaluator(evaluatorName)" id="{{evaluatorName}}-menuitem" eat-click>
+      <a tabindex="-1" href="#" ng-click="setEvaluator(evaluatorName)" class="{{evaluatorName}}-menuitem" eat-click>
         {{evaluatorName}}
         <i class="fa fa-check" ng-show="getShowEvalIcon(evaluatorName)"></i>
       </a>

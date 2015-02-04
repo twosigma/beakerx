@@ -20,12 +20,12 @@
   <div class="form-horizontal">
     <div class="form-group">
       <label for="cell-id" class="control-label col-sm-2">Id</label>
-      <div ng-class="isError() ? 'col-sm-7' : 'col-sm-10'"><input id="cell-id" class="form-control" ng-model="cellName"></div>
+      <div ng-class="isError() ? 'col-sm-7' : 'col-sm-10'"><input class="form-control" ng-model="cellName"></div>
       <div class="col-sm-3" ng-if="isError()"><span class="help-inline" style="color:red">{{getNameError()}}</span></div>
     </div>
     <div class="form-group">
       <label for="cell-tags" class="control-label col-sm-2">Tags</label>
-      <div ng-class="isError() ? 'col-sm-7' : 'col-sm-10'"><input id="cell-tags" class="form-control"  ng-model="cellTags"></div>
+      <div ng-class="isError() ? 'col-sm-7' : 'col-sm-10'"><input class="form-control" ng-model="cellTags"></div>
       <div class="col-sm-3" ng-if="isError()"><span class="help-inline" style="color:red">{{getTagError()}}</span></div>
     </div>
     <div class="form-group">
@@ -41,6 +41,6 @@
   </div>
 </div>
 <div class="modal-footer">
-  <button ng-click="close()" class="btn btn-default" id="btn-cancel">Cancel</button>
+  <button ng-click="close()" class="btn btn-default">Cancel</button>
   <button ng-click="save()" class="btn btn-primary" ng-class="saveDisabled() && 'disabled'">Save</button>
 </div>

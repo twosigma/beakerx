@@ -24,7 +24,7 @@ define(function(require, exports, module) {
         bkHelper.showLanguageManager();
       },
       tooltip: "Show available languages and edit their settings",
-      id: "language-manager-menuitem"
+      classNames: "language-manager-menuitem"
     },
     {
       name: "Lock",
@@ -36,7 +36,7 @@ define(function(require, exports, module) {
       isChecked: function () {
         return bkHelper.isNotebookLocked();
       },
-      id: "lock-menuitem"
+      classNames: "lock-menuitem"
     },
     {
       name: 'Delete all output cells',
@@ -45,7 +45,7 @@ define(function(require, exports, module) {
         bkHelper.deleteAllOutputCells();
       },
       tooltip: 'Deletes all of the output cells.',
-      id: "delete-all-menuitem"
+      classNames: "delete-all-menuitem"
     },
     {
       name: "Run all cells",

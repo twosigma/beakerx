@@ -24,8 +24,8 @@ var BeakerPageObject = function () {
   this.sync = function () {
     browser.actions().mouseDown().mouseUp().perform();
   };
-  this.newEmptyNotebook = element(by.id('new-empty-notebook'));
-  this.notebookMenu = element(by.id('notebook-menu'));
+  this.newEmptyNotebook = element(by.className('new-empty-notebook'));
+  this.notebookMenu = element(by.className('notebook-menu'));
   this.codeCell = function(index) {
     return _.extend(element.all(by.css('.bkcell.code')).get(index),
                     require('./mixins/cell.js'));
@@ -40,23 +40,23 @@ var BeakerPageObject = function () {
       return deferred.promise;
     }.bind(this));
   };
-  this.languageManagerMenuItem = element(by.id('language-manager-menuitem'));
+  this.languageManagerMenuItem = element(by.className('language-manager-menuitem'));
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {
-    return element(by.css('#' + language + '-button .plugin-known'));
+    return element(by.css('.plugin-manager .' + language + ' .plugin-known'));
   };
   this.languageManagerButtonActive = function(language) {
-    return element(by.css('#' + language + '-button .plugin-active'));
+    return element(by.css('.plugin-manager .' + language + ' .plugin-active'));
   };
   this.languageManagerButton = function(language) {
-    return element(by.id(language + '-button'));
+    return element(by.css('.plugin-manager .' + language));
   };
-  this.languageManagerCloseButton = element(by.id('language-manager-close-button'));
-  this.insertCellButton = element(by.id('insert-cell'));
-  this.runCellButton = element(by.id('run-cell-button'));
+  this.languageManagerCloseButton = element(by.className('language-manager-close-button'));
+  this.insertCellButton = element(by.className('insert-cell'));
+  this.evaluateButton = element(by.className('evaluate-script'));
   this.cellEvaluatorMenu = element(by.css('.code-cell-area .cell-evaluator-menu'));
   this.cellEvaluatorMenuItem = function (language) {
-    return element(by.css('.code-cell-area #' + language + '-menuitem'));
+    return element(by.css('.code-cell-area .' + language + '-menuitem'));
   };
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
   this.setCellInput = function (code) {

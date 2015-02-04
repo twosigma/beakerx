@@ -30,7 +30,7 @@
   <div class="navbar navbar-default">
     <ul class="nav navbar-nav">
       <li class="dropdown" ng-repeat="m in getMenus()">
-        <a href="#" role="button" class="dropdown-toggle" id="{{m.id}}" data-toggle="dropdown">{{m.name}}</a>
+        <a href="#" role="button" class="dropdown-toggle" ng-class="m.classNames" data-toggle="dropdown">{{m.name}}</a>
         <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
       </li>
     </ul>

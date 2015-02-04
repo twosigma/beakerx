@@ -53,4 +53,14 @@ describe('notebook', function () {
     expect(beakerPO.cellOutput.getText()).toMatch("str");
   });
 
+  it('can hide the input', function() {
+    var cell = beakerPO.codeCell(0);
+
+    cell.toggleInput().click();
+
+    expect(cell.inputWrapper().isDisplayed()).toBe(true);
+    expect(cell.input().isDisplayed()).toBe(false);
+    expect(cell.miniCellStatus().isDisplayed()).toBe(true);
+  });
+
 });

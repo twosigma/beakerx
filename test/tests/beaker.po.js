@@ -14,6 +14,8 @@
  *  limitations under the License.
  */
 
+var _ = require('underscore');
+
 var BeakerPageObject = function () {
   this.baseURL = 'http://localhost:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
@@ -24,6 +26,10 @@ var BeakerPageObject = function () {
   };
   this.newEmptyNotebook = element(by.id('new-empty-notebook'));
   this.notebookMenu = element(by.id('notebook-menu'));
+  this.codeCell = function(index) {
+    return _.extend(element.all(by.css('.bkcell.code')).get(index),
+                    require('./mixins/cell.js'));
+  };
   this.waitForPlugin = function(plugin) {
     browser.wait(function () {
       var deferred = protractor.promise.defer();

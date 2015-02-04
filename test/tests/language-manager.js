@@ -19,14 +19,10 @@ describe('language manager test', function () {
 
   beakerPO = new BeakerPageObject();
 
-  it('should load', function() {
+  beforeAll(function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
-  });
-
-  it('open a new notebook', function() {
     beakerPO.newEmptyNotebook.click();
-    expect(browser.getTitle()).toEqual('New Notebook');
   });
 
   it('open language manager', function () {

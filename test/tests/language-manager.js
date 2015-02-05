@@ -15,61 +15,33 @@
  */
 
 var BeakerPageObject = require('./beaker.po.js');
-describe('language manager test', function () {
+describe('language manager', function () {
 
   beakerPO = new BeakerPageObject();
 
-  it('should load', function() {
+  beforeAll(function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
-  });
-
-  it('open a new notebook', function() {
     beakerPO.newEmptyNotebook.click();
-    expect(browser.getTitle()).toEqual('New Notebook');
   });
 
-  it('open language manager', function () {
+  it('can be opened', function () {
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
     expect(beakerPO.languageManager.isDisplayed()).toBe(true);
   });
 
-  it('load ipython', function () {
+  it('can load iPython', function () {
     expect(beakerPO.languageManagerButtonKnown('IPython').isPresent()).toBe(true);
     expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(false);
     beakerPO.languageManagerButton('IPython').click();
-    // Abstract this into beakerPO XXX
-    browser.wait(function () {
-      var deferred = protractor.promise.defer();
-      beakerPO.languageManagerButtonActive('IPython').isPresent()
-        .then(function (result) {
-          deferred.fulfill(result);
-        });
-      return deferred.promise;
-    });
+    beakerPO.waitForPlugin('IPython');
+    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(true);
   });
 
-  it('close language manager', function () {
+  it('can be closed', function () {
     beakerPO.languageManagerCloseButton.click();
     expect(element.all(by.className('plugin-manager')).count()).toEqual(0);
-  });
-
-  it('add cell', function () {
-    beakerPO.insertCellButton.click();
-    expect(beakerPO.runCellButton.isDisplayed()).toBe(true);
-  });
-
-  it('set cell language to python', function () {
-    beakerPO.cellEvaluatorMenu.click();
-    beakerPO.cellEvaluatorMenuItem('IPython').click();
-    expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual("IPython");
-  });
-
-  it('enter code and evaluate', function () {
-    beakerPO.setCellInput("type(sys.version)");
-    beakerPO.runCellButton.click();
-    expect(beakerPO.cellOutput.getText()).toMatch("str");
   });
 
 });

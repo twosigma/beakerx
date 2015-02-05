@@ -15,37 +15,42 @@
  */
 
 var BeakerPageObject = require('./beaker.po.js');
-describe('beaker landing menu test', function() {
+describe('beaker landing page', function() {
   var beakerPO = new BeakerPageObject();
 
-  it('should load', function() {
+  it('can load', function() {
+    var start = new Date().getTime();
     browser.get(beakerPO.baseURL);
-    browser.waitForAngular();
+    browser.waitForAngular().then(function() {
+      var stop = new Date().getTime();
+      var len = stop-start;
+      console.log("Loading time: "+len+" milliSeconds");
+    });
   });
 
-  it('should have title and menu', function() {
+  it('has a title and menu', function() {
     expect(browser.getTitle()).toEqual('Beaker');
     expect(beakerPO.mainmenu.count()).toEqual(3);
     expect(beakerPO.mainmenu.getText()).toEqual(['File', 'Settings', 'Help']);
   });
 
-  it('should have no menu displayed', function () {
+  it('has no menu displayed', function () {
     expect(beakerPO.submenu.count()).toEqual(0);
   });
 
-  it('File menu should have 4 items', function () {
+  it('has a file menu with 4 items', function () {
     beakerPO.mainmenu.get(0).click();
     beakerPO.sync();
     expect(beakerPO.submenu.count()).toEqual(4);
   });
 
-  it('Settings menu should have 1 item', function () {
+  it('has a settings menu with 1 item', function () {
     beakerPO.mainmenu.get(1).click();
     beakerPO.sync();
     expect(beakerPO.submenu.count()).toEqual(1);
   });
 
-  it('Help menu should have 4 items', function () {
+  it('has a help menu with 4 items', function () {
     beakerPO.mainmenu.get(2).click();
     beakerPO.sync();
     expect(beakerPO.submenu.count()).toEqual(4);

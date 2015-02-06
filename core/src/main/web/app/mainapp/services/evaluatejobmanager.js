@@ -58,7 +58,7 @@
             length: job.code.length });
           return job.evaluator.evaluate(job.code, job.output, outputMap[job.cellId]);
         }
-        job.output.output.result = MESSAGE_WAITING_FOR_EVALUTOR_INIT;
+        job.output.result = MESSAGE_WAITING_FOR_EVALUTOR_INIT;
         return bkEvaluatorManager.waitEvaluator(job.evaluatorId)
           .then(function(ev) {
             job.evaluator = ev;

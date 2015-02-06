@@ -51,7 +51,7 @@ define(function(require, exports, module) {
       name: "Run all cells",
       sortorder: 130,
       action: function() {
-        bkHelper.evaluate("root");
+        bkHelper.evaluateRoot("root");
       },
       tooltip: "Run all cells"
     },

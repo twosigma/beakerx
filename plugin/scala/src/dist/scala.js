@@ -68,7 +68,10 @@ define(function(require, exports, module) {
           var onEvalStatusUpdate = function(evaluation) {
             if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
               cometdUtil.unsubscribe(evaluation.update_id);
-              deferred.resolve();
+              if (evaluation.status === "ERROR")
+                deferred.reject(evaluation.payload);
+              else
+                deferred.resolve(evaluation.payload);
             }
             if (refreshObj !== undefined)
               refreshObj.outputRefreshed();

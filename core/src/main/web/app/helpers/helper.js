@@ -133,6 +133,13 @@
           console.error("Current app doesn't support evaluate");
         }
       },
+      evaluateRoot: function(toEval) {
+        if (getCurrentApp().evaluateRoot) {
+          return getCurrentApp().evaluateRoot(toEval);
+        } else {
+          console.error("Current app doesn't support evaluateRoot");
+        }
+      },
       evaluateCode: function(evaluator, code) {
         if (getCurrentApp().evaluateCode) {
           return getCurrentApp().evaluateCode(evaluator, code);
@@ -168,23 +175,30 @@
           console.error("Current app doesn't support showAnonymousTrackingDialog");
         }
       },
-      showStatus: function(message) {
+      showStatus: function(message, nodigest) {
         if (getCurrentApp().showStatus) {
-          return getCurrentApp().showStatus(message);
+          return getCurrentApp().showStatus(message, nodigest);
         } else {
           console.error("Current app doesn't support showStatus");
         }
       },
-      clearStatus: function(message) {
+      updateStatus: function() {
+        if (getCurrentApp().updateStatus) {
+          return getCurrentApp().updateStatus();
+        } else {
+          console.error("Current app doesn't support updateStatus");
+        }
+      },
+      clearStatus: function(message, nodigest) {
         if (getCurrentApp().clearStatus) {
-          return getCurrentApp().clearStatus(message);
+          return getCurrentApp().clearStatus(message, nodigest);
         } else {
           console.error("Current app doesn't support clearStatus");
         }
       },
-      showTransientStatus: function(message) {
+      showTransientStatus: function(message, nodigest) {
         if (getCurrentApp().showTransientStatus) {
-          return getCurrentApp().showTransientStatus(message);
+          return getCurrentApp().showTransientStatus(message, nodigest);
         } else {
           console.error("Current app doesn't support showTransientStatus");
         }
@@ -438,7 +452,8 @@
       receiveEvaluationUpdate: function(modelOutput, evaluation, pluginName, shellId) {
         var maxNumOfLines = 200;
 
-        modelOutput.result.status = evaluation.status;
+        if (modelOutput.result !== undefined)
+          modelOutput.result.status = evaluation.status;
 
         // save information to handle updatable results in displays
         modelOutput.pluginName = pluginName;

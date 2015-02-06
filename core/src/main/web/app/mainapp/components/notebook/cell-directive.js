@@ -130,7 +130,7 @@
           $scope.cellmodel.output.state = {};
 
           bkCoreManager.getBkApp()
-            .evaluate($scope.cellmodel)
+            .evaluateRoot($scope.cellmodel)
             .catch(function(data) {
               console.error(data);
             });

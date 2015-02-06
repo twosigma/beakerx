@@ -60,18 +60,24 @@
         }
       };
       newStrategy.treeViewfs = { // file service
-        getChildren: function(path, callback) {
-          var self = this;
+        getChildren: function(basePath, openFolders) {
+          var self = this
+              paths = [basePath];
+
           this.showSpinner = true;
-          bkUtils.httpGet("../beaker/rest/file-io/getDecoratedChildren", {path: path})
-              .success(function (list) {
-                self.showSpinner = false;
-                callback(list);
-              })
-              .error(function () {
-                self.showSpinner = false;
-                console.log("Error loading children");
-              });
+
+          if (openFolders) {
+            var paths = [paths].concat(openFolders);
+          }
+
+          return bkUtils.httpPost("../beaker/rest/file-io/getDecoratedChildren", {
+            openFolders: paths.join(',')
+          }).success(function (list) {
+            self.showSpinner = false;
+          }).error(function () {
+            self.showSpinner = false;
+            console.log("Error loading children");
+          });
         },
         open: function(path) {
           newStrategy.input = path;

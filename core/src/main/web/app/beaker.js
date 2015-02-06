@@ -403,6 +403,6 @@
       .then(setupBeakerConfigAndRun)
       .then(bootstrapBkApp)
       .catch(function (err) {
-        console.error(err.stack);
+        console.log(err);
       });
 })();

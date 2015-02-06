@@ -247,7 +247,7 @@
           {
             name: "Run all",
             action: function () {
-              bkCoreManager.getBkApp().evaluate("root").
+              bkCoreManager.getBkApp().evaluateRoot("root").
                   catch(function (data) {
                     console.error(data);
                   });

@@ -118,9 +118,9 @@
           if ($event) $event.stopPropagation();
 
           $scope.cellmodel.output.state = {};
-          bkCoreManager.getBkApp().evaluate($scope.cellmodel).
+          bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel).
               catch(function(data) {
-                console.log("ERROR: "+data);
+                console.log("Evaluation failed");
               });
         };
         var editedListener = function(newValue, oldValue) {

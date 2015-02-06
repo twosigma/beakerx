@@ -153,7 +153,10 @@ define(function(require, exports, module) {
             evaluation.payload = "<pre>" + result + "</pre>";
           }
           if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation,  PLUGIN_NAME, self.settings.shellID)) {
-            deferred.resolve();
+            if (evaluation.status === "ERROR")
+              deferred.reject(evaluation.payload);
+            else
+              deferred.resolve(evaluation.payload);
           }
           if (refreshObj !== undefined)
             refreshObj.outputRefreshed();

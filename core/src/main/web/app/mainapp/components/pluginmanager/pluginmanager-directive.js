@@ -121,8 +121,9 @@
             $scope.evalTabOp.newPluginNameOrUrl = "";
           }
 
-          bkSessionManager.addEvaluator({ name: '', plugin: plugin });
-          bkCoreManager.getBkApp().addEvaluator({ name: '', plugin: plugin });
+          var newEval = { name: '', plugin: plugin };
+          bkSessionManager.addEvaluator(newEval);
+          bkCoreManager.getBkApp().addEvaluator(newEval);
           $rootScope.$broadcast('languageAdded', { evaluator: plugin });
         }
       }

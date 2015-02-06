@@ -317,6 +317,7 @@
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
           lineNumbers: true,
           matchBrackets: true,
+          electricChars: false,
           extraKeys: {
             "Up" : function(cm) {
               if ($('.CodeMirror-hint').length > 0) {

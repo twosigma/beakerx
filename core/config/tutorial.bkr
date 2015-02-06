@@ -20,18 +20,6 @@
             }
         },
         {
-            "name": "IPython",
-            "plugin": "IPython",
-            "imports": "",
-            "supplementalClassPath": "",
-            "view": {
-                "cm": {
-                    "mode": "python",
-                    "background": "#EAEAFF"
-                }
-            }
-        },
-        {
             "name": "JavaScript",
             "plugin": "JavaScript",
             "jsSetting2": "",
@@ -54,12 +42,15 @@
             "evaluatorReader": false
         },
         {
-            "id": "textikdMvQ",
-            "type": "text",
+            "id": "markdown0FmMDD",
+            "type": "markdown",
             "body": [
-                "Beaker is based on the idea of the lab notebook, brought to life in your web browser. Each Beaker notebook is a place for recording the written ideas, data, images, spreadsheets, diagrams, equations, and especially code, that one produces in the course of research. &nbsp;With Beaker notebooks you can analyze, visualize, and document data and science, using multiple programming languages.<div><br></div><div>This tutorial covers the basics of interacting with code cells and notebooks. &nbsp;There are more tutorials on a variety of languages and topics, linked from the list below.</div>"
+                "Beaker is based on the idea of the lab notebook, brought to life in your web browser. Each Beaker notebook is a place for recording the written ideas, data, images, spreadsheets, diagrams, equations, and especially code, that one produces in the course of research. With Beaker notebooks you can analyze, visualize, and document data and science, using multiple programming languages.",
+                "",
+                "This tutorial covers the basics of interacting with code cells and notebooks. There are more tutorials on a variety of languages and topics, linked from the list below."
             ],
-            "evaluatorReader": false
+            "evaluatorReader": false,
+            "mode": "preview"
         },
         {
             "id": "codewQAk41",
@@ -173,62 +164,38 @@
             "evaluatorReader": false
         },
         {
-            "id": "textKDdmxf",
-            "type": "text",
+            "id": "markdownbiE8W3",
+            "type": "markdown",
             "body": [
-                "Below is some IPython code. To run it, move your cursor into the cell, click, and then press CTRL-ENTER or click on the \"Run\" button.<div><br></div><div>The output from running a cell appears right below the input.</div>"
+                "Below is some JavaScript code. To run it, move your cursor into the cell, click, and then press Control-Enter (Command-Enter on Mac) or click on the \"Run\" button.",
+                "",
+                "The output from running a cell appears right below the input."
             ],
-            "evaluatorReader": false
+            "evaluatorReader": false,
+            "mode": "preview"
         },
         {
             "id": "codeh1TYII",
             "type": "code",
-            "evaluator": "IPython",
+            "evaluator": "JavaScript",
             "input": {
                 "body": [
-                    "a = 1",
-                    "a"
+                    "var factorial = function(x) {",
+                    "  if (x < 2) return x;",
+                    "  return x * factorial(x-1);",
+                    "}",
+                    "",
+                    "factorial(20);"
                 ]
             },
             "output": {
-                "selectedType": "BeakerDisplay",
+                "selectedType": "Text",
                 "outputArrived": true,
                 "elapsedTime": 181,
-                "state": {},
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<div title=\"click to expand output; double click to hide output\" class=\"out_prompt_overlay prompt\" style=\"display: none;\"></div><div style=\"display: none;\" class=\"output\"></div><div title=\"click to expand output\" class=\"btn btn-default output_collapsed\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_text\"><pre>1</pre></div>"
-                }
-            },
-            "evaluatorReader": true,
-            "lineCount": 2
-        },
-        {
-            "id": "textmEdrvq",
-            "type": "text",
-            "body": [
-                "And here's a basic histogram from matplotlib:"
-            ],
-            "evaluatorReader": false
-        },
-        {
-            "id": "code3E0zXv",
-            "type": "code",
-            "evaluator": "IPython",
-            "input": {
-                "body": [
-                    "hist([1,2,2])"
-                ]
-            },
-            "output": {
-                "selectedType": "Hidden",
-                "outputArrived": true,
-                "elapsedTime": 364,
                 "state": {}
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 6
         },
         {
             "id": "Section2enUlh",
@@ -247,12 +214,17 @@
             "evaluatorReader": false
         },
         {
-            "id": "textJwyp0v",
-            "type": "text",
+            "id": "markdownP6PhVe",
+            "type": "markdown",
             "body": [
-                "<div>Move your cursor to the area below this text. You'll see a blue bar appear with the text 'Insert Cell.' Click on that bar and add a new IPython cell. &nbsp;It uses the language of the previous code cell in the notebook, which in this case is IPython.</div><div><br></div><div>If you want to create a cell of a different language or type, then click on the right side of the bar on the triangle.</div><div><br></div><div>Click into the new cell and press CTRL-SHIFT-A. This will create a new cell of the same type.</div>"
+                "Move your cursor to the area below this text. You'll see a blue bar appear with the text 'Insert JavaScript Cell.' Click on that bar and add a new code cell. It uses the language of the previous code cell in the notebook, which in this case is JavaScript.",
+                "",
+                "If you want to create a cell of a different language or type, then click on the right side of the bar on the triangle. If the language you want isn't in the menu, then select \"Other Languages...\" and add it to the notebook.",
+                "",
+                "Click into the new cell and press Control-Shift-A. This will create a new cell of the same type."
             ],
-            "evaluatorReader": false
+            "evaluatorReader": false,
+            "mode": "preview"
         },
         {
             "id": "SectionkfKSFY",
@@ -263,12 +235,17 @@
             "evaluatorReader": false
         },
         {
-            "id": "textOYea2S",
-            "type": "text",
+            "id": "markdowntulyDU",
+            "type": "markdown",
             "body": [
-                "<div>Move your cursor into a code cell. Pressing the UP and DOWN arrow keys will move your cursor from line to line within the cell, and then from cell to cell if you keep going over the edge.</div><div><br></div><div>Pressing CTRL-SHIFT-E within a code cell will allow you to change the cell's language.</div><div><br></div><div>In the top-right corner of the cell are some icons with common operations including deleting, moving the cell up and down, and three dots for a menu with more actions. &nbsp;Code cells have toggles to hide or show the input and output areas.</div>"
+                "Move your cursor into a code cell. Pressing the Up and Down arrow keys will move your cursor from line to line within the cell, and then from cell to cell if you keep going over the edge.",
+                "",
+                "Pressing Control-Shift-E within a code cell will allow you to change the cell's language.",
+                "",
+                "In the top-right corner of the cell are some icons with common operations including deleting, moving the cell up and down, and three dots for a menu with more actions. Code cells have toggles to hide or show the input and output areas."
             ],
-            "evaluatorReader": false
+            "evaluatorReader": false,
+            "mode": "preview"
         },
         {
             "id": "SectionEt3gzB",
@@ -279,12 +256,17 @@
             "evaluatorReader": false
         },
         {
-            "id": "textMULqPW",
-            "type": "text",
+            "id": "markdownXP6cYO",
+            "type": "markdown",
             "body": [
-                "<div>Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any number of cells including other sections. There are four levels of heading, so you can organize your notebook in a tree and hide the parts you don't need. &nbsp;Try clicking the +/- buttons to get a feel for how the hierarchy works. &nbsp;The View&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→ Show Hierarchy menu makes the Hierarchy visible, including auto-numbering the sections.</span></div><div><br></div><div>Each section has a three-dot menu on the right side of the screen with operations that pertain to it, including Sharing, running all the cells in it, &nbsp;and changing its header level.</div><div><br></div><div>You can add sections with the usual Insert Cell menu.</div>"
+                "Notice that all the headings have +/- toggles on them. These are 'section cells' in Beaker, and they can contain any number of cells including other sections. There are four levels of heading, so you can organize your notebook in a tree and hide the parts you don't need. Try clicking the +/- buttons to get a feel for how the hierarchy works. The View → Show Hierarchy menu makes the Hierarchy visible, including auto-numbering the sections.",
+                "",
+                "Each section has a three-dot menu on the right side of the screen with operations that pertain to it, including Sharing, running all the cells in it, and changing its header level.",
+                "",
+                "You can add sections with the usual Insert Cell menu."
             ],
-            "evaluatorReader": false
+            "evaluatorReader": false,
+            "mode": "preview"
         },
         {
             "id": "sectionzXF8eP",
@@ -295,28 +277,36 @@
             "collapsed": false
         },
         {
-            "id": "textVwme1V",
-            "type": "text",
+            "id": "markdownqWgOly",
+            "type": "markdown",
             "body": [
-                "With just one click you can share your work with the public. &nbsp;The File&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→ Share to web menu copies your notebook to a Github gist, and then opens it with our sharing server. &nbsp;You can send that link to anyone, and they can view it without having to install Beaker. &nbsp;From that page, they can download the original notebook and open it in Beaker if they have it.</span><div><span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\"><br></span></div><div><span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">The three-dot menu for sections and code cells also has a Share item that applies to that subset of your notebook.</span></div>"
+                "With just one click you can share your work with the public. The File → Share to web menu copies your notebook to a Github gist, and then opens it with our sharing server. You can send that link to anyone, and they can view it without having to install Beaker. From that page, they can download the original notebook and open it in Beaker if they have it.",
+                "",
+                "The three-dot menu for sections and code cells also has a Share item that applies to that subset of your notebook."
             ],
-            "evaluatorReader": false
+            "evaluatorReader": false,
+            "mode": "preview"
         },
         {
             "id": "sectionBNiuvd",
             "type": "section",
-            "title": "Multiple Notebooks and the browser",
+            "title": "Multiple notebooks and the browser",
             "level": 1,
             "evaluatorReader": false,
             "collapsed": false
         },
         {
-            "id": "textadBg5q",
-            "type": "text",
+            "id": "markdownCnz1ie",
+            "type": "markdown",
             "body": [
-                "Just like your web browser allows you to see many web pages at the same time, Beaker allows you to work on multiple notebooks simultaneously. &nbsp;Just command-click (or control-click) on the Beaker logo in the upper-left corner to create a new tab in your browser, and connect to Beaker's start page. &nbsp;Here you will find a list of the current editing sessions, just click on one to open it. &nbsp;You can also use the file menu to open an existing notebook, create a new one, or select one of your recently used notebooks.<div><br></div><div>Beaker keeps track of all notebook editing sessions even if you close all browser windows on them. &nbsp;If you lose your browser window, just reconnect to the start page, normally at &nbsp;http://127.0.0.1/beaker/ and find your session in the list.</div><div><br></div><div>During normal editing of notebooks, Beaker saves checkpoints of your work automatically to the folder&nbsp;~/.beaker/v1/var/sessionBackups.</div>"
+                "Just like your web browser allows you to see many web pages at the same time, Beaker allows you to work on multiple notebooks simultaneously. Just command-click (or control-click) on the Beaker logo in the upper-left corner to create a new tab in your browser, and connect to Beaker's start page. Here you will find a list of the current editing sessions, just click on one to open it. You can also use the file menu to open an existing notebook, create a new one, or select one of your recently used notebooks.",
+                "",
+                "Beaker keeps track of all notebook editing sessions even if you close all browser windows on them. If you lose your browser window, just reconnect to the start page, normally at http://127.0.0.1:8801/beaker/ and find your session in the list.",
+                "",
+                "During normal editing of notebooks, Beaker saves checkpoints of your work every minute automatically to the folder ~/.beaker/v1/var/sessionBackups."
             ],
-            "evaluatorReader": false
+            "evaluatorReader": false,
+            "mode": "preview"
         }
     ],
     "namespace": {

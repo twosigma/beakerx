@@ -45,17 +45,23 @@
           $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children | fileFilter:fs.filter | orderBy:fs.orderBy:fs.orderReverse' data='d' fs='fs'></tree-node>");
         }
 
-        $rootScope.treeView = $rootScope.treeView || {};
-
-        if (! $rootScope.treeView[$scope.rooturi]) {
-          $rootScope.treeView[$scope.rooturi] = {
-            type: "directory",
-            uri: $scope.rooturi,
-            children: []
-          };
+        if (!_.string.endsWith($scope.rooturi, '/')) {
+          $scope.rooturi = $scope.rooturi + '/';
         }
 
-        $scope.root = $rootScope.treeView[$scope.rooturi];
+        $scope.root = {
+          type: "directory",
+          uri: $scope.rooturi,
+          children: []
+        }
+
+        if (_.contains($rootScope.openFolders, $scope.rooturi)) {
+          $scope.fs.getChildren($scope.rooturi, $rootScope.openFolders).then(function(response) {
+            $scope.$evalAsync(function() {
+              $scope.root.children = response.data;
+            });
+          });
+        }
       }
     };
   });
@@ -74,7 +80,16 @@
           "<div ng-include='\"treeNodeChildren.html\"'></div>" +
           "</div>",
       scope: {data: "=", fs: "=", displayname: "@"},
-      controller: function($scope) {
+      controller: function($scope, $rootScope) {
+        var transform = function(c) {
+          return {
+            type: c.type,
+            uri: c.uri,
+            modified: c.modified,
+            displayName: c.displayName,
+            children: _.map(c.children, transform)
+          }
+        };
         $scope.click = function() {
           if ($scope.data.type === 'directory') {
             var uri = $scope.data.uri;
@@ -83,11 +98,15 @@
             }
             $scope.fs.open(uri);
             // toggle
-            if ($scope.data.children.length) {
+            if (!_.isEmpty($scope.data.children)) {
               $scope.data.children.splice(0, $scope.data.children.length);
+              $rootScope.openFolders = _.reject($rootScope.openFolders, function(folder) {
+                return _.string.startsWith(folder, uri);
+              });
             } else {
-              $scope.fs.getChildren($scope.data.uri, function(children) {
-                $scope.data.children.splice(0, $scope.data.children.length);
+              $rootScope.openFolders = $rootScope.openFolders || [];
+              $rootScope.openFolders.push(uri);
+              $scope.fs.getChildren($scope.data.uri).success(function(children) {
                 children = _.sortBy(children, function(c) {
                   if (c.type === "directory") {
                     return "!!!!!" + c.uri.toLowerCase();
@@ -95,15 +114,7 @@
                     return c.uri.toLowerCase();
                   }
                 });
-                _.each(children, function(c) {
-                  $scope.data.children.push({
-                    type: c.type,
-                    uri: c.uri,
-                    modified: c.modified,
-                    displayName: c.displayName,
-                    children: []
-                  });
-                });
+                $scope.data.children = _.map(children, transform);
               });
             }
           } else {

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.FormParam;
@@ -211,19 +212,29 @@ public class FileIORest {
     return result;
   }
 
-  @GET
+  @POST
   @Path("getDecoratedChildren")
   public List<Map<String, Object>> getDecoratedChildren(
-      @QueryParam("path") String path) {
+      @FormParam("openFolders") String openFolderList) {
+    List<String> openFolders = Arrays.asList(openFolderList.split("\\s*,\\s*"));
+    return getChildren(openFolders.get(0), openFolders);
+  }
+
+  private static List<Map<String, Object>> getChildren(String path, List<String> openFolders) {
     File f = new File(path);
     File[] children = f.listFiles();
     List<Map<String, Object>> ret = new ArrayList<>(children.length);
     for (File cf : children) {
       if (!cf.isHidden()) {
+        String childPath = cf.getPath();
         Map<String, Object> map = new HashMap<>();
-        map.put("uri", cf.getPath());
+        map.put("uri", childPath);
         map.put("modified", cf.lastModified());
         map.put("type", cf.isDirectory() ? "directory" : getMimeTypeForFileName(cf.getPath()));
+        String prettyChildPath = childPath + "/";
+        if (openFolders.contains(prettyChildPath)) {
+          map.put("children", getChildren(childPath, openFolders));
+        }
         ret.add(map);
       }
     }

@@ -389,6 +389,23 @@
 
       // other JS utils
       updateDocumentModelFromDOM: function(id) {
+	  function convertCanvasToImage(elem) {
+	      if (elem.nodeName == "CANVAS") {
+		  var img = document.createElement("img");
+		  img.src = elem.toDataURL();
+		  return {dom: img, changed: true};
+	      }
+              var changed = false;
+	      var childNodes = elem.childNodes;
+	      for (var i = 0; i < childNodes.length; i++) {
+		  var result = convertCanvasToImage(childNodes[i]);
+		  if (result.changed) {
+		      elem.replaceChild(result.dom, childNodes[i]);
+		  }
+		  changed = changed || result.changed;
+	      }
+	      return {dom: elem, changed: changed};
+	  };
           // 1) find the cell that contains elem
           var elem = $("#" + id).closest("bk-cell");
           if (elem === undefined || elem[0] === undefined) {
@@ -405,9 +422,11 @@
             console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
             return;
           }
+	  // 2.5) search for any canvas elements in body and replace each with an image.
+	  body = convertCanvasToImage(body[0]).dom;
 
           // 2) convert that part of the DOM to a string
-          var newOutput = body[0].innerHTML;
+          var newOutput = body.innerHTML;
 
           // 3) set the result.object to that string.
           var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);

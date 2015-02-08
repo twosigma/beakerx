@@ -393,18 +393,16 @@
 	      if (elem.nodeName == "CANVAS") {
 		  var img = document.createElement("img");
 		  img.src = elem.toDataURL();
-		  return {dom: img, changed: true};
+		  return img;
 	      }
-              var changed = false;
 	      var childNodes = elem.childNodes;
 	      for (var i = 0; i < childNodes.length; i++) {
 		  var result = convertCanvasToImage(childNodes[i]);
-		  if (result.changed) {
-		      elem.replaceChild(result.dom, childNodes[i]);
+		  if (result != childNodes[i]) {
+		      elem.replaceChild(result, childNodes[i]);
 		  }
-		  changed = changed || result.changed;
 	      }
-	      return {dom: elem, changed: changed};
+	      return elem;
 	  };
           // 1) find the cell that contains elem
           var elem = $("#" + id).closest("bk-cell");
@@ -423,7 +421,7 @@
             return;
           }
 	  // 2.5) search for any canvas elements in body and replace each with an image.
-	  body = convertCanvasToImage(body[0]).dom;
+	  body = convertCanvasToImage(body[0]);
 
           // 2) convert that part of the DOM to a string
           var newOutput = body.innerHTML;

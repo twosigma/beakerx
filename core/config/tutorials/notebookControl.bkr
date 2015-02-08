@@ -166,8 +166,9 @@
                 "body": [
                     "// ask the system to evaluate every cell with the tag 'mytag'",
                     "// this is an async call that returns a promise",
-                    "beaker.evaluate(\"mytag\").then(function() {",
-                    "\treturn \"finished\";",
+                    "beaker.evaluate(\"mytag\").then(function(x) {",
+                    "     ",
+                    "\treturn \"got \" + x.length + \" results: \" + x",
                     "})",
                     "// scroll below to see the evaluated cells"
                 ]
@@ -177,7 +178,7 @@
                 "selectedType": "Text"
             },
             "evaluatorReader": true,
-            "lineCount": 6
+            "lineCount": 7
         },
         {
             "id": "markdownuCSID2",
@@ -261,7 +262,9 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "elapsedTime": 80
+                "elapsedTime": 62,
+                "pluginName": "Groovy",
+                "shellId": "188b1a03-8f15-4967-8397-01c9b6801422"
             },
             "evaluatorReader": true,
             "lineCount": 1,

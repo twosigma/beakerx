@@ -66,12 +66,17 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "# This is a code cell.\n# Click below, on the 3rd line, then type some Python code (eg \"1+2\"), then click \"Run\".\n"
+                "body": [
+                    "# This is a code cell.",
+                    "# Click below, on the 3rd line, then type some Python code (eg \"1+2\"), then click \"Run\".",
+                    ""
+                ]
             },
             "output": {
                 "selectedType": "BeakerDisplay",
                 "outputArrived": true,
-                "elapsedTime": 30
+                "elapsedTime": 30,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -81,20 +86,29 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": "# This cell is for the R language.  Try running \"hist(rnorm(100))\".\n"
+                "body": [
+                    "# This cell is for the R language.  Try running \"hist(rnorm(100))\".",
+                    ""
+                ]
             },
             "output": {
                 "selectedType": "Html",
-                "elapsedTime": 945
+                "elapsedTime": 945,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 2
         },
         {
-            "id": "text97Oipt",
-            "type": "text",
-            "body": "<p style=\"margin-bottom: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 20px;\">Beaker also supports <b>JavaScript</b>, <b>Julia</b>, <b>Groovy</b>, <b>Ruby</b>, and <b>Node</b>. To add another language to this notebook, select <b>Notebook</b>&nbsp;<span style=\"color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 14px; line-height: 22.3999996185303px;\">→</span>&nbsp;<b>Plugin manager</b> from the menu on top of the screen.</p><p style=\"margin-top: 15px; color: rgb(0, 0, 0); font-family: Helvetica, arial, freesans, clean, sans-serif; font-size: 15px; line-height: 20px; margin-bottom: 0px !important;\">For general help, see the tutorial notebook under <b>Help</b>&nbsp;<span style=\"color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 14px; line-height: 22.3999996185303px;\">→</span>&nbsp;<b>Tutorial notebook</b></p>",
-            "evaluatorReader": false
+            "id": "markdown188oO3",
+            "type": "markdown",
+            "body": [
+                "Beaker also supports JavaScript, Julia, Groovy, Ruby, Scala, Python3, Java, and Node. To add another language to this notebook, select **Notebook → Language** manager from the menu on top of the screen.",
+                "",
+                "For general help, see the tutorial notebook under **Help → Tutorial** notebook"
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
         }
     ]
 }

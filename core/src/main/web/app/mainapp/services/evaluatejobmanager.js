@@ -224,7 +224,7 @@
       evaluate: function(cell, notick) {
         var parent = jobQueue.getCurrentJob();
         if (parent === undefined)
-          return evaluateRoot(cell);
+          return this.evaluateRoot(cell);
         
         var deferred = bkUtils.newDeferred();
         if (jobQueue.isRunning(cell.id)) {

@@ -66,11 +66,7 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": [
-                    "# This is a code cell.",
-                    "# Click below, on the 3rd line, then type some Python code (eg \"1+2\"), then click \"Run\".",
-                    ""
-                ]
+                "body": "# This is a code cell.\n# Click below, on the 3rd line, then type some Python code (eg \"1+2\"), then click \"Run\".\n"
             },
             "output": {
                 "selectedType": "BeakerDisplay",
@@ -86,10 +82,7 @@
             "type": "code",
             "evaluator": "R",
             "input": {
-                "body": [
-                    "# This cell is for the R language.  Try running \"hist(rnorm(100))\".",
-                    ""
-                ]
+                "body": "# This cell is for the R language.  Try running \"hist(rnorm(100))\".\n"
             },
             "output": {
                 "selectedType": "Html",
@@ -102,11 +95,8 @@
         {
             "id": "markdown188oO3",
             "type": "markdown",
-            "body": [
-                "Beaker also supports JavaScript, Julia, Groovy, Ruby, Scala, Python3, Java, and Node. To add another language to this notebook, select **Notebook → Language** manager from the menu on top of the screen.",
-                "",
-                "For general help, see the tutorial notebook under **Help → Tutorial** notebook"
-            ],
+            "body": 
+                "Beaker also supports JavaScript, Julia, Groovy, Ruby, Scala, Python3, Java, and Node. To add another language to this notebook, select **Notebook → Language manager** from the menu on top of the screen.\n\nFor general help, see the tutorial notebook under **Help → Tutorial** notebook.",
             "evaluatorReader": false,
             "mode": "preview"
         }

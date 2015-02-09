@@ -13,7 +13,7 @@ http {
   # turn this on for debugging
   #access_log %(nginx_dir)s/logs/access.log;
   access_log off;
-  
+
   sendfile on;
   tcp_nopush on;
 
@@ -27,7 +27,7 @@ http {
   proxy_read_timeout      1000000;
   proxy_buffers           32 4k;
   client_max_body_size    100M;
-  client_body_buffer_size 128k;  
+  client_body_buffer_size 128k;
   client_body_temp_path   "client_temp";
   proxy_temp_path         "client_temp";
   fastcgi_temp_path       "client_temp";
@@ -36,7 +36,7 @@ http {
 
   server {
     autoindex off;
-    
+
     %(listen_section)s
 
     # redirect server error pages to the static page /50x.html and serve them directly from static html directory
@@ -91,7 +91,7 @@ http {
       try_files $uri @dopass;
     }
 
-    # forward all other urls 
+    # forward all other urls
     location @dopass {
       %(auth_cookie_rule)s
       proxy_pass http://127.0.0.1:%(port_beaker)s;

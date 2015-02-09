@@ -35,7 +35,6 @@ root {
 
 html body {
     padding-top: 125px;
-    font-family: $font-family-primary;
 }
 
 body.dragover:after {
@@ -76,14 +75,7 @@ ul.cell-output-labels {
 }
 
 .bkcell a.evaluate-script {
-    color:      black;
-    border:     solid 1px rgb(213, 213, 213);
-    display:    inline-block;
-    padding:    7px 26px;
-    font-size:  13px;
     margin-top: 20px;
-    background: rgb(241, 241, 241);
-    text-decoration: none;
 }
 
 .bkcell .CodeMirror {

@@ -79,7 +79,7 @@
           index: pluginIndex,
           secondaryIndex: secondaryIndex,
           sortorder: plugin.sortorder,
-          id: plugin.id
+          classNames: plugin.id
         };
         menus[pluginIndex + '_' + secondaryIndex + '_' + parentMenu.name] = parentMenu;
       } else {

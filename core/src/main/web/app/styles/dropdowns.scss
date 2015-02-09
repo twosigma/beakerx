@@ -15,8 +15,6 @@
  */
 
 .dropdown-menu {
-    border-radius: 0;
-    -webkit-border-radius: 0;
     box-shadow: 0 0 4px rgba(0,0,0,0.2);
     -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.2);
     border: none;
@@ -43,8 +41,6 @@
     left: 100%;
     margin-top: -6px;
     margin-left: -1px;
-    border-radius: 0;
-    -webkit-border-radius: 0;
   }
 
   &.drop-left > .dropdown-menu {
@@ -73,14 +69,4 @@
       display: block;
     }
   }
-}
-
-html .dropdown-menu li a:hover,  html .dropdown-submenu:hover > a{
-    background: $highlight-blue;
-    color: #fff;
-}
-
-.dropdown.new-cell-menu {
-    margin:  10px 0;
-    display: inline-block;
 }

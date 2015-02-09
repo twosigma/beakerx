@@ -15,20 +15,17 @@
   limitations under the License.
 -->
 <ul class="notebook-dashboard-list">
-  <li class='session' ng-repeat='session in sessions | orderBy:"openedDate":true'>
-    <div class="left">
+  <li class='session clearfix' ng-repeat='session in sessions | orderBy:"openedDate":true'>
+    <div class="pull-left">
       <div class='caption' ng-click='open(session)'>{{getCaption(session)}}</div>
       <div class='light path' ng-if="getDescription(session)">
         {{getDescription(session)}}
       </div>
     </div>
-    <div class='btn-group right'>
-      <a class='mid beaker-btn close-session' ng-click='close(session)'>Close</a>
-    </div>
-    <div class='open-date light right'>
+    <a class='btn btn-default btn-sm pull-right close-session' ng-click='close(session)'>Close</a>
+    <div class='open-date light pull-right'>
       <span>Opened on</span>
       {{session.openedDate | date:'medium'}}
     </div>
-    <div class="cl"></div>
   </li>
 </ul>

@@ -37,33 +37,39 @@
 }
 
 .notebook-dashboard-list {
-  margin:     0;
+  margin: 0;
   list-style: none;
 
   .caption {
-    cursor:       pointer;
-    font-size:    15px;
-    font-weight:  bold;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 6px;
 
     &:hover {
       text-decoration: underline;
     }
   }
 
-  .session {
-    margin:       10px 0;
-    border:       solid 1px $cell-border;
-    padding:      20px;
-    border-left:  solid 3px #41566a;
+  .path {
+    margin-bottom: 6px;
   }
 
-  .path {
-    margin-bottom: -7px
+  .session {
+    margin: 18px 0;
+    border: solid 1px $cell-border;
+    padding: 11px;
+    padding-left: 23px;
+    border-left: solid 3px #41566a;
+  }
+
+  .open-date {
+    margin-top: 8px;
   }
 
   .light {
-    color:        $font-grey;
-    font-size:    11px;
+    color: $font-grey;
+    font-size: 11px;
     margin-right: 30px;
 
     span {

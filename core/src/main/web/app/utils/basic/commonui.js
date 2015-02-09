@@ -148,8 +148,8 @@
       restrict: 'E',
       template: '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">' +
           '<li ng-repeat="item in getMenuItems() | isHidden" ng-class="getItemClass(item)">' +
-          '<a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item)" ' +
-          '  id="{{item.id}}" title="{{item.tooltip}}" eat-click>' +
+          '<a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item) + item.classNames" ' +
+          '  title="{{item.tooltip}}" eat-click>' +
           '<i class="glyphicon glyphicon-ok" ng-show="isMenuItemChecked(item)"> </i> ' +
           '{{getName(item)}}' +
           '</a>' +

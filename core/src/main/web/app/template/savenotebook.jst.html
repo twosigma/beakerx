@@ -41,6 +41,6 @@
     <i class="new-folder bk-icon" data-toggle="tooltip" title="Make new directory ({{getStrategy().input}})" ng-click="getStrategy().newFolder(getStrategy().input)"></i>
   </p>
   <span style="float:left;">{{getStrategy().getResult()}}</span>
-  <button ng-click="close()" class="beaker-btn">Cancel</button>
-  <button ng-click="close(getStrategy().getResult())" class="beaker-btn active" ng-disabled="getStrategy().getSaveBtnDisabled()" >Save</button>
+  <button ng-click="close()" class="btn btn-default">Cancel</button>
+  <button ng-click="close(getStrategy().getResult())" class="btn btn-primary" ng-disabled="getStrategy().getSaveBtnDisabled()" >Save</button>
 </div>

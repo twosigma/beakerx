@@ -19,7 +19,7 @@
       <img src="app/images/beaker_icon@2x.png" />
       Beaker
     </a>
-    <p class="navbar-text left">{{filename()}}</p>
+    <p class="navbar-text">{{filename()}}</p>
     <span class="navbar-text" ng-if="loading || !!loadingmsg">
       <i class='fa fa-refresh fa-spin text-white'></i>
     </span>
@@ -30,12 +30,12 @@
   <div class="navbar navbar-default">
     <ul class="nav navbar-nav">
       <li class="dropdown" ng-repeat="m in getMenus()">
-        <a href="#" role="button" class="dropdown-toggle" id="{{m.id}}" data-toggle="dropdown">{{m.name}}</a>
+        <a href="#" role="button" class="dropdown-toggle" ng-class="m.classNames" data-toggle="dropdown">{{m.name}}</a>
         <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
       </li>
     </ul>
-    <p ng-if="isEdited()" class="navbar-text text-success right">edited</p>
-    <p ng-if="isDisconnected()" class="navbar-text right">
+    <p ng-if="isEdited()" class="navbar-text text-success pull-right">edited</p>
+    <p ng-if="isDisconnected()" class="navbar-text pull-right">
       <a href="javascript:;" class="navbar-link text-danger" ng-click="promptToSave()" eat-click>{{getOffineMessage()}}</a>
     </p>
   </div>

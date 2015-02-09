@@ -14,65 +14,10 @@
  *  limitations under the License.
  */
 
-/*
- *   BOOTSTRAP OVERRIDES
- *   If we switch to bootstrap compilation with variables,
- *   this should be able to be killed.
- */
-
-$navbar-height: 38px;
-$navbar-default-link-color: #3f5264;
-$navbar-default-link-hover-color: #fff;
-$navbar-default-link-hover-bg: #39a9ed;
-$line-height-computed: 20px;
-$navbar-padding-vertical: ($navbar-height - $line-height-computed) / 2;
-
-.navbar {
-  border-radius: 0;
-  min-height: $navbar-height;
-}
-
-.navbar-text {
-  margin-top: (($navbar-height - $line-height-computed) / 2);
-  margin-bottom: (($navbar-height - $line-height-computed) / 2);
-}
-
-.navbar-nav > li > a {
-  padding-top: (($navbar-height - $line-height-computed) / 2);
-  padding-bottom: (($navbar-height - $line-height-computed) / 2);
-}
-
-.navbar-brand {
-  height: $navbar-height;
-  padding-top: $navbar-padding-vertical;
-  padding-bottom: $navbar-padding-vertical;
-}
-
-.navbar-inverse {
-  background: #3f5264;
-}
-
 .navbar-default {
-  background: #eff2f8;
   box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
   -webkit-box-shadow: 0px 1px 2px rgba(26, 26, 26, 0.39);
-
-  .navbar-nav {
-    > li > a, > .open > a {
-      color: $navbar-default-link-color;
-
-      &:hover,
-      &:focus {
-        color: $navbar-default-link-hover-color;
-        background-color: $navbar-default-link-hover-bg;
-      }
-    }
-  }
 }
-
-/*
- *   End BOOTSTRAP OVERRIDES
- */
 
 .navbar {
   border-width: 0;

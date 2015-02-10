@@ -19,13 +19,16 @@ describe('language manager', function () {
 
   beakerPO = new BeakerPageObject();
 
-  beforeAll(function() {
+//  beforeAll(function() {
+//    browser.get(beakerPO.baseURL);
+//    browser.waitForAngular();
+//    beakerPO.newEmptyNotebook.click();
+//  });
+
+  it('can be opened', function () {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
     beakerPO.newEmptyNotebook.click();
-  });
-
-  it('can be opened', function () {
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
     expect(beakerPO.languageManager.isDisplayed()).toBe(true);

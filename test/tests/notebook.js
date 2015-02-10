@@ -16,15 +16,18 @@
 
 var BeakerPageObject = require('./beaker.po.js');
 describe('notebook', function () {
-
+  var originalTimeout = 0;
+  
   beakerPO = new BeakerPageObject();
 
-  beforeAll(function() {
+//  beforeAll(function() {
+//    browser.get(beakerPO.baseURL);
+//    browser.waitForAngular();
+//  });
+  
+  it('can load', function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
-  });
-
-  it('can load', function() {
     beakerPO.newEmptyNotebook.click();
     expect(browser.getTitle()).toEqual('New Notebook');
   });
@@ -34,7 +37,7 @@ describe('notebook', function () {
     expect(beakerPO.runCellButton.isDisplayed()).toBe(true);
   });
 
-  it('can set a cell language to Python', function () {
+  it('can set a cell language to Python', function (done) {
     /* load iPython */
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
@@ -45,15 +48,17 @@ describe('notebook', function () {
     beakerPO.cellEvaluatorMenu.click();
     beakerPO.cellEvaluatorMenuItem('IPython').click();
     expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual("IPython");
+    done();
   });
 
-  it('can enter code into a cell and evaluate it', function () {
+  it('can enter code into a cell and evaluate it', function (done) {
     beakerPO.setCellInput("type(sys.version)");
     beakerPO.runCellButton.click();
     expect(beakerPO.cellOutput.getText()).toMatch("str");
+    done();
   });
 
-  it('can hide the input', function() {
+  it('can hide the input', function(done) {
     var cell = beakerPO.codeCell(0);
 
     cell.toggleInput().click();
@@ -61,6 +66,7 @@ describe('notebook', function () {
     expect(cell.inputWrapper().isDisplayed()).toBe(true);
     expect(cell.input().isDisplayed()).toBe(false);
     expect(cell.miniCellStatus().isDisplayed()).toBe(true);
+    done();
   });
 
 });

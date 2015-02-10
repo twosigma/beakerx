@@ -59,8 +59,39 @@
 
       scope.editor = new EpicEditor(options).load();
 
+      // config MathJax
+      var deferred = Q.defer();
+      var previewer = scope.editor.getElement('previewer');
+
+      var config = previewer.createElement('script');
+      config.type = 'text/x-mathjax-config';
+      config.text = "MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$']], displayMath: [['$$','$$']], processEscapes: true}});";
+      previewer.body.appendChild(config);
+
+      var mathjax = previewer.createElement('script');
+      mathjax.type = 'text/javascript';
+      mathjax.src = "./vendor/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      previewer.body.appendChild(mathjax);
+
+      mathjax.onload = function() {
+        deferred.resolve();
+      };
+      mathjax.onerror = function() {
+        deferred.reject("Failed to config MathJax in EpicEditor");
+      };
+      var mathJaxReady = deferred.promise;
+
       scope.editor.on('preview', function() {
         scope.cellmodel.mode = "preview";
+        mathJaxReady.then(function() {
+          scope.editor
+            .getElement('previewerIframe')
+            .contentWindow
+            .eval('MathJax.Hub.Queue(["Typeset",MathJax.Hub]);');
+          $timeout(function() {
+            scope.editor.reflow();
+          });
+        });
       });
       scope.editor.on('edit', function() {
         scope.cellmodel.mode = "edit";

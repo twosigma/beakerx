@@ -19,11 +19,127 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective('Table', ["bkCellMenuPluginManager", "bkUtils", '$interval', 'uiGridConstants', function(bkCellMenuPluginManager, bkUtils, $interval, uiGridConstants) {
+  (function($) {
+    $.fn.dataTable.moment = function ( format, locale ) {
+        var types = $.fn.dataTable.ext.type;
+     
+        // Add type detection
+        types.detect.unshift( function ( d ) {
+            // Null and empty values are acceptable
+            if ( d === '' || d === null ) {
+                return 'moment-'+format;
+            }
+     
+            return moment( d, format, locale, true ).isValid() ?
+                'moment-'+format :
+                null;
+        } );
+     
+        // Add sorting method - use an integer for the sorting
+        types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
+            return d === '' || d === null ?
+                -Infinity :
+                parseInt( moment( d, format, locale, true ).format( 'x' ), 10 );
+        };
+    };
+     
+    }(jQuery));
+  
+  $.fn.dataTable.moment( 'YYYYMMDD HH:mm:ss' );
+  $.fn.dataTable.moment( 'YYYYMMDD' );
+  $.fn.dataTable.moment( 'DD/MM/YYYY' );
+
+  // detect and sort by file size
+  jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "file-size-pre": function ( a ) {
+        var x = a.substring(0,a.length - 2);
+ 
+        var x_unit = (a.substring(a.length - 2, a.length).toLowerCase() == "mb" ?
+            1000 : (a.substring(a.length - 2, a.length).toLowerCase() == "gb" ? 1000000 : 1));
+ 
+        return parseInt( x * x_unit, 10 );
+    },
+ 
+    "file-size-asc": function ( a, b ) {
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    },
+ 
+    "file-size-desc": function ( a, b ) {
+        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    }
+  } );
+  
+  jQuery.fn.dataTableExt.aTypes.unshift(
+      function ( sData )
+      {
+          var sValidChars = "0123456789";
+          var Char;
+   
+          /* Check the numeric part */
+          for ( var i=0 ; i<(sData.length - 3) ; i++ )
+          {
+              Char = sData.charAt(i);
+              if (sValidChars.indexOf(Char) == -1)
+              {
+                  return null;
+              }
+          }
+   
+          /* Check for size unit KB, MB or GB */
+          if ( sData.substring(sData.length - 2, sData.length).toLowerCase() == "kb"
+              || sData.substring(sData.length - 2, sData.length).toLowerCase() == "mb"
+              || sData.substring(sData.length - 2, sData.length).toLowerCase() == "gb" )
+          {
+              return 'file-size';
+          }
+          return null;
+      }
+  );
+  
+  // detect and sort by IP addresses
+  jQuery.fn.dataTableExt.aTypes.unshift(
+      function ( sData )
+      {
+          if (/^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$/.test(sData)) {
+              return 'ip-address';
+          }
+          return null;
+      }
+  );
+  
+  jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+    "ip-address-pre": function ( a ) {
+        var m = a.split("."), x = "";
+ 
+        for(var i = 0; i < m.length; i++) {
+            var item = m[i];
+            if(item.length == 1) {
+                x += "00" + item;
+            } else if(item.length == 2) {
+                x += "0" + item;
+            } else {
+                x += item;
+            }
+        }
+ 
+        return x;
+    },
+ 
+    "ip-address-asc": function ( a, b ) {
+        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    },
+ 
+    "ip-address-desc": function ( a, b ) {
+        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    }
+  } );
+  
+  beaker.bkoDirective('Table', ["bkCellMenuPluginManager", "bkUtils", '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
     var CELL_TYPE = "bko-tabledisplay";
     return {
-      template: '<div ui-grid="gridOptions" ui-grid-cellNav ui-grid-resize-columns ui-grid-exporter ui-grid-pinning ui-grid-selection style="witdth: 500px; height: 350px; "></div>',
+      template: '<table cellpadding="0" cellspacing="0" border="0" class="display" id="{{id}}"></table>',
       controller: function($scope) {
+        $scope.id = "table_" + bkUtils.generateId(6);
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
@@ -33,149 +149,36 @@
         });
       },
       link: function(scope, element, attrs) {
-        var data = scope.model.getCellModel().values;
-        var columns = scope.model.getCellModel().columnNames;
-
-        var fakeI18n = function( title ){
-          var deferred = bkUtils.newDeferred();
-          $interval( function() {
-            deferred.resolve( 'col: ' + title );
-          }, 1000, 1);
-          return deferred.promise;
-        };
-        
-        scope.gridOptions = {
-            enableSorting: true,
-            enableFiltering: true,
-            columnDefs: [ ],
-            modifierKeysToMultiSelectCells: true,
-            enableRowSelection: true,
-            enableColumnResizing: true,
-            enableSelect: true,
-            enableSelectAll: true,
-            enableSelectionBatchEvent: false,
-            multiSelect: true,
-            selectionRowHeaderWidth: 35,
-            enableGridMenu: true,
-            showGridFooter: true,
-            showColumnFooter: true,
-            gridMenuShowHideColumns: false,
-            
-            gridMenuCustomItems: [
-                                  {
-                                    title: 'Clear Selection',
-                                    action: function ($event) {
-                                      scope.gridApi.selection.clearSelectedRows();
-                                      scope.gridApi.core.notifyDataChange(scope.gridApi.grid, uiGridConstants.dataChange.ALL );
-                                    }
-                                  }
-
-                                ]
-         
-        };
-        scope.gridOptions.onRegisterApi = function(gridApi){
-          scope.gridApi = gridApi;
-          gridApi.selection.on.rowSelectionChanged(scope,function(row) {
-            var msg = 'row selected ' + row.isSelected;
-            console.log(msg);
-          });
-        }
-        scope.gridOptions.rowIdentity = function(row) {
-          return row.beakerid;
-        };
-        scope.gridOptions.getRowIdentity = function(row) {
-          return row.beakerid;
-        };
-        
-        scope.gridOptions.data = [];
-        
-        var i,j;
-        for (j=0; j<columns.length; j++) {
-          var f = 'f'+j;
-          scope.gridOptions.columnDefs.push( { field: f, name: columns[j] } );
-        }
-        
-        for (i=0; i<data.length; i++) {
-          var d = data[i];
-          var t = {};
-          t.beakerid = i;
-          for (j=0; j<columns.length; j++) {
-            var f = 'f'+j;
-            t[f] = d[j];
+        scope.init = function(model) {
+          if (scope.table) {
+            scope.table.destroy();
+            delete scope.table;
+            delete scope.colreorg;
+            delete scope.timeStrings;
+            delete scope.tz;
           }
-          scope.gridOptions.data.push(t);
-        }
-                             
-        scope.getDumpState = function() {
-          return scope.model.getDumpState();
-        };
-
-        /*
-        scope.dtOptions = bkDatatables.DTOptionsBuilder
-        .fromFnPromise(function() {
-          var deferred = bkUtils.newDeferred();
-          deferred.resolve(data);
-          return deferred.promise; })
-          .withColReorder()
-          .withColVis()
-          .withTableTools('vendor/TableTools-2.2.3/swf/copy_csv_xls_pdf.swf')
-          .withTableToolsButtons([
-                                  'select_all',
-                                  'select_none',
-                                  'copy',
-                                  {
-                                    'sExtends': 'collection',
-                                    'sButtonText': 'Save',
-                                    'aButtons': ['csv', 'xls', 'pdf']
-                                  }
-                                  ])
-                                  .withTableToolsOption('sRowSelect', 'os')
-                                  .withOption('scrollX', true)
-                                  .withDOM('<"bko-table-top">rt<"bko-table-bottom"lp><"bko-table-bottom2"TC><"bko-table-clear">')
-                                  .withOption('searching', false);
-        if (data.length > 25) {
-          scope.dtOptions.withPaginationType('simple_numbers')
-          .withDisplayLength(25)
-          .withOption('lengthMenu', [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]);
-        } else {
-          scope.dtOptions.withOption('paging', false);
-          scope.dtOptions.withOption('scrollY', 350);
-          scope.dtOptions.withOption('scrollCollapse', true);
-        }
-*/
+          
+          var data = model.values;
+          var columns = model.columnNames;
+          var cols = [];
+          var i;
         
-        scope.state = {};
-        var savedstate = scope.model.getDumpState();
-        if (savedstate !== undefined && savedstate.tablestate !== undefined) {
-          scope.state = savedstate.tablestate;
-        }
-        /*
-        scope.dtOptions.withOption('stateSave', true);
-        scope.dtOptions.withOption('stateSaveCallback',
-            function (settings, data) {
-          scope.state = data;
-        });
-
-        scope.dtOptions.withOption('stateLoadCallback',
-            function (settings) {
-          return scope.state;
-        });
-
-        scope.dtColumns = [ ];
-        for (var i = 0; i < columns.length; i++) {
-          if (columns[i] === "time") {
-            if (scope.model.getCellModel().timeStrings) {
-              scope.timeStrings = scope.model.getCellModel().timeStrings;
-              scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
-                  .renderWith(function(data, type, full, meta)
-                      {
+          scope.timeStrings = model.timeStrings;
+          scope.tz          = model.timeZone;
+        
+          for (i=0; i<columns.length; i++) {
+            if (columns[i] === "time") {
+              if (scope.timeStrings) {
+                cols.push({
+                  "title" : columns[i],
+                  "render" : function(data, type, full, meta) {
                     return scope.timeStrings[meta.row];
-                      }));
-            } else {
-              scope.tz = scope.model.getCellModel().timeZone;
-              scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i])
-                  .renderWith(function(value,type,full,meta)
-                      {
+                  }
+                });
+              } else {
+                cols.push({
+                  "title" : columns[i],
+                  "render" : function(value,type,full,meta) {
                     if (typeof value =='string')
                       return value;
                     var nano = value % 1000;
@@ -186,22 +189,93 @@
                     if (tz)
                       time.tz(tz);
                     return time.format("YYYYMMDD HH:mm:ss.SSS");
-                      }));
-            }
-          } else
-            scope.dtColumns.push(bkDatatables.DTColumnBuilder.newColumn(i).withTitle(columns[i]));
-        }
-
-        scope.$on('expand', function() {
-          scope.dtOptions.dirty = true;
-        });
-*/
+                  }
+                });
+              }
+            } else
+              cols.push({ "title" : columns[i] });        
+          }
+          var id = '#' + scope.id;
+          var init = {
+              "data": data,
+              "columns": cols,
+              "stateSave": true,
+              "processing": true,
+              "stateSaveCallback": function (settings, data) {
+                scope.state = data;
+              },
+              "stateLoadCallback": function (settings) {
+                return scope.state;
+              }
+            };
         
+          if (data.length > 25) {
+            init.pagingType = 'simple_numbers';
+            init.pageLength = 25
+            init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]];
+          } else {
+            init.paging = false;
+            init.scrollY = 350;
+            init.scrollCollapse = true;
+          }
+
+          init.scrollX = true;
+          init.dom  = 'rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-buttons"TC>>S';
+          init.searching = false;
+          init.deferRender= true;
+          init.tableTools= {
+            "sSwfPath": "vendor/DataTables-1.10.5/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
+            "sRowSelect": "os",
+            "aButtons" : [
+                      'select_all',
+                      'select_none',
+                      'copy',
+                      {
+                        'sExtends': 'collection',
+                        'sButtonText': 'Save',
+                        'aButtons': ['csv', 'xls', 'pdf']
+                      }
+                    ]
+          };
+        
+        
+          bkHelper.timeout(function() {
+            // we must wait for the DOM elements to appear
+            scope.table = $(id).DataTable(init);
+            scope.colreorg = new $.fn.dataTable.ColReorder( scope.table );
+          },0);                  
+        }
+        
+        scope.getDumpState = function() {
+          return scope.model.getDumpState();
+        };
+
+        scope.state = {};
+        var savedstate = scope.model.getDumpState();
+        if (savedstate !== undefined && savedstate.tablestate !== undefined) {
+          scope.state = savedstate.tablestate;
+        }
+        
+        scope.$on("$destroy", function() {
+          console.log('destroy');
+          scope.table.destroy();
+          delete scope.table;
+          delete scope.colreorg;
+        });
+
         scope.$watch('getDumpState()', function(result) {
           if (result !== undefined && result.tablestate === undefined) {
             scope.model.setDumpState({ tablestate : scope.state});
           }
         });
+
+        scope.getCellModel = function() {
+          return scope.model.getCellModel();
+        };
+        scope.$watch('getCellModel()', function(m) {
+          scope.init(m);
+        });
+
       }
     };
   }]);

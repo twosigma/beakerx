@@ -1,14 +1,35 @@
 table.dataTable.hover tbody tr:hover,
 table.dataTable.hover tbody tr.odd:hover,
-table.dataTable.hover tbody tr.even:hover, table.dataTable.display tbody tr:hover,
+table.dataTable.hover tbody tr.even:hover,
+table.dataTable.display tbody tr:hover,
 table.dataTable.display tbody tr.odd:hover,
 table.dataTable.display tbody tr.even:hover {
-  background-color: #99CCFF;
+  background-color: #99CCFF !important;
 }
+
+table.dataTable.hover tbody tr:hover > .sorting_1,
+table.dataTable.hover tbody tr.odd:hover > .sorting_1,
+table.dataTable.hover tbody tr.even:hover > .sorting_1,
+table.dataTable.display tbody tr:hover > .sorting_1,
+table.dataTable.display tbody tr.odd:hover > .sorting_1,
+table.dataTable.display tbody tr.even:hover > .sorting_1 {
+  background-color: #99CCFF !important;
+}
+
 table.dataTable.hover tbody tr:hover.selected,
 table.dataTable.hover tbody tr.odd:hover.selected,
-table.dataTable.hover tbody tr.even:hover.selected, table.dataTable.display tbody tr:hover.selected,
+table.dataTable.hover tbody tr.even:hover.selected,
+table.dataTable.display tbody tr:hover.selected,
 table.dataTable.display tbody tr.odd:hover.selected,
 table.dataTable.display tbody tr.even:hover.selected {
-  background-color: #6699FF;
+  background-color: #6699FF !important;
+}
+
+table.dataTable.hover tbody tr:hover.selected > .sorting_1,
+table.dataTable.hover tbody tr.odd:hover.selected > .sorting_1,
+table.dataTable.hover tbody tr.even:hover.selected > .sorting_1,
+table.dataTable.display tbody tr:hover.selected > .sorting_1,
+table.dataTable.display tbody tr.odd:hover.selected > .sorting_1,
+table.dataTable.display tbody tr.even:hover.selected > .sorting_1 {
+  background-color: #6699FF !important;
 }

@@ -133,6 +133,13 @@
           console.error("Current app doesn't support evaluate");
         }
       },
+      evaluateRoot: function(toEval) {
+        if (getCurrentApp().evaluateRoot) {
+          return getCurrentApp().evaluateRoot(toEval);
+        } else {
+          console.error("Current app doesn't support evaluateRoot");
+        }
+      },
       evaluateCode: function(evaluator, code) {
         if (getCurrentApp().evaluateCode) {
           return getCurrentApp().evaluateCode(evaluator, code);
@@ -168,23 +175,30 @@
           console.error("Current app doesn't support showAnonymousTrackingDialog");
         }
       },
-      showStatus: function(message) {
+      showStatus: function(message, nodigest) {
         if (getCurrentApp().showStatus) {
-          return getCurrentApp().showStatus(message);
+          return getCurrentApp().showStatus(message, nodigest);
         } else {
           console.error("Current app doesn't support showStatus");
         }
       },
-      clearStatus: function(message) {
+      updateStatus: function() {
+        if (getCurrentApp().updateStatus) {
+          return getCurrentApp().updateStatus();
+        } else {
+          console.error("Current app doesn't support updateStatus");
+        }
+      },
+      clearStatus: function(message, nodigest) {
         if (getCurrentApp().clearStatus) {
-          return getCurrentApp().clearStatus(message);
+          return getCurrentApp().clearStatus(message, nodigest);
         } else {
           console.error("Current app doesn't support clearStatus");
         }
       },
-      showTransientStatus: function(message) {
+      showTransientStatus: function(message, nodigest) {
         if (getCurrentApp().showTransientStatus) {
-          return getCurrentApp().showTransientStatus(message);
+          return getCurrentApp().showTransientStatus(message, nodigest);
         } else {
           console.error("Current app doesn't support showTransientStatus");
         }
@@ -375,6 +389,21 @@
 
       // other JS utils
       updateDocumentModelFromDOM: function(id) {
+	  function convertCanvasToImage(elem) {
+	      if (elem.nodeName == "CANVAS") {
+		  var img = document.createElement("img");
+		  img.src = elem.toDataURL();
+		  return img;
+	      }
+	      var childNodes = elem.childNodes;
+	      for (var i = 0; i < childNodes.length; i++) {
+		  var result = convertCanvasToImage(childNodes[i]);
+		  if (result != childNodes[i]) {
+		      elem.replaceChild(result, childNodes[i]);
+		  }
+	      }
+	      return elem;
+	  };
           // 1) find the cell that contains elem
           var elem = $("#" + id).closest("bk-cell");
           if (elem === undefined || elem[0] === undefined) {
@@ -391,9 +420,11 @@
             console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
             return;
           }
+	  // 2.5) search for any canvas elements in body and replace each with an image.
+	  body = convertCanvasToImage(body[0]);
 
           // 2) convert that part of the DOM to a string
-          var newOutput = body[0].innerHTML;
+          var newOutput = body.innerHTML;
 
           // 3) set the result.object to that string.
           var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);
@@ -438,7 +469,8 @@
       receiveEvaluationUpdate: function(modelOutput, evaluation, pluginName, shellId) {
         var maxNumOfLines = 200;
 
-        modelOutput.result.status = evaluation.status;
+        if (modelOutput.result !== undefined)
+          modelOutput.result.status = evaluation.status;
 
         // save information to handle updatable results in displays
         modelOutput.pluginName = pluginName;

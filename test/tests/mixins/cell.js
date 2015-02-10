@@ -14,24 +14,18 @@
  *  limitations under the License.
  */
 
-var BeakerPageObject = require('./beaker.po.js');
-describe('beaker landing page load', function() {
-  var beakerPO = new BeakerPageObject();
-  var start, stop;
-
-  beforeEach(function() {
-    start = new Date().getTime();
-  });
-
-  afterEach(function() {
-    stop = new Date().getTime();
-    var len = stop-start;
-    console.log("Loading time: "+len+" milliSeconds");
-  });
-
-  it('should load', function() {
-    browser.get(beakerPO.baseURL);
-    browser.waitForAngular();
-  });
-
-});
+var cellMixin = {
+  toggleInput: function() {
+    return this.all(by.css('.toggle-menu .expand-contract')).first();
+  },
+  inputWrapper: function() {
+    return this.element(by.css('.code-cell-input'));
+  },
+  input: function() {
+    return this.element(by.css('.code-cell-input-content'));
+  },
+  miniCellStatus: function() {
+    return this.element(by.css('.mini-cell-stats'));
+  }
+};
+module.exports = cellMixin;

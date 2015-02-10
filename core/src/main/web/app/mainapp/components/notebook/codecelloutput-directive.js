@@ -56,7 +56,7 @@
             }
             $scope.subscribedTo = null;
           }
-          if (!$scope.subscribedTo && result.update_id) {
+          if (!$scope.subscribedTo && result !== undefined && result.update_id) {
             if ($scope.model.pluginName && window.languageUpdateService && window.languageUpdateService[$scope.model.pluginName]) {
               var onUpdatableResultUpdate = function(update) {
                 $scope.model.result = update;

@@ -184,7 +184,7 @@ define(function(require, exports, module) {
             
             beaker._beaker_model_output_result = modelOutput.result;
             beaker.showProgressUpdate = function (a,b,c) {
-              if ( a === undefined)
+              if ( a === undefined || beaker._beaker_model_output_result === undefined || beaker._beaker_model_output_result.object === undefined)
                 return;
               if ( typeof a === 'string' )
                 beaker._beaker_model_output_result.object.message = a;

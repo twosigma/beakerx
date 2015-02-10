@@ -34,11 +34,6 @@ dependencies {
   provided group: 'org.scala-lang', name: 'scala-compiler', version: '2.11.4'
   provided group: 'org.scala-lang', name: 'scala-library', version: '2.11.4'
   provided group: 'jline', name: 'jline', version: '2.12'
-  testCompile group: 'com.sun.jersey', name: 'jersey-client', version: '1.17.1'
-  testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-core', version: '1.17.1'
-  testCompile group: 'com.sun.jersey.jersey-test-framework', name: 'jersey-test-framework-external', version: '1.17.1'
-  testCompile group: 'org.cometd.java', name: 'cometd-java-client', version: '2.7.0'
-  testCompile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
 }
 
 compileScala
@@ -47,14 +42,6 @@ compileJava {
   options.compilerArgs << '-Xlint:deprecation'
   options.compilerArgs << '-Xlint:unchecked'
 }
-
-test {
-	jvmArgs = [ "-Djersey.test.port=34561", "-Dbeaker.test.dir=../../core/config/plugins/eval/scala", "-Dbeaker.test.debug=true" ]
-	// to debug add: , "-Dbeaker.test.debug=true"
-	testLogging.showStandardStreams = true
-}
-
-test.dependsOn installApp
 
 if (hasProperty('evalPluginDir')) {
   installApp.into new File(evalPluginDir, 'scala')

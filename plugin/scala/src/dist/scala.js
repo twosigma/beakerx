@@ -68,7 +68,10 @@ define(function(require, exports, module) {
           var onEvalStatusUpdate = function(evaluation) {
             if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
               cometdUtil.unsubscribe(evaluation.update_id);
-              deferred.resolve();
+              if (evaluation.status === "ERROR")
+                deferred.reject(evaluation.payload);
+              else
+                deferred.resolve(evaluation.payload);
             }
             if (refreshObj !== undefined)
               refreshObj.outputRefreshed();
@@ -134,11 +137,14 @@ define(function(require, exports, module) {
         }).done(cb);
       },
       updateShell: function (cb) {
-        bkHelper.httpPost(serviceBase + "/rest/scalash/setShellOptions", {
+        var p = bkHelper.httpPost(serviceBase + "/rest/scalash/setShellOptions", {
           shellId: this.settings.shellID,
           classPath: this.settings.classPath,
           imports: this.settings.imports,
-          outdir: this.settings.outdir}).success(cb);
+          outdir: this.settings.outdir});
+        if (cb) {
+          p.success(cb);
+        }
       },
       spec: {
         outdir:      {type: "settableString", action: "updateShell", name: "Dynamic classes directory"},

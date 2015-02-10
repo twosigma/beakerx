@@ -69,15 +69,7 @@ define(function(require, exports, module) {
         evaluate: function (code, modelOutput) {
           var deferred = Q.defer();
             var self = this;
-            var progressObj = {
-                type: "BeakerDisplay",
-                innertype: "Progress",
-                object: {
-                    message: "submitting ...",
-                    startTime: new Date().getTime()
-                }
-            };
-            modelOutput.result = progressObj;
+            bkHelper.setupProgressOutput(modelOutput);
             $.ajax({
                 type: "POST",
                 datatype: "json",
@@ -86,14 +78,14 @@ define(function(require, exports, module) {
             }).done(function(ret) {
                 modelOutput.result = ret;
                 bkHelper.refreshRootScope();
-                deferred.resolve();
+                deferred.resolve(ret);
             }).fail(function(xhr, textStatus, error) {
                 modelOutput.result = {
                     type: "BeakerDisplay",
                     innertype: "Error",
                     object: xhr.responseText
                 };
-                deferred.resolve();
+                deferred.reject(xhr.responseText);
             });
           return deferred.promise;
         },

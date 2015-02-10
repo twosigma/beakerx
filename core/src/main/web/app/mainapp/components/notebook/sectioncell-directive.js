@@ -134,7 +134,7 @@
         $scope.cellview.menu.addItem({
           name: "Run all",
           action: function() {
-            bkCoreManager.getBkApp().evaluate($scope.cellmodel.id).
+            bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel.id).
                 catch(function(data) {
                   console.error(data);
                 });

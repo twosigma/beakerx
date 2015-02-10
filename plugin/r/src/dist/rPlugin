@@ -25,6 +25,13 @@ os.chdir(os.path.dirname(self_path))
 os.environ['beaker_r_init'] = os.getcwd() + '/beaker'
 
 if os.name == 'nt':
+    try:
+        import _winreg
+        key = _winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, "Software\\R-core\\R")
+        value =  _winreg.QueryValueEx(key, "InstallPath")[0]
+        os.environ["PATH"] += os.pathsep + value + "\\bin"
+    except:
+        pass # ignore any error
     bin = "bin\\r"
 else:
     bin ="bin/r"

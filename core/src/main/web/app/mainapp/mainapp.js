@@ -61,28 +61,32 @@
       restrict: 'E',
       template: JST["template/mainapp/mainapp"](),
       scope: {},
-      controller: function($scope) {
-        var showLoadingStatusMessage = function(message) {
+      controller: function($scope, $timeout) {
+        var showLoadingStatusMessage = function(message, nodigest) {
           $scope.loadingmsg = message;
+          if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
+            $scope.$digest();
+        };
+        var updateLoadingStatusMessage = function() {
           if (!($scope.$$phase || $scope.$root.$$phase))
             $scope.$digest();
         };
-        var clrLoadingStatusMessage = function(message) {
+        var clrLoadingStatusMessage = function(message, nodigest) {
           if ($scope.loadingmsg === message) {
             $scope.loadingmsg = "";
-            if (!($scope.$$phase || $scope.$root.$$phase))
+            if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
               $scope.$digest();
           }
         }
-        var showTransientStatusMessage = function(message) {
+        var showTransientStatusMessage = function(message, nodigest) {
           $scope.loadingmsg = message;
-          if (!($scope.$$phase || $scope.$root.$$phase))
+          if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
             $scope.$digest();
           if (message !== "") {
             $timeout(function() {
               if ($scope.loadingmsg === message) {
                 $scope.loadingmsg = "";
-                if (!($scope.$$phase || $scope.$root.$$phase))
+                if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
                   $scope.$digest();
               }
             }, 500, 0, false);
@@ -126,15 +130,19 @@
             // somehow the notebook is scrolled to the middle
             // this hack listens to the 'scroll' event and scrolls it to the top
             // A better solution is to do this when Angular stops firing and DOM updates finish.
-            // A even better solution would be to get rid of the unwanted scrolling in the first place.
             // A even even better solution is the session actually remembers where the scrolling was
             // and scroll to there and in the case of starting a new session (i.e. loading a notebook from file)
             // scroll to top.
+            // A even better solution would be to get rid of the unwanted scrolling in the first place.
             var listener = function(ev) {
               window.scrollTo(0, 0);
               window.removeEventListener('scroll', listener, false);
             };
-            window.addEventListener('scroll', listener, false);
+
+            $timeout(function() {
+              window.scrollTo(0, 0);
+              window.addEventListener('scroll', listener, false);
+            });
           };
           var loadNotebookModelAndResetSession = function(
               notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId,
@@ -272,7 +280,7 @@
                     cellCount: notebookModel.cells.length
                   });
 
-                  bkHelper.evaluate("initialization").then(function () { if(mustwait !== undefined) mustwait.close(); });
+                  bkHelper.evaluateRoot("initialization").then(function () { if(mustwait !== undefined) mustwait.close(); });
                 }
               });
               clrLoadingStatusMessage("Loading notebook");
@@ -290,7 +298,7 @@
                 }).level,
                 cellCount: notebookModel.cells.length
               });
-              bkHelper.evaluate("initialization").then(function () { if(mustwait !== undefined) mustwait.close(); });
+              bkHelper.evaluateRoot("initialization").then(function () { if(mustwait !== undefined) mustwait.close(); });
             }
             clrLoadingStatusMessage("Loading notebook");
             $scope.loading = false;
@@ -536,14 +544,17 @@
             getNotebookModel: function() {
               return bkSessionManager.getRawNotebookModel();
             },
-            showStatus: function(message) {
-              showLoadingStatusMessage(message);
+            showStatus: function(message, nodigest) {
+              showLoadingStatusMessage(message, nodigest);
             },
-            clearStatus: function(message) {
-              clrLoadingStatusMessage(message);
+            updateStatus: function() {
+              updateLoadingStatusMessage();
             },
-            showTransientStatus: function(message) {
-              showTransientStatusMessage(message);
+            clearStatus: function(message, nodigest) {
+              clrLoadingStatusMessage(message, nodigest);
+            },
+            showTransientStatus: function(message, nodigest) {
+              showTransientStatusMessage(message, nodigest);
             },
 
             saveNotebook: function() {
@@ -701,6 +712,49 @@
                 return bkEvaluateJobManager.evaluate(toEval);
               } else {
                 return bkEvaluateJobManager.evaluateAll(toEval);
+              }
+            },
+            evaluateRoot: function(toEval) {
+              var cellOp = bkSessionManager.getNotebookCellOp();
+              // toEval can be a tagName (string), either "initialization", name of an evaluator or user defined tag
+              // or a cellID (string)
+              // or a cellModel
+              // or an array of cellModels
+              if (typeof toEval === "string") {
+                if (cellOp.hasCell(toEval)) {
+                  // this is a cellID
+                  if (cellOp.isContainer(toEval)) {
+                    // this is a section cell or root cell
+                    // in this case toEval is going to be an array of cellModels
+                    toEval = cellOp.getAllCodeCells(toEval);
+                  } else {
+                    // single cell, just get the cell model from cellID
+                    toEval = cellOp.getCell(toEval);
+                  }
+                } else {
+                  // not a cellID
+                  if (toEval === "initialization") {
+                    // in this case toEval is going to be an array of cellModels
+                    toEval = bkSessionManager.notebookModelGetInitializationCells();
+                  } else if(cellOp.hasUserTag(toEval)) {
+                    // this is a user tag for a cell
+                    // in this case toEval is going to be an array of cellModels
+                    toEval = cellOp.getCellsWithUserTag(toEval);
+                  } else {
+                    // assume it is a evaluator name,
+                    // in this case toEval is going to be an array of cellModels
+                    toEval = cellOp.getCellsWithEvaluator(toEval);
+                  }
+                }
+              }
+              if (toEval === undefined || (!_.isArray(toEval) && toEval.length === 0)) {
+                showTransientStatusMessage("ERROR: cannot find anything to evaluate");
+                return "cannot find anything to evaluate";
+              }
+              if (!_.isArray(toEval)) {
+                return bkEvaluateJobManager.evaluateRoot(toEval);
+              } else {
+                return bkEvaluateJobManager.evaluateRootAll(toEval);
               }
             },
             evaluateCode: function(evaluator, code) {

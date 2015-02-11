@@ -159,7 +159,7 @@
                 '  </a>' +
                 '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel2">' +
                 '    <li ng-repeat="menuidx in getCellMenuIdx">' +
-                '      <a tabindex="-1" href="#" ng-click="doCellMenu(menuidx)" id="display-{{menuidx}}-menuitem" eat-click>' +
+                '      <a tabindex="-1" href="#" ng-click="doCellMenu(menuidx)" id="show-{{menuidx}}-menuitem" eat-click>' +
                 '        {{ getCellMenuNam[menuidx] }}' +
                 '        <i class="fa fa-check" ng-show="getCellMenuSho[menuidx]"></i>' +
                 '      </a>' +
@@ -168,9 +168,22 @@
                 '</div>' +
                 '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
                 '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
-                '  Sort ' +
+                '  Display as ' +
                 '  </a>' +
                 '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel3">' +
+                '    <li ng-repeat="menuidx in getDisplayMenuIdx">' +
+                '      <a tabindex="-1" href="#" ng-click="doDisplayMenu(menuidx)" id="display-{{menuidx}}-menuitem" eat-click>' +
+                '        {{ getDisplayMenuNam[menuidx] }}' +
+                '    <select><option>1</option><option>13</option><option>15</option></select>' +
+                '      </a>' +
+                '    </li>' +
+                '  </ul>' +
+                '</div>' +
+                '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
+                '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
+                '  Sort ' +
+                '  </a>' +
+                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel4">' +
                 '    <li>' +
                 '      <a tabindex="-1" href="#" ng-click="doClearSort()" id="clrsort-menuitem" eat-click>' +
                 '        Reset Sort' +
@@ -182,7 +195,7 @@
                 '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
                 '  Export ' +
                 '  </a>' +
-                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel4">' +
+                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel5">' +
                 '    <li>' +
                 '      <a tabindex="-1" href="#" ng-click="doCSVExport(false)" id="export-menuitem" eat-click>' +
                 '        All as CSV' +
@@ -208,6 +221,10 @@
         $scope.getCellMenuIdx =  [];
         $scope.getCellMenuNam =  [];
         $scope.getCellMenuSho =  [];
+        $scope.getDisplayMenuIdx =  [];
+        $scope.getDisplayMenuNam =  [];
+        $scope.getDisplayMenuVal =  [];
+        $scope.getDisplayMenuOpt =  [];
         $scope.renderMenu = function() {
           return $scope.table !== undefined;
         };
@@ -216,9 +233,50 @@
             return;
           $scope.table.order( [ 0, 'asc' ] ).draw();
         };
-        $scope.doCSVExport = function(all) {
-          // TODO
+        $scope.convertToCSV = function(data) {
+          var i, j;
+          var out = "";
+          
+          for(j=1; j<$scope.columns.length; j++) {
+            if (j>1)
+              out = out + '\t';
+            out = out + '"' + $scope.columns[j].title.replace(/"/g, '""') + '"';
+          }          
+          out = out + '\n';
+
+          for(i=0; i<data.length; i++) {
+            var row = data[i];
+            for(j=1; j<row.length; j++) {
+              if (j>1)
+                out = out + '\t';
+              out = out + '"' + row[j].replace(/"/g, '""') + '"';
+            }
+            out = out + '\n';
+          }
+          return out;
         };
+        $scope.doCSVExport = function(all) {
+          var data;
+          if (!all)
+            data = $scope.table.rows().data();
+          else
+            data = $scope.table.rows(".selected").data();
+          var out = $scope.convertToCSV(data);
+          bkHelper.selectFile(function(n) {
+            var suffix = ".csv";
+            if(n === undefined)
+              return;
+            if (n.indexOf(suffix,n.length-suffix.length) === -1)
+              n = n + suffix;
+            // TODO check for error
+            return bkHelper.saveFile(n,out);
+          } , "Select name for CSV file to save", "csv");
+        };
+        $scope.allTypes = ['string', 'integer', 'formatted integer', 'double', 'double 2 decimals', 'double 4 decimals', 'scientific', 'time', 'boolean'];
+        $scope.allStringTypes = ['string', ];
+        $scope.allIntTypes = ['string', 'integer', 'formatted integer', 'time'];
+        $scope.allDoubleTypes = ['string', 'double', 'double 2 decimals', 'double 4 decimals', 'scientific'];
+        $scope.allBoolTypes = ['string', 'boolean'];
         $scope.refreshCellMenu = function() {
           $scope.getCellMenuIdx =  [0];
           $scope.getCellMenuNam =  ['Show all'];
@@ -235,6 +293,30 @@
               $scope.getCellMenuSho[0] = false;
             }
           }
+          
+          $scope.getDisplayMenuIdx =  [];
+          $scope.getDisplayMenuNam =  [];
+          $scope.getDisplayMenuVal =  [];
+          $scope.getDisplayMenuOpt =  [];
+          for(i=1; i<$scope.columns.length; i++) {
+            $scope.getDisplayMenuIdx.push(i-1);
+            $scope.getDisplayMenuVal.push($scope.actualtype[order[i]]);
+            if ($scope.types) {
+              if ($scope.types[order[i]] === 'string') {
+                $scope.getDisplayMenuNam.push($scope.allStringTypes);
+              } else if ($scope.types[order[i]] === 'double') {
+                $scope.getDisplayMenuNam.push($scope.allDoubleTypes);
+              } else if ($scope.types[order[i]] === 'integer') {
+                $scope.getDisplayMenuNam.push($scope.allIntegerTypes);
+              } else if ($scope.types[order[i]] === 'boolean') {
+                $scope.getBooleanMenuNam.push($scope.allDoubleTypes);
+              } else {
+                $scope.getStringMenuNam.push($scope.allDoubleTypes);
+              }
+            } else {
+              $scope.getDisplayMenuNam.push($scope.allTypes);
+            }
+          }
         };
         $scope.doEditMenu = function(idx) {
           if ($scope.table === undefined)
@@ -248,8 +330,10 @@
           } else if(idx==2) {
             $scope.table.rows().nodes().to$().toggleClass("selected");   
           } else if(idx==3) {
-            console.log($scope.table.rows(".selected").data());
-            // TODO
+            var data = $scope.table.rows(".selected").data();
+            var out = $scope.convertToCSV(data);
+            // WARNING: the only good solution is to use flash
+            window.prompt("Copy to clipboard:", out);
           }
           console.log(idx);
         };
@@ -302,9 +386,11 @@
           scope.timeStrings = model.timeStrings;
           scope.tz          = model.timeZone;
           scope.types       = model.types;
+          scope.actualtype  = [];
         
           // create a dummy column to keep server ordering
           cols.push({ "title" : scope.id, "visible" : false });
+          scope.actualtype.push('string');
           
           for (i=0; i<columns.length; i++) {
             if (columns[i] === "time" || (scope.types !== undefined && scope.types[i] === 'time')) {
@@ -315,6 +401,7 @@
                     return scope.timeStrings[meta.row];
                   }
                 });
+                scope.actualtype('time');
               } else {
                 cols.push({
                   "title" : columns[i],
@@ -331,6 +418,7 @@
                     return time.format("YYYYMMDD HH:mm:ss.SSS");
                   }
                 });
+                scope.actualtype('time');
               }
             } else {
               if (scope.types !== undefined) {
@@ -343,10 +431,15 @@
                       return parts.join(".");
                     }
                   });
-                } else
+                  scope.actualtype('formatted integer');
+                } else {
                   cols.push({ "title" : columns[i] });   
-              } else
+                  scope.actualtype.push('string');
+                }
+              } else {
                 cols.push({ "title" : columns[i] });   
+                scope.actualtype.push('string');
+              }
             }
           }
           scope.columns = cols;

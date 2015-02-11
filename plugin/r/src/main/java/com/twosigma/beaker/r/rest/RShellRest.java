@@ -442,13 +442,28 @@ public class RShellRest {
       }
       String[][] array = new String[cols][];
       List<List> values = new ArrayList<>();
-      List<Class> classes = new ArrayList<>();
+      List<String> classes = new ArrayList<>();
 
       for (int i = 0; i < cols; i++) {
-        // XXX should identify numeric columns
-        classes.add(String.class);
         if (null == list.at(i)) {
           return false;
+        }
+        String cname = list.at(i).getClass().getName();
+        if (cname.equals("org.rosuda.REngine.REXPFactor")) {
+          String t = "select\n";
+          String [] sv = list.at(i).asFactor().levels();
+          for (String s : sv)
+            t = t + s + '\n';
+          t = t.substring(0, t.length()-1);
+          classes.add(t);
+        } else if (cname.equals("org.rosuda.REngine.REXPInteger")) {
+          classes.add("integer");
+        } else if (cname.equals("org.rosuda.REngine.REXPDouble")) {
+          classes.add("double");
+        } else if (cname.equals("org.rosuda.REngine.REXPLogical")) {
+          classes.add("boolean");
+        } else { // consider this the default if (cname.equals("org.rosuda.REngine.REXPString")) {
+          classes.add("string");
         }
         array[i] = list.at(i).asStrings();
       }

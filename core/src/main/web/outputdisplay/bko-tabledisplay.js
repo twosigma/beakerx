@@ -72,6 +72,9 @@
   jQuery.fn.dataTableExt.aTypes.unshift(
       function ( sData )
       {
+        if (typeof sData !== 'string')
+          return;
+        
           var sValidChars = "0123456789";
           var Char;
    
@@ -137,7 +140,60 @@
   beaker.bkoDirective('Table', ["bkCellMenuPluginManager", "bkUtils", '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
     var CELL_TYPE = "bko-tabledisplay";
     return {
-      template: '<table cellpadding="0" cellspacing="0" border="0" class="display" id="{{id}}"></table>',
+      template: '<div style="float: right; width: 50px;">&nbsp;</div>' +
+                '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
+                '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
+                '  Edit ' +
+                '  </a>' +
+                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel">' +
+                '    <li ng-repeat="menuidx in getEditMenuIdx">' +
+                '      <a tabindex="-1" href="#" ng-click="doEditMenu(menuidx)" id="edit-{{menuidx}}-menuitem" eat-click>' +
+                '        {{ getEditMenuNam[menuidx] }}' +
+                '      </a>' +
+                '    </li>' +
+                '  </ul>' +
+                '</div>' +
+                '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
+                '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
+                '  Show/Hide ' +
+                '  </a>' +
+                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel2">' +
+                '    <li ng-repeat="menuidx in getCellMenuIdx">' +
+                '      <a tabindex="-1" href="#" ng-click="doCellMenu(menuidx)" id="display-{{menuidx}}-menuitem" eat-click>' +
+                '        {{ getCellMenuNam[menuidx] }}' +
+                '        <i class="fa fa-check" ng-show="getCellMenuSho[menuidx]"></i>' +
+                '      </a>' +
+                '    </li>' +
+                '  </ul>' +
+                '</div>' +
+                '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
+                '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
+                '  Sort ' +
+                '  </a>' +
+                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel3">' +
+                '    <li>' +
+                '      <a tabindex="-1" href="#" ng-click="doClearSort()" id="clrsort-menuitem" eat-click>' +
+                '        Reset Sort' +
+                '      </a>' +
+                '    </li>' +
+                '  </ul>' +
+                '</div>' +
+                '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
+                '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
+                '  Export ' +
+                '  </a>' +
+                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel4">' +
+                '    <li>' +
+                '      <a tabindex="-1" href="#" ng-click="doCSVExport(false)" id="export-menuitem" eat-click>' +
+                '        All as CSV' +
+                '      </a>' +
+                '      <a tabindex="-1" href="#" ng-click="doCSVExport(true)" id="export-menuitem" eat-click>' +
+                '        Selected as CSV' +
+                '      </a>' +
+                '    </li>' +
+                '  </ul>' +
+                '</div>' +
+                '<table cellpadding="0" class="display" border="0" cellspacing="0" id="{{id}}"></table>',
       controller: function($scope) {
         $scope.id = "table_" + bkUtils.generateId(6);
         $scope.getShareMenuPlugin = function() {
@@ -147,9 +203,90 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
+        $scope.getEditMenuIdx =  [0, 1, 2, 3];
+        $scope.getEditMenuNam =  ['Select All', 'Deselect All', 'Reverse Selection', 'Copy to Clipboard'];
+        $scope.getCellMenuIdx =  [];
+        $scope.getCellMenuNam =  [];
+        $scope.getCellMenuSho =  [];
+        $scope.renderMenu = function() {
+          return $scope.table !== undefined;
+        };
+        $scope.doClearSort = function() {
+          if ($scope.table === undefined)
+            return;
+          $scope.table.order( [ 0, 'asc' ] ).draw();
+        };
+        $scope.doCSVExport = function(all) {
+          // TODO
+        };
+        $scope.refreshCellMenu = function() {
+          $scope.getCellMenuIdx =  [0];
+          $scope.getCellMenuNam =  ['Show all'];
+          $scope.getCellMenuSho =  [true];
+          if ($scope.table === undefined)
+            return;
+          var i;
+          var order = $scope.colreorg.fnOrder();
+          for(i=1; i<$scope.columns.length; i++) {
+            $scope.getCellMenuIdx.push(i);
+            $scope.getCellMenuNam.push('Show col '+$scope.columns[order[i]].title);
+            $scope.getCellMenuSho.push($scope.table.column(order[i]).visible());
+            if (!$scope.table.column(order[i]).visible()) {
+              $scope.getCellMenuSho[0] = false;
+            }
+          }
+        };
+        $scope.doEditMenu = function(idx) {
+          if ($scope.table === undefined)
+            return;
+          
+          if (idx==0) {
+            $scope.table.rows().nodes().to$().removeClass("selected");
+            $scope.table.rows().nodes().to$().addClass("selected");
+          } else if(idx==1) {
+            $scope.table.rows().nodes().to$().removeClass("selected");   
+          } else if(idx==2) {
+            $scope.table.rows().nodes().to$().toggleClass("selected");   
+          } else if(idx==3) {
+            console.log($scope.table.rows(".selected").data());
+            // TODO
+          }
+          console.log(idx);
+        };
+        $scope.doCellMenu = function(idx) {
+          if ($scope.table === undefined)
+            return;
+          
+          if (idx==0) {
+            for(idx = 1; idx<$scope.getCellMenuSho.length; idx++) {
+              $scope.table.column(idx).visible( true, false );
+              $scope.getCellMenuSho[idx] = true;
+            }
+            $scope.getCellMenuSho[0] = true;
+            $scope.table.columns.adjust().draw( false );
+            return;
+          }
+          var order = $scope.colreorg.fnOrder();
+          if ($scope.getCellMenuSho[idx]) {
+            $scope.table.column(idx).visible( false );
+            $scope.getCellMenuSho[idx] = false;
+            $scope.getCellMenuSho[0] = false;
+          } else {
+            $scope.table.column(idx).visible( true );
+            $scope.getCellMenuSho[idx] = true;
+            $scope.getCellMenuSho[0] = true;
+            for (idx=1; idx<$scope.getCellMenuSho.length; idx++) {
+              if (!$scope.getCellMenuSho[idx]) {
+                $scope.getCellMenuSho[0] = false;
+                break;
+              }
+            }
+          }
+        };
       },
       link: function(scope, element, attrs) {
         scope.init = function(model) {
+          console.log('do init()');
           if (scope.table) {
             scope.table.destroy();
             delete scope.table;
@@ -158,16 +295,19 @@
             delete scope.tz;
           }
           
-          var data = model.values;
           var columns = model.columnNames;
           var cols = [];
           var i;
         
           scope.timeStrings = model.timeStrings;
           scope.tz          = model.timeZone;
+          scope.types       = model.types;
         
+          // create a dummy column to keep server ordering
+          cols.push({ "title" : scope.id, "visible" : false });
+          
           for (i=0; i<columns.length; i++) {
-            if (columns[i] === "time") {
+            if (columns[i] === "time" || (scope.types !== undefined && scope.types[i] === 'time')) {
               if (scope.timeStrings) {
                 cols.push({
                   "title" : columns[i],
@@ -192,15 +332,40 @@
                   }
                 });
               }
-            } else
-              cols.push({ "title" : columns[i] });        
+            } else {
+              if (scope.types !== undefined) {
+                if (scope.types[i] === 'integer') {
+                  cols.push({
+                    "title" : columns[i],
+                    "render" : function(data, type, full, meta) {
+                      var parts = data.toString().split(".");
+                      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                      return parts.join(".");
+                    }
+                  });
+                } else
+                  cols.push({ "title" : columns[i] });   
+              } else
+                cols.push({ "title" : columns[i] });   
+            }
           }
+          scope.columns = cols;
+          
+          var data = [];
+          var r, c;
+          for (r=0; r<model.values.length; r++) {
+            var row = [];
+            row.push(r);
+            data.push(row.concat(model.values[r]));
+          }
+
           var id = '#' + scope.id;
           var init = {
               "data": data,
               "columns": cols,
               "stateSave": true,
               "processing": true,
+              "order": [[ 0, "asc" ]],
               "stateSaveCallback": function (settings, data) {
                 scope.state = data;
               },
@@ -220,29 +385,24 @@
           }
 
           init.scrollX = true;
-          init.dom  = 'rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p><"bko-table-buttons"TC>>S';
+          init.dom  = 'rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>S';
           init.searching = false;
-          init.deferRender= true;
-          init.tableTools= {
-            "sSwfPath": "vendor/DataTables-1.10.5/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
-            "sRowSelect": "os",
-            "aButtons" : [
-                      'select_all',
-                      'select_none',
-                      'copy',
-                      {
-                        'sExtends': 'collection',
-                        'sButtonText': 'Save',
-                        'aButtons': ['csv', 'xls', 'pdf']
-                      }
-                    ]
-          };
-        
-        
+          init.deferRender= true;        
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear
             scope.table = $(id).DataTable(init);
-            scope.colreorg = new $.fn.dataTable.ColReorder( scope.table );
+            scope.colreorg = new $.fn.dataTable.ColReorder( scope.table, {
+              "fnReorderCallback": function () {
+                scope.refreshCellMenu();
+                scope.$digest();
+              },
+              "iFixedColumns": 1
+             } );
+            scope.refreshCellMenu();
+            
+            $(id + ' tbody').on( 'click', 'tr', function () {
+              $(this).toggleClass('selected');
+            } );
           },0);                  
         }
         
@@ -258,9 +418,13 @@
         
         scope.$on("$destroy", function() {
           console.log('destroy');
-          scope.table.destroy();
-          delete scope.table;
-          delete scope.colreorg;
+          if (scope.table) {
+            scope.table.destroy();
+            delete scope.table;
+            delete scope.colreorg;
+            delete scope.timeStrings;
+            delete scope.tz;
+          }
         });
 
         scope.$watch('getDumpState()', function(result) {

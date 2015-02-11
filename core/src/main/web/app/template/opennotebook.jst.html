@@ -19,7 +19,7 @@
    <div class="filters-and-sorts">
      <div class="dropdown">
        <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
-         Sort by: {{getStrategy().treeViewfs.getOrderBy()}}
+         Sort by: {{getStrategy().treeViewfs.getPrettyOrderBy()}}
        </button>
        <ul class="dropdown-menu" role="menu">
          <li><a href="javascript:;" ng-click="getStrategy().treeViewfs.setOrderBy({ orderBy: 'uri', reverse: false })">Name</a></li>

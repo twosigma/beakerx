@@ -42,7 +42,7 @@
       scope: {rooturi: "@", fs: "="},
       controller: function($scope) {
         if (!$templateCache.get('treeNodeChildren.html')) {
-          $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children | fileFilter:fs.filter | orderBy:fs.orderBy:fs.orderReverse' data='d' fs='fs'></tree-node>");
+          $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children | fileFilter:fs.filter | orderBy:fs.getOrderBy():fs.getOrderReverse()' data='d' fs='fs'></tree-node>");
         }
 
         if (!_.string.endsWith($scope.rooturi, '/')) {

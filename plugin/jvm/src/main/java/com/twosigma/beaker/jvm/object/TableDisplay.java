@@ -17,6 +17,7 @@ package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
 import java.util.List;
+
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
@@ -26,9 +27,9 @@ public class TableDisplay {
 
   private final List<List> values;
   private final List<String> columns;
-  private final List<Class> classes;
+  private final List<String> classes;
 
-  public TableDisplay(List<List> values, List<String> columns, List<Class> classes) {
+  public TableDisplay(List<List> values, List<String> columns, List<String> classes) {
     this.values = values;
     this.columns = columns;
     this.classes = classes;
@@ -47,6 +48,7 @@ public class TableDisplay {
         jgen.writeObjectField("type", "TableDisplay");
         jgen.writeObjectField("columnNames", value.columns);
         jgen.writeObjectField("values", value.values);
+        jgen.writeObjectField("types", value.classes);
         // jgen.writeObjectField("timeZone", "UTC");
         jgen.writeEndObject();
       }

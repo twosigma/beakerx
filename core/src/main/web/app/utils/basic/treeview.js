@@ -49,14 +49,18 @@
           $scope.rooturi = $scope.rooturi + '/';
         }
 
+        $rootScope.fsPrefs = $rootScope.fsPrefs || {
+          openFolders: []
+        };
+
         $scope.root = {
           type: "directory",
           uri: $scope.rooturi,
           children: []
         }
 
-        if (_.contains($rootScope.openFolders, $scope.rooturi)) {
-          $scope.fs.getChildren($scope.rooturi, $rootScope.openFolders).then(function(response) {
+        if (_.contains($rootScope.fsPrefs.openFolders, $scope.rooturi)) {
+          $scope.fs.getChildren($scope.rooturi, $rootScope.fsPrefs.openFolders).then(function(response) {
             $scope.$evalAsync(function() {
               $scope.root.children = response.data;
             });
@@ -100,12 +104,11 @@
             // toggle
             if (!_.isEmpty($scope.data.children)) {
               $scope.data.children.splice(0, $scope.data.children.length);
-              $rootScope.openFolders = _.reject($rootScope.openFolders, function(folder) {
+              $rootScope.fsPrefs.openFolders = _.reject($rootScope.fsPrefs.openFolders, function(folder) {
                 return _.string.startsWith(folder, uri);
               });
             } else {
-              $rootScope.openFolders = $rootScope.openFolders || [];
-              $rootScope.openFolders.push(uri);
+              $rootScope.fsPrefs.openFolders.push(uri);
               $scope.fs.getChildren($scope.data.uri).success(function(children) {
                 children = _.sortBy(children, function(c) {
                   if (c.type === "directory") {

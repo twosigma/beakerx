@@ -82,6 +82,10 @@
         fillInput: function(path) {
           newStrategy.input = path;
         },
+        open: function(path) {
+          this.fillInput(path);
+          $rootScope.$broadcast('modal.submit');
+        },
         setOrderBy: function(options) {
           $rootScope.fsPrefs.orderBy = options.orderBy;
           $rootScope.fsPrefs.orderReverse = options.reverse;
@@ -513,10 +517,13 @@
     };
   });
 
-  module.controller('modalDialogCtrl', function($scope, $modalInstance, modalDialogOp) {
+  module.controller('modalDialogCtrl', function($scope, $rootScope, $modalInstance, modalDialogOp) {
     $scope.getStrategy = function() {
       return modalDialogOp.getStrategy();
     };
+    $rootScope.$on('modal.submit', function() {
+      $scope.close($scope.getStrategy().getResult());
+    });
     $scope.close = function(result) {
       $modalInstance.close(result);
     };

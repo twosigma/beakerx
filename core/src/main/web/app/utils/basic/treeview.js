@@ -82,7 +82,7 @@
   treeView.directive("treeNode", function() {
     return {
       restrict: 'E',
-      template: "<span ng-click='click()'><i class='{{ getIcon() }}'></i> <span>{{ getDisplayName() }}</span></span>" +
+      template: "<span ng-dblclick='dblClick()' ng-click='click()'><i class='{{ getIcon() }}'></i> <span>{{ getDisplayName() }}</span></span>" +
           "<div class='pushright'>" +
           "<div ng-include='\"treeNodeChildren.html\"'></div>" +
           "</div>",
@@ -126,6 +126,11 @@
           } else {
             $scope.fs.fillInput($scope.data.uri);
           }
+        };
+        $scope.dblClick = function() {
+          if ($scope.data.type === 'directory') return;
+
+          $scope.fs.open($scope.data.uri);
         };
         $scope.getIcon = function() {
           if ($scope.data.type === "directory") {

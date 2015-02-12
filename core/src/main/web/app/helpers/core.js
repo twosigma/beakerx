@@ -79,7 +79,7 @@
             console.log("Error loading children");
           });
         },
-        open: function(path) {
+        fillInput: function(path) {
           newStrategy.input = path;
         },
         setOrderBy: function(options) {

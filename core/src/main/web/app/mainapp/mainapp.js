@@ -23,7 +23,6 @@
   'use strict';
   var module = angular.module('bk.mainApp', [
                                              'ngRoute',
-                                             "ui.grid",
                                              'bk.utils',
                                              'bk.commonUi',
                                              'bk.core',

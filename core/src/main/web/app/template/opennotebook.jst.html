@@ -14,12 +14,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div class="modal-header">
+<div class="modal-header fixed">
    <h1>{{ getStrategy().title || 'Open'}}<span ng-show="getStrategy().treeViewfs.showSpinner"><i class="fa fa-refresh fa-spin"></i></span></h1>
    <div class="filters-and-sorts">
      <div class="dropdown">
        <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
-         Sort by: {{getStrategy().treeViewfs.getOrderBy()}}
+         Sort by: {{getStrategy().treeViewfs.getPrettyOrderBy()}}
        </button>
        <ul class="dropdown-menu" role="menu">
          <li><a href="javascript:;" ng-click="getStrategy().treeViewfs.setOrderBy({ orderBy: 'uri', reverse: false })">Name</a></li>
@@ -28,11 +28,11 @@
      </div>
    </div>
 </div>
-<div class="modal-body">
+<div class="modal-body fixed">
    <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>
    <tree-view rooturi="<%- homedir %>" fs="getStrategy().treeViewfs"></tree-view>
 </div>
-<div class="modal-footer">
+<div class="modal-footer fixed">
    <div class=text-left>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>
    <p><input id="openFileInput" class="form-control" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>
    <span style="float:left;" ng-if="getStrategy().ext === undefined">

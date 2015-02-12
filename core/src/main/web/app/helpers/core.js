@@ -83,19 +83,23 @@
           newStrategy.input = path;
         },
         setOrderBy: function(options) {
-          newStrategy.treeViewfs.orderBy = options.orderBy;
-          newStrategy.treeViewfs.orderReverse = options.reverse;
+          $rootScope.fsPrefs.orderBy = options.orderBy;
+          $rootScope.fsPrefs.orderReverse = options.reverse;
         },
         getOrderBy: function() {
+          return $rootScope.fsPrefs.orderBy || 'uri';
+        },
+        getOrderReverse: function() {
+          return !!$rootScope.fsPrefs.orderReverse;
+        },
+        getPrettyOrderBy: function() {
           var prettyNames = {
             uri: 'Name',
             modified: 'Date Modified'
           }
 
-          return prettyNames[newStrategy.treeViewfs.orderBy];
+          return prettyNames[$rootScope.fsPrefs.orderBy || 'uri'];
         },
-        orderBy: 'uri',
-        orderReverse: false,
         showSpinner: false,
         applyExtFilter: true,
         extFilter: ['bkr'],

@@ -36,6 +36,10 @@ Say `cd test; ./runner` to run the end-to-end tests with Protractor.
 
 [![Build Status](https://travis-ci.org/twosigma/beaker-notebook.svg?branch=master)](https://travis-ci.org/twosigma/beaker-notebook)
 
+To enable the debug menu, add the following to your `beaker.pref.json` file:
+
+    "notebook-app-menu-plugins": ["./plugin/menu/debug.js"]
+
 ##Presentation and Demo on YouTube
 
 [![Greenwood and Draves speak at PyData](http://img.youtube.com/vi/G4RmVni8nxc/0.jpg)](http://www.youtube.com/watch?v=G4RmVni8nxc)

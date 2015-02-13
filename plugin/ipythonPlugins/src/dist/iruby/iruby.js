@@ -153,6 +153,7 @@ define(function(require, exports, module) {
           evaluation.payload = "<pre>" + result + "</pre>";
         }
         if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation,  PLUGIN_NAME, self.settings.shellID)) {
+          _theCancelFunction = null;
           if (evaluation.status === "ERROR")
             deferred.reject(evaluation.payload);
           else
@@ -219,9 +220,6 @@ define(function(require, exports, module) {
         iopub: {output: output}
       };
       kernel.execute(code, callbacks, {silent: false});
-      deferred.promise.finally(function() {
-        _theCancelFunction = null;
-      });
       return deferred.promise;
     },
     autocomplete: function(code, cpos, cb) {

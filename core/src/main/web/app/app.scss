@@ -318,8 +318,18 @@ table.dataTable tbody td {
     white-space: nowrap;
 }
 
-.bko-table-bottom2 {
+.bko-table-selector {
     padding-top: 10px;
-    overflow: hidden;
-    white-space: nowrap;
+    float: left;
+}
+
+.bko-table-pagenum {
+    padding-top: 0px;
+    padding-left: 30px;
+    float: left;
+}
+
+.bko-table-buttons {
+    padding-top: 10px;
+    float: right;
 }

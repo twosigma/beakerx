@@ -38,7 +38,6 @@
 
     var module = angular.module('bk.notebook.share', [
         'bk.utils',
-        'bk.datatables',
         "bk.notebookCellModelManager",
         "M_bkTable_static",
         "M_bkChart_static",

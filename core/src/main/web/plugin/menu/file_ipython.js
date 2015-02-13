@@ -25,7 +25,7 @@ define(function(require, exports, module) {
       var bkrCodeCell = {
         "id": "code" + bkHelper.generateId(6),
         "evaluator": "IPython",
-        "class": ["code"],
+        "type": "code",
         "input": {
           "body": ""
         },
@@ -57,7 +57,7 @@ define(function(require, exports, module) {
     var convertMarkDownCell = function(ipyMDCell) {
       var bkrMDCell = {
         "id": "markdown" + bkHelper.generateId(6),
-        "class": ["markdown"],
+        "type": "markdown",
         "body": "",
         "mode": "preview"
       };
@@ -71,7 +71,7 @@ define(function(require, exports, module) {
     var convertRawCell = function(ipyRawCell) {
       var bkrTextCell = {
         "id": "text" + bkHelper.generateId(6),
-        "class": ["text"],
+        "type": "text",
         "body": ""
       };
       if (ipyRawCell.source && ipyRawCell.source.length > 0) {
@@ -81,22 +81,21 @@ define(function(require, exports, module) {
     };
 
     var convertHeadingCell = function(ipyHeadingCell) {
-      var bkrTextCell = {
-        "id": "text" + bkHelper.generateId(6),
-        "class": ["text"],
+      var bkrSectionCell = {
+        "id": "section" + bkHelper.generateId(6),
+	"level": ipyHeadingCell.level,
+        "type": "section",
         "body": ""
       };
       if (ipyHeadingCell.source && ipyHeadingCell.source.length > 0) {
-        bkrTextCell.body = ipyHeadingCell.source.join("\n");
+        bkrSectionCell.title = ipyHeadingCell.source.join("\n");
       }
-      bkrTextCell.body = "<h" + ipyHeadingCell.level + ">" + bkrTextCell.body +
-          "</h" + ipyHeadingCell.level + ">";
-      return bkrTextCell;
+      return bkrSectionCell;
     };
 
     var newBeakerNotebook = function() {
       return {
-        "beaker": "1",
+        "beaker": "2",
         "evaluators": [
           {
             "name": "Html",
@@ -113,12 +112,7 @@ define(function(require, exports, module) {
             "supplementalClassPath": ""
           }
         ],
-        cells: [
-          {
-            "id": "root",
-            "class": ["notebook", "container"]
-          }
-        ],
+        cells: [],
         tagMap: {
           "root": []
         },

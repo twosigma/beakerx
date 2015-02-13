@@ -68,6 +68,7 @@ define(function(require, exports, module) {
           var onEvalStatusUpdate = function(evaluation) {
             if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
               cometdUtil.unsubscribe(evaluation.update_id);
+              ScalaCancelFunction = null;
               if (evaluation.status === "ERROR")
                 deferred.reject(evaluation.payload);
               else
@@ -82,9 +83,6 @@ define(function(require, exports, module) {
           if (ret.update_id) {
             cometdUtil.subscribe(ret.update_id, onEvalStatusUpdate);
           }
-        });
-        deferred.promise.finally(function () {
-          ScalaCancelFunction = null;
         });
         return deferred.promise;
       },

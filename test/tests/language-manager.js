@@ -31,12 +31,12 @@ describe('language manager', function () {
     expect(beakerPO.languageManager.isDisplayed()).toBe(true);
   });
 
-  it('can load iPython', function () {
-    expect(beakerPO.languageManagerButtonKnown('IPython').isPresent()).toBe(true);
-    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(false);
-    beakerPO.languageManagerButton('IPython').click();
-    beakerPO.waitForPlugin('IPython');
-    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(true);
+  it('can load Groovy', function () {
+    expect(beakerPO.languageManagerButtonKnown('Groovy').isPresent()).toBe(true);
+    expect(beakerPO.languageManagerButtonActive('Groovy').isPresent()).toBe(false);
+    beakerPO.languageManagerButton('Groovy').click();
+    beakerPO.waitForPlugin('Groovy');
+    expect(beakerPO.languageManagerButtonActive('Groovy').isPresent()).toBe(true);
   });
 
   it('can be closed', function () {

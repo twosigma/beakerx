@@ -16,14 +16,15 @@
 
 var BeakerPageObject = require('./beaker.po.js');
 describe('notebook', function () {
-
+  var originalTimeout = 0;
+  
   beakerPO = new BeakerPageObject();
 
   beforeAll(function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
   });
-
+  
   it('can load', function() {
     beakerPO.newEmptyNotebook.click();
     expect(browser.getTitle()).toEqual('New Notebook');
@@ -34,26 +35,29 @@ describe('notebook', function () {
     expect(beakerPO.runCellButton.isDisplayed()).toBe(true);
   });
 
-  it('can set a cell language to Python', function () {
+  it('can set a cell language to Groovy', function (done) {
     /* load iPython */
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
-    beakerPO.languageManagerButton('IPython').click();
-    beakerPO.waitForPlugin('IPython');
+    beakerPO.languageManagerButton('Groovy').click();
+    beakerPO.waitForPlugin('Groovy');
     beakerPO.languageManagerCloseButton.click();
 
     beakerPO.cellEvaluatorMenu.click();
-    beakerPO.cellEvaluatorMenuItem('IPython').click();
-    expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual("IPython");
+    beakerPO.cellEvaluatorMenuItem('Groovy').click();
+    expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual("Groovy");
+    done();
   });
 
-  it('can enter code into a cell and evaluate it', function () {
-    beakerPO.setCellInput("type(sys.version)");
+  it('can enter code into a cell and evaluate it', function (done) {
+    beakerPO.setCellInput("1+1");
     beakerPO.runCellButton.click();
-    expect(beakerPO.cellOutput.getText()).toMatch("str");
+    beakerPO.waitForCellOutput();
+    expect(beakerPO.getCellOutput().getText()).toMatch("2");
+    done();
   });
 
-  it('can hide the input', function() {
+  it('can hide the input', function(done) {
     var cell = beakerPO.codeCell(0);
 
     cell.toggleInput().click();
@@ -61,6 +65,14 @@ describe('notebook', function () {
     expect(cell.inputWrapper().isDisplayed()).toBe(true);
     expect(cell.input().isDisplayed()).toBe(false);
     expect(cell.miniCellStatus().isDisplayed()).toBe(true);
+    done();
+  });
+
+  it('can close the notebook', function(done) {
+    beakerPO.fileMenu.click();
+    beakerPO.closeMenuItem.click();
+    beakerPO.modalDialogNoButton.click();
+    done();
   });
 
 });

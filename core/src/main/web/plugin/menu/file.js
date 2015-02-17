@@ -24,6 +24,7 @@ define(function(require, exports, module) {
     {
       name: "New Notebook",
       sortorder: 100,
+      id: "new-notebook-menuitem",
       action: function() {
         bkHelper.newSession(true);
       },
@@ -31,22 +32,26 @@ define(function(require, exports, module) {
     },
     {
       name: "Open",
+      id: "open-menuitem",
       sortorder: 110
     },
     {
       name: "Open recent",
       sortorder: 120,
+      id: "open-recent-menuitem",
       items: function() {
         return bkHelper.getRecentMenuItems();
       }
     },
     {
       name: "Import",
+      id: "import-menuitem",
       sortorder: 125,
       action: bkHelper.importNotebookDialog
     },
     {
       name: "Save",
+      id: "save-menuitem",
       sortorder: 130,
       action: function() {
         bkHelper.saveNotebook();
@@ -54,6 +59,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Save As",
+      id: "save-as-menuitem",
       sortorder: 140,
       autoReduce: true,
       items: []
@@ -61,6 +67,7 @@ define(function(require, exports, module) {
     {
       name: "Share to Web",
       sortorder: 150,
+      id: "share-to-web-menuitem",
       action: function () {
         bkHelper.shareNotebook();
       },
@@ -68,6 +75,7 @@ define(function(require, exports, module) {
     },
     {
       name: "Close",
+      id: "close-menuitem",
       sortorder: 160,
       action: function() {
         bkHelper.closeNotebook();
@@ -77,6 +85,7 @@ define(function(require, exports, module) {
 
   var menuItemPromise = bkHelper.newPromise({
     parent: "File",
+    id: "file-menu",
     items: fileMenuItems
   });
 

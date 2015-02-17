@@ -70,7 +70,11 @@ define(function(require, exports, module) {
       }
     }
   ];
-  var menuItemPromise = bkHelper.newPromise({items: menuItems, parent: "View"});
+  var menuItemPromise = bkHelper.newPromise({
+    items: menuItems,
+    id: "view-menu",
+    parent: "View"
+  });
   exports.getMenuItems = function() {
     return menuItemPromise;
   };

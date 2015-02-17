@@ -23,7 +23,7 @@
   <div class="navbar navbar-default">
     <ul class="nav navbar-nav">
       <li class="dropdown" ng-repeat="m in getMenus()">
-        <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
+        <a href="#" id="{{m.id}}" role="button" class="dropdown-toggle" data-toggle="dropdown">{{m.name}}</a>
         <bk-dropdown-menu menu-items="m.items"></bk-dropdown-menu>
       </li>
       <p ng-if="disconnected" class="navbar-text text-danger right">

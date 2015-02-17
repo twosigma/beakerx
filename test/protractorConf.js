@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-exports.config = {
+var config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
   framework: 'jasmine2',
   capabilities: {
@@ -25,4 +25,6 @@ exports.config = {
           'tests/notebook.js',
           'tests/language-manager.js'
   ]
-}
+};
+
+exports.config = config;

@@ -177,10 +177,12 @@ define(function(require, exports, module) {
     var toAdd = [
       {
         parent: "File",
+        id: "file-menu",
         submenu: "Open",
         items: [
           {
             name: "Open... IRuby (.ipynb)",
+            id: "open-iruby-menuitem",
             reducedName: "Open...",
             tooltip: "Open a IRuby notebook from file system and convert it to Beaker notebook",
             sortorder: 120,

@@ -22,6 +22,7 @@ ext {
 task build
 task clean
 task check
+task updatePackages
 task run (type: Exec) {
   workingDir coreDir
   commandLine './beaker.command'
@@ -73,4 +74,5 @@ check.dependsOn(":core:installApp")
 check.dependsOn(writeVersion)
 check.dependsOn(installPlugins)
 check.dependsOn(":test:check")
+updatePackages.dependsOn(":core:updatePackages")
 

@@ -45,3 +45,8 @@ task assemble (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['assemble']
 }
+
+task updatePackages (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['updatePackages']
+}

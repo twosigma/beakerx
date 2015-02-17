@@ -40,19 +40,19 @@ describe('beaker landing page', function() {
 
   it('has a file menu with 4 items', function () {
     beakerPO.mainmenu.get(0).click();
-    beakerPO.sync();
+    //beakerPO.sync();
     expect(beakerPO.submenu.count()).toEqual(4);
   });
 
   it('has a settings menu with 1 item', function () {
     beakerPO.mainmenu.get(1).click();
-    beakerPO.sync();
+    //beakerPO.sync();
     expect(beakerPO.submenu.count()).toEqual(1);
   });
 
   it('has a help menu with 4 items', function () {
     beakerPO.mainmenu.get(2).click();
-    beakerPO.sync();
+    //beakerPO.sync();
     expect(beakerPO.submenu.count()).toEqual(4);
   });
 

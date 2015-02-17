@@ -39,57 +39,57 @@ var csslist = [
 ];
 
 var jslist = [
-  "src/main/web/vendor/flotr2/flotr2.js",
-  "src/main/web/vendor/bower_components/big.js/big.js",
-  "src/main/web/vendor/bower_components/jquery/jquery.js",
-  "src/main/web/vendor/bower_components/datatables/media/js/jquery.dataTables.js",
-  "src/main/web/vendor/bower_components/jquery-file-upload/js/vendor/jquery.ui.widget.js",
-  "src/main/web/vendor/bower_components/jquery-file-upload/js/jquery.fileupload.js",
-  "src/main/web/vendor/ColVis-1.1.1/js/dataTables.colVis.js",
-  "src/main/web/vendor/ColReorder-1.1.2/js/dataTables.colReorder.js",
-  "src/main/web/vendor/Responsive-1.0.1/js/dataTables.responsive.js",
-  "src/main/web/vendor/TableTools-2.2.3/js/dataTables.tableTools.js",
-  "src/main/web/vendor/bower_components/angular/angular.js",
-  "src/main/web/vendor/bower_components/ngstorage/ngStorage.js",
-  "src/main/web/vendor/bower_components/angular-datatables/dist/angular-datatables.js",
-  "src/main/web/vendor/bower_components/angular-route/angular-route.js",
-  "src/main/web/vendor/bower_components/angular-animate/angular-animate.js",
-  "src/main/web/vendor/bower_components/codemirror/lib/codemirror.js",
-  "src/main/web/vendor/bower_components/codemirror/addon/hint/show-hint.js",
-  "src/main/web/vendor/bower_components/codemirror/addon/hint/javascript-hint.js",
-  "src/main/web/vendor/bower_components/codemirror/addon/hint/html-hint.js",
-  "src/main/web/vendor/bower_components/codemirror/addon/hint/xml-hint.js",
-  "src/main/web/vendor/bower_components/codemirror/addon/edit/matchbrackets.js",
-  "src/main/web/vendor/bower_components/codemirror/addon/dialog/dialog.js",
-  "src/main/web/vendor/bower_components/codemirror/addon/search/searchcursor.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/r/r.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/ruby/ruby.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/javascript/javascript.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/python/python.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/julia/julia.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/groovy/groovy.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/htmlmixed/htmlmixed.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/stex/stex.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/xml/xml.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/css/css.js",
-  "src/main/web/vendor/bower_components/codemirror/mode/clike/clike.js",
-  "src/main/web/vendor/bower_components/codemirror/keymap/vim.js",
-  "src/main/web/vendor/bower_components/codemirror/keymap/emacs.js",
-  "src/main/web/vendor/bower_components/q/q.js",
-  "src/main/web/vendor/epiceditor/js/epiceditor.js",
-  "src/main/web/vendor/bower_components/underscore/underscore-min.js",
-  "src/main/web/vendor/bower_components/underscore.string/lib/underscore.string.js",
-  "src/main/web/vendor/angular-ui/ui-utils.min.js",
-  "src/main/web/vendor/cometd/cometd.js",
-  "src/main/web/vendor/cometd/jquery/jquery.cometd.js",
-  "src/main/web/vendor/jquery.event.drag/jquery.event.drag.js",
-  "src/main/web/vendor/jquery-ui/js/jquery-ui.custom.min.js",
-  "src/main/web/vendor/bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
-  "src/main/web/vendor/bower_components/bootstrap-sass/assets/javascripts/bootstrap.js",
-  "src/main/web/vendor/moment/moment.min.js",
-  "src/main/web/vendor/moment/moment-timezone.js",
-  "src/main/web/vendor/moment/moment-timezone-data.js",
-  "src/main/web/vendor/bower_components/requirejs/require.js"
+  "src/vendor/flotr2/flotr2.js",
+  "src/vendor/bower_components/big.js/big.js",
+  "src/vendor/bower_components/jquery/jquery.js",
+  "src/vendor/bower_components/datatables/media/js/jquery.dataTables.js",
+  "src/vendor/bower_components/jquery-file-upload/js/vendor/jquery.ui.widget.js",
+  "src/vendor/bower_components/jquery-file-upload/js/jquery.fileupload.js",
+  "src/vendor/ColVis-1.1.1/js/dataTables.colVis.js",
+  "src/vendor/ColReorder-1.1.2/js/dataTables.colReorder.js",
+  "src/vendor/Responsive-1.0.1/js/dataTables.responsive.js",
+  "src/vendor/TableTools-2.2.3/js/dataTables.tableTools.js",
+  "src/vendor/bower_components/angular/angular.js",
+  "src/vendor/bower_components/ngstorage/ngStorage.js",
+  "src/vendor/bower_components/angular-datatables/dist/angular-datatables.js",
+  "src/vendor/bower_components/angular-route/angular-route.js",
+  "src/vendor/bower_components/angular-animate/angular-animate.js",
+  "src/vendor/bower_components/codemirror/lib/codemirror.js",
+  "src/vendor/bower_components/codemirror/addon/hint/show-hint.js",
+  "src/vendor/bower_components/codemirror/addon/hint/javascript-hint.js",
+  "src/vendor/bower_components/codemirror/addon/hint/html-hint.js",
+  "src/vendor/bower_components/codemirror/addon/hint/xml-hint.js",
+  "src/vendor/bower_components/codemirror/addon/edit/matchbrackets.js",
+  "src/vendor/bower_components/codemirror/addon/dialog/dialog.js",
+  "src/vendor/bower_components/codemirror/addon/search/searchcursor.js",
+  "src/vendor/bower_components/codemirror/mode/r/r.js",
+  "src/vendor/bower_components/codemirror/mode/ruby/ruby.js",
+  "src/vendor/bower_components/codemirror/mode/javascript/javascript.js",
+  "src/vendor/bower_components/codemirror/mode/python/python.js",
+  "src/vendor/bower_components/codemirror/mode/julia/julia.js",
+  "src/vendor/bower_components/codemirror/mode/groovy/groovy.js",
+  "src/vendor/bower_components/codemirror/mode/htmlmixed/htmlmixed.js",
+  "src/vendor/bower_components/codemirror/mode/stex/stex.js",
+  "src/vendor/bower_components/codemirror/mode/xml/xml.js",
+  "src/vendor/bower_components/codemirror/mode/css/css.js",
+  "src/vendor/bower_components/codemirror/mode/clike/clike.js",
+  "src/vendor/bower_components/codemirror/keymap/vim.js",
+  "src/vendor/bower_components/codemirror/keymap/emacs.js",
+  "src/vendor/bower_components/q/q.js",
+  "src/vendor/epiceditor/js/epiceditor.js",
+  "src/vendor/bower_components/underscore/underscore-min.js",
+  "src/vendor/bower_components/underscore.string/lib/underscore.string.js",
+  "src/vendor/angular-ui/ui-utils.min.js",
+  "src/vendor/cometd/cometd.js",
+  "src/vendor/cometd/jquery/jquery.cometd.js",
+  "src/vendor/jquery.event.drag/jquery.event.drag.js",
+  "src/vendor/jquery-ui/js/jquery-ui.custom.min.js",
+  "src/vendor/bower_components/angular-bootstrap/ui-bootstrap-tpls.js",
+  "src/vendor/bower_components/bootstrap-sass/assets/javascripts/bootstrap.js",
+  "src/vendor/moment/moment.min.js",
+  "src/vendor/moment/moment-timezone.js",
+  "src/vendor/moment/moment-timezone-data.js",
+  "src/vendor/bower_components/requirejs/require.js"
 ];
 
 var bkjslist = [
@@ -149,7 +149,7 @@ var outdispcsslist = [
 ];
 
 var outdispjslist = [
- "src/main/web/vendor/bower_components/d3/d3.js",
+ "src/vendor/bower_components/d3/d3.js",
 
  "src/main/web/outputdisplay/bko-tabledisplay.js",
  
@@ -161,9 +161,9 @@ var outdispjslist = [
 
  "src/main/web/outputdisplay/bko-results.js",
 
- "src/main/web/vendor/vega/vega.js",
- "src/main/web/vendor/vega/d3.geo.projection.min.js",
- "src/main/web/vendor/vega/d3.layout.cloud.js",
+ "src/vendor/vega/vega.js",
+ "src/vendor/vega/d3.geo.projection.min.js",
+ "src/vendor/vega/d3.layout.cloud.js",
  "src/main/web/outputdisplay/bko-vega.js",
 
  "src/main/web/outputdisplay/bko-plot/plotutils.js",
@@ -234,7 +234,6 @@ gulp.task("buildSingleOutDispCss", function() {
 
 gulp.task("buildSingleOutDispJs", function() {
   gulp.src(outdispjslist)
-  .pipe(debug())
   .pipe(concat('beakerOutDisp.js'))
   .pipe(header(banner ))
   .pipe(gulp.dest(buildPath));

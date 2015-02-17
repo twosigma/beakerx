@@ -62,19 +62,19 @@ task (bowerInstall, type: Exec) {
 
 task (zipPackages, type: Exec) {
   if (windows()) {
-    commandLine 'cmd', '/c', 'zip', '-r', '../data/allDeps.zip', 'src/main/web/vendor/';
+    commandLine 'cmd', '/c', 'zip', '-r', '../data/allDeps.zip', 'src/vendor/';
   } else {
-    commandLine 'zip', '-r', '../data/allDeps.zip', 'src/main/web/vendor/'
+    commandLine 'zip', '-r', '../data/allDeps.zip', 'src/vendor/'
   }
 }
 
 task updatePackagesFont(type: Copy) {
-    from 'src/main/web/vendor/bower_components/font-awesome/fonts/'
+    from 'src/vendor/bower_components/font-awesome/fonts/'
     into 'src/main/web/app/fonts/'
 }
 
 task updatePackages(type: Copy) {
-    from 'src/main/web/vendor/bower_components/datatables/media/images/'
+    from 'src/vendor/bower_components/datatables/media/images/'
     into 'src/main/web/app/images/'
 }
 

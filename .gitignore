@@ -2,9 +2,10 @@ build
 beaker/*
 node_modules
 core/nginx/bin
-core/src/main/web/vendor/bower_components
+core/src/vendor
 shared/src/main/dist/
 core/src/main/dist/
+core/src/main/temp/
 core/config/plugins/
 core/config/version
 core/config/build_time

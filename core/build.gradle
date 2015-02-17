@@ -62,7 +62,7 @@ task (bowerInstall, type: Exec) {
 
 task (updatePackages, type: Exec) {
   if (windows()) {
-    ;
+    commandLine 'cmd', '/c', 'zip', '-r', '../data/allDeps.zip', 'src/main/web/vendor/';
   } else {
     commandLine 'zip', '-r', '../data/allDeps.zip', 'src/main/web/vendor/'
   }
@@ -70,7 +70,7 @@ task (updatePackages, type: Exec) {
 
 task (extractPackages, type: Exec) {
   if (windows()) {
-    ;
+    commandLine 'cmd', '/c', 'unzip', '-oq', '../data/allDeps.zip';
   } else {
     commandLine 'unzip', '-oq', '../data/allDeps.zip'
   }
@@ -101,6 +101,7 @@ task (copyNginx, type: Exec) {
 }
 
 bowerInstall.dependsOn npmInstall
+bowerInstall.dependsOn extractPackages
 compileCss.dependsOn npmInstall
 compileCss.dependsOn extractPackages
 updatePackages.dependsOn bowerInstall

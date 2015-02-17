@@ -40,7 +40,7 @@
         };
     };
   }(jQuery));
-  
+
   $.fn.dataTable.moment( 'YYYYMMDD HH:mm:ss' );
   $.fn.dataTable.moment( 'YYYYMMDD' );
   $.fn.dataTable.moment( 'DD/MM/YYYY' );
@@ -60,14 +60,14 @@
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
   } );
-  
+
   jQuery.fn.dataTableExt.aTypes.unshift( function ( sData ) {
     if (typeof sData !== 'string')
       return;
-        
+
     var sValidChars = "0123456789";
     var Char;
-   
+
     /* Check the numeric part */
     for ( var i=0 ; i<(sData.length - 3) ; i++ ) {
       Char = sData.charAt(i);
@@ -83,7 +83,7 @@
     }
     return null;
   } );
-  
+
   // detect and sort by IP addresses
   jQuery.fn.dataTableExt.aTypes.unshift( function ( sData ) {
     if (/^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$/.test(sData)) {
@@ -91,7 +91,7 @@
     }
     return null;
   } );
-  
+
   jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "ip-address-pre": function ( a ) {
       var m = a.split("."), x = "";
@@ -114,78 +114,11 @@
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
   } );
-  
+
   beaker.bkoDirective('Table', ["bkCellMenuPluginManager", "bkUtils", '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
     var CELL_TYPE = "bko-tabledisplay";
     return {
-      template: '<div style="float: right; width: 50px;">&nbsp;</div>' +
-                '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
-                '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
-                '  Edit ' +
-                '  </a>' +
-                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel">' +
-                '    <li ng-repeat="menuidx in getEditMenuIdx">' +
-                '      <a tabindex="-1" href="#" ng-click="doEditMenu(menuidx)" id="edit-{{menuidx}}-menuitem" eat-click>' +
-                '        {{ getEditMenuNam[menuidx] }}' +
-                '      </a>' +
-                '    </li>' +
-                '  </ul>' +
-                '</div>' +
-                '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
-                '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
-                '  Show/Hide ' +
-                '  </a>' +
-                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel2">' +
-                '    <li ng-repeat="menuidx in getCellMenuIdx">' +
-                '      <a tabindex="-1" href="#" ng-click="doCellMenu(menuidx)" id="show-{{menuidx}}-menuitem" eat-click>' +
-                '        {{ getCellMenuNam[menuidx] }}' +
-                '        <i class="fa fa-check" ng-show="getCellMenuSho[menuidx]"></i>' +
-                '      </a>' +
-                '    </li>' +
-                '  </ul>' +
-                '</div>' +
-                '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
-                '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
-                '  Display as ' +
-                '  </a>' +
-                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel3">' +
-                '    <li ng-repeat="menuidx in getDisplayMenuIdx">' +
-                '      <a tabindex="-1" href="#" ng-click="doDisplayMenu(menuidx)" id="display-{{menuidx}}-menuitem" eat-click>' +
-                '        {{ getDisplayMenuNam[menuidx] }}' +
-               // '    <select ng-model="getDisplayMenuVal[menuidx]" ng-change="updateDisplay(menuidx)"><option ng-repeat="item in getDisplayMenuOpt[menuidx]" value="item.type">{{ item.name }}</option></select>' +
-                '    <select ng-model="getDisplayMenuVal[menuidx]" ng-change="updateDisplay(menuidx)" ng-options="item.type as item.name for item in getDisplayMenuOpt[menuidx]"></select>' +
-                '      </a>' +
-                '    </li>' +
-                '  </ul>' +
-                '</div>' +
-                '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
-                '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
-                '  Sort ' +
-                '  </a>' +
-                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel4">' +
-                '    <li>' +
-                '      <a tabindex="-1" href="#" ng-click="doClearSort()" id="clrsort-menuitem" eat-click>' +
-                '        Reset Sort' +
-                '      </a>' +
-                '    </li>' +
-                '  </ul>' +
-                '</div>' +
-                '<div class="dropdown dtmenu" ng-if="renderMenu()">' +
-                '  <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">' +
-                '  Export ' +
-                '  </a>' +
-                '  <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel5">' +
-                '    <li>' +
-                '      <a tabindex="-1" href="#" ng-click="doCSVExport(false)" id="export-menuitem" eat-click>' +
-                '        All as CSV' +
-                '      </a>' +
-                '      <a tabindex="-1" href="#" ng-click="doCSVExport(true)" id="export-menuitem" eat-click>' +
-                '        Selected as CSV' +
-                '      </a>' +
-                '    </li>' +
-                '  </ul>' +
-                '</div>' +
-                '<table cellpadding="0" class="display" border="0" cellspacing="0" id="{{id}}"></table>',
+      template: JST['mainapp/components/notebook/output-table'],
       controller: function($scope) {
 
         $scope.id = "table_" + bkUtils.generateId(6);
@@ -201,12 +134,12 @@
         $scope.convertToCSV = function(data) {
           var i, j;
           var out = "";
-          
+
           for(j=1; j<$scope.columns.length; j++) {
             if (j>1)
               out = out + '\t';
             out = out + '"' + $scope.columns[j].title.replace(/"/g, '""') + '"';
-          }          
+          }
           out = out + '\n';
 
           for(i=0; i<data.length; i++) {
@@ -224,20 +157,20 @@
         $scope.renderMenu = function() {
           return $scope.table !== undefined;
         };
-        
+
         $scope.getEditMenuIdx =  [0, 1, 2, 3];
         $scope.getEditMenuNam =  ['Select All', 'Deselect All', 'Reverse Selection', 'Copy to Clipboard'];
         $scope.doEditMenu = function(idx) {
           if ($scope.table === undefined)
             return;
-          
+
           if (idx==0) {
             $scope.table.rows().nodes().to$().removeClass("selected");
             $scope.table.rows().nodes().to$().addClass("selected");
           } else if(idx==1) {
-            $scope.table.rows().nodes().to$().removeClass("selected");   
+            $scope.table.rows().nodes().to$().removeClass("selected");
           } else if(idx==2) {
-            $scope.table.rows().nodes().to$().toggleClass("selected");   
+            $scope.table.rows().nodes().to$().toggleClass("selected");
           } else if(idx==3) {
             var data = $scope.table.rows(".selected").data();
             var out = $scope.convertToCSV(data);
@@ -269,7 +202,7 @@
         $scope.doCellMenu = function(idx) {
           if ($scope.table === undefined)
             return;
-          
+
           if (idx==0) {
             for(idx = 1; idx<$scope.getCellMenuSho.length; idx++) {
               $scope.table.column(idx).visible( true, false );
@@ -296,13 +229,13 @@
             }
           }
         };
-        
+
         $scope.doClearSort = function() {
           if ($scope.table === undefined)
             return;
           $scope.table.order( [ 0, 'asc' ] ).draw();
         };
-        
+
         $scope.doCSVExport = function(all) {
           var data;
           if (!all)
@@ -320,7 +253,7 @@
             return bkHelper.saveFile(n,out);
           } , "Select name for CSV file to save", "csv");
         };
-        
+
         $scope.getDisplayMenuIdx =  [];
         $scope.getDisplayMenuNam =  [];
         $scope.getDisplayMenuVal =  [];
@@ -396,8 +329,8 @@
                                   { type: 6, name: 'scientific'} ];
         $scope.allBoolTypes = [ { type: 0, name: 'string'},
                                 { type: 8, name: 'boolean'} ];
-        
-        
+
+
         $scope.refreshDisplayMenu = function() {
           $scope.getDisplayMenuIdx =  [];
           $scope.getDisplayMenuNam =  [];
@@ -454,7 +387,7 @@
         };
         scope.init = function(model) {
           scope.doDestroy(true);
-        
+
           var i;
 
           // validate saved state (if any)
@@ -474,14 +407,14 @@
               scope.typestate = undefined;
             }
           }
-                  
+
           // copy basic data
           scope.columnNames = model.columnNames;
           scope.timeStrings = model.timeStrings;
           scope.tz          = model.timeZone;
           scope.types       = model.types;
           scope.actualtype  = [];
-        
+
           // compute how to display columns (remind: dummy column to keep server ordering)
           if (scope.typestate !== undefined) {
             // we have a display state to recover
@@ -537,7 +470,7 @@
             cols.push(col);
           }
           scope.columns = cols;
-          
+
           var id = '#' + scope.id;
           var init = {
               "data": scope.data,
@@ -556,7 +489,7 @@
                 return scope.state;
               }
             };
-        
+
           if (scope.data.length > 25) {
             init.pagingType = 'simple_numbers';
             init.pageLength = 25
@@ -584,9 +517,9 @@
             $(id + ' tbody').on( 'click', 'tr', function () {
               $(this).toggleClass('selected');
             } );
-          },0);                  
+          },0);
         }
-        
+
         scope.getDumpState = function() {
           return scope.model.getDumpState();
         };
@@ -598,7 +531,7 @@
           scope.typestate = savedstate.datatablestate.typestate;
           scope.colstate = savedstate.datatablestate.colstate;
         }
-        
+
         scope.$on("$destroy", function() {
           scope.doDestroy(true);
         });

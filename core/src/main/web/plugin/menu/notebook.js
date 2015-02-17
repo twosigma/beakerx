@@ -53,16 +53,19 @@ define(function(require, exports, module) {
       action: function() {
         bkHelper.evaluateRoot("root");
       },
-      tooltip: "Run all cells"
+      tooltip: "Run all cells",
+      id: "run-all-cells-menuitem"
     },
     {
       name: 'Collapse All Sections',
       sortorder: 135,
-      action: bkHelper.collapseAllSections
+      action: bkHelper.collapseAllSections,
+      id: "collapse-all-menuitem"
     },
     {
       name: "Edit mode",
-      sortorder: 140
+      sortorder: 140,
+      id: "edit-mode-menuitem"
     }
   ];
   var toAdd = [
@@ -74,10 +77,12 @@ define(function(require, exports, module) {
     {
       parent: "Notebook",
       submenu: "Edit mode",
+      id: "edit-mode-menuitem",
       items: [
         {
           name: "Normal",
           sortorder: 100,
+          id: "normal-edit-mode-menuitem",
           isChecked: function () {
             return bkHelper.getInputCellKeyMapMode() === "default";
           },
@@ -88,6 +93,7 @@ define(function(require, exports, module) {
         {
           name: "Vim (limited support)",
           sortorder: 120,
+          id: "vim-edit-mode-menuitem",
           isChecked: function () {
             return bkHelper.getInputCellKeyMapMode() === "vim";
           },
@@ -98,6 +104,7 @@ define(function(require, exports, module) {
         {
           name: "Emacs",
           sortorder: 110,
+          id: "emacs-edit-mode-menuitem",
           isChecked: function () {
             return bkHelper.getInputCellKeyMapMode() === "emacs";
           },

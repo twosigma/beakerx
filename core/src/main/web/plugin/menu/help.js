@@ -55,6 +55,7 @@ define(function(require, exports, module) {
   ];
   var menuItemPromise = bkHelper.newPromise({
     parent: "Help",
+    id: "help-menu",
     items: menuItems
   });
   exports.getMenuItems = function() {

@@ -31,7 +31,7 @@ describe('language manager', function () {
     expect(beakerPO.languageManager.isDisplayed()).toBe(true);
   });
 
-  it('can load iPython', function () {
+  it('can load Groovy', function () {
     expect(beakerPO.languageManagerButtonKnown('Groovy').isPresent()).toBe(true);
     expect(beakerPO.languageManagerButtonActive('Groovy').isPresent()).toBe(false);
     beakerPO.languageManagerButton('Groovy').click();

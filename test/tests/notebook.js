@@ -35,7 +35,7 @@ describe('notebook', function () {
     expect(beakerPO.runCellButton.isDisplayed()).toBe(true);
   });
 
-  it('can set a cell language to Python', function (done) {
+  it('can set a cell language to Groovy', function (done) {
     /* load iPython */
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
@@ -52,7 +52,8 @@ describe('notebook', function () {
   it('can enter code into a cell and evaluate it', function (done) {
     beakerPO.setCellInput("1+1");
     beakerPO.runCellButton.click();
-    expect(beakerPO.cellOutput.getText()).toMatch("2");
+    beakerPO.waitForCellOutput();
+    expect(beakerPO.getCellOutput().getText()).toMatch("2");
     done();
   });
 
@@ -64,6 +65,13 @@ describe('notebook', function () {
     expect(cell.inputWrapper().isDisplayed()).toBe(true);
     expect(cell.input().isDisplayed()).toBe(false);
     expect(cell.miniCellStatus().isDisplayed()).toBe(true);
+    done();
+  });
+
+  it('can close the notebook', function(done) {
+    beakerPO.fileMenu.click();
+    beakerPO.closeMenuItem.click();
+    beakerPO.modalDialogNoButton.click();
     done();
   });
 

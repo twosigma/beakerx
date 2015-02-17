@@ -24,10 +24,12 @@ define(function(require, exports, module) {
     var toAdd = [
       {
         parent: "File",
+        id: "file-menu",
         submenu: "Open",
         items: [
           {
             name: "Open... (.bkr)",
+            id: "open-menuitem",
             reducedName: "Open...",
             tooltip: "Open a bkr notebook file",
             sortorder: 100,
@@ -43,10 +45,12 @@ define(function(require, exports, module) {
       },
       {
         parent: "File",
+        id: "file-menu",
         submenu: "Save As",
         items: [
           {
             name: "Save as... (file)",
+            id: "save-as-menuitem",
             reducedName: "Save as...",
             tooltip: "Save a file from file system",
             sortorder: 100,

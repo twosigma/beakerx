@@ -24,8 +24,17 @@ var BeakerPageObject = function () {
   this.sync = function () {
     browser.actions().mouseDown().mouseUp().perform();
   };
+
   this.newEmptyNotebook = element(by.id('new-empty-notebook'));
+  
+  this.fileMenu = element(by.id('file-menu'));
+  this.viewMenu = element(by.id('view-menu'));
   this.notebookMenu = element(by.id('notebook-menu'));
+  this.helpMenu = element(by.id('help-menu'));
+
+  this.languageManagerMenuItem = element(by.id('language-manager-menuitem'));
+  this.closeMenuItem = element(by.id('close-menuitem'));
+
   this.codeCell = function(index) {
     return _.extend(element.all(by.css('.bkcell.code')).get(index),
                     require('./mixins/cell.js'));
@@ -40,7 +49,7 @@ var BeakerPageObject = function () {
       return deferred.promise;
     }.bind(this));
   };
-  this.languageManagerMenuItem = element(by.id('language-manager-menuitem'));
+
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {
     return element(by.css('#' + language + '-button .plugin-known'));
@@ -54,6 +63,11 @@ var BeakerPageObject = function () {
   this.languageManagerCloseButton = element(by.id('language-manager-close-button'));
   this.insertCellButton = element(by.id('insert-cell'));
   this.runCellButton = element(by.id('run-cell-button'));
+
+  this.modalDialogYesButton = element(by.id('modal-dialog-yes'));
+  this.modalDialogNoButton = element(by.id('modal-dialog-no'));
+  this.modalDialogCancelButton = element(by.id('modal-dialog-cancel'));
+
   this.cellEvaluatorMenu = element(by.css('.code-cell-area .cell-evaluator-menu'));
   this.cellEvaluatorMenuItem = function (language) {
     return element(by.css('.code-cell-area #' + language + '-menuitem'));
@@ -62,6 +76,18 @@ var BeakerPageObject = function () {
   this.setCellInput = function (code) {
     browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
   };
-  this.cellOutput = element(by.css('bk-output-display pre'));
+  this.waitForCellOutput = function(plugin) {
+    browser.wait(function () {
+      var deferred = protractor.promise.defer();
+      this.getCellOutput().isPresent()
+        .then(function (result) {
+          deferred.fulfill(result);
+        });
+      return deferred.promise;
+    }.bind(this));
+  };
+  this.getCellOutput = function() {
+    return element(by.css('bk-output-display div pre'));
+  };
 };
 module.exports = BeakerPageObject;

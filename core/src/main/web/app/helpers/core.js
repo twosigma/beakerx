@@ -455,9 +455,9 @@
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='Yes beaker-btn " + yesBtnClass +"' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
-            "   <button class='No beaker-btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
-            "   <button class='Cancel beaker-btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
+            "   <button id='modal-dialog-yes' class='Yes beaker-btn " + yesBtnClass +"' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
+            "   <button id='modal-dialog-no' class='No beaker-btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
+            "   <button id='modal-dialog-cancel' class='Cancel beaker-btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },

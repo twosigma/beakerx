@@ -171,10 +171,12 @@ define(function(require, exports, module) {
     var toAdd = [
       {
         parent: "File",
+        id: "file-menu",
         submenu: "Open",
         items: [
           {
             name: "Open... IPython (.ipynb)",
+            id: "open-ipython-menuitem",
             reducedName: "Open...",
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
             sortorder: 110,

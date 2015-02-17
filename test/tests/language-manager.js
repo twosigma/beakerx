@@ -19,27 +19,24 @@ describe('language manager', function () {
 
   beakerPO = new BeakerPageObject();
 
-//  beforeAll(function() {
-//    browser.get(beakerPO.baseURL);
-//    browser.waitForAngular();
-//    beakerPO.newEmptyNotebook.click();
-//  });
-
-  it('can be opened', function () {
+  beforeAll(function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
     beakerPO.newEmptyNotebook.click();
+  });
+
+  it('can be opened', function () {
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
     expect(beakerPO.languageManager.isDisplayed()).toBe(true);
   });
 
   it('can load iPython', function () {
-    expect(beakerPO.languageManagerButtonKnown('IPython').isPresent()).toBe(true);
-    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(false);
-    beakerPO.languageManagerButton('IPython').click();
-    beakerPO.waitForPlugin('IPython');
-    expect(beakerPO.languageManagerButtonActive('IPython').isPresent()).toBe(true);
+    expect(beakerPO.languageManagerButtonKnown('Groovy').isPresent()).toBe(true);
+    expect(beakerPO.languageManagerButtonActive('Groovy').isPresent()).toBe(false);
+    beakerPO.languageManagerButton('Groovy').click();
+    beakerPO.waitForPlugin('Groovy');
+    expect(beakerPO.languageManagerButtonActive('Groovy').isPresent()).toBe(true);
   });
 
   it('can be closed', function () {

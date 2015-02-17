@@ -20,14 +20,12 @@ describe('notebook', function () {
   
   beakerPO = new BeakerPageObject();
 
-//  beforeAll(function() {
-//    browser.get(beakerPO.baseURL);
-//    browser.waitForAngular();
-//  });
-  
-  it('can load', function() {
+  beforeAll(function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
+  });
+  
+  it('can load', function() {
     beakerPO.newEmptyNotebook.click();
     expect(browser.getTitle()).toEqual('New Notebook');
   });
@@ -41,20 +39,20 @@ describe('notebook', function () {
     /* load iPython */
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
-    beakerPO.languageManagerButton('IPython').click();
-    beakerPO.waitForPlugin('IPython');
+    beakerPO.languageManagerButton('Groovy').click();
+    beakerPO.waitForPlugin('Groovy');
     beakerPO.languageManagerCloseButton.click();
 
     beakerPO.cellEvaluatorMenu.click();
-    beakerPO.cellEvaluatorMenuItem('IPython').click();
-    expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual("IPython");
+    beakerPO.cellEvaluatorMenuItem('Groovy').click();
+    expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual("Groovy");
     done();
   });
 
   it('can enter code into a cell and evaluate it', function (done) {
-    beakerPO.setCellInput("type(sys.version)");
+    beakerPO.setCellInput("1+1");
     beakerPO.runCellButton.click();
-    expect(beakerPO.cellOutput.getText()).toMatch("str");
+    expect(beakerPO.cellOutput.getText()).toMatch("2");
     done();
   });
 

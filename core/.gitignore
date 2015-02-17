@@ -5,7 +5,7 @@ nginx/bin
 src/vendor/
 src/main/web/template/version.html
 src/main/dist/
-src/main/temp/
+src/main/web/app/temp
 src/main/web/app/dist
 *~
 .gradle

@@ -22,6 +22,7 @@
     "gulp-strip-css-comments": "",
     "gulp-header" : "",
     "gulp-strip-comments": "",
+    "run-sequence": "",
     "html-classer-gulp": "0.0.2"
   }
 }

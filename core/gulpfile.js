@@ -258,7 +258,7 @@ gulp.task("compileBeakerTemplates", function() {
     }
   }))
   .pipe(concat('templates.js'))
-  .pipe(gulp.dest(buildPath));
+  .pipe(gulp.dest(tempPath));
 });
 
 gulp.task("watchBeakerScss", function() {
@@ -272,4 +272,12 @@ gulp.task("watchBeakerTemplates", function() {
 });
 
 gulp.task("watch", ["watchBeakerScss", "watchBeakerTemplates"]);
-gulp.task("compile", ["compileBeakerScss", "compileBeakerTemplates", "buildSingleCss", "buildSingleVendorJs", "buildSingleBeakerJs", "buildSingleOutDispCss", "buildSingleOutDispJs"]);
+gulp.task("compile", function(callback) {
+  runSequence("compileBeakerScss",
+      "compileBeakerTemplates",
+      "buildSingleCss",
+      "buildSingleVendorJs",
+      "buildSingleBeakerJs", 
+      "buildSingleOutDispCss",
+      "buildSingleOutDispJs", callback); });
+

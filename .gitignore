@@ -5,7 +5,6 @@ core/nginx/bin
 core/src/vendor
 shared/src/main/dist/
 core/src/main/dist/
-core/src/main/temp/
 core/config/plugins/
 core/config/version
 core/config/build_time

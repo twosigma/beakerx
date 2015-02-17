@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-exports.config = {
+var config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
   framework: 'jasmine2',
   capabilities: {
@@ -25,4 +25,17 @@ exports.config = {
           'tests/notebook.js',
           'tests/language-manager.js'
   ]
+};
+
+if (process.env.TRAVIS_BUILD_NUMBER) {
+  config.seleniumAddress = 'http://localhost:4445/wd/hub';
+  config.capabilities = {
+    'username': process.env.SAUCE_USERNAME,
+    'accessKey': process.env.SAUCE_ACCESS_KEY,
+    'browserName': 'chrome',
+    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+    'build': process.env.TRAVIS_BUILD_NUMBER,
+    'name': 'App Tests'
+  }
 }
+exports.config = config;

@@ -1,24 +1,25 @@
 language: java
 jdk:
  - oraclejdk7
-before_install:
-  - "export CHROME_BIN=chromium-browser"
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
 before_script:
-  - sudo add-apt-repository --yes ppa:nginx/stable
-  - sudo add-apt-repository --yes ppa:chris-lea/zeromq
-  - sudo add-apt-repository --yes ppa:marutter/rrutter
-  - sudo apt-get update -q
-  - sudo apt-get install nginx
-  - sudo apt-get install libzmq3-dbg libzmq3-dev libzmq3
-  - sudo apt-get install python-pip python-dev
-  - sudo pip install ipython jinja2 tornado
-  - sudo pip install pyzmq
-  - sudo apt-get install python-matplotlib python-scipy python-pandas
-  - sudo apt-get install r-base r-base-dev
-  - sudo Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"
-  - sudo Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"
-  - sudo Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')"
-  - sudo Rscript -e "install.packages('RJSONIO',,'http://cran.us.r-project.org')"
-  - sudo Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')"
+ - sudo add-apt-repository --yes ppa:nginx/stable
+ - sudo add-apt-repository --yes ppa:chris-lea/zeromq
+ - sudo add-apt-repository --yes ppa:marutter/rrutter
+ - sudo apt-get update -q
+ - sudo apt-get install nginx
+ - sudo apt-get install libzmq3-dbg libzmq3-dev libzmq3
+ - sudo apt-get install python-pip python-dev
+ - sudo pip install ipython jinja2 tornado
+ - sudo pip install pyzmq
+ - sudo apt-get install python-matplotlib python-scipy python-pandas
+ - sudo apt-get install r-base r-base-dev
+ - sudo Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"
+ - sudo Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"
+ - sudo Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')"
+ - sudo Rscript -e "install.packages('RJSONIO',,'http://cran.us.r-project.org')"
+ - sudo Rscript -e "install.packages('RCurl',,'http://cran.us.r-project.org')"
+ - bash ./test/sauce_connect_setup.sh
+env:
+  global:
+  - secure: dricMRQIN+nF7cY72jsnOUR3tSUDRAvGoZYkJai+40dJpZk4MPjz5Uttt3NUyt+IbpDkh1exj5Z0pFfbCeLE2UONDT2na0PJr1XA0aHi9CVTG+Xh1uMuG+0OeZMUqVNzNZj2AP/TIJdxtOdd2FnoN+HpJPTQFaNFMK2atlR+LMA=
+  - secure: KOpZstE1pmuFUxAOmqZYDoWIDg3sF1sqPaq8ly1ADJD116ofxYD9aKIK5R2yS3oqReXU3b5ZkZ0DnOsLEG/MZ44WW9nMyr6hHJgxevyDxo6OOA8zlej080jZPamY11sgX4jjYdVCKZR9pRChAYseInfbh5wKT5yCTzONtZWa6hk=

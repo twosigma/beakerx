@@ -14,6 +14,9 @@
  *  limitations under the License.
  */
 
+@import "../vendor/bower_components/font-awesome/css/font-awesome.css";
+
+
 @import "../vendor/bower_components/codemirror/lib/codemirror.css";
 @import "../vendor/bower_components/codemirror/addon/hint/show-hint.css";
 
@@ -28,3 +31,26 @@ $icon-font-path: "../../vendor/bower_components/bootstrap-sass/assets/fonts/boot
 @import "../vendor/bower_components/bootstrap-sass/assets/stylesheets/bootstrap.scss";
 
 @import "styles/vendor/datatables.scss";
+
+@import "../vendor/bower_components/angular-datatables/dist/datatables.bootstrap.css";
+@import "../vendor/bower_components/datatables/media/css/jquery.dataTables.css";
+@import "../vendor/ColVis-1.1.1/css/dataTables.colVis.min.css";
+@import "../vendor/ColReorder-1.1.2/css/dataTables.colReorder.min.css";
+@import "../vendor/Responsive-1.0.1/css/dataTables.responsive.css";
+@import "../vendor/TableTools-2.2.3/css/dataTables.tableTools.min.css";
+
+/* This is for datatables customization */
+table.dataTable.hover tbody tr:hover,
+table.dataTable.hover tbody tr.odd:hover,
+table.dataTable.hover tbody tr.even:hover, table.dataTable.display tbody tr:hover,
+table.dataTable.display tbody tr.odd:hover,
+table.dataTable.display tbody tr.even:hover {
+  background-color: #99CCFF;
+}
+table.dataTable.hover tbody tr:hover.selected,
+table.dataTable.hover tbody tr.odd:hover.selected,
+table.dataTable.hover tbody tr.even:hover.selected, table.dataTable.display tbody tr:hover.selected,
+table.dataTable.display tbody tr.odd:hover.selected,
+table.dataTable.display tbody tr.even:hover.selected {
+  background-color: #6699FF;
+}

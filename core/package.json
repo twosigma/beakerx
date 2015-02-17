@@ -17,6 +17,11 @@
     "gulp-template-compile": "^0.2.0",
     "gulp-concat": "^2.3.4",
     "gulp-htmlmin": "^0.1.3",
+    "gulp-debug" : "",
+    "gulp-import-css": "",
+    "gulp-strip-css-comments": "",
+    "gulp-header" : "",
+    "gulp-strip-comments": "",
     "html-classer-gulp": "0.0.2"
   }
 }

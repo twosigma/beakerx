@@ -60,12 +60,22 @@ task (bowerInstall, type: Exec) {
   }
 }
 
-task (updatePackages, type: Exec) {
+task (zipPackages, type: Exec) {
   if (windows()) {
     commandLine 'cmd', '/c', 'zip', '-r', '../data/allDeps.zip', 'src/main/web/vendor/';
   } else {
     commandLine 'zip', '-r', '../data/allDeps.zip', 'src/main/web/vendor/'
   }
+}
+
+task updatePackagesFont(type: Copy) {
+    from 'src/main/web/vendor/bower_components/font-awesome/fonts/'
+    into 'src/main/web/app/fonts/'
+}
+
+task updatePackages(type: Copy) {
+    from 'src/main/web/vendor/bower_components/datatables/media/images/'
+    into 'src/main/web/app/images/'
 }
 
 task (extractPackages, type: Exec) {
@@ -104,7 +114,9 @@ bowerInstall.dependsOn npmInstall
 bowerInstall.dependsOn extractPackages
 compileCss.dependsOn npmInstall
 compileCss.dependsOn extractPackages
-updatePackages.dependsOn bowerInstall
+updatePackagesFont.dependsOn bowerInstall
+updatePackagesFont.dependsOn zipPackages
+updatePackages.dependsOn updatePackagesFont
 build.dependsOn extractPackages
 build.dependsOn compileCss
 run.dependsOn bowerInstall

@@ -504,7 +504,7 @@
         }
 
         // now update payload (if needed)
-        if (evaluation.payload !== undefined) {
+        if (evaluation.payload !== undefined && modelOutput.result !== undefined && modelOutput.result.object !== undefined) {
           modelOutput.result.object.payload = evaluation.payload;
         }
 

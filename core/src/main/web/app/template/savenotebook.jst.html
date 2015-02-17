@@ -14,7 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div class="modal-header">
+<div class="modal-header fixed">
   <h1>Save <span ng-show="getStrategy().treeViewfs.showSpinner">
   <i class="fa fa-refresh fa-spin"></i></span></h1>
   <div class="filters-and-sorts">
@@ -29,13 +29,13 @@
     </div>
   </div>
 </div>
-<div class="modal-body">
+<div class="modal-body fixed" style="padding-bottom: 106px"> <!-- padding-bottom linked with modal-footer height -->
   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>
   <tree-view rooturi="<%- homedir %>" fs="getStrategy().treeViewfs"></tree-view>
   <tree-view ng-if="'<%- homedir %>' != '<%- pwd %>'" rooturi="<%- pwd %>" fs="getStrategy().treeViewfs"></tree-view>
   <!-- this ng-if above should be removed and made template logic once this issue is resolved: https://github.com/ingro/gulp-template-compile/issues/5 -->
 </div>
-<div class="modal-footer">
+<div class="modal-footer fixed" style="height: 106px"> <!-- height linked with modal-body padding-bottom -->
   <p>
     <input id="saveAsFileInput" class="left" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start />
     <i class="new-folder bk-icon" data-toggle="tooltip" title="Make new directory ({{getStrategy().input}})" ng-click="getStrategy().newFolder(getStrategy().input)"></i>

@@ -1,7 +1,5 @@
 html {
   .modal-content {
-    max-height: 80%;
-    overflow: hidden;
     border-width: 5px 0 0;
     border-radius: 0;
     border-color: #098CCD;
@@ -20,9 +18,29 @@ html {
     padding: 30px 25px 25px;
   }
 
+  $fixed-header-height: 112px;
+  $fixed-footer-height: 130px;
+
+  .modal-header.fixed {
+    height: $fixed-header-height;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    background: #FFF;
+    z-index: 1;
+  }
+
   .modal-body {
     padding: 0 25px;
     overflow-y: auto;
+  }
+
+  .modal-body.fixed {
+    box-sizing: border-box;
+    padding-top: $fixed-header-height;
+    padding-bottom: $fixed-footer-height;
+    max-height: calc(100vh - 70px);
   }
 
   .modal-footer {
@@ -33,6 +51,16 @@ html {
     border-width: 0;
     padding-left: 25px;
     padding-right: 25px;
+  }
+
+  .modal-footer.fixed {
+    height: $fixed-footer-height;
+    padding-top: 14px;
+    padding-bottom: 15px;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
   }
 }
 

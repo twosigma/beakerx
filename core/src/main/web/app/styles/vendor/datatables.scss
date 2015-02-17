@@ -1,0 +1,37 @@
+table.dataTable.hover tbody tr:hover,
+table.dataTable.hover tbody tr.odd:hover,
+table.dataTable.hover tbody tr.even:hover,
+table.dataTable.display tbody tr:hover,
+table.dataTable.display tbody tr.odd:hover,
+table.dataTable.display tbody tr.even:hover {
+  &, & > .sorting_1 {
+    background-color: #99CCFF !important;
+  }
+  &.selected {
+    &, & > .sorting_1 {
+      background-color: #6699FF !important;
+    }
+  }
+}
+
+div.dtmenu {
+  float: right;
+  color: #73BE3B;
+  cursor: pointer;
+  display: inline-block;
+  &:hover {
+    color: #FFF;
+    background-color: #39A9ED;
+  }
+}
+
+a.dtmenu {
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 12px;
+  background: url("../app/images/down@2x.png") no-repeat scroll right center / 8px auto transparent;
+  padding-left: 13px;
+  padding-right: 13px;
+  margin-left: 10px;
+  margin-right: 10px;
+}

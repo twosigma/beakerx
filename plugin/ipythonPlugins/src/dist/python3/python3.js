@@ -25,6 +25,7 @@ define(function(require, exports, module) {
   var COMMAND = "ipythonPlugins/python3/python3Plugin";
   var kernels = {};
   var _theCancelFunction = null;
+  var gotError = false;
   var serviceBase = null;
   var ipyVersion1 = false;
   var now = function() {
@@ -124,6 +125,7 @@ define(function(require, exports, module) {
           deferred.reject("An evaluation is already in progress");
           return deferred.promise;
         }
+        gotError = false;
 
         var self = this;
         var startTime = new Date().getTime();
@@ -136,6 +138,8 @@ define(function(require, exports, module) {
           bkHelper.setupCancellingOutput(modelOutput);
         };
         var execute_reply = function(msg) {
+          if (_theCancelFunction === null)
+            return;
           // this is called when processing is completed
           if (!ipyVersion1) {
             msg = msg.content;
@@ -165,7 +169,9 @@ define(function(require, exports, module) {
             bkHelper.refreshRootScope();     
         }
         var output = function output(a0, a1) {
-       // this is called to write output
+          if (_theCancelFunction === null || gotError)
+            return;
+          // this is called to write output
           var type;
           var content;
           if (ipyVersion1) {
@@ -180,6 +186,7 @@ define(function(require, exports, module) {
           evaluation.status = "RUNNING";
 
           if (type === "pyerr") {
+            gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
               return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
             }, content.evalue);

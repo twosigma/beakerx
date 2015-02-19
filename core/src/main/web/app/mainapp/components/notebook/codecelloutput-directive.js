@@ -35,7 +35,7 @@
       },
       controller: function($scope) {
         var _shareMenuItems = [];
-        
+
         $scope.getOutputResult = function() {
           return $scope.model.result;
         };
@@ -66,7 +66,7 @@
               $scope.subscribedTo = result.update_id;
             }
           }
-          
+
           if (result !== undefined && result.type === "UpdatableEvaluationResult")
             $scope.applicableDisplays = bkOutputDisplayFactory.getApplicableDisplays(result.payload);
           else

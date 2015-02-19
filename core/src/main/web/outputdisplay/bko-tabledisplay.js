@@ -197,6 +197,7 @@
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
+
         $scope.convertToCSV = function(data) {
           var i, j;
           var out = "";

@@ -156,15 +156,26 @@
       },
       replace: true,
       controller: function($scope) {
+        $scope.getMenuItems = function() {
+          return _.result($scope, 'menuItems');
+        };
+      }
+    };
+  });
+  module.directive('bkDropdownMenuItem', function($compile) {
+    return {
+      restrict: 'E',
+      template: JST['template/dropdown_item'](),
+      scope: {
+        "item": "="
+      },
+      replace: true,
+      controller: function($scope) {
         var isItemDisabled = function(item) {
           if (_.isFunction(item.disabled)) {
             return item.disabled();
           }
           return item.disabled;
-        };
-
-        $scope.getMenuItems = function() {
-          return _.result($scope, 'menuItems');
         };
 
         $scope.getAClass = function(item) {
@@ -244,15 +255,23 @@
           }
           return false;
         };
-        $scope.getSubItems = function(parentItem) {
-          if (_.isFunction(parentItem.items)) {
-            return parentItem.items();
-          }
-          return parentItem.items;
-        };
       },
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
+        scope.getSubItems = function() {
+          if (_.isFunction(scope.item.items)) {
+            return scope.item.items();
+          }
+          return scope.item.items;
+        };
 
+        scope.$watchCollection('getSubItems()', function(items, oldItems) {
+          if (!_.isEmpty(items)) {
+            $compile('<bk-dropdown-menu menu-items="getSubItems()"></bk-dropdown-menu>')(scope, function(cloned, scope) {
+              element.find('ul.dropdown-menu').remove();
+              element.append(cloned);
+            });
+          }
+        });
       }
     };
   });

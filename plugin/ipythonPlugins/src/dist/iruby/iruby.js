@@ -25,6 +25,7 @@ define(function(require, exports, module) {
   var COMMAND = "ipythonPlugins/iruby/irubyPlugin";
   var kernels = {};
   var _theCancelFunction = null;
+  var gotError = false;
   var serviceBase = null;
   var ipyVersion1 = false;
   var now = function() {
@@ -129,6 +130,7 @@ define(function(require, exports, module) {
       var startTime = new Date().getTime();
       var kernel = kernels[self.settings.shellID];
       bkHelper.setupProgressOutput(modelOutput);
+      gotError = false;
 
       _theCancelFunction = function() {
         var kernel = kernels[self.settings.shellID];
@@ -136,6 +138,8 @@ define(function(require, exports, module) {
         bkHelper.setupCancellingOutput(modelOutput);
       };
       var execute_reply = function(msg) {
+        if (_theCancelFunction === null)
+          return;
         // this is called when processing is completed
         if (!ipyVersion1) {
           msg = msg.content;
@@ -165,6 +169,8 @@ define(function(require, exports, module) {
           bkHelper.refreshRootScope();     
       }
       var output = function output(a0, a1) {
+        if (_theCancelFunction === null || gotError)
+          return;
         // this is called to write output
         var type;
         var content;
@@ -179,6 +185,7 @@ define(function(require, exports, module) {
         evaluation.status = "RUNNING";
 
         if (type === "pyerr") {
+          gotError = true;
           var trace = _.reduce(content.traceback, function(memo, line) {
             return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
           }, content.evalue);

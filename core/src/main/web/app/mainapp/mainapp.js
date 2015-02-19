@@ -1019,10 +1019,10 @@
           if (bkEvaluateJobManager.isAnyInProgress()) {
             return "Some cells are still running. Leaving the page now will cause cancelling and result be lost";
           }
-        };
-        window.unload = function() {
-          bkEvaluateJobManager.cancel();
           onDestroy();
+        };
+        window.onunload = function() {
+          bkEvaluateJobManager.cancel();
         };
         startAutoBackup();
         $scope.gotoControlPanel = function(event) {

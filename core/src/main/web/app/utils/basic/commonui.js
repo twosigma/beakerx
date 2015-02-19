@@ -146,25 +146,7 @@
   module.directive('bkDropdownMenu', function() {
     return {
       restrict: 'E',
-      template: '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">' +
-          '<li ng-repeat="item in getMenuItems() | isHidden" ng-class="getItemClass(item)">' +
-          '<a href="#" tabindex="-1" ng-click="runAction(item)" ng-class="getAClass(item) + item.classNames" ' +
-          '  title="{{item.tooltip}}" eat-click>' +
-          '<i class="glyphicon glyphicon-ok" ng-show="isMenuItemChecked(item)"> </i> ' +
-          '{{getName(item)}}' +
-          '</a>' +
-        // XXX - the submenu needs to be hacked to be as wide as the parent
-        // otherwise there is a gap and you can't hit the submenu. BEAKER-433
-          '<ul class="dropdown-menu">' +
-          '<li ng-repeat="subitem in getSubItems(item) | isHidden" ng-class="getItemClass(subitem)">' +
-          '<a href="#"  tabindex="-1" ng-click="runAction(subitem)" ng-class="getAClass(subitem)" title="{{subitem.tooltip}}" eat-click>' +
-          '<i class="glyphicon glyphicon-ok" ng-show="isMenuItemChecked(subitem)"> </i> ' +
-          '{{getName(subitem)}}' +
-          '</a>' +
-          '</li>' +
-          '</ul>' +
-          '</li>' +
-          '</ul>',
+      template: JST['template/dropdown'](),
       scope: {
         "menuItems": "=",
 

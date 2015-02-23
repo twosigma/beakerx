@@ -13,10 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.twosigma.beaker.jvm.classloader;
 
-
-import org.xeustechnologies.jcl.ProxyClassLoader;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,13 +25,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.xeustechnologies.jcl.exception.JclException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import org.xeustechnologies.jcl.JarClassLoader;
 
 public class DynamicClassLoader {
     @SuppressWarnings("rawtypes")
@@ -50,8 +45,7 @@ public class DynamicClassLoader {
         parent.getLocalLoader().setOrder(20);
         parent.getCurrentLoader().setOrder(30);
         parent.getParentLoader().setOrder(40); 
-        parent.getThreadLoader().setOrder(50);
-        parent.getSystemLoader().setOrder(60);
+        parent.getSystemLoader().setOrder(50);
         if(dir!=null && !dir.isEmpty()) {
           getProxy().setOrder(10);
           parent.addLoader(getProxy());

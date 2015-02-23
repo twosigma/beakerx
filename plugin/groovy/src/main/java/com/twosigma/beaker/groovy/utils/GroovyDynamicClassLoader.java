@@ -26,9 +26,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.xeustechnologies.jcl.ProxyClassLoader;
-
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
+import com.twosigma.beaker.jvm.classloader.ProxyClassLoader;
 
 public class GroovyDynamicClassLoader extends DynamicClassLoader {
   protected final GroovyLoaderProxy glp = new GroovyLoaderProxy();

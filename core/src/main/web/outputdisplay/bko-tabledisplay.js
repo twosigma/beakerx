@@ -119,7 +119,7 @@
     var CELL_TYPE = "bko-tabledisplay";
     return {
       template: JST['mainapp/components/notebook/output-table'],
-      controller: function($scope) {
+      controller: function($scope, $modal) {
 
         $scope.id = "table_" + bkUtils.generateId(6);
 
@@ -366,6 +366,22 @@
           $scope.doDestroy(false);
           $scope.actualtype[order[idx+1]] = $scope.getDisplayMenuVal[idx];
           $scope.doCreateTable();
+        }
+
+        $scope.closeOptionsDialog = function() {
+          $scope.modal.close();
+        }
+
+        $scope.openOptionsDialog = function() {
+          var options = {
+            backdrop: true,
+            keyboard: true,
+            backdropClick: true,
+            scope: $scope,
+            template: JST['mainapp/components/notebook/output-table-options']()
+          }
+
+          $scope.modal = $modal.open(options);
         }
 
       },

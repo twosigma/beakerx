@@ -124,6 +124,11 @@ bk-text-cell div[contenteditable]{
         .bkcell {
             margin-bottom: 0;
         }
+
+        &.error {
+            border: 1px solid $error_red;
+            margin: -1px;
+        }
     }
 }
 

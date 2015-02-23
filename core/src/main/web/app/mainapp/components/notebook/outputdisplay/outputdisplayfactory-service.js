@@ -39,7 +39,7 @@
         template: "<div class='outline warning'></div> <pre class='out_warning'>{{model.getCellModel().message}}</pre>"
       },
       "Error": {
-        template: "<div class='outline error'></div><pre class='out_error'>" +
+        template: "<pre class='out_error'>" +
             "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
             "<span ng-bind-html='shortError'></span></pre>" +
             "<pre ng-show='expanded'><span ng-bind-html='longError'></span>" +

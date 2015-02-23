@@ -1,0 +1,110 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+package com.twosigma.beaker.jvm.classloader;
+
+/**
+ * NOTE: this is a modified version of JCL library source file.
+ *  
+ * 
+ *  JCL (Jar Class Loader)
+ *
+ *  Copyright (C) 2011  Kamran Zafar
+ *
+ *  This file is part of Jar Class Loader (JCL).
+ *  Jar Class Loader (JCL) is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  JarClassLoader is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with JCL.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  @author Kamran Zafar
+ *
+ *  Contact Info:
+ *  Email:  xeus.man@gmail.com
+ *  Web:    http://xeustech.blogspot.com
+ */
+
+import java.io.InputStream;
+import java.net.URL;
+
+/**
+ * @author Kamran Zafar
+ * 
+ */
+public abstract class ProxyClassLoader implements Comparable<ProxyClassLoader> {
+    // Default order
+    protected int order = 5;
+    // Enabled by default
+    protected boolean enabled = true;
+
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Set loading order
+     * 
+     * @param order
+     */
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
+    /**
+     * Loads the class
+     * 
+     * @param className
+     * @param resolveIt
+     * @return class
+     */
+    public abstract Class loadClass(String className, boolean resolveIt);
+
+    /**
+     * Loads the resource
+     * 
+     * @param name
+     * @return InputStream
+     */
+    public abstract InputStream loadResource(String name);
+
+    /**
+     * Finds the resource
+     *
+     * @param name
+     * @return InputStream
+     */
+    public abstract URL findResource(String name);
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public int compareTo(ProxyClassLoader o) {
+        return order - o.getOrder();
+    }
+}

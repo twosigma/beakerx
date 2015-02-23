@@ -16,8 +16,6 @@
 package com.twosigma.beaker.jvm.classloader;
 
 
-import org.xeustechnologies.jcl.ProxyClassLoader;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,13 +24,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.xeustechnologies.jcl.exception.JclException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import org.xeustechnologies.jcl.JarClassLoader;
 
 public class DynamicClassLoader {
     @SuppressWarnings("rawtypes")

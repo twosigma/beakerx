@@ -40,15 +40,16 @@
     <div ng-if ="hasOutput()" class="code-cell-output" ng-class="{
       'no-output': isHiddenOutput(),
       'input-hidden': cellmodel.input.hidden,
-      'output-hidden': cellmodel.output.hidden
+      'output-hidden': cellmodel.output.hidden,
+      'error': isError()
       }">
       <ul class="cell-output-labels">
         <li ng-if="!isShowOutput()"><b> Output Hidden</b></li>
-        <li ng-if='cellmodel.output.result.innertype != "Error" && isShowOutput()'>
+        <li ng-if='!isError() && isShowOutput()'>
           <b>Cell Output</b>
           <small class='cell-run-time'>{{getElapsedTimeString()}}</small>
         </li>
-        <li class="error-title" ng-if='cellmodel.output.result.innertype == "Error" && isShowOutput()'><b>Error</b></li>
+        <li class="error-title" ng-if='isError() && isShowOutput()'><b>Error</b></li>
       </ul>
       <bk-code-cell-output
             model="cellmodel.output"

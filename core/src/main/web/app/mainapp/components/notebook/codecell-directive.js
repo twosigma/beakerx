@@ -52,6 +52,12 @@
           return !($scope.cellmodel.output.result);
         }
 
+        $scope.isError = function() {
+          var type = $scope.cellmodel.output.result.innertype || $scope.cellmodel.output.result.payload.innertype;
+
+          return type == 'Error';
+        }
+
         $scope.isShowInput = function() {
           if ($scope.isLocked()) {
             return false;

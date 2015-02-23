@@ -156,7 +156,7 @@
                     container: div,
 		    theme: {
 			editor: '../../../src/css/markdown-edit.css',
-			preview: '../../../src/css/markdown-preview.css'  
+			preview: '../../../src/css/markdown-preview.css'
 		    },
                     file: {
                         defaultContent: scope.cellmodel.body
@@ -253,9 +253,9 @@
 
                     }
                 };
-		$scope.isShowOutput = function() {
-		    return $scope.$parent.isShowOutput();
-		};
+                $scope.isShowOutput = function() {
+                  return $scope.$parent.isShowOutput();
+                };
                 $scope.getOutputDisplayModel = function() {
                     var display = $scope.cellmodel.output.selectedType;
                     if (!display) {
@@ -395,7 +395,7 @@
     module.directive('bkoError', function() {
         return {
             restrict: "E",
-            template: "<div class='outline error'></div><pre class='out_error'>" +
+            template: "<pre class='out_error'>" +
             "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
             "<span></span></pre>" +
             "<pre ng-show='expanded'><span></span>" +

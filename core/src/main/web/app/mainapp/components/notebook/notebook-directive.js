@@ -104,6 +104,7 @@
           registerCM: function (cellId, cm) {
             this._codeMirrors[cellId] = cm;
             cm.setOption("keyMap", this._cmKeyMapMode);
+            cm.setOption("vimMode", this._cmKeyMapMode == "vim");
           },
           unregisterCM: function (cellId) {
             delete this._codeMirrors[cellId];
@@ -114,6 +115,7 @@
             this._cmKeyMapMode = keyMapMode;
             _.each(this._codeMirrors, function (cm) {
               cm.setOption("keyMap", keyMapMode);
+              cm.setOption("vimMode", keyMapMode == "vim");
             });
           },
           getCMKeyMapMode: function () {

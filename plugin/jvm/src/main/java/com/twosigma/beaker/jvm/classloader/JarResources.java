@@ -53,7 +53,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
+import java.security.cert.Certificate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
@@ -69,8 +71,7 @@ import java.util.logging.Logger;
  */
 public class JarResources {
 
-    protected String baseUrl;
-    protected Map<String, byte[]> jarEntryContents;
+    protected Map<String, JclJarEntry> jarEntryContents;
     protected boolean collisionAllowed;
 
     private static Logger logger = Logger.getLogger( JarResources.class.getName() );
@@ -79,7 +80,7 @@ public class JarResources {
      * Default constructor
      */
     public JarResources() {
-        jarEntryContents = new HashMap<String, byte[]>();
+        jarEntryContents = new HashMap<String, JclJarEntry>();
         collisionAllowed = true;
     }
 
@@ -89,28 +90,30 @@ public class JarResources {
      */
     public URL getResourceURL(String name) {
       if (logger.isLoggable( Level.FINEST ))
-        logger.finest( "getResourceURL: " + name + " " + baseUrl );
+        logger.finest( "getResourceURL: " + name );
       
-        if (baseUrl == null) {
-            throw new JclException( "non-URL accessible resource" );
+      JclJarEntry entry = jarEntryContents.get(name);
+      if (entry != null) {
+        if (entry.getBaseUrl() == null) {
+          throw new JclException( "non-URL accessible resource" );
         }
-        if (jarEntryContents.get( name ) != null) {
-            try {
-                return new URL( baseUrl.toString() + name );
-            } catch (MalformedURLException e) {
-                throw new JclException( e );
-            }
+        try {
+          return new URL( entry.getBaseUrl().toString() + name );
+        } catch (MalformedURLException e) {
+          throw new JclException( e );
         }
+      }
 
-        return null;
+      return null;
     }
 
     /**
      * @param name
      * @return byte[]
      */
-    public byte[] getResource(String name) {
-        return jarEntryContents.get( name );
+    public JclJarEntry getResource(String name) {
+      JclJarEntry entry = jarEntryContents.get(name);
+      return entry;
     }
 
     /**
@@ -119,7 +122,13 @@ public class JarResources {
      * @return Map
      */
     public Map<String, byte[]> getResources() {
-        return Collections.unmodifiableMap( jarEntryContents );
+      Map<String, byte[]> resourcesAsBytes = new HashMap<String, byte[]>(jarEntryContents.size());
+      
+      for (Map.Entry<String, JclJarEntry> entry : jarEntryContents.entrySet()) {
+        resourcesAsBytes.put(entry.getKey(), entry.getValue().getResourceBytes());
+      }
+
+      return resourcesAsBytes;
     }
 
     /**
@@ -134,11 +143,10 @@ public class JarResources {
         FileInputStream fis = null;
         try {
             File file = new File( jarFile );
-            baseUrl = "jar:" + file.toURI().toString() + "!/";
+            String baseUrl = "jar:" + file.toURI().toString() + "!/";
             fis = new FileInputStream( file );
-            loadJar( fis );
+            loadJar( baseUrl, fis, getProtectionDomain(file.toURI().toURL()) );
         } catch (IOException e) {
-            baseUrl = null;
             if (logger.isLoggable( Level.FINEST ))
               logger.finest( "error on : " + jarFile );
             throw new JclException( e );
@@ -163,11 +171,10 @@ public class JarResources {
 
         InputStream in = null;
         try {
-            baseUrl = "jar:" + url.toString() + "!/";
+            String baseUrl = "jar:" + url.toString() + "!/";
             in = url.openStream();
-            loadJar( in );
+            loadJar(baseUrl, in, getProtectionDomain(url) );
         } catch (IOException e) {
-            baseUrl = null;
             if (logger.isLoggable( Level.FINEST ))
               logger.finest( "error on: " + url.toString() );
             throw new JclException( e );
@@ -182,10 +189,27 @@ public class JarResources {
     }
 
     /**
+        * Loads protection domain for specified jar. The domain is not loaded from the jar itself but it is derived from parent protection domain.
+        * 
+        * @param aURL jar url
+        * @return
+        */
+    protected ProtectionDomain getProtectionDomain(URL aURL) {
+      ProtectionDomain parentDomain = getClass().getProtectionDomain();
+      CodeSource csParent = parentDomain.getCodeSource();
+      Certificate[] certParent = csParent.getCertificates();
+      CodeSource csChild = (certParent == null ? new CodeSource(aURL, csParent.getCodeSigners()) : new CodeSource(aURL, certParent));
+      ProtectionDomain pdChild = new ProtectionDomain(csChild, parentDomain.getPermissions(), parentDomain.getClassLoader(), parentDomain.getPrincipals());
+      return pdChild;
+    }
+         
+    /**
      * Load the jar contents from InputStream
+     * @param baseUrl 
+     * @param protectionDomain 
      * 
      */
-    public void loadJar(InputStream jarStream) {
+    public void loadJar(String baseUrl, InputStream jarStream, ProtectionDomain p) {
 
         BufferedInputStream bis = null;
         JarInputStream jis = null;
@@ -226,7 +250,11 @@ public class JarResources {
                 }
 
                 // add to internal resource HashMap
-                jarEntryContents.put( jarEntry.getName(), out.toByteArray() );
+                JclJarEntry entry = new JclJarEntry();
+                entry.setBaseUrl(baseUrl);
+                entry.setResourceBytes(out.toByteArray());
+                entry.setProtectionDomain(p);
+                jarEntryContents.put( jarEntry.getName(), entry );
 
                 if (logger.isLoggable( Level.FINEST ))
                     logger.finest( jarEntry.getName() + ": size=" + out.size() + " ,csize="

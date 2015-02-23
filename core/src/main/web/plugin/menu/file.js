@@ -31,6 +31,15 @@ define(function(require, exports, module) {
       tooltip: "Open a new empty notebook, add the languages of your choice"
     },
     {
+      name: "New Beaker window",
+      sortorder: 105,
+      id: "new-beaker-window-menuitem",
+      action: function() {
+        window.open('/beaker', '_blank');
+      },
+      tooltip: "Open a new browser tab or window to work on more than one notebook at the same time"
+    },
+    {
       name: "Open",
       id: "open-menuitem",
       sortorder: 110

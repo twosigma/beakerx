@@ -168,7 +168,7 @@ public class JarClassLoader extends AbstractClassLoader {
     public void add(InputStream jarStream) {
       if (logger.isLoggable(Level.FINEST))
         logger.finest("Adding input stream");
-      classpathResources.loadJar( jarStream );
+      classpathResources.loadJar( null, jarStream, null );
     }
 
     /**
@@ -189,7 +189,7 @@ public class JarClassLoader extends AbstractClassLoader {
      * @param className
      * @return byte[]
      */
-    protected byte[] loadClassBytes(String className) {
+    protected JclJarEntry loadClassBytes(String className) {
         className = formatClassName( className );
 
         return classpathResources.getResource( className );
@@ -260,7 +260,7 @@ public class JarClassLoader extends AbstractClassLoader {
         @Override
         public Class loadClass(String className, boolean resolveIt) {
             Class result = null;
-            byte[] classBytes;
+            JclJarEntry classBytes;
 
             result = classes.get( className );
             if (result != null) {
@@ -274,7 +274,7 @@ public class JarClassLoader extends AbstractClassLoader {
                 return null;
             }
 
-            result = defineClass( className, classBytes, 0, classBytes.length );
+            result = defineClass( className, classBytes.getResourceBytes(), 0, classBytes.getResourceBytes().length, classBytes.getProtectionDomain() );
 
             if (result == null) {
                 return null;
@@ -300,12 +300,12 @@ public class JarClassLoader extends AbstractClassLoader {
 
         @Override
         public InputStream loadResource(String name) {
-            byte[] arr = classpathResources.getResource( name );
+            JclJarEntry arr = classpathResources.getResource( name );
             if (arr != null) {
                 if (logger.isLoggable( Level.FINEST ))
                     logger.finest( "Returning newly loaded resource " + name );
 
-                return new ByteArrayInputStream( arr );
+                return new ByteArrayInputStream( arr.getResourceBytes() );
             }
 
             return null;
@@ -341,9 +341,9 @@ public class JarClassLoader extends AbstractClassLoader {
      * 
      * @return Map
      */
-    public Map<String, byte[]> getLoadedResources() {
-        return classpathResources.getResources();
-    }
+//    public Map<String, byte[]> getLoadedResources() {
+//        return classpathResources.getResources();
+//    }
 
     /**
      * @return Local JCL ProxyClassLoader

@@ -108,7 +108,10 @@ public class ClasspathResources extends JarResources {
                 if (logger.isLoggable( Level.FINEST ))
                     logger.finest( "Loading resource: " + entryName );
 
-                jarEntryContents.put( entryName, content );
+                JclJarEntry entry = new JclJarEntry();
+                entry.setBaseUrl(resource);
+                entry.setResourceBytes(content);
+                jarEntryContents.put( entryName, entry );                
             }
         } catch (IOException e) {
             throw new JclException( e );
@@ -161,7 +164,10 @@ public class ClasspathResources extends JarResources {
             if (logger.isLoggable( Level.FINEST ))
                 logger.finest( "Loading remote resource." );
 
-            jarEntryContents.put( url.toString(), content );
+            JclJarEntry entry = new JclJarEntry();
+            entry.setResourceBytes(content);
+            jarEntryContents.put( url.toString(), entry );    
+            
         } catch (IOException e) {
             throw new JclException( e );
         } finally {
@@ -212,7 +218,9 @@ public class ClasspathResources extends JarResources {
                 if (logger.isLoggable( Level.FINEST ))
                     logger.finest( "Loading class: " + entryName );
 
-                jarEntryContents.put( entryName, content );
+                JclJarEntry entry = new JclJarEntry();
+                entry.setResourceBytes(content);
+                jarEntryContents.put( entryName, entry ); 
             }
         } catch (IOException e) {
             throw new JclException( e );

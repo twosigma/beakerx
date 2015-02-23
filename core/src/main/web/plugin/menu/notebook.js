@@ -91,7 +91,7 @@ define(function(require, exports, module) {
           }
         },
         {
-          name: "Vim (limited support)",
+          name: "Vim",
           sortorder: 120,
           id: "vim-edit-mode-menuitem",
           isChecked: function () {

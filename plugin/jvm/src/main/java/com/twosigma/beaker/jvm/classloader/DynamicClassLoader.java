@@ -45,8 +45,7 @@ public class DynamicClassLoader {
         parent.getLocalLoader().setOrder(20);
         parent.getCurrentLoader().setOrder(30);
         parent.getParentLoader().setOrder(40); 
-        parent.getThreadLoader().setOrder(50);
-        parent.getSystemLoader().setOrder(60);
+        parent.getSystemLoader().setOrder(50);
         if(dir!=null && !dir.isEmpty()) {
           getProxy().setOrder(10);
           parent.addLoader(getProxy());

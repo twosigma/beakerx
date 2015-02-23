@@ -71,7 +71,6 @@ public abstract class AbstractClassLoader extends ClassLoader {
     private final ProxyClassLoader systemLoader = new SystemLoader();
     private final ProxyClassLoader parentLoader = new ParentLoader();
     private final ProxyClassLoader currentLoader = new CurrentLoader();
-    private final ProxyClassLoader threadLoader = new ThreadContextLoader();
 
     /**
      * Build a new instance of AbstractClassLoader.java.
@@ -94,7 +93,6 @@ public abstract class AbstractClassLoader extends ClassLoader {
         loaders.add(systemLoader);
         loaders.add(parentLoader);
         loaders.add(currentLoader);
-        loaders.add(threadLoader);
     }
 
     public void addLoader(ProxyClassLoader loader) {
@@ -397,64 +395,6 @@ public abstract class AbstractClassLoader extends ClassLoader {
         }
     }
 
-    /**
-     * Current class loader
-     * 
-     */
-    class ThreadContextLoader extends ProxyClassLoader {
-        private final Logger logger = Logger.getLogger(ThreadContextLoader.class.getName());
-
-        public ThreadContextLoader() {
-            order = 40;
-            enabled = true;
-        }
-
-        @Override
-        public Class loadClass(String className, boolean resolveIt) {
-            Class result;
-            try {
-                result = Thread.currentThread().getContextClassLoader().loadClass(className);
-            } catch (ClassNotFoundException e) {
-                return null;
-            }
-
-            if (logger.isLoggable(Level.FINEST))
-                logger.finest("Returning class " + className + " loaded with thread context classloader");
-
-            return result;
-        }
-
-        @Override
-        public InputStream loadResource(String name) {
-            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
-
-            if (is != null) {
-                if (logger.isLoggable(Level.FINEST))
-                    logger.finest("Returning resource " + name + " loaded with thread context classloader");
-
-                return is;
-            }
-
-            return null;
-        }
-
-        @Override
-        public URL findResource(String name) {
-            URL url = Thread.currentThread().getContextClassLoader().getResource(name);
-
-            if (url != null) {
-                if (logger.isLoggable(Level.FINEST))
-                    logger.finest("Returning resource " + name + " loaded with thread context classloader");
-
-                return url;
-            }
-
-            return null;
-        }
-
-    }
-
-
     public ProxyClassLoader getSystemLoader() {
         return systemLoader;
     }
@@ -465,10 +405,6 @@ public abstract class AbstractClassLoader extends ClassLoader {
 
     public ProxyClassLoader getCurrentLoader() {
         return currentLoader;
-    }
-
-    public ProxyClassLoader getThreadLoader() {
-        return threadLoader;
     }
 
 }

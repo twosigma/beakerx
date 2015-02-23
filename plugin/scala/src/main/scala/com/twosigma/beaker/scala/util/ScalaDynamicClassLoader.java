@@ -23,9 +23,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.xeustechnologies.jcl.ProxyClassLoader;
-
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
+import com.twosigma.beaker.jvm.classloader.ProxyClassLoader;
 
 public class ScalaDynamicClassLoader extends DynamicClassLoader {
   protected final ScalaLoaderProxy glp = new ScalaLoaderProxy();

@@ -73,4 +73,14 @@ Beaker's full source code and documentation is available under the
 Apache 2.0 license.  Beaker's sharing feature uses a server with its
 own [repository](https://github.com/twosigma/beaker-sharing-server).
 
+##Contributing
 
+We welcome developers to extend and improve Beaker in ways that can
+benefit everyone. In order for us to accept your code or pull request,
+we need for you to fill out and send back to us a signed copy of the
+[Contributor License Agreement](http://beakernotebook.com/cla.zip).
+
+We're also looking to expand our full-time, NYC-based engineering team
+by two positions.  Especially high priority is our need for a
+[front-end web developer](http://www.twosigma.com/careers/position/935.html),
+but also hiring [full-stack](http://www.twosigma.com/careers/position/936.html).

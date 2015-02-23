@@ -395,7 +395,7 @@
     module.directive('bkoError', function() {
         return {
             restrict: "E",
-            template: "<div class='outline error'></div><pre class='out_error'>" +
+            template: "<pre class='out_error'>" +
             "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
             "<span></span></pre>" +
             "<pre ng-show='expanded'><span></span>" +

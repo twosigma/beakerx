@@ -34,11 +34,11 @@
 </div>
 <div class="modal-footer fixed">
    <div class=text-left>Enter a file path (e.g. /Users/...) or URL (e.g. http://...):</div>
-   <p><input id="openFileInput" class="form-control" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>
+   <p><input class="form-control" ng-model="getStrategy().input" ng-keypress="getStrategy().close($event, close)" focus-start /></p>
    <span style="float:left;" ng-if="getStrategy().ext === undefined">
      <input type="checkbox" style="vertical-align:top;" ng-model="getStrategy().treeViewfs.applyExtFilter">
      <span ng-click="getStrategy().treeViewfs.applyExtFilter = !getStrategy().treeViewfs.applyExtFilter">show ${ extension } files only</span>
    </span>
-   <button ng-click="close()" class="beaker-btn">Cancel</button>
-   <button ng-click="close(getStrategy().getResult())" class="beaker-btn active modal-submit">{{ getStrategy().closebtn || 'Open'}}</button>
+   <button ng-click="close()" class="btn btn-default">Cancel</button>
+   <button ng-click="close(getStrategy().getResult())" class="btn btn-primary modal-submit">{{ getStrategy().closebtn || 'Open'}}</button>
 </div>

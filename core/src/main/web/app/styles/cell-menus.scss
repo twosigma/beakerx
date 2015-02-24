@@ -16,31 +16,16 @@
 
 .bkcell bk-new-cell-menu {
     display: block;
-
-    .dropdown-toggle {
-        opacity: 0;
-        transition: opacity, 300ms;
-    }
+    opacity: 0;
+    transition: opacity, 300ms;
 
     &:hover {
-        .dropdown-toggle {
-            opacity: 1;
-        }
+        opacity: 1;
     }
 }
 
 bk-new-cell-menu {
-  .dropdown-toggle {
-    text-decoration: none;
-  }
-  .shift-right {
-    margin-left: 1px;
-  }
-}
-
-.dropdown-toggle {
-    color:      #3f5264;
-    font-size:  13px;
+    margin: 10px 0;
 }
 
 .locked .toggle-menu {

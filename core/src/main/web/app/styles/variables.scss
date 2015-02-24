@@ -20,8 +20,7 @@
  */
 $screen-xs: 1px; $screen-sm: 2px; $screen-md: 3px;
 
-$font-family-primary: 'pt_sansregular', Helvetica, sans-serif;
-$font-family-primary-bold: 'pt_sansbold', Helvetica, sans-serif;
+$font-family-sans-serif: 'pt-sans', Helvetica, sans-serif;
 
 $highlight-blue: #39a9ed;
 $cell-border: #CCC;
@@ -29,3 +28,34 @@ $font-grey: #7E7E7E;
 $green: #73be3b;
 $error_red: #AF061B;
 $warning_yellow: #DBDB55;
+
+$border-radius-base: 0;
+$border-radius-large: 0;
+$border-radius-small: 0;
+
+$navbar-height: 38px;
+$navbar-inverse-bg: #3f5264;
+$navbar-default-bg: #eff2f8;
+$navbar-default-link-color: #3f5264;
+$navbar-default-link-hover-color: #fff;
+$navbar-default-link-active-color: #fff;
+$navbar-default-link-hover-bg: #39a9ed;
+$navbar-default-link-active-bg: #39a9ed;
+
+$dropdown-link-hover-color: #fff;
+$dropdown-link-hover-bg: $highlight-blue;
+
+$modal-backdrop-bg: #a3a3a3;
+$modal-backdrop-opacity: 0.5;
+$modal-title-padding: 25px;
+$modal-inner-padding: 25px;
+
+$padding-base-vertical: 8px;
+$padding-base-horizontal: 19px;
+$padding-xs-vertical: 1px;
+
+$btn-default-color: #000;
+$btn-default-bg: #f1f1f1;
+$btn-default-border: $cell-border;
+$btn-primary-color: #FFF;
+$btn-primary-bg: $highlight-blue;

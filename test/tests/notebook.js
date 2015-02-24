@@ -17,14 +17,14 @@
 var BeakerPageObject = require('./beaker.po.js');
 describe('notebook', function () {
   var originalTimeout = 0;
-  
+
   beakerPO = new BeakerPageObject();
 
   beforeAll(function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
   });
-  
+
   it('can load', function() {
     beakerPO.newEmptyNotebook.click();
     expect(browser.getTitle()).toEqual('New Notebook');
@@ -32,7 +32,7 @@ describe('notebook', function () {
 
   it('can add a cell', function () {
     beakerPO.insertCellButton.click();
-    expect(beakerPO.runCellButton.isDisplayed()).toBe(true);
+    expect(beakerPO.evaluateButton.isDisplayed()).toBe(true);
   });
 
   it('can set a cell language to Groovy', function (done) {
@@ -51,7 +51,7 @@ describe('notebook', function () {
 
   it('can enter code into a cell and evaluate it', function (done) {
     beakerPO.setCellInput("1+1");
-    beakerPO.runCellButton.click();
+    beakerPO.evaluateButton.click();
     beakerPO.waitForCellOutput();
     expect(beakerPO.getCellOutput().getText()).toMatch("2");
     done();

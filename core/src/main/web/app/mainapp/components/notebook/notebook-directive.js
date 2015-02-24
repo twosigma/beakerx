@@ -164,11 +164,15 @@
         $scope.showStdOut = true;
         $scope.showStdErr = true;
 
-        $scope.toggleStdOut = function () {
+        $scope.toggleStdOut = function ($event) {
+          if ($event) $event.stopPropagation();
+
           $scope.showStdOut = !$scope.showStdOut;
         };
 
-        $scope.toggleStdErr = function () {
+        $scope.toggleStdErr = function ($event) {
+          if ($event) $event.stopPropagation();
+
           $scope.showStdErr = !$scope.showStdErr;
         };
 

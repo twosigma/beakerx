@@ -24,7 +24,10 @@
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/newcellmenu"](),
-      scope: { config: '=' },
+      scope: {
+        config: '=',
+        size: '@'
+      },
       controller: function($scope) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
         var recentlyAddedLanguage;
@@ -37,12 +40,7 @@
           return levels;
         };
 
-        $scope.newCodeCell = function(evaluatorName, $event) {
-          if ($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-          }
-
+        $scope.newCodeCell = function(evaluatorName) {
           var newCell = newCellFactory.newCodeCell(evaluatorName);
           attachCell(newCell);
         };
@@ -102,12 +100,6 @@
         $scope.$on('cellMapRecreated', function() {
           recentlyAddedLanguage = null;
         });
-      },
-      link: function(scope, element, attrs) {
-        scope.moveMenu = function(event) {
-          var menu = element.find('.dropdown-menu').first();
-          menu.css("left", bkUtils.getEventOffsetX(0, event));
-        };
       }
     };
   });

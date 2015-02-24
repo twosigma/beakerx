@@ -328,11 +328,6 @@
       },
       // general
       showModalDialog: function(callback, template, strategy) {
-        if (!template) {
-          // use default template
-          template = "./app/template/openmenumodal.html";
-        }
-
         var options = {
           backdrop: true,
           keyboard: true,
@@ -391,13 +386,13 @@
           msgHeader = "Oops...";
         }
         btnText = btnText ? btnText : "Close";
-        btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'active';
+        btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
         var template = "<div class='modal-header'>" +
             "<h1>" + msgHeader + "</h1>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='beaker-btn " + btnClass +"' ng-click='close(\"OK\")'>" + btnText + "</button>" +
+            "   <button class='btn " + btnClass +"' ng-click='close(\"OK\")'>" + btnText + "</button>" +
             "</div>";
         return this.showModalDialog(callback, template);
       },
@@ -419,15 +414,15 @@
         };
         okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
         cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
-        okBtnClass = okBtnClass ? _.isArray(okBtnClass) ? okBtnClass.join(' ') : okBtnClass : '';
-        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : '';
+        okBtnClass = okBtnClass ? _.isArray(okBtnClass) ? okBtnClass.join(' ') : okBtnClass : 'btn-default';
+        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
         var template = "<div class='modal-header'>" +
             "<h1>" + msgHeader + "</h1>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button class='Yes beaker-btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
-            "   <button class='Cancel beaker-btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
+            "   <button class='Yes btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
+            "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },
@@ -451,17 +446,17 @@
         yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
         noBtnTxt = noBtnTxt ? noBtnTxt : "No";
         cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
-        yesBtnClass = yesBtnClass ? _.isArray(yesBtnClass) ? okBtnClass.join(' ') : yesBtnClass : '';
-        noBtnClass = noBtnClass ? _.isArray(noBtnClass) ? noBtnClass.join(' ') : noBtnClass : '';
-        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : '';
+        yesBtnClass = yesBtnClass ? _.isArray(yesBtnClass) ? okBtnClass.join(' ') : yesBtnClass : 'btn-default';
+        noBtnClass = noBtnClass ? _.isArray(noBtnClass) ? noBtnClass.join(' ') : noBtnClass : 'btn-default';
+        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
         var template = "<div class='modal-header'>" +
             "<h1>" + msgHeader + "</h1>" +
             "</div>" +
             "<div class='modal-body'><p>" + msgBody + "</p></div>" +
             '<div class="modal-footer">' +
-            "   <button id='modal-dialog-yes' class='Yes beaker-btn " + yesBtnClass +"' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
-            "   <button id='modal-dialog-no' class='No beaker-btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
-            "   <button id='modal-dialog-cancel' class='Cancel beaker-btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
+            "   <button class='yes btn " + yesBtnClass +"' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
+            "   <button class='no btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
+            "   <button class='cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
             "</div>";
         return this.showModalDialog(close, template);
       },

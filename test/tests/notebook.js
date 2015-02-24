@@ -17,14 +17,14 @@
 var BeakerPageObject = require('./beaker.po.js');
 describe('notebook', function () {
   var originalTimeout = 0;
-  
+
   beakerPO = new BeakerPageObject();
 
   beforeAll(function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
   });
-  
+
   it('can load', function() {
     beakerPO.newEmptyNotebook.click();
     expect(browser.getTitle()).toEqual('New Notebook');

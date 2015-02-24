@@ -188,9 +188,9 @@ define(function(require, exports, module) {
             gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
               return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
-            }, content.evalue);
+            }, IPython.utils.fixConsole(content.evalue));
 
-            evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [content.evalue, trace];
+            evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [IPython.utils.fixConsole(content.evalue), trace];
           } else if (type === "stream") {
             evaluation.outputdata = [];
             if (content.name === "stderr") {

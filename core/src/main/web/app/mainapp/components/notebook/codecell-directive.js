@@ -53,7 +53,13 @@
         }
 
         $scope.isError = function() {
-          var type = $scope.cellmodel.output.result.innertype || $scope.cellmodel.output.result.payload.innertype;
+          if ($scope.cellmodel === undefined || $scope.cellmodel.output === undefined || $scope.cellmodel.output.result === undefined)
+            return false;
+          
+          var type = $scope.cellmodel.output.result.innertype;
+          
+          if (!type && $scope.cellmodel.output.result.payload !== undefined)
+            type = $scope.cellmodel.output.result.payload.innertype;
 
           return type == 'Error';
         }

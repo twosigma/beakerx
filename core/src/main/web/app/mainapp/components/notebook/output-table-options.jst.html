@@ -13,77 +13,60 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="modal-header">
+<div class="modal-header fixed" style="height: 69px"><!-- height linked to modal-body padding-top  -->
   <h1>Table Options</h1>
 </div>
-<div class="modal-body">
-  <div class="dropdown dtmenu" ng-if="renderMenu()">
-    <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">
-      Edit
-    </a>
-    <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel">
-      <li ng-repeat="menuidx in getEditMenuIdx">
-        <a tabindex="-1" href="#" ng-click="doEditMenu(menuidx)" id="edit-{{menuidx}}-menuitem" eat-click>
-          {{ getEditMenuNam[menuidx] }}
-        </a>
-      </li>
-    </ul>
+<div class="modal-body fixed modal-large" style="padding-top: 69px; padding-bottom: 68px;"><!-- padding linked to modal-header/-footer heights  -->
+  <div class="row">
+    <div class="col-xs-4">
+      <h2>Edit</h2>
+      <button ng-repeat="menuidx in getEditMenuIdx" class="btn btn-link" ng-click="doEditMenu(menuidx)">
+        {{ getEditMenuNam[menuidx] }}
+      </button>
+    </div>
+    <div class="col-xs-4">
+      <h2>Sort</h2>
+      <button class="btn btn-link" ng-click="doClearSort()">
+        Reset Sort
+      </button>
+    </div>
+    <div class="col-xs-4">
+      <h2>Export</h2>
+      <button class="btn btn-link" ng-click="doCSVExport(false)">
+        All as CSV
+      </button>
+      <button class="btn btn-link" ng-click="doCSVExport(true)">
+        Selected as CSV
+      </button>
+    </div>
   </div>
-  <div class="dropdown dtmenu" ng-if="renderMenu()">
-    <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">
-      Show/Hide
-    </a>
-    <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel2">
-      <li ng-repeat="menuidx in getCellMenuIdx">
-        <a tabindex="-1" href="#" ng-click="doCellMenu(menuidx)" id="show-{{menuidx}}-menuitem" eat-click>
-          {{ getCellMenuNam[menuidx] }}
-          <i class="fa fa-check" ng-show="getCellMenuSho[menuidx]"></i>
-        </a>
-      </li>
-    </ul>
+  <div class="row">
+    <div class="col-xs-3">
+      <h2>Show Columns</h2>
+    </div>
+    <div class="col-xs-9">
+      <div class="col-xs-4" ng-repeat="menuidx in getCellMenuIdx" ng-click="doCellMenu(menuidx)">
+        <input type="checkbox" ng-checked="getCellMenuSho[menuidx]"/>
+        {{ getCellMenuNam[menuidx] }}
+      </div>
+    </div>
   </div>
-  <div class="dropdown dtmenu" ng-if="renderMenu()">
-    <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">
-      Display as
-    </a>
-    <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel3">
-      <li ng-repeat="menuidx in getDisplayMenuIdx">
-        <a tabindex="-1" href="#" ng-click="doDisplayMenu(menuidx)" id="display-{{menuidx}}-menuitem" eat-click>
+  <div class="row">
+    <div class="col-xs-3">
+      <h2>Display Type</h2>
+    </div>
+    <div class="col-xs-9 form-horizontal">
+      <div class="form-group" ng-repeat="menuidx in getDisplayMenuIdx">
+        <label class="col-xs-4 control-label">
           {{ getDisplayMenuNam[menuidx] }}
-          <select ng-model="getDisplayMenuVal[menuidx]" ng-change="updateDisplay(menuidx)"><option ng-repeat="item in getDisplayMenuOpt[menuidx]" value="item.type">{{ item.name }}</option></select>
-          <select ng-model="getDisplayMenuVal[menuidx]" ng-change="updateDisplay(menuidx)" ng-options="item.type as item.name for item in getDisplayMenuOpt[menuidx]"></select>
-        </a>
-      </li>
-    </ul>
+        </label>
+        <div class="col-xs-8">
+          <select class="form-control" ng-model="getDisplayMenuVal[menuidx]" ng-change="updateDisplay(menuidx)" ng-options="item.type as item.name for item in getDisplayMenuOpt[menuidx]"></select>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="dropdown dtmenu" ng-if="renderMenu()">
-    <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">
-      Sort
-    </a>
-    <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel4">
-      <li>
-        <a tabindex="-1" href="#" ng-click="doClearSort()" id="clrsort-menuitem" eat-click>
-          Reset Sort
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="dropdown dtmenu" ng-if="renderMenu()">
-    <a class=" dropdown-toggle dtmenu" data-toggle="dropdown">
-      Export
-    </a>
-    <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel5">
-      <li>
-        <a tabindex="-1" href="#" ng-click="doCSVExport(false)" id="export-menuitem" eat-click>
-          All as CSV
-        </a>
-        <a tabindex="-1" href="#" ng-click="doCSVExport(true)" id="export-menuitem" eat-click>
-          Selected as CSV
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="modal-footer">
-    <button class="beaker-btn active" ng-click='closeOptionsDialog()'>Close</button>
-  </div>
+</div>
+<div class="modal-footer fixed" style="height: 68px;"> <!-- height linked to modal-body padding-bottom -->
+  <button class="beaker-btn active" ng-click='closeOptionsDialog()'>Close</button>
 </div>

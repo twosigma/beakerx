@@ -184,7 +184,7 @@
         $scope.getCellMenuSho =  [];
         $scope.refreshCellMenu = function() {
           $scope.getCellMenuIdx =  [0];
-          $scope.getCellMenuNam =  ['Show all'];
+          $scope.getCellMenuNam =  ['All'];
           $scope.getCellMenuSho =  [true];
           if ($scope.table === undefined)
             return;
@@ -192,7 +192,7 @@
           var order = $scope.colreorg.fnOrder();
           for(i=1; i<$scope.columns.length; i++) {
             $scope.getCellMenuIdx.push(i);
-            $scope.getCellMenuNam.push('Show col '+$scope.columns[order[i]].title);
+            $scope.getCellMenuNam.push($scope.columns[order[i]].title);
             $scope.getCellMenuSho.push($scope.table.column(order[i]).visible());
             if (!$scope.table.column(order[i]).visible()) {
               $scope.getCellMenuSho[0] = false;
@@ -343,7 +343,7 @@
           for(i=1; i<$scope.columns.length; i++) {
             $scope.getDisplayMenuIdx.push(i-1);
             $scope.getDisplayMenuVal.push($scope.actualtype[order[i]]);
-            $scope.getDisplayMenuNam.push($scope.columns[order[i]].title +' as ');
+            $scope.getDisplayMenuNam.push($scope.columns[order[i]].title);
             if ($scope.types) {
               if ($scope.types[order[i]-1] === 'string') {
                 $scope.getDisplayMenuOpt.push($scope.allStringTypes);
@@ -378,6 +378,7 @@
             keyboard: true,
             backdropClick: true,
             scope: $scope,
+            windowClass: 'output-table-options',
             template: JST['mainapp/components/notebook/output-table-options']()
           }
 

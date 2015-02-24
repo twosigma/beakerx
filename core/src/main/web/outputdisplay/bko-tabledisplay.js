@@ -244,7 +244,6 @@
             // WARNING: the only good solution is to use flash
             window.prompt("Copy to clipboard:", out);
           }
-          console.log(idx);
         };
 
         $scope.getCellMenuIdx =  [];
@@ -595,7 +594,6 @@
         scope.state = {};
         var savedstate = scope.model.getDumpState();
         if (savedstate !== undefined && savedstate.datatablestate !== undefined ) {
-          console.log('restoring state');
           scope.state = savedstate.datatablestate.datatable;
           scope.typestate = savedstate.datatablestate.typestate;
           scope.colstate = savedstate.datatablestate.colstate;

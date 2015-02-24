@@ -29,6 +29,9 @@
       getChildren: function(uri, callback) {
         _provider.getChildren(uri, callback);
       },
+      fillInput: function(uri) {
+        _provider.fillInput(uri);
+      },
       open: function(uri) {
         _provider.open(uri);
       }
@@ -79,7 +82,7 @@
   treeView.directive("treeNode", function() {
     return {
       restrict: 'E',
-      template: "<span ng-click='click()'><i class='{{ getIcon() }}'></i> <span>{{ getDisplayName() }}</span></span>" +
+      template: "<span ng-dblclick='dblClick()' ng-click='click()'><i class='{{ getIcon() }}'></i> <span>{{ getDisplayName() }}</span></span>" +
           "<div class='pushright'>" +
           "<div ng-include='\"treeNodeChildren.html\"'></div>" +
           "</div>",
@@ -100,7 +103,7 @@
             if (!_.string.endsWith(uri, '/')) {
               uri = uri + '/';
             }
-            $scope.fs.open(uri);
+            $scope.fs.fillInput(uri);
             // toggle
             if (!_.isEmpty($scope.data.children)) {
               $scope.data.children.splice(0, $scope.data.children.length);
@@ -121,9 +124,13 @@
               });
             }
           } else {
-            // open
-            $scope.fs.open($scope.data.uri);
+            $scope.fs.fillInput($scope.data.uri);
           }
+        };
+        $scope.dblClick = function() {
+          if ($scope.data.type === 'directory') return;
+
+          $scope.fs.open($scope.data.uri);
         };
         $scope.getIcon = function() {
           if ($scope.data.type === "directory") {

@@ -503,21 +503,28 @@
           }
         }
 
+        if (modelOutput.result === undefined) {
+          console.log("WARNING: this should not happen - your plugin javascript is broken!");
+          setupProgressOutput(modelOutput);
+        }
+        
         // now update payload (if needed)
         if (evaluation.payload !== undefined && modelOutput.result !== undefined && modelOutput.result.object !== undefined) {
           modelOutput.result.object.payload = evaluation.payload;
         }
 
-        if (modelOutput.result.object.payload === undefined) {
-          if (modelOutput.result.object.outputdata.length > 0) {
-            modelOutput.result.object.payload = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : undefined };
+        if (modelOutput.result.object !== undefined) {
+          if (modelOutput.result.object.payload === undefined) {
+            if (modelOutput.result.object.outputdata.length > 0) {
+              modelOutput.result.object.payload = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : undefined };
+            }
+          } else if (modelOutput.result.object.payload.type === "Results") {
+            modelOutput.result.object.payload.outputdata = modelOutput.result.object.outputdata;
+          } else if (modelOutput.result.object.outputdata.length > 0) {
+            modelOutput.result.object.payload = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : modelOutput.result.object.payload };
           }
-        } else if (modelOutput.result.object.payload.type === "Results") {
-          modelOutput.result.object.payload.outputdata = modelOutput.result.object.outputdata;
-        } else if (modelOutput.result.object.outputdata.length > 0) {
-          modelOutput.result.object.payload = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : modelOutput.result.object.payload };
         }
-
+        
         if (evaluation.status === "FINISHED") {
           if (evaluation.payload === undefined) {
             if (modelOutput.result.object.payload !== undefined && modelOutput.result.object.payload.type === "Results")

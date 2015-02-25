@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.Exception;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
 import java.nio.file.Paths;
@@ -77,6 +78,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String hash;
   private final String gist_server;
   private final String sharing_server;
+  private final JSONObject prefs;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
@@ -130,6 +132,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
         this.sharing_server = (String)obj.get("sharing_server");
     else
         this.sharing_server = "http://sharing.beakernotebook.com/gist/anonymous";
+    this.prefs = obj;
     
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
     final String mainDefaultNotebookPath = this.dotDir + "/config/default.bkr";
@@ -368,5 +371,18 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getSharingServerUrl() {
     return this.sharing_server;      
+  }
+
+  @Override
+  public String getPluginPath(String plugin) {
+    String result = null;
+    try {
+      JSONObject plugins = (JSONObject) this.prefs.get("plugins");
+      JSONObject pprefs = (JSONObject) plugins.get(plugin);
+      result = (String) pprefs.get("path");
+    } catch (Exception e) {
+      // ignore
+    }
+    return result;
   }
 }

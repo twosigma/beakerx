@@ -146,6 +146,7 @@ public class PluginServiceLocatorRest {
   private final Map<String, PluginConfig> plugins = new HashMap<>();
   private Process nginxProc;
   private int portSearchStart;
+  private BeakerConfig config;
 
   private static String[] listToArray(List<String> lst) {
     return lst.toArray(new String[lst.size()]);
@@ -177,6 +178,7 @@ public class PluginServiceLocatorRest {
     this.pluginArgs = new HashMap<>();
     this.outputLogService = outputLogService;
     this.encoder = new Base64();
+    this.config = bkConfig;
     this.nginxTemplate = utils.readFile(this.nginxDir + "/nginx.conf.template");
     if (nginxTemplate == null) {
       throw new RuntimeException("Cannot get nginx template");
@@ -288,12 +290,48 @@ public class PluginServiceLocatorRest {
 
   private boolean internalEnvar(String var) {
     String [] vars = {"beaker_plugin_password",
+                      "beaker_plugin_path",
                       "beaker_tmp_dir",
                       "beaker_core_password"};
     for (int i = 0; i < vars.length; i++)
       if (var.startsWith(vars[0] + "="))
         return true;
     return false;
+  }
+
+  private String[] buildEnv(String pluginId, String password) {
+    String[] env = this.pluginEnvps.get(pluginId);
+    List<String> envList = new ArrayList<>();
+    if (env != null) {
+      for (int i = 0; i < env.length; i++) {
+        if (!internalEnvar(env[i]))
+          envList.add(env[i]);
+      }
+    } else {
+      for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
+        if (!internalEnvar(entry.getKey() + "="))
+          envList.add(entry.getKey() + "=" + entry.getValue());
+      }
+    }
+    if (password != null) {
+      envList.add("beaker_plugin_password=" + password);
+    }
+    envList.add("beaker_core_password=" + this.corePassword);
+    envList.add("beaker_core_port=" + corePort);
+    envList.add("beaker_tmp_dir=" + this.nginxServDir);
+    String plugPath = this.config.getPluginPath(pluginId);
+    if (null != plugPath) {
+      for (int i = 0; i < envList.size(); i++) {
+        String path = "PATH=";
+        if (envList.get(i).startsWith(path)) {
+          envList.set(i, path + plugPath + ":" + envList.get(i).substring(path.length()));
+          System.out.println("XXX prepended path: " + envList.get(i));
+        }
+      }
+    }
+    env = new String[envList.size()];
+    envList.toArray(env);
+    return env;
   }
 
   /**
@@ -379,26 +417,8 @@ public class PluginServiceLocatorRest {
       }
 
       fullCommand.add(Integer.toString(pConfig.port));
-          
-      String[] env = this.pluginEnvps.get(pluginId);
-      List<String> envList = new ArrayList<>();
-      if (env != null) {
-        for (int i = 0; i < env.length; i++) {
-          if (!internalEnvar(env[i]))
-            envList.add(env[i]);
-        }
-      } else {
-        for (Map.Entry<String, String> entry: System.getenv().entrySet()) {
-          if (!internalEnvar(entry.getKey() + "="))
-            envList.add(entry.getKey() + "=" + entry.getValue());
-        }
-      }
-      envList.add("beaker_plugin_password=" + password);
-      envList.add("beaker_core_password=" + this.corePassword);
-      envList.add("beaker_core_port=" + corePort);
-      envList.add("beaker_tmp_dir=" + this.nginxServDir);
-      env = new String[envList.size()];
-      envList.toArray(env);
+
+      String[] env = buildEnv(pluginId, password);
 
       if (windows()) {
         fullCommand.add(0, "python");
@@ -550,7 +570,7 @@ public class PluginServiceLocatorRest {
   {
     List<String> cmdBase = pythonBaseCommand(pluginId, command);
     cmdBase.add("--hash");
-    Process proc = Runtime.getRuntime().exec(listToArray(cmdBase));
+    Process proc = Runtime.getRuntime().exec(listToArray(cmdBase), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-hash", null, null).start();
@@ -701,9 +721,9 @@ public class PluginServiceLocatorRest {
     if (windows()) {
       // XXX use ipythonPlugin --version, like generateIPythonConfig does
       String cmd2 = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
-      proc = Runtime.getRuntime().exec(cmd2);
+      proc = Runtime.getRuntime().exec(cmd2, buildEnv(pluginId, null));
     } else {
-      proc = Runtime.getRuntime().exec(listToArray(cmd));
+      proc = Runtime.getRuntime().exec(listToArray(cmd), buildEnv(pluginId, null));
     }
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-version", null, null).start();

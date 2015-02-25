@@ -31,3 +31,16 @@
     display: none !important;
   }
 }
+
+.btn-group.new-cell {
+  .btn-xs {
+    line-height: 1em;
+
+    &.dropdown-toggle {
+      padding: 2px 6px 0 !important;
+    }
+    &.insert-cell {
+      padding-top: 4px;
+    }
+  }
+}

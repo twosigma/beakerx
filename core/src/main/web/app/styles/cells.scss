@@ -18,12 +18,8 @@
 @import "cell-errors";
 @import "cell-outputs";
 
-.bkcell {
-    margin-bottom:  10px;
-
-    .CodeMirror {
-        background: transparent;
-    }
+.bkcell .CodeMirror {
+    background: transparent;
 }
 
 bk-markdown-cell > div {

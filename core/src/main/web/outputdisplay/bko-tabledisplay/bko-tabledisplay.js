@@ -118,7 +118,7 @@
   beaker.bkoDirective('Table', ["bkCellMenuPluginManager", "bkUtils", '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
     var CELL_TYPE = "bko-tabledisplay";
     return {
-      template: JST['mainapp/components/notebook/output-table'],
+      template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $modal) {
 
         $scope.id = "table_" + bkUtils.generateId(6);
@@ -131,6 +131,7 @@
           $scope.model.resetShareMenuItems(newItems);
         });
 
+        // CSV support functions
         $scope.convertToCSV = function(data) {
           var i, j;
           var out = "";
@@ -154,88 +155,6 @@
           return out;
         };
 
-        $scope.renderMenu = function() {
-          return $scope.table !== undefined;
-        };
-
-        $scope.getEditMenuIdx =  [0, 1, 2, 3];
-        $scope.getEditMenuNam =  ['Select All', 'Deselect All', 'Reverse Selection', 'Copy to Clipboard'];
-        $scope.doEditMenu = function(idx) {
-          if ($scope.table === undefined)
-            return;
-
-          if (idx==0) {
-            $scope.table.rows().nodes().to$().removeClass("selected");
-            $scope.table.rows().nodes().to$().addClass("selected");
-          } else if(idx==1) {
-            $scope.table.rows().nodes().to$().removeClass("selected");
-          } else if(idx==2) {
-            $scope.table.rows().nodes().to$().toggleClass("selected");
-          } else if(idx==3) {
-            var data = $scope.table.rows(".selected").data();
-            var out = $scope.convertToCSV(data);
-            // WARNING: the only good solution is to use flash
-            window.prompt("Copy to clipboard:", out);
-          }
-        };
-
-        $scope.getCellMenuIdx =  [];
-        $scope.getCellMenuNam =  [];
-        $scope.getCellMenuSho =  [];
-        $scope.refreshCellMenu = function() {
-          $scope.getCellMenuIdx =  [0];
-          $scope.getCellMenuNam =  ['All'];
-          $scope.getCellMenuSho =  [true];
-          if ($scope.table === undefined)
-            return;
-          var i;
-          var order = $scope.colreorg.fnOrder();
-          for(i=1; i<$scope.columns.length; i++) {
-            $scope.getCellMenuIdx.push(i);
-            $scope.getCellMenuNam.push($scope.columns[order[i]].title);
-            $scope.getCellMenuSho.push($scope.table.column(order[i]).visible());
-            if (!$scope.table.column(order[i]).visible()) {
-              $scope.getCellMenuSho[0] = false;
-            }
-          }
-        };
-        $scope.doCellMenu = function(idx) {
-          if ($scope.table === undefined)
-            return;
-
-          if (idx==0) {
-            for(idx = 1; idx<$scope.getCellMenuSho.length; idx++) {
-              $scope.table.column(idx).visible( true, false );
-              $scope.getCellMenuSho[idx] = true;
-            }
-            $scope.getCellMenuSho[0] = true;
-            $scope.table.columns.adjust().draw( false );
-            return;
-          }
-          var order = $scope.colreorg.fnOrder();
-          if ($scope.getCellMenuSho[idx]) {
-            $scope.table.column(idx).visible( false );
-            $scope.getCellMenuSho[idx] = false;
-            $scope.getCellMenuSho[0] = false;
-          } else {
-            $scope.table.column(idx).visible( true );
-            $scope.getCellMenuSho[idx] = true;
-            $scope.getCellMenuSho[0] = true;
-            for (idx=1; idx<$scope.getCellMenuSho.length; idx++) {
-              if (!$scope.getCellMenuSho[idx]) {
-                $scope.getCellMenuSho[0] = false;
-                break;
-              }
-            }
-          }
-        };
-
-        $scope.doClearSort = function() {
-          if ($scope.table === undefined)
-            return;
-          $scope.table.order( [ 0, 'asc' ] ).draw();
-        };
-
         $scope.doCSVExport = function(all) {
           var data;
           if (!all)
@@ -253,11 +172,92 @@
             return bkHelper.saveFile(n,out);
           } , "Select name for CSV file to save", "csv");
         };
-
-        $scope.getDisplayMenuIdx =  [];
-        $scope.getDisplayMenuNam =  [];
-        $scope.getDisplayMenuVal =  [];
-        $scope.getDisplayMenuOpt =  [];
+        
+        // these are the menu actions
+        $scope.doResetSort = function() {
+          if ($scope.table === undefined)
+            return;
+          $scope.table.order( [ 0, 'asc' ] ).draw();
+        };
+        $scope.doSelectAll = function(idx) {
+          if ($scope.table === undefined)
+            return;
+          $scope.table.rows().nodes().to$().removeClass("selected");
+          $scope.table.rows().nodes().to$().addClass("selected");
+        }
+        $scope.doDeselectAll = function(idx) {
+          if ($scope.table === undefined)
+            return;
+          $scope.table.rows().nodes().to$().removeClass("selected");
+        }
+        $scope.doReverseSelection = function(idx) {
+          if ($scope.table === undefined)
+            return;
+          $scope.table.rows().nodes().to$().toggleClass("selected");
+        }
+        $scope.doCopyToClipboard = function(idx) {
+          if ($scope.table === undefined)
+            return;
+          var data = $scope.table.rows(".selected").data();
+          var out = $scope.convertToCSV(data);
+          // WARNING: the only good solution is to use flash
+          window.prompt("Copy to clipboard:", out);
+        }
+                
+        $scope.getCellIdx      =  [];
+        $scope.getCellNam      =  [];
+        $scope.getCellSho      =  [];
+        $scope.getCellDisp     =  [];
+        $scope.getCellDispOpts =  [];
+        
+        $scope.getCellDispOptsF = function(i) {
+          return $scope.getCellDispOpts[i];
+        };
+                
+        $scope.displayAll = function() {
+          var i;
+          for(i=0; i<$scope.getCellSho.length; i++) {
+            $scope.getCellSho[i] = true;
+          }
+        };        
+        
+        $scope.refreshCells = function() {
+          $scope.getCellIdx      =  [];
+          $scope.getCellNam      =  [];
+          $scope.getCellSho      =  [];
+          $scope.getCellDisp     =  [];
+          $scope.getCellDispOpts =  [];
+          
+          if ($scope.table === undefined)
+            return;
+          
+          var i;
+          for(i=1; i<$scope.columns.length; i++) {
+            $scope.getCellIdx.push(i-1);
+            var order = $scope.colorder[i];
+            $scope.getCellNam.push($scope.columns[order].title);
+            $scope.getCellSho.push($scope.table.column(order).visible());
+            $scope.getCellDisp.push($scope.actualtype[order-1]);
+            if ($scope.types) {
+              if ($scope.types[order-1] === 'string') {
+                $scope.getCellDispOpts.push($scope.allStringTypes);
+              } else if ($scope.types[order-1] === 'double') {
+                $scope.getCellDispOpts.push($scope.allDoubleTypes);
+              } else if ($scope.types[order-1] === 'integer') {
+                $scope.getCellDispOpts.push($scope.allIntTypes);
+              } else if ($scope.types[order-1] === 'boolean') {
+                $scope.getCellDispOpts.push($scope.allBoolTypes);
+              } else {
+                $scope.getCellDispOpts.push($scope.allStringTypes);
+              }
+            } else {
+              $scope.getCellDispOpts.push($scope.allTypes);
+            }
+          }
+        };
+        
+        $scope.renderMenu     = false;
+        
         $scope.allTypes = [ { type: 0, name: 'string'},
                             { type: 1, name: 'integer'},
                             { type: 2, name: 'formatted integer'},
@@ -330,48 +330,6 @@
         $scope.allBoolTypes = [ { type: 0, name: 'string'},
                                 { type: 8, name: 'boolean'} ];
 
-
-        $scope.refreshDisplayMenu = function() {
-          $scope.getDisplayMenuIdx =  [];
-          $scope.getDisplayMenuNam =  [];
-          $scope.getDisplayMenuVal =  [];
-          $scope.getDisplayMenuOpt =  [];
-          if ($scope.table === undefined)
-            return;
-          var i;
-          var order = $scope.colreorg.fnOrder();
-          for(i=1; i<$scope.columns.length; i++) {
-            $scope.getDisplayMenuIdx.push(i-1);
-            $scope.getDisplayMenuVal.push($scope.actualtype[order[i]]);
-            $scope.getDisplayMenuNam.push($scope.columns[order[i]].title);
-            if ($scope.types) {
-              if ($scope.types[order[i]-1] === 'string') {
-                $scope.getDisplayMenuOpt.push($scope.allStringTypes);
-              } else if ($scope.types[order[i]-1] === 'double') {
-                $scope.getDisplayMenuOpt.push($scope.allDoubleTypes);
-              } else if ($scope.types[order[i]-1] === 'integer') {
-                $scope.getDisplayMenuOpt.push($scope.allIntTypes);
-              } else if ($scope.types[order[i]-1] === 'boolean') {
-                $scope.getDisplayMenuOpt.push($scope.allBoolTypes);
-              } else {
-                $scope.getDisplayMenuOpt.push($scope.allStringTypes);
-              }
-            } else {
-              $scope.getDisplayMenuOpt.push($scope.allTypes);
-            }
-          }
-        };
-        $scope.updateDisplay = function(idx) {
-          var order = $scope.colreorg.fnOrder();
-          $scope.doDestroy(false);
-          $scope.actualtype[order[idx+1]] = $scope.getDisplayMenuVal[idx];
-          $scope.doCreateTable();
-        }
-
-        $scope.closeOptionsDialog = function() {
-          $scope.modal.close();
-        }
-
         $scope.openOptionsDialog = function() {
           var options = {
             backdrop: true,
@@ -379,19 +337,43 @@
             backdropClick: true,
             scope: $scope,
             windowClass: 'output-table-options',
-            template: JST['mainapp/components/notebook/output-table-options']()
+            template: JST['bko-tabledisplay/output-table-options']()
           }
-
+          $scope.getCellShoOld   = $scope.getCellSho.slice(0);
+          $scope.getCellDispOld  = $scope.getCellDisp.slice(0);
           $scope.modal = $modal.open(options);
-        }
+        };
+        
+        $scope.closeOptionsDialog = function() {
+          $scope.modal.close();
+          var i;
+          
+          for (i=0; i<$scope.getCellDisp.length; i++) {
+            if (($scope.getCellDisp[i] !== $scope.getCellDispOld[i]) || ($scope.getCellSho[i] !== $scope.getCellShoOld[i])) {            
+              $scope.doDestroy(false);
+              // update table display
+              for (i=0; i<$scope.getCellDisp.length; i++) {
+                $scope.actualtype[$scope.colorder[i+1]-1] = $scope.getCellDisp[i];
+              }
+              $scope.doCreateTable();
+            }
+          }
+        };
 
+        $scope.cancelOptionsDialog = function() {
+          $scope.modal.close();
+          scope.refreshCells();
+        };
       },
       link: function(scope, element, attrs) {
         scope.doDestroy = function(all) {
           if (scope.table) {
+            $(scope.id + ' tbody').off('click');
             scope.table.destroy();
             delete scope.table;
             delete scope.colreorg;
+            delete scope.state;
+            scope.renderMenu = false;
           }
           if (all) {
             delete scope.timeStrings;
@@ -435,12 +417,10 @@
           // compute how to display columns (remind: dummy column to keep server ordering)
           if (scope.typestate !== undefined) {
             // we have a display state to recover
-            // TODO
             scope.actualtype = scope.typestate;
             scope.typestate  = undefined;
           }
           if (scope.actualtype.length === 0) {
-            scope.actualtype.push(0);
             for (i=0; i<scope.columnNames.length; i++) {
               if (scope.columnNames[i] === "time" || (scope.types !== undefined && scope.types[i] === 'time')) {
                 scope.actualtype(7);
@@ -470,26 +450,31 @@
           scope.data = data;
           scope.doCreateTable();
         };
+        
         scope.doCreateTable = function() {
           var cols = [];
           var i;
 
           // build configuration
           cols.push({ "title" : scope.id, "visible" : false });
+          
           for (i=0; i<scope.columnNames.length; i++) {
-            var type = scope.actualtype[i+1];
+            var type = scope.actualtype[i];
             var col = {
                 "title" : scope.columnNames[i]
             };
             if (scope.allConverters[type] !== undefined) {
               col.render = scope.allConverters[type];
             }
+            if (scope.getCellSho !== undefined)
+              col.visible = scope.getCellSho[i];
             cols.push(col);
           }
           scope.columns = cols;
 
           var id = '#' + scope.id;
           var init = {
+              "destroy" : true,
               "data": scope.data,
               "columns": scope.columns,
               "stateSave": true,
@@ -520,16 +505,20 @@
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear
             scope.table = $(id).DataTable(init);
-            scope.colreorg = new $.fn.dataTable.ColReorder( scope.table, {
+            scope.renderMenu = true;
+            scope.colreorg = new $.fn.dataTable.ColReorder( $(id), {
               "fnReorderCallback": function () {
-                scope.refreshCellMenu();
-                scope.refreshDisplayMenu();
+                scope.colorder = scope.colreorg.fnOrder().slice(0);
+                scope.refreshCells();
                 scope.$digest();
               },
               "iFixedColumns": 1
              } );
-            scope.refreshCellMenu();
-            scope.refreshDisplayMenu();
+            if (scope.colorder !== undefined)
+              scope.colreorg.fnOrder(scope.colorder);
+            else
+              scope.colorder = scope.colreorg.fnOrder().slice(0);
+            scope.refreshCells();
 
             $(id + ' tbody').on( 'click', 'tr', function () {
               $(this).toggleClass('selected');
@@ -545,19 +534,19 @@
         var savedstate = scope.model.getDumpState();
         if (savedstate !== undefined && savedstate.datatablestate !== undefined ) {
           scope.state = savedstate.datatablestate.datatable;
-          scope.typestate = savedstate.datatablestate.typestate;
-          scope.colstate = savedstate.datatablestate.colstate;
+          scope.typestate = savedstate.datatablestate.typestate.slice(0);
+          scope.colstate = savedstate.datatablestate.colstate.slice(0);
         }
 
         scope.$on("$destroy", function() {
           scope.doDestroy(true);
         });
 
-        scope.$watch('getDumpState()', function(result) {
-          if (result !== undefined && result.tablestate === undefined) {
-            scope.model.setDumpState({ datatablestate: { datatable : scope.state, typestate : scope.actualtypes, colstate : scope.columnNames } });
-          }
-        });
+//        scope.$watch('getDumpState()', function(result) {
+//          if (result !== undefined && result.datatablestate === undefined) {
+//            scope.model.setDumpState({ datatablestate: { datatable : scope.state, typestate : scope.actualtypes.slice(0), colstate : scope.columnNames.slice(0) } });
+//          }
+//        });
 
         scope.getCellModel = function() {
           return scope.model.getCellModel();

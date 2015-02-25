@@ -17,8 +17,13 @@
 /* Our typeface makes vertical alignment... well, not so good,
    so let's help it along a little bit by adjusting padding. */
 .btn-xs {
-  padding-top: $padding-xs-vertical + 1;
+  padding-top: $padding-xs-vertical + 2;
   padding-bottom: $padding-xs-vertical - 1;
+  // correct font-awesome (not our typeface)
+  .fa {
+    position: relative;
+    top: -2px;
+  }
 }
 
 .text-danger {

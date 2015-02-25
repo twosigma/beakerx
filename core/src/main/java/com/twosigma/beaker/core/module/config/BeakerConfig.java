@@ -195,4 +195,10 @@ public interface BeakerConfig {
    */
   public String getSharingServerUrl();
 
+  /**
+   * Path to find a backend.
+   * @return
+   */
+  public String getPluginPath(String plugin);
+
 }

@@ -49,8 +49,8 @@ bk-markdown-cell > div {
 }
 
 .text-cell {
-    padding: 20px;
-    padding-top: 40px;
+    padding: $grid-row-height $grid-gutter-width;
+    padding-top: $grid-row-height*2;
 }
 
 .locked {
@@ -63,7 +63,7 @@ bk-markdown-cell > div {
     float:          left;
     z-index:        99;
     position:       relative;
-    padding-bottom: 20px;
+    padding-bottom: $grid-row-height;
 }
 
 bk-cell > .bkcell {
@@ -72,7 +72,7 @@ bk-cell > .bkcell {
 
 bk-section-cell, bk-text-cell {
     display: block;
-    padding: 20px 0;
+    padding: $grid-row-height 0;
 }
 
 bk-text-cell div[contenteditable]{
@@ -80,18 +80,18 @@ bk-text-cell div[contenteditable]{
 }
 
 .bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
-    margin-top: -20px;
+    margin-top: -$grid-row-height;
 }
 
 .code-cell-area {
     .code-cell-input {
-        padding: 40px 20px 20px;
+        padding: $grid-row-height*2 $grid-gutter-width $grid-row-height;
 
         .advanced-mode & {
-            padding-top: 20px;
+            padding-top: $grid-row-height;
 
             &.input-hidden {
-                padding-top: 40px;
+                padding-top: $grid-row-height*2;
             }
         }
 
@@ -101,7 +101,7 @@ bk-text-cell div[contenteditable]{
     }
 
     .code-cell-output {
-        padding: 20px;
+        padding: $grid-row-height $grid-gutter-width;;
         position: relative;
         border-top: solid 1px #CCC;
 
@@ -145,7 +145,7 @@ bk-output-display pre {
 }
 
 .code-cell-hidden {
-    padding-top: 20px;
+    padding-top: $grid-row-height;
 }
 
 bk-cell .section > .toggle-menu {

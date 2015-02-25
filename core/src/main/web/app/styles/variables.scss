@@ -20,7 +20,14 @@
  */
 $screen-xs: 1px; $screen-sm: 2px; $screen-md: 3px;
 
+$grid-column-width: 60px;
+$grid-gutter-width: 20px;
+$grid-row-height: 18px;
+
 $font-family-sans-serif: 'pt-sans', Helvetica, sans-serif;
+$font-size-base: 14px;
+
+$line-height-base: $grid-row-height / $font-size-base;
 
 $highlight-blue: #39a9ed;
 $cell-border: #CCC;

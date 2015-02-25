@@ -46,8 +46,8 @@ bk-new-cell-menu {
 }
 
 .toggle-menu {
-    top:        20px;
-    right:      20px;
+    top: $grid-row-height;
+    right: $grid-gutter-width;
     z-index:    10;
     position:   absolute;
 }

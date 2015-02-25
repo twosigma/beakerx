@@ -75,7 +75,7 @@ ul.cell-output-labels {
 }
 
 .bkcell a.evaluate-script {
-    margin-top: 20px;
+    margin-top: $grid-row-height;
 }
 
 .bkcell .CodeMirror {

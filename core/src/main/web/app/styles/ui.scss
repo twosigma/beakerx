@@ -35,7 +35,7 @@
 }
 
 label, input, button, select, textarea {
-  font-size: 14px;
+  font-size: $font-size-base;
   font-weight: normal;
   line-height: $grid-row-height;
 }

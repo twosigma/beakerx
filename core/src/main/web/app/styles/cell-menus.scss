@@ -26,6 +26,10 @@
 
 bk-new-cell-menu {
     margin: 15px 0;
+
+    .advanced-mode & {
+      margin: 0;
+    }
 }
 
 .new-cell {

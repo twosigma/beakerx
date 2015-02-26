@@ -13,12 +13,13 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="btn-group new-cell">
+<div class="btn-group new-cell" ng-class="last && 'last'">
   <button ng-click="newCodeCell(defaultEvaluator())" class="btn btn-primary insert-cell" ng-class="size && 'btn-'+size">
     Insert {{defaultEvaluator()}} Cell
   </button>
   <button class="btn btn-primary dropdown-toggle" ng-class="size && 'btn-'+size" data-toggle="dropdown">
-    <i class="fa fa-sort-down"></i>
+    <i class="fa fa-sort-down" ng-class="!last && 'advanced-hide'"></i>
+    <span ng-if="!last" class="plus advanced-only">+</span>
   </button>
   <ul class="dropdown-menu" role="menu">
     <li class="dropdown-submenu">

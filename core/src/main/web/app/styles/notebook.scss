@@ -32,6 +32,11 @@
   }
 }
 
+.advanced-mode :not(.base-menu-add) bk-new-cell-menu {
+  position: relative;
+  left: -$grid-gutter-width - 4px;
+}
+
 .btn-group.new-cell {
   .btn-xs {
     line-height: 1em;
@@ -41,6 +46,33 @@
     }
     &.insert-cell {
       padding-top: 4px;
+    }
+  }
+  .plus {
+    font-size: 21px;
+  }
+  .advanced-mode :not(.base-menu-add) & {
+    &::after {
+      $height: 4px;
+      content: "";
+      display: inline-block;
+      position: absolute;
+      right: -10px;
+      top: 50%;
+      margin-top: -$height;
+      z-index: 0;
+      height: 0;
+      border-top: $height solid transparent;
+      border-bottom: $height solid transparent;
+      border-left: $height+1px solid $highlight-blue;
+    }
+
+    .insert-cell {
+      display: none;
+    }
+
+    .dropdown-toggle {
+      padding: 4px 4px 0 !important;
     }
   }
 }

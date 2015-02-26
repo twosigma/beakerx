@@ -388,6 +388,10 @@ public class DefaultBeakerConfig implements BeakerConfig {
     return result;
   }
 
+  public Object getPluginPrefs() {
+    return this.prefs.get("plugins");
+  }
+
   private void augmentPluginOptions() {
     try {
       Map<String, JSONObject> plugins = (Map<String, JSONObject>) this.prefs.get("plugins");

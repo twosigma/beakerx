@@ -8,6 +8,7 @@ var htmlClass = require('html-classer-gulp');
 var importCss = require('gulp-import-css');
 var Path      = require('path');
 var debug     = require('gulp-debug');
+var runSequence = require('gulp-run-sequence');
 var stripCssComments = require('gulp-strip-css-comments');
 var stripJsComments = require('gulp-strip-comments');
 var header = require('gulp-header');
@@ -42,17 +43,18 @@ var jslist = [
   "src/vendor/flotr2/flotr2.js",
   "src/vendor/bower_components/big.js/big.js",
   "src/vendor/bower_components/jquery/jquery.js",
-  "src/vendor/bower_components/datatables/media/js/jquery.dataTables.js",
+  "src/vendor/DataTables-1.10.5/media/js/jquery.dataTables.js",
   "src/vendor/bower_components/jquery-file-upload/js/vendor/jquery.ui.widget.js",
   "src/vendor/bower_components/jquery-file-upload/js/jquery.fileupload.js",
-  "src/vendor/ColVis-1.1.1/js/dataTables.colVis.js",
-  "src/vendor/ColReorder-1.1.2/js/dataTables.colReorder.js",
-  "src/vendor/Responsive-1.0.1/js/dataTables.responsive.js",
-  "src/vendor/TableTools-2.2.3/js/dataTables.tableTools.js",
+  "src/vendor/DataTables-1.10.5/extensions/FixedColumns/js/dataTables.fixedColumns.js",
+  "src/vendor/DataTables-1.10.5/extensions/ColReorder/js/dataTables.colReorder.js",
+
   "src/vendor/bower_components/angular/angular.js",
   "src/vendor/bower_components/ngstorage/ngStorage.js",
   "src/vendor/bower_components/angular-datatables/dist/angular-datatables.js",
   "src/vendor/bower_components/angular-route/angular-route.js",
+  "src/vendor/bower_components/angular-touch/angular-touch.js",
+  "src/vendor/bower_components/angular-mocks/angular-mocks.js",
   "src/vendor/bower_components/angular-animate/angular-animate.js",
   "src/vendor/bower_components/codemirror/lib/codemirror.js",
   "src/vendor/bower_components/codemirror/addon/hint/show-hint.js",
@@ -89,18 +91,18 @@ var jslist = [
   "src/vendor/moment/moment.min.js",
   "src/vendor/moment/moment-timezone.js",
   "src/vendor/moment/moment-timezone-data.js",
+  "src/vendor/zeroclipboard-2.2.0/dist/ZeroClipboard.js",
   "src/vendor/bower_components/requirejs/require.js"
 ];
 
 var bkjslist = [
-  "src/main/web/app/dist/templates.js",
+  "src/main/web/app/temp/templates.js",
   "src/main/web/app/controlpanel/controlpanel.js",
   "src/main/web/app/controlpanel/controlpanel-directive.js",
   "src/main/web/app/controlpanel/controlpanelsessionitem-directive.js",
   "src/main/web/app/helpers/cellmenupluginmanager.js",
   "src/main/web/app/helpers/core.js",
   "src/main/web/app/helpers/debug.js",
-  "src/main/web/app/helpers/datatables.js",
   "src/main/web/app/helpers/evaluatepluginmanager.js",
   "src/main/web/app/helpers/helper.js",
   "src/main/web/app/helpers/menupluginmanager.js",
@@ -151,7 +153,7 @@ var outdispcsslist = [
 var outdispjslist = [
  "src/vendor/bower_components/d3/d3.js",
 
- "src/main/web/outputdisplay/bko-tabledisplay.js",
+ "src/main/web/outputdisplay/bko-tabledisplay/bko-tabledisplay.js",
  
  "src/main/web/outputdisplay/bko-image.js",
  
@@ -271,7 +273,28 @@ gulp.task("watchBeakerTemplates", function() {
   gulp.watch(watchPath, ["compileBeakerTemplates"])
 });
 
-gulp.task("watch", ["watchBeakerScss", "watchBeakerTemplates"]);
+gulp.task("watchSingleCss", function() {
+  gulp.watch(csslist, ["buildSingleCss"]);
+});
+
+gulp.task("watchSingleVendorJs", function() {
+  gulp.watch(jslist, ["buildSingleVendorJs"]);
+});
+
+gulp.task("watchSingleBeakerJs", function() {
+  gulp.watch(bkjslist, ["buildSingleBeakerJs"]);
+});
+
+gulp.task("watchSingleOutDispCss", function() {
+  gulp.watch(outdispcsslist, ["buildSingleOutDispCss"]);
+});
+
+gulp.task("watchSingleOutDispJs", function() {
+  gulp.watch(outdispjslist, ["buildSingleOutDispJs"]);
+});
+
+
+gulp.task("watch", ["watchBeakerScss", "watchBeakerTemplates", "watchSingleCss", "watchSingleVendorJs", "watchSingleBeakerJs", "watchSingleOutDispCss", "watchSingleOutDispJs"]);
 gulp.task("compile", function(callback) {
   runSequence("compileBeakerScss",
       "compileBeakerTemplates",

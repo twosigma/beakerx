@@ -73,6 +73,11 @@ task updatePackagesFont(type: Copy) {
     into 'src/main/web/app/fonts/'
 }
 
+task updatePackagesFont2(type: Copy) {
+    from 'src/vendor/bower_components/bootstrap-sass/assets/fonts/bootstrap/'
+    into 'src/main/web/app/fonts/'
+}
+
 task updatePackages(type: Copy) {
     from 'src/vendor/bower_components/datatables/media/images/'
     into 'src/main/web/app/images/'
@@ -117,6 +122,7 @@ compileCss.dependsOn extractPackages
 updatePackagesFont.dependsOn bowerInstall
 updatePackagesFont.dependsOn zipPackages
 updatePackages.dependsOn updatePackagesFont
+updatePackages.dependsOn updatePackagesFont2
 build.dependsOn extractPackages
 build.dependsOn compileCss
 run.dependsOn bowerInstall

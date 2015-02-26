@@ -134,19 +134,28 @@
         // CSV support functions
         $scope.convertToCSV = function(data) {
           var i, j;
-          var out = "";
-
-          for(j=1; j<$scope.columns.length; j++) {
-            if (j>1)
+          var out = '';
+          // TODO
+          for(i=1; i<$scope.columns.length; i++) {
+            var order = $scope.colorder[i];
+            if (!$scope.table.column(order).visible())
+              continue;
+            if (out !== '')
               out = out + '\t';
-            out = out + '"' + $scope.columns[j].title.replace(/"/g, '""') + '"';
+            out = out + '"' + $scope.columns[order].title.replace(/"/g, '""') + '"';
           }
           out = out + '\n';
 
           for(i=0; i<data.length; i++) {
             var row = data[i];
-            for(j=1; j<row.length; j++) {
-              if (j>1)
+            var some = false;
+            for(j=1; j<$scope.columns.length; j++) {
+              var order = $scope.colorder[j];
+              if (!$scope.table.column(order).visible())
+                continue;
+              if (!some)
+                some = true;
+              else
                 out = out + '\t';
               out = out + '"' + row[j].replace(/"/g, '""') + '"';
             }
@@ -196,12 +205,7 @@
           $scope.table.rows().nodes().to$().toggleClass("selected");
         }
         $scope.doCopyToClipboard = function(idx) {
-          if ($scope.table === undefined)
-            return;
-          var data = $scope.table.rows(".selected").data();
-          var out = $scope.convertToCSV(data);
-          // WARNING: the only good solution is to use flash
-          window.prompt("Copy to clipboard:", out);
+          // this is handled by the invisible flash movie
         }
                 
         $scope.getCellIdx      =  [];
@@ -406,6 +410,7 @@
         };
       },
       link: function(scope, element, attrs) {
+        
         scope.doDestroy = function(all) {
           if (scope.table) {
             $(scope.id + ' tbody').off('click');
@@ -413,6 +418,8 @@
             scope.table.destroy();
             delete scope.table;
             delete scope.colreorg;
+            scope.clipclient.destroy();
+            delete scope.clipclient;
 //            delete scope.fixcols;
             scope.renderMenu = false;
           }
@@ -431,20 +438,17 @@
 
           var i;
 
-          // validate saved state (if any)
-          if (scope.colstate !== undefined) {
-            if (scope.colstate.length !== model.columnNames.length)
-              scope.colstate = undefined;
+          // validate saved state (if any) by using column \Names
+          if (scope.savedstate !== undefined) {
+            if (scope.savedstate.columnNames.length !== model.columnNames.length)
+              scope.savedstate = undefined;
             else {
-              for(i=0; i<scope.colstate.length; i++) {
-                if (model.columnNames[i] !== scope.colstate[i]) {
-                  scope.colstate = undefined;
+              for(i=0; i<scope.savedstate.columnNames.length; i++) {
+                if (model.columnNames[i] !== scope.savedstate.columnNames[i]) {
+                  scope.savedstate = undefined;
                   break;
                 }
               }
-            }
-            if (scope.colstate === undefined) {
-              scope.typestate = undefined;
             }
           }
 
@@ -453,17 +457,22 @@
           scope.timeStrings = model.timeStrings;
           scope.tz          = model.timeZone;
           scope.types       = model.types;
-          scope.actualtype  = [];
-          scope.actualalign = [];
 
           // compute how to display columns (remind: dummy column to keep server ordering)
-          if (scope.typestate !== undefined) {
+          if (scope.savedstate !== undefined) {
             // we have a display state to recover
-            scope.actualtype = scope.typestate;
-            scope.typestate  = undefined;
+            scope.actualtype  = scope.savedstate.actualtype;
+            scope.actualalign = scope.savedstate.actualalign;
+            scope.colorder    = scope.savedstate.colorder;
+            scope.getCellSho  = scope.savedstate.getCellSho;
+            scope.pagination  = scope.savedstate.pagination;
+            scope.savedstate  = undefined;
           }
+          
           // auto compute types
-          if (scope.actualtype.length === 0) {
+          if (scope.actualtype === undefined || scope.actualtype.length === 0) {
+            scope.actualtype = [];
+            scope.actualalign = [];
             for (i=0; i<scope.columnNames.length; i++) {
               if (scope.columnNames[i] === "time" || (scope.types !== undefined && scope.types[i] === 'time')) {
                 scope.actualtype.push(7);
@@ -596,28 +605,62 @@
               $(this).toggleClass('selected');
               event.stopPropagation();
             } );
+            
           },0);
         }
 
+        scope.menuToggle = function() {
+          if (scope.clipclient === undefined) {
+              scope.clipclient = new ZeroClipboard( );
+              var d = document.getElementById(scope.id + '_dt_copy');
+              
+              scope.clipclient.clip( d );
+              
+              scope.clipclient.on( "copy", function (event) {
+                var clipboard = event.clipboardData;
+                var data = scope.table.rows(".selected").data();
+                if (data === undefined || data.length === 0) {
+                  data = scope.table.rows().data();
+                }
+                var out = scope.convertToCSV(data);
+  
+                clipboard.setData( "text/plain", out );
+              });
+          }
+        }
+        
         scope.getDumpState = function() {
           return scope.model.getDumpState();
         };
 
         var savedstate = scope.model.getDumpState();
         if (savedstate !== undefined && savedstate.datatablestate !== undefined ) {
-          scope.typestate = savedstate.datatablestate.typestate.slice(0);
-          scope.colstate = savedstate.datatablestate.colstate.slice(0);
+          scope.savedstate = savedstate.datatablestate;
         }
 
         scope.$on("$destroy", function() {
           scope.doDestroy(true);
         });
 
-//        scope.$watch('getDumpState()', function(result) {
-//          if (result !== undefined && result.datatablestate === undefined) {
-//            scope.model.setDumpState({ datatablestate: { datatable : scope.state, typestate : scope.actualtypes.slice(0), colstate : scope.columnNames.slice(0) } });
-//          }
-//        });
+        scope.$watch('getDumpState()', function(result) {
+          if (result !== undefined && result.datatablestate === undefined) {
+            var state = {
+                'pagination'  : scope.pagination
+            };
+            if (scope.columnNames !== undefined)
+              state.columnNames = scope.columnNames.slice(0);
+            if (scope.actualtypes !== undefined)
+              state.actualtypes = scope.actualtypes.slice(0);
+            if (scope.actualalign !== undefined)
+              state.actualalign = scope.actualalign.slice(0);
+            if (scope.colorder !== undefined)
+              state.colorder = scope.colorder.slice(0);
+            if (scope.getCellSho !== undefined)
+              state.getCellSho = scope.getCellSho;
+            
+            scope.model.setDumpState({ datatablestate: state });
+          }
+        });
 
         scope.getCellModel = function() {
           return scope.model.getCellModel();

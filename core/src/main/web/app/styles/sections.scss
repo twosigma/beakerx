@@ -51,28 +51,38 @@
   top: -2px;
 }
 
-.section1 {
-  font-size: 30px;
-}
-
-.section2 {
+.section1, h1 {
   font-size: 26px;
+  line-height: 26px;
+  font-weight: normal;
 }
 
-.section3 {
-  font-size: 24px;
-}
-
-.section4 {
-  font-size: 22px;
-}
-
-.section5 {
-  font-size: 20px;
-}
-
-.section6 {
+.section2, h2 {
   font-size: 18px;
+  line-height: 20px;
+  font-weight: normal;
+}
+
+.section3, h3 {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.section4, h4 {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: normal;
+  text-decoration: uppercase;
+}
+
+.section5, h5 {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.section6, h6 {
+  font-size: 13px;
+  line-height: 18px;
 }
 
 .modal-header h1 {

@@ -25,10 +25,6 @@
 bk-markdown-cell > div {
     border:      solid 1px $cell-border;
     padding-top: 30px;
-
-    &.focused, &:hover {
-        border: solid 1px $highlight-blue;
-    }
 }
 
 .mini-cell-stats {

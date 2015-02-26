@@ -22,33 +22,6 @@ bk-code-cell-output {
   .ui-state-default {
     background: rgb(235, 235, 235);
   }
-
-  .slick-header-column, .slick-cell, .slick-headerrow-column {
-    text-align:   center;
-    font-family:  pt_sansregular;
-  }
-
-  .slick-header-column.ui-state-default {
-    height: 14px;
-  }
-
-  .slick-cell {
-    border-right-color: $cell-border;
-    border-right-style: solid;
-    border-bottom-color: $cell-border;
-
-    &.r0 {
-      border-left: solid 1px $cell-border;
-    }
-  }
-
-  .slick-column-name {
-    margin-left: -9px;
-  }
-
-  .slick-header-column:first-child {
-    border-left: solid 1px $cell-border;
-  }
 }
 
 .advanced-mode bk-output-display[type="Html"] {

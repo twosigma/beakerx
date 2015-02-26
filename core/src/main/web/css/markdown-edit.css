@@ -14,15 +14,10 @@
   font-style: normal;
 }
 
-html { padding-left: 20px; }
-
 body {
   border:0;
 	font-family: 'pt_sansregular', Helvetica, sans-serif;
 	font-size:13px;
-	padding-top:10px;
-	padding-bottom:10px;
 	line-height:1.6;
   margin:0;
-  padding:5px 0;
 }

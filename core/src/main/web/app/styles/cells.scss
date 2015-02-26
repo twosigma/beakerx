@@ -22,11 +22,6 @@
     background: transparent;
 }
 
-.markdown-wrapper {
-    border: solid 1px $cell-border;
-    padding: 35px 0 25px 0;
-}
-
 .mini-cell-stats {
     top: 22px;
     left: 20px;
@@ -40,13 +35,12 @@
     line-height: 25px;
 }
 
-.bkcell.code-cell-area, .text-cell {
+.markdown-wrapper, .bkcell.code-cell-area, .text-wrapper {
     border: solid 1px $cell-border;
 }
 
-.text-cell {
-    padding: $grid-row-height $grid-gutter-width;
-    padding-top: $grid-row-height*2;
+.markdown-wrapper, .text-cell {
+    padding: $grid-row-height*2 $grid-gutter-width*3 $grid-row-height $grid-gutter-width;
 }
 
 .locked {
@@ -66,7 +60,7 @@ bk-cell > .bkcell {
     position: relative;
 }
 
-bk-section-cell, bk-text-cell {
+bk-section-cell {
     display: block;
     padding: $grid-row-height 0;
 }

@@ -157,6 +157,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.pluginOptions = pref.getPluginOptions();
     this.pluginEnvps = new HashMap<>();
 
+    augmentPluginOptions();
+
     this.publicServer = pref.getPublicServer();
     this.noPasswordAllowed = pref.getNoPasswordAllowed();
     this.authCookie = RandomStringUtils.random(40, true, true);
@@ -384,5 +386,17 @@ public class DefaultBeakerConfig implements BeakerConfig {
       // ignore
     }
     return result;
+  }
+
+  private void augmentPluginOptions() {
+    try {
+      Map<String, JSONObject> plugins = (Map<String, JSONObject>) this.prefs.get("plugins");
+      for (Map.Entry<String, JSONObject> entry: plugins.entrySet()) {
+        String options = (String) entry.getValue().get("options");
+        this.pluginOptions.put(entry.getKey(), options);
+      }
+    } catch (Exception e) {
+      // ignore
+    }
   }
 }

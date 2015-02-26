@@ -21,7 +21,7 @@
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
 
     function initializeEditor(scope, element, attrs) {
-      var div = element.find("div").first().get()[0];
+      var div = element.find(".epiceditor")[0];
       var options = {
         basePath: 'vendor/epiceditor',
         container: div,

@@ -149,7 +149,7 @@ bk-output-display pre {
 }
 
 bk-cell .section > .toggle-menu {
-    margin-top: -4px;
+    top: $grid-row-height;
 }
 
 .toggle-menu {

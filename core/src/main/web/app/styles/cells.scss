@@ -65,8 +65,8 @@ bk-section-cell {
     padding: $grid-row-height 0;
 }
 
-bk-text-cell div[contenteditable]{
-    margin-top: 5px;
+.editable-text {
+    outline: none;
 }
 
 .bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {

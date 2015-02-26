@@ -400,4 +400,11 @@ public class UtilRest {
     return data;
   }
 
+  @GET
+  @Path("getPluginPrefs")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Object getPluginPrefs() {
+    return bkConfig.getPluginPrefs();
+  }
+
 }

@@ -15,4 +15,6 @@
 -->
 
 <p class='depth-indicator'>{{getFullIndex()}}</p>
-<div contenteditable="{{ isEditable() ? true : false }}" style="min-height: 14px; min-width: 14px;"></div>
+<div class="text-wrapper" ng-click="edit()">
+  <div class="editable-text" contenteditable="{{ isEditable() ? true : false }}" style="min-height: 14px; min-width: 14px;"></div>
+</div>

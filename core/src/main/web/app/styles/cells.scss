@@ -39,7 +39,7 @@
     border: solid 1px $cell-border;
 }
 
-.markdown-wrapper, .text-cell {
+.markdown-wrapper, .text-wrapper {
     padding: $grid-row-height*2 $grid-gutter-width*3 $grid-row-height $grid-gutter-width;
 }
 

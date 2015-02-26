@@ -32,12 +32,15 @@
         };
       },
       link: function(scope, element, attrs) {
-        var titleElement = $(element.find("div").first());
-        element.find('div').html(scope.cellmodel.body);
-        titleElement.bind('blur', function() {
-          scope.cellmodel.body = titleElement.html().trim();
+        var textbox = $(element.find(".editable-text").first());
+        element.find('.editable-text').html(scope.cellmodel.body);
+        textbox.bind('blur', function() {
+          scope.cellmodel.body = textbox.html().trim();
           scope.$apply();
         });
+        scope.edit = function() {
+          textbox.focus();
+        };
         scope.$watch('cellmodel.body', function(newVal, oldVal) {
           if (newVal !== oldVal) {
             bkSessionManager.setNotebookModelEdited(true);

@@ -14,7 +14,7 @@
   font-style: normal;
 }
 
-html { padding:0 10px; }
+html { padding-left: 20px; }
 
 body {
   margin:0;
@@ -26,8 +26,8 @@ body {
 }
 
 #epiceditor-preview{
-	padding-top:10px;
-	padding-bottom:10px;
+	padding-top:5px;
+	padding-bottom:5px;
 	font-family: 'pt_sansregular', Helvetica, sans-serif;
 	font-size:13px;
 	line-height:1.6;

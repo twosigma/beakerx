@@ -537,9 +537,14 @@
         });
         // cellmodel.body <-- CodeMirror
         var changeHandler = function(cm, e) {
-          scope.cellmodel.lineCount = cm.lineCount();
-          scope.cellmodel.input.body = cm.getValue();
-          bkUtils.refreshRootScope();
+          if (scope.cellmodel.input.body !== cm.getValue()) {
+            scope.cellmodel.lineCount = cm.lineCount();
+            scope.cellmodel.input.body = cm.getValue();            
+            if (! bkSessionManager.isNotebookModelEdited()) {
+              bkSessionManager.setNotebookModelEdited(true);
+              bkUtils.refreshRootScope();
+            }
+          }
         };
 
         scope.cm.on("change", changeHandler);

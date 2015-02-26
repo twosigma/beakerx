@@ -135,7 +135,6 @@
         $scope.convertToCSV = function(data) {
           var i, j;
           var out = '';
-          // TODO
           for(i=1; i<$scope.columns.length; i++) {
             var order = $scope.colorder[i];
             if (!$scope.table.column(order).visible())
@@ -418,8 +417,10 @@
             scope.table.destroy();
             delete scope.table;
             delete scope.colreorg;
-            scope.clipclient.destroy();
-            delete scope.clipclient;
+            if (scope.clipclient !== undefined) {
+              scope.clipclient.destroy();
+              delete scope.clipclient;
+            }
 //            delete scope.fixcols;
             scope.renderMenu = false;
           }

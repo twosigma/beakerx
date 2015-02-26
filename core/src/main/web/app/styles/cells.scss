@@ -67,6 +67,9 @@ bk-section-cell {
 
 .editable-text {
     outline: none;
+    // contenteditable requires manual override
+    font: $font-size-base $font-family-sans-serif;
+    line-height: $line-height-base;
 }
 
 .bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {

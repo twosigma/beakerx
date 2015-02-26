@@ -53,12 +53,11 @@ NOTEBOOKCSS=(
     "bower_components/angular-datatables/dist/datatables.bootstrap.css"
     "bower_components/datatables/media/css/jquery.dataTables.css"
     "ColVis-1.1.1/css/dataTables.colVis.min.css"
-    "ColReorder-1.1.2/css/dataTables.colReorder.min.css"  
-    "Responsive-1.0.1/css/dataTables.responsive.css"  
+    "ColReorder-1.1.2/css/dataTables.colReorder.min.css"
+    "Responsive-1.0.1/css/dataTables.responsive.css"
     "TableTools-2.2.3/css/dataTables.tableTools.min.css")
 
 BEAKERCSS=(
-    "css/datatables.css"
     "app/dist/app.css"
     "outputdisplay/bko-plot/bko-plot.css"
     "app/dist/vendor.css"

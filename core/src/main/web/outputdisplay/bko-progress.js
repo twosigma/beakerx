@@ -26,7 +26,11 @@
         scope.elapsed = 0;
         var computeElapsed = function() {
           var now = new Date().getTime();
-          var start = scope.model.getCellModel().startTime;
+          var start;
+          if ( scope.model.getCellModel() !== undefined)
+            start = scope.model.getCellModel().startTime;
+          else
+            start = now;
           scope.elapsed = now - start;
           if (!(scope.$$phase || scope.$root.$$phase)) {
             // we don't execute the $interval within $apply so we have to manually refresh it. This refreshes only this scope.

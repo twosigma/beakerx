@@ -232,17 +232,6 @@ tree-node {
     cursor: pointer;
 }
 
-table.dataTable tbody td {
-    padding: 2px 2px;
-    white-space: nowrap;
-    border-left-style: solid;
-    border-right-style: solid;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-left-color: gray;
-    border-right-color: gray;
-}
-
 .cursor_hand {
     cursor: pointer;
 }
@@ -310,8 +299,18 @@ table.dataTable tbody td {
     white-space: nowrap;
 }
 
-.bko-table-bottom2 {
+.bko-table-selector {
     padding-top: 10px;
-    overflow: hidden;
-    white-space: nowrap;
+    float: left;
+}
+
+.bko-table-pagenum {
+    padding-top: 0px;
+    padding-left: 30px;
+    float: left;
+}
+
+.bko-table-buttons {
+    padding-top: 10px;
+    float: right;
 }

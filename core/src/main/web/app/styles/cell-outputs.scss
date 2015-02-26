@@ -65,3 +65,13 @@ bk-code-cell-output {
 .markdown-wrapper, .dataTables_scrollBody {
   box-sizing: content-box;
 }
+
+.modal.output-table-options {
+  .row {
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    margin: 0;
+  }
+}

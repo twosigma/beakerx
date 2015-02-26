@@ -23,7 +23,7 @@
   window.bkInit.getOutputDisplayJsList = [
       "vendor/bower_components/d3/d3.js",
 
-      "outputdisplay/bko-tabledisplay.js",
+      "outputdisplay/bko-tabledisplay/bko-tabledisplay.js",
 
       // enable this to use the example object container output display
       //"outputdisplay/bko-testcontainer.js",

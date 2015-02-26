@@ -7,6 +7,7 @@ var htmlmin   = require('gulp-htmlmin');
 var htmlClass = require('html-classer-gulp');
 var Path      = require('path');
 var rootPath  = Path.join(__dirname, "/src/main/web/app/");
+var root2Path  = Path.join(__dirname, "/src/main/web/outputdisplay/");
 var buildPath = Path.join(__dirname, "/src/main/web/app/dist");
 
 function handleError(e) {
@@ -21,7 +22,7 @@ gulp.task("compileScss", function() {
 });
 
 gulp.task("compileTemplates", function() {
-  gulp.src(rootPath+ "/**/*.jst.html")
+  gulp.src([rootPath+ "/**/*.jst.html",root2Path+ "/**/*.jst.html"])
   .pipe(htmlClass({klass: "bkr"}))
   .pipe(htmlmin({removeComments: true}))
   .pipe(template({

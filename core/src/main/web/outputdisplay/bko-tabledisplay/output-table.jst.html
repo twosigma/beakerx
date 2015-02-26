@@ -1,0 +1,36 @@
+<!--
+    Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<div style="float: right; width: 50px;">&nbsp;</div>
+<div class="dropdown dtmenu clearfix" ng-if="renderMenu">
+   <a class=" dropdown-toggle dtmenu" data-toggle="dropdown" ng-click="menuToggle()">
+   Table Display 
+   </a>
+   <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel">
+     <li><a tabindex="-1" href="#" ng-click="doResetSort()" id="dt-reset-sort" eat-click>Reset Sort</a></li>
+     <li>&nbsp;</li>
+     <li><a tabindex="-1" href="#" ng-click="doSelectAll()" id="dt-select-all" eat-click>Select All</a></li>
+     <li><a tabindex="-1" href="#" ng-click="doDeselectAll()" id="dt-deselect-all" eat-click>Deselect All</a></li>
+     <li><a tabindex="-1" href="#" ng-click="doReverseSelection()" id="dt-reverse-selection" eat-click>Reverse Selection</a></li>
+     <li>&nbsp;</li>
+     <li><a tabindex="-1" href="#" ng-click="doCopyToClipboard()" id="{{id}}_dt_copy" eat-click>Copy to Clipboard</a></li>
+     <li><a tabindex="-1" href="#" ng-click="doCSVExport(false)" id="dt-save-all" eat-click>Save All as CSV</a></li>
+     <li><a tabindex="-1" href="#" ng-click="doCSVExport(true)" id="dt-save-selected" eat-click>Save Selected as CSV</a></li>
+     <li>&nbsp;</li>
+     <li><a tabindex="-1" href="#" ng-click="openOptionsDialog()" id="dt-options" eat-click>Options...</a></li>
+   </ul>
+ </div>
+
+<table cellpadding="0" class="display" border="0" cellspacing="0" id="{{id}}"></table>

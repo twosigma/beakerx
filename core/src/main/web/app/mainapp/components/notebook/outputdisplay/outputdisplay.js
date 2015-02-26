@@ -19,5 +19,5 @@
  */
 (function() {
   "use strict";
-  var module = angular.module('bk.outputDisplay', ['bk.utils']);
+  var module = angular.module('bk.outputDisplay', ['bk.utils',  'ngAnimate', 'ngTouch']);
 })();

@@ -94,6 +94,9 @@
   var initOutputDisplay = function()
   {
     var deferred = Q.defer();
+    
+    ZeroClipboard.config( { swfPath: "vendor/zeroclipboard-2.2.0/dist/ZeroClipboard.swf", hoverClass: 'dropdown-submenu-flash' } );
+    
     function loadJS(url, success, failure) {
       var e = document.createElement('script');
       e.type = "text/javascript";

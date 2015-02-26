@@ -595,7 +595,7 @@ public class PluginServiceLocatorRest {
     cmd.add("--profile");
     cmd.add(this.nginxServDir);
     cmd.add(pluginId);
-    Runtime.getRuntime().exec(listToArray(cmd)).waitFor();
+    Runtime.getRuntime().exec(listToArray(cmd), buildEnv(pluginId, null)).waitFor();
     String hash = hashIPythonPassword(password, pluginId, command);
     String config = this.ipythonTemplate;
     config = config.replace("%(port)s", Integer.toString(port));

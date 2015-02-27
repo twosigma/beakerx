@@ -55,19 +55,22 @@ body.dragover:after {
   padding-top: 100px;
 }
 
-ul.cell-output-labels {
-    list-style: none;
+.code-cell-output {
+  > h6 {
+    font-size: $font-size-base;
+    font-weight: bold;
     margin: 0;
+  }
+
+  &.error > h6 {
+    color: $error_red;
+  }
 }
 
 .notebook-container {
     padding: 0 30px;
     margin-top: 10px;
     box-sizing: border-box;
-}
-
-.locked .cell-output-labels li {
-    padding-top: 0;
 }
 
 .output_subarea {

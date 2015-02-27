@@ -55,9 +55,9 @@
         $scope.isError = function() {
           if ($scope.cellmodel === undefined || $scope.cellmodel.output === undefined || $scope.cellmodel.output.result === undefined)
             return false;
-          
+
           var type = $scope.cellmodel.output.result.innertype;
-          
+
           if (!type && $scope.cellmodel.output.result.payload !== undefined)
             type = $scope.cellmodel.output.result.payload.innertype;
 
@@ -126,6 +126,13 @@
           }
           return !(result === undefined || result === null);
         };
+
+        $scope.outputTitle = function() {
+          if (!$scope.isShowOutput()) return "Output Hidden";
+
+          return $scope.isError() ? "Error" : "Cell Output";
+        };
+
         $scope.evaluate = function($event) {
           if ($event) $event.stopPropagation();
 

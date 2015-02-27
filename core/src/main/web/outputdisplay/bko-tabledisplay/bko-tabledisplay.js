@@ -143,12 +143,12 @@
               out = out + '\t';
             out = out + '"' + $scope.columns[order].title.replace(/"/g, '""') + '"';
           }
-          out = out + '\n';
+          out = out + '\r\n';
 
           for(i=0; i<data.length; i++) {
             var row = data[i];
             var some = false;
-            for(j=1; j<$scope.columns.length; j++) {
+            for(j=1; j<row.length; j++) {
               var order = $scope.colorder[j];
               if (!$scope.table.column(order).visible())
                 continue;
@@ -156,9 +156,12 @@
                 some = true;
               else
                 out = out + '\t';
-              out = out + '"' + row[j].replace(/"/g, '""') + '"';
+              var d = row[j];
+              if ($scope.columns[order].render !== undefined )
+                d = $scope.columns[order].render(d);
+              out = out + '"' + d.replace(/"/g, '""') + '"';
             }
-            out = out + '\n';
+            out = out + '\r\n';
           }
           return out;
         };

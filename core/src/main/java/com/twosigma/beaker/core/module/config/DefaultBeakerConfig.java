@@ -31,6 +31,7 @@ import java.net.InetAddress;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -400,9 +401,15 @@ public class DefaultBeakerConfig implements BeakerConfig {
     try {
       Map<String, JSONObject> plugins = (Map<String, JSONObject>) this.prefs.get("plugins");
       for (Map.Entry<String, JSONObject> entry: plugins.entrySet()) {
-        String options = (String) entry.getValue().get("options");
+        Object options = entry.getValue().get("options");
         if (options != null) {
-          this.pluginOptions.put(entry.getKey(), options);
+          if (options instanceof String) {
+            this.pluginOptions.put(entry.getKey(), (String) options);
+          } else {
+            for (String o : (List<String>) options) {
+              this.pluginOptions.put(entry.getKey(), o);
+            }
+          }
         }
       }
     } catch (Exception e) {

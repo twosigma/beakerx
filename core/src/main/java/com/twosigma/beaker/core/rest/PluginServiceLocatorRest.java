@@ -325,7 +325,6 @@ public class PluginServiceLocatorRest {
         String path = "PATH=";
         if (envList.get(i).startsWith(path)) {
           envList.set(i, path + plugPath + ":" + envList.get(i).substring(path.length()));
-          System.out.println("XXX prepended path: " + envList.get(i));
         }
       }
     }

@@ -401,7 +401,9 @@ public class DefaultBeakerConfig implements BeakerConfig {
       Map<String, JSONObject> plugins = (Map<String, JSONObject>) this.prefs.get("plugins");
       for (Map.Entry<String, JSONObject> entry: plugins.entrySet()) {
         String options = (String) entry.getValue().get("options");
-        this.pluginOptions.put(entry.getKey(), options);
+        if (options != null) {
+          this.pluginOptions.put(entry.getKey(), options);
+        }
       }
     } catch (Exception e) {
       // ignore

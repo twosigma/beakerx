@@ -18,6 +18,16 @@
   z-index: 150;
 }
 
+.CodeMirror-lines {
+  padding: 0;
+}
+
+.CodeMirror-linenumber {
+  padding-left: 0;
+  padding-right: 3px;
+  min-width: $grid-gutter-width - 3px;
+}
+
 /* This is for datatables customization */
 table.dataTable.hover tbody tr:hover,
 table.dataTable.hover tbody tr.odd:hover,

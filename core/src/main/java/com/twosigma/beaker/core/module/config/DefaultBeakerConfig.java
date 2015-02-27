@@ -78,7 +78,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String hash;
   private final String gist_server;
   private final String sharing_server;
-  private final JSONObject prefs;
+  private JSONObject prefs;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
@@ -390,6 +390,10 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
   public Object getPluginPrefs() {
     return this.prefs.get("plugins");
+  }
+
+  public void setPluginPrefs(JSONObject newPrefs) {
+    this.prefs = newPrefs;
   }
 
   private void augmentPluginOptions() {

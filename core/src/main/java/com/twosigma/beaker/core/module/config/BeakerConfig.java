@@ -18,6 +18,7 @@ package com.twosigma.beaker.core.module.config;
 
 import java.util.Map;
 import java.net.UnknownHostException;
+import org.json.simple.JSONObject;
 
 /**
  * BeakerConfig
@@ -202,4 +203,5 @@ public interface BeakerConfig {
   public String getPluginPath(String plugin);
 
   public Object getPluginPrefs();
+  public void setPluginPrefs(JSONObject prefs);
 }

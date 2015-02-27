@@ -119,9 +119,9 @@
       }
 
       for (var i = 0; i < this.n; i++) {
-        if (this.x[i] == null || isNaN(this.x[i]) === true) {
-          console.error("invalid value passed to sampler");
-        }
+        //if (this.x[i] == null || isNaN(this.x[i]) === true) {
+        //  console.error("invalid value passed to sampler");
+        //}
         this.x[i] = this.mapIndex(this.x[i]);
       }
 

@@ -143,7 +143,7 @@
               out = out + '\t';
             out = out + '"' + $scope.columns[order].title.replace(/"/g, '""') + '"';
           }
-          out = out + '\n';
+          out = out + '\r\n';
 
           for(i=0; i<data.length; i++) {
             var row = data[i];
@@ -158,7 +158,7 @@
                 out = out + '\t';
               out = out + '"' + row[j].replace(/"/g, '""') + '"';
             }
-            out = out + '\n';
+            out = out + '\r\n';
           }
           return out;
         };

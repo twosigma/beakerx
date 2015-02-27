@@ -38,6 +38,10 @@ td.dtcenter {
   border-color: $border-color;
 }
 
+.dataTables_scrollHeadInner {
+  padding-left: 0 !important;
+}
+
 div.dtmenu {
   float: right;
   color: #73BE3B;

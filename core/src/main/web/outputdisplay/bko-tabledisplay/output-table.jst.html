@@ -13,12 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div style="float: right; width: 50px;">&nbsp;</div>
-<div class="dropdown dtmenu clearfix" ng-if="renderMenu">
+<div class="dropdown dtmenu clearfix" style="float: left" ng-if="renderMenu">
    <a class=" dropdown-toggle dtmenu" data-toggle="dropdown" ng-click="menuToggle()">
    Table Display 
    </a>
-   <ul class="dropdown-menu" role="menu" submenu-classes="drop-left" aria-labelledby="dLabel">
+   <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
      <li><a tabindex="-1" href="#" ng-click="doResetSort()" id="dt-reset-sort" eat-click>Reset Sort</a></li>
      <li>&nbsp;</li>
      <li><a tabindex="-1" href="#" ng-click="doSelectAll()" id="dt-select-all" eat-click>Select All</a></li>
@@ -33,4 +32,4 @@
    </ul>
  </div>
 
-<table cellpadding="0" class="display" border="0" cellspacing="0" id="{{id}}"></table>
+<table cellpadding="0" class="display" border="0" cellspacing="0" width="10%" id="{{id}}"></table>

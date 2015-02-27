@@ -412,8 +412,10 @@
         
         scope.doDestroy = function(all) {
           if (scope.table) {
-            $(scope.id + ' tbody').off('click');
-            $(scope.id).html('');
+            clearTimeout(scope.refresh_size);
+            $(window).unbind('resize.'+scope.id);
+            $('#' + scope.id + ' tbody').off('click');
+            $('#' + scope.id).html('');
             scope.table.destroy();
             delete scope.table;
             delete scope.colreorg;
@@ -441,7 +443,9 @@
 
           // validate saved state (if any) by using column \Names
           if (scope.savedstate !== undefined) {
-            if (scope.savedstate.columnNames.length !== model.columnNames.length)
+            if (scope.savedstate.columnNames === undefined)
+              scope.savedstate = undefined;
+            else if (scope.savedstate.columnNames.length !== model.columnNames.length)
               scope.savedstate = undefined;
             else {
               for(i=0; i<scope.savedstate.columnNames.length; i++) {
@@ -512,6 +516,15 @@
           scope.data = data;
         };
         
+        scope.update_size = function() {
+          var me = $('#' + scope.id);
+          // this is dataTables_scrollBody
+          var pp = me.parent();
+          if (pp.width() > me.width() + 16) {
+            pp.width( me.width() + 16);
+          }
+        };
+
         scope.doCreateTable = function() {
           var cols = [];
           var i;
@@ -545,10 +558,14 @@
               "columns": scope.columns,
               "stateSave": true,
               "processing": true,
+              "autoWidth": true,
               "order": [[ 0, "asc" ]],
-              "scrollX": true,
+              "scrollX": '10%',
               "searching": false,
-              "deferRender": true
+              "deferRender": true,
+              "drawCallback": function( settings ) {
+                scope.update_size();
+              }
             };
           
           if (!scope.pagination.use) {
@@ -607,8 +624,13 @@
               event.stopPropagation();
             } );
             
+            $(window).bind('resize.'+scope.id, function() {
+              clearTimeout(scope.refresh_size);
+              scope.refresh_size = setTimeout(function() { scope.update_size(); }, 250);
+            });
+            
           },0);
-        }
+        };
 
         scope.menuToggle = function() {
           if (scope.clipclient === undefined) {

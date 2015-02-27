@@ -22,6 +22,7 @@ html {
   }
 
   .modal-body {
+    overflow-y: auto;
     padding-top: 0;
     padding-bottom: 0;
   }
@@ -38,6 +39,7 @@ html {
   }
 
   .modal-footer.fixed {
+    background-color: white;
     height: $fixed-footer-height;
     padding-top: 14px;
     padding-bottom: 15px;
@@ -65,5 +67,6 @@ html {
 .new-folder {
   cursor: pointer;
   margin-left: 8px;
-  margin-top: 6px;
+  position: relative;
+  top: 6px;
 }

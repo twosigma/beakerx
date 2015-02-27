@@ -29,6 +29,7 @@ import java.lang.Exception;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -72,7 +73,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String recentNotebooksFileUrl;
   private final String sessionBackupDir;
   private final Map<String, String> pluginLocations;
-  private final Map<String, String> pluginOptions;
+  private final Map<String, List<String>> pluginOptions;
   private final Map<String, String[]> pluginEnvps;
   private final String version;
   private final String buildTime;
@@ -297,7 +298,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   }
 
   @Override
-  public Map<String, String> getPluginOptions() {
+  public Map<String, List<String>> getPluginOptions() {
     return this.pluginOptions;
   }
 
@@ -397,17 +398,27 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.prefs = newPrefs;
   }
 
+  private void addOption(String plugin, String option) {
+    List<String> current = this.pluginOptions.get(plugin);
+    if (null == current) {
+      current = new ArrayList<>();
+      this.pluginOptions.put(plugin, current);
+    } 
+    current.add(option);
+  }
+
   private void augmentPluginOptions() {
     try {
       Map<String, JSONObject> plugins = (Map<String, JSONObject>) this.prefs.get("plugins");
       for (Map.Entry<String, JSONObject> entry: plugins.entrySet()) {
         Object options = entry.getValue().get("options");
+        String key = entry.getKey();
         if (options != null) {
           if (options instanceof String) {
-            this.pluginOptions.put(entry.getKey(), (String) options);
+            addOption(key, (String) options);
           } else {
             for (String o : (List<String>) options) {
-              this.pluginOptions.put(entry.getKey(), o);
+              addOption(key, o);
             }
           }
         }

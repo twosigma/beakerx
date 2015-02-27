@@ -16,6 +16,7 @@
 
 package com.twosigma.beaker.core.module.config;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,5 +48,5 @@ public interface BeakerConfigPref {
    * Gets a map of plugin starting options
    * @return
    */
-  public Map<String, String> getPluginOptions();
+  public Map<String, List<String>> getPluginOptions();
 }

@@ -212,8 +212,10 @@ public class PluginServiceLocatorRest {
     this.corePassword = webServerConfig.getPassword();
 
     // record plugin options from cli and to pass through to individual plugins
-    for (Map.Entry<String, String> e: bkConfig.getPluginOptions().entrySet()) {
-      addPluginArgs(e.getKey(), e.getValue());
+    for (Map.Entry<String, List<String>> e: bkConfig.getPluginOptions().entrySet()) {
+      for (String arg : e.getValue()) {
+        addPluginArg(e.getKey(), arg);
+      }
     }
 
     // Add shutdown hook
@@ -529,7 +531,7 @@ public class PluginServiceLocatorRest {
     }
   }
 
-  private void addPluginArgs(String plugin, String arg) {
+  private void addPluginArg(String plugin, String arg) {
     List<String> args = this.pluginArgs.get(plugin);
     if (args == null) {
       args = new ArrayList<>();

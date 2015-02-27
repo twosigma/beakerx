@@ -18,18 +18,6 @@ import os
 import sys
 import subprocess
 
-#backend = '' # XXX or whatever you gave to 'conda create'
-#backend = backend.strip()
-#if backend == '':
-#    backend = "deactivate"
-#else:
-#    backend = "activate " + backend
-
-#p = subprocess.Popen(["sh", "-c", "source " + backend + ' ; echo $PATH'], stdout=subprocess.PIPE)
-#out, err = p.communicate()
-
-#os.environ["PATH"] = out.strip()
-
 if len(sys.argv) > 1:
     arg1 = sys.argv[1]
     if arg1 == "--version":
@@ -43,7 +31,7 @@ if len(sys.argv) > 1:
 
 port = sys.argv.pop()
 
-# set pythonpath to include this directory so we can import beaker.py
+# set pythonpath to include this directory so we can import beaker_runtime.py
 plugin_dir = os.path.dirname(sys.argv.pop(0))
 if "PYTHONPATH" in os.environ:
     old_path = ':' + os.environ["PYTHONPATH"]

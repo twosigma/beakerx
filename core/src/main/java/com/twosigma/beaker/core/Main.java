@@ -35,8 +35,10 @@ import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.cli.GnuParser;
@@ -112,15 +114,22 @@ public class Main {
     }
   }
 
-  private static Map<String, String> getPluginOptions(CommandLine options) {
-    Map<String, String> result = new HashMap<>();
+  private static Map<String, List<String>> getPluginOptions(CommandLine options) {
+    Map<String, List<String>> result = new HashMap<>();
     if (options.hasOption("plugin-option")) {
       for (String param: options.getOptionValues("plugin-option")) {
         int x = param.indexOf(':');
         if (x < 0) {
           throw new RuntimeException("plugin option requires colon (':')");
         }
-        result.put(param.substring(0, x), param.substring(x + 1, param.length()));
+        String key = param.substring(0, x);
+        String val = param.substring(x + 1, param.length());
+        List<String> current = result.get(key);
+        if (null == current) {
+          current = new ArrayList<>();
+          result.put(key, current);
+        } 
+        current.add(val);
       }
     }
     return result;
@@ -209,7 +218,7 @@ public class Main {
       final Boolean noPasswordAllowed,
       final Integer portBase,
       final String defaultNotebookUrl,
-      final Map<String, String> pluginOptions) {
+      final Map<String, List<String>> pluginOptions) {
     return new BeakerConfigPref() {
 
       @Override
@@ -238,7 +247,7 @@ public class Main {
       }
 
       @Override
-      public Map<String, String> getPluginOptions() {
+      public Map<String, List<String>> getPluginOptions() {
         return pluginOptions;
       }
     };

@@ -29,17 +29,16 @@
   </script>
 
   <link rel="shortcut icon" href="/static/favicon.png" />
-  <link rel="stylesheet" href="vendor/bower_components/font-awesome/css/font-awesome.css" />
-  <link rel="stylesheet" href="vendor/DataTables-1.10.5/media/css/jquery.dataTables.css" />
-  <link rel="stylesheet" href="vendor/DataTables-1.10.5/extensions/FixedColumns/css/dataTables.fixedColumns.min.css" />
-  <link rel="stylesheet" href="vendor/DataTables-1.10.5/extensions/ColReorder/css/dataTables.colReorder.min.css" />
-  <link rel="stylesheet" href="app/dist/vendor.css" />
+  
+  <!-- htmlbuild:css -->
+  <link rel="stylesheet" href="app/temp/vendor.css" />
+  <link rel="stylesheet" href="app/temp/app.css" />
+  <!-- endbuild -->
 
-  <link rel="stylesheet" href="app/dist/app.css" />
-
+  <!-- htmlbuild:vendorjs -->
   <script src="vendor/flotr2/flotr2.js"></script>
-  <script src="vendor/bower_components/big.js/big.min.js"></script>
-  <script src="vendor/bower_components/jquery/jquery.min.js"></script>
+  <script src="vendor/bower_components/big.js/big.js"></script>
+  <script src="vendor/bower_components/jquery/jquery.js"></script>
   <script src="vendor/DataTables-1.10.5/media/js/jquery.dataTables.js"></script>
   <script src="vendor/bower_components/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
   <script src="vendor/bower_components/jquery-file-upload/js/jquery.fileupload.js"></script>
@@ -89,8 +88,10 @@
   <script src="vendor/moment/moment-timezone-data.js"></script>
   <script src="vendor/zeroclipboard-2.2.0/dist/ZeroClipboard.js"></script>
   <script src="vendor/bower_components/requirejs/require.js" data-main="app/main.js"></script>
+  <!-- endbuild -->
 
-  <script src="app/dist/templates.js"></script>
+  <!-- htmlbuild:beakerjs -->
+  <script src="app/temp/templates.js"></script>
   <script src="app/controlpanel/controlpanel.js"></script>
   <script src="app/controlpanel/controlpanel-directive.js"></script>
   <script src="app/controlpanel/controlpanelsessionitem-directive.js"></script>
@@ -98,7 +99,6 @@
   <script src="app/helpers/cellmenupluginmanager.js"></script>
   <script src="app/helpers/core.js"></script>
   <script src="app/helpers/debug.js"></script>
-  <!-- script src="app/helpers/datatables.js"></script -->
   <script src="app/helpers/evaluatepluginmanager.js"></script>
   <script src="app/helpers/helper.js"></script>
   <script src="app/helpers/menupluginmanager.js"></script>
@@ -140,7 +140,8 @@
   <script src="app/utils/share.js"></script>
   <script src="app/utils/track.js"></script>
   <script src="app/utils/utils.js"></script>
-
+  <!-- endbuild -->
+  
   <script src="app/beaker.js"></script>
 
 </head>

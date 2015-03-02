@@ -1,0 +1,61 @@
+$border-color: #D4D0D0;
+
+table.dataTable {
+  margin : 0;
+  thead th, tbody td {
+    padding: 4px 10px;
+    white-space: nowrap;
+    border: 1px solid $border-color;
+    border-width: 0 1px 0 0;
+    &:first-child {
+      border-left-width: 1px;
+    }
+  }
+  thead {
+    background-color: #E6E6E6;
+    th {
+      border-width: 1px 1px 1px 0;
+      color: #515A5A;
+      font-weight: normal;
+    }
+  }
+}
+
+th.dtright {
+  text-align : right
+}
+th.dtcenter {
+  text-align : center
+}
+td.dtright {
+  text-align : right
+}
+td.dtcenter {
+  text-align : center
+}
+
+.dataTables_wrapper.no-footer .dataTables_scrollBody {
+  border-color: $border-color;
+}
+
+div.dtmenu {
+  float: right;
+  color: #73BE3B;
+  cursor: pointer;
+  display: inline-block;
+  &:hover {
+    color: #FFF;
+    background-color: #39A9ED;
+  }
+}
+
+a.dtmenu {
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 12px;
+  background: url("../images/down@2x.png") no-repeat scroll right center / 8px auto transparent;
+  padding-left: 13px;
+  padding-right: 13px;
+  margin-left: 10px;
+  margin-right: 10px;
+}

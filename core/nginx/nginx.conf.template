@@ -58,6 +58,9 @@ http {
     location /beaker/fonts {
         rewrite /beaker/fonts/(.*) /%(urlhash)s/beaker/app/fonts/$1;
     }
+    location /%(urlhash)s/beaker/fonts {
+        rewrite /%(urlhash)s/beaker/fonts/(.*) /%(urlhash)s/beaker/app/fonts/$1;
+    }
 
     # login and loginrest are used for the public server option
     location /loginrest/ {

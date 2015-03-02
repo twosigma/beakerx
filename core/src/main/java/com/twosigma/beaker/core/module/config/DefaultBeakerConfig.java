@@ -364,7 +364,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   
   @Override
   public String getMainPageFileName() {
-      return this.installDir + "/src/main/web/app/template/index_template.html";
+      return this.installDir + "/src/main/web/app/dist/index_template.html";
   }
   
   @Override

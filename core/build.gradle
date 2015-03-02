@@ -60,11 +60,50 @@ task (bowerInstall, type: Exec) {
   }
 }
 
+task (zipPackages, type: Exec) {
+  if (windows()) {
+    commandLine 'cmd', '/c', 'zip', '-r', '../data/allDeps.zip', 'src/vendor/';
+  } else {
+    commandLine 'zip', '-r', '../data/allDeps.zip', 'src/vendor/'
+  }
+}
+
+task updatePackagesFont(type: Copy) {
+    from 'src/vendor/bower_components/font-awesome/fonts/'
+    into 'src/main/web/app/fonts/'
+}
+
+task updatePackagesFont2(type: Copy) {
+    from 'src/vendor/bower_components/bootstrap-sass/assets/fonts/bootstrap/'
+    into 'src/main/web/app/fonts/'
+}
+
+task updatePackages(type: Copy) {
+    from 'src/vendor/bower_components/datatables/media/images/'
+    into 'src/main/web/app/images/'
+}
+
+task (extractPackages, type: Exec) {
+  if (windows()) {
+    commandLine 'cmd', '/c', 'unzip', '-oq', '../data/allDeps.zip';
+  } else {
+    commandLine 'unzip', '-oq', '../data/allDeps.zip'
+  }
+}
+
 task (compileCss, type: Exec) {
   if (windows()) {
     commandLine 'cmd', '/c', 'npm', 'run-script', 'compile'
   } else {
     commandLine 'npm', 'run-script', 'compile'
+  }
+}
+
+task (compileCssDebug, type: Exec) {
+  if (windows()) {
+    commandLine 'cmd', '/c', 'npm', 'run-script', 'compile', '--', '--debug'
+  } else {
+    commandLine 'npm', 'run-script', 'compile', '--', '--debug'
   }
 }
 
@@ -84,16 +123,28 @@ task (copyNginx, type: Exec) {
   }
 }
 
+task builddebug
+
 bowerInstall.dependsOn npmInstall
+bowerInstall.dependsOn extractPackages
 compileCss.dependsOn npmInstall
-
-build.dependsOn bowerInstall
+compileCss.dependsOn extractPackages
+compileCssDebug.dependsOn npmInstall
+compileCssDebug.dependsOn extractPackages
+updatePackagesFont.dependsOn bowerInstall
+updatePackagesFont.dependsOn zipPackages
+updatePackages.dependsOn updatePackagesFont
+updatePackages.dependsOn updatePackagesFont2
+build.dependsOn extractPackages
 build.dependsOn compileCss
+builddebug.dependsOn extractPackages
+builddebug.dependsOn compileCssDebug
 run.dependsOn bowerInstall
-
 run.dependsOn jar
+
 if (mac() || windows()) {
   build.dependsOn copyNginx
+  builddebug.dependsOn copyNginx
   run.dependsOn copyNginx
   startScripts {
     defaultJvmOpts=['-Dbeaker.nginx.bin.dir=' + './nginx/bin']

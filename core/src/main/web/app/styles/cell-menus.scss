@@ -32,6 +32,10 @@ bk-new-cell-menu {
   position: relative;
   left: -1px;
 
+  .insert-cell {
+    border-right-width: 4px;
+  }
+
   .btn {
     border-color: white !important;
   }

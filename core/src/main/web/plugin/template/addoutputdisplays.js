@@ -16,13 +16,9 @@
 (function() {
   "use strict";
   window.bkInit.getOutputDisplayCssList = [
-       "app/dist/beakerOutDisp.css"
+       <%= cssfiles %>
      ];
   window.bkInit.getOutputDisplayJsList = [
-
-      // enable this to use the example object container output display
-      //"outputdisplay/bko-testcontainer.js",
-
-      "app/dist/beakerOutDisp.js"
+       <%= jsfiles %>
     ];
 })();

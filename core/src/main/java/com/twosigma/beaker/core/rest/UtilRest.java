@@ -400,4 +400,18 @@ public class UtilRest {
     return data;
   }
 
+  @GET
+  @Path("getPluginPrefs")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Object getPluginPrefs() {
+    return bkConfig.getPluginPrefs();
+  }
+
+  @POST
+  @Path("setPluginPrefs")
+  public void setPluginPrefs(JSONObject pluginPrefs) {
+    // Merge pluginPrefs into prefs, and save the file, like the above methods do.
+    bkConfig.setPluginPrefs(pluginPrefs);
+  }
+
 }

@@ -16,8 +16,10 @@
 
 package com.twosigma.beaker.core.module.config;
 
+import java.util.List;
 import java.util.Map;
 import java.net.UnknownHostException;
+import org.json.simple.JSONObject;
 
 /**
  * BeakerConfig
@@ -153,7 +155,7 @@ public interface BeakerConfig {
    * Additional options to use when starting a plugin
    * @return
    */
-  public Map<String, String> getPluginOptions();
+  public Map<String, List<String>> getPluginOptions();
   /**
    * optional alternative environment variables a plugin should be started with
    * @return
@@ -195,4 +197,12 @@ public interface BeakerConfig {
    */
   public String getSharingServerUrl();
 
+  /**
+   * Path to find a backend.
+   * @return
+   */
+  public String getPluginPath(String plugin);
+
+  public Object getPluginPrefs();
+  public void setPluginPrefs(JSONObject prefs);
 }

@@ -25,11 +25,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.Exception;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -70,13 +73,14 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String recentNotebooksFileUrl;
   private final String sessionBackupDir;
   private final Map<String, String> pluginLocations;
-  private final Map<String, String> pluginOptions;
+  private final Map<String, List<String>> pluginOptions;
   private final Map<String, String[]> pluginEnvps;
   private final String version;
   private final String buildTime;
   private final String hash;
   private final String gist_server;
   private final String sharing_server;
+  private JSONObject prefs;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
@@ -130,6 +134,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
         this.sharing_server = (String)obj.get("sharing_server");
     else
         this.sharing_server = "http://sharing.beakernotebook.com/gist/anonymous";
+    this.prefs = obj;
     
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
     final String mainDefaultNotebookPath = this.dotDir + "/config/default.bkr";
@@ -153,6 +158,8 @@ public class DefaultBeakerConfig implements BeakerConfig {
     this.pluginLocations = new HashMap<>();
     this.pluginOptions = pref.getPluginOptions();
     this.pluginEnvps = new HashMap<>();
+
+    augmentPluginOptions();
 
     this.publicServer = pref.getPublicServer();
     this.noPasswordAllowed = pref.getNoPasswordAllowed();
@@ -291,7 +298,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   }
 
   @Override
-  public Map<String, String> getPluginOptions() {
+  public Map<String, List<String>> getPluginOptions() {
     return this.pluginOptions;
   }
 
@@ -368,5 +375,56 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getSharingServerUrl() {
     return this.sharing_server;      
+  }
+
+  @Override
+  public String getPluginPath(String plugin) {
+    String result = null;
+    try {
+      JSONObject plugins = (JSONObject) this.prefs.get("plugins");
+      JSONObject pprefs = (JSONObject) plugins.get(plugin);
+      result = (String) pprefs.get("path");
+    } catch (Exception e) {
+      // ignore
+    }
+    return result;
+  }
+
+  public Object getPluginPrefs() {
+    return this.prefs.get("plugins");
+  }
+
+  public void setPluginPrefs(JSONObject newPrefs) {
+    this.prefs = newPrefs;
+  }
+
+  private void addOption(String plugin, String option) {
+    List<String> current = this.pluginOptions.get(plugin);
+    if (null == current) {
+      current = new ArrayList<>();
+      this.pluginOptions.put(plugin, current);
+    } 
+    current.add(option);
+  }
+
+  private void augmentPluginOptions() {
+    try {
+      Map<String, JSONObject> plugins = (Map<String, JSONObject>) this.prefs.get("plugins");
+      for (Map.Entry<String, JSONObject> entry: plugins.entrySet()) {
+        Object options = entry.getValue().get("options");
+        String key = entry.getKey();
+        if (options != null) {
+          if (options instanceof String) {
+            addOption(key, (String) options);
+          } else {
+            for (String o : (List<String>) options) {
+              addOption(key, o);
+            }
+          }
+        }
+      }
+    } catch (Exception e) {
+      // ignore
+    }
   }
 }

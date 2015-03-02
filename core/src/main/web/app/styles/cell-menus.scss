@@ -28,6 +28,15 @@ bk-new-cell-menu {
     margin: 10px 0;
 }
 
+.new-cell {
+  position: relative;
+  left: -1px;
+
+  .btn {
+    border-color: white !important;
+  }
+}
+
 .locked .toggle-menu {
     display: none;
 }

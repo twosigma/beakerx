@@ -106,10 +106,10 @@ gulp.task("compileBeakerTemplates", function() {
 
 
 gulp.task('buildOutputDisplayTemplate', function () {
-  var cssarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_css.list').toString().trim().split("\n");
-  var jsarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_javascript.list').toString().trim().split("\n");
-  var vendorcssarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_vendorcss.list').toString().trim().split("\n");
-  var vendorjsarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_vendorjs.list').toString().trim().split("\n");
+  var cssarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_css.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var jsarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_javascript.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var vendorcssarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_vendorcss.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var vendorjsarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_vendorjs.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
 
   var ca = [];
   if (vendorcssarray.length > 0) {
@@ -161,7 +161,6 @@ gulp.task('buildOutputDisplayTemplate', function () {
     }
     gulp.src(ca)
       .pipe(stripJsComments())
-      .pipe(minifyJS())
       .pipe(concat('beakerOutputDisplay.js'))
       .pipe(header(banner ))
       .pipe(gulp.dest(buildPath));
@@ -171,6 +170,7 @@ gulp.task('buildOutputDisplayTemplate', function () {
   }
    
   if (vendorcssarray.length > 0) {
+    console.log('HERE:' + vendorcssarray);
     cssfiles = '"app/dist/beakerOutputDisplayVendor.css", ' + cssfiles;
   }
 
@@ -205,7 +205,6 @@ gulp.task('buildIndexTemplate', function () {
         } else {
           block.pipe(gulpSrc(false))
             .pipe(stripJsComments())
-            .pipe(minifyJS())
             .pipe(concat('beakerApp.js'))
             .pipe(header(banner ))
             .pipe(gulp.dest(buildPath));

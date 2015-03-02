@@ -20,6 +20,7 @@ ext {
 }
 
 task build
+task builddebug
 task clean
 task check
 task updatePackages
@@ -28,6 +29,10 @@ task run (type: Exec) {
   commandLine './beaker.command'
 }
 task runOnly (type: Exec) {
+  workingDir coreDir
+  commandLine './beaker.command'
+}
+task debug (type: Exec) {
   workingDir coreDir
   commandLine './beaker.command'
 }
@@ -68,7 +73,12 @@ build.dependsOn(":core:build")
 build.dependsOn(":core:installApp")
 build.dependsOn(writeVersion)
 build.dependsOn(installPlugins)
+builddebug.dependsOn(":core:builddebug")
+builddebug.dependsOn(":core:installApp")
+builddebug.dependsOn(writeVersion)
+builddebug.dependsOn(installPlugins)
 run.dependsOn(build)
+debug.dependsOn(builddebug)
 check.dependsOn(":core:build")
 check.dependsOn(":core:installApp")
 check.dependsOn(writeVersion)

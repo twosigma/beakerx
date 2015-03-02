@@ -99,6 +99,14 @@ task (compileCss, type: Exec) {
   }
 }
 
+task (compileCssDebug, type: Exec) {
+  if (windows()) {
+    commandLine 'cmd', '/c', 'npm', 'run-script', 'compile', '--', '--debug'
+  } else {
+    commandLine 'npm', 'run-script', 'compile', '--', '--debug'
+  }
+}
+
 task (copyNginx, type: Exec) {
   if (mac()) {
     def brewLocation = 'which brew'.execute().text[0..-10]
@@ -115,6 +123,8 @@ task (copyNginx, type: Exec) {
   }
 }
 
+task builddebug
+
 bowerInstall.dependsOn npmInstall
 bowerInstall.dependsOn extractPackages
 compileCss.dependsOn npmInstall
@@ -125,11 +135,14 @@ updatePackages.dependsOn updatePackagesFont
 updatePackages.dependsOn updatePackagesFont2
 build.dependsOn extractPackages
 build.dependsOn compileCss
+builddebug.dependsOn extractPackages
+builddebug.dependsOn compileCssDebug
 run.dependsOn bowerInstall
 run.dependsOn jar
 
 if (mac() || windows()) {
   build.dependsOn copyNginx
+  builddebug.dependsOn copyNginx
   run.dependsOn copyNginx
   startScripts {
     defaultJvmOpts=['-Dbeaker.nginx.bin.dir=' + './nginx/bin']

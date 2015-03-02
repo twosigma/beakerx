@@ -21,6 +21,11 @@ task build (type: GradleBuild) {
   tasks = ['build']
 }
 
+task builddebug (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['builddebug']
+}
+
 task check (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['check']
@@ -39,6 +44,11 @@ task clean (type: GradleBuild) {
 task run (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['run']
+}
+
+task debug (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['debug']
 }
 
 task assemble (type: GradleBuild) {

@@ -14,24 +14,44 @@
     limitations under the License.
 -->
 
-#Beaker Development - where to add stuff
+#Beaker Development - build system
 
-This document details where things should be added to become part of beaker build.
 
-# Vendor libraries
+The build system is designed to produce a stripped down 'run' build or a 'debug' build where individual files are loaded by the browser to facilitate debugging.
 
-Vendor libraries should be gathered either by bower or manually downloaded.
+To run beaker you can execute:
 
-To add a bower library you can edit the bower.json file then execute 'gradle updatePackages', this will download a (new) version and create the dependencies zip file.
+gradle run
 
-To add a library manually you should first build the product ('gradle build'), then download the new library and put it inside the vendor directory and execute 'gradle updatePackages'.
+To run beaker in 'debugging mode' you can execute:
 
-In both cases you should edit 'gulpfile.js' and add the relevant CSS files to the csslist array and the JavaScript files to the csslist array.
+gradle debug
+
+To run the automatic test suite you can execute:
+
+gradle check
+
+
+# HOWTO add 3rd party libraries
+
+3rd libraries should be gathered either by bower or manually downloaded.
+
+To add a bower-based distribution you can edit the bower.json file then execute 'gradle updatePackages', this will download a (new) version and create the dependencies zip file.
+
+To add a distribution manually you should first build the product ('gradle build'), then download the new library files and put it inside the core/src/vendor directory and execute 'gradle updatePackages'.
+
+In both cases you should tell the product to load the library at startup.
+* If the new 3rd party code is required in the 'general' code you should edit the file 'core/src/main/web/app/template/index_template.html' and add js files to the proper (vendor) section of the file, while css should be included in 'core/src/main/web/app/vendor.scss'.
+* If the new 3rd party code is used in a (new) output display you should edit the files 'core/src/main/web/plugin/template/addoutputdisplays_vendorcss.list' and/or 'core/src/main/web/plugin/template/addoutputdisplays_vendorjs.list'
+
+NOTE: 3rd party libraries (also called vendor) are always cohalescence in a single JavaScript and a single CSS file to enhance loading performance.
 
 # new beaker files
 
-New Beaker templates are automatically compiled.
+New Beaker templates are automatically compiled, includig templates placed in 'core/src/main/web/outputdisplay' directory tree.
 
-New beaker JavaScript files should be added to the 'bkjslist' array inside 'gulpfile.js'.
+New Beaker JavaScript files should be added to the 'core/src/main/web/app/template/index_template.html' inside the proper section.
 
+New Beaker CSS should be added using the 'core/src/main/web/app/app.scss'
 
+New files related to Beaker outputdisplay should be added to 'core/src/main/web/plugin/template/addoutputdisplays_css.list' and 'core/src/main/web/plugin/template/addoutputdisplays_javascript.list'

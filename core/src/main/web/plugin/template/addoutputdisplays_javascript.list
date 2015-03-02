@@ -20,7 +20,7 @@ outputdisplay/bko-plot/plotitems/std/plottext.js
 outputdisplay/bko-plot/plotitems/lod/plotlodline.js
 outputdisplay/bko-plot/plotitems/lod/plotlodriver.js
 outputdisplay/bko-plot/plotitems/lod/plotlodbox.js
-outputdisplay/bko-plot/plotitems/lod/plotlodpoint.js,
+outputdisplay/bko-plot/plotitems/lod/plotlodpoint.js
 outputdisplay/bko-plot/plotitems/lod/plotlodstem.js
 outputdisplay/bko-plot/plotitems/lodloader/plotlinelodloader.js
 outputdisplay/bko-plot/plotitems/lodloader/plotarealodloader.js

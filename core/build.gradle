@@ -129,6 +129,8 @@ bowerInstall.dependsOn npmInstall
 bowerInstall.dependsOn extractPackages
 compileCss.dependsOn npmInstall
 compileCss.dependsOn extractPackages
+compileCss.compileCssDebug npmInstall
+compileCss.compileCssDebug extractPackages
 updatePackagesFont.dependsOn bowerInstall
 updatePackagesFont.dependsOn zipPackages
 updatePackages.dependsOn updatePackagesFont

@@ -48,10 +48,16 @@ public class UpdatableEvaluationResult extends Observable {
   public static class Serializer extends JsonSerializer<UpdatableEvaluationResult> {
 
     private final Provider<UpdateManager> updateManagerProvider;
+    private final Provider<ObjectSerializer> objectSerializerProvider;
 
     @Inject
-    private Serializer(Provider<UpdateManager> ump) {
+    private Serializer(Provider<UpdateManager> ump, Provider<ObjectSerializer> osp) {
       this.updateManagerProvider = ump;
+      objectSerializerProvider = osp;
+    }
+
+    private ObjectSerializer getObjectSerializer() {
+      return objectSerializerProvider.get();
     }
 
     private UpdateManager getUpdateManager() {
@@ -68,7 +74,10 @@ public class UpdatableEvaluationResult extends Observable {
         jgen.writeStartObject();
         jgen.writeObjectField("update_id", id);
         jgen.writeStringField("type", "UpdatableEvaluationResult");
-        jgen.writeObjectField("payload", evalResult.getValue());
+        jgen.writeFieldName("payload");
+        Object obj = evalResult.getValue();
+        if (!getObjectSerializer().writeObject(obj, jgen))
+          jgen.writeObject(obj.toString());
         jgen.writeEndObject();
       }
     }

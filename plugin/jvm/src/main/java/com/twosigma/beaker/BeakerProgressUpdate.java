@@ -23,7 +23,9 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import com.twosigma.beaker.jvm.object.SerializeUtils;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.twosigma.beaker.jvm.object.ObjectSerializer;
 
 public class BeakerProgressUpdate {
 
@@ -89,6 +91,17 @@ public class BeakerProgressUpdate {
 
   public static class Serializer extends JsonSerializer<BeakerProgressUpdate> {
 
+    private final Provider<ObjectSerializer> objectSerializerProvider;
+
+    @Inject
+    private Serializer(Provider<ObjectSerializer> osp) {
+      objectSerializerProvider = osp;
+    }
+
+    private ObjectSerializer getObjectSerializer() {
+      return objectSerializerProvider.get();
+    }
+
     @Override
     public void serialize(BeakerProgressUpdate value,
         JsonGenerator jgen,
@@ -99,9 +112,11 @@ public class BeakerProgressUpdate {
         jgen.writeStartObject();
         jgen.writeStringField("message", value.message);
         jgen.writeNumberField("progressBar", value.progressBar);
-        if (value.payload!=null) {
-          jgen.writeFieldName("payload");
-          SerializeUtils.writeObject(value.payload, jgen);
+        Object obj = value.payload;
+        if (obj != null) {
+          jgen.writeFieldName("payload");          
+          if (!getObjectSerializer().writeObject(obj, jgen))
+            jgen.writeObject(obj.toString());
         }
         jgen.writeEndObject();
       }

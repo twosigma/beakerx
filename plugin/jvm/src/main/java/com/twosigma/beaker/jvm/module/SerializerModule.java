@@ -42,7 +42,9 @@ import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
+import com.twosigma.beaker.jvm.object.ObjectSerializer;
 import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.jvm.object.PlotObjectSerializer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
@@ -60,8 +62,7 @@ import org.cometd.bayeux.server.BayeuxServer;
 /**
  * The Guice module as the registry of mapping from classes to serializers
  */
-public class SerializerModule
-        extends AbstractModule {
+public class SerializerModule extends AbstractModule {
 
   @Override
   protected void configure() {
@@ -84,6 +85,13 @@ public class SerializerModule
     UpdateManager updateManager = new UpdateManager(bayeuxServer);
     updateManager.addUpdaterFactory(new ObservableUpdaterFactory());
     return updateManager;
+  }
+
+  @Provides
+  @Singleton
+  public ObjectSerializer getObjectSerializer(Injector injector) {
+    ObjectSerializer serializer = injector.getInstance(PlotObjectSerializer.class);
+    return serializer;
   }
 
   @Provides

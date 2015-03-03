@@ -16,7 +16,12 @@
 package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
@@ -25,16 +30,47 @@ import org.codehaus.jackson.map.SerializerProvider;
 
 public class TableDisplay {
 
-  private final List<List> values;
+  private final List<List<?>> values;
   private final List<String> columns;
   private final List<String> classes;
 
-  public TableDisplay(List<List> values, List<String> columns, List<String> classes) {
-    this.values = values;
-    this.columns = columns;
-    this.classes = classes;
+  public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
+    values = v;
+    columns = co;
+    classes = cl;
   }
 
+  public TableDisplay(Collection<Map<?,?>> v, ObjectSerializer serializer) {
+    values = new ArrayList<List<?>>();
+    columns = new ArrayList<String>();
+    classes = new ArrayList<String>();
+
+    // create columns
+    for(Map<?,?> m : v) {
+      Set<?> w = m.entrySet();
+      for (Object s : w) {
+        Entry<?,?> e = (Entry<?, ?>) s;
+        String c = e.getKey().toString();
+        if (!columns.contains(c)) {
+          columns.add(c);
+          classes.add(serializer.convertType(e.getValue().getClass().getName()));
+        }
+      }
+    }
+
+    // now build values
+    for(Map<?,?> m : v) {
+      List<Object> vals = new ArrayList<Object>();
+      for (String cn : columns) {
+        if (m.containsKey(cn))
+          vals.add(m.get(cn));
+        else
+          vals.addAll(null);
+      }
+      values.add(vals);
+    }
+  }
+  
   public static class Serializer extends JsonSerializer<TableDisplay> {
 
     @Override
@@ -49,7 +85,6 @@ public class TableDisplay {
         jgen.writeObjectField("columnNames", value.columns);
         jgen.writeObjectField("values", value.values);
         jgen.writeObjectField("types", value.classes);
-        // jgen.writeObjectField("timeZone", "UTC");
         jgen.writeEndObject();
       }
     }

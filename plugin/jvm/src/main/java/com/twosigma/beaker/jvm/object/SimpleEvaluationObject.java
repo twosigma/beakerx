@@ -166,7 +166,7 @@ public class SimpleEvaluationObject extends Observable {
 
     @Inject
     private Serializer(Provider<UpdateManager> ump) {
-      this.updateManagerProvider = ump;
+      updateManagerProvider    = ump;
     }
 
     private UpdateManager getUpdateManager() {
@@ -174,9 +174,7 @@ public class SimpleEvaluationObject extends Observable {
     }
 
     @Override
-    public void serialize(SimpleEvaluationObject value,
-        JsonGenerator jgen,
-        SerializerProvider provider)
+    public void serialize(SimpleEvaluationObject value,  JsonGenerator jgen,  SerializerProvider provider)
         throws IOException, JsonProcessingException {
 
       synchronized (value) {

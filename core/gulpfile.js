@@ -227,6 +227,9 @@ gulp.task('buildIndexTemplate', function () {
     .pipe(gulp.dest(buildPath));
 });
 
+gulp.task("watch", function() {
+  gulp.watch(["**/*.scss", "**/*.jst.html"], ["compile"]);
+});
 
 gulp.task("compile", function(cb) {
   runSequence( "compileBeakerScss",

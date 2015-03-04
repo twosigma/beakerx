@@ -33,7 +33,7 @@
   }
 }
 
-.section0, .section1, .section2, .section3, .section4, .section5,
+.section1, .section2, .section3, .section4, .section5, .section6,
 .modal-header h1
 {
   color:        #47474A;
@@ -51,28 +51,38 @@
   top: -2px;
 }
 
-.section0 {
-  font-size: 30px;
-}
-
-.section1 {
+.section1, h1 {
   font-size: 26px;
+  line-height: 26px;
+  font-weight: normal;
 }
 
-.section2 {
-  font-size: 24px;
-}
-
-.section3 {
-  font-size: 22px;
-}
-
-.section4 {
-  font-size: 20px;
-}
-
-.section5 {
+.section2, h2 {
   font-size: 18px;
+  line-height: 20px;
+  font-weight: normal;
+}
+
+.section3, h3 {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.section4, h4 {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: normal;
+  text-decoration: uppercase;
+}
+
+.section5, h5 {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.section6, h6 {
+  font-size: 13px;
+  line-height: 18px;
 }
 
 .modal-header h1 {

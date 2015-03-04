@@ -50,11 +50,11 @@ function handleError(e) {
   console.log('\u0007', e.message);
 }
 
-//pipe a glob stream into this and receive a gulp file stream 
+//pipe a glob stream into this and receive a gulp file stream
 var gulpSrc = function (isvendor) {
   var paths = es.through();
   var files = es.through();
-  
+
   paths.pipe(es.writeArray(function (err, srcs) {
     var ls = [];
     for (var i=0; i<srcs.length; i++) {
@@ -62,7 +62,7 @@ var gulpSrc = function (isvendor) {
     }
     gulp.src(ls).pipe(files);
   }));
-  
+
   return es.duplex(paths, files);
 };
 
@@ -104,7 +104,6 @@ gulp.task("compileBeakerTemplates", function() {
   .pipe(gulp.dest(tempPath));
 });
 
-
 gulp.task('buildOutputDisplayTemplate', function () {
   var cssarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_css.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
   var jsarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_javascript.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
@@ -120,7 +119,7 @@ gulp.task('buildOutputDisplayTemplate', function () {
       .pipe(concat('beakerOutputDisplayVendor.css'))
       .pipe(gulp.dest(buildPath));
   }
-  
+
   ca = [];
   if (vendorjsarray.length > 0) {
     for (var i=0; i<vendorjsarray.length; i++) {
@@ -130,9 +129,9 @@ gulp.task('buildOutputDisplayTemplate', function () {
       .pipe(concat('beakerOutputDisplayVendor.js'))
       .pipe(gulp.dest(buildPath));
   }
-  
+
   var cssfiles, jsfiles;
-    
+
   if (argv.debug) {
     cssfiles = '';
     for (var i=0; i<cssarray.length; i++) {
@@ -167,7 +166,7 @@ gulp.task('buildOutputDisplayTemplate', function () {
     cssfiles = '"app/dist/beakerOutputDisplay.css"';
     jsfiles = '"app/dist/beakerOutputDisplay.js"';
   }
-   
+
   if (vendorcssarray.length > 0) {
     console.log('HERE:' + vendorcssarray);
     cssfiles = '"app/dist/beakerOutputDisplayVendor.css", ' + cssfiles;
@@ -189,7 +188,7 @@ gulp.task('buildOutputDisplayTemplate', function () {
 gulp.task('buildIndexTemplate', function () {
   gulp.src([rootPath + 'template/index_template.html'])
     .pipe(htmlbuild({
-      // build js with preprocessor 
+      // build js with preprocessor
       vendorjs: htmlbuild.preprocess.js(function (block) {
         block.pipe(gulpSrc(true))
           .pipe(concat('beakerVendor.js'))
@@ -197,7 +196,7 @@ gulp.task('buildIndexTemplate', function () {
         block.end('app/dist/beakerVendor.js');
       }),
 
-      // build js with preprocessor 
+      // build js with preprocessor
       beakerjs: htmlbuild.preprocess.js(function (block) {
         if (argv.debug) {
           block.pipe(block);
@@ -211,7 +210,7 @@ gulp.task('buildIndexTemplate', function () {
         }
       }),
 
-      // build css with preprocessor 
+      // build css with preprocessor
       css: htmlbuild.preprocess.css(function (block) {
         if (argv.debug) {
           block.pipe(block);
@@ -228,6 +227,9 @@ gulp.task('buildIndexTemplate', function () {
     .pipe(gulp.dest(buildPath));
 });
 
+gulp.task("watch", function() {
+  gulp.watch(["**/*.scss", "**/*.jst.html"], ["compile"]);
+});
 
 gulp.task("compile", function(cb) {
   runSequence( "compileBeakerScss",

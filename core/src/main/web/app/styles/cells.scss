@@ -18,21 +18,8 @@
 @import "cell-errors";
 @import "cell-outputs";
 
-.bkcell {
-    margin-bottom:  10px;
-
-    .CodeMirror {
-        background: transparent;
-    }
-}
-
-bk-markdown-cell > div {
-    border:      solid 1px $cell-border;
-    padding-top: 30px;
-
-    &.focused, &:hover {
-        border: solid 1px $highlight-blue;
-    }
+.bkcell .CodeMirror {
+    background: transparent;
 }
 
 .mini-cell-stats {
@@ -48,13 +35,12 @@ bk-markdown-cell > div {
     line-height: 25px;
 }
 
-.bkcell.code-cell-area, .text-cell {
+.markdown-wrapper, .bkcell.code-cell-area, .text-wrapper {
     border: solid 1px $cell-border;
 }
 
-.text-cell {
-    padding: 20px;
-    padding-top: 40px;
+.markdown-wrapper, .text-wrapper {
+    padding: $grid-row-height*2 $grid-gutter-width*3 $grid-row-height $grid-gutter-width;
 }
 
 .locked {
@@ -67,35 +53,38 @@ bk-markdown-cell > div {
     float:          left;
     z-index:        99;
     position:       relative;
-    padding-bottom: 20px;
+    padding-bottom: $grid-row-height;
 }
 
 bk-cell > .bkcell {
     position: relative;
 }
 
-bk-section-cell, bk-text-cell {
+bk-section-cell {
     display: block;
-    padding: 20px 0;
+    padding: $grid-row-height 0;
 }
 
-bk-text-cell div[contenteditable]{
-    margin-top: 5px;
+.editable-text {
+    outline: none;
+    // contenteditable requires manual override
+    font: $font-size-base $font-family-sans-serif;
+    line-height: $line-height-base;
 }
 
 .bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
-    margin-top: -20px;
+    margin-top: -$grid-row-height;
 }
 
 .code-cell-area {
     .code-cell-input {
-        padding: 40px 20px 20px;
+        padding: $grid-row-height*2 $grid-gutter-width $grid-row-height;
 
         .advanced-mode & {
-            padding-top: 20px;
+            padding-top: $grid-row-height;
 
             &.input-hidden {
-                padding-top: 40px;
+                padding-top: $grid-row-height*2;
             }
         }
 
@@ -105,7 +94,7 @@ bk-text-cell div[contenteditable]{
     }
 
     .code-cell-output {
-        padding: 20px;
+        padding: $grid-row-height $grid-gutter-width;;
         position: relative;
         border-top: solid 1px #CCC;
 
@@ -137,10 +126,6 @@ bk-code-cell .locked .code-cell-output {
     margin-top: 0;
 }
 
-bk-output-display .slickgrid {
-    padding-top: 10px;
-}
-
 bk-output-display pre {
     border:     none;
     margin:     0;
@@ -149,11 +134,11 @@ bk-output-display pre {
 }
 
 .code-cell-hidden {
-    padding-top: 20px;
+    padding-top: $grid-row-height;
 }
 
 bk-cell .section > .toggle-menu {
-    margin-top: -4px;
+    top: $grid-row-height;
 }
 
 .toggle-menu {

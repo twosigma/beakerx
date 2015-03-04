@@ -16,16 +16,24 @@
 
 .bkcell bk-new-cell-menu {
     display: block;
-    opacity: 0;
-    transition: opacity, 300ms;
+
+    .new-cell {
+      visibility: hidden;
+    }
 
     &:hover {
-        opacity: 1;
+      .new-cell {
+        visibility: visible;
+      }
     }
 }
 
 bk-new-cell-menu {
-    margin: 10px 0;
+    margin: 15px 0;
+
+    .advanced-mode & {
+      margin: 0;
+    }
 }
 
 .new-cell {
@@ -39,6 +47,10 @@ bk-new-cell-menu {
   .btn {
     border-color: white !important;
   }
+
+  &.last {
+    margin-top: $grid-row-height;
+  }
 }
 
 .locked .toggle-menu {
@@ -46,8 +58,8 @@ bk-new-cell-menu {
 }
 
 .toggle-menu {
-    top:        20px;
-    right:      20px;
+    top: $grid-row-height - 5px;
+    right: $grid-gutter-width;
     z-index:    10;
     position:   absolute;
 }

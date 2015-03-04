@@ -13,38 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-bk-code-cell-output {
-  .toggle-menu.bkr {
-    right: $grid-gutter-width - 1px;
-  }
-
-  .ui-state-default {
-    background: rgb(235, 235, 235);
-  }
-}
-
-.advanced-mode bk-output-display[type="Html"] {
-  padding-top: 10px;
-  display: block;
-  margin-top: 8px;
-  position: relative;
-}
-
-.advanced-mode bk-output-display.bkr {
-  min-height: 20px;
-}
-
-.markdown-wrapper, .dataTables_scrollBody {
-  box-sizing: content-box;
-}
-
-.modal.output-table-options {
-  .row {
-    margin-bottom: 20px;
-  }
-
-  h2 {
-    margin: 0;
-  }
-}
+(function() {
+  "use strict";
+  window.bkInit.getOutputDisplayCssList = [
+       "app/dist/beakerOutputDisplay.css"
+     ];
+  window.bkInit.getOutputDisplayJsList = [
+       "app/dist/beakerOutputDisplayVendor.js", "app/dist/beakerOutputDisplay.js"
+    ];
+})();

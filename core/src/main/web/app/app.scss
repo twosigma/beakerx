@@ -28,13 +28,14 @@
 @import "styles/stdout";
 @import "styles/modal";
 @import "styles/plugin-manager";
+@import "styles/vendor_overrides";
 
 root {
     display: block;
 }
 
 html body {
-    padding-top: 125px;
+    padding-top: 100px;
 }
 
 body.dragover:after {
@@ -54,9 +55,17 @@ body.dragover:after {
   padding-top: 100px;
 }
 
-ul.cell-output-labels {
-    list-style: none;
+.code-cell-output {
+  > h6 {
+    font-size: $font-size-base;
+    font-weight: bold;
+    line-height: 1em;
     margin: 0;
+  }
+
+  &.error > h6 {
+    color: $error_red;
+  }
 }
 
 .notebook-container {
@@ -65,17 +74,13 @@ ul.cell-output-labels {
     box-sizing: border-box;
 }
 
-.locked .cell-output-labels li {
-    padding-top: 0;
-}
-
 .output_subarea {
     background: transparent;
     border: none;
 }
 
 .bkcell a.evaluate-script {
-    margin-top: 20px;
+    margin-top: $grid-row-height;
 }
 
 .bkcell .CodeMirror {

@@ -21,7 +21,7 @@
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
 
     function initializeEditor(scope, element, attrs) {
-      var div = element.find("div").first().get()[0];
+      var div = element.find(".epiceditor")[0];
       var options = {
         basePath: 'vendor/epiceditor',
         container: div,
@@ -48,7 +48,6 @@
       if (scope.editor) {
         scope.editor.removeListener("preview");
         scope.editor.removeListener("edit");
-        scope.editor.removeListener("focus");
         scope.editor.removeListener("blur");
         scope.editor.removeListener("preview-clicked");
         scope.editor.editorIframeDocument.removeEventListener('keyup', saveToScope);
@@ -65,11 +64,7 @@
       scope.editor.on('edit', function() {
         scope.cellmodel.mode = "edit";
       });
-      scope.editor.on('focus', function() {
-        scope.focused = true;
-      });
       scope.editor.on('blur', function() {
-        scope.focused = false;
         scope.editor.preview();
       });
       scope.editor.on('preview-clicked', function() {

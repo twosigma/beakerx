@@ -16,11 +16,15 @@
 
 .bkcell bk-new-cell-menu {
     display: block;
-    opacity: 0;
-    transition: opacity, 300ms;
+
+    .new-cell {
+      visibility: hidden;
+    }
 
     &:hover {
-        opacity: 1;
+      .new-cell {
+        visibility: visible;
+      }
     }
 }
 

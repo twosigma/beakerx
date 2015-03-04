@@ -150,7 +150,6 @@ gulp.task('buildOutputDisplayTemplate', function () {
     }
     gulp.src(ca)
       .pipe(stripCssComments())
-      .pipe(minifyCSS())
       .pipe(concat('beakerOutputDisplay.css'))
       .pipe(header(banner ))
       .pipe(gulp.dest(buildPath));
@@ -219,7 +218,6 @@ gulp.task('buildIndexTemplate', function () {
         } else {
           block.pipe(gulpSrc(false))
             .pipe(stripCssComments())
-            .pipe(minifyCSS())
             .pipe(concat('beakerApp.css'))
             .pipe(header(banner ))
             .pipe(gulp.dest(buildPath));

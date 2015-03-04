@@ -32,6 +32,12 @@ import org.codehaus.jackson.JsonProcessingException;
 
 public class BasicObjectSerializer implements ObjectSerializer {
 
+  public static final String TYPE_INTEGER = "integer";
+  public static final String TYPE_DOUBLE  = "double";
+  public static final String TYPE_STRING  = "string";
+  public static final String TYPE_BOOLEAN = "boolean";
+  public static final String TYPE_SELECT  = "select";
+  
   protected Map<String,String> types;
   
   private static boolean isListOfMaps(Object o) {
@@ -50,20 +56,28 @@ public class BasicObjectSerializer implements ObjectSerializer {
   
   public BasicObjectSerializer() {
     types = new HashMap<String,String>();
-    types.put("java.lang.Integer", "integer");
+    addTypeConversion("java.lang.Integer", "integer");
     // TODO
   }
   
+  @Override
+  public void addTypeConversion(String from, String to) {
+    types.put(from,to);
+  }
+
+  @Override
   public String convertType(String tn) {
     if (types.containsKey(tn))
       return types.get(tn);
     return "";
   }
   
+  @Override
   public boolean isPrimitiveType(String tn) {
     return types.containsKey(tn);
   }
 
+  @Override
   public boolean writeObject(Object obj, JsonGenerator jgen)
       throws IOException, JsonProcessingException  {
 
@@ -118,4 +132,5 @@ public class BasicObjectSerializer implements ObjectSerializer {
     }
     return true;
   }
+
 }

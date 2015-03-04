@@ -19,28 +19,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.logging.Logger;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 
 /**
- * ErrorGobbler that takes a stream from a evaluator process and write to outputLog
+ * ErrorGobbler that takes a stream from a evaluator process and write to session and cell output area
  */
 public class ErrorGobbler extends Thread {
 
   private final InputStream inputStream;
-  private boolean expectingExtraLine;
   private SimpleEvaluationObject dest;
+  private final static Logger logger = Logger.getLogger(ErrorGobbler.class.getName());
   
   public ErrorGobbler(InputStream is) {
     inputStream = is;
-    expectingExtraLine = false;
-  }
-
-  // R has a very weird behavior: when a session process is
-  // interrupted the master issues an empty line to stderr.  No idea
-  // why or how to stop it, seems like a bug.  Use this to hide it.
-  public void expectExtraLine() {
-    expectingExtraLine = true;
   }
 
   public void reset(SimpleEvaluationObject dest) {
@@ -54,17 +47,13 @@ public class ErrorGobbler extends Thread {
       BufferedReader br = new BufferedReader(isr);
       String line = null;
       while ((line = br.readLine()) != null) {
-        if (expectingExtraLine && line.length() == 0) {
-          expectingExtraLine = false;
-          continue;
-        }
-        if (this.dest != null)
+        if (this.dest != null) {
           this.dest.appendError(line+"\n");
-        else
-          System.err.println(line);
+        } else if(!line.isEmpty()) {
+          logger.info("Error line not captured: '"+line+"'");
+        }
       }
     } catch (IOException ioe) {
-      ioe.printStackTrace();
     }
   }
 }

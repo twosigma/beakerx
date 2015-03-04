@@ -21,10 +21,13 @@ package com.twosigma.beaker.r.module;
  * SimpleEvaluationObject, otherwise just pass it on as output.
  */
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Logger;
 
 public class ROutputHandler extends Thread {
 
@@ -34,7 +37,9 @@ public class ROutputHandler extends Thread {
   private SimpleEvaluationObject dest;
   private final String beginMagic;
   private final String endMagic;
-
+  private final static Logger logger = Logger.getLogger(ROutputHandler.class.getName());
+  private final Semaphore capsem = new Semaphore(0);
+  
   public ROutputHandler(InputStream stream, String beginMagic, String endMagic) {
     this.stream = stream;
     this.recording = false;
@@ -47,6 +52,13 @@ public class ROutputHandler extends Thread {
     this.dest = dest;
   }
 
+  public void waitForCapture() {
+    try {
+      capsem.acquire();
+    } catch (InterruptedException e) {
+    }
+  }
+  
   @Override
   public void run() {
 
@@ -54,12 +66,16 @@ public class ROutputHandler extends Thread {
       String line = null;
       while ((line = br.readLine()) != null) {
         if (line.indexOf(this.beginMagic) >= 0) {
+          logger.fine("begin capturing");
           this.recording = true;
-        } else if ((line.indexOf(this.endMagic) >= 0) && this.dest!=null) {
-          this.dest.finished(this.captured);
+        } else if ((line.indexOf(this.endMagic) >= 0) && this.dest!=null) {        
+          if (this.captured != null)
+            this.dest.finished(this.captured);
+          logger.fine("end capturing: '"+this.captured+"'");
           this.dest = null;
           this.captured = null;
           this.recording = false;
+          capsem.release();
         } else if (this.recording) {
           if (null == this.captured) {
             this.captured = line;
@@ -68,12 +84,12 @@ public class ROutputHandler extends Thread {
           }
         } else if (this.dest!= null) {
           this.dest.appendOutput(line+"\n");
-        } else {
-          System.out.println(line);
+        } else  if(!line.isEmpty()) {
+          logger.info("Output line not captured: '"+line+"'");
         }
       }
     } catch (IOException ioe) {
-      ioe.printStackTrace();
     }
+    capsem.release();
   }
 }

@@ -9,4 +9,5 @@ public interface ObjectSerializer {
   public boolean writeObject(Object obj, JsonGenerator jgen) throws IOException, JsonProcessingException;
   public String convertType(String tn);
   public boolean isPrimitiveType(String tn);
+  public void addTypeConversion(String from, String to);
 }

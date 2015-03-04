@@ -24,7 +24,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
@@ -87,6 +90,17 @@ public class TableDisplay {
         jgen.writeObjectField("types", value.classes);
         jgen.writeEndObject();
       }
+    }
+  }
+  
+  public static class DeSerializer extends JsonDeserializer<TableDisplay> {
+
+    @Override
+    public TableDisplay deserialize(JsonParser arg0, DeserializationContext arg1)
+        throws IOException, JsonProcessingException {
+      System.out.println("PIPPERO");
+      // TODO Auto-generated method stub
+      return null;
     }
   }
 }

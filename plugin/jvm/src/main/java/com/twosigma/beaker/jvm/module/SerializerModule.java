@@ -54,6 +54,9 @@ import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.chart.Color;
 
 import org.codehaus.jackson.Version;
+import org.codehaus.jackson.annotate.JsonSubTypes;
+import org.codehaus.jackson.annotate.JsonSubTypes.Type;
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -119,12 +122,13 @@ public class SerializerModule extends AbstractModule {
     module.addSerializer(Area.class, injector.getInstance(AreaSerializer.class));
     module.addSerializer(YAxis.class, injector.getInstance(YAxisSerializer.class));
     module.addSerializer(Crosshair.class, injector.getInstance(CrosshairSerializer.class));
-
     
     mapper.registerModule(module);
 
-    // SerializationConfig config = mapper.getSerializationConfig();
+    SerializationConfig config = mapper.getSerializationConfig();
 
+    config.addMixInAnnotations(TableDisplay.class, MyMixIn.class);
+    
     // Pretty
     mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 
@@ -144,4 +148,10 @@ public class SerializerModule extends AbstractModule {
   public JacksonJsonProvider getJackson(ObjectMapper mapper) {
     return new JacksonJsonProvider(mapper);
   }
+  
+  @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
+  @JsonSubTypes({  
+    @Type(value = TableDisplay.class, name = "TableDisplay") })  
+  public abstract class MyMixIn {}
+  
 }

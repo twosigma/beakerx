@@ -1,0 +1,241 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "section001",
+            "type": "section",
+            "level": 1,
+            "title": "R Tests",
+            "collapsed": false,
+            "evaluatorReader": false
+        },
+        {
+            "id": "codemGRkqA",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# basic test",
+                    "1+1"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "R",
+                "shellId": "f1b95b78-8c79-4e8b-aeb8-ce92edf3c497",
+                "elapsedTime": 167
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "code2uVtKX",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# test simple plot - this has 'not visible'",
+                    "# histogram of 1000 random normal variables",
+                    "hist(rnorm(1000), breaks=25, col=\"gray\")"
+                ]
+            },
+            "evaluatorReader": true,
+            "lineCount": 3,
+            "output": {
+                "selectedType": "Html",
+                "elapsedTime": 309,
+                "state": {},
+                "pluginName": "R",
+                "shellId": "f1b95b78-8c79-4e8b-aeb8-ce92edf3c497"
+            }
+        },
+        {
+            "id": "codeG6bqsQ",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# test simple plot - this has 'visible' stuff plus graphics",
+                    "# box plot of sample data set of car gas efficiency",
+                    "library(ggplot2)",
+                    "ggplot(mpg, aes(class, hwy, fill = factor(year))) + geom_boxplot()"
+                ]
+            },
+            "output": {
+                "selectedType": "Html",
+                "elapsedTime": 2307,
+                "state": {},
+                "pluginName": "R",
+                "shellId": "f1b95b78-8c79-4e8b-aeb8-ce92edf3c497"
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
+            "id": "codezB5I5w",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# dataframe test - this should auto detect column types",
+                    "# the raw data frame renders as a spreadsheet",
+                    "mpg"
+                ]
+            },
+            "output": {
+                "selectedType": "Table",
+                "elapsedTime": 136,
+                "state": {},
+                "pluginName": "R",
+                "shellId": "f1b95b78-8c79-4e8b-aeb8-ce92edf3c497"
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeW7oCy6",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "#lots of text test",
+                    "ctl <- c(4.17,5.58,5.18,6.11,4.50,4.61,5.17,4.53,5.33,5.14)",
+                    "trt <- c(4.81,4.17,4.41,3.59,5.87,3.83,6.03,4.89,4.32,4.69)",
+                    "group <- gl(2, 10, 20, labels = c(\"Ctl\",\"Trt\"))",
+                    "weight <- c(ctl, trt)",
+                    "lm.D9 <- lm(weight ~ group)",
+                    "lm.D90 <- lm(weight ~ group - 1) # omitting intercept",
+                    "summary(lm.D90)"
+                ]
+            },
+            "output": {
+                "selectedType": "Text",
+                "elapsedTime": 490,
+                "state": {},
+                "pluginName": "R",
+                "shellId": "f1b95b78-8c79-4e8b-aeb8-ce92edf3c497"
+            },
+            "evaluatorReader": true,
+            "lineCount": 8
+        },
+        {
+            "id": "codeD5ACk8",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# printing to stderr and stdout + basic math",
+                    "write(\"1 prints to stderr\", stderr())",
+                    "write(\"2 prints to stderr\", stderr())",
+                    "write(\"3 prints to stderr\", stderr())",
+                    "write(\"4 prints to stderr\", stderr())",
+                    "1+1",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "R",
+                "shellId": "f1b95b78-8c79-4e8b-aeb8-ce92edf3c497",
+                "elapsedTime": 204
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "code2W1yMu",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# printing to stderr and stdout + simple plot - this has 'not visible'",
+                    "# histogram of 1000 random normal variables",
+                    "write(\"1 prints to stderr\", stderr())",
+                    "write(\"2 prints to stderr\", stderr())",
+                    "write(\"3 prints to stdout\", stdout())",
+                    "write(\"4 prints to stderr\", stderr())",
+                    "hist(rnorm(1000), breaks=25, col=\"gray\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "R",
+                "shellId": "f1b95b78-8c79-4e8b-aeb8-ce92edf3c497",
+                "elapsedTime": 261
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "codeXV89q2",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# test for cell evaluation interrupt",
+                    "wait <- function(wait.time = 60){",
+                    "  now <- proc.time()[3]",
+                    "  while(proc.time()[3] < (now + wait.time)) dum <- 0",
+                    "}",
+                    "",
+                    "wait()",
+                    "  ",
+                    "1+1"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "R",
+                "shellId": "f1b95b78-8c79-4e8b-aeb8-ce92edf3c497",
+                "elapsedTime": 1746
+            },
+            "evaluatorReader": true,
+            "lineCount": 9
+        }
+    ]
+}

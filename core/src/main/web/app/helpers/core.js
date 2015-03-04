@@ -329,6 +329,8 @@
       // general
       showModalDialog: function(callback, template, strategy) {
         var options = {
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
           backdrop: true,
           keyboard: true,
           backdropClick: true,
@@ -465,6 +467,8 @@
       },
       showFullModalDialog: function(callback, template, controller, dscope) {
         var options = {
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
           backdrop: true,
           keyboard: true,
           backdropClick: true,
@@ -486,6 +490,8 @@
       },
       showLanguageManager: function() {
         var options = {
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
           backdrop: true,
           keyboard: true,
           backdropClick: true,

@@ -1,0 +1,144 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "code1cS7UE",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// verify 'list of maps' to datatable conversion",
+                    "[ [a:1, b:3], [a:4, c:5] ]"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "1ee39c1e-2131-4dd7-85b8-ea8f017e9c92",
+                "elapsedTime": 1334
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codefZlNFL",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// verify primitive type map to datatable conversion",
+                    "[a:1, b:2, c: 55]",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "1ee39c1e-2131-4dd7-85b8-ea8f017e9c92",
+                "elapsedTime": 54
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeSWnl9a",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// verify non-primitive type map to datatable conversion",
+                    "[a:1, b:2, c: new Plot()]"
+                ]
+            },
+            "output": {
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeC5170V",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// verify basic plots",
+                    "new Plot()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "44974d3b-3c98-4b5c-9dcf-7c26e8428c44",
+                "elapsedTime": 59
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "code6cxIZX",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// basic collection",
+                    "[1,2,3,4,5,6]"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "1ee39c1e-2131-4dd7-85b8-ea8f017e9c92",
+                "elapsedTime": 51
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        }
+    ]
+}

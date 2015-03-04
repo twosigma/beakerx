@@ -34,7 +34,7 @@ public class EvaluationResult {
   }
 
   public Object getValue() {
-    return this.value;
+    return value;
   }
 
   public static class Serializer extends JsonSerializer<EvaluationResult> {
@@ -56,7 +56,7 @@ public class EvaluationResult {
 
       Object obj = evalResult.getValue();
       if (!getObjectSerializer().writeObject(obj, jgen))
-        jgen.writeObject(obj.toString());
+        jgen.writeObject("ERROR: unsupported object "+obj.toString());
     }
   }
 }

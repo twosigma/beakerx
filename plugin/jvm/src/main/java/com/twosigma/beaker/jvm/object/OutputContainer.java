@@ -59,7 +59,7 @@ public class OutputContainer {
         jgen.writeArrayFieldStart("items");
         for (Object obj : value.items)
           if (!getObjectSerializer().writeObject(obj, jgen))
-            jgen.writeObject(obj.toString());
+            jgen.writeObject("ERROR: unsupported object"+obj.toString());
         jgen.writeEndArray();
         jgen.writeEndObject();
       }

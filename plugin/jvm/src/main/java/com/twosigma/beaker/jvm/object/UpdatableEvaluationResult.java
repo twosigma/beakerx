@@ -77,7 +77,7 @@ public class UpdatableEvaluationResult extends Observable {
         jgen.writeFieldName("payload");
         Object obj = evalResult.getValue();
         if (!getObjectSerializer().writeObject(obj, jgen))
-          jgen.writeObject(obj.toString());
+          jgen.writeObject("ERROR: unsupported object"+obj.toString());
         jgen.writeEndObject();
       }
     }

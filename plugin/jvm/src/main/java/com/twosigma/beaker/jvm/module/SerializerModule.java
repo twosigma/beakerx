@@ -21,6 +21,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
+import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
@@ -69,13 +70,8 @@ public class SerializerModule extends AbstractModule {
     bind(SimpleEvaluationObject.Serializer.class);
     bind(EvaluationResult.Serializer.class);
     bind(UpdatableEvaluationResult.Serializer.class);
-    bind(TableDisplay.Serializer.class);
     bind(OutputContainer.Serializer.class);
-    // enable this to use the example object container
-    //bind(TestContainer.Serializer.class);
-    bind(StringObject.Serializer.class);
     bind(BeakerProgressUpdate.Serializer.class);
-    bind(BeakerCodeCell.Serializer.class);
   }
 
   @Provides
@@ -124,9 +120,10 @@ public class SerializerModule extends AbstractModule {
     module.addSerializer(YAxis.class, injector.getInstance(YAxisSerializer.class));
     module.addSerializer(Crosshair.class, injector.getInstance(CrosshairSerializer.class));
 
+    
     mapper.registerModule(module);
 
-    SerializationConfig config = mapper.getSerializationConfig();
+    // SerializationConfig config = mapper.getSerializationConfig();
 
     // Pretty
     mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
@@ -135,6 +132,9 @@ public class SerializerModule extends AbstractModule {
     mapper.disable(SerializationConfig.Feature.AUTO_DETECT_GETTERS);
     mapper.disable(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS);
     mapper.disable(SerializationConfig.Feature.AUTO_DETECT_FIELDS);
+    mapper.disable(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS);
+    
+    NamespaceClient.setInjector(injector);
     
     return mapper;
   }

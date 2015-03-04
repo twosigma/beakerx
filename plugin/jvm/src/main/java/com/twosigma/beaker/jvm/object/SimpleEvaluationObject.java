@@ -163,16 +163,22 @@ public class SimpleEvaluationObject extends Observable {
   public static class Serializer extends JsonSerializer<SimpleEvaluationObject> {
 
     private final Provider<UpdateManager> updateManagerProvider;
+    private final Provider<ObjectSerializer> objectSerializerProvider;
 
     @Inject
-    private Serializer(Provider<UpdateManager> ump) {
+    private Serializer(Provider<UpdateManager> ump, Provider<ObjectSerializer> osp) {
       updateManagerProvider    = ump;
+      objectSerializerProvider = osp;
     }
 
     private UpdateManager getUpdateManager() {
       return this.updateManagerProvider.get();
     }
-
+    
+    private ObjectSerializer getObjectSerializer() {
+      return objectSerializerProvider.get();
+    }
+    
     @Override
     public void serialize(SimpleEvaluationObject value,  JsonGenerator jgen,  SerializerProvider provider)
         throws IOException, JsonProcessingException {
@@ -189,8 +195,10 @@ public class SimpleEvaluationObject extends Observable {
           jgen.writeNumberField("progressBar", value.getProgressBar());
         if (value.getPayloadChanged()) {
           EvaluationResult o = value.getPayload();
-          if (o != null)
-            jgen.writeObjectField("payload", o);
+          if (o != null) {
+            jgen.writeFieldName("payload");
+            if (!getObjectSerializer().writeObject(o, jgen))
+              jgen.writeObject("ERROR: unsupported object "+o.toString());          }
         }
         
         jgen.writeArrayFieldStart("outputdata");
@@ -211,7 +219,6 @@ public class SimpleEvaluationObject extends Observable {
         jgen.writeEndArray();
         jgen.writeEndObject();
       }
-
     }
   }
 

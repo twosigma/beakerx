@@ -16,12 +16,17 @@
 
 package com.twosigma.beaker;
 
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Provider;
+import com.twosigma.beaker.jvm.object.ObjectSerializer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +36,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.ClientProtocolException;
+import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -38,16 +44,27 @@ import org.codehaus.jackson.type.TypeReference;
 
 public class NamespaceClient {
 
+  private static Injector injector;
+  
+  public static void setInjector(Injector m) { injector = m; }
+  
   private String session;
-  private ObjectMapper mapper;
   private String auth;
   private String urlBase;
   private String ctrlUrlBase;
   private SimpleEvaluationObject seo;
   private Class<?> [] oclasses;
 
-  private NamespaceClient(String session) {
-    this.mapper = new ObjectMapper();
+  private final Provider<ObjectMapper> objectMapper;
+  private final Provider<ObjectSerializer> objectSerializerProvider;
+
+  @Inject
+  private NamespaceClient(Provider<ObjectMapper> ump, Provider<ObjectSerializer> osp) {
+    objectMapper       = ump;
+    objectSerializerProvider = osp;
+  }
+  
+  private void setup(String session) {
     this.session = session;
     String account = "beaker:" + System.getenv("beaker_core_password");
     this.auth = "Basic " + Base64.encodeBase64String(account.getBytes());
@@ -81,11 +98,14 @@ public class NamespaceClient {
     if (currentSession!=null)
       return nsClients.get(currentSession);
     return null;
-    }
+  }
 
   public synchronized  static NamespaceClient getBeaker(String s) {
-    if (!nsClients.containsKey(s))
-      nsClients.put(s, new NamespaceClient(s));
+    if (!nsClients.containsKey(s)) {
+      NamespaceClient c = injector.getInstance(NamespaceClient.class);
+      c.setup(s);
+      nsClients.put(s, c);
+    }
     currentSession = s;
     return nsClients.get(currentSession);
   }
@@ -107,7 +127,12 @@ public class NamespaceClient {
       .add("sync", sync.toString())
       .add("session", this.session);
     if (!unset) {
-      form.add("value", mapper.writeValueAsString(value));
+      StringWriter sw = new StringWriter();
+      JsonGenerator jgen = objectMapper.get().getJsonFactory().createJsonGenerator(sw);
+      if (!objectSerializerProvider.get().writeObject(value, jgen))
+        form.add("value", "ERROR: unsupported object "+value.toString());
+      else
+        form.add("value", sw.toString());
     }
     String reply = Request.Post(urlBase + "/set")
       .addHeader("Authorization", auth).bodyForm(form.build())
@@ -144,7 +169,7 @@ public class NamespaceClient {
     String valueString = Request.Get(urlBase + "/get?" + args)
       .addHeader("Authorization", auth)
       .execute().returnContent().asString();
-    NamespaceBinding binding = mapper.readValue(valueString, NamespaceBinding.class);
+    NamespaceBinding binding = objectMapper.get().readValue(valueString, NamespaceBinding.class);
     if (!binding.getDefined()) {
       throw new RuntimeException("name not defined: " + name);
     }
@@ -220,7 +245,7 @@ public class NamespaceClient {
     
     while(ret==null && idx<oclasses.length) {   
       try {
-        ret = mapper.readValue(reply, oclasses[idx++]);
+        ret = objectMapper.get().readValue(reply, oclasses[idx++]);
       } catch(JsonParseException e)
       { 
       } catch(EOFException e2)
@@ -251,7 +276,7 @@ public class NamespaceClient {
     String reply = Request.Post(ctrlUrlBase +urlfragment)
         .addHeader("Authorization", auth).bodyForm(postdata.build())
         .execute().returnContent().asString();
-    return mapper.readValue(reply, Boolean.class);
+    return objectMapper.get().readValue(reply, Boolean.class);
   }
   
   public boolean showStatus(String msg) throws ClientProtocolException, IOException {
@@ -274,7 +299,7 @@ public class NamespaceClient {
     String reply = Request.Get(ctrlUrlBase + "/getEvaluators?" + args)
         .addHeader("Authorization", auth)
         .execute().returnContent().asString();
-    return mapper.readValue(reply, new TypeReference<List<String>>(){});
+    return objectMapper.get().readValue(reply, new TypeReference<List<String>>(){});
   }
   
   public List<BeakerCodeCell> getCodeCells(String filter) throws ClientProtocolException, IOException {
@@ -282,14 +307,14 @@ public class NamespaceClient {
     String reply = Request.Get(ctrlUrlBase + "/getCodeCells?" + args)
         .addHeader("Authorization", auth)
         .execute().returnContent().asString();
-    return mapper.readValue(reply, new TypeReference<List<BeakerCodeCell>>(){});
+    return objectMapper.get().readValue(reply, new TypeReference<List<BeakerCodeCell>>(){});
   }
   
   private String runStringRequest(String urlfragment, Form postdata) throws ClientProtocolException, IOException {
     String reply = Request.Post(ctrlUrlBase + urlfragment)
         .addHeader("Authorization", auth).bodyForm(postdata.build())
         .execute().returnContent().asString();
-    return mapper.readValue(reply, StringObject.class).getText();
+    return objectMapper.get().readValue(reply, StringObject.class).getText();
   }
   
   public String setCodeCellBody(String name, String body) throws ClientProtocolException, IOException {

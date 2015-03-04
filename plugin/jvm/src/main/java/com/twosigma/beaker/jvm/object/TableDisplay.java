@@ -65,7 +65,7 @@ public class TableDisplay {
         if (m.containsKey(cn))
           vals.add(m.get(cn));
         else
-          vals.addAll(null);
+          vals.add(null);
       }
       values.add(vals);
     }

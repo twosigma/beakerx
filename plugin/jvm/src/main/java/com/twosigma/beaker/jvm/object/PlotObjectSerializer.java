@@ -21,11 +21,16 @@ import com.twosigma.beaker.chart.xychart.XYChart;
 import com.twosigma.beaker.chart.xychart.plotitem.XYGraphics;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 
 public class PlotObjectSerializer extends BasicObjectSerializer {
 
+  private final static Logger logger = Logger.getLogger(PlotObjectSerializer.class.getName());
+  
   @Override
   public boolean writeObject(Object obj, JsonGenerator jgen)
       throws IOException, JsonProcessingException  {
@@ -43,7 +48,7 @@ public class PlotObjectSerializer extends BasicObjectSerializer {
         return false;
       }
     } catch (Exception e) {
-      System.err.println(e);
+      logger.log(Level.SEVERE,"exception in serialization",e);
       return false;
     }
     return true;

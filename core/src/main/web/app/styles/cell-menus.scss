@@ -43,6 +43,10 @@ bk-new-cell-menu {
   .btn {
     border-color: white !important;
   }
+
+  &.last {
+    margin-top: $grid-row-height;
+  }
 }
 
 .locked .toggle-menu {

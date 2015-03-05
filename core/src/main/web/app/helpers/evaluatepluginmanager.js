@@ -130,11 +130,9 @@
                     if (factory !== undefined && factory.create !== undefined) {
                       return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
                     } else {
-		      // or should someone pass in a scope to use, like with a method on the evaluatorLoadQueue?
-                      $rootScope.pluginId = name;
-		      var modal = $modal.open({backdrop: true,
-					       backdropClick: true,
-					       template: JST['helpers/plugin-load-error']()});
+		      $modal.open({backdrop: true,
+				   backdropClick: true,
+				   template: JST['helpers/plugin-load-error']({pluginId: name})});
 		      deferred.reject("no factory for evaluator plugin");
 		    }
                   }, function(err) {

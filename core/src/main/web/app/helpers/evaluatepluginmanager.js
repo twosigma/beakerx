@@ -19,7 +19,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.evaluatePluginManager', ['bk.utils']);
-  module.factory('bkEvaluatePluginManager', function(bkUtils, $rootScope, $modal) {
+  module.factory('bkEvaluatePluginManager', function(bkUtils, $modal) {
     var nameToUrlMap = {};
     var nameToVisualParams = {};
     var plugins = {};

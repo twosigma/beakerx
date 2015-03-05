@@ -54,11 +54,64 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
+                        },
+                        "columnNames": [
+                            "a",
+                            "b",
+                            "c"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "1ee39c1e-2131-4dd7-85b8-ea8f017e9c92",
-                "elapsedTime": 1334
+                "shellId": "d79b0365-1502-4509-b608-0854d55d65e0",
+                "elapsedTime": 1255,
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            3,
+                            null
+                        ],
+                        [
+                            4,
+                            null,
+                            5
+                        ]
+                    ],
+                    "types": [
+                        "integer",
+                        "integer",
+                        "integer"
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -139,6 +192,37 @@
             },
             "evaluatorReader": true,
             "lineCount": 2
+        },
+        {
+            "id": "codepZM8Jo",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "beaker.x = [ [a:1, b:3], [a:4, c:5] ]",
+                    "\"\""
+                ]
+            },
+            "output": {
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeZVB2HL",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "beaker.x"
+                ]
+            },
+            "output": {
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         }
     ]
 }

@@ -15,8 +15,11 @@
  */
 package com.twosigma.beaker.jvm.module;
 
+import java.io.IOException;
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.BeakerCodeCell;
@@ -41,9 +44,10 @@ import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
+import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
-import com.twosigma.beaker.jvm.object.ObjectSerializer;
+import com.twosigma.beaker.jvm.object.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.PlotObjectSerializer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -53,11 +57,13 @@ import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.chart.Color;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.Version;
-import org.codehaus.jackson.annotate.JsonSubTypes;
-import org.codehaus.jackson.annotate.JsonSubTypes.Type;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.codehaus.jackson.map.DeserializationContext;
+import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
@@ -67,7 +73,7 @@ import org.cometd.bayeux.server.BayeuxServer;
  * The Guice module as the registry of mapping from classes to serializers
  */
 public class SerializerModule extends AbstractModule {
-
+  
   @Override
   protected void configure() {
     bind(SimpleEvaluationObject.Serializer.class);
@@ -88,8 +94,14 @@ public class SerializerModule extends AbstractModule {
 
   @Provides
   @Singleton
-  public ObjectSerializer getObjectSerializer(Injector injector) {
-    ObjectSerializer serializer = injector.getInstance(PlotObjectSerializer.class);
+  public BeakerObjectConverter getObjectSerializer(Injector injector) {
+    BeakerObjectConverter serializer = injector.getInstance(PlotObjectSerializer.class);
+    try {
+    serializer.addTypeDeserializer(injector.getInstance(TableDisplay.DeSerializer.class));
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+    // TODO add here more
     return serializer;
   }
 
@@ -97,21 +109,22 @@ public class SerializerModule extends AbstractModule {
   @Singleton
   public ObjectMapper getObjectMapper(Injector injector) {
     ObjectMapper mapper = new ObjectMapper();
-
+try {
     SimpleModule module =
             new SimpleModule("MySerializer", new Version(1, 0, 0, null));
 
+    // this is the root object we deserialize when reading from notebook namespace
+    module.addDeserializer(NamespaceBinding.class, injector.getInstance(NamespaceBindingDeserializer.class));
+    
+    // all these objects can be returned as values and/or stored in the notebook namespace
     module.addSerializer(SimpleEvaluationObject.class, injector.getInstance(SimpleEvaluationObject.Serializer.class));
     module.addSerializer(EvaluationResult.class, injector.getInstance(EvaluationResult.Serializer.class));
     module.addSerializer(UpdatableEvaluationResult.class, injector.getInstance(UpdatableEvaluationResult.Serializer.class));
     module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
     module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
-    // enable this to use the example object container
-    //module.addSerializer(TestContainer.class, injector.getInstance(TestContainer.Serializer.class));
     module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
     module.addSerializer(BeakerProgressUpdate.class, injector.getInstance(BeakerProgressUpdate.Serializer.class));
     module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
-
     module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
     module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));
     module.addSerializer(CombinedPlot.class, injector.getInstance(CombinedPlotSerializer.class));
@@ -125,11 +138,6 @@ public class SerializerModule extends AbstractModule {
     
     mapper.registerModule(module);
 
-    SerializationConfig config = mapper.getSerializationConfig();
-
-    config.addMixInAnnotations(TableDisplay.class, MyMixIn.class);
-    
-    // Pretty
     mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
 
     // Manually serialize everything, either through mixin or serializer
@@ -139,7 +147,9 @@ public class SerializerModule extends AbstractModule {
     mapper.disable(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS);
     
     NamespaceClient.setInjector(injector);
-    
+} catch(Exception e) {
+  e.printStackTrace();
+}
     return mapper;
   }
 
@@ -149,9 +159,31 @@ public class SerializerModule extends AbstractModule {
     return new JacksonJsonProvider(mapper);
   }
   
-  @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
-  @JsonSubTypes({  
-    @Type(value = TableDisplay.class, name = "TableDisplay") })  
-  public abstract class MyMixIn {}
+  /*
+   * This class is used to deserialize the root object when reading from the notebook namespace
+   */
+  public static class NamespaceBindingDeserializer extends JsonDeserializer<NamespaceBinding> {
+    
+    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+
+    @Inject
+    public NamespaceBindingDeserializer(Provider<BeakerObjectConverter> osp) {
+      objectSerializerProvider = osp;
+    }
+
+    @Override
+    public NamespaceBinding deserialize(JsonParser jp, DeserializationContext ctxt) 
+      throws IOException, JsonProcessingException {
+        ObjectMapper mapper = (ObjectMapper)jp.getCodec();
+        JsonNode node = mapper.readTree(jp);
+        String name = node.get("name").asText();
+        String session = node.get("session").asText();
+        Boolean defined = node.get("defined").asBoolean();
+        JsonNode o = node.get("value");
+        
+        Object obj = objectSerializerProvider.get().deserialize(o, mapper);
+        return new NamespaceBinding(name,session,obj,defined);
+    }
+  }
   
 }

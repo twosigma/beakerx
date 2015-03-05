@@ -34,7 +34,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.jvm.object.BasicObjectSerializer;
-import com.twosigma.beaker.jvm.object.ObjectSerializer;
+import com.twosigma.beaker.jvm.object.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.r.utils.RServerEvaluator;
 
@@ -48,12 +48,12 @@ public class RShellRest {
 
   private int corePort = -1;
   private final Map<String, RServerEvaluator> shells = new HashMap<>();
-  private final Provider<ObjectSerializer> objectSerializerProvider;
+  private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
   private final static Logger logger = Logger.getLogger(RShellRest.class.getName());
       
   @Inject
-  public RShellRest(Provider<ObjectSerializer> osp) {
+  public RShellRest(Provider<BeakerObjectConverter> osp) {
     logger.fine("created");
     objectSerializerProvider = osp;
     objectSerializerProvider.get().addTypeConversion("org.rosuda.REngine.REXPFactor", BasicObjectSerializer.TYPE_SELECT);

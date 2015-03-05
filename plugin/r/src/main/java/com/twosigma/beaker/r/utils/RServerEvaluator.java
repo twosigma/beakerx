@@ -35,7 +35,7 @@ import org.rosuda.REngine.RList;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
-import com.twosigma.beaker.jvm.object.ObjectSerializer;
+import com.twosigma.beaker.jvm.object.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus;
 import com.twosigma.beaker.jvm.object.TableDisplay;
@@ -67,9 +67,9 @@ public class RServerEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
   protected boolean iswindows;
-  protected ObjectSerializer objSerializer;
+  protected BeakerObjectConverter objSerializer;
 
-  public RServerEvaluator(String id, String sId, int cp, ObjectSerializer os) {
+  public RServerEvaluator(String id, String sId, int cp, BeakerObjectConverter os) {
     logger.fine("created");
     shellId = id;
     sessionId = sId;

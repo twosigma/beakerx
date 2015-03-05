@@ -24,10 +24,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
@@ -43,7 +41,7 @@ public class TableDisplay {
     classes = cl;
   }
 
-  public TableDisplay(Collection<Map<?,?>> v, ObjectSerializer serializer) {
+  public TableDisplay(Collection<Map<?,?>> v, BeakerObjectConverter serializer) {
     values = new ArrayList<List<?>>();
     columns = new ArrayList<String>();
     classes = new ArrayList<String>();
@@ -93,14 +91,19 @@ public class TableDisplay {
     }
   }
   
-  public static class DeSerializer extends JsonDeserializer<TableDisplay> {
+  public static class DeSerializer implements ObjectDeserializer {
+
 
     @Override
-    public TableDisplay deserialize(JsonParser arg0, DeserializationContext arg1)
-        throws IOException, JsonProcessingException {
-      System.out.println("PIPPERO");
+    public Object deserialize(JsonNode n) {
       // TODO Auto-generated method stub
-      return null;
+      System.out.println("DESERIALIZE TABLE DISPLAY");
+      return "TABLE DISPLAY";
+    }
+
+    @Override
+    public boolean canBeUsed(JsonNode n) {
+      return n.has("type") && n.get("type").asText().equals("TableDisplay");
     }
   }
 }

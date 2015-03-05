@@ -33,9 +33,11 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
-public class BasicObjectSerializer implements ObjectSerializer {
+public class BasicObjectSerializer implements BeakerObjectConverter {
 
   public static final String TYPE_INTEGER = "integer";
   public static final String TYPE_DOUBLE  = "double";
@@ -45,7 +47,8 @@ public class BasicObjectSerializer implements ObjectSerializer {
   
   protected Map<String,String> types;
   private final static Logger logger = Logger.getLogger(BasicObjectSerializer.class.getName());
-  
+  protected static List<ObjectDeserializer> supportedTypes;
+
   protected boolean isListOfMaps(Object o) {
     if (! (o instanceof Collection<?>))
       return false;
@@ -94,6 +97,8 @@ public class BasicObjectSerializer implements ObjectSerializer {
     addTypeConversion("java.util.concurrent.atomic.AtomicLong", TYPE_INTEGER);
     addTypeConversion("java.math.BigDecimal", TYPE_INTEGER);
     addTypeConversion("java.math.BigInteger", TYPE_INTEGER);
+    
+    supportedTypes = new ArrayList<ObjectDeserializer>();
   }
   
   @Override
@@ -146,8 +151,10 @@ public class BasicObjectSerializer implements ObjectSerializer {
         // convert this 'on the fly' to an array of objects
         Collection<?> c = (Collection<?>) obj;
         jgen.writeStartArray();
-        for(Object o : c)
-          writeObject(o, jgen);
+        for(Object o : c) {
+          if (!writeObject(o, jgen))
+            jgen.writeObject("ERROR: unsupported object "+o.toString());
+        }
         jgen.writeEndArray();
       } else if(isPrimitiveTypeMap(obj)) {
         logger.fine("primitive type map");
@@ -204,6 +211,42 @@ public class BasicObjectSerializer implements ObjectSerializer {
       return false;
     }
     return true;
+  }
+
+  @Override
+  public Object deserialize(JsonNode n, ObjectMapper mapper) {
+    Object obj = null;
+    if (n!=null) {
+      for (ObjectDeserializer d : supportedTypes) {
+        try {
+          if (d.canBeUsed(n)) {
+            obj = d.deserialize(n);
+            if (obj != null) {
+              logger.finest("used custom deserialization");
+              break;
+            }
+          }
+        } catch (Exception e) {
+          logger.log(Level.SEVERE,"exception in deserialization",e);
+          obj = null;
+        }
+      }
+    }
+    if (obj==null) {
+      logger.finest("using standard deserialization");
+      try {
+        obj = mapper.readValue(n, Object.class);
+      } catch (Exception e) {
+        logger.log(Level.SEVERE,"exception in auto deserialization",e);
+        obj = null;
+      }
+    }
+    return obj;
+  }
+
+  @Override
+  public void addTypeDeserializer(ObjectDeserializer o) {
+    supportedTypes.add(o);
   }
 
 }

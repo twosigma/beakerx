@@ -163,10 +163,10 @@ public class SimpleEvaluationObject extends Observable {
   public static class Serializer extends JsonSerializer<SimpleEvaluationObject> {
 
     private final Provider<UpdateManager> updateManagerProvider;
-    private final Provider<ObjectSerializer> objectSerializerProvider;
+    private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
     @Inject
-    private Serializer(Provider<UpdateManager> ump, Provider<ObjectSerializer> osp) {
+    private Serializer(Provider<UpdateManager> ump, Provider<BeakerObjectConverter> osp) {
       updateManagerProvider    = ump;
       objectSerializerProvider = osp;
     }
@@ -175,7 +175,7 @@ public class SimpleEvaluationObject extends Observable {
       return this.updateManagerProvider.get();
     }
     
-    private ObjectSerializer getObjectSerializer() {
+    private BeakerObjectConverter getObjectSerializer() {
       return objectSerializerProvider.get();
     }
     

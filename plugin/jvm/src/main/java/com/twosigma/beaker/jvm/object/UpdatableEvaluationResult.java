@@ -48,15 +48,15 @@ public class UpdatableEvaluationResult extends Observable {
   public static class Serializer extends JsonSerializer<UpdatableEvaluationResult> {
 
     private final Provider<UpdateManager> updateManagerProvider;
-    private final Provider<ObjectSerializer> objectSerializerProvider;
+    private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
     @Inject
-    private Serializer(Provider<UpdateManager> ump, Provider<ObjectSerializer> osp) {
+    private Serializer(Provider<UpdateManager> ump, Provider<BeakerObjectConverter> osp) {
       this.updateManagerProvider = ump;
       objectSerializerProvider = osp;
     }
 
-    private ObjectSerializer getObjectSerializer() {
+    private BeakerObjectConverter getObjectSerializer() {
       return objectSerializerProvider.get();
     }
 

@@ -19,7 +19,7 @@ package com.twosigma.beaker;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
-import com.twosigma.beaker.jvm.object.ObjectSerializer;
+import com.twosigma.beaker.jvm.object.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
@@ -56,10 +56,10 @@ public class NamespaceClient {
   private Class<?> [] oclasses;
 
   private final Provider<ObjectMapper> objectMapper;
-  private final Provider<ObjectSerializer> objectSerializerProvider;
+  private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
   @Inject
-  private NamespaceClient(Provider<ObjectMapper> ump, Provider<ObjectSerializer> osp) {
+  private NamespaceClient(Provider<ObjectMapper> ump, Provider<BeakerObjectConverter> osp) {
     objectMapper       = ump;
     objectSerializerProvider = osp;
   }
@@ -131,8 +131,11 @@ public class NamespaceClient {
       JsonGenerator jgen = objectMapper.get().getJsonFactory().createJsonGenerator(sw);
       if (!objectSerializerProvider.get().writeObject(value, jgen))
         form.add("value", "ERROR: unsupported object "+value.toString());
-      else
+      else {
+        jgen.flush();
+        System.out.println("OUTPUT: "+sw.toString());
         form.add("value", sw.toString());
+      }
     }
     String reply = Request.Post(urlBase + "/set")
       .addHeader("Authorization", auth).bodyForm(form.build())

@@ -25,7 +25,7 @@ import org.codehaus.jackson.map.SerializerProvider;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.twosigma.beaker.jvm.object.ObjectSerializer;
+import com.twosigma.beaker.jvm.object.BeakerObjectConverter;
 
 public class BeakerProgressUpdate {
 
@@ -91,14 +91,14 @@ public class BeakerProgressUpdate {
 
   public static class Serializer extends JsonSerializer<BeakerProgressUpdate> {
 
-    private final Provider<ObjectSerializer> objectSerializerProvider;
+    private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
     @Inject
-    private Serializer(Provider<ObjectSerializer> osp) {
+    private Serializer(Provider<BeakerObjectConverter> osp) {
       objectSerializerProvider = osp;
     }
 
-    private ObjectSerializer getObjectSerializer() {
+    private BeakerObjectConverter getObjectSerializer() {
       return objectSerializerProvider.get();
     }
 

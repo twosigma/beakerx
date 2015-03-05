@@ -39,14 +39,14 @@ public class EvaluationResult {
 
   public static class Serializer extends JsonSerializer<EvaluationResult> {
 
-    private final Provider<ObjectSerializer> objectSerializerProvider;
+    private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
     @Inject
-    public Serializer(Provider<ObjectSerializer> osp) {
+    public Serializer(Provider<BeakerObjectConverter> osp) {
       objectSerializerProvider = osp;
     }
 
-    private ObjectSerializer getObjectSerializer() {
+    private BeakerObjectConverter getObjectSerializer() {
       return objectSerializerProvider.get();
     }
 

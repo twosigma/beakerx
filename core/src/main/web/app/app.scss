@@ -83,23 +83,6 @@ body.dragover:after {
     margin-top: $grid-row-height;
 }
 
-.bkcell .CodeMirror {
-    clear: both;
-}
-
-.CodeMirror-linenumber {
-    text-align: left;
-}
-
-.CodeMirror-gutters {
-    border:             none;
-    background-color:   transparent;
-}
-
-.CodeMirror {
-    height: auto;
-}
-
 .tschartcontainer {
     width: 640px;
     height: 480px;
@@ -173,17 +156,6 @@ PRE.CodeContainer img {
 
 .display-none {
     display: none;
-}
-
-.CodeMirror-fullscreen {
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 9999;
-    background: white !important;
-    color: black;
 }
 
 input[type="text"].inputerror {
@@ -270,10 +242,6 @@ tree-node {
     background-color: rgb(205, 223, 214);
 
     -webkit-transition: 0.5s background;
-}
-
-.CodeMirror-matchingbracket {
-    font-weight: bold;
 }
 
 .dropdown-menu {

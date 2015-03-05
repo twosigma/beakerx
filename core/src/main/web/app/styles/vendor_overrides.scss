@@ -14,6 +14,31 @@
  *  limitations under the License.
  */
 
+.CodeMirror {
+  clear: both;
+  height: auto;
+}
+
+.CodeMirror-gutters {
+  border:             none;
+  background-color:   transparent;
+}
+
+.CodeMirror-fullscreen {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background: white !important;
+  color: black;
+}
+
+.CodeMirror-matchingbracket {
+  font-weight: bold;
+}
+
 .CodeMirror-hints {
   z-index: 150;
 }
@@ -24,7 +49,7 @@
 
 .CodeMirror-linenumber {
   padding-left: 0;
-  padding-right: 3px;
+  padding-right: 5px;
   min-width: $grid-gutter-width - 3px;
 }
 

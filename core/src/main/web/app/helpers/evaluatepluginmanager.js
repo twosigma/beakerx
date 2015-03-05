@@ -131,13 +131,10 @@
                       return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
                     } else {
 		      // or should someone pass in a scope to use, like with a method on the evaluatorLoadQueue?
-		      $rootScope.pluginId = name;
-		      $rootScope.closeErrorDialog = function () {
-			  $rootScope.modal.close();
-		      }
-		      $rootScope.modal = $modal.open({backdrop: true,
-						      backdropClick: true,
-						      template: JST['helpers/plugin-load-error']()});
+                      $rootScope.pluginId = name;
+		      var modal = $modal.open({backdrop: true,
+					       backdropClick: true,
+					       template: JST['helpers/plugin-load-error']()});
 		      deferred.reject("no factory for evaluator plugin");
 		    }
                   }, function(err) {

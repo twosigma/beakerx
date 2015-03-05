@@ -1,0 +1,37 @@
+<!--
+    Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<div class="modal-header fixed" style="height: 69px"><!-- height linked to modal-body padding-top  -->
+  <h1>Language Manager Error</h1>
+</div>
+<div class="modal-body fixed modal-large" style="padding-top: 69px; padding-bottom: 68px;"><!-- padding linked to modal-header/-footer heights  -->
+
+<p>Failed to start {{pluginId}}.</p>
+
+<p>Did you install it according to the instructions
+on <a href="http://beakernotebook.com/installing/{{pluginId}}">BeakerNotebook.com</a>?
+</p>
+
+<p>If you already have it,
+then <a href="http://beakernotebook.com/prefs">edit your preferences
+file</a> to help Beaker find it on your system.
+</p>
+
+
+</div>
+
+<div class="modal-footer fixed bkr" style="height: 68px;"> <!-- height linked to modal-body padding-bottom -->
+  <button class="btn btn-primary modal-submit bkr" ng-click='closeErrorDialog()'>OK</button>
+</div>

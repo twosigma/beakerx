@@ -19,7 +19,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.evaluatePluginManager', ['bk.utils']);
-  module.factory('bkEvaluatePluginManager', function(bkUtils) {
+  module.factory('bkEvaluatePluginManager', function(bkUtils, $rootScope, $modal) {
     var nameToUrlMap = {};
     var nameToVisualParams = {};
     var plugins = {};
@@ -129,8 +129,17 @@
                   .then(function(factory) {
                     if (factory !== undefined && factory.create !== undefined) {
                       return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
-                    } else
-                      deferred.reject("no factory for evaluator plugin");
+                    } else {
+		      // or should someone pass in a scope to use, like with a method on the evaluatorLoadQueue?
+		      $rootScope.pluginId = name;
+		      $rootScope.closeErrorDialog = function () {
+			  $rootScope.modal.close();
+		      }
+		      $rootScope.modal = $modal.open({backdrop: true,
+						      backdropClick: true,
+						      template: JST['helpers/plugin-load-error']()});
+		      deferred.reject("no factory for evaluator plugin");
+		    }
                   }, function(err) {
                     if (!_.isEmpty(ex.name)) {
                       delete plugins[ex.name];

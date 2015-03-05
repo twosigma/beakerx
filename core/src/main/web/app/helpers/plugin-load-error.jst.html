@@ -13,25 +13,27 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="modal-header fixed" style="height: 69px"><!-- height linked to modal-body padding-top  -->
-  <h1>Language Manager Error</h1>
+<div class="modal-header fixed">
+  <h1>Language Error</h1>
 </div>
-<div class="modal-body fixed modal-large" style="padding-top: 69px; padding-bottom: 68px;"><!-- padding linked to modal-header/-footer heights  -->
+<div class="modal-body fixed modal-large">
 
 <p>Failed to start {{pluginId}}.</p>
 
 <p>Did you install it according to the instructions
-on <a href="http://beakernotebook.com/installing/{{pluginId}}">BeakerNotebook.com</a>?
+on <a target="_blank" href="http://beakernotebook.com/getting-started#{{pluginId}}">BeakerNotebook.com</a>?
 </p>
 
-<p>If you already have it,
-then <a href="http://beakernotebook.com/prefs">edit your preferences
-file</a> to help Beaker find it on your system, and then restart
-Beaker and try again.
+<p>If you already have it, then <a target="_blank"
+href="https://github.com/twosigma/beaker-notebook/wiki/Language-Preferences">edit
+your preferences file</a> to help Beaker find it on your system, and
+then restart Beaker and try again.
 </p>
+
+<p>Any other languages in your notebook should still work.</p>
 
 </div>
 
-<div class="modal-footer fixed bkr" style="height: 68px;"> <!-- height linked to modal-body padding-bottom -->
+<div class="modal-footer fixed bkr">
   <button class="beaker-btn active" ng-click='$close()'>OK</button>
 </div>

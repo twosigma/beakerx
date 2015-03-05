@@ -16,11 +16,14 @@
 package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializerProvider;
 
 import com.google.inject.Inject;
@@ -65,4 +68,44 @@ public class OutputContainer {
       }
     }
   }
+  
+  public static class DeSerializer implements ObjectDeserializer {
+    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+
+    @Inject
+    public DeSerializer(Provider<BeakerObjectConverter> osp) {
+      objectSerializerProvider = osp;
+    }
+
+    private BeakerObjectConverter getObjectSerializer() {
+      return objectSerializerProvider.get();
+    }
+
+    @Override
+    public Object deserialize(JsonNode n, ObjectMapper mapper) {
+      Object o = null;
+      try {
+        List<Object> vals = null;
+        
+        if (n.has("items")) {
+          JsonNode nn = n.get("items");
+          if (nn.isArray()) {
+            vals = new ArrayList<Object>();
+            for (JsonNode no : nn) {
+              vals.add(getObjectSerializer().deserialize(no, mapper));
+            }
+          }
+        }
+        o = new OutputContainer(vals);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      return o;
+    }
+
+    @Override
+    public boolean canBeUsed(JsonNode n) {
+      return n.has("type") && n.get("type").asText().equals("OutputContainer");
+    }
+  }     
 }

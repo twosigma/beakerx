@@ -17,8 +17,9 @@
 package com.twosigma.beaker.jvm.object;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 
 public interface ObjectDeserializer {
   public boolean canBeUsed(JsonNode n);
-  public Object deserialize(JsonNode n);
+  public Object deserialize(JsonNode n, ObjectMapper mapper);
 }

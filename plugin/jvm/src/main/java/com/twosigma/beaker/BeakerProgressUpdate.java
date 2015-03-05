@@ -110,13 +110,14 @@ public class BeakerProgressUpdate {
 
       synchronized (value) {
         jgen.writeStartObject();
+        jgen.writeStringField("type", "BeakerProgressUpdate");
         jgen.writeStringField("message", value.message);
         jgen.writeNumberField("progressBar", value.progressBar);
         Object obj = value.payload;
         if (obj != null) {
           jgen.writeFieldName("payload");          
           if (!getObjectSerializer().writeObject(obj, jgen))
-            jgen.writeObject(obj.toString());
+            jgen.writeObject("ERROR: unsupported object "+obj.toString());
         }
         jgen.writeEndObject();
       }

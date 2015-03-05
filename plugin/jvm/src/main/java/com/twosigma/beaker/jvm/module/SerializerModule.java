@@ -16,6 +16,11 @@
 package com.twosigma.beaker.jvm.module;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -73,6 +78,7 @@ import org.cometd.bayeux.server.BayeuxServer;
  * The Guice module as the registry of mapping from classes to serializers
  */
 public class SerializerModule extends AbstractModule {
+  private final static Logger logger = Logger.getLogger(SerializerModule.class.getName());
   
   @Override
   protected void configure() {
@@ -97,11 +103,13 @@ public class SerializerModule extends AbstractModule {
   public BeakerObjectConverter getObjectSerializer(Injector injector) {
     BeakerObjectConverter serializer = injector.getInstance(PlotObjectSerializer.class);
     try {
-    serializer.addTypeDeserializer(injector.getInstance(TableDisplay.DeSerializer.class));
+      serializer.addTypeDeserializer(injector.getInstance(TableDisplay.DeSerializer.class));
+      serializer.addTypeDeserializer(injector.getInstance(OutputContainer.DeSerializer.class));
+      // TODO add here more - BeakerCodeCell BeakerProgressUpdate SimpleEvaluationObject UpdatableEvaluationResult
+      
     } catch(Exception e) {
-      e.printStackTrace();
+      logger.log(Level.SEVERE, "exception while creating ObjectSerializer", e);
     }
-    // TODO add here more
     return serializer;
   }
 
@@ -109,47 +117,48 @@ public class SerializerModule extends AbstractModule {
   @Singleton
   public ObjectMapper getObjectMapper(Injector injector) {
     ObjectMapper mapper = new ObjectMapper();
-try {
-    SimpleModule module =
-            new SimpleModule("MySerializer", new Version(1, 0, 0, null));
+    try {
+      SimpleModule module =
+          new SimpleModule("MySerializer", new Version(1, 0, 0, null));
 
-    // this is the root object we deserialize when reading from notebook namespace
-    module.addDeserializer(NamespaceBinding.class, injector.getInstance(NamespaceBindingDeserializer.class));
-    
-    // all these objects can be returned as values and/or stored in the notebook namespace
-    module.addSerializer(SimpleEvaluationObject.class, injector.getInstance(SimpleEvaluationObject.Serializer.class));
-    module.addSerializer(EvaluationResult.class, injector.getInstance(EvaluationResult.Serializer.class));
-    module.addSerializer(UpdatableEvaluationResult.class, injector.getInstance(UpdatableEvaluationResult.Serializer.class));
-    module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
-    module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
-    module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
-    module.addSerializer(BeakerProgressUpdate.class, injector.getInstance(BeakerProgressUpdate.Serializer.class));
-    module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
-    module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
-    module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));
-    module.addSerializer(CombinedPlot.class, injector.getInstance(CombinedPlotSerializer.class));
-    module.addSerializer(Line.class, injector.getInstance(LineSerializer.class));
-    module.addSerializer(Points.class, injector.getInstance(PointsSerializer.class));
-    module.addSerializer(Bars.class, injector.getInstance(BarsSerializer.class));
-    module.addSerializer(Stems.class, injector.getInstance(StemsSerializer.class));
-    module.addSerializer(Area.class, injector.getInstance(AreaSerializer.class));
-    module.addSerializer(YAxis.class, injector.getInstance(YAxisSerializer.class));
-    module.addSerializer(Crosshair.class, injector.getInstance(CrosshairSerializer.class));
-    
-    mapper.registerModule(module);
+      // this is the root object we deserialize when reading from notebook namespace
+      module.addDeserializer(NamespaceBinding.class, injector.getInstance(NamespaceBindingDeserializer.class));
+      module.addDeserializer(BeakerCodeCellList.class, injector.getInstance(BeakerCodeCellListDeserializer.class));
+      
+      // all these objects can be returned as values and/or stored in the notebook namespace
+      module.addSerializer(SimpleEvaluationObject.class, injector.getInstance(SimpleEvaluationObject.Serializer.class));
+      module.addSerializer(EvaluationResult.class, injector.getInstance(EvaluationResult.Serializer.class));
+      module.addSerializer(UpdatableEvaluationResult.class, injector.getInstance(UpdatableEvaluationResult.Serializer.class));
+      module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
+      module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
+      module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
+      module.addSerializer(BeakerProgressUpdate.class, injector.getInstance(BeakerProgressUpdate.Serializer.class));
+      module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
+      module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
+      module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));
+      module.addSerializer(CombinedPlot.class, injector.getInstance(CombinedPlotSerializer.class));
+      module.addSerializer(Line.class, injector.getInstance(LineSerializer.class));
+      module.addSerializer(Points.class, injector.getInstance(PointsSerializer.class));
+      module.addSerializer(Bars.class, injector.getInstance(BarsSerializer.class));
+      module.addSerializer(Stems.class, injector.getInstance(StemsSerializer.class));
+      module.addSerializer(Area.class, injector.getInstance(AreaSerializer.class));
+      module.addSerializer(YAxis.class, injector.getInstance(YAxisSerializer.class));
+      module.addSerializer(Crosshair.class, injector.getInstance(CrosshairSerializer.class));
 
-    mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
+      mapper.registerModule(module);
 
-    // Manually serialize everything, either through mixin or serializer
-    mapper.disable(SerializationConfig.Feature.AUTO_DETECT_GETTERS);
-    mapper.disable(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS);
-    mapper.disable(SerializationConfig.Feature.AUTO_DETECT_FIELDS);
-    mapper.disable(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS);
-    
-    NamespaceClient.setInjector(injector);
-} catch(Exception e) {
-  e.printStackTrace();
-}
+      mapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
+
+      // Manually serialize everything, either through mixin or serializer
+      mapper.disable(SerializationConfig.Feature.AUTO_DETECT_GETTERS);
+      mapper.disable(SerializationConfig.Feature.AUTO_DETECT_IS_GETTERS);
+      mapper.disable(SerializationConfig.Feature.AUTO_DETECT_FIELDS);
+      mapper.disable(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS);
+
+      NamespaceClient.setInjector(injector);
+    } catch(Exception e) {
+      logger.log(Level.SEVERE, "exception while creating ObjectMapper", e);
+    }
     return mapper;
   }
 
@@ -158,12 +167,12 @@ try {
   public JacksonJsonProvider getJackson(ObjectMapper mapper) {
     return new JacksonJsonProvider(mapper);
   }
-  
+
   /*
    * This class is used to deserialize the root object when reading from the notebook namespace
    */
   public static class NamespaceBindingDeserializer extends JsonDeserializer<NamespaceBinding> {
-    
+
     private final Provider<BeakerObjectConverter> objectSerializerProvider;
 
     @Inject
@@ -173,17 +182,59 @@ try {
 
     @Override
     public NamespaceBinding deserialize(JsonParser jp, DeserializationContext ctxt) 
-      throws IOException, JsonProcessingException {
-        ObjectMapper mapper = (ObjectMapper)jp.getCodec();
-        JsonNode node = mapper.readTree(jp);
-        String name = node.get("name").asText();
-        String session = node.get("session").asText();
-        Boolean defined = node.get("defined").asBoolean();
-        JsonNode o = node.get("value");
-        
-        Object obj = objectSerializerProvider.get().deserialize(o, mapper);
-        return new NamespaceBinding(name,session,obj,defined);
+        throws IOException, JsonProcessingException {
+      ObjectMapper mapper = (ObjectMapper)jp.getCodec();
+      JsonNode node = mapper.readTree(jp);
+      String name = node.get("name").asText();
+      String session = node.get("session").asText();
+      Boolean defined = node.get("defined").asBoolean();
+      JsonNode o = node.get("value");
+
+      Object obj = objectSerializerProvider.get().deserialize(o, mapper);
+      return new NamespaceBinding(name,session,obj,defined);
     }
   }
+
+
+  /*
+   * This class is usedas fake root object when accessing the notebook code cells
+   */
+  public static class BeakerCodeCellList {
+    public List<BeakerCodeCell> theList;
+  }
   
+  /*
+   * This class is used to deserialize the above fake root object when reading the notebook code cells
+   */
+  public static class BeakerCodeCellListDeserializer extends JsonDeserializer<BeakerCodeCellList> {
+
+    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+
+    @Inject
+    public BeakerCodeCellListDeserializer(Provider<BeakerObjectConverter> osp) {
+      objectSerializerProvider = osp;
+    }
+
+    @Override
+    public BeakerCodeCellList deserialize(JsonParser jp, DeserializationContext ctxt) 
+        throws IOException, JsonProcessingException {
+      ObjectMapper mapper = (ObjectMapper)jp.getCodec();
+      JsonNode node = mapper.readTree(jp);
+      
+      List<BeakerCodeCell> l = new ArrayList<BeakerCodeCell>();
+      
+      if (node.isArray()) {
+        for (JsonNode o : node) {
+          Object obj = objectSerializerProvider.get().deserialize(o, mapper);
+          if (obj instanceof BeakerCodeCell)
+            l.add((BeakerCodeCell) obj);
+        }
+      }
+      
+      BeakerCodeCellList r = new BeakerCodeCellList();
+      r.theList = l;
+      return r;
+    }
+  }
+
 }

@@ -220,7 +220,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
       for (ObjectDeserializer d : supportedTypes) {
         try {
           if (d.canBeUsed(n)) {
-            obj = d.deserialize(n);
+            obj = d.deserialize(n, mapper);
             if (obj != null) {
               logger.finest("used custom deserialization");
               break;

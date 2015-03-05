@@ -19,6 +19,7 @@ package com.twosigma.beaker;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
+import com.twosigma.beaker.jvm.module.SerializerModule.BeakerCodeCellList;
 import com.twosigma.beaker.jvm.object.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.shared.NamespaceBinding;
@@ -133,7 +134,6 @@ public class NamespaceClient {
         form.add("value", "ERROR: unsupported object "+value.toString());
       else {
         jgen.flush();
-        System.out.println("OUTPUT: "+sw.toString());
         form.add("value", sw.toString());
       }
     }
@@ -310,7 +310,8 @@ public class NamespaceClient {
     String reply = Request.Get(ctrlUrlBase + "/getCodeCells?" + args)
         .addHeader("Authorization", auth)
         .execute().returnContent().asString();
-    return objectMapper.get().readValue(reply, new TypeReference<List<BeakerCodeCell>>(){});
+    BeakerCodeCellList ll = objectMapper.get().readValue(reply, BeakerCodeCellList.class);
+    return ll.theList;
   }
   
   private String runStringRequest(String urlfragment, Form postdata) throws ClientProtocolException, IOException {

@@ -57,6 +57,7 @@ public class BeakerCodeCell {
 
       synchronized (value) {
         jgen.writeStartObject();
+        jgen.writeStringField("type", "BeakerCodeCell");
         jgen.writeStringField("cellId", value.cellId);
         jgen.writeStringField("evaluatorId", value.evaluatorId);
         jgen.writeStringField("code", value.code);
@@ -67,5 +68,7 @@ public class BeakerCodeCell {
       }
     }
   }
+  
+  
   
 }

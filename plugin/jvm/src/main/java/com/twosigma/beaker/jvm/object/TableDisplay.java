@@ -18,6 +18,7 @@ package com.twosigma.beaker.jvm.object;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,6 +28,7 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializerProvider;
 
 public class TableDisplay {
@@ -72,6 +74,11 @@ public class TableDisplay {
     }
   }
   
+  
+  public List<List<?>> getValues() { return values; }
+  public List<String> getColumnNames() { return columns; }
+  public List<String> getTypes() { return classes; }
+  
   public static class Serializer extends JsonSerializer<TableDisplay> {
 
     @Override
@@ -93,17 +100,44 @@ public class TableDisplay {
   
   public static class DeSerializer implements ObjectDeserializer {
 
-
+    @SuppressWarnings("unchecked")
     @Override
-    public Object deserialize(JsonNode n) {
-      // TODO Auto-generated method stub
-      System.out.println("DESERIALIZE TABLE DISPLAY");
-      return "TABLE DISPLAY";
+    public Object deserialize(JsonNode n, ObjectMapper mapper) {
+      Object o = null;
+      try {
+        List<List<?>> vals = null;
+        List<String> cols = null;
+        List<String> clas = null;
+        
+        if (n.has("columnNames"))
+          cols = mapper.readValue(n.get("columnNames"), List.class);
+        if (n.has("types"))
+          clas = mapper.readValue(n.get("types"), List.class);
+        if (n.has("values"))
+          vals = mapper.readValue(n.get("values"), List.class);
+        /*
+         * unfortunately the other 'side' of this is in the BeakerObjectSerializer
+         */
+        if (cols!=null && vals!=null && cols.size()==2 && cols.get(0).equals("Key") && cols.get(1).equals("Value")) {
+          Map<String,Object> m = new HashMap<String,Object>();
+          for(List<?> l : vals) {
+            if (l.size()!=2)
+              continue;
+            m.put(l.get(0).toString(), l.get(1));
+          }
+          o = m;
+        } else {
+          o = new TableDisplay(vals, cols, clas);
+        }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      return o;
     }
 
     @Override
     public boolean canBeUsed(JsonNode n) {
       return n.has("type") && n.get("type").asText().equals("TableDisplay");
     }
-  }
+  }     
 }

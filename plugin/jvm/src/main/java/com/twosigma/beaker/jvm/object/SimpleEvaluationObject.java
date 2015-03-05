@@ -186,6 +186,7 @@ public class SimpleEvaluationObject extends Observable {
       synchronized (value) {
         String id = getUpdateManager().register(value);
         jgen.writeStartObject();
+        jgen.writeObjectField("type", "SimpleEvaluationObject");
         jgen.writeObjectField("update_id", id);
         jgen.writeObjectField("expression", value.getExpression());
         jgen.writeObjectField("status", value.getStatus());

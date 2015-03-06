@@ -166,8 +166,6 @@ run.dependsOn copyVendorStuff
 debug.dependsOn builddebug
 debug.dependsOn jar
 debug.dependsOn copyVendorStuff
-jar.mustRunAfter build
-jar.mustRunAfter builddebug
 
 if (mac() || windows()) {
   build.dependsOn copyNginx

@@ -157,13 +157,15 @@ updatePackages.dependsOn bowerInstall
 updatePackages.dependsOn copyStuff
 bowerInstall.mustRunAfter extractPackages
 copyStuff.mustRunAfter bowerInstall
-copyBootStrapFonts.mustRunAfter
+copyVendorStuff.mustRunAfter extractPackages
 build.dependsOn compileCss
 builddebug.dependsOn compileCssDebug
 run.dependsOn build
 run.dependsOn jar
+run.dependsOn copyVendorStuff
 debug.dependsOn builddebug
 debug.dependsOn jar
+debug.dependsOn copyVendorStuff
 jar.mustRunAfter build
 jar.mustRunAfter builddebug
 

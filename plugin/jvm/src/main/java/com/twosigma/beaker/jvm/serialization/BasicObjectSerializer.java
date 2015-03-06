@@ -99,7 +99,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     addTypeConversion("java.lang.StringBuilder", TYPE_STRING);
     addTypeConversion("java.util.concurrent.atomic.AtomicInteger", TYPE_INTEGER);
     addTypeConversion("java.util.concurrent.atomic.AtomicLong", TYPE_INTEGER);
-    addTypeConversion("java.math.BigDecimal", TYPE_INTEGER);
+    addTypeConversion("java.math.BigDecimal", TYPE_DOUBLE);
     addTypeConversion("java.math.BigInteger", TYPE_INTEGER);
     
     supportedTypes = new ArrayList<ObjectDeserializer>();

@@ -45,23 +45,6 @@ http {
       alias "%(static_dir)s/static/";
     }
 
-    # in google chrome iframe do not inherit base tag and epiceditor uses iframes
-    location = /beaker/vendor/epiceditor/themes/base/epiceditor.css {
-        rewrite /beaker/vendor/epiceditor/themes/base/epiceditor.css /%(urlhash)s/beaker/vendor/epiceditor/themes/base/epiceditor.css;
-    }
-    location = /beaker/css/markdown-edit.css {
-        rewrite /beaker/css/markdown-edit.css /%(urlhash)s/beaker/css/markdown-edit.css;
-    }
-    location = /beaker/css/markdown-preview.css {
-        rewrite /beaker/css/markdown-preview.css /%(urlhash)s/beaker/css/markdown-preview.css;
-    }
-    location /beaker/fonts {
-        rewrite /beaker/fonts/(.*) /%(urlhash)s/beaker/app/fonts/$1;
-    }
-    location /%(urlhash)s/beaker/fonts {
-        rewrite /%(urlhash)s/beaker/fonts/(.*) /%(urlhash)s/beaker/app/fonts/$1;
-    }
-
     # login and loginrest are used for the public server option
     location /loginrest/ {
       proxy_pass http://127.0.0.1:%(port_beaker)s/rest/login/;

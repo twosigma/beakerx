@@ -19,65 +19,14 @@
   var module = angular.module('bk.notebook');
 
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
+    // Extract text with preserving whitespace, inspired from:
+    // http://stackoverflow.com/questions/3455931/extracting-text-from-a-contenteditable-div
+    function getContentEditableText(content) {
+      var ce = $("<pre />").html(content);
+      ce.find("div").replaceWith(function() { return "\n" + this.innerHTML; });
+      ce.find("br").replaceWith("\n");
 
-    function initializeEditor(scope, element, attrs) {
-      var div = element.find(".epiceditor")[0];
-      var options = {
-        basePath: 'vendor/epiceditor',
-        container: div,
-        theme: {
-          editor: '../../../css/markdown-edit.css',
-          preview: '../../../css/markdown-preview.css'
-        },
-        file: {
-          defaultContent: scope.cellmodel.body
-        },
-        button: false,
-        clientSideStorage: false,
-        autogrow: {
-          minHeight: 50,
-          maxHeight: false,
-          scroll: true
-        }
-      };
-      var saveToScope = function() {
-        scope.cellmodel.body = scope.editor.getText();
-        scope.$apply();
-      };
-
-      if (scope.editor) {
-        scope.editor.removeListener("preview");
-        scope.editor.removeListener("edit");
-        scope.editor.removeListener("blur");
-        scope.editor.removeListener("preview-clicked");
-        scope.editor.editorIframeDocument.removeEventListener('keyup', saveToScope);
-        if (!scope.editor.is('unloaded')) {
-          scope.editor.unload();
-        }
-      }
-
-      scope.editor = new EpicEditor(options).load();
-
-      scope.editor.on('preview', function() {
-        scope.cellmodel.mode = "preview";
-      });
-      scope.editor.on('edit', function() {
-        scope.cellmodel.mode = "edit";
-      });
-      scope.editor.on('blur', function() {
-        scope.editor.preview();
-      });
-      scope.editor.on('preview-clicked', function() {
-        scope.edit();
-      });
-      scope.editor.on('reflow', function(size) {
-        div.style.height = size.height;
-      });
-
-      scope.editor.editorIframeDocument.addEventListener('keyup', saveToScope);
-
-      scope.editor.preview();
-      //return editor;
+      return ce.text();
     }
 
     return {
@@ -89,52 +38,44 @@
         }
       },
       link: function(scope, element, attrs) {
-        var args  = arguments;
-        var _this = this;
+        var convert = function() {
+          element.find('.markup').html(marked(scope.cellmodel.body));
+        }
 
         scope.edit = function() {
-          if (bkHelper.isNotebookLocked()) {
-            return
+          if (bkHelper.isNotebookLocked()) return;
+
+          scope.mode = 'edit';
+        }
+
+        scope.mode = 'preview';
+        convert();
+
+        element.find('.markdown').on('blur', function() {
+          scope.$apply(function() {
+            scope.cellmodel.body = getContentEditableText(element.find('.markdown').html());
+            scope.mode = 'preview';
+          });
+        });
+
+        scope.$watch('mode', function(newVal, oldVal) {
+          if (newVal == oldVal) return;
+
+          if (scope.mode == 'preview') {
+            convert();
+          } else {
+            var markdown = element.find('.markdown');
+            markdown.html(scope.cellmodel.body);
+            markdown.focus();
           }
+        });
 
-          scope.editor && scope.editor.edit();
-        }
-
-        if (scope.cellmodel.mode === "preview") {
-          // set timeout otherwise the height will be wrong.
-          // similar hack found in epic editor source:
-          // epiceditor.js#L845
-          $timeout(function() {
-            scope.editor && scope.editor.preview();
-          }, 0);
-        }
         scope.$watch('cellmodel.body', function(newVal, oldVal) {
           if (newVal !== oldVal) {
             bkSessionManager.setNotebookModelEdited(true);
           }
         });
-
-        scope.$parent.$watch('index', function(newV, oldV) {
-          if (newV === oldV) {
-            return;
-          }
-
-          $timeout(function() {
-            initializeEditor(scope, element);
-          }, 0);
-        });
-
-        scope.$on('$destroy', function() {
-          if (scope.editor && !scope.editor.is('unloaded')) {
-            scope.editor.unload();
-          }
-
-          EpicEditor._data.unnamedEditors = [];
-        });
-
-        initializeEditor(scope, element);
       }
     };
   }]);
-
 })();

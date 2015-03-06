@@ -24,6 +24,7 @@ import org.codehaus.jackson.map.SerializerProvider;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 
 public class EvaluationResult {
 

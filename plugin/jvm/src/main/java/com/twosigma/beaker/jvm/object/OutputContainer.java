@@ -18,6 +18,8 @@ package com.twosigma.beaker.jvm.object;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonNode;
@@ -28,9 +30,11 @@ import org.codehaus.jackson.map.SerializerProvider;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 
 public class OutputContainer {
-
+  private final static Logger logger = Logger.getLogger(OutputContainer.class.getName());
   private final List<Object> items;
 
   public OutputContainer(List<Object> items) {
@@ -98,7 +102,7 @@ public class OutputContainer {
         }
         o = new OutputContainer(vals);
       } catch (Exception e) {
-        e.printStackTrace();
+        logger.log(Level.SEVERE, "exception deserializing OutputContainer ", e);
       }
       return o;
     }

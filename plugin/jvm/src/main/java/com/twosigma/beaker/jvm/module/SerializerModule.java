@@ -15,16 +15,14 @@
  */
 package com.twosigma.beaker.jvm.module;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.image.BufferedImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.ImageIcon;
+
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.BeakerCodeCell;
@@ -52,23 +50,24 @@ import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
-import com.twosigma.beaker.jvm.object.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.object.OutputContainer;
-import com.twosigma.beaker.jvm.object.PlotObjectSerializer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
+import com.twosigma.beaker.jvm.serialization.BeakerCodeCellList;
+import com.twosigma.beaker.jvm.serialization.BeakerCodeCellListDeserializer;
+import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.jvm.serialization.BufferedImageDeserializer;
+import com.twosigma.beaker.jvm.serialization.BufferedImageSerializer;
+import com.twosigma.beaker.jvm.serialization.ImageIconSerializer;
+import com.twosigma.beaker.jvm.serialization.NamespaceBindingDeserializer;
+import com.twosigma.beaker.jvm.serialization.PlotObjectSerializer;
 import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.chart.Color;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
@@ -105,8 +104,11 @@ public class SerializerModule extends AbstractModule {
     try {
       serializer.addTypeDeserializer(injector.getInstance(TableDisplay.DeSerializer.class));
       serializer.addTypeDeserializer(injector.getInstance(OutputContainer.DeSerializer.class));
-      // TODO add here more - BeakerCodeCell BeakerProgressUpdate SimpleEvaluationObject UpdatableEvaluationResult
-      
+      serializer.addTypeDeserializer(injector.getInstance(BeakerCodeCell.DeSerializer.class));
+      serializer.addTypeDeserializer(injector.getInstance(BeakerProgressUpdate.DeSerializer.class));
+      serializer.addTypeDeserializer(injector.getInstance(SimpleEvaluationObject.DeSerializer.class));
+      serializer.addTypeDeserializer(injector.getInstance(UpdatableEvaluationResult.DeSerializer.class));   
+      serializer.addTypeDeserializer(new BufferedImageDeserializer());
     } catch(Exception e) {
       logger.log(Level.SEVERE, "exception while creating ObjectSerializer", e);
     }
@@ -134,6 +136,9 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
       module.addSerializer(BeakerProgressUpdate.class, injector.getInstance(BeakerProgressUpdate.Serializer.class));
       module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
+      module.addSerializer(BufferedImage.class, new BufferedImageSerializer());
+      module.addSerializer(ImageIcon.class, new ImageIconSerializer());
+      
       module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
       module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));
       module.addSerializer(CombinedPlot.class, injector.getInstance(CombinedPlotSerializer.class));
@@ -166,75 +171,6 @@ public class SerializerModule extends AbstractModule {
   @Singleton
   public JacksonJsonProvider getJackson(ObjectMapper mapper) {
     return new JacksonJsonProvider(mapper);
-  }
-
-  /*
-   * This class is used to deserialize the root object when reading from the notebook namespace
-   */
-  public static class NamespaceBindingDeserializer extends JsonDeserializer<NamespaceBinding> {
-
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
-
-    @Inject
-    public NamespaceBindingDeserializer(Provider<BeakerObjectConverter> osp) {
-      objectSerializerProvider = osp;
-    }
-
-    @Override
-    public NamespaceBinding deserialize(JsonParser jp, DeserializationContext ctxt) 
-        throws IOException, JsonProcessingException {
-      ObjectMapper mapper = (ObjectMapper)jp.getCodec();
-      JsonNode node = mapper.readTree(jp);
-      String name = node.get("name").asText();
-      String session = node.get("session").asText();
-      Boolean defined = node.get("defined").asBoolean();
-      JsonNode o = node.get("value");
-
-      Object obj = objectSerializerProvider.get().deserialize(o, mapper);
-      return new NamespaceBinding(name,session,obj,defined);
-    }
-  }
-
-
-  /*
-   * This class is usedas fake root object when accessing the notebook code cells
-   */
-  public static class BeakerCodeCellList {
-    public List<BeakerCodeCell> theList;
-  }
-  
-  /*
-   * This class is used to deserialize the above fake root object when reading the notebook code cells
-   */
-  public static class BeakerCodeCellListDeserializer extends JsonDeserializer<BeakerCodeCellList> {
-
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
-
-    @Inject
-    public BeakerCodeCellListDeserializer(Provider<BeakerObjectConverter> osp) {
-      objectSerializerProvider = osp;
-    }
-
-    @Override
-    public BeakerCodeCellList deserialize(JsonParser jp, DeserializationContext ctxt) 
-        throws IOException, JsonProcessingException {
-      ObjectMapper mapper = (ObjectMapper)jp.getCodec();
-      JsonNode node = mapper.readTree(jp);
-      
-      List<BeakerCodeCell> l = new ArrayList<BeakerCodeCell>();
-      
-      if (node.isArray()) {
-        for (JsonNode o : node) {
-          Object obj = objectSerializerProvider.get().deserialize(o, mapper);
-          if (obj instanceof BeakerCodeCell)
-            l.add((BeakerCodeCell) obj);
-        }
-      }
-      
-      BeakerCodeCellList r = new BeakerCodeCellList();
-      r.theList = l;
-      return r;
-    }
   }
 
 }

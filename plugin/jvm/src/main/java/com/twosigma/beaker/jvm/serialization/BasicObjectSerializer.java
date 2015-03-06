@@ -13,10 +13,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.twosigma.beaker.jvm.object;
+package com.twosigma.beaker.jvm.serialization;
 
 import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
+import com.twosigma.beaker.jvm.object.EvaluationResult;
+import com.twosigma.beaker.jvm.object.OutputContainer;
+import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

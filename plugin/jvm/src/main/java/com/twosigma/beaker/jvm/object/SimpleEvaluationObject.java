@@ -18,6 +18,8 @@ package com.twosigma.beaker.jvm.object;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.twosigma.beaker.BeakerProgressUpdate;
+import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beaker.jvm.threads.BeakerOutputHandler;
 import com.twosigma.beaker.jvm.threads.BeakerStdOutErrHandler;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
@@ -26,18 +28,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializerProvider;
 
 /**
  * Abstraction around an evaluation, for communication of the state over REST to the plugin.
  */
 public class SimpleEvaluationObject extends Observable {
-
+  private final static Logger logger = Logger.getLogger(SimpleEvaluationObject.class.getName());
   private static final int OUTPUT_QUEUE_SIZE = 30;
   
   public class EvaluationStdOutput {
@@ -187,8 +193,8 @@ public class SimpleEvaluationObject extends Observable {
         String id = getUpdateManager().register(value);
         jgen.writeStartObject();
         jgen.writeObjectField("type", "SimpleEvaluationObject");
-        jgen.writeObjectField("update_id", id);
-        jgen.writeObjectField("expression", value.getExpression());
+        jgen.writeStringField("update_id", id);
+        jgen.writeStringField("expression", value.getExpression());
         jgen.writeObjectField("status", value.getStatus());
         if (value.getMessage() != null)
           jgen.writeStringField("message", value.getMessage());
@@ -223,6 +229,70 @@ public class SimpleEvaluationObject extends Observable {
     }
   }
 
+  public static class DeSerializer implements ObjectDeserializer {
+
+    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+
+    @Inject
+    private DeSerializer(Provider<BeakerObjectConverter> osp) {
+      objectSerializerProvider = osp;
+    }
+
+    private BeakerObjectConverter getObjectSerializer() {
+      return objectSerializerProvider.get();
+    }
+
+    @Override
+    public Object deserialize(JsonNode n, ObjectMapper mapper) {
+      SimpleEvaluationObject o = null;
+      try {
+        String expression=null, message=null;
+        Object status=null,payload=null;
+        Integer progressBar=null;
+        
+        if (n.has("expression"))
+          expression = n.get("expression").asText();
+        if (n.has("message"))
+          message = n.get("message").asText();
+        if (n.has("progressBar"))
+          progressBar = n.get("progressBar").asInt();
+        if (n.has("payload"))
+          payload = getObjectSerializer().deserialize(n.get("payload"), mapper);
+        
+        o = new SimpleEvaluationObject(expression);
+        o.message = message;
+        o.status = (EvaluationStatus) status;
+        o.progressBar = progressBar;
+        o.payload = (EvaluationResult) payload;
+        
+        if (n.has("outputdata")) {
+          JsonNode ne = n.get("outputdata");
+          for (JsonNode d : ne) {
+            if (!d.has("type") || !d.has("value"))
+              continue;
+            if (d.get("type").asText().equals("out")) {
+              EvaluationStdOutput e = o.new EvaluationStdOutput(d.get("value").asText());
+              o.outputdata.add(e);
+            } else  {
+              EvaluationStdError e = o.new EvaluationStdError(d.get("value").asText());
+              o.outputdata.add(e);
+            }
+          }
+        }
+        
+      } catch (Exception e) {
+        logger.log(Level.SEVERE, "exception deserializing SimpleEvaluationObject ", e);
+      }
+      return o;
+    }
+
+    @Override
+    public boolean canBeUsed(JsonNode n) {
+      return n.has("type") && n.get("type").asText().equals("SimpleEvaluationObject");
+    }
+  }     
+  
+  
   public class SimpleOutputHandler implements BeakerOutputHandler {
     
     @Override

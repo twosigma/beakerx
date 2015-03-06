@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Set;
 
 import org.codehaus.jackson.JsonGenerator;
@@ -31,8 +33,11 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializerProvider;
 
-public class TableDisplay {
+import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 
+public class TableDisplay {
+  private final static Logger logger = Logger.getLogger(TableDisplay.class.getName());
   private final List<List<?>> values;
   private final List<String> columns;
   private final List<String> classes;
@@ -130,7 +135,7 @@ public class TableDisplay {
           o = new TableDisplay(vals, cols, clas);
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        logger.log(Level.SEVERE, "exception deserializing TableDisplay ", e);
       }
       return o;
     }

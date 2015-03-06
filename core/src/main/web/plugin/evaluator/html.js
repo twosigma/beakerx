@@ -28,42 +28,54 @@ define(function(require, exports, module) {
     borderColor: "",
     shortName: "Ht",
     evaluate: function(code, modelOutput) {
-      var startTime = new Date().getTime();
-      return bkHelper.fcall(function() {
-        var beaker = bkHelper.getNotebookModel().namespace; // this is visible to JS code in cell
-        if (undefined === beaker) {
-          bkHelper.getNotebookModel().namespace = {};
+      var deferred = bkHelper.newDeferred();
+      bkHelper.timeout(function () {
+        try {
+          var startTime = new Date().getTime();
+          var beaker = bkHelper.getNotebookModel().namespace; // this is visible to JS code in cell
+          if (undefined === beaker) {
+            bkHelper.getNotebookModel().namespace = {};
+          }
+        
+          var precode = "<script>\n"+
+          "var beaker = bkHelper.getNotebookModel().namespace;\n"+
+          "beaker.showProgressUpdate = function (a,b,c) { };\n"+
+          "beaker.showStatus = bkHelper.showStatus;\n"+
+          "beaker.clearStatus = bkHelper.clearStatus;\n"+
+          "beaker.showTransientStatus = bkHelper.showTransientStatus;\n"+
+          "beaker.getEvaluators = bkHelper.getEvaluators;\n"+
+          "beaker.getCodeCells = bkHelper.getCodeCells;\n"+
+          "beaker.setCodeCellBody = bkHelper.setCodeCellBody;\n"+
+          "beaker.setCodeCellEvaluator = bkHelper.setCodeCellEvaluator;\n"+
+          "beaker.setCodeCellTags = bkHelper.setCodeCellTags;\n"+
+          "beaker.evaluate = bkHelper.evaluate;\n"+
+          "beaker.evaluateCode = bkHelper.evaluateCode;\n"+
+          "beaker.loadJS = bkHelper.loadJS;\n"+
+          "beaker.loadList = bkHelper.loadList;\n"+
+          "beaker.httpGet = bkHelper.httpGet;\n"+
+          "beaker.httpPost = bkHelper.httpPost;\n"+
+          "beaker.newDeferred = bkHelper.newDeferred;\n"+
+          "beaker.newPromise = bkHelper.newPromise;\n"+
+          "beaker.all = bkHelper.all;\n"+
+          "beaker.timeout = bkHelper.timeout;\n"+
+          "</script>\n";
+        
+          modelOutput.result = {
+            type: "BeakerDisplay",
+            innertype: "Html",
+            object: precode+code};
+          modelOutput.elapsedTime = new Date().getTime() - startTime;
+          deferred.resolve("");
+        } catch (err) {
+          modelOutput.result = {
+              type: "BeakerDisplay",
+              innertype: "Error",
+              object: "" + err
+          };
+          deferred.reject(modelOutput.result);
         }
-        
-        var precode = "<script>\n"+
-        "var beaker = bkHelper.getNotebookModel().namespace;\n"+
-        "beaker.showProgressUpdate = function (a,b,c) { };\n"+
-        "beaker.showStatus = bkHelper.showStatus;\n"+
-        "beaker.clearStatus = bkHelper.clearStatus;\n"+
-        "beaker.showTransientStatus = bkHelper.showTransientStatus;\n"+
-        "beaker.getEvaluators = bkHelper.getEvaluators;\n"+
-        "beaker.getCodeCells = bkHelper.getCodeCells;\n"+
-        "beaker.setCodeCellBody = bkHelper.setCodeCellBody;\n"+
-        "beaker.setCodeCellEvaluator = bkHelper.setCodeCellEvaluator;\n"+
-        "beaker.setCodeCellTags = bkHelper.setCodeCellTags;\n"+
-        "beaker.evaluate = bkHelper.evaluate;\n"+
-        "beaker.evaluateCode = bkHelper.evaluateCode;\n"+
-        "beaker.loadJS = bkHelper.loadJS;\n"+
-        "beaker.loadList = bkHelper.loadList;\n"+
-        "beaker.httpGet = bkHelper.httpGet;\n"+
-        "beaker.httpPost = bkHelper.httpPost;\n"+
-        "beaker.newDeferred = bkHelper.newDeferred;\n"+
-        "beaker.newPromise = bkHelper.newPromise;\n"+
-        "beaker.all = bkHelper.all;\n"+
-        "beaker.timeout = bkHelper.timeout;\n"+
-        "</script>\n";
-        
-        modelOutput.result = {
-          type: "BeakerDisplay",
-          innertype: "Html",
-          object: precode+code};
-        modelOutput.elapsedTime = new Date().getTime() - startTime;
-      });
+      }, 0);
+      return deferred.promise;
     },
     spec: {
     }

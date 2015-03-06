@@ -264,10 +264,15 @@ public class NamespaceClient {
     String reply = Request.Post(ctrlUrlBase + "/evaluate")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    JsonNode n = objectMapper.get().readTree(reply);
-    Object r = objectSerializerProvider.get().deserialize(n, objectMapper.get());
-    if (r == null)
-      r = deserializeObject(reply);
+    Object r;
+    try {
+      JsonNode n = objectMapper.get().readTree(reply);
+      r = objectSerializerProvider.get().deserialize(n, objectMapper.get());
+      if (r == null)
+        r = deserializeObject(reply);
+    } catch (Exception e) {
+      r = null;
+    }
     return r;
   }
 
@@ -277,10 +282,15 @@ public class NamespaceClient {
     String reply = Request.Post(ctrlUrlBase + "/evaluateCode")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    JsonNode n = objectMapper.get().readTree(reply);
-    Object r = objectSerializerProvider.get().deserialize(n, objectMapper.get());
-    if (r == null)
-      r = deserializeObject(reply);
+    Object r;
+    try {
+      JsonNode n = objectMapper.get().readTree(reply);
+      r = objectSerializerProvider.get().deserialize(n, objectMapper.get());
+      if (r == null)
+        r = deserializeObject(reply);
+    } catch(Exception e) {
+      r = null;
+    }
     return r;
   }
 

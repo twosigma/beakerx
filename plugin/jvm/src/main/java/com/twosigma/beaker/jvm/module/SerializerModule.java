@@ -62,6 +62,7 @@ import com.twosigma.beaker.jvm.serialization.BufferedImageSerializer;
 import com.twosigma.beaker.jvm.serialization.ImageIconSerializer;
 import com.twosigma.beaker.jvm.serialization.NamespaceBindingDeserializer;
 import com.twosigma.beaker.jvm.serialization.PlotObjectSerializer;
+import com.twosigma.beaker.jvm.serialization.ResultsDeserializer;
 import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
 import com.twosigma.beaker.chart.Color;
@@ -109,7 +110,8 @@ public class SerializerModule extends AbstractModule {
       serializer.addTypeDeserializer(injector.getInstance(SimpleEvaluationObject.DeSerializer.class));
       serializer.addTypeDeserializer(injector.getInstance(UpdatableEvaluationResult.DeSerializer.class));   
       serializer.addTypeDeserializer(new BufferedImageDeserializer());
-    } catch(Exception e) {
+      serializer.addTypeDeserializer(injector.getInstance(ResultsDeserializer.class)); 
+      } catch(Exception e) {
       logger.log(Level.SEVERE, "exception while creating ObjectSerializer", e);
     }
     return serializer;

@@ -381,7 +381,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   public String getPluginPath(String plugin) {
     String result = null;
     try {
-      JSONObject plugins = (JSONObject) this.prefs.get("plugins");
+      JSONObject plugins = (JSONObject) this.prefs.get("languages");
       JSONObject pprefs = (JSONObject) plugins.get(plugin);
       result = (String) pprefs.get("path");
     } catch (Exception e) {
@@ -391,7 +391,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   }
 
   public Object getPluginPrefs() {
-    return this.prefs.get("plugins");
+    return this.prefs.get("languages");
   }
 
   public void setPluginPrefs(JSONObject newPrefs) {
@@ -409,7 +409,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
 
   private void augmentPluginOptions() {
     try {
-      Map<String, JSONObject> plugins = (Map<String, JSONObject>) this.prefs.get("plugins");
+      Map<String, JSONObject> plugins = (Map<String, JSONObject>) this.prefs.get("languages");
       for (Map.Entry<String, JSONObject> entry: plugins.entrySet()) {
         Object options = entry.getValue().get("options");
         String key = entry.getKey();

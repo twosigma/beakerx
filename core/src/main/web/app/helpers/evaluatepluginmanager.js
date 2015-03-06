@@ -19,7 +19,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.evaluatePluginManager', ['bk.utils']);
-  module.factory('bkEvaluatePluginManager', function(bkUtils) {
+  module.factory('bkEvaluatePluginManager', function(bkUtils, $modal) {
     var nameToUrlMap = {};
     var nameToVisualParams = {};
     var plugins = {};
@@ -129,9 +129,16 @@
                   .then(function(factory) {
                     if (factory !== undefined && factory.create !== undefined) {
                       return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
-                    } else
-                      deferred.reject("no factory for evaluator plugin");
+                    } else {
+		      $modal.open({backdrop: true,
+				   backdropClick: true,
+				   template: JST['helpers/plugin-load-error']({pluginId: name})});
+		      deferred.reject("no factory for evaluator plugin");
+		    }
                   }, function(err) {
+                    // This function is never called.  Instead the
+                    // "then" clause above is called but factory is
+                    // undefined.  Unknown why XXX.
                     if (!_.isEmpty(ex.name)) {
                       delete plugins[ex.name];
                     }
@@ -147,12 +154,13 @@
                   });
               },
               reject: function(err) {
-                bkHelper.showTransientStatus("Failed loading plugin "+name+": "+err);
+                // This is called if the URL is bad or there is a syntax error in the JS.
+                bkHelper.showTransientStatus("Failed to find plugin "+name+": "+err);
                 console.error(err);
                 if (_.isEmpty(name)) {
-                  deferred.reject("failed to load plugin: " + url);
+                  deferred.reject("failed to find plugin: " + url);
                 } else {
-                  deferred.reject("failed to load plugin: " + name + " at " + url);
+                  deferred.reject("failed to find plugin: " + name + " at " + url);
                 }
               }
           };

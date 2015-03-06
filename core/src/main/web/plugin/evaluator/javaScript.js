@@ -250,7 +250,7 @@ define(function(require, exports, module) {
                   }
                 }
                 output.then(function(o) {
-                  modelOutput.result = "" + o; // See Issue #396            
+                  modelOutput.result = o;
                   deferred.resolve(o);
                   delete beaker._beaker_model_output_result;
                 }, function(e) {
@@ -263,12 +263,12 @@ define(function(require, exports, module) {
                   delete beaker._beaker_model_output_result;
                 });
               } else {
-                modelOutput.result = "" + output; // See Issue #396            
+                modelOutput.result = output;  
                 deferred.resolve(output);
                 delete beaker._beaker_model_output_result;
               }
             } else {
-              modelOutput.result = "" + output; // See Issue #396            
+              modelOutput.result = output;
               deferred.resolve(output);
               delete beaker._beaker_model_output_result;
             }
@@ -278,7 +278,7 @@ define(function(require, exports, module) {
                 innertype: "Error",
                 object: "" + err
             };
-            deferred.reject(err);
+            deferred.reject(modelOutput.result);
           }
         }, 0);
         return deferred.promise;

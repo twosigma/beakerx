@@ -15,6 +15,10 @@
  */
 package com.twosigma.beaker.r;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.logging.LogManager;
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.twosigma.beaker.jvm.module.SerializerModule;
@@ -25,6 +29,7 @@ import com.twosigma.beaker.r.rest.RShellRest;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
+
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -56,12 +61,26 @@ public class Main {
     }
   }
 
+  private static final LogManager logManager = LogManager.getLogManager();
+
   public static void main(String[] args) throws Exception
   {
-    java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
     if (args.length != 1) {
       System.out.println("usage: rPlugin <portListen>");
+      System.exit(20);
     }
+    
+    if (System.getenv("beaker_logger_file") != null) {
+      try {
+        logManager.readConfiguration(new FileInputStream(System.getenv("beaker_logger_file")));
+      } catch (IOException exception) {
+        System.err.println("Error in loading configuration: " + exception);
+      }
+    } else {
+      java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
+      java.util.logging.Logger.getLogger("com.twosigma.beaker").setLevel(java.util.logging.Level.SEVERE);
+    }
+    
     testRserve();
     final int port = Integer.parseInt(args[0]);
     final int corePort = Integer.parseInt(System.getenv("beaker_core_port"));

@@ -1,0 +1,268 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "datatable",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// verify standard output and error with datatable output",
+                    "System.out.println('test 1')",
+                    "System.out.println('test 2')",
+                    "System.err.println('test 3')",
+                    "System.out.println('test 4')",
+                    "[ [a:1, b:3], [a:4, c:5] ]",
+                    "// expected output is a datatable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "950c5be3-06f0-446f-b6a8-5dead18142ef",
+                "elapsedTime": 1303
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "codeC5170V",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// verify standard output and error with plot output",
+                    "System.out.println('test 1')",
+                    "System.out.println('test 2')",
+                    "System.err.println('test 3')",
+                    "System.out.println('test 4')",
+                    "new Plot()",
+                    "// expected output is a plot"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "950c5be3-06f0-446f-b6a8-5dead18142ef",
+                "elapsedTime": 137
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "code6cxIZX",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// verify standard output and error with basic output",
+                    "System.out.println('test 1')",
+                    "System.out.println('test 2')",
+                    "System.err.println('test 3')",
+                    "System.out.println('test 4')",
+                    "[1,2,3,4,5,6]",
+                    "// expected output is the same text"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "950c5be3-06f0-446f-b6a8-5dead18142ef",
+                "elapsedTime": 46
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "codehkAnKs",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "",
+                    "// verify standard output and error with  output container",
+                    "import com.twosigma.beaker.jvm.object.OutputContainer",
+                    "System.out.println('test 1')",
+                    "System.out.println('test 2')",
+                    "System.err.println('test 3')",
+                    "System.out.println('test 4')",
+                    "def o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])",
+                    "o",
+                    "// expected output is a container with 3 parts"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "950c5be3-06f0-446f-b6a8-5dead18142ef",
+                "elapsedTime": 544
+            },
+            "evaluatorReader": true,
+            "lineCount": 10
+        },
+        {
+            "id": "image",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// test creating an image",
+                    "import java.awt.image.BufferedImage",
+                    "System.out.println('test 1')",
+                    "System.out.println('test 2')",
+                    "System.err.println('test 3')",
+                    "System.out.println('test 4')",
+                    "BufferedImage i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",
+                    "g2 = i.createGraphics()",
+                    "g2.drawLine(0,0,100,100)",
+                    "i",
+                    "// expected output is a black rectangle with a white diagonal"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "950c5be3-06f0-446f-b6a8-5dead18142ef",
+                "elapsedTime": 1285
+            },
+            "evaluatorReader": true,
+            "lineCount": 11
+        },
+        {
+            "id": "codeBaJyH9",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// this should display both the image and a datatable",
+                    "import com.twosigma.beaker.jvm.object.OutputContainer",
+                    "System.out.println('test 1')",
+                    "System.out.println('test 2')",
+                    "System.err.println('test 3')",
+                    "System.out.println('test 4')",
+                    "def a = beaker.getCodeCells('image').output[0]",
+                    "def b = beaker.getCodeCells('datatable').output[0]",
+                    "import com.twosigma.beaker.jvm.object.OutputContainer",
+                    "new OutputContainer([a, b])",
+                    "// expected output is an image and a datatable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "950c5be3-06f0-446f-b6a8-5dead18142ef",
+                "elapsedTime": 567
+            },
+            "evaluatorReader": true,
+            "lineCount": 11
+        }
+    ],
+    "namespace": {
+        "x": {
+            "type": "OutputContainer",
+            "items": [
+                "pippero",
+                [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            3,
+                            null
+                        ],
+                        [
+                            4,
+                            null,
+                            5
+                        ]
+                    ],
+                    "types": [
+                        "integer",
+                        "integer",
+                        "integer"
+                    ]
+                }
+            ]
+        },
+        "r": {
+            "update_id": "5689ad70-16c3-424b-9461-ac2db5330a22",
+            "type": "UpdatableEvaluationResult",
+            "payload": "test 1"
+        },
+        "i": {
+            "type": "ImageIcon",
+            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+            "width": 100,
+            "height": 100
+        },
+        "_beaker_model_output_result": {
+            "type": "BeakerDisplay",
+            "innertype": "Progress",
+            "object": {
+                "message": "running...",
+                "startTime": 1425662167213
+            }
+        }
+    }
+}

@@ -16,33 +16,48 @@
 package com.twosigma.beaker.jvm.object;
 
 import java.io.IOException;
+
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+
 public class EvaluationResult {
 
   private final Object value;
 
-  public EvaluationResult(Object value) {
-    this.value = value;
+  public EvaluationResult(Object v) {
+    value = v;
   }
 
   public Object getValue() {
-    return this.value;
+    return value;
   }
 
   public static class Serializer extends JsonSerializer<EvaluationResult> {
 
+    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+
+    @Inject
+    public Serializer(Provider<BeakerObjectConverter> osp) {
+      objectSerializerProvider = osp;
+    }
+
+    private BeakerObjectConverter getObjectSerializer() {
+      return objectSerializerProvider.get();
+    }
+
     @Override
-    public void serialize(
-        EvaluationResult evalResult,
-        JsonGenerator jgen,
+    public void serialize( EvaluationResult evalResult, JsonGenerator jgen,
         SerializerProvider sp) throws IOException, JsonProcessingException {
 
       Object obj = evalResult.getValue();
-      SerializeUtils.writeObject(obj, jgen);
+      if (!getObjectSerializer().writeObject(obj, jgen))
+        jgen.writeObject("ERROR: unsupported object "+obj.toString());
     }
   }
 }

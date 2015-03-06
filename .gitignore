@@ -8,6 +8,7 @@ core/src/main/dist/
 core/config/plugins/
 core/config/version
 core/config/build_time
+core/src/main/web/app/vendor
 plugin/jvm/src/main/dist/
 *~
 .gradle

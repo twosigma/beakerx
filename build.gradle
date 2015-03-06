@@ -60,3 +60,13 @@ task updatePackages (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['updatePackages']
 }
+
+task zipPackages (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['zipPackages']
+}
+
+task copyVendorStuff (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['copyVendorStuff']
+}

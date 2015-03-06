@@ -24,6 +24,9 @@ task builddebug
 task clean
 task check
 task updatePackages
+task zipPackages
+task copyVendorStuff
+
 task run (type: Exec) {
   workingDir coreDir
   commandLine './beaker.command'

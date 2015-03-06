@@ -21,6 +21,7 @@
     "font-awesome": "4.0.3",
     "requirejs": "2.1.11",
     "big.js": "~2.5.1",
-    "moment": "2.8.4"
+    "moment": "2.8.4",
+    "marked": "~0.3.3"
   }
 }

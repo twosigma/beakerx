@@ -70,6 +70,7 @@ bk-section-cell {
     // contenteditable requires manual override
     font: $font-size-base $font-family-sans-serif;
     line-height: $line-height-base;
+    white-space: pre;
 }
 
 .bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {

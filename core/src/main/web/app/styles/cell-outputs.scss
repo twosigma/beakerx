@@ -39,6 +39,17 @@ bk-code-cell-output {
   box-sizing: content-box;
 }
 
+.markup {
+  min-height: $line-height-base + 0em;
+  & > :first-child {
+    margin-top: 0;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
+}
+
 .modal.output-table-options {
   .row {
     margin-bottom: 20px;

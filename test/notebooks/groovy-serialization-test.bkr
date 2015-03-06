@@ -44,7 +44,7 @@
     ],
     "cells": [
         {
-            "id": "code1cS7UE",
+            "id": "datatable",
             "type": "code",
             "evaluator": "Groovy",
             "input": {
@@ -58,8 +58,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 1431
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 67
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -79,8 +79,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 126
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 60
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -100,8 +100,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 66
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 109
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -121,8 +121,8 @@
                 "state": {},
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 55
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 60
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -142,8 +142,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 71
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 78
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -167,10 +167,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Results",
+                "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 1088
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 630
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -194,10 +194,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Results",
+                "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 656
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 605
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -223,8 +223,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 594
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 611
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -248,10 +248,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Results",
+                "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 709
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 601
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -273,8 +273,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 58
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 83
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -304,10 +304,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Results",
+                "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 571
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 630
             },
             "evaluatorReader": true,
             "lineCount": 15
@@ -329,8 +329,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 62
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 84
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -351,8 +351,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 77
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 80
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -374,15 +374,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "BeakerDisplay",
+                "selectedType": "Image",
                 "pluginName": "Groovy",
-                "shellId": "98da4ee8-3b19-407b-be3f-9e8e92d635ae",
-                "elapsedTime": 1276,
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Text",
-                    "object": "pending"
-                }
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 71
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -411,10 +406,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Results",
+                "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 632
+                "shellId": "6fcadfd8-6d9b-4dec-95f0-053df18ed552",
+                "elapsedTime": 1223
             },
             "evaluatorReader": true,
             "lineCount": 14
@@ -425,39 +420,86 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "// this should display the same image",
-                    "beaker.getCodeCells('image').output[0]",
-                    ""
+                    "// this should display both the image and a datatable",
+                    "import com.twosigma.beaker.jvm.object.OutputContainer",
+                    "def a = beaker.getCodeCells('image').output[0]",
+                    "def b = beaker.getCodeCells('datatable').output[0]",
+                    "import com.twosigma.beaker.jvm.object.OutputContainer",
+                    "new OutputContainer([a, b])"
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "98da4ee8-3b19-407b-be3f-9e8e92d635ae",
-                "elapsedTime": 573
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 593
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+        {
+            "id": "codeLr88WY",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// check that JavaScript can properly return objects from beaker namespace",
+                    "beaker.i",
+                    "// below you should see the image"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Image",
+                "pluginName": "Groovy",
+                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
+                "elapsedTime": 608
             },
             "evaluatorReader": true,
             "lineCount": 3
         },
         {
-            "id": "codeLr88WY",
+            "id": "codejZuiR5",
             "type": "code",
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "beaker.evaluate('image')"
+                    "// now evaluate objects in javascript from groovy",
+                    "beaker.evaluateCode('JavaScript', 'var o={a:1, b:2}; o')",
+                    "// you should see a datatable"
                 ]
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "98da4ee8-3b19-407b-be3f-9e8e92d635ae",
-                "elapsedTime": 658
+                "shellId": "6fcadfd8-6d9b-4dec-95f0-053df18ed552",
+                "elapsedTime": 660
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 3
+        },
+        {
+            "id": "codefqZ7Ym",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// now evaluate javascript with errors from groovy",
+                    "beaker.evaluateCode('JavaScript', 'var o={a:1, b:2; o')",
+                    "// you should see a datatable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "6fcadfd8-6d9b-4dec-95f0-053df18ed552",
+                "elapsedTime": 629
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
         }
     ],
     "namespace": {
@@ -510,6 +552,14 @@
             "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
             "width": 100,
             "height": 100
+        },
+        "_beaker_model_output_result": {
+            "type": "BeakerDisplay",
+            "innertype": "Progress",
+            "object": {
+                "message": "running...",
+                "startTime": 1425660724315
+            }
         }
     }
 }

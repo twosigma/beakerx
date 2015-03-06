@@ -38,6 +38,7 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.ClientProtocolException;
 import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -263,7 +264,11 @@ public class NamespaceClient {
     String reply = Request.Post(ctrlUrlBase + "/evaluate")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    return deserializeObject(reply);
+    JsonNode n = objectMapper.get().readTree(reply);
+    Object r = objectSerializerProvider.get().deserialize(n, objectMapper.get());
+    if (r == null)
+      r = deserializeObject(reply);
+    return r;
   }
 
   public Object evaluateCode(String evaluator, String code) throws ClientProtocolException, IOException {
@@ -272,7 +277,11 @@ public class NamespaceClient {
     String reply = Request.Post(ctrlUrlBase + "/evaluateCode")
         .addHeader("Authorization", auth).bodyForm(form.build())
         .execute().returnContent().asString();
-    return deserializeObject(reply);
+    JsonNode n = objectMapper.get().readTree(reply);
+    Object r = objectSerializerProvider.get().deserialize(n, objectMapper.get());
+    if (r == null)
+      r = deserializeObject(reply);
+    return r;
   }
 
   private boolean runBooleanRequest(String urlfragment, Form postdata) throws ClientProtocolException, IOException {

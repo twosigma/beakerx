@@ -432,8 +432,8 @@
                 "state": {},
                 "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "914ee464-a5aa-4861-990f-b5d78e4db8d8",
-                "elapsedTime": 593
+                "shellId": "6fcadfd8-6d9b-4dec-95f0-053df18ed552",
+                "elapsedTime": 589
             },
             "evaluatorReader": true,
             "lineCount": 6
@@ -475,7 +475,7 @@
                 "selectedType": "Results",
                 "pluginName": "Groovy",
                 "shellId": "6fcadfd8-6d9b-4dec-95f0-053df18ed552",
-                "elapsedTime": 660
+                "elapsedTime": 3946
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -488,7 +488,7 @@
                 "body": [
                     "// now evaluate javascript with errors from groovy",
                     "beaker.evaluateCode('JavaScript', 'var o={a:1, b:2; o')",
-                    "// you should see a datatable"
+                    "// you should see a datatable with the error details"
                 ]
             },
             "output": {
@@ -496,7 +496,7 @@
                 "selectedType": "Results",
                 "pluginName": "Groovy",
                 "shellId": "6fcadfd8-6d9b-4dec-95f0-053df18ed552",
-                "elapsedTime": 629
+                "elapsedTime": 2215
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -552,14 +552,6 @@
             "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
             "width": 100,
             "height": 100
-        },
-        "_beaker_model_output_result": {
-            "type": "BeakerDisplay",
-            "innertype": "Progress",
-            "object": {
-                "message": "running...",
-                "startTime": 1425660724315
-            }
         }
     }
 }

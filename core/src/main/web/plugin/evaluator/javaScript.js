@@ -278,7 +278,7 @@ define(function(require, exports, module) {
                 innertype: "Error",
                 object: "" + err
             };
-            deferred.reject(err);
+            deferred.reject(modelOutput.result);
           }
         }, 0);
         return deferred.promise;

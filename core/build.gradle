@@ -68,20 +68,41 @@ task (zipPackages, type: Exec) {
   }
 }
 
-task updatePackagesFont(type: Copy) {
+
+
+task (copyDTImages, type: Copy) {
+	from 'src/vendor/bower_components/datatables/media/images/'
+	into 'src/main/web/app/images/'
+}
+task (copyAwesomeFonts, type: Copy) {
     from 'src/vendor/bower_components/font-awesome/fonts/'
-    into 'src/main/web/app/fonts/'
+	into 'src/main/web/app/fonts/'
+}	
+task (copyBootStrapFonts, type: Copy) {
+	from 'src/vendor/bower_components/bootstrap-sass/assets/fonts/bootstrap/'
+	into 'src/main/web/app/fonts/'
 }
 
-task updatePackagesFont2(type: Copy) {
-    from 'src/vendor/bower_components/bootstrap-sass/assets/fonts/bootstrap/'
-    into 'src/main/web/app/fonts/'
+task copyStuff
+copyStuff.dependsOn copyDTImages
+copyStuff.dependsOn copyAwesomeFonts
+copyStuff.dependsOn copyBootStrapFonts
+
+task updatePackages
+
+task (copyMathJax, type: Copy) {
+	from 'src/vendor/MathJax-2.5-latest/'
+	into 'src/main/web/app/vendor/mathjax/'
+	exclude '**.md'
+	exclude '**.json'
+	exclude 'docs'
+	exclude 'test'
+	exclude 'LICENSE'
+	exclude 'unpacked'
 }
 
-task updatePackages(type: Copy) {
-    from 'src/vendor/bower_components/datatables/media/images/'
-    into 'src/main/web/app/images/'
-}
+task copyVendorStuff
+copyVendorStuff.dependsOn copyMathJax
 
 task (extractPackages, type: Exec) {
   if (windows()) {
@@ -124,23 +145,27 @@ task (copyNginx, type: Exec) {
 }
 
 task builddebug
+task debug
 
 bowerInstall.dependsOn npmInstall
-bowerInstall.dependsOn extractPackages
 compileCss.dependsOn npmInstall
 compileCss.dependsOn extractPackages
 compileCssDebug.dependsOn npmInstall
 compileCssDebug.dependsOn extractPackages
-updatePackagesFont.dependsOn bowerInstall
-updatePackagesFont.dependsOn zipPackages
-updatePackages.dependsOn updatePackagesFont
-updatePackages.dependsOn updatePackagesFont2
-build.dependsOn extractPackages
+updatePackages.dependsOn extractPackages
+updatePackages.dependsOn bowerInstall
+updatePackages.dependsOn copyStuff
+bowerInstall.mustRunAfter extractPackages
+copyStuff.mustRunAfter bowerInstall
+copyVendorStuff.mustRunAfter extractPackages
 build.dependsOn compileCss
-builddebug.dependsOn extractPackages
 builddebug.dependsOn compileCssDebug
-run.dependsOn bowerInstall
+run.dependsOn build
 run.dependsOn jar
+run.dependsOn copyVendorStuff
+debug.dependsOn builddebug
+debug.dependsOn jar
+debug.dependsOn copyVendorStuff
 
 if (mac() || windows()) {
   build.dependsOn copyNginx

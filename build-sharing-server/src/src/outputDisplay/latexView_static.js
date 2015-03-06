@@ -15,22 +15,6 @@
  */
 (function () {
     var module = angular.module('M_latexDisplay_static', []);
-    module.run(function () {
-        //console.log("loading math jax script for latex");
-        var head = document.getElementsByTagName('head')[0];
-        var scriptConfigMathJax = document.createElement('script');
-        scriptConfigMathJax.type = 'text/x-mathjax-config';
-        scriptConfigMathJax.innerHTML =
-            "MathJax.Hub.Config({tex2jax: {" +
-                "displayMath: [['MATH_JAX_BEGIN', 'MATH_JAX_END']]," +
-                "inlineMath: [['MATH_JAX_INLINE_BEGIN', 'MATH_JAX_INLINE_END']]" +
-                "}});";
-        head.appendChild(scriptConfigMathJax);
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = "./vendor/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-        head.appendChild(script);
-    });
     module.directive('bkoLatex', ["$compile", function ($compile) {
         var generateID = function (length) {
             var text = "";

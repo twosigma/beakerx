@@ -24,6 +24,9 @@ task builddebug
 task clean
 task check
 task updatePackages
+task zipPackages
+task copyVendorStuff
+
 task run (type: Exec) {
   workingDir coreDir
   commandLine './beaker.command'
@@ -71,10 +74,12 @@ clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
 build.dependsOn(":core:build")
 build.dependsOn(":core:installApp")
+build.dependsOn(":core:copyVendorStuff")
 build.dependsOn(writeVersion)
 build.dependsOn(installPlugins)
 builddebug.dependsOn(":core:builddebug")
 builddebug.dependsOn(":core:installApp")
+builddebug.dependsOn(":core:copyVendorStuff")
 builddebug.dependsOn(writeVersion)
 builddebug.dependsOn(installPlugins)
 run.dependsOn(build)

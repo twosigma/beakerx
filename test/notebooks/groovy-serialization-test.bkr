@@ -358,7 +358,7 @@
             "lineCount": 4
         },
         {
-            "id": "codeg8ZtVN",
+            "id": "image",
             "type": "code",
             "evaluator": "Groovy",
             "input": {
@@ -374,10 +374,15 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Image",
+                "selectedType": "BeakerDisplay",
                 "pluginName": "Groovy",
-                "shellId": "3bf8adde-e8b6-41f4-be03-d2f24e1653e0",
-                "elapsedTime": 69
+                "shellId": "98da4ee8-3b19-407b-be3f-9e8e92d635ae",
+                "elapsedTime": 1276,
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Text",
+                    "object": "pending"
+                }
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -413,6 +418,46 @@
             },
             "evaluatorReader": true,
             "lineCount": 14
+        },
+        {
+            "id": "codeBaJyH9",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// this should display the same image",
+                    "beaker.getCodeCells('image').output[0]",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "98da4ee8-3b19-407b-be3f-9e8e92d635ae",
+                "elapsedTime": 573
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeLr88WY",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "beaker.evaluate('image')"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "98da4ee8-3b19-407b-be3f-9e8e92d635ae",
+                "elapsedTime": 658
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         }
     ],
     "namespace": {

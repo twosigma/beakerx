@@ -34,7 +34,6 @@ public class BeakerCodeCellListDeserializer extends JsonDeserializer<BeakerCodeC
     JsonNode node = mapper.readTree(jp);
     
     List<BeakerCodeCell> l = new ArrayList<BeakerCodeCell>();
-    
     if (node.isArray()) {
       for (JsonNode o : node) {
         Object obj = objectSerializerProvider.get().deserialize(o, mapper);

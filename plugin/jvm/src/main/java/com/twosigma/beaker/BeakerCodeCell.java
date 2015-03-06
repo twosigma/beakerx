@@ -113,6 +113,8 @@ public class BeakerCodeCell {
         String cellId=null, evaluatorId=null, code=null, outputtype=null, tags=null;
         Object output=null;
         
+        System.out.println("SSS");
+
         if (n.has("cellId"))
           cellId = n.get("cellId").asText();
         if (n.has("evaluatorId"))
@@ -123,8 +125,10 @@ public class BeakerCodeCell {
           outputtype = n.get("outputtype").asText();
         if (n.has("tags"))
           tags = n.get("tags").asText();
-        if (n.has("output"))
+        if (n.has("output")) {          
           output = getObjectSerializer().deserialize(n.get("output"), mapper);
+          System.out.println("output is "+output.getClass().getName());
+        }
         
         o = new BeakerCodeCell();
         o.setcellId(cellId);
@@ -135,6 +139,7 @@ public class BeakerCodeCell {
         o.settags(tags);
       } catch (Exception e) {
         logger.log(Level.SEVERE, "exception deserializing BeakerCodeCell ", e);
+        e.printStackTrace();
       }
       return o;
     }

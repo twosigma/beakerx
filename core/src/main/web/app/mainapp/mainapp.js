@@ -852,27 +852,16 @@
                   if (cell.output !== undefined && cell.output.result !== undefined) {
                     if (cell.output.result.type !== undefined) {
                       if (cell.output.result.type === 'BeakerDisplay') {
-                        o.outputtype = cell.output.result.innertype;
-                        if (cell.output.result.object !== undefined) {
-                          if (typeof cell.output.result.object === 'string') {
-                            o.output = cell.output.result.object;
-                          } else {
-                            o.output = JSON.stringify(cell.output.result.object);
-                          }
-                        }
+                        o.output = cell.output.result.object;
                       } else {
                         o.outputtype = cell.output.result.type;
-                        o.output = JSON.stringify(cell.output.result);
+                        o.output = cell.output.result;
                       }
                     } else {
-                      o.outputtype = typeof cell.output.result;
-                      if (typeof cell.output.result === 'string') {
-                        o.output = cell.output.result;
-                      } else {
-                        o.output = JSON.stringify(cell.output.result);
-                      }
+                      o.output = cell.output.result;
                     }
                   }
+                  o.type = "BeakerCodeCell";
                   ret.push(o);
                 }
               } else {
@@ -880,8 +869,20 @@
                 o.cellId = filter.id;
                 o.evaluatorId = filter.evaluator;
                 o.code = filter.input.body;
-                o.output = filter.output;
+                if (filter.output !== undefined && filter.output.result !== undefined) {
+                  if (filter.output.result.type !== undefined) {
+                    if (filter.output.result.type === 'BeakerDisplay') {
+                      o.output = filter.output.result.object;
+                    } else {
+                      o.outputtype = filter.output.result.type;
+                      o.output = filter.output.result;
+                    }
+                  } else {
+                    o.output = filter.output.result;
+                  }
+                }
                 o.tags = filter.tags;
+                o.type = "BeakerCodeCell";
                 ret.push(o);
               }
               return ret;

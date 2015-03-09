@@ -71,7 +71,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     if (!(o instanceof Map<?,?>))
       return false;
     Map<?,?> m = (Map<?,?>) o;
-    
+        
     Set<?> eset = m.entrySet();
     for (Object entry : eset) {
       Entry<?,?> e = (Entry<?, ?>) entry;
@@ -82,6 +82,27 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     }
     return true;
   }
+
+  protected boolean isPrimitiveTypeListOfList(Object o) {
+    if (!(o instanceof Collection<?>))
+      return false;
+    Collection<?> m = (Collection<?>) o;
+    int max = 0;
+
+    for (Object entry : m) {
+      if (!(entry instanceof Collection<?>))
+        return false;
+      Collection<?> e = (Collection<?>) entry;
+      for (Object ei : e) {
+        if (!isPrimitiveType(ei.getClass().getName()))
+          return false;
+      }
+      if (max < e.size())
+        max = e.size();
+    }
+    return max>=2 && m.size()>=2;
+  }
+
   
   public BasicObjectSerializer() {
     types = new HashMap<String,String>();
@@ -150,6 +171,35 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         Collection<Map<?, ?>> co = (Collection<Map<?, ?>>) obj;
         TableDisplay t = new TableDisplay(co,this);
         jgen.writeObject(t);
+      } else if (isPrimitiveTypeListOfList(obj)) {
+        logger.fine("collection of collections");
+        
+        Collection<?> m = (Collection<?>) obj;
+        int max = 0;
+                
+        for (Object entry : m) {
+          Collection<?> e = (Collection<?>) entry;
+          if (max < e.size())
+            max = e.size();
+        }
+        List<String> columns = new ArrayList<String>();
+        for (int i=0; i<max; i++)
+          columns.add("c"+i);
+        List<List<?>> values = new ArrayList<List<?>>();
+        for (Object entry : m) {
+          Collection<?> e = (Collection<?>) entry;
+          List<Object> l2 = new ArrayList<Object>(e);
+          if (l2.size() < max) {
+            for (int i=l2.size(); i<max; i++)
+              l2.add(null);
+          }
+          values.add(l2);
+        }
+        jgen.writeStartObject();
+        jgen.writeObjectField("type", "TableDisplay");
+        jgen.writeObjectField("columnNames", columns);
+        jgen.writeObjectField("values", values);
+        jgen.writeEndObject();
       } else if (obj instanceof Collection<?>) {
         logger.fine("collection");
         // convert this 'on the fly' to an array of objects

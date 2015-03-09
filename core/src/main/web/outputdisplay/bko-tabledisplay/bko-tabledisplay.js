@@ -273,6 +273,15 @@
         
         $scope.renderMenu     = false;
         
+        var chr = {
+            '"': '&quot;', '&': '&amp;', "'": '&#39;',
+            '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
+        };
+        
+        $scope.escapeHTML = function (text) {
+          return text.replace(/[\"&'\/<>]/g, function (a) { return chr[a]; });
+        },
+        
         $scope.allTypes = [ { type: 0, name: 'string'},
                             { type: 1, name: 'integer'},
                             { type: 2, name: 'formatted integer'},
@@ -285,51 +294,69 @@
                             { type: 9, name: 'boolean'}];
         $scope.allConverters = [
                                 // string
-                                undefined,
+                                function(value,type,full,meta) {
+                                  if (type === 'display' && value !== null && value !== undefined)
+                                    return $scope.escapeHTML(value);
+                                  return value;
+                                },
                                 // integer
                                 function(value,type,full,meta) {
-                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                  if (value !== undefined && value !== '' && value !== null)
                                     return parseInt(value);
+                                  if (type === 'sort')
+                                    return NaN;
                                   return '';
                                 },
                                 // formatted integer
                                 function(value,type,full,meta) {
-                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null)) {
+                                  if (value !== undefined && value !== '' && value !== null) {
                                     var x = parseInt(value);
-                                    if (x !== 'NaN')
+                                    if (x !== NaN)
                                       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                     return x;
                                   }
+                                  if (type === 'sort')
+                                    return NaN;
                                   return '';
                                 },
                                 // double
                                 function(value,type,full,meta) {
-                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                  if (value !== undefined && value !== '' && value !== null)
                                     return parseFloat(value);
+                                  if (type === 'sort')
+                                    return NaN;
                                   return '';
                                 },
                                 // double 2 decimals
                                 function(value,type,full,meta) {
-                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                  if (value !== undefined && value !== '' && value !== null)
                                     return parseFloat(value).toFixed(2);
+                                  if (type === 'sort')
+                                    return NaN;
                                   return '';
                                 },
                                 // double 4 decimals
                                 function(value,type,full,meta) {
-                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                  if (value !== undefined && value !== '' && value !== null)
                                     return parseFloat(value).toFixed(4);
+                                  if (type === 'sort')
+                                    return NaN;
                                   return '';
                                 },
                                 // exponential 5
                                 function(value,type,full,meta) {
-                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                  if (value !== undefined && value !== '' && value !== null)
                                     return parseFloat(value).toExponential(5);
+                                  if (type === 'sort')
+                                    return NaN;
                                   return '';
                                 },
                                 // exponential 15
                                 function(value,type,full,meta) {
-                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                  if (value !== undefined && value !== '' && value !== null)
                                     return parseFloat(value).toExponential(15);
+                                  if (type === 'sort')
+                                    return NaN;
                                   return '';
                                 },
                                 // time

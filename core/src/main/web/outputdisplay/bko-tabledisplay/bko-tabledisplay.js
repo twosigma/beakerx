@@ -287,30 +287,43 @@
                                 undefined,
                                 // integer
                                 function(value,type,full,meta) {
-                                  return parseInt(value);
+                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                    return parseInt(value);
+                                  return '';
                                 },
                                 // formatted integer
                                 function(value,type,full,meta) {
-                                  var x = parseInt(value);
-                                  if (x !== 'NaN')
-                                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                  return x;
+                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null)) {
+                                    var x = parseInt(value);
+                                    if (x !== 'NaN')
+                                      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                    return x;
+                                  }
+                                  return '';
                                 },
                                 // double
                                 function(value,type,full,meta) {
-                                  return parseFloat(value);
+                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                    return parseFloat(value);
+                                  return '';
                                 },
                                 // double 2 decimals
                                 function(value,type,full,meta) {
-                                  return parseFloat(value).toFixed(2);
+                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                    return parseFloat(value).toFixed(2);
+                                  return '';
                                 },
                                 // double 4 decimals
                                 function(value,type,full,meta) {
-                                  return parseFloat(value).toFixed(4);
+                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                    return parseFloat(value).toFixed(4);
+                                  return '';
                                 },
                                 // scientific
                                 function(value,type,full,meta) {
-                                  return parseFloat(value).toExponential();
+                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                    return parseFloat(value).toExponential();
+                                  return '';
                                 },
                                 // time
                                 function(value,type,full,meta) {
@@ -327,7 +340,7 @@
                                 },
                                 // boolean
                                 function(value,type,full,meta) {
-                                  if (value.toLowerCase() === 'true' || value === '1')
+                                  if (value !== undefined && value !== null && (value.toLowerCase() === 'true' || value === 1))
                                     return 'true';
                                   return 'false';
                                 }

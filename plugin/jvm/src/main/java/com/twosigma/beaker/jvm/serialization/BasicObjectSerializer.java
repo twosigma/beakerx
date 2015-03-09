@@ -71,7 +71,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     if (!(o instanceof Map<?,?>))
       return false;
     Map<?,?> m = (Map<?,?>) o;
-    
+        
     Set<?> eset = m.entrySet();
     for (Object entry : eset) {
       Entry<?,?> e = (Entry<?, ?>) entry;
@@ -87,7 +87,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     if (!(o instanceof Collection<?>))
       return false;
     Collection<?> m = (Collection<?>) o;
-    
+    int max = 0;
+
     for (Object entry : m) {
       if (!(entry instanceof Collection<?>))
         return false;
@@ -96,8 +97,10 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         if (!isPrimitiveType(ei.getClass().getName()))
           return false;
       }
+      if (max < e.size())
+        max = e.size();
     }
-    return true;
+    return max>=2 && m.size()>=2;
   }
 
   

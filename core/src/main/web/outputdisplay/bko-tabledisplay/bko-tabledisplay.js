@@ -537,7 +537,7 @@
             scope.actualtype = [];
             scope.actualalign = [];
             for (i=0; i<scope.columnNames.length; i++) {
-              if (scope.types !== undefined && scope.types[i] === 'time') {
+              if (scope.types !== undefined && scope.types !== null && scope.types[i] === 'time') {
                 scope.actualtype.push(8);
                 scope.actualalign.push('C');
               } else {

@@ -131,7 +131,20 @@ public class TableDisplay {
             m.put(l.get(0).toString(), l.get(1));
           }
           o = m;
-        } else {
+        } else if(cols!=null && vals!=null && cols.size()>=2 && vals.size()>=2) {
+          int i=0;
+          for (String c : cols) {
+            if (c.startsWith("c") && Integer.parseInt(c.substring(1))==i)
+              i++;
+            else
+              break;
+          }
+          if (i==cols.size()) {
+            // rollback to list of lists
+            o = vals;
+          }
+        }
+        if (o==null) {
           o = new TableDisplay(vals, cols, clas);
         }
       } catch (Exception e) {

@@ -107,6 +107,48 @@
             "lineCount": 3
         },
         {
+            "id": "codeMwBwGY",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// verify primitive type matrix to datatable conversion",
+                    "[[1,2,3],[4,5,6], [7,8,9,10]]",
+                    "// expected output is a datatable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "203374c1-6a04-4b93-8d02-784cb11b2896",
+                "elapsedTime": 91
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeFlU3F1",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// verify non primitive type matrix to datatable conversion",
+                    "[[1,2,3],[4,5,6], [7,8,9,new Plot()]]",
+                    "// expected output is a JSON text"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "203374c1-6a04-4b93-8d02-784cb11b2896",
+                "elapsedTime": 100
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
             "id": "codeC5170V",
             "type": "code",
             "evaluator": "Groovy",
@@ -201,6 +243,35 @@
             },
             "evaluatorReader": true,
             "lineCount": 9
+        },
+        {
+            "id": "codeIMTwpz",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "",
+                    "// test storing primitive type matrix in beaker namespace",
+                    "beaker.x = [[1,2,3],[4,5,6], [7,8,9,10]]",
+                    "",
+                    "sleep(1)",
+                    "",
+                    "if(!beaker.x.getClass().getName().endsWith(\".ArrayList\"))",
+                    "  \"ERROR: this test is failed: \"+beaker.x.getClass().getName()",
+                    "else",
+                    "  \"OK\"",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "Groovy",
+                "shellId": "203374c1-6a04-4b93-8d02-784cb11b2896",
+                "elapsedTime": 632
+            },
+            "evaluatorReader": true,
+            "lineCount": 11
         },
         {
             "id": "code6KOVvS",
@@ -504,42 +575,32 @@
     ],
     "namespace": {
         "x": {
-            "type": "OutputContainer",
-            "items": [
-                "pippero",
+            "type": "TableDisplay",
+            "columnNames": [
+                "c0",
+                "c1",
+                "c2",
+                "c3"
+            ],
+            "values": [
                 [
                     1,
                     2,
                     3,
+                    null
+                ],
+                [
                     4,
                     5,
-                    6
+                    6,
+                    null
                 ],
-                {
-                    "type": "TableDisplay",
-                    "columnNames": [
-                        "a",
-                        "b",
-                        "c"
-                    ],
-                    "values": [
-                        [
-                            1,
-                            3,
-                            null
-                        ],
-                        [
-                            4,
-                            null,
-                            5
-                        ]
-                    ],
-                    "types": [
-                        "integer",
-                        "integer",
-                        "integer"
-                    ]
-                }
+                [
+                    7,
+                    8,
+                    9,
+                    10
+                ]
             ]
         },
         "r": {

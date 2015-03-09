@@ -279,9 +279,10 @@
                             { type: 3, name: 'double'},
                             { type: 4, name: 'double 2 decimals'},
                             { type: 5, name: 'double 4 decimals'},
-                            { type: 6, name: 'scientific'},
-                            { type: 7, name: 'time'},
-                            { type: 8, name: 'boolean'} ];
+                            { type: 6, name: 'exponential 5'},
+                            { type: 7, name: 'exponential 15'},
+                            { type: 8, name: 'time'},
+                            { type: 9, name: 'boolean'}];
         $scope.allConverters = [
                                 // string
                                 undefined,
@@ -319,10 +320,16 @@
                                     return parseFloat(value).toFixed(4);
                                   return '';
                                 },
-                                // scientific
+                                // exponential 5
                                 function(value,type,full,meta) {
                                   if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
-                                    return parseFloat(value).toExponential();
+                                    return parseFloat(value).toExponential(5);
+                                  return '';
+                                },
+                                // exponential 15
+                                function(value,type,full,meta) {
+                                  if (type === 'sort' || (value !== undefined && value !== '' && value !== null))
+                                    return parseFloat(value).toExponential(15);
                                   return '';
                                 },
                                 // time
@@ -349,14 +356,15 @@
         $scope.allIntTypes = [ { type: 0, name: 'string'},
                                { type: 1, name: 'integer'},
                                { type: 2, name: 'formatted integer'},
-                               { type: 7, name: 'time'} ];
+                               { type: 8, name: 'time'} ];
         $scope.allDoubleTypes = [ { type: 0, name: 'string'},
                                   { type: 3, name: 'double'},
                                   { type: 4, name: 'double 2 decimals'},
                                   { type: 5, name: 'double 4 decimals'},
-                                  { type: 6, name: 'scientific'} ];
+                                  { type: 6, name: 'exponential 5'},
+                                  { type: 7, name: 'exponential 15'} ];
         $scope.allBoolTypes = [ { type: 0, name: 'string'},
-                                { type: 8, name: 'boolean'} ];
+                                { type: 9, name: 'boolean'} ];
 
         $scope.openOptionsDialog = function() {
           var options = {
@@ -496,7 +504,7 @@
             scope.actualalign = [];
             for (i=0; i<scope.columnNames.length; i++) {
               if (scope.columnNames[i] === "time" || (scope.types !== undefined && scope.types[i] === 'time')) {
-                scope.actualtype.push(7);
+                scope.actualtype.push(8);
                 scope.actualalign.push('C');
               } else {
                 if (scope.types !== undefined) {

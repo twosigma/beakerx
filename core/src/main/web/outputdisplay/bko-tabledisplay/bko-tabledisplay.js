@@ -135,6 +135,11 @@
         $scope.convertToCSV = function(data) {
           var i, j;
           var out = '';
+          var eol = '\n';
+          
+          if (navigator.appVersion.indexOf("Win")!=-1)
+            eol = '\r\n';
+          
           for(i=1; i<$scope.columns.length; i++) {
             var order = $scope.colorder[i];
             if (!$scope.table.column(order).visible())
@@ -143,7 +148,7 @@
               out = out + '\t';
             out = out + '"' + $scope.columns[order].title.replace(/"/g, '""') + '"';
           }
-          out = out + '\r\n';
+          out = out + eol;
 
           for(i=0; i<data.length; i++) {
             var row = data[i];
@@ -159,9 +164,9 @@
               var d = row[j];
               if ($scope.columns[order].render !== undefined )
                 d = $scope.columns[order].render(d);
-              out = out + '"' + d.replace(/"/g, '""') + '"';
+              out = out + '"' + (d !== undefined && d !== null ? d.replace(/"/g, '""') : '') + '"';
             }
-            out = out + '\r\n';
+            out = out + eol;
           }
           return out;
         };

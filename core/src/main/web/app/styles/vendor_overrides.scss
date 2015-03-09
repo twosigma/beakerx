@@ -59,6 +59,10 @@ tbody tr {
     &:hover {
       table.dataTable.hover &, table.dataTable.display & {
         background-color: #99CCFF;
+
+        td {
+          background-color: transparent !important;
+        }
       }
 
       &.selected {

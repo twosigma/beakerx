@@ -284,7 +284,9 @@
         };
         
         $scope.escapeHTML = function (text) {
-          return text.replace(/[\"&'\/<>]/g, function (a) { return chr[a]; });
+          if ($.type(text) === "string")
+            return text.replace(/[\"&'\/<>]/g, function (a) { return chr[a]; });
+          return text;
         },
         
         $scope.allTypes = [ { type: 0, name: 'string'},
@@ -535,7 +537,7 @@
             scope.actualtype = [];
             scope.actualalign = [];
             for (i=0; i<scope.columnNames.length; i++) {
-              if (scope.columnNames[i] === "time" || (scope.types !== undefined && scope.types[i] === 'time')) {
+              if (scope.types !== undefined && scope.types[i] === 'time') {
                 scope.actualtype.push(8);
                 scope.actualalign.push('C');
               } else {

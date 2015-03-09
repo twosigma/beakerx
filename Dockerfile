@@ -35,6 +35,7 @@ RUN add-apt-repository -y ppa:webupd8team/java && \
 
 RUN apt-get update && apt-get install -y nginx gradle-1.12 python g++ make git
 
+RUN useradd beaker --create-home
 
 ##########
 #  Java  #
@@ -59,8 +60,8 @@ RUN pip install ipython==2.4.1 jinja2 tornado pyzmq pandas
 
 # https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847
 RUN apt-get install -y python-virtualenv python3-dev && \
-    virtualenv /root/py3k -p python3 && \
-    /root/py3k/bin/pip install ipython[notebook]==2.4.1
+    virtualenv /home/beaker/py3k -p python3 && \
+    /home/beaker/py3k/bin/pip install ipython[notebook]==2.4.1
 
 #######
 #  R  #
@@ -103,7 +104,6 @@ RUN npm config --global set cache /home/beaker/.npm && \
 #  Build and Run  #
 ###################
 
-RUN useradd beaker --create-home
 ADD . /home/beaker/src
 ENV HOME /home/beaker
 
@@ -115,7 +115,7 @@ RUN su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'" && \
     su -m beaker -c "julia --eval 'Pkg.add(\"Gadfly\")'"
 
 RUN mkdir -p /home/beaker/.beaker/v1/config && \
-    echo '{"pref-format" : "1", "languages" : {"Python3" : {"path": "/root/py3k/bin"}}}' > /home/beaker/.beaker/v1/config/beaker.pref.json
+    echo '{"pref-format" : "1", "languages" : {"Python3" : {"path": "/home/beaker/py3k/bin"}}}' > /home/beaker/.beaker/v1/config/beaker.pref.json
 
 RUN chown -R beaker:beaker /home/beaker && \
     su -m beaker -c "cd /home/beaker/src  && gradle build"

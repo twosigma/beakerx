@@ -169,16 +169,11 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         columns.add("Key");
         columns.add("Value");
 
-        List<String> classes = new ArrayList<String>();
         List<List<?>> values = new ArrayList<List<?>>();
 
         Set<?> eset = m.entrySet();
         for (Object entry : eset) {
           Entry<?,?> e = (Entry<?, ?>) entry;
-          if(classes.isEmpty()) {
-            classes.add(convertType(e.getKey().getClass().getName()));
-            classes.add(convertType(e.getValue().getClass().getName()));
-          }
           List<String> l = new ArrayList<String>();
           l.add(e.getKey().toString());
           l.add(e.getValue().toString());
@@ -188,7 +183,6 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         jgen.writeObjectField("type", "TableDisplay");
         jgen.writeObjectField("columnNames", columns);
         jgen.writeObjectField("values", values);
-        jgen.writeObjectField("types", classes);
         jgen.writeEndObject();
       } else if (obj instanceof Map<?,?>) {
         logger.fine("generic map");

@@ -55,10 +55,19 @@ RUN apt-get install -y libzmq3-dbg libzmq3-dev libzmq3
 
 # Then IPython proper:
 RUN apt-get install -y python-pip python-dev python-yaml
-RUN pip install ipython jinja2 tornado pyzmq pandas 
+RUN pip install ipython==2.4.1 jinja2 tornado pyzmq pandas 
 
 # And some useful libraries:
 RUN apt-get install -y python-matplotlib python-scipy
+
+#############
+#  Python3  #
+#############
+
+# https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847
+RUN apt-get install -y python-virtualenv python3-dev
+RUN virtualenv /root/py3k -p python3
+RUN /root/py3k/bin/pip install ipython[notebook]==2.4.1
 
 #######
 #  R  #
@@ -111,6 +120,9 @@ ENV HOME /home/beaker
 # which need to go as root.
 RUN su -m beaker -c "julia --eval 'Pkg.add(\"IJulia\")'"
 RUN su -m beaker -c "julia --eval 'Pkg.add(\"Gadfly\")'"
+
+RUN mkdir -p /home/beaker/.beaker/v1/config
+RUN echo '{"pref-format" : "1", "languages" : {"Python3" : {"path": "/root/py3k/bin"}}}' > /home/beaker/.beaker/v1/config/beaker.pref.json
 
 RUN chown -R beaker:beaker /home/beaker
 RUN su -m beaker -c "cd /home/beaker/src  && gradle build"

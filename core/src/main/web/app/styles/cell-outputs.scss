@@ -48,6 +48,10 @@ bk-code-cell-output {
   & > :last-child {
     margin-bottom: 0;
   }
+
+  ul, ol {
+    margin-left: $grid-gutter-width;
+  }
 }
 
 .modal.output-table-options {

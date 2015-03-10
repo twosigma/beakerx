@@ -44,7 +44,8 @@ import org.codehaus.jackson.map.SerializerProvider;
  */
 public class SimpleEvaluationObject extends Observable {
   private final static Logger logger = Logger.getLogger(SimpleEvaluationObject.class.getName());
-  private static final int OUTPUT_QUEUE_SIZE = 30;
+  private static final int OUTPUT_QUEUE_SIZE = 20;
+  private static final int MAX_LINE_LENGTH = 240;
   
   public class EvaluationStdOutput {
     public String payload;
@@ -362,8 +363,8 @@ public class SimpleEvaluationObject extends Observable {
   
   private synchronized void doAppendOutput(String s) {
     buildingout += s;
+    String add = null;
     if (s.contains("\n")) {
-      String add;
       if (s.endsWith("\n")) {
         add = buildingout;
         buildingout = "";
@@ -371,19 +372,35 @@ public class SimpleEvaluationObject extends Observable {
         add = buildingout.substring(0, buildingout.lastIndexOf('\n')+1);
         buildingout = buildingout.substring(buildingout.lastIndexOf('\n')+1);
       }
-      if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdOutput)) {
-        outputdata.add(new EvaluationStdOutput(add));
-      } else {
-        EvaluationStdOutput st = (EvaluationStdOutput) outputdata.get(outputdata.size()-1);
-        st.payload += add;
-      }
-      for(int i = 0; i < add.length(); i++) {
-        if (add.charAt(i) == '\n')
+    } if ( buildingout.length() > MAX_LINE_LENGTH) {
+      add = buildingout;
+      buildingout = "";
+    }
+    if (add != null) {
+      String [] v = add.split("\n");
+      for (String sv : v) {
+        while (sv.length()>MAX_LINE_LENGTH) {
+          String t = sv.substring(0, MAX_LINE_LENGTH);
+          sv = sv.substring(MAX_LINE_LENGTH);
+          if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdOutput)) {
+            outputdata.add(new EvaluationStdOutput(t+"\n"));
+          } else {
+            EvaluationStdOutput st = (EvaluationStdOutput) outputdata.get(outputdata.size()-1);
+            st.payload += t+"\n";
+          }
           outputdataCount ++;
+        }
+        if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdOutput)) {
+          outputdata.add(new EvaluationStdOutput(sv+"\n"));
+        } else {
+          EvaluationStdOutput st = (EvaluationStdOutput) outputdata.get(outputdata.size()-1);
+          st.payload += sv+"\n";
+        }
+        outputdataCount ++;
       }
       setChanged();
       notifyObservers();
-    }    
+    }
   }
 
   public void appendError(String s) {
@@ -398,8 +415,8 @@ public class SimpleEvaluationObject extends Observable {
 
   private synchronized void doAppendError(String s) {
     buildingerr += s;
+    String add = null;
     if (s.contains("\n")) {
-      String add;
       if (s.endsWith("\n")) {
         add = buildingerr;
         buildingerr = "";
@@ -407,32 +424,46 @@ public class SimpleEvaluationObject extends Observable {
         add = buildingerr.substring(0, buildingerr.lastIndexOf('\n')+1);
         buildingerr = buildingerr.substring(buildingerr.lastIndexOf('\n')+1);
       }
-
+    } else if ( buildingerr.length() > MAX_LINE_LENGTH) {
+      add = buildingerr;
+      buildingerr = "";
+    }
+    if (add != null) {
       /*
-       * HACK to remove annoying stderr messages from third party libraries
-       */
+      * HACK to remove annoying stderr messages from third party libraries
+      */
       if ((add.contains("org.antlr.v4.runtime.misc.NullUsageProcessor") && add.contains("'RELEASE_6'")) ||
           (add.contains("JavaSourceCompilerImpl compile"))) {
         String [] v = add.split("\n");
         add = "";
-        for(String s2 : v)
+        for(String s2 : v) {
           if (!s2.contains("org.antlr.v4.runtime.misc.NullUsageProcessor") && !s2.contains("JavaSourceCompilerImpl compile"))
             add += s2 + "\n";
+        }
       }
-      if (!add.isEmpty()) {
+      String [] v = add.split("\n");
+      for (String sv : v) {
+        while (sv.length()>MAX_LINE_LENGTH) {
+          String t = sv.substring(0, MAX_LINE_LENGTH);
+          sv = sv.substring(MAX_LINE_LENGTH);
+          if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdError)) {
+            outputdata.add(new EvaluationStdError(t+"\n"));
+          } else {
+            EvaluationStdError st = (EvaluationStdError) outputdata.get(outputdata.size()-1);
+            st.payload += t+"\n";
+          }
+          outputdataCount ++;
+        }
         if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdError)) {
-          outputdata.add(new EvaluationStdError(add));
+          outputdata.add(new EvaluationStdError(sv+"\n"));
         } else {
           EvaluationStdError st = (EvaluationStdError) outputdata.get(outputdata.size()-1);
-          st.payload += add;
+          st.payload += sv+"\n";
         }
-        for(int i = 0; i < add.length(); i++) {
-          if (add.charAt(i) == '\n')
-            outputdataCount ++;
-        }
-        setChanged();
-        notifyObservers();
+        outputdataCount ++;
       }
+      setChanged();
+      notifyObservers();
     }
   }
 

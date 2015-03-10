@@ -317,7 +317,7 @@ public class RServerEvaluator {
       if (iswindows) {
         return;
       }
-      if (pid >=0) {
+      if (pid >0) {
         try {
           logger.fine("sending signal");
           Runtime.getRuntime().exec("kill -SIGINT " + pid);

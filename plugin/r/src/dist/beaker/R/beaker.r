@@ -104,46 +104,70 @@ set_fast <- function(var, val) {
   return (set4(var, val, FALSE, FALSE))
 }
 
-convertFromJSON <- function(res) {
-	tres = fromJSON(res)
-	if (is.list(tres) && exists("type", where=tres) && tres[["type"]] == "TableDisplay") {
-      create <- TRUE
-      cols <- length(tres$types)
-	  rows <- length(tres$values)
+convertFromJSON <- function(res, var) {
+  tres = fromJSON(res)
+  if (!tres$defined) {
+    stop(paste("object '", var, "' not found in notebook namespace.", sep=''))
+  }
+  tres = tres$value
+  
+  if (is.list(tres) && exists("type", where=tres) && tres[["type"]] == "TableDisplay") {	
+    cols <- length(tres$columnNames)
+    rows <- length(tres$values)
+    if (cols == 2 && tres$columnNames[1] == "Key" && tres$columnNames[2] == "Value") {
+      o = list()
+      for (i in 1:rows) {
+        o[[ tres$values[[i]][[1]] ]] = tres$values[[i]][[2]]
+      }
+      tres = o
+    } else {
 	  dummy_nv = logical(rows)
 	  df <- data.frame(dummy_nv);
 	  for (i in 1:cols) {
-	    if (tres$types[[i]] == "double" || tres$types[[i]] == "integer") {
+	    if (exists("types", where=tres) && (tres$types[i] == "double" || tres$types[i] == "integer")) {
 		  nv <- numeric(rows);
 		  for( j in 1:rows) {
-		      nv [j] <- as.numeric(tres$values[[j]][[i]])
+		    if ( is.null( tres$values[[j]][[i]] ) )
+		      nv [j] <- NaN
+		    else
+		      nv [j] <- as.numeric( tres$values[[j]][[i]] )
 		  }
 	  	  df[ tres$columnNames[[i]] ] = nv
 		} else {
-		    nv <- character(rows);
-		    for( j in 1:rows) {
-		      nv [j] <- as.character(tres$values[[j]][[i]])
-		    }
-		    if(tres$types[[i]] == "select") 
-		      df[ tres$columnNames[[i]] ] = factor(nv)		  
-		    else
-		      df[ tres$columnNames[[i]] ] = nv		 
-		  }
-		}
-		tres <- df[ tres$columnNames ]
-	}
-	return (tres)
+		  nv <- character( rows );
+          for( j in 1:rows) {
+            if ( is.null( tres$values[[j]][[i]] ) )
+              nv [j] <- ""
+            else
+		      nv [j] <- as.character( tres$values[[j]][[i]] )
+          }
+		  if(exists("types", where=tres) && tres$types[[i]] == "select") 
+		    df[ tres$columnNames[[i]] ] = factor(nv)		  
+		  else
+		    df[ tres$columnNames[[i]] ] = nv		 
+        }
+	  }
+      tres <- df[ tres$columnNames ]
+      ismatrix <- TRUE
+      for (i in 1:cols) {
+        pp = paste("c",i-1, sep="")
+        if ( names(tres)[[i]] != pp )
+          ismatrix <- FALSE
+      }
+      if (ismatrix) {
+       tres = data.matrix(tres)
+      }
+    }
+  }
+  return (tres)
 }
 
 
 get <- function(var) {
   req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
               '/rest/namespace/get?name=', var, '&session=', session_id, sep='')
-  res = convertFromJSON(getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC))
-  if (!res$defined) {
-    stop(paste("object '", var, "' not found in notebook namespace.", sep=''))
-  }
-  return (res$value)
+  res = convertFromJSON(getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC), var)
+  return (res)
 }
 
 saved_svg_options = c()

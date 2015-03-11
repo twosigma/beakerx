@@ -127,20 +127,13 @@
           var addScrollingHack = function() {
             // TODO, the following is a hack to address the issue that
             // somehow the notebook is scrolled to the middle
-            // this hack listens to the 'scroll' event and scrolls it to the top
-            // A better solution is to do this when Angular stops firing and DOM updates finish.
-            // A even even better solution is the session actually remembers where the scrolling was
+            // this hack scrolls to the top when Angular stops firing and DOM updates finish.
+            // A better solution is the session actually remembers where the scrolling was
             // and scroll to there and in the case of starting a new session (i.e. loading a notebook from file)
             // scroll to top.
             // A even better solution would be to get rid of the unwanted scrolling in the first place.
-            var listener = function(ev) {
-              window.scrollTo(0, 0);
-              window.removeEventListener('scroll', listener, false);
-            };
-
             $timeout(function() {
               window.scrollTo(0, 0);
-              window.addEventListener('scroll', listener, false);
             });
           };
           var loadNotebookModelAndResetSession = function(

@@ -32,6 +32,16 @@
             }
         },
         {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        },
+        {
             "name": "R",
             "plugin": "R",
             "view": {
@@ -43,263 +53,597 @@
     ],
     "cells": [
         {
-            "id": "section001",
-            "type": "section",
-            "level": 1,
-            "title": "R Tests",
-            "collapsed": false,
-            "evaluatorReader": false
-        },
-        {
-            "id": "codemGRkqA",
+            "id": "datatable",
             "type": "code",
-            "evaluator": "R",
+            "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "# basic test",
-                    "1+1"
+                    "// verify 'list of maps' to datatable conversion",
+                    "beaker.lof = [ [a:1, b:3], [a:4, c:5] ]",
+                    "// verify primitive type map to datatable conversion",
+                    "beaker.ptm = [a:1, b:2, c: 55]",
+                    "// verify non-primitive type map to datatable conversion",
+                    "beaker.npm = [a:1, b:2, c: new Plot()]",
+                    "// verify primitive type matrix to datatable conversion",
+                    "beaker.ptmx = [[1,2,3],[4,5,6], [7,8,9,10]]",
+                    "// verify basic collection",
+                    "beaker.bcol = [1,2,3,4,5,6]",
+                    "// verify basic plots",
+                    "beaker.plot = new Plot()",
+                    "// verify basic types",
+                    "beaker.int = 12",
+                    "beaker.double = 34.56",
+                    "beaker.string = \"pippero\"",
+                    "beaker.boolean = true",
+                    "// verify output container",
+                    "import com.twosigma.beaker.jvm.object.OutputContainer",
+                    "beaker.outc = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])",
+                    "// verify an image",
+                    "import java.awt.image.BufferedImage",
+                    "BufferedImage i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",
+                    "g2 = i.createGraphics()",
+                    "g2.drawLine(0,0,100,100)",
+                    "beaker.img = i",
+                    "\"OK\""
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "pluginName": "R",
-                "shellId": "fd1c31cd-57b5-46ec-b243-f710e6e83c16",
-                "elapsedTime": 51
+                "pluginName": "Groovy",
+                "shellId": "7f1395fd-5c5e-4ee2-a852-7e71a68dbaa0",
+                "elapsedTime": 1266
             },
             "evaluatorReader": true,
-            "lineCount": 2
+            "lineCount": 27
         },
         {
-            "id": "code2uVtKX",
+            "id": "code6mOCDX",
             "type": "code",
             "evaluator": "R",
             "input": {
                 "body": [
-                    "# test simple plot - this has 'not visible'",
-                    "# histogram of 1000 random normal variables",
-                    "hist(rnorm(1000), breaks=25, col=\"gray\")"
-                ]
-            },
-            "evaluatorReader": true,
-            "lineCount": 3,
-            "output": {
-                "selectedType": "Html",
-                "elapsedTime": 597,
-                "state": {},
-                "pluginName": "R",
-                "shellId": "fd1c31cd-57b5-46ec-b243-f710e6e83c16"
-            }
-        },
-        {
-            "id": "codeG6bqsQ",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": [
-                    "# test simple plot - this has 'visible' stuff plus graphics",
-                    "# box plot of sample data set of car gas efficiency",
-                    "library(ggplot2)",
-                    "ggplot(mpg, aes(class, hwy, fill = factor(year))) + geom_boxplot()"
-                ]
-            },
-            "output": {
-                "selectedType": "Html",
-                "elapsedTime": 1183,
-                "state": {},
-                "pluginName": "R",
-                "shellId": "fd1c31cd-57b5-46ec-b243-f710e6e83c16"
-            },
-            "evaluatorReader": true,
-            "lineCount": 4
-        },
-        {
-            "id": "codezB5I5w",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": [
-                    "# dataframe test - this should auto detect column types",
-                    "# the raw data frame renders as a spreadsheet",
-                    "mpg"
-                ]
-            },
-            "output": {
-                "selectedType": "Table",
-                "elapsedTime": 50,
-                "state": {},
-                "pluginName": "R",
-                "shellId": "fd1c31cd-57b5-46ec-b243-f710e6e83c16"
-            },
-            "evaluatorReader": true,
-            "lineCount": 3
-        },
-        {
-            "id": "codeW7oCy6",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": [
-                    "# lots of text test",
-                    "ctl <- c(4.17,5.58,5.18,6.11,4.50,4.61,5.17,4.53,5.33,5.14)",
-                    "trt <- c(4.81,4.17,4.41,3.59,5.87,3.83,6.03,4.89,4.32,4.69)",
-                    "group <- gl(2, 10, 20, labels = c(\"Ctl\",\"Trt\"))",
-                    "weight <- c(ctl, trt)",
-                    "lm.D9 <- lm(weight ~ group)",
-                    "lm.D90 <- lm(weight ~ group - 1) # omitting intercept",
-                    "summary(lm.D90)",
-                    "# expected output is some text"
-                ]
-            },
-            "output": {
-                "selectedType": "Text",
-                "elapsedTime": 49,
-                "state": {},
-                "pluginName": "R",
-                "shellId": "fd1c31cd-57b5-46ec-b243-f710e6e83c16"
-            },
-            "evaluatorReader": true,
-            "lineCount": 9
-        },
-        {
-            "id": "codeD5ACk8",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": [
-                    "# printing to stderr and stdout + basic math",
-                    "write(\"1 prints to stderr\", stderr())",
-                    "write(\"2 prints to stderr\", stderr())",
-                    "write(\"3 prints to stderr\", stderr())",
-                    "write(\"4 prints to stderr\", stderr())",
-                    "1+1",
-                    ""
-                ]
-            },
-            "output": {
-                "state": {},
-                "selectedType": "Results",
-                "pluginName": "R",
-                "shellId": "fd1c31cd-57b5-46ec-b243-f710e6e83c16",
-                "elapsedTime": 38
-            },
-            "evaluatorReader": true,
-            "lineCount": 7
-        },
-        {
-            "id": "code2W1yMu",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": [
-                    "# printing to stderr and stdout + simple plot - this has 'not visible'",
-                    "# histogram of 1000 random normal variables",
-                    "write(\"1 prints to stderr\", stderr())",
-                    "write(\"2 prints to stderr\", stderr())",
-                    "write(\"3 prints to stdout\", stdout())",
-                    "write(\"4 prints to stderr\", stderr())",
-                    "hist(rnorm(1000), breaks=25, col=\"gray\")",
-                    "# expected output is a plot"
-                ]
-            },
-            "output": {
-                "state": {},
-                "selectedType": "Results",
-                "pluginName": "R",
-                "shellId": "fd1c31cd-57b5-46ec-b243-f710e6e83c16",
-                "elapsedTime": 51
-            },
-            "evaluatorReader": true,
-            "lineCount": 8
-        },
-        {
-            "id": "code3Eq9Fq",
-            "type": "code",
-            "evaluator": "JavaScript",
-            "input": {
-                "body": [
-                    "beaker.x = [ 10, 11]",
-                    "\"\""
-                ]
-            },
-            "output": {
-                "state": {},
-                "selectedType": "Hidden"
-            },
-            "evaluatorReader": true,
-            "lineCount": 2
-        },
-        {
-            "id": "codenYmwpl",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": [
-                    "# test accessing beater namespace",
-                    "beaker::set('mpg',mpg)",
-                    "beaker::get('x')",
-                    "# expected output is [10, 11]"
-                ]
-            },
-            "output": {
-                "state": {},
-                "selectedType": "Text",
-                "pluginName": "R",
-                "shellId": "fd1c31cd-57b5-46ec-b243-f710e6e83c16",
-                "elapsedTime": 1191
-            },
-            "evaluatorReader": true,
-            "lineCount": 4
-        },
-        {
-            "id": "codeBw0rtA",
-            "type": "code",
-            "evaluator": "JavaScript",
-            "input": {
-                "body": [
-                    "beaker.mpg",
-                    "// expected output is the mpg datatable"
-                ]
-            },
-            "output": {
-                "state": {},
-                "selectedType": "Table"
-            },
-            "evaluatorReader": true,
-            "lineCount": 2
-        },
-        {
-            "id": "codeXV89q2",
-            "type": "code",
-            "evaluator": "R",
-            "input": {
-                "body": [
-                    "# test for cell evaluation interrupt",
-                    "wait <- function(wait.time = 60){",
-                    "  now <- proc.time()[3]",
-                    "  while(proc.time()[3] < (now + wait.time)) dum <- 0",
+                    "error <- FALSE",
+                    "lof <- beaker::get(\"lof\")",
+                    "ptm <- beaker::get(\"ptm\")",
+                    "npm <- beaker::get(\"npm\")",
+                    "ptmx <- beaker::get(\"ptmx\")",
+                    "bcol <- beaker::get(\"bcol\")",
+                    "plot <- beaker::get(\"plot\")",
+                    "aint <- beaker::get(\"int\")",
+                    "adouble <- beaker::get(\"double\")",
+                    "astring <- beaker::get(\"string\")",
+                    "aboolean <- beaker::get(\"boolean\")",
+                    "outc = beaker::get(\"outc\")",
+                    "img = beaker::get(\"img\")",
+                    "",
+                    "if (class(lof) != \"data.frame\" || length(lof) != 3 || length(lof$a) != 2) {",
+                    "  print(\"ERROR in lof\")",
+                    "  error <- TRUE",
                     "}",
                     "",
-                    "wait()",
-                    "  ",
-                    "1+1"
+                    "if (class(ptm) != \"list\" || length(ptm) != 3 || ptm$a != 1) {",
+                    "  print(\"ERROR ptm\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "if (class(npm) != \"list\" || length(npm) != 3 || npm$c$type != \"Plot\") {",
+                    "  print(\"ERROR npm\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "if (class(ptmx) != \"matrix\" || length(ptmx) != 12) {",
+                    "  print(\"ERROR ptmx\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "if (class(bcol) != \"numeric\" || length(bcol) != 6) {",
+                    "  print(\"ERROR bcol\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "if (class(plot) != \"list\" || length(plot) != 28 || plot$type != \"Plot\") {",
+                    "  print(\"ERROR plot\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "if (class(aint) != \"numeric\") {",
+                    "  print(\"ERROR aint\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "if (class(adouble) != \"numeric\") {",
+                    "  print(\"ERROR adouble\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "",
+                    "if (class(astring) != \"character\") {",
+                    "  print(\"ERROR astring\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "",
+                    "if (class(aboolean) != \"logical\") {",
+                    "  print(\"ERROR aboolean\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "if (class(outc) != \"list\" || length(outc) != 2 || outc$type != \"OutputContainer\") {",
+                    "  print(\"ERROR outc\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "if (class(img) != \"list\" || length(img) != 4 || img$type != \"ImageIcon\") {",
+                    "  print(\"ERROR img\")",
+                    "  error <- TRUE",
+                    "}",
+                    "",
+                    "",
+                    "if (error)",
+                    "  \"ERROR\"",
+                    "else",
+                    "  \"OK\""
                 ]
             },
             "output": {
                 "state": {},
                 "selectedType": "Results",
                 "pluginName": "R",
-                "shellId": "fd1c31cd-57b5-46ec-b243-f710e6e83c16",
-                "elapsedTime": 15981
+                "shellId": "a8da082f-6793-4902-bdde-3b8c4bb116d4",
+                "elapsedTime": 1218
             },
             "evaluatorReader": true,
-            "lineCount": 9
+            "lineCount": 81
+        },
+        {
+            "id": "codepZM8Jo",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "library(ggplot2)",
+                    "aint = 10",
+                    "adouble = 23.45",
+                    "alogic = TRUE",
+                    "astring = \"pippero\"",
+                    "",
+                    "aintvec = c(10,11,12)",
+                    "adoublevec = c(23.45, 34.5, 445.6, 455.6, 0.3)",
+                    "alogicvec = c(TRUE, FALSE, TRUE)",
+                    "astringvec = c(\"pippero\", \"pluto\", \"paperino\")",
+                    "",
+                    "aintlist = list(10,11,12)",
+                    "adoublelist = list(23.45, 34.5, 445.6, 455.6, 0.3)",
+                    "alogiclist = list(TRUE, FALSE, TRUE)",
+                    "astringlist = list(\"pippero\", \"pluto\", \"paperino\")",
+                    "",
+                    "matrix <- matrix(1:20, nrow=5,ncol=4)",
+                    "namedlist <- list(name=\"Fred\", mynumbers=adoublevec, mymatrix=matrix, age=5.3)",
+                    "fact <- factor(c(rep(\"male\",20), rep(\"female\", 30)))",
+                    "mydates <- as.Date(c(\"2007-06-22\", \"2004-02-13\"))",
+                    "",
+                    "# basic types",
+                    "beaker::set(\"aint\",aint)",
+                    "beaker::set(\"adouble\",adouble)",
+                    "beaker::set(\"alogic\",alogic)",
+                    "beaker::set(\"astring\",astring)",
+                    "",
+                    "# basic types vectors",
+                    "beaker::set(\"aintvec\",aintvec)",
+                    "beaker::set(\"adoublevec\",adoublevec)",
+                    "beaker::set(\"alogicvec\",alogicvec)",
+                    "beaker::set(\"astringvec\",astringvec)",
+                    "",
+                    "# basic lists",
+                    "beaker::set(\"aintlist\",aintlist)",
+                    "beaker::set(\"adoublelist\",adoublelist)",
+                    "beaker::set(\"alogiclist\",alogiclist)",
+                    "beaker::set(\"astringlist\",astringlist)",
+                    "",
+                    "# matrix",
+                    "beaker::set(\"matrix\",matrix)",
+                    "",
+                    "# named list",
+                    "beaker::set(\"namedlist\",namedlist)",
+                    "",
+                    "# factors",
+                    "beaker::set(\"fact\",fact)",
+                    "",
+                    "# dates",
+                    "beaker::set(\"dates\",mydates)",
+                    "",
+                    "# data frame",
+                    "beaker::set(\"mpg\",mpg)",
+                    "",
+                    "\"OK\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "R",
+                "shellId": "a8da082f-6793-4902-bdde-3b8c4bb116d4",
+                "elapsedTime": 1661
+            },
+            "evaluatorReader": true,
+            "lineCount": 55
+        },
+        {
+            "id": "codeZVB2HL",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "def t",
+                    "def error = false",
+                    "",
+                    "t = beaker.aint",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=1 || !t[0].getClass().getName().equals(\"java.lang.Integer\")) {",
+                    "  System.out.println(\"ERROR on aint\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.adouble",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=1 || !t[0].getClass().getName().equals(\"java.lang.Double\")) {",
+                    "  System.out.println(\"ERROR on adouble\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.alogic",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=1 || !t[0].getClass().getName().equals(\"java.lang.Boolean\")) {",
+                    "  System.out.println(\"ERROR on alogic\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.astring",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=1 || !t[0].getClass().getName().equals(\"java.lang.String\")) {",
+                    "  System.out.println(\"ERROR on astring\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.aintvec",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=3 || !t[0].getClass().getName().equals(\"java.lang.Integer\")) {",
+                    "  System.out.println(\"ERROR on aintvec\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.adoublevec",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=5 || !t[0].getClass().getName().equals(\"java.lang.Double\")) {",
+                    "  System.out.println(\"ERROR on adoublevec\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.alogicvec",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=3 || !t[0].getClass().getName().equals(\"java.lang.Boolean\")) {",
+                    "  System.out.println(\"ERROR on alogicvec\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.astringvec",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=3 || !t[0].getClass().getName().equals(\"java.lang.String\")) {",
+                    "  System.out.println(\"ERROR on astringvec\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.aintlist",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=3 || !t[0].getClass().getName().equals(\"java.lang.Integer\")) {",
+                    "  System.out.println(\"ERROR on aintlist\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.adoublelist",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=5 || !t[0].getClass().getName().equals(\"java.lang.Double\")) {",
+                    "  System.out.println(\"ERROR on adoublelist\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.alogiclist",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=3 || !t[0].getClass().getName().equals(\"java.lang.Boolean\")) {",
+                    "  System.out.println(\"ERROR on alogiclist\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.astringlist",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=3 || !t[0].getClass().getName().equals(\"java.lang.String\")) {",
+                    "  System.out.println(\"ERROR on astringlist\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.matrix",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=5 || !t[0].getClass().getName().equals(\"java.util.ArrayList\") || t[0].size()!=4) {",
+                    "  System.out.println(\"ERROR on matrix\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.namedlist",
+                    "if(!t.getClass().getName().equals('java.util.LinkedHashMap') || t.size()!=4 || !t.name.equals(\"Fred\")) {",
+                    "  System.out.println(\"ERROR on astringlist\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.fact",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=50 || !t[0].getClass().getName().equals(\"java.lang.String\")) {",
+                    "  System.out.println(\"ERROR on fact\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.dates",
+                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=2 || !t[0].getClass().getName().equals(\"java.lang.Integer\")) {",
+                    "  System.out.println(\"ERROR on dates\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "t = beaker.mpg",
+                    "if(!t.getClass().getName().equals('com.twosigma.beaker.jvm.object.TableDisplay')) {",
+                    "  System.out.println(\"ERROR on data frame\")",
+                    "  error = true",
+                    "}",
+                    "",
+                    "if (error)",
+                    "  \"ERROR\"",
+                    "else",
+                    "  \"OK\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "7f1395fd-5c5e-4ee2-a852-7e71a68dbaa0",
+                "elapsedTime": 1196
+            },
+            "evaluatorReader": true,
+            "lineCount": 109
         }
     ],
     "namespace": {
-        "x": [
+        "x": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "c0",
+                "c1",
+                "c2",
+                "c3"
+            ],
+            "values": [
+                [
+                    1,
+                    2,
+                    3,
+                    null
+                ],
+                [
+                    4,
+                    5,
+                    6,
+                    null
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    10
+                ]
+            ]
+        },
+        "r": {
+            "update_id": "5689ad70-16c3-424b-9461-ac2db5330a22",
+            "type": "UpdatableEvaluationResult",
+            "payload": "test 1"
+        },
+        "i": {
+            "type": "ImageIcon",
+            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+            "width": 100,
+            "height": 100
+        },
+        "lof": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "a",
+                "b",
+                "c"
+            ],
+            "values": [
+                [
+                    1,
+                    3,
+                    null
+                ],
+                [
+                    4,
+                    null,
+                    5
+                ]
+            ],
+            "types": [
+                "integer",
+                "integer",
+                "integer"
+            ]
+        },
+        "ptm": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "Key",
+                "Value"
+            ],
+            "values": [
+                [
+                    "a",
+                    "1"
+                ],
+                [
+                    "b",
+                    "2"
+                ],
+                [
+                    "c",
+                    "55"
+                ]
+            ]
+        },
+        "npm": {
+            "a": 1,
+            "b": 2,
+            "c": {
+                "type": "Plot",
+                "init_width": 640,
+                "init_height": 480,
+                "chart_title": null,
+                "domain_axis_label": null,
+                "y_label": "",
+                "show_legend": false,
+                "use_tool_tip": true,
+                "graphics_list": [],
+                "constant_lines": [],
+                "constant_bands": [],
+                "texts": [],
+                "rangeAxes": [
+                    {
+                        "type": "YAxis",
+                        "auto_range": true,
+                        "auto_range_includes_zero": true,
+                        "lower_margin": 0.05,
+                        "upper_margin": 0.05,
+                        "lower_bound": 0,
+                        "upper_bound": 0,
+                        "log": false
+                    }
+                ],
+                "x_auto_range": true,
+                "x_lower_margin": 0.05,
+                "x_upper_margin": 0.05,
+                "x_lower_bound": 0,
+                "x_upper_bound": 0,
+                "y_auto_range": true,
+                "y_auto_range_includes_zero": true,
+                "y_lower_margin": 0.05,
+                "y_upper_margin": 0.05,
+                "y_lower_bound": 0,
+                "y_upper_bound": 0,
+                "log_x": false,
+                "log_y": false,
+                "time_zone": null,
+                "crosshair": null
+            }
+        },
+        "ptmx": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "c0",
+                "c1",
+                "c2",
+                "c3"
+            ],
+            "values": [
+                [
+                    1,
+                    2,
+                    3,
+                    null
+                ],
+                [
+                    4,
+                    5,
+                    6,
+                    null
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    10
+                ]
+            ]
+        },
+        "bcol": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+        ],
+        "plot": {
+            "type": "Plot",
+            "init_width": 640,
+            "init_height": 480,
+            "chart_title": null,
+            "domain_axis_label": null,
+            "y_label": "",
+            "show_legend": false,
+            "use_tool_tip": true,
+            "graphics_list": [],
+            "constant_lines": [],
+            "constant_bands": [],
+            "texts": [],
+            "rangeAxes": [
+                {
+                    "type": "YAxis",
+                    "auto_range": true,
+                    "auto_range_includes_zero": true,
+                    "lower_margin": 0.05,
+                    "upper_margin": 0.05,
+                    "lower_bound": 0,
+                    "upper_bound": 0,
+                    "log": false
+                }
+            ],
+            "x_auto_range": true,
+            "x_lower_margin": 0.05,
+            "x_upper_margin": 0.05,
+            "x_lower_bound": 0,
+            "x_upper_bound": 0,
+            "y_auto_range": true,
+            "y_auto_range_includes_zero": true,
+            "y_lower_margin": 0.05,
+            "y_upper_margin": 0.05,
+            "y_lower_bound": 0,
+            "y_upper_bound": 0,
+            "log_x": false,
+            "log_y": false,
+            "time_zone": null,
+            "crosshair": null
+        },
+        "int": 12,
+        "double": 34.56,
+        "string": "pippero",
+        "boolean": true,
+        "aint": [
+            10
+        ],
+        "adouble": [
+            23.45
+        ],
+        "alogic": [
+            true
+        ],
+        "astring": [
+            "pippero"
+        ],
+        "aintvec": [
             10,
-            11
+            11,
+            12
+        ],
+        "adoublevec": [
+            23.45,
+            34.5,
+            445.6,
+            455.6,
+            0.3
+        ],
+        "alogicvec": [
+            true,
+            false,
+            true
+        ],
+        "astringvec": [
+            "pippero",
+            "pluto",
+            "paperino"
         ],
         "mpg": {
             "type": "TableDisplay",
@@ -3372,6 +3716,225 @@
                 "string",
                 "select",
                 "select"
+            ]
+        },
+        "aintlist": [
+            10,
+            11,
+            12
+        ],
+        "adoublelist": [
+            23.45,
+            34.5,
+            445.6,
+            455.6,
+            0.3
+        ],
+        "alogiclist": [
+            true,
+            false,
+            true
+        ],
+        "astringlist": [
+            "pippero",
+            "pluto",
+            "paperino"
+        ],
+        "outc": {
+            "type": "OutputContainer",
+            "items": [
+                "pippero",
+                [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            3,
+                            null
+                        ],
+                        [
+                            4,
+                            null,
+                            5
+                        ]
+                    ],
+                    "types": [
+                        "integer",
+                        "integer",
+                        "integer"
+                    ]
+                }
+            ]
+        },
+        "img": {
+            "type": "ImageIcon",
+            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+            "width": 100,
+            "height": 100
+        },
+        "matrix": [
+            [
+                1,
+                6,
+                11,
+                16
+            ],
+            [
+                2,
+                7,
+                12,
+                17
+            ],
+            [
+                3,
+                8,
+                13,
+                18
+            ],
+            [
+                4,
+                9,
+                14,
+                19
+            ],
+            [
+                5,
+                10,
+                15,
+                20
+            ]
+        ],
+        "namedlist": {
+            "name": "Fred",
+            "mynumbers": [
+                23.45,
+                34.5,
+                445.6,
+                455.6,
+                0.3
+            ],
+            "mymatrix": [
+                [
+                    1,
+                    6,
+                    11,
+                    16
+                ],
+                [
+                    2,
+                    7,
+                    12,
+                    17
+                ],
+                [
+                    3,
+                    8,
+                    13,
+                    18
+                ],
+                [
+                    4,
+                    9,
+                    14,
+                    19
+                ],
+                [
+                    5,
+                    10,
+                    15,
+                    20
+                ]
+            ],
+            "age": 5.3
+        },
+        "fact": [
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "male",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female",
+            "female"
+        ],
+        "dates": [
+            13686,
+            12461
+        ],
+        "bmap": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "Key",
+                "Value"
+            ],
+            "values": [
+                [
+                    "a",
+                    "1"
+                ],
+                [
+                    "b",
+                    "34"
+                ],
+                [
+                    "c",
+                    "pippo"
+                ]
             ]
         }
     }

@@ -179,6 +179,21 @@
       });
       $rootScope.$broadcast('cellMapRecreated');
     };
+    var moveInsideViewport = function($cell) {
+      var offset = $cell.offset();
+      var windowPosition = $(window).scrollTop();
+      var overflow = {
+        top: Math.min(offset.top - windowPosition, 0),
+        bottom: Math.min(offset.top - $cell.outerHeight() - windowPosition - $(window).height(), 0)
+      }
+
+      if (overflow.bottom) {
+        window.scrollTo(0, offset.top - $(window).height() + $cell.outerHeight());
+      }
+      if (overflow.top) {
+        window.scrollTo(0, offset.top);
+      }
+    };
     return {
       _getCellMap: function() {
         return cellMap;
@@ -541,6 +556,9 @@
           // append after
           this.insertAfter(id, cell);
         }
+        $timeout(function() {
+          moveInsideViewport($('[cellid=' + cell.id + '] .bkcell'));
+        });
       },
       getInitializationCells: function() {
         return tagMap.initialization;

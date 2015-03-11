@@ -130,7 +130,6 @@ task (compileCssDebug, type: Exec) {
 
 task (copyNginx, type: Exec) {
   if (mac()) {
-//  def brewLocation = 'which brew'.execute().text[0..-10] // use nginx from current machine
     def brewLocation = '../launcher/mac/nginx/' // use nginx from old mac
     commandLine 'cp', '-f',
       brewLocation + 'lib/libpcre.1.dylib',

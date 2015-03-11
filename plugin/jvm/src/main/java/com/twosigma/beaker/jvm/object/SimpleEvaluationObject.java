@@ -88,6 +88,7 @@ public class SimpleEvaluationObject extends Observable {
   }
   
   public synchronized void finished(Object r) {
+    doFlush();
     clrOutputHandler();
     this.status = EvaluationStatus.FINISHED;
     payload = new EvaluationResult(r);
@@ -97,6 +98,7 @@ public class SimpleEvaluationObject extends Observable {
   }
 
   public synchronized void error(Object r) {
+    doFlush();
     clrOutputHandler();
     this.status = EvaluationStatus.ERROR;
     payload = new EvaluationResult(r);
@@ -467,6 +469,29 @@ public class SimpleEvaluationObject extends Observable {
     }
   }
 
+  private synchronized void doFlush() {
+    if (! buildingout.isEmpty()) {
+      if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdOutput)) {
+        outputdata.add(new EvaluationStdOutput(buildingout+"\n"));
+      } else {
+        EvaluationStdOutput st = (EvaluationStdOutput) outputdata.get(outputdata.size()-1);
+        st.payload += buildingout+"\n";
+      }
+      buildingout = "";
+      outputdataCount ++;
+    }
+    if (! buildingerr.isEmpty()) {
+      if (outputdata.size() == 0 || !(outputdata.get(outputdata.size()-1) instanceof EvaluationStdError)) {
+        outputdata.add(new EvaluationStdError(buildingerr+"\n"));
+      } else {
+        EvaluationStdError st = (EvaluationStdError) outputdata.get(outputdata.size()-1);
+        st.payload += buildingerr+"\n";
+      }
+      buildingerr = "";
+      outputdataCount ++;
+    }
+  }
+  
   public void setOutputHandler() {
     BeakerStdOutErrHandler.setOutputHandler(getStdOutputHandler(), getStdErrorHandler());
   }

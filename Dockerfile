@@ -59,9 +59,10 @@ RUN pip install ipython==2.4.1 jinja2 tornado pyzmq pandas
 #############
 
 # https://bugs.launchpad.net/ubuntu/+source/python3.4/+bug/1290847
-RUN apt-get install -y python-virtualenv python3-dev && \
+RUN apt-get install -y python-virtualenv python3-dev pkgconf libfreetype6-dev libfreetype6 libxft-dev libblas-dev liblapack-dev gfortran libyaml-dev && \
     virtualenv /home/beaker/py3k -p python3 && \
-    /home/beaker/py3k/bin/pip install ipython[notebook]==2.4.1
+    /home/beaker/py3k/bin/pip install ipython[notebook]==2.4.1 && \
+    /home/beaker/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml
 
 #######
 #  R  #

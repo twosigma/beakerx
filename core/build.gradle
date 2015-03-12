@@ -106,7 +106,7 @@ copyVendorStuff.dependsOn copyMathJax
 
 task (extractPackages, type: Exec) {
   if (windows()) {
-    commandLine 'cmd', '/c', 'unzip', '-oq', '../data/allDeps.zip';
+    commandLine 'cmd', '/c', '7z', 'x', '-y', '..\\data\\allDeps.zip';
   } else {
     commandLine 'unzip', '-oq', '../data/allDeps.zip'
   }

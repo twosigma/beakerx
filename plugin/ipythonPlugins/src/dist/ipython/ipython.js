@@ -273,7 +273,7 @@ define(function(require, exports, module) {
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: ipyVersion1 ? "ipython1" : "ipython2",
-            startedIndicator: "[NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
+            startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
             startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;

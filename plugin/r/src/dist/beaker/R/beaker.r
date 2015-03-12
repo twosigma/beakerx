@@ -104,14 +104,17 @@ set_fast <- function(var, val) {
   return (set4(var, val, FALSE, FALSE))
 }
 
-convertFromJSON <- function(res, var) {
+convertVarFromJSON <- function(res, var) {
   tres = fromJSON(res)
   if (!tres$defined) {
     stop(paste("object '", var, "' not found in notebook namespace.", sep=''))
   }
-  tres = tres$value
-  
-  if (is.list(tres) && exists("type", where=tres) && tres[["type"]] == "TableDisplay") {	
+  tres = transformJSON(tres$value)
+  return (tres)
+}
+
+transformJSON <- function(tres) {
+  if (is.list(tres) && exists("type", where=tres) && tres[["type"]] == "TableDisplay") {
     cols <- length(tres$columnNames)
     rows <- length(tres$values)
     if (cols == 2 && tres$columnNames[1] == "Key" && tres$columnNames[2] == "Value") {
@@ -166,7 +169,7 @@ convertFromJSON <- function(res, var) {
 get <- function(var) {
   req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
               '/rest/namespace/get?name=', var, '&session=', session_id, sep='')
-  res = convertFromJSON(getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC), var)
+  res = convertVarFromJSON(getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC), var)
   return (res)
 }
 
@@ -175,3 +178,98 @@ saved_svg_options = c()
 svg_options <- function(...) {
   saved_svg_options <<- list(...)
 }
+
+showProgressUpdate <- function(...) {
+  write("WARNING: R language plugin does not support progress updates", stderr())
+}
+
+evaluate <- function(filter) {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/notebookctrl/evaluate', sep='')
+  opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
+  reply = postForm(req, style='POST', filter=filter, session=session_id, .opts=opts)
+  if (isValidJSON(reply,TRUE))
+	res = transformJSON(fromJSON(reply))
+  else
+    res = reply
+  return (res)
+}
+
+evaluateCode <- function(evaluator,code) {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/notebookctrl/evaluateCode', sep='')
+  opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
+  reply = postForm(req, style='POST', evaluator=evaluator, code=code, session=session_id, .opts=opts)
+  if (isValidJSON(reply,TRUE))
+	res = transformJSON(fromJSON(reply))
+  else
+    res = reply
+  return (res)
+}
+
+showStatus <- function(msg) {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/notebookctrl/showStatus', sep='')
+  opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
+  reply = postForm(req, style='POST', msg=msg, session=session_id, .opts=opts)
+  return (reply == "true")
+}
+
+clearStatus <- function(msg) {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/notebookctrl/clearStatus', sep='')
+  opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
+  reply = postForm(req, style='POST', msg=msg, session=session_id, .opts=opts)
+  return (reply == "true")
+}
+
+showTransientStatus <- function(msg) {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/notebookctrl/showTransientStatus', sep='')
+  opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
+  reply = postForm(req, style='POST', msg=msg, session=session_id, .opts=opts)
+  return (reply == "true")
+}
+
+getEvaluators <- function() {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/notebookctrl/getEvaluators?session=', session_id, sep='')
+  reply = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
+  if (!isValidJSON(reply,TRUE))
+    stop('the server returned an invalid response')
+  return (transformJSON(fromJSON(reply)))
+}
+
+getCodeCells <- function(filter) {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/notebookctrl/getCodeCells?session=', session_id, '&filter=',filter, sep='')
+  reply = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
+  if (!isValidJSON(reply,TRUE))
+    stop('the server returned an invalid response')
+  return (transformJSON(fromJSON(reply)))
+}
+
+setCodeCellBody <- function(name,body) {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/notebookctrl/setCodeCellBody', sep='')
+  opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
+  reply = postForm(req, style='POST', name=name, body=body, session=session_id, .opts=opts)
+  return (as.character(reply))
+}
+
+setCodeCellEvaluator <- function(name,evaluator) {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/notebookctrl/setCodeCellEvaluator', sep='')
+  opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
+  reply = postForm(req, style='POST', name=name, evaluator=evaluator, session=session_id, .opts=opts)
+  return (as.character(reply))
+}
+
+setCodeCellTags <- function(name,tags) {
+  req = paste('http://127.0.0.1:',Sys.getenv("beaker_core_port"),
+              '/rest/notebookctrl/setCodeCellTags', sep='')
+  opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
+  reply = postForm(req, style='POST', name=name, tags=tags, session=session_id, .opts=opts)
+  return (as.character(reply))
+}
+

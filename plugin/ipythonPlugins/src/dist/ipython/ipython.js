@@ -27,7 +27,7 @@ define(function(require, exports, module) {
   var _theCancelFunction = null;
   var gotError = false;
   var serviceBase = null;
-  var ipyVersion1 = false;
+  var ipyVersion = false;
   var myPython = null;
   var now = function() {
     return new Date().getTime();
@@ -50,6 +50,8 @@ define(function(require, exports, module) {
           return;
         }
         if (_.isEmpty(shellID)) {
+          console.log("myPython=");
+          console.log(myPython);
           shellID = myPython.utils.uuid();
         }
 
@@ -58,7 +60,7 @@ define(function(require, exports, module) {
         .success(function(result) {
           bkHelper.httpPost(base + "/login?next=%2E", {password: result})
           .success(function(result) {
-            if (ipyVersion1) {
+            if (ipyVersion == '1') {
               self.kernel = new myPython.Kernel(base + "/kernels/");
               kernels[shellID] = self.kernel;
               self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
@@ -140,7 +142,7 @@ define(function(require, exports, module) {
           if (_theCancelFunction === null)
             return;
           // this is called when processing is completed
-          if (!ipyVersion1) {
+          if (ipyVersion != '1') {
             msg = msg.content;
           }
           var result = _(msg.payload).map(function(payload) {
@@ -173,7 +175,7 @@ define(function(require, exports, module) {
           // this is called to write output
           var type;
           var content;
-          if (ipyVersion1) {
+          if (ipyVersion != '1') {
             type = a0;
             content = a1;
           } else {
@@ -202,7 +204,7 @@ define(function(require, exports, module) {
             var elem = $(document.createElement("div"));
             var oa = new myPython.OutputArea(elem);
             // twiddle the mime types? XXX
-            if (ipyVersion1) {
+            if (ipyVersion == '1') {
               oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
             } else {
               oa.append_mime_type(content.data, elem);
@@ -220,7 +222,7 @@ define(function(require, exports, module) {
           else
             bkHelper.refreshRootScope();
         };
-        var callbacks = ipyVersion1 ? {
+        var callbacks = (ipyVersion == '1') ? {
           execute_reply: execute_reply,
           output: output
         } : {
@@ -232,7 +234,7 @@ define(function(require, exports, module) {
       },
       autocomplete: function(code, cpos, cb) {
         var kernel = kernels[this.settings.shellID];
-        if (ipyVersion1) {
+        if (ipyVersion == '1') {
           kernel.complete(code, cpos, {'complete_reply': function(reply) {
             cb(reply.matches, reply.matched_text);
           }});
@@ -269,12 +271,13 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
-      myPython = ipyVersion1 ? IPython1 : IPython;
+      require('IPython3:namespace');
+      myPython = (ipyVersion == '1') ? IPython1 : IPython;
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        nginxRules: ipyVersion1 ? "ipython1" : "ipython2",
-            startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-            startedIndicatorStream: "stderr"
+        nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2",
+        startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
+        startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
         var IPythonShell = function(settings, doneCB) {
@@ -354,17 +357,15 @@ define(function(require, exports, module) {
         {pluginId: PLUGIN_NAME, command: COMMAND})
         .success(function(result) {
           var backendVersion = result;
-          if (backendVersion[0] == "1") {
-            ipyVersion1 = true;
-          }
-          console.log("Using ipython 1.x compatibility mode: " + ipyVersion1);
-          if (ipyVersion1) {
+          ipyVersion = backendVersion[0];
+          console.log("Using ipython compatibility mode: " + ipyVersion);
+          if (ipyVersion == '1') {
             bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython/namespace.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython/utils.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython/kernel.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js"
                                ], onSuccess, onFail);
-          } else {
+          } else if (ipyVersion == '2') {
             bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython2/namespace.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython2/utils.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython2/kernel.js",
@@ -372,6 +373,15 @@ define(function(require, exports, module) {
                                "./plugins/eval/ipythonPlugins/vendor/ipython2/comm.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js"
                                ], onSuccess, onFail);
+          } else {
+            console.log(define);
+            bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js",
+                               "./plugins/eval/ipythonPlugins/vendor/ipython3/utils.js",
+                               "./plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js",
+                               "./plugins/eval/ipythonPlugins/vendor/ipython3/session.js"
+                               // "./plugins/eval/ipythonPlugins/vendor/ipython3/comm.js",
+                               // "./plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js"
+                              ], onSuccess, onFail);
           }
         }).error(function() {
           console.log("failed to locate plugin service", PLUGIN_NAME, arguments);

@@ -16,7 +16,6 @@
 
 import os
 import sys
-import subprocess
 
 if len(sys.argv) > 1:
     arg1 = sys.argv[1]

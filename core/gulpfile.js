@@ -62,6 +62,16 @@ if (argv.debug && argv.embed) {
   return (20);
 }
 
+if (argv.embed) {
+  var p;
+  if( fs.existsSync(argv.embed)) {
+    p = argv.embed;
+  } else {
+    p = srcPath + 'plugin/init/embeddedBeakerConfig.js';
+  }
+  fs.createReadStream(p).pipe(fs.createWriteStream(buildPath+'beakerConfig.js'));
+}
+
 function handleError(e) {
   console.log('\u0007', e.message);
 }

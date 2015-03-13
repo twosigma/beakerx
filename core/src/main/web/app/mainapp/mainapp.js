@@ -1189,12 +1189,16 @@
         bkSessionManager.clear();
 
         bkMenuPluginManager.clear();
-        bkUtils.httpGet('../beaker/rest/util/getMenuPlugins')
-        .success(function(menuUrls) {
-          menuUrls.forEach(function(url) {
-            bkMenuPluginManager.loadMenuPlugin(url);
+        if (window.beaker.isEmbedded === undefined) {
+          bkUtils.httpGet('../beaker/rest/util/getMenuPlugins')
+          .success(function(menuUrls) {
+            menuUrls.forEach(function(url) {
+              bkMenuPluginManager.loadMenuPlugin(url);
+            });
           });
-        });
+        } else {
+          // TODO
+        }
         bkCellMenuPluginManager.reset();
         bkEvaluateJobManager.reset();
 

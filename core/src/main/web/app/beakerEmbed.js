@@ -249,8 +249,8 @@
         bkEvaluatePluginManager.addNameToUrlEntry(key, value);
       });
 
-      if (window.bkInit && window.bkInit.getEvaluatorUrlMap) {
-        var evaluatorsUrlMap = window.bkInit.getEvaluatorUrlMap();
+      if (window.beaker.getEvaluatorUrlMap) {
+        var evaluatorsUrlMap = window.beaker.getEvaluatorUrlMap();
         _.chain(evaluatorsUrlMap).keys().each(function(key) {
           var value = evaluatorsUrlMap[key];
           bkEvaluatePluginManager.addNameToUrlEntry(key, value);

@@ -130,7 +130,7 @@ task (compileCssEmbed, type: Exec) {
   if (windows()) {
     commandLine 'cmd', '/c', 'npm', 'run-script', 'compile', '--', '--embed'
   } else {
-    commandLine 'npm', 'run-script', 'compile', '--', '--debug'
+    commandLine 'npm', 'run-script', 'compile', '--', '--embed'
   }
 }
 

@@ -43,7 +43,8 @@
         this.toBeAddedToOutputDisplayType[type] = displays;
       }
     },
-    postHelperHooks: []
+    postHelperHooks: [],
+    isEmbedded: true
   };
 
 })();

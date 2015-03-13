@@ -45,6 +45,22 @@ var banner = ['/*',
               ' */',
               ''].join('\n');
 
+if (argv.help) {
+  console.log("");
+  console.log("OPTIONS:");
+  console.log("--debug            enable debugging version");
+  console.log("--outdisp=path     directory containint the output display file list(s)");
+  console.log("--embed=fname      compile embedded version with a list of languages");
+  console.log("");
+  return(20);
+}
+
+if (argv.debug && argv.embed) {
+  console.log("");
+  console.log("ERROR: you cannot use --debug and --embed at the same time");
+  console.log("");
+  return (20);
+}
 
 function handleError(e) {
   console.log('\u0007', e.message);
@@ -87,7 +103,6 @@ gulp.task("compileBeakerScss", function() {
   .pipe(sass().on('error', handleError))
   .pipe(importCss())
   .pipe(stripCssComments())
-  //.pipe(minifyCSS())
   .pipe(gulp.dest(tempPath))
 });
 
@@ -105,10 +120,17 @@ gulp.task("compileBeakerTemplates", function() {
 });
 
 gulp.task('buildOutputDisplayTemplate', function () {
-  var cssarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_css.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var jsarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_javascript.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var vendorcssarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_vendorcss.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var vendorjsarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_vendorjs.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  
+  var thePath = pluginPath + 'template/';
+  
+  if (argv.outdisp) {
+    thePath = argv.outdisp + '/';
+  }
+
+  var cssarray = fs.readFileSync(thePath + 'addoutputdisplays_css.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var jsarray = fs.readFileSync(thePath + 'addoutputdisplays_javascript.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var vendorcssarray = fs.readFileSync(thePath + 'addoutputdisplays_vendorcss.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var vendorjsarray = fs.readFileSync(thePath + 'addoutputdisplays_vendorjs.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
 
   var ca = [];
   if (vendorcssarray.length > 0) {
@@ -168,7 +190,6 @@ gulp.task('buildOutputDisplayTemplate', function () {
   }
 
   if (vendorcssarray.length > 0) {
-    console.log('HERE:' + vendorcssarray);
     cssfiles = '"app/dist/beakerOutputDisplayVendor.css", ' + cssfiles;
   }
 
@@ -183,6 +204,20 @@ gulp.task('buildOutputDisplayTemplate', function () {
     }))
     .pipe(gulp.dest(pluginPath + 'init/'));
 });
+
+function filterLines(line) {
+  if (!argv.embed)
+    return line;
+}
+
+function filterLinesBis(line) {
+  if (argv.embed)
+    return line;
+}
+
+function copyLine(line) {
+  return line;
+}
 
 
 gulp.task('buildIndexTemplate', function () {
@@ -222,7 +257,25 @@ gulp.task('buildIndexTemplate', function () {
             .pipe(gulp.dest(buildPath));
           block.end('app/dist/beakerApp.css');
         }
-      })
+      }),
+      
+      embedremove:  function (block) {
+        var filterSrc = es.mapSync(filterLines),
+            copySrc = es.mapSync(copyLine);
+        block.pipe(filterSrc);
+        copySrc.pipe(block);
+        b = es.duplex(copySrc, filterSrc);
+        b.pipe(b);
+      },
+      
+      embedinclude:  function (block) {
+        var filterSrc = es.mapSync(filterLinesBis),
+            copySrc = es.mapSync(copyLine);
+        block.pipe(filterSrc);
+        copySrc.pipe(block);
+        b = es.duplex(copySrc, filterSrc);
+        b.pipe(b);
+      }
     }))
     .pipe(gulp.dest(buildPath));
 });

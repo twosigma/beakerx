@@ -68,8 +68,6 @@ task (zipPackages, type: Exec) {
   }
 }
 
-
-
 task (copyDTImages, type: Copy) {
 	from 'src/vendor/bower_components/datatables/media/images/'
 	into 'src/main/web/app/images/'
@@ -128,6 +126,14 @@ task (compileCssDebug, type: Exec) {
   }
 }
 
+task (compileCssEmbed, type: Exec) {
+  if (windows()) {
+    commandLine 'cmd', '/c', 'npm', 'run-script', 'compile', '--', '--embed'
+  } else {
+    commandLine 'npm', 'run-script', 'compile', '--', '--debug'
+  }
+}
+
 task (copyNginx, type: Exec) {
   if (mac()) {
     def brewLocation = '../launcher/mac/nginx/' // use nginx from old mac
@@ -146,10 +152,14 @@ task (copyNginx, type: Exec) {
 
 task builddebug
 task debug
+task runembed
+task buildembed
 
 bowerInstall.dependsOn npmInstall
 compileCss.dependsOn npmInstall
 compileCss.dependsOn extractPackages
+compileCssEmbed.dependsOn npmInstall
+compileCssEmbed.dependsOn extractPackages
 compileCssDebug.dependsOn npmInstall
 compileCssDebug.dependsOn extractPackages
 updatePackages.dependsOn extractPackages
@@ -159,6 +169,7 @@ bowerInstall.mustRunAfter extractPackages
 copyStuff.mustRunAfter bowerInstall
 copyVendorStuff.mustRunAfter extractPackages
 build.dependsOn compileCss
+buildembed.dependsOn compileCssEmbed
 builddebug.dependsOn compileCssDebug
 run.dependsOn build
 run.dependsOn jar
@@ -166,6 +177,9 @@ run.dependsOn copyVendorStuff
 debug.dependsOn builddebug
 debug.dependsOn jar
 debug.dependsOn copyVendorStuff
+runembed.dependsOn buildembed
+runembed.dependsOn jar
+runembed.dependsOn copyVendorStuff
 
 if (mac() || windows()) {
   build.dependsOn copyNginx

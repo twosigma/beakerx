@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -27,6 +28,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Request;
 import org.rosuda.REngine.REXP;
@@ -108,9 +110,8 @@ public class RServerEvaluator {
   }
 
   public List<String> autocomplete(String code, int caretPosition) {
-    logger.fine("not implemented");
-    // TODO
-    return null;
+    logger.fine("autocomplete");
+    return myWorker.autocomplete(code,caretPosition);
   }
 
   protected int getPortFromCore() throws IOException, ClientProtocolException
@@ -308,9 +309,63 @@ public class RServerEvaluator {
     String password;
     int pid;
     Process rServe;
-
+    private final Semaphore mutex = new Semaphore(1);
+    
     public workerThread() {
       super("groovy worker");
+    }
+
+    public List<String> autocomplete(String code, int caretPosition) {
+      if (connection == null)
+        return null;
+
+      try {
+        if (mutex.tryAcquire(1, TimeUnit.SECONDS)) {          
+          StringBuilder evcode = new StringBuilder();
+          
+          String ss = code.substring(0, caretPosition);
+          caretPosition += StringUtils.countMatches(ss, "\n");
+          
+          evcode.append("utils:::.assignLinebuffer('");
+          evcode.append(code.replaceAll("'", "\\\\'").replaceAll("\n", "\\\\n"));
+          evcode.append("')\n");
+          evcode.append("utils:::.assignEnd(");
+          evcode.append(caretPosition);
+          evcode.append(")\n");
+          evcode.append("utils:::.guessTokenFromLine()\n");
+          evcode.append("utils:::.completeToken()\n");
+          evcode.append("utils:::.retrieveCompletions()\n");
+
+          String tryCode = "beaker_eval_=withVisible(try({" + evcode.toString() + "\n},silent=TRUE))";
+          REXP result;
+          try {
+            result = connection.eval(tryCode);
+            if (result!= null) {
+              logger.finest("RESULT: "+result);
+              
+              String[] value = result.asList().at(0).asStrings();
+              
+              ArrayList<String> r = new ArrayList<String>();
+              for (String s : value) {
+                r.add(s);
+              }      
+              mutex.release();
+              return r;
+            }
+          } catch (RserveException e) {
+            logger.log(Level.SEVERE, "Exception in autocomplete", e);
+          } catch (REXPMismatchException e) {
+            logger.log(Level.SEVERE, "Exception in autocomplete", e);
+          }
+          mutex.release();
+          return null;
+        }
+      } catch (InterruptedException e1) { }
+      
+      ArrayList<String> r = new ArrayList<String>();
+      r.add("  ");
+      r.add("** Rserve is busy **");
+      return r;
     }
 
     public void cancelExecution() {
@@ -367,16 +422,20 @@ public class RServerEvaluator {
         outputHandler.start();
 
         connection = new RConnection("127.0.0.1", port);
+        mutex.acquire();
         connection.login("beaker", password);
-        
+               
         pid = connection.eval("Sys.getpid()").asInteger();
 
         String initCode = "devtools::load_all(Sys.getenv('beaker_r_init'), " +
             "quiet=TRUE, export_all=FALSE)\n" +
             "beaker:::set_session('" + sessionId + "')\n";
         connection.eval(initCode);
+        mutex.release();
       } catch(Exception e) {
         logger.log(Level.SEVERE, "exception starting RServe", e);
+        if (connection != null)
+          mutex.release();
         if (rServe!=null) {
           rServe.destroy();
           try {
@@ -400,6 +459,8 @@ public class RServerEvaluator {
     public void run() {
       jobDescriptor j = null;
 
+      startRserve();
+      
       while(!exit) {
         try {
           // wait for work
@@ -429,6 +490,8 @@ public class RServerEvaluator {
           }
 
           boolean isfinished = false;
+
+          mutex.acquire();
 
           try {
             // direct graphical output
@@ -468,7 +531,6 @@ public class RServerEvaluator {
               j.outputObject.error(e.getMessage());
             }
           }
-
           
           // flush graphical output
           try {
@@ -485,6 +547,7 @@ public class RServerEvaluator {
 
           outputHandler.reset(null);
           errorGobbler.reset(null);
+          mutex.release();
 
         } catch(Throwable e) {
           logger.log(Level.SEVERE, "exception in worker:", e);
@@ -493,9 +556,13 @@ public class RServerEvaluator {
       logger.fine("destroying worker");
       if (rServe!=null && connection!=null) {
         try {
+          mutex.acquire();
+        } catch (InterruptedException e1) { }
+        try {
           connection.shutdown();
         } catch (RserveException e) {
         }
+        mutex.release();
         try {
           rServe.waitFor();
         } catch (InterruptedException e) {

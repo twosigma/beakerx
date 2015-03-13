@@ -99,8 +99,40 @@ define(function(require, exports, module) {
         url: serviceBase + "/rest/rsh/autocomplete",
         data: {shellID: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
-            cb(x);
-          });
+        var matchedText = undefined;
+        if (x !== undefined) {
+          var i, shortest;
+          shortest = undefined;
+          for (i=0; i<x.length; i++) {
+            if (shortest === undefined || shortest.length > x[1].length)
+              shortest = x[i];            
+          }
+          console.log("short: "+shortest);
+          for (i=shortest.length; i>0; i--) {
+            var a = code.substring(cpos-i,cpos);
+            var b = shortest.substring(0,i);
+            console.log("'"+a+"' '"+b+"'");
+            if (a === b)
+              break;
+          }
+          if (i>0)
+            matchedText = shortest.substring(0,i);
+          else if(code.charAt(cpos-1) === '(') {
+            for (i=0; i<x.length; i++) {
+              x[i] = '(' + x[i];
+            }
+          } else if(code.charAt(cpos-1) === ',') {
+            for (i=0; i<x.length; i++) {
+              x[i] = ',' + x[i];
+            }
+          } else if(code.charAt(cpos-1) === ' ') {
+            for (i=0; i<x.length; i++) {
+              x[i] = ' ' + x[i];
+            }
+          }
+        }
+        cb(x, matchedText, false);
+      });
     },
     exit: function(cb) {
       this.cancelExecution();

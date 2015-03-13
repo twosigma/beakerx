@@ -256,7 +256,14 @@ getCodeCells <- function(filter) {
   reply = getURL(req, userpwd=pwarg, httpauth = AUTH_BASIC)
   if (!isValidJSON(reply,TRUE))
     stop('the server returned an invalid response')
-  return (transformJSON(fromJSON(reply)))
+  rr = fromJSON(reply)
+  iteml = length(rr)
+  for (i in 1:iteml) {
+    if (!is.list(rr[[i]]))
+      rr[[i]] = as.list(rr[[i]])
+    rr[[i]]$output = transformJSON(rr[[i]]$output)
+  }
+  return (rr)
 }
 
 setCodeCellBody <- function(name,body) {

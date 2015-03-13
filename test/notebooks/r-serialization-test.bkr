@@ -91,8 +91,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "7f1395fd-5c5e-4ee2-a852-7e71a68dbaa0",
-                "elapsedTime": 1266
+                "shellId": "0e447c6b-2a29-4066-9a0b-3c0a822c294f",
+                "elapsedTime": 3080
             },
             "evaluatorReader": true,
             "lineCount": 27
@@ -169,7 +169,7 @@
                     "  error <- TRUE",
                     "}",
                     "",
-                    "if (class(outc) != \"list\" || length(outc) != 2 || outc$type != \"OutputContainer\") {",
+                    "if (class(outc) != \"list\" || length(outc) != 3) {",
                     "  print(\"ERROR outc\")",
                     "  error <- TRUE",
                     "}",
@@ -188,10 +188,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Results",
+                "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "a8da082f-6793-4902-bdde-3b8c4bb116d4",
-                "elapsedTime": 1218
+                "shellId": "ff513019-8bc6-4ce5-983c-fb164789eb7f",
+                "elapsedTime": 703
             },
             "evaluatorReader": true,
             "lineCount": 81
@@ -263,8 +263,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "a8da082f-6793-4902-bdde-3b8c4bb116d4",
-                "elapsedTime": 1661
+                "shellId": "ff513019-8bc6-4ce5-983c-fb164789eb7f",
+                "elapsedTime": 2157
             },
             "evaluatorReader": true,
             "lineCount": 55
@@ -390,8 +390,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "7f1395fd-5c5e-4ee2-a852-7e71a68dbaa0",
-                "elapsedTime": 1196
+                "shellId": "0e447c6b-2a29-4066-9a0b-3c0a822c294f",
+                "elapsedTime": 1208
             },
             "evaluatorReader": true,
             "lineCount": 109

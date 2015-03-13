@@ -162,6 +162,16 @@ transformJSON <- function(tres) {
       }
     }
   }
+  if (is.list(tres) && exists("type", where=tres) && tres[["type"]] == "OutputContainer") {
+    iteml <- length(tres$items)
+    
+    o = list()
+    for (i in 1:iteml) {
+      o[[ i ]] = transformJSON(tres$items[[i]])
+    }
+    tres = o
+  }  
+  
   return (tres)
 }
 

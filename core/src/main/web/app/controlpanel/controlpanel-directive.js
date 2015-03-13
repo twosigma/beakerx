@@ -44,12 +44,14 @@
 
         // setup menus
         bkMenuPluginManager.clear();
-        bkUtils.httpGet('../beaker/rest/util/getControlPanelMenuPlugins')
-            .success(function(menuUrls) {
-              menuUrls.forEach(function(url) {
-                bkMenuPluginManager.loadMenuPlugin(url);
+        if (window.beaker.isEmbedded === undefined) {
+          bkUtils.httpGet('../beaker/rest/util/getControlPanelMenuPlugins')
+              .success(function(menuUrls) {
+                menuUrls.forEach(function(url) {
+                  bkMenuPluginManager.loadMenuPlugin(url);
+                });
               });
-            });
+        }
         $scope.getMenus = function() {
           return bkMenuPluginManager.getMenus();
         };

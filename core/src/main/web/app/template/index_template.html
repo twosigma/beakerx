@@ -16,9 +16,10 @@
 <!doctype html>
 <html>
 <head>
-  <base href="/URL-HASH-TO-REPLACE/beaker/"/>
   <meta charset="utf-8">
   <title>Beaker</title>
+  <base href="/URL-HASH-TO-REPLACE/beaker/"/>
+  <!-- htmlbuild:embedremove -->
   <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -29,10 +30,15 @@
   </script>
 
   <link rel="shortcut icon" href="/static/favicon.png" />
+  <!-- endbuild -->
 
   <!-- htmlbuild:css -->
   <link rel="stylesheet" href="app/temp/vendor.css" />
   <link rel="stylesheet" href="app/temp/app.css" />
+  <!-- endbuild -->
+
+  <!-- htmlbuild:embedinclude -->
+  <link rel="stylesheet" href="app/dist/beakerOutputDisplay.css" />
   <!-- endbuild -->
 
   <!-- htmlbuild:vendorjs -->
@@ -154,8 +160,18 @@
   <script src="app/utils/utils.js"></script>
   <!-- endbuild -->
 
-  <script src="app/beaker.js"></script>
+  <!-- htmlbuild:embedremove -->
+    <script src="app/beaker.js"></script>
+  <!-- endbuild -->
 
+  <!-- htmlbuild:embedinclude -->
+    <script src="app/beakerPreEmbed.js"></script>
+    <script src="app/dist/beakerOutputDisplayVendor.js"></script>
+    <script src="app/dist/beakerOutputDisplay.js"></script>
+    <script src="app/dist/beakerLanguagePlugins.js"></script>
+    <script src="app/beakerEmbed.js"></script>
+  <!-- endbuild -->
+  
 </head>
 <body>
   <ng-view class="beaker-sandbox"></ng-view>

@@ -1,14 +1,13 @@
 // Copyright (c) IPython Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('IPython3:kernel', [
-    'base/js/namespace',
-    'jquery',
-    'base/js/utils',
-    './comm',
-    './serialize',
-    'widgets/js/init'
-], function(IPython, $, utils, comm, serialize, widgetmanager) {
+define('ipython3_kernel', [
+    'ipython3_namespace',
+    'ipython3_jquery',
+    'ipython3_utils',
+    'ipython3_comm',
+    'ipython3_serialize'
+], function(IPython, $, utils, comm, serialize) {
     "use strict";
 
     /**
@@ -54,7 +53,8 @@ define('IPython3:kernel', [
         this.bind_events();
         this.init_iopub_handlers();
         this.comm_manager = new comm.CommManager(this);
-        this.widget_manager = new widgetmanager.WidgetManager(this.comm_manager, notebook);
+        this.widget_manager = undefined;  // XXX temporary
+        // this.widget_manager = new widgetmanager.WidgetManager(this.comm_manager, notebook);
         
         this.last_msg_id = null;
         this.last_msg_callbacks = {};

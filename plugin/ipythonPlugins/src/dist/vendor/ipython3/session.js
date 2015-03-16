@@ -1,11 +1,11 @@
 // Copyright (c) IPython Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define([
-    'base/js/namespace',
-    'jquery',
-    'base/js/utils',
-    'services/kernels/kernel',
+define('ipython3_session', [
+    'ipython3_namespace',
+    'ipython3_jquery',
+    'ipython3_utils',
+    'ipython3_kernel',
 ], function(IPython, $, utils, kernel) {
     "use strict";
 

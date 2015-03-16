@@ -1,14 +1,11 @@
 // Copyright (c) IPython Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define('IPython3:utils', [
-    'base/js/namespace',
-    'jquery',
-    'codemirror/lib/codemirror',
-    'moment',
-    // silently upgrades CodeMirror
-    'codemirror/mode/meta',
-], function(IPython, $, CodeMirror, moment){
+define('ipython3_utils', [
+    'ipython3_namespace',
+    'ipython3_jquery'
+    'ipython3_moment'
+], function(IPython, $, moment){
     "use strict";
     
     var load_extensions = function () {

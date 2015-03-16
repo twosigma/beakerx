@@ -271,7 +271,10 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
-      require('IPython3:namespace');
+      debugger;
+      require('ipython3_namespace');
+      require('ipython3_kernel');
+      require('ipython3_utils');
       myPython = (ipyVersion == '1') ? IPython1 : IPython;
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,

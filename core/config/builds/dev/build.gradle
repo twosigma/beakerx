@@ -75,6 +75,10 @@ task writeVersion << {
   new File(coreDir, 'config/build_time').write(new Date().format("yyyy-MM-dd HH:mm z"));
 }
 
+task clearhash << {
+  new File(coreDir, 'config/hash').write('');
+}
+
 clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
 build.dependsOn(":core:build")
@@ -94,6 +98,7 @@ builddebug.dependsOn(writeVersion)
 builddebug.dependsOn(installPlugins)
 run.dependsOn(build)
 runembed.dependsOn(buildembed)
+runembed.dependsOn(clearhash)
 debug.dependsOn(builddebug)
 check.dependsOn(":core:build")
 check.dependsOn(":core:installApp")

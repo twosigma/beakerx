@@ -69,7 +69,9 @@ if (argv.embed) {
   } else {
     p = srcPath + 'plugin/init/embeddedBeakerConfig.js';
   }
-  fs.mkdirSync(buildPath);
+  if( ! fs.existsSync(buildPath)) {
+    fs.mkdirSync(buildPath);
+  }
   fs.createReadStream(p).pipe(fs.createWriteStream(buildPath+'beakerConfig.js'));
 }
 

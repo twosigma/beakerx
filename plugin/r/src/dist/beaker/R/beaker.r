@@ -253,7 +253,7 @@ transformJSON <- function(tres) {
 	    tres = o
 	  }  
 	  else if (tres[["type"]] == "Date" && exists("value", where=tres)) {
-	  	tres = as.POSIXct(tres[["value"]])
+	  	tres = strptime(tres[["value"]],format='%B %d, %Y %H:%M:%S')
 	  }
   }
   if (is.list(tres)) {
@@ -378,5 +378,9 @@ setCodeCellTags <- function(name,tags) {
   opts = list(userpwd=pwarg, httpauth = AUTH_BASIC)
   reply = postForm(req, style='POST', name=name, tags=tags, session=session_id, .opts=opts)
   return (as.character(reply))
+}
+
+createOutputContainer <- function(items) {
+	return (list(type='OutputContainer', items=items))
 }
 

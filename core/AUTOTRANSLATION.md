@@ -9,7 +9,6 @@ Types to JSON:
 2 - boolean					boolean
 3 - float					double
 4 - date					{ type: 'Date', value: '...', timestamp: XX }
-
 5 - data frame				{ type: 'TableDisplay', subtype: 'TableDisplay', columnNames: [...], types: [...], values: [...] }
 6 - [dict basictyp]			{ type: 'TableDisplay', subtype: 'ListOfMaps', columnNames: [...], types: [...], values: [...] }
 7 - [basictyp]				[...]

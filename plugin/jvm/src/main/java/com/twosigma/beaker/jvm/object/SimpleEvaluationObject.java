@@ -63,6 +63,7 @@ public class SimpleEvaluationObject extends Observable {
   private final String expression;
   private EvaluationResult payload;
   private boolean payload_changed;
+  private String jsonres;
   private String message;
   private int progressBar;
   private BeakerOutputHandler stdout;
@@ -90,6 +91,17 @@ public class SimpleEvaluationObject extends Observable {
   public synchronized void finished(Object r) {
     doFlush();
     clrOutputHandler();
+    this.status = EvaluationStatus.FINISHED;
+    payload = new EvaluationResult(r);
+    payload_changed = true;
+    setChanged();
+    notifyObservers();
+  }
+
+  public synchronized void finished(Object r, String json) {
+    doFlush();
+    clrOutputHandler();
+    this.jsonres = json;
     this.status = EvaluationStatus.FINISHED;
     payload = new EvaluationResult(r);
     payload_changed = true;
@@ -135,6 +147,11 @@ public class SimpleEvaluationObject extends Observable {
   @JsonProperty("status")
   public synchronized EvaluationStatus getStatus() {
     return status;
+  }
+
+  @JsonProperty("jsonres")
+  public synchronized String getJsonRes() {
+    return jsonres;
   }
 
   @JsonProperty("payload")
@@ -210,7 +227,11 @@ public class SimpleEvaluationObject extends Observable {
             if (!getObjectSerializer().writeObject(o, jgen))
               jgen.writeObject("ERROR: unsupported object "+o.toString());          }
         }
-        
+        if (value.getJsonRes() != null) {
+          logger.finest("adding raw json data: '"+value.getJsonRes()+"'");
+          jgen.writeFieldName("jsonres");
+          jgen.writeRawValue(value.getJsonRes());
+        }
         jgen.writeArrayFieldStart("outputdata");
         for (Object o : value.getOutputdata()) {
           if (o instanceof EvaluationStdOutput) {

@@ -493,15 +493,21 @@ public class RServerEvaluator {
 
           mutex.acquire();
 
+          String resultjson = null;
+
           try {
             // direct graphical output
             String tryCode;
             connection.eval("do.call(svg,c(list('" + file + "'), beaker::saved_svg_options))");
-            tryCode = "beaker_eval_=withVisible(try({" + j.codeToBeExecuted + "\n},silent=TRUE))";
+            tryCode = "beaker_eval_=withVisible(try({ " + j.codeToBeExecuted + "\n},silent=TRUE))\n"+
+                    "list(beaker_eval_, beaker:::convertToJSON(beaker_eval_$value))";
             REXP result = connection.eval(tryCode);
-                        
-            if (result!= null)
+            
+            if (result!= null) {
               logger.finest("RESULT: "+result);
+              resultjson=result.asList().at(1).asString();
+              result = result.asList().at(0);
+            }
             
             if (null == result) {
               logger.fine("null result");;
@@ -515,6 +521,7 @@ public class RServerEvaluator {
             } else if (!isVisible(result, j.outputObject)) {
               logger.fine("is not visible");
             } else {
+              outputHandler.setResultsJson(resultjson);
               logger.fine("capturing from output handler");
               String finish = "print(\"" + BEGIN_MAGIC + "\")\n" +
                   "print(beaker_eval_$value)\n" +
@@ -543,7 +550,7 @@ public class RServerEvaluator {
           if (!isfinished)
             isfinished = addSvgResults(file, j.outputObject);
           if (!isfinished)
-            j.outputObject.finished("");
+            j.outputObject.finished("", resultjson);
 
           outputHandler.reset(null);
           errorGobbler.reset(null);

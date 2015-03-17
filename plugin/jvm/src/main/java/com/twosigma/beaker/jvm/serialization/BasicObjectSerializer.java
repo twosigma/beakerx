@@ -152,8 +152,6 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         jgen.writeObject("null");
       } else if ( (obj instanceof TableDisplay)  ||
                   (obj instanceof EvaluationResult)||
-                  (obj instanceof OutputContainer) ||   
-                  (obj instanceof BeakerProgressUpdate) ||
                   (obj instanceof UpdatableEvaluationResult) ||
                   (obj instanceof BeakerCodeCell) ||
                   (obj instanceof ImageIcon) ||
@@ -199,6 +197,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         jgen.writeObjectField("type", "TableDisplay");
         jgen.writeObjectField("columnNames", columns);
         jgen.writeObjectField("values", values);
+        jgen.writeObjectField("subtype", TableDisplay.MATRIX_SUBTYPE);
         jgen.writeEndObject();
       } else if (obj instanceof Collection<?>) {
         logger.fine("collection");
@@ -233,6 +232,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         jgen.writeObjectField("type", "TableDisplay");
         jgen.writeObjectField("columnNames", columns);
         jgen.writeObjectField("values", values);
+        jgen.writeObjectField("subtype", TableDisplay.DICTIONARY_SUBTYPE);
         jgen.writeEndObject();
       } else if (obj instanceof Map<?,?>) {
         logger.fine("generic map");

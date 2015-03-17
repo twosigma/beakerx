@@ -1,0 +1,1411 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "codeRYNkH0",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var d = beaker.newDeferred();",
+                    "beaker.evaluate('groovyret').then(function (r) {",
+                    "  beaker.out = r;",
+                    "  if (r.length !== 17)",
+                    "    d.reject(\"invalid length \"+r.length);",
+                    "  else if (typeof(r[0]) !== 'number' || r[0]%1 !== 0) ",
+                    "    d.reject(\"invalid integer\");",
+                    "  else if (typeof(r[1]) !== 'number') ",
+                    "    d.reject(\"invalid float\");",
+                    "  else if (typeof(r[2]) !== 'boolean') ",
+                    "    d.reject(\"invalid boolean\");",
+                    "  else if (typeof(r[3]) !== 'string') ",
+                    "    d.reject(\"invalid string\");",
+                    "  else if (typeof(r[4]) !== 'object' || r[4].type !== 'Date')",
+                    "    d.reject(\"invalid string\");",
+                    "  else if (typeof(r[5]) !== 'object' || r[5].type !== 'TableDisplay' || r[5].subtype !== 'TableDisplay') ",
+                    "    d.reject(\"invalid data frame\");",
+                    "  else if (typeof(r[6]) !== 'object' || r[6].type !== 'TableDisplay' || r[6].subtype !== 'ListOfMaps') ",
+                    "    d.reject(\"invalid list of dictionaries\");",
+                    "  else if (!_.isArray(r[7])) ",
+                    "    d.reject(\"invalid basic collection\");",
+                    "  else if (typeof(r[8]) !== 'object' || r[8].type !== 'TableDisplay' || r[8].subtype !== 'Matrix') ",
+                    "    d.reject(\"invalid matrix\");",
+                    "  else if (!_.isArray(r[9])) ",
+                    "    d.reject(\"invalid matrix of objects\");",
+                    "  else if (!_.isArray(r[10])) ",
+                    "    d.reject(\"invalid xD array of basic types\");",
+                    "  else if (typeof(r[11]) !== 'object' || r[11].type !== 'TableDisplay' || r[11].subtype !== 'Dictionary') ",
+                    "    d.reject(\"invalid dictionary\");",
+                    "  else if (typeof(r[12]) !== 'object' || r[12].type !== 'Plot') ",
+                    "    d.reject(\"invalid plot\");",
+                    "  else if (typeof(r[13]) !== 'object' || r[13].type !== 'ImageIcon') ",
+                    "    d.reject(\"invalid image\");",
+                    "  else if (typeof(r[14]) !== 'object' || r[14].type !== 'OutputContainer') ",
+                    "    d.reject(\"invalid OutputContainer\");",
+                    "  else if (!_.isArray(r[15]) || typeof(r[15][0]) !== 'object' || r[15][0].type !== 'BeakerCodeCell') ",
+                    "    d.reject(\"invalid BeakerCodeCell\");",
+                    "  else if (typeof(r[16]) !== 'object' || r[16].plot === undefined) ",
+                    "    d.reject(\"invalid map of objects\");",
+                    "  d.resolve('OK');",
+                    "})",
+                    "d"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "OK",
+                "selectedType": "Text",
+                "elapsedTime": 14764
+            },
+            "evaluatorReader": true,
+            "lineCount": 42
+        },
+        {
+            "id": "codeOSRZTr",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.out[15]",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    {
+                        "type": "BeakerCodeCell",
+                        "cellId": "codecell",
+                        "evaluatorId": "Groovy",
+                        "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\no",
+                        "outputtype": "OutputContainer",
+                        "output": {
+                            "type": "OutputContainer",
+                            "items": [
+                                "pippero",
+                                [
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    5,
+                                    6
+                                ],
+                                {
+                                    "type": "TableDisplay",
+                                    "columnNames": [
+                                        "a",
+                                        "b",
+                                        "c"
+                                    ],
+                                    "values": [
+                                        [
+                                            1,
+                                            3,
+                                            null
+                                        ],
+                                        [
+                                            4,
+                                            null,
+                                            5
+                                        ]
+                                    ],
+                                    "types": [
+                                        "integer",
+                                        "integer",
+                                        "integer"
+                                    ],
+                                    "subtype": "TableDisplay"
+                                }
+                            ]
+                        },
+                        "tags": "groovyret"
+                    }
+                ],
+                "selectedType": "Text"
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "sectionN09y35",
+            "type": "section",
+            "title": "Groovy cells that return a value",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeYX3xaO",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// return integer - 0",
+                    "1"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": 1,
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 63,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codejWhPJZ",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// return float - 1",
+                    "10.34"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": 10.34,
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 104,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "code0Mgbz7",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// return boolean - 2",
+                    "true"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": true,
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 59,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeHTV7JC",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// return string - 3",
+                    "'test string'"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "test string",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 72
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codecukfwj",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// return a date - 4",
+                    "import java.util.Date",
+                    "d = new Date()",
+                    "d",
+                    "// ERROR TODO"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "ERROR: unsupported object Tue Mar 17 09:19:08 EDT 2015",
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 76
+            },
+            "evaluatorReader": true,
+            "lineCount": 5,
+            "tags": "groovyret"
+        },
+        {
+            "id": "code0a2pAY",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// dataframe - 5",
+                    "import com.twosigma.beaker.jvm.object.TableDisplay",
+                    "new TableDisplay([ [1,2],[4,5] ], ['a','b'], ['integer','integer'])"
+                ]
+            },
+            "output": {
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "a",
+                        "b"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            2
+                        ],
+                        [
+                            4,
+                            5
+                        ]
+                    ],
+                    "types": [
+                        "integer",
+                        "integer"
+                    ],
+                    "subtype": "TableDisplay"
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 65,
+                "state": {},
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 3,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeOlGxFt",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// list of dictionaries - 6",
+                    "[ [a:1, b:3], [a:4, c:5] ]"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            3,
+                            null
+                        ],
+                        [
+                            4,
+                            null,
+                            5
+                        ]
+                    ],
+                    "types": [
+                        "integer",
+                        "integer",
+                        "integer"
+                    ],
+                    "subtype": "ListOfMaps"
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 132,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codej4nMAh",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// basic collection - 7",
+                    "[1,2,3,4,5,6]"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 114,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeqziiIr",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// 2D [] of basic types - 8",
+                    "[[1,2,3],[4,5,6], [7,8,9,10]]"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2",
+                        "c3"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            2,
+                            3,
+                            null
+                        ],
+                        [
+                            4,
+                            5,
+                            6,
+                            null
+                        ],
+                        [
+                            7,
+                            8,
+                            9,
+                            10
+                        ]
+                    ],
+                    "subtype": "Matrix"
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 58,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeEap7QF",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// 2D [] of objects - 9",
+                    "[[1,2,3],[4,5,6], [7,8,9,new Plot()]]"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    [
+                        1,
+                        2,
+                        3
+                    ],
+                    [
+                        4,
+                        5,
+                        6
+                    ],
+                    [
+                        7,
+                        8,
+                        9,
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": null,
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "show_legend": false,
+                            "use_tool_tip": true,
+                            "graphics_list": [],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": true,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "log": false
+                                }
+                            ],
+                            "x_auto_range": true,
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": true,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_x": false,
+                            "log_y": false,
+                            "time_zone": null,
+                            "crosshair": null
+                        }
+                    ]
+                ],
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 130,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeRtnnq6",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// xD [] of basic types - 10",
+                    "[[[1,2,3],[4,5,6], [7,8,9,10]],[[1,2,3],[4,5,6], [7,8,9,10]]]",
+                    "// ERROR"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    {
+                        "type": "TableDisplay",
+                        "columnNames": [
+                            "c0",
+                            "c1",
+                            "c2",
+                            "c3"
+                        ],
+                        "values": [
+                            [
+                                1,
+                                2,
+                                3,
+                                null
+                            ],
+                            [
+                                4,
+                                5,
+                                6,
+                                null
+                            ],
+                            [
+                                7,
+                                8,
+                                9,
+                                10
+                            ]
+                        ],
+                        "subtype": "Matrix"
+                    },
+                    {
+                        "type": "TableDisplay",
+                        "columnNames": [
+                            "c0",
+                            "c1",
+                            "c2",
+                            "c3"
+                        ],
+                        "values": [
+                            [
+                                1,
+                                2,
+                                3,
+                                null
+                            ],
+                            [
+                                4,
+                                5,
+                                6,
+                                null
+                            ],
+                            [
+                                7,
+                                8,
+                                9,
+                                10
+                            ]
+                        ],
+                        "subtype": "Matrix"
+                    }
+                ],
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 82
+            },
+            "evaluatorReader": true,
+            "lineCount": 3,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codecG7XhG",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// dictionary - 11",
+                    "[a:1, b:2, c: 55]"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "Key",
+                        "Value"
+                    ],
+                    "values": [
+                        [
+                            "a",
+                            "1"
+                        ],
+                        [
+                            "b",
+                            "2"
+                        ],
+                        [
+                            "c",
+                            "55"
+                        ]
+                    ],
+                    "subtype": "Dictionary"
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 57,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeBLSpkU",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// Plot - 12",
+                    "new Plot()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": false,
+                    "use_tool_tip": true,
+                    "graphics_list": [],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "auto_range": true,
+                            "auto_range_includes_zero": true,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "log": false
+                        }
+                    ],
+                    "x_auto_range": true,
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": true,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_x": false,
+                    "log_y": false,
+                    "time_zone": null,
+                    "crosshair": null
+                },
+                "selectedType": "Plot",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 60,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeqVIa4y",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// image - 13",
+                    "import java.awt.image.BufferedImage",
+                    "BufferedImage i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",
+                    "g2 = i.createGraphics()",
+                    "g2.drawLine(0,0,100,100)",
+                    "i"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "ImageIcon",
+                    "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                    "width": 100,
+                    "height": 100
+                },
+                "selectedType": "Image",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 70,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 6,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codecell",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// output container - 14",
+                    "import com.twosigma.beaker.jvm.object.OutputContainer",
+                    "def o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])",
+                    "o"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "OutputContainer",
+                    "items": [
+                        "pippero",
+                        [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        {
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "a",
+                                "b",
+                                "c"
+                            ],
+                            "values": [
+                                [
+                                    1,
+                                    3,
+                                    null
+                                ],
+                                [
+                                    4,
+                                    null,
+                                    5
+                                ]
+                            ],
+                            "types": [
+                                "integer",
+                                "integer",
+                                "integer"
+                            ],
+                            "subtype": "ListOfMaps"
+                        }
+                    ]
+                },
+                "selectedType": "OutputContainer",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 77,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 4,
+            "tags": "groovyret"
+        },
+        {
+            "id": "code1m8KLP",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// beaker code cell - 15",
+                    "beaker.getCodeCells('codecell')"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    {
+                        "type": "BeakerCodeCell",
+                        "cellId": "codecell",
+                        "evaluatorId": "Groovy",
+                        "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\no",
+                        "outputtype": "OutputContainer",
+                        "output": {
+                            "type": "OutputContainer",
+                            "items": [
+                                "pippero",
+                                [
+                                    1,
+                                    2,
+                                    3,
+                                    4,
+                                    5,
+                                    6
+                                ],
+                                {
+                                    "type": "TableDisplay",
+                                    "columnNames": [
+                                        "a",
+                                        "b",
+                                        "c"
+                                    ],
+                                    "values": [
+                                        [
+                                            1,
+                                            3,
+                                            null
+                                        ],
+                                        [
+                                            4,
+                                            null,
+                                            5
+                                        ]
+                                    ],
+                                    "types": [
+                                        "integer",
+                                        "integer",
+                                        "integer"
+                                    ],
+                                    "subtype": "TableDisplay"
+                                }
+                            ]
+                        },
+                        "tags": "groovyret"
+                    }
+                ],
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 2376,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 2,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeuvxCAY",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// object map - 16",
+                    "import java.awt.image.BufferedImage",
+                    "BufferedImage i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",
+                    "g2 = i.createGraphics()",
+                    "g2.drawLine(0,0,100,100)",
+                    "p = new Plot()",
+                    "[ plot:  p, img: i ]",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "plot": {
+                        "type": "Plot",
+                        "init_width": 640,
+                        "init_height": 480,
+                        "chart_title": null,
+                        "domain_axis_label": null,
+                        "y_label": "",
+                        "show_legend": false,
+                        "use_tool_tip": true,
+                        "graphics_list": [],
+                        "constant_lines": [],
+                        "constant_bands": [],
+                        "texts": [],
+                        "rangeAxes": [
+                            {
+                                "type": "YAxis",
+                                "auto_range": true,
+                                "auto_range_includes_zero": true,
+                                "lower_margin": 0.05,
+                                "upper_margin": 0.05,
+                                "lower_bound": 0,
+                                "upper_bound": 0,
+                                "log": false
+                            }
+                        ],
+                        "x_auto_range": true,
+                        "x_lower_margin": 0.05,
+                        "x_upper_margin": 0.05,
+                        "x_lower_bound": 0,
+                        "x_upper_bound": 0,
+                        "y_auto_range": true,
+                        "y_auto_range_includes_zero": true,
+                        "y_lower_margin": 0.05,
+                        "y_upper_margin": 0.05,
+                        "y_lower_bound": 0,
+                        "y_upper_bound": 0,
+                        "log_x": false,
+                        "log_y": false,
+                        "time_zone": null,
+                        "crosshair": null
+                    },
+                    "img": {
+                        "type": "ImageIcon",
+                        "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                        "width": 100,
+                        "height": 100
+                    }
+                },
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
+                "elapsedTime": 59,
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 8,
+            "tags": "groovyret"
+        }
+    ],
+    "namespace": {
+        "out": [
+            1,
+            10.34,
+            true,
+            "test string",
+            "ERROR: unsupported object Tue Mar 17 09:19:08 EDT 2015",
+            {
+                "type": "TableDisplay",
+                "columnNames": [
+                    "a",
+                    "b"
+                ],
+                "values": [
+                    [
+                        1,
+                        2
+                    ],
+                    [
+                        4,
+                        5
+                    ]
+                ],
+                "types": [
+                    "integer",
+                    "integer"
+                ],
+                "subtype": "TableDisplay"
+            },
+            {
+                "type": "TableDisplay",
+                "columnNames": [
+                    "a",
+                    "b",
+                    "c"
+                ],
+                "values": [
+                    [
+                        1,
+                        3,
+                        null
+                    ],
+                    [
+                        4,
+                        null,
+                        5
+                    ]
+                ],
+                "types": [
+                    "integer",
+                    "integer",
+                    "integer"
+                ],
+                "subtype": "ListOfMaps"
+            },
+            [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            {
+                "type": "TableDisplay",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2",
+                    "c3"
+                ],
+                "values": [
+                    [
+                        1,
+                        2,
+                        3,
+                        null
+                    ],
+                    [
+                        4,
+                        5,
+                        6,
+                        null
+                    ],
+                    [
+                        7,
+                        8,
+                        9,
+                        10
+                    ]
+                ],
+                "subtype": "Matrix"
+            },
+            [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    4,
+                    5,
+                    6
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    {
+                        "type": "Plot",
+                        "init_width": 640,
+                        "init_height": 480,
+                        "chart_title": null,
+                        "domain_axis_label": null,
+                        "y_label": "",
+                        "show_legend": false,
+                        "use_tool_tip": true,
+                        "graphics_list": [],
+                        "constant_lines": [],
+                        "constant_bands": [],
+                        "texts": [],
+                        "rangeAxes": [
+                            {
+                                "type": "YAxis",
+                                "auto_range": true,
+                                "auto_range_includes_zero": true,
+                                "lower_margin": 0.05,
+                                "upper_margin": 0.05,
+                                "lower_bound": 0,
+                                "upper_bound": 0,
+                                "log": false
+                            }
+                        ],
+                        "x_auto_range": true,
+                        "x_lower_margin": 0.05,
+                        "x_upper_margin": 0.05,
+                        "x_lower_bound": 0,
+                        "x_upper_bound": 0,
+                        "y_auto_range": true,
+                        "y_auto_range_includes_zero": true,
+                        "y_lower_margin": 0.05,
+                        "y_upper_margin": 0.05,
+                        "y_lower_bound": 0,
+                        "y_upper_bound": 0,
+                        "log_x": false,
+                        "log_y": false,
+                        "time_zone": null,
+                        "crosshair": null
+                    }
+                ]
+            ],
+            [
+                {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2",
+                        "c3"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            2,
+                            3,
+                            null
+                        ],
+                        [
+                            4,
+                            5,
+                            6,
+                            null
+                        ],
+                        [
+                            7,
+                            8,
+                            9,
+                            10
+                        ]
+                    ],
+                    "subtype": "Matrix"
+                },
+                {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2",
+                        "c3"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            2,
+                            3,
+                            null
+                        ],
+                        [
+                            4,
+                            5,
+                            6,
+                            null
+                        ],
+                        [
+                            7,
+                            8,
+                            9,
+                            10
+                        ]
+                    ],
+                    "subtype": "Matrix"
+                }
+            ],
+            {
+                "type": "TableDisplay",
+                "columnNames": [
+                    "Key",
+                    "Value"
+                ],
+                "values": [
+                    [
+                        "a",
+                        "1"
+                    ],
+                    [
+                        "b",
+                        "2"
+                    ],
+                    [
+                        "c",
+                        "55"
+                    ]
+                ],
+                "subtype": "Dictionary"
+            },
+            {
+                "type": "Plot",
+                "init_width": 640,
+                "init_height": 480,
+                "chart_title": null,
+                "domain_axis_label": null,
+                "y_label": "",
+                "show_legend": false,
+                "use_tool_tip": true,
+                "graphics_list": [],
+                "constant_lines": [],
+                "constant_bands": [],
+                "texts": [],
+                "rangeAxes": [
+                    {
+                        "type": "YAxis",
+                        "auto_range": true,
+                        "auto_range_includes_zero": true,
+                        "lower_margin": 0.05,
+                        "upper_margin": 0.05,
+                        "lower_bound": 0,
+                        "upper_bound": 0,
+                        "log": false
+                    }
+                ],
+                "x_auto_range": true,
+                "x_lower_margin": 0.05,
+                "x_upper_margin": 0.05,
+                "x_lower_bound": 0,
+                "x_upper_bound": 0,
+                "y_auto_range": true,
+                "y_auto_range_includes_zero": true,
+                "y_lower_margin": 0.05,
+                "y_upper_margin": 0.05,
+                "y_lower_bound": 0,
+                "y_upper_bound": 0,
+                "log_x": false,
+                "log_y": false,
+                "time_zone": null,
+                "crosshair": null
+            },
+            {
+                "type": "ImageIcon",
+                "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                "width": 100,
+                "height": 100
+            },
+            {
+                "type": "OutputContainer",
+                "items": [
+                    "pippero",
+                    [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6
+                    ],
+                    {
+                        "type": "TableDisplay",
+                        "columnNames": [
+                            "a",
+                            "b",
+                            "c"
+                        ],
+                        "values": [
+                            [
+                                1,
+                                3,
+                                null
+                            ],
+                            [
+                                4,
+                                null,
+                                5
+                            ]
+                        ],
+                        "types": [
+                            "integer",
+                            "integer",
+                            "integer"
+                        ],
+                        "subtype": "ListOfMaps"
+                    }
+                ]
+            },
+            [
+                {
+                    "type": "BeakerCodeCell",
+                    "cellId": "codecell",
+                    "evaluatorId": "Groovy",
+                    "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\no",
+                    "outputtype": "OutputContainer",
+                    "output": {
+                        "type": "OutputContainer",
+                        "items": [
+                            "pippero",
+                            [
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6
+                            ],
+                            {
+                                "type": "TableDisplay",
+                                "columnNames": [
+                                    "a",
+                                    "b",
+                                    "c"
+                                ],
+                                "values": [
+                                    [
+                                        1,
+                                        3,
+                                        null
+                                    ],
+                                    [
+                                        4,
+                                        null,
+                                        5
+                                    ]
+                                ],
+                                "types": [
+                                    "integer",
+                                    "integer",
+                                    "integer"
+                                ],
+                                "subtype": "TableDisplay"
+                            }
+                        ]
+                    },
+                    "tags": "groovyret"
+                }
+            ],
+            {
+                "plot": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": false,
+                    "use_tool_tip": true,
+                    "graphics_list": [],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "auto_range": true,
+                            "auto_range_includes_zero": true,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "log": false
+                        }
+                    ],
+                    "x_auto_range": true,
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": true,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_x": false,
+                    "log_y": false,
+                    "time_zone": null,
+                    "crosshair": null
+                },
+                "img": {
+                    "type": "ImageIcon",
+                    "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                    "width": 100,
+                    "height": 100
+                }
+            }
+        ]
+    }
+}

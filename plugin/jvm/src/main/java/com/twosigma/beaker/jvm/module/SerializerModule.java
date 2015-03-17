@@ -16,6 +16,7 @@
 package com.twosigma.beaker.jvm.module;
 
 import java.awt.image.BufferedImage;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,6 +60,8 @@ import com.twosigma.beaker.jvm.serialization.BeakerCodeCellListDeserializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.BufferedImageDeserializer;
 import com.twosigma.beaker.jvm.serialization.BufferedImageSerializer;
+import com.twosigma.beaker.jvm.serialization.DateDeserializer;
+import com.twosigma.beaker.jvm.serialization.DateSerializer;
 import com.twosigma.beaker.jvm.serialization.ImageIconSerializer;
 import com.twosigma.beaker.jvm.serialization.NamespaceBindingDeserializer;
 import com.twosigma.beaker.jvm.serialization.PlotObjectSerializer;
@@ -110,6 +113,7 @@ public class SerializerModule extends AbstractModule {
       serializer.addTypeDeserializer(injector.getInstance(SimpleEvaluationObject.DeSerializer.class));
       serializer.addTypeDeserializer(injector.getInstance(UpdatableEvaluationResult.DeSerializer.class));   
       serializer.addTypeDeserializer(new BufferedImageDeserializer());
+      serializer.addTypeDeserializer(new DateDeserializer());
       serializer.addTypeDeserializer(injector.getInstance(ResultsDeserializer.class)); 
       } catch(Exception e) {
       logger.log(Level.SEVERE, "exception while creating ObjectSerializer", e);
@@ -140,6 +144,7 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
       module.addSerializer(BufferedImage.class, new BufferedImageSerializer());
       module.addSerializer(ImageIcon.class, new ImageIconSerializer());
+      module.addSerializer(Date.class, new DateSerializer());
       
       module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
       module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));

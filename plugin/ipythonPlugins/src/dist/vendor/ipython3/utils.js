@@ -3,8 +3,7 @@
 
 define('ipython3_utils', [
     'ipython3_namespace'
-//, 'ipython3_moment'
-], function(IPython){
+], function(IPython) {
     "use strict";
     
     var load_extensions = function () {

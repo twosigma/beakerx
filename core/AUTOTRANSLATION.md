@@ -36,11 +36,11 @@ return/set/read
 
 
 						JVM				R		Python2		Python3
-1 - integer				ok/ok/ok	KO/ok/ok		ok
-2 - string				ok/ok/ok	KO/ok/ok		ok
-3 - boolean				ok/ok/ok	KO/ok/ok		ok
-4 - date				ok/ok/ok	KO/ok/ok
-5 - data frame			ok/ok/ok	KO/ok/ok		ok
+1 - integer				ok/ok/ok	ok/ok/ok		ok
+2 - string				ok/ok/ok	ok/ok/ok		ok
+3 - boolean				ok/ok/ok	ok/ok/ok		ok
+4 - date				ok/ok/ok	ok/ok/ok
+5 - data frame			ok/ok/ok	ok/ok/ok		ok
 6 - [dict btype]		ok/ok/ok	KO/KO
 7 - [btype]				ok/ok/ok	KO/ok/ok		ok
 8 - [btype][btype]		ok/ok/ok	KO/ok/ok

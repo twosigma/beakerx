@@ -77,7 +77,7 @@ define(function(require, exports, module) {
             if (evaluation.status === "ERROR")
               deferred.reject(evaluation.payload);
             else
-              deferred.resolve(evaluation.payload);
+              deferred.resolve(evaluation.jsonres !== undefined ? evaluation.jsonres : evaluation.payload);
           }
           if (refreshObj !== undefined)
             refreshObj.outputRefreshed();

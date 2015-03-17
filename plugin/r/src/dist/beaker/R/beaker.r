@@ -23,53 +23,139 @@ set_session <- function(id) {
   session_id <<- id
 }
 
-collapse_unit_vectors <- FALSE
+collapse_unit_vectors = TRUE
+
+set_collapse_unit_vectors <- function(val) {
+  collapse_unit_vectors <<- val
+}
+
+convertToJSONObject <- function(val) {
+  p = "{ "
+  first <- TRUE
+  for (obj in names(val)) {
+    if (first) {
+  	  first <- FALSE
+    } else {
+  	  p = paste(p, ", ", sep='')
+    }
+    p = paste(p, '"', sep='')
+    p = paste(p, obj, sep='')
+    p = paste(p, '": ', sep='')
+    p = paste(p, convertToJSON(val[[obj]]), sep='')
+  }
+  p = paste(p, " }", sep='')
+  return (p)
+}
+
+getTypeName <- function(c) {
+  if (c == "numeric")
+    p = "\"double\""
+  else if (c == "logical")
+    p = "\"boolean\""
+  else if (c == "factor")
+    p = "\"select\""
+  else
+    p = "\"string\""
+  return(p)
+}
 
 convertToJSON <- function(val) {
   if (class(val) == "data.frame") {
-    p = "{ \"type\":\"TableDisplay\",\"columnNames\":"
+    p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"columnNames\":"
     colNames = names(val)
     types = lapply(val,class)
-    p = paste(p, toJSON(colNames))
-    p = paste(p, ", \"values\":")
-    p = paste(p,toJSON(val, byrow = TRUE))
-    p = paste(p, ", \"types\": [")
+    p = paste(p, toJSON(colNames), sep='')
+    p = paste(p, ", \"values\":", sep='')
+    p = paste(p,toJSON(val, byrow = TRUE), sep='')
+    p = paste(p, ", \"types\": [", sep='')
     comma = FALSE
     for(i in 1:length(types)) {
       c = types[i]
       if (comma)
-        p = paste(p, ",")
+        p = paste(p, ",", sep='')
       comma = TRUE
-      if (c == "numeric")
-        p = paste(p, "\"double\"")
-      else if (c == "logical")
-        p = paste(p, "\"boolean\"")
-      else if (c == "factor")
-        p = paste(p, "\"select\"")
-      else
-        p = paste(p, "\"string\"")
+      p = paste(p, getTypeName(c), sep='')
     }
-    p = paste(p, "] }")
+    p = paste(p, "] }", sep='')
     o = p
   }
   else if (class(val) == "numeric" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
-  	if (collapse_unit_vectors && length(val) == 1) {
-  	  o = toJSON(val, .level=0L);
-  	} else {
-   	  o = toJSON(val)
+    if (is.null(names(val))) {
+  	  if (collapse_unit_vectors && length(val) == 1) {
+  	    o = toJSON(val, .level=0L);
+  	  } else {
+   	    o = toJSON(val)
+      }
+    } else {
+      # HERE check if it contains only basic types      
+	  o = convertToJSONObject(val)
     }
   } else if (class(val) == "matrix") {
-    o = toJSON(val)
+    p = "{ \"type\":\"TableDisplay\",\"subtype\":\"Matrix\",\"columnNames\":"
+    colNames <- numeric(ncol(val));
+	for( j in 1:ncol(val)) {
+		colNames[j] <- paste('c',j, sep='')
+    }
+    p = paste(p, toJSON(colNames), sep='')
+    p = paste(p, ", \"values\":", sep='')
+    p = paste(p,toJSON(val), sep='')
+    p = paste(p, ", \"types\": [", sep='')
+    comma = FALSE
+    for(i in 1:ncol(val)) {
+      c = class(val[1][i])
+      if (comma)
+        p = paste(p, ",", sep='')
+      comma = TRUE
+      p = paste(p, getTypeName(c), sep='')
+    }
+
+    p = paste(p, "] }", sep='')
+    o = p
+    
   } else if (class(val) == "table") {
     o = toJSON(val)
   } else if (class(val) == "list") {
-    o = toJSON(val)
+    if (is.null(names(val))) {
+	  p = "[ "
+  	  first <- TRUE
+  	  for (obj in val) {
+  	    if (first) {
+  	  	  first <- FALSE
+  	    } else {
+  	  	  p = paste(p, ", ", sep='')
+  	    }
+        p = paste(p, convertToJSON(obj), sep='')
+	  }
+	  p = paste(p, " ]", sep='')
+	  o = p
+	} else {
+	  # HERE check if it contains only basic types
+	  o = convertToJSONObject(val) 
+	}
+  } else if (class(val) == "list") {
+  	p = "[ "
+  	first <- TRUE
+  	for (obj in val) {
+  	  if (first) {
+  	  	first <- FALSE
+  	  } else {
+  	  	p = paste(p, ", ")
+  	  }
+      p = paste(p, convertToJSON(obj))
+	}
+	p = paste(p, " ]")
+	o = p
   } else if (class(val) == "complex") {
     if (collapse_unit_vectors && length(val) == 1) {
       o = toJSON(as.character(val), .level=0L)
     } else {
       o = toJSON(as.character(val))
     }
+  } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
+  	p = "{ \"type\": \"Date\", \"value\": \""
+  	p = paste(p, as.character(val))
+  	p = paste(p, "\" }")
+  	o = p
   } else {
     o = toJSON(val)
   }
@@ -114,64 +200,68 @@ convertVarFromJSON <- function(res, var) {
 }
 
 transformJSON <- function(tres) {
-  if (is.list(tres) && exists("type", where=tres) && tres[["type"]] == "TableDisplay") {
-    cols <- length(tres$columnNames)
-    rows <- length(tres$values)
-    if (cols == 2 && tres$columnNames[1] == "Key" && tres$columnNames[2] == "Value") {
-      o = list()
-      for (i in 1:rows) {
-        o[[ tres$values[[i]][[1]] ]] = tres$values[[i]][[2]]
-      }
-      tres = o
-    } else {
-	  dummy_nv = logical(rows)
-	  df <- data.frame(dummy_nv);
-	  for (i in 1:cols) {
-	    if (exists("types", where=tres) && (tres$types[i] == "double" || tres$types[i] == "integer")) {
-		  nv <- numeric(rows);
-		  for( j in 1:rows) {
-		    if ( is.null( tres$values[[j]][[i]] ) )
-		      nv [j] <- NaN
-		    else
-		      nv [j] <- as.numeric( tres$values[[j]][[i]] )
+  if (is.list(tres) && exists("type", where=tres)) {
+    if(tres[["type"]] == "TableDisplay") {
+	    cols <- length(tres$columnNames)
+	    rows <- length(tres$values)
+	    if (exists("subtype", where=tres) && tres$subtype == "Dictionary") {
+	      o = list()
+	      for (i in 1:rows) {
+	        o[[ tres$values[[i]][[1]] ]] = tres$values[[i]][[2]]
+	      }
+	      tres = o
+	    } else {
+		  dummy_nv = logical(rows)
+		  df <- data.frame(dummy_nv);
+		  for (i in 1:cols) {
+		    if (exists("types", where=tres) && (tres$types[i] == "double" || tres$types[i] == "integer")) {
+			  nv <- numeric(rows);
+			  for( j in 1:rows) {
+			    if ( is.null( tres$values[[j]][[i]] ) )
+			      nv [j] <- NaN
+			    else
+			      nv [j] <- as.numeric( tres$values[[j]][[i]] )
+			  }
+		  	  df[ tres$columnNames[[i]] ] = nv
+			} else {
+			  nv <- character( rows );
+	          for( j in 1:rows) {
+	            if ( is.null( tres$values[[j]][[i]] ) )
+	              nv [j] <- ""
+	            else
+			      nv [j] <- as.character( tres$values[[j]][[i]] )
+	          }
+			  if(exists("types", where=tres) && tres$types[[i]] == "select") 
+			    df[ tres$columnNames[[i]] ] = factor(nv)		  
+			  else
+			    df[ tres$columnNames[[i]] ] = nv		 
+	        }
 		  }
-	  	  df[ tres$columnNames[[i]] ] = nv
-		} else {
-		  nv <- character( rows );
-          for( j in 1:rows) {
-            if ( is.null( tres$values[[j]][[i]] ) )
-              nv [j] <- ""
-            else
-		      nv [j] <- as.character( tres$values[[j]][[i]] )
-          }
-		  if(exists("types", where=tres) && tres$types[[i]] == "select") 
-		    df[ tres$columnNames[[i]] ] = factor(nv)		  
-		  else
-		    df[ tres$columnNames[[i]] ] = nv		 
-        }
+	      tres <- df[ tres$columnNames ]
+	      if (exists("subtype", where=tres) && tres$subtype == "Matrix") {
+		    tres = data.matrix(tres)
+	      }
+	    }
 	  }
-      tres <- df[ tres$columnNames ]
-      ismatrix <- TRUE
-      for (i in 1:cols) {
-        pp = paste("c",i-1, sep="")
-        if ( names(tres)[[i]] != pp )
-          ismatrix <- FALSE
-      }
-      if (ismatrix) {
-       tres = data.matrix(tres)
-      }
+	  else if (tres[["type"]] == "OutputContainer") {
+	    iteml <- length(tres$items)
+	    
+	    o = list()
+	    for (i in 1:iteml) {
+	      o[[ i ]] = transformJSON(tres$items[[i]])
+	    }
+	    tres = o
+	  }  
+	  else if (tres[["type"]] == "Date" && exists("value", where=tres)) {
+	  	tres = as.POSIXct(tres[["value"]])
+	  }
+  }
+  if (is.list(tres)) {
+    iteml <- length(tres)
+    for (i in 1:iteml) {
+      tres[[i]] = transformJSON(tres[[i]])
     }
   }
-  if (is.list(tres) && exists("type", where=tres) && tres[["type"]] == "OutputContainer") {
-    iteml <- length(tres$items)
-    
-    o = list()
-    for (i in 1:iteml) {
-      o[[ i ]] = transformJSON(tres$items[[i]])
-    }
-    tres = o
-  }  
-  
   return (tres)
 }
 

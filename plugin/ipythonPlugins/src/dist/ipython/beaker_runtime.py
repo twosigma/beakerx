@@ -20,14 +20,29 @@ class DataFrameEncoder(json.JSONEncoder):
         # similarly handle Panels.
         # make this extensible by the user to handle their own types.
         if type(obj) == pandas.core.frame.DataFrame:
-            return obj.to_dict(outtype='list')
+            out = {}
+            out['type'] = "TableDisplay"
+            out['columnNames'] = obj.columns.tolist()
+            out['values'] = obj.values.tolist()
+            out['subtype'] = "TableDisplay"
+            ty = []
+            num = len(obj.columns.tolist())
+            x = 0;
+            for x in range(0,num):
+              	ty.append( type(obj.values[0][x]).__name__)
+            out['types'] = ty
+            return out
         if type(obj) == pandas.core.series.Series:
             return obj.to_dict()
-        if isinstance(obj, numpy.ndarray) and obj.ndim == 1:
+        if isinstance(obj, numpy.ndarray) and obj.ndim == 2:
+        	# this should become a table like above
+            return obj.tolist()
+        if isinstance(obj, numpy.ndarray):
             return obj.tolist()
         if isinstance(obj, numpy.generic):
             return obj.item()
         return json.JSONEncoder.default(self, obj)
+
 
 class Beaker:
     """Runtime support for Python code in Beaker."""

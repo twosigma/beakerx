@@ -52,7 +52,7 @@
                     "var d = beaker.newDeferred();",
                     "beaker.evaluate('groovyret').then(function (r) {",
                     "  beaker.out = r;",
-                    "  if (r.length !== 17)",
+                    "  if (r.length !== 18)",
                     "    d.reject(\"invalid length \"+r.length);",
                     "  else if (typeof(r[0]) !== 'number' || r[0]%1 !== 0) ",
                     "    d.reject(\"ERROR returning integer\");",
@@ -87,7 +87,9 @@
                     "  else if (!_.isArray(r[15]) || typeof(r[15][0]) !== 'object' || r[15][0].type !== 'BeakerCodeCell') ",
                     "    d.reject(\"ERROR returning BeakerCodeCell\");",
                     "  else if (typeof(r[16]) !== 'object' || r[16].plot === undefined) ",
-                    "    d.reject(\"ERROR returning map of objects\");",
+                    "    d.reject(\"ERROR returning dictionary\");",
+                    "  else if (!_.isArray(r[17])) ",
+                    "    d.reject(\"ERROR returning list of dictionaries\");",
                     "",
                     "  else if (typeof(beaker.v0) !== 'number' || beaker.v0%1 !== 0) ",
                     "    d.reject(\"ERROR setting integer\");",
@@ -122,7 +124,9 @@
                     "  else if (!_.isArray(beaker.v15) || typeof(beaker.v15[0]) !== 'object' || beaker.v15[0].type !== 'BeakerCodeCell') ",
                     "    d.reject(\"ERROR setting BeakerCodeCell\");",
                     "  else if (typeof(beaker.v16) !== 'object' || r[16].plot === undefined) ",
-                    "    d.reject(\"ERROR setting map of objects\");",
+                    "    d.reject(\"ERROR setting dictionary\");",
+                    "  else if (!_.isArray(beaker.v17)) ",
+                    "    d.reject(\"ERROR setting list of dictionaries\");",
                     "  beaker.evaluate('steptwo');",
                     "  d.resolve('OK');",
                     "})",
@@ -131,11 +135,11 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "BeakerDisplay",
                 "elapsedTime": 14764
             },
             "evaluatorReader": true,
-            "lineCount": 78
+            "lineCount": 82
         },
         {
             "id": "codeOSRZTr",
@@ -178,7 +182,9 @@
                     "else if (!beaker.v15.getClass().getName().endsWith(\".ArrayList\") || !beaker.v15[0].getClass().getName().endsWith(\".LinkedHashMap\"))",
                     "\t\"ERROR reading beaker code cells\"",
                     "else if (!beaker.v16.getClass().getName().endsWith(\".LinkedHashMap\"))",
-                    "\t\"ERROR reading map of objects\"",
+                    "\t\"ERROR reading dictionary\"",
+                    "else if (!beaker.v17.getClass().getName().endsWith(\".ArrayList\") || !beaker.v17[0].getClass().getName().endsWith(\".LinkedHashMap\"))",
+                    "\t\"ERROR reading list of dictionaries\"",
                     "else",
                     "  \"OK\"",
                     ""
@@ -188,11 +194,11 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 922
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 1155
             },
             "evaluatorReader": true,
-            "lineCount": 39,
+            "lineCount": 41,
             "tags": "steptwo"
         },
         {
@@ -201,7 +207,7 @@
             "title": "Groovy cells that return a value",
             "level": 1,
             "evaluatorReader": false,
-            "collapsed": true
+            "collapsed": false
         },
         {
             "id": "codeYX3xaO",
@@ -219,8 +225,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 590,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 98,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -243,8 +249,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 587,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 591,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -267,8 +273,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 589,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 586,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -291,8 +297,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 609
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 594
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -316,8 +322,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 652,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 627,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -340,8 +346,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 596,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 620,
                 "state": {},
                 "hidden": true
             },
@@ -355,7 +361,7 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "// list of dictionaries - 6",
+                    "// [dict basictyp] - 6",
                     "def a = [ [a:1, b:3], [a:4, c:5] ]",
                     "beaker.v6 = a",
                     "a"
@@ -365,8 +371,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 666,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 667,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -379,7 +385,7 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "// basic collection - 7",
+                    "// [basictyp] - 7",
                     "def a = [1,2,3,4,5,6]",
                     "beaker.v7 = a",
                     "a"
@@ -389,8 +395,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 674,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 698,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -403,7 +409,7 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "// 2D [] of basic types - 8",
+                    "// [basictyp][basictyp] - 8",
                     "def a = [[1,2,3],[4,5,6], [7,8,9,10]]",
                     "beaker.v8 = a",
                     "a"
@@ -413,8 +419,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 597,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 591,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -427,7 +433,7 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "// 2D [] of objects - 9",
+                    "// [objects][objects] - 9",
                     "def a = [[1,2,3],[4,5,6], [7,8,9,new Plot()]]",
                     "beaker.v9 = a",
                     "a"
@@ -437,8 +443,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 679,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 601,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -451,7 +457,7 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "// xD [] of basic types - 10",
+                    "// [objects][objects][objects]... - 10",
                     "def a = [[[1,2,3],[4,5,6], [7,8,9,10]],[[1,2,3],[4,5,6], [7,8,9,10]]]",
                     "beaker.v10 = a",
                     "a"
@@ -461,8 +467,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 601,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 579,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -475,7 +481,7 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "// dictionary - 11",
+                    "// dict (basictyp) - 11",
                     "def a = [a:1, b:2, c: 55]",
                     "beaker.v11 = a",
                     "a"
@@ -485,8 +491,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 593,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 613,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -509,8 +515,8 @@
                 "state": {},
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 696,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 787,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -536,8 +542,8 @@
                 "state": {},
                 "selectedType": "Image",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 616,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 648,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -561,8 +567,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 608,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 606,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -585,8 +591,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 615,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 669,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -599,7 +605,7 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "// object map - 16",
+                    "// dict - 16",
                     "import java.awt.image.BufferedImage",
                     "BufferedImage i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",
                     "g2 = i.createGraphics()",
@@ -615,12 +621,40 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
-                "elapsedTime": 605,
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 591,
                 "hidden": true
             },
             "evaluatorReader": true,
             "lineCount": 10,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeDGQmJ5",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// dict - 17",
+                    "import java.awt.image.BufferedImage",
+                    "BufferedImage i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",
+                    "g2 = i.createGraphics()",
+                    "g2.drawLine(0,0,100,100)",
+                    "p = new Plot()",
+                    "def a = [ [ plot:  p, img: i ], [ a:10, img: i] ]",
+                    "beaker.v17 = a",
+                    "a"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "elapsedTime": 609
+            },
+            "evaluatorReader": true,
+            "lineCount": 9,
             "tags": "groovyret"
         }
     ],
@@ -632,8 +666,8 @@
             "test string",
             {
                 "type": "Date",
-                "value": "Mar 17, 2015 9:43:24 AM",
-                "timestamp": 1426599804269
+                "value": "Mar 17, 2015 12:11:00 PM",
+                "timestamp": 1426608660204
             },
             {
                 "type": "TableDisplay",
@@ -1048,6 +1082,82 @@
                     "width": 100,
                     "height": 100
                 }
+            },
+            {
+                "type": "TableDisplay",
+                "columnNames": [
+                    "plot",
+                    "img",
+                    "a"
+                ],
+                "values": [
+                    [
+                        {
+                            "type": "Plot",
+                            "init_width": 640,
+                            "init_height": 480,
+                            "chart_title": null,
+                            "domain_axis_label": null,
+                            "y_label": "",
+                            "show_legend": false,
+                            "use_tool_tip": true,
+                            "graphics_list": [],
+                            "constant_lines": [],
+                            "constant_bands": [],
+                            "texts": [],
+                            "rangeAxes": [
+                                {
+                                    "type": "YAxis",
+                                    "auto_range": true,
+                                    "auto_range_includes_zero": true,
+                                    "lower_margin": 0.05,
+                                    "upper_margin": 0.05,
+                                    "lower_bound": 0,
+                                    "upper_bound": 0,
+                                    "log": false
+                                }
+                            ],
+                            "x_auto_range": true,
+                            "x_lower_margin": 0.05,
+                            "x_upper_margin": 0.05,
+                            "x_lower_bound": 0,
+                            "x_upper_bound": 0,
+                            "y_auto_range": true,
+                            "y_auto_range_includes_zero": true,
+                            "y_lower_margin": 0.05,
+                            "y_upper_margin": 0.05,
+                            "y_lower_bound": 0,
+                            "y_upper_bound": 0,
+                            "log_x": false,
+                            "log_y": false,
+                            "time_zone": null,
+                            "crosshair": null
+                        },
+                        {
+                            "type": "ImageIcon",
+                            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                            "width": 100,
+                            "height": 100
+                        },
+                        null
+                    ],
+                    [
+                        null,
+                        {
+                            "type": "ImageIcon",
+                            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                            "width": 100,
+                            "height": 100
+                        },
+                        10
+                    ]
+                ],
+                "types": [
+                    "",
+                    "",
+                    "integer"
+                ],
+                "subtype": "ListOfMaps"
             }
         ],
         "v0": 1,
@@ -1056,8 +1166,8 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "value": "Mar 17, 2015 9:43:24 AM",
-            "timestamp": 1426599804269
+            "value": "Mar 17, 2015 12:11:00 PM",
+            "timestamp": 1426608660204
         },
         "v5": {
             "type": "TableDisplay",
@@ -1425,53 +1535,80 @@
             }
         ],
         "v16": {
-            "plot": {
-                "type": "Plot",
-                "init_width": 640,
-                "init_height": 480,
-                "chart_title": null,
-                "domain_axis_label": null,
-                "y_label": "",
-                "show_legend": false,
-                "use_tool_tip": true,
-                "graphics_list": [],
-                "constant_lines": [],
-                "constant_bands": [],
-                "texts": [],
-                "rangeAxes": [
+            "type": "TableDisplay",
+            "columnNames": [
+                "plot",
+                "img",
+                "a"
+            ],
+            "values": [
+                [
                     {
-                        "type": "YAxis",
-                        "auto_range": true,
-                        "auto_range_includes_zero": true,
-                        "lower_margin": 0.05,
-                        "upper_margin": 0.05,
-                        "lower_bound": 0,
-                        "upper_bound": 0,
-                        "log": false
-                    }
+                        "type": "Plot",
+                        "init_width": 640,
+                        "init_height": 480,
+                        "chart_title": null,
+                        "domain_axis_label": null,
+                        "y_label": "",
+                        "show_legend": false,
+                        "use_tool_tip": true,
+                        "graphics_list": [],
+                        "constant_lines": [],
+                        "constant_bands": [],
+                        "texts": [],
+                        "rangeAxes": [
+                            {
+                                "type": "YAxis",
+                                "auto_range": true,
+                                "auto_range_includes_zero": true,
+                                "lower_margin": 0.05,
+                                "upper_margin": 0.05,
+                                "lower_bound": 0,
+                                "upper_bound": 0,
+                                "log": false
+                            }
+                        ],
+                        "x_auto_range": true,
+                        "x_lower_margin": 0.05,
+                        "x_upper_margin": 0.05,
+                        "x_lower_bound": 0,
+                        "x_upper_bound": 0,
+                        "y_auto_range": true,
+                        "y_auto_range_includes_zero": true,
+                        "y_lower_margin": 0.05,
+                        "y_upper_margin": 0.05,
+                        "y_lower_bound": 0,
+                        "y_upper_bound": 0,
+                        "log_x": false,
+                        "log_y": false,
+                        "time_zone": null,
+                        "crosshair": null
+                    },
+                    {
+                        "type": "ImageIcon",
+                        "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                        "width": 100,
+                        "height": 100
+                    },
+                    null
                 ],
-                "x_auto_range": true,
-                "x_lower_margin": 0.05,
-                "x_upper_margin": 0.05,
-                "x_lower_bound": 0,
-                "x_upper_bound": 0,
-                "y_auto_range": true,
-                "y_auto_range_includes_zero": true,
-                "y_lower_margin": 0.05,
-                "y_upper_margin": 0.05,
-                "y_lower_bound": 0,
-                "y_upper_bound": 0,
-                "log_x": false,
-                "log_y": false,
-                "time_zone": null,
-                "crosshair": null
-            },
-            "img": {
-                "type": "ImageIcon",
-                "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
-                "width": 100,
-                "height": 100
-            }
+                [
+                    null,
+                    {
+                        "type": "ImageIcon",
+                        "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                        "width": 100,
+                        "height": 100
+                    },
+                    10
+                ]
+            ],
+            "types": [
+                "",
+                "",
+                "integer"
+            ],
+            "subtype": "ListOfMaps"
         }
     }
 }

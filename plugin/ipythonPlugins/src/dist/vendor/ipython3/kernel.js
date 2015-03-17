@@ -3,11 +3,10 @@
 
 define('ipython3_kernel', [
     'ipython3_namespace',
-    'ipython3_jquery',
     'ipython3_utils',
     'ipython3_comm',
     'ipython3_serialize'
-], function(IPython, $, utils, comm, serialize) {
+], function(IPython, utils, comm, serialize) {
     "use strict";
 
     /**

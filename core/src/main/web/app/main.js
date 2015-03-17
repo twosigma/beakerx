@@ -18,17 +18,11 @@ requirejs.config({
   paths: {
     'ipython3_comm':       "../plugins/eval/ipythonPlugins/vendor/ipython3/comm",
     'ipython3_namespace':  "../plugins/eval/ipythonPlugins/vendor/ipython3/namespace",
-    'ipython3_jquery':     "../plugins/eval/ipythonPlugins/vendor/ipython3/jquery.min",
     'ipython3_kernel':     "../plugins/eval/ipythonPlugins/vendor/ipython3/kernel",
     'ipython3_moment':     "../plugins/eval/ipythonPlugins/vendor/ipython3/moment.min",
     'ipython3_session':    "../plugins/eval/ipythonPlugins/vendor/ipython3/session",
     'ipython3_serialize':  "../plugins/eval/ipythonPlugins/vendor/ipython3/serialize",
     'ipython3_underscore': "../plugins/eval/ipythonPlugins/vendor/ipython3/underscore-min",
     'ipython3_utils':      "../plugins/eval/ipythonPlugins/vendor/ipython3/utils"
-  },
-  shim: {
-    underscore: {
-      exports: '_'
-    }
   }
 });

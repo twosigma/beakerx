@@ -3,9 +3,8 @@
 
 define('ipython3_comm', [
     'ipython3_namespace',
-    'ipython3_jquery',
-    'ipython3_utils',
-], function(IPython, $, utils) {
+    'ipython3_utils'
+], function(IPython, utils) {
     "use strict";
 
     //-----------------------------------------------------------------------

@@ -270,10 +270,13 @@ define(function(require, exports, module) {
 
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
+    console.log("ipython.js init");
     var onSuccess = function() {
-      debugger;
+      console.log("about to require ipython3_namespace");
       require('ipython3_namespace');
+      console.log("about to require ipython3_kernel");
       require('ipython3_kernel');
+      console.log("about to require ipython3_utils");
       require('ipython3_utils');
       myPython = (ipyVersion == '1') ? IPython1 : IPython;
       bkHelper.locatePluginService(PLUGIN_NAME, {
@@ -377,13 +380,14 @@ define(function(require, exports, module) {
                                "./plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js"
                                ], onSuccess, onFail);
           } else {
-            console.log(define);
+            console.log("about to start loading ipython3 modules");
             bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/utils.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython3/session.js"
-                               // "./plugins/eval/ipythonPlugins/vendor/ipython3/comm.js",
-                               // "./plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js"
+                               "./plugins/eval/ipythonPlugins/vendor/ipython3/session.js",
+                               "./plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js",
+                               "./plugins/eval/ipythonPlugins/vendor/ipython3/comm.js"
+                                //"./plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js"
                               ], onSuccess, onFail);
           }
         }).error(function() {

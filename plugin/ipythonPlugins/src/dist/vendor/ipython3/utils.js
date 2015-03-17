@@ -2,10 +2,9 @@
 // Distributed under the terms of the Modified BSD License.
 
 define('ipython3_utils', [
-    'ipython3_namespace',
-    'ipython3_jquery'
-    'ipython3_moment'
-], function(IPython, $, moment){
+    'ipython3_namespace'
+//, 'ipython3_moment'
+], function(IPython){
     "use strict";
     
     var load_extensions = function () {

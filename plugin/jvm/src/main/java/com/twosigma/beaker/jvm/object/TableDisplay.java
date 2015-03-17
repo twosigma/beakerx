@@ -69,7 +69,8 @@ public class TableDisplay {
         String c = e.getKey().toString();
         if (!columns.contains(c)) {
           columns.add(c);
-          classes.add(serializer.convertType(e.getValue().getClass().getName()));
+          String n = e.getValue()!=null ? e.getValue().getClass().getName() : "string";
+          classes.add(serializer.convertType(n));
         }
       }
     }
@@ -143,8 +144,20 @@ public class TableDisplay {
             m.put(l.get(0).toString(), l.get(1));
           }
           o = m;
+        } else if(subtype!=null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE) && cols!=null && vals!=null) {
+          List<Map<String,Object>>  oo = new ArrayList<Map<String,Object>>();
+          for(int r=0; r<vals.size(); r++) {
+            Map<String,Object> m = new HashMap<String,Object>();
+            List<?> row = vals.get(r);
+            for(int c=0; c<cols.size(); c++) {
+              if(row.size()>c)
+                m.put(cols.get(c), row.get(c));
+            }
+            oo.add(m);
+          }
+          o = oo;
         } else if(subtype!=null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
-            o = vals;
+          o = vals;
         }
         if (o==null) {
           o = new TableDisplay(vals, cols, clas);

@@ -60,9 +60,11 @@ import com.twosigma.beaker.jvm.serialization.BeakerCodeCellListDeserializer;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.BufferedImageDeserializer;
 import com.twosigma.beaker.jvm.serialization.BufferedImageSerializer;
+import com.twosigma.beaker.jvm.serialization.CollectionDeserializer;
 import com.twosigma.beaker.jvm.serialization.DateDeserializer;
 import com.twosigma.beaker.jvm.serialization.DateSerializer;
 import com.twosigma.beaker.jvm.serialization.ImageIconSerializer;
+import com.twosigma.beaker.jvm.serialization.MapDeserializer;
 import com.twosigma.beaker.jvm.serialization.NamespaceBindingDeserializer;
 import com.twosigma.beaker.jvm.serialization.PlotObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.ResultsDeserializer;
@@ -115,6 +117,8 @@ public class SerializerModule extends AbstractModule {
       serializer.addTypeDeserializer(new BufferedImageDeserializer());
       serializer.addTypeDeserializer(new DateDeserializer());
       serializer.addTypeDeserializer(injector.getInstance(ResultsDeserializer.class)); 
+      serializer.addTypeDeserializer(injector.getInstance(CollectionDeserializer.class));
+      serializer.addTypeDeserializer(injector.getInstance(MapDeserializer.class));
       } catch(Exception e) {
       logger.log(Level.SEVERE, "exception while creating ObjectSerializer", e);
     }

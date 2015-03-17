@@ -135,7 +135,7 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "BeakerDisplay",
+                "selectedType": "Text",
                 "elapsedTime": 14764
             },
             "evaluatorReader": true,
@@ -161,29 +161,29 @@
                     "\t\"ERROR reading date\"",
                     "else if (!beaker.v5.getClass().getName().endsWith(\".TableDisplay\"))",
                     "\t\"ERROR reading data frame\"",
-                    "else if (!beaker.v6.getClass().getName().endsWith(\".TableDisplay\"))",
+                    "else if (!beaker.v6.getClass().getName().endsWith(\".ArrayList\"))",
                     "\t\"ERROR reading list of dictionaries\"",
                     "else if (!beaker.v7.getClass().getName().endsWith(\".ArrayList\"))",
                     "\t\"ERROR reading basic collection\"",
                     "else if (!beaker.v8.getClass().getName().endsWith(\".ArrayList\"))",
                     "\t\"ERROR reading matrix\"",
-                    "else if (!beaker.v8.getClass().getName().endsWith(\".ArrayList\"))",
+                    "else if (!beaker.v9.getClass().getName().endsWith(\".ArrayList\"))",
                     "\t\"ERROR reading matrix of objects\"",
                     "else if (!beaker.v10.getClass().getName().endsWith(\".ArrayList\"))",
                     "\t\"ERROR reading xD array of basic types\"",
                     "else if (!beaker.v11.getClass().getName().endsWith(\".HashMap\"))",
                     "\t\"ERROR reading dictionary\"",
-                    "else if (!beaker.v12.getClass().getName().endsWith(\".LinkedHashMap\"))",
+                    "else if (!beaker.v12.getClass().getName().endsWith(\".HashMap\"))",
                     "\t\"ERROR reading plot\"",
                     "else if (!beaker.v13.getClass().getName().endsWith(\".BufferedImage\"))",
                     "\t\"ERROR reading image\"",
                     "else if (!beaker.v14.getClass().getName().endsWith(\".OutputContainer\"))",
                     "\t\"ERROR reading output container\"",
-                    "else if (!beaker.v15.getClass().getName().endsWith(\".ArrayList\") || !beaker.v15[0].getClass().getName().endsWith(\".LinkedHashMap\"))",
+                    "else if (!beaker.v15.getClass().getName().endsWith(\".ArrayList\") || !beaker.v15[0].getClass().getName().endsWith(\".BeakerCodeCell\"))",
                     "\t\"ERROR reading beaker code cells\"",
-                    "else if (!beaker.v16.getClass().getName().endsWith(\".LinkedHashMap\"))",
+                    "else if (!beaker.v16.getClass().getName().endsWith(\".HashMap\"))",
                     "\t\"ERROR reading dictionary\"",
-                    "else if (!beaker.v17.getClass().getName().endsWith(\".ArrayList\") || !beaker.v17[0].getClass().getName().endsWith(\".LinkedHashMap\"))",
+                    "else if (!beaker.v17.getClass().getName().endsWith(\".ArrayList\") || !beaker.v17[0].getClass().getName().endsWith(\".HashMap\"))",
                     "\t\"ERROR reading list of dictionaries\"",
                     "else",
                     "  \"OK\"",
@@ -192,10 +192,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 1155
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 3484
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -225,8 +225,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 98,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 600,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -249,8 +249,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 591,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 634,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -273,8 +273,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 586,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 621,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -297,8 +297,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 594
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 614
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -320,10 +320,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 627,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 695,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -344,10 +344,10 @@
                 ]
             },
             "output": {
-                "selectedType": "Table",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 620,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 825,
                 "state": {},
                 "hidden": true
             },
@@ -369,10 +369,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Table",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 667,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 784,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -393,10 +393,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 698,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 741,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -417,9 +417,9 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Table",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
                 "elapsedTime": 591,
                 "hidden": true
             },
@@ -441,10 +441,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 601,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 636,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -465,10 +465,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 579,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 1582,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -489,10 +489,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Table",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 613,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 1147,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -515,8 +515,8 @@
                 "state": {},
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 787,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 625,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -540,10 +540,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Image",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 648,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 1161,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -565,10 +565,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "OutputContainer",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 606,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 919,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -589,10 +589,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 669,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 770,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -619,10 +619,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 591,
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 1209,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -648,10 +648,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Table",
+                "selectedType": "Results",
                 "pluginName": "Groovy",
-                "shellId": "a1079f12-d167-4bbc-96e9-49327115f4c5",
-                "elapsedTime": 609
+                "shellId": "c9d68068-8b18-4103-ba69-9f28c5ac0c47",
+                "elapsedTime": 703
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -666,8 +666,8 @@
             "test string",
             {
                 "type": "Date",
-                "value": "Mar 17, 2015 12:11:00 PM",
-                "timestamp": 1426608660204
+                "value": "Mar 17, 2015 3:08:28 PM",
+                "timestamp": 1426619308600
             },
             {
                 "type": "TableDisplay",
@@ -990,7 +990,7 @@
                     "cellId": "codecell",
                     "evaluatorId": "Groovy",
                     "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\nbeaker.v14 = o\no",
-                    "outputtype": "OutputContainer",
+                    "outputtype": "Results",
                     "output": {
                         "type": "OutputContainer",
                         "items": [
@@ -1025,9 +1025,9 @@
                                 "types": [
                                     "integer",
                                     "integer",
-                                    "integer"
+                                    ""
                                 ],
-                                "subtype": "TableDisplay"
+                                "subtype": "ListOfMaps"
                             }
                         ]
                     },
@@ -1083,82 +1083,66 @@
                     "height": 100
                 }
             },
-            {
-                "type": "TableDisplay",
-                "columnNames": [
-                    "plot",
-                    "img",
-                    "a"
-                ],
-                "values": [
-                    [
-                        {
-                            "type": "Plot",
-                            "init_width": 640,
-                            "init_height": 480,
-                            "chart_title": null,
-                            "domain_axis_label": null,
-                            "y_label": "",
-                            "show_legend": false,
-                            "use_tool_tip": true,
-                            "graphics_list": [],
-                            "constant_lines": [],
-                            "constant_bands": [],
-                            "texts": [],
-                            "rangeAxes": [
-                                {
-                                    "type": "YAxis",
-                                    "auto_range": true,
-                                    "auto_range_includes_zero": true,
-                                    "lower_margin": 0.05,
-                                    "upper_margin": 0.05,
-                                    "lower_bound": 0,
-                                    "upper_bound": 0,
-                                    "log": false
-                                }
-                            ],
-                            "x_auto_range": true,
-                            "x_lower_margin": 0.05,
-                            "x_upper_margin": 0.05,
-                            "x_lower_bound": 0,
-                            "x_upper_bound": 0,
-                            "y_auto_range": true,
-                            "y_auto_range_includes_zero": true,
-                            "y_lower_margin": 0.05,
-                            "y_upper_margin": 0.05,
-                            "y_lower_bound": 0,
-                            "y_upper_bound": 0,
-                            "log_x": false,
-                            "log_y": false,
-                            "time_zone": null,
-                            "crosshair": null
-                        },
-                        {
-                            "type": "ImageIcon",
-                            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
-                            "width": 100,
-                            "height": 100
-                        },
-                        null
-                    ],
-                    [
-                        null,
-                        {
-                            "type": "ImageIcon",
-                            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
-                            "width": 100,
-                            "height": 100
-                        },
-                        10
-                    ]
-                ],
-                "types": [
-                    "",
-                    "",
-                    "integer"
-                ],
-                "subtype": "ListOfMaps"
-            }
+            [
+                {
+                    "plot": {
+                        "type": "Plot",
+                        "init_width": 640,
+                        "init_height": 480,
+                        "chart_title": null,
+                        "domain_axis_label": null,
+                        "y_label": "",
+                        "show_legend": false,
+                        "use_tool_tip": true,
+                        "graphics_list": [],
+                        "constant_lines": [],
+                        "constant_bands": [],
+                        "texts": [],
+                        "rangeAxes": [
+                            {
+                                "type": "YAxis",
+                                "auto_range": true,
+                                "auto_range_includes_zero": true,
+                                "lower_margin": 0.05,
+                                "upper_margin": 0.05,
+                                "lower_bound": 0,
+                                "upper_bound": 0,
+                                "log": false
+                            }
+                        ],
+                        "x_auto_range": true,
+                        "x_lower_margin": 0.05,
+                        "x_upper_margin": 0.05,
+                        "x_lower_bound": 0,
+                        "x_upper_bound": 0,
+                        "y_auto_range": true,
+                        "y_auto_range_includes_zero": true,
+                        "y_lower_margin": 0.05,
+                        "y_upper_margin": 0.05,
+                        "y_lower_bound": 0,
+                        "y_upper_bound": 0,
+                        "log_x": false,
+                        "log_y": false,
+                        "time_zone": null,
+                        "crosshair": null
+                    },
+                    "img": {
+                        "type": "ImageIcon",
+                        "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                        "width": 100,
+                        "height": 100
+                    }
+                },
+                {
+                    "a": 10,
+                    "img": {
+                        "type": "ImageIcon",
+                        "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                        "width": 100,
+                        "height": 100
+                    }
+                }
+            ]
         ],
         "v0": 1,
         "v1": 10.34,
@@ -1166,8 +1150,8 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "value": "Mar 17, 2015 12:11:00 PM",
-            "timestamp": 1426608660204
+            "value": "Mar 17, 2015 3:08:28 PM",
+            "timestamp": 1426619308600
         },
         "v5": {
             "type": "TableDisplay",
@@ -1490,7 +1474,7 @@
                 "cellId": "codecell",
                 "evaluatorId": "Groovy",
                 "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\nbeaker.v14 = o\no",
-                "outputtype": "OutputContainer",
+                "outputtype": "Results",
                 "output": {
                     "type": "OutputContainer",
                     "items": [
@@ -1525,9 +1509,9 @@
                             "types": [
                                 "integer",
                                 "integer",
-                                "integer"
+                                ""
                             ],
-                            "subtype": "TableDisplay"
+                            "subtype": "ListOfMaps"
                         }
                     ]
                 },
@@ -1535,80 +1519,113 @@
             }
         ],
         "v16": {
-            "type": "TableDisplay",
-            "columnNames": [
-                "plot",
-                "img",
-                "a"
-            ],
-            "values": [
-                [
+            "plot": {
+                "type": "Plot",
+                "init_width": 640,
+                "init_height": 480,
+                "chart_title": null,
+                "domain_axis_label": null,
+                "y_label": "",
+                "show_legend": false,
+                "use_tool_tip": true,
+                "graphics_list": [],
+                "constant_lines": [],
+                "constant_bands": [],
+                "texts": [],
+                "rangeAxes": [
                     {
-                        "type": "Plot",
-                        "init_width": 640,
-                        "init_height": 480,
-                        "chart_title": null,
-                        "domain_axis_label": null,
-                        "y_label": "",
-                        "show_legend": false,
-                        "use_tool_tip": true,
-                        "graphics_list": [],
-                        "constant_lines": [],
-                        "constant_bands": [],
-                        "texts": [],
-                        "rangeAxes": [
-                            {
-                                "type": "YAxis",
-                                "auto_range": true,
-                                "auto_range_includes_zero": true,
-                                "lower_margin": 0.05,
-                                "upper_margin": 0.05,
-                                "lower_bound": 0,
-                                "upper_bound": 0,
-                                "log": false
-                            }
-                        ],
-                        "x_auto_range": true,
-                        "x_lower_margin": 0.05,
-                        "x_upper_margin": 0.05,
-                        "x_lower_bound": 0,
-                        "x_upper_bound": 0,
-                        "y_auto_range": true,
-                        "y_auto_range_includes_zero": true,
-                        "y_lower_margin": 0.05,
-                        "y_upper_margin": 0.05,
-                        "y_lower_bound": 0,
-                        "y_upper_bound": 0,
-                        "log_x": false,
-                        "log_y": false,
-                        "time_zone": null,
-                        "crosshair": null
-                    },
-                    {
-                        "type": "ImageIcon",
-                        "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
-                        "width": 100,
-                        "height": 100
-                    },
-                    null
+                        "type": "YAxis",
+                        "auto_range": true,
+                        "auto_range_includes_zero": true,
+                        "lower_margin": 0.05,
+                        "upper_margin": 0.05,
+                        "lower_bound": 0,
+                        "upper_bound": 0,
+                        "log": false
+                    }
                 ],
-                [
-                    null,
-                    {
-                        "type": "ImageIcon",
-                        "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
-                        "width": 100,
-                        "height": 100
-                    },
-                    10
-                ]
-            ],
-            "types": [
-                "",
-                "",
-                "integer"
-            ],
-            "subtype": "ListOfMaps"
-        }
+                "x_auto_range": true,
+                "x_lower_margin": 0.05,
+                "x_upper_margin": 0.05,
+                "x_lower_bound": 0,
+                "x_upper_bound": 0,
+                "y_auto_range": true,
+                "y_auto_range_includes_zero": true,
+                "y_lower_margin": 0.05,
+                "y_upper_margin": 0.05,
+                "y_lower_bound": 0,
+                "y_upper_bound": 0,
+                "log_x": false,
+                "log_y": false,
+                "time_zone": null,
+                "crosshair": null
+            },
+            "img": {
+                "type": "ImageIcon",
+                "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                "width": 100,
+                "height": 100
+            }
+        },
+        "v17": [
+            {
+                "plot": {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": false,
+                    "use_tool_tip": true,
+                    "graphics_list": [],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "auto_range": true,
+                            "auto_range_includes_zero": true,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "log": false
+                        }
+                    ],
+                    "x_auto_range": true,
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": true,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_x": false,
+                    "log_y": false,
+                    "time_zone": null,
+                    "crosshair": null
+                },
+                "img": {
+                    "type": "ImageIcon",
+                    "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                    "width": 100,
+                    "height": 100
+                }
+            },
+            {
+                "a": 10,
+                "img": {
+                    "type": "ImageIcon",
+                    "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                    "width": 100,
+                    "height": 100
+                }
+            }
+        ]
     }
 }

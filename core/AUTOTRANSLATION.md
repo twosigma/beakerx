@@ -36,23 +36,23 @@ UpdatableEvaluationResult	{ type: 'UpdatableEvaluationResult', update_id: '...',
 return/set/read
 
 
-						JVM				R	Python2	Python3	JavaScript
+						JVM				R		Python2		Python3
 1 - integer				ok/ok/ok	KO/ok/ok		ok
 2 - string				ok/ok/ok	KO/ok/ok		ok
 3 - boolean				ok/ok/ok	KO/ok/ok		ok
 4 - date				ok/ok/ok	KO/ok/ok
 5 - data frame			ok/ok/ok	KO/ok/ok		ok
-6 - [dict btype]		ok/ok/KO	KO/KO
+6 - [dict btype]		ok/ok/ok	KO/KO
 7 - [btype]				ok/ok/ok	KO/ok/ok		ok
 8 - [btype][btype]		ok/ok/ok	KO/ok/ok
-9 - [objects][objects]	ok/ok/KO	KO/ok
+9 - [objects][objects]	ok/ok/ok	KO/ok
 10 - [obj][obj][obj]..	ok/ok/ok	KO/ok
 11 - dict (basictyp)	ok/ok/ok	KO/KO/ok
 12 - Plot				ok/ok/KO	KO/KO/KO
 13 - Image				ok/ok/ok	KO/KO/KO
 14 - OutputContainer	ok/ok/ok	KO/ok/KO
-15 - BeakerCodeCell		ok/ok/KO	KO/ok/KO
+15 - BeakerCodeCell		ok/ok/ok	KO/ok/KO
 16 - dict				ok/ok/ok	KO/ok/KO
-17 - [dict]				KO/KO/KO	KO/?/?
+17 - [dict]				ok/ok/ok	KO/?/?
 
 

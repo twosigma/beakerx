@@ -55,14 +55,14 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
   private final static Logger logger = Logger.getLogger(BasicObjectSerializer.class.getName());
   protected static List<ObjectDeserializer> supportedTypes;
 
-  protected boolean isListOfMaps(Object o) {
+  protected boolean isListOfPrimitiveTypeMaps(Object o) {
     if (! (o instanceof Collection<?>))
       return false;
     Collection<?> c = (Collection<?>) o;
     if (c.isEmpty())
       return false;
     for (Object obj : c) {
-      if (!(obj instanceof Map<?,?>)) {        
+      if (!isPrimitiveTypeMap(obj)) {        
         return false;
       }
     }
@@ -166,7 +166,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         jgen.writeObject(obj);
       } else if (isPrimitiveType(obj.getClass().getName())) {
         jgen.writeObject(obj);
-      } else if (isListOfMaps(obj)) {
+      } else if (isListOfPrimitiveTypeMaps(obj)) {
         logger.fine("list of maps");
         // convert this 'on the fly' to a datatable
         @SuppressWarnings("unchecked")

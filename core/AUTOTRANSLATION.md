@@ -9,19 +9,20 @@ string					string
 boolean					boolean
 float					double
 date					{ type: 'Date', value: '...', timestamp: XX }
+
 data frame				{ type: 'TableDisplay', subtype: 'TableDisplay', columnNames: [...], types: [...], values: [...] }
 list of dictionaries	{ type: 'TableDisplay', subtype: 'ListOfMaps', columnNames: [...], types: [...], values: [...] }
 [basic types]			[basic types]
-[objects]				[objects]
 2D [] of basic types	{ type: 'TableDisplay', subtype: 'Matrix', columnNames: ['c0','c1',...], types: [...], values: [...] }
 2D [] of objects		2D [] objects
 xD [] of objects		xD [] objects
-basic type map			{ type: 'TableDisplay', subtype: 'Dictionary', columnNames: ['Key','Value'], values: [...] }
-
-object map				dictionary
-Image
+dictionary				{ type: 'TableDisplay', subtype: 'Dictionary', columnNames: ['Key','Value'], values: [...] }
+Plot					{ type: 'Plot', .... }
+Image					{ type: 'ImageIcon', .... }
 OutputContainer			{ type: 'OutputContainer', items: [...] }
-BeakerCodeCell
+BeakerCodeCell			{ type: 'BeakerCodeCell', .... }
+map of objects			{ key: val, ... }
+
 
 EvaluationResult		content object
 BeakerProgressUpdate
@@ -30,25 +31,28 @@ SimpleEvaluationObject	{ type: 'SimpleEvaluationObject', update_id: '...', expre
 UpdatableEvaluationResult	{ type: 'UpdatableEvaluationResult', update_id: '...', payload: {...} }
 
 
+return/set/read
+
 
 						JVM				R	Python2	Python3	JavaScript
-integer					ok/ok			ok		ok
-string					ok/ok			ok		ok
-boolean					ok/ok			ok		ok
-float					ok/ok			ok		ok
-date					NO
+integer					ok/ok/ok			ok		ok
+string					ok/ok/ok			ok		ok
+boolean					ok/ok/ok			ok		ok
+float					ok/ok/ok			ok		ok
+date					ok/ok/ok
 
-data frame				ok/ok			ok		ok
-list of dictionaries	ok/ok			N/A
-[basic types]			ok/ok			ok		ok
-2D [] of basic types	ok/ok			KO
-2D [] of objects		ok/ok			KO
-xD [] of basic types	ok/ok		
-dictionary				(map) ok/ok		KO
-Plot					ok
-Image					ok/ok		
-OutputContainer			ok/ok
-BeakerCodeCell			ok/ok
+data frame				ok/ok/ok			ok		ok
+list of dictionaries	ok/ok/KO			N/A
+[basic types]			ok/ok/ok			ok		ok
+2D [] of basic types	ok/ok/ok			KO
+2D [] of objects		ok/ok/ok			KO
+xD [] of basic types	ok/ok/ok		
+dictionary				ok/ok/ok		KO
+Plot					ok/ok/KO
+Image					ok/ok/ok		
+OutputContainer			ok/ok/ok
+BeakerCodeCell			ok/ok/KO
+map of objects			ok/ok/ok
 
 
 

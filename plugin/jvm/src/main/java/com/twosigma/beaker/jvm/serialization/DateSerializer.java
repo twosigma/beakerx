@@ -17,7 +17,7 @@ public class DateSerializer extends JsonSerializer<Date> {
     synchronized(v) {
       jgen.writeStartObject();
       jgen.writeStringField("type",  "Date");
-      jgen.writeObjectField("value", DateFormat.getDateTimeInstance().format(v));
+      jgen.writeStringField("value", DateFormat.getDateTimeInstance().format(v));
       jgen.writeNumberField("timestamp", v.getTime());
       jgen.writeEndObject();
     }

@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
   public static final String TYPE_DOUBLE  = "double";
   public static final String TYPE_STRING  = "string";
   public static final String TYPE_BOOLEAN = "boolean";
+  public static final String TYPE_TIME    = "time";
   public static final String TYPE_SELECT  = "select";
   
   protected Map<String,String> types;
@@ -118,6 +120,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     addTypeConversion("java.lang.String", TYPE_STRING);
     addTypeConversion("java.lang.StringBuffer", TYPE_STRING);
     addTypeConversion("java.lang.StringBuilder", TYPE_STRING);
+    addTypeConversion("java.util.Date", TYPE_TIME); 
     addTypeConversion("java.util.concurrent.atomic.AtomicInteger", TYPE_INTEGER);
     addTypeConversion("java.util.concurrent.atomic.AtomicLong", TYPE_INTEGER);
     addTypeConversion("java.math.BigDecimal", TYPE_DOUBLE);
@@ -155,6 +158,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
                   (obj instanceof UpdatableEvaluationResult) ||
                   (obj instanceof BeakerCodeCell) ||
                   (obj instanceof ImageIcon) ||
+                  (obj instanceof Date) ||
                   (obj instanceof BufferedImage) ||
                   (obj instanceof OutputContainer)  ||
                   (obj instanceof BeakerProgressUpdate) ) {

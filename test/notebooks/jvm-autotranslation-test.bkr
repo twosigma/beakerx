@@ -55,39 +55,75 @@
                     "  if (r.length !== 17)",
                     "    d.reject(\"invalid length \"+r.length);",
                     "  else if (typeof(r[0]) !== 'number' || r[0]%1 !== 0) ",
-                    "    d.reject(\"invalid integer\");",
+                    "    d.reject(\"ERROR returning integer\");",
                     "  else if (typeof(r[1]) !== 'number') ",
-                    "    d.reject(\"invalid float\");",
+                    "    d.reject(\"ERROR returning float\");",
                     "  else if (typeof(r[2]) !== 'boolean') ",
-                    "    d.reject(\"invalid boolean\");",
+                    "    d.reject(\"ERROR returning boolean\");",
                     "  else if (typeof(r[3]) !== 'string') ",
-                    "    d.reject(\"invalid string\");",
+                    "    d.reject(\"ERROR returning string\");",
                     "  else if (typeof(r[4]) !== 'object' || r[4].type !== 'Date')",
-                    "    d.reject(\"invalid string\");",
+                    "    d.reject(\"ERROR returning date\");",
                     "  else if (typeof(r[5]) !== 'object' || r[5].type !== 'TableDisplay' || r[5].subtype !== 'TableDisplay') ",
-                    "    d.reject(\"invalid data frame\");",
+                    "    d.reject(\"ERROR returning data frame\");",
                     "  else if (typeof(r[6]) !== 'object' || r[6].type !== 'TableDisplay' || r[6].subtype !== 'ListOfMaps') ",
-                    "    d.reject(\"invalid list of dictionaries\");",
+                    "    d.reject(\"ERROR returning list of dictionaries\");",
                     "  else if (!_.isArray(r[7])) ",
-                    "    d.reject(\"invalid basic collection\");",
+                    "    d.reject(\"ERROR returning basic collection\");",
                     "  else if (typeof(r[8]) !== 'object' || r[8].type !== 'TableDisplay' || r[8].subtype !== 'Matrix') ",
-                    "    d.reject(\"invalid matrix\");",
+                    "    d.reject(\"ERROR returning matrix\");",
                     "  else if (!_.isArray(r[9])) ",
-                    "    d.reject(\"invalid matrix of objects\");",
+                    "    d.reject(\"ERROR returning matrix of objects\");",
                     "  else if (!_.isArray(r[10])) ",
-                    "    d.reject(\"invalid xD array of basic types\");",
+                    "    d.reject(\"ERROR returning xD array of basic types\");",
                     "  else if (typeof(r[11]) !== 'object' || r[11].type !== 'TableDisplay' || r[11].subtype !== 'Dictionary') ",
-                    "    d.reject(\"invalid dictionary\");",
+                    "    d.reject(\"ERROR returning dictionary\");",
                     "  else if (typeof(r[12]) !== 'object' || r[12].type !== 'Plot') ",
-                    "    d.reject(\"invalid plot\");",
+                    "    d.reject(\"ERROR returning plot\");",
                     "  else if (typeof(r[13]) !== 'object' || r[13].type !== 'ImageIcon') ",
-                    "    d.reject(\"invalid image\");",
+                    "    d.reject(\"ERROR returning image\");",
                     "  else if (typeof(r[14]) !== 'object' || r[14].type !== 'OutputContainer') ",
-                    "    d.reject(\"invalid OutputContainer\");",
+                    "    d.reject(\"ERROR returning OutputContainer\");",
                     "  else if (!_.isArray(r[15]) || typeof(r[15][0]) !== 'object' || r[15][0].type !== 'BeakerCodeCell') ",
-                    "    d.reject(\"invalid BeakerCodeCell\");",
+                    "    d.reject(\"ERROR returning BeakerCodeCell\");",
                     "  else if (typeof(r[16]) !== 'object' || r[16].plot === undefined) ",
-                    "    d.reject(\"invalid map of objects\");",
+                    "    d.reject(\"ERROR returning map of objects\");",
+                    "",
+                    "  else if (typeof(beaker.v0) !== 'number' || beaker.v0%1 !== 0) ",
+                    "    d.reject(\"ERROR setting integer\");",
+                    "  else if (typeof(beaker.v1) !== 'number') ",
+                    "    d.reject(\"ERROR setting float\");",
+                    "  else if (typeof(beaker.v2) !== 'boolean') ",
+                    "    d.reject(\"ERROR setting boolean\");",
+                    "  else if (typeof(beaker.v3) !== 'string') ",
+                    "    d.reject(\"ERROR setting string\");",
+                    "  else if (typeof(beaker.v4) !== 'object' || beaker.v4.type !== 'Date')",
+                    "    d.reject(\"ERROR setting date\");",
+                    "  else if (typeof(beaker.v5) !== 'object' || beaker.v5.type !== 'TableDisplay' || beaker.v5.subtype !== 'TableDisplay') ",
+                    "    d.reject(\"ERROR setting data frame\");",
+                    "  else if (typeof(beaker.v6) !== 'object' || beaker.v6.type !== 'TableDisplay' || beaker.v6.subtype !== 'ListOfMaps') ",
+                    "    d.reject(\"ERROR setting list of dictionaries\");",
+                    "  else if (!_.isArray(beaker.v7)) ",
+                    "    d.reject(\"ERROR setting basic collection\");",
+                    "  else if (typeof(beaker.v8) !== 'object' || beaker.v8.type !== 'TableDisplay' || beaker.v8.subtype !== 'Matrix') ",
+                    "    d.reject(\"ERROR setting matrix\");",
+                    "  else if (!_.isArray(beaker.v9)) ",
+                    "    d.reject(\"ERROR setting matrix of objects\");",
+                    "  else if (!_.isArray(beaker.v10)) ",
+                    "    d.reject(\"ERROR setting xD array of basic types\");",
+                    "  else if (typeof(beaker.v11) !== 'object' || beaker.v11.type !== 'TableDisplay' || beaker.v11.subtype !== 'Dictionary') ",
+                    "    d.reject(\"ERROR setting dictionary\");",
+                    "  else if (typeof(beaker.v12) !== 'object' || beaker.v12.type !== 'Plot') ",
+                    "    d.reject(\"ERROR setting plot\");",
+                    "  else if (typeof(beaker.v13) !== 'object' || beaker.v13.type !== 'ImageIcon') ",
+                    "    d.reject(\"ERROR setting image\");",
+                    "  else if (typeof(beaker.v14) !== 'object' || beaker.v14.type !== 'OutputContainer') ",
+                    "    d.reject(\"ERROR setting OutputContainer\");",
+                    "  else if (!_.isArray(beaker.v15) || typeof(beaker.v15[0]) !== 'object' || beaker.v15[0].type !== 'BeakerCodeCell') ",
+                    "    d.reject(\"ERROR setting BeakerCodeCell\");",
+                    "  else if (typeof(beaker.v16) !== 'object' || r[16].plot === undefined) ",
+                    "    d.reject(\"ERROR setting map of objects\");",
+                    "  beaker.evaluate('steptwo');",
                     "  d.resolve('OK');",
                     "})",
                     "d"
@@ -95,79 +131,69 @@
             },
             "output": {
                 "state": {},
-                "result": "OK",
                 "selectedType": "Text",
                 "elapsedTime": 14764
             },
             "evaluatorReader": true,
-            "lineCount": 42
+            "lineCount": 78
         },
         {
             "id": "codeOSRZTr",
             "type": "code",
-            "evaluator": "JavaScript",
+            "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "beaker.out[15]",
+                    "// now verify we can read back the values from beaker object",
+                    "",
+                    "if (!beaker.v0.getClass().getName().endsWith(\".Integer\"))",
+                    "\t\"ERROR reading integer\"",
+                    "else if (!beaker.v1.getClass().getName().endsWith(\".Double\"))",
+                    "\t\"ERROR reading double\"",
+                    "else if (!beaker.v2.getClass().getName().endsWith(\".Boolean\"))",
+                    "\t\"ERROR reading boolean\"",
+                    "else if (!beaker.v3.getClass().getName().endsWith(\".String\"))",
+                    "\t\"ERROR reading string\"",
+                    "else if (!beaker.v4.getClass().getName().endsWith(\".Date\"))",
+                    "\t\"ERROR reading date\"",
+                    "else if (!beaker.v5.getClass().getName().endsWith(\".TableDisplay\"))",
+                    "\t\"ERROR reading data frame\"",
+                    "else if (!beaker.v6.getClass().getName().endsWith(\".TableDisplay\"))",
+                    "\t\"ERROR reading list of dictionaries\"",
+                    "else if (!beaker.v7.getClass().getName().endsWith(\".ArrayList\"))",
+                    "\t\"ERROR reading basic collection\"",
+                    "else if (!beaker.v8.getClass().getName().endsWith(\".ArrayList\"))",
+                    "\t\"ERROR reading matrix\"",
+                    "else if (!beaker.v8.getClass().getName().endsWith(\".ArrayList\"))",
+                    "\t\"ERROR reading matrix of objects\"",
+                    "else if (!beaker.v10.getClass().getName().endsWith(\".ArrayList\"))",
+                    "\t\"ERROR reading xD array of basic types\"",
+                    "else if (!beaker.v11.getClass().getName().endsWith(\".HashMap\"))",
+                    "\t\"ERROR reading dictionary\"",
+                    "else if (!beaker.v12.getClass().getName().endsWith(\".LinkedHashMap\"))",
+                    "\t\"ERROR reading plot\"",
+                    "else if (!beaker.v13.getClass().getName().endsWith(\".BufferedImage\"))",
+                    "\t\"ERROR reading image\"",
+                    "else if (!beaker.v14.getClass().getName().endsWith(\".OutputContainer\"))",
+                    "\t\"ERROR reading output container\"",
+                    "else if (!beaker.v15.getClass().getName().endsWith(\".ArrayList\") || !beaker.v15[0].getClass().getName().endsWith(\".LinkedHashMap\"))",
+                    "\t\"ERROR reading beaker code cells\"",
+                    "else if (!beaker.v16.getClass().getName().endsWith(\".LinkedHashMap\"))",
+                    "\t\"ERROR reading map of objects\"",
+                    "else",
+                    "  \"OK\"",
                     ""
                 ]
             },
             "output": {
                 "state": {},
-                "result": [
-                    {
-                        "type": "BeakerCodeCell",
-                        "cellId": "codecell",
-                        "evaluatorId": "Groovy",
-                        "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\no",
-                        "outputtype": "OutputContainer",
-                        "output": {
-                            "type": "OutputContainer",
-                            "items": [
-                                "pippero",
-                                [
-                                    1,
-                                    2,
-                                    3,
-                                    4,
-                                    5,
-                                    6
-                                ],
-                                {
-                                    "type": "TableDisplay",
-                                    "columnNames": [
-                                        "a",
-                                        "b",
-                                        "c"
-                                    ],
-                                    "values": [
-                                        [
-                                            1,
-                                            3,
-                                            null
-                                        ],
-                                        [
-                                            4,
-                                            null,
-                                            5
-                                        ]
-                                    ],
-                                    "types": [
-                                        "integer",
-                                        "integer",
-                                        "integer"
-                                    ],
-                                    "subtype": "TableDisplay"
-                                }
-                            ]
-                        },
-                        "tags": "groovyret"
-                    }
-                ],
-                "selectedType": "Text"
+                "selectedType": "Text",
+                "pluginName": "Groovy",
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 922
             },
             "evaluatorReader": true,
-            "lineCount": 2
+            "lineCount": 39,
+            "tags": "steptwo"
         },
         {
             "id": "sectionN09y35",
@@ -175,7 +201,7 @@
             "title": "Groovy cells that return a value",
             "level": 1,
             "evaluatorReader": false,
-            "collapsed": false
+            "collapsed": true
         },
         {
             "id": "codeYX3xaO",
@@ -184,20 +210,21 @@
             "input": {
                 "body": [
                     "// return integer - 0",
-                    "1"
+                    "def a = 1",
+                    "beaker.v0 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": 1,
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 63,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 590,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -207,20 +234,21 @@
             "input": {
                 "body": [
                     "// return float - 1",
-                    "10.34"
+                    "def a = 10.34",
+                    "beaker.v1 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": 10.34,
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 104,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 587,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -230,20 +258,21 @@
             "input": {
                 "body": [
                     "// return boolean - 2",
-                    "true"
+                    "def a = true",
+                    "beaker.v2 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": true,
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 59,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 589,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -253,19 +282,20 @@
             "input": {
                 "body": [
                     "// return string - 3",
-                    "'test string'"
+                    "def a = 'test string'",
+                    "beaker.v3 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": "test string",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 72
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 609
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -276,21 +306,22 @@
                 "body": [
                     "// return a date - 4",
                     "import java.util.Date",
-                    "d = new Date()",
+                    "def d = new Date()",
+                    "beaker.v4 = d",
                     "d",
-                    "// ERROR TODO"
+                    ""
                 ]
             },
             "output": {
                 "state": {},
-                "result": "ERROR: unsupported object Tue Mar 17 09:19:08 EDT 2015",
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 76
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 652,
+                "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 5,
+            "lineCount": 6,
             "tags": "groovyret"
         },
         {
@@ -301,41 +332,21 @@
                 "body": [
                     "// dataframe - 5",
                     "import com.twosigma.beaker.jvm.object.TableDisplay",
-                    "new TableDisplay([ [1,2],[4,5] ], ['a','b'], ['integer','integer'])"
+                    "def a = new TableDisplay([ [1,2],[4,5] ], ['a','b'], ['integer','integer'])",
+                    "beaker.v5 = a",
+                    "a"
                 ]
             },
             "output": {
-                "result": {
-                    "type": "TableDisplay",
-                    "columnNames": [
-                        "a",
-                        "b"
-                    ],
-                    "values": [
-                        [
-                            1,
-                            2
-                        ],
-                        [
-                            4,
-                            5
-                        ]
-                    ],
-                    "types": [
-                        "integer",
-                        "integer"
-                    ],
-                    "subtype": "TableDisplay"
-                },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 65,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 596,
                 "state": {},
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 3,
+            "lineCount": 5,
             "tags": "groovyret"
         },
         {
@@ -345,45 +356,21 @@
             "input": {
                 "body": [
                     "// list of dictionaries - 6",
-                    "[ [a:1, b:3], [a:4, c:5] ]"
+                    "def a = [ [a:1, b:3], [a:4, c:5] ]",
+                    "beaker.v6 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": {
-                    "type": "TableDisplay",
-                    "columnNames": [
-                        "a",
-                        "b",
-                        "c"
-                    ],
-                    "values": [
-                        [
-                            1,
-                            3,
-                            null
-                        ],
-                        [
-                            4,
-                            null,
-                            5
-                        ]
-                    ],
-                    "types": [
-                        "integer",
-                        "integer",
-                        "integer"
-                    ],
-                    "subtype": "ListOfMaps"
-                },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 132,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 666,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -393,27 +380,21 @@
             "input": {
                 "body": [
                     "// basic collection - 7",
-                    "[1,2,3,4,5,6]"
+                    "def a = [1,2,3,4,5,6]",
+                    "beaker.v7 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6
-                ],
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 114,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 674,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -423,49 +404,21 @@
             "input": {
                 "body": [
                     "// 2D [] of basic types - 8",
-                    "[[1,2,3],[4,5,6], [7,8,9,10]]"
+                    "def a = [[1,2,3],[4,5,6], [7,8,9,10]]",
+                    "beaker.v8 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": {
-                    "type": "TableDisplay",
-                    "columnNames": [
-                        "c0",
-                        "c1",
-                        "c2",
-                        "c3"
-                    ],
-                    "values": [
-                        [
-                            1,
-                            2,
-                            3,
-                            null
-                        ],
-                        [
-                            4,
-                            5,
-                            6,
-                            null
-                        ],
-                        [
-                            7,
-                            8,
-                            9,
-                            10
-                        ]
-                    ],
-                    "subtype": "Matrix"
-                },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 58,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 597,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -475,77 +428,21 @@
             "input": {
                 "body": [
                     "// 2D [] of objects - 9",
-                    "[[1,2,3],[4,5,6], [7,8,9,new Plot()]]"
+                    "def a = [[1,2,3],[4,5,6], [7,8,9,new Plot()]]",
+                    "beaker.v9 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": [
-                    [
-                        1,
-                        2,
-                        3
-                    ],
-                    [
-                        4,
-                        5,
-                        6
-                    ],
-                    [
-                        7,
-                        8,
-                        9,
-                        {
-                            "type": "Plot",
-                            "init_width": 640,
-                            "init_height": 480,
-                            "chart_title": null,
-                            "domain_axis_label": null,
-                            "y_label": "",
-                            "show_legend": false,
-                            "use_tool_tip": true,
-                            "graphics_list": [],
-                            "constant_lines": [],
-                            "constant_bands": [],
-                            "texts": [],
-                            "rangeAxes": [
-                                {
-                                    "type": "YAxis",
-                                    "auto_range": true,
-                                    "auto_range_includes_zero": true,
-                                    "lower_margin": 0.05,
-                                    "upper_margin": 0.05,
-                                    "lower_bound": 0,
-                                    "upper_bound": 0,
-                                    "log": false
-                                }
-                            ],
-                            "x_auto_range": true,
-                            "x_lower_margin": 0.05,
-                            "x_upper_margin": 0.05,
-                            "x_lower_bound": 0,
-                            "x_upper_bound": 0,
-                            "y_auto_range": true,
-                            "y_auto_range_includes_zero": true,
-                            "y_lower_margin": 0.05,
-                            "y_upper_margin": 0.05,
-                            "y_lower_bound": 0,
-                            "y_upper_bound": 0,
-                            "log_x": false,
-                            "log_y": false,
-                            "time_zone": null,
-                            "crosshair": null
-                        }
-                    ]
-                ],
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 130,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 679,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -555,81 +452,21 @@
             "input": {
                 "body": [
                     "// xD [] of basic types - 10",
-                    "[[[1,2,3],[4,5,6], [7,8,9,10]],[[1,2,3],[4,5,6], [7,8,9,10]]]",
-                    "// ERROR"
+                    "def a = [[[1,2,3],[4,5,6], [7,8,9,10]],[[1,2,3],[4,5,6], [7,8,9,10]]]",
+                    "beaker.v10 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": [
-                    {
-                        "type": "TableDisplay",
-                        "columnNames": [
-                            "c0",
-                            "c1",
-                            "c2",
-                            "c3"
-                        ],
-                        "values": [
-                            [
-                                1,
-                                2,
-                                3,
-                                null
-                            ],
-                            [
-                                4,
-                                5,
-                                6,
-                                null
-                            ],
-                            [
-                                7,
-                                8,
-                                9,
-                                10
-                            ]
-                        ],
-                        "subtype": "Matrix"
-                    },
-                    {
-                        "type": "TableDisplay",
-                        "columnNames": [
-                            "c0",
-                            "c1",
-                            "c2",
-                            "c3"
-                        ],
-                        "values": [
-                            [
-                                1,
-                                2,
-                                3,
-                                null
-                            ],
-                            [
-                                4,
-                                5,
-                                6,
-                                null
-                            ],
-                            [
-                                7,
-                                8,
-                                9,
-                                10
-                            ]
-                        ],
-                        "subtype": "Matrix"
-                    }
-                ],
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 82
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 601,
+                "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 3,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -639,41 +476,21 @@
             "input": {
                 "body": [
                     "// dictionary - 11",
-                    "[a:1, b:2, c: 55]"
+                    "def a = [a:1, b:2, c: 55]",
+                    "beaker.v11 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": {
-                    "type": "TableDisplay",
-                    "columnNames": [
-                        "Key",
-                        "Value"
-                    ],
-                    "values": [
-                        [
-                            "a",
-                            "1"
-                        ],
-                        [
-                            "b",
-                            "2"
-                        ],
-                        [
-                            "c",
-                            "55"
-                        ]
-                    ],
-                    "subtype": "Dictionary"
-                },
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 57,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 593,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -683,60 +500,21 @@
             "input": {
                 "body": [
                     "// Plot - 12",
-                    "new Plot()"
+                    "def a = new Plot()",
+                    "beaker.v12 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": {
-                    "type": "Plot",
-                    "init_width": 640,
-                    "init_height": 480,
-                    "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
-                    "show_legend": false,
-                    "use_tool_tip": true,
-                    "graphics_list": [],
-                    "constant_lines": [],
-                    "constant_bands": [],
-                    "texts": [],
-                    "rangeAxes": [
-                        {
-                            "type": "YAxis",
-                            "auto_range": true,
-                            "auto_range_includes_zero": true,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
-                            "lower_bound": 0,
-                            "upper_bound": 0,
-                            "log": false
-                        }
-                    ],
-                    "x_auto_range": true,
-                    "x_lower_margin": 0.05,
-                    "x_upper_margin": 0.05,
-                    "x_lower_bound": 0,
-                    "x_upper_bound": 0,
-                    "y_auto_range": true,
-                    "y_auto_range_includes_zero": true,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
-                    "y_lower_bound": 0,
-                    "y_upper_bound": 0,
-                    "log_x": false,
-                    "log_y": false,
-                    "time_zone": null,
-                    "crosshair": null
-                },
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 60,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 696,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -750,25 +528,20 @@
                     "BufferedImage i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",
                     "g2 = i.createGraphics()",
                     "g2.drawLine(0,0,100,100)",
+                    "beaker.v13 = i",
                     "i"
                 ]
             },
             "output": {
                 "state": {},
-                "result": {
-                    "type": "ImageIcon",
-                    "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
-                    "width": 100,
-                    "height": 100
-                },
                 "selectedType": "Image",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 70,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 616,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 6,
+            "lineCount": 7,
             "tags": "groovyret"
         },
         {
@@ -780,59 +553,20 @@
                     "// output container - 14",
                     "import com.twosigma.beaker.jvm.object.OutputContainer",
                     "def o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])",
+                    "beaker.v14 = o",
                     "o"
                 ]
             },
             "output": {
                 "state": {},
-                "result": {
-                    "type": "OutputContainer",
-                    "items": [
-                        "pippero",
-                        [
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6
-                        ],
-                        {
-                            "type": "TableDisplay",
-                            "columnNames": [
-                                "a",
-                                "b",
-                                "c"
-                            ],
-                            "values": [
-                                [
-                                    1,
-                                    3,
-                                    null
-                                ],
-                                [
-                                    4,
-                                    null,
-                                    5
-                                ]
-                            ],
-                            "types": [
-                                "integer",
-                                "integer",
-                                "integer"
-                            ],
-                            "subtype": "ListOfMaps"
-                        }
-                    ]
-                },
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 77,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 608,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 4,
+            "lineCount": 5,
             "tags": "groovyret"
         },
         {
@@ -842,69 +576,21 @@
             "input": {
                 "body": [
                     "// beaker code cell - 15",
-                    "beaker.getCodeCells('codecell')"
+                    "def a = beaker.getCodeCells('codecell')",
+                    "beaker.v15 = a",
+                    "a"
                 ]
             },
             "output": {
                 "state": {},
-                "result": [
-                    {
-                        "type": "BeakerCodeCell",
-                        "cellId": "codecell",
-                        "evaluatorId": "Groovy",
-                        "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\no",
-                        "outputtype": "OutputContainer",
-                        "output": {
-                            "type": "OutputContainer",
-                            "items": [
-                                "pippero",
-                                [
-                                    1,
-                                    2,
-                                    3,
-                                    4,
-                                    5,
-                                    6
-                                ],
-                                {
-                                    "type": "TableDisplay",
-                                    "columnNames": [
-                                        "a",
-                                        "b",
-                                        "c"
-                                    ],
-                                    "values": [
-                                        [
-                                            1,
-                                            3,
-                                            null
-                                        ],
-                                        [
-                                            4,
-                                            null,
-                                            5
-                                        ]
-                                    ],
-                                    "types": [
-                                        "integer",
-                                        "integer",
-                                        "integer"
-                                    ],
-                                    "subtype": "TableDisplay"
-                                }
-                            ]
-                        },
-                        "tags": "groovyret"
-                    }
-                ],
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 2376,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 615,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 2,
+            "lineCount": 4,
             "tags": "groovyret"
         },
         {
@@ -919,69 +605,22 @@
                     "g2 = i.createGraphics()",
                     "g2.drawLine(0,0,100,100)",
                     "p = new Plot()",
-                    "[ plot:  p, img: i ]",
+                    "def a = [ plot:  p, img: i ]",
+                    "beaker.v16 = a",
+                    "a",
                     ""
                 ]
             },
             "output": {
                 "state": {},
-                "result": {
-                    "plot": {
-                        "type": "Plot",
-                        "init_width": 640,
-                        "init_height": 480,
-                        "chart_title": null,
-                        "domain_axis_label": null,
-                        "y_label": "",
-                        "show_legend": false,
-                        "use_tool_tip": true,
-                        "graphics_list": [],
-                        "constant_lines": [],
-                        "constant_bands": [],
-                        "texts": [],
-                        "rangeAxes": [
-                            {
-                                "type": "YAxis",
-                                "auto_range": true,
-                                "auto_range_includes_zero": true,
-                                "lower_margin": 0.05,
-                                "upper_margin": 0.05,
-                                "lower_bound": 0,
-                                "upper_bound": 0,
-                                "log": false
-                            }
-                        ],
-                        "x_auto_range": true,
-                        "x_lower_margin": 0.05,
-                        "x_upper_margin": 0.05,
-                        "x_lower_bound": 0,
-                        "x_upper_bound": 0,
-                        "y_auto_range": true,
-                        "y_auto_range_includes_zero": true,
-                        "y_lower_margin": 0.05,
-                        "y_upper_margin": 0.05,
-                        "y_lower_bound": 0,
-                        "y_upper_bound": 0,
-                        "log_x": false,
-                        "log_y": false,
-                        "time_zone": null,
-                        "crosshair": null
-                    },
-                    "img": {
-                        "type": "ImageIcon",
-                        "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
-                        "width": 100,
-                        "height": 100
-                    }
-                },
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "6e89f623-6b43-449e-870e-08ab2ebb6ebc",
-                "elapsedTime": 59,
+                "shellId": "271278c2-516b-4241-b0b0-72a1076bc0da",
+                "elapsedTime": 605,
                 "hidden": true
             },
             "evaluatorReader": true,
-            "lineCount": 8,
+            "lineCount": 10,
             "tags": "groovyret"
         }
     ],
@@ -991,7 +630,11 @@
             10.34,
             true,
             "test string",
-            "ERROR: unsupported object Tue Mar 17 09:19:08 EDT 2015",
+            {
+                "type": "Date",
+                "value": "Mar 17, 2015 9:43:24 AM",
+                "timestamp": 1426599804269
+            },
             {
                 "type": "TableDisplay",
                 "columnNames": [
@@ -1312,7 +955,7 @@
                     "type": "BeakerCodeCell",
                     "cellId": "codecell",
                     "evaluatorId": "Groovy",
-                    "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\no",
+                    "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\nbeaker.v14 = o\no",
                     "outputtype": "OutputContainer",
                     "output": {
                         "type": "OutputContainer",
@@ -1406,6 +1049,429 @@
                     "height": 100
                 }
             }
-        ]
+        ],
+        "v0": 1,
+        "v1": 10.34,
+        "v2": true,
+        "v3": "test string",
+        "v4": {
+            "type": "Date",
+            "value": "Mar 17, 2015 9:43:24 AM",
+            "timestamp": 1426599804269
+        },
+        "v5": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "a",
+                "b"
+            ],
+            "values": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    4,
+                    5
+                ]
+            ],
+            "types": [
+                "integer",
+                "integer"
+            ],
+            "subtype": "TableDisplay"
+        },
+        "v6": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "a",
+                "b",
+                "c"
+            ],
+            "values": [
+                [
+                    1,
+                    3,
+                    null
+                ],
+                [
+                    4,
+                    null,
+                    5
+                ]
+            ],
+            "types": [
+                "integer",
+                "integer",
+                "integer"
+            ],
+            "subtype": "ListOfMaps"
+        },
+        "v7": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+        ],
+        "v8": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "c0",
+                "c1",
+                "c2",
+                "c3"
+            ],
+            "values": [
+                [
+                    1,
+                    2,
+                    3,
+                    null
+                ],
+                [
+                    4,
+                    5,
+                    6,
+                    null
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    10
+                ]
+            ],
+            "subtype": "Matrix"
+        },
+        "v9": [
+            [
+                1,
+                2,
+                3
+            ],
+            [
+                4,
+                5,
+                6
+            ],
+            [
+                7,
+                8,
+                9,
+                {
+                    "type": "Plot",
+                    "init_width": 640,
+                    "init_height": 480,
+                    "chart_title": null,
+                    "domain_axis_label": null,
+                    "y_label": "",
+                    "show_legend": false,
+                    "use_tool_tip": true,
+                    "graphics_list": [],
+                    "constant_lines": [],
+                    "constant_bands": [],
+                    "texts": [],
+                    "rangeAxes": [
+                        {
+                            "type": "YAxis",
+                            "auto_range": true,
+                            "auto_range_includes_zero": true,
+                            "lower_margin": 0.05,
+                            "upper_margin": 0.05,
+                            "lower_bound": 0,
+                            "upper_bound": 0,
+                            "log": false
+                        }
+                    ],
+                    "x_auto_range": true,
+                    "x_lower_margin": 0.05,
+                    "x_upper_margin": 0.05,
+                    "x_lower_bound": 0,
+                    "x_upper_bound": 0,
+                    "y_auto_range": true,
+                    "y_auto_range_includes_zero": true,
+                    "y_lower_margin": 0.05,
+                    "y_upper_margin": 0.05,
+                    "y_lower_bound": 0,
+                    "y_upper_bound": 0,
+                    "log_x": false,
+                    "log_y": false,
+                    "time_zone": null,
+                    "crosshair": null
+                }
+            ]
+        ],
+        "v10": [
+            {
+                "type": "TableDisplay",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2",
+                    "c3"
+                ],
+                "values": [
+                    [
+                        1,
+                        2,
+                        3,
+                        null
+                    ],
+                    [
+                        4,
+                        5,
+                        6,
+                        null
+                    ],
+                    [
+                        7,
+                        8,
+                        9,
+                        10
+                    ]
+                ],
+                "subtype": "Matrix"
+            },
+            {
+                "type": "TableDisplay",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2",
+                    "c3"
+                ],
+                "values": [
+                    [
+                        1,
+                        2,
+                        3,
+                        null
+                    ],
+                    [
+                        4,
+                        5,
+                        6,
+                        null
+                    ],
+                    [
+                        7,
+                        8,
+                        9,
+                        10
+                    ]
+                ],
+                "subtype": "Matrix"
+            }
+        ],
+        "v11": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "Key",
+                "Value"
+            ],
+            "values": [
+                [
+                    "a",
+                    "1"
+                ],
+                [
+                    "b",
+                    "2"
+                ],
+                [
+                    "c",
+                    "55"
+                ]
+            ],
+            "subtype": "Dictionary"
+        },
+        "v12": {
+            "type": "Plot",
+            "init_width": 640,
+            "init_height": 480,
+            "chart_title": null,
+            "domain_axis_label": null,
+            "y_label": "",
+            "show_legend": false,
+            "use_tool_tip": true,
+            "graphics_list": [],
+            "constant_lines": [],
+            "constant_bands": [],
+            "texts": [],
+            "rangeAxes": [
+                {
+                    "type": "YAxis",
+                    "auto_range": true,
+                    "auto_range_includes_zero": true,
+                    "lower_margin": 0.05,
+                    "upper_margin": 0.05,
+                    "lower_bound": 0,
+                    "upper_bound": 0,
+                    "log": false
+                }
+            ],
+            "x_auto_range": true,
+            "x_lower_margin": 0.05,
+            "x_upper_margin": 0.05,
+            "x_lower_bound": 0,
+            "x_upper_bound": 0,
+            "y_auto_range": true,
+            "y_auto_range_includes_zero": true,
+            "y_lower_margin": 0.05,
+            "y_upper_margin": 0.05,
+            "y_lower_bound": 0,
+            "y_upper_bound": 0,
+            "log_x": false,
+            "log_y": false,
+            "time_zone": null,
+            "crosshair": null
+        },
+        "v13": {
+            "type": "ImageIcon",
+            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+            "width": 100,
+            "height": 100
+        },
+        "v14": {
+            "type": "OutputContainer",
+            "items": [
+                "pippero",
+                [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "a",
+                        "b",
+                        "c"
+                    ],
+                    "values": [
+                        [
+                            1,
+                            3,
+                            null
+                        ],
+                        [
+                            4,
+                            null,
+                            5
+                        ]
+                    ],
+                    "types": [
+                        "integer",
+                        "integer",
+                        "integer"
+                    ],
+                    "subtype": "ListOfMaps"
+                }
+            ]
+        },
+        "v15": [
+            {
+                "type": "BeakerCodeCell",
+                "cellId": "codecell",
+                "evaluatorId": "Groovy",
+                "code": "// output container - 14\nimport com.twosigma.beaker.jvm.object.OutputContainer\ndef o = new OutputContainer(['pippero', [1,2,3,4,5,6], [ [a:1, b:3], [a:4, c:5] ]])\nbeaker.v14 = o\no",
+                "outputtype": "OutputContainer",
+                "output": {
+                    "type": "OutputContainer",
+                    "items": [
+                        "pippero",
+                        [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6
+                        ],
+                        {
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "a",
+                                "b",
+                                "c"
+                            ],
+                            "values": [
+                                [
+                                    1,
+                                    3,
+                                    null
+                                ],
+                                [
+                                    4,
+                                    null,
+                                    5
+                                ]
+                            ],
+                            "types": [
+                                "integer",
+                                "integer",
+                                "integer"
+                            ],
+                            "subtype": "TableDisplay"
+                        }
+                    ]
+                },
+                "tags": "groovyret"
+            }
+        ],
+        "v16": {
+            "plot": {
+                "type": "Plot",
+                "init_width": 640,
+                "init_height": 480,
+                "chart_title": null,
+                "domain_axis_label": null,
+                "y_label": "",
+                "show_legend": false,
+                "use_tool_tip": true,
+                "graphics_list": [],
+                "constant_lines": [],
+                "constant_bands": [],
+                "texts": [],
+                "rangeAxes": [
+                    {
+                        "type": "YAxis",
+                        "auto_range": true,
+                        "auto_range_includes_zero": true,
+                        "lower_margin": 0.05,
+                        "upper_margin": 0.05,
+                        "lower_bound": 0,
+                        "upper_bound": 0,
+                        "log": false
+                    }
+                ],
+                "x_auto_range": true,
+                "x_lower_margin": 0.05,
+                "x_upper_margin": 0.05,
+                "x_lower_bound": 0,
+                "x_upper_bound": 0,
+                "y_auto_range": true,
+                "y_auto_range_includes_zero": true,
+                "y_lower_margin": 0.05,
+                "y_upper_margin": 0.05,
+                "y_lower_bound": 0,
+                "y_upper_bound": 0,
+                "log_x": false,
+                "log_y": false,
+                "time_zone": null,
+                "crosshair": null
+            },
+            "img": {
+                "type": "ImageIcon",
+                "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                "width": 100,
+                "height": 100
+            }
+        }
     }
 }

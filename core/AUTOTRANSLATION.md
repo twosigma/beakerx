@@ -51,7 +51,7 @@ return/set/read
 12 - Plot				ok/ok/KO	N/A
 13 - Image				ok/ok/ok	N/A
 14 - OutputContainer	ok/ok/ok	ok/ok/ok
-15 - BeakerCodeCell		ok/ok/ok	KO/KO/KO
+15 - BeakerCodeCell		ok/ok/ok	ok/ok/ok
 16 - dict				ok/ok/ok	ok/ok/ok
 17 - [dict]				ok/ok/ok	ok/ok/ok
 

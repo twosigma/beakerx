@@ -91,8 +91,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "0e447c6b-2a29-4066-9a0b-3c0a822c294f",
-                "elapsedTime": 3080
+                "shellId": "0978e0b1-f5c3-428b-8b66-5ef83d185ffd",
+                "elapsedTime": 1707
             },
             "evaluatorReader": true,
             "lineCount": 27
@@ -117,7 +117,7 @@
                     "outc = beaker::get(\"outc\")",
                     "img = beaker::get(\"img\")",
                     "",
-                    "if (class(lof) != \"data.frame\" || length(lof) != 3 || length(lof$a) != 2) {",
+                    "if (class(lof) != \"list\" || length(lof) != 2) {",
                     "  print(\"ERROR in lof\")",
                     "  error <- TRUE",
                     "}",
@@ -169,7 +169,7 @@
                     "  error <- TRUE",
                     "}",
                     "",
-                    "if (class(outc) != \"list\" || length(outc) != 3) {",
+                    "if (class(outc) != \"list\" || length(outc) != 2) {",
                     "  print(\"ERROR outc\")",
                     "  error <- TRUE",
                     "}",
@@ -190,8 +190,9 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "ff513019-8bc6-4ce5-983c-fb164789eb7f",
-                "elapsedTime": 703
+                "shellId": "b0a0b17b-cb1a-4dad-b7c0-f35cce92004f",
+                "elapsedTime": 679,
+                "dataresult": "OK"
             },
             "evaluatorReader": true,
             "lineCount": 81
@@ -263,8 +264,9 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "ff513019-8bc6-4ce5-983c-fb164789eb7f",
-                "elapsedTime": 2157
+                "shellId": "b0a0b17b-cb1a-4dad-b7c0-f35cce92004f",
+                "elapsedTime": 1800,
+                "dataresult": "OK"
             },
             "evaluatorReader": true,
             "lineCount": 55
@@ -279,25 +281,25 @@
                     "def error = false",
                     "",
                     "t = beaker.aint",
-                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=1 || !t[0].getClass().getName().equals(\"java.lang.Integer\")) {",
+                    "if(!t.getClass().getName().equals(\"java.lang.Integer\")) {",
                     "  System.out.println(\"ERROR on aint\")",
                     "  error = true",
                     "}",
                     "",
                     "t = beaker.adouble",
-                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=1 || !t[0].getClass().getName().equals(\"java.lang.Double\")) {",
+                    "if(!t.getClass().getName().equals(\"java.lang.Double\")) {",
                     "  System.out.println(\"ERROR on adouble\")",
                     "  error = true",
                     "}",
                     "",
                     "t = beaker.alogic",
-                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=1 || !t[0].getClass().getName().equals(\"java.lang.Boolean\")) {",
+                    "if(!t.getClass().getName().equals(\"java.lang.Boolean\")) {",
                     "  System.out.println(\"ERROR on alogic\")",
                     "  error = true",
                     "}",
                     "",
                     "t = beaker.astring",
-                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=1 || !t[0].getClass().getName().equals(\"java.lang.String\")) {",
+                    "if(!t.getClass().getName().equals(\"java.lang.String\")) {",
                     "  System.out.println(\"ERROR on astring\")",
                     "  error = true",
                     "}",
@@ -357,8 +359,8 @@
                     "}",
                     "",
                     "t = beaker.namedlist",
-                    "if(!t.getClass().getName().equals('java.util.LinkedHashMap') || t.size()!=4 || !t.name.equals(\"Fred\")) {",
-                    "  System.out.println(\"ERROR on astringlist\")",
+                    "if(!t.getClass().getName().equals('java.util.HashMap') || t.size()!=4 || !t.name.equals(\"Fred\")) {",
+                    "  System.out.println(\"ERROR on named list\")",
                     "  error = true",
                     "}",
                     "",
@@ -369,7 +371,7 @@
                     "}",
                     "",
                     "t = beaker.dates",
-                    "if(!t.getClass().getName().equals('java.util.ArrayList') || t.size()!=2 || !t[0].getClass().getName().equals(\"java.lang.Integer\")) {",
+                    "if(!t.getClass().getName().equals('java.util.Date')) {",
                     "  System.out.println(\"ERROR on dates\")",
                     "  error = true",
                     "}",
@@ -390,8 +392,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "0e447c6b-2a29-4066-9a0b-3c0a822c294f",
-                "elapsedTime": 1208
+                "shellId": "0978e0b1-f5c3-428b-8b66-5ef83d185ffd",
+                "elapsedTime": 846
             },
             "evaluatorReader": true,
             "lineCount": 109
@@ -461,7 +463,8 @@
                 "integer",
                 "integer",
                 "integer"
-            ]
+            ],
+            "subtype": "ListOfMaps"
         },
         "ptm": {
             "type": "TableDisplay",
@@ -482,7 +485,8 @@
                     "c",
                     "55"
                 ]
-            ]
+            ],
+            "subtype": "Dictionary"
         },
         "npm": {
             "a": 1,
@@ -556,7 +560,8 @@
                     9,
                     10
                 ]
-            ]
+            ],
+            "subtype": "Matrix"
         },
         "bcol": [
             1,
@@ -611,18 +616,10 @@
         "double": 34.56,
         "string": "pippero",
         "boolean": true,
-        "aint": [
-            10
-        ],
-        "adouble": [
-            23.45
-        ],
-        "alogic": [
-            true
-        ],
-        "astring": [
-            "pippero"
-        ],
+        "aint": 10,
+        "adouble": 23.45,
+        "alogic": true,
+        "astring": "pippero",
         "aintvec": [
             10,
             11,
@@ -647,6 +644,7 @@
         ],
         "mpg": {
             "type": "TableDisplay",
+            "subtype": "TableDisplay",
             "columnNames": [
                 "manufacturer",
                 "model",
@@ -3775,7 +3773,8 @@
                         "integer",
                         "integer",
                         "integer"
-                    ]
+                    ],
+                    "subtype": "ListOfMaps"
                 }
             ]
         },
@@ -3785,48 +3784,16 @@
             "width": 100,
             "height": 100
         },
-        "matrix": [
-            [
-                1,
-                6,
-                11,
-                16
+        "matrix": {
+            "type": "TableDisplay",
+            "subtype": "Matrix",
+            "columnNames": [
+                "c1",
+                "c2",
+                "c3",
+                "c4"
             ],
-            [
-                2,
-                7,
-                12,
-                17
-            ],
-            [
-                3,
-                8,
-                13,
-                18
-            ],
-            [
-                4,
-                9,
-                14,
-                19
-            ],
-            [
-                5,
-                10,
-                15,
-                20
-            ]
-        ],
-        "namedlist": {
-            "name": "Fred",
-            "mynumbers": [
-                23.45,
-                34.5,
-                445.6,
-                455.6,
-                0.3
-            ],
-            "mymatrix": [
+            "values": [
                 [
                     1,
                     6,
@@ -3858,6 +3825,70 @@
                     20
                 ]
             ],
+            "types": [
+                "string",
+                "string",
+                "string",
+                "string"
+            ]
+        },
+        "namedlist": {
+            "name": "Fred",
+            "mynumbers": [
+                23.45,
+                34.5,
+                445.6,
+                455.6,
+                0.3
+            ],
+            "mymatrix": {
+                "type": "TableDisplay",
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c1",
+                    "c2",
+                    "c3",
+                    "c4"
+                ],
+                "values": [
+                    [
+                        1,
+                        6,
+                        11,
+                        16
+                    ],
+                    [
+                        2,
+                        7,
+                        12,
+                        17
+                    ],
+                    [
+                        3,
+                        8,
+                        13,
+                        18
+                    ],
+                    [
+                        4,
+                        9,
+                        14,
+                        19
+                    ],
+                    [
+                        5,
+                        10,
+                        15,
+                        20
+                    ]
+                ],
+                "types": [
+                    "string",
+                    "string",
+                    "string",
+                    "string"
+                ]
+            },
             "age": 5.3
         },
         "fact": [
@@ -3912,10 +3943,10 @@
             "female",
             "female"
         ],
-        "dates": [
-            13686,
-            12461
-        ],
+        "dates": {
+            "type": "Date",
+            "value": "Jun 22, 2007 12:00:00 AM"
+        },
         "bmap": {
             "type": "TableDisplay",
             "columnNames": [

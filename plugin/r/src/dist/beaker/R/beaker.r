@@ -89,9 +89,9 @@ convertToDataTableDictionary <- function(l) {
       p = paste(p, ",", sep='')
 	comma = TRUE
     p = paste(p, "[\"", sep='')
-    p = paste(p, as.character(n[[i]]), sep='')
+    p = paste(p, gsub("\"","\\\"",as.character(n[[i]])), sep='')
     p = paste(p, "\",\"", sep='')
-    p = paste(p, as.character(l[[n[[i]]]]), sep='')
+    p = paste(p, gsub("\"","\\\"",as.character(l[[n[[i]]]])), sep='')
     p = paste(p, "\"]", sep='')
   }
   
@@ -109,7 +109,7 @@ convertToDataTableLoM <- function(val) {
     }
     comma = TRUE
     p = paste(p, "\"", sep='')
-    p = paste(p, cols[[i]], sep='')
+    p = paste(p, gsub("\"","\\\"",cols[[i]]), sep='')
     p = paste(p, "\"", sep='')
   }  
   p = paste(p, "], \"values\": [", sep='')
@@ -132,7 +132,7 @@ convertToDataTableLoM <- function(val) {
       }
       p = paste(p, "\"", sep='')
       if (exists(cn, where=l)) {
-        p = paste(p, l[[cn]], sep='')
+        p = paste(p, gsub("\"","\\\"",l[[cn]]), sep='')
       }
       p = paste(p, "\"", sep='')
     }
@@ -199,7 +199,7 @@ convertToJSON <- function(val) {
     o = p
   } else if (class(val) == "table") {
     o = toJSON(val)
-  } else if (class(val) == "list") {
+  } else if (class(val) == "list" && length(val)>0) {
     if (is.null(names(val))) {
       if (isListOfDictionaries(val)) {
         # convert to datatable list of maps
@@ -237,8 +237,11 @@ convertToJSON <- function(val) {
   	p = paste(p, format(val,format='%b %d, %Y %I:%M:%S %p'), sep='')
   	p = paste(p, "\" }", sep='')
   	o = p
-  } else {
+  } else if (class(val) == "list") {
     o = toJSON(val)
+  } else {
+    o = paste("\"ERROR: invalid object type ", gsub("\"","\\\"",class(val)), sep='')
+    o = paste(o, "\"", sep='')
   }
   return (o)
 }
@@ -285,7 +288,7 @@ transformJSON <- function(tres) {
     tres = as.list(tres)
   }
 
-  if (is.list(tres)) {
+  if (is.list(tres) && length(tres)>0) {
     if (!is.null(names(tres)) && exists("type", where=tres)) {
 	    if (tres[["type"]] == "TableDisplay") {
 		    cols <- length(tres$columnNames)

@@ -222,12 +222,16 @@ public class SimpleEvaluationObject extends Observable {
           jgen.writeNumberField("progressBar", value.getProgressBar());
         if (value.getPayloadChanged()) {
           EvaluationResult o = value.getPayload();
-          if (o != null) {
+          if (o != null && o.getValue() !=null ) {
             jgen.writeFieldName("payload");
             if (!getObjectSerializer().writeObject(o, jgen))
-              jgen.writeObject("ERROR: unsupported object "+o.toString());          }
+              jgen.writeObject("ERROR: unsupported object "+o.toString());
+          } else if(value.getJsonRes() != null) {
+            jgen.writeFieldName("payload");
+            jgen.writeRawValue(value.getJsonRes());            
+          }
         }
-        if (value.getJsonRes() != null) {
+        if (value.getJsonRes() != null && value.getPayload() != null && value.getPayload().getValue() != null) {
           logger.finest("adding raw json data: '"+value.getJsonRes()+"'");
           jgen.writeFieldName("jsonres");
           jgen.writeRawValue(value.getJsonRes());

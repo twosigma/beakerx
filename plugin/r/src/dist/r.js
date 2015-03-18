@@ -107,11 +107,9 @@ define(function(require, exports, module) {
             if (shortest === undefined || shortest.length > x[1].length)
               shortest = x[i];            
           }
-          console.log("short: "+shortest);
           for (i=shortest.length; i>0; i--) {
             var a = code.substring(cpos-i,cpos);
             var b = shortest.substring(0,i);
-            console.log("'"+a+"' '"+b+"'");
             if (a === b)
               break;
           }

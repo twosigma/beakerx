@@ -13,7 +13,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -33,13 +32,11 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Request;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;
-import org.rosuda.REngine.RList;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus;
-import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.r.module.ErrorGobbler;
 import com.twosigma.beaker.r.module.ROutputHandler;
@@ -255,51 +252,54 @@ public class RServerEvaluator {
     return false;
   }
 
-  protected boolean isDataFrame(REXP result, SimpleEvaluationObject obj) {
-    TableDisplay table;
-    try {
-      RList list = result.asList().at(0).asList();
-      int cols = list.size();
-      String[] names = list.keys();
-      if (null == names) {
-        return false;
-      }
-      String[][] array = new String[cols][];
-      List<List<?>> values = new ArrayList<>();
-      List<String> classes = new ArrayList<>();
-
-      for (int i = 0; i < cols; i++) {
-        if (null == list.at(i)) {
-          return false;
-        }
-        REXP o = list.at(i);
-        String cname = o.getClass().getName();
-        classes.add(objSerializer.convertType(cname));
-        array[i] = o.asStrings();
-      }
-      if (array.length < 1) {
-        return false;
-      }
-      for (int j = 0; j < array[0].length; j++) {
-        List<String> row = new ArrayList<>();
-        for (int i = 0; i < cols; i++) {
-          if (array[i].length != array[0].length) {
-            return false;
-          }
-          row.add(array[i][j]);
-        }
-        values.add(row);
-      }
-      table = new TableDisplay(values, Arrays.asList(names), classes);
-    } catch (NullPointerException e) {
-      return false;
-    } catch (REXPMismatchException e) {
-      return false;
-    }
-    logger.fine("is an datatable");
-    obj.finished(table);
-    return true;
-  }
+//  protected boolean isDataFrame(REXP result, SimpleEvaluationObject obj, String resultjson) {
+//    TableDisplay table;
+//    try {
+//      RList list = result.asList().at(0).asList();
+//      int cols = list.size();
+//      String[] names = list.keys();
+//      if (null == names) {
+//        return false;
+//      }
+//      String[][] array = new String[cols][];
+//      List<List<?>> values = new ArrayList<>();
+//      List<String> classes = new ArrayList<>();
+//
+//      for (int i = 0; i < cols; i++) {
+//        if (null == list.at(i)) {
+//          return false;
+//        }
+//        REXP o = list.at(i);
+//        String cname = o.getClass().getName();
+//        classes.add(objSerializer.convertType(cname));
+//        array[i] = o.asStrings();
+//      }
+//      if (array.length < 1) {
+//        return false;
+//      }
+//      for (int j = 0; j < array[0].length; j++) {
+//        List<String> row = new ArrayList<>();
+//        for (int i = 0; i < cols; i++) {
+//          if (array[i].length != array[0].length) {
+//            return false;
+//          }
+//          row.add(array[i][j]);
+//        }
+//        values.add(row);
+//      }
+//      table = new TableDisplay(values, Arrays.asList(names), classes);
+//    } catch (NullPointerException e) {
+//      return false;
+//    } catch (REXPMismatchException e) {
+//      return false;
+//    }
+//    logger.fine("is an datatable");
+//    if (resultjson!=null && !resultjson.isEmpty())
+//      obj.finished(null,resultjson);
+//    else
+//      obj.finished(table);
+//    return true;
+//  }
 
   protected class workerThread extends Thread {
     RConnection connection;
@@ -506,6 +506,7 @@ public class RServerEvaluator {
             if (result!= null) {
               logger.finest("RESULT: "+result);
               resultjson=result.asList().at(1).asString();
+              logger.finest("JSON: "+resultjson);
               result = result.asList().at(0);
             }
             
@@ -515,9 +516,10 @@ public class RServerEvaluator {
               isfinished = true;
             } else if (isError(result, j.outputObject)) {
               isfinished = true;
-            } else if (isDataFrame(result, j.outputObject)) {
+            } else if (resultjson!=null && !resultjson.isEmpty() && resultjson.matches("(?s).*\"type\"\\s*:\\s*\"TableDisplay\".*")) {
+              logger.fine("is a dataframe");              
+              j.outputObject.finished(null, resultjson);
               isfinished = true;
-              // nothing
             } else if (!isVisible(result, j.outputObject)) {
               logger.fine("is not visible");
             } else {

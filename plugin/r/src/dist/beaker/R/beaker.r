@@ -26,7 +26,7 @@ set_session <- function(id) {
 collapse_unit_vectors = TRUE
 
 set_collapse_unit_vectors <- function(val) {
-  collapse_unit_vectors <<- val
+  collapse_unit_vectors <- val
 }
 
 convertToJSONObject <- function(val) {
@@ -59,6 +59,90 @@ getTypeName <- function(c) {
   return(p)
 }
 
+containsOnlyBasicTypes <- function(l) {
+  len <- length(l)
+  for (i in 1:len) {
+    t = l[[i]]
+    c = class(t)
+    if ((c != "numeric" && c != "logical" && c != "factor" && c!="character" && c!="Date" && c!="POSIXct" && c!="POSIXlt") || length(t)>1)
+      return (FALSE)
+  }
+  return (TRUE)
+}
+
+isListOfDictionaries <- function(l) {
+  len <- length(l)
+  for (i in 1:len) {
+    t = l[[i]]
+    if ((class(t) != "list") || (is.null(names(t))) || !containsOnlyBasicTypes(t))
+      return (FALSE)
+  }
+  return(TRUE)
+}
+
+convertToDataTableDictionary <- function(l) {
+  p = "{ \"type\":\"TableDisplay\",\"subtype\":\"Dictionary\",\"columnNames\": [\"Key\",\"Value\"], \"values\": ["
+  n = names(l)
+  comma = FALSE
+  for (i in 1:length(n)) {
+    if (comma)
+      p = paste(p, ",", sep='')
+	comma = TRUE
+    p = paste(p, "[\"", sep='')
+    p = paste(p, as.character(n[[i]]), sep='')
+    p = paste(p, "\",\"", sep='')
+    p = paste(p, as.character(l[[n[[i]]]]), sep='')
+    p = paste(p, "\"]", sep='')
+  }
+  
+  p = paste(p, "] }", sep='')
+  return (p)
+}
+
+convertToDataTableLoM <- function(val) {
+  p = "{ \"type\":\"TableDisplay\",\"subtype\":\"ListOfMaps\",\"columnNames\": ["
+  cols = unique(unlist(lapply(val, names)))
+  comma = FALSE
+  for (i in 1:length(cols)) {
+    if (comma) {
+      p = paste(p, ",", sep='')
+    }
+    comma = TRUE
+    p = paste(p, "\"", sep='')
+    p = paste(p, cols[[i]], sep='')
+    p = paste(p, "\"", sep='')
+  }  
+  p = paste(p, "], \"values\": [", sep='')
+
+  comma = FALSE
+  for (l in val) {
+    if (comma) {
+      p = paste(p, ", [", sep='')
+    } else {
+      p = paste(p, "[", sep='')
+      comma = TRUE
+    }
+    comma2 = FALSE
+  	for (ci in 1:length(cols)) {
+      cn = cols[[ci]]
+      if (comma2) {
+        p = paste(p, ", ", sep='')
+  	  } else {
+        comma2 = TRUE
+      }
+      p = paste(p, "\"", sep='')
+      if (exists(cn, where=l)) {
+        p = paste(p, l[[cn]], sep='')
+      }
+      p = paste(p, "\"", sep='')
+    }
+    p = paste(p, "]", sep='')
+  }
+
+  p = paste(p, "] }", sep='')
+  return (p)
+}
+  
 convertToJSON <- function(val) {
   if (class(val) == "data.frame") {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"columnNames\":"
@@ -66,7 +150,7 @@ convertToJSON <- function(val) {
     types = lapply(val,class)
     p = paste(p, toJSON(colNames), sep='')
     p = paste(p, ", \"values\":", sep='')
-    p = paste(p,toJSON(val, byrow = TRUE), sep='')
+    p = paste(p, toJSON(val, byrow = TRUE), sep='')
     p = paste(p, ", \"types\": [", sep='')
     comma = FALSE
     for(i in 1:length(types)) {
@@ -86,8 +170,11 @@ convertToJSON <- function(val) {
   	  } else {
    	    o = toJSON(val)
       }
+    } else if (containsOnlyBasicTypes(val)) {
+      # convert to datatable dictionary
+      o = convertToDataTableDictionary(val)
     } else {
-      # HERE check if it contains only basic types      
+      # convert to dictionary     
 	  o = convertToJSONObject(val)
     }
   } else if (class(val) == "matrix") {
@@ -108,43 +195,37 @@ convertToJSON <- function(val) {
       comma = TRUE
       p = paste(p, getTypeName(c), sep='')
     }
-
     p = paste(p, "] }", sep='')
     o = p
-    
   } else if (class(val) == "table") {
     o = toJSON(val)
   } else if (class(val) == "list") {
     if (is.null(names(val))) {
-	  p = "[ "
-  	  first <- TRUE
-  	  for (obj in val) {
-  	    if (first) {
-  	  	  first <- FALSE
-  	    } else {
-  	  	  p = paste(p, ", ", sep='')
-  	    }
-        p = paste(p, convertToJSON(obj), sep='')
-	  }
-	  p = paste(p, " ]", sep='')
-	  o = p
-	} else {
-	  # HERE check if it contains only basic types
+      if (isListOfDictionaries(val)) {
+        # convert to datatable list of maps
+        o = convertToDataTableLoM(val)
+      } else {
+	    # this is a basic list
+		p = "[ "
+	  	first <- TRUE
+	  	for (obj in val) {
+	  	  if (first) {
+	  	    first <- FALSE
+	  	  } else {
+	  	    p = paste(p, ", ", sep='')
+	  	  }
+	      p = paste(p, convertToJSON(obj), sep='')
+		}
+		p = paste(p, " ]", sep='')
+		o = p
+      }
+	} else if (containsOnlyBasicTypes(val)) {
+      # convert to datatable dictionary
+      o = convertToDataTableDictionary(val)
+    } else {
+      # convert to dictionary     
 	  o = convertToJSONObject(val) 
 	}
-  } else if (class(val) == "list") {
-  	p = "[ "
-  	first <- TRUE
-  	for (obj in val) {
-  	  if (first) {
-  	  	first <- FALSE
-  	  } else {
-  	  	p = paste(p, ", ")
-  	  }
-      p = paste(p, convertToJSON(obj))
-	}
-	p = paste(p, " ]")
-	o = p
   } else if (class(val) == "complex") {
     if (collapse_unit_vectors && length(val) == 1) {
       o = toJSON(as.character(val), .level=0L)
@@ -153,8 +234,8 @@ convertToJSON <- function(val) {
     }
   } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
   	p = "{ \"type\": \"Date\", \"value\": \""
-  	p = paste(p, as.character(val))
-  	p = paste(p, "\" }")
+  	p = paste(p, format(val,format='%b %d, %Y %I:%M:%S %p'), sep='')
+  	p = paste(p, "\" }", sep='')
   	o = p
   } else {
     o = toJSON(val)
@@ -200,67 +281,78 @@ convertVarFromJSON <- function(res, var) {
 }
 
 transformJSON <- function(tres) {
-  if (is.list(tres) && exists("type", where=tres)) {
-    if(tres[["type"]] == "TableDisplay") {
-	    cols <- length(tres$columnNames)
-	    rows <- length(tres$values)
-	    if (exists("subtype", where=tres) && tres$subtype == "Dictionary") {
-	      o = list()
-	      for (i in 1:rows) {
-	        o[[ tres$values[[i]][[1]] ]] = tres$values[[i]][[2]]
-	      }
-	      tres = o
-	    } else {
-		  dummy_nv = logical(rows)
-		  df <- data.frame(dummy_nv);
-		  for (i in 1:cols) {
-		    if (exists("types", where=tres) && (tres$types[i] == "double" || tres$types[i] == "integer")) {
-			  nv <- numeric(rows);
-			  for( j in 1:rows) {
-			    if ( is.null( tres$values[[j]][[i]] ) )
-			      nv [j] <- NaN
-			    else
-			      nv [j] <- as.numeric( tres$values[[j]][[i]] )
-			  }
-		  	  df[ tres$columnNames[[i]] ] = nv
-			} else {
-			  nv <- character( rows );
-	          for( j in 1:rows) {
-	            if ( is.null( tres$values[[j]][[i]] ) )
-	              nv [j] <- ""
-	            else
-			      nv [j] <- as.character( tres$values[[j]][[i]] )
-	          }
-			  if(exists("types", where=tres) && tres$types[[i]] == "select") 
-			    df[ tres$columnNames[[i]] ] = factor(nv)		  
-			  else
-			    df[ tres$columnNames[[i]] ] = nv		 
-	        }
-		  }
-	      tres <- df[ tres$columnNames ]
-	      if (exists("subtype", where=tres) && tres$subtype == "Matrix") {
-		    tres = data.matrix(tres)
-	      }
-	    }
-	  }
-	  else if (tres[["type"]] == "OutputContainer") {
-	    iteml <- length(tres$items)
-	    
-	    o = list()
-	    for (i in 1:iteml) {
-	      o[[ i ]] = transformJSON(tres$items[[i]])
-	    }
-	    tres = o
-	  }  
-	  else if (tres[["type"]] == "Date" && exists("value", where=tres)) {
-	  	tres = strptime(tres[["value"]],format='%B %d, %Y %H:%M:%S')
-	  }
+  if (!is.list(tres) && !is.null(names(tres))) {
+    tres = as.list(tres)
   }
+
   if (is.list(tres)) {
-    iteml <- length(tres)
-    for (i in 1:iteml) {
-      tres[[i]] = transformJSON(tres[[i]])
-    }
+    if (!is.null(names(tres)) && exists("type", where=tres)) {
+	    if (tres[["type"]] == "TableDisplay") {
+		    cols <- length(tres$columnNames)
+		    rows <- length(tres$values)
+		    if (exists("subtype", where=tres) && tres$subtype == "Dictionary") {
+		      o = list()
+		      for (i in 1:rows) {
+		        o[[ tres$values[[i]][[1]] ]] = tres$values[[i]][[2]]
+		      }
+		      tres = o
+		    } else if (exists("subtype", where=tres) && tres$subtype == "ListOfMaps") {
+		      o = list()
+		      for (i in 1:rows) {
+                oo = list()
+				for (j in 1:cols) {
+                  oo[[ tres$columnNames[[j]] ]] = tres$values[[i]][[j]]
+                }
+                o[[ length(o) +1 ]] = oo
+			  } 
+              tres = o
+		    } else {
+			  dummy_nv = logical(rows)
+			  df <- data.frame(dummy_nv);
+			  for (i in 1:cols) {
+			    if (exists("types", where=tres) && (tres$types[i] == "double" || tres$types[i] == "integer")) {
+				  nv <- numeric(rows);
+				  for( j in 1:rows) {
+				    if ( is.null( tres$values[[j]][[i]] ) )
+				      nv [j] <- NaN
+				    else
+				      nv [j] <- as.numeric( tres$values[[j]][[i]] )
+				  }
+			  	  df[ tres$columnNames[[i]] ] = nv
+				} else {
+				  nv <- character( rows );
+		          for( j in 1:rows) {
+		            if ( is.null( tres$values[[j]][[i]] ) )
+		              nv [j] <- ""
+		            else
+				      nv [j] <- as.character( tres$values[[j]][[i]] )
+		          }
+				  if(exists("types", where=tres) && tres$types[[i]] == "select") 
+				    df[ tres$columnNames[[i]] ] = factor(nv)		  
+				  else
+				    df[ tres$columnNames[[i]] ] = nv		 
+		        }
+			  }
+		      if (exists("subtype", where=tres) && tres$subtype == "Matrix") {
+                tres <- df[ tres$columnNames ]
+                tres = matrix(as.numeric(unlist(tres)),nrow=nrow(tres))
+		      } else {
+                tres <- df[ tres$columnNames ]
+              }
+		    }
+		  }
+		  else if (tres[["type"]] == "OutputContainer") {
+		    # nothing to do here
+		  }
+		  else if (tres[["type"]] == "Date" && exists("value", where=tres)) {
+		  	tres = strptime(tres[["value"]],format='%b %d, %Y %I:%M:%S %p')
+		  }
+	  } else {
+	    iteml <- length(tres)
+	    for (i in 1:iteml) {
+	      tres[[i]] = transformJSON(tres[[i]])
+	    }
+	  }
   }
   return (tres)
 }

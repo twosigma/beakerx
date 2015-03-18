@@ -12,13 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os, urllib, urllib2, json, pandas, yaml, numpy
+import os, urllib, urllib2, json, pandas, yaml, numpy, IPython, datetime
+from IPython.utils.traitlets import Unicode
 
 # should be inner class to Beaker
 class DataFrameEncoder(json.JSONEncoder):
     def default(self, obj):
         # similarly handle Panels.
         # make this extensible by the user to handle their own types.
+        if type(obj) == datetime.datetime:
+            out = {}
+            out['type'] = "Date"
+            out['value'] = obj.strftime("%b %d, %Y %I:%M:%S %p")
+            return out
         if type(obj) == pandas.core.frame.DataFrame:
             out = {}
             out['type'] = "TableDisplay"
@@ -43,10 +49,15 @@ class DataFrameEncoder(json.JSONEncoder):
             return obj.item()
         return json.JSONEncoder.default(self, obj)
 
+class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
+    format_type = Unicode('application/json')
+    def __call__(self, obj):
+        return json.dumps(obj, cls=DataFrameEncoder)
 
 class Beaker:
     """Runtime support for Python code in Beaker."""
     session_id = ''
+    registered = False
     core_url = '127.0.0.1:' + os.environ['beaker_core_port']
     password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
     password_mgr.add_password(None, core_url, 'beaker',
@@ -76,6 +87,12 @@ class Beaker:
     def set_session(self, id):
         self.session_id = id
 
+    def register_output(self):
+        if (self.registered == False):
+            ip = IPython.InteractiveShell.instance()
+            ip.display_formatter.formatters['application/json'] = MyJSONFormatter(parent=ip.display_formatter)
+            self.registered = True
+
     def set(self, var, val):
         return self.set4(var, val, False, True)
 
@@ -87,3 +104,4 @@ class Beaker:
 
     def __getattr__(self, name):
         return self.get(name)
+

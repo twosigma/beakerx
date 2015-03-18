@@ -23,7 +23,7 @@ Types to JSON:
 16 - dict					{ key: val, ... }
 17 - [dict]					[ { ... }, ... ]
 
-
+18 - complex XXXX TODO
 
 EvaluationResult		content object
 BeakerProgressUpdate
@@ -36,23 +36,24 @@ return/set/read
 
 
 						JVM				R		Python2		Python3
-0 - integer				ok/ok/ok	ok/ok/ok		ok
-1 - float				ok/ok/ok	ok/ok/ok		ok
-2 - boolean				ok/ok/ok	ok/ok/ok		ok
-3 - string				ok/ok/ok	ok/ok/ok		ok
-4 - date				ok/ok/ok	ok/ok/ok
-5 - data frame			ok/ok/ok	ok/ok/ok		ok
+0 - integer				ok/ok/ok	ok/ok/ok	ok
+1 - float				ok/ok/ok	ok/ok/ok	ok
+2 - boolean				ok/ok/ok	ok/ok/ok	ok
+3 - string				ok/ok/ok	ok/ok/ok	ok
+4 - date				ok/ok/ok	ok/ok/ok	ok
+5 - data frame			ok/ok/ok	ok/ok/ok	ok
 6 - [dict btype]		ok/ok/ok	ok/ok/ok
-7 - [btype]				ok/ok/ok	ok/ok/ok		ok
+7 - [btype]				ok/ok/ok	ok/ok/ok	ok
 8 - [btype][btype]		ok/ok/ok	ok/ok/ok
-9 - [objects][objects]	ok/ok/ok	N/A
-10 - [obj][obj][obj]..	ok/ok/ok	N/A
+9 - [objects][objects]	ok/ok/ok	N/A			
+10 - [obj][obj][obj]..	ok/ok/ok	N/A			.
 11 - dict (basictyp)	ok/ok/ok	ok/ok/ok
-12 - Plot				ok/ok/KO	N/A
+12 - Plot				ok/ok/KO	N/A			N/A
 13 - Image				ok/ok/ok	N/A
-14 - OutputContainer	ok/ok/ok	ok/ok/ok
-15 - BeakerCodeCell		ok/ok/ok	ok/ok/ok
-16 - dict				ok/ok/ok	ok/ok/ok
-17 - [dict]				ok/ok/ok	ok/ok/ok
+14 - OutputContainer	ok/ok/ok	ok/ok/ok	
+15 - BeakerCodeCell		ok/ok/ok	ok/ok/ok	
+16 - dict				ok/ok/ok	ok/ok/ok	ok
+17 - [dict]				ok/ok/ok	ok/ok/ok	ok
+
 
 

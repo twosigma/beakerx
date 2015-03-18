@@ -198,6 +198,8 @@ define(function(require, exports, module) {
             } else {
               evaluation.outputdata.push( { type : 'err', value : content.data } );
             }
+          } else if(content.data['application/json'] !== undefined) {
+            evaluation.payload = JSON.parse(content.data['application/json']);
           } else {
             var elem = $(document.createElement("div"));
             var oa = new myPython.OutputArea(elem);
@@ -207,12 +209,12 @@ define(function(require, exports, module) {
             } else {
               oa.append_mime_type(content.data, elem);
             }
-            var table = bkHelper.findTable(elem[0]);
-            if (table) {
-              evaluation.payload = table;
-            } else {
+            //var table = bkHelper.findTable(elem[0]);
+            //if (table) {
+            //  evaluation.payload = table;
+            //} else {
               evaluation.payload = elem.html();
-            }
+            //}
           }
           bkHelper.receiveEvaluationUpdate(modelOutput, evaluation,  PLUGIN_NAME, self.settings.shellID);
           if (refreshObj !== undefined)
@@ -307,6 +309,7 @@ define(function(require, exports, module) {
                     "except ImportError:\n" +
                     "    import beaker_runtime as beaker_runtime\n" +
                     "beaker = beaker_runtime.Beaker()\n" +
+                    "beaker.register_output()\n" +
                     "beaker.set_session('" + bkHelper.getSessionId() + "')\n");
                 self.evaluate(initCode, {}).then(function () {
                   if (doneCB) {

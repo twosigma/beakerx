@@ -66,23 +66,40 @@ define(function(require, exports, module) {
               self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
             } else {
               // Required by ipython backend, but not used.
-              var model = {
-                  notebook : {
-                    name : "fakename" + shellID,
-                    path : "/some/path" + shellID
-                  }
+              var model = (ipyVersion == '2') ? {
+                notebook : {
+                  name : "fakename" + shellID,
+                  path : "/some/path" + shellID
+                }
+              } : {
+                kernel: {
+                  id: shellID,
+                  name: "python2"
+                },
+                notebook: {
+                  path: "/fake/path"
+                }
               };
               var ajaxsettings = {
                   processData : false,
-                  cache : false,
-                  type : "POST",
+                  cache: false,
+                  type: "POST",
                   data: JSON.stringify(model),
-                  dataType : "json",
-                  success : function (data, status, xhr) {
-                    self.kernel = new myPython.Kernel(base + "/api/kernels");
+                  dataType: "json",
+                  success: function (data, status, xhr) {
+                    self.kernel = (ipyVersion == '2') ?
+                      (new myPython.Kernel(base + "/api/kernels")) :
+                      (new myPython.Kernel(base + "/api/kernels",
+                                           undefined,
+                                           {events: {on: function (){}}},
+                                           "fakename"));
                     kernels[shellID] = self.kernel;
                     // the data.id is the session id but it is not used yet
-                    self.kernel._kernel_started({id: data.kernel.id});
+                    if (ipyVersion == '2') {
+                      self.kernel._kernel_started({id: data.kernel.id});
+                    } else {
+                      
+                    }
                   }
               };
               var url = myPython.utils.url_join_encode(serviceBase, 'api/sessions/');

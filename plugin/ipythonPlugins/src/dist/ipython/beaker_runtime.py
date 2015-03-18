@@ -52,7 +52,10 @@ class DataFrameEncoder(json.JSONEncoder):
 class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
     format_type = Unicode('application/json')
     def __call__(self, obj):
-        return json.dumps(obj, cls=DataFrameEncoder)
+        try:
+            return json.dumps(obj, cls=DataFrameEncoder)
+        except:
+            return None
 
 class Beaker:
     """Runtime support for Python code in Beaker."""

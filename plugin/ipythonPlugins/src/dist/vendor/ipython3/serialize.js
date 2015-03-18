@@ -2,8 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 define('ipython3_serialize', [
-    'ipython3_underscore',
-    ], function (_) {
+    ], function () {
     "use strict";
     
     var _deserialize_array_buffer = function (buf) {

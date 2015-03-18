@@ -21,7 +21,6 @@ requirejs.config({
     'ipython3_kernel':     "../plugins/eval/ipythonPlugins/vendor/ipython3/kernel",
     'ipython3_session':    "../plugins/eval/ipythonPlugins/vendor/ipython3/session",
     'ipython3_serialize':  "../plugins/eval/ipythonPlugins/vendor/ipython3/serialize",
-    'ipython3_underscore': "../plugins/eval/ipythonPlugins/vendor/ipython3/underscore-min",
     'ipython3_utils':      "../plugins/eval/ipythonPlugins/vendor/ipython3/utils"
   }
 });

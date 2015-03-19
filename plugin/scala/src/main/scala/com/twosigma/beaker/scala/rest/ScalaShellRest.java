@@ -38,14 +38,14 @@ import javax.ws.rs.core.MediaType;
 public class ScalaShellRest {
 
   private final Map<String, ScalaEvaluator> shells = new HashMap<>();
-  
+
   public ScalaShellRest() throws IOException {}
 
   @POST
   @Path("getShell")
   @Produces(MediaType.TEXT_PLAIN)
   public String getShell(@FormParam("shellId") String shellId,
-      @FormParam("sessionId") String sessionId) 
+      @FormParam("sessionId") String sessionId)
     throws InterruptedException, MalformedURLException
   {
 	  // if the shell does not already exist, create a new shell

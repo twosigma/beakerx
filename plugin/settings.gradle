@@ -23,7 +23,8 @@ include 'shared',
         'plugin:julia',
         'plugin:node',
         'plugin:r',
-        'plugin:scala'
+        'plugin:scala',
+        'plugin:clojure'
 
 project(':shared').projectDir = file("../shared")
 project(':plugin:jvm').projectDir = file("./jvm")
@@ -36,3 +37,4 @@ project(':plugin:julia').projectDir = file("./julia")
 project(':plugin:node').projectDir = file("./node")
 project(':plugin:r').projectDir = file("./r")
 project(':plugin:scala').projectDir = file("./scala")
+project(':plugin:clojure').projectDir = file("./clojure")

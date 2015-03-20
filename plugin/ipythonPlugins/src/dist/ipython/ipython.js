@@ -137,8 +137,8 @@ define(function(require, exports, module) {
           kernel.interrupt();
           bkHelper.setupCancellingOutput(modelOutput);
         };
+        
         var doFinish = function() {
-          console.log("dofinish");
           if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
             _theCancelFunction = null;
             if (finalStuff.status === "ERROR")
@@ -152,6 +152,7 @@ define(function(require, exports, module) {
             bkHelper.refreshRootScope();       
           finalStuff = undefined;
         }
+        
         var execute_reply = function(msg) {
           if (_theCancelFunction === null)
             return;
@@ -181,16 +182,13 @@ define(function(require, exports, module) {
             if (!_.isEmpty(result)) {
               evaluation.payload = "<pre>" + result + "</pre>";
             }
-            console.log(' caz1 '+evaluation.payload);
-            finalStuff = $.extend(true, {}, evaluation);
+            finalStuff = evaluation;
             bkHelper.timeout(doFinish,250);
           }
         }
         var output = function output(a0, a1) {
-          if (_theCancelFunction === null || gotError) {
-            console.log("TOO LATE");
+          if (_theCancelFunction === null || gotError)
             return;
-          }
           // this is called to write output
           var type;
           var content;
@@ -212,7 +210,6 @@ define(function(require, exports, module) {
             }, myPython.utils.fixConsole(content.evalue));
 
             evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
-            console.log(' caz2 '+evaluation.payload);
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload
             }
@@ -227,7 +224,6 @@ define(function(require, exports, module) {
             }
           } else if(content.data['application/json'] !== undefined) {
             evaluation.payload = JSON.parse(content.data['application/json']);
-            console.log(' caz3 '+evaluation.payload);
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload;
             }
@@ -241,13 +237,12 @@ define(function(require, exports, module) {
               oa.append_mime_type(content.data, elem);
             }
             evaluation.payload = elem.html();
-            console.log(' caz4 '+evaluation.payload);
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload;
             }
           }
           if (finalStuff === undefined) {            
-            finalStuff = $.extend(true, {}, evaluation);
+            finalStuff = evaluation;
             bkHelper.timeout(doFinish,150);
           }
         };

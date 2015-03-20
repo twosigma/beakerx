@@ -303,10 +303,6 @@ class Beaker:
     def set(self, var, val):
         return self.set4(var, val, False, True)
 
-    def dotest(self, obj):
-        obj = transform(obj)
-        return json.dumps(obj, cls=DataFrameEncoder)
-
     def createOutputContainer(self):
         return OutputContainer()
     
@@ -357,14 +353,13 @@ class Beaker:
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/getEvaluators?' + 
                               urllib.urlencode({'session':self.session_id}))
         conn = urllib2.urlopen(req)
-        result = json.loads(conn.read()) # would use json.loads but it returns unicode
+        result = json.loads(conn.read())
         return transformBack(result)
 
     def getCodeCells(self,filter):
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/getCodeCells?' + 
                               urllib.urlencode({'session':self.session_id, 'filter':filter}))
         conn = urllib2.urlopen(req)
-        #result = yaml.load(conn.read()) # would use json.loads but it returns unicode
         result = json.loads(conn.read())
         return transformBack(result)
 

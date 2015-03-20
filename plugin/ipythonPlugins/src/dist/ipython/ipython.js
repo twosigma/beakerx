@@ -128,6 +128,7 @@ define(function(require, exports, module) {
         var self = this;
         var startTime = new Date().getTime();
         var kernel = kernels[self.settings.shellID];
+        var finalStuff = undefined;
         bkHelper.setupProgressOutput(modelOutput);
         gotError = false;
         
@@ -136,6 +137,21 @@ define(function(require, exports, module) {
           kernel.interrupt();
           bkHelper.setupCancellingOutput(modelOutput);
         };
+        var doFinish = function() {
+          console.log("dofinish");
+          if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
+            _theCancelFunction = null;
+            if (finalStuff.status === "ERROR")
+              deferred.reject(finalStuff.payload);
+            else
+              deferred.resolve(finalStuff.payload);
+          }
+          if (refreshObj !== undefined)
+            refreshObj.outputRefreshed();
+          else
+            bkHelper.refreshRootScope();       
+          finalStuff = undefined;
+        }
         var execute_reply = function(msg) {
           if (_theCancelFunction === null)
             return;
@@ -146,30 +162,35 @@ define(function(require, exports, module) {
           var result = _(msg.payload).map(function(payload) {
             return myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(payload.text));
           }).join("");
-          var evaluation = { };
-          if (msg.status === "error")
-            evaluation.status = "ERROR";
-          else
-            evaluation.status = "FINISHED";
-
-          if (!_.isEmpty(result)) {
-            evaluation.payload = "<pre>" + result + "</pre>";
-          }
-          if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME, self.settings.shellID)) {
-            _theCancelFunction = null;
-            if (evaluation.status === "ERROR")
-              deferred.reject(evaluation.payload);
+          if (finalStuff !== undefined) {
+            if (msg.status === "error")
+              finalStuff.status = "ERROR";
             else
-              deferred.resolve(evaluation.payload);
+              finalStuff.status = "FINISHED";
+  
+            if (!_.isEmpty(result) && finalStuff.payload === undefined) {
+              finalStuff.payload = "<pre>" + result + "</pre>";
+            }
+          } else {
+            var evaluation = { };
+            if (msg.status === "error")
+              evaluation.status = "ERROR";
+            else
+              evaluation.status = "FINISHED";
+  
+            if (!_.isEmpty(result)) {
+              evaluation.payload = "<pre>" + result + "</pre>";
+            }
+            console.log(' caz1 '+evaluation.payload);
+            finalStuff = $.extend(true, {}, evaluation);
+            bkHelper.timeout(doFinish,250);
           }
-          if (refreshObj !== undefined)
-            refreshObj.outputRefreshed();
-          else
-            bkHelper.refreshRootScope();       
         }
         var output = function output(a0, a1) {
-          if (_theCancelFunction === null || gotError)
+          if (_theCancelFunction === null || gotError) {
+            console.log("TOO LATE");
             return;
+          }
           // this is called to write output
           var type;
           var content;
@@ -183,7 +204,7 @@ define(function(require, exports, module) {
 
           var evaluation = { };
           evaluation.status = "RUNNING";
-
+          
           if (type === "pyerr") {
             gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
@@ -191,8 +212,14 @@ define(function(require, exports, module) {
             }, myPython.utils.fixConsole(content.evalue));
 
             evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
+            console.log(' caz2 '+evaluation.payload);
+            if (finalStuff !== undefined) {
+              finalStuff.payload = evaluation.payload
+            }
           } else if (type === "stream") {
             evaluation.outputdata = [];
+            if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
+              evaluation.outputdata = finalStuff.outputdata;
             if (content.name === "stderr") {
               evaluation.outputdata.push( { type : 'out', value : content.data } );
             } else {
@@ -200,6 +227,10 @@ define(function(require, exports, module) {
             }
           } else if(content.data['application/json'] !== undefined) {
             evaluation.payload = JSON.parse(content.data['application/json']);
+            console.log(' caz3 '+evaluation.payload);
+            if (finalStuff !== undefined) {
+              finalStuff.payload = evaluation.payload;
+            }
           } else {
             var elem = $(document.createElement("div"));
             var oa = new myPython.OutputArea(elem);
@@ -209,18 +240,16 @@ define(function(require, exports, module) {
             } else {
               oa.append_mime_type(content.data, elem);
             }
-            //var table = bkHelper.findTable(elem[0]);
-            //if (table) {
-            //  evaluation.payload = table;
-            //} else {
-              evaluation.payload = elem.html();
-            //}
+            evaluation.payload = elem.html();
+            console.log(' caz4 '+evaluation.payload);
+            if (finalStuff !== undefined) {
+              finalStuff.payload = evaluation.payload;
+            }
           }
-          bkHelper.receiveEvaluationUpdate(modelOutput, evaluation,  PLUGIN_NAME, self.settings.shellID);
-          if (refreshObj !== undefined)
-            refreshObj.outputRefreshed();
-          else
-            bkHelper.refreshRootScope();
+          if (finalStuff === undefined) {            
+            finalStuff = $.extend(true, {}, evaluation);
+            bkHelper.timeout(doFinish,150);
+          }
         };
         var callbacks = ipyVersion1 ? {
           execute_reply: execute_reply,

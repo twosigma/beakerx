@@ -15,6 +15,7 @@ plugin/jvm/src/main/dist/
 .gradle
 .idea
 src/main/main.iml
+*.iml
 nbproject/
 build.xml
 manifest.mf

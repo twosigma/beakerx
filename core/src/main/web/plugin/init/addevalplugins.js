@@ -26,7 +26,8 @@
       "R": { url : "./plugins/eval/r/r.js", bgColor: "#8495BB", fgColor: "#FFFFFF", borderColor: "", shortName: "R" },
       "Scala": { url : "./plugins/eval/scala/scala.js", bgColor: "#B41703", fgColor: "#FFFFFF", borderColor: "", shortName: "Sc" },
       "Clojure": { url : "./plugins/eval/clojure/clojure.js", bgColor: "#5881d8", fgColor: "#FFFFFF", borderColor: "", shortName: "Cj" },
-      "Node": { url : "./plugins/eval/node/node.js", bgColor: "#8EC453", fgColor: "#FFFFFF", borderColor: "", shortName: "N" }
+      "Node": { url : "./plugins/eval/node/node.js", bgColor: "#8EC453", fgColor: "#FFFFFF", borderColor: "", shortName: "N" },
+      "kdb": { url : "./plugins/eval/kdb/kdb.js", bgColor: "#353C41", fgColor: "#FFFFFF", borderColor: "", shortName: "K" }
     };
   };
 })();

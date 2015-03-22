@@ -1,0 +1,26 @@
+apply plugin:'application'
+mainClassName = 'com.twosigma.beaker.kdb.Main'
+
+configurations {
+  provided
+  compile.extendsFrom provided
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  provided project(':plugin:jvm')
+  provided project(':core')
+  provided group: 'com.google.guava', name: 'guava', version: '18.0'
+}
+
+compileJava {
+  options.compilerArgs << '-Xlint:deprecation'
+  options.compilerArgs << '-Xlint:unchecked'
+}
+
+if (hasProperty('evalPluginDir')) {
+  installApp.into new File(evalPluginDir, 'kdb')
+}

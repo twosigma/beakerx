@@ -50,8 +50,6 @@ define(function(require, exports, module) {
           return;
         }
         if (_.isEmpty(shellID)) {
-          console.log("myPython=");
-          console.log(myPython);
           shellID = myPython.utils.uuid();
         }
 
@@ -80,6 +78,10 @@ define(function(require, exports, module) {
                   path: "/fake/path"
                 }
               };
+              var fakeNotebook = {
+                events: {on: function (){},
+                         trigger: function (){}}
+              };
               var ajaxsettings = {
                   processData : false,
                   cache: false,
@@ -91,14 +93,15 @@ define(function(require, exports, module) {
                       (new myPython.Kernel(base + "/api/kernels")) :
                       (new myPython.Kernel(base + "/api/kernels",
                                            undefined,
-                                           {events: {on: function (){}}},
+                                           fakeNotebook,
                                            "fakename"));
                     kernels[shellID] = self.kernel;
                     // the data.id is the session id but it is not used yet
                     if (ipyVersion == '2') {
                       self.kernel._kernel_started({id: data.kernel.id});
                     } else {
-                      
+                      self.kernel._kernel_created({id: data.kernel.id});
+                      self.kernel.running = true;
                     }
                   }
               };
@@ -262,7 +265,6 @@ define(function(require, exports, module) {
         }
       },
       exit: function(cb) {
-        console.log("ipython exit");
         this.cancelExecution();
         _theCancelFunction = null;
         var kernel = kernels[this.settings.shellID];
@@ -287,13 +289,9 @@ define(function(require, exports, module) {
 
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
-    console.log("ipython.js init");
     var onSuccess = function() {
-      console.log("about to require ipython3_namespace");
       require('ipython3_namespace');
-      console.log("about to require ipython3_kernel");
       require('ipython3_kernel');
-      console.log("about to require ipython3_utils");
       require('ipython3_utils');
       myPython = (ipyVersion == '1') ? IPython1 : IPython;
       bkHelper.locatePluginService(PLUGIN_NAME, {
@@ -346,9 +344,11 @@ define(function(require, exports, module) {
             };
             var kernel = kernels[shellID];
             var waitForKernel = function () {
-              if (kernel.shell_channel.readyState == 1 &&
-                  kernel.stdin_channel.readyState == 1 &&
-                  kernel.iopub_channel.readyState == 1) {
+              if ((ipyVersion == '3') ?
+                  (kernel.ws.readyState == 1) :
+                  (kernel.shell_channel.readyState == 1 &&
+                   kernel.stdin_channel.readyState == 1 &&
+                   kernel.iopub_channel.readyState == 1)) {
                 finish();
               } else {
                 setTimeout(waitForKernel, 50);

@@ -13,7 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'shared', 'plugin:jvm', 'plugin:groovy', 'plugin:javash', 'plugin:ipython', 'plugin:python3', 'plugin:iruby', 'plugin:julia', 'plugin:node', 'plugin:r', 'plugin:scala'
+include 'shared',
+        'plugin:jvm',
+        'plugin:groovy',
+        'plugin:javash',
+        'plugin:ipython',
+        'plugin:python3',
+        'plugin:iruby',
+        'plugin:julia',
+        'plugin:node',
+        'plugin:r',
+        'plugin:scala',
+        'plugin:clojure'
+
 project(':shared').projectDir = file("../shared")
 project(':plugin:jvm').projectDir = file("./jvm")
 project(':plugin:groovy').projectDir = file("./groovy")
@@ -25,3 +37,4 @@ project(':plugin:julia').projectDir = file("./julia")
 project(':plugin:node').projectDir = file("./node")
 project(':plugin:r').projectDir = file("./r")
 project(':plugin:scala').projectDir = file("./scala")
+project(':plugin:clojure').projectDir = file("./clojure")

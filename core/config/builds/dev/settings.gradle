@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-include 'shared', 'core', 'plugin:jvm', 'plugin:groovy', 'plugin:javash', 'plugin:ipythonPlugins', 'plugin:node', 'plugin:r', 'plugin:scala', 'test'
+include 'shared', 'core', 'plugin:jvm', 'plugin:groovy', 'plugin:javash', 'plugin:ipythonPlugins', 'plugin:node', 'plugin:r', 'plugin:scala', 'plugin:clojure', 'test'
 def root = new File(settingsDir, "../../../../")
 project(':shared').projectDir = new File(root, "shared")
 project(':core').projectDir = new File(root, "core")
@@ -25,3 +25,4 @@ project(':plugin:ipythonPlugins').projectDir = new File(root, "/plugin/ipythonPl
 project(':plugin:node').projectDir = new File(root, "/plugin/node")
 project(':plugin:r').projectDir = new File(root, "/plugin/r")
 project(':plugin:scala').projectDir = new File(root, "/plugin/scala")
+project(':plugin:clojure').projectDir = new File(root, "/plugin/clojure")

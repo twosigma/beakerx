@@ -91,10 +91,10 @@
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": false,
-                "elapsedTime": 75,
+                "elapsedTime": 343,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "8E0CF48EE93D488EB1DBFC95976DD454"
+                "shellId": "8EB4F652C93346C18D802119845D536D"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -134,10 +134,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 599,
+                "elapsedTime": 586,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "b2119db3-6047-43ac-9d01-17828a8dbcf5",
+                "shellId": "d67ef95b-e97a-4aca-bab1-8c22c5bc768e",
                 "dataresult": "Strings work fine"
             },
             "evaluatorReader": true,
@@ -162,10 +162,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 592,
+                "elapsedTime": 604,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "3c718cc4-9e65-489d-abb4-9a7afb76742d"
+                "shellId": "48f41f17-c39a-4207-9dee-13c136cfb7b1"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -205,10 +205,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 588,
+                "elapsedTime": 600,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "3c718cc4-9e65-489d-abb4-9a7afb76742d"
+                "shellId": "48f41f17-c39a-4207-9dee-13c136cfb7b1"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -240,10 +240,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 567,
+                "elapsedTime": 580,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "b2119db3-6047-43ac-9d01-17828a8dbcf5",
+                "shellId": "d67ef95b-e97a-4aca-bab1-8c22c5bc768e",
                 "dataresult": 12
             },
             "evaluatorReader": true,
@@ -260,22 +260,14 @@
             },
             "output": {
                 "outputArrived": true,
-                "selectedType": "Html",
-                "elapsedTime": 96,
+                "selectedType": "Text",
+                "elapsedTime": 220,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "8E0CF48EE93D488EB1DBFC95976DD454"
+                "shellId": "8EB4F652C93346C18D802119845D536D"
             },
             "evaluatorReader": true,
             "lineCount": 1
-        },
-        {
-            "id": "textZQtpZU",
-            "type": "text",
-            "body": [
-                "To access it as a scalar, just index out the first element:"
-            ],
-            "evaluatorReader": false
         },
         {
             "id": "code3eQahz",
@@ -289,10 +281,10 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Text",
-                "elapsedTime": 565,
+                "elapsedTime": 590,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "3c718cc4-9e65-489d-abb4-9a7afb76742d"
+                "shellId": "48f41f17-c39a-4207-9dee-13c136cfb7b1"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -301,7 +293,7 @@
             "id": "textA2RUxj",
             "type": "text",
             "body": [
-                "In reverse, it has no problems translating scalars from other languages to R:"
+                "In reverse, it has no problems translating scalars from other languages to R vectors:"
             ],
             "evaluatorReader": false
         },
@@ -316,10 +308,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 576,
+                "elapsedTime": 577,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "3c718cc4-9e65-489d-abb4-9a7afb76742d"
+                "shellId": "48f41f17-c39a-4207-9dee-13c136cfb7b1"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -335,10 +327,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 570,
+                "elapsedTime": 574,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "b2119db3-6047-43ac-9d01-17828a8dbcf5",
+                "shellId": "d67ef95b-e97a-4aca-bab1-8c22c5bc768e",
                 "dataresult": 13
             },
             "evaluatorReader": true,
@@ -373,10 +365,10 @@
             "output": {
                 "outputArrived": false,
                 "selectedType": "Hidden",
-                "elapsedTime": 63,
+                "elapsedTime": 309,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "8E0CF48EE93D488EB1DBFC95976DD454"
+                "shellId": "8EB4F652C93346C18D802119845D536D"
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -385,7 +377,7 @@
             "id": "text8tNp2l",
             "type": "text",
             "body": [
-                "In languages without a Data Frame type, they show up as a dictionary of arrays:"
+                "In JVM based languages, which lack a Data Frame type, they are internally represented as a Table Display object:"
             ],
             "evaluatorReader": false
         },
@@ -395,24 +387,26 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "beaker.df"
+                    "def o = beaker.df",
+                    "System.out.println(o.getClass().getName())",
+                    "o"
                 ]
             },
             "output": {
-                "selectedType": "Table",
-                "elapsedTime": 590,
+                "selectedType": "Results",
+                "elapsedTime": 633,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "3c718cc4-9e65-489d-abb4-9a7afb76742d"
+                "shellId": "48f41f17-c39a-4207-9dee-13c136cfb7b1"
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 3
         },
         {
             "id": "textT2NWWl",
             "type": "text",
             "body": [
-                "Auto-translating a data frame to R is fully automatic."
+                "Auto-translating a data frame between languages that support if (such as R and Python) is fully automatic."
             ],
             "evaluatorReader": false
         },
@@ -427,10 +421,10 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 623,
+                "elapsedTime": 701,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "b2119db3-6047-43ac-9d01-17828a8dbcf5"
+                "shellId": "d67ef95b-e97a-4aca-bab1-8c22c5bc768e"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -446,10 +440,10 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 592,
+                "elapsedTime": 570,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "b2119db3-6047-43ac-9d01-17828a8dbcf5"
+                "shellId": "d67ef95b-e97a-4aca-bab1-8c22c5bc768e"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -460,25 +454,43 @@
             "evaluator": "IPython",
             "input": {
                 "body": [
-                    "pandas.DataFrame(beaker.df2)"
+                    "print type(beaker.df2)",
+                    "beaker.df2"
                 ]
             },
             "output": {
                 "outputArrived": true,
-                "selectedType": "BeakerDisplay",
-                "elapsedTime": 1539,
+                "selectedType": "Results",
+                "elapsedTime": 311,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "8E0CF48EE93D488EB1DBFC95976DD454"
+                "shellId": "8EB4F652C93346C18D802119845D536D"
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 2
         },
         {
-            "id": "textJi6Elj",
-            "type": "text",
+            "id": "markdownScGaZR",
+            "type": "markdown",
             "body": [
-                "We are considering how to more automatically detect complex types, and also how to allow the user to define their own types. &nbsp;Again, your feedback is appreciated."
+                "Auto detected (and auto converted) data types that can be returned and/or stored in the beaker namespace are:",
+                "* integers",
+                "* floats and doubles",
+                "* booleans",
+                "* strings",
+                "* dates and time",
+                "* data frames - which are displayed using a data table",
+                "* list of dictionaries of basic types - which are displayed using a data table",
+                "* two dimensional array of basic types (matrix) - which are displayed using a data table",
+                "* multi dimensional array of any supported data type",
+                "* dictionary of basic types - which are displayed using a Key/Value data table",
+                "* Beaker plots (JVM languages only)",
+                "* Beaker Image (JVM language only)",
+                "* Beaker OutputContainer - used to display multiple data from a cell",
+                "* BeakerCodeCell",
+                "* any containers of any supported type",
+                "",
+                ""
             ],
             "evaluatorReader": false
         }
@@ -500,56 +512,56 @@
         "df": {
             "values": [
                 [
-                    1.2444446151476676,
-                    -1.5686448812346288,
-                    0.12327495220896395,
-                    0.8803664648524792
+                    -0.8682032304921652,
+                    -0.01572105077852163,
+                    0.6202163981945918,
+                    -0.23635696634330527
                 ],
                 [
-                    0.46416779607696174,
-                    -0.4651128982529294,
-                    -0.36775167714427176,
-                    -1.2600596722130224
+                    -0.5551688151268797,
+                    0.22658269302115472,
+                    -0.005730711422324884,
+                    -0.4077862672551507
                 ],
                 [
-                    -0.666151927308202,
-                    -0.6747184415681339,
-                    -0.43865026704136,
-                    0.4269571275806415
+                    -2.2981856449076585,
+                    1.6348391860928642,
+                    0.21693891451748598,
+                    -1.7581808942506352
                 ],
                 [
-                    -0.33006394126381144,
-                    -0.869157213143733,
-                    -0.39797072851262943,
-                    0.5785854291100263
+                    0.15951996502807503,
+                    -1.2744930312146727,
+                    1.1392615420520948,
+                    0.2390393451857066
                 ],
                 [
-                    -0.8706195635367554,
-                    1.522373516870626,
-                    -1.0084893193747364,
-                    0.16851980117665152
+                    0.45680207687221147,
+                    -0.3213719333689673,
+                    -1.1094524249872988,
+                    0.36760772071684056
                 ],
                 [
-                    0.35197987885526216,
-                    0.8777050515392416,
-                    -0.03241679833184477,
-                    1.3218615404791134
+                    -0.4824216065310473,
+                    -0.17941299942779163,
+                    1.6787530578882737,
+                    1.361207420800429
                 ]
+            ],
+            "subtype": "TableDisplay",
+            "type": "TableDisplay",
+            "types": [
+                "double",
+                "double",
+                "double",
+                "double"
             ],
             "columnNames": [
                 "A",
                 "B",
                 "C",
                 "D"
-            ],
-            "type": "TableDisplay",
-            "types": [
-                "float64",
-                "float64",
-                "float64",
-                "float64"
-            ],
-            "subtype": "TableDisplay"
+            ]
         },
         "df2": {
             "type": "TableDisplay",
@@ -560,44 +572,44 @@
             ],
             "values": [
                 [
-                    1.2243,
-                    -0.29327
+                    1.5256,
+                    0.90513
                 ],
                 [
-                    -0.26271,
-                    0.62639
+                    -0.013351,
+                    -1.3565
                 ],
                 [
-                    -0.99858,
-                    1.1232
+                    0.091082,
+                    -1.6425
                 ],
                 [
-                    0.15118,
-                    -0.24182
+                    -1.0396,
+                    -0.012614
                 ],
                 [
-                    1.1534,
-                    0.33172
+                    0.89461,
+                    0.86492
                 ],
                 [
-                    1.256,
-                    0.47873
+                    0.52191,
+                    0.55019
                 ],
                 [
-                    -1.0016,
-                    2.2816
+                    -0.8063,
+                    -1.055
                 ],
                 [
-                    0.70664,
-                    -0.49103
+                    0.21362,
+                    -1.0764
                 ],
                 [
-                    -1.4406,
-                    -0.82407
+                    -1.9298,
+                    0.79415
                 ],
                 [
-                    -0.84996,
-                    0.12649
+                    2.3056,
+                    2.0903
                 ]
             ],
             "types": [

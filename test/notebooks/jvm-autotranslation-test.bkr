@@ -198,8 +198,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 20976
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 882
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -229,9 +229,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 1309,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 596
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -253,9 +252,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 950,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 558
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -277,9 +275,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 1348,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 571
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -301,8 +298,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3583
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 584
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -324,11 +321,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Date",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3951,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 564
             },
             "evaluatorReader": true,
             "lineCount": 6,
@@ -350,10 +346,9 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3995,
-                "state": {},
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 589,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -375,9 +370,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3989,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 592
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -399,9 +393,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3991,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 569
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -423,9 +416,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3985,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 589
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -447,9 +439,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3997,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 671
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -471,9 +462,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3007,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 588
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -495,9 +485,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 2967,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 588
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -519,9 +508,8 @@
                 "state": {},
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3979,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 560
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -546,8 +534,8 @@
                 "state": {},
                 "selectedType": "Image",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3976,
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 594,
                 "hidden": true
             },
             "evaluatorReader": true,
@@ -571,9 +559,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3989,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 583
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -595,9 +582,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3942,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 594
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -625,9 +611,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3986,
-                "hidden": true
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 570
             },
             "evaluatorReader": true,
             "lineCount": 10,
@@ -654,8 +639,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ea25720a-155d-4299-8fa4-da98f5d4212f",
-                "elapsedTime": 3971
+                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
+                "elapsedTime": 582
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -670,8 +655,8 @@
             "test string",
             {
                 "type": "Date",
-                "value": "Mar 18, 2015 10:22:50 AM",
-                "timestamp": 1426688570893
+                "value": "Mar 23, 2015 9:18:38 AM",
+                "timestamp": 1427116718272
             },
             {
                 "type": "TableDisplay",
@@ -888,15 +873,15 @@
                 "values": [
                     [
                         "a",
-                        "1"
+                        1
                     ],
                     [
                         "b",
-                        "2"
+                        2
                     ],
                     [
                         "c",
-                        "55"
+                        55
                     ]
                 ],
                 "subtype": "Dictionary"
@@ -1154,8 +1139,8 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "value": "Mar 18, 2015 10:22:50 AM",
-            "timestamp": 1426688570893
+            "value": "Mar 23, 2015 9:18:38 AM",
+            "timestamp": 1427116718272
         },
         "v5": {
             "type": "TableDisplay",
@@ -1372,15 +1357,15 @@
             "values": [
                 [
                     "a",
-                    "1"
+                    1
                 ],
                 [
                     "b",
-                    "2"
+                    2
                 ],
                 [
                     "c",
-                    "55"
+                    55
                 ]
             ],
             "subtype": "Dictionary"

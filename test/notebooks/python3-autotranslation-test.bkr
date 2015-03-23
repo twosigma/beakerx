@@ -150,7 +150,8 @@
                     "    })",
                     "})",
                     "d"
-                ]
+                ],
+                "hidden": true
             },
             "output": {
                 "state": {},
@@ -208,14 +209,15 @@
                     "else",
                     "  \"OK\"",
                     ""
-                ]
+                ],
+                "hidden": true
             },
             "output": {
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "2506a0e7-279f-4d24-8ffa-44b8eef26b07",
-                "elapsedTime": 2279
+                "shellId": "80845a2a-4b22-4e4f-b5a3-84596ef7f050",
+                "elapsedTime": 1489
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -288,14 +290,15 @@
                     "",
                     "",
                     "ret"
-                ]
+                ],
+                "hidden": true
             },
             "output": {
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 2225,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 624,
                 "dataresult": "OK"
             },
             "evaluatorReader": true,
@@ -308,7 +311,7 @@
             "title": "Python3 cells that return a value",
             "level": 1,
             "evaluatorReader": false,
-            "collapsed": false
+            "collapsed": true
         },
         {
             "id": "codeYX3xaO",
@@ -326,8 +329,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 267,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 409,
                 "dataresult": 1
             },
             "evaluatorReader": true,
@@ -350,8 +353,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 421,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 2082,
                 "dataresult": 10.34
             },
             "evaluatorReader": true,
@@ -374,8 +377,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 420,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 2046,
                 "dataresult": true
             },
             "evaluatorReader": true,
@@ -398,8 +401,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 445,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 1999,
                 "dataresult": "test string"
             },
             "evaluatorReader": true,
@@ -420,10 +423,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Date",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 399,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 2086,
                 "dataresult": {
                     "type": "Date",
                     "value": "Oct 21, 2005 06:47:22 PM"
@@ -454,8 +457,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 532,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 2037,
                 "state": {}
             },
             "evaluatorReader": true,
@@ -481,8 +484,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 617,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 2072,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -542,8 +545,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 607,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 425,
                 "dataresult": [
                     23.45,
                     34.5,
@@ -572,8 +575,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 413,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 421,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "Matrix",
@@ -643,8 +646,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 652,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 449,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -675,8 +678,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 445,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 370,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -699,8 +702,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 329,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 371,
                 "dataresult": "{ \"type\":\"TableDisplay\",\"subtype\":\"Dictionary\",\"columnNames\": [\"Key\",\"Value\"], \"values\": [[\"name\",\"Fred\"],[\"a\",\"10.4\"],[\"b\",\"33.5\"],[\"age\",\"5.3\"]] }"
             },
             "evaluatorReader": true,
@@ -723,8 +726,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 553,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 440,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -747,8 +750,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 499,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 323,
                 "hidden": true,
                 "dataresult": "not supported"
             },
@@ -775,8 +778,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 446,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 328,
                 "dataresult": {
                     "type": "OutputContainer",
                     "items": [
@@ -3884,8 +3887,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 742,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 590,
                 "dataresult": [
                     {
                         "cellId": "codecell",
@@ -3922,8 +3925,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 504,
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 377,
                 "dataresult": {
                     "name": "Fred",
                     "mynumbers": [
@@ -4007,8 +4010,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Python3",
-                "shellId": "BD685035F0C64B308FCE42ADB42AF261",
-                "elapsedTime": 519
+                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
+                "elapsedTime": 398
             },
             "evaluatorReader": true,
             "lineCount": 7,
@@ -4023,7 +4026,7 @@
             "test string",
             {
                 "type": "Date",
-                "value": "Mar 20, 2015 05:06:16 PM"
+                "value": "Mar 23, 2015 09:04:26 AM"
             },
             {
                 "values": [
@@ -4112,7 +4115,7 @@
                         33.5,
                         {
                             "type": "Date",
-                            "value": "Mar 20, 2015 05:06:17 PM"
+                            "value": "Mar 23, 2015 09:04:30 AM"
                         },
                         ""
                     ]
@@ -4589,7 +4592,7 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "value": "Mar 20, 2015 05:06:16 PM"
+            "value": "Mar 23, 2015 09:04:26 AM"
         },
         "v5": {
             "values": [
@@ -4678,7 +4681,7 @@
                     33.5,
                     {
                         "type": "Date",
-                        "value": "Mar 20, 2015 05:06:17 PM"
+                        "value": "Mar 23, 2015 09:04:30 AM"
                     },
                     ""
                 ]

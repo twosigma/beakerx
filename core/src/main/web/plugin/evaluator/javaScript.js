@@ -151,6 +151,256 @@ define(function(require, exports, module) {
 
   var JavascriptCancelFunction = null;
 
+  var knownBeakerVars = { };
+  var beakerObj = {}
+
+  function setupBeakerObject(modelOutput) {
+    
+    if (beakerObj.showProgressUpdate === undefined) {
+      console.log("setupBeakerObject");
+          
+      Object.defineProperty(beakerObj, 'showProgressUpdate', { value: function (a,b,c) {
+        if ( a === undefined || beakerObj._beaker_model_output_result === undefined || beakerObj._beaker_model_output_result.object === undefined)
+          return;
+        if ( typeof a === 'string' )
+          beakerObj._beaker_model_output_result.object.message = a;
+        else if ( typeof a === 'number' )
+          beakerObj._beaker_model_output_result.object.progressBar = a;
+        else if ( a !== null )
+          beakerObj._beaker_model_output_result.object.payload = a;
+  
+        if ( typeof b === 'string' )
+          beakerObj._beaker_model_output_result.object.message = b;
+        else if ( typeof b === 'number' )
+          beakerObj._beaker_model_output_result.object.progressBar = b;
+        else if ( b !== null )
+          beakerObj._beaker_model_output_result.object.payload = b;
+  
+        if ( typeof c === 'string' )
+          beakerObj._beaker_model_output_result.object.message = c;
+        else if ( typeof c === 'number' )
+          beakerObj._beaker_model_output_result.object.progressBar = c;
+        else if ( c !== null )
+          beakerObj._beaker_model_output_result.object.payload = c;
+      }, writeable: false });
+      
+      Object.defineProperty(beakerObj, 'showStatus', { value: bkHelper.showStatus, writeable: false });
+      Object.defineProperty(beakerObj, 'clearStatus', { value: bkHelper.clearStatus, writeable: false });
+      Object.defineProperty(beakerObj, 'showTransientStatus', { value: bkHelper.showTransientStatus, writeable: false });
+      Object.defineProperty(beakerObj, 'getEvaluators', { value: bkHelper.getEvaluators, writeable: false });
+      Object.defineProperty(beakerObj, 'getCodeCells', { value: bkHelper.getCodeCells, writeable: false });
+      Object.defineProperty(beakerObj, 'setCodeCellBody', { value: bkHelper.setCodeCellBody, writeable: false });
+      Object.defineProperty(beakerObj, 'setCodeCellEvaluator', { value: bkHelper.setCodeCellEvaluator, writeable: false });
+      Object.defineProperty(beakerObj, 'setCodeCellTags', { value: bkHelper.setCodeCellTags, writeable: false });
+      Object.defineProperty(beakerObj, 'evaluate', { value: bkHelper.evaluate, writeable: false });
+      Object.defineProperty(beakerObj, 'evaluateCode', { value: bkHelper.evaluateCode, writeable: false });
+      Object.defineProperty(beakerObj, 'loadJS', { value: bkHelper.loadJS, writeable: false });
+      Object.defineProperty(beakerObj, 'loadCSS', { value: bkHelper.loadCSS, writeable: false });
+      Object.defineProperty(beakerObj, 'loadList', { value: bkHelper.loadList, writeable: false });
+      Object.defineProperty(beakerObj, 'httpGet', { value: bkHelper.httpGet, writeable: false });
+      Object.defineProperty(beakerObj, 'httpPost', { value: bkHelper.httpPost, writeable: false });
+      Object.defineProperty(beakerObj, 'newDeferred', { value: bkHelper.newDeferred, writeable: false });
+      Object.defineProperty(beakerObj, 'newPromise', { value: bkHelper.newPromise, writeable: false });
+      Object.defineProperty(beakerObj, 'all', { value: bkHelper.all, writeable: false });
+      Object.defineProperty(beakerObj, 'timeout', { value: bkHelper.timeout, writeable: false });
+      console.log("setupBeakerObject - done");
+    }
+    Object.defineProperty(beaker, '_beaker_model_output_result', { value: modelOutput.result, writeable: false, enumerable: false });
+
+    notebookToBeakerObject();
+  }
+  
+  function isPrimitiveType(v) {
+    if (_.isDate(v) || _.isString(v) || _.isNumber(v) || _.isBoolean(v) || _.isNaN(v) || _.isNull(v) || _.isUndefined(v))
+      return true;
+    return false;
+  }
+  
+  function getDataType(v) {
+    if (_.isDate(v))
+      return "time";
+    if(_.isNumber(v)) // can we do a better job here?
+      return "double";
+    if(_.isBoolean(v))
+      return "boolean";
+    return "string";    
+  }
+  
+  function isDictionary(v) {
+    if (!_.isObject(v))
+      return false;
+    for(var i in v) {
+      if (!isPrimitiveType(v[i]))
+        return false;
+    }
+    return true;
+  }
+  
+  function transform(v) {
+    if (_.isFunction(v) || _.isUndefined(v))
+      return null;
+    
+    if (_.isDate(v)) {
+      var o = {}
+      o.type = "Date";
+      o.value = v.toString();
+      o.timestamp = v.getTime();
+      return o
+    }
+
+    if (_.isArray(v) && v.length>0) {
+      var doit = true;
+      for(var r in v) {
+        if (!_.isArray(v[r])) {
+          doit = false;
+          break;
+        }
+        for (var c in (v[r])) {
+          if (!isPrimitiveType(v[r][c])) {
+            doit = false;
+            break;
+          }
+        }
+      }
+      if (doit) {
+        var o = {}
+        o.type = "TableDisplay";
+        o.values = v;
+        o.subtype = "Matrix";
+        o.columnNames = [];
+        o.types = [];
+        for(var i in v[0]) {
+          o.columnNames.push('c'+i);
+          o.types.push(getDataType(v[0][i]));          
+        }
+        return o;
+      } else {
+        doit = true;
+        for(var r in v) {
+          if (!isDictionary(v[r])) {
+            doit = false;
+            break;
+          }
+        }
+        if (doit) {
+          console.log("is a list of maps");
+          return v;
+        }
+      }
+    }
+    
+    if (_.isObject(v) && isDictionary(v)) {
+      var o = {}
+      o.type = "TableDisplay";
+      o.values = [];
+      o.subtype = "Dictionary";
+      o.columnNames= ['Key','Value'];
+      for (var i in v) {
+        var r = [];
+        r.push(i);
+        r.push(v[i]);
+        o.values.push(r);
+      }
+      return o;
+    }
+    for(var p in v) {
+      v[p] = transform(v[p]);
+    }
+    return v;
+  }
+
+  function transformBack(v) {
+    if(v === undefined || (!_.isObject(v) && !_.isArray(v)))
+      return v;
+
+    if (v.type !== undefined) {
+      if (v.type === "Date") {
+        return new Date(v.value);
+      }
+      if (v.type === "TableDisplay") {
+        if (v.subtype === "Dictionary") {
+          var o = {}
+          for (var r in v.values) {
+            o[v.values[r][0]] = v.values[r][1];
+          }
+          return o;
+        }
+        if (v.subtype === "Matrix") {
+          return v.values;
+        }
+        if (v.subtype === "ListOfMaps") {
+          var out2 = [];
+          for (var r in v.values) {
+            var out3 = { };
+            for (var i=0; i<v.values[r].length; i++) {
+              if (v.values[r][i] !== null)
+                out3[ v.columnNames[i] ] = v.values[r][i];
+            }
+            out2.push(out3);
+          }
+          return out2;
+        }
+        console.log("TODO DataFrame");
+      }
+    }
+    for(var p in v) {
+      v[p] = transformBack(v[p]);
+    }
+    return v;
+  }
+
+  function beakerGetter(name) {
+    var ns = bkHelper.getNotebookModel().namespace;
+    return transformBack(ns[name]);
+  }
+
+  function beakerSetter(name, v) {
+    var ns = bkHelper.getNotebookModel().namespace;
+    ns[name] = transform(v);
+  }
+
+  function notebookToBeakerObject() {
+    var ns = bkHelper.getNotebookModel().namespace;
+
+    for (var p in knownBeakerVars) {
+      if (ns[p] === undefined) {
+        console.log('remove slot for '+p);
+        delete knownBeakerVars[p];
+        delete beakerObj[p];
+      }
+    }
+
+    for (var p in ns) {
+      if (knownBeakerVars[p] === undefined && beakerObj[p] === undefined) {
+        console.log('adding slot for '+p);
+        knownBeakerVars[p] = true;
+        Object.defineProperty(beakerObj, p,
+            { writeable: true,
+              get: function()  { return beakerGetter(p); },
+              set: function(v) { beakerSetter(p,v); }
+            });
+      }
+    }
+  }
+  
+  function beakerObjectToNotebook() {
+    var ns = bkHelper.getNotebookModel().namespace;
+    for (var p in beakerObj) {
+      if (!_.isFunction(beakerObj[p])) {
+        if (knownBeakerVars[p] === undefined) {
+          console.log('new slot for '+p);
+          beakerSetter(p,beakerObj[p]);
+          knownBeakerVars[p] = true;
+          Object.defineProperty(beakerObj, p,
+              { writeable: true,
+                get: function()  { return beakerGetter(p); },
+                set: function(v) { beakerSetter(p,v); }
+              });
+        }
+      }
+    }
+  }
+  
   var JavaScript_0 = {
     pluginName: PLUGIN_NAME,
     cmMode: "javascript",
@@ -163,11 +413,6 @@ define(function(require, exports, module) {
         var deferred = bkHelper.newDeferred();
         bkHelper.timeout(function () {
           try {
-            var beaker = bkHelper.getNotebookModel().namespace; // this is visible to JS code in cell
-            if (undefined === beaker) {
-              bkHelper.getNotebookModel().namespace = {};
-              beaker = bkHelper.getNotebookModel().namespace;
-            }
             var progressObj = {
                 type: "BeakerDisplay",
                 innertype: "Progress",
@@ -181,54 +426,19 @@ define(function(require, exports, module) {
               refreshObj.outputRefreshed();
             else
               bkHelper.refreshRootScope();
-            
-            beaker._beaker_model_output_result = modelOutput.result;
-            beaker.showProgressUpdate = function (a,b,c) {
-              if ( a === undefined || beaker._beaker_model_output_result === undefined || beaker._beaker_model_output_result.object === undefined)
-                return;
-              if ( typeof a === 'string' )
-                beaker._beaker_model_output_result.object.message = a;
-              else if ( typeof a === 'number' )
-                beaker._beaker_model_output_result.object.progressBar = a;
-              else if ( a !== null )
-                beaker._beaker_model_output_result.object.payload = a;
 
-              if ( typeof b === 'string' )
-                beaker._beaker_model_output_result.object.message = b;
-              else if ( typeof b === 'number' )
-                beaker._beaker_model_output_result.object.progressBar = b;
-              else if ( b !== null )
-                beaker._beaker_model_output_result.object.payload = b;
+            bkHelper.getNotebookModel().namespace; 
+            if (undefined === bkHelper.getNotebookModel().namespace) {
+              bkHelper.getNotebookModel().namespace = {};
+              beaker = bkHelper.getNotebookModel().namespace;
+            }
 
-              if ( typeof c === 'string' )
-                beaker._beaker_model_output_result.object.message = c;
-              else if ( typeof c === 'number' )
-                beaker._beaker_model_output_result.object.progressBar = c;
-              else if ( c !== null )
-                beaker._beaker_model_output_result.object.payload = c;
-            };
-            
-            beaker.showStatus = bkHelper.showStatus;
-            beaker.clearStatus = bkHelper.clearStatus;
-            beaker.showTransientStatus = bkHelper.showTransientStatus;
-            beaker.getEvaluators = bkHelper.getEvaluators;
-            beaker.getCodeCells = bkHelper.getCodeCells;
-            beaker.setCodeCellBody = bkHelper.setCodeCellBody;
-            beaker.setCodeCellEvaluator = bkHelper.setCodeCellEvaluator;
-            beaker.setCodeCellTags = bkHelper.setCodeCellTags;
-            beaker.evaluate = bkHelper.evaluate;
-            beaker.evaluateCode = bkHelper.evaluateCode;
-            beaker.loadJS = bkHelper.loadJS;
-            beaker.loadCSS = bkHelper.loadCSS;
-            beaker.loadList = bkHelper.loadList;
-            beaker.httpGet = bkHelper.httpGet;
-            beaker.httpPost = bkHelper.httpPost;
-            beaker.newDeferred = bkHelper.newDeferred;
-            beaker.newPromise = bkHelper.newPromise;
-            beaker.all = bkHelper.all;
-            beaker.timeout = bkHelper.timeout;
+            setupBeakerObject(beakerObj, modelOutput);
 
+            var beaker = beakerObj; // this is visible to JS code in cell
+ 
             var output = eval(code);
+            beakerObjectToNotebook();
             if ( typeof output === 'object' ) {
               if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {
                 output = output.promise;
@@ -250,6 +460,7 @@ define(function(require, exports, module) {
                   }
                 }
                 output.then(function(o) {
+                  o = transform(o);
                   modelOutput.result = o;
                   deferred.resolve(o);
                   delete beaker._beaker_model_output_result;
@@ -263,6 +474,7 @@ define(function(require, exports, module) {
                   delete beaker._beaker_model_output_result;
                 });
               } else {
+                output = transform(output);
                 modelOutput.result = output;  
                 deferred.resolve(output);
                 delete beaker._beaker_model_output_result;

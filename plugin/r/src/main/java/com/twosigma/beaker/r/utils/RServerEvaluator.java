@@ -252,55 +252,6 @@ public class RServerEvaluator {
     return false;
   }
 
-//  protected boolean isDataFrame(REXP result, SimpleEvaluationObject obj, String resultjson) {
-//    TableDisplay table;
-//    try {
-//      RList list = result.asList().at(0).asList();
-//      int cols = list.size();
-//      String[] names = list.keys();
-//      if (null == names) {
-//        return false;
-//      }
-//      String[][] array = new String[cols][];
-//      List<List<?>> values = new ArrayList<>();
-//      List<String> classes = new ArrayList<>();
-//
-//      for (int i = 0; i < cols; i++) {
-//        if (null == list.at(i)) {
-//          return false;
-//        }
-//        REXP o = list.at(i);
-//        String cname = o.getClass().getName();
-//        classes.add(objSerializer.convertType(cname));
-//        array[i] = o.asStrings();
-//      }
-//      if (array.length < 1) {
-//        return false;
-//      }
-//      for (int j = 0; j < array[0].length; j++) {
-//        List<String> row = new ArrayList<>();
-//        for (int i = 0; i < cols; i++) {
-//          if (array[i].length != array[0].length) {
-//            return false;
-//          }
-//          row.add(array[i][j]);
-//        }
-//        values.add(row);
-//      }
-//      table = new TableDisplay(values, Arrays.asList(names), classes);
-//    } catch (NullPointerException e) {
-//      return false;
-//    } catch (REXPMismatchException e) {
-//      return false;
-//    }
-//    logger.fine("is an datatable");
-//    if (resultjson!=null && !resultjson.isEmpty())
-//      obj.finished(null,resultjson);
-//    else
-//      obj.finished(table);
-//    return true;
-//  }
-
   protected class workerThread extends Thread {
     RConnection connection;
     ROutputHandler outputHandler;

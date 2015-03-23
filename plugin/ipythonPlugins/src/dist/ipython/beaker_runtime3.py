@@ -201,7 +201,7 @@ def transformBack(obj):
                         return out2
                 # transform to dataframe
                 return pandas.DataFrame(data=out['values'], columns=out['columnNames'])
-            return out
+        return out
     if type(obj) == list:
         out = []
         for v in obj:

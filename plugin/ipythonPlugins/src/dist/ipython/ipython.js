@@ -144,7 +144,7 @@ define(function(require, exports, module) {
             if (finalStuff.status === "ERROR")
               deferred.reject(finalStuff.payload);
             else
-              deferred.resolve(finalStuff.payload);
+              deferred.resolve(finalStuff.jsonres !== undefined ? finalStuff.jsonres : finalStuff.payload);
           }
           if (refreshObj !== undefined)
             refreshObj.outputRefreshed();
@@ -222,23 +222,31 @@ define(function(require, exports, module) {
             } else {
               evaluation.outputdata.push( { type : 'err', value : content.data } );
             }
-          } else if(content.data['application/json'] !== undefined) {
-            evaluation.payload = JSON.parse(content.data['application/json']);
-            if (finalStuff !== undefined) {
-              finalStuff.payload = evaluation.payload;
-            }
           } else {
-            var elem = $(document.createElement("div"));
-            var oa = new myPython.OutputArea(elem);
-            // twiddle the mime types? XXX
-            if (ipyVersion1) {
-              oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
-            } else {
-              oa.append_mime_type(content.data, elem);
+            var jsonres;
+            if(content.data['application/json'] !== undefined) {
+              jsonres = JSON.parse(content.data['application/json']);
             }
-            evaluation.payload = elem.html();
-            if (finalStuff !== undefined) {
-              finalStuff.payload = evaluation.payload;
+            if (jsonres !== undefined && _.isObject(jsonres) && jsonres.type !== undefined) {
+              evaluation.payload = jsonres;
+              if (finalStuff !== undefined) {
+                finalStuff.payload = evaluation.payload;
+              }
+            } else {
+              evaluation.jsonres = jsonres;
+              var elem = $(document.createElement("div"));
+              var oa = new myPython.OutputArea(elem);
+              // twiddle the mime types? XXX
+              if (ipyVersion1) {
+                oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
+              } else {
+                oa.append_mime_type(content.data, elem);
+              }
+              evaluation.payload = elem.html();
+              if (finalStuff !== undefined) {
+                finalStuff.payload = evaluation.payload;
+                finalStuff.jsonres = evaluation.jsonres;
+              }
             }
           }
           if (finalStuff === undefined) {            

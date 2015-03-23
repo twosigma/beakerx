@@ -150,7 +150,8 @@
                     "    })",
                     "})",
                     "d"
-                ]
+                ],
+                "hidden": true
             },
             "output": {
                 "state": {},
@@ -208,14 +209,15 @@
                     "else",
                     "  \"OK\"",
                     ""
-                ]
+                ],
+                "hidden": true
             },
             "output": {
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "22ff2a1a-fa61-4e9f-9d30-2f26a366e679",
-                "elapsedTime": 7871
+                "shellId": "1b28b2ad-15c6-484e-bb03-85c0d0fcb848",
+                "elapsedTime": 1078
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -288,14 +290,15 @@
                     "",
                     "",
                     "ret"
-                ]
+                ],
+                "hidden": true
             },
             "output": {
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 3350,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 651,
                 "dataresult": "OK"
             },
             "evaluatorReader": true,
@@ -328,7 +331,7 @@
             "title": "Python2 cells that return a value",
             "level": 1,
             "evaluatorReader": false,
-            "collapsed": false
+            "collapsed": true
         },
         {
             "id": "codeYX3xaO",
@@ -346,8 +349,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 512,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 320,
                 "dataresult": 1
             },
             "evaluatorReader": true,
@@ -370,8 +373,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 591,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 323,
                 "dataresult": 10.34
             },
             "evaluatorReader": true,
@@ -394,8 +397,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 524,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 291,
                 "dataresult": true
             },
             "evaluatorReader": true,
@@ -418,8 +421,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 528,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 267,
                 "dataresult": "test string"
             },
             "evaluatorReader": true,
@@ -440,10 +443,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Date",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 559,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 248,
                 "dataresult": {
                     "type": "Date",
                     "value": "Oct 21, 2005 06:47:22 PM"
@@ -474,8 +477,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 744,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 378,
                 "state": {}
             },
             "evaluatorReader": true,
@@ -501,8 +504,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 812,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 455,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -562,8 +565,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 887,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 436,
                 "dataresult": [
                     23.45,
                     34.5,
@@ -592,8 +595,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 698,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 376,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "Matrix",
@@ -663,8 +666,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 815,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 458,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -695,8 +698,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 655,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 464,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -719,8 +722,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 997,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 355,
                 "dataresult": "{ \"type\":\"TableDisplay\",\"subtype\":\"Dictionary\",\"columnNames\": [\"Key\",\"Value\"], \"values\": [[\"name\",\"Fred\"],[\"a\",\"10.4\"],[\"b\",\"33.5\"],[\"age\",\"5.3\"]] }"
             },
             "evaluatorReader": true,
@@ -743,8 +746,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 950,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 444,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -767,8 +770,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 583,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 313,
                 "hidden": true,
                 "dataresult": "not supported"
             },
@@ -795,8 +798,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 390,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 268,
                 "dataresult": {
                     "type": "OutputContainer",
                     "items": [
@@ -3904,8 +3907,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 1181,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 582,
                 "dataresult": [
                     {
                         "cellId": "codecell",
@@ -3942,8 +3945,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 599,
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 351,
                 "dataresult": {
                     "name": "Fred",
                     "mynumbers": [
@@ -4027,8 +4030,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "IPython",
-                "shellId": "B2E386E90AE94CE39AC992FC43AABCAE",
-                "elapsedTime": 722
+                "shellId": "3293A996F1F64A9B82F433EA5E2FD3CB",
+                "elapsedTime": 361
             },
             "evaluatorReader": true,
             "lineCount": 7,
@@ -4043,7 +4046,7 @@
             "test string",
             {
                 "type": "Date",
-                "value": "Mar 20, 2015 04:05:50 PM"
+                "value": "Mar 23, 2015 09:02:54 AM"
             },
             {
                 "values": [
@@ -4132,7 +4135,7 @@
                         33.5,
                         {
                             "type": "Date",
-                            "value": "Mar 20, 2015 04:05:51 PM"
+                            "value": "Mar 23, 2015 09:02:55 AM"
                         },
                         ""
                     ]
@@ -4609,7 +4612,7 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "value": "Mar 20, 2015 04:05:50 PM"
+            "value": "Mar 23, 2015 09:02:54 AM"
         },
         "v5": {
             "values": [
@@ -4698,7 +4701,7 @@
                     33.5,
                     {
                         "type": "Date",
-                        "value": "Mar 20, 2015 04:05:51 PM"
+                        "value": "Mar 23, 2015 09:02:55 AM"
                     },
                     ""
                 ]

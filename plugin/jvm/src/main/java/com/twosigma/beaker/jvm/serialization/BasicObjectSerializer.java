@@ -227,9 +227,9 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         Set<?> eset = m.entrySet();
         for (Object entry : eset) {
           Entry<?,?> e = (Entry<?, ?>) entry;
-          List<String> l = new ArrayList<String>();
+          List<Object> l = new ArrayList<Object>();
           l.add(e.getKey().toString());
-          l.add(e.getValue().toString());
+          l.add(e.getValue());
           values.add(l);
         }
         jgen.writeStartObject();

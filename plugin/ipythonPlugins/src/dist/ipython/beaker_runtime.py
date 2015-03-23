@@ -185,6 +185,8 @@ def transformBack(obj):
                         out2 = { }
                         for r in out['values']:
                             out2[r[0]] = r[1]
+                        if out['columnNames'][0] == "Index":
+                            return pandas.Series(out2)
                         return out2
                     if out['subtype'] == "Matrix":
                         return numpy.matrix(out['values'])
@@ -248,6 +250,21 @@ class DataFrameEncoder(json.JSONEncoder):
             out['types'] = ty
             return out
         if type(obj) == pandas.core.series.Series:
+            basict = True
+            for i in range(len(obj)):
+                if not isPrimitiveType(type(obj[i]).__name__):
+                    basict = False
+                    break
+            if basict:
+                out = {}
+                out['type'] = "TableDisplay"
+                out['subtype'] = "Dictionary"
+                out['columnNames'] = [ "Index", "Value" ]
+                values = []
+                for k,v in obj.iteritems():
+                    values.append( [k, transform(v)] )
+                out['values'] = values
+                return out
             return obj.to_dict()
         return json.JSONEncoder.default(self, obj)
 

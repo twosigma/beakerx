@@ -24,6 +24,14 @@ def windows() {
 def mac() {
   return System.getProperty('os.name').contains('Mac')
 }
+def winOrUnix(Object... args) {
+  if (windows()) {
+    return (['cmd', '/c'] << args).flatten()
+  }
+  else {
+    return args
+  }
+}
 
 repositories {
   mavenCentral()
@@ -44,12 +52,9 @@ dependencies {
   compile project(':shared')
 }
 
+
 task (npmInstall, type: Exec) {
-  if (windows()) {
-     commandLine 'cmd', '/c', 'npm', 'install'
-  } else {
-     commandLine 'npm', 'install'
-  }
+  commandLine(*(winOrUnix('npm', 'install')))
 }
 
 task (bowerInstall, type: Exec) {
@@ -61,11 +66,7 @@ task (bowerInstall, type: Exec) {
 }
 
 task (zipPackages, type: Exec) {
-  if (windows()) {
-    commandLine 'cmd', '/c', 'zip', '-r', '../data/allDeps.zip', 'src/vendor/';
-  } else {
-    commandLine 'zip', '-r', '../data/allDeps.zip', 'src/vendor/'
-  }
+  commandLine(*(winOrUnix('zip', '-r', '../data/allDeps.zip', 'src/vendor/')))
 }
 
 task (copyDTImages, type: Copy) {
@@ -111,19 +112,11 @@ task (extractPackages, type: Exec) {
 }
 
 task (compileCss, type: Exec) {
-  if (windows()) {
-    commandLine 'cmd', '/c', 'npm', 'run-script', 'compile'
-  } else {
-    commandLine 'npm', 'run-script', 'compile'
-  }
+  commandLine(*(winOrUnix('npm', 'run-script', 'compile')))
 }
 
 task (compileCssDebug, type: Exec) {
-  if (windows()) {
-    commandLine 'cmd', '/c', 'npm', 'run-script', 'compile', '--', '--debug'
-  } else {
-    commandLine 'npm', 'run-script', 'compile', '--', '--debug'
-  }
+  commandLine(*(winOrUnix('npm', 'run-script', 'compile', '--', '--debug')))
 }
 
 task (compileCssEmbed, type: Exec) {

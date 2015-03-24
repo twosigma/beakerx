@@ -39,7 +39,14 @@
       },
       link: function(scope, element, attrs) {
         var convert = function() {
-          element.find('.markup').html(marked(scope.cellmodel.body));
+          var markdownFragment = $('<div style="display: none;">' + scope.cellmodel.body + '</div>');
+          markdownFragment.appendTo('body'); // ugh mathjax doesn't operate on document fragments...
+
+          MathJax.Hub.Queue(["Typeset", MathJax.Hub, markdownFragment[0]]);
+          MathJax.Hub.Queue(function() {
+            element.find('.markup').html(marked(markdownFragment.html()));
+            markdownFragment.remove();
+          });
         }
 
         scope.edit = function() {

@@ -10,14 +10,14 @@
 //============================================================================
 
 /**
- * @module IPython
- * @namespace IPython
+ * @module IPython2
+ * @namespace IPython2
  * @submodule OutputArea
  */
-var IPython = (function (IPython) {
+var IPython2 = (function (IPython2) {
     "use strict";
 
-    var utils = IPython.utils;
+    var utils = IPython2.utils;
 
     /**
      * @class OutputArea
@@ -105,7 +105,7 @@ var IPython = (function (IPython) {
 
         this.element.resize(function () {
             // FIXME: Firefox on Linux misbehaves, so automatic scrolling is disabled
-            if ( IPython.utils.browser[0] === "Firefox" ) {
+            if ( IPython2.utils.browser[0] === "Firefox" ) {
                 return;
             }
             // maybe scroll output,
@@ -503,7 +503,7 @@ var IPython = (function (IPython) {
                 if (!this.trusted && !OutputArea.safe_outputs[type]) {
                     // not trusted, sanitize HTML
                     if (type==='text/html' || type==='text/svg') {
-                        value = IPython.security.sanitize_html(value);
+                        value = IPython2.security.sanitize_html(value);
                     } else {
                         // don't display if we don't know how to sanitize it
                         console.log("Ignoring untrusted " + type + " output.");
@@ -512,7 +512,7 @@ var IPython = (function (IPython) {
                 }
                 var md = json.metadata || {};
                 var toinsert = append.apply(this, [value, md, element]);
-                $([IPython.events]).trigger('output_appended.OutputArea', [type, value, md, toinsert]);
+                $([IPython2.events]).trigger('output_appended.OutputArea', [type, value, md, toinsert]);
                 return toinsert;
             }
         }
@@ -523,7 +523,7 @@ var IPython = (function (IPython) {
     var append_html = function (html, md, element) {
         var type = 'text/html';
         var toinsert = this.create_output_subarea(md, "output_html rendered_html", type);
-        // IPython.keyboard_manager.register_events(toinsert); // Beaker removed XXX
+        // IPython2.keyboard_manager.register_events(toinsert); // Beaker removed XXX
         toinsert.append(html);
         element.append(toinsert);
         return toinsert;
@@ -534,7 +534,7 @@ var IPython = (function (IPython) {
         // We just eval the JS code, element appears in the local scope.
         var type = 'application/javascript';
         var toinsert = this.create_output_subarea(md, "output_javascript", type);
-        IPython.keyboard_manager.register_events(toinsert);
+        IPython2.keyboard_manager.register_events(toinsert);
         element.append(toinsert);
         // FIXME TODO : remove `container element for 3.0` 
         //backward compat, js should be eval'ed in a context where `container` is defined.
@@ -682,7 +682,7 @@ var IPython = (function (IPython) {
                 .keydown(function (event, ui) {
                     // make sure we submit on enter,
                     // and don't re-execute the *cell* on shift-enter
-                    if (event.which === IPython.keyboard.keycodes.enter) {
+                    if (event.which === IPython2.keyboard.keycodes.enter) {
                         that._submit_raw_input();
                         return false;
                     }
@@ -694,7 +694,7 @@ var IPython = (function (IPython) {
         var raw_input = area.find('input.raw_input');
         // Register events that enable/disable the keyboard manager while raw
         // input is focused.
-        IPython.keyboard_manager.register_events(raw_input);
+        IPython2.keyboard_manager.register_events(raw_input);
         // Note, the following line used to read raw_input.focus().focus().
         // This seemed to be needed otherwise only the cell would be focused.
         // But with the modal UI, this seems to work fine with one call to focus().
@@ -715,7 +715,7 @@ var IPython = (function (IPython) {
         container.parent().remove();
         // replace with plaintext version in stdout
         this.append_output(content, false);
-        $([IPython.events]).trigger('send_input_reply.Kernel', value);
+        $([IPython2.events]).trigger('send_input_reply.Kernel', value);
     }
 
 
@@ -871,8 +871,8 @@ var IPython = (function (IPython) {
         "application/pdf" : append_pdf
     };
 
-    IPython.OutputArea = OutputArea;
+    IPython2.OutputArea = OutputArea;
 
-    return IPython;
+    return IPython2;
 
-}(IPython));
+}(IPython2));

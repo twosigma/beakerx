@@ -296,11 +296,13 @@ define(function(require, exports, module) {
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
     var onSuccess = function() {
-      require('ipython3_namespace');
-      require('ipython3_kernel');
-      require('ipython3_utils');
-      require('ipython3_outputarea');
-      myPython = (ipyVersion == '1') ? IPython1 : IPython;
+      if (ipyVersion == '3') {
+        require('ipython3_namespace');
+        require('ipython3_kernel');
+        require('ipython3_utils');
+        require('ipython3_outputarea');
+      }
+      myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2",

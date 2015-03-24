@@ -22,15 +22,10 @@
   beaker.bkoDirective('Latex', ["bkUtils", function(bkUtils) {
 
     return {
-      template: "<div id='{{id}}'></div>",
-      controller: function($scope) {
-        $scope.id = "latex_" + bkUtils.generateId(6);
-      },
       link: function(scope, element, attrs) {
         scope.$watch('model.getCellModel()', function(newValue) {
-          var div = element.find("#" + scope.id)
-              .html("MATH_JAX_INLINE_BEGIN" + newValue + "MATH_JAX_INLINE_END");
-          MathJax.Hub.Queue(["Typeset", MathJax.Hub, scope.id]);
+          element.html("MATH_JAX_INLINE_BEGIN" + newValue + "MATH_JAX_INLINE_END");
+          MathJax.Hub.Queue(["Typeset", MathJax.Hub, element[0]]);
         });
       }
     };

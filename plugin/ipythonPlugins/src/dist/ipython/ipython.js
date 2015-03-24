@@ -166,7 +166,9 @@ define(function(require, exports, module) {
             msg = msg.content;
           }
           var result = _(msg.payload).map(function(payload) {
-            return myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(payload.text));
+            // XXX can other mime types appear here?
+            var text = (ipyVersion == '3') ? payload.data["text/plain"] : payload.text;
+            return myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(text));
           }).join("");
           var evaluation = { };
           if (msg.status === "error")
@@ -206,7 +208,7 @@ define(function(require, exports, module) {
           var evaluation = { };
           evaluation.status = "RUNNING";
 
-          if (type === "pyerr") {
+          if ((ipyVersion == '3') ? (type === "error") : (type === "pyerr")) {
             gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
               return  memo + "<br>" + myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(line));
@@ -216,11 +218,9 @@ define(function(require, exports, module) {
               "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
           } else if (type === "stream") {
             evaluation.outputdata = [];
-            if (content.name === "stderr") {
-              evaluation.outputdata.push( { type : 'out', value : content.data } );
-            } else {
-              evaluation.outputdata.push( { type : 'err', value : content.data } );
-            }
+            var text = (ipyVersion == '3') ? content.text : content.data;
+            evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
+                                        value: text});
           } else {
             var elem = $(document.createElement("div"));
             var oa = (ipyVersion == '3') ?

@@ -28,14 +28,33 @@
 
       return ce.text();
     }
+    function initialMap(){return {17: false, 91: false}};
 
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/markdowncell"](),
       controller: function($scope) {
+
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + ($scope.$parent.index + 1);
-        }
+        };
+
+        var map = initialMap();
+
+        $scope.keyDown = function(e){
+          if (e.keyCode in map) {
+            map[e.keyCode] = true;
+          }
+          if (e.keyCode == 13 && (map[91] || map[17])){
+            $scope.mode = 'preview';
+            map = initialMap();
+          }
+        };
+        $scope.keyUp = function(e){
+          if (e.keyCode in map) {
+            map[e.keyCode] = false;
+          }
+        };
       },
       link: function(scope, element, attrs) {
         var convert = function() {

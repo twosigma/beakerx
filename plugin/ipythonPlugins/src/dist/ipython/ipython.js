@@ -224,7 +224,8 @@ define(function(require, exports, module) {
           } else {
             var elem = $(document.createElement("div"));
             var oa = (ipyVersion == '3') ?
-              (new myPython.OutputArea({events: {trigger: function(){}}}))
+              (new myPython.OutputArea({events: {trigger: function(){}},
+                                        keyboard_manager: {register_events: function(){}}}))
             : (new myPython.OutputArea(elem));
             // twiddle the mime types? XXX
             if (ipyVersion == '1') {

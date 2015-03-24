@@ -69,6 +69,14 @@ task (zipPackages, type: Exec) {
   commandLine(*(winOrUnix('zip', '-r', '../data/allDeps.zip', 'src/vendor/')))
 }
 
+task (publishAssets, type: Copy) {
+  from 'src/main/web/app/dist/'
+  into '../embeddable_assets/'
+  include '*js'
+  include 'beaker-sandbox.css'
+}
+
+
 task (copyDTImages, type: Copy) {
 	from 'src/vendor/bower_components/datatables/media/images/'
 	into 'src/main/web/app/images/'
@@ -163,6 +171,7 @@ copyStuff.mustRunAfter bowerInstall
 copyVendorStuff.mustRunAfter extractPackages
 build.dependsOn compileCss
 buildembed.dependsOn compileCssEmbed
+publishAssets.dependsOn buildembed
 builddebug.dependsOn compileCssDebug
 run.dependsOn build
 run.dependsOn jar

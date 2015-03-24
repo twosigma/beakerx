@@ -504,7 +504,7 @@ define(function(require, exports, module) {
           self._beaker_model_output_result.object.progressBar = c;
         else if ( c !== null )
           self._beaker_model_output_result.object.payload = c;
-      }, writeable: false });
+      }, writeable: false, enumerable: true });
       
       Object.defineProperty(this.beakerObj, 'showStatus', { value: bkHelper.showStatus, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'clearStatus', { value: bkHelper.clearStatus, writeable: false, enumerable: true });
@@ -585,7 +585,10 @@ define(function(require, exports, module) {
     
     // check if some other language added a binding
     for (var p in ns) {
-      if (this.knownBeakerVars[p] === undefined && this.beakerObj[p] === undefined) {
+      var t = ns[p];
+      if (this.predefined.indexOf(p) < 0 && _.isFunction(t)) {
+        this.beakerObj[p] = t;
+      } else if (this.knownBeakerVars[p] === undefined && this.beakerObj[p] === undefined) {
         this.knownBeakerVars[p] = true;
         var makeGetter = function(self, name) {
           return function() { return self.beakerGetter(name); }
@@ -611,36 +614,43 @@ define(function(require, exports, module) {
   BeakerObject.prototype.beakerObjectToNotebook = function() {
     var ns = bkHelper.getNotebookModel().namespace;
     
-    // check if javascript removed a binding
-    for (var p in ns) {
-      if (this.knownBeakerVars[p] !== undefined && this.beakerObj[p] === undefined) {
-        delete ns[p];
-      }
-    }
-    
     var keys = Object.keys(this.beakerObj);
     var stuff = Object.keys(this.knownBeakerVars);
     var diff = $(keys).not(stuff).get();
     diff = $(diff).not(this.predefined).get();
 
+    // check if javascript removed a binding
+    for (var p in ns) {
+      if (this.knownBeakerVars[p] !== undefined && keys.indexOf(p) <0) {
+        delete ns[p];
+        delete this.knownBeakerVars[p];
+      }
+    }
+    
     // check if javascript set any NEW variable
-    for (var p in diff) {      
+    for (var p in diff) {
       if (this.knownBeakerVars[p] === undefined) {
-        this.setCache[p] = this.beakerObj[p];
-        this.knownBeakerVars[p] = true;
-        var makeGetter = function(self, name) {
-          return function() { return self.beakerGetter(name); }
+        var t = this.beakerObj[p];
+        if (this.predefined.indexOf(p) < 0 && _.isFunction(t)) {
+          // just put functions in the namespace
+          ns[p] = t;
+        } else {
+          this.setCache[p] = t;
+          this.knownBeakerVars[p] = true;
+          var makeGetter = function(self, name) {
+            return function() { return self.beakerGetter(name); }
+          }
+          var makeSetter = function(self, name) {
+            return function(v) { self.beakerSetter(name,v); }
+          }
+          Object.defineProperty(this.beakerObj, p,
+              { writeable: true,
+                get: makeGetter(this,p),
+                set: makeSetter(this,p),
+                enumerable: true,
+                configurable: true
+              });
         }
-        var makeSetter = function(self, name) {
-          return function(v) { self.beakerSetter(name,v); }
-        }
-        Object.defineProperty(this.beakerObj, p,
-            { writeable: true,
-              get: makeGetter(this,p),
-              set: makeSetter(this,p),
-              enumerable: true,
-              configurable: true
-            });
       }
     }
     
@@ -704,6 +714,9 @@ define(function(require, exports, module) {
               delete ns._beaker_model_output_result;
             }
 
+            if (window.beaker !== undefined)
+              window.beaker.beaker = beakerObj.beakerObj;
+            
             beakerObj.setupBeakerObject(modelOutput);
             beakerObj.notebookToBeakerObject();
             var beaker = beakerObj.beakerObj;

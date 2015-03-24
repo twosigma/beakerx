@@ -75,7 +75,7 @@
             "id": "textNi07gO",
             "type": "text",
             "body": [
-                "<div>Beaker can autotranslate variables in one language to another. &nbsp;You can access this feature with the notebook namespace: a collection of variables and their values stored in the notebook. &nbsp;You can use this to produce data in one language, and consume or process it in another.</div><div><br></div><div>Because the namespace is in the notebook, the variable's values are preserved when you save a notebook to disk, or share it on the web. &nbsp;The format for data interchange is JSON.</div><div><br></div><div>The four languages that are supported are IPython, R, Groovy, and JavaScript.</div>"
+                "<div>Beaker can autotranslate variables in one language to another. &nbsp;You can access this feature with the notebook namespace: a collection of variables and their values stored in the notebook.&nbsp;</div><div>You can use this to produce data in one language, and consume or process it in another.</div><div><br></div><div>Because the namespace is in the notebook, the variable's values are preserved when you save a notebook to disk, or share it on the web. &nbsp;The format for data interchange is JSON.</div><div><br></div><div>The four languages that are supported are IPython, R, Groovy, and JavaScript.</div>"
             ],
             "evaluatorReader": false
         },
@@ -94,7 +94,7 @@
                 "elapsedTime": 343,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "8EB4F652C93346C18D802119845D536D"
+                "shellId": "5F4685CA65614566921154FC327B0859"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -134,10 +134,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 586,
+                "elapsedTime": 641,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "d67ef95b-e97a-4aca-bab1-8c22c5bc768e",
+                "shellId": "7a4abf6a-fcf1-456d-9945-166ae1430509",
                 "dataresult": "Strings work fine"
             },
             "evaluatorReader": true,
@@ -162,10 +162,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 604,
+                "elapsedTime": 2021,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "48f41f17-c39a-4207-9dee-13c136cfb7b1"
+                "shellId": "a521cc90-ff33-4f17-b4fd-de79e09cec49"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -205,10 +205,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 600,
+                "elapsedTime": 607,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "48f41f17-c39a-4207-9dee-13c136cfb7b1"
+                "shellId": "a521cc90-ff33-4f17-b4fd-de79e09cec49"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -240,10 +240,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 580,
+                "elapsedTime": 588,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "d67ef95b-e97a-4aca-bab1-8c22c5bc768e",
+                "shellId": "7a4abf6a-fcf1-456d-9945-166ae1430509",
                 "dataresult": 12
             },
             "evaluatorReader": true,
@@ -260,11 +260,12 @@
             },
             "output": {
                 "outputArrived": true,
-                "selectedType": "Text",
-                "elapsedTime": 220,
+                "selectedType": "Html",
+                "elapsedTime": 218,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "8EB4F652C93346C18D802119845D536D"
+                "shellId": "5F4685CA65614566921154FC327B0859",
+                "dataresult": 12
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -281,10 +282,10 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Text",
-                "elapsedTime": 590,
+                "elapsedTime": 598,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "48f41f17-c39a-4207-9dee-13c136cfb7b1"
+                "shellId": "a521cc90-ff33-4f17-b4fd-de79e09cec49"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -308,10 +309,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 577,
+                "elapsedTime": 592,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "48f41f17-c39a-4207-9dee-13c136cfb7b1"
+                "shellId": "a521cc90-ff33-4f17-b4fd-de79e09cec49"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -327,10 +328,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 574,
+                "elapsedTime": 573,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "d67ef95b-e97a-4aca-bab1-8c22c5bc768e",
+                "shellId": "7a4abf6a-fcf1-456d-9945-166ae1430509",
                 "dataresult": 13
             },
             "evaluatorReader": true,
@@ -365,10 +366,10 @@
             "output": {
                 "outputArrived": false,
                 "selectedType": "Hidden",
-                "elapsedTime": 309,
+                "elapsedTime": 327,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "8EB4F652C93346C18D802119845D536D"
+                "shellId": "5F4685CA65614566921154FC327B0859"
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -394,10 +395,10 @@
             },
             "output": {
                 "selectedType": "Results",
-                "elapsedTime": 633,
+                "elapsedTime": 645,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "48f41f17-c39a-4207-9dee-13c136cfb7b1"
+                "shellId": "a521cc90-ff33-4f17-b4fd-de79e09cec49"
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -406,7 +407,7 @@
             "id": "textT2NWWl",
             "type": "text",
             "body": [
-                "Auto-translating a data frame between languages that support if (such as R and Python) is fully automatic."
+                "Auto-translating a data frame between languages that support it (such as R and Python) is fully automatic."
             ],
             "evaluatorReader": false
         },
@@ -421,10 +422,10 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 701,
+                "elapsedTime": 581,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "d67ef95b-e97a-4aca-bab1-8c22c5bc768e"
+                "shellId": "7a4abf6a-fcf1-456d-9945-166ae1430509"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -440,10 +441,10 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 570,
+                "elapsedTime": 686,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "d67ef95b-e97a-4aca-bab1-8c22c5bc768e"
+                "shellId": "7a4abf6a-fcf1-456d-9945-166ae1430509"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -461,13 +462,37 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Results",
-                "elapsedTime": 311,
+                "elapsedTime": 291,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "8EB4F652C93346C18D802119845D536D"
+                "shellId": "5F4685CA65614566921154FC327B0859"
             },
             "evaluatorReader": true,
             "lineCount": 2
+        },
+        {
+            "id": "markdownFAMSnm",
+            "type": "markdown",
+            "body": [
+                "Beaker provides a DataFrame object in Javascript as well: it mimics the Python Pandas version with a minimal set of functions:"
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeMVbQlE",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.df2.toString()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text"
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         },
         {
             "id": "markdownScGaZR",
@@ -512,40 +537,40 @@
         "df": {
             "values": [
                 [
-                    -0.8682032304921652,
-                    -0.01572105077852163,
-                    0.6202163981945918,
-                    -0.23635696634330527
+                    1.0679469896336005,
+                    1.3292468417131746,
+                    -0.8385469036804384,
+                    -1.295763694109285
                 ],
                 [
-                    -0.5551688151268797,
-                    0.22658269302115472,
-                    -0.005730711422324884,
-                    -0.4077862672551507
+                    -1.2082966131811432,
+                    -0.10265628703467547,
+                    -0.5403241897516972,
+                    0.15905268445670043
                 ],
                 [
-                    -2.2981856449076585,
-                    1.6348391860928642,
-                    0.21693891451748598,
-                    -1.7581808942506352
+                    0.09262075099295038,
+                    -0.3057224072597163,
+                    -0.13386812421207822,
+                    -1.4428401626288077
                 ],
                 [
-                    0.15951996502807503,
-                    -1.2744930312146727,
-                    1.1392615420520948,
-                    0.2390393451857066
+                    -0.3035627473525138,
+                    1.223240608316643,
+                    -1.3364409977568859,
+                    0.22492419050720677
                 ],
                 [
-                    0.45680207687221147,
-                    -0.3213719333689673,
-                    -1.1094524249872988,
-                    0.36760772071684056
+                    -1.2445707133055304,
+                    1.4548793980090793,
+                    0.4723209689958721,
+                    1.0324390472220037
                 ],
                 [
-                    -0.4824216065310473,
-                    -0.17941299942779163,
-                    1.6787530578882737,
-                    1.361207420800429
+                    -0.14706027027978888,
+                    -0.15154125864614834,
+                    -1.1394481983135107,
+                    -0.045388609652781305
                 ]
             ],
             "subtype": "TableDisplay",
@@ -566,55 +591,55 @@
         "df2": {
             "type": "TableDisplay",
             "subtype": "TableDisplay",
-            "columnNames": [
-                "X1",
-                "X2"
-            ],
             "values": [
                 [
-                    1.5256,
-                    0.90513
+                    -0.060086,
+                    -0.7352
                 ],
                 [
-                    -0.013351,
-                    -1.3565
+                    -0.48288,
+                    0.77935
                 ],
                 [
-                    0.091082,
-                    -1.6425
+                    0.32808,
+                    -1.9715
                 ],
                 [
-                    -1.0396,
-                    -0.012614
+                    -0.43688,
+                    -0.24699
                 ],
                 [
-                    0.89461,
-                    0.86492
+                    2.1272,
+                    0.22844
                 ],
                 [
-                    0.52191,
-                    0.55019
+                    -0.79777,
+                    0.56916
                 ],
                 [
-                    -0.8063,
-                    -1.055
+                    -1.3479,
+                    0.42665
                 ],
                 [
-                    0.21362,
-                    -1.0764
+                    1.8303,
+                    0.19718
                 ],
                 [
-                    -1.9298,
-                    0.79415
+                    -2.5711,
+                    1.2995
                 ],
                 [
-                    2.3056,
-                    2.0903
+                    -0.16066,
+                    0.024612
                 ]
             ],
             "types": [
                 "double",
                 "double"
+            ],
+            "columnNames": [
+                "X1",
+                "X2"
             ]
         }
     }

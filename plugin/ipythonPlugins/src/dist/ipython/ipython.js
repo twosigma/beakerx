@@ -195,7 +195,7 @@ define(function(require, exports, module) {
           // this is called to write output
           var type;
           var content;
-          if (ipyVersion != '1') {
+          if (ipyVersion == '2') {
             type = a0;
             content = a1;
           } else {
@@ -212,7 +212,8 @@ define(function(require, exports, module) {
               return  memo + "<br>" + myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(line));
             }, myPython.utils.fixConsole(content.evalue));
 
-            evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
+            evaluation.payload = (content.ename === "KeyboardInterrupt") ?
+              "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
           } else if (type === "stream") {
             evaluation.outputdata = [];
             if (content.name === "stderr") {
@@ -222,12 +223,16 @@ define(function(require, exports, module) {
             }
           } else {
             var elem = $(document.createElement("div"));
-            var oa = new myPython.OutputArea(elem);
+            var oa = (ipyVersion == '3') ?
+              (new myPython.OutputArea({events: {trigger: function(){}}}))
+            : (new myPython.OutputArea(elem));
             // twiddle the mime types? XXX
             if (ipyVersion == '1') {
               oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
-            } else {
+            } else if (ipyVersion == '2') {
               oa.append_mime_type(content.data, elem);
+            } else {
+              oa.append_mime_type(content, elem);
             }
             var table = bkHelper.findTable(elem[0]);
             if (table) {
@@ -293,6 +298,7 @@ define(function(require, exports, module) {
       require('ipython3_namespace');
       require('ipython3_kernel');
       require('ipython3_utils');
+      require('ipython3_outputarea');
       myPython = (ipyVersion == '1') ? IPython1 : IPython;
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
@@ -397,14 +403,13 @@ define(function(require, exports, module) {
                                "./plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js"
                                ], onSuccess, onFail);
           } else {
-            console.log("about to start loading ipython3 modules");
             bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/utils.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/session.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython3/comm.js"
-                                //"./plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js"
+                               "./plugins/eval/ipythonPlugins/vendor/ipython3/comm.js",
+                               "./plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js"
                               ], onSuccess, onFail);
           }
         }).error(function() {

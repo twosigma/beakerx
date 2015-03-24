@@ -8,6 +8,8 @@ var minifyJS  = require('gulp-uglify');
 var htmlmin   = require('gulp-htmlmin');
 var htmlClass = require('html-classer-gulp');
 var importCss = require('gulp-import-css');
+var rename    = require('gulp-rename');
+var replace   = require('gulp-replace');
 var Path      = require('path');
 var debug     = require('gulp-debug');
 var gtemplate = require('gulp-template');
@@ -117,6 +119,25 @@ gulp.task("compileBeakerScss", function() {
   .pipe(importCss())
   .pipe(stripCssComments())
   .pipe(gulp.dest(tempPath))
+});
+
+gulp.task('prepareCssForNamespacing', function(){
+  gulp.src(Path.join(buildPath, '*.css')).
+    pipe(rename(function(path) {
+      path.basename = "_" + path.basename;
+      path.extname = ".scss";
+    }))
+    .pipe(gulp.dest(Path.join(tempPath, "namespacedCss")))
+    .on('error', handleError);
+});
+gulp.task("namespacePreparedCss", function() {
+  return gulp.src("beaker-sandbox.scss")
+    .pipe(sass()).on('error', handleError)
+    .pipe(replace('.beaker-sandbox html', '.beaker-sandbox'))
+    .pipe(replace('.beaker-sandbox body', '.beaker-sandbox'))
+    .pipe(replace('.beaker-sandbox .modal-backdrop',
+                  '.beaker-sandbox.modal-backdrop'))
+    .pipe(gulp.dest(buildPath));
 });
 
 gulp.task("compileBeakerTemplates", function() {
@@ -262,6 +283,8 @@ gulp.task('buildIndexTemplate', function () {
       css: htmlbuild.preprocess.css(function (block) {
         if (argv.debug) {
           block.pipe(block);
+        } else if (argv.embed) {
+          block.end('app/dist/beaker-sandbox.css');
         } else {
           block.pipe(gulpSrc(false))
             .pipe(stripCssComments())
@@ -297,11 +320,20 @@ gulp.task("watch", function() {
   gulp.watch(["**/*.scss", "**/*.jst.html"], ["compile"]);
 });
 
+gulp.task("namespaceCss", function(cb) {
+  runSequence("prepareCssForNamespacing",
+              "namespacePreparedCss",
+              cb);
+});
+
 gulp.task("compile", function(cb) {
-  runSequence( "compileBeakerScss",
-      "compileBeakerTemplates",
-      "buildIndexTemplate",
-      "buildOutputDisplayTemplate",
-      cb);
-  });
+  var seq = ["compileBeakerScss", "compileBeakerTemplates"];
+  if (argv.embed) {
+    seq.push("namespaceCss");
+  }
+  seq = seq.concat("buildIndexTemplate",
+                   "buildOutputDisplayTemplate",
+                   cb);
+  runSequence.apply(this, seq);
+});
 

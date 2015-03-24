@@ -294,7 +294,6 @@ define(function(require, exports, module) {
     if (_.isDate(v)) {
       var o = {}
       o.type = "Date";
-      o.value = v.toString();
       o.timestamp = v.getTime();
       return o
     }
@@ -305,7 +304,7 @@ define(function(require, exports, module) {
     if (v instanceof ImageIcon) {
       var o = {}
       o.type = "ImageIcon";
-      o.imageData = _.isArray(v.imageData) ? v.imageData.slice(0) : [];
+      o.imageData = v.imageData;
       o.width = v.width;
       o.height = v.height;
       return o
@@ -387,6 +386,14 @@ define(function(require, exports, module) {
       }
     }
     
+    if (_.isArray(v)) {
+      var o = [];
+      for(var p in v) {
+        o.push(transform(v[p]));
+      }
+      return o;
+    }
+ 
     if (_.isObject(v) && isDictionary(v)) {
       var o = {}
       o.type = "TableDisplay";
@@ -414,7 +421,7 @@ define(function(require, exports, module) {
 
     if (v.type !== undefined) {
       if (v.type === "Date") {
-        return new Date(v.value);
+        return new Date(v.timestamp);
       }
       if (v.type === "TableDisplay") {
         if (v.subtype === "Dictionary") {
@@ -530,12 +537,16 @@ define(function(require, exports, module) {
       Object.defineProperty(this.beakerObj, 'timeout', { value: bkHelper.timeout, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'DataFrame', { value: DataFrame, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'ImageIcon', { value: ImageIcon, writeable: false, enumerable: true });
+      this.predefined = Object.keys(this.beakerObj);
     }
     this._beaker_model_output_result = modelOutput.result;
   };
   
   
   BeakerObject.prototype.beakerGetter = function(name) {
+    if (this.setCache[name] !== undefined) {
+      return this.setCache[name];
+    }
     var ns = bkHelper.getNotebookModel().namespace;
     if (this.getCache[name] === undefined)
       this.getCache[name] = transformBack(ns[name]);
@@ -607,10 +618,13 @@ define(function(require, exports, module) {
       }
     }
     
+    var keys = Object.keys(this.beakerObj);
+    var stuff = Object.keys(this.knownBeakerVars);
+    var diff = $(keys).not(stuff).get();
+    diff = $(diff).not(this.predefined).get();
+
     // check if javascript set any NEW variable
-    for (var p in this.beakerObj) {
-      if (_.isFunction(this.beakerObj[p]))
-        continue;
+    for (var p in diff) {      
       if (this.knownBeakerVars[p] === undefined) {
         this.setCache[p] = this.beakerObj[p];
         this.knownBeakerVars[p] = true;
@@ -731,7 +745,7 @@ define(function(require, exports, module) {
                   };
                   console.log(e);
                   beakerObj.beakerObjectToNotebook();
-                  deferred.reject(e);
+                  deferred.reject(transform(modelOutput.result));
                   beakerObj.clearOutput();
                 });
               } else {
@@ -752,7 +766,7 @@ define(function(require, exports, module) {
                 object: "" + err
             };
             console.log(err);
-            deferred.reject(err);
+            deferred.reject(transform(modelOutput.result));
           }
         }, 0);
         return deferred.promise;

@@ -40,7 +40,7 @@
           controller: function($scope) {
             $scope.getDate = function() {
               var model = $scope.model.getCellModel();
-              return (model && model.value) ? model.value : model;
+              return (model && model.timestamp) ? moment(model.timestamp).format("YYYYMMDD HH:mm:ss.SSS") : model;
             };
           }
         },

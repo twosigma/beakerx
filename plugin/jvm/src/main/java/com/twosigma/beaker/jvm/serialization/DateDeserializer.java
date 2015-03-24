@@ -1,6 +1,5 @@
 package com.twosigma.beaker.jvm.serialization;
 
-import java.text.DateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,9 +19,7 @@ public class DateDeserializer implements ObjectDeserializer {
   public Object deserialize(JsonNode n, ObjectMapper mapper) {
     Object o = null;
     try {
-      if (n.has("value"))
-        o = DateFormat.getDateTimeInstance().parse(n.get("value").asText());
-      else if (n.has("timestamp"))
+      if (n.has("timestamp"))
         o = new Date(n.get("timestamp").asLong());
     } catch (Exception e) {
       logger.log(Level.SEVERE, "exception deserializing Date ", e);

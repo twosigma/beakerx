@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import os, json, pandas, numpy
-import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, IPython, datetime
+import urllib.request, urllib.parse, urllib.error, urllib.request, urllib.error, urllib.parse, IPython, datetime, calendar
 from IPython.utils.traitlets import Unicode
 
 class OutputContainer:
@@ -177,7 +177,7 @@ def transformBack(obj):
                         c.addItem(i)
                 return c;
             if out['type'] == "Date":
-                return datetime.datetime.strptime(out["value"], "%b %d, %Y %I:%M:%S %p")
+                return datetime.datetime.fromtimestamp(out["timestamp"])
             if out['type'] == "TableDisplay":
                 if 'subtype' in out:
                     if out['subtype'] == "Dictionary":
@@ -233,7 +233,7 @@ class DataFrameEncoder(json.JSONEncoder):
         if type(obj) == datetime.datetime:
             out = {}
             out['type'] = "Date"
-            out['value'] = obj.strftime("%b %d, %Y %I:%M:%S %p")
+            out['timestamp'] = calendar.timegm(obj.timetuple())
             return out
         if type(obj) == pandas.core.frame.DataFrame:
             out = {}

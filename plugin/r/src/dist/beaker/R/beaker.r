@@ -233,8 +233,8 @@ convertToJSON <- function(val) {
       o = toJSON(as.character(val))
     }
   } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
-  	p = "{ \"type\": \"Date\", \"value\": \""
-  	p = paste(p, format(val,format='%b %d, %Y %I:%M:%S %p'), sep='')
+  	p = "{ \"type\": \"Date\", \"timestamp\": \""
+  	p = paste(p, as.POSIXct(val), sep='')
   	p = paste(p, "\" }", sep='')
   	o = p
   } else if (class(val) == "list") {
@@ -347,8 +347,8 @@ transformJSON <- function(tres) {
 		  else if (tres[["type"]] == "OutputContainer") {
 		    # nothing to do here
 		  }
-		  else if (tres[["type"]] == "Date" && exists("value", where=tres)) {
-		  	tres = strptime(tres[["value"]],format='%b %d, %Y %I:%M:%S %p')
+		  else if (tres[["type"]] == "Date" && exists("timestamp", where=tres)) {
+		  	tres = as.POSIXct(tres[["timestamp"]], origin="1970-01-01", tz="America/New_York")
 		  }
 	  } else {
 	    iteml <- length(tres)

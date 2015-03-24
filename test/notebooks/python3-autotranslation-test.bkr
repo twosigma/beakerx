@@ -55,7 +55,7 @@
     ],
     "cells": [
         {
-            "id": "codeRYNkH0",
+            "id": "maintest",
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
@@ -73,21 +73,21 @@
                     "    d.reject(\"ERROR returning boolean\");",
                     "  else if (typeof(r[3]) !== 'string') ",
                     "    d.reject(\"ERROR returning string\");",
-                    "  else if (typeof(r[4]) !== 'object' || r[4].type !== 'Date')",
+                    "  else if (typeof(r[4]) !== 'object' || !(r[4] instanceof Date))",
                     "    d.reject(\"ERROR returning date\");",
-                    "  else if (typeof(r[5]) !== 'object' || r[5].type !== 'TableDisplay' || r[5].subtype !== 'TableDisplay') ",
+                    "  else if (typeof(r[5]) !== 'object' || !(r[5] instanceof DataFrame)) ",
                     "    d.reject(\"ERROR returning data frame\");",
-                    "  else if (typeof(r[6]) !== 'object' || r[6].type !== 'TableDisplay' || r[6].subtype !== 'ListOfMaps') ",
+                    "  else if (typeof(r[6]) !== 'object' || !_.isArray(r[6]) || !_.isObject(r[6][0])) ",
                     "    d.reject(\"ERROR returning list of dictionaries\");",
                     "  else if (!_.isArray(r[7])) ",
                     "    d.reject(\"ERROR returning basic collection\");",
-                    "  else if (typeof(r[8]) !== 'object' || r[8].type !== 'TableDisplay' || r[8].subtype !== 'Matrix') ",
+                    "  else if (typeof(r[8]) !== 'object' || !_.isArray(r[8]) || !_.isArray(r[8][0])) ",
                     "    d.reject(\"ERROR returning matrix\");",
                     "  //else if (!_.isArray(r[9])) ",
                     "  //  d.reject(\"ERROR returning matrix of objects\");",
                     "  else if (!_.isArray(r[10])) ",
                     "    d.reject(\"ERROR returning xD array of basic types\");",
-                    "  else if (typeof(r[11]) !== 'object' || r[11].type !== 'TableDisplay' || r[11].subtype !== 'Dictionary') ",
+                    "  else if (typeof(r[11]) !== 'object' || !_.isObject(r[11])) ",
                     "    d.reject(\"ERROR returning dictionary\");",
                     "  //else if (typeof(r[12]) !== 'object' || r[12].type !== 'Plot') ",
                     "  //  d.reject(\"ERROR returning plot\");",
@@ -110,21 +110,21 @@
                     "    d.reject(\"ERROR setting boolean\");",
                     "  else if (typeof(beaker.v3) !== 'string') ",
                     "    d.reject(\"ERROR setting string\");",
-                    "  else if (typeof(beaker.v4) !== 'object' || beaker.v4.type !== 'Date')",
+                    "  else if (typeof(beaker.v4) !== 'object' || !(beaker.v4 instanceof Date))",
                     "    d.reject(\"ERROR setting date\");",
-                    "  else if (typeof(beaker.v5) !== 'object' || beaker.v5.type !== 'TableDisplay' || beaker.v5.subtype !== 'TableDisplay') ",
+                    "  else if (typeof(beaker.v5) !== 'object' || !(beaker.v5 instanceof DataFrame)) ",
                     "    d.reject(\"ERROR setting data frame\");",
-                    "  else if (typeof(beaker.v6) !== 'object' || beaker.v6.type !== 'TableDisplay' || beaker.v6.subtype !== 'ListOfMaps') ",
+                    "  else if (typeof(beaker.v6) !== 'object' || !_.isArray(beaker.v6) || !_.isObject(beaker.v6)) ",
                     "    d.reject(\"ERROR setting list of dictionaries\");",
                     "  else if (!_.isArray(beaker.v7)) ",
                     "    d.reject(\"ERROR setting basic collection\");",
-                    "  else if (typeof(beaker.v8) !== 'object' || beaker.v8.type !== 'TableDisplay' || beaker.v8.subtype !== 'Matrix') ",
+                    "  else if (typeof(beaker.v8) !== 'object' || !_.isArray(beaker.v8) || !_.isArray(beaker.v8[0])) ",
                     "    d.reject(\"ERROR setting matrix\");",
                     "  //else if (!_.isArray(beaker.v9)) ",
                     "  //  d.reject(\"ERROR setting matrix of objects\");",
                     "  else if (!_.isArray(beaker.v10)) ",
                     "    d.reject(\"ERROR setting xD array of basic types\");",
-                    "  else if (typeof(beaker.v11) !== 'object' || beaker.v11.type !== 'TableDisplay' || beaker.v11.subtype !== 'Dictionary') ",
+                    "  else if (typeof(beaker.v11) !== 'object' || !_.isObject(beaker.v11)) ",
                     "    d.reject(\"ERROR setting dictionary\");",
                     "  //else if (typeof(beaker.v12) !== 'object' || beaker.v12.type !== 'Plot') ",
                     "  //  d.reject(\"ERROR setting plot\");",
@@ -155,7 +155,7 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "elapsedTime": 41816
             },
             "evaluatorReader": true,
@@ -216,8 +216,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "80845a2a-4b22-4e4f-b5a3-84596ef7f050",
-                "elapsedTime": 1489
+                "shellId": "0a699034-f2f0-41f7-adb6-a5d45bec2a8b",
+                "elapsedTime": 20215
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -295,10 +295,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 624,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 435,
                 "dataresult": "OK"
             },
             "evaluatorReader": true,
@@ -327,10 +327,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 409,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 562,
                 "dataresult": 1
             },
             "evaluatorReader": true,
@@ -351,10 +351,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 2082,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2026,
                 "dataresult": 10.34
             },
             "evaluatorReader": true,
@@ -375,10 +375,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 2046,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2040,
                 "dataresult": true
             },
             "evaluatorReader": true,
@@ -399,10 +399,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 1999,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2038,
                 "dataresult": "test string"
             },
             "evaluatorReader": true,
@@ -425,8 +425,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 2086,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2010,
                 "dataresult": {
                     "type": "Date",
                     "value": "Oct 21, 2005 06:47:22 PM"
@@ -457,8 +457,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 2037,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 16213,
                 "state": {}
             },
             "evaluatorReader": true,
@@ -484,8 +484,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 2072,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2005,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -543,10 +543,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 425,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2072,
                 "dataresult": [
                     23.45,
                     34.5,
@@ -575,8 +575,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 421,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 1985,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "Matrix",
@@ -644,10 +644,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 449,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2023,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -676,11 +676,63 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 370,
-                "dataresult": "not supported"
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2076,
+                "dataresult": [
+                    [
+                        [
+                            0,
+                            1,
+                            2
+                        ],
+                        [
+                            3,
+                            4,
+                            5
+                        ],
+                        [
+                            6,
+                            7,
+                            8
+                        ]
+                    ],
+                    [
+                        [
+                            9,
+                            10,
+                            11
+                        ],
+                        [
+                            12,
+                            13,
+                            14
+                        ],
+                        [
+                            15,
+                            16,
+                            17
+                        ]
+                    ],
+                    [
+                        [
+                            18,
+                            19,
+                            20
+                        ],
+                        [
+                            21,
+                            22,
+                            23
+                        ],
+                        [
+                            24,
+                            25,
+                            26
+                        ]
+                    ]
+                ]
             },
             "evaluatorReader": true,
             "lineCount": 12,
@@ -702,8 +754,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 371,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2011,
                 "dataresult": "{ \"type\":\"TableDisplay\",\"subtype\":\"Dictionary\",\"columnNames\": [\"Key\",\"Value\"], \"values\": [[\"name\",\"Fred\"],[\"a\",\"10.4\"],[\"b\",\"33.5\"],[\"age\",\"5.3\"]] }"
             },
             "evaluatorReader": true,
@@ -724,10 +776,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 440,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 411,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -748,10 +800,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 323,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2134,
                 "hidden": true,
                 "dataresult": "not supported"
             },
@@ -778,8 +830,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 328,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2040,
                 "dataresult": {
                     "type": "OutputContainer",
                     "items": [
@@ -3885,22 +3937,92 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 590,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 4071,
                 "dataresult": [
                     {
-                        "cellId": "codecell",
-                        "evaluatorId": "R",
-                        "code": "# output container - 14\na = beaker::createOutputContainer(list(mpg,c(0,1,2,3,4)))\nbeaker::set(\"v14\", a)\na",
-                        "output": [
-                            "Error in beaker::createOutputContainer(list(mpg, c(0, 1, 2, 3, 4))) : ",
-                            "  object 'mpg' not found",
-                            ""
-                        ],
+                        "code": "# output container - 14\na = beaker.createOutputContainer()\na.addItem(aapl.head())\na.addItem([2,3,4,5,6])\nbeaker.v14 = a\na\n",
                         "tags": "groovyret",
-                        "type": "BeakerCodeCell"
+                        "outputtype": "OutputContainer",
+                        "output": {
+                            "items": [
+                                {
+                                    "values": [
+                                        [
+                                            302.22,
+                                            305.6,
+                                            302.2,
+                                            304.18,
+                                            105972300,
+                                            40.99
+                                        ],
+                                        [
+                                            307,
+                                            310.19,
+                                            307,
+                                            309.36,
+                                            108482500,
+                                            41.69
+                                        ],
+                                        [
+                                            311.37,
+                                            312.88,
+                                            308.53,
+                                            312.8,
+                                            127087100,
+                                            42.15
+                                        ],
+                                        [
+                                            315.45,
+                                            320.18,
+                                            315.03,
+                                            318.27,
+                                            160622000,
+                                            42.89
+                                        ],
+                                        [
+                                            317.99,
+                                            319.57,
+                                            316.75,
+                                            317.13,
+                                            90313300,
+                                            42.73
+                                        ]
+                                    ],
+                                    "subtype": "TableDisplay",
+                                    "type": "TableDisplay",
+                                    "types": [
+                                        "double",
+                                        "double",
+                                        "double",
+                                        "double",
+                                        "double",
+                                        "double"
+                                    ],
+                                    "columnNames": [
+                                        "Open",
+                                        "High",
+                                        "Low",
+                                        "Close",
+                                        "Volume",
+                                        "Adj Close"
+                                    ]
+                                },
+                                [
+                                    2,
+                                    3,
+                                    4,
+                                    5,
+                                    6
+                                ]
+                            ],
+                            "type": "OutputContainer"
+                        },
+                        "type": "BeakerCodeCell",
+                        "cellId": "codecell",
+                        "evaluatorId": "Python3"
                     }
                 ]
             },
@@ -3923,68 +4045,55 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 377,
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2051,
                 "dataresult": {
-                    "name": "Fred",
-                    "mynumbers": [
-                        23.45,
-                        34.5,
-                        445.6,
-                        455.6,
-                        0.3
-                    ],
                     "plot": {
-                        "type": "TableDisplay",
-                        "subtype": "Matrix",
-                        "columnNames": [
-                            "c1",
-                            "c2",
-                            "c3",
-                            "c4"
-                        ],
                         "values": [
                             [
                                 1,
-                                6,
-                                11,
-                                16
-                            ],
-                            [
                                 2,
-                                7,
-                                12,
-                                17
+                                5
                             ],
                             [
                                 3,
-                                8,
-                                13,
-                                18
-                            ],
-                            [
                                 4,
-                                9,
-                                14,
-                                19
-                            ],
-                            [
-                                5,
-                                10,
-                                15,
-                                20
+                                5
                             ]
                         ],
-                        "types": [
-                            "string",
-                            "string",
-                            "string",
-                            "string"
+                        "subtype": "Matrix",
+                        "type": "TableDisplay",
+                        "columnNames": [
+                            "c0",
+                            "c1",
+                            "c2"
                         ]
                     },
-                    "age": 5.3
+                    "age": 5.3,
+                    "name": "Fred",
+                    "mynumbers": {
+                        "values": [
+                            [
+                                1,
+                                2,
+                                5
+                            ],
+                            [
+                                3,
+                                4,
+                                5
+                            ]
+                        ],
+                        "subtype": "Matrix",
+                        "type": "TableDisplay",
+                        "columnNames": [
+                            "c0",
+                            "c1",
+                            "c2"
+                        ]
+                    }
                 }
             },
             "evaluatorReader": true,
@@ -4008,10 +4117,150 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "FCCE44E28AA54D79BA471876B3148F73",
-                "elapsedTime": 398
+                "shellId": "E104D04A92E84FCA8FC75A39CA1B9FA3",
+                "elapsedTime": 2046,
+                "dataresult": [
+                    {
+                        "plot": {
+                            "values": [
+                                [
+                                    1,
+                                    2,
+                                    5
+                                ],
+                                [
+                                    3,
+                                    4,
+                                    5
+                                ]
+                            ],
+                            "subtype": "Matrix",
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "c0",
+                                "c1",
+                                "c2"
+                            ]
+                        },
+                        "age": 5.3,
+                        "name": "Fred1",
+                        "mynumbers": {
+                            "values": [
+                                [
+                                    1,
+                                    2,
+                                    5
+                                ],
+                                [
+                                    3,
+                                    4,
+                                    5
+                                ]
+                            ],
+                            "subtype": "Matrix",
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "c0",
+                                "c1",
+                                "c2"
+                            ]
+                        }
+                    },
+                    {
+                        "plot": {
+                            "values": [
+                                [
+                                    1,
+                                    2,
+                                    5
+                                ],
+                                [
+                                    3,
+                                    4,
+                                    5
+                                ]
+                            ],
+                            "subtype": "Matrix",
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "c0",
+                                "c1",
+                                "c2"
+                            ]
+                        },
+                        "age": 5.3,
+                        "name": "Fred2",
+                        "mynumbers": {
+                            "values": [
+                                [
+                                    1,
+                                    2,
+                                    5
+                                ],
+                                [
+                                    3,
+                                    4,
+                                    5
+                                ]
+                            ],
+                            "subtype": "Matrix",
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "c0",
+                                "c1",
+                                "c2"
+                            ]
+                        }
+                    },
+                    {
+                        "plot": {
+                            "values": [
+                                [
+                                    1,
+                                    2,
+                                    5
+                                ],
+                                [
+                                    3,
+                                    4,
+                                    5
+                                ]
+                            ],
+                            "subtype": "Matrix",
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "c0",
+                                "c1",
+                                "c2"
+                            ]
+                        },
+                        "age": 5.3,
+                        "name": "Fred3",
+                        "mynumbers": {
+                            "values": [
+                                [
+                                    1,
+                                    2,
+                                    5
+                                ],
+                                [
+                                    3,
+                                    4,
+                                    5
+                                ]
+                            ],
+                            "subtype": "Matrix",
+                            "type": "TableDisplay",
+                            "columnNames": [
+                                "c0",
+                                "c1",
+                                "c2"
+                            ]
+                        }
+                    }
+                ]
             },
             "evaluatorReader": true,
             "lineCount": 7,
@@ -4026,9 +4275,11 @@
             "test string",
             {
                 "type": "Date",
-                "value": "Mar 23, 2015 09:04:26 AM"
+                "timestamp": 1427207608
             },
             {
+                "type": "TableDisplay",
+                "subtype": "TableDisplay",
                 "values": [
                     [
                         302.22,
@@ -4071,8 +4322,6 @@
                         42.73
                     ]
                 ],
-                "subtype": "TableDisplay",
-                "type": "TableDisplay",
                 "types": [
                     "double",
                     "double",
@@ -4091,6 +4340,16 @@
                 ]
             },
             {
+                "type": "TableDisplay",
+                "subtype": "ListOfMaps",
+                "columnNames": [
+                    "a",
+                    "b",
+                    "name",
+                    "bc",
+                    "age",
+                    "affa"
+                ],
                 "values": [
                     [
                         10.4,
@@ -4115,20 +4374,10 @@
                         33.5,
                         {
                             "type": "Date",
-                            "value": "Mar 23, 2015 09:04:30 AM"
+                            "timestamp": 1427207626
                         },
                         ""
                     ]
-                ],
-                "subtype": "ListOfMaps",
-                "type": "TableDisplay",
-                "columnNames": [
-                    "a",
-                    "b",
-                    "name",
-                    "bc",
-                    "age",
-                    "affa"
                 ]
             },
             [
@@ -4139,6 +4388,7 @@
                 0.3
             ],
             {
+                "type": "TableDisplay",
                 "values": [
                     [
                         1,
@@ -4152,68 +4402,115 @@
                     ]
                 ],
                 "subtype": "Matrix",
-                "type": "TableDisplay",
                 "columnNames": [
                     "c0",
                     "c1",
                     "c2"
+                ],
+                "types": [
+                    "double",
+                    "double",
+                    "double"
                 ]
             },
             "not supported",
             [
-                [
-                    [
-                        0,
-                        1,
-                        2
+                {
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            0,
+                            1,
+                            2
+                        ],
+                        [
+                            3,
+                            4,
+                            5
+                        ],
+                        [
+                            6,
+                            7,
+                            8
+                        ]
                     ],
-                    [
-                        3,
-                        4,
-                        5
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2"
                     ],
-                    [
-                        6,
-                        7,
-                        8
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
-                ],
-                [
-                    [
-                        9,
-                        10,
-                        11
+                },
+                {
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            9,
+                            10,
+                            11
+                        ],
+                        [
+                            12,
+                            13,
+                            14
+                        ],
+                        [
+                            15,
+                            16,
+                            17
+                        ]
                     ],
-                    [
-                        12,
-                        13,
-                        14
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2"
                     ],
-                    [
-                        15,
-                        16,
-                        17
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
-                ],
-                [
-                    [
-                        18,
-                        19,
-                        20
+                },
+                {
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            18,
+                            19,
+                            20
+                        ],
+                        [
+                            21,
+                            22,
+                            23
+                        ],
+                        [
+                            24,
+                            25,
+                            26
+                        ]
                     ],
-                    [
-                        21,
-                        22,
-                        23
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2"
                     ],
-                    [
-                        24,
-                        25,
-                        26
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
-                ]
+                }
             ],
             {
+                "type": "TableDisplay",
                 "values": [
                     [
                         "a",
@@ -4233,7 +4530,6 @@
                     ]
                 ],
                 "subtype": "Dictionary",
-                "type": "TableDisplay",
                 "columnNames": [
                     "Key",
                     "Value"
@@ -4244,6 +4540,8 @@
             {
                 "items": [
                     {
+                        "type": "TableDisplay",
+                        "subtype": "TableDisplay",
                         "values": [
                             [
                                 302.22,
@@ -4286,8 +4584,6 @@
                                 42.73
                             ]
                         ],
-                        "subtype": "TableDisplay",
-                        "type": "TableDisplay",
                         "types": [
                             "double",
                             "double",
@@ -4323,6 +4619,8 @@
                     "output": {
                         "items": [
                             {
+                                "type": "TableDisplay",
+                                "subtype": "TableDisplay",
                                 "values": [
                                     [
                                         302.22,
@@ -4365,8 +4663,6 @@
                                         42.73
                                     ]
                                 ],
-                                "subtype": "TableDisplay",
-                                "type": "TableDisplay",
                                 "types": [
                                     "double",
                                     "double",
@@ -4401,6 +4697,7 @@
             ],
             {
                 "plot": {
+                    "type": "TableDisplay",
                     "values": [
                         [
                             1,
@@ -4414,16 +4711,21 @@
                         ]
                     ],
                     "subtype": "Matrix",
-                    "type": "TableDisplay",
                     "columnNames": [
                         "c0",
                         "c1",
                         "c2"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
                 },
                 "age": 5.3,
                 "name": "Fred",
                 "mynumbers": {
+                    "type": "TableDisplay",
                     "values": [
                         [
                             1,
@@ -4437,17 +4739,22 @@
                         ]
                     ],
                     "subtype": "Matrix",
-                    "type": "TableDisplay",
                     "columnNames": [
                         "c0",
                         "c1",
                         "c2"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
                 }
             },
             [
                 {
                     "plot": {
+                        "type": "TableDisplay",
                         "values": [
                             [
                                 1,
@@ -4461,16 +4768,21 @@
                             ]
                         ],
                         "subtype": "Matrix",
-                        "type": "TableDisplay",
                         "columnNames": [
                             "c0",
                             "c1",
                             "c2"
+                        ],
+                        "types": [
+                            "double",
+                            "double",
+                            "double"
                         ]
                     },
                     "age": 5.3,
                     "name": "Fred1",
                     "mynumbers": {
+                        "type": "TableDisplay",
                         "values": [
                             [
                                 1,
@@ -4484,16 +4796,21 @@
                             ]
                         ],
                         "subtype": "Matrix",
-                        "type": "TableDisplay",
                         "columnNames": [
                             "c0",
                             "c1",
                             "c2"
+                        ],
+                        "types": [
+                            "double",
+                            "double",
+                            "double"
                         ]
                     }
                 },
                 {
                     "plot": {
+                        "type": "TableDisplay",
                         "values": [
                             [
                                 1,
@@ -4507,16 +4824,21 @@
                             ]
                         ],
                         "subtype": "Matrix",
-                        "type": "TableDisplay",
                         "columnNames": [
                             "c0",
                             "c1",
                             "c2"
+                        ],
+                        "types": [
+                            "double",
+                            "double",
+                            "double"
                         ]
                     },
                     "age": 5.3,
                     "name": "Fred2",
                     "mynumbers": {
+                        "type": "TableDisplay",
                         "values": [
                             [
                                 1,
@@ -4530,16 +4852,21 @@
                             ]
                         ],
                         "subtype": "Matrix",
-                        "type": "TableDisplay",
                         "columnNames": [
                             "c0",
                             "c1",
                             "c2"
+                        ],
+                        "types": [
+                            "double",
+                            "double",
+                            "double"
                         ]
                     }
                 },
                 {
                     "plot": {
+                        "type": "TableDisplay",
                         "values": [
                             [
                                 1,
@@ -4553,16 +4880,21 @@
                             ]
                         ],
                         "subtype": "Matrix",
-                        "type": "TableDisplay",
                         "columnNames": [
                             "c0",
                             "c1",
                             "c2"
+                        ],
+                        "types": [
+                            "double",
+                            "double",
+                            "double"
                         ]
                     },
                     "age": 5.3,
                     "name": "Fred3",
                     "mynumbers": {
+                        "type": "TableDisplay",
                         "values": [
                             [
                                 1,
@@ -4576,11 +4908,15 @@
                             ]
                         ],
                         "subtype": "Matrix",
-                        "type": "TableDisplay",
                         "columnNames": [
                             "c0",
                             "c1",
                             "c2"
+                        ],
+                        "types": [
+                            "double",
+                            "double",
+                            "double"
                         ]
                     }
                 }
@@ -4592,9 +4928,11 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "value": "Mar 23, 2015 09:04:26 AM"
+            "timestamp": 1427207608
         },
         "v5": {
+            "type": "TableDisplay",
+            "subtype": "TableDisplay",
             "values": [
                 [
                     302.22,
@@ -4637,8 +4975,6 @@
                     42.73
                 ]
             ],
-            "subtype": "TableDisplay",
-            "type": "TableDisplay",
             "types": [
                 "double",
                 "double",
@@ -4657,6 +4993,16 @@
             ]
         },
         "v6": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "a",
+                "b",
+                "name",
+                "bc",
+                "age",
+                "affa"
+            ],
             "values": [
                 [
                     10.4,
@@ -4681,20 +5027,10 @@
                     33.5,
                     {
                         "type": "Date",
-                        "value": "Mar 23, 2015 09:04:30 AM"
+                        "timestamp": 1427207626
                     },
                     ""
                 ]
-            ],
-            "subtype": "ListOfMaps",
-            "type": "TableDisplay",
-            "columnNames": [
-                "a",
-                "b",
-                "name",
-                "bc",
-                "age",
-                "affa"
             ]
         },
         "v7": [
@@ -4705,6 +5041,7 @@
             0.3
         ],
         "v8": {
+            "type": "TableDisplay",
             "values": [
                 [
                     1,
@@ -4718,68 +5055,115 @@
                 ]
             ],
             "subtype": "Matrix",
-            "type": "TableDisplay",
             "columnNames": [
                 "c0",
                 "c1",
                 "c2"
+            ],
+            "types": [
+                "double",
+                "double",
+                "double"
             ]
         },
         "v9": "not supported",
         "v10": [
-            [
-                [
-                    0,
-                    1,
-                    2
+            {
+                "type": "TableDisplay",
+                "values": [
+                    [
+                        0,
+                        1,
+                        2
+                    ],
+                    [
+                        3,
+                        4,
+                        5
+                    ],
+                    [
+                        6,
+                        7,
+                        8
+                    ]
                 ],
-                [
-                    3,
-                    4,
-                    5
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2"
                 ],
-                [
-                    6,
-                    7,
-                    8
+                "types": [
+                    "double",
+                    "double",
+                    "double"
                 ]
-            ],
-            [
-                [
-                    9,
-                    10,
-                    11
+            },
+            {
+                "type": "TableDisplay",
+                "values": [
+                    [
+                        9,
+                        10,
+                        11
+                    ],
+                    [
+                        12,
+                        13,
+                        14
+                    ],
+                    [
+                        15,
+                        16,
+                        17
+                    ]
                 ],
-                [
-                    12,
-                    13,
-                    14
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2"
                 ],
-                [
-                    15,
-                    16,
-                    17
+                "types": [
+                    "double",
+                    "double",
+                    "double"
                 ]
-            ],
-            [
-                [
-                    18,
-                    19,
-                    20
+            },
+            {
+                "type": "TableDisplay",
+                "values": [
+                    [
+                        18,
+                        19,
+                        20
+                    ],
+                    [
+                        21,
+                        22,
+                        23
+                    ],
+                    [
+                        24,
+                        25,
+                        26
+                    ]
                 ],
-                [
-                    21,
-                    22,
-                    23
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2"
                 ],
-                [
-                    24,
-                    25,
-                    26
+                "types": [
+                    "double",
+                    "double",
+                    "double"
                 ]
-            ]
+            }
         ],
         "v11": {
+            "type": "TableDisplay",
             "values": [
                 [
                     "a",
@@ -4799,7 +5183,6 @@
                 ]
             ],
             "subtype": "Dictionary",
-            "type": "TableDisplay",
             "columnNames": [
                 "Key",
                 "Value"
@@ -4810,6 +5193,8 @@
         "v14": {
             "items": [
                 {
+                    "type": "TableDisplay",
+                    "subtype": "TableDisplay",
                     "values": [
                         [
                             302.22,
@@ -4852,8 +5237,6 @@
                             42.73
                         ]
                     ],
-                    "subtype": "TableDisplay",
-                    "type": "TableDisplay",
                     "types": [
                         "double",
                         "double",
@@ -4889,6 +5272,8 @@
                 "output": {
                     "items": [
                         {
+                            "type": "TableDisplay",
+                            "subtype": "TableDisplay",
                             "values": [
                                 [
                                     302.22,
@@ -4931,8 +5316,6 @@
                                     42.73
                                 ]
                             ],
-                            "subtype": "TableDisplay",
-                            "type": "TableDisplay",
                             "types": [
                                 "double",
                                 "double",
@@ -4967,6 +5350,7 @@
         ],
         "v16": {
             "plot": {
+                "type": "TableDisplay",
                 "values": [
                     [
                         1,
@@ -4980,16 +5364,21 @@
                     ]
                 ],
                 "subtype": "Matrix",
-                "type": "TableDisplay",
                 "columnNames": [
                     "c0",
                     "c1",
                     "c2"
+                ],
+                "types": [
+                    "double",
+                    "double",
+                    "double"
                 ]
             },
             "age": 5.3,
             "name": "Fred",
             "mynumbers": {
+                "type": "TableDisplay",
                 "values": [
                     [
                         1,
@@ -5003,17 +5392,22 @@
                     ]
                 ],
                 "subtype": "Matrix",
-                "type": "TableDisplay",
                 "columnNames": [
                     "c0",
                     "c1",
                     "c2"
+                ],
+                "types": [
+                    "double",
+                    "double",
+                    "double"
                 ]
             }
         },
         "v17": [
             {
                 "plot": {
+                    "type": "TableDisplay",
                     "values": [
                         [
                             1,
@@ -5027,16 +5421,21 @@
                         ]
                     ],
                     "subtype": "Matrix",
-                    "type": "TableDisplay",
                     "columnNames": [
                         "c0",
                         "c1",
                         "c2"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
                 },
                 "age": 5.3,
                 "name": "Fred1",
                 "mynumbers": {
+                    "type": "TableDisplay",
                     "values": [
                         [
                             1,
@@ -5050,16 +5449,21 @@
                         ]
                     ],
                     "subtype": "Matrix",
-                    "type": "TableDisplay",
                     "columnNames": [
                         "c0",
                         "c1",
                         "c2"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
                 }
             },
             {
                 "plot": {
+                    "type": "TableDisplay",
                     "values": [
                         [
                             1,
@@ -5073,16 +5477,21 @@
                         ]
                     ],
                     "subtype": "Matrix",
-                    "type": "TableDisplay",
                     "columnNames": [
                         "c0",
                         "c1",
                         "c2"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
                 },
                 "age": 5.3,
                 "name": "Fred2",
                 "mynumbers": {
+                    "type": "TableDisplay",
                     "values": [
                         [
                             1,
@@ -5096,16 +5505,21 @@
                         ]
                     ],
                     "subtype": "Matrix",
-                    "type": "TableDisplay",
                     "columnNames": [
                         "c0",
                         "c1",
                         "c2"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
                 }
             },
             {
                 "plot": {
+                    "type": "TableDisplay",
                     "values": [
                         [
                             1,
@@ -5119,16 +5533,21 @@
                         ]
                     ],
                     "subtype": "Matrix",
-                    "type": "TableDisplay",
                     "columnNames": [
                         "c0",
                         "c1",
                         "c2"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
                 },
                 "age": 5.3,
                 "name": "Fred3",
                 "mynumbers": {
+                    "type": "TableDisplay",
                     "values": [
                         [
                             1,
@@ -5142,11 +5561,15 @@
                         ]
                     ],
                     "subtype": "Matrix",
-                    "type": "TableDisplay",
                     "columnNames": [
                         "c0",
                         "c1",
                         "c2"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
                 }
             }

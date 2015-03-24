@@ -53,7 +53,7 @@
     ],
     "cells": [
         {
-            "id": "codeRYNkH0",
+            "id": "maintest",
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
@@ -71,21 +71,21 @@
                     "    d.reject(\"ERROR returning boolean\");",
                     "  else if (typeof(r[3]) !== 'string') ",
                     "    d.reject(\"ERROR returning string\");",
-                    "  else if (typeof(r[4]) !== 'object' || r[4].type !== 'Date')",
+                    "  else if (typeof(r[4]) !== 'object' || !(r[4] instanceof Date))",
                     "    d.reject(\"ERROR returning date\");",
-                    "  else if (typeof(r[5]) !== 'object' || r[5].type !== 'TableDisplay' || r[5].subtype !== 'TableDisplay') ",
+                    "  else if (typeof(r[5]) !== 'object' || !(r[5] instanceof DataFrame)) ",
                     "    d.reject(\"ERROR returning data frame\");",
-                    "  else if (typeof(r[6]) !== 'object' || r[6].type !== 'TableDisplay' || r[6].subtype !== 'ListOfMaps') ",
+                    "  else if (typeof(r[6]) !== 'object' || !_.isArray(r[6]) || !_.isObject(r[6][0])) ",
                     "    d.reject(\"ERROR returning list of dictionaries\");",
                     "  else if (!_.isArray(r[7])) ",
                     "    d.reject(\"ERROR returning basic collection\");",
-                    "  else if (typeof(r[8]) !== 'object' || r[8].type !== 'TableDisplay' || r[8].subtype !== 'Matrix') ",
+                    "  else if (typeof(r[8]) !== 'object' || !_.isArray(r[8]) || !_.isArray(r[8][0])) ",
                     "    d.reject(\"ERROR returning matrix\");",
                     "  //else if (!_.isArray(r[9])) ",
                     "  //  d.reject(\"ERROR returning matrix of objects\");",
                     "  //else if (!_.isArray(r[10])) ",
                     "  //  d.reject(\"ERROR returning xD array of basic types\");",
-                    "  else if (typeof(r[11]) !== 'object' || r[11].type !== 'TableDisplay' || r[11].subtype !== 'Dictionary') ",
+                    "  else if (typeof(r[11]) !== 'object' || !_.isObject(r[11])) ",
                     "    d.reject(\"ERROR returning dictionary\");",
                     "  //else if (typeof(r[12]) !== 'object' || r[12].type !== 'Plot') ",
                     "  //  d.reject(\"ERROR returning plot\");",
@@ -108,21 +108,21 @@
                     "    d.reject(\"ERROR setting boolean\");",
                     "  else if (typeof(beaker.v3) !== 'string') ",
                     "    d.reject(\"ERROR setting string\");",
-                    "  else if (typeof(beaker.v4) !== 'object' || beaker.v4.type !== 'Date')",
+                    "  else if (typeof(beaker.v4) !== 'object' || !(beaker.v4 instanceof Date))",
                     "    d.reject(\"ERROR setting date\");",
-                    "  else if (typeof(beaker.v5) !== 'object' || beaker.v5.type !== 'TableDisplay' || beaker.v5.subtype !== 'TableDisplay') ",
+                    "  else if (typeof(beaker.v5) !== 'object' || !(beaker.v5 instanceof DataFrame)) ",
                     "    d.reject(\"ERROR setting data frame\");",
-                    "  else if (typeof(beaker.v6) !== 'object' || beaker.v6.type !== 'TableDisplay' || beaker.v6.subtype !== 'ListOfMaps') ",
+                    "  else if (typeof(beaker.v6) !== 'object' || !_.isArray(beaker.v6) || !_.isObject(beaker.v6)) ",
                     "    d.reject(\"ERROR setting list of dictionaries\");",
                     "  else if (!_.isArray(beaker.v7)) ",
                     "    d.reject(\"ERROR setting basic collection\");",
-                    "  else if (typeof(beaker.v8) !== 'object' || beaker.v8.type !== 'TableDisplay' || beaker.v8.subtype !== 'Matrix') ",
+                    "  else if (typeof(beaker.v8) !== 'object' || !_.isArray(beaker.v8) || !_.isArray(beaker.v8[0])) ",
                     "    d.reject(\"ERROR setting matrix\");",
                     "  //else if (!_.isArray(beaker.v9)) ",
                     "  //  d.reject(\"ERROR setting matrix of objects\");",
                     "  //else if (!_.isArray(beaker.v10)) ",
                     "  //  d.reject(\"ERROR setting xD array of basic types\");",
-                    "  else if (typeof(beaker.v11) !== 'object' || beaker.v11.type !== 'TableDisplay' || beaker.v11.subtype !== 'Dictionary') ",
+                    "  else if (typeof(beaker.v11) !== 'object' || !_.isObject(beaker.v11)) ",
                     "    d.reject(\"ERROR setting dictionary\");",
                     "  //else if (typeof(beaker.v12) !== 'object' || beaker.v12.type !== 'Plot') ",
                     "  //  d.reject(\"ERROR setting plot\");",
@@ -153,7 +153,7 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "BeakerDisplay",
+                "selectedType": "Text",
                 "elapsedTime": 100871
             },
             "evaluatorReader": true,
@@ -214,8 +214,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "16c9b818-a9bf-4ed0-89d7-acd64b481e68",
-                "elapsedTime": 2861
+                "shellId": "7469d929-6133-44f4-b979-6bda02beafd1",
+                "elapsedTime": 1176
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -255,7 +255,7 @@
                     "  \"ERROR reading boolean\"",
                     "} else if (class(v3) != \"character\" || length(v3) != 1) {",
                     "  \"ERROR reading string\"",
-                    "} else if (class(v4) != \"POSIXlt\" || length(v4) != 1) {",
+                    "} else if (class(v4) != \"POSIXct\" || length(v4) != 1) {",
                     "  \"ERROR reading date\"",
                     "} else if (class(v5) != \"data.frame\") {",
                     "  \"ERROR reading data frame\"",
@@ -295,9 +295,12 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 994,
-                "dataresult": "OK"
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 1105,
+                "dataresult": {
+                    "type": "Date",
+                    "timestamp": "37776-03-17 09:26:40"
+                }
             },
             "evaluatorReader": true,
             "lineCount": 61,
@@ -327,8 +330,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 597,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 598,
                 "dataresult": 1
             },
             "evaluatorReader": true,
@@ -351,8 +354,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 562,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 580,
                 "dataresult": 10.34
             },
             "evaluatorReader": true,
@@ -375,8 +378,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 564,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 562,
                 "dataresult": true
             },
             "evaluatorReader": true,
@@ -399,8 +402,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 580,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 569,
                 "dataresult": "test string"
             },
             "evaluatorReader": true,
@@ -423,11 +426,11 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 564,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 619,
                 "dataresult": {
                     "type": "Date",
-                    "value": "Oct 21, 2005 06:47:22 PM"
+                    "timestamp": "2005-10-21 18:47:22"
                 }
             },
             "evaluatorReader": true,
@@ -450,8 +453,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 2221,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 1313,
                 "state": {},
                 "hidden": true
             },
@@ -475,8 +478,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 679,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 704,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -536,8 +539,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 634,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 647,
                 "dataresult": [
                     23.45,
                     34.5,
@@ -566,8 +569,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 567,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 593,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "Matrix",
@@ -637,8 +640,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 575,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 602,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -661,8 +664,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 603,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 593,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -685,8 +688,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 582,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 595,
                 "dataresult": "{ \"type\":\"TableDisplay\",\"subtype\":\"Dictionary\",\"columnNames\": [\"Key\",\"Value\"], \"values\": [[\"name\",\"Fred\"],[\"a\",\"10.4\"],[\"b\",\"33.5\"],[\"age\",\"5.3\"]] }"
             },
             "evaluatorReader": true,
@@ -709,8 +712,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 627,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 594,
                 "hidden": true,
                 "dataresult": "not supported"
             },
@@ -734,8 +737,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 592,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 596,
                 "hidden": true,
                 "dataresult": "not supported"
             },
@@ -759,8 +762,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 1784,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 1328,
                 "dataresult": {
                     "type": "OutputContainer",
                     "items": [
@@ -3868,8 +3871,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 1779,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 1502,
                 "dataresult": [
                     {
                         "cellId": "codecell",
@@ -3906,8 +3909,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 587,
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 597,
                 "dataresult": {
                     "name": "Fred",
                     "mynumbers": [
@@ -3991,8 +3994,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "99412193-ac0c-439f-b852-eb4a684c1f6f",
-                "elapsedTime": 595
+                "shellId": "8b57abd1-fe99-4a80-8069-951e7d536049",
+                "elapsedTime": 687
             },
             "evaluatorReader": true,
             "lineCount": 7,
@@ -4007,24 +4010,11 @@
             "test string",
             {
                 "type": "Date",
-                "value": "Oct 21, 2005 06:47:22 PM"
+                "timestamp": 1129934842000
             },
             {
                 "type": "TableDisplay",
                 "subtype": "TableDisplay",
-                "columnNames": [
-                    "manufacturer",
-                    "model",
-                    "displ",
-                    "year",
-                    "cyl",
-                    "trans",
-                    "drv",
-                    "cty",
-                    "hwy",
-                    "fl",
-                    "class"
-                ],
                 "values": [
                     [
                         "audi",
@@ -7081,6 +7071,19 @@
                     "string",
                     "select",
                     "select"
+                ],
+                "columnNames": [
+                    "manufacturer",
+                    "model",
+                    "displ",
+                    "year",
+                    "cyl",
+                    "trans",
+                    "drv",
+                    "cty",
+                    "hwy",
+                    "fl",
+                    "class"
                 ]
             },
             {
@@ -7130,13 +7133,6 @@
             ],
             {
                 "type": "TableDisplay",
-                "subtype": "Matrix",
-                "columnNames": [
-                    "c1",
-                    "c2",
-                    "c3",
-                    "c4"
-                ],
                 "values": [
                     [
                         1,
@@ -7169,22 +7165,24 @@
                         20
                     ]
                 ],
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2",
+                    "c3"
+                ],
                 "types": [
-                    "string",
-                    "string",
-                    "string",
-                    "string"
+                    "double",
+                    "double",
+                    "double",
+                    "double"
                 ]
             },
             "not supported",
             "not supported",
             {
                 "type": "TableDisplay",
-                "subtype": "Dictionary",
-                "columnNames": [
-                    "Key",
-                    "Value"
-                ],
                 "values": [
                     [
                         "name",
@@ -7202,6 +7200,11 @@
                         "age",
                         "5.3"
                     ]
+                ],
+                "subtype": "Dictionary",
+                "columnNames": [
+                    "Key",
+                    "Value"
                 ]
             },
             "not supported",
@@ -7212,19 +7215,6 @@
                     {
                         "type": "TableDisplay",
                         "subtype": "TableDisplay",
-                        "columnNames": [
-                            "manufacturer",
-                            "model",
-                            "displ",
-                            "year",
-                            "cyl",
-                            "trans",
-                            "drv",
-                            "cty",
-                            "hwy",
-                            "fl",
-                            "class"
-                        ],
                         "values": [
                             [
                                 "audi",
@@ -10281,6 +10271,19 @@
                             "string",
                             "select",
                             "select"
+                        ],
+                        "columnNames": [
+                            "manufacturer",
+                            "model",
+                            "displ",
+                            "year",
+                            "cyl",
+                            "trans",
+                            "drv",
+                            "cty",
+                            "hwy",
+                            "fl",
+                            "class"
                         ]
                     },
                     [
@@ -10304,19 +10307,6 @@
                             {
                                 "type": "TableDisplay",
                                 "subtype": "TableDisplay",
-                                "columnNames": [
-                                    "manufacturer",
-                                    "model",
-                                    "displ",
-                                    "year",
-                                    "cyl",
-                                    "trans",
-                                    "drv",
-                                    "cty",
-                                    "hwy",
-                                    "fl",
-                                    "class"
-                                ],
                                 "values": [
                                     [
                                         "audi",
@@ -13373,6 +13363,19 @@
                                     "string",
                                     "select",
                                     "select"
+                                ],
+                                "columnNames": [
+                                    "manufacturer",
+                                    "model",
+                                    "displ",
+                                    "year",
+                                    "cyl",
+                                    "trans",
+                                    "drv",
+                                    "cty",
+                                    "hwy",
+                                    "fl",
+                                    "class"
                                 ]
                             },
                             [
@@ -13399,13 +13402,6 @@
                 ],
                 "plot": {
                     "type": "TableDisplay",
-                    "subtype": "Matrix",
-                    "columnNames": [
-                        "c1",
-                        "c2",
-                        "c3",
-                        "c4"
-                    ],
                     "values": [
                         [
                             1,
@@ -13438,11 +13434,18 @@
                             20
                         ]
                     ],
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2",
+                        "c3"
+                    ],
                     "types": [
-                        "string",
-                        "string",
-                        "string",
-                        "string"
+                        "double",
+                        "double",
+                        "double",
+                        "double"
                     ]
                 },
                 "age": 5.3
@@ -13457,13 +13460,6 @@
                     ],
                     "plot": {
                         "type": "TableDisplay",
-                        "subtype": "Matrix",
-                        "columnNames": [
-                            "c1",
-                            "c2",
-                            "c3",
-                            "c4"
-                        ],
                         "values": [
                             [
                                 1,
@@ -13484,11 +13480,18 @@
                                 12
                             ]
                         ],
+                        "subtype": "Matrix",
+                        "columnNames": [
+                            "c0",
+                            "c1",
+                            "c2",
+                            "c3"
+                        ],
                         "types": [
-                            "string",
-                            "string",
-                            "string",
-                            "string"
+                            "double",
+                            "double",
+                            "double",
+                            "double"
                         ]
                     },
                     "age": 5.3
@@ -13504,13 +13507,6 @@
                     ],
                     "plot": {
                         "type": "TableDisplay",
-                        "subtype": "Matrix",
-                        "columnNames": [
-                            "c1",
-                            "c2",
-                            "c3",
-                            "c4"
-                        ],
                         "values": [
                             [
                                 1,
@@ -13543,11 +13539,18 @@
                                 20
                             ]
                         ],
+                        "subtype": "Matrix",
+                        "columnNames": [
+                            "c0",
+                            "c1",
+                            "c2",
+                            "c3"
+                        ],
                         "types": [
-                            "string",
-                            "string",
-                            "string",
-                            "string"
+                            "double",
+                            "double",
+                            "double",
+                            "double"
                         ]
                     },
                     "age": 5.3
@@ -13562,13 +13565,6 @@
                     ],
                     "plot": {
                         "type": "TableDisplay",
-                        "subtype": "Matrix",
-                        "columnNames": [
-                            "c1",
-                            "c2",
-                            "c3",
-                            "c4"
-                        ],
                         "values": [
                             [
                                 1,
@@ -13607,11 +13603,18 @@
                                 4
                             ]
                         ],
+                        "subtype": "Matrix",
+                        "columnNames": [
+                            "c0",
+                            "c1",
+                            "c2",
+                            "c3"
+                        ],
                         "types": [
-                            "string",
-                            "string",
-                            "string",
-                            "string"
+                            "double",
+                            "double",
+                            "double",
+                            "double"
                         ]
                     },
                     "age": 5.3
@@ -13624,24 +13627,11 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "value": "Oct 21, 2005 06:47:22 PM"
+            "timestamp": 1129934842000
         },
         "v5": {
             "type": "TableDisplay",
             "subtype": "TableDisplay",
-            "columnNames": [
-                "manufacturer",
-                "model",
-                "displ",
-                "year",
-                "cyl",
-                "trans",
-                "drv",
-                "cty",
-                "hwy",
-                "fl",
-                "class"
-            ],
             "values": [
                 [
                     "audi",
@@ -16698,6 +16688,19 @@
                 "string",
                 "select",
                 "select"
+            ],
+            "columnNames": [
+                "manufacturer",
+                "model",
+                "displ",
+                "year",
+                "cyl",
+                "trans",
+                "drv",
+                "cty",
+                "hwy",
+                "fl",
+                "class"
             ]
         },
         "v6": {
@@ -16747,13 +16750,6 @@
         ],
         "v8": {
             "type": "TableDisplay",
-            "subtype": "Matrix",
-            "columnNames": [
-                "c1",
-                "c2",
-                "c3",
-                "c4"
-            ],
             "values": [
                 [
                     1,
@@ -16786,23 +16782,24 @@
                     20
                 ]
             ],
+            "subtype": "Matrix",
+            "columnNames": [
+                "c0",
+                "c1",
+                "c2",
+                "c3"
+            ],
             "types": [
-                "string",
-                "string",
-                "string",
-                "string"
+                "double",
+                "double",
+                "double",
+                "double"
             ]
         },
         "v9": "not supported",
         "v10": [
             {
                 "type": "TableDisplay",
-                "columnNames": [
-                    "c0",
-                    "c1",
-                    "c2",
-                    "c3"
-                ],
                 "values": [
                     [
                         1,
@@ -16823,16 +16820,22 @@
                         10
                     ]
                 ],
-                "subtype": "Matrix"
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2",
+                    "c3"
+                ],
+                "types": [
+                    "double",
+                    "double",
+                    "double",
+                    "string"
+                ]
             },
             {
                 "type": "TableDisplay",
-                "columnNames": [
-                    "c0",
-                    "c1",
-                    "c2",
-                    "c3"
-                ],
                 "values": [
                     [
                         1,
@@ -16853,16 +16856,23 @@
                         10
                     ]
                 ],
-                "subtype": "Matrix"
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2",
+                    "c3"
+                ],
+                "types": [
+                    "double",
+                    "double",
+                    "double",
+                    "string"
+                ]
             }
         ],
         "v11": {
             "type": "TableDisplay",
-            "subtype": "Dictionary",
-            "columnNames": [
-                "Key",
-                "Value"
-            ],
             "values": [
                 [
                     "name",
@@ -16880,6 +16890,11 @@
                     "age",
                     "5.3"
                 ]
+            ],
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
             ]
         },
         "v12": "not supported",
@@ -16890,19 +16905,6 @@
                 {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
-                    "columnNames": [
-                        "manufacturer",
-                        "model",
-                        "displ",
-                        "year",
-                        "cyl",
-                        "trans",
-                        "drv",
-                        "cty",
-                        "hwy",
-                        "fl",
-                        "class"
-                    ],
                     "values": [
                         [
                             "audi",
@@ -19959,6 +19961,19 @@
                         "string",
                         "select",
                         "select"
+                    ],
+                    "columnNames": [
+                        "manufacturer",
+                        "model",
+                        "displ",
+                        "year",
+                        "cyl",
+                        "trans",
+                        "drv",
+                        "cty",
+                        "hwy",
+                        "fl",
+                        "class"
                     ]
                 },
                 [
@@ -19982,19 +19997,6 @@
                         {
                             "type": "TableDisplay",
                             "subtype": "TableDisplay",
-                            "columnNames": [
-                                "manufacturer",
-                                "model",
-                                "displ",
-                                "year",
-                                "cyl",
-                                "trans",
-                                "drv",
-                                "cty",
-                                "hwy",
-                                "fl",
-                                "class"
-                            ],
                             "values": [
                                 [
                                     "audi",
@@ -23051,6 +23053,19 @@
                                 "string",
                                 "select",
                                 "select"
+                            ],
+                            "columnNames": [
+                                "manufacturer",
+                                "model",
+                                "displ",
+                                "year",
+                                "cyl",
+                                "trans",
+                                "drv",
+                                "cty",
+                                "hwy",
+                                "fl",
+                                "class"
                             ]
                         },
                         [
@@ -23077,13 +23092,6 @@
             ],
             "plot": {
                 "type": "TableDisplay",
-                "subtype": "Matrix",
-                "columnNames": [
-                    "c1",
-                    "c2",
-                    "c3",
-                    "c4"
-                ],
                 "values": [
                     [
                         1,
@@ -23116,11 +23124,18 @@
                         20
                     ]
                 ],
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2",
+                    "c3"
+                ],
                 "types": [
-                    "string",
-                    "string",
-                    "string",
-                    "string"
+                    "double",
+                    "double",
+                    "double",
+                    "double"
                 ]
             },
             "age": 5.3
@@ -23135,13 +23150,6 @@
                 ],
                 "plot": {
                     "type": "TableDisplay",
-                    "subtype": "Matrix",
-                    "columnNames": [
-                        "c1",
-                        "c2",
-                        "c3",
-                        "c4"
-                    ],
                     "values": [
                         [
                             1,
@@ -23162,11 +23170,18 @@
                             12
                         ]
                     ],
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2",
+                        "c3"
+                    ],
                     "types": [
-                        "string",
-                        "string",
-                        "string",
-                        "string"
+                        "double",
+                        "double",
+                        "double",
+                        "double"
                     ]
                 },
                 "age": 5.3
@@ -23182,13 +23197,6 @@
                 ],
                 "plot": {
                     "type": "TableDisplay",
-                    "subtype": "Matrix",
-                    "columnNames": [
-                        "c1",
-                        "c2",
-                        "c3",
-                        "c4"
-                    ],
                     "values": [
                         [
                             1,
@@ -23221,11 +23229,18 @@
                             20
                         ]
                     ],
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2",
+                        "c3"
+                    ],
                     "types": [
-                        "string",
-                        "string",
-                        "string",
-                        "string"
+                        "double",
+                        "double",
+                        "double",
+                        "double"
                     ]
                 },
                 "age": 5.3
@@ -23240,13 +23255,6 @@
                 ],
                 "plot": {
                     "type": "TableDisplay",
-                    "subtype": "Matrix",
-                    "columnNames": [
-                        "c1",
-                        "c2",
-                        "c3",
-                        "c4"
-                    ],
                     "values": [
                         [
                             1,
@@ -23285,23 +23293,22 @@
                             4
                         ]
                     ],
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2",
+                        "c3"
+                    ],
                     "types": [
-                        "string",
-                        "string",
-                        "string",
-                        "string"
+                        "double",
+                        "double",
+                        "double",
+                        "double"
                     ]
                 },
                 "age": 5.3
             }
-        ],
-        "_beaker_model_output_result": {
-            "type": "BeakerDisplay",
-            "innertype": "Progress",
-            "object": {
-                "message": "running...",
-                "startTime": 1426697768970
-            }
-        }
+        ]
     }
 }

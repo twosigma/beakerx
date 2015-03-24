@@ -1,7 +1,6 @@
 package com.twosigma.beaker.jvm.serialization;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.util.Date;
 
 import org.codehaus.jackson.JsonGenerator;
@@ -17,7 +16,6 @@ public class DateSerializer extends JsonSerializer<Date> {
     synchronized(v) {
       jgen.writeStartObject();
       jgen.writeStringField("type",  "Date");
-      jgen.writeStringField("value", DateFormat.getDateTimeInstance().format(v));
       jgen.writeNumberField("timestamp", v.getTime());
       jgen.writeEndObject();
     }

@@ -62,25 +62,25 @@
                     "    d.reject(\"ERROR returning boolean\");",
                     "  else if (typeof(r[3]) !== 'string') ",
                     "    d.reject(\"ERROR returning string\");",
-                    "  else if (typeof(r[4]) !== 'object' || r[4].type !== 'Date')",
+                    "  else if (typeof(r[4]) !== 'object' || !(r[4] instanceof Date))",
                     "    d.reject(\"ERROR returning date\");",
-                    "  else if (typeof(r[5]) !== 'object' || r[5].type !== 'TableDisplay' || r[5].subtype !== 'TableDisplay') ",
+                    "  else if (typeof(r[5]) !== 'object' || !(r[5] instanceof DataFrame)) ",
                     "    d.reject(\"ERROR returning data frame\");",
-                    "  else if (typeof(r[6]) !== 'object' || r[6].type !== 'TableDisplay' || r[6].subtype !== 'ListOfMaps') ",
+                    "  else if (typeof(r[6]) !== 'object' || !_.isArray(r[6]) || !_.isObject(r[6][0])) ",
                     "    d.reject(\"ERROR returning list of dictionaries\");",
                     "  else if (!_.isArray(r[7])) ",
                     "    d.reject(\"ERROR returning basic collection\");",
-                    "  else if (typeof(r[8]) !== 'object' || r[8].type !== 'TableDisplay' || r[8].subtype !== 'Matrix') ",
+                    "  else if (typeof(r[8]) !== 'object' || !_.isArray(r[8]) || !_.isArray(r[8][0])) ",
                     "    d.reject(\"ERROR returning matrix\");",
                     "  else if (!_.isArray(r[9])) ",
                     "    d.reject(\"ERROR returning matrix of objects\");",
                     "  else if (!_.isArray(r[10])) ",
                     "    d.reject(\"ERROR returning xD array of basic types\");",
-                    "  else if (typeof(r[11]) !== 'object' || r[11].type !== 'TableDisplay' || r[11].subtype !== 'Dictionary') ",
+                    "  else if (typeof(r[11]) !== 'object' || !_.isObject(r[11])) ",
                     "    d.reject(\"ERROR returning dictionary\");",
                     "  else if (typeof(r[12]) !== 'object' || r[12].type !== 'Plot') ",
                     "    d.reject(\"ERROR returning plot\");",
-                    "  else if (typeof(r[13]) !== 'object' || r[13].type !== 'ImageIcon') ",
+                    "  else if (typeof(r[13]) !== 'object' || !(r[13] instanceof ImageIcon)) ",
                     "    d.reject(\"ERROR returning image\");",
                     "  else if (typeof(r[14]) !== 'object' || r[14].type !== 'OutputContainer') ",
                     "    d.reject(\"ERROR returning OutputContainer\");",
@@ -99,25 +99,25 @@
                     "    d.reject(\"ERROR setting boolean\");",
                     "  else if (typeof(beaker.v3) !== 'string') ",
                     "    d.reject(\"ERROR setting string\");",
-                    "  else if (typeof(beaker.v4) !== 'object' || beaker.v4.type !== 'Date')",
+                    "  else if (typeof(beaker.v4) !== 'object' || !(beaker.v4 instanceof Date))",
                     "    d.reject(\"ERROR setting date\");",
-                    "  else if (typeof(beaker.v5) !== 'object' || beaker.v5.type !== 'TableDisplay' || beaker.v5.subtype !== 'TableDisplay') ",
+                    "  else if (typeof(beaker.v5) !== 'object' || !(beaker.v5 instanceof DataFrame)) ",
                     "    d.reject(\"ERROR setting data frame\");",
-                    "  else if (typeof(beaker.v6) !== 'object' || beaker.v6.type !== 'TableDisplay' || beaker.v6.subtype !== 'ListOfMaps') ",
+                    "  else if (typeof(beaker.v6) !== 'object' || !_.isArray(beaker.v6) || !_.isObject(beaker.v6)) ",
                     "    d.reject(\"ERROR setting list of dictionaries\");",
                     "  else if (!_.isArray(beaker.v7)) ",
                     "    d.reject(\"ERROR setting basic collection\");",
-                    "  else if (typeof(beaker.v8) !== 'object' || beaker.v8.type !== 'TableDisplay' || beaker.v8.subtype !== 'Matrix') ",
+                    "  else if (typeof(beaker.v8) !== 'object' || !_.isArray(beaker.v8) || !_.isArray(beaker.v8[0])) ",
                     "    d.reject(\"ERROR setting matrix\");",
                     "  else if (!_.isArray(beaker.v9)) ",
                     "    d.reject(\"ERROR setting matrix of objects\");",
                     "  else if (!_.isArray(beaker.v10)) ",
                     "    d.reject(\"ERROR setting xD array of basic types\");",
-                    "  else if (typeof(beaker.v11) !== 'object' || beaker.v11.type !== 'TableDisplay' || beaker.v11.subtype !== 'Dictionary') ",
+                    "  else if (typeof(beaker.v11) !== 'object' || !_.isObject(beaker.v11)) ",
                     "    d.reject(\"ERROR setting dictionary\");",
                     "  else if (typeof(beaker.v12) !== 'object' || beaker.v12.type !== 'Plot') ",
                     "    d.reject(\"ERROR setting plot\");",
-                    "  else if (typeof(beaker.v13) !== 'object' || beaker.v13.type !== 'ImageIcon') ",
+                    "  else if (typeof(beaker.v13) !== 'object' || !(beaker.v13 instanceof ImageIcon)) ",
                     "    d.reject(\"ERROR setting image\");",
                     "  else if (typeof(beaker.v14) !== 'object' || beaker.v14.type !== 'OutputContainer') ",
                     "    d.reject(\"ERROR setting OutputContainer\");",
@@ -198,8 +198,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 882
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 1128
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -211,7 +211,7 @@
             "title": "Groovy cells that return a value",
             "level": 1,
             "evaluatorReader": false,
-            "collapsed": true
+            "collapsed": false
         },
         {
             "id": "codeYX3xaO",
@@ -229,8 +229,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 596
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 605
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -252,8 +252,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 558
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 609
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -275,8 +275,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 571
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 621
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -298,8 +298,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 584
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 623
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -323,8 +323,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 564
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 623
             },
             "evaluatorReader": true,
             "lineCount": 6,
@@ -346,8 +346,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 589,
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 633,
                 "state": {}
             },
             "evaluatorReader": true,
@@ -370,8 +370,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 592
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 712
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -393,8 +393,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 569
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 710
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -416,8 +416,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 589
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 604
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -439,8 +439,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 671
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 652
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -462,8 +462,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 588
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 612
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -485,8 +485,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 588
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 624
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -508,8 +508,8 @@
                 "state": {},
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 560
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 629
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -534,9 +534,8 @@
                 "state": {},
                 "selectedType": "Image",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 594,
-                "hidden": true
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 660
             },
             "evaluatorReader": true,
             "lineCount": 7,
@@ -559,8 +558,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 583
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 647
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -582,8 +581,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 594
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 649
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -611,8 +610,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 570
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 614
             },
             "evaluatorReader": true,
             "lineCount": 10,
@@ -639,8 +638,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ef9b5894-d1c0-4a72-be06-a8198a1d3799",
-                "elapsedTime": 582
+                "shellId": "df91cf72-e4ba-4260-bc6a-3fc87ae66a50",
+                "elapsedTime": 622
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -655,15 +654,11 @@
             "test string",
             {
                 "type": "Date",
-                "value": "Mar 23, 2015 9:18:38 AM",
-                "timestamp": 1427116718272
+                "timestamp": 1427221209020
             },
             {
                 "type": "TableDisplay",
-                "columnNames": [
-                    "a",
-                    "b"
-                ],
+                "subtype": "TableDisplay",
                 "values": [
                     [
                         1,
@@ -678,10 +673,14 @@
                     "integer",
                     "integer"
                 ],
-                "subtype": "TableDisplay"
+                "columnNames": [
+                    "a",
+                    "b"
+                ]
             },
             {
                 "type": "TableDisplay",
+                "subtype": "ListOfMaps",
                 "columnNames": [
                     "a",
                     "b",
@@ -698,13 +697,7 @@
                         null,
                         5
                     ]
-                ],
-                "types": [
-                    "integer",
-                    "integer",
-                    "integer"
-                ],
-                "subtype": "ListOfMaps"
+                ]
             },
             [
                 1,
@@ -716,12 +709,6 @@
             ],
             {
                 "type": "TableDisplay",
-                "columnNames": [
-                    "c0",
-                    "c1",
-                    "c2",
-                    "c3"
-                ],
                 "values": [
                     [
                         1,
@@ -742,7 +729,19 @@
                         10
                     ]
                 ],
-                "subtype": "Matrix"
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2",
+                    "c3"
+                ],
+                "types": [
+                    "double",
+                    "double",
+                    "double",
+                    "string"
+                ]
             },
             [
                 [
@@ -772,18 +771,32 @@
                         "constant_lines": [],
                         "constant_bands": [],
                         "texts": [],
-                        "rangeAxes": [
-                            {
-                                "type": "YAxis",
-                                "auto_range": true,
-                                "auto_range_includes_zero": true,
-                                "lower_margin": 0.05,
-                                "upper_margin": 0.05,
-                                "lower_bound": 0,
-                                "upper_bound": 0,
-                                "log": false
-                            }
-                        ],
+                        "rangeAxes": {
+                            "type": "TableDisplay",
+                            "subtype": "ListOfMaps",
+                            "columnNames": [
+                                "type",
+                                "auto_range",
+                                "auto_range_includes_zero",
+                                "lower_margin",
+                                "upper_margin",
+                                "lower_bound",
+                                "upper_bound",
+                                "log"
+                            ],
+                            "values": [
+                                [
+                                    "YAxis",
+                                    true,
+                                    true,
+                                    0.05,
+                                    0.05,
+                                    0,
+                                    0,
+                                    false
+                                ]
+                            ]
+                        },
                         "x_auto_range": true,
                         "x_lower_margin": 0.05,
                         "x_upper_margin": 0.05,
@@ -805,12 +818,6 @@
             [
                 {
                     "type": "TableDisplay",
-                    "columnNames": [
-                        "c0",
-                        "c1",
-                        "c2",
-                        "c3"
-                    ],
                     "values": [
                         [
                             1,
@@ -831,16 +838,22 @@
                             10
                         ]
                     ],
-                    "subtype": "Matrix"
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2",
+                        "c3"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double",
+                        "string"
+                    ]
                 },
                 {
                     "type": "TableDisplay",
-                    "columnNames": [
-                        "c0",
-                        "c1",
-                        "c2",
-                        "c3"
-                    ],
                     "values": [
                         [
                             1,
@@ -861,15 +874,23 @@
                             10
                         ]
                     ],
-                    "subtype": "Matrix"
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2",
+                        "c3"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double",
+                        "string"
+                    ]
                 }
             ],
             {
                 "type": "TableDisplay",
-                "columnNames": [
-                    "Key",
-                    "Value"
-                ],
                 "values": [
                     [
                         "a",
@@ -884,7 +905,11 @@
                         55
                     ]
                 ],
-                "subtype": "Dictionary"
+                "subtype": "Dictionary",
+                "columnNames": [
+                    "Key",
+                    "Value"
+                ]
             },
             {
                 "type": "Plot",
@@ -899,18 +924,32 @@
                 "constant_lines": [],
                 "constant_bands": [],
                 "texts": [],
-                "rangeAxes": [
-                    {
-                        "type": "YAxis",
-                        "auto_range": true,
-                        "auto_range_includes_zero": true,
-                        "lower_margin": 0.05,
-                        "upper_margin": 0.05,
-                        "lower_bound": 0,
-                        "upper_bound": 0,
-                        "log": false
-                    }
-                ],
+                "rangeAxes": {
+                    "type": "TableDisplay",
+                    "subtype": "ListOfMaps",
+                    "columnNames": [
+                        "type",
+                        "auto_range",
+                        "auto_range_includes_zero",
+                        "lower_margin",
+                        "upper_margin",
+                        "lower_bound",
+                        "upper_bound",
+                        "log"
+                    ],
+                    "values": [
+                        [
+                            "YAxis",
+                            true,
+                            true,
+                            0.05,
+                            0.05,
+                            0,
+                            0,
+                            false
+                        ]
+                    ]
+                },
                 "x_auto_range": true,
                 "x_lower_margin": 0.05,
                 "x_upper_margin": 0.05,
@@ -947,6 +986,7 @@
                     ],
                     {
                         "type": "TableDisplay",
+                        "subtype": "ListOfMaps",
                         "columnNames": [
                             "a",
                             "b",
@@ -963,13 +1003,7 @@
                                 null,
                                 5
                             ]
-                        ],
-                        "types": [
-                            "integer",
-                            "integer",
-                            "integer"
-                        ],
-                        "subtype": "ListOfMaps"
+                        ]
                     }
                 ]
             },
@@ -994,6 +1028,7 @@
                             ],
                             {
                                 "type": "TableDisplay",
+                                "subtype": "ListOfMaps",
                                 "columnNames": [
                                     "a",
                                     "b",
@@ -1010,13 +1045,7 @@
                                         null,
                                         5
                                     ]
-                                ],
-                                "types": [
-                                    "integer",
-                                    "integer",
-                                    ""
-                                ],
-                                "subtype": "ListOfMaps"
+                                ]
                             }
                         ]
                     },
@@ -1037,18 +1066,32 @@
                     "constant_lines": [],
                     "constant_bands": [],
                     "texts": [],
-                    "rangeAxes": [
-                        {
-                            "type": "YAxis",
-                            "auto_range": true,
-                            "auto_range_includes_zero": true,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
-                            "lower_bound": 0,
-                            "upper_bound": 0,
-                            "log": false
-                        }
-                    ],
+                    "rangeAxes": {
+                        "type": "TableDisplay",
+                        "subtype": "ListOfMaps",
+                        "columnNames": [
+                            "type",
+                            "auto_range",
+                            "auto_range_includes_zero",
+                            "lower_margin",
+                            "upper_margin",
+                            "lower_bound",
+                            "upper_bound",
+                            "log"
+                        ],
+                        "values": [
+                            [
+                                "YAxis",
+                                true,
+                                true,
+                                0.05,
+                                0.05,
+                                0,
+                                0,
+                                false
+                            ]
+                        ]
+                    },
                     "x_auto_range": true,
                     "x_lower_margin": 0.05,
                     "x_upper_margin": 0.05,
@@ -1087,18 +1130,32 @@
                         "constant_lines": [],
                         "constant_bands": [],
                         "texts": [],
-                        "rangeAxes": [
-                            {
-                                "type": "YAxis",
-                                "auto_range": true,
-                                "auto_range_includes_zero": true,
-                                "lower_margin": 0.05,
-                                "upper_margin": 0.05,
-                                "lower_bound": 0,
-                                "upper_bound": 0,
-                                "log": false
-                            }
-                        ],
+                        "rangeAxes": {
+                            "type": "TableDisplay",
+                            "subtype": "ListOfMaps",
+                            "columnNames": [
+                                "type",
+                                "auto_range",
+                                "auto_range_includes_zero",
+                                "lower_margin",
+                                "upper_margin",
+                                "lower_bound",
+                                "upper_bound",
+                                "log"
+                            ],
+                            "values": [
+                                [
+                                    "YAxis",
+                                    true,
+                                    true,
+                                    0.05,
+                                    0.05,
+                                    0,
+                                    0,
+                                    false
+                                ]
+                            ]
+                        },
                         "x_auto_range": true,
                         "x_lower_margin": 0.05,
                         "x_upper_margin": 0.05,
@@ -1139,15 +1196,11 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "value": "Mar 23, 2015 9:18:38 AM",
-            "timestamp": 1427116718272
+            "timestamp": 1427221209020
         },
         "v5": {
             "type": "TableDisplay",
-            "columnNames": [
-                "a",
-                "b"
-            ],
+            "subtype": "TableDisplay",
             "values": [
                 [
                     1,
@@ -1162,10 +1215,14 @@
                 "integer",
                 "integer"
             ],
-            "subtype": "TableDisplay"
+            "columnNames": [
+                "a",
+                "b"
+            ]
         },
         "v6": {
             "type": "TableDisplay",
+            "subtype": "ListOfMaps",
             "columnNames": [
                 "a",
                 "b",
@@ -1182,13 +1239,7 @@
                     null,
                     5
                 ]
-            ],
-            "types": [
-                "integer",
-                "integer",
-                "integer"
-            ],
-            "subtype": "ListOfMaps"
+            ]
         },
         "v7": [
             1,
@@ -1200,12 +1251,6 @@
         ],
         "v8": {
             "type": "TableDisplay",
-            "columnNames": [
-                "c0",
-                "c1",
-                "c2",
-                "c3"
-            ],
             "values": [
                 [
                     1,
@@ -1226,7 +1271,19 @@
                     10
                 ]
             ],
-            "subtype": "Matrix"
+            "subtype": "Matrix",
+            "columnNames": [
+                "c0",
+                "c1",
+                "c2",
+                "c3"
+            ],
+            "types": [
+                "double",
+                "double",
+                "double",
+                "string"
+            ]
         },
         "v9": [
             [
@@ -1256,18 +1313,32 @@
                     "constant_lines": [],
                     "constant_bands": [],
                     "texts": [],
-                    "rangeAxes": [
-                        {
-                            "type": "YAxis",
-                            "auto_range": true,
-                            "auto_range_includes_zero": true,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
-                            "lower_bound": 0,
-                            "upper_bound": 0,
-                            "log": false
-                        }
-                    ],
+                    "rangeAxes": {
+                        "type": "TableDisplay",
+                        "subtype": "ListOfMaps",
+                        "columnNames": [
+                            "type",
+                            "auto_range",
+                            "auto_range_includes_zero",
+                            "lower_margin",
+                            "upper_margin",
+                            "lower_bound",
+                            "upper_bound",
+                            "log"
+                        ],
+                        "values": [
+                            [
+                                "YAxis",
+                                true,
+                                true,
+                                0.05,
+                                0.05,
+                                0,
+                                0,
+                                false
+                            ]
+                        ]
+                    },
                     "x_auto_range": true,
                     "x_lower_margin": 0.05,
                     "x_upper_margin": 0.05,
@@ -1289,12 +1360,6 @@
         "v10": [
             {
                 "type": "TableDisplay",
-                "columnNames": [
-                    "c0",
-                    "c1",
-                    "c2",
-                    "c3"
-                ],
                 "values": [
                     [
                         1,
@@ -1315,16 +1380,22 @@
                         10
                     ]
                 ],
-                "subtype": "Matrix"
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2",
+                    "c3"
+                ],
+                "types": [
+                    "double",
+                    "double",
+                    "double",
+                    "string"
+                ]
             },
             {
                 "type": "TableDisplay",
-                "columnNames": [
-                    "c0",
-                    "c1",
-                    "c2",
-                    "c3"
-                ],
                 "values": [
                     [
                         1,
@@ -1345,15 +1416,23 @@
                         10
                     ]
                 ],
-                "subtype": "Matrix"
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2",
+                    "c3"
+                ],
+                "types": [
+                    "double",
+                    "double",
+                    "double",
+                    "string"
+                ]
             }
         ],
         "v11": {
             "type": "TableDisplay",
-            "columnNames": [
-                "Key",
-                "Value"
-            ],
             "values": [
                 [
                     "a",
@@ -1368,7 +1447,11 @@
                     55
                 ]
             ],
-            "subtype": "Dictionary"
+            "subtype": "Dictionary",
+            "columnNames": [
+                "Key",
+                "Value"
+            ]
         },
         "v12": {
             "type": "Plot",
@@ -1383,18 +1466,32 @@
             "constant_lines": [],
             "constant_bands": [],
             "texts": [],
-            "rangeAxes": [
-                {
-                    "type": "YAxis",
-                    "auto_range": true,
-                    "auto_range_includes_zero": true,
-                    "lower_margin": 0.05,
-                    "upper_margin": 0.05,
-                    "lower_bound": 0,
-                    "upper_bound": 0,
-                    "log": false
-                }
-            ],
+            "rangeAxes": {
+                "type": "TableDisplay",
+                "subtype": "ListOfMaps",
+                "columnNames": [
+                    "type",
+                    "auto_range",
+                    "auto_range_includes_zero",
+                    "lower_margin",
+                    "upper_margin",
+                    "lower_bound",
+                    "upper_bound",
+                    "log"
+                ],
+                "values": [
+                    [
+                        "YAxis",
+                        true,
+                        true,
+                        0.05,
+                        0.05,
+                        0,
+                        0,
+                        false
+                    ]
+                ]
+            },
             "x_auto_range": true,
             "x_lower_margin": 0.05,
             "x_upper_margin": 0.05,
@@ -1431,6 +1528,7 @@
                 ],
                 {
                     "type": "TableDisplay",
+                    "subtype": "ListOfMaps",
                     "columnNames": [
                         "a",
                         "b",
@@ -1447,13 +1545,7 @@
                             null,
                             5
                         ]
-                    ],
-                    "types": [
-                        "integer",
-                        "integer",
-                        "integer"
-                    ],
-                    "subtype": "ListOfMaps"
+                    ]
                 }
             ]
         },
@@ -1478,6 +1570,7 @@
                         ],
                         {
                             "type": "TableDisplay",
+                            "subtype": "ListOfMaps",
                             "columnNames": [
                                 "a",
                                 "b",
@@ -1494,13 +1587,7 @@
                                     null,
                                     5
                                 ]
-                            ],
-                            "types": [
-                                "integer",
-                                "integer",
-                                ""
-                            ],
-                            "subtype": "ListOfMaps"
+                            ]
                         }
                     ]
                 },
@@ -1521,18 +1608,32 @@
                 "constant_lines": [],
                 "constant_bands": [],
                 "texts": [],
-                "rangeAxes": [
-                    {
-                        "type": "YAxis",
-                        "auto_range": true,
-                        "auto_range_includes_zero": true,
-                        "lower_margin": 0.05,
-                        "upper_margin": 0.05,
-                        "lower_bound": 0,
-                        "upper_bound": 0,
-                        "log": false
-                    }
-                ],
+                "rangeAxes": {
+                    "type": "TableDisplay",
+                    "subtype": "ListOfMaps",
+                    "columnNames": [
+                        "type",
+                        "auto_range",
+                        "auto_range_includes_zero",
+                        "lower_margin",
+                        "upper_margin",
+                        "lower_bound",
+                        "upper_bound",
+                        "log"
+                    ],
+                    "values": [
+                        [
+                            "YAxis",
+                            true,
+                            true,
+                            0.05,
+                            0.05,
+                            0,
+                            0,
+                            false
+                        ]
+                    ]
+                },
                 "x_auto_range": true,
                 "x_lower_margin": 0.05,
                 "x_upper_margin": 0.05,
@@ -1571,18 +1672,32 @@
                     "constant_lines": [],
                     "constant_bands": [],
                     "texts": [],
-                    "rangeAxes": [
-                        {
-                            "type": "YAxis",
-                            "auto_range": true,
-                            "auto_range_includes_zero": true,
-                            "lower_margin": 0.05,
-                            "upper_margin": 0.05,
-                            "lower_bound": 0,
-                            "upper_bound": 0,
-                            "log": false
-                        }
-                    ],
+                    "rangeAxes": {
+                        "type": "TableDisplay",
+                        "subtype": "ListOfMaps",
+                        "columnNames": [
+                            "type",
+                            "auto_range",
+                            "auto_range_includes_zero",
+                            "lower_margin",
+                            "upper_margin",
+                            "lower_bound",
+                            "upper_bound",
+                            "log"
+                        ],
+                        "values": [
+                            [
+                                "YAxis",
+                                true,
+                                true,
+                                0.05,
+                                0.05,
+                                0,
+                                0,
+                                false
+                            ]
+                        ]
+                    },
                     "x_auto_range": true,
                     "x_lower_margin": 0.05,
                     "x_upper_margin": 0.05,

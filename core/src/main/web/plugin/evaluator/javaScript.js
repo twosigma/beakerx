@@ -30,6 +30,116 @@ define(function(require, exports, module) {
   var coffeescriptKeywords = ("and break catch class continue delete do else extends false finally for " +
       "if in instanceof isnt new no not null of off on or return switch then throw true try typeof until void while with yes").split(" ");
 
+  var ImageIcon = function(data) {
+    if (data === undefined || data.type !== "ImageIcon") {
+      this.imageData = [];
+      this.width = 0;
+      this.height = 0;
+    } else {
+      this.imageData = data.imageData;
+      this.width = data.width;
+      this.height = data.height;
+    }
+  };
+
+  var DataFrame = function(data) {
+    if (data === undefined || data.type !== "TableDisplay" || data.subtype !== "TableDisplay") {
+      this.columnNames = [];
+      this.types = [];
+      this.values = [];
+    } else {
+      this.columnNames = data.columnNames;
+      this.types = data.types;
+      this.values = data.values;
+    }
+  };
+
+  DataFrame.prototype.toString = function() {
+    var s = '';
+    s = 'DataFrame:'+
+      '  Rows: '+this.values.length+'\n' +
+      '  Data columns (total '+this.columnNames.length+' columns):\n';
+    for (var i in this.columnNames) {
+      s = s + '    '+this.columnNames[i]+'   '+this.types[i]+'\n';
+    }
+    ;
+    return s;
+  };
+
+  DataFrame.prototype.columns = function() {
+    return this.columnNames;
+  };
+
+  DataFrame.prototype.dtypes = function() {
+    return this.types;
+  };
+
+  DataFrame.prototype.getColumn = function(name) {
+    var i = this.columnNames.indexOf(name);
+    if (i < 0)
+        return null;
+    var o = [];
+    for (var j in this.values) {
+      o.push(this.values[j][i]);
+    }
+    return o; 
+  };
+
+  DataFrame.prototype.getRow = function(i) {
+    if (i < 0 || i > this.values.length)
+      return null;
+    var o = {};
+    for (var j in this.columnNames) {
+      o[this.columnNames[j]] = this.values[i][j];
+    }
+    return o;
+  };
+  
+  DataFrame.prototype.length = function() {
+    return this.values.length;
+  };
+  
+  DataFrame.prototype.removeColumn = function(name) {
+    var i = this.columnNames.indexOf(name);
+    if (i < 0)
+        return false;
+    for (var j in this.values) {
+      this.values[j].splice(i,1);
+    }
+    this.columnNames.splice(i,1);
+    this.types.splice(i,1);
+    return true;
+  };
+
+  DataFrame.prototype.addColumn = function(name, data) {
+    var i = this.columnNames.indexOf(name);
+    if (i >= 0 || data === undefined || data.length === 0)
+        return false;
+
+    this.columnNames.push(name);
+    this.types.push(getDataType(data[0]));
+    var min = data.length > this.values.length ? this.values.length : data.length;
+    var j;
+    for(j=0; j<min; j++) {
+      this.values[j].push(data[j]);
+    }
+    for(; j<this.values.length; j++) {
+      this.values[j].push(null);
+    }
+    return true;
+  };
+
+  DataFrame.prototype.addRow = function(row) {
+    var r = [];
+    for(c in this.columnNames) {
+      if (row[this.columnNames[c]] !== undefined)
+        r.push(row[this.columnNames[c]]);
+      else
+        r.push(null);
+    }
+    this.values.push(r);
+  };
+
   var getCompletions = function(token, context, keywords, options) {
     var found = [], start = token.string;
 
@@ -147,74 +257,15 @@ define(function(require, exports, module) {
       context.push(tprop);
     }
     return getCompletions(token, context, keywords, options);
-  }
+  };
 
   var JavascriptCancelFunction = null;
 
-  var knownBeakerVars = { };
-  var beakerObj = {}
-
-  function setupBeakerObject(modelOutput) {
-    
-    if (beakerObj.showProgressUpdate === undefined) {
-      console.log("setupBeakerObject");
-          
-      Object.defineProperty(beakerObj, 'showProgressUpdate', { value: function (a,b,c) {
-        if ( a === undefined || beakerObj._beaker_model_output_result === undefined || beakerObj._beaker_model_output_result.object === undefined)
-          return;
-        if ( typeof a === 'string' )
-          beakerObj._beaker_model_output_result.object.message = a;
-        else if ( typeof a === 'number' )
-          beakerObj._beaker_model_output_result.object.progressBar = a;
-        else if ( a !== null )
-          beakerObj._beaker_model_output_result.object.payload = a;
-  
-        if ( typeof b === 'string' )
-          beakerObj._beaker_model_output_result.object.message = b;
-        else if ( typeof b === 'number' )
-          beakerObj._beaker_model_output_result.object.progressBar = b;
-        else if ( b !== null )
-          beakerObj._beaker_model_output_result.object.payload = b;
-  
-        if ( typeof c === 'string' )
-          beakerObj._beaker_model_output_result.object.message = c;
-        else if ( typeof c === 'number' )
-          beakerObj._beaker_model_output_result.object.progressBar = c;
-        else if ( c !== null )
-          beakerObj._beaker_model_output_result.object.payload = c;
-      }, writeable: false });
-      
-      Object.defineProperty(beakerObj, 'showStatus', { value: bkHelper.showStatus, writeable: false });
-      Object.defineProperty(beakerObj, 'clearStatus', { value: bkHelper.clearStatus, writeable: false });
-      Object.defineProperty(beakerObj, 'showTransientStatus', { value: bkHelper.showTransientStatus, writeable: false });
-      Object.defineProperty(beakerObj, 'getEvaluators', { value: bkHelper.getEvaluators, writeable: false });
-      Object.defineProperty(beakerObj, 'getCodeCells', { value: bkHelper.getCodeCells, writeable: false });
-      Object.defineProperty(beakerObj, 'setCodeCellBody', { value: bkHelper.setCodeCellBody, writeable: false });
-      Object.defineProperty(beakerObj, 'setCodeCellEvaluator', { value: bkHelper.setCodeCellEvaluator, writeable: false });
-      Object.defineProperty(beakerObj, 'setCodeCellTags', { value: bkHelper.setCodeCellTags, writeable: false });
-      Object.defineProperty(beakerObj, 'evaluate', { value: bkHelper.evaluate, writeable: false });
-      Object.defineProperty(beakerObj, 'evaluateCode', { value: bkHelper.evaluateCode, writeable: false });
-      Object.defineProperty(beakerObj, 'loadJS', { value: bkHelper.loadJS, writeable: false });
-      Object.defineProperty(beakerObj, 'loadCSS', { value: bkHelper.loadCSS, writeable: false });
-      Object.defineProperty(beakerObj, 'loadList', { value: bkHelper.loadList, writeable: false });
-      Object.defineProperty(beakerObj, 'httpGet', { value: bkHelper.httpGet, writeable: false });
-      Object.defineProperty(beakerObj, 'httpPost', { value: bkHelper.httpPost, writeable: false });
-      Object.defineProperty(beakerObj, 'newDeferred', { value: bkHelper.newDeferred, writeable: false });
-      Object.defineProperty(beakerObj, 'newPromise', { value: bkHelper.newPromise, writeable: false });
-      Object.defineProperty(beakerObj, 'all', { value: bkHelper.all, writeable: false });
-      Object.defineProperty(beakerObj, 'timeout', { value: bkHelper.timeout, writeable: false });
-      console.log("setupBeakerObject - done");
-    }
-    Object.defineProperty(beaker, '_beaker_model_output_result', { value: modelOutput.result, writeable: false, enumerable: false });
-
-    notebookToBeakerObject();
-  }
-  
   function isPrimitiveType(v) {
     if (_.isDate(v) || _.isString(v) || _.isNumber(v) || _.isBoolean(v) || _.isNaN(v) || _.isNull(v) || _.isUndefined(v))
       return true;
     return false;
-  }
+  };
   
   function getDataType(v) {
     if (_.isDate(v))
@@ -224,7 +275,7 @@ define(function(require, exports, module) {
     if(_.isBoolean(v))
       return "boolean";
     return "string";    
-  }
+  };
   
   function isDictionary(v) {
     if (!_.isObject(v))
@@ -234,17 +285,41 @@ define(function(require, exports, module) {
         return false;
     }
     return true;
-  }
+  };
   
   function transform(v) {
     if (_.isFunction(v) || _.isUndefined(v))
       return null;
-    
+
     if (_.isDate(v)) {
       var o = {}
       o.type = "Date";
       o.value = v.toString();
       o.timestamp = v.getTime();
+      return o
+    }
+
+    if (isPrimitiveType(v))
+      return v;
+    
+    if (v instanceof ImageIcon) {
+      var o = {}
+      o.type = "ImageIcon";
+      o.imageData = _.isArray(v.imageData) ? v.imageData.slice(0) : [];
+      o.width = v.width;
+      o.height = v.height;
+      return o
+    }
+    
+    if (v instanceof DataFrame) {
+      var o = {}
+      o.type = "TableDisplay";
+      o.subtype = "TableDisplay";
+      o.values = [];
+      for (var i in v.values)
+        o.values.push(v.values[i].slice(0));
+      o.types = _.isArray(v.types) ? v.types.slice(0) : undefined;
+      o.columnNames = _.isArray(v.columnNames) ? v.columnNames.slice(0) : undefined;
       return o
     }
 
@@ -265,7 +340,9 @@ define(function(require, exports, module) {
       if (doit) {
         var o = {}
         o.type = "TableDisplay";
-        o.values = v;
+        o.values = [];
+        for (var i in v)
+          o.values.push(v[i].slice(0));
         o.subtype = "Matrix";
         o.columnNames = [];
         o.types = [];
@@ -283,8 +360,29 @@ define(function(require, exports, module) {
           }
         }
         if (doit) {
-          console.log("is a list of maps");
-          return v;
+          var o = {};
+          o.type = "TableDisplay";
+          o.subtype = "ListOfMaps";
+          o.columnNames = [];
+          for (var i in v) {
+            for (var j in v[i]) {
+              if (o.columnNames.indexOf(j)<0)
+                o.columnNames.push(j);
+            }
+          }
+          o.values = [];
+          for (var i in v) {
+            var o2 = [];
+            for (var j in o.columnNames) {
+              var n = o.columnNames[j];
+              if (v[i][n] !== undefined)
+                o2.push(transform(v[i][n]));
+              else
+                o2.push(null);
+            }
+            o.values.push(o2);
+          }          
+          return o;
         }
       }
     }
@@ -303,11 +401,12 @@ define(function(require, exports, module) {
       }
       return o;
     }
+    var o = {};
     for(var p in v) {
-      v[p] = transform(v[p]);
+      o[p] = transform(v[p]);
     }
-    return v;
-  }
+    return o;
+  };
 
   function transformBack(v) {
     if(v === undefined || (!_.isObject(v) && !_.isArray(v)))
@@ -321,12 +420,16 @@ define(function(require, exports, module) {
         if (v.subtype === "Dictionary") {
           var o = {}
           for (var r in v.values) {
-            o[v.values[r][0]] = v.values[r][1];
+            o[v.values[r][0]] = transformBack(v.values[r][1]);
           }
           return o;
         }
         if (v.subtype === "Matrix") {
-          return v.values;
+          var o = [];
+          for (var i in v.values) {
+            o.push(v.values[i].slice(0));
+          }
+          return o;
         }
         if (v.subtype === "ListOfMaps") {
           var out2 = [];
@@ -334,73 +437,226 @@ define(function(require, exports, module) {
             var out3 = { };
             for (var i=0; i<v.values[r].length; i++) {
               if (v.values[r][i] !== null)
-                out3[ v.columnNames[i] ] = v.values[r][i];
+                out3[ v.columnNames[i] ] = transformBack(v.values[r][i]);
             }
             out2.push(out3);
           }
           return out2;
         }
-        console.log("TODO DataFrame");
+        return new DataFrame(v);
       }
+      if (v.type === "ImageIcon")
+        return new ImageIcon(v);
     }
+    if (!_.isArray(v)) {
+      var o = {};
+      for(var p in v) {
+        o[p] = transformBack(v[p]);
+      }
+      return o;
+    }
+    var o = [];
     for(var p in v) {
-      v[p] = transformBack(v[p]);
+      o.push(transformBack(v[p]));
     }
-    return v;
-  }
+    return o;
+  };
 
-  function beakerGetter(name) {
+  var BeakerObject = function() {
+    this.knownBeakerVars = { };
+    this.getCache = { };
+    this.setCache = { };
+    this.beakerObj = { }
+  };
+
+  BeakerObject.prototype.setupBeakerObject = function(modelOutput) {
+    var self = this;
+    
+    if (this.beakerObj.showProgressUpdate === undefined) {          
+      Object.defineProperty(this.beakerObj, 'showProgressUpdate', { value: function (a,b,c) {
+        if ( a === undefined || self._beaker_model_output_result === undefined ||
+            self._beaker_model_output_result.object === undefined)
+          return;
+        if ( typeof a === 'string' )
+          self._beaker_model_output_result.object.message = a;
+        else if ( typeof a === 'number' )
+          self._beaker_model_output_result.object.progressBar = a;
+        else if ( a !== null )
+          self._beaker_model_output_result.object.payload = a;
+  
+        if ( typeof b === 'string' )
+          self._beaker_model_output_result.object.message = b;
+        else if ( typeof b === 'number' )
+          self._beaker_model_output_result.object.progressBar = b;
+        else if ( b !== null )
+          self._beaker_model_output_result.object.payload = b;
+  
+        if ( typeof c === 'string' )
+          self._beaker_model_output_result.object.message = c;
+        else if ( typeof c === 'number' )
+          self._beaker_model_output_result.object.progressBar = c;
+        else if ( c !== null )
+          self._beaker_model_output_result.object.payload = c;
+      }, writeable: false });
+      
+      Object.defineProperty(this.beakerObj, 'showStatus', { value: bkHelper.showStatus, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'clearStatus', { value: bkHelper.clearStatus, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'showTransientStatus', { value: bkHelper.showTransientStatus, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'getEvaluators', { value: bkHelper.getEvaluators, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'getCodeCells', { value: bkHelper.getCodeCells, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'setCodeCellBody', { value: bkHelper.setCodeCellBody, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'setCodeCellEvaluator', { value: bkHelper.setCodeCellEvaluator, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'setCodeCellTags', { value: bkHelper.setCodeCellTags, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'evaluate', { value: function(a) {
+          var d = bkHelper.newDeferred();
+          self.beakerObjectToNotebook();
+          bkHelper.evaluate(a).then(function (r) { self.notebookToBeakerObject(); d.resolve(transformBack(r)); }, function (r) { self.notebookToBeakerObject(); d.reject(r); });
+          return d.promise;
+        }, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'evaluateCode', { value: function(a,b) {
+        var d = bkHelper.newDeferred();
+          self.beakerObjectToNotebook();
+          bkHelper.evaluateCode(a,b).then(function (r) { self.notebookToBeakerObject(); d.resolve(transformBack(r)); }, function (r) { self.notebookToBeakerObject(); d.reject(r); });
+          return d.promise;
+        }, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'loadJS', { value: bkHelper.loadJS, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'loadCSS', { value: bkHelper.loadCSS, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'loadList', { value: bkHelper.loadList, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'httpGet', { value: bkHelper.httpGet, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'httpPost', { value: bkHelper.httpPost, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'newDeferred', { value: bkHelper.newDeferred, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'newPromise', { value: bkHelper.newPromise, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'all', { value: bkHelper.all, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'timeout', { value: bkHelper.timeout, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'DataFrame', { value: DataFrame, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'ImageIcon', { value: ImageIcon, writeable: false, enumerable: true });
+    }
+    this._beaker_model_output_result = modelOutput.result;
+  };
+  
+  
+  BeakerObject.prototype.beakerGetter = function(name) {
     var ns = bkHelper.getNotebookModel().namespace;
-    return transformBack(ns[name]);
-  }
+    if (this.getCache[name] === undefined)
+      this.getCache[name] = transformBack(ns[name]);
+    // this is required to support subobject modification
+    this.setCache[name] = this.getCache[name];
+    return this.getCache[name];
+  };
 
-  function beakerSetter(name, v) {
+  BeakerObject.prototype.beakerSetter = function(name, v) {
+    this.setCache[name] = v;
+    if (this.beakerSetterTimeout !== undefined)
+      bkHelper.cancelTimeout(this.beakerSetterTimeout);
+    var makeTimeout = function(self) {
+      return function() {
+        self.beakerSetterTimeout = undefined;
+        self.beakerObjectToNotebook();
+      };
+    };
+    this.beakerSetterTimeout = bkHelper.timeout(makeTimeout(this),500);
+  };
+
+  BeakerObject.prototype.notebookToBeakerObject = function() {
     var ns = bkHelper.getNotebookModel().namespace;
-    ns[name] = transform(v);
-  }
 
-  function notebookToBeakerObject() {
-    var ns = bkHelper.getNotebookModel().namespace;
-
-    for (var p in knownBeakerVars) {
+    // clear getcache
+    this.getCache = { };
+    
+    // check if some other language removed a binding
+    for (var p in this.knownBeakerVars) {
       if (ns[p] === undefined) {
-        console.log('remove slot for '+p);
-        delete knownBeakerVars[p];
-        delete beakerObj[p];
+        delete this.knownBeakerVars[p];
+        delete this.beakerObj[p];
+        delete this.setCache[p];
       }
     }
-
+    
+    // check if some other language added a binding
     for (var p in ns) {
-      if (knownBeakerVars[p] === undefined && beakerObj[p] === undefined) {
-        console.log('adding slot for '+p);
-        knownBeakerVars[p] = true;
-        Object.defineProperty(beakerObj, p,
+      if (this.knownBeakerVars[p] === undefined && this.beakerObj[p] === undefined) {
+        this.knownBeakerVars[p] = true;
+        var makeGetter = function(self, name) {
+          return function() { return self.beakerGetter(name); }
+        }
+        var makeSetter = function(self, name) {
+          return function(v) { self.beakerSetter(name,v); }
+        }
+        Object.defineProperty(this.beakerObj, p,
             { writeable: true,
-              get: function()  { return beakerGetter(p); },
-              set: function(v) { beakerSetter(p,v); }
+              get: makeGetter(this, p),
+              set: makeSetter(this, p),
+              enumerable: true,
+              configurable: true
             });
       }
     }
-  }
+  };
   
-  function beakerObjectToNotebook() {
+  BeakerObject.prototype.clearOutput = function() {
+    this._beaker_model_output_result.object = undefined;
+  };
+  
+  BeakerObject.prototype.beakerObjectToNotebook = function() {
     var ns = bkHelper.getNotebookModel().namespace;
-    for (var p in beakerObj) {
-      if (!_.isFunction(beakerObj[p])) {
-        if (knownBeakerVars[p] === undefined) {
-          console.log('new slot for '+p);
-          beakerSetter(p,beakerObj[p]);
-          knownBeakerVars[p] = true;
-          Object.defineProperty(beakerObj, p,
-              { writeable: true,
-                get: function()  { return beakerGetter(p); },
-                set: function(v) { beakerSetter(p,v); }
-              });
-        }
+    
+    // check if javascript removed a binding
+    for (var p in ns) {
+      if (this.knownBeakerVars[p] !== undefined && this.beakerObj[p] === undefined) {
+        delete ns[p];
       }
     }
-  }
+    
+    // check if javascript set any NEW variable
+    for (var p in this.beakerObj) {
+      if (_.isFunction(this.beakerObj[p]))
+        continue;
+      if (this.knownBeakerVars[p] === undefined) {
+        this.setCache[p] = this.beakerObj[p];
+        this.knownBeakerVars[p] = true;
+        var makeGetter = function(self, name) {
+          return function() { return self.beakerGetter(name); }
+        }
+        var makeSetter = function(self, name) {
+          return function(v) { self.beakerSetter(name,v); }
+        }
+        Object.defineProperty(this.beakerObj, p,
+            { writeable: true,
+              get: makeGetter(this,p),
+              set: makeSetter(this,p),
+              enumerable: true,
+              configurable: true
+            });
+      }
+    }
+    
+    // check if javascript set any new variable
+    for (var p in this.setCache) {
+      ns[p] = transform(this.setCache[p]);
+      if (this.knownBeakerVars[p] === undefined && this.beakerObj[p] === undefined) {
+          this.knownBeakerVars[p] = true;
+          var makeGetter = function(self, name) {
+            return function() { return self.beakerGetter(name); }
+          }
+          var makeSetter = function(self, name) {
+            return function(v) { self.beakerSetter(name,v); }
+          }
+          Object.defineProperty(this.beakerObj, p,
+              { writeable: true,
+                get: makeGetter(this,p),
+                set: makeSetter(this,p),
+                enumerable: true,
+                configurable: true
+              });
+      }
+    }
+    // clear setcache and getcache
+    this.setCache = { };
+    this.getCache = { };
+  };
   
+  var beakerObj = new BeakerObject(); // this is visible to JS code in cell
+
   var JavaScript_0 = {
     pluginName: PLUGIN_NAME,
     cmMode: "javascript",
@@ -427,18 +683,18 @@ define(function(require, exports, module) {
             else
               bkHelper.refreshRootScope();
 
-            bkHelper.getNotebookModel().namespace; 
-            if (undefined === bkHelper.getNotebookModel().namespace) {
+            var ns = bkHelper.getNotebookModel().namespace; 
+            if (undefined === ns) {
               bkHelper.getNotebookModel().namespace = {};
-              beaker = bkHelper.getNotebookModel().namespace;
+            } else if(ns._beaker_model_output_result !== undefined) {
+              delete ns._beaker_model_output_result;
             }
 
-            setupBeakerObject(beakerObj, modelOutput);
-
-            var beaker = beakerObj; // this is visible to JS code in cell
- 
+            beakerObj.setupBeakerObject(modelOutput);
+            beakerObj.notebookToBeakerObject();
+            var beaker = beakerObj.beakerObj;
             var output = eval(code);
-            beakerObjectToNotebook();
+            beakerObj.beakerObjectToNotebook();
             if ( typeof output === 'object' ) {
               if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {
                 output = output.promise;
@@ -450,8 +706,10 @@ define(function(require, exports, module) {
                       innertype: "Error",
                       object: "cancelled..."
                   };
-                  modelOutput.elapsedTime = new Date().getTime() - progressObj.object.startTime;
+                  if (modelOutput !== undefined && modelOutput.object !== undefined)
+                    modelOutput.elapsedTime = new Date().getTime() - modelOutput.object.startTime;
                   JavascriptCancelFunction = null;
+                  beakerObj.beakerObjectToNotebook();
                   if ( typeof output.reject === 'function') {
                     output.reject();
                     output = undefined;
@@ -462,27 +720,30 @@ define(function(require, exports, module) {
                 output.then(function(o) {
                   o = transform(o);
                   modelOutput.result = o;
+                  beakerObj.beakerObjectToNotebook();
                   deferred.resolve(o);
-                  delete beaker._beaker_model_output_result;
+                  beakerObj.clearOutput();
                 }, function(e) {
                   modelOutput.result = {
                       type: "BeakerDisplay",
                       innertype: "Error",
                       object: "" + e
                   };
+                  console.log(e);
+                  beakerObj.beakerObjectToNotebook();
                   deferred.reject(e);
-                  delete beaker._beaker_model_output_result;
+                  beakerObj.clearOutput();
                 });
               } else {
                 output = transform(output);
                 modelOutput.result = output;  
                 deferred.resolve(output);
-                delete beaker._beaker_model_output_result;
+                beakerObj.clearOutput();
               }
             } else {
               modelOutput.result = output;
               deferred.resolve(output);
-              delete beaker._beaker_model_output_result;
+              beakerObj.clearOutput();
             }
           } catch (err) {
             modelOutput.result = {
@@ -490,7 +751,8 @@ define(function(require, exports, module) {
                 innertype: "Error",
                 object: "" + err
             };
-            deferred.reject(modelOutput.result);
+            console.log(err);
+            deferred.reject(err);
           }
         }, 0);
         return deferred.promise;

@@ -310,6 +310,9 @@
       timeout: function(func, ms) {
         return bkUtils.timeout(func,ms);
       },
+      cancelTimeout: function(promise) {
+        return bkUtils.cancelTimeout(promise);  
+      },
       getHomeDirectory: function() {
         return bkUtils.getHomeDirectory();
       },

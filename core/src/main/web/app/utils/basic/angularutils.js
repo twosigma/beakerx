@@ -98,7 +98,10 @@
         return deferred.promise;
       },
       timeout: function (func, ms) {
-        $timeout(func, ms);
+        return $timeout(func, ms);
+      },
+      cancelTimeout: function(promise) {
+        $timeout.cancel(promise);
       },
       delay: function(ms) {
         var deferred = $q.defer();

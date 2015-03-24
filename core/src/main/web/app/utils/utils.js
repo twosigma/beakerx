@@ -102,7 +102,10 @@
       timeout: function(func,ms) {
         return angularUtils.timeout(func,ms);
       },
-
+      cancelTimeout: function(promise) {
+        return angularUtils.cancelTimeout(promise);  
+      },
+      
       // beaker server involved utils
       getHomeDirectory: function() {
         var deferred = angularUtils.newDeferred();

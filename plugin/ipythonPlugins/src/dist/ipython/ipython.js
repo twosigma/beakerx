@@ -197,7 +197,7 @@ define(function(require, exports, module) {
           // this is called to write output
           var type;
           var content;
-          if (ipyVersion == '2') {
+          if (ipyVersion == '1') {
             type = a0;
             content = a1;
           } else {

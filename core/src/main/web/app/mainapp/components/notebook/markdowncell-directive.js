@@ -17,6 +17,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.notebook');
+  var enterKey = 13;
 
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
     // Extract text with preserving whitespace, inspired from:
@@ -49,6 +50,17 @@
           });
         }
 
+        var syncContentAndPreview = function() {
+          scope.cellmodel.body = getContentEditableText(element.find('.markdown').html());
+          scope.mode = 'preview';
+        };
+
+        scope.keyDown = function(e) {
+          if (e.keyCode == enterKey && (e.ctrlKey || e.metaKey)){
+            syncContentAndPreview();
+          }
+        };
+
         scope.edit = function() {
           if (bkHelper.isNotebookLocked()) return;
 
@@ -60,8 +72,7 @@
 
         element.find('.markdown').on('blur', function() {
           scope.$apply(function() {
-            scope.cellmodel.body = getContentEditableText(element.find('.markdown').html());
-            scope.mode = 'preview';
+            syncContentAndPreview();
           });
         });
 

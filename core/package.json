@@ -8,6 +8,7 @@
   },
   "scripts": {
     "compile": "gulp compile",
+    "namespaceCss": "gulp namespaceCss",
     "watch": "gulp watch"
   },
   "devDependencies": {
@@ -25,11 +26,12 @@
     "gulp-strip-css-comments": "",
     "gulp-header" : "",
     "gulp-strip-comments": "",
+    "gulp-rename": "",
+    "gulp-replace": "",
     "run-sequence": "",
     "html-classer-gulp": "0.0.2",
     "gulp-load-plugins" : "",
     "event-stream" : "",
     "gulp-htmlbuild" : ""
-    
   }
 }

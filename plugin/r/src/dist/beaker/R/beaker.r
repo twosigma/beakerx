@@ -23,7 +23,7 @@ set_session <- function(id) {
   session_id <<- id
 }
 
-collapse_unit_vectors = TRUE
+collapse_unit_vectors = FALSE
 
 set_collapse_unit_vectors <- function(val) {
   collapse_unit_vectors <- val
@@ -41,7 +41,7 @@ convertToJSONObject <- function(val) {
     p = paste(p, '"', sep='')
     p = paste(p, obj, sep='')
     p = paste(p, '": ', sep='')
-    p = paste(p, convertToJSON(val[[obj]]), sep='')
+    p = paste(p, convertToJSON(val[[obj]], TRUE), sep='')
   }
   p = paste(p, " }", sep='')
   return (p)
@@ -143,7 +143,7 @@ convertToDataTableLoM <- function(val) {
   return (p)
 }
   
-convertToJSON <- function(val) {
+convertToJSON <- function(val, collapse) {
   if (class(val) == "data.frame") {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"columnNames\":"
     colNames = names(val)
@@ -165,7 +165,7 @@ convertToJSON <- function(val) {
   }
   else if (class(val) == "numeric" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
     if (is.null(names(val))) {
-  	  if (collapse_unit_vectors && length(val) == 1) {
+  	  if (collapse && length(val) == 1) {
   	    o = toJSON(val, .level=0L);
   	  } else {
    	    o = toJSON(val)
@@ -214,7 +214,7 @@ convertToJSON <- function(val) {
 	  	  } else {
 	  	    p = paste(p, ", ", sep='')
 	  	  }
-	      p = paste(p, convertToJSON(obj), sep='')
+	      p = paste(p, convertToJSON(obj, TRUE), sep='')
 		}
 		p = paste(p, " ]", sep='')
 		o = p
@@ -227,7 +227,7 @@ convertToJSON <- function(val) {
 	  o = convertToJSONObject(val) 
 	}
   } else if (class(val) == "complex") {
-    if (collapse_unit_vectors && length(val) == 1) {
+    if (collapse && length(val) == 1) {
       o = toJSON(as.character(val), .level=0L)
     } else {
       o = toJSON(as.character(val))
@@ -253,7 +253,7 @@ set4 <- function(var, val, unset, sync) {
   if (unset) {
     reply = postForm(req, style='POST', name=var, session=session_id, sync=sync, .opts=opts)
   } else {
-    reply = postForm(req, style='POST', name=var, value=convertToJSON(val), session=session_id, sync=sync, .opts=opts)
+    reply = postForm(req, style='POST', name=var, value=convertToJSON(val, collapse_unit_vectors), session=session_id, sync=sync, .opts=opts)
   }
   if (reply != 'ok') {
     stop(paste(reply))

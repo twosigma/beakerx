@@ -91,10 +91,10 @@
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": false,
-                "elapsedTime": 343,
+                "elapsedTime": 359,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "5F4685CA65614566921154FC327B0859"
+                "shellId": "489311AAD38B4730A87E3A09C9A30F04"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -134,11 +134,13 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 641,
+                "elapsedTime": 614,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "7a4abf6a-fcf1-456d-9945-166ae1430509",
-                "dataresult": "Strings work fine"
+                "shellId": "887712be-eb7a-4ae3-936e-3f102a68a6f2",
+                "dataresult": [
+                    "Strings work fine"
+                ]
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -162,10 +164,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 2021,
+                "elapsedTime": 616,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "a521cc90-ff33-4f17-b4fd-de79e09cec49"
+                "shellId": "8c2f32e3-da05-43c8-bfec-57882267129d"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -205,10 +207,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 607,
+                "elapsedTime": 616,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "a521cc90-ff33-4f17-b4fd-de79e09cec49"
+                "shellId": "8c2f32e3-da05-43c8-bfec-57882267129d"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -225,7 +227,7 @@
             "id": "text3lTKGy",
             "type": "text",
             "body": [
-                "A quirk of the R language is that there are no scalars, everything is a vector. &nbsp;So \"10\" is really an array of length one, written \"[10]\" in most other languages.&nbsp;<div>Beaker takes care of the situation by silently transforming vectors of length 1 to scalars when these are returned as results of an evaluation.</div><div>Scalars imported to R from the notebook namespace are transformed into vectors.</div>"
+                "A quirk of the R language is that there are no scalars, everything is a vector. &nbsp;So \"10\" is really an array of length one, written \"[10]\" in most other languages.&nbsp;<div>Scalars imported to R from the notebook namespace are transformed into vectors.</div>"
             ],
             "evaluatorReader": false
         },
@@ -240,11 +242,13 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 588,
+                "elapsedTime": 583,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "7a4abf6a-fcf1-456d-9945-166ae1430509",
-                "dataresult": 12
+                "shellId": "887712be-eb7a-4ae3-936e-3f102a68a6f2",
+                "dataresult": [
+                    12
+                ]
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -261,11 +265,13 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Html",
-                "elapsedTime": 218,
+                "elapsedTime": 294,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "5F4685CA65614566921154FC327B0859",
-                "dataresult": 12
+                "shellId": "489311AAD38B4730A87E3A09C9A30F04",
+                "dataresult": [
+                    12
+                ]
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -276,16 +282,16 @@
             "evaluator": "Groovy",
             "input": {
                 "body": [
-                    "beaker.z * 2"
+                    "beaker.z[0] * 2"
                 ]
             },
             "output": {
                 "outputArrived": true,
                 "selectedType": "Text",
-                "elapsedTime": 598,
+                "elapsedTime": 612,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "a521cc90-ff33-4f17-b4fd-de79e09cec49"
+                "shellId": "8c2f32e3-da05-43c8-bfec-57882267129d"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -309,10 +315,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 592,
+                "elapsedTime": 595,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "a521cc90-ff33-4f17-b4fd-de79e09cec49"
+                "shellId": "8c2f32e3-da05-43c8-bfec-57882267129d"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -328,11 +334,13 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 573,
+                "elapsedTime": 597,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "7a4abf6a-fcf1-456d-9945-166ae1430509",
-                "dataresult": 13
+                "shellId": "887712be-eb7a-4ae3-936e-3f102a68a6f2",
+                "dataresult": [
+                    13
+                ]
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -366,10 +374,10 @@
             "output": {
                 "outputArrived": false,
                 "selectedType": "Hidden",
-                "elapsedTime": 327,
+                "elapsedTime": 326,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "5F4685CA65614566921154FC327B0859"
+                "shellId": "489311AAD38B4730A87E3A09C9A30F04"
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -395,10 +403,10 @@
             },
             "output": {
                 "selectedType": "Results",
-                "elapsedTime": 645,
+                "elapsedTime": 630,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "a521cc90-ff33-4f17-b4fd-de79e09cec49"
+                "shellId": "8c2f32e3-da05-43c8-bfec-57882267129d"
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -422,10 +430,10 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 581,
+                "elapsedTime": 616,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "7a4abf6a-fcf1-456d-9945-166ae1430509"
+                "shellId": "887712be-eb7a-4ae3-936e-3f102a68a6f2"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -441,10 +449,10 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 686,
+                "elapsedTime": 733,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "7a4abf6a-fcf1-456d-9945-166ae1430509"
+                "shellId": "887712be-eb7a-4ae3-936e-3f102a68a6f2"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -462,10 +470,10 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Results",
-                "elapsedTime": 291,
+                "elapsedTime": 303,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "5F4685CA65614566921154FC327B0859"
+                "shellId": "489311AAD38B4730A87E3A09C9A30F04"
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -532,45 +540,47 @@
                 6
             ]
         },
-        "z": 12,
+        "z": [
+            12
+        ],
         "zz": 13,
         "df": {
             "values": [
                 [
-                    1.0679469896336005,
-                    1.3292468417131746,
-                    -0.8385469036804384,
-                    -1.295763694109285
+                    -1.2958876950943388,
+                    1.0339679030229096,
+                    -0.33379370943515296,
+                    -0.6022573057996473
                 ],
                 [
-                    -1.2082966131811432,
-                    -0.10265628703467547,
-                    -0.5403241897516972,
-                    0.15905268445670043
+                    0.8546098548244025,
+                    0.5996820877126882,
+                    -1.5666121888633597,
+                    0.8458988534040274
                 ],
                 [
-                    0.09262075099295038,
-                    -0.3057224072597163,
-                    -0.13386812421207822,
-                    -1.4428401626288077
+                    0.8866675451368726,
+                    0.3882221415754354,
+                    1.0138164206114364,
+                    0.3417681078289333
                 ],
                 [
-                    -0.3035627473525138,
-                    1.223240608316643,
-                    -1.3364409977568859,
-                    0.22492419050720677
+                    -0.048217875901571026,
+                    -1.3753301978590344,
+                    0.543873081497888,
+                    -0.6569179877983308
                 ],
                 [
-                    -1.2445707133055304,
-                    1.4548793980090793,
-                    0.4723209689958721,
-                    1.0324390472220037
+                    0.15771688297221204,
+                    -0.005865576051299158,
+                    0.31994159378396314,
+                    0.7136720919173277
                 ],
                 [
-                    -0.14706027027978888,
-                    -0.15154125864614834,
-                    -1.1394481983135107,
-                    -0.045388609652781305
+                    0.3129964220818653,
+                    -0.8903837774528159,
+                    -0.5089736879791984,
+                    0.22314907965245487
                 ]
             ],
             "subtype": "TableDisplay",
@@ -593,44 +603,44 @@
             "subtype": "TableDisplay",
             "values": [
                 [
-                    -0.060086,
-                    -0.7352
+                    0.39988,
+                    -1.9575
                 ],
                 [
-                    -0.48288,
-                    0.77935
+                    -0.75126,
+                    0.78968
                 ],
                 [
-                    0.32808,
-                    -1.9715
+                    -2.5769,
+                    1.0347
                 ],
                 [
-                    -0.43688,
-                    -0.24699
+                    1.8385,
+                    0.66085
                 ],
                 [
-                    2.1272,
-                    0.22844
+                    0.35921,
+                    0.52431
                 ],
                 [
-                    -0.79777,
-                    0.56916
+                    0.1243,
+                    0.98659
                 ],
                 [
-                    -1.3479,
-                    0.42665
+                    -0.65199,
+                    1.8162
                 ],
                 [
-                    1.8303,
-                    0.19718
+                    0.59188,
+                    -0.6463
                 ],
                 [
-                    -2.5711,
-                    1.2995
+                    -0.90175,
+                    -2.1602
                 ],
                 [
-                    -0.16066,
-                    0.024612
+                    -1.1589,
+                    1.1526
                 ]
             ],
             "types": [

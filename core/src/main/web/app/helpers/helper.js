@@ -310,6 +310,9 @@
       timeout: function(func, ms) {
         return bkUtils.timeout(func,ms);
       },
+      cancelTimeout: function(promise) {
+        return bkUtils.cancelTimeout(promise);  
+      },
       getHomeDirectory: function() {
         return bkUtils.getHomeDirectory();
       },
@@ -542,6 +545,8 @@
             modelOutput.result = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : evaluation.payload };
             // build output container
           }
+          if (evaluation.jsonres !== undefined)
+            modelOutput.dataresult = evaluation.jsonres;
         } else if (evaluation.status === "ERROR") {
           if (evaluation.payload === undefined) {
             if (modelOutput.result.object.payload !== undefined && modelOutput.result.object.payload.type === "Results")

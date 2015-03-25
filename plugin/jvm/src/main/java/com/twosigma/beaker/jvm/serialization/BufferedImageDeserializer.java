@@ -27,7 +27,7 @@ public class BufferedImageDeserializer implements ObjectDeserializer {
         o = ImageIO.read(bais);
       }      
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "exception deserializing OutputContainer ", e);
+      logger.log(Level.SEVERE, "exception deserializing ImageIcon ", e);
     }
     return o;
 

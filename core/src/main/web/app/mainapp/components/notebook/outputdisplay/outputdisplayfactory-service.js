@@ -35,6 +35,15 @@
             };
           }
         },
+        "Date": {
+          template: "<pre>{{getDate()}}</pre>",
+          controller: function($scope) {
+            $scope.getDate = function() {
+              var model = $scope.model.getCellModel();
+              return (model && model.timestamp) ? moment(model.timestamp).format("YYYYMMDD HH:mm:ss.SSS") : model;
+            };
+          }
+        },
       "Warning": {
         template: "<div class='outline warning'></div> <pre class='out_warning'>{{model.getCellModel().message}}</pre>"
       },
@@ -96,7 +105,7 @@
       }
     };
 
-    var types = ["Text", "BeakerStandardOutput", "BeakerStandardError", "Warning", "Error", "Html", "OutputContainer"];
+    var types = ["Text", "Date", "BeakerStandardOutput", "BeakerStandardError", "Warning", "Error", "Html", "OutputContainer"];
     var refresh = function(what, scope) {
       if (!what) {
         what = "all";
@@ -115,6 +124,7 @@
     var resultType2DisplayTypesMap = {
       // The first in the array will be used as default
       "text": ["Text", "Html", "Latex"],
+      "Date": ["Date", "Text"],
       "TableDisplay": ["Table", "Text"],
       "html": ["Html"],
       "ImageIcon": ["Image", "Text"],

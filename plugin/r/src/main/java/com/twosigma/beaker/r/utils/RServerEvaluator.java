@@ -13,7 +13,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -33,13 +32,11 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Request;
 import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;
-import org.rosuda.REngine.RList;
 import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject.EvaluationStatus;
-import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.r.module.ErrorGobbler;
 import com.twosigma.beaker.r.module.ROutputHandler;
@@ -255,52 +252,6 @@ public class RServerEvaluator {
     return false;
   }
 
-  protected boolean isDataFrame(REXP result, SimpleEvaluationObject obj) {
-    TableDisplay table;
-    try {
-      RList list = result.asList().at(0).asList();
-      int cols = list.size();
-      String[] names = list.keys();
-      if (null == names) {
-        return false;
-      }
-      String[][] array = new String[cols][];
-      List<List<?>> values = new ArrayList<>();
-      List<String> classes = new ArrayList<>();
-
-      for (int i = 0; i < cols; i++) {
-        if (null == list.at(i)) {
-          return false;
-        }
-        REXP o = list.at(i);
-        String cname = o.getClass().getName();
-        classes.add(objSerializer.convertType(cname));
-        array[i] = o.asStrings();
-      }
-      if (array.length < 1) {
-        return false;
-      }
-      for (int j = 0; j < array[0].length; j++) {
-        List<String> row = new ArrayList<>();
-        for (int i = 0; i < cols; i++) {
-          if (array[i].length != array[0].length) {
-            return false;
-          }
-          row.add(array[i][j]);
-        }
-        values.add(row);
-      }
-      table = new TableDisplay(values, Arrays.asList(names), classes);
-    } catch (NullPointerException e) {
-      return false;
-    } catch (REXPMismatchException e) {
-      return false;
-    }
-    logger.fine("is an datatable");
-    obj.finished(table);
-    return true;
-  }
-
   protected class workerThread extends Thread {
     RConnection connection;
     ROutputHandler outputHandler;
@@ -493,15 +444,22 @@ public class RServerEvaluator {
 
           mutex.acquire();
 
+          String resultjson = null;
+
           try {
             // direct graphical output
             String tryCode;
             connection.eval("do.call(svg,c(list('" + file + "'), beaker::saved_svg_options))");
-            tryCode = "beaker_eval_=withVisible(try({" + j.codeToBeExecuted + "\n},silent=TRUE))";
+            tryCode = "beaker_eval_=withVisible(try({ " + j.codeToBeExecuted + "\n},silent=TRUE))\n"+
+                    "list(beaker_eval_, beaker:::convertToJSON(beaker_eval_$value, beaker:::collapse_unit_vectors))";
             REXP result = connection.eval(tryCode);
-                        
-            if (result!= null)
+            
+            if (result!= null) {
               logger.finest("RESULT: "+result);
+              resultjson=result.asList().at(1).asString();
+              logger.finest("JSON: "+resultjson);
+              result = result.asList().at(0);
+            }
             
             if (null == result) {
               logger.fine("null result");;
@@ -509,12 +467,14 @@ public class RServerEvaluator {
               isfinished = true;
             } else if (isError(result, j.outputObject)) {
               isfinished = true;
-            } else if (isDataFrame(result, j.outputObject)) {
+            } else if (resultjson!=null && !resultjson.isEmpty() && resultjson.matches("(?s).*\"type\"\\s*:\\s*\"TableDisplay\".*")) {
+              logger.fine("is a dataframe");              
+              j.outputObject.finished(null, resultjson);
               isfinished = true;
-              // nothing
             } else if (!isVisible(result, j.outputObject)) {
               logger.fine("is not visible");
             } else {
+              outputHandler.setResultsJson(resultjson);
               logger.fine("capturing from output handler");
               String finish = "print(\"" + BEGIN_MAGIC + "\")\n" +
                   "print(beaker_eval_$value)\n" +
@@ -543,7 +503,7 @@ public class RServerEvaluator {
           if (!isfinished)
             isfinished = addSvgResults(file, j.outputObject);
           if (!isfinished)
-            j.outputObject.finished("");
+            j.outputObject.finished("", resultjson);
 
           outputHandler.reset(null);
           errorGobbler.reset(null);

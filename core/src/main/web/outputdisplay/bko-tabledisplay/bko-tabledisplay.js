@@ -302,6 +302,9 @@
         $scope.allConverters = [
                                 // string
                                 function(value,type,full,meta) {
+                                  if (_.isObject(value) && value.type === 'Date') {
+                                    value = moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS");
+                                  }
                                   if (type === 'display' && value !== null && value !== undefined)
                                     return $scope.escapeHTML(value);
                                   return value;
@@ -370,14 +373,21 @@
                                 function(value,type,full,meta) {
                                   if ($scope.timeStrings)
                                     return $scope.timeStrings[meta.row];
-                                  var nano = value % 1000;
-                                  var micro = (value / 1000) % 1000;
-                                  var milli = value / 1000 / 1000;
-                                  var time = moment(milli);
-                                  var tz = $scope.tz;
-                                  if (tz)
-                                    time.tz(tz);
-                                  return time.format("YYYYMMDD HH:mm:ss.SSS");
+
+                                  if (type === 'display') {
+                                    if (_.isObject(value) && value.type === 'Date') {
+                                      return moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS");
+                                    }
+                                    var nano = value % 1000;
+                                    var micro = (value / 1000) % 1000;
+                                    var milli = value / 1000 / 1000;
+                                    var time = moment(milli);
+                                    var tz = $scope.tz;
+                                    if (tz)
+                                      time.tz(tz);
+                                    return time.format("YYYYMMDD HH:mm:ss.SSS");
+                                  }
+                                  return value;
                                 },
                                 // boolean
                                 function(value,type,full,meta) {

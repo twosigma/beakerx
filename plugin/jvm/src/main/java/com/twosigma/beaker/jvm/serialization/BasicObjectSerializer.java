@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,20 +48,21 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
   public static final String TYPE_DOUBLE  = "double";
   public static final String TYPE_STRING  = "string";
   public static final String TYPE_BOOLEAN = "boolean";
+  public static final String TYPE_TIME    = "time";
   public static final String TYPE_SELECT  = "select";
   
   protected Map<String,String> types;
   private final static Logger logger = Logger.getLogger(BasicObjectSerializer.class.getName());
   protected static List<ObjectDeserializer> supportedTypes;
 
-  protected boolean isListOfMaps(Object o) {
+  protected boolean isListOfPrimitiveTypeMaps(Object o) {
     if (! (o instanceof Collection<?>))
       return false;
     Collection<?> c = (Collection<?>) o;
     if (c.isEmpty())
       return false;
     for (Object obj : c) {
-      if (!(obj instanceof Map<?,?>)) {        
+      if (!isPrimitiveTypeMap(obj)) {        
         return false;
       }
     }
@@ -118,6 +120,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     addTypeConversion("java.lang.String", TYPE_STRING);
     addTypeConversion("java.lang.StringBuffer", TYPE_STRING);
     addTypeConversion("java.lang.StringBuilder", TYPE_STRING);
+    addTypeConversion("java.util.Date", TYPE_TIME); 
     addTypeConversion("java.util.concurrent.atomic.AtomicInteger", TYPE_INTEGER);
     addTypeConversion("java.util.concurrent.atomic.AtomicLong", TYPE_INTEGER);
     addTypeConversion("java.math.BigDecimal", TYPE_DOUBLE);
@@ -152,11 +155,10 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         jgen.writeObject("null");
       } else if ( (obj instanceof TableDisplay)  ||
                   (obj instanceof EvaluationResult)||
-                  (obj instanceof OutputContainer) ||   
-                  (obj instanceof BeakerProgressUpdate) ||
                   (obj instanceof UpdatableEvaluationResult) ||
                   (obj instanceof BeakerCodeCell) ||
                   (obj instanceof ImageIcon) ||
+                  (obj instanceof Date) ||
                   (obj instanceof BufferedImage) ||
                   (obj instanceof OutputContainer)  ||
                   (obj instanceof BeakerProgressUpdate) ) {
@@ -164,7 +166,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         jgen.writeObject(obj);
       } else if (isPrimitiveType(obj.getClass().getName())) {
         jgen.writeObject(obj);
-      } else if (isListOfMaps(obj)) {
+      } else if (isListOfPrimitiveTypeMaps(obj)) {
         logger.fine("list of maps");
         // convert this 'on the fly' to a datatable
         @SuppressWarnings("unchecked")
@@ -199,6 +201,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         jgen.writeObjectField("type", "TableDisplay");
         jgen.writeObjectField("columnNames", columns);
         jgen.writeObjectField("values", values);
+        jgen.writeObjectField("subtype", TableDisplay.MATRIX_SUBTYPE);
         jgen.writeEndObject();
       } else if (obj instanceof Collection<?>) {
         logger.fine("collection");
@@ -224,15 +227,16 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         Set<?> eset = m.entrySet();
         for (Object entry : eset) {
           Entry<?,?> e = (Entry<?, ?>) entry;
-          List<String> l = new ArrayList<String>();
+          List<Object> l = new ArrayList<Object>();
           l.add(e.getKey().toString());
-          l.add(e.getValue().toString());
+          l.add(e.getValue());
           values.add(l);
         }
         jgen.writeStartObject();
         jgen.writeObjectField("type", "TableDisplay");
         jgen.writeObjectField("columnNames", columns);
         jgen.writeObjectField("values", values);
+        jgen.writeObjectField("subtype", TableDisplay.DICTIONARY_SUBTYPE);
         jgen.writeEndObject();
       } else if (obj instanceof Map<?,?>) {
         logger.fine("generic map");

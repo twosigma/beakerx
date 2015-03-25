@@ -849,7 +849,9 @@
                   o.evaluatorId = cell.evaluator;
                   o.code = cell.input.body;
                   o.tags = cell.tags;
-                  if (cell.output !== undefined && cell.output.result !== undefined) {
+                  if (cell.dataresult !== undefined) {
+                    o.output = cell.dataresult;
+                  } else if (cell.output !== undefined && cell.output.result !== undefined) {
                     if (cell.output.result.type !== undefined) {
                       if (cell.output.result.type === 'BeakerDisplay') {
                         o.output = cell.output.result.object;
@@ -869,7 +871,9 @@
                 o.cellId = filter.id;
                 o.evaluatorId = filter.evaluator;
                 o.code = filter.input.body;
-                if (filter.output !== undefined && filter.output.result !== undefined) {
+                if (filter.dataresult !== undefined) {
+                  o.output = filter.dataresult;
+                } else if (filter.output !== undefined && filter.output.result !== undefined) {
                   if (filter.output.result.type !== undefined) {
                     if (filter.output.result.type === 'BeakerDisplay') {
                       o.output = filter.output.result.object;

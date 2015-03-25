@@ -41,17 +41,25 @@ public class TableDisplay {
   private final List<List<?>> values;
   private final List<String> columns;
   private final List<String> classes;
+  private final String subtype;
 
+  public static final String TABLE_DISPLAY_SUBTYPE = "TableDisplay";
+  public static final String LIST_OF_MAPS_SUBTYPE = "ListOfMaps";
+  public static final String MATRIX_SUBTYPE = "Matrix";
+  public static final String DICTIONARY_SUBTYPE = "Dictionary";
+  
   public TableDisplay(List<List<?>> v, List<String> co, List<String> cl) {
     values = v;
     columns = co;
     classes = cl;
+    subtype = TABLE_DISPLAY_SUBTYPE;
   }
 
   public TableDisplay(Collection<Map<?,?>> v, BeakerObjectConverter serializer) {
     values = new ArrayList<List<?>>();
     columns = new ArrayList<String>();
     classes = new ArrayList<String>();
+    subtype = LIST_OF_MAPS_SUBTYPE;
 
     // create columns
     for(Map<?,?> m : v) {
@@ -61,7 +69,8 @@ public class TableDisplay {
         String c = e.getKey().toString();
         if (!columns.contains(c)) {
           columns.add(c);
-          classes.add(serializer.convertType(e.getValue().getClass().getName()));
+          String n = e.getValue()!=null ? e.getValue().getClass().getName() : "string";
+          classes.add(serializer.convertType(n));
         }
       }
     }
@@ -98,6 +107,7 @@ public class TableDisplay {
         jgen.writeObjectField("columnNames", value.columns);
         jgen.writeObjectField("values", value.values);
         jgen.writeObjectField("types", value.classes);
+        jgen.writeObjectField("subtype", value.subtype);
         jgen.writeEndObject();
       }
     }
@@ -113,6 +123,7 @@ public class TableDisplay {
         List<List<?>> vals = null;
         List<String> cols = null;
         List<String> clas = null;
+        String subtype = null;
         
         if (n.has("columnNames"))
           cols = mapper.readValue(n.get("columnNames"), List.class);
@@ -120,10 +131,12 @@ public class TableDisplay {
           clas = mapper.readValue(n.get("types"), List.class);
         if (n.has("values"))
           vals = mapper.readValue(n.get("values"), List.class);
+        if (n.has("subtype"))
+          subtype = mapper.readValue(n.get("subtype"), String.class);
         /*
          * unfortunately the other 'side' of this is in the BeakerObjectSerializer
          */
-        if (cols!=null && vals!=null && cols.size()==2 && cols.get(0).equals("Key") && cols.get(1).equals("Value")) {
+        if (subtype!=null && subtype.equals(TableDisplay.DICTIONARY_SUBTYPE)) {
           Map<String,Object> m = new HashMap<String,Object>();
           for(List<?> l : vals) {
             if (l.size()!=2)
@@ -131,18 +144,20 @@ public class TableDisplay {
             m.put(l.get(0).toString(), l.get(1));
           }
           o = m;
-        } else if(cols!=null && vals!=null && cols.size()>=2 && vals.size()>=2) {
-          int i=0;
-          for (String c : cols) {
-            if (c.startsWith("c") && Integer.parseInt(c.substring(1))==i)
-              i++;
-            else
-              break;
+        } else if(subtype!=null && subtype.equals(TableDisplay.LIST_OF_MAPS_SUBTYPE) && cols!=null && vals!=null) {
+          List<Map<String,Object>>  oo = new ArrayList<Map<String,Object>>();
+          for(int r=0; r<vals.size(); r++) {
+            Map<String,Object> m = new HashMap<String,Object>();
+            List<?> row = vals.get(r);
+            for(int c=0; c<cols.size(); c++) {
+              if(row.size()>c)
+                m.put(cols.get(c), row.get(c));
+            }
+            oo.add(m);
           }
-          if (i==cols.size()) {
-            // rollback to list of lists
-            o = vals;
-          }
+          o = oo;
+        } else if(subtype!=null && subtype.equals(TableDisplay.MATRIX_SUBTYPE)) {
+          o = vals;
         }
         if (o==null) {
           o = new TableDisplay(vals, cols, clas);

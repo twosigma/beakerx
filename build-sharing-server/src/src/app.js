@@ -155,8 +155,9 @@
                     basePath: 'vendor/epiceditor',
                     container: div,
 		    theme: {
-			editor: '../../../src/css/markdown-edit.css',
-			preview: '../../../src/css/markdown-preview.css'
+		      base: '../../../../../static/viewer/vendor/epiceditor/themes/base/epiceditor.css',
+			editor: '../../../../../static/viewer/css/markdown-edit.css',
+			preview: '../../../../../static/viewer/css/markdown-preview.css'
 		    },
                     file: {
                         defaultContent: scope.cellmodel.body
@@ -215,8 +216,9 @@
                 var evaluator = _(notebookModel.evaluators).find(function(evaluator) {
                     return evaluator.name === scope.cellmodel.evaluator;
                 });
+                var mode = evaluator.view !== undefined && evaluator.view.cm !== undefined ? evaluator.view.cm.mode : "";
                 var cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
-                    mode: evaluator.view.cm.mode,
+                    mode: mode,
                     lineNumbers: true,
                     matchBrackets: true,
                     onKeyEvent: function(cm, e) {

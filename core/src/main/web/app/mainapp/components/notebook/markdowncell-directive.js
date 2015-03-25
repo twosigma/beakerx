@@ -36,7 +36,7 @@
       controller: function($scope) {
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + ($scope.$parent.index + 1);
-        }
+        };
       },
       link: function(scope, element, attrs) {
         var convert = function() {
@@ -48,7 +48,7 @@
             element.find('.markup').html(marked(markdownFragment.html()));
             markdownFragment.remove();
           });
-        }
+        };
 
         var syncContentAndPreview = function() {
           scope.cellmodel.body = getContentEditableText(element.find('.markdown').html());
@@ -65,7 +65,7 @@
           if (bkHelper.isNotebookLocked()) return;
 
           scope.mode = 'edit';
-        }
+        };
 
         scope.mode = 'preview';
         convert();

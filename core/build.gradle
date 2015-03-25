@@ -76,7 +76,6 @@ task (publishAssets, type: Copy) {
   include 'beaker-sandbox.css'
 }
 
-
 task (copyDTImages, type: Copy) {
 	from 'src/vendor/bower_components/datatables/media/images/'
 	into 'src/main/web/app/images/'
@@ -98,6 +97,8 @@ copyStuff.dependsOn copyBootStrapFonts
 task updatePackages
 
 task (copyMathJax, type: Copy) {
+	inputs.dir 'src/vendor/MathJax-2.5-latest/'
+	outputs.dir'src/main/web/app/vendor/mathjax/'
 	from 'src/vendor/MathJax-2.5-latest/'
 	into 'src/main/web/app/vendor/mathjax/'
 	exclude '**.md'
@@ -112,6 +113,8 @@ task copyVendorStuff
 copyVendorStuff.dependsOn copyMathJax
 
 task (extractPackages, type: Exec) {
+  inputs.file '../data/allDeps.zip'
+  outputs.dir 'src/vendor/'
   if (windows()) {
     commandLine 'cmd', '/c', '7z', 'x', '-y', '..\\data\\allDeps.zip';
   } else {
@@ -151,11 +154,27 @@ task (copyNginx, type: Exec) {
   }
 }
 
+task doRemove() {  
+  doLast {
+      delete fileTree(dir: "src/main/web/app/temp")
+      delete fileTree(dir: "src/main/web/app/dist")
+      delete fileTree(dir: "src/main/web/app/vendor")
+      delete fileTree(dir: "src/vendor")
+      delete "src/main/web/app/temp"
+      delete "src/main/web/app/dist"
+      delete "src/main/web/app/vendor"
+      delete "src/main/web/plugin/init/addoutputdisplays.js"
+      delete "src/vendor"
+  }
+}
+
 task builddebug
 task debug
 task runembed
 task buildembed
+task realclean
 
+realclean.dependsOn doRemove
 bowerInstall.dependsOn npmInstall
 compileCss.dependsOn npmInstall
 compileCss.dependsOn extractPackages

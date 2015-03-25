@@ -23,6 +23,7 @@ task build
 task buildembed
 task builddebug
 task clean
+task realclean
 task check
 task updatePackages
 task zipPackages
@@ -81,6 +82,7 @@ task clearhash << {
 
 clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
+realclean.dependsOn(clean)
 build.dependsOn(":core:build")
 build.dependsOn(":core:installApp")
 build.dependsOn(":core:copyVendorStuff")

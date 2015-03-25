@@ -46,6 +46,11 @@ task clean (type: GradleBuild) {
   tasks = ['clean']
 }
 
+task realclean (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['realclean']
+}
+
 task run (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['run']

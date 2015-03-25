@@ -49,7 +49,6 @@ cp src/app/beaker_notebook.html outdir/template/
 
 NOTEBOOKCSS=(
     "bower_components/font-awesome/css/font-awesome.css"
-    "bower_components/bootstrap/docs/assets/css/bootstrap.css"
     "bower_components/angular-datatables/dist/datatables.bootstrap.css"
     "bower_components/datatables/media/css/jquery.dataTables.css"
     "ColVis-1.1.1/css/dataTables.colVis.min.css"
@@ -59,6 +58,8 @@ NOTEBOOKCSS=(
 
 BEAKERCSS=(
     "css/datatables.css"
+    "css/markdown-edit.css"
+    "css/markdown-preview.css"
     "app/dist/app.css"
     "outputdisplay/bko-plot/bko-plot.css"
     "app/dist/vendor.css"
@@ -74,6 +75,10 @@ for i in ${BEAKERCSS[@]}; do
     cp $WEBDIR/$i outdir/static/$(dirname $i)
 done
 
+# copy fonts
+
+cp -R $WEBDIR/app/fonts outdir/static/
+
 # copy vendor javascript for notebook sharing
 
 VENDORNOTEBOOKJS=(
@@ -81,6 +86,8 @@ VENDORNOTEBOOKJS=(
     "bower_components/big.js/big.min.js"
     "bower_components/jquery/jquery.min.js"
     "bower_components/datatables/media/js/jquery.dataTables.js"
+    "bower_components/jquery-file-upload/js/vendor/jquery.ui.widget.js"
+    "bower_components/jquery-file-upload/js/jquery.fileupload.js"
     "ColVis-1.1.1/js/dataTables.colVis.min.js"
     "ColReorder-1.1.2/js/dataTables.colReorder.min.js"
     "Responsive-1.0.1/js/dataTables.responsive.min.js"
@@ -89,6 +96,7 @@ VENDORNOTEBOOKJS=(
     "bower_components/angular-datatables/dist/angular-datatables.js"
     "bower_components/angular-route/angular-route.js"
     "bower_components/angular-animate/angular-animate.js"
+    "bower_components/ngstorage/ngStorage.min.js"
     "bower_components/d3/d3.js"
     "bower_components/codemirror/lib/codemirror.js"
     "bower_components/codemirror/addon/hint/show-hint.js"
@@ -119,7 +127,7 @@ VENDORNOTEBOOKJS=(
     "jquery.event.drag/jquery.event.drag.js"
     "jquery-ui/js/jquery-ui.custom.min.js"
     "bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"
-    "bower_components/bootstrap/docs/assets/js/bootstrap.min.js"
+    "bower_components/bootstrap-sass/assets/javascripts/bootstrap.js"
     "vega/vega.js"
     "vega/d3.geo.projection.min.js"
     "vega/d3.layout.cloud.js"

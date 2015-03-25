@@ -93,12 +93,13 @@
   <!--  we must include mathjax here: we cannot put it in the glued file -->
 
   <script type="text/x-mathjax-config">
-	MathJax.Hub.Config( {
-		tex2jax: {
-			displayMath: [['MATH_JAX_BEGIN', 'MATH_JAX_END']],
-        	inlineMath: [['MATH_JAX_INLINE_BEGIN', 'MATH_JAX_INLINE_END']]
-    	}
-	} );
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [
+        ['MATH_JAX_INLINE_BEGIN', 'MATH_JAX_INLINE_END'],
+        ['$','$'],
+        ['\\(','\\)']
+      ]}
+    });
   </script>
   <script src="app/vendor/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 

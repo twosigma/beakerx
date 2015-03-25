@@ -10,12 +10,12 @@
 //============================================================================
 /**
  * Base Comm classes
- * @module IPython
- * @namespace IPython
+ * @module IPython2
+ * @namespace IPython2
  * @submodule comm
  */
 
-var IPython = (function (IPython) {
+var IPython2 = (function (IPython2) {
     "use strict";
 
     //-----------------------------------------------------------------------
@@ -125,7 +125,7 @@ var IPython = (function (IPython) {
     
     var Comm = function (target_name, comm_id) {
         this.target_name = target_name;
-        this.comm_id = comm_id || IPython.utils.uuid();
+        this.comm_id = comm_id || IPython2.utils.uuid();
         this._msg_callback = this._close_callback = null;
     };
     
@@ -189,10 +189,10 @@ var IPython = (function (IPython) {
         this._maybe_callback('close', msg);
     };
     
-    IPython.CommManager = CommManager;
-    IPython.Comm = Comm;
+    IPython2.CommManager = CommManager;
+    IPython2.Comm = Comm;
     
-    return IPython;
+    return IPython2;
 
-}(IPython));
+}(IPython2));
 

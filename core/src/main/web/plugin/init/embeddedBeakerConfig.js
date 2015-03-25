@@ -50,75 +50,77 @@
     return [
             {
               cellType: ["notebook", "section", "code"],
-              plugin: {
-                name: "public web...",
-                tooltip: "using an anonymous github gist",
-                action: function() {
-                  publishToWeb(scope);
-                }
-              }
+              plugin: function(scope) {
+                return [
+                        {
+                          name: "public web...",
+                          tooltip: "using an anonymous github gist",
+                          action: function() {
+                            publishToWeb(scope);
+                          }
+                        }];
+                    }
             }
             ];
   };
 
   window.beaker.getMenuItems = function() {
-    var menuItems = [
-                     {
-                       name: "Language manager...",
-                       sortorder: 100,
-                       action: function () {
-                         bkHelper.showLanguageManager();
-                       },
-                       tooltip: "Show available languages and edit their settings",
-                       id: "language-manager-menuitem"
-                     },
-                     {
-                       name: "Lock",
-                       sortorder: 110,
-                       action: function () {
-                         bkHelper.toggleNotebookLocked();
-                       },
-                       tooltip: "Lock notebook from further editing",
-                       isChecked: function () {
-                         return bkHelper.isNotebookLocked();
-                       },
-                       id: "lock-menuitem"
-                     },
-                     {
-                       name: 'Delete all output cells',
-                       sortorder: 120,
-                       action: function () {
-                         bkHelper.deleteAllOutputCells();
-                       },
-                       tooltip: 'Deletes all of the output cells.',
-                       id: "delete-all-menuitem"
-                     },
-                     {
-                       name: "Run all cells",
-                       sortorder: 130,
-                       action: function() {
-                         bkHelper.evaluateRoot("root");
-                       },
-                       tooltip: "Run all cells",
-                       id: "run-all-cells-menuitem"
-                     },
-                     {
-                       name: 'Collapse All Sections',
-                       sortorder: 135,
-                       action: bkHelper.collapseAllSections,
-                       id: "collapse-all-menuitem"
-                     },
-                     {
-                       name: "Edit mode",
-                       sortorder: 140,
-                       id: "edit-mode-menuitem"
-                     }
-                     ];
     var toAdd = [
                  {
                    parent: "Notebook",
                    id: "notebook-menu",
-                   items: menuItems
+                   items: [
+                           {
+                             name: "Language manager...",
+                             sortorder: 100,
+                             action: function () {
+                               bkHelper.showLanguageManager();
+                             },
+                             tooltip: "Show available languages and edit their settings",
+                             id: "language-manager-menuitem"
+                           },
+                           {
+                             name: "Lock",
+                             sortorder: 110,
+                             action: function () {
+                               bkHelper.toggleNotebookLocked();
+                             },
+                             tooltip: "Lock notebook from further editing",
+                             isChecked: function () {
+                               return bkHelper.isNotebookLocked();
+                             },
+                             id: "lock-menuitem"
+                           },
+                           {
+                             name: 'Delete all output cells',
+                             sortorder: 120,
+                             action: function () {
+                               bkHelper.deleteAllOutputCells();
+                             },
+                             tooltip: 'Deletes all of the output cells.',
+                             id: "delete-all-menuitem"
+                           },
+                           {
+                             name: "Run all cells",
+                             sortorder: 130,
+                             action: function() {
+                               bkHelper.evaluateRoot("root");
+                             },
+                             tooltip: "Run all cells",
+                             id: "run-all-cells-menuitem"
+                           },
+                           {
+                             name: 'Collapse All Sections',
+                             sortorder: 135,
+                             action: bkHelper.collapseAllSections,
+                             id: "collapse-all-menuitem"
+                           },
+                           {
+                             name: "Edit mode",
+                             sortorder: 140,
+                             id: "edit-mode-menuitem"
+                           }
+                           ]
                  },
                  {
                    parent: "Notebook",
@@ -164,4 +166,67 @@
     return toAdd;
   };
 
+  window.beaker.getControlMenuItems = function() {
+    var toAdd = [
+                 {
+                   parent: "File",
+                   id: "file-menu",
+                   items: [
+                           {
+                             name: "New Notebook",
+                             tooltip: "Open a new empty notebook, add the languages of your choice",
+                             sortorder: 100,
+                             action: function() {
+                               bkHelper.newSession(true);
+                             }
+                           },
+                           {
+                             name: "Open recent",
+                             sortorder: 120,
+                             id: "open-recent-menuitem",
+                             items: function() {
+                               return bkHelper.getRecentMenuItems();
+                             }
+                           },
+                           {
+                             name: "Open",
+                             id: "open-menuitem",
+                             sortorder: 110
+                           },
+                           {
+                             name: "Import",
+                             id: "import-menuitem",
+                             sortorder: 130,
+                             action: bkHelper.importNotebookDialog
+                           }
+                         ]
+                 },
+                 {
+                   parent: "File",
+                   id: "file-menu",
+                   submenu: "Open",
+                   submenusortorder: 110,
+                   items: [
+                           {
+                             name: "Open... (.bkr)",
+                             id: "open-menuitem",
+                             tooltip: "Open a bkr notebook file",
+                             sortorder: 100,
+                             action: function() {
+                                 bkHelper.showModalDialog(
+                                     function(originalUrl) {
+                                       bkHelper.openNotebook(originalUrl);
+                                     },
+                                     JST['template/opennotebook']({homedir: homeDir, extension: '.bkr'}),
+                                     bkHelper.getFileSystemFileChooserStrategy()
+                                 );
+                             }
+                           }
+                           ]
+                 }
+                 ];
+    return toAdd;
+  }
+  
+  
 })();

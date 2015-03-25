@@ -1201,7 +1201,8 @@
             });
           });
         } else {
-          // TODO
+          var menues = window.beaker.getMenuItems();
+          bkMenuPluginManager.attachMenus(menues);
         }
         bkCellMenuPluginManager.reset();
         bkEvaluateJobManager.reset();

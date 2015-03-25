@@ -51,11 +51,14 @@
                   bkMenuPluginManager.loadMenuPlugin(url);
                 });
               });
+        } else {
+          var menues = window.beaker.getControlMenuItems();
+          bkMenuPluginManager.attachMenus(menues);
         }
+        
         $scope.getMenus = function() {
           return bkMenuPluginManager.getMenus();
         };
-
 
         // actions for UI
         $scope.newNotebook = function() {
@@ -70,7 +73,7 @@
 
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
-        if (bkTrack.isNeedPermission()) {
+        if (window.beaker.isEmbedded === undefined && bkTrack.isNeedPermission()) {
           bkUtils.httpGet("../beaker/rest/util/isAllowAnonymousTracking").then(function(allow) {
             switch (allow.data) {
               case "true":
@@ -86,19 +89,21 @@
         } else {
           $scope.isAllowAnonymousTracking = true;
         }
-        $scope.$watch("isAllowAnonymousTracking", function(newValue, oldValue) {
-          if (newValue !== oldValue) {
-            var allow = null;
-            if (newValue) {
-              allow = "true";
-              bkTrack.enable();
-            } else if (newValue === false) {
-              allow = "false";
-              bkTrack.disable();
+        if (window.beaker.isEmbedded === undefined) {
+          $scope.$watch("isAllowAnonymousTracking", function(newValue, oldValue) {
+            if (newValue !== oldValue) {
+              var allow = null;
+              if (newValue) {
+                allow = "true";
+                bkTrack.enable();
+              } else if (newValue === false) {
+                allow = "false";
+                bkTrack.disable();
+              }
+              bkUtils.httpPost("../beaker/rest/util/setAllowAnonymousTracking", { allow: allow });
             }
-            bkUtils.httpPost("../beaker/rest/util/setAllowAnonymousTracking", { allow: allow });
-          }
-        });
+          });
+        }
         $scope.showWhatWeLog = function() {
           return bkCoreManager.showModalDialog(
             function() {},

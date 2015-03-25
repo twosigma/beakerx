@@ -188,6 +188,16 @@
         });
         loadingInProgressPluginJobs.push(job);
       },
+      attachMenus: function(plugin) {
+        var index = pluginIndex++;
+        if (_.isArray(plugin)) {
+          _(plugin).each(function (item, i) {
+            addPlugin(item, index, i);
+          });
+        } else {
+          addPlugin(plugin, index, 0);
+        }
+      },
       getMenus: function() {
         return menus;
       },
@@ -197,12 +207,6 @@
           job.cancel();
         });
         pluginIndex = 0;
-      },
-      getMenuPlugins: function() {
-        return loadedPlugins;
-      },
-      getLoadingPlugins: function() {
-        return loadingInProgressPluginJobs;
       }
     };
   });

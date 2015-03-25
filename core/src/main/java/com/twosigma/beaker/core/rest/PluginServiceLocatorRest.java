@@ -385,7 +385,7 @@ public class PluginServiceLocatorRest {
     synchronized (this) {
       // find a port to use for proxypass between nginx and the plugin
       final int port = getNextAvailablePort(this.portSearchStart);
-      final String baseUrl = "/" + urlHash + "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
+      final String baseUrl = urlHash.isEmpty() ? "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "") : "/" + urlHash + "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
       pConfig = new PluginConfig(port, nginxRules, baseUrl, password);
       this.portSearchStart = pConfig.port + 1;
       this.plugins.put(pluginId, pConfig);

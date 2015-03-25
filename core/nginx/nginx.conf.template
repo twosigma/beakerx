@@ -73,9 +73,9 @@ http {
     }
 
     # this serves the actual (static) content
-    location /%(urlhash)s/beaker/ {
+    location /%(urlhash)sbeaker/ {
       %(auth_cookie_rule)s
-      rewrite ^/%(urlhash)s/beaker/(.*)$ /$1 break;
+      rewrite ^/%(urlhash)sbeaker/(.*)$ /$1 break;
       root "%(static_dir)s/";
       try_files $uri @dopass;
     }

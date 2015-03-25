@@ -26,6 +26,11 @@ task builddebug (type: GradleBuild) {
   tasks = ['builddebug']
 }
 
+task buildembed (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['buildembed']
+}
+
 task check (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['check']
@@ -44,6 +49,11 @@ task clean (type: GradleBuild) {
 task run (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['run']
+}
+
+task runembed (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['runembed']
 }
 
 task debug (type: GradleBuild) {
@@ -70,3 +80,9 @@ task copyVendorStuff (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['copyVendorStuff']
 }
+
+task publishAssets (type: GradleBuild) {
+  buildFile = mainGradle
+  tasks = ['publishAssets']
+}
+

@@ -8,6 +8,8 @@ var minifyJS  = require('gulp-uglify');
 var htmlmin   = require('gulp-htmlmin');
 var htmlClass = require('html-classer-gulp');
 var importCss = require('gulp-import-css');
+var rename    = require('gulp-rename');
+var replace   = require('gulp-replace');
 var Path      = require('path');
 var debug     = require('gulp-debug');
 var gtemplate = require('gulp-template');
@@ -45,6 +47,35 @@ var banner = ['/*',
               ' */',
               ''].join('\n');
 
+if (argv.help) {
+  console.log("");
+  console.log("OPTIONS:");
+  console.log("--debug            enable debugging version");
+  console.log("--outdisp=path     directory containint the output display file list(s)");
+  console.log("--embed=fname      compile embedded version with a list of languages");
+  console.log("");
+  return(20);
+}
+
+if (argv.debug && argv.embed) {
+  console.log("");
+  console.log("ERROR: you cannot use --debug and --embed at the same time");
+  console.log("");
+  return (20);
+}
+
+if (argv.embed) {
+  var p;
+  if( fs.existsSync(argv.embed)) {
+    p = argv.embed;
+  } else {
+    p = srcPath + 'plugin/init/embeddedBeakerConfig.js';
+  }
+  if( ! fs.existsSync(buildPath)) {
+    fs.mkdirSync(buildPath);
+  }
+  fs.createReadStream(p).pipe(fs.createWriteStream(buildPath+'beakerConfig.js'));
+}
 
 function handleError(e) {
   console.log('\u0007', e.message);
@@ -87,8 +118,26 @@ gulp.task("compileBeakerScss", function() {
   .pipe(sass().on('error', handleError))
   .pipe(importCss())
   .pipe(stripCssComments())
-  //.pipe(minifyCSS())
   .pipe(gulp.dest(tempPath))
+});
+
+gulp.task('prepareCssForNamespacing', function(){
+  gulp.src(Path.join(buildPath, '*.css')).
+    pipe(rename(function(path) {
+      path.basename = "_" + path.basename;
+      path.extname = ".scss";
+    }))
+    .pipe(gulp.dest(Path.join(tempPath, "namespacedCss")))
+    .on('error', handleError);
+});
+gulp.task("namespacePreparedCss", function() {
+  return gulp.src("beaker-sandbox.scss")
+    .pipe(sass()).on('error', handleError)
+    .pipe(replace('.beaker-sandbox html', '.beaker-sandbox'))
+    .pipe(replace('.beaker-sandbox body', '.beaker-sandbox'))
+    .pipe(replace('.beaker-sandbox .modal-backdrop',
+                  '.beaker-sandbox.modal-backdrop'))
+    .pipe(gulp.dest(buildPath));
 });
 
 gulp.task("compileBeakerTemplates", function() {
@@ -105,10 +154,17 @@ gulp.task("compileBeakerTemplates", function() {
 });
 
 gulp.task('buildOutputDisplayTemplate', function () {
-  var cssarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_css.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var jsarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_javascript.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var vendorcssarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_vendorcss.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var vendorjsarray = fs.readFileSync(pluginPath + 'template/addoutputdisplays_vendorjs.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  
+  var thePath = pluginPath + 'template/';
+  
+  if (argv.outdisp) {
+    thePath = argv.outdisp + '/';
+  }
+
+  var cssarray = fs.readFileSync(thePath + 'addoutputdisplays_css.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var jsarray = fs.readFileSync(thePath + 'addoutputdisplays_javascript.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var vendorcssarray = fs.readFileSync(thePath + 'addoutputdisplays_vendorcss.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var vendorjsarray = fs.readFileSync(thePath + 'addoutputdisplays_vendorjs.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
 
   var ca = [];
   if (vendorcssarray.length > 0) {
@@ -168,7 +224,6 @@ gulp.task('buildOutputDisplayTemplate', function () {
   }
 
   if (vendorcssarray.length > 0) {
-    console.log('HERE:' + vendorcssarray);
     cssfiles = '"app/dist/beakerOutputDisplayVendor.css", ' + cssfiles;
   }
 
@@ -183,6 +238,20 @@ gulp.task('buildOutputDisplayTemplate', function () {
     }))
     .pipe(gulp.dest(pluginPath + 'init/'));
 });
+
+function filterLines(line) {
+  if (!argv.embed)
+    return line;
+}
+
+function filterLinesBis(line) {
+  if (argv.embed)
+    return line;
+}
+
+function copyLine(line) {
+  return line;
+}
 
 
 gulp.task('buildIndexTemplate', function () {
@@ -214,6 +283,8 @@ gulp.task('buildIndexTemplate', function () {
       css: htmlbuild.preprocess.css(function (block) {
         if (argv.debug) {
           block.pipe(block);
+        } else if (argv.embed) {
+          block.end('app/dist/beaker-sandbox.css');
         } else {
           block.pipe(gulpSrc(false))
             .pipe(stripCssComments())
@@ -222,7 +293,25 @@ gulp.task('buildIndexTemplate', function () {
             .pipe(gulp.dest(buildPath));
           block.end('app/dist/beakerApp.css');
         }
-      })
+      }),
+      
+      embedremove:  function (block) {
+        var filterSrc = es.mapSync(filterLines),
+            copySrc = es.mapSync(copyLine);
+        block.pipe(filterSrc);
+        copySrc.pipe(block);
+        b = es.duplex(copySrc, filterSrc);
+        b.pipe(b);
+      },
+      
+      embedinclude:  function (block) {
+        var filterSrc = es.mapSync(filterLinesBis),
+            copySrc = es.mapSync(copyLine);
+        block.pipe(filterSrc);
+        copySrc.pipe(block);
+        b = es.duplex(copySrc, filterSrc);
+        b.pipe(b);
+      }
     }))
     .pipe(gulp.dest(buildPath));
 });
@@ -231,11 +320,20 @@ gulp.task("watch", function() {
   gulp.watch(["**/*.scss", "**/*.jst.html"], ["compile"]);
 });
 
+gulp.task("namespaceCss", function(cb) {
+  runSequence("prepareCssForNamespacing",
+              "namespacePreparedCss",
+              cb);
+});
+
 gulp.task("compile", function(cb) {
-  runSequence( "compileBeakerScss",
-      "compileBeakerTemplates",
-      "buildIndexTemplate",
-      "buildOutputDisplayTemplate",
-      cb);
-  });
+  var seq = ["compileBeakerScss", "compileBeakerTemplates"];
+  if (argv.embed) {
+    seq.push("namespaceCss");
+  }
+  seq = seq.concat("buildIndexTemplate",
+                   "buildOutputDisplayTemplate",
+                   cb);
+  runSequence.apply(this, seq);
+});
 

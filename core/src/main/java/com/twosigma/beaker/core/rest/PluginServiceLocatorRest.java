@@ -385,7 +385,7 @@ public class PluginServiceLocatorRest {
     synchronized (this) {
       // find a port to use for proxypass between nginx and the plugin
       final int port = getNextAvailablePort(this.portSearchStart);
-      final String baseUrl = "/" + urlHash + "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
+      final String baseUrl = urlHash.isEmpty() ? "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "") : "/" + urlHash + "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
       pConfig = new PluginConfig(port, nginxRules, baseUrl, password);
       this.portSearchStart = pConfig.port + 1;
       this.plugins.put(pluginId, pConfig);
@@ -684,7 +684,7 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(port_restart)s", Integer.toString(this.restartPort));
     nginxConfig = nginxConfig.replace("%(auth)s", auth);
     nginxConfig = nginxConfig.replace("%(restart_id)s", restartId);
-    nginxConfig = nginxConfig.replace("%(urlhash)s", urlHash);
+    nginxConfig = nginxConfig.replace("%(urlhash)s", urlHash.isEmpty() ? "" : urlHash+"/");
     nginxConfig = nginxConfig.replace("%(static_dir)s", this.nginxStaticDir.replaceAll("\\\\", "/"));
     nginxConfig = nginxConfig.replace("%(nginx_dir)s", this.nginxServDir.replaceAll("\\\\", "/"));
     java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");

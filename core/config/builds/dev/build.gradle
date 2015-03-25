@@ -20,6 +20,7 @@ ext {
 }
 
 task build
+task buildembed
 task builddebug
 task clean
 task check
@@ -36,6 +37,10 @@ task runOnly (type: Exec) {
   commandLine './beaker.command'
 }
 task debug (type: Exec) {
+  workingDir coreDir
+  commandLine './beaker.command'
+}
+task runembed (type: Exec) {
   workingDir coreDir
   commandLine './beaker.command'
 }
@@ -70,6 +75,10 @@ task writeVersion << {
   new File(coreDir, 'config/build_time').write(new Date().format("yyyy-MM-dd HH:mm z"));
 }
 
+task clearhash << {
+  new File(coreDir, 'config/hash').write('');
+}
+
 clean.dependsOn(":core:clean")
 clean.dependsOn(cleanPlugins)
 build.dependsOn(":core:build")
@@ -77,12 +86,19 @@ build.dependsOn(":core:installApp")
 build.dependsOn(":core:copyVendorStuff")
 build.dependsOn(writeVersion)
 build.dependsOn(installPlugins)
+buildembed.dependsOn(":core:buildembed")
+buildembed.dependsOn(":core:installApp")
+buildembed.dependsOn(":core:copyVendorStuff")
+buildembed.dependsOn(writeVersion)
+buildembed.dependsOn(installPlugins)
 builddebug.dependsOn(":core:builddebug")
 builddebug.dependsOn(":core:installApp")
 builddebug.dependsOn(":core:copyVendorStuff")
 builddebug.dependsOn(writeVersion)
 builddebug.dependsOn(installPlugins)
 run.dependsOn(build)
+runembed.dependsOn(buildembed)
+runembed.dependsOn(clearhash)
 debug.dependsOn(builddebug)
 check.dependsOn(":core:build")
 check.dependsOn(":core:installApp")

@@ -40,10 +40,26 @@
         for (var member in _cellMenuPlugins) {
           delete _cellMenuPlugins[member];
         }
-        bkUtils.httpGet('../beaker/rest/util/getCellMenuPlugins')
-            .success(function(menuUrls) {
-              menuUrls.forEach(self.loadPlugin);
-            });
+        if (window.beaker.isEmbedded === undefined) {
+          bkUtils.httpGet('../beaker/rest/util/getCellMenuPlugins')
+              .success(function(menuUrls) {
+                menuUrls.forEach(self.loadPlugin);
+              });
+        } else {
+          var ml = window.beaker.getCellMenuList();
+          if (_.isArray(ml)) {
+            var i;      
+            for(i=0; i<ml.length; i++) {
+              if (_.isArray(ml[i].cellType)) {
+                _(ml[i].cellType).each(function(cType) {
+                  addPlugin(cType, ml[i].plugin);
+                });
+              } else {
+                addPlugin(ml[i].cellType, ml[i].plugin);
+              }
+            }
+          }
+        }
       },
       loadPlugin: function(url) {
         return bkUtils.loadModule(url).then(function(ex) {

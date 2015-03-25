@@ -1,7 +1,7 @@
 // Copyright (c) IPython Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-define([
+define('ipython3_outputarea', [
     'ipython3_namespace',
     'ipython3_utils'
 ], function(IPython, utils) {

@@ -3373,8 +3373,8 @@
   .beaker-sandbox code {
     padding: 2px 4px;
     font-size: 90%;
-    color: #c7254e;
-    background-color: #f9f2f4;
+    color: black;
+    background-color: #F4F4F4;
     border-radius: 0; }
   .beaker-sandbox kbd {
     padding: 2px 4px;

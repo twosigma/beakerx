@@ -146,24 +146,6 @@ __p += '\n<header class="navbar-fixed-top bkr">\n  <div class="navbar navbar-inv
 }
 return __p
 }})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n<div class="bkr">\n  <div class="modal-header fixed bkr" style="height: 69px">\n    <h1 class="bkr">Language Manager</h1>\n  </div>\n  <div class="modal-body fixed modal-large plugin-manager bkr" style="padding-top: 69px; padding-bottom: 68px">\n    <div class="languages clearfix bkr">\n      <button class="btn btn-default language-icon-button bkr" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName">\n        <span ng-class="\'plugin-\' + pluginStatus" class="plugin-status bkr">●</span>\n        <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}" name="{{getEvaluatorDetails(pluginName).shortName}}" fg-color="{{getEvaluatorDetails(pluginName).fgColor}}" border-color="{{getEvaluatorDetails(pluginName).borderColor}}" class="bkr">\n        </bk-language-logo>\n\n        {{pluginName}}\n      </button>\n      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default bkr">\n        From URL...\n      </button>\n    </div>\n    <div ng-show="evalTabOp.showURL" class="input-group addeval bkr">\n      <input type="text" bk-enter="evalTabOp.togglePlugin()" ng-model="evalTabOp.newPluginNameOrUrl" class="bkr">\n      <button class="btn btn-default bkr" ng-click="evalTabOp.togglePlugin()">Add Plugin from URL</button>\n    </div>\n    <div ng-show="evalTabOp.showSecurityWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Are you sure you want to load this plugin from an external URL?</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=&quot;&quot;">Cancel</button>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <div ng-show="evalTabOp.showWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Cannot remove plugin currently used by a code cell in the notebook.<br class="bkr">\n        Delete those cells and try again.</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showWarning = false">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <tabset class="bkr">\n      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" class="bkr">\n        <bk-plugin-manager-evaluator-settings class="bkr"></bk-plugin-manager-evaluator-settings>\n      </tab>\n    </tabset>\n  </div>\n  <div class="modal-footer fixed bkr" style="height: 68px"> \n    <button class="btn btn-primary language-manager-close-button bkr" ng-click="doClose()">Close</button>\n  </div>\n</div>';
-
-}
-return __p
-}})();
-(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"] = function(obj) {
-obj || (obj = {});
-var __t, __p = '', __e = _.escape;
-with (obj) {
-__p += '\n\n<div ng-repeat="property in properties" class="form-group language-option property clearfix bkr">\n  <label class="bkr">{{ property.name }}</label>\n  <textarea class="form-control bkr" ng-model="evaluator.settings[property.key]"></textarea>\n  <button class="btn btn-default pull-right set bkr" ng-click="set(property.key)">Set</button>\n</div>\n<div ng-repeat="action in actions" class="action language-option clearfix bkr">\n  <button class="btn btn-default bkr" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>\n</div>';
-
-}
-return __p
-}})();
 (function() {(window["JST"] = window["JST"] || {})["mainapp/components/notebook/cell"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
@@ -272,6 +254,24 @@ __p += '\n\n<p class="depth-indicator bkr">{{getFullIndex()}}</p>\n<div class="t
 }
 return __p
 }})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n<div class="bkr">\n  <div class="modal-header fixed bkr" style="height: 69px">\n    <h1 class="bkr">Language Manager</h1>\n  </div>\n  <div class="modal-body fixed modal-large plugin-manager bkr" style="padding-top: 69px; padding-bottom: 68px">\n    <div class="languages clearfix bkr">\n      <button class="btn btn-default language-icon-button bkr" ng-click="evalTabOp.togglePlugin(pluginName)" ng-repeat="(pluginName, pluginStatus) in evalTabOp.getEvaluatorStatuses()" ng-class="pluginName">\n        <span ng-class="\'plugin-\' + pluginStatus" class="plugin-status bkr">●</span>\n        <bk-language-logo bg-color="{{getEvaluatorDetails(pluginName).bgColor}}" name="{{getEvaluatorDetails(pluginName).shortName}}" fg-color="{{getEvaluatorDetails(pluginName).fgColor}}" border-color="{{getEvaluatorDetails(pluginName).borderColor}}" class="bkr">\n        </bk-language-logo>\n\n        {{pluginName}}\n      </button>\n      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default bkr">\n        From URL...\n      </button>\n    </div>\n    <div ng-show="evalTabOp.showURL" class="input-group addeval bkr">\n      <input type="text" bk-enter="evalTabOp.togglePlugin()" ng-model="evalTabOp.newPluginNameOrUrl" class="bkr">\n      <button class="btn btn-default bkr" ng-click="evalTabOp.togglePlugin()">Add Plugin from URL</button>\n    </div>\n    <div ng-show="evalTabOp.showSecurityWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Are you sure you want to load this plugin from an external URL?</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.showURL=false; evalTabOp.newPluginNameOrUrl=&quot;&quot;">Cancel</button>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showSecurityWarning = false; evalTabOp.forceLoad = true; evalTabOp.togglePlugin()">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <div ng-show="evalTabOp.showWarning" class="bkr">\n      <div class="modal-body error-title body-box bkr">\n        <p class="bkr">Cannot remove plugin currently used by a code cell in the notebook.<br class="bkr">\n        Delete those cells and try again.</p>\n        <button class="btn btn-default right bkr" ng-click="evalTabOp.showWarning = false">OK</button>\n      </div>\n      <p class="bkr"><br class="bkr"></p>\n    </div>\n    <tabset class="bkr">\n      <tab ng-repeat="(evaluatorName, evaluator) in evalTabOp.getEvaluatorsWithSpec()" heading="{{evaluatorName}}" class="bkr">\n        <bk-plugin-manager-evaluator-settings class="bkr"></bk-plugin-manager-evaluator-settings>\n      </tab>\n    </tabset>\n  </div>\n  <div class="modal-footer fixed bkr" style="height: 68px"> \n    <button class="btn btn-primary language-manager-close-button bkr" ng-click="doClose()">Close</button>\n  </div>\n</div>';
+
+}
+return __p
+}})();
+(function() {(window["JST"] = window["JST"] || {})["mainapp/components/pluginmanager/pluginmanager_evaluator_settings"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '\n\n<div ng-repeat="property in properties" class="form-group language-option property clearfix bkr">\n  <label class="bkr">{{ property.name }}</label>\n  <textarea class="form-control bkr" ng-model="evaluator.settings[property.key]"></textarea>\n  <button class="btn btn-default pull-right set bkr" ng-click="set(property.key)">Set</button>\n</div>\n<div ng-repeat="action in actions" class="action language-option clearfix bkr">\n  <button class="btn btn-default bkr" ng-click="evaluator.perform(action.key)">{{ action.name }}</button>\n</div>';
+
+}
+return __p
+}})();
 (function() {(window["JST"] = window["JST"] || {})["bko-tabledisplay/output-table-options"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
@@ -338,11 +338,14 @@ return __p
                   bkMenuPluginManager.loadMenuPlugin(url);
                 });
               });
+        } else {
+          var menues = window.beaker.getControlMenuItems();
+          bkMenuPluginManager.attachMenus(menues);
         }
+        
         $scope.getMenus = function() {
           return bkMenuPluginManager.getMenus();
         };
-
 
        
         $scope.newNotebook = function() {
@@ -357,7 +360,7 @@ return __p
 
        
         $scope.isAllowAnonymousTracking = false;
-        if (bkTrack.isNeedPermission()) {
+        if (window.beaker.isEmbedded === undefined && bkTrack.isNeedPermission()) {
           bkUtils.httpGet("../beaker/rest/util/isAllowAnonymousTracking").then(function(allow) {
             switch (allow.data) {
               case "true":
@@ -373,19 +376,21 @@ return __p
         } else {
           $scope.isAllowAnonymousTracking = true;
         }
-        $scope.$watch("isAllowAnonymousTracking", function(newValue, oldValue) {
-          if (newValue !== oldValue) {
-            var allow = null;
-            if (newValue) {
-              allow = "true";
-              bkTrack.enable();
-            } else if (newValue === false) {
-              allow = "false";
-              bkTrack.disable();
+        if (window.beaker.isEmbedded === undefined) {
+          $scope.$watch("isAllowAnonymousTracking", function(newValue, oldValue) {
+            if (newValue !== oldValue) {
+              var allow = null;
+              if (newValue) {
+                allow = "true";
+                bkTrack.enable();
+              } else if (newValue === false) {
+                allow = "false";
+                bkTrack.disable();
+              }
+              bkUtils.httpPost("../beaker/rest/util/setAllowAnonymousTracking", { allow: allow });
             }
-            bkUtils.httpPost("../beaker/rest/util/setAllowAnonymousTracking", { allow: allow });
-          }
-        });
+          });
+        }
         $scope.showWhatWeLog = function() {
           return bkCoreManager.showModalDialog(
             function() {},
@@ -1315,11 +1320,13 @@ return __p
                     if (factory !== undefined && factory.create !== undefined) {
                       return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
                     } else {
-		      $modal.open({backdrop: true,
-				   backdropClick: true,
-				   template: JST['helpers/plugin-load-error']({pluginId: name})});
-		      deferred.reject("no factory for evaluator plugin");
-		    }
+                      $modal.open({
+                        backdrop: true,
+                        backdropClick: true,
+                        template: JST['helpers/plugin-load-error']({pluginId: name})
+                      });
+                      deferred.reject("no factory for evaluator plugin");
+                    }
                   }, function(err) {
                    
                    
@@ -1654,6 +1661,9 @@ return __p
       timeout: function(func, ms) {
         return bkUtils.timeout(func,ms);
       },
+      cancelTimeout: function(promise) {
+        return bkUtils.cancelTimeout(promise);  
+      },
       getHomeDirectory: function() {
         return bkUtils.getHomeDirectory();
       },
@@ -1886,6 +1896,8 @@ return __p
             modelOutput.result = { type : "Results", outputdata : modelOutput.result.object.outputdata, payload : evaluation.payload };
            
           }
+          if (evaluation.jsonres !== undefined)
+            modelOutput.dataresult = evaluation.jsonres;
         } else if (evaluation.status === "ERROR") {
           if (evaluation.payload === undefined) {
             if (modelOutput.result.object.payload !== undefined && modelOutput.result.object.payload.type === "Results")
@@ -2167,6 +2179,16 @@ return __p
         });
         loadingInProgressPluginJobs.push(job);
       },
+      attachMenus: function(plugin) {
+        var index = pluginIndex++;
+        if (_.isArray(plugin)) {
+          _(plugin).each(function (item, i) {
+            addPlugin(item, index, i);
+          });
+        } else {
+          addPlugin(plugin, index, 0);
+        }
+      },
       getMenus: function() {
         return menus;
       },
@@ -2176,12 +2198,6 @@ return __p
           job.cancel();
         });
         pluginIndex = 0;
-      },
-      getMenuPlugins: function() {
-        return loadedPlugins;
-      },
-      getLoadingPlugins: function() {
-        return loadingInProgressPluginJobs;
       }
     };
   });
@@ -3013,7 +3029,9 @@ return __p
                   o.evaluatorId = cell.evaluator;
                   o.code = cell.input.body;
                   o.tags = cell.tags;
-                  if (cell.output !== undefined && cell.output.result !== undefined) {
+                  if (cell.dataresult !== undefined) {
+                    o.output = cell.dataresult;
+                  } else if (cell.output !== undefined && cell.output.result !== undefined) {
                     if (cell.output.result.type !== undefined) {
                       if (cell.output.result.type === 'BeakerDisplay') {
                         o.output = cell.output.result.object;
@@ -3033,7 +3051,9 @@ return __p
                 o.cellId = filter.id;
                 o.evaluatorId = filter.evaluator;
                 o.code = filter.input.body;
-                if (filter.output !== undefined && filter.output.result !== undefined) {
+                if (filter.dataresult !== undefined) {
+                  o.output = filter.dataresult;
+                } else if (filter.output !== undefined && filter.output.result !== undefined) {
                   if (filter.output.result.type !== undefined) {
                     if (filter.output.result.type === 'BeakerDisplay') {
                       o.output = filter.output.result.object;
@@ -3361,7 +3381,8 @@ return __p
             });
           });
         } else {
-         
+          var menues = window.beaker.getMenuItems();
+          bkMenuPluginManager.attachMenus(menues);
         }
         bkCellMenuPluginManager.reset();
         bkEvaluateJobManager.reset();
@@ -6790,6 +6811,15 @@ return __p
             };
           }
         },
+        "Date": {
+          template: "<pre>{{getDate()}}</pre>",
+          controller: function($scope) {
+            $scope.getDate = function() {
+              var model = $scope.model.getCellModel();
+              return (model && model.timestamp) ? moment(model.timestamp).format("YYYYMMDD HH:mm:ss.SSS") : model;
+            };
+          }
+        },
       "Warning": {
         template: "<div class='outline warning'></div> <pre class='out_warning'>{{model.getCellModel().message}}</pre>"
       },
@@ -6851,7 +6881,7 @@ return __p
       }
     };
 
-    var types = ["Text", "BeakerStandardOutput", "BeakerStandardError", "Warning", "Error", "Html", "OutputContainer"];
+    var types = ["Text", "Date", "BeakerStandardOutput", "BeakerStandardError", "Warning", "Error", "Html", "OutputContainer"];
     var refresh = function(what, scope) {
       if (!what) {
         what = "all";
@@ -6870,6 +6900,7 @@ return __p
     var resultType2DisplayTypesMap = {
      
       "text": ["Text", "Html", "Latex"],
+      "Date": ["Date", "Text"],
       "TableDisplay": ["Table", "Text"],
       "html": ["Html"],
       "ImageIcon": ["Image", "Text"],
@@ -7889,7 +7920,10 @@ return __p
         return deferred.promise;
       },
       timeout: function (func, ms) {
-        $timeout(func, ms);
+        return $timeout(func, ms);
+      },
+      cancelTimeout: function(promise) {
+        $timeout.cancel(promise);
       },
       delay: function(ms) {
         var deferred = $q.defer();
@@ -8633,7 +8667,10 @@ return __p
       timeout: function(func,ms) {
         return angularUtils.timeout(func,ms);
       },
-
+      cancelTimeout: function(promise) {
+        return angularUtils.cancelTimeout(promise);  
+      },
+      
      
       getHomeDirectory: function() {
         var deferred = angularUtils.newDeferred();

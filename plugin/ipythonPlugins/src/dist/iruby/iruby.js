@@ -129,6 +129,7 @@ define(function(require, exports, module) {
       var self = this;
       var startTime = new Date().getTime();
       var kernel = kernels[self.settings.shellID];
+      var finalStuff = undefined;
       bkHelper.setupProgressOutput(modelOutput);
       gotError = false;
 
@@ -137,6 +138,22 @@ define(function(require, exports, module) {
         kernel.interrupt();
         bkHelper.setupCancellingOutput(modelOutput);
       };
+      
+      var doFinish = function() {
+        if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
+          _theCancelFunction = null;
+          if (finalStuff.status === "ERROR")
+            deferred.reject(finalStuff.payload);
+          else
+            deferred.resolve(finalStuff.payload);
+        }
+        if (refreshObj !== undefined)
+          refreshObj.outputRefreshed();
+        else
+          bkHelper.refreshRootScope();       
+        finalStuff = undefined;
+      }
+              
       var execute_reply = function(msg) {
         if (_theCancelFunction === null)
           return;
@@ -147,26 +164,27 @@ define(function(require, exports, module) {
         var result = _(msg.payload).map(function(payload) {
           return IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(payload.text));
         }).join("");
-        var evaluation = { };
-        if (msg.status === "error")
-          evaluation.status = "ERROR";
-        else
-          evaluation.status = "FINISHED";
-
-        if (!_.isEmpty(result)) {
-          evaluation.payload = "<pre>" + result + "</pre>";
-        }
-        if (bkHelper.receiveEvaluationUpdate(modelOutput, evaluation,  PLUGIN_NAME, self.settings.shellID)) {
-          _theCancelFunction = null;
-          if (evaluation.status === "ERROR")
-            deferred.reject(evaluation.payload);
+        if (finalStuff !== undefined) {
+          if (msg.status === "error")
+            finalStuff.status = "ERROR";
           else
-            deferred.resolve(evaluation.payload);
-        }
-        if (refreshObj !== undefined)
-          refreshObj.outputRefreshed();
-        else
-          bkHelper.refreshRootScope();     
+            finalStuff.status = "FINISHED";
+          if (!_.isEmpty(result) && finalStuff.payload === undefined) {
+            finalStuff.payload = "<pre>" + result + "</pre>";
+          }
+        } else {
+          var evaluation = { };
+          if (msg.status === "error")
+            evaluation.status = "ERROR";
+          else
+            evaluation.status = "FINISHED";
+
+          if (!_.isEmpty(result)) {
+            evaluation.payload = "<pre>" + result + "</pre>";
+          }
+          finalStuff = evaluation;
+          bkHelper.timeout(doFinish,250);
+        }   
       }
       var output = function output(a0, a1) {
         if (_theCancelFunction === null || gotError)
@@ -190,8 +208,13 @@ define(function(require, exports, module) {
             return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
           }, IPython.utils.fixConsole(content.evalue));
           evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [IPython.utils.fixConsole(content.evalue), trace];
+          if (finalStuff !== undefined) {
+            finalStuff.payload = evaluation.payload
+          }
         } else if (type === "stream") {
           evaluation.outputdata = [];
+          if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
+            evaluation.outputdata = finalStuff.outputdata;
           if (content.name === "stderr") {
             evaluation.outputdata.push( { type : 'out', value : content.data } );
           } else {
@@ -212,12 +235,14 @@ define(function(require, exports, module) {
           } else {
             evaluation.payload = elem.html();
           }
+          if (finalStuff !== undefined) {
+            finalStuff.payload = evaluation.payload;
+          }
         }
-        bkHelper.receiveEvaluationUpdate(modelOutput, evaluation,  PLUGIN_NAME, self.settings.shellID);
-        if (refreshObj !== undefined)
-          refreshObj.outputRefreshed();
-        else
-          bkHelper.refreshRootScope();
+        if (finalStuff === undefined) {            
+          finalStuff = evaluation;
+          bkHelper.timeout(doFinish,150);
+        }
       };
       var callbacks = ipyVersion1 ? {
         execute_reply: execute_reply,

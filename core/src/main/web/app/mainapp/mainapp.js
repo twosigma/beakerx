@@ -1193,7 +1193,7 @@
         bkSessionManager.clear();
 
         bkMenuPluginManager.clear();
-        if (window.beaker.isEmbedded === undefined) {
+        if (window.beaker === undefined || window.beaker.isEmbedded === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getMenuPlugins')
           .success(function(menuUrls) {
             menuUrls.forEach(function(url) {

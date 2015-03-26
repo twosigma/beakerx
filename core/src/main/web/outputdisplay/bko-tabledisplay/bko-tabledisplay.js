@@ -298,7 +298,8 @@
                             { type: 6, name: 'exponential 5'},
                             { type: 7, name: 'exponential 15'},
                             { type: 8, name: 'time'},
-                            { type: 9, name: 'boolean'}];
+                            { type: 9, name: 'boolean'},
+                            { type: 10, name: 'html'}];
         $scope.allConverters = [
                                 // string
                                 function(value,type,full,meta) {
@@ -394,9 +395,13 @@
                                   if (value !== undefined && value !== null && (value.toLowerCase() === 'true' || value === 1))
                                     return 'true';
                                   return 'false';
+                                },
+                                // html
+                                function(value,type,full,meta) {
+                                  return value;
                                 }
                                 ];
-        $scope.allStringTypes = [ { type: 0, name: 'string'} ];
+        $scope.allStringTypes = [ { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
         $scope.allIntTypes = [ { type: 0, name: 'string'},
                                { type: 1, name: 'integer'},
                                { type: 2, name: 'formatted integer'},

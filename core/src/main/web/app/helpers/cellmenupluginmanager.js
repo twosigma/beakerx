@@ -40,7 +40,7 @@
         for (var member in _cellMenuPlugins) {
           delete _cellMenuPlugins[member];
         }
-        if (window.beaker.isEmbedded === undefined) {
+        if (window.beaker === undefined || window.beaker.isEmbedded === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getCellMenuPlugins')
               .success(function(menuUrls) {
                 menuUrls.forEach(self.loadPlugin);

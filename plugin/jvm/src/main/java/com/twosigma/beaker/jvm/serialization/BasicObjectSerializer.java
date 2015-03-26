@@ -17,6 +17,7 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
+import com.twosigma.beaker.jvm.object.BeakerDashboard;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.TableDisplay;
@@ -159,6 +160,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
                   (obj instanceof BeakerCodeCell) ||
                   (obj instanceof ImageIcon) ||
                   (obj instanceof Date) ||
+                  (obj instanceof BeakerDashboard) ||
                   (obj instanceof BufferedImage) ||
                   (obj instanceof OutputContainer)  ||
                   (obj instanceof BeakerProgressUpdate) ) {

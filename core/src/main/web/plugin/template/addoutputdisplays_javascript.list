@@ -34,3 +34,4 @@ outputdisplay/bko-plot/plotformatter.js
 outputdisplay/bko-plot/combinedplotformatter.js
 outputdisplay/bko-plot/bko-plot.js
 outputdisplay/bko-plot/bko-combinedplot.js
+outputdisplay/bkoBeakerDashboard.js

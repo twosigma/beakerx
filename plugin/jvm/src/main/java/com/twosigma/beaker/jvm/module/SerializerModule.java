@@ -50,6 +50,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import com.twosigma.beaker.jvm.object.BeakerDashboard;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -141,14 +142,16 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(SimpleEvaluationObject.class, injector.getInstance(SimpleEvaluationObject.Serializer.class));
       module.addSerializer(EvaluationResult.class, injector.getInstance(EvaluationResult.Serializer.class));
       module.addSerializer(UpdatableEvaluationResult.class, injector.getInstance(UpdatableEvaluationResult.Serializer.class));
+      module.addSerializer(BeakerProgressUpdate.class, injector.getInstance(BeakerProgressUpdate.Serializer.class));
+      module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
+
       module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
       module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
       module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));
-      module.addSerializer(BeakerProgressUpdate.class, injector.getInstance(BeakerProgressUpdate.Serializer.class));
-      module.addSerializer(BeakerCodeCell.class, injector.getInstance(BeakerCodeCell.Serializer.class));
       module.addSerializer(BufferedImage.class, new BufferedImageSerializer());
       module.addSerializer(ImageIcon.class, new ImageIconSerializer());
       module.addSerializer(Date.class, new DateSerializer());
+      module.addSerializer(BeakerDashboard.class, injector.getInstance(BeakerDashboard.Serializer.class));
       
       module.addSerializer(Color.class, injector.getInstance(ColorSerializer.class));
       module.addSerializer(XYChart.class, injector.getInstance(XYChartSerializer.class));

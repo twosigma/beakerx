@@ -41,6 +41,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
+import com.twosigma.beaker.jvm.object.BeakerDashboard;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.OutputContainer;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
@@ -99,6 +100,7 @@ public class SerializerModule
     module.addSerializer(UpdatableEvaluationResult.class, injector.getInstance(UpdatableEvaluationResult.Serializer.class));
     module.addSerializer(TableDisplay.class, injector.getInstance(TableDisplay.Serializer.class));
     module.addSerializer(OutputContainer.class, injector.getInstance(OutputContainer.Serializer.class));
+    module.addSerializer(BeakerDashboard.class, injector.getInstance(BeakerDashboard.Serializer.class));
     // enable this to use the example object container
     //module.addSerializer(TestContainer.class, injector.getInstance(TestContainer.Serializer.class));
     module.addSerializer(StringObject.class, injector.getInstance(StringObject.Serializer.class));

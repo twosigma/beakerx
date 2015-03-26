@@ -38,6 +38,8 @@ public class SerializeUtils {
     try {
       if (obj == null) {
         jgen.writeObject("null");
+      } else if (obj instanceof BeakerDashboard) {
+        jgen.writeObject(obj);
       } else if (obj instanceof TableDisplay) {
         jgen.writeObject(obj);
       } else if (obj instanceof OutputContainer) {

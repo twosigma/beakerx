@@ -1,0 +1,181 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "codetxOJJ9",
+            "type": "code",
+            "evaluator": "Html",
+            "input": {
+                "body": [
+                    "<p>Beaker support for DashBoards is brand new and still in its infancy.</p>",
+                    "<p>With the current implementation you can build dashboards from JVM based languages containing any supportedbeaker display object.<br/>",
+                    "  Objects can be arranged by nesting rows and columns as done in <a href=\"http://getbootstrap.com/\">bootstrap</a> grids and can be skinned using the <a href=\"http://getbootstrap.com/css/\">bootstrap css</a> classes.",
+                    "</p>",
+                    "<p>Creating a dashboard involves the following steps:</p>",
+                    "<ol>",
+                    "  <li>Create an instance of BeakerDashboard object.",
+                    "  <li>Create at least one row and add it to the dashboard.",
+                    "  <li>Create one or more columns and add them to the row(s).",
+                    "  <li>Create display objects (which can be other dashboard rows) and add them to columns.",
+                    "  <li>Optionally set style information on rows and/or columns.",
+                    "  <li>Return the dashboard instance.",
+                    "</ol>",
+                    "<p>The following groovy code shows an example dashboard.<br/>",
+                    "  Today you cannot automatically set the dashboard to full screen but you can click on the button in the output cell to have it display full screen.</p>"
+                ],
+                "hidden": true
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<script>\nvar beaker = (window !== undefined && window.beaker !== undefined) ? window.beaker.beaker : undefined;\n</script>\n<p>Beaker support for DashBoards is brand new and still in its infancy.</p>\n<p>With the current implementation you can build dashboards from JVM based languages containing any supportedbeaker display object.<br/>\n  Objects can be arranged by nesting rows and columns as done in <a href=\"http://getbootstrap.com/\">bootstrap</a> grids and can be skinned using the <a href=\"http://getbootstrap.com/css/\">bootstrap css</a> classes.\n</p>\n<p>Creating a dashboard involves the following steps:</p>\n<ol>\n  <li>Create an instance of BeakerDashboard object.\n  <li>Create at least one row and add it to the dashboard.\n  <li>Create one or more columns and add them to the row(s).\n  <li>Create display objects (which can be other dashboard rows) and add them to columns.\n  <li>Optionally set style information on rows and/or columns.\n  <li>Return the dashboard instance.\n</ol>\n<p>The following groovy code shows an example dashboard.<br/>\n  Today you cannot automatically set the dashboard to full screen but you can click on the button in the output cell to have it display full screen.</p>"
+                },
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 15
+        },
+        {
+            "id": "code4cQqUL",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "import com.twosigma.beaker.jvm.object.BeakerDashboard",
+                    "",
+                    "dash = new BeakerDashboard()",
+                    "",
+                    "// create and add 3 rows",
+                    "def row1 = dash.newRow()",
+                    "def row2 = dash.newRow()",
+                    "def row3 = dash.newRow()",
+                    "",
+                    "dash.setTheStyle(\"width: 100%\")",
+                    "",
+                    "dash.addRow(row1)",
+                    "dash.addRow(row2)",
+                    "dash.addRow(row3)",
+                    "",
+                    "// the grid system has 12 spaces",
+                    "titlecol = dash.newColumn(12)",
+                    "row1.addColumn(titlecol)",
+                    "titlecol.addItem('<h3 class=\"text-center\">test</h3>')",
+                    "",
+                    "def plot1 = new Plot()",
+                    "def plot1col = dash.newColumn(6)",
+                    "plot1col.addItem(plot1)",
+                    "def plot2 = new Plot()",
+                    "def plot2col = dash.newColumn(6)",
+                    "plot2col.addItem(plot2)",
+                    "",
+                    "row2.addColumn(plot1col)",
+                    "row2.addColumn(plot2col)",
+                    "",
+                    "def footer = dash.newColumn(12)",
+                    "footer.addItem('<h5 class=\"text-right\">this is an example dashboard</h5>')",
+                    "row3.addColumn(footer)",
+                    "",
+                    "dash"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "BeakerDashboard",
+                "pluginName": "Groovy",
+                "shellId": "3408c010-1800-4824-b741-3e974dbe5166",
+                "elapsedTime": 1460
+            },
+            "evaluatorReader": true,
+            "lineCount": 35
+        },
+        {
+            "id": "codeUbWaMU",
+            "type": "code",
+            "evaluator": "Html",
+            "input": {
+                "body": [
+                    "<p>Dashboards can be changed 'on the fly' in other cells by simply changing the content of one or more of the displayed objects and then updating th output display, as shown in the following example.</p>"
+                ],
+                "hidden": true
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<script>\nvar beaker = (window !== undefined && window.beaker !== undefined) ? window.beaker.beaker : undefined;\n</script>\n<p>Dashboards can be changed 'on the fly' in other cells by simply changing the content of one or more of the displayed objects and then updating th output display, as shown in the following example.</p>"
+                },
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeAiNo4j",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "titlecol.getPayload().set(0,'<h3 class=\"text-center\">this is the changed test</h3>')",
+                    "dash.redraw()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Hidden",
+                "pluginName": "Groovy",
+                "shellId": "3408c010-1800-4824-b741-3e974dbe5166",
+                "elapsedTime": 46
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        }
+    ],
+    "namespace": {}
+}

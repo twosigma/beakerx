@@ -18,7 +18,8 @@
   window.bkInit.getOutputDisplayCssList = [
        // required for plot and combined plot output display
        "outputdisplay/bko-plot/bko-plot.css",
-       "outputdisplay/bko-plot/bko-combinedplot.css"
+       "outputdisplay/bko-plot/bko-combinedplot.css",
+       "outputdisplay/bkoBeakerDashboard.css"
      ];
   window.bkInit.getOutputDisplayJsList = [
       "vendor/bower_components/d3/d3.js",
@@ -70,6 +71,8 @@
       "outputdisplay/bko-plot/plotformatter.js",
       "outputdisplay/bko-plot/combinedplotformatter.js",
       "outputdisplay/bko-plot/bko-plot.js",
-      "outputdisplay/bko-plot/bko-combinedplot.js"
+      "outputdisplay/bko-plot/bko-combinedplot.js",
+      
+      "outputdisplay/bkoBeakerDashboard.js"
     ];
 })();

@@ -19,17 +19,39 @@
   var module = angular.module('bk.notebook');
   var enterKey = 13;
 
-  module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
-    // Extract text with preserving whitespace, inspired from:
-    // http://stackoverflow.com/questions/3455931/extracting-text-from-a-contenteditable-div
-    function getContentEditableText(content) {
-      var ce = $("<pre />").html(content);
-      ce.find("div").replaceWith(function() { return "\n" + this.innerHTML; });
-      ce.find("br").replaceWith("\n");
-
-      return ce.text();
+  //Namespace management idea from http://enterprisejquery.com/2010/10/how-good-c-habits-can-encourage-bad-javascript-habits-part-1/
+  var setEndOfContenteditable = function(contentEditableElement)
+  {
+    var range,selection;
+    if(document.createRange)
+    {
+      range = document.createRange();
+      range.selectNodeContents(contentEditableElement);
+      range.collapse(false);
+      selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
     }
+    else if(document.selection)
+    {
+      range = document.body.createTextRange();
+      range.moveToElementText(contentEditableElement);
+      range.collapse(false);
+      range.select();
+    }
+  }
 
+  // Extract text with preserving whitespace, inspired from:
+  // http://stackoverflow.com/questions/3455931/extracting-text-from-a-contenteditable-div
+  var getContentEditableText = function(content) {
+    var ce = $("<pre />").html(content);
+    ce.find("div").replaceWith(function() { return "\n" + this.innerHTML; });
+    ce.find("br").replaceWith("\n");
+
+    return ce.text();
+  }
+
+  module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/markdowncell"](),
@@ -39,7 +61,7 @@
         };
       },
       link: function(scope, element, attrs) {
-        var convert = function() {
+        var preview = function() {
           var markdownFragment = $('<div style="display: none;">' + scope.cellmodel.body + '</div>');
           markdownFragment.appendTo('body'); // ugh mathjax doesn't operate on document fragments...
 
@@ -48,11 +70,12 @@
             element.find('.markup').html(marked(markdownFragment.html()));
             markdownFragment.remove();
           });
+          scope.mode = 'preview';
         };
 
         var syncContentAndPreview = function() {
           scope.cellmodel.body = getContentEditableText(element.find('.markdown').html());
-          scope.mode = 'preview';
+          preview();
         };
 
         scope.keyDown = function(e) {
@@ -61,31 +84,38 @@
           }
         };
 
-        scope.edit = function() {
+        scope.edit = function(event) {
           if (bkHelper.isNotebookLocked()) return;
 
           scope.mode = 'edit';
+          var clickLocation;
+          var markdownCell = element.find('.markdown-wrapper');
+          var top = markdownCell.offset().top;
+          var bottom = top + markdownCell.outerHeight();
+
+          if (event.pageY < (top + bottom) / 2) {
+            clickLocation = 'top';
+          } else {
+            clickLocation = 'bottom';
+          }
+
+          var markdown = element.find('.markdown');
+          markdown.html(scope.cellmodel.body);
+
+          $timeout(function(){
+            markdown.focus();
+            if (clickLocation == 'bottom') {
+              setEndOfContenteditable(markdown[0]);
+            }
+          });
         };
 
-        scope.mode = 'preview';
-        convert();
+        preview();
 
         element.find('.markdown').on('blur', function() {
           scope.$apply(function() {
             syncContentAndPreview();
           });
-        });
-
-        scope.$watch('mode', function(newVal, oldVal) {
-          if (newVal == oldVal) return;
-
-          if (scope.mode == 'preview') {
-            convert();
-          } else {
-            var markdown = element.find('.markdown');
-            markdown.html(scope.cellmodel.body);
-            markdown.focus();
-          }
         });
 
         scope.$watch('cellmodel.body', function(newVal, oldVal) {

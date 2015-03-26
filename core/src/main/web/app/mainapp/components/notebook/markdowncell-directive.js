@@ -19,17 +19,17 @@
   var module = angular.module('bk.notebook');
   var enterKey = 13;
 
+  // Extract text with preserving whitespace, inspired from:
+  // http://stackoverflow.com/questions/3455931/extracting-text-from-a-contenteditable-div
+  var getContentEditableText = function(content) {
+    var ce = $("<pre />").html(content);
+    ce.find("div").replaceWith(function() { return "\n" + this.innerHTML; });
+    ce.find("br").replaceWith("\n");
+
+    return ce.text();
+  }
+
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
-    // Extract text with preserving whitespace, inspired from:
-    // http://stackoverflow.com/questions/3455931/extracting-text-from-a-contenteditable-div
-    function getContentEditableText(content) {
-      var ce = $("<pre />").html(content);
-      ce.find("div").replaceWith(function() { return "\n" + this.innerHTML; });
-      ce.find("br").replaceWith("\n");
-
-      return ce.text();
-    }
-
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/markdowncell"](),

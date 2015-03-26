@@ -57,7 +57,7 @@ def convertTypeName(typ):
     if typ.startswith("date"):
         return "time"
     return "string"
-    
+
 def isPrimitiveType(typ):
     if typ.startswith("float"):
         return True
@@ -77,7 +77,7 @@ def isListOfMaps(data):
     for w in data:
         if type(w) != dict:
             return False
-        for v in w.itervalues():
+        for v in w.values():
             if not isPrimitiveType(type(v).__name__):
                 return False
     return True
@@ -85,13 +85,13 @@ def isListOfMaps(data):
 def isDictionary(data):
     if type(data) != dict:
         return False
-    for v in data.itervalues():
+    for v in data.values():
         if not isPrimitiveType(type(v).__name__):
             return False
     return True
 
 def transform(obj):
-    if type(obj) == unicode:
+    if type(obj) == bytes:
         return str(obj)
     if isListOfMaps(obj):
         out = {}
@@ -99,7 +99,7 @@ def transform(obj):
         out['subtype'] = "ListOfMaps"
         cols = []
         for l in obj:
-            cols.extend(l.iterkeys())
+            cols.extend(l.keys())
         cols = list(set(cols))
         out['columnNames'] = cols
         vals = []
@@ -119,13 +119,13 @@ def transform(obj):
         out['subtype'] = "Dictionary"
         out['columnNames'] = [ "Key", "Value" ]
         values = []
-        for k,v in obj.iteritems():
+        for k,v in obj.items():
             values.append( [k, transform(v)] )
         out['values'] = values
         return out
     if type(obj) == dict:
         out = {}
-        for k,v in obj.iteritems():
+        for k,v in obj.items():
             out[k] = transform(v)
         return out
     if type(obj) == list:
@@ -156,7 +156,7 @@ def transform(obj):
 def transformBack(obj):
     if type(obj) == dict:
         out = {}
-        for k,v in obj.iteritems():
+        for k,v in obj.items():
             out[str(k)] = transformBack(v)
         if "type" in out:
             if out['type'] == "BeakerCodeCell":
@@ -207,7 +207,7 @@ def transformBack(obj):
         for v in obj:
             out.append(transformBack(v))
         return out
-    if type(obj) == unicode:
+    if type(obj) == bytes:
         obj = str(obj)
     return obj
 
@@ -260,7 +260,7 @@ class DataFrameEncoder(json.JSONEncoder):
                 out['subtype'] = "Dictionary"
                 out['columnNames'] = [ "Index", "Value" ]
                 values = []
-                for k,v in obj.iteritems():
+                for k,v in obj.items():
                     values.append( [k, transform(v)] )
                 out['values'] = values
                 return out
@@ -285,7 +285,7 @@ class Beaker:
     password_mgr.add_password(None, core_url, 'beaker',
                               os.environ['beaker_core_password'])
     urllib.request.install_opener(urllib.request.build_opener(urllib.request.HTTPBasicAuthHandler(password_mgr)))
-
+	
     def set4(self, var, val, unset, sync):
         args = {'name': var, 'session':self.session_id, 'sync':sync}
         if not unset:
@@ -297,52 +297,52 @@ class Beaker:
         reply = conn.read().decode("utf-8")
         if reply != 'ok':
             raise NameError(reply)
-  
+	
     def get(self, var):
         req = urllib.request.Request('http://' + self.core_url + '/rest/namespace/get?' + 
                                      urllib.parse.urlencode({
                     'name': var,
                     'session':self.session_id}))
         conn = urllib.request.urlopen(req)
-        result = json.loads(conn.read())
+        result = json.loads(conn.read().decode())
         if not result['defined']:
             raise NameError('name \'' + var + '\' is not defined in notebook namespace')
         return transformBack(result['value'])
-
+	
     def set_session(self, id):
         self.session_id = id
-
+	
     def register_output(self):
         if (self.registered == False):
             ip = IPython.InteractiveShell.instance()
             ip.display_formatter.formatters['application/json'] = MyJSONFormatter(parent=ip.display_formatter)
             self.registered = True
-
+	
     def set(self, var, val):
         return self.set4(var, val, False, True)
-
+	
     def createOutputContainer(self):
         return OutputContainer()
-    
+	
     def showProgressUpdate(self):
         return "WARNING: python3 language plugin does not support progress updates"
-
+	
     def evaluate(self,filter):
         args = {'filter': filter, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/evaluate',
                                      urllib.parse.urlencode(args).encode('utf8'))
         conn = urllib.request.urlopen(req)
-        result = json.loads(conn.read())
+        result = json.loads(conn.read().decode())
         return transformBack(result)
-
+	
     def evaluateCode(self, evaluator,code):
         args = {'evaluator': evaluator, 'code' : code, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/evaluateCode',
                                      urllib.parse.urlencode(args).encode('utf8'))
         conn = urllib.request.urlopen(req)
-        result = json.loads(conn.read())
+        result = json.loads(conn.read().decode())
         return transformBack(result)
-
+	
     def showStatus(self,msg):
         args = {'msg': msg, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/showStatus',
@@ -350,7 +350,7 @@ class Beaker:
         conn = urllib.request.urlopen(req)
         result = conn.read()
         return result=="true"
-
+	
     def clearStatus(self,msg):
         args = {'msg': msg, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/clearStatus',
@@ -358,7 +358,7 @@ class Beaker:
         conn = urllib.request.urlopen(req)
         result = conn.read()
         return result=="true"
-
+	
     def showTransientStatus(self,msg):
         args = {'msg': msg, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/showTransientStatus',
@@ -366,23 +366,23 @@ class Beaker:
         conn = urllib.request.urlopen(req)
         result = conn.read()
         return result=="true"
-
+	
     def getEvaluators(self):
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/getEvaluators?' + 
                                      urllib.parse.urlencode({
                     'session':self.session_id}))
         conn = urllib.request.urlopen(req)
-        result = json.loads(conn.read())
+        result = json.loads(conn.read().decode())
         return transformBack(result)
-
+	
     def getCodeCells(self,filter):
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/getCodeCells?' + 
                                      urllib.parse.urlencode({
                     'session':self.session_id, 'filter':filter}))
         conn = urllib.request.urlopen(req)
-        result = json.loads(conn.read())
+        result = json.loads(conn.read().decode())
         return transformBack(result)
-
+	
     def setCodeCellBody(self,name,body):
         args = {'name': name, 'body':body, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/setCodeCellBody',
@@ -390,7 +390,7 @@ class Beaker:
         conn = urllib.request.urlopen(req)
         result = conn.read()
         return result=="true"
-
+	
     def setCodeCellEvaluator(self,name,evaluator):
         args = {'name': name, 'evaluator':evaluator, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/setCodeCellEvaluator',
@@ -398,7 +398,7 @@ class Beaker:
         conn = urllib.request.urlopen(req)
         result = conn.read()
         return result=="true"
-
+	
     def setCodeCellTags(self,name,tags):
         args = {'name': name, 'tags':tags, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/setCodeCellTags',
@@ -406,13 +406,12 @@ class Beaker:
         conn = urllib.request.urlopen(req)
         result = conn.read()
         return result=="true"
-
-
+	
     def __setattr__(self, name, value):
         if 'session_id' == name:
             self.__dict__['session_id'] = value
             return
         return self.set(name, value)
-
+	
     def __getattr__(self, name):
         return self.get(name)

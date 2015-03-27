@@ -42,7 +42,7 @@ To enable the debug menu, add the following to your `beaker.pref.json` file:
 
 ##Presentation and Demo on YouTube
 
-[![Greenwood and Draves speak at PyData](http://img.youtube.com/vi/G4RmVni8nxc/0.jpg)](http://www.youtube.com/watch?v=G4RmVni8nxc)
+[![Greenwood and Draves speak at PyData](http://img.youtube.com/vi/wu65cYffMSg/0.jpg)](http://www.youtube.com/watch?v=wu65cYffMSg)
 
 ##Language support
 

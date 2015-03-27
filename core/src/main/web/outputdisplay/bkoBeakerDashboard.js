@@ -41,7 +41,7 @@
 
             controller: function ($scope) {
                 $scope.content = [];
-                
+
                 $scope.theid = Math.random().toString(36).substring(7);
 
                 $scope.wrapCol = function(r) {
@@ -53,7 +53,7 @@
 
                 	var i;
                 	for (i=0; i<r.payload.length; i++) {
-                		if (r.payload[i].rows != undefined)
+                		if (r.payload[i].rows !== undefined)
                 			ret.payload.push($scope.wrapRow(r.payload[i]));
                 		else {
                 			var o = {
@@ -63,13 +63,13 @@
                 						hidden: false
                 					}
             					}
-                			}
+                			};
                 			ret.payload.push(o);
                 		}
                 	}
                 	return ret;
-                }
-                
+                };
+
                 $scope.wrapRow = function(r) {
                 	var ret = { };
                 	ret.cols = [];
@@ -79,10 +79,10 @@
                 	for (i=0; i<r.cols.length; i++)
                 		ret.cols.push($scope.wrapCol(r.cols[i]));
                 	return ret;
-                }
+                };
 
                 $scope.getUpdateService = function() {
-            		if (window != undefined && window.languageUpdateService != undefined && bkEvaluatorManager.getEvaluator($scope.model.getEvaluatorId())!=undefined) 
+            		if (window !== undefined && window.languageUpdateService !== undefined && bkEvaluatorManager.getEvaluator($scope.model.getEvaluatorId())!==undefined)
             			return window.languageUpdateService[$scope.model.getEvaluatorId()];
             		return undefined;
                 };
@@ -90,23 +90,23 @@
                 $scope.ingestUpdate = function(data) {
                 	$scope.data = { };
                 	$scope.data.rows = [];
-                	
+
                 	if (data.rows !== undefined) {
 	                	var i;
 	                	for (i=0; i<data.rows.length; i++)
 	                		$scope.data.rows.push($scope.wrapRow(data.rows[i]));
                 	}
-                	
+
                 	$scope.cellmodel = $scope.model.getCellModel();
                 	if ($scope.cellmodel.output === undefined) {
                 		$scope.cellmodel.output = {
         						hidden: false
-    					}
+    					};
                 	}
                 	$scope.data.theclass  = data.theclass;
                 	$scope.data.thestyle  = data.thestyle;
                 	$scope.update_id = data.update_id;
-                	
+
                     var srv = $scope.getUpdateService();
                     if ($scope.subscribedId && $scope.subscribedId !== $scope.update_id) {
                     	if (srv !== undefined)
@@ -122,14 +122,14 @@
                     	$scope.subscribedId = $scope.update_id;
                     }
                 };
-                
+
                 $scope.$on('$destroy', function () {
                     if ($scope.subscribedId) {
                     	var srv = $scope.getUpdateService();
                     	if (srv !== undefined) {
                     		srv.unsubscribe($scope.subscribedId);
                     	}
-                    }          
+                    }
                 });
 
                 $scope.fullscreen = function() {
@@ -143,12 +143,12 @@
 					} else if (elem.webkitRequestFullscreen) {
 					  elem.webkitRequestFullscreen();
 					}
-                }
-                
+                };
+
                 $scope.isShowMenu = function() {
                     return false;
                 };
-                
+
             },
             link: function (scope, element, attrs) {
                 scope.getState = function() {

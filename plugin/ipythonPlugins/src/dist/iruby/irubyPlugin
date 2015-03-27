@@ -16,9 +16,29 @@
 
 import os
 import sys
+import subprocess
+import shutil
+
+if len(sys.argv) > 1:
+    arg1 = sys.argv[1]
+    if arg1 == "--version":
+        os.execlp("ipython", "ipython", "--version")
+    elif arg1 == "--hash":
+        os.execlp("python", "python")
+    elif arg1 == "--profile":
+        ver = subprocess.check_output(["ipython", "ipython", "--version"])
+        if (ver.startswith("2.") or ver.startswith("1.")):
+            profile = subprocess.check_output(["iruby","locate","profile"])
+            profile = profile.strip()
+            dest = sys.argv[2] +"/"+"profile_beaker_backend_" + sys.argv[3]
+            shutil.copytree(profile,dest)
+            sys.exit(0)
+        os.execlp("ipython", "ipython", "profile",
+                  "create", "beaker_backend_" + sys.argv[3],
+                  "--ipython-dir=" + sys.argv[2])
 
 port = sys.argv.pop()
 
-os.execlp("iruby", "iruby", "notebook", "--pylab", "inline",
-          "--NotebookApp.ip=127.0.0.1", "--NotebookApp.port=" + port,
-          "--NotebookApp.open_browser=False")
+os.execlp("ipython", "ipython", "notebook",
+          "--ipython-dir=" + os.environ["beaker_tmp_dir"],
+          "--profile", "beaker_backend_IRuby")

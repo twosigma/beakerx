@@ -79,8 +79,8 @@ define(function(require, exports, module) {
                 }
               };
               var fakeNotebook = {
-                events: {on: function (){},
-                         trigger: function (){}}
+                  events: {on: function (){},
+                    trigger: function (){}}
               };
               var ajaxsettings = {
                   processData : false,
@@ -90,19 +90,19 @@ define(function(require, exports, module) {
                   dataType: "json",
                   success: function (data, status, xhr) {
                     self.kernel = (ipyVersion == '2') ?
-                      (new myPython.Kernel(base + "/api/kernels")) :
-                      (new myPython.Kernel(base + "/api/kernels",
-                                           undefined,
-                                           fakeNotebook,
-                                           "fakename"));
-                    kernels[shellID] = self.kernel;
-                    // the data.id is the session id but it is not used yet
-                    if (ipyVersion == '2') {
-                      self.kernel._kernel_started({id: data.kernel.id});
-                    } else {
-                      self.kernel._kernel_created({id: data.kernel.id});
-                      self.kernel.running = true;
-                    }
+                        (new myPython.Kernel(base + "/api/kernels")) :
+                          (new myPython.Kernel(base + "/api/kernels",
+                              undefined,
+                              fakeNotebook,
+                              "fakename"));
+                        kernels[shellID] = self.kernel;
+                        // the data.id is the session id but it is not used yet
+                        if (ipyVersion == '2') {
+                          self.kernel._kernel_started({id: data.kernel.id});
+                        } else {
+                          self.kernel._kernel_created({id: data.kernel.id});
+                          self.kernel.running = true;
+                        }
                   }
               };
               var url = myPython.utils.url_join_encode(serviceBase, 'api/sessions/');
@@ -153,13 +153,13 @@ define(function(require, exports, module) {
         var finalStuff = undefined;
         bkHelper.setupProgressOutput(modelOutput);
         gotError = false;
-        
+
         _theCancelFunction = function() {
           var kernel = kernels[self.settings.shellID];
           kernel.interrupt();
           bkHelper.setupCancellingOutput(modelOutput);
         };
-        
+
         var doFinish = function() {
           if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
             _theCancelFunction = null;
@@ -174,7 +174,7 @@ define(function(require, exports, module) {
             bkHelper.refreshRootScope();       
           finalStuff = undefined;
         }
-                
+
         var execute_reply = function(msg) {
           if (_theCancelFunction === null)
             return;
@@ -233,7 +233,7 @@ define(function(require, exports, module) {
             }, myPython.utils.fixConsole(content.evalue));
 
             evaluation.payload = (content.ename === "KeyboardInterrupt") ?
-              "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
+                "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload
             }
@@ -243,30 +243,30 @@ define(function(require, exports, module) {
               evaluation.outputdata = finalStuff.outputdata;
             var text = (ipyVersion == '3') ? content.text : content.data;
             evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
-                                        value: text});
+                value: text});
           } else {
             var elem = $(document.createElement("div"));
             var oa = (ipyVersion == '3') ?
-              (new myPython.OutputArea({events: {trigger: function(){}},
-                                        keyboard_manager: {register_events: function(){}}}))
-            : (new myPython.OutputArea(elem));
-            // twiddle the mime types? XXX
-            if (ipyVersion == '1') {
-              oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
-            } else if (ipyVersion == '2') {
-              oa.append_mime_type(content.data, elem);
-            } else {
-              oa.append_mime_type(content, elem);
-            }
-            var table = bkHelper.findTable(elem[0]);
-            if (table) {
-              evaluation.payload = table;
-            } else {
-              evaluation.payload = elem.html();
-            }
-            if (finalStuff !== undefined) {
-              finalStuff.payload = evaluation.payload;
-            }
+                (new myPython.OutputArea({events: {trigger: function(){}},
+                  keyboard_manager: {register_events: function(){}}}))
+                  : (new myPython.OutputArea(elem));
+                // twiddle the mime types? XXX
+                if (ipyVersion == '1') {
+                  oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
+                } else if (ipyVersion == '2') {
+                  oa.append_mime_type(content.data, elem);
+                } else {
+                  oa.append_mime_type(content, elem);
+                }
+                var table = bkHelper.findTable(elem[0]);
+                if (table) {
+                  evaluation.payload = table;
+                } else {
+                  evaluation.payload = elem.html();
+                }
+                if (finalStuff !== undefined) {
+                  finalStuff.payload = evaluation.payload;
+                }
           }
           if (finalStuff === undefined) {            
             finalStuff = evaluation;
@@ -331,8 +331,8 @@ define(function(require, exports, module) {
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2",
-        startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-        startedIndicatorStream: "stderr"
+            startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
+            startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
         var JuliaShell = function(settings, doneCB) {
@@ -365,9 +365,9 @@ define(function(require, exports, module) {
             var waitForKernel = function () {
               if ((ipyVersion == '3') ?
                   (kernel.ws.readyState == 1) :
-                  (kernel.shell_channel.readyState == 1 &&
-                   kernel.stdin_channel.readyState == 1 &&
-                   kernel.iopub_channel.readyState == 1)) {
+                    (kernel.shell_channel.readyState == 1 &&
+                        kernel.stdin_channel.readyState == 1 &&
+                        kernel.iopub_channel.readyState == 1)) {
                 finish();
               } else {
                 setTimeout(waitForKernel, 50);
@@ -423,7 +423,7 @@ define(function(require, exports, module) {
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/comm.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js"
-                              ], onSuccess, onFail);
+                               ], onSuccess, onFail);
           }
         }).error(function() {
           console.log("failed to locate plugin service", PLUGIN_NAME, arguments);

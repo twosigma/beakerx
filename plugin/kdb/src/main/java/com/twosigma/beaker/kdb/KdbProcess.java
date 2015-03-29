@@ -19,10 +19,8 @@ import com.twosigma.beaker.core.rest.StreamGobbler;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Wraps a kdb process.
@@ -34,9 +32,6 @@ public final class KdbProcess extends Thread {
     private static final String BEAKER_CORE_PASSWORD = "beaker_core_password";
     private static final String BEAKER_CORE_PORT     = "beaker_core_port";
     private static final String SESSION_ID           = "session_id";
-
-    // kdb commands.
-    public static final String KILL_CMD = "\\\\\n";
 
     // Kdb configuration.
     private final String qhome = System.getenv(QHOME);
@@ -135,31 +130,19 @@ public final class KdbProcess extends Thread {
             SESSION_ID + "=" + sessionId
         });
 
-        // Wrap stdin/stdout.
-        OutputStreamWriter stdin = new OutputStreamWriter(kdbProcess.getOutputStream());
-        StreamGobbler      stdout = new StreamGobbler(kdbProcess.getInputStream(), "stdout");
+        // Wrap stdout.
+        StreamGobbler stdout = new StreamGobbler(kdbProcess.getInputStream(), "stdout");
         stdout.start();
 
-        long exitTime = Long.MAX_VALUE;
-        while (kdbProcess.isAlive()) {
+        // Wait until kdb exits or we're interrupted.
+        while (true) {
             try {
-                // Wait for a second for kdb to exit.
-                if (kdbProcess.waitFor(1, TimeUnit.SECONDS)) {
-                    break;
-                }
-
-                // If we've passed the exit time, forcibly kill the process.
-                if (System.currentTimeMillis() > exitTime) {
-                    kdbProcess.destroyForcibly();
-                    break;
-                }
+                // Wait for kdb to exit.
+                kdbProcess.waitFor();
+                break;
             } catch (InterruptedException e) {
-                // Interrupted - try and kill kdb.
-                stdin.write(KILL_CMD);
-                stdin.flush();
-
-                // Forcibly destroy the process in two seconds if necessary.
-                exitTime = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(2);
+                // Interrupted - destroy the process.
+                kdbProcess.destroy();
             }
         }
     }

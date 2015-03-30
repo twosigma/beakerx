@@ -63,7 +63,7 @@
                     "var d = beaker.newDeferred();",
                     "beaker.evaluate('groovyret').then(function (r) {",
                     "  beaker.out = r;",
-                    "  if (r.length !== 18)",
+                    "  if (r.length !== 23)",
                     "    d.reject(\"invalid length \"+r.length);",
                     "  else if (typeof(r[0]) !== 'number' || r[0]%1 !== 0) ",
                     "    d.reject(\"ERROR returning integer\");",
@@ -99,8 +99,18 @@
                     "    d.reject(\"ERROR returning BeakerCodeCell\");",
                     "  else if (typeof(r[16]) !== 'object' || r[16].plot === undefined) ",
                     "    d.reject(\"ERROR returning dictionary\");",
-                    "  else if (!_.isArray(r[17])) ",
+                    "  else if (!_.isArray(r[17]))",
                     "    d.reject(\"ERROR returning list of dictionaries\");",
+                    "  else if (!isNaN(r[18]))",
+                    "    d.reject(\"ERROR returning NaN\");",
+                    "  else if (r[19] != Number.POSITIVE_INFINITY)",
+                    "    d.reject(\"ERROR returning + Infinity\");",
+                    "  else if (r[20] != Number.NEGATIVE_INFINITY)",
+                    "    d.reject(\"ERROR returning - Infinity\");",
+                    "  else if (!(r[21] instanceof Date) || r[21].getFullYear()!=2015 || r[21].getMonth()!==6)",
+                    "    d.reject(\"ERROR returning date value 1\");",
+                    "  else if (!(r[22] instanceof Date) || r[22].getFullYear()!=2015 || r[22].getDay()!==2)",
+                    "    d.reject(\"ERROR returning date value 2\");",
                     "",
                     "  else if (typeof(beaker.v0) !== 'number' || beaker.v0%1 !== 0) ",
                     "    d.reject(\"ERROR setting integer\");",
@@ -138,7 +148,18 @@
                     "    d.reject(\"ERROR setting dictionary\");",
                     "  else if (!_.isArray(beaker.v17)) ",
                     "    d.reject(\"ERROR setting list of dictionaries\");",
-                    "\tbeaker.evaluate('steptwo').then(function (r) {",
+                    "  else if (!isNaN(beaker.v18))",
+                    "    d.reject(\"ERROR setting NaN\");",
+                    "  else if (beaker.v19 != Number.POSITIVE_INFINITY)",
+                    "    d.reject(\"ERROR setting + Infinity\");",
+                    "  else if (beaker.v20 != Number.NEGATIVE_INFINITY)",
+                    "    d.reject(\"ERROR setting - Infinity\");",
+                    "  else if (!(beaker.v21 instanceof Date) || beaker.v21.getFullYear()!=2015 || beaker.v21.getMonth()!==6)",
+                    "    d.reject(\"ERROR setting date value 1\");",
+                    "  else if (!(beaker.v22 instanceof Date) || beaker.v22.getFullYear()!=2015 || beaker.v22.getDay()!==2)",
+                    "    d.reject(\"ERROR setting date value 2\");",
+                    "",
+                    "  beaker.evaluate('steptwo').then(function (r) {",
                     "      console.log(r);",
                     "      if (r[0] !== 'OK')",
                     "        d.reject(beaker.getCodeCells('steptwo')[0].output);",
@@ -155,11 +176,11 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Html",
+                "selectedType": "Results",
                 "elapsedTime": 41816
             },
             "evaluatorReader": true,
-            "lineCount": 90,
+            "lineCount": 111,
             "initialization": true
         },
         {
@@ -216,8 +237,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "9dd05c9c-f654-4db1-af72-36e2f0b4aae0",
-                "elapsedTime": 828
+                "shellId": "ad7e8458-6dc9-4e25-8402-3a79f6fb0dcb",
+                "elapsedTime": 1198
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -248,6 +269,13 @@
                     "v15 = beaker.v15",
                     "v16 = beaker.v16",
                     "v17 = beaker.v17",
+                    "v18 = float(beaker.v18)",
+                    "v19 = float(beaker.v19)",
+                    "v20 = float(beaker.v20)",
+                    "v21 = beaker.v21",
+                    "v22 = beaker.v22",
+                    "",
+                    "import math",
                     "",
                     "if type(v0) != int:",
                     "  ret = \"ERROR reading integer\"",
@@ -284,7 +312,17 @@
                     "elif type(v16) != dict:",
                     "  ret = \"ERROR reading dictionary\"",
                     "elif type(v17) != list:",
-                    "  rer = \"ERROR reading list of dictionary\"",
+                    "  ret = \"ERROR reading list of dictionary\"",
+                    "elif not math.isnan(v18):",
+                    "  ret = \"ERROR reading NaN\"",
+                    "elif not math.isinf(v19) or v19<0:",
+                    "  ret = \"ERROR reading Infinity\"",
+                    "elif not math.isinf(v20) or v20>0:",
+                    "  ret = \"ERROR reading -Infinity\"",
+                    "elif type(v21) != datetime.datetime or v21.month!=7:",
+                    "  ret = \"ERROR reading date\"",
+                    "elif type(v22) != datetime.datetime or v22.year!=2015:",
+                    "  ret = \"ERROR reading date\"",
                     "else:",
                     "  ret = \"OK\"",
                     "",
@@ -295,15 +333,36 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Html",
+                "selectedType": "Results",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 620,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 969,
                 "dataresult": "OK"
             },
             "evaluatorReader": true,
-            "lineCount": 61,
+            "lineCount": 78,
             "tags": "stepthree"
+        },
+        {
+            "id": "codeUrhsq8",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "float(beaker.v20)",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Html",
+                "pluginName": "IPython",
+                "shellId": "2E070BE6C1A5496B8EF5CA058278B68C",
+                "elapsedTime": 399,
+                "dataresult": "-Infinity"
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         },
         {
             "id": "sectionN09y35",
@@ -311,7 +370,7 @@
             "title": "Python2 cells that return a value",
             "level": 1,
             "evaluatorReader": false,
-            "collapsed": true
+            "collapsed": false
         },
         {
             "id": "codeYX3xaO",
@@ -329,8 +388,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 284,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 340,
                 "dataresult": 1
             },
             "evaluatorReader": true,
@@ -353,8 +412,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 271,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 355,
                 "dataresult": 10.34
             },
             "evaluatorReader": true,
@@ -377,8 +436,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 270,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 353,
                 "dataresult": true
             },
             "evaluatorReader": true,
@@ -401,8 +460,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 272,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 349,
                 "dataresult": "test string"
             },
             "evaluatorReader": true,
@@ -425,8 +484,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 231,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 346,
                 "dataresult": {
                     "type": "Date",
                     "value": "Oct 21, 2005 06:47:22 PM"
@@ -457,8 +516,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 701,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 336,
                 "state": {}
             },
             "evaluatorReader": true,
@@ -484,8 +543,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 296,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 492,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -545,8 +604,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 286,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 397,
                 "dataresult": [
                     23.45,
                     34.5,
@@ -575,8 +634,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 220,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 360,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "Matrix",
@@ -646,8 +705,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 293,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 451,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -678,8 +737,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 224,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 379,
                 "dataresult": [
                     [
                         [
@@ -754,8 +813,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 219,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 380,
                 "dataresult": "{ \"type\":\"TableDisplay\",\"subtype\":\"Dictionary\",\"columnNames\": [\"Key\",\"Value\"], \"values\": [[\"name\",\"Fred\"],[\"a\",\"10.4\"],[\"b\",\"33.5\"],[\"age\",\"5.3\"]] }"
             },
             "evaluatorReader": true,
@@ -778,8 +837,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 300,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 428,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -802,8 +861,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 283,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 392,
                 "hidden": true,
                 "dataresult": "not supported"
             },
@@ -830,8 +889,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 238,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 333,
                 "dataresult": {
                     "type": "OutputContainer",
                     "items": [
@@ -3937,10 +3996,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Html",
+                "selectedType": "Results",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 375,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 538,
                 "dataresult": [
                     {
                         "code": "# output container - 14\na = beaker.createOutputContainer()\na.addItem(aapl.head())\na.addItem([2,3,4,5,6])\nbeaker.v14 = a\na\n",
@@ -3951,6 +4010,10 @@
                                 {
                                     "values": [
                                         [
+                                            {
+                                                "timestamp": 1288584000000,
+                                                "type": "Date"
+                                            },
                                             302.22,
                                             305.6,
                                             302.2,
@@ -3959,6 +4022,10 @@
                                             40.99
                                         ],
                                         [
+                                            {
+                                                "timestamp": 1288670400000,
+                                                "type": "Date"
+                                            },
                                             307,
                                             310.19,
                                             307,
@@ -3967,6 +4034,10 @@
                                             41.69
                                         ],
                                         [
+                                            {
+                                                "timestamp": 1288756800000,
+                                                "type": "Date"
+                                            },
                                             311.37,
                                             312.88,
                                             308.53,
@@ -3975,6 +4046,10 @@
                                             42.15
                                         ],
                                         [
+                                            {
+                                                "timestamp": 1288843200000,
+                                                "type": "Date"
+                                            },
                                             315.45,
                                             320.18,
                                             315.03,
@@ -3983,6 +4058,10 @@
                                             42.89
                                         ],
                                         [
+                                            {
+                                                "timestamp": 1288929600000,
+                                                "type": "Date"
+                                            },
                                             317.99,
                                             319.57,
                                             316.75,
@@ -3994,7 +4073,7 @@
                                     "subtype": "TableDisplay",
                                     "type": "TableDisplay",
                                     "types": [
-                                        "double",
+                                        "time",
                                         "double",
                                         "double",
                                         "double",
@@ -4002,6 +4081,7 @@
                                         "double"
                                     ],
                                     "columnNames": [
+                                        "Index",
                                         "Open",
                                         "High",
                                         "Low",
@@ -4047,8 +4127,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 288,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 369,
                 "dataresult": {
                     "plot": {
                         "values": [
@@ -4119,8 +4199,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "B16A29F6846C49E180F0E6844273EDAD",
-                "elapsedTime": 243,
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 369,
                 "dataresult": [
                     {
                         "plot": {
@@ -4265,6 +4345,123 @@
             "evaluatorReader": true,
             "lineCount": 7,
             "tags": "groovyret"
+        },
+        {
+            "id": "codeZ7Ho84",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "a = float('nan')",
+                    "beaker.v18 = a",
+                    "a"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Html",
+                "pluginName": "IPython",
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 365,
+                "dataresult": "Nan"
+            },
+            "evaluatorReader": true,
+            "lineCount": 3,
+            "tags": "groovyret"
+        },
+        {
+            "id": "coderngPqz",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "a = float('inf')",
+                    "beaker.v19 = a",
+                    "a"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Html",
+                "pluginName": "IPython",
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 372,
+                "dataresult": "Infinity"
+            },
+            "evaluatorReader": true,
+            "lineCount": 3,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeFfYMYI",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "a = float('-inf')",
+                    "beaker.v20 = a",
+                    "a"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Html",
+                "pluginName": "IPython",
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 374,
+                "dataresult": "-Infinity"
+            },
+            "evaluatorReader": true,
+            "lineCount": 3,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeiJozTq",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "import datetime",
+                    "",
+                    "a = datetime.datetime(2015,7,14,10,0,34)",
+                    "beaker.v21 = a",
+                    "a"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Date",
+                "pluginName": "IPython",
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 358
+            },
+            "evaluatorReader": true,
+            "lineCount": 5,
+            "tags": "groovyret"
+        },
+        {
+            "id": "codeHXLj1R",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "import datetime",
+                    "",
+                    "a = datetime.datetime(2015,7,14)",
+                    "beaker.v22 = a",
+                    "a"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Date",
+                "pluginName": "IPython",
+                "shellId": "957AED99EF75425F95D951A87B8F3408",
+                "elapsedTime": 375
+            },
+            "evaluatorReader": true,
+            "lineCount": 5,
+            "tags": "groovyret"
         }
     ],
     "namespace": {
@@ -4275,55 +4472,60 @@
             "test string",
             {
                 "type": "Date",
-                "timestamp": 1427212224
+                "timestamp": 1427745015000
             },
             {
                 "type": "TableDisplay",
                 "subtype": "TableDisplay",
                 "values": [
                     [
-                        302.22,
-                        305.6,
-                        302.2,
-                        304.18,
-                        105972300,
-                        40.99
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "6"
                     ],
                     [
-                        307,
-                        310.19,
-                        307,
-                        309.36,
-                        108482500,
-                        41.69
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "6"
                     ],
                     [
-                        311.37,
-                        312.88,
-                        308.53,
-                        312.8,
-                        127087100,
-                        42.15
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "6"
                     ],
                     [
-                        315.45,
-                        320.18,
-                        315.03,
-                        318.27,
-                        160622000,
-                        42.89
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "6"
                     ],
                     [
-                        317.99,
-                        319.57,
-                        316.75,
-                        317.13,
-                        90313300,
-                        42.73
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "6"
                     ]
                 ],
                 "types": [
-                    "double",
+                    "time",
                     "double",
                     "double",
                     "double",
@@ -4331,6 +4533,7 @@
                     "double"
                 ],
                 "columnNames": [
+                    "Index",
                     "Open",
                     "High",
                     "Low",
@@ -4374,10 +4577,18 @@
                         33.5,
                         {
                             "type": "Date",
-                            "timestamp": 1427212225
+                            "timestamp": 1427745016000
                         },
                         ""
                     ]
+                ],
+                "types": [
+                    "double",
+                    "double",
+                    "string",
+                    "string",
+                    "double",
+                    "string"
                 ]
             },
             [
@@ -4391,14 +4602,14 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        1,
-                        2,
-                        5
+                        "0",
+                        "1",
+                        "2"
                     ],
                     [
-                        3,
-                        4,
-                        5
+                        "0",
+                        "1",
+                        "2"
                     ]
                 ],
                 "subtype": "Matrix",
@@ -4419,19 +4630,19 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            0,
-                            1,
-                            2
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            3,
-                            4,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            6,
-                            7,
-                            8
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -4450,19 +4661,19 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            9,
-                            10,
-                            11
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            12,
-                            13,
-                            14
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            15,
-                            16,
-                            17
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -4481,19 +4692,19 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            18,
-                            19,
-                            20
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            21,
-                            22,
-                            23
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            24,
-                            25,
-                            26
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -4544,48 +4755,53 @@
                         "subtype": "TableDisplay",
                         "values": [
                             [
-                                302.22,
-                                305.6,
-                                302.2,
-                                304.18,
-                                105972300,
-                                40.99
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5",
+                                "6"
                             ],
                             [
-                                307,
-                                310.19,
-                                307,
-                                309.36,
-                                108482500,
-                                41.69
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5",
+                                "6"
                             ],
                             [
-                                311.37,
-                                312.88,
-                                308.53,
-                                312.8,
-                                127087100,
-                                42.15
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5",
+                                "6"
                             ],
                             [
-                                315.45,
-                                320.18,
-                                315.03,
-                                318.27,
-                                160622000,
-                                42.89
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5",
+                                "6"
                             ],
                             [
-                                317.99,
-                                319.57,
-                                316.75,
-                                317.13,
-                                90313300,
-                                42.73
+                                "0",
+                                "1",
+                                "2",
+                                "3",
+                                "4",
+                                "5",
+                                "6"
                             ]
                         ],
                         "types": [
-                            "double",
+                            "time",
                             "double",
                             "double",
                             "double",
@@ -4593,6 +4809,7 @@
                             "double"
                         ],
                         "columnNames": [
+                            "Index",
                             "Open",
                             "High",
                             "Low",
@@ -4623,48 +4840,53 @@
                                 "subtype": "TableDisplay",
                                 "values": [
                                     [
-                                        302.22,
-                                        305.6,
-                                        302.2,
-                                        304.18,
-                                        105972300,
-                                        40.99
+                                        "0",
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
                                     ],
                                     [
-                                        307,
-                                        310.19,
-                                        307,
-                                        309.36,
-                                        108482500,
-                                        41.69
+                                        "0",
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
                                     ],
                                     [
-                                        311.37,
-                                        312.88,
-                                        308.53,
-                                        312.8,
-                                        127087100,
-                                        42.15
+                                        "0",
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
                                     ],
                                     [
-                                        315.45,
-                                        320.18,
-                                        315.03,
-                                        318.27,
-                                        160622000,
-                                        42.89
+                                        "0",
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
                                     ],
                                     [
-                                        317.99,
-                                        319.57,
-                                        316.75,
-                                        317.13,
-                                        90313300,
-                                        42.73
+                                        "0",
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
                                     ]
                                 ],
                                 "types": [
-                                    "double",
+                                    "time",
                                     "double",
                                     "double",
                                     "double",
@@ -4672,6 +4894,7 @@
                                     "double"
                                 ],
                                 "columnNames": [
+                                    "Index",
                                     "Open",
                                     "High",
                                     "Low",
@@ -4700,14 +4923,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            1,
-                            2,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            3,
-                            4,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -4728,14 +4951,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            1,
-                            2,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            3,
-                            4,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -4757,14 +4980,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                1,
-                                2,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ],
                             [
-                                3,
-                                4,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ]
                         ],
                         "subtype": "Matrix",
@@ -4785,14 +5008,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                1,
-                                2,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ],
                             [
-                                3,
-                                4,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ]
                         ],
                         "subtype": "Matrix",
@@ -4813,14 +5036,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                1,
-                                2,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ],
                             [
-                                3,
-                                4,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ]
                         ],
                         "subtype": "Matrix",
@@ -4841,14 +5064,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                1,
-                                2,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ],
                             [
-                                3,
-                                4,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ]
                         ],
                         "subtype": "Matrix",
@@ -4869,14 +5092,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                1,
-                                2,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ],
                             [
-                                3,
-                                4,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ]
                         ],
                         "subtype": "Matrix",
@@ -4897,14 +5120,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                1,
-                                2,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ],
                             [
-                                3,
-                                4,
-                                5
+                                "0",
+                                "1",
+                                "2"
                             ]
                         ],
                         "subtype": "Matrix",
@@ -4920,7 +5143,18 @@
                         ]
                     }
                 }
-            ]
+            ],
+            "Nan",
+            "Infinity",
+            "-Infinity",
+            {
+                "type": "Date",
+                "timestamp": 1436882434000
+            },
+            {
+                "type": "Date",
+                "timestamp": 1436846400000
+            }
         ],
         "v0": 1,
         "v1": 10.34,
@@ -4928,55 +5162,60 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "timestamp": 1427212224
+            "timestamp": 1427745015000
         },
         "v5": {
             "type": "TableDisplay",
             "subtype": "TableDisplay",
             "values": [
                 [
-                    302.22,
-                    305.6,
-                    302.2,
-                    304.18,
-                    105972300,
-                    40.99
+                    "0",
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6"
                 ],
                 [
-                    307,
-                    310.19,
-                    307,
-                    309.36,
-                    108482500,
-                    41.69
+                    "0",
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6"
                 ],
                 [
-                    311.37,
-                    312.88,
-                    308.53,
-                    312.8,
-                    127087100,
-                    42.15
+                    "0",
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6"
                 ],
                 [
-                    315.45,
-                    320.18,
-                    315.03,
-                    318.27,
-                    160622000,
-                    42.89
+                    "0",
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6"
                 ],
                 [
-                    317.99,
-                    319.57,
-                    316.75,
-                    317.13,
-                    90313300,
-                    42.73
+                    "0",
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6"
                 ]
             ],
             "types": [
-                "double",
+                "time",
                 "double",
                 "double",
                 "double",
@@ -4984,6 +5223,7 @@
                 "double"
             ],
             "columnNames": [
+                "Index",
                 "Open",
                 "High",
                 "Low",
@@ -5027,10 +5267,18 @@
                     33.5,
                     {
                         "type": "Date",
-                        "timestamp": 1427212225
+                        "timestamp": 1427745016000
                     },
                     ""
                 ]
+            ],
+            "types": [
+                "double",
+                "double",
+                "string",
+                "string",
+                "double",
+                "string"
             ]
         },
         "v7": [
@@ -5044,14 +5292,14 @@
             "type": "TableDisplay",
             "values": [
                 [
-                    1,
-                    2,
-                    5
+                    "0",
+                    "1",
+                    "2"
                 ],
                 [
-                    3,
-                    4,
-                    5
+                    "0",
+                    "1",
+                    "2"
                 ]
             ],
             "subtype": "Matrix",
@@ -5072,19 +5320,19 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        0,
-                        1,
-                        2
+                        "0",
+                        "1",
+                        "2"
                     ],
                     [
-                        3,
-                        4,
-                        5
+                        "0",
+                        "1",
+                        "2"
                     ],
                     [
-                        6,
-                        7,
-                        8
+                        "0",
+                        "1",
+                        "2"
                     ]
                 ],
                 "subtype": "Matrix",
@@ -5103,19 +5351,19 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        9,
-                        10,
-                        11
+                        "0",
+                        "1",
+                        "2"
                     ],
                     [
-                        12,
-                        13,
-                        14
+                        "0",
+                        "1",
+                        "2"
                     ],
                     [
-                        15,
-                        16,
-                        17
+                        "0",
+                        "1",
+                        "2"
                     ]
                 ],
                 "subtype": "Matrix",
@@ -5134,19 +5382,19 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        18,
-                        19,
-                        20
+                        "0",
+                        "1",
+                        "2"
                     ],
                     [
-                        21,
-                        22,
-                        23
+                        "0",
+                        "1",
+                        "2"
                     ],
                     [
-                        24,
-                        25,
-                        26
+                        "0",
+                        "1",
+                        "2"
                     ]
                 ],
                 "subtype": "Matrix",
@@ -5197,48 +5445,53 @@
                     "subtype": "TableDisplay",
                     "values": [
                         [
-                            302.22,
-                            305.6,
-                            302.2,
-                            304.18,
-                            105972300,
-                            40.99
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6"
                         ],
                         [
-                            307,
-                            310.19,
-                            307,
-                            309.36,
-                            108482500,
-                            41.69
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6"
                         ],
                         [
-                            311.37,
-                            312.88,
-                            308.53,
-                            312.8,
-                            127087100,
-                            42.15
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6"
                         ],
                         [
-                            315.45,
-                            320.18,
-                            315.03,
-                            318.27,
-                            160622000,
-                            42.89
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6"
                         ],
                         [
-                            317.99,
-                            319.57,
-                            316.75,
-                            317.13,
-                            90313300,
-                            42.73
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5",
+                            "6"
                         ]
                     ],
                     "types": [
-                        "double",
+                        "time",
                         "double",
                         "double",
                         "double",
@@ -5246,6 +5499,7 @@
                         "double"
                     ],
                     "columnNames": [
+                        "Index",
                         "Open",
                         "High",
                         "Low",
@@ -5276,48 +5530,53 @@
                             "subtype": "TableDisplay",
                             "values": [
                                 [
-                                    302.22,
-                                    305.6,
-                                    302.2,
-                                    304.18,
-                                    105972300,
-                                    40.99
+                                    "0",
+                                    "1",
+                                    "2",
+                                    "3",
+                                    "4",
+                                    "5",
+                                    "6"
                                 ],
                                 [
-                                    307,
-                                    310.19,
-                                    307,
-                                    309.36,
-                                    108482500,
-                                    41.69
+                                    "0",
+                                    "1",
+                                    "2",
+                                    "3",
+                                    "4",
+                                    "5",
+                                    "6"
                                 ],
                                 [
-                                    311.37,
-                                    312.88,
-                                    308.53,
-                                    312.8,
-                                    127087100,
-                                    42.15
+                                    "0",
+                                    "1",
+                                    "2",
+                                    "3",
+                                    "4",
+                                    "5",
+                                    "6"
                                 ],
                                 [
-                                    315.45,
-                                    320.18,
-                                    315.03,
-                                    318.27,
-                                    160622000,
-                                    42.89
+                                    "0",
+                                    "1",
+                                    "2",
+                                    "3",
+                                    "4",
+                                    "5",
+                                    "6"
                                 ],
                                 [
-                                    317.99,
-                                    319.57,
-                                    316.75,
-                                    317.13,
-                                    90313300,
-                                    42.73
+                                    "0",
+                                    "1",
+                                    "2",
+                                    "3",
+                                    "4",
+                                    "5",
+                                    "6"
                                 ]
                             ],
                             "types": [
-                                "double",
+                                "time",
                                 "double",
                                 "double",
                                 "double",
@@ -5325,6 +5584,7 @@
                                 "double"
                             ],
                             "columnNames": [
+                                "Index",
                                 "Open",
                                 "High",
                                 "Low",
@@ -5353,14 +5613,14 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        1,
-                        2,
-                        5
+                        "0",
+                        "1",
+                        "2"
                     ],
                     [
-                        3,
-                        4,
-                        5
+                        "0",
+                        "1",
+                        "2"
                     ]
                 ],
                 "subtype": "Matrix",
@@ -5381,14 +5641,14 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        1,
-                        2,
-                        5
+                        "0",
+                        "1",
+                        "2"
                     ],
                     [
-                        3,
-                        4,
-                        5
+                        "0",
+                        "1",
+                        "2"
                     ]
                 ],
                 "subtype": "Matrix",
@@ -5410,14 +5670,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            1,
-                            2,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            3,
-                            4,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5438,14 +5698,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            1,
-                            2,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            3,
-                            4,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5466,14 +5726,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            1,
-                            2,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            3,
-                            4,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5494,14 +5754,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            1,
-                            2,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            3,
-                            4,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5522,14 +5782,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            1,
-                            2,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            3,
-                            4,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5550,14 +5810,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            1,
-                            2,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ],
                         [
-                            3,
-                            4,
-                            5
+                            "0",
+                            "1",
+                            "2"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5573,6 +5833,17 @@
                     ]
                 }
             }
-        ]
+        ],
+        "v18": "Nan",
+        "v20": "-Infinity",
+        "v21": {
+            "type": "Date",
+            "timestamp": 1436882434000
+        },
+        "v19": "Infinity",
+        "v22": {
+            "type": "Date",
+            "timestamp": 1436846400000
+        }
     }
 }

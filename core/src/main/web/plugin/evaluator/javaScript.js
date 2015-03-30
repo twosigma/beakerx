@@ -315,8 +315,12 @@ define(function(require, exports, module) {
       o.type = "TableDisplay";
       o.subtype = "TableDisplay";
       o.values = [];
-      for (var i in v.values)
-        o.values.push(v.values[i].slice(0));
+      for (var i in v.values) {
+        var row = [];
+        for (var item in v.values[i])
+          row.push(transform(item));
+        o.values.push(row);
+      }
       o.types = _.isArray(v.types) ? v.types.slice(0) : undefined;
       o.columnNames = _.isArray(v.columnNames) ? v.columnNames.slice(0) : undefined;
       return o
@@ -340,8 +344,12 @@ define(function(require, exports, module) {
         var o = {}
         o.type = "TableDisplay";
         o.values = [];
-        for (var i in v)
-          o.values.push(v[i].slice(0));
+        for (var i in v) {
+          var row = [];
+          for (var item in v[i])
+            row.push(transform(item));
+          o.values.push(row);
+        }
         o.subtype = "Matrix";
         o.columnNames = [];
         o.types = [];
@@ -380,7 +388,17 @@ define(function(require, exports, module) {
                 o2.push(null);
             }
             o.values.push(o2);
-          }          
+          }
+          o.types = [];
+          for (var j in o.columnNames) {
+            var n = o.columnNames[j];
+            for (var i in v) {
+              if (v[i][n] !== undefined) {
+                o.types.push(getDataType(v[i][n]));
+                break;
+              }
+            }
+          }
           return o;
         }
       }

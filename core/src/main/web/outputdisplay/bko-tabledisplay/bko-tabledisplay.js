@@ -265,6 +265,8 @@
                 $scope.getCellDispOpts.push($scope.allDoubleTypes);
               } else if ($scope.types[order-1] === 'integer') {
                 $scope.getCellDispOpts.push($scope.allIntTypes);
+              } else if ($scope.types[order-1] === 'time') {
+                $scope.getCellDispOpts.push($scope.allTimeTypes);
               } else if ($scope.types[order-1] === 'boolean') {
                 $scope.getCellDispOpts.push($scope.allBoolTypes);
               } else {
@@ -402,7 +404,8 @@
                                 }
                                 ];
         $scope.allStringTypes = [ { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
-        $scope.allIntTypes = [ { type: 0, name: 'string'},
+        $scope.allTimeTypes   = [ { type: 8, name: 'time'}, { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
+        $scope.allIntTypes    = [ { type: 0, name: 'string'},
                                { type: 1, name: 'integer'},
                                { type: 2, name: 'formatted integer'},
                                { type: 8, name: 'time'} ];
@@ -546,31 +549,28 @@
             scope.pagination  = scope.savedstate.pagination;
             scope.savedstate  = undefined;
           }
-          
           // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
             scope.actualtype = [];
             scope.actualalign = [];
             for (i=0; i<scope.columnNames.length; i++) {
-              if (scope.types !== undefined && scope.types !== null && scope.types[i] === 'time') {
-                scope.actualtype.push(8);
-                scope.actualalign.push('C');
-              } else {
-                if (scope.types !== undefined) {
-                  if (scope.types[i] === 'integer') {
-                    scope.actualtype.push(2);
-                    scope.actualalign.push('R');
-                  } else if (scope.types[i] === 'double') {
-                    scope.actualtype.push(5);
-                    scope.actualalign.push('R');
-                  } else {
-                    scope.actualtype.push(0);
-                    scope.actualalign.push('L');
-                  }
+              if (scope.types !== undefined) {
+                if (scope.types[i] === 'time') {
+                  scope.actualtype.push(8);
+                  scope.actualalign.push('C');
+                } else if (scope.types[i] === 'integer') {
+                  scope.actualtype.push(2);
+                  scope.actualalign.push('R');
+                } else if (scope.types[i] === 'double') {
+                  scope.actualtype.push(5);
+                  scope.actualalign.push('R');
                 } else {
                   scope.actualtype.push(0);
                   scope.actualalign.push('L');
                 }
+              } else {
+                scope.actualtype.push(0);
+                scope.actualalign.push('L');
               }
             }
           }

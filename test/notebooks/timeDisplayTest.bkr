@@ -1,0 +1,241 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "codesBUztb",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "Date d = new Date()",
+                    "def a = [ [ time: d, content: 'pippero'], [ time: d+2, content: 'pippero'], [ time: d+4, content: 'pippero'] ]",
+                    "beaker.a = a",
+                    "a"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
+                        },
+                        "columnNames": [
+                            "time",
+                            "content"
+                        ],
+                        "actualalign": [
+                            "C",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "time",
+                        "content"
+                    ],
+                    "values": [
+                        [
+                            {
+                                "type": "Date",
+                                "timestamp": 1427723790137
+                            },
+                            "pippero"
+                        ],
+                        [
+                            {
+                                "type": "Date",
+                                "timestamp": 1427896590137
+                            },
+                            "pippero"
+                        ],
+                        [
+                            {
+                                "type": "Date",
+                                "timestamp": 1428069390137
+                            },
+                            "pippero"
+                        ]
+                    ],
+                    "types": [
+                        "time",
+                        "string"
+                    ],
+                    "subtype": "ListOfMaps"
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "fd486f8f-5f96-400d-93a1-48c6e8778ea6",
+                "elapsedTime": 577
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
+            "id": "codegnRpcI",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.a",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
+                        },
+                        "columnNames": [
+                            "time",
+                            "content"
+                        ],
+                        "actualalign": [
+                            "C",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "ListOfMaps",
+                    "columnNames": [
+                        "time",
+                        "content"
+                    ],
+                    "values": [
+                        [
+                            {
+                                "type": "Date",
+                                "timestamp": 1427723790137
+                            },
+                            "pippero"
+                        ],
+                        [
+                            {
+                                "type": "Date",
+                                "timestamp": 1427896590137
+                            },
+                            "pippero"
+                        ],
+                        [
+                            {
+                                "type": "Date",
+                                "timestamp": 1428069390137
+                            },
+                            "pippero"
+                        ]
+                    ],
+                    "types": [
+                        "time",
+                        "string"
+                    ]
+                },
+                "selectedType": "Table"
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        }
+    ],
+    "namespace": {
+        "a": {
+            "type": "TableDisplay",
+            "subtype": "ListOfMaps",
+            "columnNames": [
+                "time",
+                "content"
+            ],
+            "values": [
+                [
+                    {
+                        "type": "Date",
+                        "timestamp": 1427723790137
+                    },
+                    "pippero"
+                ],
+                [
+                    {
+                        "type": "Date",
+                        "timestamp": 1427896590137
+                    },
+                    "pippero"
+                ],
+                [
+                    {
+                        "type": "Date",
+                        "timestamp": 1428069390137
+                    },
+                    "pippero"
+                ]
+            ],
+            "types": [
+                "time",
+                "string"
+            ]
+        }
+    }
+}

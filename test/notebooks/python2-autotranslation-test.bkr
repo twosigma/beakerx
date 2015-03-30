@@ -176,7 +176,7 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Results",
+                "selectedType": "Html",
                 "elapsedTime": 41816
             },
             "evaluatorReader": true,
@@ -237,8 +237,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "ad7e8458-6dc9-4e25-8402-3a79f6fb0dcb",
-                "elapsedTime": 1198
+                "shellId": "caea07ce-4681-445f-8d87-a5e2fb99d573",
+                "elapsedTime": 2679
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -333,36 +333,15 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Results",
+                "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 969,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 812,
                 "dataresult": "OK"
             },
             "evaluatorReader": true,
             "lineCount": 78,
             "tags": "stepthree"
-        },
-        {
-            "id": "codeUrhsq8",
-            "type": "code",
-            "evaluator": "IPython",
-            "input": {
-                "body": [
-                    "float(beaker.v20)",
-                    ""
-                ]
-            },
-            "output": {
-                "state": {},
-                "selectedType": "Html",
-                "pluginName": "IPython",
-                "shellId": "2E070BE6C1A5496B8EF5CA058278B68C",
-                "elapsedTime": 399,
-                "dataresult": "-Infinity"
-            },
-            "evaluatorReader": true,
-            "lineCount": 2
         },
         {
             "id": "sectionN09y35",
@@ -388,8 +367,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 340,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 396,
                 "dataresult": 1
             },
             "evaluatorReader": true,
@@ -412,8 +391,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 355,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 454,
                 "dataresult": 10.34
             },
             "evaluatorReader": true,
@@ -436,8 +415,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 353,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 421,
                 "dataresult": true
             },
             "evaluatorReader": true,
@@ -460,8 +439,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 349,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 451,
                 "dataresult": "test string"
             },
             "evaluatorReader": true,
@@ -484,8 +463,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 346,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 468,
                 "dataresult": {
                     "type": "Date",
                     "value": "Oct 21, 2005 06:47:22 PM"
@@ -516,8 +495,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 336,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 451,
                 "state": {}
             },
             "evaluatorReader": true,
@@ -543,8 +522,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 492,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 618,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -604,8 +583,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 397,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 618,
                 "dataresult": [
                     23.45,
                     34.5,
@@ -634,8 +613,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 360,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 421,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "Matrix",
@@ -705,8 +684,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 451,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 551,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -737,8 +716,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 379,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 432,
                 "dataresult": [
                     [
                         [
@@ -813,8 +792,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 380,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 433,
                 "dataresult": "{ \"type\":\"TableDisplay\",\"subtype\":\"Dictionary\",\"columnNames\": [\"Key\",\"Value\"], \"values\": [[\"name\",\"Fred\"],[\"a\",\"10.4\"],[\"b\",\"33.5\"],[\"age\",\"5.3\"]] }"
             },
             "evaluatorReader": true,
@@ -837,8 +816,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 428,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 591,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -861,8 +840,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 392,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 326,
                 "hidden": true,
                 "dataresult": "not supported"
             },
@@ -889,8 +868,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 333,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 401,
                 "dataresult": {
                     "type": "OutputContainer",
                     "items": [
@@ -3996,10 +3975,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Results",
+                "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 538,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 833,
                 "dataresult": [
                     {
                         "code": "# output container - 14\na = beaker.createOutputContainer()\na.addItem(aapl.head())\na.addItem([2,3,4,5,6])\nbeaker.v14 = a\na\n",
@@ -4127,8 +4106,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 369,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 389,
                 "dataresult": {
                     "plot": {
                         "values": [
@@ -4199,8 +4178,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 369,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 418,
                 "dataresult": [
                     {
                         "plot": {
@@ -4361,8 +4340,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 365,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 410,
                 "dataresult": "Nan"
             },
             "evaluatorReader": true,
@@ -4384,8 +4363,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 372,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 363,
                 "dataresult": "Infinity"
             },
             "evaluatorReader": true,
@@ -4407,8 +4386,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 374,
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 401,
                 "dataresult": "-Infinity"
             },
             "evaluatorReader": true,
@@ -4432,8 +4411,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 358
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 366
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -4456,8 +4435,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "IPython",
-                "shellId": "957AED99EF75425F95D951A87B8F3408",
-                "elapsedTime": 375
+                "shellId": "B2D6569173374A1B81016BA6BC4DD348",
+                "elapsedTime": 370
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -4472,7 +4451,7 @@
             "test string",
             {
                 "type": "Date",
-                "timestamp": 1427745015000
+                "timestamp": 1427746654000
             },
             {
                 "type": "TableDisplay",
@@ -4577,7 +4556,7 @@
                         33.5,
                         {
                             "type": "Date",
-                            "timestamp": 1427745016000
+                            "timestamp": 1427746655000
                         },
                         ""
                     ]
@@ -5162,7 +5141,7 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "timestamp": 1427745015000
+            "timestamp": 1427746654000
         },
         "v5": {
             "type": "TableDisplay",
@@ -5267,7 +5246,7 @@
                     33.5,
                     {
                         "type": "Date",
-                        "timestamp": 1427745016000
+                        "timestamp": 1427746655000
                     },
                     ""
                 ]

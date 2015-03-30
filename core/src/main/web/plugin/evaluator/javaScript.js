@@ -738,6 +738,7 @@ define(function(require, exports, module) {
             beakerObj.setupBeakerObject(modelOutput);
             beakerObj.notebookToBeakerObject();
             var beaker = beakerObj.beakerObj;
+            acorn.parse(code);
             var output = eval(code);
             beakerObj.beakerObjectToNotebook();
             if ( typeof output === 'object' ) {

@@ -82,7 +82,7 @@ define(function(require, exports, module) {
     for (var j in this.values) {
       o.push(this.values[j][i]);
     }
-    return o; 
+    return o;
   };
 
   DataFrame.prototype.getRow = function(i) {
@@ -94,11 +94,11 @@ define(function(require, exports, module) {
     }
     return o;
   };
-  
+
   DataFrame.prototype.length = function() {
     return this.values.length;
   };
-  
+
   DataFrame.prototype.removeColumn = function(name) {
     var i = this.columnNames.indexOf(name);
     if (i < 0)
@@ -266,7 +266,7 @@ define(function(require, exports, module) {
       return true;
     return false;
   };
-  
+
   function getDataType(v) {
     if (_.isDate(v))
       return "time";
@@ -274,9 +274,9 @@ define(function(require, exports, module) {
       return "double";
     if(_.isBoolean(v))
       return "boolean";
-    return "string";    
+    return "string";
   };
-  
+
   function isDictionary(v) {
     if (!_.isObject(v))
       return false;
@@ -286,7 +286,7 @@ define(function(require, exports, module) {
     }
     return true;
   };
-  
+
   function transform(v) {
     if (_.isFunction(v) || _.isUndefined(v))
       return null;
@@ -300,7 +300,7 @@ define(function(require, exports, module) {
 
     if (isPrimitiveType(v))
       return v;
-    
+
     if (v instanceof ImageIcon) {
       var o = {}
       o.type = "ImageIcon";
@@ -309,7 +309,7 @@ define(function(require, exports, module) {
       o.height = v.height;
       return o
     }
-    
+
     if (v instanceof DataFrame) {
       var o = {}
       o.type = "TableDisplay";
@@ -355,7 +355,7 @@ define(function(require, exports, module) {
         o.types = [];
         for(var i in v[0]) {
           o.columnNames.push('c'+i);
-          o.types.push(getDataType(v[0][i]));          
+          o.types.push(getDataType(v[0][i]));
         }
         return o;
       } else {
@@ -403,7 +403,7 @@ define(function(require, exports, module) {
         }
       }
     }
-    
+
     if (_.isArray(v)) {
       var o = [];
       for(var p in v) {
@@ -411,7 +411,7 @@ define(function(require, exports, module) {
       }
       return o;
     }
- 
+
     if (_.isObject(v) && isDictionary(v)) {
       var o = {}
       o.type = "TableDisplay";
@@ -496,8 +496,8 @@ define(function(require, exports, module) {
 
   BeakerObject.prototype.setupBeakerObject = function(modelOutput) {
     var self = this;
-    
-    if (this.beakerObj.showProgressUpdate === undefined) {          
+
+    if (this.beakerObj.showProgressUpdate === undefined) {
       Object.defineProperty(this.beakerObj, 'showProgressUpdate', { value: function (a,b,c) {
         if ( a === undefined || self._beaker_model_output_result === undefined ||
             self._beaker_model_output_result.object === undefined)
@@ -508,14 +508,14 @@ define(function(require, exports, module) {
           self._beaker_model_output_result.object.progressBar = a;
         else if ( a !== null )
           self._beaker_model_output_result.object.payload = a;
-  
+
         if ( typeof b === 'string' )
           self._beaker_model_output_result.object.message = b;
         else if ( typeof b === 'number' )
           self._beaker_model_output_result.object.progressBar = b;
         else if ( b !== null )
           self._beaker_model_output_result.object.payload = b;
-  
+
         if ( typeof c === 'string' )
           self._beaker_model_output_result.object.message = c;
         else if ( typeof c === 'number' )
@@ -523,7 +523,7 @@ define(function(require, exports, module) {
         else if ( c !== null )
           self._beaker_model_output_result.object.payload = c;
       }, writeable: false, enumerable: true });
-      
+
       Object.defineProperty(this.beakerObj, 'showStatus', { value: bkHelper.showStatus, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'clearStatus', { value: bkHelper.clearStatus, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'showTransientStatus', { value: bkHelper.showTransientStatus, writeable: false, enumerable: true });
@@ -559,8 +559,8 @@ define(function(require, exports, module) {
     }
     this._beaker_model_output_result = modelOutput.result;
   };
-  
-  
+
+
   BeakerObject.prototype.beakerGetter = function(name) {
     if (this.setCache[name] !== undefined) {
       return this.setCache[name];
@@ -591,7 +591,7 @@ define(function(require, exports, module) {
 
     // clear getcache
     this.getCache = { };
-    
+
     // check if some other language removed a binding
     for (var p in this.knownBeakerVars) {
       if (ns[p] === undefined) {
@@ -600,7 +600,7 @@ define(function(require, exports, module) {
         delete this.setCache[p];
       }
     }
-    
+
     // check if some other language added a binding
     for (var p in ns) {
       var t = ns[p];
@@ -624,14 +624,14 @@ define(function(require, exports, module) {
       }
     }
   };
-  
+
   BeakerObject.prototype.clearOutput = function() {
     this._beaker_model_output_result.object = undefined;
   };
-  
+
   BeakerObject.prototype.beakerObjectToNotebook = function() {
     var ns = bkHelper.getNotebookModel().namespace;
-    
+
     var keys = Object.keys(this.beakerObj);
     var stuff = Object.keys(this.knownBeakerVars);
     var diff = $(keys).not(stuff).get();
@@ -644,7 +644,7 @@ define(function(require, exports, module) {
         delete this.knownBeakerVars[p];
       }
     }
-    
+
     // check if javascript set any NEW variable
     for (var p in diff) {
       if (this.knownBeakerVars[p] === undefined) {
@@ -671,7 +671,7 @@ define(function(require, exports, module) {
         }
       }
     }
-    
+
     // check if javascript set any new variable
     for (var p in this.setCache) {
       ns[p] = transform(this.setCache[p]);
@@ -696,7 +696,7 @@ define(function(require, exports, module) {
     this.setCache = { };
     this.getCache = { };
   };
-  
+
   var beakerObj = new BeakerObject(); // this is visible to JS code in cell
 
   var JavaScript_0 = {
@@ -725,7 +725,7 @@ define(function(require, exports, module) {
             else
               bkHelper.refreshRootScope();
 
-            var ns = bkHelper.getNotebookModel().namespace; 
+            var ns = bkHelper.getNotebookModel().namespace;
             if (undefined === ns) {
               bkHelper.getNotebookModel().namespace = {};
             } else if(ns._beaker_model_output_result !== undefined) {
@@ -734,7 +734,7 @@ define(function(require, exports, module) {
 
             if (window.beaker !== undefined)
               window.beaker.beaker = beakerObj.beakerObj;
-            
+
             beakerObj.setupBeakerObject(modelOutput);
             beakerObj.notebookToBeakerObject();
             var beaker = beakerObj.beakerObj;
@@ -781,7 +781,7 @@ define(function(require, exports, module) {
                 });
               } else {
                 output = transform(output);
-                modelOutput.result = output;  
+                modelOutput.result = output;
                 deferred.resolve(output);
                 beakerObj.clearOutput();
               }

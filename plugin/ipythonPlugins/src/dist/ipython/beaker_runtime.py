@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os, urllib, urllib2, json, pandas, numpy, IPython, datetime, calendar
+import os, urllib, urllib2, json, pandas, numpy, IPython, datetime, calendar, math, traceback, types, time
 from IPython.utils.traitlets import Unicode
 from Finder.Finder_items import items
 from idlelib.IOBinding import encoding
@@ -55,7 +55,7 @@ def convertTypeName(typ):
         return "integer"
     if typ.startswith("bool"):
         return "boolean"
-    if typ.startswith("date"):
+    if typ.startswith("date") or typ.startswith("Time"):
         return "time"
     return "string"
     
@@ -66,7 +66,7 @@ def isPrimitiveType(typ):
         return True
     if typ.startswith("bool"):
         return True
-    if typ.startswith("date"):
+    if typ.startswith("date") or typ.startswith("Time"):
         return True
     if typ.startswith("str"):
         return True
@@ -90,6 +90,54 @@ def isDictionary(data):
         if not isPrimitiveType(type(v).__name__):
             return False
     return True
+
+def transformNaN(obj):
+    if not isinstance(obj, types.FloatType):
+        return obj
+    if math.isnan(obj):
+        return "Nan";
+    if math.isinf(obj):
+        if obj>0:
+            return "Infinity"
+        else:
+            return "-Infinity"
+    return obj
+
+def transformNaNs(obj):
+    for x in range(0,len(obj)):
+        i = obj[x];
+        if not isinstance(i, types.FloatType):
+            continue
+        if math.isnan(i):
+            obj[x] = "NaN";
+        if math.isinf(i):
+            if i>0:
+                obj[x] = "Infinity"
+            else:
+                obj[x] = "-Infinity"
+
+def fixNaNBack(obj):
+    if not isinstance(obj, types.StringType):
+        return obj
+    if obj == "NaN":
+        return float('nan')
+    if obj == "Infinity":
+        return float('inf')
+    if obj == "-Infinity":
+        return float('-inf')
+    return obj
+
+def fixNaNsBack(obj):
+    for x in range(0,len(obj)):
+        i = obj[x];
+        if not isinstance(i, types.StringType):
+            continue
+        if i == "NaN":
+            obj[x] = float('nan')
+        if i == "Infinity":
+            obj[x] = float('inf')
+        if i == "-Infinity":
+            obj[x] = float('-inf')
 
 def transform(obj):
     if type(obj) == unicode:
@@ -152,7 +200,7 @@ def transform(obj):
         out['output'] = transform(obj.getOutput())
         out['tags'] = obj.getTags()
         return out
-    return obj
+    return transformNaN(obj)
 
 def transformBack(obj):
     if type(obj) == dict:
@@ -178,18 +226,20 @@ def transformBack(obj):
                         c.addItem(i)
                 return c;
             if out['type'] == "Date":
-                return datetime.datetime.fromtimestamp(out["timestamp"])
+                return datetime.datetime.fromtimestamp(out["timestamp"]/1000)
             if out['type'] == "TableDisplay":
                 if 'subtype' in out:
                     if out['subtype'] == "Dictionary":
                         out2 = { }
                         for r in out['values']:
-                            out2[r[0]] = r[1]
+                            out2[r[0]] = fixNaNBack(r[1])
                         if out['columnNames'][0] == "Index":
                             return pandas.Series(out2)
                         return out2
                     if out['subtype'] == "Matrix":
-                        return numpy.matrix(out['values'])
+                        vals = out['values']
+                        fixNaNsBack(vals)
+                        return numpy.matrix(vals)
                     if out['subtype'] == "ListOfMaps":
                         out2 = []
                         cnames = out['columnNames']
@@ -200,8 +250,17 @@ def transformBack(obj):
                                     out3[ cnames[i] ] = r[i]
                             out2.append(out3)
                         return out2
-                # transform to dataframe
-                return pandas.DataFrame(data=out['values'], columns=out['columnNames'])
+                # transform to dataframe                
+                # first column becomes the index
+                vals = out['values']
+                cnames = out['columnNames'][1:]
+                index = []
+                for x in range(0,len(vals)):
+                    index.append(transformBack(vals[x][0]))
+                    v = vals[x][1:]
+                    fixNaNsBack(v)
+                    vals[x] = v
+                return pandas.DataFrame(data=vals, columns=cnames, index=index)
         return out
     if type(obj) == list:
         out = []
@@ -218,7 +277,7 @@ class DataFrameEncoder(json.JSONEncoder):
         # similarly handle Panels.
         # make this extensible by the user to handle their own types.
         if isinstance(obj, numpy.generic):
-            return obj.item()
+            return transformNaN(obj.item())
         if isinstance(obj, numpy.ndarray) and obj.ndim == 2:
             out = {}
             out['type'] = "TableDisplay"
@@ -226,28 +285,43 @@ class DataFrameEncoder(json.JSONEncoder):
             cols = [ ]
             for i in range(obj.shape[1]):
                 cols.append( "c" + str(i) )
-            out['columnNames'] =cols
-            out['values'] = obj.tolist()
+            out['columnNames'] = cols
+            vars = obj.tolist()
+            for x in range(0,len(vars)):
+                transformNaNs(vars[x])
+            out['values'] = vars
             return out
         if isinstance(obj, numpy.ndarray):
-            return obj.tolist()
-        if type(obj) == datetime.datetime:
+            ret = obj.tolist()
+            transformNaNs(ret)
+            return ret
+        if type(obj) == datetime.datetime or type(obj) == datetime.date or type(obj).__name__ == 'Timestamp':
+            if time.localtime().tm_isdst == 1:
+                offset = time.altzone
+            else:
+                offset = time.timezone
             out = {}
             out['type'] = "Date"
-            out['timestamp'] = calendar.timegm(obj.timetuple())
+            out['timestamp'] = (calendar.timegm(obj.timetuple())+offset)*1000
             return out
         if type(obj) == pandas.core.frame.DataFrame:
             out = {}
             out['type'] = "TableDisplay"
             out['subtype'] = "TableDisplay"
-            out['columnNames'] = obj.columns.tolist()
-            out['values'] = obj.values.tolist()
+            out['columnNames'] = ['Index'] + obj.columns.tolist()
+            vals = obj.values.tolist()
+            idx = obj.index.tolist()
+            for x in range(0,len(vals)):
+                vals[x] = [ idx[x] ] + vals[x]
             ty = []
             num = len(obj.columns.tolist())
             x = 0;
             for x in range(0,num):
-              	ty.append( convertTypeName(type(obj.values[0][x]).__name__))
+              	ty.append( convertTypeName(type(vals[0][x]).__name__))
             out['types'] = ty
+            for x in range(0,len(vals)):
+                transformNaNs(vals[x])
+            out['values'] = vals
             return out
         if type(obj) == pandas.core.series.Series:
             basict = True
@@ -274,7 +348,9 @@ class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
         try:
             obj = transform(obj)
             return json.dumps(obj, cls=DataFrameEncoder)
-        except:
+        except Exception as e:
+            #print(e)
+            #traceback.print_exc()
             return None
 
 class Beaker:

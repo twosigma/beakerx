@@ -289,7 +289,7 @@ class DataFrameEncoder(json.JSONEncoder):
             vars = obj.tolist()
             for x in range(0,len(vars)):
                 transformNaNs(vars[x])
-            out['values'] = obj.tolist()
+            out['values'] = vars
             return out
         if isinstance(obj, numpy.ndarray):
             ret = obj.tolist()
@@ -336,7 +336,7 @@ class DataFrameEncoder(json.JSONEncoder):
                 out['columnNames'] = [ "Index", "Value" ]
                 values = []
                 for k,v in obj.iteritems():
-                    values.append( [k, transform(transformNaN(v))] )
+                    values.append( [k, transform(v)] )
                 out['values'] = values
                 return out
             return obj.to_dict()

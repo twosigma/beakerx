@@ -794,7 +794,7 @@ define(function(require, exports, module) {
             modelOutput.result = {
                 type: "BeakerDisplay",
                 innertype: "Error",
-                object: "" + err
+                object: err.stack.split(/\n/)
             };
             console.log(err);
             deferred.reject(transform(modelOutput.result));

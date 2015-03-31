@@ -14,8 +14,8 @@
 
 import os, urllib, urllib2, json, pandas, numpy, IPython, datetime, calendar, math, traceback, types, time
 from IPython.utils.traitlets import Unicode
-from Finder.Finder_items import items
-from idlelib.IOBinding import encoding
+#from Finder.Finder_items import items
+#from idlelib.IOBinding import encoding
 
 class OutputContainer:
     def __init__(self):
@@ -289,7 +289,7 @@ class DataFrameEncoder(json.JSONEncoder):
             vars = obj.tolist()
             for x in range(0,len(vars)):
                 transformNaNs(vars[x])
-            out['values'] = obj.tolist()
+            out['values'] = vars
             return out
         if isinstance(obj, numpy.ndarray):
             ret = obj.tolist()
@@ -336,7 +336,7 @@ class DataFrameEncoder(json.JSONEncoder):
                 out['columnNames'] = [ "Index", "Value" ]
                 values = []
                 for k,v in obj.iteritems():
-                    values.append( [k, transform(transformNaN(v))] )
+                    values.append( [k, transform(v)] )
                 out['values'] = values
                 return out
             return obj.to_dict()
@@ -356,7 +356,6 @@ class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
 class Beaker:
     """Runtime support for Python code in Beaker."""
     session_id = ''
-    registered = False
     core_url = '127.0.0.1:' + os.environ['beaker_core_port']
     password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
     password_mgr.add_password(None, core_url, 'beaker',
@@ -388,10 +387,8 @@ class Beaker:
         self.session_id = id
 
     def register_output(self):
-        if (self.registered == False):
-            ip = IPython.InteractiveShell.instance()
-            ip.display_formatter.formatters['application/json'] = MyJSONFormatter(parent=ip.display_formatter)
-            self.registered = True
+        ip = IPython.InteractiveShell.instance()
+        ip.display_formatter.formatters['application/json'] = MyJSONFormatter(parent=ip.display_formatter)
 
     def set(self, var, val):
         return self.set4(var, val, False, True)

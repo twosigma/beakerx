@@ -355,12 +355,11 @@ class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
 class Beaker:
     """Runtime support for Python code in Beaker."""
     session_id = ''
-    registered = False
     core_url = '127.0.0.1:' + os.environ['beaker_core_port']
     password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
     password_mgr.add_password(None, core_url, 'beaker',
                               os.environ['beaker_core_password'])
-    urllib.request.install_opener(urllib.request.build_opener(urllib.request.HTTPBasicAuthHandler(password_mgr)))
+    urllib.request.install_opener(urllib.request.build_opener(urllib.request.HTTPBasicAuthHandler(password_mgr), urllib.request.ProxyHandler({})))
 	
     def set4(self, var, val, unset, sync):
         args = {'name': var, 'session':self.session_id, 'sync':sync}
@@ -389,11 +388,8 @@ class Beaker:
         self.session_id = id
 	
     def register_output(self):
-        print("CAZ")
-        if (self.registered == False):
-            ip = IPython.InteractiveShell.instance()
-            ip.display_formatter.formatters['application/json'] = MyJSONFormatter(parent=ip.display_formatter)
-            self.registered = True
+        ip = IPython.InteractiveShell.instance()
+        ip.display_formatter.formatters['application/json'] = MyJSONFormatter(parent=ip.display_formatter)
 	
     def set(self, var, val):
         return self.set4(var, val, False, True)

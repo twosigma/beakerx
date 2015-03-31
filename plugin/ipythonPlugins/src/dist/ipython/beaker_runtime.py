@@ -14,8 +14,6 @@
 
 import os, urllib, urllib2, json, pandas, numpy, IPython, datetime, calendar, math, traceback, types, time
 from IPython.utils.traitlets import Unicode
-from Finder.Finder_items import items
-from idlelib.IOBinding import encoding
 
 class OutputContainer:
     def __init__(self):
@@ -356,12 +354,11 @@ class MyJSONFormatter(IPython.core.formatters.BaseFormatter):
 class Beaker:
     """Runtime support for Python code in Beaker."""
     session_id = ''
-    registered = False
     core_url = '127.0.0.1:' + os.environ['beaker_core_port']
     password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
     password_mgr.add_password(None, core_url, 'beaker',
                               os.environ['beaker_core_password'])
-    urllib2.install_opener(urllib2.build_opener(urllib2.HTTPBasicAuthHandler(password_mgr)))
+    urllib2.install_opener(urllib2.build_opener(urllib2.HTTPBasicAuthHandler(password_mgr), urllib2.ProxyHandler({})))
 
     def set4(self, var, val, unset, sync):
         args = {'name': var, 'session':self.session_id, 'sync':sync}
@@ -388,10 +385,8 @@ class Beaker:
         self.session_id = id
 
     def register_output(self):
-        if (self.registered == False):
-            ip = IPython.InteractiveShell.instance()
-            ip.display_formatter.formatters['application/json'] = MyJSONFormatter(parent=ip.display_formatter)
-            self.registered = True
+        ip = IPython.InteractiveShell.instance()
+        ip.display_formatter.formatters['application/json'] = MyJSONFormatter(parent=ip.display_formatter)
 
     def set(self, var, val):
         return self.set4(var, val, False, True)

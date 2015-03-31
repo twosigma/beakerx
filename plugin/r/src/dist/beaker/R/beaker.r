@@ -313,7 +313,7 @@ transformJSON <- function(tres) {
 			  dummy_nv = logical(rows)
 			  df <- data.frame(dummy_nv);
 			  for (i in 1:cols) {
-			    if (exists("types", where=tres) && (tres$types[i] == "double" || tres$types[i] == "integer")) {
+			    if (exists("types", where=tres) && ((tres$types[i] == "double") || (tres$types[i] == "integer"))) {
 				  nv <- numeric(rows);
 				  for( j in 1:rows) {
 				    if ( is.null( tres$values[[j]][[i]] ) )
@@ -330,7 +330,7 @@ transformJSON <- function(tres) {
 		            else
 				      nv [j] <- as.character( tres$values[[j]][[i]] )
 		          }
-				  if(exists("types", where=tres) && tres$types[[i]] == "select") 
+				  if(exists("types", where=tres) && (tres$types[[i]] == "select"))
 				    df[ tres$columnNames[[i]] ] = factor(nv)		  
 				  else
 				    df[ tres$columnNames[[i]] ] = nv		 

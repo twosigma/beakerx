@@ -48,9 +48,12 @@ define(function(require, exports, module) {
       this.types = [];
       this.values = [];
     } else {
-      this.columnNames = data.columnNames;
-      this.types = data.types;
-      this.values = data.values;
+      this.columnNames = data.columnNames.slice(0);
+      this.types = data.types.slice(0);
+      this.values = [];
+      for (var j in data.values) {
+        this.values.push(data.values[j].slice(0));
+      }
     }
   };
 
@@ -311,18 +314,21 @@ define(function(require, exports, module) {
     }
 
     if (v instanceof DataFrame) {
+      console.log(v);
       var o = {}
       o.type = "TableDisplay";
       o.subtype = "TableDisplay";
       o.values = [];
       for (var i in v.values) {
         var row = [];
-        for (var item in v.values[i])
-          row.push(transform(item));
+        for (var j in v.values[i]) {
+          row.push(transform(v.values[i][j]));
+        }
         o.values.push(row);
       }
       o.types = _.isArray(v.types) ? v.types.slice(0) : undefined;
       o.columnNames = _.isArray(v.columnNames) ? v.columnNames.slice(0) : undefined;
+      console.log(o);
       return o
     }
 
@@ -468,7 +474,10 @@ define(function(require, exports, module) {
           }
           return out2;
         }
-        return new DataFrame(v);
+        console.log(v);
+        var out = new DataFrame(v);
+        console.log(out);
+        return out;
       }
       if (v.type === "ImageIcon")
         return new ImageIcon(v);
@@ -562,6 +571,7 @@ define(function(require, exports, module) {
 
 
   BeakerObject.prototype.beakerGetter = function(name) {
+    console.log("getter "+name);
     if (this.setCache[name] !== undefined) {
       return this.setCache[name];
     }
@@ -574,6 +584,7 @@ define(function(require, exports, module) {
   };
 
   BeakerObject.prototype.beakerSetter = function(name, v) {
+    console.log("setter "+name);
     this.setCache[name] = v;
     if (this.beakerSetterTimeout !== undefined)
       bkHelper.cancelTimeout(this.beakerSetterTimeout);

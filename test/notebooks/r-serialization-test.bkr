@@ -91,8 +91,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "0978e0b1-f5c3-428b-8b66-5ef83d185ffd",
-                "elapsedTime": 1707
+                "shellId": "28ea6005-332c-4290-ba87-599a4c7830cf",
+                "elapsedTime": 694
             },
             "evaluatorReader": true,
             "lineCount": 27
@@ -190,9 +190,11 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "b0a0b17b-cb1a-4dad-b7c0-f35cce92004f",
-                "elapsedTime": 679,
-                "dataresult": "OK"
+                "shellId": "07de3482-68d4-4e40-95a4-5d760ec8a2b1",
+                "elapsedTime": 672,
+                "dataresult": [
+                    "OK"
+                ]
             },
             "evaluatorReader": true,
             "lineCount": 81
@@ -264,9 +266,11 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "b0a0b17b-cb1a-4dad-b7c0-f35cce92004f",
-                "elapsedTime": 1800,
-                "dataresult": "OK"
+                "shellId": "07de3482-68d4-4e40-95a4-5d760ec8a2b1",
+                "elapsedTime": 1731,
+                "dataresult": [
+                    "OK"
+                ]
             },
             "evaluatorReader": true,
             "lineCount": 55
@@ -281,25 +285,25 @@
                     "def error = false",
                     "",
                     "t = beaker.aint",
-                    "if(!t.getClass().getName().equals(\"java.lang.Integer\")) {",
+                    "if(!t[0].getClass().getName().equals(\"java.lang.Integer\")) {",
                     "  System.out.println(\"ERROR on aint\")",
                     "  error = true",
                     "}",
                     "",
                     "t = beaker.adouble",
-                    "if(!t.getClass().getName().equals(\"java.lang.Double\")) {",
+                    "if(!t[0].getClass().getName().equals(\"java.lang.Double\")) {",
                     "  System.out.println(\"ERROR on adouble\")",
                     "  error = true",
                     "}",
                     "",
                     "t = beaker.alogic",
-                    "if(!t.getClass().getName().equals(\"java.lang.Boolean\")) {",
+                    "if(!t[0].getClass().getName().equals(\"java.lang.Boolean\")) {",
                     "  System.out.println(\"ERROR on alogic\")",
                     "  error = true",
                     "}",
                     "",
                     "t = beaker.astring",
-                    "if(!t.getClass().getName().equals(\"java.lang.String\")) {",
+                    "if(!t[0].getClass().getName().equals(\"java.lang.String\")) {",
                     "  System.out.println(\"ERROR on astring\")",
                     "  error = true",
                     "}",
@@ -392,8 +396,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "0978e0b1-f5c3-428b-8b66-5ef83d185ffd",
-                "elapsedTime": 846
+                "shellId": "28ea6005-332c-4290-ba87-599a4c7830cf",
+                "elapsedTime": 714
             },
             "evaluatorReader": true,
             "lineCount": 109
@@ -475,15 +479,15 @@
             "values": [
                 [
                     "a",
-                    "1"
+                    1
                 ],
                 [
                     "b",
-                    "2"
+                    2
                 ],
                 [
                     "c",
-                    "55"
+                    55
                 ]
             ],
             "subtype": "Dictionary"
@@ -616,10 +620,18 @@
         "double": 34.56,
         "string": "pippero",
         "boolean": true,
-        "aint": 10,
-        "adouble": 23.45,
-        "alogic": true,
-        "astring": "pippero",
+        "aint": [
+            10
+        ],
+        "adouble": [
+            23.45
+        ],
+        "alogic": [
+            true
+        ],
+        "astring": [
+            "pippero"
+        ],
         "aintvec": [
             10,
             11,
@@ -3945,7 +3957,7 @@
         ],
         "dates": {
             "type": "Date",
-            "value": "Jun 22, 2007 12:00:00 AM"
+            "timestamp": "2007-06-21 20:00:00"
         },
         "bmap": {
             "type": "TableDisplay",

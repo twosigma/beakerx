@@ -40,6 +40,37 @@
                     "mode": "groovy"
                 }
             }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
+        },
+        {
+            "name": "Python3",
+            "plugin": "Python3",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
         }
     ],
     "cells": [
@@ -56,70 +87,11 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50
-                        },
-                        "columnNames": [
-                            "time",
-                            "content"
-                        ],
-                        "actualalign": [
-                            "C",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ]
-                    }
-                },
-                "result": {
-                    "type": "TableDisplay",
-                    "columnNames": [
-                        "time",
-                        "content"
-                    ],
-                    "values": [
-                        [
-                            {
-                                "type": "Date",
-                                "timestamp": 1427723790137
-                            },
-                            "pippero"
-                        ],
-                        [
-                            {
-                                "type": "Date",
-                                "timestamp": 1427896590137
-                            },
-                            "pippero"
-                        ],
-                        [
-                            {
-                                "type": "Date",
-                                "timestamp": 1428069390137
-                            },
-                            "pippero"
-                        ]
-                    ],
-                    "types": [
-                        "time",
-                        "string"
-                    ],
-                    "subtype": "ListOfMaps"
-                },
+                "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "fd486f8f-5f96-400d-93a1-48c6e8778ea6",
-                "elapsedTime": 577
+                "shellId": "f1ee9680-d196-41cc-a7ff-5b1d0381b0ab",
+                "elapsedTime": 578
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -135,70 +107,168 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50
-                        },
-                        "columnNames": [
-                            "time",
-                            "content"
-                        ],
-                        "actualalign": [
-                            "C",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ]
-                    }
-                },
-                "result": {
-                    "type": "TableDisplay",
-                    "subtype": "ListOfMaps",
-                    "columnNames": [
-                        "time",
-                        "content"
-                    ],
-                    "values": [
-                        [
-                            {
-                                "type": "Date",
-                                "timestamp": 1427723790137
-                            },
-                            "pippero"
-                        ],
-                        [
-                            {
-                                "type": "Date",
-                                "timestamp": 1427896590137
-                            },
-                            "pippero"
-                        ],
-                        [
-                            {
-                                "type": "Date",
-                                "timestamp": 1428069390137
-                            },
-                            "pippero"
-                        ]
-                    ],
-                    "types": [
-                        "time",
-                        "string"
-                    ]
-                },
+                "state": {},
                 "selectedType": "Table"
             },
             "evaluatorReader": true,
             "lineCount": 2
+        },
+        {
+            "id": "codeqKK90H",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "beaker::get(\"a\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "R",
+                "shellId": "6bc8d1ec-12a7-47e1-a782-743e30292fe4",
+                "elapsedTime": 579
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codenCpYKg",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "beaker.a"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "IPython",
+                "shellId": "7E6C357F93D849A295641E9E0AE82462",
+                "elapsedTime": 267
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codePwHKxr",
+            "type": "code",
+            "evaluator": "Python3",
+            "input": {
+                "body": [
+                    "beaker.a"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Python3",
+                "shellId": "7858457A00254C0CA67D9DB66A0B191C",
+                "elapsedTime": 280
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codexuCb31",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "# dataframe - 5",
+                    "import pandas as pd",
+                    "import pandas.io.data",
+                    "from pandas import Series, DataFrame",
+                    "aapl = pd.io.data.get_data_yahoo('AAPL', ",
+                    "                                 start=datetime.datetime(2010, 11, 1), ",
+                    "                                 end=datetime.datetime(2014, 1, 1))",
+                    "beaker.aapl = aapl.head()",
+                    "aapl.head()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "IPython",
+                "shellId": "7E6C357F93D849A295641E9E0AE82462",
+                "elapsedTime": 375
+            },
+            "evaluatorReader": true,
+            "lineCount": 9
+        },
+        {
+            "id": "codeIMfYeA",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.aapl"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table"
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeQ6pgak",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "beaker.aapl"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "f1ee9680-d196-41cc-a7ff-5b1d0381b0ab",
+                "elapsedTime": 209
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codea0gLZ2",
+            "type": "code",
+            "evaluator": "Python3",
+            "input": {
+                "body": [
+                    "beaker.aapl"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Python3",
+                "shellId": "7858457A00254C0CA67D9DB66A0B191C",
+                "elapsedTime": 270
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeDOjgzU",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "beaker::get('aapl')"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "R",
+                "shellId": "6bc8d1ec-12a7-47e1-a782-743e30292fe4",
+                "elapsedTime": 603
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         }
     ],
     "namespace": {
@@ -213,21 +283,21 @@
                 [
                     {
                         "type": "Date",
-                        "timestamp": 1427723790137
+                        "timestamp": 1427813074751
                     },
                     "pippero"
                 ],
                 [
                     {
                         "type": "Date",
-                        "timestamp": 1427896590137
+                        "timestamp": 1427985874751
                     },
                     "pippero"
                 ],
                 [
                     {
                         "type": "Date",
-                        "timestamp": 1428069390137
+                        "timestamp": 1428158674751
                     },
                     "pippero"
                 ]
@@ -235,6 +305,89 @@
             "types": [
                 "time",
                 "string"
+            ]
+        },
+        "aapl": {
+            "type": "TableDisplay",
+            "subtype": "TableDisplay",
+            "values": [
+                [
+                    {
+                        "type": "Date",
+                        "timestamp": 1288584000000
+                    },
+                    302.22,
+                    305.6,
+                    302.2,
+                    304.18,
+                    105972300,
+                    40.99
+                ],
+                [
+                    {
+                        "type": "Date",
+                        "timestamp": 1288670400000
+                    },
+                    307,
+                    310.19,
+                    307,
+                    309.36,
+                    108482500,
+                    41.69
+                ],
+                [
+                    {
+                        "type": "Date",
+                        "timestamp": 1288756800000
+                    },
+                    311.37,
+                    312.88,
+                    308.53,
+                    312.8,
+                    127087100,
+                    42.15
+                ],
+                [
+                    {
+                        "type": "Date",
+                        "timestamp": 1288843200000
+                    },
+                    315.45,
+                    320.18,
+                    315.03,
+                    318.27,
+                    160622000,
+                    42.89
+                ],
+                [
+                    {
+                        "type": "Date",
+                        "timestamp": 1288929600000
+                    },
+                    317.99,
+                    319.57,
+                    316.75,
+                    317.13,
+                    90313300,
+                    42.73
+                ]
+            ],
+            "types": [
+                "time",
+                "double",
+                "double",
+                "double",
+                "double",
+                "double"
+            ],
+            "columnNames": [
+                "Index",
+                "Open",
+                "High",
+                "Low",
+                "Close",
+                "Volume",
+                "Adj Close"
             ]
         }
     }

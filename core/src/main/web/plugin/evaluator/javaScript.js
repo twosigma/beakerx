@@ -48,9 +48,16 @@ define(function(require, exports, module) {
       this.types = [];
       this.values = [];
     } else {
-      this.columnNames = data.columnNames;
-      this.types = data.types;
-      this.values = data.values;
+      this.columnNames = data.columnNames.slice(0);
+      this.types = data.types.slice(0);
+      this.values = [];
+      for (var j in data.values) {
+        var vals = [];
+        for (var i in data.values[j]) {
+          vals.push( transformBack(data.values[j][i]));
+        }
+        this.values.push(vals);
+      }
     }
   };
 
@@ -317,8 +324,9 @@ define(function(require, exports, module) {
       o.values = [];
       for (var i in v.values) {
         var row = [];
-        for (var item in v.values[i])
-          row.push(transform(item));
+        for (var j in v.values[i]) {
+          row.push(transform(v.values[i][j]));
+        }
         o.values.push(row);
       }
       o.types = _.isArray(v.types) ? v.types.slice(0) : undefined;
@@ -468,7 +476,8 @@ define(function(require, exports, module) {
           }
           return out2;
         }
-        return new DataFrame(v);
+        var out = new DataFrame(v);
+        return out;
       }
       if (v.type === "ImageIcon")
         return new ImageIcon(v);

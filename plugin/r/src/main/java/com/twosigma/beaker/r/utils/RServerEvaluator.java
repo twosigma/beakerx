@@ -260,7 +260,7 @@ public class RServerEvaluator {
     String password;
     int pid;
     Process rServe;
-    private final Semaphore mutex = new Semaphore(1);
+    protected final Semaphore mutex = new Semaphore(1);
     
     public workerThread() {
       super("groovy worker");
@@ -333,7 +333,7 @@ public class RServerEvaluator {
       }
     }
 
-    private boolean startRserve()
+    protected boolean startRserve()
     {
       pid = -1;
       try {

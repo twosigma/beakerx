@@ -359,7 +359,7 @@ class Beaker:
     password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
     password_mgr.add_password(None, core_url, 'beaker',
                               os.environ['beaker_core_password'])
-    urllib.request.install_opener(urllib.request.build_opener(urllib.request.HTTPBasicAuthHandler(password_mgr)))
+    urllib.request.install_opener(urllib.request.build_opener(urllib.request.HTTPBasicAuthHandler(password_mgr), urllib.request.ProxyHandler({})))
 	
     def set4(self, var, val, unset, sync):
         args = {'name': var, 'session':self.session_id, 'sync':sync}

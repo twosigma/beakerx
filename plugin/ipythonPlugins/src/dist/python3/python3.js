@@ -331,10 +331,7 @@ define(function(require, exports, module) {
                     "from IPython.core.pylabtools import figsize, getfigs\n" +
                     "from pylab import *\n" +
                     "from numpy import *\n" +
-                    "try:\n"+
-                    "    import beaker_runtime3 as beaker_runtime\n" +
-                    "except ImportError:\n" +
-                    "    import beaker_runtime as beaker_runtime\n" +
+                    "import beaker_runtime3 as beaker_runtime\n" +
                     "beaker = beaker_runtime.Beaker()\n" +
                     "beaker.register_output()\n" +
                     "beaker.set_session('" + bkHelper.getSessionId() + "')\n");

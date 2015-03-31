@@ -14,8 +14,6 @@
 
 import os, urllib, urllib2, json, pandas, numpy, IPython, datetime, calendar, math, traceback, types, time
 from IPython.utils.traitlets import Unicode
-#from Finder.Finder_items import items
-#from idlelib.IOBinding import encoding
 
 class OutputContainer:
     def __init__(self):

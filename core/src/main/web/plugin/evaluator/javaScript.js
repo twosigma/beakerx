@@ -52,7 +52,11 @@ define(function(require, exports, module) {
       this.types = data.types.slice(0);
       this.values = [];
       for (var j in data.values) {
-        this.values.push(data.values[j].slice(0));
+        var vals = [];
+        for (var i in data.values[j]) {
+          vals.push( transformBack(data.values[j][i]));
+        }
+        this.values.push(vals);
       }
     }
   };

@@ -150,9 +150,28 @@ convertToJSON <- function(val, collapse) {
     colNames = names(val)
     types = lapply(val,class)
     p = paste(p, toJSON(colNames), sep='')
-    p = paste(p, ", \"values\":", sep='')
-    p = paste(p, toJSON(val, byrow = TRUE), sep='')
-    p = paste(p, ", \"types\": [", sep='')
+    p = paste(p, ", \"values\": [", sep='')
+	firstr <- TRUE
+    for( r in 1:nrow(val)) {
+	  if (firstr) {
+	    firstr <- FALSE
+	  } else {
+	    p = paste(p, ", ", sep='')
+	  }
+      p = paste(p, "[", sep='')
+	  firstc <- TRUE
+	  for( c in 1:ncol(val)) {
+		if (firstc) {
+		  firstc <- FALSE
+		} else {
+		  p = paste(p, ", ", sep='')
+		}
+		theval = val[r,c]
+		p = paste(p, convertToJSON(theval, TRUE), sep='')
+	  }
+      p = paste(p, "]", sep='')
+    }    
+    p = paste(p, "], \"types\": [", sep='')
     comma = FALSE
     for(i in 1:length(types)) {
       c = types[i]
@@ -234,9 +253,9 @@ convertToJSON <- function(val, collapse) {
       o = toJSON(as.character(val))
     }
   } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
-  	p = "{ \"type\": \"Date\", \"timestamp\": \""
-  	p = paste(p, as.POSIXct(val), sep='')
-  	p = paste(p, "\" }", sep='')
+  	p = "{ \"type\": \"Date\", \"timestamp\": "
+  	p = paste(p, as.numeric(as.POSIXct(val))*1000, sep='')
+  	p = paste(p, " }", sep='')
   	o = p
   } else if (class(val) == "list") {
     o = toJSON(val)
@@ -324,13 +343,15 @@ transformJSON <- function(tres) {
 				  }
 			  	  df[ tres$columnNames[[i]] ] = nv
 			  	} else if (exists("types", where=tres) && !is.na(tres$types[i]) && (tres$types[i] == "time")) {
-				  nv <- character( rows );
+				  nv <- .POSIXct( character(rows) );
 		          for( j in 1:rows) {
-		            if ( is.null( tres$values[[j]][[i]] ) )
-		              nv [j] <- ""
-		            else
-				      nv [j] <- as.character( tres$values[[j]][[i]] )
-		          }			  	  
+		            if ( !is.null( tres$values[[j]][[i]] ) ) {
+		              theval = tres$values[[j]][[i]]
+		              if (is.list(theval) && !is.null(names(theval)) && exists("type", where=theval) && exists("timestamp", where=theval) && theval$type == "Date")
+				        nv [j] <- as.POSIXct(theval[["timestamp"]]/1000, origin="1970-01-01")
+				    }
+		          }		
+	      		  df[ tres$columnNames[[i]] ] = nv
 				} else {
 				  nv <- character( rows );
 		          for( j in 1:rows) {

@@ -40,6 +40,37 @@
                     "mode": "groovy"
                 }
             }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
+        },
+        {
+            "name": "Python3",
+            "plugin": "Python3",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
+        },
+        {
+            "name": "IPython",
+            "plugin": "IPython",
+            "imports": "",
+            "supplementalClassPath": "",
+            "view": {
+                "cm": {
+                    "mode": "python"
+                }
+            }
         }
     ],
     "cells": [
@@ -56,70 +87,11 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50
-                        },
-                        "columnNames": [
-                            "time",
-                            "content"
-                        ],
-                        "actualalign": [
-                            "C",
-                            "L"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ]
-                    }
-                },
-                "result": {
-                    "type": "TableDisplay",
-                    "columnNames": [
-                        "time",
-                        "content"
-                    ],
-                    "values": [
-                        [
-                            {
-                                "type": "Date",
-                                "timestamp": 1427723790137
-                            },
-                            "pippero"
-                        ],
-                        [
-                            {
-                                "type": "Date",
-                                "timestamp": 1427896590137
-                            },
-                            "pippero"
-                        ],
-                        [
-                            {
-                                "type": "Date",
-                                "timestamp": 1428069390137
-                            },
-                            "pippero"
-                        ]
-                    ],
-                    "types": [
-                        "time",
-                        "string"
-                    ],
-                    "subtype": "ListOfMaps"
-                },
+                "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "fd486f8f-5f96-400d-93a1-48c6e8778ea6",
-                "elapsedTime": 577
+                "shellId": "04de9227-b903-43f7-849d-6bbea1c685ed",
+                "elapsedTime": 593
             },
             "evaluatorReader": true,
             "lineCount": 4
@@ -135,6 +107,87 @@
                 ]
             },
             "output": {
+                "state": {},
+                "selectedType": "Table"
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeqKK90H",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "beaker::get(\"a\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Results",
+                "pluginName": "R",
+                "shellId": "86a8f4e7-8a26-40ff-b7c4-13d72f480003",
+                "elapsedTime": 552
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codenCpYKg",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "beaker.a"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "IPython",
+                "shellId": "A083A0AB86364EBA8DCEFD0674ACB636",
+                "elapsedTime": 193
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codePwHKxr",
+            "type": "code",
+            "evaluator": "Python3",
+            "input": {
+                "body": [
+                    "beaker.a"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Python3",
+                "shellId": "9CA5B08634CD4F28918FFCAF9F7B2AC0",
+                "elapsedTime": 191
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codexuCb31",
+            "type": "code",
+            "evaluator": "IPython",
+            "input": {
+                "body": [
+                    "# dataframe - 5",
+                    "import pandas as pd",
+                    "import pandas.io.data",
+                    "from pandas import Series, DataFrame",
+                    "aapl = pd.io.data.get_data_yahoo('AAPL', ",
+                    "                                 start=datetime.datetime(2010, 11, 1), ",
+                    "                                 end=datetime.datetime(2014, 1, 1))",
+                    "beaker.aapl = aapl.head()",
+                    "aapl.head()"
+                ]
+            },
+            "output": {
                 "state": {
                     "datatablestate": {
                         "pagination": {
@@ -142,19 +195,185 @@
                             "rowsToDisplay": 50
                         },
                         "columnNames": [
-                            "time",
-                            "content"
+                            "Index",
+                            "Open",
+                            "High",
+                            "Low",
+                            "Close",
+                            "Volume",
+                            "Adj Close"
                         ],
                         "actualalign": [
                             "C",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
                             "L"
                         ],
                         "colorder": [
                             0,
                             1,
-                            2
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7
                         ],
                         "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "values": [
+                        [
+                            {
+                                "timestamp": 1288584000000,
+                                "type": "Date"
+                            },
+                            302.22,
+                            305.6,
+                            302.2,
+                            304.18,
+                            105972300,
+                            40.99
+                        ],
+                        [
+                            {
+                                "timestamp": 1288670400000,
+                                "type": "Date"
+                            },
+                            307,
+                            310.19,
+                            307,
+                            309.36,
+                            108482500,
+                            41.69
+                        ],
+                        [
+                            {
+                                "timestamp": 1288756800000,
+                                "type": "Date"
+                            },
+                            311.37,
+                            312.88,
+                            308.53,
+                            312.8,
+                            127087100,
+                            42.15
+                        ],
+                        [
+                            {
+                                "timestamp": 1288843200000,
+                                "type": "Date"
+                            },
+                            315.45,
+                            320.18,
+                            315.03,
+                            318.27,
+                            160622000,
+                            42.89
+                        ],
+                        [
+                            {
+                                "timestamp": 1288929600000,
+                                "type": "Date"
+                            },
+                            317.99,
+                            319.57,
+                            316.75,
+                            317.13,
+                            90313300,
+                            42.73
+                        ]
+                    ],
+                    "subtype": "TableDisplay",
+                    "type": "TableDisplay",
+                    "types": [
+                        "time",
+                        "double",
+                        "double",
+                        "double",
+                        "double",
+                        "double"
+                    ],
+                    "columnNames": [
+                        "Index",
+                        "Open",
+                        "High",
+                        "Low",
+                        "Close",
+                        "Volume",
+                        "Adj Close"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "IPython",
+                "shellId": "B6011468D41A4895BAD4D6704683F967",
+                "elapsedTime": 1042
+            },
+            "evaluatorReader": true,
+            "lineCount": 9
+        },
+        {
+            "id": "codeIMfYeA",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.aapl"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
+                        },
+                        "columnNames": [
+                            "Index",
+                            "Open",
+                            "High",
+                            "Low",
+                            "Close",
+                            "Volume",
+                            "Adj Close"
+                        ],
+                        "actualalign": [
+                            "C",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
                             true,
                             true
                         ]
@@ -162,43 +381,551 @@
                 },
                 "result": {
                     "type": "TableDisplay",
-                    "subtype": "ListOfMaps",
-                    "columnNames": [
-                        "time",
-                        "content"
-                    ],
+                    "subtype": "TableDisplay",
                     "values": [
                         [
                             {
-                                "type": "Date",
-                                "timestamp": 1427723790137
+                                "type": "TableDisplay",
+                                "values": [
+                                    [
+                                        "timestamp",
+                                        1288584000000
+                                    ],
+                                    [
+                                        "type",
+                                        "Date"
+                                    ]
+                                ],
+                                "subtype": "Dictionary",
+                                "columnNames": [
+                                    "Key",
+                                    "Value"
+                                ]
                             },
-                            "pippero"
+                            302.22,
+                            305.6,
+                            302.2,
+                            304.18,
+                            105972300,
+                            40.99
                         ],
                         [
                             {
-                                "type": "Date",
-                                "timestamp": 1427896590137
+                                "type": "TableDisplay",
+                                "values": [
+                                    [
+                                        "timestamp",
+                                        1288670400000
+                                    ],
+                                    [
+                                        "type",
+                                        "Date"
+                                    ]
+                                ],
+                                "subtype": "Dictionary",
+                                "columnNames": [
+                                    "Key",
+                                    "Value"
+                                ]
                             },
-                            "pippero"
+                            307,
+                            310.19,
+                            307,
+                            309.36,
+                            108482500,
+                            41.69
                         ],
                         [
                             {
-                                "type": "Date",
-                                "timestamp": 1428069390137
+                                "type": "TableDisplay",
+                                "values": [
+                                    [
+                                        "timestamp",
+                                        1288756800000
+                                    ],
+                                    [
+                                        "type",
+                                        "Date"
+                                    ]
+                                ],
+                                "subtype": "Dictionary",
+                                "columnNames": [
+                                    "Key",
+                                    "Value"
+                                ]
                             },
-                            "pippero"
+                            311.37,
+                            312.88,
+                            308.53,
+                            312.8,
+                            127087100,
+                            42.15
+                        ],
+                        [
+                            {
+                                "type": "TableDisplay",
+                                "values": [
+                                    [
+                                        "timestamp",
+                                        1288843200000
+                                    ],
+                                    [
+                                        "type",
+                                        "Date"
+                                    ]
+                                ],
+                                "subtype": "Dictionary",
+                                "columnNames": [
+                                    "Key",
+                                    "Value"
+                                ]
+                            },
+                            315.45,
+                            320.18,
+                            315.03,
+                            318.27,
+                            160622000,
+                            42.89
+                        ],
+                        [
+                            {
+                                "type": "TableDisplay",
+                                "values": [
+                                    [
+                                        "timestamp",
+                                        1288929600000
+                                    ],
+                                    [
+                                        "type",
+                                        "Date"
+                                    ]
+                                ],
+                                "subtype": "Dictionary",
+                                "columnNames": [
+                                    "Key",
+                                    "Value"
+                                ]
+                            },
+                            317.99,
+                            319.57,
+                            316.75,
+                            317.13,
+                            90313300,
+                            42.73
                         ]
                     ],
                     "types": [
                         "time",
-                        "string"
+                        "double",
+                        "double",
+                        "double",
+                        "double",
+                        "double"
+                    ],
+                    "columnNames": [
+                        "Index",
+                        "Open",
+                        "High",
+                        "Low",
+                        "Close",
+                        "Volume",
+                        "Adj Close"
                     ]
                 },
                 "selectedType": "Table"
             },
             "evaluatorReader": true,
-            "lineCount": 2
+            "lineCount": 1
+        },
+        {
+            "id": "codeQ6pgak",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "beaker.aapl"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
+                        },
+                        "columnNames": [
+                            "Index",
+                            "Open",
+                            "High",
+                            "Low",
+                            "Close",
+                            "Volume",
+                            "Adj Close"
+                        ],
+                        "actualalign": [
+                            "C",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "columnNames": [
+                        "Index",
+                        "Open",
+                        "High",
+                        "Low",
+                        "Close",
+                        "Volume",
+                        "Adj Close"
+                    ],
+                    "values": [
+                        [
+                            {
+                                "type": "TableDisplay",
+                                "values": [
+                                    [
+                                        "timestamp",
+                                        1288584000000
+                                    ],
+                                    [
+                                        "type",
+                                        "Date"
+                                    ]
+                                ],
+                                "subtype": "Dictionary",
+                                "columnNames": [
+                                    "Key",
+                                    "Value"
+                                ]
+                            },
+                            302.22,
+                            305.6,
+                            302.2,
+                            304.18,
+                            105972300,
+                            40.99
+                        ],
+                        [
+                            {
+                                "type": "TableDisplay",
+                                "values": [
+                                    [
+                                        "timestamp",
+                                        1288670400000
+                                    ],
+                                    [
+                                        "type",
+                                        "Date"
+                                    ]
+                                ],
+                                "subtype": "Dictionary",
+                                "columnNames": [
+                                    "Key",
+                                    "Value"
+                                ]
+                            },
+                            307,
+                            310.19,
+                            307,
+                            309.36,
+                            108482500,
+                            41.69
+                        ],
+                        [
+                            {
+                                "type": "TableDisplay",
+                                "values": [
+                                    [
+                                        "timestamp",
+                                        1288756800000
+                                    ],
+                                    [
+                                        "type",
+                                        "Date"
+                                    ]
+                                ],
+                                "subtype": "Dictionary",
+                                "columnNames": [
+                                    "Key",
+                                    "Value"
+                                ]
+                            },
+                            311.37,
+                            312.88,
+                            308.53,
+                            312.8,
+                            127087100,
+                            42.15
+                        ],
+                        [
+                            {
+                                "type": "TableDisplay",
+                                "values": [
+                                    [
+                                        "timestamp",
+                                        1288843200000
+                                    ],
+                                    [
+                                        "type",
+                                        "Date"
+                                    ]
+                                ],
+                                "subtype": "Dictionary",
+                                "columnNames": [
+                                    "Key",
+                                    "Value"
+                                ]
+                            },
+                            315.45,
+                            320.18,
+                            315.03,
+                            318.27,
+                            160622000,
+                            42.89
+                        ],
+                        [
+                            {
+                                "type": "TableDisplay",
+                                "values": [
+                                    [
+                                        "timestamp",
+                                        1288929600000
+                                    ],
+                                    [
+                                        "type",
+                                        "Date"
+                                    ]
+                                ],
+                                "subtype": "Dictionary",
+                                "columnNames": [
+                                    "Key",
+                                    "Value"
+                                ]
+                            },
+                            317.99,
+                            319.57,
+                            316.75,
+                            317.13,
+                            90313300,
+                            42.73
+                        ]
+                    ],
+                    "types": [
+                        "time",
+                        "double",
+                        "double",
+                        "double",
+                        "double",
+                        "double"
+                    ],
+                    "subtype": "TableDisplay"
+                },
+                "selectedType": "Table",
+                "pluginName": "Groovy",
+                "shellId": "d834fd88-514d-48e8-8d6d-52ff3116c06c",
+                "elapsedTime": 587
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codea0gLZ2",
+            "type": "code",
+            "evaluator": "Python3",
+            "input": {
+                "body": [
+                    "beaker.aapl"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
+                        },
+                        "columnNames": [
+                            "Index",
+                            "Open",
+                            "High",
+                            "Low",
+                            "Close",
+                            "Volume",
+                            "Adj Close"
+                        ],
+                        "actualalign": [
+                            "C",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "R",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "columnNames": [
+                        "Index",
+                        "Open",
+                        "High",
+                        "Low",
+                        "Close",
+                        "Volume",
+                        "Adj Close"
+                    ],
+                    "types": [
+                        "time",
+                        "double",
+                        "double",
+                        "double",
+                        "double",
+                        "double"
+                    ],
+                    "subtype": "TableDisplay",
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            {
+                                "timestamp": 1288584000000,
+                                "type": "Date"
+                            },
+                            302.22,
+                            305.6,
+                            302.2,
+                            304.18,
+                            105972300,
+                            40.99
+                        ],
+                        [
+                            {
+                                "timestamp": 1288670400000,
+                                "type": "Date"
+                            },
+                            307,
+                            310.19,
+                            307,
+                            309.36,
+                            108482500,
+                            41.69
+                        ],
+                        [
+                            {
+                                "timestamp": 1288756800000,
+                                "type": "Date"
+                            },
+                            311.37,
+                            312.88,
+                            308.53,
+                            312.8,
+                            127087100,
+                            42.15
+                        ],
+                        [
+                            {
+                                "timestamp": 1288843200000,
+                                "type": "Date"
+                            },
+                            315.45,
+                            320.18,
+                            315.03,
+                            318.27,
+                            160622000,
+                            42.89
+                        ],
+                        [
+                            {
+                                "timestamp": 1288929600000,
+                                "type": "Date"
+                            },
+                            317.99,
+                            319.57,
+                            316.75,
+                            317.13,
+                            90313300,
+                            42.73
+                        ]
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "Python3",
+                "shellId": "31C8DAF50D27465DA7C40CEB47B780D3",
+                "elapsedTime": 211
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeDOjgzU",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "beaker::get('aapl')"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Error",
+                    "object": [
+                        "Error in `[.data.frame`(df, tres$columnNames) : ",
+                        "  undefined columns selected",
+                        ""
+                    ]
+                },
+                "selectedType": "BeakerDisplay",
+                "pluginName": "R",
+                "shellId": "c38f9f7f-573d-433f-a6b4-3cf6cc2cd16b",
+                "elapsedTime": 570
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
         }
     ],
     "namespace": {
@@ -213,21 +940,21 @@
                 [
                     {
                         "type": "Date",
-                        "timestamp": 1427723790137
+                        "timestamp": 1427810358221
                     },
                     "pippero"
                 ],
                 [
                     {
                         "type": "Date",
-                        "timestamp": 1427896590137
+                        "timestamp": 1427983158221
                     },
                     "pippero"
                 ],
                 [
                     {
                         "type": "Date",
-                        "timestamp": 1428069390137
+                        "timestamp": 1428155958221
                     },
                     "pippero"
                 ]
@@ -235,6 +962,159 @@
             "types": [
                 "time",
                 "string"
+            ]
+        },
+        "aapl": {
+            "type": "TableDisplay",
+            "subtype": "TableDisplay",
+            "values": [
+                [
+                    {
+                        "type": "TableDisplay",
+                        "values": [
+                            [
+                                "timestamp",
+                                1288584000000
+                            ],
+                            [
+                                "type",
+                                "Date"
+                            ]
+                        ],
+                        "subtype": "Dictionary",
+                        "columnNames": [
+                            "Key",
+                            "Value"
+                        ]
+                    },
+                    302.22,
+                    305.6,
+                    302.2,
+                    304.18,
+                    105972300,
+                    40.99
+                ],
+                [
+                    {
+                        "type": "TableDisplay",
+                        "values": [
+                            [
+                                "timestamp",
+                                1288670400000
+                            ],
+                            [
+                                "type",
+                                "Date"
+                            ]
+                        ],
+                        "subtype": "Dictionary",
+                        "columnNames": [
+                            "Key",
+                            "Value"
+                        ]
+                    },
+                    307,
+                    310.19,
+                    307,
+                    309.36,
+                    108482500,
+                    41.69
+                ],
+                [
+                    {
+                        "type": "TableDisplay",
+                        "values": [
+                            [
+                                "timestamp",
+                                1288756800000
+                            ],
+                            [
+                                "type",
+                                "Date"
+                            ]
+                        ],
+                        "subtype": "Dictionary",
+                        "columnNames": [
+                            "Key",
+                            "Value"
+                        ]
+                    },
+                    311.37,
+                    312.88,
+                    308.53,
+                    312.8,
+                    127087100,
+                    42.15
+                ],
+                [
+                    {
+                        "type": "TableDisplay",
+                        "values": [
+                            [
+                                "timestamp",
+                                1288843200000
+                            ],
+                            [
+                                "type",
+                                "Date"
+                            ]
+                        ],
+                        "subtype": "Dictionary",
+                        "columnNames": [
+                            "Key",
+                            "Value"
+                        ]
+                    },
+                    315.45,
+                    320.18,
+                    315.03,
+                    318.27,
+                    160622000,
+                    42.89
+                ],
+                [
+                    {
+                        "type": "TableDisplay",
+                        "values": [
+                            [
+                                "timestamp",
+                                1288929600000
+                            ],
+                            [
+                                "type",
+                                "Date"
+                            ]
+                        ],
+                        "subtype": "Dictionary",
+                        "columnNames": [
+                            "Key",
+                            "Value"
+                        ]
+                    },
+                    317.99,
+                    319.57,
+                    316.75,
+                    317.13,
+                    90313300,
+                    42.73
+                ]
+            ],
+            "types": [
+                "time",
+                "double",
+                "double",
+                "double",
+                "double",
+                "double"
+            ],
+            "columnNames": [
+                "Index",
+                "Open",
+                "High",
+                "Low",
+                "Close",
+                "Volume",
+                "Adj Close"
             ]
         }
     }

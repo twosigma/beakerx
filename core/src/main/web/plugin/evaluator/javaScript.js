@@ -314,7 +314,6 @@ define(function(require, exports, module) {
     }
 
     if (v instanceof DataFrame) {
-      console.log(v);
       var o = {}
       o.type = "TableDisplay";
       o.subtype = "TableDisplay";
@@ -328,7 +327,6 @@ define(function(require, exports, module) {
       }
       o.types = _.isArray(v.types) ? v.types.slice(0) : undefined;
       o.columnNames = _.isArray(v.columnNames) ? v.columnNames.slice(0) : undefined;
-      console.log(o);
       return o
     }
 
@@ -474,9 +472,7 @@ define(function(require, exports, module) {
           }
           return out2;
         }
-        console.log(v);
         var out = new DataFrame(v);
-        console.log(out);
         return out;
       }
       if (v.type === "ImageIcon")
@@ -571,7 +567,6 @@ define(function(require, exports, module) {
 
 
   BeakerObject.prototype.beakerGetter = function(name) {
-    console.log("getter "+name);
     if (this.setCache[name] !== undefined) {
       return this.setCache[name];
     }
@@ -584,7 +579,6 @@ define(function(require, exports, module) {
   };
 
   BeakerObject.prototype.beakerSetter = function(name, v) {
-    console.log("setter "+name);
     this.setCache[name] = v;
     if (this.beakerSetterTimeout !== undefined)
       bkHelper.cancelTimeout(this.beakerSetterTimeout);

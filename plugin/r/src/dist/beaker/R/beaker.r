@@ -130,11 +130,12 @@ convertToDataTableLoM <- function(val) {
   	  } else {
         comma2 = TRUE
       }
-      p = paste(p, "\"", sep='')
       if (exists(cn, where=l)) {
-        p = paste(p, gsub("\"","\\\"",l[[cn]]), sep='')
+        conv = convertToJSON(l[[cn]],TRUE)
+        p = paste(p, conv, sep='')
+      } else {
+        p = paste(p, "\"\"", sep='')
       }
-      p = paste(p, "\"", sep='')
     }
     p = paste(p, "]", sep='')
   }
@@ -296,7 +297,7 @@ transformJSON <- function(tres) {
 		    if (exists("subtype", where=tres) && tres$subtype == "Dictionary") {
 		      o = list()
 		      for (i in 1:rows) {
-		        o[[ tres$values[[i]][[1]] ]] = tres$values[[i]][[2]]
+		        o[[ tres$values[[i]][[1]] ]] = transformJSON(tres$values[[i]][[2]])
 		      }
 		      tres = o
 		    } else if (exists("subtype", where=tres) && tres$subtype == "ListOfMaps") {
@@ -304,7 +305,7 @@ transformJSON <- function(tres) {
 		      for (i in 1:rows) {
                 oo = list()
 				for (j in 1:cols) {
-                  oo[[ tres$columnNames[[j]] ]] = tres$values[[i]][[j]]
+                  oo[[ tres$columnNames[[j]] ]] = transformJSON(tres$values[[i]][[j]])
                 }
                 o[[ length(o) +1 ]] = oo
 			  } 
@@ -313,7 +314,7 @@ transformJSON <- function(tres) {
 			  dummy_nv = logical(rows)
 			  df <- data.frame(dummy_nv);
 			  for (i in 1:cols) {
-			    if (exists("types", where=tres) && ((tres$types[i] == "double") || (tres$types[i] == "integer"))) {
+			    if (exists("types", where=tres) && !is.na(tres$types[i]) && ((tres$types[i] == "double") || (tres$types[i] == "integer"))) {
 				  nv <- numeric(rows);
 				  for( j in 1:rows) {
 				    if ( is.null( tres$values[[j]][[i]] ) )
@@ -322,6 +323,14 @@ transformJSON <- function(tres) {
 				      nv [j] <- as.numeric( tres$values[[j]][[i]] )
 				  }
 			  	  df[ tres$columnNames[[i]] ] = nv
+			  	} else if (exists("types", where=tres) && !is.na(tres$types[i]) && (tres$types[i] == "time")) {
+				  nv <- character( rows );
+		          for( j in 1:rows) {
+		            if ( is.null( tres$values[[j]][[i]] ) )
+		              nv [j] <- ""
+		            else
+				      nv [j] <- as.character( tres$values[[j]][[i]] )
+		          }			  	  
 				} else {
 				  nv <- character( rows );
 		          for( j in 1:rows) {
@@ -330,7 +339,7 @@ transformJSON <- function(tres) {
 		            else
 				      nv [j] <- as.character( tres$values[[j]][[i]] )
 		          }
-				  if(exists("types", where=tres) && (tres$types[[i]] == "select"))
+				  if(exists("types", where=tres) && !is.na(tres$types[i]) && (tres$types[i] == "select"))
 				    df[ tres$columnNames[[i]] ] = factor(nv)		  
 				  else
 				    df[ tres$columnNames[[i]] ] = nv		 
@@ -348,7 +357,7 @@ transformJSON <- function(tres) {
 		    # nothing to do here
 		  }
 		  else if (tres[["type"]] == "Date" && exists("timestamp", where=tres)) {
-		  	tres = as.POSIXct(tres[["timestamp"]], origin="1970-01-01", tz="America/New_York")
+		  	tres = as.POSIXct(tres[["timestamp"]]/1000, origin="1970-01-01")
 		  }
 	  } else {
 	    iteml <- length(tres)

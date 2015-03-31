@@ -50,6 +50,8 @@ convertToJSONObject <- function(val) {
 getTypeName <- function(c) {
   if (c == "numeric")
     p = "\"double\""
+  else if (c == "integer")
+    p = "\"integer\""
   else if (c == "logical")
     p = "\"boolean\""
   else if (c == "factor")
@@ -64,7 +66,7 @@ containsOnlyBasicTypes <- function(l) {
   for (i in 1:len) {
     t = l[[i]]
     c = class(t)
-    if ((c != "numeric" && c != "logical" && c != "factor" && c!="character" && c!="Date" && c!="POSIXct" && c!="POSIXlt") || length(t)>1)
+    if ((c != "numeric" && c != "integer" && c != "logical" && c != "factor" && c!="character" && c!="Date" && c!="POSIXct" && c!="POSIXlt") || length(t)>1)
       return (FALSE)
   }
   return (TRUE)
@@ -183,7 +185,7 @@ convertToJSON <- function(val, collapse) {
     p = paste(p, "] }", sep='')
     o = p
   }
-  else if (class(val) == "numeric" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
+  else if (class(val) == "numeric" || class(val) == "integer" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
     if (is.null(names(val))) {
   	  if (collapse && length(val) == 1) {
   	    o = toJSON(val, .level=0L);
@@ -199,7 +201,7 @@ convertToJSON <- function(val, collapse) {
     }
   } else if (class(val) == "matrix") {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"Matrix\",\"columnNames\":"
-    colNames <- numeric(ncol(val));
+    colNames <- character(ncol(val));
 	for( j in 1:ncol(val)) {
 		colNames[j] <- paste('c',j, sep='')
     }
@@ -333,13 +335,22 @@ transformJSON <- function(tres) {
 			  dummy_nv = logical(rows)
 			  df <- data.frame(dummy_nv);
 			  for (i in 1:cols) {
-			    if (exists("types", where=tres) && !is.na(tres$types[i]) && ((tres$types[i] == "double") || (tres$types[i] == "integer"))) {
+			    if (exists("types", where=tres) && !is.na(tres$types[i]) && (tres$types[i] == "double")) {
 				  nv <- numeric(rows);
 				  for( j in 1:rows) {
 				    if ( is.null( tres$values[[j]][[i]] ) )
 				      nv [j] <- NaN
 				    else
 				      nv [j] <- as.numeric( tres$values[[j]][[i]] )
+				  }
+			  	  df[ tres$columnNames[[i]] ] = nv
+			    } else if (exists("types", where=tres) && !is.na(tres$types[i]) && (tres$types[i] == "integer")) {
+				  nv <- integer(rows);
+				  for( j in 1:rows) {
+				    if ( is.null( tres$values[[j]][[i]] ) )
+				      nv [j] <- NaN
+				    else
+				      nv [j] <- as.integer( tres$values[[j]][[i]] )
 				  }
 			  	  df[ tres$columnNames[[i]] ] = nv
 			  	} else if (exists("types", where=tres) && !is.na(tres$types[i]) && (tres$types[i] == "time")) {

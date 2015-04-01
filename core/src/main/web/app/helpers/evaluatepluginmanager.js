@@ -39,7 +39,8 @@
         }
         _loadInProgress = _queue.shift();
         if (_loadInProgress) {
-          if (plugins[_loadInProgress.name] || plugins[_loadInProgress.url]) { // plugin code already loaded
+          // plugin code already loaded
+          if (plugins[_loadInProgress.name] || plugins[_loadInProgress.url]) {
             if (plugins[_loadInProgress.name]) {
               _loadInProgress.resolve(plugins[_loadInProgress.name])
               .finally(function() {
@@ -129,7 +130,9 @@
                 return ex.getEvaluatorFactory()
                   .then(function(factory) {
                     if (factory !== undefined && factory.create !== undefined) {
-                      return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
+                      return factory.create(evaluatorSettings).then(function(ev) {
+                        deferred.resolve(ev);
+                      });
                     } else {
                       $modal.open({
                         backdrop: true,

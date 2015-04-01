@@ -91,8 +91,9 @@
       },
       getEvaluatorFactoryAndShell: function(evaluatorSettings) {
         var nameOrUrl = evaluatorSettings.plugin;
+        var deferred;
         if (plugins[nameOrUrl]) { // plugin code already loaded
-          var deferred = bkUtils.newDeferred();
+          deferred = bkUtils.newDeferred();
           plugins[nameOrUrl].getEvaluatorFactory().then(function(factory) {
             if (factory !== undefined && factory.create !== undefined) {
               return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
@@ -105,7 +106,7 @@
           });
           return deferred.promise;
         } else {
-          var deferred = bkUtils.newDeferred();
+          deferred = bkUtils.newDeferred();
           var name, url;
           if (nameToUrlMap[nameOrUrl]) {
             name = nameOrUrl;

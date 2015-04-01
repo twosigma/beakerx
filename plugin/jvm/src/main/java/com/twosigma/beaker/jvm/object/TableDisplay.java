@@ -33,6 +33,8 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializerProvider;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 
@@ -115,6 +117,13 @@ public class TableDisplay {
   
   public static class DeSerializer implements ObjectDeserializer {
 
+    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+    
+    @Inject
+    public DeSerializer(Provider<BeakerObjectConverter> osp) {
+      objectSerializerProvider = osp;
+    }
+    
     @SuppressWarnings("unchecked")
     @Override
     public Object deserialize(JsonNode n, ObjectMapper mapper) {
@@ -129,8 +138,22 @@ public class TableDisplay {
           cols = mapper.readValue(n.get("columnNames"), List.class);
         if (n.has("types"))
           clas = mapper.readValue(n.get("types"), List.class);
-        if (n.has("values"))
-          vals = mapper.readValue(n.get("values"), List.class);
+        if (n.has("values")) {
+          JsonNode nn = n.get("values");
+          vals = new ArrayList<List<?>>();
+          if (nn.isArray()) {
+            for (JsonNode nno : nn) {
+              if (nno.isArray()) {
+                ArrayList<Object> val = new ArrayList<Object>();
+                for (JsonNode nnoo : nno) {
+                  Object obj = objectSerializerProvider.get().deserialize(nnoo, mapper);
+                  val.add(obj);
+                }
+                vals.add(val);              
+              }
+            }
+          }
+        }
         if (n.has("subtype"))
           subtype = mapper.readValue(n.get("subtype"), String.class);
         /*

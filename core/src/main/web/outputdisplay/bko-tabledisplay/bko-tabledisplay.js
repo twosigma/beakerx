@@ -163,7 +163,7 @@
                 out = out + '\t';
               var d = row[j];
               if ($scope.columns[order].render !== undefined )
-                d = $scope.columns[order].render(d);
+                d = $scope.columns[order].render(d, "display");
               out = out + '"' + (d !== undefined && d !== null ? d.replace(/"/g, '""') : '') + '"';
             }
             out = out + eol;

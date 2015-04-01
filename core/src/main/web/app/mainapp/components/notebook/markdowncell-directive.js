@@ -48,7 +48,21 @@
     ce.find("div").replaceWith(function() { return "\n" + this.innerHTML; });
     ce.find("br").replaceWith("\n");
 
-    return ce.text();
+    return ce.html();
+  }
+
+  // On preview, html characters get translated to character entities. We need them as characters.
+  // reverse of http://stackoverflow.com/questions/1787322/htmlspecialchars-equivalent-in-javascript/4835406#4835406
+  function encodeHTML(text) {
+    var map = {
+      '&amp;':'&',
+      '&lt;':'<',
+      '&gt;':'>',
+      '&quot;':'"',
+      '&#039;':"'"
+    };
+
+    return text.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function(m) { return map[m]; });
   }
 
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
@@ -74,7 +88,7 @@
         };
 
         var syncContentAndPreview = function() {
-          scope.cellmodel.body = getContentEditableText(element.find('.markdown').html());
+          scope.cellmodel.body = getContentEditableText(encodeHTML(element.find('.markdown').html()));
           preview();
         };
 
@@ -103,7 +117,7 @@
           }
 
           var markdown = element.find('.markdown');
-          markdown.html(scope.cellmodel.body);
+          markdown.text(scope.cellmodel.body);
 
           $timeout(function(){
             markdown.focus();

@@ -27,7 +27,7 @@
 
     var evaluatorLoadQueue = (function() {
       var _queue = [];
-      var _loadInProgress = undefined;
+      var _loadInProgress;
 
       var loadEvaluator = function(ev) {
         bkHelper.showStatus("Loading plugin "+ev.name);

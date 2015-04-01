@@ -314,7 +314,7 @@ class DataFrameEncoder(json.JSONEncoder):
             ty = []
             num = len(obj.columns.tolist())
             x = 0;
-            for x in range(0,num):
+            for x in range(0,num+1):
               	ty.append( convertTypeName(type(vals[0][x]).__name__))
             out['types'] = ty
             for x in range(0,len(vals)):

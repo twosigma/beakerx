@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 Michael Pymm
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,67 +24,67 @@ import java.io.IOException;
  * Wraps kx.c to a) manage reconnections etc. b) hide the horrible.
  */
 public class KdbClient implements AutoCloseable {
-    // kdb commands.
-    public static final String PID_CMD  = ".z.i";
+  // kdb commands.
+  public static final String PID_CMD  = ".z.i";
 
-    // kdb server.
-    private final String hostname;
-    private final int    port;
+  // kdb server.
+  private final String hostname;
+  private final int    port;
 
-    // kdb client.
-    private kx.c c;
+  // kdb client.
+  private kx.c c;
 
-    // The kdb pid (retrieved after successful connection).
-    private Integer pid;
+  // The kdb pid (retrieved after successful connection).
+  private Integer pid;
 
-    /**
-     * Create a new kdb client.
-     *
-     * @param hostname  the host the server is running on.
-     * @param port      the port to connect to.
-     */
-    public KdbClient(String hostname, int port) {
-        this.hostname = hostname;
-        this.port = port;
+  /**
+   * Create a new kdb client.
+   *
+   * @param hostname  the host the server is running on.
+   * @param port      the port to connect to.
+   */
+  public KdbClient(String hostname, int port) {
+    this.hostname = hostname;
+    this.port = port;
+  }
+
+  public synchronized Object execute(String query) throws IOException, kx.c.KException {
+    // Connect if necessary.
+    if (c == null) {
+      c = new c(hostname, port);
+      pid = (Integer) c.k(PID_CMD);
     }
 
-    public synchronized Object execute(String query) throws IOException, kx.c.KException {
-        // Connect if necessary.
-        if (c == null) {
-            c = new c(hostname, port);
-            pid = (Integer) c.k(PID_CMD);
-        }
-
-        // Run the query.
-        try {
-            return c.k(query);
-        } catch (IOException | kx.c.KException e) {
-            c   = null;
-            pid = null;
-            throw e;
-        }
+    // Run the query.
+    try {
+      return c.k(query);
+    } catch (IOException | kx.c.KException e) {
+      c   = null;
+      pid = null;
+      throw e;
     }
+  }
 
-    /**
-     * Interrupt the currently running query.
-     */
-    public synchronized void interruptQuery() throws Exception {
-        // TODO - this is Linux/Mac only.
-        if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX) {
-            if (pid != null) {
-                Runtime.getRuntime().exec("kill -2 " + pid);
-            }
-        } else {
-            throw new Exception("Not implemented on this operating system");
-        }
+  /**
+   * Interrupt the currently running query.
+   */
+  public synchronized void interruptQuery() throws Exception {
+    // TODO - this is Linux/Mac only.
+    if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC_OSX) {
+      if (pid != null) {
+        Runtime.getRuntime().exec("kill -2 " + pid);
+      }
+    } else {
+      throw new Exception("Not implemented on this operating system");
     }
+  }
 
-    @Override
-    public synchronized void close() throws IOException {
-        if (c != null) {
-            c.close();
-            c   = null;
-            pid = null;
-        }
+  @Override
+  public synchronized void close() throws IOException {
+    if (c != null) {
+      c.close();
+      c   = null;
+      pid = null;
     }
+  }
 }

@@ -25,6 +25,7 @@ import com.twosigma.beaker.jvm.object.UpdatableEvaluationResult;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -51,7 +52,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
   public static final String TYPE_BOOLEAN = "boolean";
   public static final String TYPE_TIME    = "time";
   public static final String TYPE_SELECT  = "select";
-  
+
   protected Map<String,String> types;
   private final static Logger logger = Logger.getLogger(BasicObjectSerializer.class.getName());
   protected static List<ObjectDeserializer> supportedTypes;
@@ -126,7 +127,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     addTypeConversion("java.util.concurrent.atomic.AtomicLong", TYPE_INTEGER);
     addTypeConversion("java.math.BigDecimal", TYPE_DOUBLE);
     addTypeConversion("java.math.BigInteger", TYPE_INTEGER);
-    
+
     supportedTypes = new ArrayList<ObjectDeserializer>();
   }
   
@@ -205,6 +206,18 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         jgen.writeObjectField("values", values);
         jgen.writeObjectField("subtype", TableDisplay.MATRIX_SUBTYPE);
         jgen.writeEndObject();
+      } else if (obj.getClass().isArray()) {
+        logger.fine("array");
+        // write out an array of objects.
+        jgen.writeStartArray();
+        final int length = Array.getLength(obj);
+        for (int i = 0; i < length; ++i) {
+          Object o = Array.get(obj, i);
+          if (!writeObject(o, jgen)) {
+              jgen.writeObject("ERROR: unsupported object "+o.toString());
+          }
+        }
+        jgen.writeEndArray();
       } else if (obj instanceof Collection<?>) {
         logger.fine("collection");
         // convert this 'on the fly' to an array of objects

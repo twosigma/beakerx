@@ -109,7 +109,7 @@
                     "    d.reject(\"ERROR returning - Infinity\");",
                     "  else if (!(r[21] instanceof Date) || r[21].getFullYear()!=2015 || r[21].getMonth()!==6)",
                     "    d.reject(\"ERROR returning date value 1\");",
-                    "  else if (!(r[22] instanceof Date) || r[22].getFullYear()!=2015 || r[22].getDay()!==2)",
+                    "  else if (!(r[22] instanceof Date) || r[22].getFullYear()!=2015 || r[22].getDate()!==14)",
                     "    d.reject(\"ERROR returning date value 2\");",
                     "",
                     "  else if (typeof(beaker.v0) !== 'number' || beaker.v0%1 !== 0) ",
@@ -156,7 +156,7 @@
                     "    d.reject(\"ERROR setting - Infinity\");",
                     "  else if (!(beaker.v21 instanceof Date) || beaker.v21.getFullYear()!=2015 || beaker.v21.getMonth()!==6)",
                     "    d.reject(\"ERROR setting date value 1\");",
-                    "  else if (!(beaker.v22 instanceof Date) || beaker.v22.getFullYear()!=2015 || beaker.v22.getDay()!==2)",
+                    "  else if (!(beaker.v22 instanceof Date) || beaker.v22.getFullYear()!=2015 || beaker.v22.getDate()!==14)",
                     "    d.reject(\"ERROR setting date value 2\");",
                     "",
                     "  beaker.evaluate('steptwo').then(function (r) {",
@@ -237,8 +237,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "d619f246-99fe-4f9b-8f8f-f09b1bbb4c65",
-                "elapsedTime": 24605
+                "shellId": "ffb355e5-cd7f-4acd-a36e-3b5f32797c2a",
+                "elapsedTime": 1355
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -335,8 +335,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 28034,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 969,
                 "dataresult": "OK"
             },
             "evaluatorReader": true,
@@ -367,8 +367,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 347,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 333,
                 "dataresult": 1
             },
             "evaluatorReader": true,
@@ -391,8 +391,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 321,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 393,
                 "dataresult": 10.34
             },
             "evaluatorReader": true,
@@ -415,8 +415,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 353,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 386,
                 "dataresult": true
             },
             "evaluatorReader": true,
@@ -439,8 +439,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 366,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 350,
                 "dataresult": "test string"
             },
             "evaluatorReader": true,
@@ -463,8 +463,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 358,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 341,
                 "dataresult": {
                     "type": "Date",
                     "value": "Oct 21, 2005 06:47:22 PM"
@@ -495,8 +495,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 357,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 819,
                 "state": {}
             },
             "evaluatorReader": true,
@@ -522,8 +522,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 444,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 590,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -583,8 +583,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2137,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 551,
                 "dataresult": [
                     23.45,
                     34.5,
@@ -613,8 +613,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2096,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 335,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "Matrix",
@@ -684,8 +684,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2071,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 417,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -716,8 +716,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2084,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 358,
                 "dataresult": [
                     [
                         [
@@ -792,8 +792,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2095,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 377,
                 "dataresult": "{ \"type\":\"TableDisplay\",\"subtype\":\"Dictionary\",\"columnNames\": [\"Key\",\"Value\"], \"values\": [[\"name\",\"Fred\"],[\"a\",\"10.4\"],[\"b\",\"33.5\"],[\"age\",\"5.3\"]] }"
             },
             "evaluatorReader": true,
@@ -816,8 +816,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2045,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 469,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -840,8 +840,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2047,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 319,
                 "hidden": true,
                 "dataresult": "not supported"
             },
@@ -868,8 +868,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2041,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 346,
                 "dataresult": {
                     "type": "OutputContainer",
                     "items": [
@@ -3977,16 +3977,13 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 4119,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 576,
                 "dataresult": [
                     {
-                        "tags": "groovyret",
-                        "code": "# output container - 14\na = beaker.createOutputContainer()\na.addItem(aapl.head())\na.addItem([2,3,4,5,6])\nbeaker.v14 = a\na\n",
-                        "outputtype": "OutputContainer",
                         "type": "BeakerCodeCell",
                         "cellId": "codecell",
-                        "evaluatorId": "Python3",
+                        "tags": "groovyret",
                         "output": {
                             "type": "OutputContainer",
                             "items": [
@@ -4055,7 +4052,7 @@
                                         ]
                                     ],
                                     "types": [
-                                        "string",
+                                        "time",
                                         "double",
                                         "double",
                                         "double",
@@ -4081,7 +4078,10 @@
                                     6
                                 ]
                             ]
-                        }
+                        },
+                        "outputtype": "OutputContainer",
+                        "evaluatorId": "Python3",
+                        "code": "# output container - 14\na = beaker.createOutputContainer()\na.addItem(aapl.head())\na.addItem([2,3,4,5,6])\nbeaker.v14 = a\na\n"
                     }
                 ]
             },
@@ -4106,8 +4106,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2070,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 404,
                 "dataresult": {
                     "name": "Fred",
                     "plot": {
@@ -4178,8 +4178,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2066,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 400,
                 "dataresult": [
                     {
                         "name": "Fred1",
@@ -4340,8 +4340,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2103,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 372,
                 "dataresult": "Nan"
             },
             "evaluatorReader": true,
@@ -4363,8 +4363,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2065,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 388,
                 "dataresult": "Infinity"
             },
             "evaluatorReader": true,
@@ -4386,8 +4386,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2081,
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 392,
                 "dataresult": "-Infinity"
             },
             "evaluatorReader": true,
@@ -4411,8 +4411,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2005
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 303
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -4435,8 +4435,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "Python3",
-                "shellId": "1FCC78B8AA8A410C80409F5541DE0CBB",
-                "elapsedTime": 2104
+                "shellId": "568CE56A1166455899125AB6EAFE2C24",
+                "elapsedTime": 286
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -4451,60 +4451,75 @@
             "test string",
             {
                 "type": "Date",
-                "timestamp": 1427746941000
+                "timestamp": 1427892660000
             },
             {
                 "type": "TableDisplay",
                 "subtype": "TableDisplay",
                 "values": [
                     [
-                        "0",
-                        "1",
-                        "2",
-                        "3",
-                        "4",
-                        "5",
-                        "6"
+                        {
+                            "type": "Date",
+                            "timestamp": 1288584000000
+                        },
+                        302.22,
+                        305.6,
+                        302.2,
+                        304.18,
+                        105972300,
+                        40.99
                     ],
                     [
-                        "0",
-                        "1",
-                        "2",
-                        "3",
-                        "4",
-                        "5",
-                        "6"
+                        {
+                            "type": "Date",
+                            "timestamp": 1288670400000
+                        },
+                        307,
+                        310.19,
+                        307,
+                        309.36,
+                        108482500,
+                        41.69
                     ],
                     [
-                        "0",
-                        "1",
-                        "2",
-                        "3",
-                        "4",
-                        "5",
-                        "6"
+                        {
+                            "type": "Date",
+                            "timestamp": 1288756800000
+                        },
+                        311.37,
+                        312.88,
+                        308.53,
+                        312.8,
+                        127087100,
+                        42.15
                     ],
                     [
-                        "0",
-                        "1",
-                        "2",
-                        "3",
-                        "4",
-                        "5",
-                        "6"
+                        {
+                            "type": "Date",
+                            "timestamp": 1288843200000
+                        },
+                        315.45,
+                        320.18,
+                        315.03,
+                        318.27,
+                        160622000,
+                        42.89
                     ],
                     [
-                        "0",
-                        "1",
-                        "2",
-                        "3",
-                        "4",
-                        "5",
-                        "6"
+                        {
+                            "type": "Date",
+                            "timestamp": 1288929600000
+                        },
+                        317.99,
+                        319.57,
+                        316.75,
+                        317.13,
+                        90313300,
+                        42.73
                     ]
                 ],
                 "types": [
-                    "string",
+                    "time",
                     "double",
                     "double",
                     "double",
@@ -4526,39 +4541,39 @@
                 "subtype": "ListOfMaps",
                 "columnNames": [
                     "name",
-                    "bc",
                     "affa",
-                    "age",
+                    "bc",
                     "a",
-                    "b"
+                    "b",
+                    "age"
                 ],
                 "values": [
                     [
                         "Fred",
                         "",
                         "",
-                        5.3,
                         10.4,
-                        33.5
+                        33.5,
+                        5.3
                     ],
                     [
                         "Fred2",
-                        "",
                         20.4,
-                        5.3,
                         "",
-                        33.5
+                        "",
+                        33.5,
+                        5.3
                     ],
                     [
                         "Fred3",
+                        "",
                         33.5,
+                        10.4,
                         "",
                         {
                             "type": "Date",
-                            "timestamp": 1427746942000
-                        },
-                        10.4,
-                        ""
+                            "timestamp": 1427892662000
+                        }
                     ]
                 ],
                 "types": [
@@ -4735,53 +4750,68 @@
                         "subtype": "TableDisplay",
                         "values": [
                             [
-                                "0",
-                                "1",
-                                "2",
-                                "3",
-                                "4",
-                                "5",
-                                "6"
+                                {
+                                    "type": "Date",
+                                    "timestamp": 1288584000000
+                                },
+                                302.22,
+                                305.6,
+                                302.2,
+                                304.18,
+                                105972300,
+                                40.99
                             ],
                             [
-                                "0",
-                                "1",
-                                "2",
-                                "3",
-                                "4",
-                                "5",
-                                "6"
+                                {
+                                    "type": "Date",
+                                    "timestamp": 1288670400000
+                                },
+                                307,
+                                310.19,
+                                307,
+                                309.36,
+                                108482500,
+                                41.69
                             ],
                             [
-                                "0",
-                                "1",
-                                "2",
-                                "3",
-                                "4",
-                                "5",
-                                "6"
+                                {
+                                    "type": "Date",
+                                    "timestamp": 1288756800000
+                                },
+                                311.37,
+                                312.88,
+                                308.53,
+                                312.8,
+                                127087100,
+                                42.15
                             ],
                             [
-                                "0",
-                                "1",
-                                "2",
-                                "3",
-                                "4",
-                                "5",
-                                "6"
+                                {
+                                    "type": "Date",
+                                    "timestamp": 1288843200000
+                                },
+                                315.45,
+                                320.18,
+                                315.03,
+                                318.27,
+                                160622000,
+                                42.89
                             ],
                             [
-                                "0",
-                                "1",
-                                "2",
-                                "3",
-                                "4",
-                                "5",
-                                "6"
+                                {
+                                    "type": "Date",
+                                    "timestamp": 1288929600000
+                                },
+                                317.99,
+                                319.57,
+                                316.75,
+                                317.13,
+                                90313300,
+                                42.73
                             ]
                         ],
                         "types": [
-                            "string",
+                            "time",
                             "double",
                             "double",
                             "double",
@@ -4809,12 +4839,9 @@
             },
             [
                 {
-                    "tags": "groovyret",
-                    "code": "# output container - 14\na = beaker.createOutputContainer()\na.addItem(aapl.head())\na.addItem([2,3,4,5,6])\nbeaker.v14 = a\na\n",
-                    "outputtype": "OutputContainer",
                     "type": "BeakerCodeCell",
                     "cellId": "codecell",
-                    "evaluatorId": "Python3",
+                    "tags": "groovyret",
                     "output": {
                         "type": "OutputContainer",
                         "items": [
@@ -4823,53 +4850,68 @@
                                 "subtype": "TableDisplay",
                                 "values": [
                                     [
-                                        "0",
-                                        "1",
-                                        "2",
-                                        "3",
-                                        "4",
-                                        "5",
-                                        "6"
+                                        {
+                                            "type": "Date",
+                                            "timestamp": 1288584000000
+                                        },
+                                        302.22,
+                                        305.6,
+                                        302.2,
+                                        304.18,
+                                        105972300,
+                                        40.99
                                     ],
                                     [
-                                        "0",
-                                        "1",
-                                        "2",
-                                        "3",
-                                        "4",
-                                        "5",
-                                        "6"
+                                        {
+                                            "type": "Date",
+                                            "timestamp": 1288670400000
+                                        },
+                                        307,
+                                        310.19,
+                                        307,
+                                        309.36,
+                                        108482500,
+                                        41.69
                                     ],
                                     [
-                                        "0",
-                                        "1",
-                                        "2",
-                                        "3",
-                                        "4",
-                                        "5",
-                                        "6"
+                                        {
+                                            "type": "Date",
+                                            "timestamp": 1288756800000
+                                        },
+                                        311.37,
+                                        312.88,
+                                        308.53,
+                                        312.8,
+                                        127087100,
+                                        42.15
                                     ],
                                     [
-                                        "0",
-                                        "1",
-                                        "2",
-                                        "3",
-                                        "4",
-                                        "5",
-                                        "6"
+                                        {
+                                            "type": "Date",
+                                            "timestamp": 1288843200000
+                                        },
+                                        315.45,
+                                        320.18,
+                                        315.03,
+                                        318.27,
+                                        160622000,
+                                        42.89
                                     ],
                                     [
-                                        "0",
-                                        "1",
-                                        "2",
-                                        "3",
-                                        "4",
-                                        "5",
-                                        "6"
+                                        {
+                                            "type": "Date",
+                                            "timestamp": 1288929600000
+                                        },
+                                        317.99,
+                                        319.57,
+                                        316.75,
+                                        317.13,
+                                        90313300,
+                                        42.73
                                     ]
                                 ],
                                 "types": [
-                                    "string",
+                                    "time",
                                     "double",
                                     "double",
                                     "double",
@@ -4894,7 +4936,10 @@
                                 6
                             ]
                         ]
-                    }
+                    },
+                    "outputtype": "OutputContainer",
+                    "evaluatorId": "Python3",
+                    "code": "# output container - 14\na = beaker.createOutputContainer()\na.addItem(aapl.head())\na.addItem([2,3,4,5,6])\nbeaker.v14 = a\na\n"
                 }
             ],
             {
@@ -5141,60 +5186,75 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "timestamp": 1427746941000
+            "timestamp": 1427892660000
         },
         "v5": {
             "type": "TableDisplay",
             "subtype": "TableDisplay",
             "values": [
                 [
-                    "0",
-                    "1",
-                    "2",
-                    "3",
-                    "4",
-                    "5",
-                    "6"
+                    {
+                        "type": "Date",
+                        "timestamp": 1288584000000
+                    },
+                    302.22,
+                    305.6,
+                    302.2,
+                    304.18,
+                    105972300,
+                    40.99
                 ],
                 [
-                    "0",
-                    "1",
-                    "2",
-                    "3",
-                    "4",
-                    "5",
-                    "6"
+                    {
+                        "type": "Date",
+                        "timestamp": 1288670400000
+                    },
+                    307,
+                    310.19,
+                    307,
+                    309.36,
+                    108482500,
+                    41.69
                 ],
                 [
-                    "0",
-                    "1",
-                    "2",
-                    "3",
-                    "4",
-                    "5",
-                    "6"
+                    {
+                        "type": "Date",
+                        "timestamp": 1288756800000
+                    },
+                    311.37,
+                    312.88,
+                    308.53,
+                    312.8,
+                    127087100,
+                    42.15
                 ],
                 [
-                    "0",
-                    "1",
-                    "2",
-                    "3",
-                    "4",
-                    "5",
-                    "6"
+                    {
+                        "type": "Date",
+                        "timestamp": 1288843200000
+                    },
+                    315.45,
+                    320.18,
+                    315.03,
+                    318.27,
+                    160622000,
+                    42.89
                 ],
                 [
-                    "0",
-                    "1",
-                    "2",
-                    "3",
-                    "4",
-                    "5",
-                    "6"
+                    {
+                        "type": "Date",
+                        "timestamp": 1288929600000
+                    },
+                    317.99,
+                    319.57,
+                    316.75,
+                    317.13,
+                    90313300,
+                    42.73
                 ]
             ],
             "types": [
-                "string",
+                "time",
                 "double",
                 "double",
                 "double",
@@ -5216,39 +5276,39 @@
             "subtype": "ListOfMaps",
             "columnNames": [
                 "name",
-                "bc",
                 "affa",
-                "age",
+                "bc",
                 "a",
-                "b"
+                "b",
+                "age"
             ],
             "values": [
                 [
                     "Fred",
                     "",
                     "",
-                    5.3,
                     10.4,
-                    33.5
+                    33.5,
+                    5.3
                 ],
                 [
                     "Fred2",
-                    "",
                     20.4,
-                    5.3,
                     "",
-                    33.5
+                    "",
+                    33.5,
+                    5.3
                 ],
                 [
                     "Fred3",
+                    "",
                     33.5,
+                    10.4,
                     "",
                     {
                         "type": "Date",
-                        "timestamp": 1427746942000
-                    },
-                    10.4,
-                    ""
+                        "timestamp": 1427892662000
+                    }
                 ]
             ],
             "types": [
@@ -5425,53 +5485,68 @@
                     "subtype": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2",
-                            "3",
-                            "4",
-                            "5",
-                            "6"
+                            {
+                                "type": "Date",
+                                "timestamp": 1288584000000
+                            },
+                            302.22,
+                            305.6,
+                            302.2,
+                            304.18,
+                            105972300,
+                            40.99
                         ],
                         [
-                            "0",
-                            "1",
-                            "2",
-                            "3",
-                            "4",
-                            "5",
-                            "6"
+                            {
+                                "type": "Date",
+                                "timestamp": 1288670400000
+                            },
+                            307,
+                            310.19,
+                            307,
+                            309.36,
+                            108482500,
+                            41.69
                         ],
                         [
-                            "0",
-                            "1",
-                            "2",
-                            "3",
-                            "4",
-                            "5",
-                            "6"
+                            {
+                                "type": "Date",
+                                "timestamp": 1288756800000
+                            },
+                            311.37,
+                            312.88,
+                            308.53,
+                            312.8,
+                            127087100,
+                            42.15
                         ],
                         [
-                            "0",
-                            "1",
-                            "2",
-                            "3",
-                            "4",
-                            "5",
-                            "6"
+                            {
+                                "type": "Date",
+                                "timestamp": 1288843200000
+                            },
+                            315.45,
+                            320.18,
+                            315.03,
+                            318.27,
+                            160622000,
+                            42.89
                         ],
                         [
-                            "0",
-                            "1",
-                            "2",
-                            "3",
-                            "4",
-                            "5",
-                            "6"
+                            {
+                                "type": "Date",
+                                "timestamp": 1288929600000
+                            },
+                            317.99,
+                            319.57,
+                            316.75,
+                            317.13,
+                            90313300,
+                            42.73
                         ]
                     ],
                     "types": [
-                        "string",
+                        "time",
                         "double",
                         "double",
                         "double",
@@ -5499,12 +5574,9 @@
         },
         "v15": [
             {
-                "tags": "groovyret",
-                "code": "# output container - 14\na = beaker.createOutputContainer()\na.addItem(aapl.head())\na.addItem([2,3,4,5,6])\nbeaker.v14 = a\na\n",
-                "outputtype": "OutputContainer",
                 "type": "BeakerCodeCell",
                 "cellId": "codecell",
-                "evaluatorId": "Python3",
+                "tags": "groovyret",
                 "output": {
                     "type": "OutputContainer",
                     "items": [
@@ -5513,53 +5585,68 @@
                             "subtype": "TableDisplay",
                             "values": [
                                 [
-                                    "0",
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6"
+                                    {
+                                        "type": "Date",
+                                        "timestamp": 1288584000000
+                                    },
+                                    302.22,
+                                    305.6,
+                                    302.2,
+                                    304.18,
+                                    105972300,
+                                    40.99
                                 ],
                                 [
-                                    "0",
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6"
+                                    {
+                                        "type": "Date",
+                                        "timestamp": 1288670400000
+                                    },
+                                    307,
+                                    310.19,
+                                    307,
+                                    309.36,
+                                    108482500,
+                                    41.69
                                 ],
                                 [
-                                    "0",
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6"
+                                    {
+                                        "type": "Date",
+                                        "timestamp": 1288756800000
+                                    },
+                                    311.37,
+                                    312.88,
+                                    308.53,
+                                    312.8,
+                                    127087100,
+                                    42.15
                                 ],
                                 [
-                                    "0",
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6"
+                                    {
+                                        "type": "Date",
+                                        "timestamp": 1288843200000
+                                    },
+                                    315.45,
+                                    320.18,
+                                    315.03,
+                                    318.27,
+                                    160622000,
+                                    42.89
                                 ],
                                 [
-                                    "0",
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6"
+                                    {
+                                        "type": "Date",
+                                        "timestamp": 1288929600000
+                                    },
+                                    317.99,
+                                    319.57,
+                                    316.75,
+                                    317.13,
+                                    90313300,
+                                    42.73
                                 ]
                             ],
                             "types": [
-                                "string",
+                                "time",
                                 "double",
                                 "double",
                                 "double",
@@ -5584,7 +5671,10 @@
                             6
                         ]
                     ]
-                }
+                },
+                "outputtype": "OutputContainer",
+                "evaluatorId": "Python3",
+                "code": "# output container - 14\na = beaker.createOutputContainer()\na.addItem(aapl.head())\na.addItem([2,3,4,5,6])\nbeaker.v14 = a\na\n"
             }
         ],
         "v16": {

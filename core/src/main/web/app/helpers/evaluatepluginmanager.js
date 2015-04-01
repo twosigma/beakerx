@@ -30,7 +30,7 @@
       var _loadInProgress;
 
       var loadEvaluator = function(ev) {
-        bkHelper.showStatus("Loading plugin "+ev.name);
+        bkHelper.showStatus("Loading plugin " + ev.name);
         return bkUtils.loadModule(ev.url, ev.name);
       };
       var doNext = function() {
@@ -42,13 +42,13 @@
           if (plugins[_loadInProgress.name] || plugins[_loadInProgress.url]) { // plugin code already loaded
             if (plugins[_loadInProgress.name]) {
               _loadInProgress.resolve(plugins[_loadInProgress.name])
-              .finally(function () {
+              .finally(function() {
                 _loadInProgress = undefined;
               })
               .then(doNext);
             } else {
               _loadInProgress.resolve(plugins[_loadInProgress.url])
-              .finally(function () {
+              .finally(function() {
                 _loadInProgress = undefined;
               })
               .then(doNext);
@@ -57,7 +57,7 @@
           }
           return loadEvaluator(_loadInProgress)
           .then(_loadInProgress.resolve,  _loadInProgress.reject)
-          .finally(function () {
+          .finally(function() {
             bkHelper.clearStatus("Loading plugin " + _loadInProgress.name);
             _loadInProgress = undefined;
           })
@@ -78,7 +78,7 @@
         return nameToUrlMap;
       },
       addNameToUrlEntry: function(name, url) {
-        if ( typeof url === 'string' ) {
+        if (typeof url === 'string') {
           nameToUrlMap[name] = url;
         } else {
           nameToUrlMap[name] = url.url;
@@ -158,7 +158,7 @@
               },
               reject: function(err) {
                 // This is called if the URL is bad or there is a syntax error in the JS.
-                bkHelper.showTransientStatus("Failed to find plugin "+name+": "+err);
+                bkHelper.showTransientStatus("Failed to find plugin " + name + ": " + err);
                 console.error(err);
                 if (_.isEmpty(name)) {
                   deferred.reject("failed to find plugin: " + url);

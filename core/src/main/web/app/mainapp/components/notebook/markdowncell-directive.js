@@ -48,7 +48,7 @@
     ce.find("div").replaceWith(function() { return "\n" + this.innerHTML; });
     ce.find("br").replaceWith("\n");
 
-    return ce.text();
+    return ce.html();
   }
 
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
@@ -103,7 +103,7 @@
           }
 
           var markdown = element.find('.markdown');
-          markdown.html(scope.cellmodel.body);
+          markdown.text(scope.cellmodel.body);
 
           $timeout(function(){
             markdown.focus();

@@ -355,10 +355,10 @@ class Beaker:
     """Runtime support for Python code in Beaker."""
     session_id = ''
     core_url = '127.0.0.1:' + os.environ['beaker_core_port']
-    password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
-    password_mgr.add_password(None, core_url, 'beaker',
+    _beaker_password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+    _beaker_password_mgr.add_password(None, core_url, 'beaker',
                               os.environ['beaker_core_password'])
-    urllib2.install_opener(urllib2.build_opener(urllib2.HTTPBasicAuthHandler(password_mgr), urllib2.ProxyHandler({})))
+    _beaker_url_opener = urllib2.build_opener(urllib2.HTTPBasicAuthHandler(_beaker_password_mgr), urllib2.ProxyHandler({}))
 
     def set4(self, var, val, unset, sync):
         args = {'name': var, 'session':self.session_id, 'sync':sync}
@@ -367,7 +367,7 @@ class Beaker:
             args['value'] = json.dumps(val, cls=DataFrameEncoder)
         req = urllib2.Request('http://' + self.core_url + '/rest/namespace/set',
                               urllib.urlencode(args))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         reply = conn.read()
         if reply != 'ok':
             raise NameError(reply)
@@ -375,7 +375,7 @@ class Beaker:
     def get(self, var):
         req = urllib2.Request('http://' + self.core_url + '/rest/namespace/get?' + 
                               urllib.urlencode({'name': var, 'session':self.session_id}))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = json.loads(conn.read())
         if not result['defined']:
             raise NameError('name \'' + var + '\' is not defined in notebook namespace')
@@ -401,7 +401,7 @@ class Beaker:
         args = {'filter': filter, 'session':self.session_id}
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/evaluate',
                               urllib.urlencode(args))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = json.loads(conn.read())
         return transformBack(result)
 
@@ -409,7 +409,7 @@ class Beaker:
         args = {'evaluator': evaluator, 'code' : code, 'session':self.session_id}
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/evaluateCode',
                               urllib.urlencode(args))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = json.loads(conn.read())
         return transformBack(result)
 
@@ -417,7 +417,7 @@ class Beaker:
         args = {'msg': msg, 'session':self.session_id}
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/showStatus',
                               urllib.urlencode(args))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 
@@ -425,7 +425,7 @@ class Beaker:
         args = {'msg': msg, 'session':self.session_id}
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/clearStatus',
                               urllib.urlencode(args))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 
@@ -433,21 +433,21 @@ class Beaker:
         args = {'msg': msg, 'session':self.session_id}
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/showTransientStatus',
                               urllib.urlencode(args))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 
     def getEvaluators(self):
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/getEvaluators?' + 
                               urllib.urlencode({'session':self.session_id}))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = json.loads(conn.read())
         return transformBack(result)
 
     def getCodeCells(self,filter):
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/getCodeCells?' + 
                               urllib.urlencode({'session':self.session_id, 'filter':filter}))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = json.loads(conn.read())
         return transformBack(result)
 
@@ -455,7 +455,7 @@ class Beaker:
         args = {'name': name, 'body':body, 'session':self.session_id}
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/setCodeCellBody',
                               urllib.urlencode(args))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 
@@ -463,7 +463,7 @@ class Beaker:
         args = {'name': name, 'evaluator':evaluator, 'session':self.session_id}
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/setCodeCellEvaluator',
                               urllib.urlencode(args))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 
@@ -471,7 +471,7 @@ class Beaker:
         args = {'name': name, 'tags':tags, 'session':self.session_id}
         req = urllib2.Request('http://' + self.core_url + '/rest/notebookctrl/setCodeCellTags',
                               urllib.urlencode(args))
-        conn = urllib2.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 

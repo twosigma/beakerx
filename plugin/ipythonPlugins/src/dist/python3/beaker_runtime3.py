@@ -356,10 +356,10 @@ class Beaker:
     """Runtime support for Python code in Beaker."""
     session_id = ''
     core_url = '127.0.0.1:' + os.environ['beaker_core_port']
-    password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-    password_mgr.add_password(None, core_url, 'beaker',
+    _beaker_password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+    _beaker_password_mgr.add_password(None, core_url, 'beaker',
                               os.environ['beaker_core_password'])
-    urllib.request.install_opener(urllib.request.build_opener(urllib.request.HTTPBasicAuthHandler(password_mgr), urllib.request.ProxyHandler({})))
+    _beaker_url_opener = urllib.request.build_opener(urllib.request.HTTPBasicAuthHandler(_beaker_password_mgr), urllib.request.ProxyHandler({}))
 	
     def set4(self, var, val, unset, sync):
         args = {'name': var, 'session':self.session_id, 'sync':sync}
@@ -368,7 +368,7 @@ class Beaker:
             args['value'] = json.dumps(val, cls=DataFrameEncoder)
         req = urllib.request.Request('http://' + self.core_url + '/rest/namespace/set',
                                      urllib.parse.urlencode(args).encode('utf8'))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         reply = conn.read().decode("utf-8")
         if reply != 'ok':
             raise NameError(reply)
@@ -378,7 +378,7 @@ class Beaker:
                                      urllib.parse.urlencode({
                     'name': var,
                     'session':self.session_id}))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = json.loads(conn.read().decode())
         if not result['defined']:
             raise NameError('name \'' + var + '\' is not defined in notebook namespace')
@@ -404,7 +404,7 @@ class Beaker:
         args = {'filter': filter, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/evaluate',
                                      urllib.parse.urlencode(args).encode('utf8'))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = json.loads(conn.read().decode())
         return transformBack(result)
 	
@@ -412,7 +412,7 @@ class Beaker:
         args = {'evaluator': evaluator, 'code' : code, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/evaluateCode',
                                      urllib.parse.urlencode(args).encode('utf8'))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = json.loads(conn.read().decode())
         return transformBack(result)
 	
@@ -420,7 +420,7 @@ class Beaker:
         args = {'msg': msg, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/showStatus',
                                      urllib.parse.urlencode(args).encode('utf8'))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 	
@@ -428,7 +428,7 @@ class Beaker:
         args = {'msg': msg, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/clearStatus',
                                      urllib.parse.urlencode(args).encode('utf8'))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 	
@@ -436,7 +436,7 @@ class Beaker:
         args = {'msg': msg, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/showTransientStatus',
                                      urllib.parse.urlencode(args).encode('utf8'))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 	
@@ -444,7 +444,7 @@ class Beaker:
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/getEvaluators?' + 
                                      urllib.parse.urlencode({
                     'session':self.session_id}))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = json.loads(conn.read().decode())
         return transformBack(result)
 	
@@ -452,7 +452,7 @@ class Beaker:
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/getCodeCells?' + 
                                      urllib.parse.urlencode({
                     'session':self.session_id, 'filter':filter}))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = json.loads(conn.read().decode())
         return transformBack(result)
 	
@@ -460,7 +460,7 @@ class Beaker:
         args = {'name': name, 'body':body, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/setCodeCellBody',
                                      urllib.parse.urlencode(args).encode('utf8'))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 	
@@ -468,7 +468,7 @@ class Beaker:
         args = {'name': name, 'evaluator':evaluator, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/setCodeCellEvaluator',
                                      urllib.parse.urlencode(args).encode('utf8'))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 	
@@ -476,7 +476,7 @@ class Beaker:
         args = {'name': name, 'tags':tags, 'session':self.session_id}
         req = urllib.request.Request('http://' + self.core_url + '/rest/notebookctrl/setCodeCellTags',
                                      urllib.parse.urlencode(args).encode('utf8'))
-        conn = urllib.request.urlopen(req)
+        conn = self._beaker_url_opener.open(req)
         result = conn.read()
         return result=="true"
 	

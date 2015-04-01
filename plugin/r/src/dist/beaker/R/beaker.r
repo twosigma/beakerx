@@ -15,6 +15,8 @@
 library(RCurl, quietly=TRUE)
 library(RJSONIO, quietly=TRUE)
 
+options(RCurlOptions = list(httpheader = c(Expect=''), noproxy = '127.0.0.1'))
+
 pwarg = paste('beaker:', Sys.getenv("beaker_core_password"), sep='')
 
 session_id = ''

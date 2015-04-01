@@ -527,7 +527,6 @@
           }
         });
 
-        scope.cm.focus();
         scope.updateUI(scope.getEvaluator());
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope.cm);
         scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
@@ -546,7 +545,7 @@
         var changeHandler = function(cm, e) {
           if (scope.cellmodel.input.body !== cm.getValue()) {
             scope.cellmodel.lineCount = cm.lineCount();
-            scope.cellmodel.input.body = cm.getValue();            
+            scope.cellmodel.input.body = cm.getValue();
             if (! bkSessionManager.isNotebookModelEdited()) {
               bkSessionManager.setNotebookModelEdited(true);
               bkUtils.refreshRootScope();
@@ -585,6 +584,10 @@
           var cells = [scope.cellmodel];
           return bkUtils.generateNotebook([evaluator], cells);
         };
+
+        scope.$on('beaker.cell.added', function(e, cellmodel) {
+          if (cellmodel === scope.cellmodel) scope.cm.focus();
+        });
 
         scope.$on("$destroy", function() {
           CodeMirror.off(window, "resize", resizeHandler);

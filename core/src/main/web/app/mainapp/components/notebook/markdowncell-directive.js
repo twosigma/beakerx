@@ -113,12 +113,16 @@
           });
         };
 
-        scope.edit();
+        preview();
 
         element.find('.markdown').on('blur', function() {
           scope.$apply(function() {
             syncContentAndPreview();
           });
+        });
+
+        scope.$on('beaker.cell.added', function(e, cellmodel) {
+          if (cellmodel === scope.cellmodel) scope.edit();
         });
 
         scope.$watch('cellmodel.body', function(newVal, oldVal) {

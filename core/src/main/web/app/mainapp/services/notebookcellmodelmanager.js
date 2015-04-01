@@ -290,6 +290,10 @@
           throw "target cell " + id + " was not found";
         }
         recreateCellMap();
+
+        $timeout(function() {
+          $rootScope.$broadcast('beaker.cell.added', cell);
+        });
       },
       insertAt: function(index, cell,doNotClearUndoAction) {
         if (_.isArray(cell)) {

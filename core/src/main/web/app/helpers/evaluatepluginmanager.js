@@ -30,7 +30,7 @@
       var _loadInProgress;
 
       var loadEvaluator = function(ev) {
-        bkHelper.showStatus("Loading plugin " + ev.name);
+        bkHelper.showStatus('Loading plugin ' + ev.name);
         return bkUtils.loadModule(ev.url, ev.name);
       };
       var doNext = function() {
@@ -59,7 +59,7 @@
           return loadEvaluator(_loadInProgress)
           .then(_loadInProgress.resolve,  _loadInProgress.reject)
           .finally(function() {
-            bkHelper.clearStatus("Loading plugin " + _loadInProgress.name);
+            bkHelper.clearStatus('Loading plugin ' + _loadInProgress.name);
             _loadInProgress = undefined;
           })
           .then(doNext);
@@ -99,7 +99,7 @@
             if (factory !== undefined && factory.create !== undefined) {
               return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
             } else {
-              deferred.reject("no factory for evaluator plugin");
+              deferred.reject('no factory for evaluator plugin');
             }
           }, function(err) {
             console.log(err);
@@ -114,7 +114,7 @@
             name = nameOrUrl;
             url = nameToUrlMap[nameOrUrl];
           } else {
-            name = "";
+            name = '';
             url = nameOrUrl;
           }
 
@@ -140,7 +140,7 @@
                         backdropClick: true,
                         template: JST['helpers/plugin-load-error']({pluginId: name})
                       });
-                      deferred.reject("no factory for evaluator plugin");
+                      deferred.reject('no factory for evaluator plugin');
                     }
                   }, function(err) {
                     // This function is never called.  Instead the
@@ -154,20 +154,20 @@
                     }
                     console.error(err);
                     if (_.isEmpty(name)) {
-                      deferred.reject("failed to load plugin: " + url);
+                      deferred.reject('failed to load plugin: ' + url);
                     } else {
-                      deferred.reject("failed to load plugin: " + name + " at " + url);
+                      deferred.reject('failed to load plugin: ' + name + ' at ' + url);
                     }
                   });
               },
               reject: function(err) {
                 // This is called if the URL is bad or there is a syntax error in the JS.
-                bkHelper.showTransientStatus("Failed to find plugin " + name + ": " + err);
+                bkHelper.showTransientStatus('Failed to find plugin ' + name + ': ' + err);
                 console.error(err);
                 if (_.isEmpty(name)) {
-                  deferred.reject("failed to find plugin: " + url);
+                  deferred.reject('failed to find plugin: ' + url);
                 } else {
-                  deferred.reject("failed to find plugin: " + name + " at " + url);
+                  deferred.reject('failed to find plugin: ' + name + ' at ' + url);
                 }
               }
           };

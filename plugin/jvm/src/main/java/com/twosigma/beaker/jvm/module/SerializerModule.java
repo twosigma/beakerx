@@ -93,6 +93,7 @@ public class SerializerModule extends AbstractModule {
     bind(UpdatableEvaluationResult.Serializer.class);
     bind(OutputContainer.Serializer.class);
     bind(BeakerProgressUpdate.Serializer.class);
+    bind(TableDisplay.DeSerializer.class);
   }
 
   @Provides

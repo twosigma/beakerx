@@ -108,7 +108,8 @@
           return deferred.promise;
         } else {
           deferred = bkUtils.newDeferred();
-          var name, url;
+          var name;
+          var url;
           if (nameToUrlMap[nameOrUrl]) {
             name = nameOrUrl;
             url = nameToUrlMap[nameOrUrl];

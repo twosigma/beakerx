@@ -16,6 +16,6 @@
 
 <p class='depth-indicator'>{{getFullIndex()}}</p>
 <div ng-click="edit($event)" class='markdown-wrapper'>
-  <div ng-keydown="keyDown($event)" tabindex="0" ng-show="mode=='edit'" class="editable-text markdown" contenteditable="{{ isEditable() }}"></div>
+  <div ng-keydown="keyDown($event)" tabindex="0" ng-click="$event.stopPropagation()" ng-show="mode=='edit'" class="editable-text markdown" contenteditable="{{ isEditable() }}"></div>
   <div ng-show="mode=='preview'" class="markup"></div>
 </div>

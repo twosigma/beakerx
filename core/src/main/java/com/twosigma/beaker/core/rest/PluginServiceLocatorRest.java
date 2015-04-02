@@ -78,6 +78,9 @@ public class PluginServiceLocatorRest {
     "location %(base_url)s/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/;\n" +
     "  proxy_set_header Authorization \"Basic %(auth)s\";\n" +
+    "  proxy_http_version 1.1;\n" +
+    "  proxy_set_header Upgrade $http_upgrade;\n" +
+    "  proxy_set_header Connection \"upgrade\";\n" +
     "}\n";
 
   private static final String IPYTHON_RULES_BASE =

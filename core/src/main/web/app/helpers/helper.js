@@ -594,8 +594,8 @@
             init: function(pluginName, serviceBase) {
               if (!this.initialized) {
                 this.cometd = new $.Cometd();
-                this.cometd.unregisterTransport("websocket");
-                this.cometd.init(serviceBase + "/cometd");
+                //this.cometd.unregisterTransport("websocket");
+                this.cometd.init(document.baseURI + serviceBase + "/cometd/");
                 this.hlistener = this.cometd.addListener('/meta/handshake', function(message) {
                   if (window.bkDebug) console.log(pluginName+'/meta/handshake');
                   if (message.successful) {

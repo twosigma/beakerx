@@ -15,15 +15,20 @@
  */
 package com.twosigma.beaker.shared.servlet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletException;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+
 import org.cometd.annotation.AnnotationCometdServlet;
 import org.cometd.annotation.ServerAnnotationProcessor;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.BayeuxServerImpl;
+import org.cometd.websocket.server.WebSocketTransport;
 import org.eclipse.jetty.util.Loader;
 
 /**

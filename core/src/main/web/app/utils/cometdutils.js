@@ -21,8 +21,9 @@
   'use strict';
   var module = angular.module('bk.cometdUtils', []);
   module.factory('cometdUtils', function () {
-    $.cometd.unregisterTransport("websocket");
-    $.cometd.init("cometd");
+    $.cometd.init({
+      url: document.baseURI+'cometd/'
+    });
     var _statusListener;
     return {
       addConnectedStatusListener: function (cb) {

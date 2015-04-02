@@ -18,6 +18,7 @@ package com.twosigma.beaker.core;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.twosigma.beaker.shared.module.GuiceCometdModule;
+import com.twosigma.beaker.core.module.CometdModule;
 import com.twosigma.beaker.core.module.SerializerModule;
 import com.twosigma.beaker.core.module.URLConfigModule;
 import com.twosigma.beaker.core.module.WebServerModule;
@@ -29,6 +30,7 @@ import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
+
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -41,6 +43,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -63,7 +66,7 @@ public class Main {
   static {
     GuiceComponentProviderFactoryLogger.setLevel(Level.WARNING);
     WebApplicationImplLogger.setLevel(Level.WARNING);
-    JerseyLogger.setLevel(Level.OFF);
+    JerseyLogger.setLevel(Level.ALL);
   }
 
   private static final Integer PORT_BASE_START_DEFAULT = 8800;
@@ -184,9 +187,9 @@ public class Main {
         new DefaultWebServerConfigModule(webAppPref),
         new GeneralUtilsModule(),
         new WebServerModule(),
-        new URLConfigModule(),
         new SerializerModule(),
-        new GuiceCometdModule());
+        new GuiceCometdModule(),
+        new URLConfigModule());
 
     PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
     processStarter.start();

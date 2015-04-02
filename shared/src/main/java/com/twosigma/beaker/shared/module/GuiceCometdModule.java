@@ -15,6 +15,9 @@
  */
 package com.twosigma.beaker.shared.module;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -25,19 +28,42 @@ import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.annotation.ServerAnnotationProcessor;
 import org.cometd.annotation.Service;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.JacksonJSONContextServer;
+import org.cometd.websocket.server.WebSocketTransport;
 
 // Should load from cometd-contrib
 public class GuiceCometdModule extends AbstractModule {
-
+//
+//  @Provides @Singleton
+//  BayeuxServer getBayeuxServer() {
+//    BayeuxServerImpl b = new BayeuxServerImpl();
+//    System.out.println("INFO: "+b.toString());
+//    System.out.println("INFO: "+b.getOption("logLevel"));
+//    
+//    b.addTransport(new WebSocketTransport(b));
+//    
+//    List<String> s = new ArrayList<String>();
+//    s.add("websocket");
+//    s.add("callback-polling");
+//    s.add("long-polling");
+//    b.setAllowedTransports(s);
+//    System.out.println("INFO: "+b.getAllowedTransports());
+//    b.setOption("logLevel", "3");
+//    return b;
+//  }
+  
   @Override
   protected final void configure() {
+    
     bind(BayeuxServer.class).to(BayeuxServerImpl.class).in(Scopes.SINGLETON);
+
+    
     if (discoverBindings()) {
       // automatically add services
       bindListener(new AbstractMatcher<TypeLiteral<?>>() {
@@ -105,6 +131,10 @@ public class GuiceCometdModule extends AbstractModule {
   @Provides
   public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om) {
     BayeuxServerImpl server = new BayeuxServerImpl();
+    
+    //server.setOption("logLevel", "3");
+    server.addTransport(new WebSocketTransport(server));
+
     server.setOption(BayeuxServerImpl.JSON_CONTEXT, new JacksonJSONContextServer() {
       @Override
       public ObjectMapper getObjectMapper() {

@@ -25,6 +25,7 @@ dependencies {
   compile group: 'org.apache.cxf', name: 'cxf-bundle-jaxrs', version: '2.7.7'
   compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.3'
   compile group: 'com.sun.jersey.contribs', name: 'jersey-guice', version: '1.17.1'
+  compile group: 'org.cometd.java', name: 'cometd-websocket-jetty', version: '2.7.0'
 }
 
 compileJava {

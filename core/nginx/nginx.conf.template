@@ -84,7 +84,10 @@ http {
     location @dopass {
       %(auth_cookie_rule)s
       proxy_pass http://127.0.0.1:%(port_beaker)s;
+      proxy_http_version 1.1;
       proxy_set_header Authorization "Basic %(auth)s";
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
     }
 
     %(plugin_section)s

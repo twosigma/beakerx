@@ -16,6 +16,8 @@
 
 import os
 import sys
+import subprocess
+import shutil
 
 if len(sys.argv) > 1:
     arg1 = sys.argv[1]
@@ -24,17 +26,19 @@ if len(sys.argv) > 1:
     elif arg1 == "--hash":
         os.execlp("python", "python")
     elif arg1 == "--profile":
+        ver = subprocess.check_output(["ipython", "ipython", "--version"])
+        if (ver.startswith("2.") or ver.startswith("1.")):
+            profile = subprocess.check_output(["ipython","locate","profile","julia"])
+            profile = profile.strip()
+            dest = sys.argv[2] +"/"+"profile_beaker_backend_" + sys.argv[3]
+            shutil.copytree(profile,dest)
+            sys.exit(0)
         os.execlp("ipython", "ipython", "profile",
                   "create", "beaker_backend_" + sys.argv[3],
                   "--ipython-dir=" + sys.argv[2])
 
 port = sys.argv.pop()
 
-# Get the location of julia and kernel.jl.
-# Is there a better way to do this? Manual override?
-pynb_conf = os.environ["beaker_tmp_dir"] + '/profile_beaker_backend_Julia/ipython_notebook_config.py'
-os.system('grep "^c.KernelManager.kernel_cmd" ~/.ipython/profile_julia/ipython_config.py >> ' + pynb_conf)
-
-os.execlp("ipython", "ipython", "notebook", "--pylab", "inline",
+os.execlp("ipython", "ipython", "notebook",
           "--ipython-dir=" + os.environ["beaker_tmp_dir"],
           "--profile", "beaker_backend_Julia")

@@ -27,10 +27,10 @@
 
     var evaluatorLoadQueue = (function() {
       var _queue = [];
-      var _loadInProgress = undefined;
+      var _loadInProgress;
 
       var loadEvaluator = function(ev) {
-        bkHelper.showStatus("Loading plugin "+ev.name);
+        bkHelper.showStatus('Loading plugin ' + ev.name);
         return bkUtils.loadModule(ev.url, ev.name);
       };
       var doNext = function() {
@@ -39,16 +39,17 @@
         }
         _loadInProgress = _queue.shift();
         if (_loadInProgress) {
-          if (plugins[_loadInProgress.name] || plugins[_loadInProgress.url]) { // plugin code already loaded
+          // plugin code already loaded
+          if (plugins[_loadInProgress.name] || plugins[_loadInProgress.url]) {
             if (plugins[_loadInProgress.name]) {
               _loadInProgress.resolve(plugins[_loadInProgress.name])
-              .finally(function () {
+              .finally(function() {
                 _loadInProgress = undefined;
               })
               .then(doNext);
             } else {
               _loadInProgress.resolve(plugins[_loadInProgress.url])
-              .finally(function () {
+              .finally(function() {
                 _loadInProgress = undefined;
               })
               .then(doNext);
@@ -57,8 +58,8 @@
           }
           return loadEvaluator(_loadInProgress)
           .then(_loadInProgress.resolve,  _loadInProgress.reject)
-          .finally(function () {
-            bkHelper.clearStatus("Loading plugin " + _loadInProgress.name)
+          .finally(function() {
+            bkHelper.clearStatus('Loading plugin ' + _loadInProgress.name);
             _loadInProgress = undefined;
           })
           .then(doNext);
@@ -78,7 +79,7 @@
         return nameToUrlMap;
       },
       addNameToUrlEntry: function(name, url) {
-        if ( typeof url === 'string' ) {
+        if (typeof url === 'string') {
           nameToUrlMap[name] = url;
         } else {
           nameToUrlMap[name] = url.url;
@@ -91,13 +92,14 @@
       },
       getEvaluatorFactoryAndShell: function(evaluatorSettings) {
         var nameOrUrl = evaluatorSettings.plugin;
+        var deferred;
         if (plugins[nameOrUrl]) { // plugin code already loaded
-          var deferred = bkUtils.newDeferred();
+          deferred = bkUtils.newDeferred();
           plugins[nameOrUrl].getEvaluatorFactory().then(function(factory) {
             if (factory !== undefined && factory.create !== undefined) {
               return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
             } else {
-              deferred.reject("no factory for evaluator plugin");
+              deferred.reject('no factory for evaluator plugin');
             }
           }, function(err) {
             console.log(err);
@@ -105,13 +107,14 @@
           });
           return deferred.promise;
         } else {
-          var deferred = bkUtils.newDeferred();
-          var name, url;
+          deferred = bkUtils.newDeferred();
+          var name;
+          var url;
           if (nameToUrlMap[nameOrUrl]) {
             name = nameOrUrl;
             url = nameToUrlMap[nameOrUrl];
           } else {
-            name = "";
+            name = '';
             url = nameOrUrl;
           }
 
@@ -128,14 +131,16 @@
                 return ex.getEvaluatorFactory()
                   .then(function(factory) {
                     if (factory !== undefined && factory.create !== undefined) {
-                      return factory.create(evaluatorSettings).then(function(ev) { deferred.resolve(ev); });
+                      return factory.create(evaluatorSettings).then(function(ev) {
+                        deferred.resolve(ev);
+                      });
                     } else {
                       $modal.open({
                         backdrop: true,
                         backdropClick: true,
                         template: JST['helpers/plugin-load-error']({pluginId: name})
                       });
-                      deferred.reject("no factory for evaluator plugin");
+                      deferred.reject('no factory for evaluator plugin');
                     }
                   }, function(err) {
                     // This function is never called.  Instead the
@@ -149,20 +154,20 @@
                     }
                     console.error(err);
                     if (_.isEmpty(name)) {
-                      deferred.reject("failed to load plugin: " + url);
+                      deferred.reject('failed to load plugin: ' + url);
                     } else {
-                      deferred.reject("failed to load plugin: " + name + " at " + url);
+                      deferred.reject('failed to load plugin: ' + name + ' at ' + url);
                     }
                   });
               },
               reject: function(err) {
                 // This is called if the URL is bad or there is a syntax error in the JS.
-                bkHelper.showTransientStatus("Failed to find plugin "+name+": "+err);
+                bkHelper.showTransientStatus('Failed to find plugin ' + name + ': ' + err);
                 console.error(err);
                 if (_.isEmpty(name)) {
-                  deferred.reject("failed to find plugin: " + url);
+                  deferred.reject('failed to find plugin: ' + url);
                 } else {
-                  deferred.reject("failed to find plugin: " + name + " at " + url);
+                  deferred.reject('failed to find plugin: ' + name + ' at ' + url);
                 }
               }
           };

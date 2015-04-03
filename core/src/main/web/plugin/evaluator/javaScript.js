@@ -151,7 +151,7 @@ define(function(require, exports, module) {
     var found = [], start = token.string;
 
     function maybeAdd(str) {
-      if (str.indexOf(start) === 0 && !arrayContains(found, str))
+      if (str.indexOf(start) === 0 && !_.contains(found, str))
         found.push(str);
     }
 
@@ -203,19 +203,6 @@ define(function(require, exports, module) {
     return found;
   };
   var Pos = CodeMirror.Pos;
-
-  function arrayContains(arr, item) {
-    if (!Array.prototype.indexOf) {
-      var i = arr.length;
-      while (i--) {
-        if (arr[i] === item) {
-          return true;
-        }
-      }
-      return false;
-    }
-    return arr.indexOf(item) !== -1;
-  }
 
   function scriptHint(editor, keywords, getToken, options) {
     // Find the token at the cursor

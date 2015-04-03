@@ -157,11 +157,11 @@ define(function(require, exports, module) {
 
     function gatherCompletions(obj) {
       if (typeof obj === "string")
-        forEach(stringProps, maybeAdd);
+        _.each(stringProps, maybeAdd);
       else if (obj instanceof Array)
-        forEach(arrayProps, maybeAdd);
+        _.each(arrayProps, maybeAdd);
       else if (obj instanceof Function)
-        forEach(funcProps, maybeAdd);
+        _.each(funcProps, maybeAdd);
       for (var name in obj)
         maybeAdd(name);
     }
@@ -198,16 +198,11 @@ define(function(require, exports, module) {
       for (var v = token.state.globalVars; v; v = v.next)
         maybeAdd(v.name);
       gatherCompletions(window);
-      forEach(keywords, maybeAdd);
+      _.each(keywords, maybeAdd);
     }
     return found;
   };
   var Pos = CodeMirror.Pos;
-
-  function forEach(arr, f) {
-    for (var i = 0, e = arr.length; i < e; ++i)
-      f(arr[i]);
-  }
 
   function arrayContains(arr, item) {
     if (!Array.prototype.indexOf) {

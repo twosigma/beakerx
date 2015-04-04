@@ -10,15 +10,15 @@
 //============================================================================
 
 /**
- * @module IPython
- * @namespace IPython
+ * @module IPython2
+ * @namespace IPython2
  * @submodule Kernel
  */
 
-var IPython = (function (IPython) {
+var IPython2 = (function (IPython2) {
     "use strict";
     
-    var utils = IPython.utils;
+    var utils = IPython2.utils;
 
     // Initialization and connection.
     /**
@@ -46,8 +46,8 @@ var IPython = (function (IPython) {
         
         this.bind_events();
         this.init_iopub_handlers();
-        this.comm_manager = new IPython.CommManager(this);
-        // this.widget_manager = new IPython.WidgetManager(this.comm_manager); // XXX temporarily disabled
+        this.comm_manager = new IPython2.CommManager(this);
+        // this.widget_manager = new IPython2.WidgetManager(this.comm_manager); // XXX temporarily disabled
     };
 
 
@@ -68,7 +68,7 @@ var IPython = (function (IPython) {
     
     Kernel.prototype.bind_events = function () {
         var that = this;
-        $([IPython.events]).on('send_input_reply.Kernel', function(evt, data) { 
+        $([IPython2.events]).on('send_input_reply.Kernel', function(evt, data) { 
             that.send_input_reply(data);
         });
     };
@@ -110,7 +110,7 @@ var IPython = (function (IPython) {
      * @method restart
      */
     Kernel.prototype.restart = function () {
-        $([IPython.events]).trigger('status_restarting.Kernel', {kernel: this});
+        $([IPython2.events]).trigger('status_restarting.Kernel', {kernel: this});
         if (this.running) {
             this.stop_channels();
             $.post(utils.url_join_encode(this.kernel_url, "restart"),
@@ -134,7 +134,7 @@ var IPython = (function (IPython) {
 
     Kernel.prototype._websocket_closed = function(ws_url, early) {
         this.stop_channels();
-        $([IPython.events]).trigger('websocket_closed.Kernel',
+        $([IPython2.events]).trigger('websocket_closed.Kernel',
             {ws_url: ws_url, kernel: this, early: early}
         );
     };
@@ -215,7 +215,7 @@ var IPython = (function (IPython) {
             if ( !channels[i].readyState ) return;
         }
         // all events ready, trigger started event.
-        $([IPython.events]).trigger('status_started.Kernel', {kernel: this});
+        $([IPython2.events]).trigger('status_started.Kernel', {kernel: this});
     };
     
     /**
@@ -352,7 +352,7 @@ var IPython = (function (IPython) {
             content.allow_stdin = true;
         }
         $.extend(true, content, options);
-        $([IPython.events]).trigger('execution_request.Kernel', {kernel: this, content:content});
+        $([IPython2.events]).trigger('execution_request.Kernel', {kernel: this, content:content});
         return this.send_shell_message("execute_request", content, callbacks);
     };
 
@@ -386,7 +386,7 @@ var IPython = (function (IPython) {
 
     Kernel.prototype.interrupt = function () {
         if (this.running) {
-            $([IPython.events]).trigger('status_interrupting.Kernel', {kernel: this});
+            $([IPython2.events]).trigger('status_interrupting.Kernel', {kernel: this});
             $.post(utils.url_join_encode(this.kernel_url, "interrupt"));
         }
     };
@@ -412,7 +412,7 @@ var IPython = (function (IPython) {
         var content = {
             value : input,
         };
-        $([IPython.events]).trigger('input_reply.Kernel', {kernel: this, content:content});
+        $([IPython2.events]).trigger('input_reply.Kernel', {kernel: this, content:content});
         var msg = this._get_msg("input_reply", content);
         this.stdin_channel.send(JSON.stringify(msg));
         return msg.header.msg_id;
@@ -464,7 +464,7 @@ var IPython = (function (IPython) {
 
     Kernel.prototype._handle_shell_reply = function (e) {
         var reply = $.parseJSON(e.data);
-        $([IPython.events]).trigger('shell_reply.Kernel', {kernel: this, reply:reply});
+        $([IPython2.events]).trigger('shell_reply.Kernel', {kernel: this, reply:reply});
         var content = reply.content;
         var metadata = reply.metadata;
         var parent_id = reply.parent_header.msg_id;
@@ -518,7 +518,7 @@ var IPython = (function (IPython) {
         }
         
         if (execution_state === 'busy') {
-            $([IPython.events]).trigger('status_busy.Kernel', {kernel: this});
+            $([IPython2.events]).trigger('status_busy.Kernel', {kernel: this});
         } else if (execution_state === 'idle') {
             // clear callbacks on idle, there can be no more
             if (callbacks !== undefined) {
@@ -529,17 +529,17 @@ var IPython = (function (IPython) {
                 }
             }
             // trigger status_idle event
-            $([IPython.events]).trigger('status_idle.Kernel', {kernel: this});
+            $([IPython2.events]).trigger('status_idle.Kernel', {kernel: this});
         } else if (execution_state === 'restarting') {
             // autorestarting is distinct from restarting,
             // in that it means the kernel died and the server is restarting it.
             // status_restarting sets the notification widget,
             // autorestart shows the more prominent dialog.
-            $([IPython.events]).trigger('status_autorestarting.Kernel', {kernel: this});
-            $([IPython.events]).trigger('status_restarting.Kernel', {kernel: this});
+            $([IPython2.events]).trigger('status_autorestarting.Kernel', {kernel: this});
+            $([IPython2.events]).trigger('status_restarting.Kernel', {kernel: this});
         } else if (execution_state === 'dead') {
             this.stop_channels();
-            $([IPython.events]).trigger('status_dead.Kernel', {kernel: this});
+            $([IPython2.events]).trigger('status_dead.Kernel', {kernel: this});
         }
     };
     
@@ -600,9 +600,9 @@ var IPython = (function (IPython) {
     };
 
 
-    IPython.Kernel = Kernel;
+    IPython2.Kernel = Kernel;
 
-    return IPython;
+    return IPython2;
 
-}(IPython));
+}(IPython2));
 

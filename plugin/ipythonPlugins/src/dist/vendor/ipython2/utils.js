@@ -8,12 +8,12 @@
 //============================================================================
 // Utilities
 //============================================================================
-IPython.namespace('IPython.utils');
+IPython2.namespace('IPython2.utils');
 
-IPython.utils = (function (IPython) {
+IPython2.utils = (function (IPython2) {
     "use strict";
     
-    IPython.load_extensions = function () {
+    IPython2.load_extensions = function () {
         // load one or more IPython notebook extensions with requirejs
         
         var extensions = [];
@@ -509,5 +509,5 @@ IPython.utils = (function (IPython) {
         is_focused : is_focused
     };
 
-}(IPython));
+}(IPython2));
 

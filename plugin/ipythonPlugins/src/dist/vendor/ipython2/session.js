@@ -9,10 +9,10 @@
 // Notebook
 //============================================================================
 
-var IPython = (function (IPython) {
+var IPython2 = (function (IPython2) {
     "use strict";
     
-    var utils = IPython.utils;
+    var utils = IPython2.utils;
     
     var Session = function(notebook, options){
         console.trace("xxx new session");
@@ -91,7 +91,7 @@ var IPython = (function (IPython) {
     Session.prototype._handle_start_success = function (data, status, xhr) {
         this.id = data.id;
         var kernel_service_url = utils.url_path_join(this.base_url, "api/kernels");
-        this.kernel = new IPython.Kernel(kernel_service_url);
+        this.kernel = new IPython2.Kernel(kernel_service_url);
       console.log("xxx calling _kernel_started with");
       console.log(data.kernel);
         this.kernel._kernel_started(data.kernel);
@@ -115,8 +115,8 @@ var IPython = (function (IPython) {
         this.kernel.kill();
     };
     
-    IPython.Session = Session;
+    IPython2.Session = Session;
 
-    return IPython;
+    return IPython2;
 
-}(IPython));
+}(IPython2));

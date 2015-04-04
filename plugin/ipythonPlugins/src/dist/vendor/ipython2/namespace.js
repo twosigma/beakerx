@@ -5,15 +5,15 @@
 //  the file COPYING, distributed as part of this software.
 //----------------------------------------------------------------------------
 
-var IPython = IPython || {};
+var IPython2 = IPython2 || {};
 
-IPython.namespace = function (ns_string) {
+IPython2.namespace = function (ns_string) {
     var parts = ns_string.split('.'),
-        parent = IPython,
+        parent = IPython2,
         i;
 
     // String redundant leading global
-    if (parts[0] === "IPython") {
+    if (parts[0] === "IPython2") {
         parts = parts.slice(1);
     }
 

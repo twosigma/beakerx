@@ -72,7 +72,7 @@ define(function(require, exports, module) {
               } : {
                 kernel: {
                   id: shellID,
-                  name: "python3"
+                  name: "ruby 0.3"
                 },
                 notebook: {
                   path: "/fake/path"

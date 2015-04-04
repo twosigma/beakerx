@@ -72,7 +72,7 @@ define(function(require, exports, module) {
               } : {
                 kernel: {
                   id: shellID,
-                  name: "python2"
+                  name: "python"
                 },
                 notebook: {
                   path: "/fake/path"
@@ -166,11 +166,7 @@ define(function(require, exports, module) {
             if (finalStuff.status === "ERROR")
               deferred.reject(finalStuff.payload);
             else
-<<<<<<< HEAD
               deferred.resolve(finalStuff.jsonres !== undefined ? finalStuff.jsonres : finalStuff.payload);
-=======
-              deferred.resolve(finalStuff.payload);
->>>>>>> origin/v1.2.1
           }
           if (refreshObj !== undefined)
             refreshObj.outputRefreshed();
@@ -178,11 +174,7 @@ define(function(require, exports, module) {
             bkHelper.refreshRootScope();       
           finalStuff = undefined;
         }
-<<<<<<< HEAD
-        
-=======
-                
->>>>>>> origin/v1.2.1
+
         var execute_reply = function(msg) {
           if (_theCancelFunction === null)
             return;
@@ -198,7 +190,6 @@ define(function(require, exports, module) {
           if (finalStuff !== undefined) {
             if (msg.status === "error")
               finalStuff.status = "ERROR";
-<<<<<<< HEAD
             else
               finalStuff.status = "FINISHED";
   
@@ -211,31 +202,12 @@ define(function(require, exports, module) {
               evaluation.status = "ERROR";
             else
               evaluation.status = "FINISHED";
-  
-=======
-            else
-              finalStuff.status = "FINISHED";
-            if (!_.isEmpty(result) && finalStuff.payload === undefined) {
-              finalStuff.payload = "<pre>" + result + "</pre>";
-            }
-          } else {
-            var evaluation = { };
-            if (msg.status === "error")
-              evaluation.status = "ERROR";
-            else
-              evaluation.status = "FINISHED";
-
->>>>>>> origin/v1.2.1
             if (!_.isEmpty(result)) {
               evaluation.payload = "<pre>" + result + "</pre>";
             }
             finalStuff = evaluation;
             bkHelper.timeout(doFinish,250);
-<<<<<<< HEAD
           }
-=======
-          }     
->>>>>>> origin/v1.2.1
         }
         var output = function output(a0, a1) {
           if (_theCancelFunction === null || gotError)
@@ -253,24 +225,15 @@ define(function(require, exports, module) {
 
           var evaluation = { };
           evaluation.status = "RUNNING";
-<<<<<<< HEAD
-          
-          if (type === "pyerr") {
-=======
 
           if ((ipyVersion == '3') ? (type === "error") : (type === "pyerr")) {
->>>>>>> origin/v1.2.1
             gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
               return  memo + "<br>" + myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(line));
             }, myPython.utils.fixConsole(content.evalue));
 
-<<<<<<< HEAD
-            evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
-=======
             evaluation.payload = (content.ename === "KeyboardInterrupt") ?
               "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
->>>>>>> origin/v1.2.1
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload
             }
@@ -278,17 +241,6 @@ define(function(require, exports, module) {
             evaluation.outputdata = [];
             if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
               evaluation.outputdata = finalStuff.outputdata;
-<<<<<<< HEAD
-            if (content.name === "stderr") {
-              evaluation.outputdata.push( { type : 'out', value : content.data } );
-            } else {
-              evaluation.outputdata.push( { type : 'err', value : content.data } );
-            }
-          } else {
-            var jsonres;
-            if(content.data['application/json'] !== undefined) {
-              jsonres = JSON.parse(content.data['application/json']);
-=======
             var text = (ipyVersion == '3') ? content.text : content.data;
             evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
                                         value: text});
@@ -305,7 +257,10 @@ define(function(require, exports, module) {
               oa.append_mime_type(content.data, elem);
             } else {
               oa.append_mime_type(content, elem);
->>>>>>> origin/v1.2.1
+            }
+            var jsonres;
+            if(content.data['application/json'] !== undefined) {
+              jsonres = JSON.parse(content.data['application/json']);
             }
             if (jsonres !== undefined && _.isObject(jsonres) && jsonres.type !== undefined) {
               evaluation.payload = jsonres;
@@ -315,13 +270,18 @@ define(function(require, exports, module) {
             } else {
               evaluation.jsonres = jsonres;
               var elem = $(document.createElement("div"));
-              var oa = new myPython.OutputArea(elem);
+	      var oa = (ipyVersion == '3') ?
+                (new myPython.OutputArea({events: {trigger: function(){}},
+                                        keyboard_manager: {register_events: function(){}}})) :
+	        (new myPython.OutputArea(elem));
               // twiddle the mime types? XXX
-              if (ipyVersion1) {
+              if (ipyVersion == '1') {
                 oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
-              } else {
+              } else if (ipyVersion == '2') {
                 oa.append_mime_type(content.data, elem);
-              }
+              } else {
+		oa.append_mime_type(content, elem);
+	      }
               evaluation.payload = elem.html();
               if (finalStuff !== undefined) {
                 finalStuff.payload = evaluation.payload;
@@ -336,13 +296,6 @@ define(function(require, exports, module) {
             finalStuff = evaluation;
             bkHelper.timeout(doFinish,150);
           }
-<<<<<<< HEAD
-          if (finalStuff === undefined) {            
-            finalStuff = evaluation;
-            bkHelper.timeout(doFinish,150);
-          }
-=======
->>>>>>> origin/v1.2.1
         };
         var callbacks = (ipyVersion == '1') ? {
           execute_reply: execute_reply,

@@ -34,7 +34,7 @@ define(function(require, exports, module) {
   };
   var JuliaProto = {
       pluginName: PLUGIN_NAME,
-      cmMode: "python",
+      cmMode: "julia",
       background: "#EAFAEF",
       bgColor: "#6EAC5E",
       fgColor: "#FFFFFF",

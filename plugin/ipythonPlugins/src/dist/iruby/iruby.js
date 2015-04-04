@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 /**
- * IRuby eval plugin
- * For creating and config evaluators that uses a IRuby kernel for evaluating ruby code
+ * Iruby eval plugin
+ * For creating and config evaluators that uses a IPython kernel for evaluating ruby code
  * and updating code cell outputs.
  */
 define(function(require, exports, module) {
@@ -72,15 +72,15 @@ define(function(require, exports, module) {
               } : {
                 kernel: {
                   id: shellID,
-                  name: "ruby 0.3"
+                  name: "python3"
                 },
                 notebook: {
                   path: "/fake/path"
                 }
               };
               var fakeNotebook = {
-                  events: {on: function (){},
-                    trigger: function (){}}
+                events: {on: function (){},
+                         trigger: function (){}}
               };
               var ajaxsettings = {
                   processData : false,
@@ -90,19 +90,19 @@ define(function(require, exports, module) {
                   dataType: "json",
                   success: function (data, status, xhr) {
                     self.kernel = (ipyVersion == '2') ?
-                        (new myPython.Kernel(base + "/api/kernels")) :
-                          (new myPython.Kernel(base + "/api/kernels",
-                              undefined,
-                              fakeNotebook,
-                              "fakename"));
-                        kernels[shellID] = self.kernel;
-                        // the data.id is the session id but it is not used yet
-                        if (ipyVersion == '2') {
-                          self.kernel._kernel_started({id: data.kernel.id});
-                        } else {
-                          self.kernel._kernel_created({id: data.kernel.id});
-                          self.kernel.running = true;
-                        }
+                      (new myPython.Kernel(base + "/api/kernels")) :
+                      (new myPython.Kernel(base + "/api/kernels",
+                                           undefined,
+                                           fakeNotebook,
+                                           "fakename"));
+                    kernels[shellID] = self.kernel;
+                    // the data.id is the session id but it is not used yet
+                    if (ipyVersion == '2') {
+                      self.kernel._kernel_started({id: data.kernel.id});
+                    } else {
+                      self.kernel._kernel_created({id: data.kernel.id});
+                      self.kernel.running = true;
+                    }
                   }
               };
               var url = myPython.utils.url_join_encode(serviceBase, 'api/sessions/');
@@ -146,134 +146,27 @@ define(function(require, exports, module) {
           deferred.reject("An evaluation is already in progress");
           return deferred.promise;
         }
-<<<<<<< HEAD
-      };
-      bkHelper.fcall(spin);
-    },
-    evaluate: function(code, modelOutput, refreshObj) {
-      // begin
-      var deferred = bkHelper.newDeferred();
-      
-      if (_theCancelFunction) {
-        deferred.reject("An evaluation is already in progress");
-        return deferred.promise;
-      }
-      var self = this;
-      var startTime = new Date().getTime();
-      var kernel = kernels[self.settings.shellID];
-      var finalStuff = undefined;
-      bkHelper.setupProgressOutput(modelOutput);
-      gotError = false;
-=======
->>>>>>> origin/v1.2.1
 
         var self = this;
         var startTime = new Date().getTime();
         var kernel = kernels[self.settings.shellID];
-<<<<<<< HEAD
-        kernel.interrupt();
-        bkHelper.setupCancellingOutput(modelOutput);
-      };
-
-      var doFinish = function() {
-        if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
-          _theCancelFunction = null;
-          if (finalStuff.status === "ERROR")
-            deferred.reject(finalStuff.payload);
-          else
-            deferred.resolve(finalStuff.jsonres !== undefined ? finalStuff.jsonres : finalStuff.payload);
-        }
-        if (refreshObj !== undefined)
-          refreshObj.outputRefreshed();
-        else
-          bkHelper.refreshRootScope();       
-        finalStuff = undefined;
-      }
-      
-      var execute_reply = function(msg) {
-        if (_theCancelFunction === null)
-          return;
-        // this is called when processing is completed
-        if (!ipyVersion1) {
-          msg = msg.content;
-        }
-        var result = _(msg.payload).map(function(payload) {
-          return IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(payload.text));
-        }).join("");
-        if (finalStuff !== undefined) {
-          if (msg.status === "error")
-            finalStuff.status = "ERROR";
-          else
-            finalStuff.status = "FINISHED";
-
-          if (!_.isEmpty(result) && finalStuff.payload === undefined) {
-            finalStuff.payload = "<pre>" + result + "</pre>";
-          }
-        } else {
-          var evaluation = { };
-          if (msg.status === "error")
-            evaluation.status = "ERROR";
-          else
-            evaluation.status = "FINISHED";
-
-          if (!_.isEmpty(result)) {
-            evaluation.payload = "<pre>" + result + "</pre>";
-          }
-          finalStuff = evaluation;
-          bkHelper.timeout(doFinish,250);
-        }
-      }
-      var output = function output(a0, a1) {
-        if (_theCancelFunction === null || gotError)
-          return;
-        // this is called to write output
-        var type;
-        var content;
-        if (ipyVersion1) {
-          type = a0;
-          content = a1;
-        } else {
-          type = a0.msg_type;
-          content = a0.content;
-        }
-        var evaluation = { };
-        evaluation.status = "RUNNING";
-
-        if (type === "pyerr") {
-          gotError = true;
-          var trace = _.reduce(content.traceback, function(memo, line) {
-            return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
-          }, IPython.utils.fixConsole(content.evalue));
-          evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [IPython.utils.fixConsole(content.evalue), trace];
-          if (finalStuff !== undefined) {
-            finalStuff.payload = evaluation.payload
-          }
-        } else if (type === "stream") {
-          evaluation.outputdata = [];
-          if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
-            evaluation.outputdata = finalStuff.outputdata;
-          if (content.name === "stderr") {
-            evaluation.outputdata.push( { type : 'out', value : content.data } );
-          } else {
-            evaluation.outputdata.push( { type : 'err', value : content.data } );
-=======
         var finalStuff = undefined;
         bkHelper.setupProgressOutput(modelOutput);
         gotError = false;
-
+        
         _theCancelFunction = function() {
           var kernel = kernels[self.settings.shellID];
           kernel.interrupt();
           bkHelper.setupCancellingOutput(modelOutput);
         };
-
+        
         var doFinish = function() {
           if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
             _theCancelFunction = null;
             if (finalStuff.status === "ERROR")
               deferred.reject(finalStuff.payload);
             else
-              deferred.resolve(finalStuff.payload);
+              deferred.resolve(finalStuff.jsonres !== undefined ? finalStuff.jsonres : finalStuff.payload);
           }
           if (refreshObj !== undefined)
             refreshObj.outputRefreshed();
@@ -288,7 +181,6 @@ define(function(require, exports, module) {
           // this is called when processing is completed
           if (ipyVersion != '1') {
             msg = msg.content;
->>>>>>> origin/v1.2.1
           }
           var result = _(msg.payload).map(function(payload) {
             // XXX can other mime types appear here?
@@ -300,6 +192,7 @@ define(function(require, exports, module) {
               finalStuff.status = "ERROR";
             else
               finalStuff.status = "FINISHED";
+  
             if (!_.isEmpty(result) && finalStuff.payload === undefined) {
               finalStuff.payload = "<pre>" + result + "</pre>";
             }
@@ -309,13 +202,12 @@ define(function(require, exports, module) {
               evaluation.status = "ERROR";
             else
               evaluation.status = "FINISHED";
-
             if (!_.isEmpty(result)) {
               evaluation.payload = "<pre>" + result + "</pre>";
             }
             finalStuff = evaluation;
             bkHelper.timeout(doFinish,250);
-          }   
+          }
         }
         var output = function output(a0, a1) {
           if (_theCancelFunction === null || gotError)
@@ -341,7 +233,7 @@ define(function(require, exports, module) {
             }, myPython.utils.fixConsole(content.evalue));
 
             evaluation.payload = (content.ename === "KeyboardInterrupt") ?
-                "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
+              "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload
             }
@@ -351,70 +243,55 @@ define(function(require, exports, module) {
               evaluation.outputdata = finalStuff.outputdata;
             var text = (ipyVersion == '3') ? content.text : content.data;
             evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
-                value: text});
+                                        value: text});
           } else {
             var elem = $(document.createElement("div"));
             var oa = (ipyVersion == '3') ?
+              (new myPython.OutputArea({events: {trigger: function(){}},
+                                        keyboard_manager: {register_events: function(){}}}))
+            : (new myPython.OutputArea(elem));
+            // twiddle the mime types? XXX
+            if (ipyVersion == '1') {
+              oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
+            } else if (ipyVersion == '2') {
+              oa.append_mime_type(content.data, elem);
+            } else {
+              oa.append_mime_type(content, elem);
+            }
+            var jsonres;
+            if(content.data['application/json'] !== undefined) {
+              jsonres = JSON.parse(content.data['application/json']);
+            }
+            if (jsonres !== undefined && _.isObject(jsonres) && jsonres.type !== undefined) {
+              evaluation.payload = jsonres;
+              if (finalStuff !== undefined) {
+                finalStuff.payload = evaluation.payload;
+              }
+            } else {
+              evaluation.jsonres = jsonres;
+              var elem = $(document.createElement("div"));
+	      var oa = (ipyVersion == '3') ?
                 (new myPython.OutputArea({events: {trigger: function(){}},
-                  keyboard_manager: {register_events: function(){}}}))
-                  : (new myPython.OutputArea(elem));
-                // twiddle the mime types? XXX
-                if (ipyVersion == '1') {
-                  oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
-                } else if (ipyVersion == '2') {
-                  oa.append_mime_type(content.data, elem);
-                } else {
-                  oa.append_mime_type(content, elem);
-                }
-                var table = bkHelper.findTable(elem[0]);
-                if (table) {
-                  evaluation.payload = table;
-                } else {
-                  evaluation.payload = elem.html();
-                }
-                if (finalStuff !== undefined) {
-                  finalStuff.payload = evaluation.payload;
-                }
+                                        keyboard_manager: {register_events: function(){}}})) :
+	        (new myPython.OutputArea(elem));
+              // twiddle the mime types? XXX
+              if (ipyVersion == '1') {
+                oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
+              } else if (ipyVersion == '2') {
+                oa.append_mime_type(content.data, elem);
+              } else {
+		oa.append_mime_type(content, elem);
+	      }
+              evaluation.payload = elem.html();
+              if (finalStuff !== undefined) {
+                finalStuff.payload = evaluation.payload;
+                finalStuff.jsonres = evaluation.jsonres;
+              }
+            }
+            if (finalStuff !== undefined) {
+              finalStuff.payload = evaluation.payload;
+            }
           }
-<<<<<<< HEAD
-          if (finalStuff !== undefined) {
-            finalStuff.payload = evaluation.payload;
-          }
-        }
-        if (finalStuff === undefined) {            
-          finalStuff = evaluation;
-          bkHelper.timeout(doFinish,150);
-        }
-      };
-      var callbacks = ipyVersion1 ? {
-        execute_reply: execute_reply,
-        output: output
-      } : {
-        shell: {reply: execute_reply},
-        iopub: {output: output}
-      };
-      kernel.execute(code, callbacks, {silent: false});
-      return deferred.promise;
-    },
-    autocomplete: function(code, cpos, cb) {
-      var kernel = kernels[this.settings.shellID];
-      if (ipyVersion1) {
-	kernel.complete(code, cpos, {'complete_reply': function(reply) {
-	    cb(reply.matches, reply.matched_text);
-	}});
-      } else {
-        kernel.complete(code, cpos, function(reply) {
-            cb(reply.content.matches, reply.matched_text);
-	});
-      }
-    },
-    interrupt: function() {
-      this.cancelExecution();
-    },
-    cancelExecution: function() {
-      if (_theCancelFunction) {
-        _theCancelFunction();
-=======
           if (finalStuff === undefined) {            
             finalStuff = evaluation;
             bkHelper.timeout(doFinish,150);
@@ -467,7 +344,6 @@ define(function(require, exports, module) {
       },
       spec: {
         interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
->>>>>>> origin/v1.2.1
       }
   };
 
@@ -484,8 +360,8 @@ define(function(require, exports, module) {
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2",
-            startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-            startedIndicatorStream: "stderr"
+        startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
+        startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
         var IRubyShell = function(settings, doneCB) {
@@ -518,9 +394,9 @@ define(function(require, exports, module) {
             var waitForKernel = function () {
               if ((ipyVersion == '3') ?
                   (kernel.ws.readyState == 1) :
-                    (kernel.shell_channel.readyState == 1 &&
-                        kernel.stdin_channel.readyState == 1 &&
-                        kernel.iopub_channel.readyState == 1)) {
+                  (kernel.shell_channel.readyState == 1 &&
+                   kernel.stdin_channel.readyState == 1 &&
+                   kernel.iopub_channel.readyState == 1)) {
                 finish();
               } else {
                 setTimeout(waitForKernel, 50);
@@ -576,7 +452,7 @@ define(function(require, exports, module) {
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/comm.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js"
-                               ], onSuccess, onFail);
+                              ], onSuccess, onFail);
           }
         }).error(function() {
           console.log("failed to locate plugin service", PLUGIN_NAME, arguments);

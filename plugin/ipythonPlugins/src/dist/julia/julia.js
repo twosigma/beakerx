@@ -34,7 +34,7 @@ define(function(require, exports, module) {
   };
   var JuliaProto = {
       pluginName: PLUGIN_NAME,
-      cmMode: "julia",
+      cmMode: "python",
       background: "#EAFAEF",
       bgColor: "#6EAC5E",
       fgColor: "#FFFFFF",
@@ -79,8 +79,8 @@ define(function(require, exports, module) {
                 }
               };
               var fakeNotebook = {
-                  events: {on: function (){},
-                    trigger: function (){}}
+                events: {on: function (){},
+                         trigger: function (){}}
               };
               var ajaxsettings = {
                   processData : false,
@@ -90,19 +90,19 @@ define(function(require, exports, module) {
                   dataType: "json",
                   success: function (data, status, xhr) {
                     self.kernel = (ipyVersion == '2') ?
-                        (new myPython.Kernel(base + "/api/kernels")) :
-                          (new myPython.Kernel(base + "/api/kernels",
-                              undefined,
-                              fakeNotebook,
-                              "fakename"));
-                        kernels[shellID] = self.kernel;
-                        // the data.id is the session id but it is not used yet
-                        if (ipyVersion == '2') {
-                          self.kernel._kernel_started({id: data.kernel.id});
-                        } else {
-                          self.kernel._kernel_created({id: data.kernel.id});
-                          self.kernel.running = true;
-                        }
+                      (new myPython.Kernel(base + "/api/kernels")) :
+                      (new myPython.Kernel(base + "/api/kernels",
+                                           undefined,
+                                           fakeNotebook,
+                                           "fakename"));
+                    kernels[shellID] = self.kernel;
+                    // the data.id is the session id but it is not used yet
+                    if (ipyVersion == '2') {
+                      self.kernel._kernel_started({id: data.kernel.id});
+                    } else {
+                      self.kernel._kernel_created({id: data.kernel.id});
+                      self.kernel.running = true;
+                    }
                   }
               };
               var url = myPython.utils.url_join_encode(serviceBase, 'api/sessions/');
@@ -153,24 +153,20 @@ define(function(require, exports, module) {
         var finalStuff = undefined;
         bkHelper.setupProgressOutput(modelOutput);
         gotError = false;
-
+        
         _theCancelFunction = function() {
           var kernel = kernels[self.settings.shellID];
           kernel.interrupt();
           bkHelper.setupCancellingOutput(modelOutput);
         };
-
+        
         var doFinish = function() {
           if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
             _theCancelFunction = null;
             if (finalStuff.status === "ERROR")
               deferred.reject(finalStuff.payload);
             else
-<<<<<<< HEAD
               deferred.resolve(finalStuff.jsonres !== undefined ? finalStuff.jsonres : finalStuff.payload);
-=======
-              deferred.resolve(finalStuff.payload);
->>>>>>> origin/v1.2.1
           }
           if (refreshObj !== undefined)
             refreshObj.outputRefreshed();
@@ -178,11 +174,7 @@ define(function(require, exports, module) {
             bkHelper.refreshRootScope();       
           finalStuff = undefined;
         }
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> origin/v1.2.1
         var execute_reply = function(msg) {
           if (_theCancelFunction === null)
             return;
@@ -200,10 +192,7 @@ define(function(require, exports, module) {
               finalStuff.status = "ERROR";
             else
               finalStuff.status = "FINISHED";
-<<<<<<< HEAD
   
-=======
->>>>>>> origin/v1.2.1
             if (!_.isEmpty(result) && finalStuff.payload === undefined) {
               finalStuff.payload = "<pre>" + result + "</pre>";
             }
@@ -213,21 +202,12 @@ define(function(require, exports, module) {
               evaluation.status = "ERROR";
             else
               evaluation.status = "FINISHED";
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> origin/v1.2.1
             if (!_.isEmpty(result)) {
               evaluation.payload = "<pre>" + result + "</pre>";
             }
             finalStuff = evaluation;
             bkHelper.timeout(doFinish,250);
-<<<<<<< HEAD
           }
-=======
-          }   
->>>>>>> origin/v1.2.1
         }
         var output = function output(a0, a1) {
           if (_theCancelFunction === null || gotError)
@@ -249,18 +229,11 @@ define(function(require, exports, module) {
           if ((ipyVersion == '3') ? (type === "error") : (type === "pyerr")) {
             gotError = true;
             var trace = _.reduce(content.traceback, function(memo, line) {
-<<<<<<< HEAD
-              return  memo + "<br>" + IPython.utils.fixCarriageReturn(IPython.utils.fixConsole(line));
-            }, IPython.utils.fixConsole(content.evalue));
-
-            evaluation.payload = (content.ename === "KeyboardInterrupt") ? "Interrupted" : [IPython.utils.fixConsole(content.evalue), trace];
-=======
               return  memo + "<br>" + myPython.utils.fixCarriageReturn(myPython.utils.fixConsole(line));
             }, myPython.utils.fixConsole(content.evalue));
 
             evaluation.payload = (content.ename === "KeyboardInterrupt") ?
-                "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
->>>>>>> origin/v1.2.1
+              "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload
             }
@@ -268,58 +241,56 @@ define(function(require, exports, module) {
             evaluation.outputdata = [];
             if (finalStuff !== undefined && finalStuff.outputdata !== undefined)
               evaluation.outputdata = finalStuff.outputdata;
-<<<<<<< HEAD
-            if (content.name === "stderr") {
-              evaluation.outputdata.push( { type : 'out', value : content.data } );
-            } else {
-              evaluation.outputdata.push( { type : 'err', value : content.data } );
-            }
+            var text = (ipyVersion == '3') ? content.text : content.data;
+            evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
+                                        value: text});
           } else {
             var elem = $(document.createElement("div"));
-            var oa = new IPython.OutputArea(elem);
+            var oa = (ipyVersion == '3') ?
+              (new myPython.OutputArea({events: {trigger: function(){}},
+                                        keyboard_manager: {register_events: function(){}}}))
+            : (new myPython.OutputArea(elem));
             // twiddle the mime types? XXX
-            if (ipyVersion1) {
+            if (ipyVersion == '1') {
               oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
-            } else {
+            } else if (ipyVersion == '2') {
               oa.append_mime_type(content.data, elem);
-            }
-            var table = bkHelper.findTable(elem[0]);
-            if (table) {
-              evaluation.payload = table;
             } else {
+              oa.append_mime_type(content, elem);
+            }
+            var jsonres;
+            if(content.data['application/json'] !== undefined) {
+              jsonres = JSON.parse(content.data['application/json']);
+            }
+            if (jsonres !== undefined && _.isObject(jsonres) && jsonres.type !== undefined) {
+              evaluation.payload = jsonres;
+              if (finalStuff !== undefined) {
+                finalStuff.payload = evaluation.payload;
+              }
+            } else {
+              evaluation.jsonres = jsonres;
+              var elem = $(document.createElement("div"));
+	      var oa = (ipyVersion == '3') ?
+                (new myPython.OutputArea({events: {trigger: function(){}},
+                                        keyboard_manager: {register_events: function(){}}})) :
+	        (new myPython.OutputArea(elem));
+              // twiddle the mime types? XXX
+              if (ipyVersion == '1') {
+                oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
+              } else if (ipyVersion == '2') {
+                oa.append_mime_type(content.data, elem);
+              } else {
+		oa.append_mime_type(content, elem);
+	      }
               evaluation.payload = elem.html();
+              if (finalStuff !== undefined) {
+                finalStuff.payload = evaluation.payload;
+                finalStuff.jsonres = evaluation.jsonres;
+              }
             }
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload;
             }
-=======
-            var text = (ipyVersion == '3') ? content.text : content.data;
-            evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
-                value: text});
-          } else {
-            var elem = $(document.createElement("div"));
-            var oa = (ipyVersion == '3') ?
-                (new myPython.OutputArea({events: {trigger: function(){}},
-                  keyboard_manager: {register_events: function(){}}}))
-                  : (new myPython.OutputArea(elem));
-                // twiddle the mime types? XXX
-                if (ipyVersion == '1') {
-                  oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
-                } else if (ipyVersion == '2') {
-                  oa.append_mime_type(content.data, elem);
-                } else {
-                  oa.append_mime_type(content, elem);
-                }
-                var table = bkHelper.findTable(elem[0]);
-                if (table) {
-                  evaluation.payload = table;
-                } else {
-                  evaluation.payload = elem.html();
-                }
-                if (finalStuff !== undefined) {
-                  finalStuff.payload = evaluation.payload;
-                }
->>>>>>> origin/v1.2.1
           }
           if (finalStuff === undefined) {            
             finalStuff = evaluation;
@@ -389,8 +360,8 @@ define(function(require, exports, module) {
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2",
-            startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-            startedIndicatorStream: "stderr"
+        startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
+        startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
         var JuliaShell = function(settings, doneCB) {
@@ -423,9 +394,9 @@ define(function(require, exports, module) {
             var waitForKernel = function () {
               if ((ipyVersion == '3') ?
                   (kernel.ws.readyState == 1) :
-                    (kernel.shell_channel.readyState == 1 &&
-                        kernel.stdin_channel.readyState == 1 &&
-                        kernel.iopub_channel.readyState == 1)) {
+                  (kernel.shell_channel.readyState == 1 &&
+                   kernel.stdin_channel.readyState == 1 &&
+                   kernel.iopub_channel.readyState == 1)) {
                 finish();
               } else {
                 setTimeout(waitForKernel, 50);
@@ -481,7 +452,7 @@ define(function(require, exports, module) {
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/comm.js",
                                "./plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js"
-                               ], onSuccess, onFail);
+                              ], onSuccess, onFail);
           }
         }).error(function() {
           console.log("failed to locate plugin service", PLUGIN_NAME, arguments);

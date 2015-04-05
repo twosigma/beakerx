@@ -1,0 +1,136 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Node",
+            "plugin": "Node",
+            "view": {
+                "cm": {
+                    "mode": "javascript"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionoEtULq",
+            "type": "section",
+            "title": "Node Server and JavaScript Client",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownLn3DJ5",
+            "type": "markdown",
+            "body": [
+                "[Node](https://nodejs.org/) is a server programmable in JavaScript, powered by Chrome's V8 runtime.  Node uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeuBtnh9",
+            "type": "code",
+            "evaluator": "Node",
+            "input": {
+                "body": [
+                    "var http = require('http');",
+                    "var count = 0;",
+                    "var server = http.createServer(function (request, response) {",
+                    "  response.setHeader(\"Access-Control-Allow-Origin\", \"*\");",
+                    "  response.writeHead(200, {\"Content-Type\": \"text/plain\"});",
+                    "  response.end(\"Hello from Node \" + count);",
+                    "  count = count + 1;",
+                    "});",
+                    "",
+                    "server.listen(8000);",
+                    "\"server started\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "server started",
+                "selectedType": "Text"
+            },
+            "evaluatorReader": true,
+            "lineCount": 11
+        },
+        {
+            "id": "codeYLvzUk",
+            "type": "code",
+            "evaluator": "Html",
+            "input": {
+                "body": [
+                    "<div id=\"message\"></div>"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<script>\nvar beaker = (window !== undefined && window.beaker !== undefined) ? window.beaker.beaker : undefined;\n</script>\n<div id=\"message\"></div>"
+                },
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 0
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "code5aRHZP",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var update = function () {",
+                    "  $.get(\"http://127.0.0.1:8000/\", function(response) {",
+                    "    document.getElementById(\"message\").innerHTML = (response);",
+                    "    window.setTimeout(update, 200);",
+                    "  });",
+                    "};",
+                    "update();"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "BeakerDisplay"
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        }
+    ],
+    "namespace": {
+        "0": null
+    }
+}

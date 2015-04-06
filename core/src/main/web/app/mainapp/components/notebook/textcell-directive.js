@@ -46,6 +46,9 @@
             bkSessionManager.setNotebookModelEdited(true);
           }
         });
+        scope.$on('beaker.cell.added', function(e, cellmodel) {
+          if (cellmodel === scope.cellmodel) scope.edit();
+        });
       }
     };
   });

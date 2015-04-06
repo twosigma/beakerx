@@ -93,7 +93,7 @@
           var top = markdownCell.offset().top;
           var bottom = top + markdownCell.outerHeight();
 
-          if (event.pageY < (top + bottom) / 2) {
+          if (event !== undefined && event.pageY < (top + bottom) / 2) {
             clickLocation = 'top';
           } else {
             clickLocation = 'bottom';

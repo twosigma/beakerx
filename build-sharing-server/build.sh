@@ -110,7 +110,7 @@ VENDORNOTEBOOKJS=(
     "bower_components/codemirror/keymap/emacs.js"
     "bower_components/q/q.js"
     "epiceditor/js/epiceditor.js"
-    "bower_components/underscore/underscore-min.js"
+    "bower_components/lodash/dist/lodash.underscore.js"
     "bower_components/underscore.string/dist/underscore.string.min.js"
     "angular-ui/ui-utils.min.js"
     "cometd/cometd.js"

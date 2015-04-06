@@ -109,8 +109,14 @@ task (copyMathJax, type: Copy) {
 	exclude 'unpacked'
 }
 
+task (copyRequireJS, type: Copy) {
+	from 'src/vendor/requirejs/'
+	into 'src/main/web/app/vendor/requirejs/'
+}
+
 task copyVendorStuff
 copyVendorStuff.dependsOn copyMathJax
+copyVendorStuff.dependsOn copyRequireJS
 
 task (extractPackages, type: Exec) {
   inputs.file '../data/allDeps.zip'

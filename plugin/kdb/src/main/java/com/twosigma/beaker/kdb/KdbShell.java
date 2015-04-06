@@ -72,11 +72,15 @@ public class KdbShell {
    */
   public void evaluate(SimpleEvaluationObject obj, String code) {
     try {
+      kdbProcess.getErrorHandler().reset(obj);
+      kdbProcess.getOutputHandler().reset(obj);
       Object result = kdbClient.execute(code);
       obj.finished(convert(result));
     } catch (Exception e) {
       obj.error(e);
     }
+    kdbProcess.getErrorHandler().reset(null);
+    kdbProcess.getOutputHandler().reset(null);
   }
 
   /**

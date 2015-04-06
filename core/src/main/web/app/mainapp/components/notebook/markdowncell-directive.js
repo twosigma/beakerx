@@ -39,7 +39,7 @@
       range.collapse(false);
       range.select();
     }
-  }
+  };
 
   // Extract text with preserving whitespace, inspired from:
   // http://stackoverflow.com/questions/3455931/extracting-text-from-a-contenteditable-div
@@ -49,7 +49,7 @@
     ce.find("br").replaceWith("\n");
 
     return ce.text();
-  }
+  };
 
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
     return {

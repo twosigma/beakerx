@@ -23,7 +23,8 @@
       bkEvaluatorManager,
       bkSessionManager,
       bkCoreManager,
-      bkCellMenuPluginManager) {
+      bkCellMenuPluginManager,
+      $timeout) {
     var CELL_TYPE = "section";
     return {
       restrict: 'E',
@@ -182,17 +183,70 @@
         };
       },
       link: function(scope, element, attrs) {
-        var titleElement = $(element.find(".bk-section-title").first());
-        titleElement.bind('blur', function() {
-          scope.resetTitle(titleElement.html().trim());
+        var formatMarkdown = function(text){
+          return text.replace('<p>','').replace('</p>','');
+        };
+        var preview = function() {
+          var markdownFragment = $('<div style="display: none;">' + scope.cellmodel.title + '</div>');
+          markdownFragment.appendTo('body'); // ugh mathjax doesn't operate on document fragments...
+
+          MathJax.Hub.Queue(["Typeset", MathJax.Hub, markdownFragment[0]]);
+          MathJax.Hub.Queue(function() {
+            var markedHtml = formatMarkdown(marked(markdownFragment.html()));
+            element.find('.markup').first().html(markedHtml);
+            markdownFragment.remove();
+          });
+          scope.mode = 'preview';
+        };
+
+        var syncContentAndPreview = function() {
+          scope.cellmodel.title = scope.cm.getValue();
+          preview();
+        };
+
+        scope.edit = function(event) {
+          if (bkHelper.isNotebookLocked()) return;
+
+          scope.mode = 'edit';
+
+          $timeout(function() {
+            var cm = scope.cm;
+            cm.setValue(scope.cellmodel.title);
+            cm.clearHistory();
+            cm.focus();
+          });
+        };
+
+        scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
+          electricChars: false,
+          extraKeys: {
+            "Ctrl-Enter": function(cm) {
+              scope.$apply(function() {
+                syncContentAndPreview();
+              });
+            },
+            "Cmd-Enter": function(cm) {
+              scope.$apply(function() {
+                syncContentAndPreview();
+              });
+            }
+          }
         });
 
-        scope.$watch('isContentEditable()', function(newValue) {
-          titleElement.attr('contenteditable', newValue);
+        scope.$watch('cellmodel.title', function(newVal, oldVal) {
+          if (scope.cm && newVal !== scope.cm.getValue()) {
+            if (newVal === null) {
+              newVal = "";
+            }
+            scope.cm.setValue(newVal);
+            scope.cm.clearHistory();
+          }
         });
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
-          if (cellmodel === scope.cellmodel) titleElement.focus();
+          if (cellmodel === scope.cellmodel) {
+            scope.edit();
+          }
         });
 
         if (scope.isInitializationCell()) {
@@ -200,6 +254,12 @@
         } else {
           element.closest(".bkcell").removeClass("initcell");
         }
+
+        scope.cm.on('blur', function() {
+          scope.$apply(function() {
+            syncContentAndPreview();
+          });
+        });
 
         scope.$watch('isInitializationCell()', function(newValue, oldValue) {
           if (newValue !== oldValue) {

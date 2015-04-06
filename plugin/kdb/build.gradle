@@ -33,8 +33,6 @@ repositories {
 
 dependencies {
   provided project(':plugin:jvm')
-//  provided project(':core')
-  provided group: 'com.google.guava', name: 'guava', version: '18.0'
 }
 
 compileJava {

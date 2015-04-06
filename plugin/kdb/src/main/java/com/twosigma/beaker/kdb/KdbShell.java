@@ -15,7 +15,7 @@
  */
 package com.twosigma.beaker.kdb;
 
-import com.google.common.primitives.*;
+
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.serialization.BasicObjectSerializer;
@@ -232,23 +232,24 @@ public class KdbShell {
     if (!c.isArray()) {
       return null;
     }
+    
     if (c.getComponentType().isPrimitive()) {
       if (o instanceof boolean[]) {
-        return Booleans.asList((boolean[]) o);
+        return Arrays.asList(ArrayUtils.toObject((boolean[]) o));
       } else if (o instanceof byte[]) {
-        return Bytes.asList((byte[]) o);
+        return Arrays.asList(ArrayUtils.toObject((byte[]) o));
       } else if (o instanceof short[]) {
-        return Shorts.asList((short[]) o);
+        return Arrays.asList(ArrayUtils.toObject((short[]) o));
       } else if (o instanceof int[]) {
-        return Ints.asList((int[]) o);
+        return Arrays.asList(ArrayUtils.toObject((int[]) o));
       } else if (o instanceof long[]) {
-        return Longs.asList((long[]) o);
+        return Arrays.asList(ArrayUtils.toObject((long[]) o));
       } else if (o instanceof float[]) {
-        return Floats.asList((float[]) o);
+        return Arrays.asList(ArrayUtils.toObject((float[]) o));
       } else if (o instanceof double[]) {
-        return Doubles.asList((double[]) o);
+        return Arrays.asList(ArrayUtils.toObject((double[]) o));
       } else if (o instanceof char[]) {
-        return Chars.asList((char[]) o);
+        return Arrays.asList(ArrayUtils.toObject((char[]) o));
       } else {
         throw new RuntimeException("Unhandled primitive type");
       }

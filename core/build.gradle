@@ -109,8 +109,14 @@ task (copyMathJax, type: Copy) {
 	exclude 'unpacked'
 }
 
+task (copyRequireJS, type: Copy) {
+	from 'src/vendor/requirejs/'
+	into 'src/main/web/app/vendor/requirejs/'
+}
+
 task copyVendorStuff
 copyVendorStuff.dependsOn copyMathJax
+copyVendorStuff.dependsOn copyRequireJS
 
 task (extractPackages, type: Exec) {
   inputs.file '../data/allDeps.zip'
@@ -140,6 +146,7 @@ task (compileCssEmbed, type: Exec) {
 
 task (copyNginx, type: Exec) {
   if (mac()) {
+//  def brewLocation = 'which brew'.execute().text[0..-10] // use nginx from current machine
     def brewLocation = '../launcher/mac/nginx/' // use nginx from old mac
     commandLine 'cp', '-f',
       brewLocation + 'lib/libpcre.1.dylib',

@@ -34,7 +34,6 @@
       $scope.evalTabOp.showSecurityWarning = false;
       $scope.evalTabOp.forceLoad = false;
       $scope.evalTabOp.newPluginNameOrUrl = "";
-      console.log("doClose");
       $modalInstance.close("ok");
     };
 

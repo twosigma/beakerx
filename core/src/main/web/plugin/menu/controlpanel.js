@@ -42,7 +42,7 @@ define(function(require, exports, module) {
       sortorder: 110
     },
     {
-      name: "Import",
+      name: "Upload (.bkr)",
       id: "import-menuitem",
       sortorder: 130,
       action: bkHelper.importNotebookDialog

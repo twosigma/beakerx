@@ -54,7 +54,7 @@
             "id": "markdownLn3DJ5",
             "type": "markdown",
             "body": [
-                "[Node](https://nodejs.org/) is a server programmable in JavaScript, powered by Chrome's V8 runtime.  Node uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices."
+                "[Node](https://nodejs.org/) is programmable in JavaScript and is powered by Chrome's V8 runtime, but runs on the server as a backend.  Node uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices."
             ],
             "evaluatorReader": false
         },
@@ -64,10 +64,9 @@
             "evaluator": "Node",
             "input": {
                 "body": [
-                    "var http = require('http');",
                     "var count = 0;",
                     "var server = http.createServer(function (request, response) {",
-                    "  response.setHeader(\"Access-Control-Allow-Origin\", \"*\");",
+                    "  response.setHeader(\"Access-Control-Allow-Origin\", \"*\"); // See Issue #1397",
                     "  response.writeHead(200, {\"Content-Type\": \"text/plain\"});",
                     "  response.end(\"Hello from Node \" + count);",
                     "  count = count + 1;",
@@ -83,7 +82,7 @@
                 "selectedType": "Text"
             },
             "evaluatorReader": true,
-            "lineCount": 11
+            "lineCount": 10
         },
         {
             "id": "codeYLvzUk",
@@ -114,9 +113,9 @@
             "input": {
                 "body": [
                     "var update = function () {",
-                    "  $.get(\"http://127.0.0.1:8000/\", function(response) {",
-                    "    document.getElementById(\"message\").innerHTML = (response);",
-                    "    window.setTimeout(update, 200);",
+                    "  $.get(\"http://127.0.0.1:8000\", function(response) {",
+                    "    document.getElementById(\"message\").innerHTML = response;",
+                    "    window.setTimeout(update, 0);",
                     "  });",
                     "};",
                     "update();"

@@ -88,18 +88,15 @@
           if (bkHelper.isNotebookLocked()) return;
 
           scope.mode = 'edit';
+          var clickLocation;
+          var markdownCell = element.find('.markdown-wrapper');
+          var top = markdownCell.offset().top;
+          var bottom = top + markdownCell.outerHeight();
 
-          if (event){
-            var clickLocation;
-            var markdownCell = element.find('.markdown-wrapper');
-            var top = markdownCell.offset().top;
-            var bottom = top + markdownCell.outerHeight();
-
-            if (event.pageY < (top + bottom) / 2) {
-              clickLocation = 'top';
-            } else {
-              clickLocation = 'bottom';
-            }
+          if (event.pageY < (top + bottom) / 2) {
+            clickLocation = 'top';
+          } else {
+            clickLocation = 'bottom';
           }
 
           var markdown = element.find('.markdown');

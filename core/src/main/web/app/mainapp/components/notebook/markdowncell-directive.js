@@ -17,41 +17,12 @@
 (function() {
   'use strict';
   var module = angular.module('bk.notebook');
-  var enterKey = 13;
-
-  //Namespace management idea from http://enterprisejquery.com/2010/10/how-good-c-habits-can-encourage-bad-javascript-habits-part-1/
-  var setEndOfContenteditable = function(contentEditableElement)
-  {
-    var range,selection;
-    if(document.createRange)
-    {
-      range = document.createRange();
-      range.selectNodeContents(contentEditableElement);
-      range.collapse(false);
-      selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-    else if(document.selection)
-    {
-      range = document.body.createTextRange();
-      range.moveToElementText(contentEditableElement);
-      range.collapse(false);
-      range.select();
-    }
-  };
-
-  // Extract text with preserving whitespace, inspired from:
-  // http://stackoverflow.com/questions/3455931/extracting-text-from-a-contenteditable-div
-  var getContentEditableText = function(content) {
-    var ce = $("<pre />").html(content);
-    ce.find("div").replaceWith(function() { return "\n" + this.innerHTML; });
-    ce.find("br").replaceWith("\n");
-
-    return ce.text();
-  };
 
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
+  marked.setOptions({
+    gfm: true,
+    breaks: true
+  });
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/markdowncell"](),
@@ -74,14 +45,8 @@
         };
 
         var syncContentAndPreview = function() {
-          scope.cellmodel.body = getContentEditableText(element.find('.markdown').html());
+          scope.cellmodel.body = scope.cm.getValue();
           preview();
-        };
-
-        scope.keyDown = function(e) {
-          if (e.keyCode == enterKey && (e.ctrlKey || e.metaKey)){
-            syncContentAndPreview();
-          }
         };
 
         scope.edit = function(event) {
@@ -89,33 +54,46 @@
 
           scope.mode = 'edit';
 
-          if (event) {
-            var clickLocation;
-            var markdownCell = element.find('.markdown-wrapper');
-            var top = markdownCell.offset().top;
-            var bottom = top + markdownCell.outerHeight();
+          $timeout(function() {
+            var cm = scope.cm;
+            cm.setValue(scope.cellmodel.body);
+            cm.clearHistory();
 
-            if (event !== undefined && event.pageY < (top + bottom) / 2) {
-              clickLocation = 'top';
-            } else {
-              clickLocation = 'bottom';
+            if (event) {
+              var clickLocation;
+              var markdownCell = element.find('.markdown-wrapper');
+              var top = markdownCell.offset().top;
+              var bottom = top + markdownCell.outerHeight();
+              if (event !== undefined && event.pageY < (top + bottom) / 2) {
+                cm.setCursor(0, 0);
+              } else {
+                cm.setCursor(cm.lineCount() - 1, cm.getLine(cm.lastLine()).length);
+              }
             }
-          }
 
-          var markdown = element.find('.markdown');
-          markdown.html(scope.cellmodel.body);
-
-          $timeout(function(){
-            markdown.focus();
-            if (clickLocation == 'bottom') {
-              setEndOfContenteditable(markdown[0]);
-            }
+            cm.focus();
           });
         };
 
         preview();
 
-        element.find('.markdown').on('blur', function() {
+        scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
+          electricChars: false,
+          extraKeys: {
+            "Ctrl-Enter": function(cm) {
+              scope.$apply(function() {
+                syncContentAndPreview();
+              });
+            },
+            "Cmd-Enter": function(cm) {
+              scope.$apply(function() {
+                syncContentAndPreview();
+              });
+            }
+          }
+        });
+
+        scope.cm.on("blur", function(){
           scope.$apply(function() {
             syncContentAndPreview();
           });

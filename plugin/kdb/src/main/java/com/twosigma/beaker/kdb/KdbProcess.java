@@ -15,7 +15,8 @@
  */
 package com.twosigma.beaker.kdb;
 
-import com.twosigma.beaker.core.rest.StreamGobbler;
+import com.twosigma.beaker.kdb.utils.ErrorGobbler;
+import com.twosigma.beaker.kdb.utils.KdbOutputHandler;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -43,6 +44,11 @@ public final class KdbProcess extends Thread {
   // The port to have kdb listen on.
   private final int kdbPort;
 
+  // interface for stdout and error
+  private KdbOutputHandler outputHandler;
+  private ErrorGobbler errorGobbler;
+
+  
   /**
    * Create a new KdbProcess.
    *
@@ -110,6 +116,10 @@ public final class KdbProcess extends Thread {
     }
   }
 
+  public KdbOutputHandler getOutputHandler() { return outputHandler; }
+  public ErrorGobbler getErrorHandler() { return errorGobbler; }
+
+  
   private void runImpl() throws Exception {
     // Guess at QLIC if it's not set.
     String qlic = System.getenv(QLIC);
@@ -129,10 +139,12 @@ public final class KdbProcess extends Thread {
         BEAKER_CORE_PORT + "=" + System.getenv(BEAKER_CORE_PORT),
         SESSION_ID + "=" + sessionId
       });
+    
+    errorGobbler = new ErrorGobbler(kdbProcess.getErrorStream());
+    errorGobbler.start();
 
-    // Wrap stdout.
-    StreamGobbler stdout = new StreamGobbler(kdbProcess.getInputStream(), "stdout");
-    stdout.start();
+    outputHandler = new KdbOutputHandler(kdbProcess.getInputStream());
+    outputHandler.start();
 
     // Wait until kdb exits or we're interrupted.
     while (true) {

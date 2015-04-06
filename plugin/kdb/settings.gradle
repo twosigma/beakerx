@@ -13,33 +13,6 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-apply plugin: 'java'
-
-repositories {
-  mavenCentral()
-}
-
-apply plugin:'application'
-mainClassName = 'com.twosigma.beaker.kdb.Main'
-
-configurations {
-  provided
-  compile.extendsFrom provided
-}
-
-repositories {
-  mavenCentral()
-}
-
-dependencies {
-  provided project(':plugin:jvm')
-}
-
-compileJava {
-  options.compilerArgs << '-Xlint:deprecation'
-  options.compilerArgs << '-Xlint:unchecked'
-}
-
-if (hasProperty('evalPluginDir')) {
-  installApp.into new File(evalPluginDir, 'kdb')
-}
+include 'plugin:jvm', 'shared'
+project(':plugin:jvm').projectDir = new File(settingsDir, "../jvm")
+project(':shared').projectDir = new File(settingsDir, "../../shared")

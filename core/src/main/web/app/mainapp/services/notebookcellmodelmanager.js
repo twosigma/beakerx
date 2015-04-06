@@ -269,6 +269,9 @@
           throw "target cell " + id + " was not found";
         }
         recreateCellMap();
+        $timeout(function() {
+          $rootScope.$broadcast('beaker.cell.added', cell);
+        });
       },
       insertLast: function(cell) {
         if (!_.isObject(cell)) {
@@ -277,12 +280,15 @@
 
         cells.splice(cells.length, 0, cell);
         recreateCellMap();
+        $timeout(function() {
+          $rootScope.$broadcast('beaker.cell.added', cell);
+        });
       },
       insertAfter: function(id, cell) {
         if (!_.isObject(cell)) {
           throw "unacceptable"
         }
-
+        
         var index = this.getIndex(id);
         if (index !== -1) {
           cells.splice(index + 1, 0, cell);
@@ -290,7 +296,6 @@
           throw "target cell " + id + " was not found";
         }
         recreateCellMap();
-
         $timeout(function() {
           $rootScope.$broadcast('beaker.cell.added', cell);
         });
@@ -304,6 +309,9 @@
           throw "unacceptable"
         }
         recreateCellMap(doNotClearUndoAction);
+        $timeout(function() {
+          $rootScope.$broadcast('beaker.cell.added', cell);
+        });
       },
       moveUp: function(id) {
         var index = this.getIndex(id);

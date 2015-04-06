@@ -245,19 +245,6 @@ define(function(require, exports, module) {
             evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
                                         value: text});
           } else {
-            var elem = $(document.createElement("div"));
-            var oa = (ipyVersion == '3') ?
-              (new myPython.OutputArea({events: {trigger: function(){}},
-                                        keyboard_manager: {register_events: function(){}}}))
-            : (new myPython.OutputArea(elem));
-            // twiddle the mime types? XXX
-            if (ipyVersion == '1') {
-              oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
-            } else if (ipyVersion == '2') {
-              oa.append_mime_type(content.data, elem);
-            } else {
-              oa.append_mime_type(content, elem);
-            }
             var jsonres;
             if(content.data['application/json'] !== undefined) {
               jsonres = JSON.parse(content.data['application/json']);

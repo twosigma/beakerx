@@ -17,12 +17,15 @@
 (function() {
   'use strict';
   var module = angular.module('bk.notebook');
-
-  module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
   marked.setOptions({
     gfm: true,
     breaks: true
   });
+  module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', 'bkCoreManager', '$timeout', function(bkSessionManager, bkHelper, bkCoreManager, $timeout) {
+    var notebookCellOp = bkSessionManager.getNotebookCellOp();
+    var getBkNotebookWidget = function() {
+      return bkCoreManager.getBkApp().getBkNotebookWidget();
+    };
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/markdowncell"](),
@@ -32,6 +35,8 @@
         };
       },
       link: function(scope, element, attrs) {
+        var bkNotebook = getBkNotebookWidget();
+
         var preview = function() {
           var markdownFragment = $('<div style="display: none;">' + scope.cellmodel.body + '</div>');
           markdownFragment.appendTo('body'); // ugh mathjax doesn't operate on document fragments...
@@ -49,9 +54,47 @@
           preview();
         };
 
+        var moveFocusDown = function() {
+          // move focus to next code cell
+          var thisCellId = scope.cellmodel.id;
+          var nextCell = notebookCellOp.getNext(thisCellId);
+          while (nextCell) {
+            if (bkNotebook.getFocusable(nextCell.id)) {
+              bkNotebook.getFocusable(nextCell.id).focus();
+              break;
+            } else {
+              nextCell = notebookCellOp.getNext(nextCell.id);
+            }
+          }
+        };
+
+        var moveFocusUp = function() {
+          // move focus to prev code cell
+          var thisCellID = scope.cellmodel.id;
+          var prevCell = notebookCellOp.getPrev(thisCellID);
+          while (prevCell) {
+            var t = bkNotebook.getFocusable(prevCell.id);
+            if (t) {
+              t.focus();
+              var top = t.cm.cursorCoords(true,'window').top;
+              if ( top < 150)
+                window.scrollBy(0, top-150);
+              break;
+            } else {
+              prevCell = notebookCellOp.getPrev(prevCell.id);
+            }
+          }
+        };
+
+        scope.focus = function() {
+          scope.edit();
+          scope.$apply();
+        };
+
         scope.edit = function(event) {
           if (bkHelper.isNotebookLocked()) return;
 
+          var cm = scope.cm;
           scope.mode = 'edit';
 
           $timeout(function() {
@@ -79,7 +122,43 @@
 
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
           electricChars: false,
+          smartIndent: false,
           extraKeys: {
+            "Up" : function(cm) {
+              if ($('.CodeMirror-hint').length > 0) {
+                //codecomplete is up, skip
+                return;
+              }
+              if (cm.getCursor().line === 0) {
+                moveFocusUp();
+              } else {
+                cm.execCommand("goLineUp");
+                var top = cm.cursorCoords(true,'window').top;
+                if ( top < 150)
+                  window.scrollBy(0, top-150);
+              }
+            },
+            "Down" : function(cm) {
+              if ($('.CodeMirror-hint').length > 0) {
+                //codecomplete is up, skip
+                return;
+              }
+              if (cm.getCursor().line === cm.doc.size - 1) {
+                moveFocusDown();
+              } else {
+                cm.execCommand("goLineDown");
+              }
+            },
+            "Esc" : function(cm) {
+              cm.execCommand("singleSelection");
+              if (cm.state.vim && cm.state.vim.insertMode) {
+                return;
+              } else {
+                if (isFullScreen(cm)) {
+                  setFullScreen(cm, false);
+                }
+              }
+            },
             "Ctrl-Enter": function(cm) {
               scope.$apply(function() {
                 syncContentAndPreview();
@@ -89,9 +168,55 @@
               scope.$apply(function() {
                 syncContentAndPreview();
               });
+            },
+            "Alt-Down": moveFocusDown,
+            "Alt-J": moveFocusDown,
+            "Alt-Up": moveFocusUp,
+            "Alt-K": moveFocusUp,
+            "Ctrl-Alt-Up": function(cm) { // cell move up
+              notebookCellOp.moveUp(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
+            "Cmd-Alt-Up": function(cm) { // cell move up
+              notebookCellOp.moveUp(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
+            "Ctrl-Alt-Down": function(cm) { // cell move down
+              notebookCellOp.moveDown(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
+            "Cmd-Alt-Down": function(cm) { // cell move down
+              notebookCellOp.moveDown(scope.cellmodel.id);
+              bkUtils.refreshRootScope();
+              cm.focus();
+            },
+            "Ctrl-Alt-H": function(cm) { // cell hide
+              scope.cellmodel.input.hidden = true;
+              bkUtils.refreshRootScope();
+            },
+            "Cmd-Alt-H": function(cm) { // cell hide
+              scope.cellmodel.input.hidden = true;
+              bkUtils.refreshRootScope();
+            },
+            "Ctrl-Alt-D": function(cm) { // cell delete
+              notebookCellOp.delete(scope.cellmodel.id, true);
+              bkUtils.refreshRootScope();
+            },
+            "Cmd-Alt-D": function(cm) { // cell delete
+              notebookCellOp.delete(scope.cellmodel.id, true);
+              bkUtils.refreshRootScope();
             }
           }
         });
+
+        scope.cm.setValue(scope.cellmodel.body);
+        bkNotebook.registerFocusable(scope.cellmodel.id, scope);
+        bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
+
+        syncContentAndPreview();
 
         scope.cm.on("blur", function(){
           scope.$apply(function() {

@@ -71,7 +71,7 @@ public class KdbRest {
     if (shellId.isEmpty() || !shells.containsKey(shellId)) {
       shellId = UUID.randomUUID().toString();
       try {
-        KdbShell shell = new KdbShell(shellId, sessionId, corePort, objectSerializerProvider.get());
+        KdbShell shell = new KdbShell(shellId, sessionId, corePort, objectSerializerProvider.get(), null);
         shells.put(shellId, shell);
       } catch (Exception e) {
         throw new Exception("Could not start kdb", e);

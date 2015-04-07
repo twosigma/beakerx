@@ -543,6 +543,9 @@
             getNotebookModel: function() {
               return bkSessionManager.getRawNotebookModel();
             },
+            getBeakerObject: function() {
+              return bkSessionManager.getBeakerObject();
+            },
             showStatus: function(message, nodigest) {
               showLoadingStatusMessage(message, nodigest);
             },

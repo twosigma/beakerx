@@ -38,7 +38,7 @@ define(function(require, exports, module) {
           }
         
           var precode = "<script>\n"+
-          "var beaker = (window !== undefined && window.beaker !== undefined) ? window.beaker.beaker : undefined;\n"+
+          "var beaker = bkHelper.getBeakerObject().beakerObj;\n"+
           "</script>\n";
         
           modelOutput.result = {

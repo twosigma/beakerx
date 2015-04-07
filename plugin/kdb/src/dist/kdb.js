@@ -26,7 +26,7 @@ define(function(require, exports, module) {
   
   var KDB = {
     pluginName: PLUGIN_NAME,
-    cmMode: "r",
+    cmMode: "q",
     background: "#C0CFF0",
     bgColor: "#005e99",
     fgColor: "#FFFFFF",

@@ -239,7 +239,7 @@
           for (var i in v) {
             var row = [];
             for (var item in v[i])
-              row.push(transform(item));
+              row.push(transform(v[i][item]));
             o.values.push(row);
           }
           o.subtype = "Matrix";

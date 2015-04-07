@@ -559,6 +559,8 @@ define(function(require, exports, module) {
           type: 'out',
           value: input + "\n"
         });
+        bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
+        bkHelper.refreshRootScope();
       }, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'printErr', {value: function(input) {
         self.evaluation.outputdata.push({
@@ -758,7 +760,7 @@ define(function(require, exports, module) {
             if (window.beaker !== undefined)
               window.beaker.beaker = beakerObj.beakerObj;
 
-            var evaluation = { status: 'FINISHED', outputdata: [] };
+            var evaluation = { status: 'RUNNING', outputdata: [] };
             beakerObj.setupBeakerObject(modelOutput, evaluation);
             beakerObj.notebookToBeakerObject();
             var beaker = beakerObj.beakerObj;
@@ -789,6 +791,7 @@ define(function(require, exports, module) {
                 }
                 output.then(function(o) {
                   o = transform(o);
+                  evaluation.status = 'FINISHED';
                   evaluation.payload = output;
                   bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
                   beakerObj.beakerObjectToNotebook();
@@ -807,12 +810,14 @@ define(function(require, exports, module) {
                 });
               } else {
                 output = transform(output);
+                evaluation.status = 'FINISHED';
                 evaluation.payload = output;
                 bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
                 deferred.resolve(output);
                 beakerObj.clearOutput();
               }
             } else {
+              evaluation.status = 'FINISHED';
               evaluation.payload = output;
               bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
               deferred.resolve(output);

@@ -711,6 +711,7 @@ define(function(require, exports, module) {
                 }
               };
             modelOutput.result = progressObj;
+            modelOutput.result.object.outputdata = [];
             if (refreshObj !== undefined)
               refreshObj.outputRefreshed();
             else
@@ -729,6 +730,13 @@ define(function(require, exports, module) {
             beakerObj.setupBeakerObject(modelOutput);
             beakerObj.notebookToBeakerObject();
             var beaker = beakerObj.beakerObj;
+            var evaluation = { status: 'FINISHED', outputdata: [] };
+            beaker.print = function(input) {
+              evaluation.outputdata.push({
+                type: 'out',
+                value: input + "\n"
+              });
+            }
             acorn.parse(code);
             var output = eval(code);
             beakerObj.beakerObjectToNotebook();
@@ -756,7 +764,8 @@ define(function(require, exports, module) {
                 }
                 output.then(function(o) {
                   o = transform(o);
-                  modelOutput.result = o;
+                  evaluation.payload = output;
+                  bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
                   beakerObj.beakerObjectToNotebook();
                   deferred.resolve(o);
                   beakerObj.clearOutput();
@@ -773,12 +782,14 @@ define(function(require, exports, module) {
                 });
               } else {
                 output = transform(output);
-                modelOutput.result = output;
+                evaluation.payload = output;
+                bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
                 deferred.resolve(output);
                 beakerObj.clearOutput();
               }
             } else {
-              modelOutput.result = output;
+              evaluation.payload = output;
+              bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
               deferred.resolve(output);
               beakerObj.clearOutput();
             }

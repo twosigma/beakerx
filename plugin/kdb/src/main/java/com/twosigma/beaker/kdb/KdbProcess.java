@@ -35,7 +35,7 @@ public final class KdbProcess extends Thread {
   private static final String SESSION_ID           = "session_id";
 
   // Kdb configuration.
-  private final String qhome = System.getenv(QHOME);
+  private String qhome;
   private final String qbin;
 
   // Session id.
@@ -55,11 +55,16 @@ public final class KdbProcess extends Thread {
    * @param sessionId  the session id (for namespace access).
    * @param kdbPort    the port for kdb to listen on.
    */
-  public KdbProcess(String sessionId, int kdbPort) throws Exception {
+  public KdbProcess(String sessionId, int kdbPort, String qh) throws Exception {
     super("kdb-" + sessionId + ":" + kdbPort);
     this.sessionId = sessionId;
     this.kdbPort = kdbPort;
 
+    if (qh != null)
+      qhome = System.getenv(QHOME);
+    else
+      qhome = qh;
+    
     // Try to find the q binary.
     if (qhome == null) {
       throw new Exception("QHOME is not set");

@@ -91,6 +91,13 @@
           console.error("Current app doesn't support getNotebookModel");
         }
       },
+      getBeakerObject: function() {
+        if (getCurrentApp().getBeakerObject) {
+          return getCurrentApp().getBeakerObject();
+        } else {
+          console.error("Current app doesn't support getBeakerObject");
+        }
+      },
       collapseAllSections: function() {
         if (getCurrentApp().collapseAllSections) {
           return getCurrentApp().collapseAllSections();

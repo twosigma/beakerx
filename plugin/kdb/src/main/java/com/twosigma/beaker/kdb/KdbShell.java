@@ -42,26 +42,26 @@ public class KdbShell {
   private final static Logger logger = Logger.getLogger(KdbShell.class.getName());
 
   // Shell configuration.
-  private final String                shellId;
-  private final String                sessionId;
-  private final int                   corePort;
-  private final BeakerObjectConverter objConv;
+  protected final String                shellId;
+  protected final String                sessionId;
+  protected final int                   corePort;
+  protected final BeakerObjectConverter objConv;
 
   // The kdb process.
-  private final int        kdbPort;
-  private final KdbProcess kdbProcess;
+  protected final int        kdbPort;
+  protected final KdbProcess kdbProcess;
 
   // The kdb client.
-  private final KdbClient kdbClient;
+  protected final KdbClient kdbClient;
 
-  public KdbShell(String shellId, String sessionId, int corePort, BeakerObjectConverter objConv) throws Exception {
+  public KdbShell(String shellId, String sessionId, int corePort, BeakerObjectConverter objConv, String qh) throws Exception {
     this.shellId   = shellId;
     this.sessionId = sessionId;
     this.corePort  = corePort;
     this.objConv   = objConv;
 
     kdbPort = getPortFromCore();
-    kdbProcess = new KdbProcess(sessionId, kdbPort);
+    kdbProcess = new KdbProcess(sessionId, kdbPort, qh);
     kdbProcess.start();
 
     kdbClient = new KdbClient("localhost", kdbPort);
@@ -261,7 +261,7 @@ public class KdbShell {
   /**
    * Query the beaker server to get an available port.
    */
-  private int getPortFromCore() throws IOException {
+  protected int getPortFromCore() throws IOException {
     String password = System.getenv("beaker_core_password");
     String auth     = Base64.encodeBase64String(("beaker:" + password).getBytes("ASCII"));
     String response = Request.Get("http://127.0.0.1:" + corePort + "/rest/plugin-services/getAvailablePort")

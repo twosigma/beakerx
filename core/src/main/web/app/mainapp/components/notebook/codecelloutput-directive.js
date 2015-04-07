@@ -97,15 +97,22 @@
             _shareMenuItems = newItems;
           },
           getCometdUtil: function() {
-            if ($scope.evaluatorId) {
-              var evaluator = bkEvaluatorManager.getEvaluator($scope.evaluatorId);
+            var id = $scope.getEvaluatorId();            
+            if (id) {
+              var evaluator = bkEvaluatorManager.getEvaluator(id);
               if (evaluator) {
                 return evaluator.cometdUtil;
               }
             }
           },
           getEvaluatorId: function() {
-            return $scope.evaluatorId;
+            var id = $scope;
+            while (id !== undefined) {
+              if (id.evaluatorId !== undefined)
+                return id.evaluatorId;
+              id = id.$parent;
+            }
+            return undefined;
           }
         };
 

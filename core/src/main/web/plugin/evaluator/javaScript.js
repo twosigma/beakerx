@@ -505,7 +505,6 @@ define(function(require, exports, module) {
 
   BeakerObject.prototype.setupBeakerObject = function(modelOutput, evaluation) {
     var self = this;
-    self.evaluation = evaluation;
 
     if (this.beakerObj.showProgressUpdate === undefined) {
       Object.defineProperty(this.beakerObj, 'showProgressUpdate', { value: function (a,b,c) {
@@ -555,11 +554,7 @@ define(function(require, exports, module) {
           return d.promise;
         }, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'print', {value: function(input) {
-        self.evaluation.outputdata.push({
-          type: 'out',
-          value: input + "\n"
-        });
-        bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
+        bkHelper.receiveEvaluationUpdate(modelOutput, {outputdata:[{type:'out', value: input+"\n"}]}, PLUGIN_NAME);
         bkHelper.refreshRootScope();
       }, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'printErr', {value: function(input) {
@@ -762,6 +757,8 @@ define(function(require, exports, module) {
 
             var evaluation = { status: 'RUNNING', outputdata: [] };
             beakerObj.setupBeakerObject(modelOutput, evaluation);
+            bkHelper.setupProgressOutput(modelOutput); // this prob makes some of the above unnecessary
+
             beakerObj.notebookToBeakerObject();
             var beaker = beakerObj.beakerObj;
             acorn.parse(code);

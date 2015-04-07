@@ -503,8 +503,9 @@ define(function(require, exports, module) {
     this.beakerObj = { }
   };
 
-  BeakerObject.prototype.setupBeakerObject = function(modelOutput) {
+  BeakerObject.prototype.setupBeakerObject = function(modelOutput, evaluation) {
     var self = this;
+    self.evaluation = evaluation;
 
     if (this.beakerObj.showProgressUpdate === undefined) {
       Object.defineProperty(this.beakerObj, 'showProgressUpdate', { value: function (a,b,c) {
@@ -553,6 +554,18 @@ define(function(require, exports, module) {
           bkHelper.evaluateCode(a,b).then(function (r) { self.notebookToBeakerObject(); d.resolve(transformBack(r)); }, function (r) { self.notebookToBeakerObject(); d.reject(r); });
           return d.promise;
         }, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'print', {value: function(input) {
+        self.evaluation.outputdata.push({
+          type: 'out',
+          value: input + "\n"
+        });
+      }, writeable: false, enumerable: true });
+      Object.defineProperty(this.beakerObj, 'printErr', {value: function(input) {
+        self.evaluation.outputdata.push({
+          type: 'err',
+          value: input + "\n"
+        });
+      }, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'loadJS', { value: bkHelper.loadJS, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'loadCSS', { value: bkHelper.loadCSS, writeable: false, enumerable: true });
       Object.defineProperty(this.beakerObj, 'loadList', { value: bkHelper.loadList, writeable: false, enumerable: true });
@@ -729,6 +742,7 @@ define(function(require, exports, module) {
                 }
               };
             modelOutput.result = progressObj;
+            modelOutput.result.object.outputdata = [];
             if (refreshObj !== undefined)
               refreshObj.outputRefreshed();
             else
@@ -744,7 +758,8 @@ define(function(require, exports, module) {
             if (window.beaker !== undefined)
               window.beaker.beaker = beakerObj.beakerObj;
 
-            beakerObj.setupBeakerObject(modelOutput);
+            var evaluation = { status: 'FINISHED', outputdata: [] };
+            beakerObj.setupBeakerObject(modelOutput, evaluation);
             beakerObj.notebookToBeakerObject();
             var beaker = beakerObj.beakerObj;
             acorn.parse(code);
@@ -774,7 +789,8 @@ define(function(require, exports, module) {
                 }
                 output.then(function(o) {
                   o = transform(o);
-                  modelOutput.result = o;
+                  evaluation.payload = output;
+                  bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
                   beakerObj.beakerObjectToNotebook();
                   deferred.resolve(o);
                   beakerObj.clearOutput();
@@ -791,12 +807,14 @@ define(function(require, exports, module) {
                 });
               } else {
                 output = transform(output);
-                modelOutput.result = output;
+                evaluation.payload = output;
+                bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
                 deferred.resolve(output);
                 beakerObj.clearOutput();
               }
             } else {
-              modelOutput.result = output;
+              evaluation.payload = output;
+              bkHelper.receiveEvaluationUpdate(modelOutput, evaluation, PLUGIN_NAME);
               deferred.resolve(output);
               beakerObj.clearOutput();
             }

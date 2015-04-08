@@ -37,16 +37,14 @@
 
 .markdown-wrapper, .bkcell.code-cell-area, .text-wrapper {
     border: solid 1px $cell-border;
+
+    .locked & {
+        border: solid 1px transparent;
+    }
 }
 
 .markdown-wrapper, .text-wrapper {
     padding: $grid-row-height*2 $grid-gutter-width*3 $grid-row-height $grid-gutter-width;
-}
-
-.locked {
-    .bkcell.code-cell-area, .text-cell {
-        border: solid 1px transparent;
-    }
 }
 
 .bkcell bk-code-cell-input-menu .dropdown {

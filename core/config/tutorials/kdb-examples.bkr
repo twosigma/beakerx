@@ -54,11 +54,13 @@
             "id": "markdownvmJbxN",
             "type": "markdown",
             "body": [
-                "[Kdb](http://kx.com) is Kx System's column-store database. It handles in-memory and on-disk archives seamlessly, and scales to very large datasets. It comes with two languages - `k`, the original ASCII APL-ish language underlying kdb, and `q`, the slightly more friendly language that extends k and adds SQL-like queries.",
+                "[Kdb](http://kx.com) is a column-store database that handles in-memory and on-disk archives seamlessly, and scales to very large datasets.",
+                "The database is accessed with the Q language, which combines elements of APL, Scheme, and SQL.",
+                "",
                 "The plugin supports the following features:",
                 "* Evaluating kdb expressions",
                 "* Beaker autotranslation (via the `.bk.g` and `.bk.s` functions)",
-                "* Autocomplete (for table names and functions in the default namespace as well as inbuilt q function names)",
+                "* Autocomplete (for table names and functions in the default namespace as well as inbuilt Q function names)",
                 "* Translation of table (keyed and unkeyed) and dictionary values (at the top level)"
             ],
             "evaluatorReader": false
@@ -75,7 +77,39 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
+                        },
+                        "columnNames": [
+                            "time",
+                            "symbol",
+                            "price",
+                            "quantity"
+                        ],
+                        "actualalign": [
+                            "C",
+                            "L",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -714,7 +748,31 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
+                        },
+                        "columnNames": [
+                            "symbol",
+                            "price"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "result": {
                     "type": "TableDisplay",
                     "columnNames": [
@@ -789,7 +847,39 @@
                 ]
             },
             "output": {
-                "state": {},
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
+                        },
+                        "columnNames": [
+                            "time",
+                            "symbol",
+                            "price",
+                            "quantity"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",

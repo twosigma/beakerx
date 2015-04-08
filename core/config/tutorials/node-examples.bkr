@@ -112,21 +112,32 @@
             "evaluator": "JavaScript",
             "input": {
                 "body": [
+                    "var ncalls = 0;",
+                    "var startTime = new Date().getTime();",
+                    "var deferred = beaker.newDeferred();",
+                    "",
                     "var update = function () {",
                     "  $.get(\"http://127.0.0.1:8000\", function(response) {",
                     "    document.getElementById(\"message\").innerHTML = response;",
-                    "    window.setTimeout(update, 0);",
+                    "    if (ncalls++ < 1000)",
+                    "      beaker.timeout(update, 0);",
+                    "    else {",
+                    "      var ms = (new Date().getTime() - startTime) / 1000;",
+                    "      deferred.resolve(ms + \"ms per HTTP call\");",
+                    "    }",
                     "  });",
                     "};",
-                    "update();"
+                    "update();",
+                    "deferred"
                 ]
             },
             "output": {
                 "state": {},
-                "selectedType": "BeakerDisplay"
+                "selectedType": "Text",
+                "result": "6.796ms per HTTP call"
             },
             "evaluatorReader": true,
-            "lineCount": 7
+            "lineCount": 17
         }
     ],
     "namespace": {

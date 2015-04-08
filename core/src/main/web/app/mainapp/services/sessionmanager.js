@@ -406,12 +406,12 @@
     var _sessionId = null;
     var _edited = false;
 
-    var BeakerObject = function(ns) {
+    var BeakerObject = function(nbmodel) {
       this.knownBeakerVars = { };
       this.getCache = { };
       this.setCache = { };
       this.beakerObj = { }
-      this.ns = ns;
+      this.nbmodel = nbmodel;
     };
 
     BeakerObject.prototype.setupBeakerObject = function(modelOutput) {
@@ -488,8 +488,8 @@
       if (this.setCache[name] !== undefined) {
         return this.setCache[name];
       }
-      if (this.getCache[name] === undefined)
-        this.getCache[name] = transformBack(this.ns[name]);
+      if (this.getCache[name] === undefined && this.nbmodel.namespace !== undefined)
+        this.getCache[name] = transformBack(this.nbmodel.namespace[name]);
       // this is required to support subobject modification
       this.setCache[name] = this.getCache[name];
       return this.getCache[name];
@@ -514,7 +514,7 @@
 
       // check if some other language removed a binding
       for (var p in this.knownBeakerVars) {
-        if (this.ns[p] === undefined) {
+        if (this.nbmodel.namespace !== undefined && this.nbmodel.namespace[p] === undefined) {
           delete this.knownBeakerVars[p];
           delete this.beakerObj[p];
           delete this.setCache[p];
@@ -522,26 +522,28 @@
       }
 
       // check if some other language added a binding
-      for (var p in this.ns) {
-        var t = this.ns[p];
-        if (this.predefined.indexOf(p)>=0) {
-          delete this.ns[p];
-        } else if (this.knownBeakerVars[p] === undefined) {
-          delete this.beakerObj[p];
-          this.knownBeakerVars[p] = true;
-          var makeGetter = function(self, name) {
-            return function() { return self.beakerGetter(name); }
+      if (this.nbmodel.namespace !== undefined) {
+        for (var p in this.nbmodel.namespace) {
+          var t = this.nbmodel.namespace[p];
+          if (this.predefined.indexOf(p)>=0) {
+            delete this.nbmodel.namespace[p];
+          } else if (this.knownBeakerVars[p] === undefined) {
+            delete this.beakerObj[p];
+            this.knownBeakerVars[p] = true;
+            var makeGetter = function(self, name) {
+              return function() { return self.beakerGetter(name); }
+            }
+            var makeSetter = function(self, name) {
+              return function(v) { self.beakerSetter(name,v); }
+            }
+            Object.defineProperty(this.beakerObj, p,
+                { writeable: true,
+                  get: makeGetter(this, p),
+                  set: makeSetter(this, p),
+                  enumerable: true,
+                  configurable: true
+                });
           }
-          var makeSetter = function(self, name) {
-            return function(v) { self.beakerSetter(name,v); }
-          }
-          Object.defineProperty(this.beakerObj, p,
-              { writeable: true,
-                get: makeGetter(this, p),
-                set: makeSetter(this, p),
-                enumerable: true,
-                configurable: true
-              });
         }
       }
     };
@@ -553,21 +555,25 @@
       diff = $(diff).not(this.predefined).get();
 
       // check if javascript removed a binding
-      for (var p in this.ns) {
-        if (this.knownBeakerVars[p] !== undefined && keys.indexOf(p) <0) {
-          delete this.ns[p];
-          delete this.knownBeakerVars[p];
+      if ( this.nbmodel.namespace !== undefined ) {
+        for (var p in this.nbmodel.namespace) {
+          if (this.knownBeakerVars[p] !== undefined && keys.indexOf(p) <0) {
+            delete this.nbmodel.namespace[p];
+            delete this.knownBeakerVars[p];
+          }
         }
       }
-
+      
       // check if javascript set any NEW variable
       for (var i in diff) {
         var p = diff[i];
         if (this.knownBeakerVars[p] === undefined) {
+          if (this.nbmodel.namespace === undefined)
+            this.nbmodel.namespace = { };
           var t = this.beakerObj[p];
-          if (this.predefined.indexOf(p)>=0 || _.isFunction(t)) {
+          if ((this.predefined.indexOf(p)>=0 || _.isFunction(t))) {
             // we do NOT put functions in the namespace 
-            delete this.ns[p];
+            delete this.nbmodel.namespace[p];
             delete this.knownBeakerVars[p];
           } else {
             this.setCache[p] = t;
@@ -591,10 +597,12 @@
 
       // check if javascript set any new variable
       for (var p in this.setCache) {
+        if (this.nbmodel.namespace === undefined)
+          this.nbmodel.namespace = { };
         if (this.isCircularObject(this.setCache[p]))
-          this.ns[p] = "ERROR: circular objects are not supported";
+          this.nbmodel.namespace[p] = "ERROR: circular objects are not supported";
         else
-          this.ns[p] = transform(this.setCache[p]);
+          this.nbmodel.namespace[p] = transform(this.setCache[p]);
         if (this.knownBeakerVars[p] === undefined && this.beakerObj[p] === undefined) {
             this.knownBeakerVars[p] = true;
             var makeGetter = function(self, name) {
@@ -640,10 +648,11 @@
       parents.pop(node);
       return false;
   }
+
+    var _bo = {};
     
     var _notebookModel = (function() {
       var _v = {};
-      var _bo = {};
       return {
         reset: function() {
           this.set({});
@@ -660,9 +669,9 @@
           if (_v._beaker_model_output_result !== undefined) {
             delete _v._beaker_model_output_result;
           }
-          if (_v.namespace === undefined)
-            _v.namespace = { };
-          _bo = new BeakerObject(_v.namespace);
+          //if (_v.namespace === undefined)
+          //  _v.namespace = { };
+          _bo = new BeakerObject(_v);
           if (this.isEmpty()) {
             bkNotebookCellModelManager.reset([]);
           } else {

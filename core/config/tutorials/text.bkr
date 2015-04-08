@@ -42,16 +42,87 @@
             "evaluatorReader": false
         },
         {
-            "id": "textHVCI1K",
-            "type": "text",
-            "body": "Beaker has four kinds of cells for text: markdown, LaTeX, HTML, and plain text.",
+            "id": "markdown8nMuAN",
+            "type": "markdown",
+            "body": [
+                "Beaker has four kinds of cells for text: markdown, HTML, LaTeX, and plain text."
+            ],
             "evaluatorReader": false
         },
         {
-            "id": "sectionf7ibxJ",
+            "id": "sectionHLDsZf",
             "type": "section",
-            "title": "LaTeX for typeset display math",
-            "level": 4,
+            "title": "Markdown",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdowngV91Gh",
+            "type": "markdown",
+            "body": [
+                "[Markdown](http://daringfireball.net/projects/markdown/syntax) is a text-to-HTML conversion tool that allows you to write using an easy-to-read, easy-to-write plain text format.  Here's a quick demo:",
+                "",
+                "* Markdown is good for making *lists*,",
+                "* writing `code documentation`,",
+                "* and making **bold** statements.",
+                "",
+                "Click on this cell to see how this formatting was specified or to edit its contents.  Click away on the background of the notebook to reformat and display.  You can also use the control-enter (command-enter) keyboard shortcut to format a markdown cell.",
+                "",
+                "You can embed LaTeX into a markdown cell by enclosing it with dollar characters: $e^{i\\pi}+1=0$.",
+                ""
+            ],
+            "evaluatorReader": false,
+            "mode": "preview"
+        },
+        {
+            "id": "sectionvRlTk5",
+            "type": "section",
+            "title": "HTML",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeB8fmAw",
+            "type": "code",
+            "evaluator": "Html",
+            "input": {
+                "body": [
+                    "<p>",
+                    "  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.",
+                    "</p>",
+                    "<p>",
+                    "  But you can also create interactive elements:<br/>",
+                    "  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">",
+                    "  \tWhat is a beaker?",
+                    "  </button>",
+                    "</p>",
+                    "<p>",
+                    "  You can combine HTML and JavaScript cells to program interactive applications within Beaker.",
+                    "</p>",
+                    ""
+                ],
+                "hidden": true
+            },
+            "output": {
+                "result": {
+                    "type": "BeakerDisplay",
+                    "innertype": "Html",
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But you can also create interactive elements:<br/>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n"
+                },
+                "selectedType": "BeakerDisplay",
+                "elapsedTime": 0,
+                "state": {}
+            },
+            "evaluatorReader": true,
+            "lineCount": 13
+        },
+        {
+            "id": "section94sNHm",
+            "type": "section",
+            "title": "LaTeX",
+            "level": 2,
             "evaluatorReader": false,
             "collapsed": false
         },
@@ -60,7 +131,11 @@
             "type": "code",
             "evaluator": "Latex",
             "input": {
-                "body": "1 +  \\frac{q^2}{(1-q)}+\\frac{q^6}{(1-q)(1-q^2)}+\\cdots =\n\\prod_{j=0}^{\\infty}\\frac{1}{(1-q^{5j+2})(1-q^{5j+3})},\n\\quad\\quad \\text{for $|q|<1$}.",
+                "body": [
+                    "1 +  \\frac{q^2}{(1-q)}+\\frac{q^6}{(1-q)(1-q^2)}+\\cdots =",
+                    "\\prod_{j=0}^{\\infty}\\frac{1}{(1-q^{5j+2})(1-q^{5j+3})},",
+                    "\\quad\\quad \\text{for $|q|<1$}."
+                ],
                 "hidden": true
             },
             "output": {
@@ -70,68 +145,28 @@
                     "object": "1 +  \\frac{q^2}{(1-q)}+\\frac{q^6}{(1-q)(1-q^2)}+\\cdots =\n\\prod_{j=0}^{\\infty}\\frac{1}{(1-q^{5j+2})(1-q^{5j+3})},\n\\quad\\quad \\text{for $|q|<1$}."
                 },
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 8
+                "elapsedTime": 8,
+                "state": {}
             },
             "evaluatorReader": true,
             "lineCount": 3
         },
         {
-            "id": "sectionvBaqkP",
-            "type": "section",
-            "title": "HTML including CSS",
-            "level": 4,
-            "evaluatorReader": false,
-            "collapsed": false
-        },
-        {
-            "id": "codeB8fmAw",
-            "type": "code",
-            "evaluator": "Html",
-            "input": {
-                "body": "<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But can also create interactive elements:<br/>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n",
-                "hidden": true
-            },
-            "output": {
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<p>\n  The usual text formatting tags work, like &lt;em&gt; for <em>emphasis</em>.\n</p>\n<p>\n  But can also create interactive elements:<br/>\n  <button class=\"btn btn-default\" onclick=\"alert('A simple container for mixing liquids, used in many laboratories')\">\n  \tWhat is a beaker?\n  </button>\n</p>\n<p>\n  You can combine HTML and JavaScript cells to program interactive applications within Beaker.\n</p>\n"
-                },
-                "selectedType": "BeakerDisplay",
-                "elapsedTime": 12,
-                "state": {}
-            },
-            "evaluatorReader": true,
-            "lineCount": 13
-        },
-        {
-            "id": "sectiongeXedC",
+            "id": "sectionnHVCJ3",
             "type": "section",
             "title": "Plain Text",
-            "level": 4,
+            "level": 2,
             "evaluatorReader": false,
             "collapsed": false
         },
         {
             "id": "textRX7EgD",
             "type": "text",
-            "body": "Plain text<div>respects line breaks.</div>",
+            "body": [
+                "Plan text is deprecated, please do not use it."
+            ],
             "evaluatorReader": false
-        },
-        {
-            "id": "sectionGqkeAJ",
-            "type": "section",
-            "title": "Markdown",
-            "level": 4,
-            "evaluatorReader": false,
-            "collapsed": false
-        },
-        {
-            "id": "markdowngV91Gh",
-            "type": "markdown",
-            "body": "Why use [markdown](http://daringfireball.net/projects/markdown/syntax)?\n\n * It's good for making *lists*,\n * writing `code documentation`, and\n * everyone else is.\n\nClick on it to make it editable, click away on the background of the notebook to reformat and display.",
-            "evaluatorReader": false,
-            "mode": "preview"
         }
-    ]
+    ],
+    "namespace": {}
 }

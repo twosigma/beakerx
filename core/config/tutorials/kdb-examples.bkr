@@ -54,12 +54,11 @@
             "id": "markdownvmJbxN",
             "type": "markdown",
             "body": [
-                "[Kdb](http://kx.com) is an array-processing language and database designed for high performance and small memory footprint.  It is based on APL but influenced by Scheme, and closely related to Q.  Follow the instructions on BeakerNotebook.com for how to install IPython so Beaker can use it.",
-                "",
-                "The following are supported:",
+                "[Kdb](http://kx.com) is Kx System's column-store database. It handles in-memory and on-disk archives seamlessly, and scales to very large datasets. It comes with two languages - `k`, the original ASCII APL-ish language underlying kdb, and `q`, the slightly more friendly language that extends k and adds SQL-like queries.",
+                "The plugin supports the following features:",
                 "* Evaluating kdb expressions",
                 "* Beaker autotranslation (via the `.bk.g` and `.bk.s` functions)",
-                "* Autocomplete (for table names and functions in the default namespace as well as q function names)",
+                "* Autocomplete (for table names and functions in the default namespace as well as inbuilt q function names)",
                 "* Translation of table (keyed and unkeyed) and dictionary values (at the top level)"
             ],
             "evaluatorReader": false

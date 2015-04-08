@@ -35,7 +35,7 @@ public final class KdbProcess extends Thread {
   private static final String SESSION_ID           = "session_id";
 
   // Kdb configuration.
-  private String qhome;
+  private final String qhome;
   private final String qbin;
 
   // Session id.
@@ -60,11 +60,12 @@ public final class KdbProcess extends Thread {
     this.sessionId = sessionId;
     this.kdbPort = kdbPort;
 
-    if (qh != null)
+    if (qh == null) {
       qhome = System.getenv(QHOME);
-    else
+    } else {
       qhome = qh;
-    
+    }
+
     // Try to find the q binary.
     if (qhome == null) {
       throw new Exception("QHOME is not set");

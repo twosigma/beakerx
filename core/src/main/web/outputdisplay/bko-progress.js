@@ -61,6 +61,9 @@
         scope.hasProgressBar = function() {
           return scope.model.getCellModel().progressBar >= 0;
         };
+        scope.hasOutputData = function() {
+          return scope.model.getCellModel().outputdata !== undefined && scope.model.getCellModel().outputdata.length > 0;
+        };
         scope.hasPayload = function() {
           return scope.model.getCellModel().payload !== undefined;
         };

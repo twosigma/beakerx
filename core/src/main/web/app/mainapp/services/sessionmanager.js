@@ -464,6 +464,20 @@
             bkHelper.evaluateCode(a,b).then(function (r) { self.notebookToBeakerObject(); d.resolve(transformBack(r)); }, function (r) { self.notebookToBeakerObject(); d.reject(r); });
             return d.promise;
           }, writeable: false, enumerable: true });
+        Object.defineProperty(this.beakerObj, 'print', {value: function(input) {
+          bkHelper.receiveEvaluationUpdate(self._beaker_model_output,
+                                           {outputdata:[{type:'out', value: input+"\n"}]}, "JavaScript");
+          // XXX should not be needed but when progress meter is shown at same time
+          // display is broken without this, you get "OUTPUT" instead of any lines of text.
+          bkHelper.refreshRootScope();
+        }, writeable: false, enumerable: true });
+        Object.defineProperty(this.beakerObj, 'printError', {value: function(input) {
+          bkHelper.receiveEvaluationUpdate(self._beaker_model_output,
+                                           {outputdata:[{type:'err', value: input+"\n"}]}, "JavaScript");
+          // XXX should not be needed but when progress meter is shown at same time
+          // display is broken without this, you get "OUTPUT" instead of any lines of text.
+          bkHelper.refreshRootScope();
+        }, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'loadJS', { value: bkHelper.loadJS, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'loadCSS', { value: bkHelper.loadCSS, writeable: false, enumerable: true });
         Object.defineProperty(this.beakerObj, 'loadList', { value: bkHelper.loadList, writeable: false, enumerable: true });
@@ -477,7 +491,8 @@
         Object.defineProperty(this.beakerObj, 'ImageIcon', { value: ImageIcon, writeable: false, enumerable: true });
         this.predefined = Object.keys(this.beakerObj);
       }
-      this._beaker_model_output_result = modelOutput.result;
+      this._beaker_model_output_result = modelOutput.result; // XXX obviated by next line
+      this._beaker_model_output = modelOutput;
     };
 
     BeakerObject.prototype.clearOutput = function() {

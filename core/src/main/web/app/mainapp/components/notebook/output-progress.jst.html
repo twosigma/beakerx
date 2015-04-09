@@ -1,19 +1,38 @@
+<!--
+
+  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <div ng-if='elapsed > 200' class='row'>
   <div class='col-sm-2'>
       <i class='fa fa-cog fa-spin fa-lg'></i>
       <span> &nbsp; Elapsed: {{getElapsedTime()}} &nbsp; </span>
-      <i class='fa fa-times-circle fa-lg text-danger cursor_hand' ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
+      <i class='fa fa-times-circle fa-lg text-danger cursor_hand'
+         ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
   </div>
   <div class='col-sm-2' ng-if='hasProgressBar()'>
 	  <div class="progress">
-		  <div class="progress-bar" role="progressbar" aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100" style="width: {{getProgressBar()}}%;">
+		  <div class="progress-bar" role="progressbar"
+                       aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100"
+                       style="width: {{getProgressBar()}}%;">
 		    {{getProgressBar()}} %
 		  </div>
 	  </div>
   </div>
   <div ng-if='hasMessage()' class='col-sm-8'> {{getMessage()}}</div>
 </div>
-<div ng-if='hasPayload()' >
+<div ng-if='hasPayload() || hasOutputData()' >
   <hr>
   <bk-code-cell-output model='outputDisplayModel'></bk-code-cell-output>
 </div>

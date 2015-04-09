@@ -148,16 +148,19 @@
           return bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
         };
 
+        var moveMethod = 'move';
+        if ($scope.cellmodel.type == 'section') moveMethod = 'moveSection';
+
         $scope.moveCellUp = function() {
-          notebookCellOp.moveSectionUp($scope.cellmodel.id);
+          notebookCellOp[moveMethod + 'Up']($scope.cellmodel.id);
         }
 
         $scope.moveCellDown = function() {
-          notebookCellOp.moveSectionDown($scope.cellmodel.id);
+          notebookCellOp[moveMethod + 'Down']($scope.cellmodel.id);
         }
 
-        $scope.moveCellUpDisabled   = function(){return !notebookCellOp.isPossibleToMoveSectionUp($scope.cellmodel.id)};
-        $scope.moveCellDownDisabled = function(){return !notebookCellOp.isPossibleToMoveSectionDown($scope.cellmodel.id)};
+        $scope.moveCellUpDisabled = function(){return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Up']($scope.cellmodel.id)};
+        $scope.moveCellDownDisabled = function(){return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Down']($scope.cellmodel.id)};
 
         $scope.cellview.menu.addItem({
           name: "Delete cell",

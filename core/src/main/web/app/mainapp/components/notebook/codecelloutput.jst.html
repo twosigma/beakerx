@@ -16,10 +16,12 @@
 -->
 <div class="toggle-menu">
   <div class="dropdown dropdown-promoted" style="float: right;">
-    <div class="cell-menu-item cell-dropdown dropdown-toggle" data-toggle="dropdown" title="cell output menu" ng-show="isShowMenu()"></div>
+    <div class="cell-menu-item cell-dropdown dropdown-toggle" data-toggle="dropdown"
+         title="cell output menu" ng-show="isShowMenu()"></div>
     <bk-code-cell-output-menu model="outputCellMenuModel"></bk-code-cell-output-menu>
   </div>
-  <div class="cell-menu-item expand-contract" ng-click="toggleExpansion()" ng-class="!isExpanded() && 'collapsed'" title="hide/show cell output" ng-show="isShowMenu()"></div>
+  <div class="cell-menu-item expand-contract" ng-click="toggleExpansion()"
+       ng-class="!isExpanded() && 'collapsed'" title="hide/show cell output" ng-show="isShowMenu()"></div>
 </div>
 <bk-output-display ng-show="isShowOutput()"
     model="outputDisplayModel"

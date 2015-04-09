@@ -154,7 +154,8 @@ define(function(require, exports, module) {
                 innertype: "Progress",
                 object: {
                   message: "running...",
-                  startTime: new Date().getTime()
+                  startTime: new Date().getTime(),
+                  outputdata: []
                 }
               };
             modelOutput.result = progressObj;
@@ -196,7 +197,7 @@ define(function(require, exports, module) {
                     o = "ERROR: circular objects are not supported";
                   else
                     o = beakerObj.transform(o);
-                  modelOutput.result = o;
+                  bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: o}, PLUGIN_NAME);
                   beakerObj.beakerObjectToNotebook();
                   deferred.resolve(o);
                   beakerObj.clearOutput();
@@ -221,12 +222,12 @@ define(function(require, exports, module) {
                   output = "ERROR: circular objects are not supported";
                 else
                   output = beakerObj.transform(output);
-                modelOutput.result = output;
+                bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: output}, PLUGIN_NAME);
                 deferred.resolve(output);
                 beakerObj.clearOutput();
               }
             } else {
-              modelOutput.result = output;
+              bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: output}, PLUGIN_NAME);
               deferred.resolve(output);
               beakerObj.clearOutput();
             }

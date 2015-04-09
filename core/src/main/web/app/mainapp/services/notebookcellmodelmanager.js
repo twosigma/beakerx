@@ -288,7 +288,7 @@
         if (!_.isObject(cell)) {
           throw "unacceptable"
         }
-        
+
         var index = this.getIndex(id);
         if (index !== -1) {
           cells.splice(index + 1, 0, cell);
@@ -313,6 +313,10 @@
           $rootScope.$broadcast('beaker.cell.added', cell);
         });
       },
+      isPossibleToMoveUp: function(id) {
+        // If the cell isn't first (or nonexistent?)
+        return [-1, 0].indexOf(this.getIndex(id)) === -1;
+      },
       moveUp: function(id) {
         var index = this.getIndex(id);
         if (index !== -1) {
@@ -327,6 +331,10 @@
           throw "target cell " + id + " was not found";
         }
         recreateCellMap();
+      },
+      isPossibleToMoveDown: function(id) {
+        // If the cell isn't last (or nonexistent?)
+        return [-1, (cells.length-1)].indexOf(this.getIndex(id)) === -1;
       },
       moveDown: function(id) {
         var index = this.getIndex(id);

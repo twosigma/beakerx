@@ -302,7 +302,10 @@
             return;
           showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
         };
-
+        scope.focus = function() {
+          scope.cm.focus();
+          scope.$apply();
+        };
         CodeMirror.on(window, "resize", resizeHandler);
         var moveFocusDown = function() {
           // move focus to next code cell
@@ -325,7 +328,7 @@
             var t = scope.bkNotebook.getFocusable(prevCell.id);
             if (t) {
               t.focus();
-              var top = t.cursorCoords(true,'window').top;
+              var top = t.cm.cursorCoords(true,'window').top;
               if ( top < 150)
                 window.scrollBy(0, top-150);
               break;
@@ -529,7 +532,7 @@
         });
 
         scope.updateUI(scope.getEvaluator());
-        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope.cm);
+        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
         scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 
         // cellmodel.body --> CodeMirror

@@ -123,27 +123,37 @@
       return true;
     };
 
-    DataFrame.prototype.addColumn = function(name, data) {
+    DataFrame.prototype.addColumn = function(name, data, type) {
       var i = this.columnNames.indexOf(name);
       if (i >= 0 || data === undefined || data.length === 0)
           return false;
 
       this.columnNames.push(name);
-      this.types.push(getDataType(data[0]));
-      var min = data.length > this.values.length ? this.values.length : data.length;
+      this.types.push((type === undefined) ? getDataType(data[0]) : type);
+      var min = (data.length > this.values.length) ? this.values.length : data.length;
       var j;
-      for(j=0; j<min; j++) {
+      for (j = 0; j < min; j++) {
         this.values[j].push(data[j]);
       }
-      for(; j<this.values.length; j++) {
-        this.values[j].push(null);
+      if (this.values.length > data.length) {
+        for (; j < this.values.length; j++) {
+          this.values[j].push(null);
+        }
+      } else {
+        for (; j < data.length; j++) {
+          this.values.push([]);
+          for (var k = 0; k < this.columnNames.length - 1; k++) {
+            this.values[j].push(null);
+          }
+          this.values[j].push(data[j]);
+        }
       }
       return true;
     };
 
     DataFrame.prototype.addRow = function(row) {
       var r = [];
-      for(c in this.columnNames) {
+      for(var c in this.columnNames) {
         if (row[this.columnNames[c]] !== undefined)
           r.push(row[this.columnNames[c]]);
         else

@@ -181,9 +181,9 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "result": "ratio = 0.01",
+                "result": "ratio = 0.204",
                 "pluginName": "JavaScript",
-                "elapsedTime": 115373
+                "elapsedTime": 2564
             },
             "evaluatorReader": true,
             "lineCount": 70
@@ -260,12 +260,218 @@
             "collapsed": false
         },
         {
-            "id": "codeVBGmAc",
+            "id": "markdownfwlPXU",
+            "type": "markdown",
+            "body": [
+                "Beaker provides a rudimentary DataFrame class in JavaScript.  This is most often encountered as a result of autotranslating DataFrames in other languages to JavaScript.  You can then access them as follows."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeq2N3Fu",
             "type": "code",
             "evaluator": "JavaScript",
             "input": {
                 "body": [
-                    "[[\"there\", \"is\"], [\"also\", \"a return value\"]]"
+                    "var df = new beaker.DataFrame();",
+                    "df.addColumn(\"name\", [\"chris\", \"dana\", \"pat\"]);",
+                    "df.addColumn(\"height\", [145.58, 178.12, 212.20]);",
+                    "df.addColumn(\"age\", [8, 12, 18], \"integer\");",
+                    "beaker.df = df;",
+                    "df"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "TableDisplay",
+                    "values": [
+                        [
+                            "chris",
+                            145.58,
+                            8
+                        ],
+                        [
+                            "dana",
+                            178.12,
+                            12
+                        ],
+                        [
+                            "pat",
+                            212.2,
+                            18
+                        ]
+                    ],
+                    "types": [
+                        "string",
+                        "double",
+                        "integer"
+                    ],
+                    "columnNames": [
+                        "name",
+                        "height",
+                        "age"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 17
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+        {
+            "id": "codebUXwTB",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.df.addRow({name: \"cass\", height: 179.81, age: 12});",
+                    "beaker.df"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "TableDisplay",
+                    "values": [
+                        [
+                            "chris",
+                            145.58,
+                            8
+                        ],
+                        [
+                            "dana",
+                            178.12,
+                            12
+                        ],
+                        [
+                            "pat",
+                            212.2,
+                            18
+                        ],
+                        [
+                            "cass",
+                            179.81,
+                            12
+                        ]
+                    ],
+                    "types": [
+                        "string",
+                        "double",
+                        "integer"
+                    ],
+                    "columnNames": [
+                        "name",
+                        "height",
+                        "age"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 8
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeezzeV4",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.df.toString()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "DataFrame:  Rows: 4\n  Data columns (total 3 columns):\n    name   string\n    height   double\n    age   integer\n",
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 6
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codelXtcIc",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.df.columns()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    "name",
+                    "height",
+                    "age"
+                ],
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 7
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codexbWnLA",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.df.dtypes()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    "string",
+                    "double",
+                    "integer"
+                ],
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 6
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeu1BYGo",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.df.getColumn(\"name\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    "chris",
+                    "dana",
+                    "pat",
+                    "cass"
+                ],
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 7
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codeSpYbEt",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.df.getRow(0)"
                 ]
             },
             "output": {
@@ -274,12 +480,127 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "there",
-                            "is"
+                            "name",
+                            "chris"
                         ],
                         [
-                            "also",
-                            "a return value"
+                            "height",
+                            145.58
+                        ],
+                        [
+                            "age",
+                            8
+                        ]
+                    ],
+                    "subtype": "Dictionary",
+                    "columnNames": [
+                        "Key",
+                        "Value"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 7
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "codePTuKaA",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// gets the number of rows",
+                    "beaker.df.length()"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": 4,
+                "selectedType": "Text",
+                "pluginName": "JavaScript",
+                "elapsedTime": 11
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeczvMqm",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.df.removeColumn(\"age\");",
+                    "beaker.df"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "TableDisplay",
+                    "values": [
+                        [
+                            "chris",
+                            145.58
+                        ],
+                        [
+                            "dana",
+                            178.12
+                        ],
+                        [
+                            "pat",
+                            212.2
+                        ],
+                        [
+                            "cass",
+                            179.81
+                        ]
+                    ],
+                    "types": [
+                        "string",
+                        "double"
+                    ],
+                    "columnNames": [
+                        "name",
+                        "height"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 8
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeVBGmAc",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "[[\"matrices are\", \"automatically\"],",
+                    " [\"displayed as\", \"data frames\"],",
+                    " [\"with made-up\", \"column names\"]]"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            "matrices are",
+                            "automatically"
+                        ],
+                        [
+                            "displayed as",
+                            "data frames"
+                        ],
+                        [
+                            "with made-up",
+                            "column names"
                         ]
                     ],
                     "subtype": "Matrix",
@@ -294,11 +615,83 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 25
+                "elapsedTime": 6
             },
             "evaluatorReader": true,
-            "lineCount": 1
+            "lineCount": 3
+        },
+        {
+            "id": "codeNtnrk8",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "var record = {first: \"Berzelius\", last: \"Beaker\", company: \"Phlogiston Labs\"};",
+                    "record"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            "first",
+                            "Berzelius"
+                        ],
+                        [
+                            "last",
+                            "Beaker"
+                        ],
+                        [
+                            "company",
+                            "Phlogiston Labs"
+                        ]
+                    ],
+                    "subtype": "Dictionary",
+                    "columnNames": [
+                        "Key",
+                        "Value"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 7
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         }
     ],
-    "namespace": {}
+    "namespace": {
+        "df": {
+            "type": "TableDisplay",
+            "subtype": "TableDisplay",
+            "values": [
+                [
+                    "chris",
+                    145.58
+                ],
+                [
+                    "dana",
+                    178.12
+                ],
+                [
+                    "pat",
+                    212.2
+                ],
+                [
+                    "cass",
+                    179.81
+                ]
+            ],
+            "types": [
+                "string",
+                "double"
+            ],
+            "columnNames": [
+                "name",
+                "height"
+            ]
+        }
+    }
 }

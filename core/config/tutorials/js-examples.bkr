@@ -50,6 +50,14 @@
             "evaluatorReader": false
         },
         {
+            "id": "sectionTzWHqv",
+            "type": "section",
+            "title": "The Game of Life",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
             "id": "code31H2LG",
             "type": "code",
             "evaluator": "Html",
@@ -87,7 +95,7 @@
                     "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n<style>\ndiv.cell {\n  width: 12px;\n  height: 12px;\n  display: table-cell;\n  border: 1px solid gray;\n}\ndiv.alive {\n  background-color: brown;\n}\ndiv.dead {\n  background-color: lightskyblue;\n}\nbutton.life {\n  margin-top: 20px;\n}\n</style>\n\n<div id=\"life\">\n</div>\n\n<button id=\"stop\" class=\"life\">stop</button>"
                 },
                 "selectedType": "BeakerDisplay",
-                "elapsedTime": 1
+                "elapsedTime": 0
             },
             "evaluatorReader": true,
             "lineCount": 22
@@ -173,7 +181,9 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "result": "ratio = 0.101"
+                "result": "ratio = 0.01",
+                "pluginName": "JavaScript",
+                "elapsedTime": 115373
             },
             "evaluatorReader": true,
             "lineCount": 70
@@ -190,6 +200,101 @@
             "output": {
                 "state": {},
                 "selectedType": "BeakerDisplay"
+            },
+            "evaluatorReader": true,
+            "lineCount": 1
+        },
+        {
+            "id": "sectionNfcu1l",
+            "type": "section",
+            "title": "Printing",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeKLDfkl",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "beaker.print(\"Use 'beaker.print()' to log output to the 'cell output' area below.\");",
+                    "beaker.print(\"It gets saved in the notebook.\");",
+                    "beaker.printError(\"Errors too!\");",
+                    "\"returns a regular value too\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "Use 'beaker.print()' to log output to the 'cell output' area below.\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "It gets saved in the notebook.\n"
+                        },
+                        {
+                            "type": "err",
+                            "value": "Errors too!\n"
+                        }
+                    ],
+                    "payload": "returns a regular value too"
+                },
+                "selectedType": "Results",
+                "pluginName": "JavaScript",
+                "elapsedTime": 94
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
+            "id": "section8MJCjE",
+            "type": "section",
+            "title": "Data Frames",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "codeVBGmAc",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "[[\"there\", \"is\"], [\"also\", \"a return value\"]]"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            "there",
+                            "is"
+                        ],
+                        [
+                            "also",
+                            "a return value"
+                        ]
+                    ],
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1"
+                    ],
+                    "types": [
+                        "string",
+                        "string"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 25
             },
             "evaluatorReader": true,
             "lineCount": 1

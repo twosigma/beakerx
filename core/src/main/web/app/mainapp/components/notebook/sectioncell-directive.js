@@ -186,17 +186,21 @@
         titleElement.bind('blur', function() {
           scope.resetTitle(titleElement.html().trim());
         });
+
         scope.$watch('isContentEditable()', function(newValue) {
           titleElement.attr('contenteditable', newValue);
         });
+
         scope.$on('beaker.cell.added', function(e, cellmodel) {
           if (cellmodel === scope.cellmodel) titleElement.focus();
         });
+
         if (scope.isInitializationCell()) {
           element.closest(".bkcell").addClass("initcell");
         } else {
           element.closest(".bkcell").removeClass("initcell");
         }
+
         scope.$watch('isInitializationCell()', function(newValue, oldValue) {
           if (newValue !== oldValue) {
             if (newValue) {

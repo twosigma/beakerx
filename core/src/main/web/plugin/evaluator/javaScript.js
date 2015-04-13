@@ -176,11 +176,9 @@ define(function(require, exports, module) {
               }
               if(typeof output.then === 'function') {
                 JavascriptCancelFunction = function () {
-                  modelOutput.result = {
-                      type: "BeakerDisplay",
-                      innertype: "Error",
-                      object: "cancelled..."
-                  };
+                  bkHelper.receiveEvaluationUpdate(modelOutput,
+                                                   {status: "ERROR", payload: "cancelled..."},
+                                                   PLUGIN_NAME);
                   if (modelOutput !== undefined && modelOutput.object !== undefined)
                     modelOutput.elapsedTime = new Date().getTime() - modelOutput.object.startTime;
                   JavascriptCancelFunction = null;
@@ -202,11 +200,8 @@ define(function(require, exports, module) {
                   deferred.resolve(o);
                   beakerObj.clearOutput();
                 }, function(e) {
-                  modelOutput.result = {
-                      type: "BeakerDisplay",
-                      innertype: "Error",
-                      object: "" + e
-                  };
+                  bkHelper.receiveEvaluationUpdate(modelOutput,
+                                                   {status: "ERROR", payload: e}, PLUGIN_NAME);
                   console.log(e);
                   beakerObj.beakerObjectToNotebook();
                   var r;
@@ -232,11 +227,9 @@ define(function(require, exports, module) {
               beakerObj.clearOutput();
             }
           } catch (err) {
-            modelOutput.result = {
-                type: "BeakerDisplay",
-                innertype: "Error",
-                object: err.stack.split(/\n/)
-            };
+            bkHelper.receiveEvaluationUpdate(modelOutput,
+                                             {status: "ERROR", payload: err.stack.split(/\n/)},
+                                             PLUGIN_NAME);
             console.log(err);
             beakerObj.clearOutput();
             var r;

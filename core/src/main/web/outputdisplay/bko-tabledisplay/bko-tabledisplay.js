@@ -145,7 +145,7 @@
             if (!$scope.table.column(order).visible())
               continue;
             if (out !== '')
-              out = out + '\t';
+              out = out + ',';
             out = out + '"' + $scope.columns[order].title.replace(/"/g, '""') + '"';
           }
           out = out + eol;
@@ -160,7 +160,7 @@
               if (!some)
                 some = true;
               else
-                out = out + '\t';
+                out = out + ',';
               var d = row[j];
               if ($scope.columns[order].render !== undefined )
                 d = $scope.columns[order].render(d, "display");
@@ -176,7 +176,7 @@
           if (!all)
             data = $scope.table.rows().data();
           else
-            data = $scope.table.rows(".selected").data();
+            data = $scope.table.rows(function(index, data, node) { return $scope.selected[index]; }).data();
           var out = $scope.convertToCSV(data);
           bkHelper.selectFile(function(n) {
             var suffix = ".csv";
@@ -198,18 +198,26 @@
         $scope.doSelectAll = function(idx) {
           if ($scope.table === undefined)
             return;
-          $scope.table.rows().nodes().to$().removeClass("selected");
-          $scope.table.rows().nodes().to$().addClass("selected");
+          for (var i in $scope.selected) {
+            $scope.selected[i] = true;
+          }
+          $scope.update_selected();
         }
         $scope.doDeselectAll = function(idx) {
           if ($scope.table === undefined)
             return;
-          $scope.table.rows().nodes().to$().removeClass("selected");
+          for (var i in $scope.selected) {
+            $scope.selected[i] = true;
+          }
+          $scope.update_selected();
         }
         $scope.doReverseSelection = function(idx) {
           if ($scope.table === undefined)
             return;
-          $scope.table.rows().nodes().to$().toggleClass("selected");
+          for (var i in $scope.selected) {
+            $scope.selected[i] = !$scope.selected[i];
+          }
+          $scope.update_selected();
         }
         $scope.doCopyToClipboard = function(idx) {
           // this is handled by the invisible flash movie
@@ -581,12 +589,15 @@
         scope.doCreateData = function(model) {
           // create a dummy column to keep server ordering
           var data = [], r;
+          var selected = [];
           for (r=0; r<model.values.length; r++) {
             var row = [];
             row.push(r);
             data.push(row.concat(model.values[r]));
+            selected.push(false);
           }
           scope.data = data;
+          scope.selected = selected;
         };
         
         scope.update_size = function() {
@@ -598,6 +609,26 @@
           }
         };
 
+        scope.update_selected = function() {
+          
+          if (scope.table === undefined)
+            return;
+
+          scope.table.rows().eq(0).each( function (index) {
+            var row = scope.table.row(index);
+            var tr = row.node();
+            if (tr !== undefined) {
+              var iPos =row.index();
+              if (!scope.selected[iPos]) {
+                $(tr).removeClass('selected');
+              } else {
+                $(tr).addClass('selected');
+              }
+            }
+          } );
+          
+        }
+        
         scope.doCreateTable = function() {
           var cols = [];
           var i;
@@ -638,6 +669,7 @@
               "deferRender": true,
               "drawCallback": function( settings ) {
                 scope.update_size();
+                scope.update_selected();
               }
             };
           
@@ -693,7 +725,14 @@
 
             $(id + ' tbody').off( 'click');
             $(id + ' tbody').on( 'click', 'tr', function (event) {
-              $(this).toggleClass('selected');
+              var iPos = scope.table.row( this ).index();              
+              if (scope.selected[iPos]) {
+                scope.selected[iPos] = false;
+                $(this).removeClass('selected');
+              } else {
+                scope.selected[iPos] = true;
+                $(this).addClass('selected');
+              }
               event.stopPropagation();
             } );
             
@@ -714,7 +753,8 @@
               
               scope.clipclient.on( "copy", function (event) {
                 var clipboard = event.clipboardData;
-                var data = scope.table.rows(".selected").data();
+
+                var data = scope.table.rows(function(index, data, node) { return scope.selected[index]; }).data();
                 if (data === undefined || data.length === 0) {
                   data = scope.table.rows().data();
                 }

@@ -1,6 +1,6 @@
 worker_processes  4;
 daemon off;
-error_log  %(nginx_dir)s/logs/nginx.log error;
+error_log  "%(nginx_dir)s/logs/nginx.log" error;
 pid nginx.pid;
 
 events {

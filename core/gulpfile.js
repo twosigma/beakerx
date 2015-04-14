@@ -332,6 +332,7 @@ gulp.task('buildIndexTemplate', function () {
 });
 
 gulp.task("watch", function() {
+  argv.debug = true;
   gulp.watch(["**/*.scss", "**/*.jst.html"], ["compile"]);
 });
 

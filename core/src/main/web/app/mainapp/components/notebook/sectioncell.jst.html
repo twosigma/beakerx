@@ -21,14 +21,7 @@
     <i class='fa fa-minus'></i>
   </span>
   <p class='depth-indicator'>{{getFullIndex()}}</p>
-  <div style="margin-left:20px" class='section{{cellmodel.level}} bk-section-title'>
-    <div ng-show="mode=='edit'" class="codemirror-wrapper">
-      <textarea></textarea>
-    </div>
-    <span ng-click="edit($event)" class="markup" ng-show="mode=='preview'">
-      {{cellmodel.title}}
-    </span>
-  </div>
+  <bk-markdown-editable class='section{{cellmodel.level}} bk-section-title' options="markdownEditableOptions" cellmodel="cellmodel"></bk-markdown-editable>
 </div>
 <bk-new-cell-menu size="xs" config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
 <div ng-show="isShowChildren()" class="section-children">

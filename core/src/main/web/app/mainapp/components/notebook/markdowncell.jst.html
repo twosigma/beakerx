@@ -16,8 +16,5 @@
 
 <p class='depth-indicator'>{{getFullIndex()}}</p>
 <div ng-click="edit($event)" class='markdowncell-wrapper'>
-  <div ng-show="mode=='edit'" ng-click="$event.stopPropagation()" class="codemirror-wrapper">
-    <textarea></textarea>
-  </div>
-  <div ng-show="mode=='preview'" class="markup"></div>
+  <bk-markdown-editable cellmodel="cellmodel" options="markdownEditableOptions"></bk-markdown-editable>
 </div>

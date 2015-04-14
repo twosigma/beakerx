@@ -46,7 +46,7 @@ bk-section-cell, bk-markdown-cell {
   }
 }
 
-.markdown-wrapper, .bkcell.code-cell-area, .text-wrapper {
+.markdowncell-wrapper, .bkcell.code-cell-area, .textcell-wrapper {
     border: solid 1px $cell-border;
 
     .locked & {
@@ -54,7 +54,7 @@ bk-section-cell, bk-markdown-cell {
     }
 }
 
-.markdown-wrapper, .text-wrapper {
+.markdowncell-wrapper, .textcell-wrapper {
     padding: $grid-row-height*2 $grid-gutter-width*3 $grid-row-height $grid-gutter-width;
 }
 

@@ -64,34 +64,6 @@
       }
     };
   });
-  module.directive('bkShow', function() { // like ngShow, but animated
-    return {
-      link: function(scope, element, attrs) {
-        var expression = attrs.bkShow;
-        scope.$watch(expression, function(newValue, oldValue) {
-          if (newValue) {
-            element.stop(true, true).slideDown(200);
-          } else {
-            element.stop(true, true).slideUp(200);
-          }
-        });
-      }
-    };
-  });
-  module.directive('bkHide', function() { // like ngShow, but animated
-    return {
-      link: function(scope, element, attrs) {
-        var expression = attrs.bkHide;
-        scope.$watch(expression, function(newValue, oldValue) {
-          if (newValue) {
-            element.stop(true, true).slideUp(200);
-          } else {
-            element.stop(true, true).slideDown(200);
-          }
-        });
-      }
-    };
-  });
   module.filter('isHidden', function() {
     return function(input) {
       return _(input).filter(function(it) {

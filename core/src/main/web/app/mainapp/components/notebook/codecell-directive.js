@@ -23,7 +23,8 @@
       bkEvaluatorManager,
       bkCellMenuPluginManager,
       bkSessionManager,
-      bkCoreManager) {
+      bkCoreManager,
+      $timeout) {
 
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
@@ -587,6 +588,14 @@
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
           if (cellmodel === scope.cellmodel) scope.cm.focus();
+        });
+
+        scope.$on('beaker.section.toggled', function(e, isCollapsed) {
+          if (!isCollapsed) {
+            $timeout(function() {
+              scope.cm.refresh();
+            });
+          }
         });
 
         scope.$on("$destroy", function() {

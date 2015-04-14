@@ -24,6 +24,6 @@
   <span class='section{{cellmodel.level}} bk-section-title' contenteditable="true">{{cellmodel.title}}</span>
 </div>
 <bk-new-cell-menu size="xs" config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
-<div bk-show="isShowChildren()" class="section-children">
+<div ng-show="isShowChildren()" class="section-children">
   <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index" cellid="{{cell.id}}"></bk-cell>
 </div>

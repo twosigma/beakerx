@@ -35,6 +35,7 @@
             $scope.cellmodel.collapsed = false;
           }
           $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
+          $scope.$broadcast('beaker.section.toggled', $scope.cellmodel.collapsed);
         };
         $scope.isShowChildren = function() {
           if ($scope.cellmodel.collapsed === undefined) {

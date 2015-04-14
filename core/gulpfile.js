@@ -169,9 +169,9 @@ gulp.task("compileBeakerTemplates", function() {
 });
 
 gulp.task('buildOutputDisplayTemplate', function () {
-  
+
   var thePath = pluginPath + 'template/';
-  
+
   if (argv.outdisp) {
     thePath = argv.outdisp + '/';
   }
@@ -309,7 +309,7 @@ gulp.task('buildIndexTemplate', function () {
           block.end('app/dist/beakerApp.css');
         }
       }),
-      
+
       embedremove:  function (block) {
         var filterSrc = es.mapSync(filterLines),
             copySrc = es.mapSync(copyLine);
@@ -318,7 +318,7 @@ gulp.task('buildIndexTemplate', function () {
         b = es.duplex(copySrc, filterSrc);
         b.pipe(b);
       },
-      
+
       embedinclude:  function (block) {
         var filterSrc = es.mapSync(filterLinesBis),
             copySrc = es.mapSync(copyLine);

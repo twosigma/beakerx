@@ -32,11 +32,6 @@
   }
 }
 
-.bk-section-title:focus {
-  outline: none;
-  background-color: #B8E1FB;
-}
-
 .advanced-mode :not(.base-menu-add) bk-new-cell-menu {
   position: relative;
   left: -$grid-gutter-width - 4px;

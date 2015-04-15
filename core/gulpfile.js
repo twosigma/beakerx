@@ -333,7 +333,7 @@ gulp.task('buildIndexTemplate', function () {
 
 gulp.task("watch", function() {
   argv.debug = true;
-  gulp.watch(["**/*.scss", "**/*.jst.html"], ["compile"]);
+  gulp.watch(["**/*.scss", "**/*.jst.html", rootPath + "template/index_template.html"], ["compile"]);
 });
 
 gulp.task("namespaceCss", function(cb) {

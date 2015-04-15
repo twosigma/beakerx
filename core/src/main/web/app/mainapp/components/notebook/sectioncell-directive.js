@@ -23,8 +23,13 @@
       bkEvaluatorManager,
       bkSessionManager,
       bkCoreManager,
-      bkCellMenuPluginManager) {
+      bkCellMenuPluginManager,
+      $timeout) {
     var CELL_TYPE = "section";
+    var notebookCellOp = bkSessionManager.getNotebookCellOp();
+    var getBkNotebookWidget = function() {
+      return bkCoreManager.getBkApp().getBkNotebookWidget();
+    };
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/sectioncell"](),
@@ -105,10 +110,6 @@
             }
           ]
         });
-        $scope.isContentEditable = function() {
-          return !bkSessionManager.isNotebookLocked();
-        };
-
         $scope.getShareData = function() {
           var cells = [$scope.cellmodel]
               .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
@@ -180,32 +181,14 @@
             return $scope.cellmodel;
           }
         };
-      },
-      link: function(scope, element, attrs) {
-        var titleElement = $(element.find(".bk-section-title").first());
-        titleElement.bind('blur', function() {
-          scope.resetTitle(titleElement.html().trim());
-        });
-        scope.$watch('isContentEditable()', function(newValue) {
-          titleElement.attr('contenteditable', newValue);
-        });
-        scope.$on('beaker.cell.added', function(e, cellmodel) {
-          if (cellmodel === scope.cellmodel) titleElement.focus();
-        });
-        if (scope.isInitializationCell()) {
-          element.closest(".bkcell").addClass("initcell");
-        } else {
-          element.closest(".bkcell").removeClass("initcell");
-        }
-        scope.$watch('isInitializationCell()', function(newValue, oldValue) {
-          if (newValue !== oldValue) {
-            if (newValue) {
-              element.closest(".bkcell").addClass("initcell");
-            } else {
-              element.closest(".bkcell").removeClass("initcell");
-            }
-          }
-        });
+
+        $scope.markdownEditableOptions = {};
+
+        $scope.edit = function() {
+          if (bkHelper.isNotebookLocked()) return;
+
+          $scope.markdownEditableOptions.edit();
+        };
       }
     };
   });

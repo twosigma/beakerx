@@ -17,41 +17,15 @@
 (function() {
   'use strict';
   var module = angular.module('bk.notebook');
-  var enterKey = 13;
-
-  //Namespace management idea from http://enterprisejquery.com/2010/10/how-good-c-habits-can-encourage-bad-javascript-habits-part-1/
-  var setEndOfContenteditable = function(contentEditableElement)
-  {
-    var range,selection;
-    if(document.createRange)
-    {
-      range = document.createRange();
-      range.selectNodeContents(contentEditableElement);
-      range.collapse(false);
-      selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-    else if(document.selection)
-    {
-      range = document.body.createTextRange();
-      range.moveToElementText(contentEditableElement);
-      range.collapse(false);
-      range.select();
-    }
-  }
-
-  // Extract text with preserving whitespace, inspired from:
-  // http://stackoverflow.com/questions/3455931/extracting-text-from-a-contenteditable-div
-  var getContentEditableText = function(content) {
-    var ce = $("<pre />").html(content);
-    ce.find("div").replaceWith(function() { return "\n" + this.innerHTML; });
-    ce.find("br").replaceWith("\n");
-
-    return ce.text();
-  }
-
-  module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', '$timeout', function(bkSessionManager, bkHelper, $timeout) {
+  marked.setOptions({
+    gfm: true,
+    breaks: true
+  });
+  module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', 'bkCoreManager', '$timeout', function(bkSessionManager, bkHelper, bkCoreManager, $timeout) {
+    var notebookCellOp = bkSessionManager.getNotebookCellOp();
+    var getBkNotebookWidget = function() {
+      return bkCoreManager.getBkApp().getBkNotebookWidget();
+    };
     return {
       restrict: 'E',
       template: JST["mainapp/components/notebook/markdowncell"](),
@@ -59,74 +33,12 @@
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + ($scope.$parent.index + 1);
         };
-      },
-      link: function(scope, element, attrs) {
-        var preview = function() {
-          var markdownFragment = $('<div style="display: none;">' + scope.cellmodel.body + '</div>');
-          markdownFragment.appendTo('body'); // ugh mathjax doesn't operate on document fragments...
 
-          MathJax.Hub.Queue(["Typeset", MathJax.Hub, markdownFragment[0]]);
-          MathJax.Hub.Queue(function() {
-            element.find('.markup').html(marked(markdownFragment.html()));
-            markdownFragment.remove();
-          });
-          scope.mode = 'preview';
+        $scope.markdownEditableOptions = {};
+
+        $scope.edit = function(event) {
+          $scope.markdownEditableOptions.edit(event);
         };
-
-        var syncContentAndPreview = function() {
-          scope.cellmodel.body = getContentEditableText(element.find('.markdown').html());
-          preview();
-        };
-
-        scope.keyDown = function(e) {
-          if (e.keyCode == enterKey && (e.ctrlKey || e.metaKey)){
-            syncContentAndPreview();
-          }
-        };
-
-        scope.edit = function(event) {
-          if (bkHelper.isNotebookLocked()) return;
-
-          scope.mode = 'edit';
-          var clickLocation;
-          var markdownCell = element.find('.markdown-wrapper');
-          var top = markdownCell.offset().top;
-          var bottom = top + markdownCell.outerHeight();
-
-          if (event !== undefined && event.pageY < (top + bottom) / 2) {
-            clickLocation = 'top';
-          } else {
-            clickLocation = 'bottom';
-          }
-
-          var markdown = element.find('.markdown');
-          markdown.html(scope.cellmodel.body);
-
-          $timeout(function(){
-            markdown.focus();
-            if (clickLocation == 'bottom') {
-              setEndOfContenteditable(markdown[0]);
-            }
-          });
-        };
-
-        preview();
-
-        element.find('.markdown').on('blur', function() {
-          scope.$apply(function() {
-            syncContentAndPreview();
-          });
-        });
-
-        scope.$on('beaker.cell.added', function(e, cellmodel) {
-          if (cellmodel === scope.cellmodel) scope.edit();
-        });
-
-        scope.$watch('cellmodel.body', function(newVal, oldVal) {
-          if (newVal !== oldVal) {
-            bkSessionManager.setNotebookModelEdited(true);
-          }
-        });
       }
     };
   }]);

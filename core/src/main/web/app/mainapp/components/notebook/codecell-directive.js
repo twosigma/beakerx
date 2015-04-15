@@ -43,15 +43,15 @@
 
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + ($scope.$parent.index + 1);
-        }
+        };
 
         $scope.isLocked = function() {
           return bkSessionManager.isNotebookLocked();
-        }
+        };
 
         $scope.isEmpty = function() {
           return !($scope.cellmodel.output.result);
-        }
+        };
 
         $scope.isError = function() {
           if ($scope.cellmodel === undefined || $scope.cellmodel.output === undefined || $scope.cellmodel.output.result === undefined)
@@ -63,7 +63,7 @@
             type = $scope.cellmodel.output.result.payload.innertype;
 
           return type == 'Error';
-        }
+        };
 
         $scope.isShowInput = function() {
           if ($scope.isLocked()) {
@@ -87,11 +87,11 @@
 
         $scope.isHiddenOutput = function() {
           return $scope.cellmodel.output.selectedType == 'Hidden';
-        }
+        };
 
         $scope.hasOutput = function() {
-          return $scope.cellmodel.output.result != undefined;
-        }
+          return $scope.cellmodel.output.result !== undefined;
+        };
 
         $scope.backgroundClick = function(event) {
           if (!$scope.isShowInput() || $(event.toElement).parents().hasClass("code-cell-output")) {
@@ -115,7 +115,7 @@
                          cm.getLine(cm.lastLine()).length);
           }
           cm.focus();
-        }
+        };
 
         $scope.isShowOutput = function() {
           if ($scope.cellmodel.output.hidden === true) {
@@ -246,7 +246,7 @@
           }
 
           return "";
-        }
+        };
 
         $scope.cellmenu.addItem({
           name: "Initialization Cell",
@@ -302,7 +302,10 @@
             return;
           showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
         };
-
+        scope.focus = function() {
+          scope.cm.focus();
+          scope.$apply();
+        };
         CodeMirror.on(window, "resize", resizeHandler);
         var moveFocusDown = function() {
           // move focus to next code cell
@@ -325,7 +328,7 @@
             var t = scope.bkNotebook.getFocusable(prevCell.id);
             if (t) {
               t.focus();
-              var top = t.cursorCoords(true,'window').top;
+              var top = t.cm.cursorCoords(true,'window').top;
               if ( top < 150)
                 window.scrollBy(0, top-150);
               break;
@@ -529,7 +532,7 @@
         });
 
         scope.updateUI(scope.getEvaluator());
-        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope.cm);
+        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
         scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 
         // cellmodel.body --> CodeMirror

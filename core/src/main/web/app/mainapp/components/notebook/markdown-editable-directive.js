@@ -103,6 +103,10 @@
           scope.mode = 'edit';
 
           $timeout(function() {
+            // remove content of markup when toggling to edit mode to prevent
+            // flash when toggling back to preview mode.
+            element.find('.markup').html('');
+
             var cm = scope.cm;
             cm.setValue(scope.cellmodel[contentAttribute]);
             cm.clearHistory();

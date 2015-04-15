@@ -29,6 +29,7 @@ import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import com.twosigma.beaker.shared.module.util.GeneralUtilsModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
+
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -41,6 +42,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -184,9 +186,9 @@ public class Main {
         new DefaultWebServerConfigModule(webAppPref),
         new GeneralUtilsModule(),
         new WebServerModule(),
-        new URLConfigModule(),
         new SerializerModule(),
-        new GuiceCometdModule());
+        new GuiceCometdModule(),
+        new URLConfigModule());
 
     PluginServiceLocatorRest processStarter = injector.getInstance(PluginServiceLocatorRest.class);
     processStarter.start();

@@ -25,19 +25,24 @@ import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.cometd.annotation.ServerAnnotationProcessor;
 import org.cometd.annotation.Service;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.server.BayeuxServerImpl;
 import org.cometd.server.JacksonJSONContextServer;
+import org.cometd.websocket.server.WebSocketTransport;
 
 // Should load from cometd-contrib
 public class GuiceCometdModule extends AbstractModule {
-
+  
   @Override
   protected final void configure() {
+    
     bind(BayeuxServer.class).to(BayeuxServerImpl.class).in(Scopes.SINGLETON);
+
+    
     if (discoverBindings()) {
       // automatically add services
       bindListener(new AbstractMatcher<TypeLiteral<?>>() {
@@ -105,6 +110,9 @@ public class GuiceCometdModule extends AbstractModule {
   @Provides
   public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om) {
     BayeuxServerImpl server = new BayeuxServerImpl();
+    
+    server.addTransport(new WebSocketTransport(server));
+
     server.setOption(BayeuxServerImpl.JSON_CONTEXT, new JacksonJSONContextServer() {
       @Override
       public ObjectMapper getObjectMapper() {
@@ -125,7 +133,7 @@ public class GuiceCometdModule extends AbstractModule {
   }
 
   protected void configure(BayeuxServerImpl server) {
-//	server.setOption("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
+
   }
 
   @Provides

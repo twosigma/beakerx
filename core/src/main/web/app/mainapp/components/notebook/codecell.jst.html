@@ -42,10 +42,7 @@
       'output-hidden': cellmodel.output.hidden,
       'error': isError()
       }">
-      <h6>
-        {{outputTitle()}}
-        <small class='cell-run-time' ng-if="!isShowOutput">{{getElapsedTimeString()}}</small>
-      </h6>
+      <h6 ng-if="outputTitle()">{{outputTitle()}}</h6>
       <bk-code-cell-output
             model="cellmodel.output"
             evaluator-id="{{ cellmodel.evaluator }}"

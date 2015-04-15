@@ -161,13 +161,6 @@
             },
             "Esc" : function(cm) {
               cm.execCommand("singleSelection");
-              if (cm.state.vim && cm.state.vim.insertMode) {
-                return;
-              } else {
-                if (isFullScreen(cm)) {
-                  setFullScreen(cm, false);
-                }
-              }
             },
             "Ctrl-Enter": function(cm) {
               scope.$apply(function() {

@@ -18,7 +18,6 @@ package com.twosigma.beaker.core;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.twosigma.beaker.shared.module.GuiceCometdModule;
-import com.twosigma.beaker.core.module.CometdModule;
 import com.twosigma.beaker.core.module.SerializerModule;
 import com.twosigma.beaker.core.module.URLConfigModule;
 import com.twosigma.beaker.core.module.WebServerModule;

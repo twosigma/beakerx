@@ -15,9 +15,6 @@
  */
 package com.twosigma.beaker.shared.module;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -114,7 +111,6 @@ public class GuiceCometdModule extends AbstractModule {
   public final BayeuxServerImpl getBayeuxServer(final ObjectMapper om) {
     BayeuxServerImpl server = new BayeuxServerImpl();
     
-    //server.setOption("logLevel", "3");
     server.addTransport(new WebSocketTransport(server));
 
     server.setOption(BayeuxServerImpl.JSON_CONTEXT, new JacksonJSONContextServer() {

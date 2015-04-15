@@ -35,17 +35,14 @@
       template: JST["mainapp/components/notebook/sectioncell"](),
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
+
+        $scope.cellmodel.collapsed = $scope.cellmodel.collapsed || false;
+
         $scope.toggleShowChildren = function() {
-          if ($scope.cellmodel.collapsed === undefined) {
-            $scope.cellmodel.collapsed = false;
-          }
           $scope.cellmodel.collapsed = !$scope.cellmodel.collapsed;
           $scope.$broadcast('beaker.section.toggled', $scope.cellmodel.collapsed);
         };
         $scope.isShowChildren = function() {
-          if ($scope.cellmodel.collapsed === undefined) {
-            $scope.cellmodel.collapsed = false;
-          }
           return !$scope.cellmodel.collapsed;
         };
         $scope.getChildren = function() {

@@ -52,6 +52,10 @@ bk-code-cell-output {
   ul, ol {
     margin-left: $grid-gutter-width;
   }
+
+  .bk-section-title & {
+    min-height: 1em;
+  }
 }
 
 .modal.output-table-options {

@@ -99,6 +99,7 @@
 
         scope.edit = function(event) {
           if (bkHelper.isNotebookLocked()) return;
+          if (event.target.tagName === "A") return; // Don't edit if clicking a link
 
           scope.mode = 'edit';
 

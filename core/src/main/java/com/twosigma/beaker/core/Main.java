@@ -66,7 +66,7 @@ public class Main {
   static {
     GuiceComponentProviderFactoryLogger.setLevel(Level.WARNING);
     WebApplicationImplLogger.setLevel(Level.WARNING);
-    JerseyLogger.setLevel(Level.ALL);
+    JerseyLogger.setLevel(Level.OFF);
   }
 
   private static final Integer PORT_BASE_START_DEFAULT = 8800;

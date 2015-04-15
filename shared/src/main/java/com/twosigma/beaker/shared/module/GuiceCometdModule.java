@@ -39,24 +39,6 @@ import org.cometd.websocket.server.WebSocketTransport;
 
 // Should load from cometd-contrib
 public class GuiceCometdModule extends AbstractModule {
-//
-//  @Provides @Singleton
-//  BayeuxServer getBayeuxServer() {
-//    BayeuxServerImpl b = new BayeuxServerImpl();
-//    System.out.println("INFO: "+b.toString());
-//    System.out.println("INFO: "+b.getOption("logLevel"));
-//    
-//    b.addTransport(new WebSocketTransport(b));
-//    
-//    List<String> s = new ArrayList<String>();
-//    s.add("websocket");
-//    s.add("callback-polling");
-//    s.add("long-polling");
-//    b.setAllowedTransports(s);
-//    System.out.println("INFO: "+b.getAllowedTransports());
-//    b.setOption("logLevel", "3");
-//    return b;
-//  }
   
   @Override
   protected final void configure() {
@@ -155,7 +137,7 @@ public class GuiceCometdModule extends AbstractModule {
   }
 
   protected void configure(BayeuxServerImpl server) {
-//	server.setOption("jsonContext", JacksonJSONContextServer.class.getCanonicalName());
+
   }
 
   @Provides

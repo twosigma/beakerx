@@ -129,9 +129,7 @@
         };
 
         $scope.outputTitle = function() {
-          if (!$scope.isShowOutput()) return "Output Hidden";
-
-          return $scope.isError() ? "Error" : "Cell Output";
+          return $scope.isError() ? "Error" : null;
         };
 
         $scope.evaluate = function($event) {
@@ -237,15 +235,6 @@
 
         $scope.isInitializationCell = function() {
           return $scope.cellmodel.initialization;
-        };
-
-        $scope.getElapsedTimeString = function() {
-          // Do not show anything if less than 20 ms
-          if ($scope.cellmodel.output.elapsedTime >= 200) {
-            return "("+bkUtils.formatTimeString($scope.cellmodel.output.elapsedTime)+")";
-          }
-
-          return "";
         };
 
         $scope.cellmenu.addItem({

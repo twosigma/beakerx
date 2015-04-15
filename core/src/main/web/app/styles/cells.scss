@@ -107,6 +107,8 @@ bk-section-cell {
         padding: $grid-row-height $grid-gutter-width;
         position: relative;
         border-top: solid 1px #CCC;
+        min-height: #{$line-height-base}em;
+        box-sizing: content-box;
 
         .out_error {
             padding-bottom: 0;

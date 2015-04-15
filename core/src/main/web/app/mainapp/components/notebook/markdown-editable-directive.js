@@ -126,6 +126,7 @@
         preview();
 
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
+          mode: "markdown",
           electricChars: false,
           smartIndent: false,
           extraKeys: {

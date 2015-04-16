@@ -45,7 +45,7 @@
 
           MathJax.Hub.Queue(["Typeset", MathJax.Hub, markdownFragment[0]]);
           MathJax.Hub.Queue(function() {
-            element.find('.markup').html(marked(markdownFragment.html(), {gfm: true, breaks: true}));
+            element.find('.markup').html(marked(markdownFragment.html(), {gfm: true}));
             markdownFragment.remove();
           });
           scope.mode = 'preview';

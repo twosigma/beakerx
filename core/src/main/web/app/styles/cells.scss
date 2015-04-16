@@ -55,7 +55,7 @@ bk-section-cell, bk-markdown-cell {
 }
 
 .markdowncell-wrapper, .textcell-wrapper {
-    padding: $grid-row-height*2 $grid-gutter-width*3 $grid-row-height $grid-gutter-width;
+    padding: $grid-row-height $grid-gutter-width*3 $grid-row-height $grid-gutter-width;
 }
 
 .bkcell bk-code-cell-input-menu .dropdown {

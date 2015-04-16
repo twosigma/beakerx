@@ -296,229 +296,47 @@
           scope.$apply();
         };
         CodeMirror.on(window, "resize", resizeHandler);
-        var moveFocusDown = function() {
-          // move focus to next code cell
-          var thisCellId = scope.cellmodel.id;
-          var nextCell = notebookCellOp.getNext(thisCellId);
-          while (nextCell) {
-            if (scope.bkNotebook.getFocusable(nextCell.id)) {
-              scope.bkNotebook.getFocusable(nextCell.id).focus();
-              break;
-            } else {
-              nextCell = notebookCellOp.getNext(nextCell.id);
-            }
-          }
-        };
-        var moveFocusUp = function() {
-          // move focus to prev code cell
-          var thisCellID = scope.cellmodel.id;
-          var prevCell = notebookCellOp.getPrev(thisCellID);
-          while (prevCell) {
-            var t = scope.bkNotebook.getFocusable(prevCell.id);
-            if (t) {
-              t.focus();
-              var top = t.cm.cursorCoords(true,'window').top;
-              if ( top < 150)
-                window.scrollBy(0, top-150);
-              break;
-            } else {
-              prevCell = notebookCellOp.getPrev(prevCell.id);
-            }
-          }
-        };
-        scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
-          lineNumbers: true,
-          matchBrackets: true,
-          electricChars: false,
-          extraKeys: {
-            "Up" : function(cm) {
-              if ($('.CodeMirror-hint').length > 0) {
-                //codecomplete is up, skip
-                return;
-              }
-              if (cm.getCursor().line === 0) {
-                moveFocusUp();
-              } else {
-                cm.execCommand("goLineUp");
-                var top = cm.cursorCoords(true,'window').top;
-                if ( top < 150)
-                  window.scrollBy(0, top-150);
-              }
-            },
-            "Down" : function(cm) {
-              if ($('.CodeMirror-hint').length > 0) {
-                //codecomplete is up, skip
-                return;
-              }
-              if (cm.getCursor().line === cm.doc.size - 1) {
-                moveFocusDown();
-              } else {
-                cm.execCommand("goLineDown");
-              }
-            },
-            "Esc" : function(cm) {
-              cm.execCommand("singleSelection");
-              if (cm.state.vim && cm.state.vim.insertMode) {
-                return;
-              } else {
-                if (isFullScreen(cm)) {
-                  setFullScreen(cm, false);
-                }
-              }
-            },
-            "Ctrl-S": "save",
-            "Cmd-S": "save",
-            "Shift-Ctrl-A": function(cm) {
-              scope.appendCodeCell();
-            },
-            "Shift-Cmd-A": function(cm) {
-              scope.appendCodeCell();
-            },
-            "Shift-Ctrl-E": function(cm) {
-              scope.popupMenu();
-              element.find(".inputcellmenu").find('li').find('a')[0].focus();
-            },
-            "Shift-Cmd-E": function(cm) {
-              scope.popupMenu();
-              element.find(".inputcellmenu").find('li').find('a')[0].focus();
-            },
-            "Alt-Down": moveFocusDown,
-            "Alt-J": moveFocusDown,
-            "Alt-Up": moveFocusUp,
-            "Alt-K": moveFocusUp,
-            "Alt-F11": function(cm) {
-              setFullScreen(cm, !isFullScreen(cm));
-            },
-            "Ctrl-Enter": function(cm) {
-              scope.evaluate();
-            },
-            "Cmd-Enter": function(cm) {
-              scope.evaluate();
-            },
-            "Shift-Enter": function(cm) {
-              scope.evaluate();
-              moveFocusDown();
-            },
-            "Ctrl-Space": function(cm) {
-              var getToken = function(editor, cur) {
-                return editor.getTokenAt(cur);
-              };
-              var getHints = function(editor, showHintCB, options) {
-                var cur = editor.getCursor();
-                var token = getToken(editor, cur);
-                var cursorPos = editor.indexFromPos(cur);
-                // We might want this defined by the plugin.
-                var onResults = function(results, matched_text, dotFix) {
-                  var start = token.start;
-                  var end = token.end;
-                  if (dotFix && token.string === ".") {
-                    start += 1;
-                  }
-                  if (matched_text) {
-                    start += (cur.ch - token.start - matched_text.length);
-                    end = start + matched_text.length;
-                  }
-                  showHintCB({
-                    list: _.uniq(results),
-                    from: CodeMirror.Pos(cur.line, start),
-                    to: CodeMirror.Pos(cur.line, end)
-                  });
-                };
-                scope.autocomplete(cursorPos, onResults);
-              };
 
-              if (cm.getOption('mode') === 'htmlmixed' || cm.getOption('mode') === 'javascript') {
-                console.log("using code mirror");
-                cm.execCommand("autocomplete");
-              } else {
-                var options = {
-                  async: true,
-                  closeOnUnfocus: true,
-                  alignWithWord: true,
-                  completeSingle: true
-                };
-                CodeMirror.showHint(cm, getHints, options);
+        var codeMirrorOptions = bkCoreManager.codeMirrorOptions(scope, notebookCellOp);
+        _.extend(codeMirrorOptions.extraKeys, {
+          "Esc" : function(cm) {
+            cm.execCommand("singleSelection");
+            if (cm.state.vim && cm.state.vim.insertMode) {
+              return;
+            } else {
+              if (isFullScreen(cm)) {
+                setFullScreen(cm, false);
               }
-            },
-            "Cmd-Space": function(cm) {
-              var getToken = function(editor, cur) {
-                return editor.getTokenAt(cur);
-              };
-              var getHints = function(editor, showHintCB, options) {
-                var cur = editor.getCursor();
-                var token = getToken(editor, cur);
-                var cursorPos = editor.indexFromPos(cur);
-                // We might want this defined by the plugin.
-                var onResults = function(results, matched_text, dotFix) {
-                  var start = token.start;
-                  var end = token.end;
-                  if (dotFix && token.string === ".") {
-                    start += 1;
-                  }
-                  if (matched_text) {
-                    start += (cur.ch - token.start - matched_text.length);
-                    end = start + matched_text.length;
-                  }
-                  showHintCB({
-                    list: _.uniq(results),
-                    from: CodeMirror.Pos(cur.line, start),
-                    to: CodeMirror.Pos(cur.line, end)
-                  });
-                };
-                scope.autocomplete(cursorPos, onResults);
-              };
-
-              if (cm.getOption('mode') === 'htmlmixed' || cm.getOption('mode') === 'javascript') {
-                console.log("using code mirror");
-                cm.execCommand("autocomplete");
-              } else {
-                var options = {
-                  async: true,
-                  closeOnUnfocus: true,
-                  alignWithWord: true,
-                  completeSingle: true
-                };
-                CodeMirror.showHint(cm, getHints, options);
-              }
-            },
-            "Ctrl-Alt-Up": function(cm) { // cell move up
-              notebookCellOp.moveUp(scope.cellmodel.id);
-              bkUtils.refreshRootScope();
-              cm.focus();
-            },
-            "Cmd-Alt-Up": function(cm) { // cell move up
-              notebookCellOp.moveUp(scope.cellmodel.id);
-              bkUtils.refreshRootScope();
-              cm.focus();
-            },
-            "Ctrl-Alt-Down": function(cm) { // cell move down
-              notebookCellOp.moveDown(scope.cellmodel.id);
-              bkUtils.refreshRootScope();
-              cm.focus();
-            },
-            "Cmd-Alt-Down": function(cm) { // cell move down
-              notebookCellOp.moveDown(scope.cellmodel.id);
-              bkUtils.refreshRootScope();
-              cm.focus();
-            },
-            "Ctrl-Alt-H": function(cm) { // cell hide
-              scope.cellmodel.input.hidden = true;
-              bkUtils.refreshRootScope();
-            },
-            "Cmd-Alt-H": function(cm) { // cell hide
-              scope.cellmodel.input.hidden = true;
-              bkUtils.refreshRootScope();
-            },
-            "Ctrl-Alt-D": function(cm) { // cell delete
-              notebookCellOp.delete(scope.cellmodel.id, true);
-              bkUtils.refreshRootScope();
-            },
-            "Cmd-Alt-D": function(cm) { // cell delete
-              notebookCellOp.delete(scope.cellmodel.id, true);
-              bkUtils.refreshRootScope();
             }
+          },
+          "Alt-F11": function(cm) {
+            setFullScreen(cm, !isFullScreen(cm));
+          },
+          "Shift-Ctrl-A": function(cm) {
+            scope.appendCodeCell();
+          },
+          "Shift-Cmd-A": function(cm) {
+            scope.appendCodeCell();
+          },
+          "Shift-Ctrl-E": function(cm) {
+            scope.popupMenu();
+            element.find(".inputcellmenu").find('li').find('a')[0].focus();
+          },
+          "Shift-Cmd-E": function(cm) {
+            scope.popupMenu();
+            element.find(".inputcellmenu").find('li').find('a')[0].focus();
+          },
+          "Ctrl-Alt-H": function(cm) { // cell hide
+            scope.cellmodel.input.hidden = true;
+            bkUtils.refreshRootScope();
+          },
+          "Cmd-Alt-H": function(cm) { // cell hide
+            scope.cellmodel.input.hidden = true;
+            bkUtils.refreshRootScope();
           }
         });
+
+        scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], codeMirrorOptions);
 
         scope.updateUI(scope.getEvaluator());
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);

@@ -47,8 +47,9 @@
           MathJax.Hub.Queue(function() {
             element.find('.markup').html(marked(markdownFragment.html(), {gfm: true}));
             markdownFragment.remove();
+            scope.mode = 'preview';
+            scope.$apply();
           });
-          scope.mode = 'preview';
         };
 
         var syncContentAndPreview = function() {
@@ -97,6 +98,10 @@
           if (bkHelper.isNotebookLocked()) return;
           if (event && event.target.tagName === "A") return; // Don't edit if clicking a link
 
+          var cm = scope.cm;
+          cm.clearHistory();
+          cm.setValue(scope.cellmodel[contentAttribute]);
+
           scope.mode = 'edit';
 
           $timeout(function() {
@@ -104,9 +109,7 @@
             // flash when toggling back to preview mode.
             element.find('.markup').html('');
 
-            var cm = scope.cm;
             cm.setValue(scope.cellmodel[contentAttribute]);
-            cm.clearHistory();
 
             if (event) {
               var clickLocation;

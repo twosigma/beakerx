@@ -17,10 +17,6 @@
 (function() {
   'use strict';
   var module = angular.module('bk.notebook');
-  marked.setOptions({
-    gfm: true,
-    breaks: true
-  });
   module.directive('bkMarkdownCell', ['bkSessionManager', 'bkHelper', 'bkCoreManager', '$timeout', function(bkSessionManager, bkHelper, bkCoreManager, $timeout) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {

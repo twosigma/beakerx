@@ -71,3 +71,16 @@ tbody tr {
     }
   }
 }
+
+// Bootstrap wants to keep focus styling on dropdowns
+// after they are closed *shrug*
+.navbar-default .navbar-nav > li > a {
+  &:focus {
+    color: $navbar-default-link-color;
+    background-color: transparent;
+  }
+  &:hover {
+    color: $navbar-default-link-hover-color !important;
+    background-color: $navbar-default-link-hover-bg !important;
+  }
+}

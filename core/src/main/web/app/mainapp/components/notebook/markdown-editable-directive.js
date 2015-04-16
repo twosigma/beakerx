@@ -17,10 +17,6 @@
 (function() {
   'use strict';
   var module = angular.module('bk.notebook');
-  marked.setOptions({
-    gfm: true,
-    breaks: true
-  });
   module.directive('bkMarkdownEditable', ['bkSessionManager', 'bkHelper', 'bkCoreManager', '$timeout', function(bkSessionManager, bkHelper, bkCoreManager, $timeout) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
@@ -49,7 +45,7 @@
 
           MathJax.Hub.Queue(["Typeset", MathJax.Hub, markdownFragment[0]]);
           MathJax.Hub.Queue(function() {
-            element.find('.markup').html(marked(markdownFragment.html()));
+            element.find('.markup').html(marked(markdownFragment.html(), {gfm: true, breaks: true}));
             markdownFragment.remove();
           });
           scope.mode = 'preview';

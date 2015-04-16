@@ -47,8 +47,9 @@
           MathJax.Hub.Queue(function() {
             element.find('.markup').html(marked(markdownFragment.html(), {gfm: true}));
             markdownFragment.remove();
+            scope.mode = 'preview';
+            scope.$apply();
           });
-          scope.mode = 'preview';
         };
 
         var syncContentAndPreview = function() {
@@ -123,8 +124,6 @@
             cm.focus();
           });
         };
-
-        preview();
 
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
           mode: "markdown",
@@ -216,6 +215,7 @@
         bkNotebook.registerFocusable(scope.cellmodel.id, scope);
         bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 
+        scope.cm.setValue(scope.cellmodel[contentAttribute]);
         preview();
 
         scope.cm.on("blur", function(){

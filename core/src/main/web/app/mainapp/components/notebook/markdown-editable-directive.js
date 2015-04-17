@@ -30,7 +30,6 @@
         options: '='
       },
       link: function(scope, element, attrs) {
-        var bkNotebook = getBkNotebookWidget();
         var contentAttribute;
 
         if (!_.isUndefined(scope.cellmodel.body)) {
@@ -56,38 +55,9 @@
           scope.cellmodel[contentAttribute] = scope.cm.getValue();
           preview();
         };
+        scope.evaluate = syncContentAndPreview;
 
-        var moveFocusDown = function() {
-          // move focus to next code cell
-          var thisCellId = scope.cellmodel.id;
-          var nextCell = notebookCellOp.getNext(thisCellId);
-          while (nextCell) {
-            if (bkNotebook.getFocusable(nextCell.id)) {
-              bkNotebook.getFocusable(nextCell.id).focus();
-              break;
-            } else {
-              nextCell = notebookCellOp.getNext(nextCell.id);
-            }
-          }
-        };
-
-        var moveFocusUp = function() {
-          // move focus to prev code cell
-          var thisCellID = scope.cellmodel.id;
-          var prevCell = notebookCellOp.getPrev(thisCellID);
-          while (prevCell) {
-            var t = bkNotebook.getFocusable(prevCell.id);
-            if (t) {
-              t.focus();
-              var top = t.cm.cursorCoords(true,'window').top;
-              if ( top < 150)
-                window.scrollBy(0, top-150);
-              break;
-            } else {
-              prevCell = notebookCellOp.getPrev(prevCell.id);
-            }
-          }
-        };
+        scope.bkNotebook = getBkNotebookWidget();
 
         scope.focus = function() {
           scope.edit();
@@ -125,95 +95,17 @@
           });
         };
 
-        scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], {
+        var codeMirrorOptions = _.extend(bkCoreManager.codeMirrorOptions(scope, notebookCellOp), {
+          lineNumbers: false,
           mode: "markdown",
-          electricChars: false,
-          smartIndent: false,
-          extraKeys: {
-            "Up" : function(cm) {
-              if ($('.CodeMirror-hint').length > 0) {
-                //codecomplete is up, skip
-                return;
-              }
-              if (cm.getCursor().line === 0) {
-                moveFocusUp();
-              } else {
-                cm.execCommand("goLineUp");
-                var top = cm.cursorCoords(true,'window').top;
-                if ( top < 150)
-                  window.scrollBy(0, top-150);
-              }
-            },
-            "Down" : function(cm) {
-              if ($('.CodeMirror-hint').length > 0) {
-                //codecomplete is up, skip
-                return;
-              }
-              if (cm.getCursor().line === cm.doc.size - 1) {
-                moveFocusDown();
-              } else {
-                cm.execCommand("goLineDown");
-              }
-            },
-            "Esc" : function(cm) {
-              cm.execCommand("singleSelection");
-            },
-            "Ctrl-Enter": function(cm) {
-              scope.$apply(function() {
-                syncContentAndPreview();
-              });
-            },
-            "Cmd-Enter": function(cm) {
-              scope.$apply(function() {
-                syncContentAndPreview();
-              });
-            },
-            "Alt-Down": moveFocusDown,
-            "Alt-J": moveFocusDown,
-            "Alt-Up": moveFocusUp,
-            "Alt-K": moveFocusUp,
-            "Ctrl-Alt-Up": function(cm) { // cell move up
-              notebookCellOp.moveUp(scope.cellmodel.id);
-              bkUtils.refreshRootScope();
-              cm.focus();
-            },
-            "Cmd-Alt-Up": function(cm) { // cell move up
-              notebookCellOp.moveUp(scope.cellmodel.id);
-              bkUtils.refreshRootScope();
-              cm.focus();
-            },
-            "Ctrl-Alt-Down": function(cm) { // cell move down
-              notebookCellOp.moveDown(scope.cellmodel.id);
-              bkUtils.refreshRootScope();
-              cm.focus();
-            },
-            "Cmd-Alt-Down": function(cm) { // cell move down
-              notebookCellOp.moveDown(scope.cellmodel.id);
-              bkUtils.refreshRootScope();
-              cm.focus();
-            },
-            "Ctrl-Alt-H": function(cm) { // cell hide
-              scope.cellmodel.input.hidden = true;
-              bkUtils.refreshRootScope();
-            },
-            "Cmd-Alt-H": function(cm) { // cell hide
-              scope.cellmodel.input.hidden = true;
-              bkUtils.refreshRootScope();
-            },
-            "Ctrl-Alt-D": function(cm) { // cell delete
-              notebookCellOp.delete(scope.cellmodel.id, true);
-              bkUtils.refreshRootScope();
-            },
-            "Cmd-Alt-D": function(cm) { // cell delete
-              notebookCellOp.delete(scope.cellmodel.id, true);
-              bkUtils.refreshRootScope();
-            }
-          }
+          smartIndent: false
         });
 
+        scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], codeMirrorOptions);
+
         scope.options.edit = function(event) { scope.edit(event) };
-        bkNotebook.registerFocusable(scope.cellmodel.id, scope);
-        bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
+        scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
+        scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 
         scope.cm.setValue(scope.cellmodel[contentAttribute]);
         preview();

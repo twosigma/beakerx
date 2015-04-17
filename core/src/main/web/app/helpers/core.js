@@ -311,6 +311,163 @@
         return deferred.promise;
       },
 
+      codeMirrorOptions: function(scope, notebookCellOp) {
+        var goUpOrMoveFocusUp = function(cm) {
+          if ($('.CodeMirror-hint').length > 0) {
+            //codecomplete is up, skip
+            return;
+          }
+          if (cm.getCursor().line === 0) {
+            moveFocusUp();
+          } else {
+            cm.execCommand("goLineUp");
+            var top = cm.cursorCoords(true,'window').top;
+            if ( top < 150)
+              window.scrollBy(0, top-150);
+          }
+        };
+
+        var goDownOrMoveFocusDown = function(cm) {
+          if ($('.CodeMirror-hint').length > 0) {
+            //codecomplete is up, skip
+            return;
+          }
+          if (cm.getCursor().line === cm.doc.size - 1) {
+            moveFocusDown();
+          } else {
+            cm.execCommand("goLineDown");
+          }
+        };
+
+        var moveFocusDown = function() {
+          // move focus to next code cell
+          var thisCellId = scope.cellmodel.id;
+          var nextCell = notebookCellOp.getNext(thisCellId);
+          while (nextCell) {
+            if (scope.bkNotebook.getFocusable(nextCell.id)) {
+              scope.bkNotebook.getFocusable(nextCell.id).focus();
+              break;
+            } else {
+              nextCell = notebookCellOp.getNext(nextCell.id);
+            }
+          }
+        };
+
+        var moveFocusUp = function() {
+          // move focus to prev code cell
+          var thisCellID = scope.cellmodel.id;
+          var prevCell = notebookCellOp.getPrev(thisCellID);
+          while (prevCell) {
+            var t = scope.bkNotebook.getFocusable(prevCell.id);
+            if (t) {
+              t.focus();
+              var top = t.cm.cursorCoords(true,'window').top;
+              if ( top < 150)
+                window.scrollBy(0, top-150);
+              break;
+            } else {
+              prevCell = notebookCellOp.getPrev(prevCell.id);
+            }
+          }
+        };
+
+        var evaluate = function() {
+          scope.evaluate();
+          scope.$apply();
+        };
+
+        var evaluateAndGoDown = function() {
+          scope.evaluate();
+          moveFocusDown();
+        };
+
+        var showAutoComplete = function(cm) {
+          var getToken = function(editor, cur) {
+            return editor.getTokenAt(cur);
+          };
+          var getHints = function(editor, showHintCB, options) {
+            var cur = editor.getCursor();
+            var token = getToken(editor, cur);
+            var cursorPos = editor.indexFromPos(cur);
+            // We might want this defined by the plugin.
+            var onResults = function(results, matched_text, dotFix) {
+              var start = token.start;
+              var end = token.end;
+              if (dotFix && token.string === ".") {
+                start += 1;
+              }
+              if (matched_text) {
+                start += (cur.ch - token.start - matched_text.length);
+                end = start + matched_text.length;
+              }
+              showHintCB({
+                list: _.uniq(results),
+                from: CodeMirror.Pos(cur.line, start),
+                to: CodeMirror.Pos(cur.line, end)
+              });
+            };
+            scope.autocomplete(cursorPos, onResults);
+          };
+
+          if (cm.getOption('mode') === 'htmlmixed' || cm.getOption('mode') === 'javascript') {
+            console.log("using code mirror");
+            cm.execCommand("autocomplete");
+          } else {
+            var options = {
+              async: true,
+              closeOnUnfocus: true,
+              alignWithWord: true,
+              completeSingle: true
+            };
+            CodeMirror.showHint(cm, getHints, options);
+          }
+        };
+
+        var moveCellUp = function(cm) {
+          notebookCellOp.moveUp(scope.cellmodel.id);
+          bkUtils.refreshRootScope();
+          cm.focus();
+        };
+
+        var moveCellDown = function(cm) {
+          notebookCellOp.moveDown(scope.cellmodel.id);
+          bkUtils.refreshRootScope();
+          cm.focus();
+        };
+
+        var deleteCell = function(cm) {
+          notebookCellOp.delete(scope.cellmodel.id, true);
+          bkUtils.refreshRootScope();
+        };
+
+        return {
+          lineNumbers: true,
+          matchBrackets: true,
+          electricChars: false,
+          extraKeys: {
+            "Up" : goUpOrMoveFocusUp,
+            "Down" : goDownOrMoveFocusDown,
+            "Ctrl-S": "save",
+            "Cmd-S": "save",
+            "Alt-Down": moveFocusDown,
+            "Alt-J": moveFocusDown,
+            "Alt-Up": moveFocusUp,
+            "Alt-K": moveFocusUp,
+            "Ctrl-Enter": evaluate,
+            "Cmd-Enter": evaluate,
+            "Shift-Enter": evaluateAndGoDown,
+            "Ctrl-Space": showAutoComplete,
+            "Cmd-Space": showAutoComplete,
+            "Ctrl-Alt-Up": moveCellUp,
+            "Cmd-Alt-Up": moveCellUp,
+            "Ctrl-Alt-Down": moveCellDown,
+            "Cmd-Alt-Down": moveCellDown,
+            "Ctrl-Alt-D": deleteCell,
+            "Cmd-Alt-D": deleteCell
+          }
+        };
+      },
+
       _bkAppImpl: null,
       setBkAppImpl: function(bkAppOp) {
         this._bkAppImpl = bkAppOp;

@@ -1032,16 +1032,6 @@
               "level": level
             };
           },
-          newTextCell: function(id) {
-            if (!id) {
-              id = "text" + bkUtils.generateId(6);
-            }
-            return {
-              "id": id,
-              "type": "text",
-              "body": ""
-            };
-          },
           newMarkdownCell: function(id) {
             var tail = _notebookModel.get().cells.length - 1;
             if (!id) {

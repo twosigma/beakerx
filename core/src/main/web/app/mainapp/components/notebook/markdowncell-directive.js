@@ -29,12 +29,6 @@
         $scope.getFullIndex = function() {
           return $scope.$parent.$parent.$parent.getFullIndex() + "." + ($scope.$parent.index + 1);
         };
-
-        $scope.markdownEditableOptions = {};
-
-        $scope.edit = function(event) {
-          $scope.markdownEditableOptions.edit(event);
-        };
       }
     };
   }]);

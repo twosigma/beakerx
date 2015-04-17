@@ -39,6 +39,7 @@ bk-section-cell, bk-markdown-cell {
   .codemirror-wrapper > .CodeMirror {
     font-family: inherit;
     line-height: inherit;
+    color: inherit;
 
     pre {
       padding: 0;
@@ -46,7 +47,11 @@ bk-section-cell, bk-markdown-cell {
   }
 }
 
-.markdowncell-wrapper, .bkcell.code-cell-area, .textcell-wrapper {
+bk-markdown-cell bk-markdown-editable {
+  display: block;
+}
+
+bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper {
     border: solid 1px $cell-border;
 
     .locked & {
@@ -54,7 +59,10 @@ bk-section-cell, bk-markdown-cell {
     }
 }
 
-.markdowncell-wrapper, .textcell-wrapper {
+.textcell-wrapper,
+bk-markdown-cell .CodeMirror-lines,
+bk-markdown-cell .markup
+{
     padding: $grid-row-height $grid-gutter-width*3 $grid-row-height $grid-gutter-width;
 }
 

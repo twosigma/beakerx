@@ -50,10 +50,6 @@
         $scope.showPluginManager = function() {
           bkHelper.showLanguageManager($scope);
         };
-        $scope.newTextCell = function() {
-          var newCell = newCellFactory.newTextCell();
-          attachCell(newCell);
-        };
         $scope.newMarkdownCell = function() {
           var newCell = newCellFactory.newMarkdownCell();
           attachCell(newCell);

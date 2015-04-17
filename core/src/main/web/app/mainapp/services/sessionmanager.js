@@ -588,7 +588,7 @@
           }
         }
       }
-      
+
       // check if javascript set any NEW variable
       for (var i in diff) {
         var p = diff[i];
@@ -597,7 +597,7 @@
             this.nbmodel.namespace = { };
           var t = this.beakerObj[p];
           if ((this.predefined.indexOf(p)>=0 || _.isFunction(t))) {
-            // we do NOT put functions in the namespace 
+            // we do NOT put functions in the namespace
             delete this.nbmodel.namespace[p];
             delete this.knownBeakerVars[p];
           } else {
@@ -651,7 +651,7 @@
     };
 
     BeakerObject.prototype.transform = transform;
-    
+
     BeakerObject.prototype.isCircularObject = function(node, parents) {
       parents = parents || [];
       if (!node || typeof node != "object"){
@@ -675,7 +675,7 @@
   }
 
     var _bo = {};
-    
+
     var _notebookModel = (function() {
       var _v = {};
       return {
@@ -759,7 +759,7 @@
     };
 
     var _subscriptions = {};
-    var connectcontrol = function(sessionId) {      
+    var connectcontrol = function(sessionId) {
       _subscriptions[sessionId] =
           $.cometd.subscribe("/notebookctrl/" + sessionId, function(req) {
             try {
@@ -785,7 +785,7 @@
                     $.cometd.publish("/service/notebookctrl/receive", JSON.stringify(reply2));
                   }, function(err) {
                     reply2.value=err;
-                    $.cometd.publish("/service/notebookctrl/receive", JSON.stringify(reply2));                    
+                    $.cometd.publish("/service/notebookctrl/receive", JSON.stringify(reply2));
                   });
                 }
               }
@@ -800,14 +800,14 @@
             }
           });
       };
-      
+
       var disconnectcontrol = function(sessionId) {
         if (sessionId) {
           $.cometd.unsubscribe(_subscriptions[sessionId]);
           delete _subscriptions[sessionId];
         }
       };
-    
+
     return {
       reset: function(notebookUri, uriType, readOnly, format, notebookModel, edited, sessionId) {
 
@@ -818,7 +818,7 @@
 
         if (_sessionId)
           disconnectcontrol(_sessionId);
-        
+
         bkEvaluatorManager.reset();
 
         // check inputs

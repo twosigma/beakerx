@@ -26,8 +26,7 @@
       restrict: 'E',
       template: JST["mainapp/components/notebook/markdown-editable"](),
       scope: {
-        cellmodel: '=',
-        options: '='
+        cellmodel: '='
       },
       link: function(scope, element, attrs) {
         var contentAttribute;
@@ -103,7 +102,6 @@
 
         scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], codeMirrorOptions);
 
-        scope.options.edit = function(event) { scope.edit(event) };
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
         scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 

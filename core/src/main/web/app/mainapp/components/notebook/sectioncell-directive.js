@@ -178,14 +178,6 @@
             return $scope.cellmodel;
           }
         };
-
-        $scope.markdownEditableOptions = {};
-
-        $scope.edit = function() {
-          if (bkHelper.isNotebookLocked()) return;
-
-          $scope.markdownEditableOptions.edit();
-        };
       }
     };
   });

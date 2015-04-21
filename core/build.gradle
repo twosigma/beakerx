@@ -107,6 +107,7 @@ task (copyMathJax, type: Copy) {
 	exclude 'test'
 	exclude 'LICENSE'
 	exclude 'unpacked'
+	exclude '**/HTML-CSS/TeX/png/**'
 }
 
 task (copyRequireJS, type: Copy) {

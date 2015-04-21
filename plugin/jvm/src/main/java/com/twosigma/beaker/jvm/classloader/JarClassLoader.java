@@ -286,7 +286,12 @@ public class JarClassLoader extends AbstractClassLoader {
             if (result.getPackage() == null) {
                 int lastDotIndex = className.lastIndexOf( '.' );
                 String packageName = (lastDotIndex >= 0) ? className.substring( 0, lastDotIndex) : "";
-                definePackage( packageName, null, null, null, null, null, null, null );
+
+                // Groovy scripts are sometimes defined in the default package. If these get included, 
+                // the package name is empty, but this causes an IllegalArgumentException,
+                // so skip defining the package in this case
+                if(!packageName.isEmpty())
+                    definePackage( packageName, null, null, null, null, null, null, null );
             }
 
             if (resolveIt)

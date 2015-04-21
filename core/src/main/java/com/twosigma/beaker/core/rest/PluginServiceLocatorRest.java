@@ -251,8 +251,11 @@ public class PluginServiceLocatorRest {
     String base = this.pluginLocations.containsKey(pluginId) ?
       this.pluginLocations.get(pluginId) : this.pluginDir;
     result.add(base + "/" + command);
+    
     if (windows()) {
-      result.add(0, "python");
+	String python = this.config.getInstallDirectory() + "\\python\\python";
+	System.err.println("python = " + python);
+	result.add(0, python);
     }
     return result;
   }
@@ -425,7 +428,8 @@ public class PluginServiceLocatorRest {
       String[] env = buildEnv(pluginId, password);
 
       if (windows()) {
-        fullCommand.add(0, "python");
+	String python = this.config.getInstallDirectory() + "\\python\\python";
+        fullCommand.add(0, python);
       }
       System.out.println("Running");
       for (int i = 0; i < fullCommand.size(); i++) {

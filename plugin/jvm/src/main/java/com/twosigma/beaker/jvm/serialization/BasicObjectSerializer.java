@@ -149,7 +149,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
   }
 
   @Override
-  public boolean writeObject(Object obj, JsonGenerator jgen)
+  public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand)
       throws IOException, JsonProcessingException  {
 
     try {
@@ -169,14 +169,14 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         jgen.writeObject(obj);
       } else if (isPrimitiveType(obj.getClass().getName())) {
         jgen.writeObject(obj);
-      } else if (isListOfPrimitiveTypeMaps(obj)) {
+      } else if (expand && isListOfPrimitiveTypeMaps(obj)) {
         logger.fine("list of maps");
         // convert this 'on the fly' to a datatable
         @SuppressWarnings("unchecked")
         Collection<Map<?, ?>> co = (Collection<Map<?, ?>>) obj;
         TableDisplay t = new TableDisplay(co,this);
         jgen.writeObject(t);
-      } else if (isPrimitiveTypeListOfList(obj)) {
+      } else if (expand && isPrimitiveTypeListOfList(obj)) {
         logger.fine("collection of collections");
         
         Collection<?> m = (Collection<?>) obj;
@@ -213,8 +213,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         final int length = Array.getLength(obj);
         for (int i = 0; i < length; ++i) {
           Object o = Array.get(obj, i);
-          if (!writeObject(o, jgen)) {
-              jgen.writeObject("ERROR: unsupported object "+o.toString());
+          if (!writeObject(o, jgen, false)) {
+              jgen.writeObject(o.toString());
           }
         }
         jgen.writeEndArray();
@@ -224,11 +224,11 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         Collection<?> c = (Collection<?>) obj;
         jgen.writeStartArray();
         for(Object o : c) {
-          if (!writeObject(o, jgen))
-            jgen.writeObject("ERROR: unsupported object "+o.toString());
+          if (!writeObject(o, jgen, false))
+            jgen.writeObject(o.toString());
         }
         jgen.writeEndArray();
-      } else if(isPrimitiveTypeMap(obj)) {
+      } else if(expand && isPrimitiveTypeMap(obj)) {
         logger.fine("primitive type map");
         
         Map<?,?> m = (Map<?,?>) obj;
@@ -265,8 +265,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
           jgen.writeStartObject();
           for (Object k : kset) {
             jgen.writeFieldName(k.toString());
-            if (!writeObject(m.get(k), jgen))
-              jgen.writeObject(m.get(k)!=null ? ("ERROR: unsupported object "+m.get(k).toString()) : "null");
+            if (!writeObject(m.get(k), jgen, false))
+              jgen.writeObject(m.get(k)!=null ? (m.get(k).toString()) : "null");
           }
           jgen.writeEndObject();
         }

@@ -128,8 +128,8 @@ public class BeakerProgressUpdate {
         Object obj = value.payload;
         if (obj != null) {
           jgen.writeFieldName("payload");          
-          if (!getObjectSerializer().writeObject(obj, jgen))
-            jgen.writeString("ERROR: unsupported object "+obj.toString());
+          if (!getObjectSerializer().writeObject(obj, jgen, true))
+            jgen.writeString(obj.toString());
         }
         jgen.writeEndObject();
       }

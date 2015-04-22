@@ -21,6 +21,7 @@ import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.config.WebServerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -44,6 +45,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -53,6 +55,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -144,6 +147,11 @@ public class PluginServiceLocatorRest {
   private final String corePassword;
   private final String urlHash;
 
+  private final String useHttpsCert;
+  private final String useHttpsKey;
+  private final Boolean requirePassword;
+  private final String listenInterface;
+  
   private final String nginxTemplate;
   private final String ipythonTemplate;
   private final Map<String, PluginConfig> plugins = new HashMap<>();
@@ -170,6 +178,10 @@ public class PluginServiceLocatorRest {
     this.pluginDir = bkConfig.getPluginDirectory();
     this.publicServer = bkConfig.getPublicServer();
     this.portBase = bkConfig.getPortBase();
+    this.useHttpsCert = bkConfig.getUseHttpsCert();
+    this.useHttpsKey = bkConfig.getUseHttpsKey();
+    this.requirePassword = bkConfig.getRequirePassword();
+    this.listenInterface = bkConfig.getListenInterface();
     this.servPort = this.portBase + 1;
     this.corePort = this.portBase + 2;
     this.restartPort = this.portBase + 3;
@@ -662,17 +674,44 @@ public class PluginServiceLocatorRest {
     } catch (UnknownHostException e) {
       System.err.println("warning: UnknownHostException from InetAddress.getLocalHost().getHostName(), ignored");
     }
+    if (this.listenInterface != null && !this.listenInterface.equals("*")) {
+      hostName = this.listenInterface;
+    }
+    
     if (this.publicServer) {
-      listenSection = "listen " + this.portBase + " ssl;\n";
+      if (this.listenInterface != null && !this.listenInterface.equals("*")) {
+        listenSection = "listen " + this.listenInterface + ":"+ this.portBase + " ssl;\n";
+      } else {
+        listenSection = "listen " + this.portBase + " ssl;\n";
+      }
       listenSection += "server_name " + hostName + ";\n";
-      listenSection += "ssl_certificate " + this.nginxServDir + "/ssl_cert.pem;\n";
-      listenSection += "ssl_certificate_key " + this.nginxServDir + "/ssl_cert.pem;\n";
+      
+      if (this.useHttpsCert==null || this.useHttpsKey==null) {
+        listenSection += "ssl_certificate " + this.nginxServDir + "/ssl_cert.pem;\n";
+        listenSection += "ssl_certificate_key " + this.nginxServDir + "/ssl_cert.pem;\n";
+      } else {
+        listenSection += "ssl_certificate " + this.useHttpsCert + ";\n";
+        listenSection += "ssl_certificate_key " + this.useHttpsKey + ";\n";
+      }
       authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
       startPage = "/login/login.html";
     } else {
-      listenSection = "listen 127.0.0.1:" + this.servPort + ";\n";
-      authCookieRule = "";
-      startPage = "/beaker/";
+      if (this.listenInterface != null) {
+        if(this.listenInterface.equals("*")) {
+          listenSection = "listen " + this.servPort + ";\n";          
+        } else {
+          listenSection = "listen "+this.listenInterface+":" + this.servPort + ";\n";
+        }
+      } else {
+        listenSection = "listen 127.0.0.1:" + this.servPort + ";\n";
+      }
+      if (this.requirePassword) {
+        authCookieRule = "if ($http_cookie !~ \"BeakerAuth=" + this.authCookie + "\") {return 403;}";
+        startPage = "/login/login.html";
+      } else {
+        authCookieRule = "";
+        startPage = "/beaker/";
+      }
     }
     nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
     nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);

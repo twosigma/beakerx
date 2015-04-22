@@ -18,23 +18,16 @@ package com.twosigma.beaker.core.module.config;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
-import com.twosigma.beaker.core.rest.StreamGobbler;
-
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.Exception;
 import java.net.UnknownHostException;
 import java.net.InetAddress;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import java.util.UUID;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.simple.JSONObject;
@@ -61,7 +54,6 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final Map<String, String> nginxPluginRules;
   private final Boolean useKerberos;
   private final Boolean publicServer;
-  private final Boolean noPasswordAllowed;
   private final String authCookie;
   private final String passwordHash;
   private final String password;
@@ -81,6 +73,10 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String gist_server;
   private final String sharing_server;
   private JSONObject prefs;
+  private final String useHttpsCert;
+  private final String useHttpsKey;
+  private final Boolean requirePassword;
+  private final String listenInterface;
 
   private String hash(String password) {
     return DigestUtils.sha512Hex(password + getPasswordSalt());
@@ -162,14 +158,18 @@ public class DefaultBeakerConfig implements BeakerConfig {
     augmentPluginOptions();
 
     this.publicServer = pref.getPublicServer();
-    this.noPasswordAllowed = pref.getNoPasswordAllowed();
+    this.useHttpsCert = pref.getUseHttpsCert();
+    this.useHttpsKey = pref.getUseHttpsKey();
+    this.requirePassword = pref.getRequirePassword();
+    this.listenInterface = pref.getListenInterface();
+    
     this.authCookie = RandomStringUtils.random(40, true, true);
     // XXX user might provide their own hash in beaker.config.json
     String password = RandomStringUtils.random(15, true, true);
     this.passwordHash = hash(password);
     this.password = password;
 
-    if (this.publicServer) {
+    if (this.publicServer && (this.useHttpsCert == null || this.useHttpsKey == null))  {
       String cert = this.nginxServDir + "/ssl_cert.pem";
       String tmp = this.nginxServDir + "/cert.tmp";
       PrintWriter pw = new PrintWriter(tmp);
@@ -248,8 +248,23 @@ public class DefaultBeakerConfig implements BeakerConfig {
   }
 
   @Override
-  public Boolean getNoPasswordAllowed() {
-    return this.noPasswordAllowed;
+  public Boolean getRequirePassword() {
+    return requirePassword;
+  }
+  
+  @Override
+  public String getUseHttpsCert() {
+    return useHttpsCert;
+  }
+  
+  @Override
+  public String getUseHttpsKey() {
+    return useHttpsKey;
+  }
+  
+  @Override
+  public String getListenInterface() {
+    return listenInterface;
   }
 
   @Override
@@ -334,9 +349,18 @@ public class DefaultBeakerConfig implements BeakerConfig {
     throws UnknownHostException
   {
     String initUrl;
-    String hostname = this.publicServer ? InetAddress.getLocalHost().getHostName() : "127.0.0.1";
+    String hostname;
+    if (this.listenInterface != null) {
+      if (this.listenInterface.equals("*"))
+        hostname = InetAddress.getLocalHost().getHostName();
+      else
+        hostname = this.listenInterface;
+    } else if(this.publicServer)
+      hostname = InetAddress.getLocalHost().getHostName();
+    else
+      hostname = "127.0.0.1";
 
-    boolean useHttps = this.publicServer; // XXX should be independently setable
+    boolean useHttps = this.publicServer || (this.useHttpsCert!=null && this.useHttpsKey!=null);
 
     if (useHttps) {
       initUrl = "https://" + hostname + ":" + this.portBase + "/";
@@ -407,6 +431,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
     current.add(option);
   }
 
+  @SuppressWarnings("unchecked")
   private void augmentPluginOptions() {
     try {
       Map<String, JSONObject> plugins = (Map<String, JSONObject>) this.prefs.get("languages");

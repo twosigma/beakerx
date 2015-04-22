@@ -38,7 +38,11 @@ public interface BeakerConfigPref {
    */
   public Integer getPortBase();
   public Boolean getPublicServer();
-  public Boolean getNoPasswordAllowed();
+  public Boolean getRequirePassword();
+  public String getUseHttpsCert();
+  public String getUseHttpsKey();
+  public String getListenInterface();
+  
   /**
    * Gets the url of the default notebook
    * @return
@@ -49,4 +53,5 @@ public interface BeakerConfigPref {
    * @return
    */
   public Map<String, List<String>> getPluginOptions();
+
 }

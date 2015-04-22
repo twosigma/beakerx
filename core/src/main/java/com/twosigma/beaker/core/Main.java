@@ -91,6 +91,11 @@ public class Main {
     opts.addOption(null, "public-server", false, "allow connections from external computers");
     opts.addOption(null, "no-password", false, "do not require a password from external connections " +
                    "(warning: for advanced users only!)");
+    opts.addOption(null, "use-ssl-cert", true, "Enable SSL - requires path to cert file (both SSL options should be used)");
+    opts.addOption(null, "use-ssl-key", true, "Enable SSL - requires path to key file (both SSL options should be used)");
+    opts.addOption(null, "require-password", false, "Ask for password when connecting");
+    opts.addOption(null, "listen-interface", true, "Interface to listen on - requires ip address or '*'");
+    
     CommandLine line = parser.parse(opts, args);
     if (line.hasOption("help")) {
       new HelpFormatter().printHelp("beaker.command", opts);
@@ -158,15 +163,22 @@ public class Main {
     CommandLine options = parseCommandLine(args);
 
     final Integer portBase = options.hasOption("port-base") ?
-      Integer.parseInt(options.getOptionValue("port-base")) : findPortBase(PORT_BASE_START_DEFAULT);
+        Integer.parseInt(options.getOptionValue("port-base")) : findPortBase(PORT_BASE_START_DEFAULT);
     final Boolean useKerberos = options.hasOption("disable-kerberos") ?
-      !parseBoolean(options.getOptionValue("disable-kerberos")) : USE_KERBEROS_DEFAULT;
+        !parseBoolean(options.getOptionValue("disable-kerberos")) : USE_KERBEROS_DEFAULT;
     final Boolean openBrowser = options.hasOption("open-browser") ?
-      parseBoolean(options.getOptionValue("open-browser")) : OPEN_BROWSER_DEFAULT;
-    final Boolean useHttps = options.hasOption("use-https") ?
-      parseBoolean(options.getOptionValue("use-https")) : USE_HTTPS_DEFAULT;
+        parseBoolean(options.getOptionValue("open-browser")) : OPEN_BROWSER_DEFAULT;
+    final String useHttpsCert = options.hasOption("use-ssl-cert") ?
+        options.getOptionValue("use-ssl-cert") : null;
+    final String useHttpsKey = options.hasOption("use-ssl-key") ?
+        options.getOptionValue("use-ssl-key") : null;
     final Boolean publicServer = options.hasOption("public-server");
-
+    final Boolean requirePassword = options.hasOption("require-password");
+    final String listenInterface = options.hasOption("listen-interface") ?
+        options.getOptionValue("listen-interface") : null;
+    
+    
+    
     // create preferences for beaker core from cli options and others
     // to be used by BeakerCoreConfigModule to initialize its config
     BeakerConfigPref beakerCorePref = createBeakerCoreConfigPref(
@@ -175,7 +187,11 @@ public class Main {
         false,
         portBase,
         options.getOptionValue("default-notebook"),
-        getPluginOptions(options));
+        getPluginOptions(options),
+        useHttpsCert,
+        useHttpsKey,
+        requirePassword,
+        listenInterface);
 
     WebAppConfigPref webAppPref = createWebAppConfigPref(
         portBase + BEAKER_SERVER_PORT_OFFSET,
@@ -220,7 +236,11 @@ public class Main {
       final Boolean noPasswordAllowed,
       final Integer portBase,
       final String defaultNotebookUrl,
-      final Map<String, List<String>> pluginOptions) {
+      final Map<String, List<String>> pluginOptions,
+      final String useHttpsCert,
+      final String useHttpsKey,
+      final Boolean requirePassword,
+      final String listenInterface) {
     return new BeakerConfigPref() {
 
       @Override
@@ -239,8 +259,23 @@ public class Main {
       }
 
       @Override
-      public Boolean getNoPasswordAllowed() {
-        return noPasswordAllowed;
+      public Boolean getRequirePassword() {
+        return requirePassword;
+      }
+      
+      @Override
+      public String getUseHttpsCert() {
+        return useHttpsCert;
+      }
+      
+      @Override
+      public String getUseHttpsKey() {
+        return useHttpsKey;
+      }
+      
+      @Override
+      public String getListenInterface() {
+        return listenInterface;
       }
 
       @Override

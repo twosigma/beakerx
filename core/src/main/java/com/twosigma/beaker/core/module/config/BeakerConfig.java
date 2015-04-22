@@ -19,6 +19,7 @@ package com.twosigma.beaker.core.module.config;
 import java.util.List;
 import java.util.Map;
 import java.net.UnknownHostException;
+
 import org.json.simple.JSONObject;
 
 /**
@@ -82,10 +83,25 @@ public interface BeakerConfig {
    */
   public Boolean getPublicServer();
   /**
-   * No Password allowed
+   * Require Password for access
    * @return
    */
-  public Boolean getNoPasswordAllowed();
+  public Boolean getRequirePassword();
+  /**
+   * The SSL cert
+   * @return
+   */
+  public String getUseHttpsCert();
+  /**
+   * The SSL Key
+   * @return
+   */
+  public String getUseHttpsKey();
+  /**
+   * Interface to listen on
+   * @return
+   */
+  public String getListenInterface();
   /**
    * Auth cookie
    * @return

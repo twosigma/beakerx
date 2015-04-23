@@ -263,8 +263,10 @@ public class PluginServiceLocatorRest {
     String base = this.pluginLocations.containsKey(pluginId) ?
       this.pluginLocations.get(pluginId) : this.pluginDir;
     result.add(base + "/" + command);
+    
     if (windows()) {
-      result.add(0, "python");
+	String python = this.config.getInstallDirectory() + "\\python\\python";
+	result.add(0, python);
     }
     return result;
   }
@@ -437,7 +439,8 @@ public class PluginServiceLocatorRest {
       String[] env = buildEnv(pluginId, password);
 
       if (windows()) {
-        fullCommand.add(0, "python");
+	String python = this.config.getInstallDirectory() + "\\python\\python";
+        fullCommand.add(0, python);
       }
       System.out.println("Running");
       for (int i = 0; i < fullCommand.size(); i++) {
@@ -761,13 +764,7 @@ public class PluginServiceLocatorRest {
     Process proc;
     List<String> cmd = pythonBaseCommand(pluginId, command);
     cmd.add("--version");
-    if (windows()) {
-      // XXX use ipythonPlugin --version, like generateIPythonConfig does
-      String cmd2 = "python " + "\"" + this.pluginDir + "/ipythonPlugins/ipython/ipythonVersion\"";
-      proc = Runtime.getRuntime().exec(cmd2, buildEnv(pluginId, null));
-    } else {
-      proc = Runtime.getRuntime().exec(listToArray(cmd), buildEnv(pluginId, null));
-    }
+    proc = Runtime.getRuntime().exec(listToArray(cmd), buildEnv(pluginId, null));
     BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
     new StreamGobbler(proc.getErrorStream(), "stderr", "ipython-version", null, null).start();
     String line = br.readLine();

@@ -107,6 +107,7 @@ task (copyMathJax, type: Copy) {
 	exclude 'test'
 	exclude 'LICENSE'
 	exclude 'unpacked'
+	exclude '**/HTML-CSS/TeX/png/**'
 }
 
 task (copyRequireJS, type: Copy) {
@@ -122,7 +123,7 @@ task (extractPackages, type: Exec) {
   inputs.file '../data/allDeps.zip'
   outputs.dir 'src/vendor/'
   if (windows()) {
-    commandLine 'cmd', '/c', '7z', 'x', '-y', '..\\data\\allDeps.zip';
+    commandLine 'cmd', '/c', '7za', 'x', '-y', '..\\data\\allDeps.zip';
   } else {
     commandLine 'unzip', '-oq', '../data/allDeps.zip'
   }

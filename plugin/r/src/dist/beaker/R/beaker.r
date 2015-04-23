@@ -258,7 +258,7 @@ convertToJSON <- function(val, collapse) {
     }
   } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
   	p = "{ \"type\": \"Date\", \"timestamp\": "
-  	p = paste(p, as.numeric(as.POSIXct(val))*1000, sep='')
+  	p = paste(p, as.numeric(as.POSIXct(val, tz = "UTC"))*1000, sep='')
   	p = paste(p, " }", sep='')
   	o = p
   } else if (class(val) == "list") {
@@ -361,7 +361,7 @@ transformJSON <- function(tres) {
 		            if ( !is.null( tres$values[[j]][[i]] ) ) {
 		              theval = tres$values[[j]][[i]]
 		              if (is.list(theval) && !is.null(names(theval)) && exists("type", where=theval) && exists("timestamp", where=theval) && theval$type == "Date")
-				        nv [j] <- as.POSIXct(theval[["timestamp"]]/1000, origin="1970-01-01")
+				        nv [j] <- as.POSIXct(theval[["timestamp"]]/1000, origin="1970-01-01", tz = "UTC")
 				    }
 		          }		
 	      		  df[ tres$columnNames[[i]] ] = nv
@@ -391,7 +391,7 @@ transformJSON <- function(tres) {
 		    # nothing to do here
 		  }
 		  else if (tres[["type"]] == "Date" && exists("timestamp", where=tres)) {
-		  	tres = as.POSIXct(tres[["timestamp"]]/1000, origin="1970-01-01")
+		  	tres = as.POSIXct(tres[["timestamp"]]/1000, origin="1970-01-01", tz = "UTC")
 		  }
 	  } else {
 	    iteml <- length(tres)

@@ -314,7 +314,7 @@
                                 // string
                                 function(value,type,full,meta) {
                                   if (_.isObject(value) && value.type === 'Date') {
-                                    value = moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS");
+                                    value = moment.utc(value.timestamp).local().format("YYYYMMDD HH:mm:ss.SSS ZZ");
                                   }
                                   if (type === 'display' && value !== null && value !== undefined)
                                     return $scope.escapeHTML(value);
@@ -387,7 +387,7 @@
 
                                   if (type === 'display') {
                                     if (_.isObject(value) && value.type === 'Date') {
-                                      return moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS");
+                                      return moment.utc(value.timestamp).local().format("YYYYMMDD HH:mm:ss.SSS ZZ");
                                     }
                                     var nano = value % 1000;
                                     var micro = (value / 1000) % 1000;

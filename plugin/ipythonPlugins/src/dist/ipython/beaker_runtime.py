@@ -224,7 +224,7 @@ def transformBack(obj):
                         c.addItem(i)
                 return c;
             if out['type'] == "Date":
-                return datetime.datetime.fromtimestamp(out["timestamp"]/1000)
+                return datetime.datetime.utcfromtimestamp(out["timestamp"]/1000)
             if out['type'] == "TableDisplay":
                 if 'subtype' in out:
                     if out['subtype'] == "Dictionary":
@@ -300,7 +300,8 @@ class DataFrameEncoder(json.JSONEncoder):
                 offset = time.timezone
             out = {}
             out['type'] = "Date"
-            out['timestamp'] = (calendar.timegm(obj.timetuple())+offset)*1000
+            // +offset
+            out['timestamp'] = (calendar.timegm(obj.timetuple()))*1000
             return out
         if type(obj) == pandas.core.frame.DataFrame:
             out = {}

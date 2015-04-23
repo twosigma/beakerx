@@ -75,7 +75,7 @@
                     "    d.reject(\"ERROR returning string\");",
                     "  else if (typeof(r[4]) !== 'object' || !(r[4] instanceof Date))",
                     "    d.reject(\"ERROR returning date\");",
-                    "  else if (typeof(r[5]) !== 'object' || !(r[5] instanceof DataFrame)) ",
+                    "  else if (typeof(r[5]) !== 'object' || !(r[5] instanceof beaker.DataFrame)) ",
                     "    d.reject(\"ERROR returning data frame\");",
                     "  else if (typeof(r[6]) !== 'object' || !_.isArray(r[6]) || !_.isObject(r[6][0])) ",
                     "    d.reject(\"ERROR returning list of dictionaries\");",
@@ -122,7 +122,7 @@
                     "    d.reject(\"ERROR setting string\");",
                     "  else if (typeof(beaker.v4) !== 'object' || !(beaker.v4 instanceof Date))",
                     "    d.reject(\"ERROR setting date\");",
-                    "  else if (typeof(beaker.v5) !== 'object' || !(beaker.v5 instanceof DataFrame)) ",
+                    "  else if (typeof(beaker.v5) !== 'object' || !(beaker.v5 instanceof beaker.DataFrame)) ",
                     "    d.reject(\"ERROR setting data frame\");",
                     "  else if (typeof(beaker.v6) !== 'object' || !_.isArray(beaker.v6) || !_.isObject(beaker.v6)) ",
                     "    d.reject(\"ERROR setting list of dictionaries\");",
@@ -177,7 +177,8 @@
             "output": {
                 "state": {},
                 "selectedType": "Html",
-                "elapsedTime": 41816
+                "elapsedTime": 10298,
+                "pluginName": "JavaScript"
             },
             "evaluatorReader": true,
             "lineCount": 111,
@@ -237,8 +238,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "0e6eb276-b204-489b-b4fc-3d1ef402cd89",
-                "elapsedTime": 1136
+                "shellId": "90c4752e-6add-40f1-a830-7eedb6653b00",
+                "elapsedTime": 693
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -335,8 +336,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 796,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 353,
                 "dataresult": "OK"
             },
             "evaluatorReader": true,
@@ -349,7 +350,7 @@
             "title": "Python2 cells that return a value",
             "level": 1,
             "evaluatorReader": false,
-            "collapsed": false
+            "collapsed": true
         },
         {
             "id": "codeYX3xaO",
@@ -367,8 +368,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 337,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 303,
                 "dataresult": 1
             },
             "evaluatorReader": true,
@@ -391,8 +392,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 352,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 333,
                 "dataresult": 10.34
             },
             "evaluatorReader": true,
@@ -415,8 +416,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 310,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 339,
                 "dataresult": true
             },
             "evaluatorReader": true,
@@ -439,8 +440,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 299,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 347,
                 "dataresult": "test string"
             },
             "evaluatorReader": true,
@@ -463,8 +464,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 333,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 358,
                 "dataresult": {
                     "type": "Date",
                     "value": "Oct 21, 2005 06:47:22 PM"
@@ -495,8 +496,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 362,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 776,
                 "state": {}
             },
             "evaluatorReader": true,
@@ -522,8 +523,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 471,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 408,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "ListOfMaps",
@@ -583,8 +584,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 457,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 385,
                 "dataresult": [
                     23.45,
                     34.5,
@@ -613,8 +614,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 384,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 388,
                 "dataresult": {
                     "type": "TableDisplay",
                     "subtype": "Matrix",
@@ -684,8 +685,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 498,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 529,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -716,8 +717,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 351,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 354,
                 "dataresult": [
                     [
                         [
@@ -792,8 +793,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 370,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 378,
                 "dataresult": "{ \"type\":\"TableDisplay\",\"subtype\":\"Dictionary\",\"columnNames\": [\"Key\",\"Value\"], \"values\": [[\"name\",\"Fred\"],[\"a\",\"10.4\"],[\"b\",\"33.5\"],[\"age\",\"5.3\"]] }"
             },
             "evaluatorReader": true,
@@ -816,8 +817,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 430,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 498,
                 "dataresult": "not supported"
             },
             "evaluatorReader": true,
@@ -840,8 +841,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 346,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 337,
                 "hidden": true,
                 "dataresult": "not supported"
             },
@@ -868,8 +869,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 340,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 422,
                 "dataresult": {
                     "type": "OutputContainer",
                     "items": [
@@ -3977,8 +3978,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 582,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 584,
                 "dataresult": [
                     {
                         "code": "# output container - 14\na = beaker.createOutputContainer()\na.addItem(aapl.head())\na.addItem([2,3,4,5,6])\nbeaker.v14 = a\na\n",
@@ -3993,24 +3994,24 @@
                                                 "timestamp": 1288584000000,
                                                 "type": "Date"
                                             },
-                                            302.22,
-                                            305.6,
-                                            302.2,
-                                            304.18,
+                                            302.22003,
+                                            305.59997999999996,
+                                            302.20001,
+                                            304.18002,
                                             105972300,
-                                            40.99
+                                            40.98854
                                         ],
                                         [
                                             {
                                                 "timestamp": 1288670400000,
                                                 "type": "Date"
                                             },
-                                            307,
+                                            306.99997,
                                             310.19,
-                                            307,
-                                            309.36,
+                                            306.99997,
+                                            309.36005,
                                             108482500,
-                                            41.69
+                                            41.68655
                                         ],
                                         [
                                             {
@@ -4018,41 +4019,42 @@
                                                 "type": "Date"
                                             },
                                             311.37,
-                                            312.88,
-                                            308.53,
-                                            312.8,
+                                            312.87997,
+                                            308.52997,
+                                            312.79999,
                                             127087100,
-                                            42.15
+                                            42.150090000000006
                                         ],
                                         [
                                             {
                                                 "timestamp": 1288843200000,
                                                 "type": "Date"
                                             },
-                                            315.45,
-                                            320.18,
-                                            315.03,
-                                            318.27,
+                                            315.45001,
+                                            320.18002,
+                                            315.03002999999995,
+                                            318.26999,
                                             160622000,
-                                            42.89
+                                            42.88718
                                         ],
                                         [
                                             {
                                                 "timestamp": 1288929600000,
                                                 "type": "Date"
                                             },
-                                            317.99,
-                                            319.57,
+                                            317.98999,
+                                            319.57001,
                                             316.75,
-                                            317.13,
+                                            317.13004,
                                             90313300,
-                                            42.73
+                                            42.73357
                                         ]
                                     ],
                                     "subtype": "TableDisplay",
                                     "type": "TableDisplay",
                                     "types": [
                                         "time",
+                                        "double",
                                         "double",
                                         "double",
                                         "double",
@@ -4106,8 +4108,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 364,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 349,
                 "dataresult": {
                     "plot": {
                         "values": [
@@ -4178,8 +4180,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 363,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 409,
                 "dataresult": [
                     {
                         "plot": {
@@ -4340,8 +4342,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 351,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 211,
                 "dataresult": "Nan"
             },
             "evaluatorReader": true,
@@ -4363,8 +4365,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 362,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 215,
                 "dataresult": "Infinity"
             },
             "evaluatorReader": true,
@@ -4386,8 +4388,8 @@
                 "state": {},
                 "selectedType": "Html",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 371,
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 214,
                 "dataresult": "-Infinity"
             },
             "evaluatorReader": true,
@@ -4411,8 +4413,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 376
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 230
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -4435,8 +4437,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "IPython",
-                "shellId": "96A243D1F71E45DABD579849AD7F5823",
-                "elapsedTime": 375
+                "shellId": "E6125A88016C42E0A1559D0C96857794",
+                "elapsedTime": 228
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -4451,7 +4453,7 @@
             "test string",
             {
                 "type": "Date",
-                "timestamp": 1427892587000
+                "timestamp": 1429802855000
             },
             {
                 "type": "TableDisplay",
@@ -4462,24 +4464,24 @@
                             "type": "Date",
                             "timestamp": 1288584000000
                         },
-                        302.22,
-                        305.6,
-                        302.2,
-                        304.18,
+                        302.22003,
+                        305.59997999999996,
+                        302.20001,
+                        304.18002,
                         105972300,
-                        40.99
+                        40.98854
                     ],
                     [
                         {
                             "type": "Date",
                             "timestamp": 1288670400000
                         },
-                        307,
+                        306.99997,
                         310.19,
-                        307,
-                        309.36,
+                        306.99997,
+                        309.36005,
                         108482500,
-                        41.69
+                        41.68655
                     ],
                     [
                         {
@@ -4487,39 +4489,40 @@
                             "timestamp": 1288756800000
                         },
                         311.37,
-                        312.88,
-                        308.53,
-                        312.8,
+                        312.87997,
+                        308.52997,
+                        312.79999,
                         127087100,
-                        42.15
+                        42.150090000000006
                     ],
                     [
                         {
                             "type": "Date",
                             "timestamp": 1288843200000
                         },
-                        315.45,
-                        320.18,
-                        315.03,
-                        318.27,
+                        315.45001,
+                        320.18002,
+                        315.03002999999995,
+                        318.26999,
                         160622000,
-                        42.89
+                        42.88718
                     ],
                     [
                         {
                             "type": "Date",
                             "timestamp": 1288929600000
                         },
-                        317.99,
-                        319.57,
+                        317.98999,
+                        319.57001,
                         316.75,
-                        317.13,
+                        317.13004,
                         90313300,
-                        42.73
+                        42.73357
                     ]
                 ],
                 "types": [
                     "time",
+                    "double",
                     "double",
                     "double",
                     "double",
@@ -4571,7 +4574,7 @@
                         33.5,
                         {
                             "type": "Date",
-                            "timestamp": 1427892588000
+                            "timestamp": 1429802856000
                         },
                         ""
                     ]
@@ -4596,14 +4599,14 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        "0",
-                        "1",
-                        "2"
+                        1,
+                        2,
+                        5
                     ],
                     [
-                        "0",
-                        "1",
-                        "2"
+                        3,
+                        4,
+                        5
                     ]
                 ],
                 "subtype": "Matrix",
@@ -4624,19 +4627,19 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            0,
+                            1,
+                            2
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            3,
+                            4,
+                            5
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            6,
+                            7,
+                            8
                         ]
                     ],
                     "subtype": "Matrix",
@@ -4655,19 +4658,19 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            9,
+                            10,
+                            11
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            12,
+                            13,
+                            14
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            15,
+                            16,
+                            17
                         ]
                     ],
                     "subtype": "Matrix",
@@ -4686,19 +4689,19 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            18,
+                            19,
+                            20
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            21,
+                            22,
+                            23
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            24,
+                            25,
+                            26
                         ]
                     ],
                     "subtype": "Matrix",
@@ -4753,24 +4756,24 @@
                                     "type": "Date",
                                     "timestamp": 1288584000000
                                 },
-                                302.22,
-                                305.6,
-                                302.2,
-                                304.18,
+                                302.22003,
+                                305.59997999999996,
+                                302.20001,
+                                304.18002,
                                 105972300,
-                                40.99
+                                40.98854
                             ],
                             [
                                 {
                                     "type": "Date",
                                     "timestamp": 1288670400000
                                 },
-                                307,
+                                306.99997,
                                 310.19,
-                                307,
-                                309.36,
+                                306.99997,
+                                309.36005,
                                 108482500,
-                                41.69
+                                41.68655
                             ],
                             [
                                 {
@@ -4778,39 +4781,40 @@
                                     "timestamp": 1288756800000
                                 },
                                 311.37,
-                                312.88,
-                                308.53,
-                                312.8,
+                                312.87997,
+                                308.52997,
+                                312.79999,
                                 127087100,
-                                42.15
+                                42.150090000000006
                             ],
                             [
                                 {
                                     "type": "Date",
                                     "timestamp": 1288843200000
                                 },
-                                315.45,
-                                320.18,
-                                315.03,
-                                318.27,
+                                315.45001,
+                                320.18002,
+                                315.03002999999995,
+                                318.26999,
                                 160622000,
-                                42.89
+                                42.88718
                             ],
                             [
                                 {
                                     "type": "Date",
                                     "timestamp": 1288929600000
                                 },
-                                317.99,
-                                319.57,
+                                317.98999,
+                                319.57001,
                                 316.75,
-                                317.13,
+                                317.13004,
                                 90313300,
-                                42.73
+                                42.73357
                             ]
                         ],
                         "types": [
                             "time",
+                            "double",
                             "double",
                             "double",
                             "double",
@@ -4853,24 +4857,24 @@
                                             "type": "Date",
                                             "timestamp": 1288584000000
                                         },
-                                        302.22,
-                                        305.6,
-                                        302.2,
-                                        304.18,
+                                        302.22003,
+                                        305.59997999999996,
+                                        302.20001,
+                                        304.18002,
                                         105972300,
-                                        40.99
+                                        40.98854
                                     ],
                                     [
                                         {
                                             "type": "Date",
                                             "timestamp": 1288670400000
                                         },
-                                        307,
+                                        306.99997,
                                         310.19,
-                                        307,
-                                        309.36,
+                                        306.99997,
+                                        309.36005,
                                         108482500,
-                                        41.69
+                                        41.68655
                                     ],
                                     [
                                         {
@@ -4878,39 +4882,40 @@
                                             "timestamp": 1288756800000
                                         },
                                         311.37,
-                                        312.88,
-                                        308.53,
-                                        312.8,
+                                        312.87997,
+                                        308.52997,
+                                        312.79999,
                                         127087100,
-                                        42.15
+                                        42.150090000000006
                                     ],
                                     [
                                         {
                                             "type": "Date",
                                             "timestamp": 1288843200000
                                         },
-                                        315.45,
-                                        320.18,
-                                        315.03,
-                                        318.27,
+                                        315.45001,
+                                        320.18002,
+                                        315.03002999999995,
+                                        318.26999,
                                         160622000,
-                                        42.89
+                                        42.88718
                                     ],
                                     [
                                         {
                                             "type": "Date",
                                             "timestamp": 1288929600000
                                         },
-                                        317.99,
-                                        319.57,
+                                        317.98999,
+                                        319.57001,
                                         316.75,
-                                        317.13,
+                                        317.13004,
                                         90313300,
-                                        42.73
+                                        42.73357
                                     ]
                                 ],
                                 "types": [
                                     "time",
+                                    "double",
                                     "double",
                                     "double",
                                     "double",
@@ -4947,14 +4952,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            1,
+                            2,
+                            5
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            3,
+                            4,
+                            5
                         ]
                     ],
                     "subtype": "Matrix",
@@ -4975,14 +4980,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            1,
+                            2,
+                            5
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            3,
+                            4,
+                            5
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5004,14 +5009,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                "0",
-                                "1",
-                                "2"
+                                1,
+                                2,
+                                5
                             ],
                             [
-                                "0",
-                                "1",
-                                "2"
+                                3,
+                                4,
+                                5
                             ]
                         ],
                         "subtype": "Matrix",
@@ -5032,14 +5037,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                "0",
-                                "1",
-                                "2"
+                                1,
+                                2,
+                                5
                             ],
                             [
-                                "0",
-                                "1",
-                                "2"
+                                3,
+                                4,
+                                5
                             ]
                         ],
                         "subtype": "Matrix",
@@ -5060,14 +5065,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                "0",
-                                "1",
-                                "2"
+                                1,
+                                2,
+                                5
                             ],
                             [
-                                "0",
-                                "1",
-                                "2"
+                                3,
+                                4,
+                                5
                             ]
                         ],
                         "subtype": "Matrix",
@@ -5088,14 +5093,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                "0",
-                                "1",
-                                "2"
+                                1,
+                                2,
+                                5
                             ],
                             [
-                                "0",
-                                "1",
-                                "2"
+                                3,
+                                4,
+                                5
                             ]
                         ],
                         "subtype": "Matrix",
@@ -5116,14 +5121,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                "0",
-                                "1",
-                                "2"
+                                1,
+                                2,
+                                5
                             ],
                             [
-                                "0",
-                                "1",
-                                "2"
+                                3,
+                                4,
+                                5
                             ]
                         ],
                         "subtype": "Matrix",
@@ -5144,14 +5149,14 @@
                         "type": "TableDisplay",
                         "values": [
                             [
-                                "0",
-                                "1",
-                                "2"
+                                1,
+                                2,
+                                5
                             ],
                             [
-                                "0",
-                                "1",
-                                "2"
+                                3,
+                                4,
+                                5
                             ]
                         ],
                         "subtype": "Matrix",
@@ -5186,7 +5191,7 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "timestamp": 1427892587000
+            "timestamp": 1429802855000
         },
         "v5": {
             "type": "TableDisplay",
@@ -5197,24 +5202,24 @@
                         "type": "Date",
                         "timestamp": 1288584000000
                     },
-                    302.22,
-                    305.6,
-                    302.2,
-                    304.18,
+                    302.22003,
+                    305.59997999999996,
+                    302.20001,
+                    304.18002,
                     105972300,
-                    40.99
+                    40.98854
                 ],
                 [
                     {
                         "type": "Date",
                         "timestamp": 1288670400000
                     },
-                    307,
+                    306.99997,
                     310.19,
-                    307,
-                    309.36,
+                    306.99997,
+                    309.36005,
                     108482500,
-                    41.69
+                    41.68655
                 ],
                 [
                     {
@@ -5222,39 +5227,40 @@
                         "timestamp": 1288756800000
                     },
                     311.37,
-                    312.88,
-                    308.53,
-                    312.8,
+                    312.87997,
+                    308.52997,
+                    312.79999,
                     127087100,
-                    42.15
+                    42.150090000000006
                 ],
                 [
                     {
                         "type": "Date",
                         "timestamp": 1288843200000
                     },
-                    315.45,
-                    320.18,
-                    315.03,
-                    318.27,
+                    315.45001,
+                    320.18002,
+                    315.03002999999995,
+                    318.26999,
                     160622000,
-                    42.89
+                    42.88718
                 ],
                 [
                     {
                         "type": "Date",
                         "timestamp": 1288929600000
                     },
-                    317.99,
-                    319.57,
+                    317.98999,
+                    319.57001,
                     316.75,
-                    317.13,
+                    317.13004,
                     90313300,
-                    42.73
+                    42.73357
                 ]
             ],
             "types": [
                 "time",
+                "double",
                 "double",
                 "double",
                 "double",
@@ -5306,7 +5312,7 @@
                     33.5,
                     {
                         "type": "Date",
-                        "timestamp": 1427892588000
+                        "timestamp": 1429802856000
                     },
                     ""
                 ]
@@ -5331,14 +5337,14 @@
             "type": "TableDisplay",
             "values": [
                 [
-                    "0",
-                    "1",
-                    "2"
+                    1,
+                    2,
+                    5
                 ],
                 [
-                    "0",
-                    "1",
-                    "2"
+                    3,
+                    4,
+                    5
                 ]
             ],
             "subtype": "Matrix",
@@ -5359,19 +5365,19 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        "0",
-                        "1",
-                        "2"
+                        0,
+                        1,
+                        2
                     ],
                     [
-                        "0",
-                        "1",
-                        "2"
+                        3,
+                        4,
+                        5
                     ],
                     [
-                        "0",
-                        "1",
-                        "2"
+                        6,
+                        7,
+                        8
                     ]
                 ],
                 "subtype": "Matrix",
@@ -5390,19 +5396,19 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        "0",
-                        "1",
-                        "2"
+                        9,
+                        10,
+                        11
                     ],
                     [
-                        "0",
-                        "1",
-                        "2"
+                        12,
+                        13,
+                        14
                     ],
                     [
-                        "0",
-                        "1",
-                        "2"
+                        15,
+                        16,
+                        17
                     ]
                 ],
                 "subtype": "Matrix",
@@ -5421,19 +5427,19 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        "0",
-                        "1",
-                        "2"
+                        18,
+                        19,
+                        20
                     ],
                     [
-                        "0",
-                        "1",
-                        "2"
+                        21,
+                        22,
+                        23
                     ],
                     [
-                        "0",
-                        "1",
-                        "2"
+                        24,
+                        25,
+                        26
                     ]
                 ],
                 "subtype": "Matrix",
@@ -5488,24 +5494,24 @@
                                 "type": "Date",
                                 "timestamp": 1288584000000
                             },
-                            302.22,
-                            305.6,
-                            302.2,
-                            304.18,
+                            302.22003,
+                            305.59997999999996,
+                            302.20001,
+                            304.18002,
                             105972300,
-                            40.99
+                            40.98854
                         ],
                         [
                             {
                                 "type": "Date",
                                 "timestamp": 1288670400000
                             },
-                            307,
+                            306.99997,
                             310.19,
-                            307,
-                            309.36,
+                            306.99997,
+                            309.36005,
                             108482500,
-                            41.69
+                            41.68655
                         ],
                         [
                             {
@@ -5513,39 +5519,40 @@
                                 "timestamp": 1288756800000
                             },
                             311.37,
-                            312.88,
-                            308.53,
-                            312.8,
+                            312.87997,
+                            308.52997,
+                            312.79999,
                             127087100,
-                            42.15
+                            42.150090000000006
                         ],
                         [
                             {
                                 "type": "Date",
                                 "timestamp": 1288843200000
                             },
-                            315.45,
-                            320.18,
-                            315.03,
-                            318.27,
+                            315.45001,
+                            320.18002,
+                            315.03002999999995,
+                            318.26999,
                             160622000,
-                            42.89
+                            42.88718
                         ],
                         [
                             {
                                 "type": "Date",
                                 "timestamp": 1288929600000
                             },
-                            317.99,
-                            319.57,
+                            317.98999,
+                            319.57001,
                             316.75,
-                            317.13,
+                            317.13004,
                             90313300,
-                            42.73
+                            42.73357
                         ]
                     ],
                     "types": [
                         "time",
+                        "double",
                         "double",
                         "double",
                         "double",
@@ -5588,24 +5595,24 @@
                                         "type": "Date",
                                         "timestamp": 1288584000000
                                     },
-                                    302.22,
-                                    305.6,
-                                    302.2,
-                                    304.18,
+                                    302.22003,
+                                    305.59997999999996,
+                                    302.20001,
+                                    304.18002,
                                     105972300,
-                                    40.99
+                                    40.98854
                                 ],
                                 [
                                     {
                                         "type": "Date",
                                         "timestamp": 1288670400000
                                     },
-                                    307,
+                                    306.99997,
                                     310.19,
-                                    307,
-                                    309.36,
+                                    306.99997,
+                                    309.36005,
                                     108482500,
-                                    41.69
+                                    41.68655
                                 ],
                                 [
                                     {
@@ -5613,39 +5620,40 @@
                                         "timestamp": 1288756800000
                                     },
                                     311.37,
-                                    312.88,
-                                    308.53,
-                                    312.8,
+                                    312.87997,
+                                    308.52997,
+                                    312.79999,
                                     127087100,
-                                    42.15
+                                    42.150090000000006
                                 ],
                                 [
                                     {
                                         "type": "Date",
                                         "timestamp": 1288843200000
                                     },
-                                    315.45,
-                                    320.18,
-                                    315.03,
-                                    318.27,
+                                    315.45001,
+                                    320.18002,
+                                    315.03002999999995,
+                                    318.26999,
                                     160622000,
-                                    42.89
+                                    42.88718
                                 ],
                                 [
                                     {
                                         "type": "Date",
                                         "timestamp": 1288929600000
                                     },
-                                    317.99,
-                                    319.57,
+                                    317.98999,
+                                    319.57001,
                                     316.75,
-                                    317.13,
+                                    317.13004,
                                     90313300,
-                                    42.73
+                                    42.73357
                                 ]
                             ],
                             "types": [
                                 "time",
+                                "double",
                                 "double",
                                 "double",
                                 "double",
@@ -5682,14 +5690,14 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        "0",
-                        "1",
-                        "2"
+                        1,
+                        2,
+                        5
                     ],
                     [
-                        "0",
-                        "1",
-                        "2"
+                        3,
+                        4,
+                        5
                     ]
                 ],
                 "subtype": "Matrix",
@@ -5710,14 +5718,14 @@
                 "type": "TableDisplay",
                 "values": [
                     [
-                        "0",
-                        "1",
-                        "2"
+                        1,
+                        2,
+                        5
                     ],
                     [
-                        "0",
-                        "1",
-                        "2"
+                        3,
+                        4,
+                        5
                     ]
                 ],
                 "subtype": "Matrix",
@@ -5739,14 +5747,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            1,
+                            2,
+                            5
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            3,
+                            4,
+                            5
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5767,14 +5775,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            1,
+                            2,
+                            5
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            3,
+                            4,
+                            5
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5795,14 +5803,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            1,
+                            2,
+                            5
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            3,
+                            4,
+                            5
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5823,14 +5831,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            1,
+                            2,
+                            5
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            3,
+                            4,
+                            5
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5851,14 +5859,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            1,
+                            2,
+                            5
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            3,
+                            4,
+                            5
                         ]
                     ],
                     "subtype": "Matrix",
@@ -5879,14 +5887,14 @@
                     "type": "TableDisplay",
                     "values": [
                         [
-                            "0",
-                            "1",
-                            "2"
+                            1,
+                            2,
+                            5
                         ],
                         [
-                            "0",
-                            "1",
-                            "2"
+                            3,
+                            4,
+                            5
                         ]
                     ],
                     "subtype": "Matrix",

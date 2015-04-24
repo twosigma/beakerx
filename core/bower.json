@@ -10,7 +10,7 @@
     "angular-touch": "1.2.28",
     "angular-mocks": "1.2.28",
     "d3": "3.3.9",
-    "underscore": "1.7.0",
+    "lodash": "2.4.1",
     "underscore.string": "2.3.3",
     "codemirror": "4.7.0",
     "q": "0.9.7",

@@ -37,6 +37,10 @@ http {
   server {
     autoindex off;
 
+    # enable requests for specific instances in multi-user environments
+    # where a request could be routed to one of many server instances
+    rewrite ^/beaker/[0-9]+/(.*)$ /%(urlhash)s$1 last;
+
     %(listen_section)s
 
     # redirect server error pages to the static page /50x.html and serve them directly from static html directory

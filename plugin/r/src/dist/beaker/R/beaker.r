@@ -203,13 +203,23 @@ convertToJSON <- function(val, collapse) {
     }
   } else if (class(val) == "matrix") {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"Matrix\",\"columnNames\":"
-    colNames <- character(ncol(val));
-	for( j in 1:ncol(val)) {
-		colNames[j] <- paste('c',j, sep='')
+    ta = rownames(val)
+	rownames(val) <- NULL
+    tb = colnames(val)
+	colnames(val) <- NULL
+	if (is.null(tb)) {
+    	colNames <- character(ncol(val));
+		for( j in 1:ncol(val)) {
+			colNames[j] <- paste('c',j, sep='')
+    	}
+    	p = paste(p, toJSON(colNames), sep='')
+    } else {
+    	p = paste(p, toJSON(tb), sep='')
     }
-    p = paste(p, toJSON(colNames), sep='')
     p = paste(p, ", \"values\":", sep='')
     p = paste(p,toJSON(val), sep='')
+    rownames(val) <- ta
+    colnames(val) <- tb
     p = paste(p, ", \"types\": [", sep='')
     comma = FALSE
     for(i in 1:ncol(val)) {

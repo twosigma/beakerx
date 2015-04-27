@@ -265,8 +265,11 @@ def transformBack(obj):
         for v in obj:
             out.append(transformBack(v))
         return out
-    if type(obj) == unicode:
-        obj = str(obj)
+    try:
+        if type(obj) == unicode:
+            obj = str(obj)
+    except Exception as e:
+        return obj
     return obj
 
 # should be inner class to Beaker

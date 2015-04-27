@@ -387,7 +387,7 @@
 
                                   if (type === 'display') {
                                     if (_.isObject(value) && value.type === 'Date') {
-                                      return moment.utc(value.timestamp).local().format("YYYYMMDD HH:mm:ss.SSS ZZ");
+                                      return moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS ZZ");
                                     }
                                     var nano = value % 1000;
                                     var micro = (value / 1000) % 1000;

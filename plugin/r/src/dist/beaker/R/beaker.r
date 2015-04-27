@@ -361,7 +361,7 @@ transformJSON <- function(tres) {
 		            if ( !is.null( tres$values[[j]][[i]] ) ) {
 		              theval = tres$values[[j]][[i]]
 		              if (is.list(theval) && !is.null(names(theval)) && exists("type", where=theval) && exists("timestamp", where=theval) && theval$type == "Date")
-				        nv [j] <- as.POSIXct(theval[["timestamp"]]/1000, origin="1970-01-01", tz = "UTC")
+				        nv [j] <- as.POSIXct(theval[["timestamp"]]/1000, origin="1970-01-01")
 				    }
 		          }		
 	      		  df[ tres$columnNames[[i]] ] = nv

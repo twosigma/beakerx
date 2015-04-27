@@ -195,7 +195,7 @@
       if (_.isDate(v)) {
         var o = {}
         o.type = "Date";
-        o.timestamp = v.UTC();
+        o.timestamp = v.valueOf();
         return o
       }
 
@@ -341,8 +341,7 @@
 
       if (v.type !== undefined) {
         if (v.type === "Date") {
-          var d = new Date();
-          d.setUTCDate(v.timestamp);
+          var d = new Date(v.timestamp);
           return d;
         }
         if (v.type === "TableDisplay") {

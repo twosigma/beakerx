@@ -41,8 +41,7 @@
             $scope.getDate = function() {
               var model = $scope.model.getCellModel();
               if (model && model.timestamp) {
-                var m = moment.utc(model.timestamp);
-                m.local();
+                var m = moment(model.timestamp);
                 return m.format("YYYYMMDD HH:mm:ss.SSS ZZ");
               }
               return model;

@@ -21,7 +21,7 @@ public class DateDeserializer implements ObjectDeserializer {
     Object o = null;
     try {
       if (n.has("timestamp"))
-        o = new Date(n.get("timestamp").asLong() + TimeZone.getDefault().getRawOffset());
+        o = new Date(n.get("timestamp").asLong());
     } catch (Exception e) {
       logger.log(Level.SEVERE, "exception deserializing Date ", e);
     }

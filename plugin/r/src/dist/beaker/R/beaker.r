@@ -203,13 +203,23 @@ convertToJSON <- function(val, collapse) {
     }
   } else if (class(val) == "matrix") {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"Matrix\",\"columnNames\":"
-    colNames <- character(ncol(val));
-	for( j in 1:ncol(val)) {
-		colNames[j] <- paste('c',j, sep='')
+    ta = rownames(val)
+	rownames(val) <- NULL
+    tb = colnames(val)
+	colnames(val) <- NULL
+	if (is.null(tb)) {
+    	colNames <- character(ncol(val));
+		for( j in 1:ncol(val)) {
+			colNames[j] <- paste('c',j, sep='')
+    	}
+    	p = paste(p, toJSON(colNames), sep='')
+    } else {
+    	p = paste(p, toJSON(tb), sep='')
     }
-    p = paste(p, toJSON(colNames), sep='')
     p = paste(p, ", \"values\":", sep='')
     p = paste(p,toJSON(val), sep='')
+    rownames(val) <- ta
+    colnames(val) <- tb
     p = paste(p, ", \"types\": [", sep='')
     comma = FALSE
     for(i in 1:ncol(val)) {
@@ -258,7 +268,7 @@ convertToJSON <- function(val, collapse) {
     }
   } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
   	p = "{ \"type\": \"Date\", \"timestamp\": "
-  	p = paste(p, as.numeric(as.POSIXct(val))*1000, sep='')
+  	p = paste(p, as.numeric(as.POSIXct(val, tz = "UTC"))*1000, sep='')
   	p = paste(p, " }", sep='')
   	o = p
   } else if (class(val) == "list") {
@@ -391,7 +401,7 @@ transformJSON <- function(tres) {
 		    # nothing to do here
 		  }
 		  else if (tres[["type"]] == "Date" && exists("timestamp", where=tres)) {
-		  	tres = as.POSIXct(tres[["timestamp"]]/1000, origin="1970-01-01")
+		  	tres = as.POSIXct(tres[["timestamp"]]/1000, origin="1970-01-01", tz = "UTC")
 		  }
 	  } else {
 	    iteml <- length(tres)

@@ -98,8 +98,8 @@ public class BeakerDashboard extends Observable {
       for (Object o : payload) {
         if ( o instanceof dashRow ) {
           ((dashRow) o).serialize(jgen, boc);
-        } else if (!boc.writeObject(o, jgen))
-          jgen.writeObject("ERROR: unsupported object "+o.toString());
+        } else if (!boc.writeObject(o, jgen, true))
+          jgen.writeObject(o.toString());
       }
       jgen.writeEndArray();
       jgen.writeEndObject();

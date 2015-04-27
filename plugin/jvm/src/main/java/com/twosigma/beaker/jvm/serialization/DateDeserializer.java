@@ -1,6 +1,7 @@
 package com.twosigma.beaker.jvm.serialization;
 
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

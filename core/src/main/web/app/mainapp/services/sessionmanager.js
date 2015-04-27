@@ -195,7 +195,7 @@
       if (_.isDate(v)) {
         var o = {}
         o.type = "Date";
-        o.timestamp = v.getTime();
+        o.timestamp = v.valueOf();
         return o
       }
 

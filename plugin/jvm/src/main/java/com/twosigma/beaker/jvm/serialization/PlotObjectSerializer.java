@@ -32,17 +32,17 @@ public class PlotObjectSerializer extends BasicObjectSerializer {
   private final static Logger logger = Logger.getLogger(PlotObjectSerializer.class.getName());
   
   @Override
-  public boolean writeObject(Object obj, JsonGenerator jgen)
+  public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand)
       throws IOException, JsonProcessingException  {
 
     try {
-      if (super.writeObject(obj, jgen)) {
+      if (super.writeObject(obj, jgen, expand)) {
         return true;
-      } else if (obj instanceof XYChart) {
+      } else if (expand && obj instanceof XYChart) {
         jgen.writeObject((XYChart) obj);
-      } else if (obj instanceof XYGraphics) {
+      } else if (expand && obj instanceof XYGraphics) {
         jgen.writeObject(new Plot().add((XYGraphics) obj));
-      } else if (obj instanceof CombinedPlot) {
+      } else if (expand && obj instanceof CombinedPlot) {
         jgen.writeObject((CombinedPlot) obj);
       } else {
         return false;

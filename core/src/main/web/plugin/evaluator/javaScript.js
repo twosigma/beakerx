@@ -191,6 +191,7 @@ define(function(require, exports, module) {
                   }
                 }
                 output.then(function(o) {
+                  JavascriptCancelFunction = null;
                   if (beakerObj.isCircularObject(o))
                     o = "ERROR: circular objects are not supported";
                   else
@@ -200,6 +201,7 @@ define(function(require, exports, module) {
                   deferred.resolve(o);
                   beakerObj.clearOutput();
                 }, function(e) {
+                  JavascriptCancelFunction = null;
                   bkHelper.receiveEvaluationUpdate(modelOutput,
                                                    {status: "ERROR", payload: e}, PLUGIN_NAME);
                   console.log(e);

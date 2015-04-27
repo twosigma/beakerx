@@ -265,8 +265,11 @@ def transformBack(obj):
         for v in obj:
             out.append(transformBack(v))
         return out
-    if type(obj) == unicode:
-        obj = str(obj)
+    try:
+        if type(obj) == unicode:
+            obj = str(obj)
+    except Exception as e:
+        return obj
     return obj
 
 # should be inner class to Beaker
@@ -294,13 +297,9 @@ class DataFrameEncoder(json.JSONEncoder):
             transformNaNs(ret)
             return ret
         if type(obj) == datetime.datetime or type(obj) == datetime.date or type(obj).__name__ == 'Timestamp':
-            if time.localtime().tm_isdst == 1:
-                offset = time.altzone
-            else:
-                offset = time.timezone
             out = {}
             out['type'] = "Date"
-            out['timestamp'] = (calendar.timegm(obj.timetuple())+offset)*1000
+            out['timestamp'] = int(obj.strftime("%s"))*1000
             return out
         if type(obj) == pandas.core.frame.DataFrame:
             out = {}

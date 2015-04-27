@@ -56,8 +56,8 @@ public class EvaluationResult {
         SerializerProvider sp) throws IOException, JsonProcessingException {
 
       Object obj = evalResult.getValue();
-      if (!getObjectSerializer().writeObject(obj, jgen))
-        jgen.writeObject("ERROR: unsupported object "+obj.toString());
+      if (!getObjectSerializer().writeObject(obj, jgen, true))
+        jgen.writeObject(obj.toString());
     }
   }
 }

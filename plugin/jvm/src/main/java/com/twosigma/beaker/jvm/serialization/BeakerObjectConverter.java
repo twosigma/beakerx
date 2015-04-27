@@ -23,7 +23,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 public interface BeakerObjectConverter {
-  public boolean writeObject(Object obj, JsonGenerator jgen) throws IOException, JsonProcessingException;
+  public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws IOException, JsonProcessingException;
   public String convertType(String tn);
   public boolean isPrimitiveType(String tn);
   public void addTypeConversion(String from, String to);

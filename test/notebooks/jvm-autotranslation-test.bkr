@@ -64,7 +64,7 @@
                     "    d.reject(\"ERROR returning string\");",
                     "  else if (typeof(r[4]) !== 'object' || !(r[4] instanceof Date))",
                     "    d.reject(\"ERROR returning date\");",
-                    "  else if (typeof(r[5]) !== 'object' || !(r[5] instanceof DataFrame)) ",
+                    "  else if (typeof(r[5]) !== 'object' || !(r[5] instanceof beaker.DataFrame)) ",
                     "    d.reject(\"ERROR returning data frame\");",
                     "  else if (typeof(r[6]) !== 'object' || !_.isArray(r[6]) || !_.isObject(r[6][0])) ",
                     "    d.reject(\"ERROR returning list of dictionaries\");",
@@ -80,7 +80,7 @@
                     "    d.reject(\"ERROR returning dictionary\");",
                     "  else if (typeof(r[12]) !== 'object' || r[12].type !== 'Plot') ",
                     "    d.reject(\"ERROR returning plot\");",
-                    "  else if (typeof(r[13]) !== 'object' || !(r[13] instanceof ImageIcon)) ",
+                    "  else if (typeof(r[13]) !== 'object' || !(r[13] instanceof beaker.ImageIcon)) ",
                     "    d.reject(\"ERROR returning image\");",
                     "  else if (typeof(r[14]) !== 'object' || r[14].type !== 'OutputContainer') ",
                     "    d.reject(\"ERROR returning OutputContainer\");",
@@ -101,7 +101,7 @@
                     "    d.reject(\"ERROR setting string\");",
                     "  else if (typeof(beaker.v4) !== 'object' || !(beaker.v4 instanceof Date))",
                     "    d.reject(\"ERROR setting date\");",
-                    "  else if (typeof(beaker.v5) !== 'object' || !(beaker.v5 instanceof DataFrame)) ",
+                    "  else if (typeof(beaker.v5) !== 'object' || !(beaker.v5 instanceof beaker.DataFrame)) ",
                     "    d.reject(\"ERROR setting data frame\");",
                     "  else if (typeof(beaker.v6) !== 'object' || !_.isArray(beaker.v6) || !_.isObject(beaker.v6)) ",
                     "    d.reject(\"ERROR setting list of dictionaries\");",
@@ -117,7 +117,7 @@
                     "    d.reject(\"ERROR setting dictionary\");",
                     "  else if (typeof(beaker.v12) !== 'object' || beaker.v12.type !== 'Plot') ",
                     "    d.reject(\"ERROR setting plot\");",
-                    "  else if (typeof(beaker.v13) !== 'object' || !(beaker.v13 instanceof ImageIcon)) ",
+                    "  else if (typeof(beaker.v13) !== 'object' || !(beaker.v13 instanceof beaker.ImageIcon)) ",
                     "    d.reject(\"ERROR setting image\");",
                     "  else if (typeof(beaker.v14) !== 'object' || beaker.v14.type !== 'OutputContainer') ",
                     "    d.reject(\"ERROR setting OutputContainer\");",
@@ -129,7 +129,7 @@
                     "    d.reject(\"ERROR setting list of dictionaries\");",
                     "  beaker.evaluate('steptwo').then(function (r) {",
                     "\t  d.resolve(beaker.getCodeCells('steptwo')[0].output);",
-                    "    })",
+                    "    }, function (b) { d.resolve(\"ERROR\"); })",
                     "})",
                     "d"
                 ],
@@ -138,7 +138,8 @@
             "output": {
                 "state": {},
                 "selectedType": "Text",
-                "elapsedTime": 14764
+                "elapsedTime": 13999,
+                "pluginName": "JavaScript"
             },
             "evaluatorReader": true,
             "lineCount": 83,
@@ -198,8 +199,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 1800
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 896
             },
             "evaluatorReader": true,
             "lineCount": 41,
@@ -229,8 +230,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 2195
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 593
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -252,8 +253,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 665
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 604
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -275,8 +276,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 636
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 599
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -298,8 +299,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 693
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 595
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -323,8 +324,8 @@
                 "state": {},
                 "selectedType": "Date",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 642
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 601
             },
             "evaluatorReader": true,
             "lineCount": 6,
@@ -345,8 +346,8 @@
             "output": {
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 639,
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 683,
                 "state": {}
             },
             "evaluatorReader": true,
@@ -369,8 +370,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 726
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 609
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -392,8 +393,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 641
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 586
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -415,8 +416,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 634
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 627
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -438,8 +439,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 673
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 602
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -461,8 +462,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 652
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 595
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -484,8 +485,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 619
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 559
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -507,8 +508,8 @@
                 "state": {},
                 "selectedType": "Plot",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 633
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 613
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -533,8 +534,8 @@
                 "state": {},
                 "selectedType": "Image",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 1726
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 604
             },
             "evaluatorReader": true,
             "lineCount": 7,
@@ -557,8 +558,8 @@
                 "state": {},
                 "selectedType": "OutputContainer",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 645
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 628
             },
             "evaluatorReader": true,
             "lineCount": 5,
@@ -580,8 +581,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 679
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 612
             },
             "evaluatorReader": true,
             "lineCount": 4,
@@ -609,8 +610,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 621
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 603
             },
             "evaluatorReader": true,
             "lineCount": 10,
@@ -637,8 +638,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "cac29fef-949b-464e-b6f4-033ce75eb7e3",
-                "elapsedTime": 756
+                "shellId": "b607c606-de1b-49cb-9297-0151c337afce",
+                "elapsedTime": 615
             },
             "evaluatorReader": true,
             "lineCount": 9,
@@ -653,7 +654,7 @@
             "test string",
             {
                 "type": "Date",
-                "timestamp": 1427398605962
+                "timestamp": 1429732485150
             },
             {
                 "type": "TableDisplay",
@@ -696,6 +697,11 @@
                         null,
                         5
                     ]
+                ],
+                "types": [
+                    "double",
+                    "double",
+                    "double"
                 ]
             },
             [
@@ -742,78 +748,38 @@
                     "string"
                 ]
             },
-            [
-                [
-                    1,
-                    2,
-                    3
+            {
+                "type": "TableDisplay",
+                "values": [
+                    [
+                        1,
+                        2,
+                        3
+                    ],
+                    [
+                        4,
+                        5,
+                        6
+                    ],
+                    [
+                        7,
+                        8,
+                        9,
+                        "com.twosigma.beaker.chart.xychart.Plot@2a392f39"
+                    ]
                 ],
-                [
-                    4,
-                    5,
-                    6
+                "subtype": "Matrix",
+                "columnNames": [
+                    "c0",
+                    "c1",
+                    "c2"
                 ],
-                [
-                    7,
-                    8,
-                    9,
-                    {
-                        "type": "Plot",
-                        "init_width": 640,
-                        "init_height": 480,
-                        "chart_title": null,
-                        "domain_axis_label": null,
-                        "y_label": "",
-                        "show_legend": false,
-                        "use_tool_tip": true,
-                        "graphics_list": [],
-                        "constant_lines": [],
-                        "constant_bands": [],
-                        "texts": [],
-                        "rangeAxes": {
-                            "type": "TableDisplay",
-                            "subtype": "ListOfMaps",
-                            "columnNames": [
-                                "type",
-                                "auto_range",
-                                "auto_range_includes_zero",
-                                "lower_margin",
-                                "upper_margin",
-                                "lower_bound",
-                                "upper_bound",
-                                "log"
-                            ],
-                            "values": [
-                                [
-                                    "YAxis",
-                                    true,
-                                    true,
-                                    0.05,
-                                    0.05,
-                                    0,
-                                    0,
-                                    false
-                                ]
-                            ]
-                        },
-                        "x_auto_range": true,
-                        "x_lower_margin": 0.05,
-                        "x_upper_margin": 0.05,
-                        "x_lower_bound": 0,
-                        "x_upper_bound": 0,
-                        "y_auto_range": true,
-                        "y_auto_range_includes_zero": true,
-                        "y_lower_margin": 0.05,
-                        "y_upper_margin": 0.05,
-                        "y_lower_bound": 0,
-                        "y_upper_bound": 0,
-                        "log_x": false,
-                        "log_y": false,
-                        "time_zone": null,
-                        "crosshair": null
-                    }
+                "types": [
+                    "double",
+                    "double",
+                    "double"
                 ]
-            ],
+            },
             [
                 {
                     "type": "TableDisplay",
@@ -821,14 +787,12 @@
                         [
                             1,
                             2,
-                            3,
-                            null
+                            3
                         ],
                         [
                             4,
                             5,
-                            6,
-                            null
+                            6
                         ],
                         [
                             7,
@@ -841,14 +805,12 @@
                     "columnNames": [
                         "c0",
                         "c1",
-                        "c2",
-                        "c3"
+                        "c2"
                     ],
                     "types": [
                         "double",
                         "double",
-                        "double",
-                        "string"
+                        "double"
                     ]
                 },
                 {
@@ -857,14 +819,12 @@
                         [
                             1,
                             2,
-                            3,
-                            null
+                            3
                         ],
                         [
                             4,
                             5,
-                            6,
-                            null
+                            6
                         ],
                         [
                             7,
@@ -877,14 +837,12 @@
                     "columnNames": [
                         "c0",
                         "c1",
-                        "c2",
-                        "c3"
+                        "c2"
                     ],
                     "types": [
                         "double",
                         "double",
-                        "double",
-                        "string"
+                        "double"
                     ]
                 }
             ],
@@ -947,6 +905,16 @@
                             0,
                             false
                         ]
+                    ],
+                    "types": [
+                        "string",
+                        "boolean",
+                        "boolean",
+                        "double",
+                        "double",
+                        "double",
+                        "double",
+                        "boolean"
                     ]
                 },
                 "x_auto_range": true,
@@ -1002,6 +970,11 @@
                                 null,
                                 5
                             ]
+                        ],
+                        "types": [
+                            "double",
+                            "double",
+                            "double"
                         ]
                     }
                 ]
@@ -1044,6 +1017,11 @@
                                         null,
                                         5
                                     ]
+                                ],
+                                "types": [
+                                    "double",
+                                    "double",
+                                    "double"
                                 ]
                             }
                         ]
@@ -1052,61 +1030,7 @@
                 }
             ],
             {
-                "plot": {
-                    "type": "Plot",
-                    "init_width": 640,
-                    "init_height": 480,
-                    "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
-                    "show_legend": false,
-                    "use_tool_tip": true,
-                    "graphics_list": [],
-                    "constant_lines": [],
-                    "constant_bands": [],
-                    "texts": [],
-                    "rangeAxes": {
-                        "type": "TableDisplay",
-                        "subtype": "ListOfMaps",
-                        "columnNames": [
-                            "type",
-                            "auto_range",
-                            "auto_range_includes_zero",
-                            "lower_margin",
-                            "upper_margin",
-                            "lower_bound",
-                            "upper_bound",
-                            "log"
-                        ],
-                        "values": [
-                            [
-                                "YAxis",
-                                true,
-                                true,
-                                0.05,
-                                0.05,
-                                0,
-                                0,
-                                false
-                            ]
-                        ]
-                    },
-                    "x_auto_range": true,
-                    "x_lower_margin": 0.05,
-                    "x_upper_margin": 0.05,
-                    "x_lower_bound": 0,
-                    "x_upper_bound": 0,
-                    "y_auto_range": true,
-                    "y_auto_range_includes_zero": true,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
-                    "y_lower_bound": 0,
-                    "y_upper_bound": 0,
-                    "log_x": false,
-                    "log_y": false,
-                    "time_zone": null,
-                    "crosshair": null
-                },
+                "plot": "com.twosigma.beaker.chart.xychart.Plot@49149e9d",
                 "img": {
                     "type": "ImageIcon",
                     "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
@@ -1116,61 +1040,7 @@
             },
             [
                 {
-                    "plot": {
-                        "type": "Plot",
-                        "init_width": 640,
-                        "init_height": 480,
-                        "chart_title": null,
-                        "domain_axis_label": null,
-                        "y_label": "",
-                        "show_legend": false,
-                        "use_tool_tip": true,
-                        "graphics_list": [],
-                        "constant_lines": [],
-                        "constant_bands": [],
-                        "texts": [],
-                        "rangeAxes": {
-                            "type": "TableDisplay",
-                            "subtype": "ListOfMaps",
-                            "columnNames": [
-                                "type",
-                                "auto_range",
-                                "auto_range_includes_zero",
-                                "lower_margin",
-                                "upper_margin",
-                                "lower_bound",
-                                "upper_bound",
-                                "log"
-                            ],
-                            "values": [
-                                [
-                                    "YAxis",
-                                    true,
-                                    true,
-                                    0.05,
-                                    0.05,
-                                    0,
-                                    0,
-                                    false
-                                ]
-                            ]
-                        },
-                        "x_auto_range": true,
-                        "x_lower_margin": 0.05,
-                        "x_upper_margin": 0.05,
-                        "x_lower_bound": 0,
-                        "x_upper_bound": 0,
-                        "y_auto_range": true,
-                        "y_auto_range_includes_zero": true,
-                        "y_lower_margin": 0.05,
-                        "y_upper_margin": 0.05,
-                        "y_lower_bound": 0,
-                        "y_upper_bound": 0,
-                        "log_x": false,
-                        "log_y": false,
-                        "time_zone": null,
-                        "crosshair": null
-                    },
+                    "plot": "com.twosigma.beaker.chart.xychart.Plot@29ab7476",
                     "img": {
                         "type": "ImageIcon",
                         "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
@@ -1195,7 +1065,7 @@
         "v3": "test string",
         "v4": {
             "type": "Date",
-            "timestamp": 1427398605962
+            "timestamp": 1429732485150
         },
         "v5": {
             "type": "TableDisplay",
@@ -1238,6 +1108,11 @@
                     null,
                     5
                 ]
+            ],
+            "types": [
+                "double",
+                "double",
+                "double"
             ]
         },
         "v7": [
@@ -1284,78 +1159,38 @@
                 "string"
             ]
         },
-        "v9": [
-            [
-                1,
-                2,
-                3
+        "v9": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    1,
+                    2,
+                    3
+                ],
+                [
+                    4,
+                    5,
+                    6
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    "com.twosigma.beaker.chart.xychart.Plot@2a392f39"
+                ]
             ],
-            [
-                4,
-                5,
-                6
+            "subtype": "Matrix",
+            "columnNames": [
+                "c0",
+                "c1",
+                "c2"
             ],
-            [
-                7,
-                8,
-                9,
-                {
-                    "type": "Plot",
-                    "init_width": 640,
-                    "init_height": 480,
-                    "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
-                    "show_legend": false,
-                    "use_tool_tip": true,
-                    "graphics_list": [],
-                    "constant_lines": [],
-                    "constant_bands": [],
-                    "texts": [],
-                    "rangeAxes": {
-                        "type": "TableDisplay",
-                        "subtype": "ListOfMaps",
-                        "columnNames": [
-                            "type",
-                            "auto_range",
-                            "auto_range_includes_zero",
-                            "lower_margin",
-                            "upper_margin",
-                            "lower_bound",
-                            "upper_bound",
-                            "log"
-                        ],
-                        "values": [
-                            [
-                                "YAxis",
-                                true,
-                                true,
-                                0.05,
-                                0.05,
-                                0,
-                                0,
-                                false
-                            ]
-                        ]
-                    },
-                    "x_auto_range": true,
-                    "x_lower_margin": 0.05,
-                    "x_upper_margin": 0.05,
-                    "x_lower_bound": 0,
-                    "x_upper_bound": 0,
-                    "y_auto_range": true,
-                    "y_auto_range_includes_zero": true,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
-                    "y_lower_bound": 0,
-                    "y_upper_bound": 0,
-                    "log_x": false,
-                    "log_y": false,
-                    "time_zone": null,
-                    "crosshair": null
-                }
+            "types": [
+                "double",
+                "double",
+                "double"
             ]
-        ],
+        },
         "v10": [
             {
                 "type": "TableDisplay",
@@ -1363,14 +1198,12 @@
                     [
                         1,
                         2,
-                        3,
-                        null
+                        3
                     ],
                     [
                         4,
                         5,
-                        6,
-                        null
+                        6
                     ],
                     [
                         7,
@@ -1383,14 +1216,12 @@
                 "columnNames": [
                     "c0",
                     "c1",
-                    "c2",
-                    "c3"
+                    "c2"
                 ],
                 "types": [
                     "double",
                     "double",
-                    "double",
-                    "string"
+                    "double"
                 ]
             },
             {
@@ -1399,14 +1230,12 @@
                     [
                         1,
                         2,
-                        3,
-                        null
+                        3
                     ],
                     [
                         4,
                         5,
-                        6,
-                        null
+                        6
                     ],
                     [
                         7,
@@ -1419,14 +1248,12 @@
                 "columnNames": [
                     "c0",
                     "c1",
-                    "c2",
-                    "c3"
+                    "c2"
                 ],
                 "types": [
                     "double",
                     "double",
-                    "double",
-                    "string"
+                    "double"
                 ]
             }
         ],
@@ -1489,6 +1316,16 @@
                         0,
                         false
                     ]
+                ],
+                "types": [
+                    "string",
+                    "boolean",
+                    "boolean",
+                    "double",
+                    "double",
+                    "double",
+                    "double",
+                    "boolean"
                 ]
             },
             "x_auto_range": true,
@@ -1544,6 +1381,11 @@
                             null,
                             5
                         ]
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double"
                     ]
                 }
             ]
@@ -1586,6 +1428,11 @@
                                     null,
                                     5
                                 ]
+                            ],
+                            "types": [
+                                "double",
+                                "double",
+                                "double"
                             ]
                         }
                     ]
@@ -1594,61 +1441,7 @@
             }
         ],
         "v16": {
-            "plot": {
-                "type": "Plot",
-                "init_width": 640,
-                "init_height": 480,
-                "chart_title": null,
-                "domain_axis_label": null,
-                "y_label": "",
-                "show_legend": false,
-                "use_tool_tip": true,
-                "graphics_list": [],
-                "constant_lines": [],
-                "constant_bands": [],
-                "texts": [],
-                "rangeAxes": {
-                    "type": "TableDisplay",
-                    "subtype": "ListOfMaps",
-                    "columnNames": [
-                        "type",
-                        "auto_range",
-                        "auto_range_includes_zero",
-                        "lower_margin",
-                        "upper_margin",
-                        "lower_bound",
-                        "upper_bound",
-                        "log"
-                    ],
-                    "values": [
-                        [
-                            "YAxis",
-                            true,
-                            true,
-                            0.05,
-                            0.05,
-                            0,
-                            0,
-                            false
-                        ]
-                    ]
-                },
-                "x_auto_range": true,
-                "x_lower_margin": 0.05,
-                "x_upper_margin": 0.05,
-                "x_lower_bound": 0,
-                "x_upper_bound": 0,
-                "y_auto_range": true,
-                "y_auto_range_includes_zero": true,
-                "y_lower_margin": 0.05,
-                "y_upper_margin": 0.05,
-                "y_lower_bound": 0,
-                "y_upper_bound": 0,
-                "log_x": false,
-                "log_y": false,
-                "time_zone": null,
-                "crosshair": null
-            },
+            "plot": "com.twosigma.beaker.chart.xychart.Plot@49149e9d",
             "img": {
                 "type": "ImageIcon",
                 "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
@@ -1658,61 +1451,7 @@
         },
         "v17": [
             {
-                "plot": {
-                    "type": "Plot",
-                    "init_width": 640,
-                    "init_height": 480,
-                    "chart_title": null,
-                    "domain_axis_label": null,
-                    "y_label": "",
-                    "show_legend": false,
-                    "use_tool_tip": true,
-                    "graphics_list": [],
-                    "constant_lines": [],
-                    "constant_bands": [],
-                    "texts": [],
-                    "rangeAxes": {
-                        "type": "TableDisplay",
-                        "subtype": "ListOfMaps",
-                        "columnNames": [
-                            "type",
-                            "auto_range",
-                            "auto_range_includes_zero",
-                            "lower_margin",
-                            "upper_margin",
-                            "lower_bound",
-                            "upper_bound",
-                            "log"
-                        ],
-                        "values": [
-                            [
-                                "YAxis",
-                                true,
-                                true,
-                                0.05,
-                                0.05,
-                                0,
-                                0,
-                                false
-                            ]
-                        ]
-                    },
-                    "x_auto_range": true,
-                    "x_lower_margin": 0.05,
-                    "x_upper_margin": 0.05,
-                    "x_lower_bound": 0,
-                    "x_upper_bound": 0,
-                    "y_auto_range": true,
-                    "y_auto_range_includes_zero": true,
-                    "y_lower_margin": 0.05,
-                    "y_upper_margin": 0.05,
-                    "y_lower_bound": 0,
-                    "y_upper_bound": 0,
-                    "log_x": false,
-                    "log_y": false,
-                    "time_zone": null,
-                    "crosshair": null
-                },
+                "plot": "com.twosigma.beaker.chart.xychart.Plot@29ab7476",
                 "img": {
                     "type": "ImageIcon",
                     "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",

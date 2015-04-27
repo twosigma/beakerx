@@ -131,8 +131,8 @@ public class NamespaceClient {
     if (!unset) {
       StringWriter sw = new StringWriter();
       JsonGenerator jgen = objectMapper.get().getJsonFactory().createJsonGenerator(sw);
-      if (!objectSerializerProvider.get().writeObject(value, jgen))
-        form.add("value", "ERROR: unsupported object "+value.toString());
+      if (!objectSerializerProvider.get().writeObject(value, jgen, true))
+        form.add("value", value.toString());
       else {
         jgen.flush();
         form.add("value", sw.toString());

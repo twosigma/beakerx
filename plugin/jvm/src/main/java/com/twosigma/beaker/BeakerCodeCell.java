@@ -85,8 +85,8 @@ public class BeakerCodeCell {
         jgen.writeStringField("code", value.code);
         jgen.writeStringField("outputtype", value.outputtype);
         jgen.writeFieldName("output");
-        if (!getObjectSerializer().writeObject(value.output, jgen))
-          jgen.writeString("ERROR: unsupported object "+value.output.toString());
+        if (!getObjectSerializer().writeObject(value.output, jgen, true))
+          jgen.writeString(value.output.toString());
         jgen.writeStringField("tags", value.tags);
         jgen.writeEndObject();
       }

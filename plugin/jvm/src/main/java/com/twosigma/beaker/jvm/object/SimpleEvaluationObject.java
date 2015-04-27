@@ -224,8 +224,8 @@ public class SimpleEvaluationObject extends Observable {
           EvaluationResult o = value.getPayload();
           if (o != null && o.getValue() !=null ) {
             jgen.writeFieldName("payload");
-            if (!getObjectSerializer().writeObject(o, jgen))
-              jgen.writeObject("ERROR: unsupported object "+o.toString());
+            if (!getObjectSerializer().writeObject(o, jgen, true))
+              jgen.writeObject(o.toString());
           } else if(value.getJsonRes() != null) {
             jgen.writeFieldName("payload");
             jgen.writeRawValue(value.getJsonRes());            

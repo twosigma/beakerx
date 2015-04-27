@@ -2,7 +2,6 @@ package com.twosigma.beaker.jvm.serialization;
 
 import java.io.IOException;
 import java.util.Date;
-
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
@@ -15,7 +14,7 @@ public class DateSerializer extends JsonSerializer<Date> {
       throws IOException, JsonProcessingException {
     synchronized(v) {
       jgen.writeStartObject();
-      jgen.writeStringField("type",  "Date");
+      jgen.writeStringField("type",  "Date");      
       jgen.writeNumberField("timestamp", v.getTime());
       jgen.writeEndObject();
     }

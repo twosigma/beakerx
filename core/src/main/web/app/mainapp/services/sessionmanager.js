@@ -341,8 +341,7 @@
 
       if (v.type !== undefined) {
         if (v.type === "Date") {
-          var d = new Date(v.timestamp);
-          return d;
+          return new Date(v.timestamp);
         }
         if (v.type === "TableDisplay") {
           if (v.subtype === "Dictionary") {

@@ -314,7 +314,7 @@
                                 // string
                                 function(value,type,full,meta) {
                                   if (_.isObject(value) && value.type === 'Date') {
-                                    value = moment.utc(value.timestamp).local().format("YYYYMMDD HH:mm:ss.SSS ZZ");
+                                    value = moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS ZZ");
                                   }
                                   if (type === 'display' && value !== null && value !== undefined)
                                     return $scope.escapeHTML(value);

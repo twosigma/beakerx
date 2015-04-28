@@ -83,7 +83,7 @@ task (copyDTImages, type: Copy) {
 task (copyAwesomeFonts, type: Copy) {
     from 'src/vendor/bower_components/font-awesome/fonts/'
 	into 'src/main/web/app/fonts/'
-}	
+}
 task (copyBootStrapFonts, type: Copy) {
 	from 'src/vendor/bower_components/bootstrap-sass/assets/fonts/bootstrap/'
 	into 'src/main/web/app/fonts/'
@@ -162,7 +162,7 @@ task (copyNginx, type: Exec) {
   }
 }
 
-task doRemove() {  
+task doRemove() {
   doLast {
       delete fileTree(dir: "src/main/web/app/temp")
       delete fileTree(dir: "src/main/web/app/dist")

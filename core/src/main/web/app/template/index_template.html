@@ -41,6 +41,9 @@
   <link rel="stylesheet" href="app/temp/app.css" />
   <!-- endbuild -->
 
+  <!--  we include katex styles here so it can require its font files relatively -->
+  <link rel="stylesheet" href="app/vendor/katex-build/katex.min.css" />
+
   <!-- htmlbuild:vendorjs -->
   <script src="vendor/flotr2/flotr2.js"></script>
   <script src="vendor/bower_components/lodash/dist/lodash.underscore.js"></script>
@@ -94,22 +97,11 @@
   <script src="vendor/moment/moment-with-locales.min.js"></script>
   <script src="vendor/moment/moment-timezone-with-data.min.js"></script>
   <script src="vendor/zeroclipboard-2.2.0/dist/ZeroClipboard.js"></script>
+  <script src="vendor/bower_components/katex-build/katex.min.js"></script>
+  <script src="vendor/bower_components/katex-build/contrib/auto-render.min.js"></script>
   <!-- endbuild -->
 
   <script src="app/vendor/requirejs/require.js" data-main="app/main.js"></script>
-
-  <!--  we must include mathjax here: we cannot put it in the glued file -->
-
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      tex2jax: {inlineMath: [
-        ['MATH_JAX_INLINE_BEGIN', 'MATH_JAX_INLINE_END'],
-        ['$','$'],
-        ['\\(','\\)']
-      ]}
-    });
-  </script>
-  <script src="app/vendor/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   <!-- htmlbuild:beakerjs -->
   <script src="app/temp/templates.js"></script>

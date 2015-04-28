@@ -32,16 +32,18 @@
         var contentAttribute = scope.cellmodel.type === "section" ? 'title' : 'body';
 
         var preview = function() {
-          var markdownFragment = $('<div style="display: none;">' + scope.cellmodel[contentAttribute] + '</div>');
-          markdownFragment.appendTo('body'); // ugh mathjax doesn't operate on document fragments...
-
-          MathJax.Hub.Queue(["Typeset", MathJax.Hub, markdownFragment[0]]);
-          MathJax.Hub.Queue(function() {
-            element.find('.markup').html(marked(markdownFragment.html(), {gfm: true}));
-            markdownFragment.remove();
-            scope.mode = 'preview';
-            scope.$apply();
+          var markdownFragment = $('<div>' + scope.cellmodel[contentAttribute] + '</div>');
+          renderMathInElement(markdownFragment[0], {
+            delimiters: [
+              {left: "$$", right: "$$", display: true},
+              {left: "$", right:  "$", display: false},
+              {left: "\\[", right: "\\]", display: true},
+              {left: "\\(", right: "\\)", display: false}
+            ]
           });
+          element.find('.markup').html(marked(markdownFragment.html(), {gfm: true}));
+          markdownFragment.remove();
+          scope.mode = 'preview';
         };
 
         var syncContentAndPreview = function() {

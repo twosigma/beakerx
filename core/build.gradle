@@ -96,18 +96,12 @@ copyStuff.dependsOn copyBootStrapFonts
 
 task updatePackages
 
-task (copyMathJax, type: Copy) {
-	inputs.dir 'src/vendor/MathJax-2.5-latest/'
-	outputs.dir'src/main/web/app/vendor/mathjax/'
-	from 'src/vendor/MathJax-2.5-latest/'
-	into 'src/main/web/app/vendor/mathjax/'
-	exclude '**.md'
+task (copyKatex, type: Copy) {
+	inputs.dir 'src/vendor/bower_components/katex-build/'
+	outputs.dir 'src/main/web/app/vendor/katex-build/'
+	from 'src/vendor/bower_components/katex-build/'
+	into 'src/main/web/app/vendor/katex-build/'
 	exclude '**.json'
-	exclude 'docs'
-	exclude 'test'
-	exclude 'LICENSE'
-	exclude 'unpacked'
-	exclude '**/HTML-CSS/TeX/png/**'
 }
 
 task (copyRequireJS, type: Copy) {
@@ -116,7 +110,7 @@ task (copyRequireJS, type: Copy) {
 }
 
 task copyVendorStuff
-copyVendorStuff.dependsOn copyMathJax
+copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 
 task (extractPackages, type: Exec) {

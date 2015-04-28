@@ -29,13 +29,7 @@
         cellmodel: '='
       },
       link: function(scope, element, attrs) {
-        var contentAttribute;
-
-        if (!_.isUndefined(scope.cellmodel.body)) {
-          contentAttribute = 'body';
-        } else {
-          contentAttribute = 'title';
-        }
+        var contentAttribute = scope.cellmodel.type === "section" ? 'title' : 'body';
 
         var preview = function() {
           var markdownFragment = $('<div style="display: none;">' + scope.cellmodel[contentAttribute] + '</div>');

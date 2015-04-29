@@ -41,7 +41,7 @@ var IPython1 = (function (IPython1) {
         this.style();
         this.bind_events();
     };
-    
+
     OutputArea.prototype.create_elements = function () {
         this.element = $("<div/>");
         this.collapse_button = $("<div/>");
@@ -55,17 +55,17 @@ var IPython1 = (function (IPython1) {
     OutputArea.prototype.style = function () {
         this.collapse_button.hide();
         this.prompt_overlay.hide();
-        
+
         this.wrapper.addClass('output_wrapper');
         this.element.addClass('output vbox');
-        
+
         this.collapse_button.addClass("btn output_collapsed");
         this.collapse_button.attr('title', 'click to expand output');
         this.collapse_button.html('. . .');
-        
+
         this.prompt_overlay.addClass('out_prompt_overlay prompt');
         this.prompt_overlay.attr('title', 'click to expand output; double click to hide output');
-        
+
         this.collapse();
     };
 
@@ -87,7 +87,7 @@ var IPython1 = (function (IPython1) {
         // line-height from http://stackoverflow.com/questions/1185151
         var fontSize = this.element.css('font-size');
         var lineHeight = Math.floor(parseInt(fontSize.replace('px','')) * 1.5);
-        
+
         return (this.element.height() > lines * lineHeight);
     };
 
@@ -548,10 +548,10 @@ var IPython1 = (function (IPython1) {
         this.expand();
         this.flush_clear_timeout();
         var area = this.create_output_area();
-        
+
         // disable any other raw_inputs, if they are left around
         $("div.output_subarea.raw_input").remove();
-        
+
         area.append(
             $("<div/>")
             .addClass("box-flex1 output_subarea raw_input")
@@ -649,7 +649,7 @@ var IPython1 = (function (IPython1) {
             output_div.find("div.output_subarea").not("div.output_stderr").not("div.output_stdout").parent().remove();
         }
         this.unscroll_area();
-        
+
         // remove cleared outputs from JSON list:
         for (var i = this.outputs.length - 1; i >= 0; i--) {
             var out = this.outputs[i];

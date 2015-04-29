@@ -27,7 +27,7 @@
         };
         return {
             restrict: 'E',
-            template: "<div id='aaa'>MATH_JAX_INLINE_BEGIN{{model}}MATH_JAX_INLINE_END<button ng-click='update()'>[debug] force update</button></div>",
+            template: "<div id='aaa'>${{model}}$<button ng-click='update()'>[debug] force update</button></div>",
             controller: ["$scope", function ($scope) {
                 var model = $scope.model;
                 $scope.$watch('model', function () {
@@ -38,10 +38,13 @@
                 var id = "latex_" + generateID(6);
                 scope.update = function () {
                     var div = element.find('div');
-                    div.replaceWith($compile("<div id='" + id + "'>MATH_JAX_INLINE_BEGIN{{model}}MATH_JAX_INLINE_END</div>")(scope));
-                    setTimeout(function () {
-                        MathJax.Hub.Queue(["Typeset", MathJax.Hub, id]);
-                    }, 100);
+                    div.replaceWith($compile("<div id='" + id + "'>${{model}}$</div>")(scope));
+                    renderMathInElement(element[0], {
+                      delimiters: [{
+                        left: "$",
+                        right:  "$"
+                      }]
+                    });
                 };
             }
         };

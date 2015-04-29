@@ -66,7 +66,7 @@ task (bowerInstall, type: Exec) {
 }
 
 task (zipPackages, type: Exec) {
-  commandLine(*(winOrUnix('zip', '-r', '../data/allDeps.zip', 'src/vendor/')))
+  commandLine(*(winOrUnix('zip', '-FSr', '../data/allDeps.zip', 'src/vendor/')))
 }
 
 task (publishAssets, type: Copy) {
@@ -83,7 +83,7 @@ task (copyDTImages, type: Copy) {
 task (copyAwesomeFonts, type: Copy) {
     from 'src/vendor/bower_components/font-awesome/fonts/'
 	into 'src/main/web/app/fonts/'
-}	
+}
 task (copyBootStrapFonts, type: Copy) {
 	from 'src/vendor/bower_components/bootstrap-sass/assets/fonts/bootstrap/'
 	into 'src/main/web/app/fonts/'
@@ -96,18 +96,12 @@ copyStuff.dependsOn copyBootStrapFonts
 
 task updatePackages
 
-task (copyMathJax, type: Copy) {
-	inputs.dir 'src/vendor/MathJax-2.5-latest/'
-	outputs.dir'src/main/web/app/vendor/mathjax/'
-	from 'src/vendor/MathJax-2.5-latest/'
-	into 'src/main/web/app/vendor/mathjax/'
-	exclude '**.md'
+task (copyKatex, type: Copy) {
+	inputs.dir 'src/vendor/bower_components/katex-build/'
+	outputs.dir 'src/main/web/app/vendor/katex-build/'
+	from 'src/vendor/bower_components/katex-build/'
+	into 'src/main/web/app/vendor/katex-build/'
 	exclude '**.json'
-	exclude 'docs'
-	exclude 'test'
-	exclude 'LICENSE'
-	exclude 'unpacked'
-	exclude '**/HTML-CSS/TeX/png/**'
 }
 
 task (copyRequireJS, type: Copy) {
@@ -116,7 +110,7 @@ task (copyRequireJS, type: Copy) {
 }
 
 task copyVendorStuff
-copyVendorStuff.dependsOn copyMathJax
+copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 
 task (extractPackages, type: Exec) {
@@ -162,7 +156,7 @@ task (copyNginx, type: Exec) {
   }
 }
 
-task doRemove() {  
+task doRemove() {
   doLast {
       delete fileTree(dir: "src/main/web/app/temp")
       delete fileTree(dir: "src/main/web/app/dist")

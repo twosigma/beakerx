@@ -24,8 +24,13 @@
     return {
       link: function(scope, element, attrs) {
         scope.$watch('model.getCellModel()', function(newValue) {
-          element.html("MATH_JAX_INLINE_BEGIN" + newValue + "MATH_JAX_INLINE_END");
-          MathJax.Hub.Queue(["Typeset", MathJax.Hub, element[0]]);
+          element.html("$" + newValue + "$");
+          renderMathInElement(element[0], {
+            delimiters: [{
+              left: "$",
+              right:  "$"
+            }]
+          });
         });
       }
     };

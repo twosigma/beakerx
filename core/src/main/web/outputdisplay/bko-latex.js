@@ -24,13 +24,7 @@
     return {
       link: function(scope, element, attrs) {
         scope.$watch('model.getCellModel()', function(newValue) {
-          element.html("$" + newValue + "$");
-          renderMathInElement(element[0], {
-            delimiters: [{
-              left: "$",
-              right:  "$"
-            }]
-          });
+          katex.render(newValue, element[0]);
         });
       }
     };

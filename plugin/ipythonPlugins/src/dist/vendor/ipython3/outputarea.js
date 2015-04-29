@@ -198,7 +198,7 @@ define('ipython3_outputarea', [
     };
 
 
-    // typeset with MathJax if MathJax is available
+    // typeset with Latex
     OutputArea.prototype.typeset = function () {
         utils.typeset(this.element);
     };

@@ -202,10 +202,10 @@ var IPython2 = (function (IPython2) {
     };
 
 
-    // typeset with MathJax if MathJax is available
+    // typeset with Katex if it's is available
     OutputArea.prototype.typeset = function () {
-        if (window.MathJax){
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        if (window.renderMathInElement) {
+            window.renderMathInElement(document.body);
         }
     };
 

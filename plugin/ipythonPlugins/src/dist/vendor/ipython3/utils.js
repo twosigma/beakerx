@@ -775,12 +775,12 @@ define('ipython3_utils', [
 
     var typeset = function(element, text) {
         /**
-         * Apply MathJax rendering to an element, and optionally set its text
+         * Apply Katex rendering to an element, and optionally set its text
          *
-         * If MathJax is not available, make no changes.
+         * If Katex is not available, make no changes.
          *
          * Returns the output any number of typeset elements, or undefined if
-         * MathJax was not available.
+         * Katex was not available.
          *
          * Parameters
          * ----------
@@ -791,12 +791,12 @@ define('ipython3_utils', [
         if(arguments.length > 1){
             $el.text(text);
         }
-        if(!window.MathJax){
+        if(!window.renderMathInElement){
             return;
         }
         return $el.map(function(){
-            // MathJax takes a DOM node: $.map makes `this` the context
-            return MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
+            // Katex takes a DOM node: $.map makes `this` the context
+            return window.renderMathInElement(this);
         });
     };
 

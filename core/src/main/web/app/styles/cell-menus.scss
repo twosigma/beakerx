@@ -16,6 +16,7 @@
 
 .bkcell bk-new-cell-menu {
     display: block;
+    cursor: pointer;
 
     .new-cell {
       visibility: hidden;
@@ -37,9 +38,6 @@ bk-new-cell-menu {
 }
 
 .new-cell {
-  position: relative;
-  left: -1px;
-
   .insert-cell {
     border-right-width: 4px;
   }

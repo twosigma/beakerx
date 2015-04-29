@@ -99,6 +99,17 @@
         $scope.$on('cellMapRecreated', function() {
           recentlyAddedLanguage = null;
         });
+      },
+      link: function(scope, element) {
+        element.on('click', function(e) {
+          if (e.target !== element[0]) return;
+
+          scope.newCodeCell(scope.defaultEvaluator());
+        });
+
+        scope.$on('destroy', function() {
+          element.off('click');
+        });
       }
     };
   });

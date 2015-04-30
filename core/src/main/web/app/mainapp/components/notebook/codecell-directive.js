@@ -293,7 +293,6 @@
         };
         scope.focus = function() {
           scope.cm.focus();
-          scope.$apply();
         };
         CodeMirror.on(window, "resize", resizeHandler);
 

@@ -387,7 +387,11 @@
 
                                   if (type === 'display') {
                                     if (_.isObject(value) && value.type === 'Date') {
-                                      return moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS ZZ");
+                                      var time = moment(value.timestamp);
+                                      var tz = $scope.tz;
+                                      if (tz)
+                                        time.tz(tz);
+                                      return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
                                     }
                                     var nano = value % 1000;
                                     var micro = (value / 1000) % 1000;
@@ -396,7 +400,7 @@
                                     var tz = $scope.tz;
                                     if (tz)
                                       time.tz(tz);
-                                    return time.format("YYYYMMDD HH:mm:ss.SSS");
+                                    return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
                                   }
                                   return value;
                                 },

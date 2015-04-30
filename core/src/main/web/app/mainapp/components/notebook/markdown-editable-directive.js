@@ -16,6 +16,33 @@
 
 (function() {
   'use strict';
+
+  // Override markdown link renderer to always have `target="_blank"`
+  // Mostly from Renderer.prototype.link
+  // https://github.com/chjj/marked/blob/master/lib/marked.js#L862-L881
+  var bkRenderer = new marked.Renderer();
+  bkRenderer.link = function(href, title, text) {
+    if (this.options.sanitize) {
+      try {
+        var prot = decodeURIComponent(unescape(href))
+          .replace(/[^\w:]/g, '')
+          .toLowerCase();
+      } catch (e) {
+        return '';
+      }
+      if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0) {
+        return '';
+      }
+    }
+    var out = '<a href="' + href + '"';
+    if (title) {
+      out += ' title="' + title + '"';
+    }
+    out += ' target="_blank"'; // < ADDED THIS LINE ONLY
+    out += '>' + text + '</a>';
+    return out;
+  };
+
   var module = angular.module('bk.notebook');
   module.directive('bkMarkdownEditable', ['bkSessionManager', 'bkHelper', 'bkCoreManager', '$timeout', function(bkSessionManager, bkHelper, bkCoreManager, $timeout) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
@@ -41,7 +68,7 @@
               {left: "\\(", right: "\\)", display: false}
             ]
           });
-          element.find('.markup').html(marked(markdownFragment.html(), {gfm: true}));
+          element.find('.markup').html(marked(markdownFragment.html(), {gfm: true, renderer: bkRenderer}));
           markdownFragment.remove();
           scope.mode = 'preview';
         };

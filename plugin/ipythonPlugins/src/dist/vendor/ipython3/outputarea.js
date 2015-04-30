@@ -52,17 +52,17 @@ define('ipython3_outputarea', [
     OutputArea.prototype.style = function () {
         this.collapse_button.hide();
         this.prompt_overlay.hide();
-        
+
         this.wrapper.addClass('output_wrapper');
         this.element.addClass('output');
-        
+
         this.collapse_button.addClass("btn btn-default output_collapsed");
         this.collapse_button.attr('title', 'click to expand output');
         this.collapse_button.text('. . .');
-        
+
         this.prompt_overlay.addClass('out_prompt_overlay prompt');
         this.prompt_overlay.attr('title', 'click to expand output; double click to hide output');
-        
+
         this.collapse();
     };
 
@@ -198,7 +198,7 @@ define('ipython3_outputarea', [
     };
 
 
-    // typeset with MathJax if MathJax is available
+    // typeset with Latex
     OutputArea.prototype.typeset = function () {
         utils.typeset(this.element);
     };
@@ -228,8 +228,8 @@ define('ipython3_outputarea', [
         }
         this.append_output(json);
     };
-    
-    
+
+
     OutputArea.output_types = [
         'application/javascript',
         'text/html',
@@ -264,10 +264,10 @@ define('ipython3_outputarea', [
         });
         return bundle;
     };
-    
+
     OutputArea.prototype.append_output = function (json) {
         this.expand();
-        
+
         // Clear the output if clear is queued.
         var needs_height_reset = false;
         if (this.clear_queued) {
@@ -298,7 +298,7 @@ define('ipython3_outputarea', [
         }
 
         // We must release the animation fixed height in a callback since Gecko
-        // (FireFox) doesn't render the image immediately as the data is 
+        // (FireFox) doesn't render the image immediately as the data is
         // available.
         var that = this;
         var handle_appended = function ($el) {
@@ -316,7 +316,7 @@ define('ipython3_outputarea', [
         } else {
             handle_appended();
         }
-        
+
         if (record_output) {
             this.outputs.push(json);
         }
@@ -397,7 +397,7 @@ define('ipython3_outputarea', [
             .append($('<div/>').text(err.toString()).addClass('js-error'))
             .append($('<div/>').text('See your browser Javascript console for more details.').addClass('js-error'));
     };
-    
+
     OutputArea.prototype._safe_append = function (toinsert) {
         /**
          * safely append an item to the document
@@ -543,7 +543,7 @@ define('ipython3_outputarea', [
         'image/png' : true,
         'image/jpeg' : true
     };
-    
+
     OutputArea.prototype.append_mime_type = function (json, element, handle_inserted) {
         for (var i=0; i < OutputArea.display_order.length; i++) {
             var type = OutputArea.display_order[i];
@@ -563,7 +563,7 @@ define('ipython3_outputarea', [
                 var md = json.metadata || {};
                 var toinsert = append.apply(this, [value, md, element, handle_inserted]);
                 // Since only the png and jpeg mime types call the inserted
-                // callback, if the mime type is something other we must call the 
+                // callback, if the mime type is something other we must call the
                 // inserted callback only when the element is actually inserted
                 // into the DOM.  Use a timeout of 0 to do this.
                 if (['image/png', 'image/jpeg'].indexOf(type) < 0 && handle_inserted !== undefined) {
@@ -658,7 +658,7 @@ define('ipython3_outputarea', [
         // The jQuery resize handlers don't seem to work on the svg element.
         // When the svg renders completely, measure it's size and set the parent
         // div to that size.  Then set the svg to 100% the size of the parent
-        // div and make the parent div resizable.  
+        // div and make the parent div resizable.
         this._dblclick_to_reset_size(svg_area, true, false);
 
         svg_area.append(svg);
@@ -707,7 +707,7 @@ define('ipython3_outputarea', [
             img.on("load", callback);
         }
     };
-    
+
     var set_width_height = function (img, md, mime) {
         /**
          * set width and height of an img element from metadata
@@ -717,7 +717,7 @@ define('ipython3_outputarea', [
         var width = _get_metadata_key(md, 'width', mime);
         if (width !== undefined) img.attr('width', width);
     };
-    
+
     var append_png = function (png, md, element, handle_inserted) {
         var type = 'image/png';
         var toinsert = this.create_output_subarea(md, "output_png", type);
@@ -783,12 +783,12 @@ define('ipython3_outputarea', [
         this.expand();
         var content = msg.content;
         var area = this.create_output_area();
-        
+
         // disable any other raw_inputs, if they are left around
         $("div.output_subarea.raw_input_container").remove();
-        
+
         var input_type = content.password ? 'password' : 'text';
-        
+
         area.append(
             $("<div/>")
             .addClass("box-flex1 output_subarea raw_input_container")
@@ -812,7 +812,7 @@ define('ipython3_outputarea', [
                 })
             )
         );
-        
+
         this.element.append(area);
         var raw_input = area.find('input.raw_input');
         // Register events that enable/disable the keyboard manager while raw
@@ -877,7 +877,7 @@ define('ipython3_outputarea', [
                 this.element.height(height);
                 this.clear_queued = false;
             }
-            
+
             // Clear all
             // Remove load event handlers from img tags because we don't want
             // them to fire if the image is never added to the page.
@@ -886,7 +886,7 @@ define('ipython3_outputarea', [
 
             // Notify others of changes.
             this.element.trigger('changed');
-            
+
             this.outputs = [];
             this.trusted = true;
             this.unscroll_area();

@@ -5,16 +5,16 @@ define('ipython3_utils', [
     'ipython3_namespace'
 ], function(IPython) {
     "use strict";
-    
+
     var load_extensions = function () {
         // load one or more IPython notebook extensions with requirejs
-        
+
         var extensions = [];
         var extension_names = arguments;
         for (var i = 0; i < extension_names.length; i++) {
             extensions.push("nbextensions/" + arguments[i]);
         }
-        
+
         require(extensions,
             function () {
                 for (var i = 0; i < arguments.length; i++) {
@@ -33,7 +33,7 @@ define('ipython3_utils', [
             }
         );
     };
-    
+
     IPython.load_extensions = load_extensions;
 
     /**
@@ -193,7 +193,7 @@ define('ipython3_utils', [
     //Map from terminal commands to CSS classes
     var ansi_colormap = {
         "01":"ansibold",
-        
+
         "30":"ansiblack",
         "31":"ansired",
         "32":"ansigreen",
@@ -202,7 +202,7 @@ define('ipython3_utils', [
         "35":"ansipurple",
         "36":"ansicyan",
         "37":"ansigray",
-        
+
         "40":"ansibgblack",
         "41":"ansibgred",
         "42":"ansibggreen",
@@ -212,7 +212,7 @@ define('ipython3_utils', [
         "46":"ansibgcyan",
         "47":"ansibggray"
     };
-    
+
     function _process_numbers(attrs, numbers) {
         // process ansi escapes
         var n = numbers.shift();
@@ -228,7 +228,7 @@ define('ipython3_utils', [
                 console.log("Not enough fields for VT100 color", numbers);
                 return;
             }
-            
+
             var index_or_rgb = numbers.shift();
             var r,g,b;
             if (index_or_rgb == "5") {
@@ -335,7 +335,7 @@ define('ipython3_utils', [
         // all ANSI codes that do not end with "m".
         var ignored_re = /(?=(\033\[[\d;=]*[a-ln-zA-Z]{1}))\1(?!m)/g;
         txt = txt.replace(ignored_re, "");
-        
+
         // color ansi codes
         txt = ansispan(txt);
         return txt;
@@ -369,7 +369,7 @@ define('ipython3_utils', [
         test.remove();
         return Math.floor(points*pixel_per_point);
     };
-    
+
     var always_new = function (constructor) {
         /**
          * wrapper around contructor to avoid requiring `var a = new constructor()`
@@ -402,13 +402,13 @@ define('ipython3_utils', [
         url = url.replace(/\/\/+/, '/');
         return url;
     };
-    
+
     var url_path_split = function (path) {
         /**
          * Like os.path.split for URLs.
          * Always returns two strings, the directory path and the base filename
          */
-        
+
         var idx = path.lastIndexOf('/');
         if (idx === -1) {
             return ['', path];
@@ -416,7 +416,7 @@ define('ipython3_utils', [
             return [ path.slice(0, idx), path.slice(idx + 1) ];
         }
     };
-    
+
     var parse_url = function (url) {
         /**
          * an `a` element with an href allows attr-access to the parsed segments of a URL
@@ -432,7 +432,7 @@ define('ipython3_utils', [
         a.href = url;
         return a;
     };
-    
+
     var encode_uri_components = function (uri) {
         /**
          * encode just the components of a multi-segment uri,
@@ -440,7 +440,7 @@ define('ipython3_utils', [
          */
         return uri.split('/').map(encodeURIComponent).join('/');
     };
-    
+
     var url_join_encode = function () {
         /**
          * join a sequence of url components with '/',
@@ -483,7 +483,7 @@ define('ipython3_utils', [
             return val;
         return decodeURIComponent(val);
     };
-    
+
     var to_absolute_cursor_pos = function (cm, cursor) {
         /**
          * get the absolute cursor position from CodeMirror's col, ch
@@ -497,7 +497,7 @@ define('ipython3_utils', [
         }
         return cursor_pos;
     };
-    
+
     var from_absolute_cursor_pos = function (cm, cursor_pos) {
         /**
          * turn absolute cursor postion into CodeMirror col, ch cursor
@@ -520,7 +520,7 @@ define('ipython3_utils', [
             line : i - 1,
         };
     };
-    
+
     // http://stackoverflow.com/questions/2400935/browser-detection-in-javascript
     var browser = (function() {
         if (typeof navigator === 'undefined') {
@@ -547,7 +547,7 @@ define('ipython3_utils', [
         if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
         return OSName;
     })();
-    
+
     var get_url_param = function (name) {
         // get a URL parameter. I cannot believe we actually need this.
         // Based on http://stackoverflow.com/a/25359264/938949
@@ -556,7 +556,7 @@ define('ipython3_utils', [
             return decodeURIComponent(match[1] || '');
         }
     };
-    
+
     var is_or_has = function (a, b) {
         /**
          * Is b a child of a or a itself?
@@ -580,13 +580,13 @@ define('ipython3_utils', [
             return false;
         }
     };
-    
+
     var mergeopt = function(_class, options, overwrite){
         options = options || {};
         overwrite = overwrite || {};
         return $.extend(true, {}, _class.options_default, options, overwrite);
     };
-    
+
     var ajax_error_msg = function (jqXHR) {
         /**
          * Return a JSON error message if there is one,
@@ -611,7 +611,7 @@ define('ipython3_utils', [
     };
 
     var requireCodeMirrorMode = function (mode, callback, errback) {
-        /** 
+        /**
          * find a predefined mode or detect from CM metadata then
          * require and callback with the resolveable mode string: mime or
          * custom name
@@ -645,10 +645,10 @@ define('ipython3_utils', [
             }, errback
         );
     };
-    
+
     /** Error type for wrapped XHR errors. */
     var XHR_ERROR = 'XhrError';
-    
+
     /**
      * Wraps an AJAX error as an Error object.
      */
@@ -661,7 +661,7 @@ define('ipython3_utils', [
         wrapped_error.xhr_error = error;
         return wrapped_error;
     };
-    
+
     var promising_ajax = function(url, settings) {
         /**
          * Like $.ajax, but returning an ES6 promise. success and error settings
@@ -714,8 +714,8 @@ define('ipython3_utils', [
         /**
          * Tries to load a class
          *
-         * Tries to load a class from a module using require.js, if a module 
-         * is specified, otherwise tries to load a class from the global 
+         * Tries to load a class from a module using require.js, if a module
+         * is specified, otherwise tries to load a class from the global
          * registry, if the global registry is provided.
          */
         return new Promise(function(resolve, reject) {
@@ -761,26 +761,26 @@ define('ipython3_utils', [
     var reject = function(message, log) {
         /**
          * Creates a wrappable Promise rejection function.
-         * 
+         *
          * Creates a function that returns a Promise.reject with a new WrappedError
-         * that has the provided message and wraps the original error that 
+         * that has the provided message and wraps the original error that
          * caused the promise to reject.
          */
-        return function(error) { 
+        return function(error) {
             var wrapped_error = new WrappedError(message, error);
-            if (log) console.error(wrapped_error); 
-            return Promise.reject(wrapped_error); 
+            if (log) console.error(wrapped_error);
+            return Promise.reject(wrapped_error);
         };
     };
 
     var typeset = function(element, text) {
         /**
-         * Apply MathJax rendering to an element, and optionally set its text
+         * Apply Katex rendering to an element, and optionally set its text
          *
-         * If MathJax is not available, make no changes.
+         * If Katex is not available, make no changes.
          *
          * Returns the output any number of typeset elements, or undefined if
-         * MathJax was not available.
+         * Katex was not available.
          *
          * Parameters
          * ----------
@@ -791,22 +791,22 @@ define('ipython3_utils', [
         if(arguments.length > 1){
             $el.text(text);
         }
-        if(!window.MathJax){
+        if(!window.renderMathInElement){
             return;
         }
         return $el.map(function(){
-            // MathJax takes a DOM node: $.map makes `this` the context
-            return MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
+            // Katex takes a DOM node: $.map makes `this` the context
+            return window.renderMathInElement(this);
         });
     };
-    
+
     var time = {};
     time.milliseconds = {};
     time.milliseconds.s = 1000;
     time.milliseconds.m = 60 * time.milliseconds.s;
     time.milliseconds.h = 60 * time.milliseconds.m;
     time.milliseconds.d = 24 * time.milliseconds.h;
-    
+
     time.thresholds = {
         // moment.js thresholds in milliseconds
         s: moment.relativeTimeThreshold('s') * time.milliseconds.s,
@@ -814,14 +814,14 @@ define('ipython3_utils', [
         h: moment.relativeTimeThreshold('h') * time.milliseconds.h,
         d: moment.relativeTimeThreshold('d') * time.milliseconds.d,
     };
-    
+
     time.timeout_from_dt = function (dt) {
         /** compute a timeout based on dt
-        
+
         input and output both in milliseconds
-        
+
         use moment's relative time thresholds:
-        
+
         - 10 seconds if in 'seconds ago' territory
         - 1 minute if in 'minutes ago'
         - 1 hour otherwise
@@ -834,7 +834,7 @@ define('ipython3_utils', [
             return time.milliseconds.h;
         }
     };
-    
+
     var utils = {
         load_extensions: load_extensions,
         load_extensions_from_config: load_extensions_from_config,
@@ -877,6 +877,6 @@ define('ipython3_utils', [
 
     // Backwards compatability.
     IPython.utils = utils;
-    
+
     return utils;
-}); 
+});

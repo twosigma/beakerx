@@ -39,7 +39,7 @@ cp $EXTDIR/core/src/main/web/static/*                     outdir/static/static/
 cp $VENDIR/bower_components/font-awesome/fonts/*          outdir/static/vendor/bower_components/font-awesome/fonts/
 cp $VENDIR/bower_components/datatables/media/images/*.png outdir/static/vendor/bower_components/datatables/media/images/
 cp $VENDIR/TableTools-2.2.3/images/*.png                  outdir/static/vendor/TableTools-2.2.3/images/
-cp -r $VENDIR/mathjax                                     outdir/static/vendor/
+cp -r $VENDIR/katex-build                                 outdir/static/vendor/
 cp $VENDIR/TableTools-2.2.3/swf/*                         outdir/static/vendor/TableTools-2.2.3/swf/
 cp $VENDIR/epiceditor/themes/base/epiceditor.css          outdir/static/vendor/epiceditor/themes/base/
 touch outdir/static/app/main.js

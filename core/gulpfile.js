@@ -336,6 +336,8 @@ gulp.task("watch", function() {
   gulp.watch(["**/*.scss", "**/*.jst.html", rootPath + "template/index_template.html"], ["compile"]);
 });
 
+gulp.task('default', ['compile', 'watch']);
+
 gulp.task("namespaceCss", function(cb) {
   runSequence("prepareCssForNamespacing",
               "namespacePreparedCss",

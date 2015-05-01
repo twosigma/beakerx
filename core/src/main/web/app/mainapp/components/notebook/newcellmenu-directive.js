@@ -26,14 +26,11 @@
       template: JST["mainapp/components/notebook/newcellmenu"](),
       scope: {
         config: '=',
-        size: '@',
         position: '@'
       },
       controller: function($scope) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
         var recentlyAddedLanguage;
-
-        $scope.last = $scope.position == 'last';
 
         $scope.getEvaluators = function() {
           return bkEvaluatorManager.getAllEvaluators();

@@ -14,8 +14,9 @@
  *  limitations under the License.
  */
 
-.bkcell bk-new-cell-menu {
+bk-new-cell-menu {
     display: block;
+    margin: 15px 0;
 
     .new-cell {
       visibility: hidden;
@@ -26,10 +27,6 @@
         visibility: visible;
       }
     }
-}
-
-bk-new-cell-menu {
-    margin: 15px 0;
 
     .advanced-mode & {
       margin: 0;

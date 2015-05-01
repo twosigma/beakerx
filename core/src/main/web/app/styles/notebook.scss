@@ -48,7 +48,7 @@ bk-new-cell-menu {
   .plus {
     font-size: 14px;
   }
-  .advanced-mode &:not(.base-menu-add) {
+  .advanced-mode & {
     .btn {
       height: 10px;
       width: $grid-gutter-width;

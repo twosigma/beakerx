@@ -14,6 +14,7 @@
     limitations under the License.
 -->
 <div ng-class="{'advanced-mode': isAdvancedMode(), 'hierarchy-mode': isHierarchyEnabled()}">
+  <bk-new-cell-menu ng-show="!isLocked() && !isLoading" config="newCellMenuConfig"></bk-new-cell-menu>
   <div class="bkcell">
     <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index" cellid="{{cell.id}}">
     </bk-cell>
@@ -22,7 +23,6 @@
       <bk-dropdown-menu menu-items="menuItems" submenu-classes="pull-left"></bk-dropdown-menu>
     </div>
   </div>
-  <bk-new-cell-menu ng-show="!isLocked() && !isLoading" config="newCellMenuConfig"></bk-new-cell-menu>
   <div ng-show="isShowingOutput()" class="outputlogbox"></div>
   <div ng-show="isShowingOutput()" class="outputlogcontainer">
     <div class="outputloghandle"></div>

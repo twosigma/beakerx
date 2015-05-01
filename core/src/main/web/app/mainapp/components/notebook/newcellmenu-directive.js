@@ -80,7 +80,7 @@
           if ($scope.config && $scope.config.attachCell) {
             return $scope.config.attachCell(cell);
           } else {
-            cellOps.insertLast(cell);
+            cellOps.insertFirst(cell);
           }
         }
 

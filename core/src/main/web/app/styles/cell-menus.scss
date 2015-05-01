@@ -22,7 +22,7 @@ bk-new-cell-menu {
       visibility: hidden;
     }
 
-    &:hover {
+    &:hover, &.only-child {
       .new-cell {
         visibility: visible;
       }

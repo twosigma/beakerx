@@ -233,6 +233,10 @@
           return notebookCellOp.getChildren("root");
         };
 
+        $scope.isEmpty = function() {
+          return $scope.getChildren().length == 0;
+        };
+
         $scope.getShareMenuPlugin = function () {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };

@@ -35,7 +35,7 @@ root {
 }
 
 html body {
-    padding-top: 100px;
+    padding-top: $navbar-height*2;
 }
 
 body.dragover:after {

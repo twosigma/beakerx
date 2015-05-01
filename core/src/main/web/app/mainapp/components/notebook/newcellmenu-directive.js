@@ -26,14 +26,12 @@
       template: JST["mainapp/components/notebook/newcellmenu"](),
       scope: {
         config: '=',
-        size: '@',
+        isLarge: '=',
         position: '@'
       },
       controller: function($scope) {
         var newCellFactory = bkSessionManager.getNotebookNewCellFactory();
         var recentlyAddedLanguage;
-
-        $scope.last = $scope.position == 'last';
 
         $scope.getEvaluators = function() {
           return bkEvaluatorManager.getAllEvaluators();
@@ -83,7 +81,7 @@
           if ($scope.config && $scope.config.attachCell) {
             return $scope.config.attachCell(cell);
           } else {
-            cellOps.insertLast(cell);
+            cellOps.insertFirst(cell);
           }
         }
 

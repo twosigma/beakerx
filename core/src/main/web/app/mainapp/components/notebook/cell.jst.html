@@ -45,5 +45,5 @@
     </div>
   </div>
   <div ng-include="getTypeCellUrl()"></div>
-  <bk-new-cell-menu size="xs" config="newCellMenuConfig" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
+  <bk-new-cell-menu config="newCellMenuConfig" ng-class="isLarge && 'large'" is-large="isLarge" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
 </div>

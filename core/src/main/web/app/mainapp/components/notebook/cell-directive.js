@@ -45,6 +45,8 @@
         };
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
 
+        $scope.isLarge = notebookCellOp.isLast($scope.cellmodel.id);
+
         $scope.cellview = {
           showDebugInfo: false,
           menu: {
@@ -76,8 +78,7 @@
         $scope.newCellMenuConfig = {
           isShow: function() {
             return !bkSessionManager.isNotebookLocked()
-                && !notebookCellOp.isContainer($scope.cellmodel.id)
-                && !notebookCellOp.isLast($scope.cellmodel.id);
+                && !notebookCellOp.isContainer($scope.cellmodel.id);
           },
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);

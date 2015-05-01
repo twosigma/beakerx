@@ -273,12 +273,12 @@
           $rootScope.$broadcast('beaker.cell.added', cell);
         });
       },
-      insertLast: function(cell) {
+      insertFirst: function(cell) {
         if (!_.isObject(cell)) {
           throw "unacceptable"
         }
 
-        cells.splice(cells.length, 0, cell);
+        cells.splice(0, 0, cell);
         recreateCellMap();
         $timeout(function() {
           $rootScope.$broadcast('beaker.cell.added', cell);

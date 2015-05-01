@@ -14,24 +14,21 @@
  *  limitations under the License.
  */
 
-.bkcell bk-new-cell-menu {
+bk-new-cell-menu {
     display: block;
+    margin: 15px 0;
 
     .new-cell {
       visibility: hidden;
     }
 
-    &:hover {
+    &:hover, &.only-child {
       .new-cell {
         visibility: visible;
       }
     }
-}
 
-bk-new-cell-menu {
-    margin: 15px 0;
-
-    .advanced-mode & {
+    .advanced-mode &:not(.large) {
       margin: 0;
     }
 }

@@ -28,7 +28,7 @@ bk-new-cell-menu {
       }
     }
 
-    .advanced-mode & {
+    .advanced-mode &:not(.large) {
       margin: 0;
     }
 }

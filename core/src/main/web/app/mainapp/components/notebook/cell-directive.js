@@ -45,6 +45,8 @@
         };
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
 
+        $scope.isLarge = notebookCellOp.isLast($scope.cellmodel.id);
+
         $scope.cellview = {
           showDebugInfo: false,
           menu: {

@@ -14,13 +14,13 @@
     limitations under the License.
 -->
 <div class="btn-group new-cell">
-  <button ng-click="newCodeCell(defaultEvaluator())" class="btn btn-primary insert-cell btn-xs">
-    <span class='advanced-hide'>
+  <button ng-click="newCodeCell(defaultEvaluator())" class="btn btn-primary insert-cell" ng-class="!isLarge && 'btn-xs'">
+    <span ng-class="!isLarge && 'advanced-hide'">
       Insert {{defaultEvaluator()}} Cell
     </span>
-    <span class="plus advanced-only">+</span>
+    <span ng-if="!isLarge" class="plus advanced-only">+</span>
   </button>
-  <button class="btn btn-primary dropdown-toggle btn-xs" data-toggle="dropdown">
+  <button class="btn btn-primary dropdown-toggle" ng-class="!isLarge && 'btn-xs'" data-toggle="dropdown">
     <i class="fa fa-sort-down"></i>
   </button>
   <ul class="dropdown-menu" role="menu">

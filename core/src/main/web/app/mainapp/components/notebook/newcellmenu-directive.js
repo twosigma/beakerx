@@ -26,6 +26,7 @@
       template: JST["mainapp/components/notebook/newcellmenu"](),
       scope: {
         config: '=',
+        isLarge: '=',
         position: '@'
       },
       controller: function($scope) {

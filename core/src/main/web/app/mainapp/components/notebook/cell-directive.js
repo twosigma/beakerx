@@ -159,8 +159,13 @@
           notebookCellOp[moveMethod + 'Down']($scope.cellmodel.id);
         };
 
-        $scope.moveCellUpDisabled = function(){return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Up']($scope.cellmodel.id);};
-        $scope.moveCellDownDisabled = function(){return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Down']($scope.cellmodel.id);};
+        $scope.moveCellUpDisabled = function() {
+          return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Up']($scope.cellmodel.id);
+        };
+
+        $scope.moveCellDownDisabled = function() {
+          return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Down']($scope.cellmodel.id);
+        };
 
         $scope.cellview.menu.addItem({
           name: 'Delete cell',

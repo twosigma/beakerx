@@ -594,7 +594,9 @@
           var tgs = tags.split(re);
           var i;
           for(i=0; i<tgs.length; i++) {
-            if(cellMap[tgs[i]] !== undefined) return 'ERROR: The name "'+tgs[i]+'" is already used as a cell name.';
+            if(cellMap[tgs[i]] !== undefined) {
+              return 'ERROR: The name "'+tgs[i]+'" is already used as a cell name.';
+            }
           }
         }
         return '';

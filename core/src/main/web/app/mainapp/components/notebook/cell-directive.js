@@ -73,7 +73,7 @@
 
         $scope.isLocked = function() {
           return bkSessionManager.isNotebookLocked();
-        }
+        };
 
         $scope.newCellMenuConfig = {
           isShow: function() {
@@ -139,7 +139,7 @@
 
         $scope.deleteCell = function() {
           notebookCellOp.delete($scope.cellmodel.id, true);
-        }
+        };
 
         $scope.getEvaluators = function() {
           return bkEvaluatorManager.getAllEvaluators();
@@ -154,14 +154,14 @@
 
         $scope.moveCellUp = function() {
           notebookCellOp[moveMethod + 'Up']($scope.cellmodel.id);
-        }
+        };
 
         $scope.moveCellDown = function() {
           notebookCellOp[moveMethod + 'Down']($scope.cellmodel.id);
-        }
+        };
 
-        $scope.moveCellUpDisabled = function(){return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Up']($scope.cellmodel.id)};
-        $scope.moveCellDownDisabled = function(){return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Down']($scope.cellmodel.id)};
+        $scope.moveCellUpDisabled = function(){return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Up']($scope.cellmodel.id);};
+        $scope.moveCellDownDisabled = function(){return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Down']($scope.cellmodel.id);};
 
         $scope.cellview.menu.addItem({
           name: "Delete cell",

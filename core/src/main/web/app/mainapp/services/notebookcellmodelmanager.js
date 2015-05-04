@@ -275,7 +275,7 @@
       },
       insertFirst: function(cell) {
         if (!_.isObject(cell)) {
-          throw "unacceptable"
+          throw "unacceptable";
         }
 
         cells.splice(0, 0, cell);
@@ -286,7 +286,7 @@
       },
       insertAfter: function(id, cell) {
         if (!_.isObject(cell)) {
-          throw "unacceptable"
+          throw "unacceptable";
         }
 
         var index = this.getIndex(id);
@@ -306,7 +306,7 @@
         } else if (_.isObject(cell)) {
           cells.splice(index, 0, cell);
         } else {
-          throw "unacceptable"
+          throw "unacceptable";
         }
         recreateCellMap(doNotClearUndoAction);
         $timeout(function() {
@@ -603,7 +603,7 @@
         if (cellMap[newid] !== undefined)
           return "ERROR: Cell '"+newid+"' already exists.";
         if (tagMap.usertags[newid] !== undefined)
-          return "ERROR: The name '"+newid+"' is already used as a tag."
+          return "ERROR: The name '"+newid+"' is already used as a tag.";
         return '';
       },
       renameCell: function(oldid, newid) {

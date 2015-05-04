@@ -132,7 +132,7 @@
       var re = /\s+/;
       var tags = codeCell.raw.tags.split(re);
       var i;
-      for (i=0; i<tags.length; i++) {
+      for (i = 0; i < tags.length; i++) {
         userTagsMap.add(tags[i], codeCell.raw);
       }
     });
@@ -301,7 +301,7 @@
           $rootScope.$broadcast('beaker.cell.added', cell);
         });
       },
-      insertAt: function(index, cell,doNotClearUndoAction) {
+      insertAt: function(index, cell, doNotClearUndoAction) {
         if (_.isArray(cell)) {
           Array.prototype.splice.apply(cells, [index, 0].concat(cell));
         } else if (_.isObject(cell)) {
@@ -335,7 +335,7 @@
       },
       isPossibleToMoveDown: function(id) {
         // If the cell isn't last (or nonexistent?)
-        return [-1, (cells.length-1)].indexOf(this.getIndex(id)) === -1;
+        return [-1, (cells.length - 1)].indexOf(this.getIndex(id)) === -1;
       },
       moveDown: function(id) {
         var index = this.getIndex(id);
@@ -425,7 +425,7 @@
         }
       },
       redo: function() {
-        if(redoAction) {
+        if (redoAction) {
           redoAction.apply();
           redoAction2 = redoAction;
           undoAction = undoAction2;
@@ -448,7 +448,7 @@
         if (cells) {
           _.each(cells, function(cell) {
             if (cell.output) {
-              cell.output.state = { };
+              cell.output.state = {};
             }
           });
         }
@@ -598,9 +598,9 @@
         if (tags !== undefined) {
           var tgs = tags.split(re);
           var i;
-          for(i=0; i<tgs.length; i++) {
-            if(cellMap[tgs[i]] !== undefined) {
-              return 'ERROR: The name "'+tgs[i]+'" is already used as a cell name.';
+          for (i = 0; i < tgs.length; i++) {
+            if (cellMap[tgs[i]] !== undefined) {
+              return 'ERROR: The name "' + tgs[i] + '" is already used as a cell name.';
             }
           }
         }
@@ -608,10 +608,10 @@
       },
       canRenameCell: function(newid) {
         if (cellMap[newid] !== undefined) {
-          return 'ERROR: Cell "'+newid+'" already exists.';
+          return 'ERROR: Cell "' + newid + '" already exists.';
         }
         if (tagMap.usertags[newid] !== undefined) {
-          return 'ERROR: The name "'+newid+'" is already used as a tag.';
+          return 'ERROR: The name "' + newid + '" is already used as a tag.';
         }
         return '';
       },

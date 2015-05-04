@@ -51,7 +51,7 @@
           showDebugInfo: false,
           menu: {
             items: [],
-            renameItem: function(opts)  {
+            renameItem: function(opts) {
               _.findWhere(this.items,
                 {name: opts.name}
               ).name = opts.newName;
@@ -92,7 +92,7 @@
             return $scope.$parent.getFullIndex() + '.' + ($scope.index + 1);
           }
 
-          return $scope.index+$scope.getNestedLevel();
+          return $scope.index + $scope.getNestedLevel();
         };
 
         $scope.toggleShowDebugInfo = function() {

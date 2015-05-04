@@ -188,7 +188,7 @@
       return true;
     };
 
-    function transform(v) {
+    function transform(v, norecurse) {
       if (_.isFunction(v) || _.isUndefined(v))
         return null;
 
@@ -202,7 +202,7 @@
       if (isPrimitiveType(v))
         return v;
 
-      if (v instanceof ImageIcon) {
+      if (v instanceof ImageIcon && norecurse === undefined) {
         var o = {}
         o.type = "ImageIcon";
         o.imageData = v.imageData;
@@ -211,7 +211,7 @@
         return o
       }
 
-      if (v instanceof DataFrame) {
+      if (v instanceof DataFrame && norecurse === undefined) {
         var o = {}
         o.type = "TableDisplay";
         o.subtype = "TableDisplay";
@@ -219,7 +219,7 @@
         for (var i in v.values) {
           var row = [];
           for (var j in v.values[i]) {
-            row.push(transform(v.values[i][j]));
+            row.push(transform(v.values[i][j], true));
           }
           o.values.push(row);
         }
@@ -242,14 +242,14 @@
             }
           }
         }
-        if (doit) {
+        if (doit && norecurse === undefined) {
           var o = {}
           o.type = "TableDisplay";
           o.values = [];
           for (var i in v) {
             var row = [];
             for (var item in v[i])
-              row.push(transform(v[i][item]));
+              row.push(transform(v[i][item], true));
             o.values.push(row);
           }
           o.subtype = "Matrix";
@@ -268,7 +268,7 @@
               break;
             }
           }
-          if (doit) {
+          if (doit && norecurse === undefined) {
             var o = {};
             o.type = "TableDisplay";
             o.subtype = "ListOfMaps";
@@ -285,7 +285,7 @@
               for (var j in o.columnNames) {
                 var n = o.columnNames[j];
                 if (v[i][n] !== undefined)
-                  o2.push(transform(v[i][n]));
+                  o2.push(transform(v[i][n], true));
                 else
                   o2.push(null);
               }
@@ -309,12 +309,12 @@
       if (_.isArray(v)) {
         var o = [];
         for(var p in v) {
-          o.push(transform(v[p]));
+          o.push(transform(v[p], true));
         }
         return o;
       }
 
-      if (_.isObject(v) && isDictionary(v)) {
+      if (_.isObject(v) && isDictionary(v) && norecurse === undefined) {
         var o = {}
         o.type = "TableDisplay";
         o.values = [];
@@ -323,14 +323,14 @@
         for (var i in v) {
           var r = [];
           r.push(i);
-          r.push(v[i]);
+          r.push(transform(v[i],true));
           o.values.push(r);
         }
         return o;
       }
       var o = {};
       for(var p in v) {
-        o[p] = transform(v[p]);
+        o[p] = transform(v[p], true);
       }
       return o;
     };

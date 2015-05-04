@@ -19,13 +19,13 @@
  */
 (function() {
   'use strict';
-  var module = angular.module("bk.notebookCellModelManager", []);
+  var module = angular.module('bk.notebookCellModelManager', []);
 
   // utilities
   var generateCellMap = function(cells) {
     var decoratedCells = {
-      "root": {
-        id: "root",
+      'root': {
+        id: 'root',
         raw: null,
         level: 0,
         parent: null,
@@ -54,7 +54,7 @@
       return this[this.length - 1];
     };
     _(decoratedCells).each(function(cell) {
-      if (cell.id === "root") {
+      if (cell.id === 'root') {
         return;
       }
       while (stack.peek().level >= cell.level) {
@@ -77,7 +77,7 @@
           return cell.raw && cell.raw.initialization;
         })
         .map(function(cell) {
-          if (cell.raw.type === "code") {
+          if (cell.raw.type === 'code') {
             return cell;
           } else {
             return _(cell.allDescendants).chain()
@@ -85,7 +85,7 @@
                   return cellMap[childId];
                 })
                 .filter(function(c) {
-                  return c.raw.type === "code";
+                  return c.raw.type === 'code';
                 })
                 .value();
           }
@@ -110,7 +110,7 @@
     };
     _(cellMap).chain()
         .filter(function(cell) {
-          return cell.raw && cell.raw.type === "code";
+          return cell.raw && cell.raw.type === 'code';
         })
         .each(function(codeCell) {
           evaluatorMap.add(codeCell.raw.evaluator, codeCell.raw);
@@ -126,7 +126,7 @@
     };
     _(cellMap).chain()
     .filter(function(cell) {
-      return cell.raw && cell.raw.type === "code" && cell.raw.tags !== undefined && cell.raw.tags !== '';
+      return cell.raw && cell.raw.type === 'code' && cell.raw.tags !== undefined && cell.raw.tags !== '';
     })
     .each(function(codeCell) {
       var re = /\s+/;
@@ -148,7 +148,7 @@
     oldArray.splice.apply(oldArray, args);
   };
 
-  module.factory("bkNotebookCellModelManager", function($timeout, $rootScope) {
+  module.factory('bkNotebookCellModelManager', function($timeout, $rootScope) {
     var cells = [];
     var cellMap = {};
     var tagMap = {};
@@ -209,7 +209,7 @@
         if (this.hasCell(id)) {
           return cellMap[id];
         } else {
-          throw "target cell " + id + " was not found";
+          throw 'target cell ' + id + ' was not found';
         }
       },
       getCell: function(id) {
@@ -223,7 +223,7 @@
       },
       getParent: function(id) {
         var parentId = this._getDecoratedCell(id).parent;
-        if (parentId === "root") {
+        if (parentId === 'root') {
           return;
         } else {
           return this.getCell(parentId);
@@ -243,10 +243,10 @@
       },
       getAllCodeCells: function(id) {
         if (!id) {
-          id = "root";
+          id = 'root';
         }
         return this.getAllDescendants(id).filter(function(cell) {
-          return cell.type === "code";
+          return cell.type === 'code';
         });
       },
       // find the first code cell starting with the startCell and scan
@@ -254,7 +254,7 @@
       findCodeCell: function(startCellId, forward) {
         var cell = this.getCell(startCellId);
         while (cell) {
-          if (cell.type === "code") {
+          if (cell.type === 'code') {
             return cell;
           }
           cell = forward ? this.getNext(cell.id) : this.getPrev(cell.id);
@@ -266,7 +266,7 @@
         if (index !== -1) {
           cells.splice(index, 0, cell);
         } else {
-          throw "target cell " + id + " was not found";
+          throw 'target cell ' + id + ' was not found';
         }
         recreateCellMap();
         $timeout(function() {
@@ -275,7 +275,7 @@
       },
       insertFirst: function(cell) {
         if (!_.isObject(cell)) {
-          throw "unacceptable";
+          throw 'unacceptable';
         }
 
         cells.splice(0, 0, cell);
@@ -286,14 +286,14 @@
       },
       insertAfter: function(id, cell) {
         if (!_.isObject(cell)) {
-          throw "unacceptable";
+          throw 'unacceptable';
         }
 
         var index = this.getIndex(id);
         if (index !== -1) {
           cells.splice(index + 1, 0, cell);
         } else {
-          throw "target cell " + id + " was not found";
+          throw 'target cell ' + id + ' was not found';
         }
         recreateCellMap();
         $timeout(function() {
@@ -306,7 +306,7 @@
         } else if (_.isObject(cell)) {
           cells.splice(index, 0, cell);
         } else {
-          throw "unacceptable";
+          throw 'unacceptable';
         }
         recreateCellMap(doNotClearUndoAction);
         $timeout(function() {
@@ -328,7 +328,7 @@
             cells[index - 1] = cell;
           }
         } else {
-          throw "target cell " + id + " was not found";
+          throw 'target cell ' + id + ' was not found';
         }
         recreateCellMap();
       },
@@ -347,13 +347,13 @@
             cells[index + 1] = cell;
           }
         } else {
-          throw "target cell " + id + " was not found";
+          throw 'target cell ' + id + ' was not found';
         }
         recreateCellMap();
       },
       undoableDelete: function() {
         this.deleteUndo = {
-            type: "single",
+            type: 'single',
             index: this.getIndex(id),
             cell: this.getCell(id)
         };
@@ -387,10 +387,10 @@
         // delete the section cell as well as all its descendants
         var cell = this.getCell(id);
         if (!cell) {
-          throw "target cell " + id + " was not found";
+          throw 'target cell ' + id + ' was not found';
         }
-        if (cell.type !== "section") {
-          throw "target cell " + id + " is not a section cell";
+        if (cell.type !== 'section') {
+          throw 'target cell ' + id + ' is not a section cell';
         }
         var index = this.getIndex(id);
         var descendants = this.getAllDescendants(id);
@@ -419,7 +419,7 @@
           redoAction2 = undefined;
           undoAction2 = undoAction;
           undoAction = undefined;
-        } else console.log("no undo");
+        } else console.log('no undo');
       },
       redo: function() {
         if(redoAction) {
@@ -428,7 +428,7 @@
           undoAction = undoAction2;
           undoAction2 = undefined;
           redoAction = undefined;
-        } else console.log("no redo");
+        } else console.log('no redo');
       },
       deleteAllOutputCells: function() {
         if (cells) {
@@ -454,7 +454,7 @@
         }
         // this function shifts a continuous sequence of cells
         if (segBegin + offset < 0 || segBegin + segLength - 1 + offset >= cells.length) {
-          throw "Illegal shifting, result would be out of bound";
+          throw 'Illegal shifting, result would be out of bound';
         }
         var slice1 = cells.slice(0, segBegin);
         var slice2 = cells.slice(segBegin, segBegin + segLength);
@@ -504,7 +504,7 @@
         var length = this.getSectionLength(id);
         var prevSib = this.getPrevSibling(id);
         if (!prevSib) {
-          throw "Cannot move section up";
+          throw 'Cannot move section up';
         }
         var prevSibId = prevSib.id;
         var offset = -1 * this.getSectionLength(prevSibId);
@@ -516,7 +516,7 @@
       moveSectionDown: function(id) {
         var nextSib = this.getNextSibling(id);
         if (!nextSib) {
-          throw "Cannot move section down";
+          throw 'Cannot move section down';
         }
         this.moveSectionUp(nextSib.id);
       },
@@ -541,7 +541,7 @@
         return this.getCellAtIndex(index - 1);
       },
       isContainer: function(id) {
-        return id === "root" || !!this.getCell(id).level;
+        return id === 'root' || !!this.getCell(id).level;
       },
       isEmpty: function(id) {
         return this._getDecoratedCell(id).allDescendants.length === 0;
@@ -594,16 +594,16 @@
           var tgs = tags.split(re);
           var i;
           for(i=0; i<tgs.length; i++) {
-            if(cellMap[tgs[i]] !== undefined) return "ERROR: The name '"+tgs[i]+"' is already used as a cell name.";
+            if(cellMap[tgs[i]] !== undefined) return 'ERROR: The name "'+tgs[i]+'" is already used as a cell name.';
           }
         }
-        return "";
+        return '';
       },
       canRenameCell: function(newid) {
         if (cellMap[newid] !== undefined)
-          return "ERROR: Cell '"+newid+"' already exists.";
+          return 'ERROR: Cell "'+newid+'" already exists.';
         if (tagMap.usertags[newid] !== undefined)
-          return "ERROR: The name '"+newid+"' is already used as a tag.";
+          return 'ERROR: The name "'+newid+'" is already used as a tag.';
         return '';
       },
       renameCell: function(oldid, newid) {

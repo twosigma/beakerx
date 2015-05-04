@@ -106,6 +106,7 @@ check.dependsOn(":core:build")
 check.dependsOn(":core:installApp")
 check.dependsOn(writeVersion)
 check.dependsOn(installPlugins)
+check.dependsOn(":core:copyVendorStuff")
 check.dependsOn(":test:check")
 updatePackages.dependsOn(":core:updatePackages")
 

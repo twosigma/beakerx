@@ -32,10 +32,10 @@
   module.directive('bkCell', function(bkUtils, bkSessionManager, bkCoreManager, bkEvaluatorManager) {
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/cell"](),
+      template: JST['mainapp/components/notebook/cell'](),
       scope: {
-        cellmodel: "=",
-        index: "="
+        cellmodel: '=',
+        index: '='
       },
       controller: function($scope, $element) {
         $scope.cellmodel.evaluatorReader = false;
@@ -51,7 +51,7 @@
           showDebugInfo: false,
           menu: {
             items: [],
-            renameItem: function(opts)  {
+            renameItem: function(opts) {
               _.findWhere(this.items,
                 {name: opts.name}
               ).name = opts.newName;
@@ -73,12 +73,11 @@
 
         $scope.isLocked = function() {
           return bkSessionManager.isNotebookLocked();
-        }
+        };
 
         $scope.newCellMenuConfig = {
           isShow: function() {
-            return !bkSessionManager.isNotebookLocked()
-                && !notebookCellOp.isContainer($scope.cellmodel.id);
+            return !bkSessionManager.isNotebookLocked() && !notebookCellOp.isContainer($scope.cellmodel.id);
           },
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);
@@ -90,10 +89,10 @@
 
         $scope.getFullIndex = function() {
           if ($scope.$parent.getNestedLevel) {
-            return $scope.$parent.getFullIndex() + "." + ($scope.index + 1);
+            return $scope.$parent.getFullIndex() + '.' + ($scope.index + 1);
           }
 
-          return $scope.index+$scope.getNestedLevel();
+          return $scope.index + $scope.getNestedLevel();
         };
 
         $scope.toggleShowDebugInfo = function() {
@@ -126,7 +125,9 @@
         };
 
         $scope.evaluate = function($event) {
-          if ($event) $event.stopPropagation();
+          if ($event) {
+            $event.stopPropagation();
+          }
 
           $scope.cellmodel.output.state = {};
 
@@ -139,7 +140,7 @@
 
         $scope.deleteCell = function() {
           notebookCellOp.delete($scope.cellmodel.id, true);
-        }
+        };
 
         $scope.getEvaluators = function() {
           return bkEvaluatorManager.getAllEvaluators();
@@ -150,45 +151,52 @@
         };
 
         var moveMethod = 'move';
-        if ($scope.cellmodel.type == 'section') moveMethod = 'moveSection';
+        if ($scope.cellmodel.type == 'section') {
+          moveMethod = 'moveSection';
+        }
 
         $scope.moveCellUp = function() {
           notebookCellOp[moveMethod + 'Up']($scope.cellmodel.id);
-        }
+        };
 
         $scope.moveCellDown = function() {
           notebookCellOp[moveMethod + 'Down']($scope.cellmodel.id);
-        }
+        };
 
-        $scope.moveCellUpDisabled = function(){return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Up']($scope.cellmodel.id)};
-        $scope.moveCellDownDisabled = function(){return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Down']($scope.cellmodel.id)};
+        $scope.moveCellUpDisabled = function() {
+          return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Up']($scope.cellmodel.id);
+        };
+
+        $scope.moveCellDownDisabled = function() {
+          return !notebookCellOp['isPossibleTo' + _.string.capitalize(moveMethod) + 'Down']($scope.cellmodel.id);
+        };
 
         $scope.cellview.menu.addItem({
-          name: "Delete cell",
+          name: 'Delete cell',
           action: $scope.deleteCell
         });
 
         $scope.cellview.menu.addItem({
-          name: "Move up",
+          name: 'Move up',
           action: $scope.moveCellUp,
           disabled: $scope.moveCellUpDisabled
         });
 
         $scope.cellview.menu.addItem({
-          name: "Move down",
+          name: 'Move down',
           action: $scope.moveCellDown,
           disabled: $scope.moveCellDownDisabled
         });
 
         $scope.cellview.menu.addItem({
-          name: "Cut",
+          name: 'Cut',
           action: function() {
             notebookCellOp.cut($scope.cellmodel.id);
           }
         });
 
         $scope.cellview.menu.addItem({
-          name: "Paste (append after)",
+          name: 'Paste (append after)',
           disabled: function() {
             return !notebookCellOp.clipboard;
           },
@@ -199,7 +207,7 @@
 
         $scope.getTypeCellUrl = function() {
           var type = $scope.cellmodel.type;
-          return type + "-cell.html";
+          return type + '-cell.html';
         };
 
         $scope.isCodeCell = function() {

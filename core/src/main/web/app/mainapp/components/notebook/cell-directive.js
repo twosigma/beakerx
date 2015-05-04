@@ -77,8 +77,7 @@
 
         $scope.newCellMenuConfig = {
           isShow: function() {
-            return !bkSessionManager.isNotebookLocked()
-                && !notebookCellOp.isContainer($scope.cellmodel.id);
+            return !bkSessionManager.isNotebookLocked() && !notebookCellOp.isContainer($scope.cellmodel.id);
           },
           attachCell: function(newCell) {
             notebookCellOp.insertAfter($scope.cellmodel.id, newCell);

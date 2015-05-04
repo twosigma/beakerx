@@ -1,6 +1,11 @@
 language: java
 jdk:
  - oraclejdk7
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - /usr/local/lib/R
+    - $HOME/build/twosigma/beaker-notebook/core/node_modules
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"

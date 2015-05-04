@@ -125,7 +125,9 @@
         };
 
         $scope.evaluate = function($event) {
-          if ($event) $event.stopPropagation();
+          if ($event) {
+            $event.stopPropagation();
+          }
 
           $scope.cellmodel.output.state = {};
 
@@ -149,7 +151,9 @@
         };
 
         var moveMethod = 'move';
-        if ($scope.cellmodel.type == 'section') moveMethod = 'moveSection';
+        if ($scope.cellmodel.type == 'section') {
+          moveMethod = 'moveSection';
+        }
 
         $scope.moveCellUp = function() {
           notebookCellOp[moveMethod + 'Up']($scope.cellmodel.id);

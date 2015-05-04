@@ -132,8 +132,9 @@
       var re = /\s+/;
       var tags = codeCell.raw.tags.split(re);
       var i;
-      for (i=0; i<tags.length; i++)
+      for (i=0; i<tags.length; i++) {
         userTagsMap.add(tags[i], codeCell.raw);
+      }
     });
 
     return {
@@ -419,7 +420,9 @@
           redoAction2 = undefined;
           undoAction2 = undoAction;
           undoAction = undefined;
-        } else console.log('no undo');
+        } else {
+          console.log('no undo');
+        }
       },
       redo: function() {
         if(redoAction) {
@@ -428,7 +431,9 @@
           undoAction = undoAction2;
           undoAction2 = undefined;
           redoAction = undefined;
-        } else console.log('no redo');
+        } else {
+          console.log('no redo');
+        }
       },
       deleteAllOutputCells: function() {
         if (cells) {
@@ -602,15 +607,18 @@
         return '';
       },
       canRenameCell: function(newid) {
-        if (cellMap[newid] !== undefined)
+        if (cellMap[newid] !== undefined) {
           return 'ERROR: Cell "'+newid+'" already exists.';
-        if (tagMap.usertags[newid] !== undefined)
+        }
+        if (tagMap.usertags[newid] !== undefined) {
           return 'ERROR: The name "'+newid+'" is already used as a tag.';
+        }
         return '';
       },
       renameCell: function(oldid, newid) {
-        if (this.canRenameCell(newid) !== '')
+        if (this.canRenameCell(newid) !== '') {
           return;
+        }
         var idx = this.getIndex(oldid);
         if (idx >= 0) {
           cells[idx].id = newid;

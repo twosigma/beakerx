@@ -232,6 +232,8 @@ if (hasProperty('includeDepsInJar')) {
        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     } {
       exclude "META-INF/*.SF"
+      exclude "org/eclipse/jetty/**"
+      exclude "org/cometd/**"
     }
   }
 }

@@ -7036,7 +7036,7 @@ return __p
           $.ajax({
             type: "GET",
             datatype: "json",
-            url: "../beaker/rest/outputlog/clear",
+            url: bkUtils.serverUrl("beaker/rest/outputlog/clear"),
             data: {}});
           $scope.outputLog = [];
         };
@@ -7163,7 +7163,7 @@ return __p
           shareMenu
         ];
 
-        bkUtils.httpGet("../beaker/rest/util/isUseAdvancedMode").success(function(isAdvanced) {
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/util/isUseAdvancedMode")).success(function(isAdvanced) {
           if (_impl._viewModel.isAdvancedMode() != (isAdvanced === "true")) {
             _impl._viewModel.toggleAdvancedMode();
           }

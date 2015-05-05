@@ -33,7 +33,14 @@
    */
   module.factory('bkUtils', function(commonUtils, angularUtils, bkTrack, cometdUtils) {
 
+    var serverRoot = "../";
+    function serverUrl(path) {
+      return serverRoot + path;
+    }
+
     var bkUtils = {
+      serverUrl: serverUrl,
+
       // wrap trackingService
       log: function(event, obj) {
         bkTrack.log(event, obj);
@@ -105,32 +112,35 @@
       cancelTimeout: function(promise) {
         return angularUtils.cancelTimeout(promise);  
       },
-      
+      setServerRoot: function(url) {
+        serverRoot = url;
+      },
+
       // beaker server involved utils
       getHomeDirectory: function() {
         var deferred = angularUtils.newDeferred();
-        this.httpGet("../beaker/rest/file-io/getHomeDirectory")
+        this.httpGet(serverUrl("beaker/rest/file-io/getHomeDirectory"))
             .success(deferred.resolve)
             .error(deferred.reject);
         return deferred.promise;
       },
       getVersionInfo: function() {
         var deferred = angularUtils.newDeferred();
-        this.httpGet("../beaker/rest/util/getVersionInfo")
+        this.httpGet(serverUrl("beaker/rest/util/getVersionInfo"))
             .success(deferred.resolve)
             .error(deferred.reject);
         return deferred.promise;
       },
       getStartUpDirectory: function() {
         var deferred = angularUtils.newDeferred();
-        this.httpGet("../beaker/rest/file-io/getStartUpDirectory")
+        this.httpGet(serverUrl("beaker/rest/file-io/getStartUpDirectory"))
             .success(deferred.resolve)
             .error(deferred.reject);
         return deferred.promise;
       },
       getDefaultNotebook: function() {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet("../beaker/rest/util/getDefaultNotebook").
+        angularUtils.httpGet(serverUrl("beaker/rest/util/getDefaultNotebook")).
             success(function(data) {
               deferred.resolve(angular.fromJson(data));
             }).
@@ -148,7 +158,7 @@
       },
       loadFile: function(path) {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet("../beaker/rest/file-io/load", {path: path})
+        angularUtils.httpGet(serverUrl("beaker/rest/file-io/load"), {path: path})
             .success(function(content) {
               if (!_.isString(content)) {
                 // angular $http auto-detects JSON response and deserialize it using a JSON parser
@@ -160,9 +170,10 @@
             .error(deferred.reject);
         return deferred.promise;
       },
+
       loadHttp: function(url) {
         var deferred = angularUtils.newDeferred();
-        angularUtils.httpGet("../beaker/rest/http-proxy/load", {url: url})
+        angularUtils.httpGet(serverUrl("beaker/rest/http-proxy/load"), {url: url})
             .success(function(content) {
               if (!_.isString(content)) {
                 // angular $http auto-detects JSON response and deserialize it using a JSON parser
@@ -177,11 +188,11 @@
       saveFile: function(path, contentAsJson, overwrite) {
         var deferred = angularUtils.newDeferred();
         if (overwrite) {
-          angularUtils.httpPost("../beaker/rest/file-io/save", {path: path, content: contentAsJson})
+          angularUtils.httpPost(serverUrl("beaker/rest/file-io/save"), {path: path, content: contentAsJson})
               .success(deferred.resolve)
               .error(deferred.reject);
         } else {
-          angularUtils.httpPost("../beaker/rest/file-io/saveIfNotExists", {path: path, content: contentAsJson})
+          angularUtils.httpPost(serverUrl("beaker/rest/file-io/saveIfNotExists"), {path: path, content: contentAsJson})
               .success(deferred.resolve)
               .error(function(data, status, header, config) {
                 if (status === 409) {

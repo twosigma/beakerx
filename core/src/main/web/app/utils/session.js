@@ -20,16 +20,16 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.session', ['bk.angularUtils']);
+  var module = angular.module('bk.session', ['bk.utils']);
   /**
    * bkSession
    * - talks to beaker server (/beaker/rest/session)
    * - bkSessionManager should depend on it to update/backup the session model
    */
-  module.factory('bkSession', function(angularUtils) {
+  module.factory('bkSession', function(bkUtils) {
     var backupSession = function(sessionId, sessionData) {
-      var deferred = angularUtils.newDeferred();
-      angularUtils.httpPost("../beaker/rest/session-backup/backup/" + sessionId, sessionData)
+      var deferred = bkUtils.newDeferred();
+      bkUtils.httpPost(bkUtils.serverUrl("beaker/rest/session-backup/backup/" + sessionId), sessionData)
           .success(function(data) {
             deferred.resolve();
           })
@@ -40,8 +40,8 @@
       return deferred.promise;
     };
     var getSessions = function() {
-      var deferred = angularUtils.newDeferred();
-      angularUtils.httpGet("../beaker/rest/session-backup/getExistingSessions")
+      var deferred = bkUtils.newDeferred();
+      bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/session-backup/getExistingSessions"))
           .success(function(sessions) {
             deferred.resolve(sessions);
           })
@@ -51,8 +51,8 @@
       return deferred.promise;
     };
     var loadSession = function(sessionId) {
-      var deferred = angularUtils.newDeferred();
-      angularUtils.httpGet("../beaker/rest/session-backup/load", {sessionid: sessionId})
+      var deferred = bkUtils.newDeferred();
+      bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/session-backup/load"), {sessionid: sessionId})
           .success(function(session, status) {
             deferred.resolve(session);
           })
@@ -62,8 +62,8 @@
       return deferred.promise;
     };
     var closeSession = function(sessionId) {
-      var deferred = angularUtils.newDeferred();
-      angularUtils.httpPost("../beaker/rest/session-backup/close", {sessionid: sessionId})
+      var deferred = bkUtils.newDeferred();
+      bkUtils.httpPost(bkUtils.serverUrl("beaker/rest/session-backup/close"), {sessionid: sessionId})
           .success(function(ret) {
             deferred.resolve(sessionId);
           })
@@ -73,8 +73,8 @@
       return deferred.promise;
     };
     var recordLoadedPlugin = function(pluginName, pluginUrl) {
-      angularUtils.httpPost(
-          "../beaker/rest/session-backup/addPlugin",
+      bkUtils.httpPost(
+          bkUtils.serverUrl("beaker/rest/session-backup/addPlugin"),
           {pluginname: pluginName, pluginurl: pluginUrl})
           .success(function(ret) {
             //console.log("recordLoadedPlugin");
@@ -84,8 +84,8 @@
           });
     };
     var getPlugins = function() {
-      var deferred = angularUtils.newDeferred();
-      angularUtils.httpGet("../beaker/rest/session-backup/getExistingPlugins", {})
+      var deferred = bkUtils.newDeferred();
+      bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/session-backup/getExistingPlugins"), {})
           .success(function(plugins) {
             deferred.resolve(plugins);
           })

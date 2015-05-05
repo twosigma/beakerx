@@ -296,6 +296,9 @@
       generateId: function(length) {
         return bkUtils.generateId(length);
       },
+      serverUrl: function(path) {
+        return bkUtils.serverUrl(path);
+      },
       httpGet: function(url, data) {
         return bkUtils.httpGet(url, data);
       },
@@ -381,7 +384,7 @@
 
       // eval utils
       locatePluginService: function(id, locator) {
-        return bkUtils.httpGet("../beaker/rest/plugin-services/" + id,
+        return bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/plugin-services/" + id),
             locator);
       },
       getEvaluatorFactory: function(shellConstructorPromise) {

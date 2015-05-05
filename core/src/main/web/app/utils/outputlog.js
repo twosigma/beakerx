@@ -19,11 +19,11 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.outputLog', ['bk.angularUtils', 'bk.cometdUtils']);
-  module.factory('bkOutputLog', function (angularUtils, cometdUtils) {
+  var module = angular.module('bk.outputLog', ['bk.utils', 'bk.cometdUtils']);
+  module.factory('bkOutputLog', function (bkUtils, cometdUtils) {
     return {
       getLog: function (cb) {
-        angularUtils.httpGet("../beaker/rest/outputlog/get", {})
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/outputlog/get"), {})
             .success(cb)
             .error(function () {
               console.log("failed to get output log");

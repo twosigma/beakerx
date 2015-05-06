@@ -75,4 +75,18 @@ describe('notebook', function () {
     done();
   });
 
+  it('can handle escaping $ in markdown', function(done) {
+    beakerPO.newEmptyNotebook.click()
+    .then(function() {
+      return beakerPO.createMarkdownCell('hello world \\$');
+    })
+    .then(function() {
+      return beakerPO.readMarkdownCell();
+    }.bind(this))
+    .then(function(txt) {
+      expect(txt).toEqual('hello world $');
+      done();
+    });
+  });
+
 });

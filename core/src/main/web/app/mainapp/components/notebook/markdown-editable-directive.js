@@ -43,6 +43,11 @@
     return out;
   };
 
+  bkRenderer.paragraph = function(text) {
+    // Allow users to write \$ to escape $
+    return marked.Renderer.prototype.paragraph.call(this, text.replace(/\\\$/g, '$'));
+  };
+
   var module = angular.module('bk.notebook');
   module.directive('bkMarkdownEditable', ['bkSessionManager', 'bkHelper', 'bkCoreManager', '$timeout', function(bkSessionManager, bkHelper, bkCoreManager, $timeout) {
     var notebookCellOp = bkSessionManager.getNotebookCellOp();

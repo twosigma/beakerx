@@ -69,10 +69,23 @@ describe('notebook', function () {
   });
 
   it('can close the notebook', function(done) {
-    beakerPO.fileMenu.click();
-    beakerPO.closeMenuItem.click();
-    beakerPO.modalDialogNoButton.click();
-    done();
+    beakerPO.closeNotebook()
+    .then(done);
+  });
+
+  it('can handle escaping $ in markdown', function(done) {
+    beakerPO.newEmptyNotebook.click()
+    .then(function() {
+      return beakerPO.createMarkdownCell('hello world \\$');
+    })
+    .then(function() {
+      return beakerPO.readMarkdownCell();
+    }.bind(this))
+    .then(function(txt) {
+      expect(txt).toEqual('hello world $');
+    })
+    .then(beakerPO.closeNotebook)
+    .then(done);
   });
 
 });

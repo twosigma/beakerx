@@ -322,15 +322,15 @@
                                 },
                                 // integer
                                 function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== null)
+                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
                                     return parseInt(value);
                                   if (type === 'sort')
                                     return NaN;
-                                  return '';
+                                  return value;
                                 },
                                 // formatted integer
                                 function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== null) {
+                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
                                     var x = parseInt(value);
                                     if (x !== NaN)
                                       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -338,47 +338,47 @@
                                   }
                                   if (type === 'sort')
                                     return NaN;
-                                  return '';
+                                  return value;
                                 },
                                 // double
                                 function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== null)
+                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
                                     return parseFloat(value);
                                   if (type === 'sort')
                                     return NaN;
-                                  return '';
+                                  return value;
                                 },
                                 // double 2 decimals
                                 function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== null)
+                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
                                     return parseFloat(value).toFixed(2);
                                   if (type === 'sort')
                                     return NaN;
-                                  return '';
+                                  return value;
                                 },
                                 // double 4 decimals
                                 function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== null)
+                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
                                     return parseFloat(value).toFixed(4);
                                   if (type === 'sort')
                                     return NaN;
-                                  return '';
+                                  return value;
                                 },
                                 // exponential 5
                                 function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== null)
+                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
                                     return parseFloat(value).toExponential(5);
                                   if (type === 'sort')
                                     return NaN;
-                                  return '';
+                                  return value;
                                 },
                                 // exponential 15
                                 function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== null)
+                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
                                     return parseFloat(value).toExponential(15);
                                   if (type === 'sort')
                                     return NaN;
-                                  return '';
+                                  return value;
                                 },
                                 // time
                                 function(value,type,full,meta) {

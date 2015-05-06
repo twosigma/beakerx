@@ -25,6 +25,20 @@ var BeakerPageObject = function () {
     browser.actions().mouseDown().mouseUp().perform();
   };
 
+  this.createMarkdownCell = function(text) {
+    element(by.css('bk-new-cell-menu .dropdown-toggle'))
+    .click()
+    .then(function() {
+      return element(by.css('a[ng-click="newMarkdownCell()"]'));
+    })
+    .then(function(el) {
+      return el.click();
+    })
+    .then(function() {
+      return this.setCellInput(text);
+    }.bind(this));
+  }.bind(this);
+
   this.newEmptyNotebook = element(by.className('new-empty-notebook'));
 
   this.fileMenu = element(by.className('file-menu'));
@@ -49,6 +63,20 @@ var BeakerPageObject = function () {
       return deferred.promise;
     }.bind(this));
   };
+
+  this.readMarkdownCell = function() {
+    return element(by.css('body'))
+    .then(function(el) {
+      // click on the body to refocus editor
+      return el.click();
+    })
+    .then(function() {
+      return element(by.css('.markup p'))
+    })
+    .then(function(el) {
+      return el.getText();
+    });
+ }
 
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {

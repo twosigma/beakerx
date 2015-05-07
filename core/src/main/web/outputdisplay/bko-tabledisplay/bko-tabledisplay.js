@@ -142,7 +142,7 @@
           if (format === 'tabs') {
             sep = '\t';
             qot = '';
-            fix = function (s) { return s.replace(/\t/g, '');};
+            fix = function (s) { return s.replace(/\t/g, ' ');};
           }
           if (navigator.appVersion.indexOf("Win")!=-1)
             eol = '\r\n';

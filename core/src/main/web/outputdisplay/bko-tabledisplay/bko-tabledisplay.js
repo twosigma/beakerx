@@ -131,12 +131,19 @@
           $scope.model.resetShareMenuItems(newItems);
         });
 
-        // CSV support functions
-        $scope.convertToCSV = function(data) {
+        $scope.exportTo = function(data, format) {
           var i, j;
           var out = '';
           var eol = '\n';
-          
+          var sep = ',';
+          var qot = '"';
+          var fix = function (s) { return s.replace(/"/g, '""');};
+
+          if (format === 'tabs') {
+            sep = '\t';
+            qot = '';
+            fix = function (s) { return s.replace(/\t/g, ' ');};
+          }
           if (navigator.appVersion.indexOf("Win")!=-1)
             eol = '\r\n';
           
@@ -145,8 +152,8 @@
             if (!$scope.table.column(order).visible())
               continue;
             if (out !== '')
-              out = out + ',';
-            out = out + '"' + $scope.columns[order].title.replace(/"/g, '""') + '"';
+              out = out + sep;
+            out = out + qot + fix($scope.columns[order].title) + qot;
           }
           out = out + eol;
 
@@ -160,11 +167,11 @@
               if (!some)
                 some = true;
               else
-                out = out + ',';
+                out = out + sep;
               var d = row[j];
               if ($scope.columns[order].render !== undefined )
                 d = $scope.columns[order].render(d, "display");
-              out = out + '"' + (d !== undefined && d !== null ? d.replace(/"/g, '""') : '') + '"';
+              out = out + qot + (d !== undefined && d !== null ? fix(d) : '') + qot;
             }
             out = out + eol;
           }
@@ -177,7 +184,7 @@
             data = $scope.table.rows().data();
           else
             data = $scope.table.rows(function(index, data, node) { return $scope.selected[index]; }).data();
-          var out = $scope.convertToCSV(data);
+          var out = $scope.exportTo(data, 'csv');
           bkHelper.selectFile(function(n) {
             var suffix = ".csv";
             if(n === undefined)
@@ -758,11 +765,12 @@
               scope.clipclient.on( "copy", function (event) {
                 var clipboard = event.clipboardData;
 
-                var data = scope.table.rows(function(index, data, node) { return scope.selected[index]; }).data();
+                var data = scope.table.rows(function(index, data, node) {
+                  return scope.selected[index]; }).data();
                 if (data === undefined || data.length === 0) {
                   data = scope.table.rows().data();
                 }
-                var out = scope.convertToCSV(data);
+                var out = scope.exportTo(data, 'tabs');
   
                 clipboard.setData( "text/plain", out );
               });

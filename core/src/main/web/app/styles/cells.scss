@@ -115,7 +115,6 @@ bk-section-cell {
         padding: $grid-row-height $grid-gutter-width;
         position: relative;
         border-top: solid 1px #CCC;
-        min-height: #{$line-height-base}em;
         box-sizing: content-box;
 
         .out_error {
@@ -150,6 +149,7 @@ bk-output-display pre {
     border:     none;
     margin:     0;
     padding:    0;
+    line-height: 1;
     background: transparent;
 }
 

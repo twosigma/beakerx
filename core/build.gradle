@@ -182,6 +182,7 @@ compileAssets.dependsOn npmInstall
 compileAssets.dependsOn extractPackages
 compileAssetsEmbed.dependsOn npmInstall
 compileAssetsEmbed.dependsOn extractPackages
+compileAssetsEmbed.dependsOn compileAssets // not ideal, but htmlbuild creates manifests
 compileAssetsDebug.dependsOn npmInstall
 compileAssetsDebug.dependsOn extractPackages
 updatePackages.dependsOn extractPackages

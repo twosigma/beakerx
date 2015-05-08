@@ -73,7 +73,7 @@
   });
   module.directive('dropdownPromoted', function() {
     // Is your dropdown being covered by its ancestors siblings?
-    // Promote that shiz, and prepend it to the body so it doesn't
+    // Promote that shiz, and prepend it to the notebook so it doesn't
     // ever get bullied again.
     return {
       restrict: 'C',
@@ -82,15 +82,19 @@
         var toggle = element.find('.dropdown-toggle').first();
 
         var showDropdown = function() {
-          var togglePosition = toggle.offset();
+          window.requestAnimationFrame(function() {
+            var notebook = bkHelper.getNotebookElement(scope);
+            var togglePosition = toggle.offset();
+            var notebookPosition = notebook.offset();
 
-          dropdown.show().css({
-            top: togglePosition.top + 'px',
-            left: togglePosition.left - dropdown.outerWidth() + 'px',
+            dropdown.show().css({
+              top: togglePosition.top - notebookPosition.top + 'px',
+              left: togglePosition.left - notebookPosition.left - dropdown.outerWidth() + 'px',
+            });
+
+            dropdown.prependTo(notebook);
+            dropdown.css('visibility', 'visible');
           });
-
-          dropdown.prependTo('body');
-          dropdown.css('visibility', 'visible');
 
           element.on('click', '.dropdown-toggle', hideDropdown);
           $(document).on('click.bs.dropdown.data-api', hideDropdown);

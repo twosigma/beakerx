@@ -98,6 +98,9 @@
           console.error("Current app doesn't support getBeakerObject");
         }
       },
+      getNotebookElement: function(currentScope) {
+        return bkCoreManager.getNotebookElement(currentScope);
+      },
       collapseAllSections: function() {
         if (getCurrentApp().collapseAllSections) {
           return getCurrentApp().collapseAllSections();

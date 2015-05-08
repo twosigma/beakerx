@@ -123,15 +123,15 @@ task (extractPackages, type: Exec) {
   }
 }
 
-task (compileCss, type: Exec) {
+task (compileAssets, type: Exec) {
   commandLine(*(winOrUnix('npm', 'run-script', 'compile')))
 }
 
-task (compileCssDebug, type: Exec) {
+task (compileAssetsDebug, type: Exec) {
   commandLine(*(winOrUnix('npm', 'run-script', 'compile', '--', '--debug')))
 }
 
-task (compileCssEmbed, type: Exec) {
+task (compileAssetsEmbed, type: Exec) {
   if (windows()) {
     commandLine 'cmd', '/c', 'npm', 'run-script', 'compile', '--', '--embed'
   } else {
@@ -178,22 +178,23 @@ task realclean
 
 realclean.dependsOn doRemove
 bowerInstall.dependsOn npmInstall
-compileCss.dependsOn npmInstall
-compileCss.dependsOn extractPackages
-compileCssEmbed.dependsOn npmInstall
-compileCssEmbed.dependsOn extractPackages
-compileCssDebug.dependsOn npmInstall
-compileCssDebug.dependsOn extractPackages
+compileAssets.dependsOn npmInstall
+compileAssets.dependsOn extractPackages
+compileAssetsEmbed.dependsOn npmInstall
+compileAssetsEmbed.dependsOn extractPackages
+compileAssetsEmbed.dependsOn compileAssets // not ideal, but htmlbuild creates manifests
+compileAssetsDebug.dependsOn npmInstall
+compileAssetsDebug.dependsOn extractPackages
 updatePackages.dependsOn extractPackages
 updatePackages.dependsOn bowerInstall
 updatePackages.dependsOn copyStuff
 bowerInstall.mustRunAfter extractPackages
 copyStuff.mustRunAfter bowerInstall
 copyVendorStuff.mustRunAfter extractPackages
-build.dependsOn compileCss
-buildembed.dependsOn compileCssEmbed
+build.dependsOn compileAssets
+buildembed.dependsOn compileAssetsEmbed
 publishAssets.dependsOn buildembed
-builddebug.dependsOn compileCssDebug
+builddebug.dependsOn compileAssetsDebug
 run.dependsOn build
 run.dependsOn jar
 run.dependsOn copyVendorStuff

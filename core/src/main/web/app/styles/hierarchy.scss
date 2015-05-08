@@ -16,6 +16,14 @@
 
 .hierarchy-mode {
 
+  .section-toggle {
+    top: 3px;
+
+    + .depth-indicator {
+      margin-left: 20px;
+    }
+  }
+
   .mini-cell-stats {
     left: 104px;
   }
@@ -29,7 +37,7 @@
     top: 0;
   }
 
-  .bkcell.code-cell-area, .text-cell, .bk-markdown-cell, bk-markdown-cell > div {
+  .bkcell.code-cell-area, .text-cell, .bk-markdown-cell, bk-markdown-editable {
     margin-left: 84px;
   }
 
@@ -50,6 +58,7 @@
   .bk-section-title {
     top: 5px;
     position: relative;
+    display: inline-block;
   }
 }
 

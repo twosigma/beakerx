@@ -191,9 +191,9 @@
               return;
             if (n.indexOf(suffix,n.length-suffix.length) === -1)
               n = n + suffix;
-            // TODO check for error
-            return bkHelper.saveFile(n,out);
-          } , "Select name for CSV file to save", "csv");
+            // TODO check for error, prompt for overwrite
+            return bkHelper.saveFile(n, out, true);
+          } , "Select name for CSV file to save", "csv", "Save");
         };
         
         // these are the menu actions

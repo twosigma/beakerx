@@ -16,6 +16,14 @@
 
 .hierarchy-mode {
 
+  .section-toggle {
+    top: 3px;
+
+    + .depth-indicator {
+      margin-left: 20px;
+    }
+  }
+
   .mini-cell-stats {
     left: 104px;
   }

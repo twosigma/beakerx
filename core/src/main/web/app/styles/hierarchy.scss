@@ -46,6 +46,7 @@
   }
 
   .depth-indicator {
+    vertical-align: top;
     display: inline-block;
   }
 
@@ -58,6 +59,7 @@
   .bk-section-title {
     top: 5px;
     position: relative;
+    vertical-align: top;
     display: inline-block;
   }
 }

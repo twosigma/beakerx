@@ -299,6 +299,9 @@
         } else {
           div.removeClass("initcell");
         }
+        scope.getNotebookElement = function() {
+          return element;
+        };
         scope.$watch('isInitializationCell()', function (newValue, oldValue) {
           if (newValue !== oldValue) {
             if (newValue) {

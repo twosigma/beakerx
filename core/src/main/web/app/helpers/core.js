@@ -480,6 +480,15 @@
         return bkRecentMenu.getMenuItems();
       },
 
+      getNotebookElement: function(currentScope) {
+        // Walk up the scope tree and find the one that has access to the
+        // notebook element (notebook directive scope, specifically)
+        if (_.isUndefined(currentScope.getNotebookElement)) {
+          return bkCoreManager.getNotebookElement(currentScope.$parent);
+        } else {
+          return currentScope.getNotebookElement();
+        }
+      },
       getNotebookCellManager: function() {
         return bkNotebookCellModelManager;
       },

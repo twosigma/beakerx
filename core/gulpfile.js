@@ -36,6 +36,7 @@ var plugins = require('gulp-load-plugins');
 var htmlbuild = require('gulp-htmlbuild');
 var es = require('event-stream');
 var fs = require('fs');
+var sourcemaps = require('gulp-sourcemaps');
 
 var srcPath  = Path.join(__dirname, "/src/main/web/");
 var vendorPath  = Path.join(__dirname, "/src/");
@@ -130,10 +131,12 @@ gulp.task("buildSingleOutDispJs", function() {
 
 gulp.task("compileBeakerScss", function() {
   return gulp.src(Path.join(rootPath, "**.scss"))
+  .pipe(sourcemaps.init())
   .pipe(sass().on('error', handleError))
   .pipe(importCss())
   .pipe(stripCssComments())
-  .pipe(gulp.dest(tempPath))
+  .pipe(sourcemaps.write())
+  .pipe(gulp.dest(tempPath));
 });
 
 gulp.task('prepareCssForNamespacing', function(){

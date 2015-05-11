@@ -39,7 +39,8 @@ http {
 
     # enable requests for specific instances in multi-user environments
     # where a request could be routed to one of many server instances
-    rewrite ^/beaker/[0-9]+/(.*)$ /%(urlhash)s$1 last;
+    # /beaker/<uuid>/foo -> /foo
+    rewrite "^/beaker/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/(.*)$" /%(urlhash)s$1 last;
 
     %(listen_section)s
 

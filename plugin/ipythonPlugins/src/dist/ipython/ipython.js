@@ -329,10 +329,28 @@ define(function(require, exports, module) {
           _theCancelFunction();
         }
       },
+      reset: function() {
+        console.log("reset");
+      },
+      updateShell: function() {
+        console.log("updateShell");
+      },
       spec: {
-        interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
+        interrupt: {type: "action", action: "interrupt", name: "Interrupt"},
+        reset: {type: "action", action: "reset", name: "Reset"},
+        setup: {type: "settableString", action: "updateShell", name: "Setup Code"}
       }
   };
+  var defaultSetup = ("%matplotlib inline\n" +
+                      "import numpy\n" +
+                      "import matplotlib\n" +
+                      "from matplotlib import pylab, mlab, pyplot\n" +
+                      "np = numpy\n" +
+                      "plt = pyplot\n" +
+                      "from IPython.display import display\n" +
+                      "from IPython.core.pylabtools import figsize, getfigs\n" +
+                      "from pylab import *\n" +
+                      "from numpy import *\n");
 
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
@@ -355,31 +373,19 @@ define(function(require, exports, module) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
-
-            // XXX these are not used by python, they are leftover from groovy
-            if (!settings.imports) {
-              settings.imports = "";
-            }
-            if (!settings.supplementalClassPath) {
-              settings.supplementalClassPath = "";
+            if ("setup" in settings) {
+              console.log("got settings: " + settings.setup);
+            } else {
+              settings.setup = defaultSetup;
             }
             self.settings = settings;
             var finish = function () {
               if (bkHelper.hasSessionId()) {
-                var initCode = ("%matplotlib inline\n" +
-                    "import numpy\n" +
-                    "import matplotlib\n" +
-                    "from matplotlib import pylab, mlab, pyplot\n" +
-                    "np = numpy\n" +
-                    "plt = pyplot\n" +
-                    "from IPython.display import display\n" +
-                    "from IPython.core.pylabtools import figsize, getfigs\n" +
-                    "from pylab import *\n" +
-                    "from numpy import *\n" +
-                    "import beaker_runtime as beaker_runtime\n" +
-                    "beaker = beaker_runtime.Beaker()\n" +
-                    "beaker.register_output()\n" +
-                    "beaker.set_session('" + bkHelper.getSessionId() + "')\n");
+                var initCode = ("import beaker_runtime as beaker_runtime\n" +
+                                "beaker = beaker_runtime.Beaker()\n" +
+                                "beaker.register_output()\n" +
+                                "beaker.set_session('" + bkHelper.getSessionId() + "')\n" +
+                                settings.setup);
                 self.evaluate(initCode, {}).then(function () {
                   if (doneCB) {
                     doneCB(self);

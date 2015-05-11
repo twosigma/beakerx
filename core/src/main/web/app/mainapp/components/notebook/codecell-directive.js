@@ -30,11 +30,11 @@
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
     };
-    var CELL_TYPE = "code";
+    var CELL_TYPE = 'code';
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/codecell"](),
-      scope: { cellmodel: "=", cellmenu: "="},
+      template: JST['mainapp/components/notebook/codecell'](),
+      scope: {cellmodel: '=', cellmenu: '='},
       controller: function($scope) {
         $scope.cellview = {
           inputMenu: [],
@@ -42,7 +42,7 @@
         };
 
         $scope.getFullIndex = function() {
-          return $scope.$parent.$parent.$parent.getFullIndex() + "." + ($scope.$parent.index + 1);
+          return $scope.$parent.$parent.$parent.getFullIndex() + '.' + ($scope.$parent.index + 1);
         };
 
         $scope.isLocked = function() {
@@ -54,13 +54,17 @@
         };
 
         $scope.isError = function() {
-          if ($scope.cellmodel === undefined || $scope.cellmodel.output === undefined || $scope.cellmodel.output.result === undefined)
+          //jscs:disable
+          if ($scope.cellmodel === undefined || $scope.cellmodel.output === undefined || $scope.cellmodel.output.result === undefined) {
+          //jscs:enable
             return false;
+          }
 
           var type = $scope.cellmodel.output.result.innertype;
 
-          if (!type && $scope.cellmodel.output.result.payload !== undefined)
+          if (!type && $scope.cellmodel.output.result.payload !== undefined) {
             type = $scope.cellmodel.output.result.payload.innertype;
+          }
 
           return type == 'Error';
         };
@@ -77,7 +81,7 @@
 
         $scope.bkNotebook = getBkNotebookWidget();
         // ensure cm refreshes when 'unhide'
-        $scope.$watch("isShowInput()", function(newValue, oldValue) {
+        $scope.$watch('isShowInput()', function(newValue, oldValue) {
           if ($scope.cm && newValue === true && newValue !== oldValue) {
             bkUtils.fcall(function() {
               $scope.cm.refresh();
@@ -94,11 +98,11 @@
         };
 
         $scope.backgroundClick = function(event) {
-          if (!$scope.isShowInput() || $(event.toElement).parents().hasClass("code-cell-output")) {
+          if (!$scope.isShowInput() || $(event.toElement).parents().hasClass('code-cell-output')) {
             return;
           }
           var top = $(event.delegateTarget).offset().top;
-          var outputElement = $(event.delegateTarget).children(".code-cell-output:first");
+          var outputElement = $(event.delegateTarget).children('.code-cell-output:first');
           var bottom;
           if (outputElement.length > 0) {
             bottom = outputElement.offset().top;
@@ -129,16 +133,18 @@
         };
 
         $scope.outputTitle = function() {
-          return $scope.isError() ? "Error" : null;
+          return $scope.isError() ? 'Error' : null;
         };
 
         $scope.evaluate = function($event) {
-          if ($event) $event.stopPropagation();
+          if ($event) {
+            $event.stopPropagation();
+          }
 
           $scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel).
               catch(function(data) {
-                console.log("Evaluation failed");
+                console.log('Evaluation failed');
               });
         };
         var editedListener = function(newValue, oldValue) {
@@ -174,11 +180,11 @@
         };
         $scope.updateUI = function(evaluator) {
           if ($scope.cm && evaluator) {
-            $scope.cm.setOption("mode", evaluator.cmMode);
+            $scope.cm.setOption('mode', evaluator.cmMode);
             $scope.cellmodel.evaluatorReader = true;
           }
         };
-        $scope.$watch("getEvaluator()", function(newValue, oldValue) {
+        $scope.$watch('getEvaluator()', function(newValue, oldValue) {
           if (newValue === oldValue) {
             return;
           }
@@ -198,16 +204,16 @@
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
         var shareMenu = {
-          name: "Share",
+          name: 'Share',
           items: []
         };
         $scope.cellmenu.addItem(shareMenu);
-        $scope.$watch("getShareMenuPlugin()", function() {
+        $scope.$watch('getShareMenuPlugin()', function() {
           shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
         });
 
         $scope.cellmenu.addItem({
-          name: "Show input cell",
+          name: 'Show input cell',
           isChecked: function() {
             return !$scope.cellmodel.input.hidden;
           },
@@ -220,7 +226,7 @@
           }
         });
         $scope.cellmenu.addItem({
-          name: "Show output cell (if available)",
+          name: 'Show output cell (if available)',
           isChecked: function() {
             return !$scope.cellmodel.output.hidden;
           },
@@ -238,7 +244,7 @@
         };
 
         $scope.cellmenu.addItem({
-          name: "Initialization Cell",
+          name: 'Initialization Cell',
           isChecked: function() {
             return $scope.isInitializationCell();
           },
@@ -253,7 +259,7 @@
         });
 
         $scope.cellmenu.addItem({
-          name: "Options",
+          name: 'Options',
           action: function() {
             bkCoreManager.showFullModalDialog(function cb(r) { } ,
                 'app/mainapp/dialogs/codecelloptions.jst.html', 'CodeCellOptionsController', $scope.cellmodel);
@@ -275,31 +281,32 @@
         function setFullScreen(cm, full) {
           var wrap = cm.getWrapperElement();
           if (full) {
-            wrap.className += " CodeMirror-fullscreen";
-            wrap.style.height = winHeight() + "px";
-            document.documentElement.style.overflow = "hidden";
+            wrap.className += ' CodeMirror-fullscreen';
+            wrap.style.height = winHeight() + 'px';
+            document.documentElement.style.overflow = 'hidden';
           } else {
-            wrap.className = wrap.className.replace(" CodeMirror-fullscreen", "");
-            wrap.style.height = "";
-            document.documentElement.style.overflow = "";
+            wrap.className = wrap.className.replace(' CodeMirror-fullscreen', '');
+            wrap.style.height = '';
+            document.documentElement.style.overflow = '';
           }
           cm.refresh();
         }
         var resizeHandler = function() {
-          var showing = document.body.getElementsByClassName("CodeMirror-fullscreen")[0];
-          if (!showing)
+          var showing = document.body.getElementsByClassName('CodeMirror-fullscreen')[0];
+          if (!showing) {
             return;
-          showing.CodeMirror.getWrapperElement().style.height = winHeight() + "px";
+          }
+          showing.CodeMirror.getWrapperElement().style.height = winHeight() + 'px';
         };
         scope.focus = function() {
           scope.cm.focus();
         };
-        CodeMirror.on(window, "resize", resizeHandler);
+        CodeMirror.on(window, 'resize', resizeHandler);
 
         var codeMirrorOptions = bkCoreManager.codeMirrorOptions(scope, notebookCellOp);
         _.extend(codeMirrorOptions.extraKeys, {
-          "Esc" : function(cm) {
-            cm.execCommand("singleSelection");
+          'Esc' : function(cm) {
+            cm.execCommand('singleSelection');
             if (cm.state.vim && cm.state.vim.insertMode) {
               return;
             } else {
@@ -308,34 +315,34 @@
               }
             }
           },
-          "Alt-F11": function(cm) {
+          'Alt-F11': function(cm) {
             setFullScreen(cm, !isFullScreen(cm));
           },
-          "Shift-Ctrl-A": function(cm) {
+          'Shift-Ctrl-A': function(cm) {
             scope.appendCodeCell();
           },
-          "Shift-Cmd-A": function(cm) {
+          'Shift-Cmd-A': function(cm) {
             scope.appendCodeCell();
           },
-          "Shift-Ctrl-E": function(cm) {
+          'Shift-Ctrl-E': function(cm) {
             scope.popupMenu();
-            element.find(".inputcellmenu").find('li').find('a')[0].focus();
+            element.find('.inputcellmenu').find('li').find('a')[0].focus();
           },
-          "Shift-Cmd-E": function(cm) {
+          'Shift-Cmd-E': function(cm) {
             scope.popupMenu();
-            element.find(".inputcellmenu").find('li').find('a')[0].focus();
+            element.find('.inputcellmenu').find('li').find('a')[0].focus();
           },
-          "Ctrl-Alt-H": function(cm) { // cell hide
+          'Ctrl-Alt-H': function(cm) { // cell hide
             scope.cellmodel.input.hidden = true;
             bkUtils.refreshRootScope();
           },
-          "Cmd-Alt-H": function(cm) { // cell hide
+          'Cmd-Alt-H': function(cm) { // cell hide
             scope.cellmodel.input.hidden = true;
             bkUtils.refreshRootScope();
           }
         });
 
-        scope.cm = CodeMirror.fromTextArea(element.find("textarea")[0], codeMirrorOptions);
+        scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
 
         scope.updateUI(scope.getEvaluator());
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
@@ -345,7 +352,7 @@
         scope.$watch('cellmodel.input.body', function(newVal, oldVal) {
           if (scope.cm && newVal !== scope.cm.getValue()) {
             if (newVal === null) {
-              newVal = "";
+              newVal = '';
             }
             scope.cm.setValue(newVal);
             scope.cm.clearHistory();
@@ -356,39 +363,39 @@
           if (scope.cellmodel.input.body !== cm.getValue()) {
             scope.cellmodel.lineCount = cm.lineCount();
             scope.cellmodel.input.body = cm.getValue();
-            if (! bkSessionManager.isNotebookModelEdited()) {
+            if (!bkSessionManager.isNotebookModelEdited()) {
               bkSessionManager.setNotebookModelEdited(true);
               bkUtils.refreshRootScope();
             }
           }
         };
 
-        scope.cm.on("change", changeHandler);
+        scope.cm.on('change', changeHandler);
 
-        var inputMenuDiv = element.find(".bkcell").first();
+        var inputMenuDiv = element.find('.bkcell').first();
         scope.popupMenu = function(event) {
           var menu = inputMenuDiv.find('.dropdown').first();
           menu.find('.dropdown-toggle').first().dropdown('toggle');
         };
 
         if (scope.isInitializationCell()) {
-          element.closest(".bkcell").addClass("initcell");
+          element.closest('.bkcell').addClass('initcell');
         } else {
-          element.closest(".bkcell").removeClass("initcell");
+          element.closest('.bkcell').removeClass('initcell');
         }
         scope.$watch('isInitializationCell()', function(newValue, oldValue) {
           if (newValue !== oldValue) {
             if (newValue) {
-              element.closest(".bkcell").addClass("initcell");
+              element.closest('.bkcell').addClass('initcell');
             } else {
-              element.closest(".bkcell").removeClass("initcell");
+              element.closest('.bkcell').removeClass('initcell');
             }
           }
         });
 
         scope.getShareData = function() {
           var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
-              .find(function (evaluator) {
+              .find(function(evaluator) {
                 return evaluator.name === scope.cellmodel.evaluator;
               });
           var cells = [scope.cellmodel];
@@ -396,7 +403,9 @@
         };
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
-          if (cellmodel === scope.cellmodel) scope.cm.focus();
+          if (cellmodel === scope.cellmodel) {
+            scope.cm.focus();
+          }
         });
 
         scope.$on('beaker.section.toggled', function(e, isCollapsed) {
@@ -407,9 +416,9 @@
           }
         });
 
-        scope.$on("$destroy", function() {
-          CodeMirror.off(window, "resize", resizeHandler);
-          CodeMirror.off("change", changeHandler);
+        scope.$on('$destroy', function() {
+          CodeMirror.off(window, 'resize', resizeHandler);
+          CodeMirror.off('change', changeHandler);
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id);
           scope.bkNotebook = null;

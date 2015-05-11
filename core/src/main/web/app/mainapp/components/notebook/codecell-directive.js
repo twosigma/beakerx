@@ -54,13 +54,17 @@
         };
 
         $scope.isError = function() {
-          if ($scope.cellmodel === undefined || $scope.cellmodel.output === undefined || $scope.cellmodel.output.result === undefined)
+          //jscs:disable
+          if ($scope.cellmodel === undefined || $scope.cellmodel.output === undefined || $scope.cellmodel.output.result === undefined) {
+          //jscs:enable
             return false;
+          }
 
           var type = $scope.cellmodel.output.result.innertype;
 
-          if (!type && $scope.cellmodel.output.result.payload !== undefined)
+          if (!type && $scope.cellmodel.output.result.payload !== undefined) {
             type = $scope.cellmodel.output.result.payload.innertype;
+          }
 
           return type == 'Error';
         };
@@ -133,7 +137,9 @@
         };
 
         $scope.evaluate = function($event) {
-          if ($event) $event.stopPropagation();
+          if ($event) {
+            $event.stopPropagation();
+          }
 
           $scope.cellmodel.output.state = {};
           bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel).
@@ -286,9 +292,10 @@
           cm.refresh();
         }
         var resizeHandler = function() {
-          if (!showing)
           var showing = document.body.getElementsByClassName('CodeMirror-fullscreen')[0];
+          if (!showing) {
             return;
+          }
           showing.CodeMirror.getWrapperElement().style.height = winHeight() + 'px';
         };
         scope.focus = function() {
@@ -396,7 +403,9 @@
         };
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
-          if (cellmodel === scope.cellmodel) scope.cm.focus();
+          if (cellmodel === scope.cellmodel) {
+            scope.cm.focus();
+          }
         });
 
         scope.$on('beaker.section.toggled', function(e, isCollapsed) {

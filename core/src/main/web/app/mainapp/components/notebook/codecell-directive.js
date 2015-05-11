@@ -363,7 +363,7 @@
           if (scope.cellmodel.input.body !== cm.getValue()) {
             scope.cellmodel.lineCount = cm.lineCount();
             scope.cellmodel.input.body = cm.getValue();
-            if (! bkSessionManager.isNotebookModelEdited()) {
+            if (!bkSessionManager.isNotebookModelEdited()) {
               bkSessionManager.setNotebookModelEdited(true);
               bkUtils.refreshRootScope();
             }
@@ -395,7 +395,7 @@
 
         scope.getShareData = function() {
           var evaluator = _(bkSessionManager.getRawNotebookModel().evaluators)
-              .find(function (evaluator) {
+              .find(function(evaluator) {
                 return evaluator.name === scope.cellmodel.evaluator;
               });
           var cells = [scope.cellmodel];

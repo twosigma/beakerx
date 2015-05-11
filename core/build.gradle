@@ -207,6 +207,7 @@ runembed.dependsOn copyVendorStuff
 
 if (mac() || windows()) {
   build.dependsOn copyNginx
+  buildembed.dependsOn copyNginx
   builddebug.dependsOn copyNginx
   run.dependsOn copyNginx
   startScripts {

@@ -29,6 +29,7 @@
     "gulp-rename": "",
     "gulp-replace": "",
     "run-sequence": "",
+    "gulp-sourcemaps": "^1.5.2",
     "html-classer-gulp": "0.0.2",
     "gulp-load-plugins" : "",
     "event-stream" : "",

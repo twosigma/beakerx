@@ -45,15 +45,15 @@ describe('notebook', function() {
 
     beakerPO.cellEvaluatorMenu.click();
     beakerPO.cellEvaluatorMenuItem('Groovy').click();
-    expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual("Groovy");
+    expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual('Groovy');
     done();
   });
 
   it('can enter code into a cell and evaluate it', function(done) {
-    beakerPO.setCellInput("1+1");
+    beakerPO.setCellInput('1+1');
     beakerPO.evaluateButton.click();
     beakerPO.waitForCellOutput();
-    expect(beakerPO.getCellOutput().getText()).toMatch("2");
+    expect(beakerPO.getCellOutput().getText()).toMatch('2');
     done();
   });
 

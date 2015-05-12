@@ -319,7 +319,7 @@ define(function(require, exports, module) {
       },
       reconnect: function() {
         var kernel = kernels[this.settings.shellID];
-        kernel.restart();
+        kernel.reconnect(); // fix #1576? XXX
       },
       interrupt: function() {
         this.cancelExecution();
@@ -329,11 +329,23 @@ define(function(require, exports, module) {
           _theCancelFunction();
         }
       },
+      initCode: function() {
+        return ("import beaker_runtime as beaker_runtime\n" +
+                "beaker = beaker_runtime.Beaker()\n" +
+                "beaker.register_output()\n" +
+                "beaker.set_session('" + bkHelper.getSessionId() + "')\n" +
+                this.settings.setup);
+      },
       reset: function() {
         console.log("reset");
+        var kernel = kernels[this.settings.shellID];
+        var self = this;
+        kernel.restart(function () {
+          // need to call waitForKernel() i think XXX
+          self.evaluate(self.initCode(), {});});
       },
       updateShell: function() {
-        console.log("updateShell");
+        this.reset();
       },
       spec: {
         interrupt: {type: "action", action: "interrupt", name: "Interrupt"},
@@ -373,20 +385,16 @@ define(function(require, exports, module) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
+            console.log("checking for settings...");
             if ("setup" in settings) {
-              console.log("got settings: " + settings.setup);
+              console.log("got settings already: " + settings.setup);
             } else {
               settings.setup = defaultSetup;
             }
             self.settings = settings;
             var finish = function () {
               if (bkHelper.hasSessionId()) {
-                var initCode = ("import beaker_runtime as beaker_runtime\n" +
-                                "beaker = beaker_runtime.Beaker()\n" +
-                                "beaker.register_output()\n" +
-                                "beaker.set_session('" + bkHelper.getSessionId() + "')\n" +
-                                settings.setup);
-                self.evaluate(initCode, {}).then(function () {
+                self.evaluate(self.initCode(), {}).then(function () {
                   if (doneCB) {
                     doneCB(self);
                   }});

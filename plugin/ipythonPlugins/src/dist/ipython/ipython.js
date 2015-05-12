@@ -337,7 +337,6 @@ define(function(require, exports, module) {
                 this.settings.setup + "\n");
       },
       reset: function() {
-        console.log("reset");
         var kernel = kernels[this.settings.shellID];
         var self = this;
         kernel.restart(function () {
@@ -396,10 +395,7 @@ define(function(require, exports, module) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
-            console.log("checking for settings...");
-            if ("setup" in settings) {
-              console.log("got settings already: " + settings.setup);
-            } else {
+            if (!("setup" in settings)) {
               settings.setup = defaultSetup;
             }
             self.settings = settings;

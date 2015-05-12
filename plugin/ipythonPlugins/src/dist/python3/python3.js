@@ -319,7 +319,7 @@ define(function(require, exports, module) {
       },
       reconnect: function() {
         var kernel = kernels[this.settings.shellID];
-        kernel.restart();
+        kernel.reconnect();
       },
       interrupt: function() {
         this.cancelExecution();
@@ -329,10 +329,50 @@ define(function(require, exports, module) {
           _theCancelFunction();
         }
       },
+      initCode: function() {
+        return ("import beaker_runtime3 as beaker_runtime\n" +
+                "beaker = beaker_runtime.Beaker()\n" +
+                "beaker.register_output()\n" +
+                "beaker.set_session('" + bkHelper.getSessionId() + "')\n" +
+                this.settings.setup + "\n");
+      },
+      reset: function() {
+        var kernel = kernels[this.settings.shellID];
+        var self = this;
+        kernel.restart(function () {
+          var waitForKernel = function() {
+            if ((ipyVersion == '3') ?
+                (kernel.ws.readyState == 1) :
+                (kernel.shell_channel.readyState == 1 &&
+                 kernel.stdin_channel.readyState == 1 &&
+                 kernel.iopub_channel.readyState == 1)) {
+              self.evaluate(self.initCode(), {});
+            } else {
+              setTimeout(waitForKernel, 50);
+            }
+          };
+          waitForKernel();
+        });
+      },
+      updateShell: function() {
+        this.reset();
+      },
       spec: {
-        interrupt: {type: "action", action: "interrupt", name: "Interrupt"}
+        interrupt: {type: "action", action: "interrupt", name: "Interrupt"},
+        reset: {type: "action", action: "reset", name: "Restart"},
+        setup: {type: "settableString", action: "updateShell", name: "Setup Code"}
       }
   };
+  var defaultSetup = ("%matplotlib inline\n" +
+                      "import numpy\n" +
+                      "import matplotlib\n" +
+                      "from matplotlib import pylab, mlab, pyplot\n" +
+                      "np = numpy\n" +
+                      "plt = pyplot\n" +
+                      "from IPython.display import display\n" +
+                      "from IPython.core.pylabtools import figsize, getfigs\n" +
+                      "from pylab import *\n" +
+                      "from numpy import *\n");
 
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
@@ -355,32 +395,13 @@ define(function(require, exports, module) {
           var self = this;
           var setShellIdCB = function(shellID) {
             settings.shellID = shellID;
-
-            // XXX these are not used by python, they are leftover from groovy
-            if (!settings.imports) {
-              settings.imports = "";
-            }
-            if (!settings.supplementalClassPath) {
-              settings.supplementalClassPath = "";
+            if (!("setup" in settings)) {
+              settings.setup = defaultSetup;
             }
             self.settings = settings;
             var finish = function () {
               if (bkHelper.hasSessionId()) {
-                var initCode = ("%matplotlib inline\n" +
-                    "import numpy\n" +
-                    "import matplotlib\n" +
-                    "from matplotlib import pylab, mlab, pyplot\n" +
-                    "np = numpy\n" +
-                    "plt = pyplot\n" +
-                    "from IPython.display import display\n" +
-                    "from IPython.core.pylabtools import figsize, getfigs\n" +
-                    "from pylab import *\n" +
-                    "from numpy import *\n" +
-                    "import beaker_runtime3 as beaker_runtime\n" +
-                    "beaker = beaker_runtime.Beaker()\n" +
-                    "beaker.register_output()\n" +
-                    "beaker.set_session('" + bkHelper.getSessionId() + "')\n");
-                self.evaluate(initCode, {}).then(function () {
+                self.evaluate(self.initCode(), {}).then(function () {
                   if (doneCB) {
                     doneCB(self);
                   }});

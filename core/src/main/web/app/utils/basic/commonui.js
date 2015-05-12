@@ -115,6 +115,7 @@
         scope.$on('$destroy', function() {
           hideDropdown();
           element.off('click');
+          $(document).off('click.bs.dropdown.data-api', hideDropdown);
         });
       }
     };

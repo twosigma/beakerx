@@ -16,12 +16,12 @@
 
 var _ = require('underscore');
 
-var BeakerPageObject = function () {
+var BeakerPageObject = function() {
   this.baseURL = 'http://localhost:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
   this.submenu = element.all(by.repeater('item in getMenuItems() | isHidden'))
-    .filter(function(e,i) { return e.isDisplayed(); });
-  this.sync = function () {
+    .filter(function(e, i) { return e.isDisplayed(); });
+  this.sync = function() {
     browser.actions().mouseDown().mouseUp().perform();
   };
 
@@ -60,10 +60,10 @@ var BeakerPageObject = function () {
                     require('./mixins/cell.js'));
   };
   this.waitForPlugin = function(plugin) {
-    browser.wait(function () {
+    browser.wait(function() {
       var deferred = protractor.promise.defer();
       this.languageManagerButtonActive(plugin).isPresent()
-        .then(function (result) {
+        .then(function(result) {
           deferred.fulfill(result);
         });
       return deferred.promise;
@@ -104,18 +104,18 @@ var BeakerPageObject = function () {
   this.modalDialogCancelButton = element(by.css('.modal .cancel'));
 
   this.cellEvaluatorMenu = element(by.css('.code-cell-area .cell-evaluator-menu'));
-  this.cellEvaluatorMenuItem = function (language) {
+  this.cellEvaluatorMenuItem = function(language) {
     return element(by.css('.code-cell-area .' + language + '-menuitem'));
   };
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
-  this.setCellInput = function (code) {
+  this.setCellInput = function(code) {
     browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
   };
   this.waitForCellOutput = function(plugin) {
-    browser.wait(function () {
+    browser.wait(function() {
       var deferred = protractor.promise.defer();
       this.getCellOutput().isPresent()
-        .then(function (result) {
+        .then(function(result) {
           deferred.fulfill(result);
         });
       return deferred.promise;

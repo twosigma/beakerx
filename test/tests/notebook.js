@@ -15,7 +15,7 @@
  */
 
 var BeakerPageObject = require('./beaker.po.js');
-describe('notebook', function () {
+describe('notebook', function() {
   var originalTimeout = 0;
 
   beakerPO = new BeakerPageObject();
@@ -30,12 +30,12 @@ describe('notebook', function () {
     expect(browser.getTitle()).toEqual('New Notebook');
   });
 
-  it('can add a cell', function () {
+  it('can add a cell', function() {
     beakerPO.insertCellButton.click();
     expect(beakerPO.evaluateButton.isDisplayed()).toBe(true);
   });
 
-  it('can set a cell language to Groovy', function (done) {
+  it('can set a cell language to Groovy', function(done) {
     /* load iPython */
     beakerPO.notebookMenu.click();
     beakerPO.languageManagerMenuItem.click();
@@ -49,7 +49,7 @@ describe('notebook', function () {
     done();
   });
 
-  it('can enter code into a cell and evaluate it', function (done) {
+  it('can enter code into a cell and evaluate it', function(done) {
     beakerPO.setCellInput("1+1");
     beakerPO.evaluateButton.click();
     beakerPO.waitForCellOutput();

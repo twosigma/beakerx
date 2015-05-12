@@ -52,8 +52,8 @@ var BeakerPageObject = function() {
   this.closeNotebook = function() {
     return this.fileMenu.click()
     .then(this.closeMenuItem.click)
-    .then(this.modalDialogNoButton.click)
-  }.bind(this)
+    .then(this.modalDialogNoButton.click);
+  }.bind(this);
 
   this.codeCell = function(index) {
     return _.extend(element.all(by.css('.bkcell.code')).get(index),
@@ -77,12 +77,12 @@ var BeakerPageObject = function() {
       return el.click();
     })
     .then(function() {
-      return element(by.css('.markup p'))
+      return element(by.css('.markup p'));
     })
     .then(function(el) {
       return el.getText();
     });
- }
+  };
 
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {

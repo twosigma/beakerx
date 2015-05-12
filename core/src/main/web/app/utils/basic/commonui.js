@@ -242,7 +242,9 @@
 
         scope.$watchCollection('getSubItems()', function(items, oldItems) {
           if (!_.isEmpty(items)) {
+            //jscs:disable
             $compile('<bk-dropdown-menu menu-items="getSubItems()"></bk-dropdown-menu>')(scope, function(cloned, scope) {
+            //jscs:enable
               element.find('ul.dropdown-menu').remove();
               element.append(cloned);
             });

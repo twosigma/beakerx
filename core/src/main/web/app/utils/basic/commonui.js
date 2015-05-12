@@ -80,6 +80,16 @@
       link: function(scope, element, attrs) {
         var dropdown = element.find('.dropdown-menu').first();
         var toggle = element.find('.dropdown-toggle').first();
+        element.on('click', '.dropdown-toggle', toggleDropdown);
+        $(document).on('click.bs.dropdown.data-api', hideDropdown);
+
+        function toggleDropdown() {
+          if ($(dropdown).is(':visible')) {
+            return hideDropdown();
+          }
+
+          showDropdown();
+        }
 
         var showDropdown = function() {
           window.requestAnimationFrame(function() {
@@ -95,9 +105,6 @@
             dropdown.prependTo(notebook);
             dropdown.css('visibility', 'visible');
           });
-
-          element.on('click', '.dropdown-toggle', hideDropdown);
-          $(document).on('click.bs.dropdown.data-api', hideDropdown);
         };
 
         var hideDropdown = function() {
@@ -105,16 +112,12 @@
           .hide()
           .css('visibility', 'hidden')
           .appendTo(element);
-
-          element.on('click', '.dropdown-toggle', showDropdown);
-          $(document).off('click.bs.dropdown.data-api', hideDropdown);
         };
-
-        element.on('click', '.dropdown-toggle', showDropdown);
 
         scope.$on('$destroy', function() {
           hideDropdown();
           element.off('click');
+          $(document).off('click.bs.dropdown.data-api', hideDropdown);
         });
       }
     };

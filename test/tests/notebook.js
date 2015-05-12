@@ -88,4 +88,28 @@ describe('notebook', function() {
     .then(done);
   });
 
+  it('can open the menu', function(done) {
+    beakerPO.newEmptyNotebook.click()
+    .then(beakerPO.insertCellButton.click)
+    .then(beakerPO.toggleCellMenu.bind(this, {cellIndex: 0}))
+    .then(beakerPO.isCellMenuOpen.bind(this, {cellIndex: 0}))
+    .then(function(isOpen) {
+      expect(isOpen).toEqual(true);
+    })
+    .then(beakerPO.closeNotebook)
+    .then(done);
+  });
+
+  it('can close the menu', function(done) {
+    beakerPO.newEmptyNotebook.click()
+    .then(beakerPO.insertCellButton.click)
+    .then(beakerPO.toggleCellMenu.bind(this, {cellIndex: 0}))
+    .then(beakerPO.toggleCellMenu.bind(this, {cellIndex: 0}))
+    .then(beakerPO.isCellMenuOpen.bind(this, {cellIndex: 0}))
+    .then(function(isOpen) {
+      expect(isOpen).toEqual(false);
+    })
+    .then(beakerPO.closeNotebook)
+    .then(done);
+  });
 });

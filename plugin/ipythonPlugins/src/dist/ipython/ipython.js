@@ -319,7 +319,7 @@ define(function(require, exports, module) {
       },
       reconnect: function() {
         var kernel = kernels[this.settings.shellID];
-        kernel.reconnect(); // fix #1576? XXX
+        kernel.reconnect();
       },
       interrupt: function() {
         this.cancelExecution();
@@ -334,22 +334,33 @@ define(function(require, exports, module) {
                 "beaker = beaker_runtime.Beaker()\n" +
                 "beaker.register_output()\n" +
                 "beaker.set_session('" + bkHelper.getSessionId() + "')\n" +
-                this.settings.setup);
+                this.settings.setup + "\n");
       },
       reset: function() {
         console.log("reset");
         var kernel = kernels[this.settings.shellID];
         var self = this;
         kernel.restart(function () {
-          // need to call waitForKernel() i think XXX
-          self.evaluate(self.initCode(), {});});
+          var waitForKernel = function() {
+            if ((ipyVersion == '3') ?
+                (kernel.ws.readyState == 1) :
+                (kernel.shell_channel.readyState == 1 &&
+                 kernel.stdin_channel.readyState == 1 &&
+                 kernel.iopub_channel.readyState == 1)) {
+              self.evaluate(self.initCode(), {});
+            } else {
+              setTimeout(waitForKernel, 50);
+            }
+          };
+          waitForKernel();
+        });
       },
       updateShell: function() {
         this.reset();
       },
       spec: {
         interrupt: {type: "action", action: "interrupt", name: "Interrupt"},
-        reset: {type: "action", action: "reset", name: "Reset"},
+        reset: {type: "action", action: "reset", name: "Restart"},
         setup: {type: "settableString", action: "updateShell", name: "Setup Code"}
       }
   };

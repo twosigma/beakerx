@@ -25,6 +25,28 @@ var BeakerPageObject = function() {
     browser.actions().mouseDown().mouseUp().perform();
   };
 
+  this.toggleCellMenu = function(opts) {
+    return element.all(by.css('.bkcell .dropdown-promoted'))
+    .get(opts.cellIndex)
+    .then(function(elm) {
+      return elm.click();
+    });
+  };
+
+  this.isCellMenuOpen = function(opts) {
+    return element.all(by.css('.bkcell .open.toggle-menu.bkr'))
+    .get(opts.cellIndex)
+    .then(function(elm) {
+      return elm.isDisplayed()
+      .then(function() {
+        return true;
+      });
+    })
+    .thenCatch(function() {
+      return false;
+    });
+  };
+
   this.createMarkdownCell = function(text) {
     element(by.css('bk-new-cell-menu .dropdown-toggle'))
     .click()

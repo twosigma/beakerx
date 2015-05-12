@@ -69,7 +69,7 @@
       return _(input).filter(function(it) {
         return !it.hidden;
       });
-    }
+    };
   });
   module.directive('dropdownPromoted', function() {
     // Is your dropdown being covered by its ancestors siblings?
@@ -117,7 +117,7 @@
           element.off('click');
         });
       }
-    }
+    };
   });
   module.directive('bkDropdownMenu', function() {
     return {
@@ -299,6 +299,6 @@
         scope.$watch("fgColor", updateStyle);
         scope.$watch("borderColor", updateStyle);
       }
-    }
+    };
   });
 })();

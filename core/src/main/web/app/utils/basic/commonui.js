@@ -25,7 +25,7 @@
   module.directive('onCtrlEnter', function() {
     return {
       link: function(scope, element, attrs) {
-        element.bind("keyup", function(event) {
+        element.bind('keyup', function(event) {
           if (event.ctrlKey && event.keyCode === 13) { // ctrl + enter
             scope.$apply(attrs.onCtrlEnter);
           }
@@ -54,11 +54,11 @@
       restrict: 'C',
       link: function(scope, element, attrs) {
         element.mouseover(function(event) {
-          element.addClass("cell-bracket-selected");
+          element.addClass('cell-bracket-selected');
           event.stopPropagation();
         });
         element.mouseout(function(event) {
-          element.removeClass("cell-bracket-selected");
+          element.removeClass('cell-bracket-selected');
           event.stopPropagation();
         });
       }
@@ -124,7 +124,7 @@
       restrict: 'E',
       template: JST['template/dropdown'](),
       scope: {
-        "menuItems": "=",
+        'menuItems': '=',
 
         // Classes to be added to any submenu item. Used for adding
         // pull-left to menus that are on the far right (e.g. bkcellmenu).
@@ -143,7 +143,7 @@
       restrict: 'E',
       template: JST['template/dropdown_item'](),
       scope: {
-        "item": "="
+        'item': '='
       },
       replace: true,
       controller: function($scope) {
@@ -157,29 +157,29 @@
         $scope.getAClass = function(item) {
           var result = [];
           if (isItemDisabled(item)) {
-            result.push("disabled-link");
+            result.push('disabled-link');
           } else if (item.items && item.items.length <= 1 && item.autoReduce) {
             if (item.items.length === 0) {
-              result.push("disabled-link");
+              result.push('disabled-link');
             } else if (item.items.length === 1) {
               if (isItemDisabled(item.items[0])) {
-                result.push("disabled-link");
+                result.push('disabled-link');
               }
             }
           }
           result.push(item.id);
-          return result.join(" ");
+          return result.join(' ');
         };
 
         $scope.getItemClass = function(item) {
           var result = [];
-          if (item.type === "divider") {
-            result.push("divider");
-          } else if (item.type === "submenu" || item.items) {
+          if (item.type === 'divider') {
+            result.push('divider');
+          } else if (item.type === 'submenu' || item.items) {
             if (item.items && item.items.length <= 1 && item.autoReduce) {
 
             } else {
-              result.push("dropdown-submenu");
+              result.push('dropdown-submenu');
               // Add any extra submenu classes. (e.g. to specify if it should be left or right).
               if ($scope.submenuClasses) {
                 _.each(
@@ -191,7 +191,7 @@
               }
             }
           }
-          return result.join(" ");
+          return result.join(' ');
         };
 
         $scope.runAction = function(item) {
@@ -205,7 +205,7 @@
         };
 
         $scope.getName = function(item) {
-          var name = "";
+          var name = '';
           if (item.items && item.items.length === 1 && item.autoReduce) {
             if (item.items[0].reducedName) {
               name = item.items[0].reducedName;
@@ -256,7 +256,7 @@
 
   module.directive('bkEnter', function() {
     return function(scope, element, attrs) {
-      element.bind("keydown keypress", function(event) {
+      element.bind('keydown keypress', function(event) {
         if (event.which === 13) {
           scope.$apply(function() {
             scope.$eval(attrs.bkEnter);
@@ -269,13 +269,13 @@
 
   module.directive('bkLanguageLogo', function() {
     return {
-      restrict: "E",
-      template: "<span ng-style='style'>{{name}}</span>",
+      restrict: 'E',
+      template: '<span ng-style="style">{{name}}</span>',
       scope: {
-        name: "@",
-        bgColor: "@",
-        fgColor: "@",
-        borderColor: "@"
+        name: '@',
+        bgColor: '@',
+        fgColor: '@',
+        borderColor: '@'
       },
       link: function(scope, element, attrs) {
         scope.style = {
@@ -288,18 +288,18 @@
             'color': scope.fgColor
           };
           if (scope.borderColor) {
-            scope.style['border-width'] = "1px";
+            scope.style['border-width'] = '1px';
             scope.style['border-color'] = scope.borderColor;
-            scope.style['border-style'] = "solid";
+            scope.style['border-style'] = 'solid';
           } else {
             delete scope.style['border-width'];
             delete scope.style['border-color'];
             delete scope.style['border-style'];
           }
         };
-        scope.$watch("bgColor", updateStyle);
-        scope.$watch("fgColor", updateStyle);
-        scope.$watch("borderColor", updateStyle);
+        scope.$watch('bgColor', updateStyle);
+        scope.$watch('fgColor', updateStyle);
+        scope.$watch('borderColor', updateStyle);
       }
     };
   });

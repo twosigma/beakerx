@@ -25,6 +25,19 @@ var BeakerPageObject = function() {
     browser.actions().mouseDown().mouseUp().perform();
   };
 
+  this.toggleLanguageCellMenu = function(opts) {
+    return element.all(by.css('.dropdown-toggle bk-language-logo'))
+    .get(opts.cellIndex)
+    .then(function(elm) {
+      return elm.click();
+    })
+  };
+
+  this.isLanguageCellMenuOpen = function() {
+    return element(by.css('.inputcellmenu'))
+    .isDisplayed();
+  }
+
   this.toggleCellMenu = function(opts) {
     return element.all(by.css('.bkcell .dropdown-promoted'))
     .get(opts.cellIndex)
@@ -32,6 +45,12 @@ var BeakerPageObject = function() {
       return elm.click();
     });
   };
+
+  this.toggleAdvancedMode = function() {
+    return element(by.css('.view-menu'))
+    .click()
+    .then(element(by.partialLinkText('Advanced Mode')).click);
+  }
 
   this.isCellMenuOpen = function(opts) {
     return element.all(by.css('.bkcell .open.toggle-menu.bkr'))

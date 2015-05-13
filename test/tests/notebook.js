@@ -88,6 +88,48 @@ describe('notebook', function() {
     .then(done);
   });
 
+  it('can open a cells language menu in advanced mode', function(done) {
+    beakerPO.newEmptyNotebook.click()
+    .then(beakerPO.insertCellButton.click)
+    .then(beakerPO.toggleAdvancedMode)
+    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 0}))
+    .then(beakerPO.isLanguageCellMenuOpen)
+    .then(function(isOpen) {
+      expect(isOpen).toEqual(true);
+    })
+    .then(beakerPO.toggleAdvancedMode)
+    .then(beakerPO.closeNotebook)
+    .then(done);
+  });
+
+  it('can close a cell language menu by clicking off', function(done) {
+    beakerPO.newEmptyNotebook.click()
+    .then(beakerPO.insertCellButton.click)
+    .then(beakerPO.toggleAdvancedMode)
+    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 0}))
+    .then(element(by.css('body')).click)
+    .then(beakerPO.isLanguageCellMenuOpen)
+    .then(function(isOpen) {
+      expect(isOpen).toEqual(false);
+    })
+    .then(beakerPO.toggleAdvancedMode)
+    .then(beakerPO.closeNotebook)
+    .then(done);
+  });
+
+  it('can close a cell menu by clicking off', function(done) {
+    beakerPO.newEmptyNotebook.click()
+    .then(beakerPO.insertCellButton.click)
+    .then(beakerPO.toggleCellMenu.bind(this, {cellIndex: 0}))
+    .then(element(by.css('body')).click)
+    .then(beakerPO.isCellMenuOpen.bind(this, {cellIndex: 0}))
+    .then(function(isOpen) {
+      expect(isOpen).toEqual(false);
+    })
+    .then(beakerPO.closeNotebook)
+    .then(done);
+  });
+
   it('can open the menu', function(done) {
     beakerPO.newEmptyNotebook.click()
     .then(beakerPO.insertCellButton.click)

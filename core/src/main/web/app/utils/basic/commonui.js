@@ -78,10 +78,12 @@
     return {
       restrict: 'C',
       link: function(scope, element, attrs) {
+        $(window).on('click.' + scope.$id, hideDropdown);
+
         var dropdown = element.find('.dropdown-menu').first();
         var toggle = element.find('.dropdown-toggle').first();
+
         element.on('click', '.dropdown-toggle', toggleDropdown);
-        $(document).on('click.bs.dropdown.data-api', hideDropdown);
 
         function toggleDropdown() {
           if ($(dropdown).is(':visible')) {
@@ -97,27 +99,22 @@
             var togglePosition = toggle.offset();
             var notebookPosition = notebook.offset();
 
+            dropdown.prependTo(notebook);
+
             dropdown.show().css({
               top: togglePosition.top - notebookPosition.top + 'px',
               left: togglePosition.left - notebookPosition.left - dropdown.outerWidth() + 'px',
             });
-
-            dropdown.prependTo(notebook);
-            dropdown.css('visibility', 'visible');
           });
         };
 
-        var hideDropdown = function() {
-          dropdown
-          .hide()
-          .css('visibility', 'hidden')
-          .appendTo(element);
-        };
+        function hideDropdown() { dropdown.hide();}
 
         scope.$on('$destroy', function() {
-          hideDropdown();
+          $(window).off('.' + scope.$id);
+          // Since the dropdown is external to the directive we need to make sure to clean it up when the directive goes away
+          dropdown.remove();
           element.off('click');
-          $(document).off('click.bs.dropdown.data-api', hideDropdown);
         });
       }
     };

@@ -99,12 +99,12 @@
             var togglePosition = toggle.offset();
             var notebookPosition = notebook.offset();
 
+            dropdown.prependTo(notebook);
+
             dropdown.show().css({
               top: togglePosition.top - notebookPosition.top + 'px',
               left: togglePosition.left - notebookPosition.left - dropdown.outerWidth() + 'px',
             });
-
-            dropdown.prependTo(notebook);
           });
         };
 

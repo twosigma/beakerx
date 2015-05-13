@@ -105,20 +105,15 @@
             });
 
             dropdown.prependTo(notebook);
-            dropdown.css('visibility', 'visible');
           });
         };
 
-        function hideDropdown() {
-          dropdown
-          .hide()
-          .css('visibility', 'hidden')
-          .appendTo(element);
-        }
+        function hideDropdown() { dropdown.hide();}
 
         scope.$on('$destroy', function() {
           $(window).off('.' + scope.$id);
-          hideDropdown();
+          // Since the dropdown is external to the directive we need to make sure to clean it up when the directive goes away
+          dropdown.remove();
           element.off('click');
         });
       }

@@ -78,10 +78,12 @@
     return {
       restrict: 'C',
       link: function(scope, element, attrs) {
+        $(window).on('click.' + scope.$id, hideDropdown);
+
         var dropdown = element.find('.dropdown-menu').first();
         var toggle = element.find('.dropdown-toggle').first();
+
         element.on('click', '.dropdown-toggle', toggleDropdown);
-        $(document).on('click.bs.dropdown.data-api', hideDropdown);
 
         function toggleDropdown() {
           if ($(dropdown).is(':visible')) {
@@ -107,17 +109,17 @@
           });
         };
 
-        var hideDropdown = function() {
+        function hideDropdown() {
           dropdown
           .hide()
           .css('visibility', 'hidden')
           .appendTo(element);
-        };
+        }
 
         scope.$on('$destroy', function() {
+          $(window).off('.' + scope.$id);
           hideDropdown();
           element.off('click');
-          $(document).off('click.bs.dropdown.data-api', hideDropdown);
         });
       }
     };

@@ -84,3 +84,7 @@ tbody tr {
     background-color: $navbar-default-link-hover-bg !important;
   }
 }
+
+bk-output-display .progress-bar {
+  line-height: 21px;
+}

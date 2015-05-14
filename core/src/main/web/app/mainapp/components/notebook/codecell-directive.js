@@ -56,7 +56,7 @@
         $scope.isError = function() {
           //jscs:disable
           if ($scope.cellmodel === undefined || $scope.cellmodel.output === undefined || $scope.cellmodel.output.result === undefined) {
-          //jscs:enable
+            //jscs:enable
             return false;
           }
 
@@ -342,11 +342,14 @@
           }
         });
 
-        scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
+        Scrollin.track(element[0], {handler: function() {
+          scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
+          scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
+          scope.cm.on('change', changeHandler);
+        }});
 
         scope.updateUI(scope.getEvaluator());
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
-        scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
 
         // cellmodel.body --> CodeMirror
         scope.$watch('cellmodel.input.body', function(newVal, oldVal) {
@@ -369,8 +372,6 @@
             }
           }
         };
-
-        scope.cm.on('change', changeHandler);
 
         var inputMenuDiv = element.find('.bkcell').first();
         scope.popupMenu = function(event) {
@@ -417,6 +418,7 @@
         });
 
         scope.$on('$destroy', function() {
+          Scrollin.untrack(element[0]);
           CodeMirror.off(window, 'resize', resizeHandler);
           CodeMirror.off('change', changeHandler);
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);

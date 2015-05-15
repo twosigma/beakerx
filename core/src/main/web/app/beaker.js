@@ -152,7 +152,8 @@
       'bk.evaluatePluginManager',
       'bk.controlPanel',
       'bk.mainApp',
-      'bk.helper'
+      'bk.helper',
+      'bk.utils'
     ]);
 
 
@@ -311,6 +312,7 @@
           return $location.path("session/" + sessionId).search({});
         }
       };
+      bkUtils.initializeCometd(document.baseURI+'cometd/');
       bkCoreManager.init(beakerRootOp);
       Q.delay(1000).then(function() {
         $.get("../beaker/rest/util/whoami", {}, function(data) {

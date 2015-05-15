@@ -180,7 +180,7 @@
           $scope.outputLog = res;
         });
 
-        $scope.unregisterOutputLog = bkOutputLog.subscribe(function (reply) {
+        bkOutputLog.subscribe(function (reply) {
           if (!_impl._viewModel.isShowingOutput()) {
             _impl._viewModel.toggleShowOutput();
           }
@@ -313,7 +313,7 @@
         });
         scope.$on("$destroy", function() {
           scope.setBkNotebook({bkNotebook: undefined});
-          scope.unregisterOutputLog();
+          bkOutputLog.unsubscribe();
           _(scope.unregisters).each(function(unregister) {
             unregister();
           });

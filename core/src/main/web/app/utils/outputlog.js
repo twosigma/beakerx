@@ -31,6 +31,9 @@
       },
       subscribe: function (cb) {
         return cometdUtils.addOutputlogUpdateListener(cb);
+      },
+      unsubscribe: function() {
+        cometdUtils.removeOutputlogUpdateListener();
       }
     };
   });

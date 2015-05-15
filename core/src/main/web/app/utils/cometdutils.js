@@ -21,27 +21,37 @@
   'use strict';
   var module = angular.module('bk.cometdUtils', []);
   module.factory('cometdUtils', function () {
-    $.cometd.init({
-      url: document.baseURI+'cometd/'
-    });
     var _statusListener;
+    var _outputListener;
     return {
+      initializeCometd: function(uri) {
+        $.cometd.init({
+          url: uri
+        });
+      },
       addConnectedStatusListener: function (cb) {
-        if (_statusListener) {
-          this.removeConnectedStatusListener();
-        }
+        this.removeConnectedStatusListener();
         _statusListener = $.cometd.addListener("/meta/connect", cb);
       },
       removeConnectedStatusListener: function () {
-        $.cometd.removeListener(_statusListener);
+        if (_statusListener) {
+          $.cometd.removeListener(_statusListener);
+          _statusListener = undefined;
+        }
       },
       addOutputlogUpdateListener: function (cb) {
-        var listener = $.cometd.subscribe("/outputlog", cb);
-        return function() {
-          $.cometd.removeListener(listener);
-        };
+        this.removeOutputlogUpdateListener();
+        _outputListener = $.cometd.subscribe("/outputlog", cb);
+      },
+      removeOutputlogUpdateListener: function () {
+        if (_outputListener) {
+          $.cometd.removeListener(_outputListener);
+          _outputListener = undefined;
+        }
       },
       disconnect: function() {
+        this.removeConnectedStatusListener();
+        this.removeOutputlogUpdateListener();
         return $.cometd.disconnect();
       }
     };

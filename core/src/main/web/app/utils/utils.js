@@ -207,6 +207,9 @@
 
         return deferred.promise;
       },
+      initializeCometd: function(uri) {
+        return cometdUtils.initializeCometd(uri);
+      },
       addConnectedStatusListener: function(cb) {
         return cometdUtils.addConnectedStatusListener(cb);
       },

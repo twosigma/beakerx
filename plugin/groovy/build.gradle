@@ -32,7 +32,7 @@ dependencies {
   provided project(':plugin:jvm')
   // would prefer "groovy" over "groovy-all" but that gives me this problem:
   // http://stackoverflow.com/questions/11738732/exception-java-lang-incompatibleclasschangeerror-while-running-groovy-in-eclipse
-  provided group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.2.1'
+  provided group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.3'
   compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.3'
   antlr group : 'org.antlr', name :'antlr4', version: '4.3'
 }

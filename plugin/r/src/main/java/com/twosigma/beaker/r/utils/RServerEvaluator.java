@@ -482,8 +482,8 @@ public class RServerEvaluator {
               isfinished = true;
             } else if (isError(result, j.outputObject)) {
               isfinished = true;
-            } else if (resultjson!=null && !resultjson.isEmpty() && resultjson.matches("(?s).*\"type\"\\s*:\\s*\"TableDisplay\".*")) {
-              logger.fine("is a dataframe");              
+            } else if (resultjson!=null && !resultjson.isEmpty() && resultjson.startsWith("{ \"type\":" )) {
+              logger.fine("is a beaker object");              
               j.outputObject.finished(null, resultjson);
               isfinished = true;
             } else if (!isVisible(result, j.outputObject)) {

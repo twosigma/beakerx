@@ -91,8 +91,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "28ea6005-332c-4290-ba87-599a4c7830cf",
-                "elapsedTime": 694
+                "shellId": "13ac4b7a-6639-4baf-95c7-42986d0e38a9",
+                "elapsedTime": 2842
             },
             "evaluatorReader": true,
             "lineCount": 27
@@ -127,7 +127,7 @@
                     "  error <- TRUE",
                     "}",
                     "",
-                    "if (class(npm) != \"list\" || length(npm) != 3 || npm$c$type != \"Plot\") {",
+                    "if (class(npm) != \"list\" || length(npm) != 3) {",
                     "  print(\"ERROR npm\")",
                     "  error <- TRUE",
                     "}",
@@ -190,8 +190,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "07de3482-68d4-4e40-95a4-5d760ec8a2b1",
-                "elapsedTime": 672,
+                "shellId": "6429bcd1-62a0-4dd5-bc14-7af2eae9cf2d",
+                "elapsedTime": 632,
                 "dataresult": [
                     "OK"
                 ]
@@ -266,8 +266,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "R",
-                "shellId": "07de3482-68d4-4e40-95a4-5d760ec8a2b1",
-                "elapsedTime": 1731,
+                "shellId": "6429bcd1-62a0-4dd5-bc14-7af2eae9cf2d",
+                "elapsedTime": 2445,
                 "dataresult": [
                     "OK"
                 ]
@@ -396,8 +396,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Groovy",
-                "shellId": "28ea6005-332c-4290-ba87-599a4c7830cf",
-                "elapsedTime": 714
+                "shellId": "13ac4b7a-6639-4baf-95c7-42986d0e38a9",
+                "elapsedTime": 1101
             },
             "evaluatorReader": true,
             "lineCount": 109
@@ -495,47 +495,7 @@
         "npm": {
             "a": 1,
             "b": 2,
-            "c": {
-                "type": "Plot",
-                "init_width": 640,
-                "init_height": 480,
-                "chart_title": null,
-                "domain_axis_label": null,
-                "y_label": "",
-                "show_legend": false,
-                "use_tool_tip": true,
-                "graphics_list": [],
-                "constant_lines": [],
-                "constant_bands": [],
-                "texts": [],
-                "rangeAxes": [
-                    {
-                        "type": "YAxis",
-                        "auto_range": true,
-                        "auto_range_includes_zero": true,
-                        "lower_margin": 0.05,
-                        "upper_margin": 0.05,
-                        "lower_bound": 0,
-                        "upper_bound": 0,
-                        "log": false
-                    }
-                ],
-                "x_auto_range": true,
-                "x_lower_margin": 0.05,
-                "x_upper_margin": 0.05,
-                "x_lower_bound": 0,
-                "x_upper_bound": 0,
-                "y_auto_range": true,
-                "y_auto_range_includes_zero": true,
-                "y_lower_margin": 0.05,
-                "y_upper_margin": 0.05,
-                "y_lower_bound": 0,
-                "y_upper_bound": 0,
-                "log_x": false,
-                "log_y": false,
-                "time_zone": null,
-                "crosshair": null
-            }
+            "c": "com.twosigma.beaker.chart.xychart.Plot@5b5408cc"
         },
         "ptmx": {
             "type": "TableDisplay",
@@ -3718,12 +3678,12 @@
                 "select",
                 "select",
                 "double",
-                "string",
-                "string",
+                "integer",
+                "integer",
                 "select",
                 "select",
-                "string",
-                "string",
+                "integer",
+                "integer",
                 "select",
                 "select"
             ]
@@ -3838,10 +3798,10 @@
                 ]
             ],
             "types": [
-                "string",
-                "string",
-                "string",
-                "string"
+                "integer",
+                "integer",
+                "integer",
+                "integer"
             ]
         },
         "namedlist": {
@@ -3853,54 +3813,7 @@
                 455.6,
                 0.3
             ],
-            "mymatrix": {
-                "type": "TableDisplay",
-                "subtype": "Matrix",
-                "columnNames": [
-                    "c1",
-                    "c2",
-                    "c3",
-                    "c4"
-                ],
-                "values": [
-                    [
-                        1,
-                        6,
-                        11,
-                        16
-                    ],
-                    [
-                        2,
-                        7,
-                        12,
-                        17
-                    ],
-                    [
-                        3,
-                        8,
-                        13,
-                        18
-                    ],
-                    [
-                        4,
-                        9,
-                        14,
-                        19
-                    ],
-                    [
-                        5,
-                        10,
-                        15,
-                        20
-                    ]
-                ],
-                "types": [
-                    "string",
-                    "string",
-                    "string",
-                    "string"
-                ]
-            },
+            "mymatrix": "object: matrix",
             "age": 5.3
         },
         "fact": [
@@ -3957,7 +3870,7 @@
         ],
         "dates": {
             "type": "Date",
-            "timestamp": "2007-06-21 20:00:00"
+            "timestamp": 1182470400000
         },
         "bmap": {
             "type": "TableDisplay",

@@ -26,14 +26,14 @@
         type: "BeakerDisplay",
         innertype: "Error",
         object: msg
-      }
+      };
     };
     var textMessage = function(msg) {
       return {
         type: "BeakerDisplay",
         innertype: "Text",
         object: msg
-      }
+      };
     };
     var ERROR_MESSAGE_ON_EARLIER_FAILURE =
       errorMessage("Evaluation cancelled due to a failure of an earlier cell evaluation");

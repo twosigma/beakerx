@@ -76,7 +76,7 @@
             if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
               $scope.$digest();
           }
-        }
+        };
         var showTransientStatusMessage = function(message, nodigest) {
           $scope.loadingmsg = message;
           if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
@@ -456,7 +456,7 @@
             bkSessionManager.dumpDisplayStatus();
             $timeout(function() {
               var content = bkSessionManager.getSaveData().notebookModelAsString;
-              return fileSaver.save(uri, content, true)}, 1).then(function() {
+              return fileSaver.save(uri, content, true);}, 1).then(function() {
                 deferred.resolve({uri: uri, uriType: uriType});
               }, function(reason) {
                 deferred.reject(reason);
@@ -599,7 +599,7 @@
                       bkEvaluateJobManager.cancelAll().then(function() {
                         self._closeNotebook();
                       }
-                    ) });
+                    ); });
               } else
                 self._closeNotebook();
             },
@@ -934,7 +934,7 @@
               var cell  = cellOp.getCell(name);
               cell.tags = tags;
               cellOp.rebuildMaps();
-              return ""
+              return "";
             }
           };
         })();
@@ -1069,7 +1069,7 @@
                         });
                       }
                       $location.path(path).search(routeParams);
-                    })
+                    });
                   });
                 }
             );

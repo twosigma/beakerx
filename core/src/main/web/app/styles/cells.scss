@@ -22,6 +22,14 @@
     background: transparent;
 }
 
+.bkcelltextarea {
+    border: none;
+    resize: none;
+    font-family: monospace;
+    padding-top: 19px;
+    padding-left: 29px;
+}
+
 .mini-cell-stats {
     top: 22px;
     left: 20px;

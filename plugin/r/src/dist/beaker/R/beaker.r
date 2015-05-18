@@ -49,6 +49,54 @@ convertToJSONObject <- function(val) {
   return (p)
 }
 
+convertToJSONArray <- function(val) {
+	p = "[ "
+	first <- TRUE
+	for (obj in val) {
+	  if (first) {
+	    first <- FALSE
+	  } else {
+	    p = paste(p, ", ", sep='')
+	  }
+	  p = paste(p, convertToJSON(obj, TRUE), sep='')
+	}
+	p = paste(p, " ]", sep='')
+	return (p)
+}
+
+convertToJSONObjectNoRecurse <- function(val) {
+  p = "{ "
+  first <- TRUE
+  for (obj in names(val)) {
+    if (first) {
+  	  first <- FALSE
+    } else {
+  	  p = paste(p, ", ", sep='')
+    }
+    p = paste(p, '"', sep='')
+    p = paste(p, obj, sep='')
+    p = paste(p, '": ', sep='')
+    p = paste(p, convertToJSONNoRecurse(val[[obj]]), sep='')
+  }
+  p = paste(p, " }", sep='')
+  return (p)
+}
+
+convertToJSONArrayNoRecurse <- function(val) {
+	p = "[ "
+	first <- TRUE
+	for (obj in val) {
+	  if (first) {
+	    first <- FALSE
+	  } else {
+	    p = paste(p, ", ", sep='')
+	  }
+	  p = paste(p, convertToJSONNoRecurse(obj), sep='')
+	}
+	p = paste(p, " ]", sep='')
+	return (p)
+}
+
 getTypeName <- function(c) {
   if (c == "numeric")
     p = "\"double\""
@@ -135,7 +183,7 @@ convertToDataTableLoM <- function(val) {
         comma2 = TRUE
       }
       if (exists(cn, where=l)) {
-        conv = convertToJSON(l[[cn]],TRUE)
+        conv = convertToJSONNoRecurse(l[[cn]])
         p = paste(p, conv, sep='')
       } else {
         p = paste(p, "\"\"", sep='')
@@ -147,9 +195,101 @@ convertToDataTableLoM <- function(val) {
   p = paste(p, "] }", sep='')
   return (p)
 }
+
+convertToJSONNoRecurse <- function(val) {
+  if (class(val) == "numeric" || class(val) == "integer" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
+    if (is.null(names(val))) {
+  	  if (length(val) == 1) {
+  	    o = toJSON(val, .level=0L);
+  	  } else {
+   	    o = toJSON(val)
+      }
+    } else {
+      # convert to dictionary     
+	  o = convertToJSONObject(val)
+    }
+  } else if (class(val) == "table") {
+    o = toJSON(val)
+  } else if (class(val) == "list") {
+    if (is.null(names(val))) {
+      # this is a basic list
+      o = convertToJSONArrayNoRecurse(val) 
+    } else {
+      # convert to dictionary
+	  o = convertToJSONObjectNoRecurse(val) 
+	}
+  } else if (class(val) == "complex") {
+    if (collapse && length(val) == 1) {
+      o = toJSON(as.character(val), .level=0L)
+    } else {
+      o = toJSON(as.character(val))
+    }
+  } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
+  	p = "{ \"type\": \"Date\", \"timestamp\": "
+  	p = paste(p, as.numeric(as.POSIXct(val, tz = "UTC"))*1000, sep='')
+  	p = paste(p, " }", sep='')
+  	o = p
+  } else {
+    o = paste("\"ERROR: invalid object type ", gsub("\"","\\\"",class(val)), sep='')
+    o = paste(o, "\"", sep='')
+  }
+  return (o)
+}
   
 convertToJSON <- function(val, collapse) {
-  if (class(val) == "data.frame") {
+ 
+  if (class(val) == "numeric" || class(val) == "integer" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
+    if (is.null(names(val))) {
+  	  if (collapse && length(val) == 1) {
+  	    o = toJSON(val, .level=0L);
+  	  } else {
+   	    o = toJSON(val)
+      }
+    } else if (containsOnlyBasicTypes(val)) {
+      # convert to datatable dictionary
+      o = convertToDataTableDictionary(val)
+    } else {
+      # convert to dictionary     
+	  o = convertToJSONObjectNoRecurse(val)
+    }
+    
+  } else if (class(val) == "list") {
+    if (is.null(names(val))) {
+      if (isListOfDictionaries(val)) {
+        # convert to datatable list of maps
+        o = convertToDataTableLoM(val)
+      } else {
+	    # this is a basic list
+		o = convertToJSONArrayNoRecurse(val)
+      }
+    } else if(exists("type", val) && exists("items", val) && val$type == "OutputContainer") {
+   	  p = "{ \"type\":\"OutputContainer\",\"items\":"
+      p = paste(p, convertToJSONArray(val$items), sep='')
+      p = paste(p, " }", sep='')
+      o = p
+	} else if (containsOnlyBasicTypes(val)) {
+      # convert to datatable dictionary
+      o = convertToDataTableDictionary(val)
+    } else {
+      # convert to dictionary     
+	  o = convertToJSONObject(val) 
+	}
+	
+  } else if (class(val) == "complex") {
+    if (collapse && length(val) == 1) {
+      o = toJSON(as.character(val), .level=0L)
+    } else {
+      o = toJSON(as.character(val))
+    }
+    
+  } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
+  	p = "{ \"type\": \"Date\", \"timestamp\": "
+  	p = paste(p, as.numeric(as.POSIXct(val, tz = "UTC"))*1000, sep='')
+  	p = paste(p, " }", sep='')
+  	o = p
+  }
+  
+  else if (class(val) == "data.frame") {  
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"TableDisplay\",\"columnNames\":"
     colNames = names(val)
     types = lapply(val,class)
@@ -171,14 +311,13 @@ convertToJSON <- function(val, collapse) {
 		  p = paste(p, ", ", sep='')
 		}
 		theval = val[r,c]
-		p = paste(p, convertToJSON(theval, TRUE), sep='')
+		p = paste(p, convertToJSONNoRecurse(theval), sep='')
 	  }
       p = paste(p, "]", sep='')
     }    
     p = paste(p, "], \"types\": [", sep='')
     comma = FALSE
     for(i in 1:length(types)) {
-      c = types[i]
       if (comma)
         p = paste(p, ",", sep='')
       comma = TRUE
@@ -187,21 +326,7 @@ convertToJSON <- function(val, collapse) {
     p = paste(p, "] }", sep='')
     o = p
   }
-  else if (class(val) == "numeric" || class(val) == "integer" || class(val) == "character" || class(val) == "logical" || class(val) == "factor") {
-    if (is.null(names(val))) {
-  	  if (collapse && length(val) == 1) {
-  	    o = toJSON(val, .level=0L);
-  	  } else {
-   	    o = toJSON(val)
-      }
-    } else if (containsOnlyBasicTypes(val)) {
-      # convert to datatable dictionary
-      o = convertToDataTableDictionary(val)
-    } else {
-      # convert to dictionary     
-	  o = convertToJSONObject(val)
-    }
-  } else if (class(val) == "matrix") {
+  else if (class(val) == "matrix") {
     p = "{ \"type\":\"TableDisplay\",\"subtype\":\"Matrix\",\"columnNames\":"
     ta = rownames(val)
 	rownames(val) <- NULL
@@ -231,48 +356,10 @@ convertToJSON <- function(val, collapse) {
     }
     p = paste(p, "] }", sep='')
     o = p
+
   } else if (class(val) == "table") {
     o = toJSON(val)
-  } else if (class(val) == "list" && length(val)>0) {
-    if (is.null(names(val))) {
-      if (isListOfDictionaries(val)) {
-        # convert to datatable list of maps
-        o = convertToDataTableLoM(val)
-      } else {
-	    # this is a basic list
-		p = "[ "
-	  	first <- TRUE
-	  	for (obj in val) {
-	  	  if (first) {
-	  	    first <- FALSE
-	  	  } else {
-	  	    p = paste(p, ", ", sep='')
-	  	  }
-	      p = paste(p, convertToJSON(obj, TRUE), sep='')
-		}
-		p = paste(p, " ]", sep='')
-		o = p
-      }
-	} else if (containsOnlyBasicTypes(val)) {
-      # convert to datatable dictionary
-      o = convertToDataTableDictionary(val)
-    } else {
-      # convert to dictionary     
-	  o = convertToJSONObject(val) 
-	}
-  } else if (class(val) == "complex") {
-    if (collapse && length(val) == 1) {
-      o = toJSON(as.character(val), .level=0L)
-    } else {
-      o = toJSON(as.character(val))
-    }
-  } else if(class(val) == "POSIXct" || class(val) == "POSIXlt" || class(val) == "Date") {
-  	p = "{ \"type\": \"Date\", \"timestamp\": "
-  	p = paste(p, as.numeric(as.POSIXct(val, tz = "UTC"))*1000, sep='')
-  	p = paste(p, " }", sep='')
-  	o = p
-  } else if (class(val) == "list") {
-    o = toJSON(val)
+
   } else {
     o = paste("\"ERROR: invalid object type ", gsub("\"","\\\"",class(val)), sep='')
     o = paste(o, "\"", sep='')

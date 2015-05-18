@@ -70,6 +70,9 @@
           if (!($scope.$$phase || $scope.$root.$$phase))
             $scope.$digest();
         };
+        var getLoadingStatusMessage = function() {
+          return $scope.loadingmsg;
+        };
         var clrLoadingStatusMessage = function(message, nodigest) {
           if ($scope.loadingmsg === message) {
             $scope.loadingmsg = "";
@@ -551,6 +554,9 @@
             },
             updateStatus: function() {
               updateLoadingStatusMessage();
+            },
+            getStatus: function() {
+              return getLoadingStatusMessage();
             },
             clearStatus: function(message, nodigest) {
               clrLoadingStatusMessage(message, nodigest);

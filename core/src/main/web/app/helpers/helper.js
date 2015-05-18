@@ -199,6 +199,13 @@
           console.error("Current app doesn't support updateStatus");
         }
       },
+      getStatus: function() {
+        if (getCurrentApp().getStatus) {
+          return getCurrentApp().getStatus();
+        } else {
+          console.error("Current app doesn't support getStatus");
+        }
+      },
       clearStatus: function(message, nodigest) {
         if (getCurrentApp().clearStatus) {
           return getCurrentApp().clearStatus(message, nodigest);

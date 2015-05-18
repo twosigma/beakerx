@@ -402,7 +402,7 @@ public class PluginServiceLocatorRest {
     synchronized (this) {
       // find a port to use for proxypass between nginx and the plugin
       final int port = getNextAvailablePort(this.portSearchStart);
-      final String baseUrl = urlHash.isEmpty() ? "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "") : "/" + urlHash + "/" + generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
+      final String baseUrl = generatePrefixedRandomString(pluginId, 12).replaceAll("[\\s]", "");
       pConfig = new PluginConfig(port, nginxRules, baseUrl, password);
       this.portSearchStart = pConfig.port + 1;
       this.plugins.put(pluginId, pConfig);
@@ -503,7 +503,6 @@ public class PluginServiceLocatorRest {
   }
 
   private static Response buildResponse(String baseUrl, boolean created) {
-    baseUrl = "../.." + baseUrl;
     return Response
         .status(created ? Response.Status.CREATED : Response.Status.OK)
         .entity(baseUrl)
@@ -663,7 +662,7 @@ public class PluginServiceLocatorRest {
       }
       nginxRule = nginxRule.replace("%(port)s", Integer.toString(pConfig.getPort()))
         .replace("%(auth)s", auth)
-        .replace("%(base_url)s", pConfig.getBaseUrl());
+        .replace("%(base_url)s", (urlHash.isEmpty() ? "" : "/"+urlHash+"/" ) + pConfig.getBaseUrl());
       pluginSection.append(nginxRule + "\n\n");
     }
     String auth = encoder.encodeBase64String(("beaker:" + this.corePassword).getBytes());

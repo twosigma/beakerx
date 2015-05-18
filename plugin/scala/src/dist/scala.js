@@ -37,7 +37,7 @@ define(function(require, exports, module) {
         if (!shellId) {
           shellId = "";
         }
-        bkHelper.httpPost(serviceBase + "/rest/scalash/getShell", { shellId: shellId, sessionId: bkHelper.getSessionId() })
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/scalash/getShell"), { shellId: shellId, sessionId: bkHelper.getSessionId() })
         .success(cb)
         .error(function() {
           console.log("failed to create shell", arguments);
@@ -51,14 +51,14 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/scalash/evaluate",
+          url: bkHelper.serverUrl(serviceBase + "/rest/scalash/evaluate"),
           data: {shellId: self.settings.shellID, code: code}
         }).done(function(ret) {
           ScalaCancelFunction = function () {
             $.ajax({
               type: "POST",
               datatype: "json",
-              url: serviceBase + "/rest/scalash/cancelExecution",
+              url: bkHelper.serverUrl(serviceBase + "/rest/scalash/cancelExecution"),
               data: {shellId: self.settings.shellID}
             }).done(function (ret) {
               console.log("done cancelExecution",ret);
@@ -98,7 +98,7 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/scalash/resetEnvironment",
+          url: bkHelper.serverUrl(serviceBase + "/rest/scalash/resetEnvironment"),
           data: {shellId: this.settings.shellID}
         }).done(function (ret) {
           console.log("done resetEnvironment",ret);
@@ -108,7 +108,7 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/scalash/killAllThreads",
+          url: bkHelper.serverUrl(serviceBase + "/rest/scalash/killAllThreads"),
           data: {shellId: this.settings.shellID}
         }).done(function (ret) {
           console.log("done killAllThreads",ret);
@@ -119,7 +119,7 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/scalash/autocomplete",
+          url: bkHelper.serverUrl(serviceBase + "/rest/scalash/autocomplete"),
           data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
         }).done(function(x) {
           cb(x, undefined, false);
@@ -130,12 +130,12 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/scalash/exit",
+          url: bkHelper.serverUrl(serviceBase + "/rest/scalash/exit"),
           data: { shellId: self.settings.shellID }
         }).done(cb);
       },
       updateShell: function (cb) {
-        var p = bkHelper.httpPost(serviceBase + "/rest/scalash/setShellOptions", {
+        var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/scalash/setShellOptions"), {
           shellId: this.settings.shellID,
           classPath: this.settings.classPath,
           imports: this.settings.imports,
@@ -172,7 +172,7 @@ define(function(require, exports, module) {
       if (window.languageServiceBase == undefined) {
         window.languageServiceBase = {};
       }
-      window.languageServiceBase[PLUGIN_NAME] = serviceBase + '/rest/scalash';
+      window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/scalash');
       if (window.languageUpdateService == undefined) {
         window.languageUpdateService = {};
       }

@@ -36,7 +36,7 @@ define(function(require, exports, module) {
     newShell: function(shellId, cb) {
       if (!shellId)
         shellId = "";
-      bkHelper.httpPost(serviceBase + "/rest/javash/getShell", { shellId: shellId, sessionId: bkHelper.getSessionId() })
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/javash/getShell"), { shellId: shellId, sessionId: bkHelper.getSessionId() })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
@@ -55,14 +55,14 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/javash/evaluate",
+        url: bkHelper.serverUrl(serviceBase + "/rest/javash/evaluate"),
         data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
         JavaShCancelFunction = function () {
           $.ajax({
             type: "POST",
             datatype: "json",
-            url: serviceBase + "/rest/javash/cancelExecution",
+            url: bkHelper.serverUrl(serviceBase + "/rest/javash/cancelExecution"),
             data: {shellId: self.settings.shellID}
           }).done(function (ret) {
             console.log("done cancelExecution",ret);
@@ -102,7 +102,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/javash/resetEnvironment",
+        url: bkHelper.serverUrl(serviceBase + "/rest/javash/resetEnvironment"),
         data: {shellId: this.settings.shellID}
       }).done(function (ret) {
         console.log("done resetEnvironment",ret);
@@ -112,7 +112,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/javash/killAllThreads",
+        url: bkHelper.serverUrl(serviceBase + "/rest/javash/killAllThreads"),
         data: {shellId: this.settings.shellID}
       }).done(function (ret) {
         console.log("done killAllThreads",ret);
@@ -123,7 +123,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/javash/autocomplete",
+        url: bkHelper.serverUrl(serviceBase + "/rest/javash/autocomplete"),
         data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
         cb(x, undefined, true);
@@ -136,12 +136,12 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/javash/exit",
+        url: bkHelper.serverUrl(serviceBase + "/rest/javash/exit"),
         data: { shellId: self.settings.shellID }
       }).done(cb);
     },
     updateShell: function (cb) {
-      var p = bkHelper.httpPost(serviceBase + "/rest/javash/setShellOptions", {
+      var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/javash/setShellOptions"), {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
         imports: this.settings.imports,
@@ -178,7 +178,7 @@ define(function(require, exports, module) {
       if (window.languageServiceBase == undefined) {
         window.languageServiceBase = {};
       }
-      window.languageServiceBase[PLUGIN_NAME] = serviceBase + '/rest/javash';
+      window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/javash');
       if (window.languageUpdateService == undefined) {
         window.languageUpdateService = {};
       }

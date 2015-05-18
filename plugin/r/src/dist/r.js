@@ -36,7 +36,7 @@ define(function(require, exports, module) {
     newShell: function(shellID, cb) {
       if (!shellID)
         shellID = "";
-      bkHelper.httpPost(serviceBase + "/rest/rsh/getShell", { shellid: shellID, sessionId: bkHelper.getSessionId() })
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/rsh/getShell"), { shellid: shellID, sessionId: bkHelper.getSessionId() })
         .success(cb)
         .error(function() {
           console.log("failed to create shell", arguments);
@@ -57,7 +57,7 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/rsh/interrupt",
+          url: bkHelper.serverUrl(serviceBase + "/rest/rsh/interrupt"),
           data: {shellID: self.settings.shellID}
         }).done(function (ret) {
           console.log("done cancelExecution",ret);
@@ -67,7 +67,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/rsh/evaluate",
+        url: bkHelper.serverUrl(serviceBase + "/rest/rsh/evaluate"),
         data: {shellID: self.settings.shellID, code: code }
       }).done(function(ret) {
         var onEvalStatusUpdate = function(evaluation) {
@@ -96,7 +96,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/rsh/autocomplete",
+        url: bkHelper.serverUrl(serviceBase + "/rest/rsh/autocomplete"),
         data: {shellID: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
         var matchedText = undefined;
@@ -139,7 +139,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/rsh/exit",
+        url: bkHelper.serverUrl(serviceBase + "/rest/rsh/exit"),
         data: { shellID: self.settings.shellID }
       }).done(cb);
     },
@@ -170,7 +170,7 @@ define(function(require, exports, module) {
       if (window.languageServiceBase == undefined) {
         window.languageServiceBase = {};
       }
-      window.languageServiceBase[PLUGIN_NAME] = serviceBase + '/rest/rsh';
+      window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/rsh');
       if (window.languageUpdateService == undefined) {
         window.languageUpdateService = {};
       }

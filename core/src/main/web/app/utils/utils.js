@@ -33,13 +33,25 @@
    */
   module.factory('bkUtils', function(commonUtils, angularUtils, bkTrack, cometdUtils) {
 
-    var serverRoot = "../";
+    function endsWith(str, suffix) {
+      return str.indexOf(suffix, str.length - suffix.length) !== -1;
+    }
+    
+    var serverRoot = endsWith(document.baseURI, 'beaker/') ? document.baseURI.substring(0,document.baseURI.length-7): document.baseURI;
+    
     function serverUrl(path) {
       return serverRoot + path;
     }
 
+    var fileRoot = document.baseURI;
+    
+    function fileUrl(path) {
+      return fileRoot + path;
+    }
+
     var bkUtils = {
-      serverUrl: serverUrl,
+        serverUrl: serverUrl,
+        fileUrl: fileUrl,
 
       // wrap trackingService
       log: function(event, obj) {
@@ -114,6 +126,9 @@
       },
       setServerRoot: function(url) {
         serverRoot = url;
+      },
+      setFileRoot: function(url) {
+        fileRoot = url;
       },
 
       // beaker server involved utils

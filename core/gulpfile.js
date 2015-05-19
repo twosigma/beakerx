@@ -291,9 +291,11 @@ gulp.task('buildIndexTemplate', function () {
           block.pipe(block);
         } else {
           block.pipe(gulpSrc(false))
+            .pipe(sourcemaps.init({loadMaps: true}))
             .pipe(stripJsComments())
             .pipe(concat('beakerApp.js'))
             .pipe(header(banner ))
+            .pipe(sourcemaps.write())
             .pipe(gulp.dest(buildPath));
           block.end('app/dist/beakerApp.js');
         }

@@ -37,7 +37,7 @@ define(function(require, exports, module) {
         if (!shellId) {
           shellId = "";
         }
-        bkHelper.httpPost(serviceBase + "/rest/clojuresh/getShell", { shellId: shellId, sessionId: bkHelper.getSessionId() })
+        bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/getShell"), { shellId: shellId, sessionId: bkHelper.getSessionId() })
         .success(cb)
         .error(function() {
           console.log("failed to create shell", arguments);
@@ -51,14 +51,14 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/clojuresh/evaluate",
+          url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/evaluate"),
           data: {shellId: self.settings.shellID, code: code}
         }).done(function(ret) {
           cancelFunction = function () {
             $.ajax({
               type: "POST",
               datatype: "json",
-              url: serviceBase + "/rest/clojuresh/cancelExecution",
+              url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/cancelExecution"),
               data: {shellId: self.settings.shellID}
             }).done(function (ret) {
               console.log("done cancelExecution",ret);
@@ -98,7 +98,7 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/clojuresh/resetEnvironment",
+          url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/resetEnvironment"),
           data: {shellId: this.settings.shellID}
         }).done(function (ret) {
           console.log("done resetEnvironment",ret);
@@ -108,7 +108,7 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/clojuresh/killAllThreads",
+          url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/killAllThreads"),
           data: {shellId: this.settings.shellID}
         }).done(function (ret) {
           console.log("done killAllThreads",ret);
@@ -119,7 +119,7 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/clojuresh/autocomplete",
+          url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/autocomplete"),
           data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
         }).done(function(x) {
           cb(x, undefined, false);
@@ -130,12 +130,12 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/clojuresh/exit",
+          url: bkHelper.serverUrl(serviceBase + "/rest/clojuresh/exit"),
           data: { shellId: self.settings.shellID }
         }).done(cb);
       },
       updateShell: function (cb) {
-        var p = bkHelper.httpPost(serviceBase + "/rest/clojuresh/setShellOptions", {
+        var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/clojuresh/setShellOptions"), {
           shellId: this.settings.shellID
         });
         if (cb) {
@@ -161,7 +161,7 @@ define(function(require, exports, module) {
       if (window.languageServiceBase == undefined) {
         window.languageServiceBase = {};
       }
-      window.languageServiceBase[PLUGIN_NAME] = serviceBase + '/rest/clojuresh';
+      window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/clojuresh');
       if (window.languageUpdateService == undefined) {
         window.languageUpdateService = {};
       }

@@ -53,13 +53,21 @@ define(function(require, exports, module) {
           shellID = myPython.utils.uuid();
         }
 
-        var base = _.string.startsWith(serviceBase, "/") ? serviceBase : "/" + serviceBase;
-        bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonPassword", {pluginId: PLUGIN_NAME})
+        bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"), {pluginId: PLUGIN_NAME})
         .success(function(result) {
-          bkHelper.httpPost(base + "/login?next=%2E", {password: result})
+          bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2E"), {password: result})
           .success(function(result) {
+            var baseurl = bkHelper.serverUrl(serviceBase);
+            var t = baseurl.indexOf('//');
+            if (t>=0) {
+              baseurl = baseurl.substring(t+2);
+              t = baseurl.indexOf('/');
+              if (t>=0) {
+                baseurl = baseurl.substring(t);
+              }
+            }
             if (ipyVersion == '1') {
-              self.kernel = new myPython.Kernel(base + "/kernels/");
+              self.kernel = new myPython.Kernel(baseurl + "/kernels/");
               kernels[shellID] = self.kernel;
               self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
             } else {
@@ -90,8 +98,8 @@ define(function(require, exports, module) {
                   dataType: "json",
                   success: function (data, status, xhr) {
                     self.kernel = (ipyVersion == '2') ?
-                      (new myPython.Kernel(base + "/api/kernels")) :
-                      (new myPython.Kernel(base + "/api/kernels",
+                      (new myPython.Kernel(baseurl + "/api/kernels")) :
+                      (new myPython.Kernel(baseurl + "/api/kernels",
                                            undefined,
                                            fakeNotebook,
                                            "fakename"));
@@ -105,7 +113,7 @@ define(function(require, exports, module) {
                     }
                   }
               };
-              var url = myPython.utils.url_join_encode(serviceBase, 'api/sessions/');
+              var url = myPython.utils.url_join_encode(baseurl, 'api/sessions/');
               $.ajax(url, ajaxsettings);
             }
           });
@@ -452,28 +460,28 @@ define(function(require, exports, module) {
           ipyVersion = backendVersion[0];
           console.log("Using ipython compatibility mode: " + ipyVersion);
           if (ipyVersion == '1') {
-            bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython/namespace.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython/utils.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython/kernel.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js"
+            bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/namespace.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/utils.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/kernel.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython/outputarea.js")
                                ], onSuccess, onFail);
           } else if (ipyVersion == '2') {
-            bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython2/namespace.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython2/utils.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython2/kernel.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython2/session.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython2/comm.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js"
+            bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/namespace.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/utils.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/kernel.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/session.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/comm.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython2/outputarea.js")
                                ], onSuccess, onFail);
           } else {
-            bkHelper.loadList(["./plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython3/utils.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython3/session.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython3/comm.js",
-                               "./plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js"
-                              ], onSuccess, onFail);
+            bkHelper.loadList([bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/namespace.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/utils.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/kernel.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/session.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/serialize.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/comm.js"),
+                               bkHelper.fileUrl("plugins/eval/ipythonPlugins/vendor/ipython3/outputarea.js")
+                               ], onSuccess, onFail);
           }
         }).error(function() {
           console.log("failed to locate plugin service", PLUGIN_NAME, arguments);

@@ -36,7 +36,7 @@ define(function(require, exports, module) {
     newShell: function(shellId, cb) {
       if (!shellId)
         shellId = "";
-      bkHelper.httpPost(serviceBase + "/rest/groovysh/getShell", { shellId: shellId, sessionId: bkHelper.getSessionId() })
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/groovysh/getShell"), { shellId: shellId, sessionId: bkHelper.getSessionId() })
           .success(cb)
           .error(function() {
             console.log("failed to create shell", arguments);
@@ -55,14 +55,14 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/groovysh/evaluate",
+        url: bkHelper.serverUrl(serviceBase + "/rest/groovysh/evaluate"),
         data: {shellId: self.settings.shellID, code: code}
       }).done(function(ret) {
         GroovyCancelFunction = function () {
           $.ajax({
             type: "POST",
             datatype: "json",
-            url: serviceBase + "/rest/groovysh/cancelExecution",
+            url: bkHelper.serverUrl(serviceBase + "/rest/groovysh/cancelExecution"),
             data: {shellId: self.settings.shellID}
           }).done(function (ret) {
             console.log("done cancelExecution",ret);
@@ -102,7 +102,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/groovysh/resetEnvironment",
+        url: bkHelper.serverUrl(serviceBase + "/rest/groovysh/resetEnvironment"),
         data: {shellId: this.settings.shellID}
       }).done(function (ret) {
         console.log("done resetEnvironment",ret);
@@ -112,7 +112,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/groovysh/killAllThreads",
+        url: bkHelper.serverUrl(serviceBase + "/rest/groovysh/killAllThreads"),
         data: {shellId: this.settings.shellID}
       }).done(function (ret) {
         console.log("done killAllThreads",ret);
@@ -123,7 +123,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/groovysh/autocomplete",
+        url: bkHelper.serverUrl(serviceBase + "/rest/groovysh/autocomplete"),
         data: {shellId: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
         cb(x, undefined, true);
@@ -136,12 +136,12 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/groovysh/exit",
+        url: bkHelper.serverUrl(serviceBase + "/rest/groovysh/exit"),
         data: { shellId: self.settings.shellID }
       }).done(cb);
     },
     updateShell: function (cb) {
-      var p = bkHelper.httpPost(serviceBase + "/rest/groovysh/setShellOptions", {
+      var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/groovysh/setShellOptions"), {
         shellId: this.settings.shellID,
         classPath: this.settings.classPath,
         imports: this.settings.imports,
@@ -178,7 +178,7 @@ define(function(require, exports, module) {
       if (window.languageServiceBase == undefined) {
         window.languageServiceBase = {};
       }
-      window.languageServiceBase[PLUGIN_NAME] = serviceBase + '/rest/groovysh';
+      window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/groovysh');
       if (window.languageUpdateService == undefined) {
         window.languageUpdateService = {};
       }

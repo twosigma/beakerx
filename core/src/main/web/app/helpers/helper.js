@@ -309,6 +309,9 @@
       serverUrl: function(path) {
         return bkUtils.serverUrl(path);
       },
+      fileUrl: function(path) {
+        return bkUtils.fileUrl(path);
+      },
       httpGet: function(url, data) {
         return bkUtils.httpGet(url, data);
       },
@@ -394,8 +397,7 @@
 
       // eval utils
       locatePluginService: function(id, locator) {
-        return bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/plugin-services/" + id),
-            locator);
+        return bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/plugin-services/" + id), locator);
       },
       getEvaluatorFactory: function(shellConstructorPromise) {
         return shellConstructorPromise.then(function(Shell) {
@@ -607,8 +609,7 @@
             init: function(pluginName, serviceBase) {
               if (!this.initialized) {
                 this.cometd = new $.Cometd();
-                //this.cometd.unregisterTransport("websocket");
-                this.cometd.init(document.baseURI + serviceBase + "/cometd/");
+                this.cometd.init(bkUtils.serverUrl(serviceBase + "/cometd/"));
                 this.hlistener = this.cometd.addListener('/meta/handshake', function(message) {
                   if (window.bkDebug) console.log(pluginName+'/meta/handshake');
                   if (message.successful) {

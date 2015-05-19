@@ -34,7 +34,7 @@ define(function(require, exports, module) {
     shortName: "K",
     newShell: function(shellId, cb) {
       if (!shellId) shellId = "";
-      bkHelper.httpPost(serviceBase + "/rest/kdb/getShell", { shellid: shellId, sessionId: bkHelper.getSessionId() })
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/rest/kdb/getShell"), { shellid: shellId, sessionId: bkHelper.getSessionId() })
         .success(cb)
         .error(function() {
           console.log("failed to create shell", arguments);
@@ -55,7 +55,7 @@ define(function(require, exports, module) {
         $.ajax({
           type: "POST",
           datatype: "json",
-          url: serviceBase + "/rest/kdb/interrupt",
+          url: bkHelper.serverUrl(serviceBase + "/rest/kdb/interrupt"),
           data: {shellID: self.settings.shellID}
         }).done(function (ret) {
           console.log("done cancelExecution",ret);
@@ -65,7 +65,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/kdb/evaluate",
+        url: bkHelper.serverUrl(serviceBase + "/rest/kdb/evaluate"),
         data: {shellID: self.settings.shellID, code: code }
       }).done(function(ret) {
         var onEvalStatusUpdate = function(evaluation) {
@@ -94,7 +94,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/kdb/autocomplete",
+        url: bkHelper.serverUrl(serviceBase + "/rest/kdb/autocomplete"),
         data: {shellID: self.settings.shellID, code: code, caretPosition: cpos}
       }).done(function(x) {
         var matchedText = undefined;
@@ -105,7 +105,6 @@ define(function(require, exports, module) {
             if (shortest === undefined || shortest.length > x[1].length)
               shortest = x[i];            
           }
-          console.log("short: "+shortest);
           for (i=shortest.length; i>0; i--) {
             var a = code.substring(cpos-i,cpos);
             var b = shortest.substring(0,i);
@@ -139,7 +138,7 @@ define(function(require, exports, module) {
       $.ajax({
         type: "POST",
         datatype: "json",
-        url: serviceBase + "/rest/kdb/exit",
+        url: bkHelper.serverUrl(serviceBase + "/rest/kdb/exit"),
         data: { shellID: self.settings.shellID }
       }).done(cb);
     },
@@ -170,7 +169,7 @@ define(function(require, exports, module) {
       if (window.languageServiceBase == undefined) {
         window.languageServiceBase = {};
       }
-      window.languageServiceBase[PLUGIN_NAME] = serviceBase + '/rest/kdb';
+      window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/kdb');
       if (window.languageUpdateService == undefined) {
         window.languageUpdateService = {};
       }

@@ -45,7 +45,7 @@ define(function(require, exports, module) {
                 $.ajax({
                     type: "GET",
                     datatype: "json",
-                    url: serviceBase + "/pulse"
+                    url: bkHelper.serverUrl(serviceBase + "/pulse")
                 }).fail(function(){
                     setTimeout(function () {
                         checkNodeServerRunning();
@@ -54,7 +54,7 @@ define(function(require, exports, module) {
                     $.ajax({
                         type: "POST",
                         datatype: "json",
-                        url: serviceBase + "/shell",
+                        url: bkHelper.serverUrl(serviceBase + "/shell"),
                         data: {shellid: shellID}
                     }).done(function(response){
                         shellID = response.shellID;
@@ -73,7 +73,7 @@ define(function(require, exports, module) {
             $.ajax({
                 type: "POST",
                 datatype: "json",
-                url: serviceBase + "/evaluate",
+                url: bkHelper.serverUrl(serviceBase + "/evaluate"),
                 data: {shellID: self.settings.shellID, code: code}
             }).done(function(ret) {
                 modelOutput.result = ret;
@@ -98,7 +98,7 @@ define(function(require, exports, module) {
             $.ajax({
                 type: "POST",
                 datatype: "json",
-                url: serviceBase + "/rest/node/exit",
+                url: bkHelper.serverUrl(serviceBase + "/rest/node/exit"),
                 data: { shellID: self.settings.shellID }
             }).done(cb);
         },

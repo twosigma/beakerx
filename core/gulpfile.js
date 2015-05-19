@@ -278,7 +278,9 @@ gulp.task('buildIndexTemplate', function () {
       // build js with preprocessor
       vendorjs: htmlbuild.preprocess.js(function (block) {
         block.pipe(gulpSrc(true))
+          .pipe(sourcemaps.init({loadMaps: true}))
           .pipe(concat('beakerVendor.js'))
+          .pipe(sourcemaps.write())
           .pipe(gulp.dest(buildPath));
         block.end('app/dist/beakerVendor.js');
       }),
@@ -289,9 +291,11 @@ gulp.task('buildIndexTemplate', function () {
           block.pipe(block);
         } else {
           block.pipe(gulpSrc(false))
+            .pipe(sourcemaps.init({loadMaps: true}))
             .pipe(stripJsComments())
             .pipe(concat('beakerApp.js'))
             .pipe(header(banner ))
+            .pipe(sourcemaps.write())
             .pipe(gulp.dest(buildPath));
           block.end('app/dist/beakerApp.js');
         }

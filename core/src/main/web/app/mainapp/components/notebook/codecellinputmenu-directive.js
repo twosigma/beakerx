@@ -28,21 +28,21 @@
     } ;
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/codecellinputmenu"](),
+      template: JST['mainapp/components/notebook/codecellinputmenu'](),
       controller: function($scope) {
         $scope.getItemClass = function(item) {
           var result = [];
           if (item.items) {
-            result.push("dropdown-submenu");
+            result.push('dropdown-submenu');
           }
-          return result.join(" ");
+          return result.join(' ');
         };
         $scope.getSubmenuItemClass = function(item) {
           var result = [];
           if (item.disabled) {
-            result.push("disabled-link");
+            result.push('disabled-link');
           }
-          return result.join(" ");
+          return result.join(' ');
         };
         $scope.getShowEvalIcon = function(evaluatorName) {
           return $scope.cellmodel.evaluator === evaluatorName;

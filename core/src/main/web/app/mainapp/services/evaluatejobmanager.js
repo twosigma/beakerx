@@ -26,14 +26,14 @@
         type: "BeakerDisplay",
         innertype: "Error",
         object: msg
-      }
+      };
     };
     var textMessage = function(msg) {
       return {
         type: "BeakerDisplay",
         innertype: "Text",
         object: msg
-      }
+      };
     };
     var ERROR_MESSAGE_ON_EARLIER_FAILURE =
       errorMessage("Evaluation cancelled due to a failure of an earlier cell evaluation");
@@ -43,7 +43,7 @@
       textMessage("pending");
     var MESSAGE_WAITING_FOR_EVALUTOR_INIT =
       textMessage("waiting for evaluator initialization ...");
-    
+
     var jobQueue = (function() {
 
       var _queue = [];
@@ -70,12 +70,12 @@
 
       var doNext = function(innext) {
         var job;
-        
+
         if (_jobInProgress.length == 0) {
           // start a new root job
           job = _queue.shift();
         } else {
-          // we have something executing... 
+          // we have something executing...
           var last = _jobInProgress[_jobInProgress.length-1];
           if (last.runchild !== undefined && last.runchild.finished) {
             last.runchild = undefined;
@@ -87,7 +87,7 @@
               // we have a parent job to cancel
               parent = _jobInProgress[_jobInProgress.length-2];
             }
-            
+
             if (parent !== undefined) {
               parent.cancel_deferred = last.cancel_deferred;
               if (parent.evaluator && parent.evaluator.cancelExecution) {
@@ -98,7 +98,7 @@
                 parent.children[idx].whendone.reject('... cancelled!');
                 delete running[parent.children[idx].cellId];
               }
-              parent.children = [];              
+              parent.children = [];
             } else {
               for(idx = 0; idx<_queue.length; idx++) {
                 _queue[idx].output.result=ERROR_MESSAGE_ON_CANCEL;
@@ -112,7 +112,7 @@
             _jobInProgress.pop();
             bkHelper.clearStatus("Evaluating " + last.evaluatorId + " cell " + last.cellId, true);
             if (parent !== undefined) {
-              bkHelper.showStatus("Evaluating " + parent.evaluatorId + " cell " + parent.cellId, true);              
+              bkHelper.showStatus("Evaluating " + parent.evaluatorId + " cell " + parent.cellId, true);
             } else {
               last.cancel_deferred.resolve('done');
             }
@@ -129,18 +129,18 @@
           } else if (last.finished && last.children.length === 0) {
             // check if this has finished
             if (last.error) {
-              last.whendone.reject(last.error);              
+              last.whendone.reject(last.error);
               if (_jobInProgress.length > 1) {
                 // we have a parent job to cancel
                 var parent = _jobInProgress[_jobInProgress.length-2];
-                
+
                 var idx;
                 for(idx = 0; idx<parent.children.length; idx++) {
                   parent.children[idx].output.result=ERROR_MESSAGE_ON_EARLIER_FAILURE;
                   parent.children[idx].whendone.reject("Evaluation cancelled due to a failure of an earlier cell evaluation");
                   delete running[parent.children[idx].cellId];
                 }
-                parent.children = [];              
+                parent.children = [];
               } else {
                 var idx;
                 for(idx = 0; idx<_queue.length; idx++) {
@@ -157,7 +157,7 @@
             _jobInProgress.pop();
             if (_jobInProgress.length > 0) {
               job = _jobInProgress[_jobInProgress.length-1];
-              bkHelper.showStatus("Evaluating " + job.evaluatorId + " cell " + job.cellId, true);              
+              bkHelper.showStatus("Evaluating " + job.evaluatorId + " cell " + job.cellId, true);
             }
             doNext(true);
             if (innext === undefined)
@@ -165,12 +165,12 @@
             return;
           }
         }
-        
+
         if (job === undefined) {
           $timeout(function() { bkHelper.refreshRootScope(); }, 0);
           return;
         }
-        
+
         _jobInProgress.push(job);
         bkHelper.showStatus("Evaluating " + job.evaluatorId + " cell " + job.cellId, true);
 
@@ -225,7 +225,7 @@
         var parent = jobQueue.getCurrentJob();
         if (parent === undefined)
           return this.evaluateRoot(cell);
-        
+
         var deferred = bkUtils.newDeferred();
         if (jobQueue.isRunning(cell.id)) {
           bkHelper.showTransientStatus("ERROR: restart blocked for cell "+cell.id);
@@ -311,7 +311,7 @@
       cancel: function() {
         var currentJob = jobQueue.getCurrentJob();
         var deferred = bkUtils.newDeferred();
-        
+
         if (currentJob && currentJob.evaluator) {
           if (currentJob.evaluator.cancelExecution) {
             currentJob.cancel_deferred = deferred;
@@ -325,9 +325,9 @@
       cancelAll: function() {
         var currentJob = jobQueue.getCurrentJob();
         var deferred = bkUtils.newDeferred();
-        
+
         jobQueue.cancelAll();
-        
+
         if (currentJob && currentJob.evaluator) {
           if (currentJob.evaluator.cancelExecution) {
             currentJob.cancel_deferred = deferred;

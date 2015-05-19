@@ -426,7 +426,7 @@
 		  }
 	      }
 	      return elem;
-	  };
+	  }
           // 1) find the cell that contains elem
           var elem = $("#" + id).closest("bk-cell");
           if (elem === undefined || elem[0] === undefined) {
@@ -640,7 +640,7 @@
             subscribe: function(update_id, callback) {
               if (!update_id)
                 return;
-              if (window.bkDebug) console.log('subscribe to '+update_id)
+              if (window.bkDebug) console.log('subscribe to '+update_id);
               if (this.subscriptions[update_id]) {
                 this.cometd.unsubscribe(this.subscriptions[update_id]);
                 this.subscriptions[update_id] = null;
@@ -654,7 +654,7 @@
             unsubscribe: function(update_id) {
               if (!update_id)
                 return;
-              if (window.bkDebug) console.log('unsubscribe from '+update_id)
+              if (window.bkDebug) console.log('unsubscribe from '+update_id);
               if (this.subscriptions[update_id]) {
                 this.cometd.unsubscribe(this.subscriptions[update_id]);
                 this.subscriptions[update_id] = null;

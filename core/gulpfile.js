@@ -278,7 +278,9 @@ gulp.task('buildIndexTemplate', function () {
       // build js with preprocessor
       vendorjs: htmlbuild.preprocess.js(function (block) {
         block.pipe(gulpSrc(true))
+          .pipe(sourcemaps.init({loadMaps: true}))
           .pipe(concat('beakerVendor.js'))
+          .pipe(sourcemaps.write())
           .pipe(gulp.dest(buildPath));
         block.end('app/dist/beakerVendor.js');
       }),

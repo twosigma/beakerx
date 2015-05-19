@@ -160,6 +160,7 @@ define(function(require, exports, module) {
     cometdUtil: cometdUtil
   };
   var defaultImports = [
+    "graxxia.*",
     "com.twosigma.beaker.NamespaceClient",
     "com.twosigma.beaker.BeakerProgressUpdate",
     "com.twosigma.beaker.chart.Color",

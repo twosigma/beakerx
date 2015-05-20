@@ -22,11 +22,12 @@
   // https://github.com/chjj/marked/blob/master/lib/marked.js#L862-L881
   var bkRenderer = new marked.Renderer();
   bkRenderer.link = function(href, title, text) {
+    var prot;
     if (this.options.sanitize) {
       try {
-        var prot = decodeURIComponent(unescape(href))
-          .replace(/[^\w:]/g, '')
-          .toLowerCase();
+        prot = decodeURIComponent(unescape(href))
+        .replace(/[^\w:]/g, '')
+        .toLowerCase();
       } catch (e) {
         return '';
       }

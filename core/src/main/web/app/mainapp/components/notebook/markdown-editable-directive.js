@@ -31,7 +31,9 @@
       } catch (e) {
         return '';
       }
+      //jshint ignore:start
       if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0) {
+        //jshint ignore:end
         return '';
       }
     }

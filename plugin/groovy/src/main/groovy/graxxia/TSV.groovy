@@ -58,6 +58,8 @@ class TSV implements Iterable {
     
     Map options
     
+    static List<MatrixValueAdapter> formats = [ new DateMatrixValueAdapter()]
+    
     TSV(Map options=[:], String fileName) {
         this.reader =  { 
             fileName.endsWith(".gz") ? new GZIPInputStream(new FileInputStream(fileName)).newReader() : new File(fileName).newReader() 
@@ -136,6 +138,13 @@ class TSV implements Iterable {
                         else
                         if(v in ["true","false"])
                             columnTypes[index] = Boolean
+                        else {
+                            for(f in formats) {
+                                if(f.sniff(v)) {
+                                    columnTypes[index] = f
+                                }
+                            }
+                        }
                     }
                 }
                 
@@ -151,15 +160,20 @@ class TSV implements Iterable {
     }
     
     @CompileStatic
-    List<Object> convertColumns(String [] values, List<Class> columnTypes) {
+    List<Object> convertColumns(String [] values, List columnTypes) {
         List<Object> newValues = values as List
         final int numColumns = columnTypes.size()
         for(int index = 0; index<numColumns; ++index) {
-            Class type = columnTypes[index]
+            def type = columnTypes[index]
             if(values.size()<=index)
                 return
             try {
-                newValues[index] = values[index].asType(type)
+                if(type instanceof Class)
+                    newValues[index] = values[index].asType((Class)type)
+                else {
+                    MatrixValueAdapter adapter = (MatrixValueAdapter)type
+                    newValues[index] = adapter.deserialize(values[index])
+                }
             }
             catch(NumberFormatException e) {
                 // Ignore

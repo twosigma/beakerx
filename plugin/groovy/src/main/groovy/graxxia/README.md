@@ -16,5 +16,5 @@
 
 #Graxxia
 
-These files were copied from https://github.com/ssadedin/graxxia at 16765a8e9e7cb04c4102a52fbc4a05561a19c03f
+These files were copied from https://github.com/ssadedin/graxxia
 And its dependencies were added to plugin/groovy/build.gradle

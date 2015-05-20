@@ -36,7 +36,7 @@
         //jshint ignore:end
         return '';
       }
-    }
+    };
     var out = '<a href="' + href + '"';
     if (title) {
       out += ' title="' + title + '"';
@@ -44,7 +44,7 @@
     out += ' target="_blank"'; // < ADDED THIS LINE ONLY
     out += '>' + text + '</a>';
     return out;
-  };
+  }
 
   bkRenderer.paragraph = function(text) {
     // Allow users to write \$ to escape $

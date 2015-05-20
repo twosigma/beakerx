@@ -158,8 +158,16 @@ gulp.task("namespacePreparedCss", function() {
     // Scope styles usually scoped to html/body to the sandbox
     .pipe(replace('.beaker-sandbox html', '.beaker-sandbox'))
     .pipe(replace('.beaker-sandbox body', '.beaker-sandbox'))
+    // Modal stuff is outside of the main sandbox, so change it from scoping
+    // inside beaker-sandbox to styling based on the classes we add (core.js)
     .pipe(replace('.beaker-sandbox .modal-backdrop',
                   '.beaker-sandbox.modal-backdrop'))
+    .pipe(replace('.beaker-sandbox .modal-',
+                  '.beaker-sandbox.modal .modal-'))
+    .pipe(replace('.beaker-sandbox .modal',
+                  '.beaker-sandbox.modal'))
+    .pipe(replace('.beaker-sandbox.modal .modal-open',
+                  'body.modal-open'))
     .pipe(gulp.dest(buildPath));
 });
 

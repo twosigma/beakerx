@@ -61,6 +61,7 @@ bk-markdown-cell bk-markdown-editable {
 
 bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper {
     border: solid 1px $cell-border;
+    background-color: white;
 
     .locked & {
         border: solid 1px transparent;

@@ -443,7 +443,8 @@
             keyboard: true,
             backdropClick: true,
             scope: $scope,
-            windowClass: 'output-table-options',
+            windowClass: 'output-table-options beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
             template: JST['bko-tabledisplay/output-table-options']()
           }
           $scope.getCellShoOld    = $scope.getCellSho.slice(0);

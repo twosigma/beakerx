@@ -132,6 +132,8 @@
                     } else {
                       $modal.open({backdrop: true,
                         backdropClick: true,
+                        windowClass: 'beaker-sandbox',
+                        backdropClass: 'beaker-sandbox',
                         template: JST['helpers/plugin-load-error']({pluginId: name})});
                       deferred.reject("no factory for evaluator plugin");
                     }

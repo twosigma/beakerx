@@ -71,7 +71,7 @@ bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper
 bk-markdown-cell .CodeMirror-lines,
 bk-markdown-cell .markup
 {
-    padding: $grid-row-height $grid-gutter-width*3 $grid-row-height $grid-gutter-width;
+    padding: $grid-row-height $grid-gutter-width;
 }
 
 .bkcell bk-code-cell-input-menu .dropdown {

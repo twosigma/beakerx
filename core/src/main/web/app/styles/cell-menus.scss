@@ -53,7 +53,7 @@ bk-new-cell-menu {
 
 .toggle-menu {
     top: $grid-row-height - 5px;
-    right: 0;
+    right: 1px;
     z-index:    10;
     position:   absolute;
     background: rgba(255, 255, 255, 0.5);

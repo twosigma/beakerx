@@ -92,6 +92,11 @@
         };
 
         scope.edit = function(event) {
+          var selection = window.getSelection() || {};
+          // If the user is selecting some text, do not enter the edit markdown mode
+          if (selection.type == "Range" && $.contains(element[0], selection.focusNode)) {
+            return;
+          }
           if (bkHelper.isNotebookLocked()) return;
           if (event && event.target.tagName === "A") return; // Don't edit if clicking a link
 

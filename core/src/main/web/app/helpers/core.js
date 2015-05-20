@@ -460,6 +460,16 @@
           bkUtils.refreshRootScope();
         };
 
+        var tab = function(cm) {
+          var cursor = cm.getCursor();
+          var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
+          if (leftLine.match(/^\s*$/)) {
+            cm.execCommand("indentMore");
+          } else {
+            showAutoComplete(cm);
+          }
+        }
+
         return {
           lineNumbers: true,
           matchBrackets: true,
@@ -483,7 +493,8 @@
             "Ctrl-Alt-Down": moveCellDown,
             "Cmd-Alt-Down": moveCellDown,
             "Ctrl-Alt-D": deleteCell,
-            "Cmd-Alt-D": deleteCell
+            "Cmd-Alt-D": deleteCell,
+            "Tab": tab
           }
         };
       },

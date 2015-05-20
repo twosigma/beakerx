@@ -20,6 +20,7 @@ import groovy.transform.CompileStatic;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix
 import org.apache.commons.math3.linear.RealMatrix;
+import org.codehaus.groovy.runtime.typehandling.GroovyCastException;
 
 /**
  * Wraps an Apache-Commons-Math matrix of double values with a 
@@ -68,8 +69,8 @@ import org.apache.commons.math3.linear.RealMatrix;
 class Matrix extends Expando implements Iterable {
      
     static { 
-		
-//		println "Setting Matrix meta class properties ...."
+        
+//        println "Setting Matrix meta class properties ...."
         double[][].metaClass.toMatrix = { new Matrix(delegate) }
         
         def originalMethod = double[][].metaClass.getMetaMethod("asType", Class)
@@ -81,7 +82,8 @@ class Matrix extends Expando implements Iterable {
         def originalMultiply = Integer.metaClass.getMetaMethod("multiply", Class)
         Integer.metaClass.multiply = { arg -> arg instanceof Matrix ? arg.multiply(delegate) : originalMultiply(arg)}
     }
-	
+    
+    
     /**
      * How many rows are displayed in toString() and other calls that format output
      */
@@ -89,42 +91,71 @@ class Matrix extends Expando implements Iterable {
     
     @Delegate
     Array2DRowRealMatrix matrix
-	
-	List<String> names = []
-	
+    
+    List<String> names = []
+    
     public Matrix(int rows, int columns) {
         matrix = new Array2DRowRealMatrix(rows, columns)
     }
     
     public Matrix(MatrixColumn... sourceColumns) {
-		this.initFromColumns(sourceColumns)
+        this.initFromColumns(sourceColumns)
     }
-	
-    @CompileStatic
-	private void initFromColumns(MatrixColumn[] sourceColumns) {
-		int rows = columns[0].size()
-		final int cols = columns.size()
-        double[][] newData =  new double[rows][]
-		MatrixColumn [] columns = sourceColumns
-		for(int i=0; i<rows;++i) {
-			double [] row = newData[i]
-			for(int j=0; j<++cols;++j)
-				row[j] = (double)(columns[j].getDoubleAt(i))
-		}
-		matrix = new Array2DRowRealMatrix(newData,false)
-		this.names = columns.collect { MatrixColumn c -> c.name }
-	}
-	
-	
     
-    public Matrix(Iterable<Iterable> rows) {
+    @CompileStatic
+    private void initFromColumns(MatrixColumn[] sourceColumns) {
+        int rows = columns[0].size()
+        final int cols = columns.size()
+        double[][] newData =  new double[rows][]
+        MatrixColumn [] columns = sourceColumns
+        for(int i=0; i<rows;++i) {
+            double [] row = newData[i]
+            for(int j=0; j<++cols;++j)
+                row[j] = (double)(columns[j].getDoubleAt(i))
+        }
+        matrix = new Array2DRowRealMatrix(newData,false)
+        this.names = columns.collect { MatrixColumn c -> c.name }
+    }
+    
+    public Matrix(Iterable<Iterable> rows, List<String> columnNames=null) {
         List data = new ArrayList(4096)
         int rowCount = 0
-        for(r in rows) {
-            double[] rowData = r.collect{ (double)it }
-			data.add(rowData)
+        Iterable r0 = rows[0]
+        List<Boolean> isNumerics = r0.collect { it instanceof Number }
+        
+        int matrixColumnCount = isNumerics.count { it }
+        
+        // Initialise an empty list for each non-numeric column that
+        // we are going to fill
+        List<List> nonNumerics = isNumerics.grep { !it }.collect { [] }
+        
+        int rowIndex = 0
+        for(row in rows) {
+            int colIndex = 0
+            int numericColumnIndex = 0
+            int nonNumericColumnIndex = 0
+            double[] rowNumericValues = new double[matrixColumnCount]
+            for(value in row) {  
+                if(isNumerics[colIndex]) {
+                    rowNumericValues[numericColumnIndex++] = (double)value
+                }
+                else
+                    nonNumerics[nonNumericColumnIndex++].add(value)
+                ++colIndex
+            }
+            ++rowIndex
+            data.add(rowNumericValues)
         }
+        
         matrix = new Array2DRowRealMatrix((double[][])data.toArray(), false)
+        if(columnNames)
+            this.@names = [columnNames,isNumerics].transpose().grep { it[1] }.collect { it[0] }
+            
+        int nonNumericIndex = 0
+        isNumerics.eachWithIndex { isNumeric, index ->
+            if(!isNumeric)
+                this.setProperty(columnNames[index],nonNumerics[nonNumericIndex++])        
+        }
     }
     
     public Matrix(double [][] values) {
@@ -132,11 +163,11 @@ class Matrix extends Expando implements Iterable {
     }
      
     public Matrix(int rows, int columns, List<Double> data) {
-		this.initFromList(rows,columns,data)
+        this.initFromList(rows,columns,data)
     }
-	
+    
     @CompileStatic
-	void initFromList(int rows, int columns, List<Double> data) {
+    void initFromList(int rows, int columns, List<Double> data) {
         matrix = new Array2DRowRealMatrix(rows, columns)
         int i=0
         for(int r=0; r<rows; ++r) {
@@ -144,15 +175,14 @@ class Matrix extends Expando implements Iterable {
                 matrix.dataRef[r][c] = (double)data[i++]
             }
         }
-	}
-	
+    }
     
     public Matrix(int rows, int columns, double[] matrixData) {
-		this.initFromArray(rows, columns, matrixData)
+        this.initFromArray(rows, columns, matrixData)
     }
-	
+    
     @CompileStatic
-	private void initFromArray(int rows, int columns, double[] matrixData) {
+    private void initFromArray(int rows, int columns, double[] matrixData) {
         matrix = new Array2DRowRealMatrix(rows, columns)
         int i=0
         for(int r=0; r<rows; ++r) {
@@ -160,8 +190,8 @@ class Matrix extends Expando implements Iterable {
                 matrix.dataRef[r][c] = matrixData[++i]
             }
         }
-		
-	}
+        
+    }
       
     public Matrix(Array2DRowRealMatrix m) {
         matrix = m
@@ -188,20 +218,20 @@ class Matrix extends Expando implements Iterable {
         matrix.getRow(n)
     }
     
-	/**
-	 * Implementation of the [] operator. Adds several different behaviors:
-	 * <ul>
-	 *    <li>Plain old indexing returns a row: <code>m[4]</code> returns 5th row of matrix.
-	 *    <li>Double indexing returns a cell: <code>m[4][5]</code> returns 6th column of 4th row.
-	 *    <li>Empty index returns a column: <code>m[][6]</code> returns 7th column
-	 *    <li>List (or any iterable) index returns rows matching indices:
-	 *    </ul>
-	 * <pre>
-	 * Matrix m = new Matrix([1..80], 10, 8)
-	 * m[2..4] == [ [ 9..16 ], [17..24], [25..32] ]
-	 * @param n
-	 * @return
-	 */
+    /**
+     * Implementation of the [] operator. Adds several different behaviors:
+     * <ul>
+     *    <li>Plain old indexing returns a row: <code>m[4]</code> returns 5th row of matrix.
+     *    <li>Double indexing returns a cell: <code>m[4][5]</code> returns 6th column of 4th row.
+     *    <li>Empty index returns a column: <code>m[][6]</code> returns 7th column
+     *    <li>List (or any iterable) index returns rows matching indices:
+     *    </ul>
+     * <pre>
+     * Matrix m = new Matrix([1..80], 10, 8)
+     * m[2..4] == [ [ 9..16 ], [17..24], [25..32] ]
+     * @param n
+     * @return
+     */
     @CompileStatic
     Object getAt(Object n) {
         if(n == null) {
@@ -257,22 +287,22 @@ class Matrix extends Expando implements Iterable {
        } 
     }
     
-	/**
-	 * Return a subset of the rows indicated by the indices in the given iterable
-	 * (Note that the indices don't need to be consecutive or monotonic).
-	 * @param i
-	 * @return
-	 */
+    /**
+     * Return a subset of the rows indicated by the indices in the given iterable
+     * (Note that the indices don't need to be consecutive or monotonic).
+     * @param i
+     * @return
+     */
     @CompileStatic
     double[][] subsetRows(Iterable<Number> i) {
         List<Integer> indices = new ArrayList(this.matrix.rowDimension)
         i.each { Number n -> indices.add(n.toInteger()) }
-		
-		double [][] result = new double[indices.size()][this.matrix.columnDimension]
-		int destRowIndex = 0
-		for(int srcRowIndex in indices) {
-			System.arraycopy(this.matrix.dataRef[srcRowIndex], 0, result[destRowIndex++], 0, this.matrix.columnDimension)
-		}
+        
+        double [][] result = new double[indices.size()][this.matrix.columnDimension]
+        int destRowIndex = 0
+        for(int srcRowIndex in indices) {
+            System.arraycopy(this.matrix.dataRef[srcRowIndex], 0, result[destRowIndex++], 0, this.matrix.columnDimension)
+        }
         return result
     }
     
@@ -281,13 +311,13 @@ class Matrix extends Expando implements Iterable {
        matrix.dataRef[n] = (values as double[])
     }
     
-	/**
-	 * Specialization of <code>collect</code>: if 1 arg then
-	 * just pass the row, if 2 args, pass the row AND the index.
-	 * 
-	 * @param c	Closure to execute for each row in the matrix
-	 * @return	results collected
-	 */
+    /**
+     * Specialization of <code>collect</code>: if 1 arg then
+     * just pass the row, if 2 args, pass the row AND the index.
+     * 
+     * @param c    Closure to execute for each row in the matrix
+     * @return    results collected
+     */
     @CompileStatic
     def collect(Closure c) {
         List<Object> results = new ArrayList(matrix.dataRef.size())
@@ -362,8 +392,8 @@ class Matrix extends Expando implements Iterable {
         
         List<Number> keepRows = this.findIndexValues(c)
 
-		double [][] submatrix = this.subsetRows((Iterable<Number>)keepRows)
-		
+        double [][] submatrix = this.subsetRows((Iterable<Number>)keepRows)
+        
         def result = new Matrix(new Array2DRowRealMatrix(submatrix))
         result.@names = this.@names
         if(!this.properties.isEmpty()) 
@@ -588,13 +618,37 @@ class Matrix extends Expando implements Iterable {
     }
     
     void save(Writer w) {
+        
+        List nonMatrixCols = this.properties*.key 
+        
+        List columnNames = nonMatrixCols + (this.names?:this.properties.names)
+        
         // NOTE: the this.properties.names seems to be required because of a 
         // weird bug where groovy will prefer to set an expando property rather than
         // set the real property on this object
-        if(this.names/* || this.properties.names */) {
-            w.println "# " + (this.names?:this.properties.names).join("\t")   
+        if(columnNames) {
+            w.println "# " + columnNames.join("\t")   
         }
+        
+        if(this.rowDimension == 0)
+            return
+        
+        List<MatrixValueAdapter> adapters = TSV.formats + [
+           new NumberMatrixValueAdapter(),
+           new StringMatrixValueAdapter()
+        ] 
+       
+        List<MatrixValueAdapter> types = nonMatrixCols.collect { colName ->
+            adapters.find { adapter -> adapter.sniff(getProperty(colName)[0]) }
+        }
+        
         eachRow { row ->
+            def d = delegate
+            if(nonMatrixCols) {
+                nonMatrixCols.eachWithIndex { colName, colIndex -> 
+                    w.print((types[colIndex].serialize(d[colName])) + "\t") 
+                }
+            }
             w.println((row as List).join("\t"))
         }
     }
@@ -614,10 +668,7 @@ class Matrix extends Expando implements Iterable {
             r.close()
             r = new FileReader(fileName)
         }
-        Matrix m = new Matrix(new TSV(readFirstLine:true, r)*.values)
-        if(names)
-            m.@names = names
-            
+        Matrix m = new Matrix(new TSV(readFirstLine:true, r)*.values, names)
         return m
     }
        
@@ -642,7 +693,7 @@ class Matrix extends Expando implements Iterable {
         def printRow = { row ->
            List cells = (row as List)
            if(this.properties) {
-               cells = this.properties.collect { it.value[rowCount] } + cells
+               cells = this.properties.collect { it.value?it.value[rowCount]:"null" } + cells
            }
            def values = cells.collect { value ->
                if(!(value instanceof Double))
@@ -681,5 +732,14 @@ class Matrix extends Expando implements Iterable {
     
     void setNames(List<String> names) {
         this.names = names
+    }
+    
+    Object getProperty(String name) {
+        if(name in this.@names) {
+            return this.col(this.@names.indexOf(name))
+        }
+        else {
+            return super.getProperty(name)
+        }
     }
 }

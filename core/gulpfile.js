@@ -151,6 +151,11 @@ gulp.task('prepareCssForNamespacing', function(){
 gulp.task("namespacePreparedCss", function() {
   return gulp.src("beaker-sandbox.scss")
     .pipe(sass()).on('error', handleError)
+    // Only set html/body styles if the body is the .beaker-sandbox
+    .pipe(replace('.beaker-sandbox html {', 'html.beaker-sandbox {'))
+    .pipe(replace('.beaker-sandbox body {', 'body.beaker-sandbox {'))
+    .pipe(replace('.beaker-sandbox html body {', 'html body.beaker-sandbox {'))
+    // Scope styles usually scoped to html/body to the sandbox
     .pipe(replace('.beaker-sandbox html', '.beaker-sandbox'))
     .pipe(replace('.beaker-sandbox body', '.beaker-sandbox'))
     .pipe(replace('.beaker-sandbox .modal-backdrop',

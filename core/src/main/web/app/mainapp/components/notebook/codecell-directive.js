@@ -404,7 +404,7 @@
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
           if (cellmodel === scope.cellmodel) {
-            scope.cm.focus();
+            scope.cm && scope.cm.focus();
           }
         });
 

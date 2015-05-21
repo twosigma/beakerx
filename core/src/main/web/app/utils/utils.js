@@ -246,7 +246,7 @@
       saveAjax: function(ajaxLocator, contentAsJson) {
         var deferred = angularUtils.newDeferred();
         var destination = parseAjaxLocator(ajaxLocator).destination;
-        angularUtils.httpPut(destination, {data: contentAsJson})
+        angularUtils.httpPutJson(destination, {data: contentAsJson})
           .success(deferred.resolve)
           .error(deferred.reject);
         return deferred.promise;

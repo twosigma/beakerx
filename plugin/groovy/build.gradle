@@ -79,6 +79,11 @@ if (hasProperty('includeDepsInJar')) {
       exclude "META-INF/*.SF"
       exclude "META-INF/*.DSA"
       exclude "META-INF/*.RSA"
+      exclude "org/apache/ivy/**"
+      exclude "org/apache/commons/math/**"
+      exclude "org/apache/commons/math3/**"
+      exclude "org/bouncycastle/**"
+      exclude "com/lowagie/**"
     }
   }
 }

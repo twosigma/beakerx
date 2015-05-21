@@ -46,12 +46,12 @@ bk-code-cell-output {
     min-height: 1em;
   }
 
-  p:before {
+  p:first-child:before {
     content: ' ';
     display: block;
     float: right;
     height: 10px;
-    width: 79px;
+    width: 117px;
   }
 }
 

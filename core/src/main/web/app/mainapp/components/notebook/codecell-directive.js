@@ -181,13 +181,12 @@
         $scope.updateUI = function(evaluator) {
           if ($scope.cm && evaluator) {
             $scope.cm.setOption('mode', evaluator.cmMode);
-            $scope.cellmodel.evaluatorReader = true;
+            $timeout(function() {
+              $scope.cellmodel.evaluatorReader = true;
+            });
           }
         };
         $scope.$watch('getEvaluator()', function(newValue, oldValue) {
-          if (newValue === oldValue) {
-            return;
-          }
           $scope.updateUI(newValue);
         });
         $scope.appendCodeCell = function(evaluatorName) {
@@ -346,9 +345,9 @@
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
+          scope.updateUI(scope.getEvaluator());
         }});
 
-        scope.updateUI(scope.getEvaluator());
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
 
         // cellmodel.body --> CodeMirror

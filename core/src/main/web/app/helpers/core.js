@@ -146,6 +146,7 @@
 
     var LOCATION_FILESYS = "file";
     var LOCATION_HTTP = "http";
+    var LOCATION_AJAX = "ajax";
 
     // fileLoaders are responsible for loading files and output the file content as string
     // fileLoader impl must define an 'load' method which returns a then-able
@@ -160,6 +161,11 @@
         return bkUtils.loadHttp(uri);
       }
     };
+    _fileLoaders[LOCATION_AJAX] = {
+      load: function(uri) {
+        return bkUtils.loadAjax(uri);
+      }
+    };
 
     // fileSavers are responsible for saving various formats into bkr
     // fileLoader impl must define an 'load' method which returns a then-able
@@ -171,6 +177,12 @@
       },
       showFileChooser: function(initUri) {
         return bkCoreManager.showDefaultSavingFileChooser(initUri);
+      }
+    };
+
+    _fileSavers[LOCATION_AJAX] = {
+      save: function(uri, contentAsString) {
+        return bkUtils.saveAjax(uri, contentAsString);
       }
     };
 
@@ -217,7 +229,15 @@
       },
       guessUriType: function(notebookUri) {
         // TODO, make smarter guess
-        return /^https?:\/\//.exec(notebookUri) ? LOCATION_HTTP : LOCATION_FILESYS;
+        if (/^https?:\/\//.exec(notebookUri)) {
+          return LOCATION_HTTP;
+        }
+        else if (/^ajax:\/\//.exec(notebookUri)) {
+          return LOCATION_AJAX;
+        }
+        else {
+          return LOCATION_FILESYS;
+        }
       },
       guessFormat: function(notebookUri) {
         // TODO, make smarter guess

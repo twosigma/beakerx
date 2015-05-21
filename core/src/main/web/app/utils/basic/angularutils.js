@@ -77,12 +77,11 @@
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         });
       },
-      httpPut: function(url, data) {
+      httpPutJson: function(url, data) {
         return $http({
           method: "PUT",
           url: url,
-          data: $.param(data),
-          headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+          data: data
         });
       },
       newDeferred: function() {

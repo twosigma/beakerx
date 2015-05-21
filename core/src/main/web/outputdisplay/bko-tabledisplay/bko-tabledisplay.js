@@ -146,7 +146,7 @@
           }
           if (navigator.appVersion.indexOf("Win")!=-1)
             eol = '\r\n';
-          
+
           for(i=1; i<$scope.columns.length; i++) {
             var order = $scope.colorder[i];
             if (!$scope.table.column(order).visible())
@@ -195,7 +195,7 @@
             return bkHelper.saveFile(n, out, true);
           } , "Select name for CSV file to save", "csv", "Save");
         };
-        
+
         // these are the menu actions
         $scope.doResetSort = function() {
           if ($scope.table === undefined)
@@ -229,7 +229,7 @@
         $scope.doCopyToClipboard = function(idx) {
           // this is handled by the invisible flash movie
         }
-                
+
         $scope.getCellIdx      =  [];
         $scope.getCellNam      =  [];
         $scope.getCellSho      =  [];
@@ -242,18 +242,18 @@
 //            'fixLeft' : false,
 //            'fixRight' : false
         };
-        
+
         $scope.getCellDispOptsF = function(i) {
           return $scope.getCellDispOpts[i];
         };
-                
+
         $scope.displayAll = function() {
           var i;
           for(i=0; i<$scope.getCellSho.length; i++) {
             $scope.getCellSho[i] = true;
           }
-        };        
-        
+        };
+
         $scope.refreshCells = function() {
           $scope.getCellIdx      =  [];
           $scope.getCellNam      =  [];
@@ -261,10 +261,10 @@
           $scope.getCellAlign    =  [];
           $scope.getCellDisp     =  [];
           $scope.getCellDispOpts =  [];
-          
+
           if ($scope.table === undefined)
             return;
-          
+
           var i;
           for(i=1; i<$scope.columns.length; i++) {
             $scope.getCellIdx.push(i-1);
@@ -292,20 +292,20 @@
             }
           }
         };
-        
+
         $scope.renderMenu     = false;
-        
+
         var chr = {
             '"': '&quot;', '&': '&amp;', "'": '&#39;',
             '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
         };
-        
+
         $scope.escapeHTML = function (text) {
           if ($.type(text) === "string")
             return text.replace(/[\"&'\/<>]/g, function (a) { return chr[a]; });
           return text;
         },
-        
+
         $scope.allTypes = [ { type: 0, name: 'string'},
                             { type: 1, name: 'integer'},
                             { type: 2, name: 'formatted integer'},
@@ -443,7 +443,8 @@
             keyboard: true,
             backdropClick: true,
             scope: $scope,
-            windowClass: 'output-table-options',
+            windowClass: 'output-table-options beaker-sandbox',
+            backdropClass: 'beaker-sandbox',
             template: JST['bko-tabledisplay/output-table-options']()
           }
           $scope.getCellShoOld    = $scope.getCellSho.slice(0);
@@ -455,7 +456,7 @@
 //          $scope.fixRightOld = $scope.pagination.fixRight;
           $scope.modal = $modal.open(options);
         };
-        
+
         $scope.closeOptionsDialog = function() {
           $scope.modal.close();
           var i;
@@ -473,7 +474,7 @@
             doit = 2;
           } else {
            for (i=0; i<$scope.getCellDisp.length; i++) {
-              if (($scope.getCellDisp[i] !== $scope.getCellDispOld[i]) || ($scope.getCellAlign[i] !== $scope.getCellAlignOld[i])) {            
+              if (($scope.getCellDisp[i] !== $scope.getCellDispOld[i]) || ($scope.getCellAlign[i] !== $scope.getCellAlignOld[i])) {
                 doit = 2;
               }
             }
@@ -504,7 +505,7 @@
         };
       },
       link: function(scope, element, attrs) {
-        
+
         scope.doDestroy = function(all) {
           if (scope.table) {
             clearTimeout(scope.refresh_size);
@@ -610,7 +611,7 @@
           scope.data = data;
           scope.selected = selected;
         };
-        
+
         scope.update_size = function() {
           var me = $('#' + scope.id);
           // this is dataTables_scrollBody
@@ -621,7 +622,7 @@
         };
 
         scope.update_selected = function() {
-          
+
           if (scope.table === undefined)
             return;
 
@@ -637,16 +638,16 @@
               }
             }
           } );
-          
+
         }
-        
+
         scope.doCreateTable = function() {
           var cols = [];
           var i;
 
           // build configuration
           cols.push({ "title" : scope.id, "visible" : false });
-          
+
           for (i=0; i<scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
@@ -683,13 +684,13 @@
                 scope.update_selected();
               }
             };
-          
+
           if (!scope.pagination.use) {
             init.paging = false;
             init.scrollY = scope.pagination.rowsToDisplay*27;
             init.scrollCollapse = true;
             init.dom = 'rt';
-          } else {          
+          } else {
             init.dom = 'rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>S';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
@@ -701,7 +702,7 @@
               init.scrollCollapse = true;
             }
           }
-          
+
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear
             scope.table = $(id).DataTable(init);
@@ -736,7 +737,7 @@
 
             $(id + ' tbody').off( 'click');
             $(id + ' tbody').on( 'click', 'tr', function (event) {
-              var iPos = scope.table.row( this ).index();              
+              var iPos = scope.table.row( this ).index();
               if (scope.selected[iPos]) {
                 scope.selected[iPos] = false;
                 $(this).removeClass('selected');
@@ -746,12 +747,12 @@
               }
               event.stopPropagation();
             } );
-            
+
             $(window).bind('resize.'+scope.id, function() {
               clearTimeout(scope.refresh_size);
               scope.refresh_size = setTimeout(function() { scope.update_size(); }, 250);
             });
-            
+
           },0);
         };
 
@@ -759,9 +760,9 @@
           if (scope.clipclient === undefined) {
               scope.clipclient = new ZeroClipboard( );
               var d = document.getElementById(scope.id + '_dt_copy');
-              
+
               scope.clipclient.clip( d );
-              
+
               scope.clipclient.on( "copy", function (event) {
                 var clipboard = event.clipboardData;
 
@@ -771,12 +772,12 @@
                   data = scope.table.rows().data();
                 }
                 var out = scope.exportTo(data, 'tabs');
-  
+
                 clipboard.setData( "text/plain", out );
               });
           }
         }
-        
+
         scope.getDumpState = function() {
           return scope.model.getDumpState();
         };
@@ -805,7 +806,7 @@
               state.colorder = scope.colorder.slice(0);
             if (scope.getCellSho !== undefined)
               state.getCellSho = scope.getCellSho;
-            
+
             scope.model.setDumpState({ datatablestate: state });
           }
         });

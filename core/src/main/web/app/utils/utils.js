@@ -49,6 +49,13 @@
       return fileRoot + path;
     }
 
+    // ajax notebook location types should be of the form
+    // ajax:/loading/path:/saving/path
+    function parseAjaxLocator(locator) {
+      var pieces = locator.split(":");
+      return { source: pieces[1], destination: pieces[2] }
+    }
+
     var bkUtils = {
         serverUrl: serverUrl,
         fileUrl: fileUrl,
@@ -200,6 +207,20 @@
             .error(deferred.reject);
         return deferred.promise;
       },
+      loadAjax: function(ajaxLocator) {
+        var deferred = angularUtils.newDeferred();
+        angularUtils.httpGet(parseAjaxLocator(ajaxLocator).source)
+            .success(function(content) {
+              if (!_.isString(content)) {
+                // angular $http auto-detects JSON response and deserialize it using a JSON parser
+                // we don't want this behavior, this is a hack to reverse it
+                content = JSON.stringify(content);
+              }
+              deferred.resolve(content);
+            })
+            .error(deferred.reject);
+        return deferred.promise;
+      },
       saveFile: function(path, contentAsJson, overwrite) {
         var deferred = angularUtils.newDeferred();
         if (overwrite) {
@@ -220,6 +241,14 @@
               });
         }
 
+        return deferred.promise;
+      },
+      saveAjax: function(ajaxLocator, contentAsJson) {
+        var deferred = angularUtils.newDeferred();
+        var destination = parseAjaxLocator(ajaxLocator).destination;
+        angularUtils.httpPut(destination, {data: contentAsJson})
+          .success(deferred.resolve)
+          .error(deferred.reject);
         return deferred.promise;
       },
       initializeCometd: function(uri) {

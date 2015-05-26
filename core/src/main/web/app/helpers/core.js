@@ -401,6 +401,18 @@
           moveFocusDown();
         };
 
+        var maybeShowAutoComplete = function(cm) {
+          if (scope.bkNotebook.getCMKeyMapMode() === "emacs") {
+            cm.setCursor(cm.getCursor());
+            cm.setExtending(!cm.getExtending());
+            cm.on("change", function() {
+              cm.setExtending(false);
+            });
+          } else {
+            showAutoComplete(cm);
+          }
+        };
+
         var showAutoComplete = function(cm) {
           var getToken = function(editor, cur) {
             return editor.getTokenAt(cur);
@@ -486,7 +498,7 @@
             "Ctrl-Enter": evaluate,
             "Cmd-Enter": evaluate,
             "Shift-Enter": evaluateAndGoDown,
-            "Ctrl-Space": showAutoComplete,
+            "Ctrl-Space": maybeShowAutoComplete,
             "Cmd-Space": showAutoComplete,
             "Ctrl-Alt-Up": moveCellUp,
             "Cmd-Alt-Up": moveCellUp,

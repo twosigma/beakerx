@@ -482,6 +482,25 @@
           }
         }
 
+        var backspace = function(cm) {
+          var cursor = cm.getCursor();
+          var anchor = cm.getCursor("anchor");
+          if (cursor.line != anchor.line || cursor.ch != anchor.ch) {
+            cm.replaceRange("", cursor, anchor);
+            return;
+          }
+          var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
+          if (leftLine.match(/^\s+$/)) {
+            cm.deleteH(-1, "char");
+            var indent = cm.getOption('indentUnit');
+            while ((cm.getCursor().ch % indent) != 0) {
+              cm.deleteH(-1, "char");
+            }
+          } else {
+            cm.deleteH(-1, "char");
+          }
+        }
+
         return {
           lineNumbers: true,
           matchBrackets: true,
@@ -506,7 +525,8 @@
             "Cmd-Alt-Down": moveCellDown,
             "Ctrl-Alt-D": deleteCell,
             "Cmd-Alt-D": deleteCell,
-            "Tab": tab
+            "Tab": tab,
+            "Backspace": backspace
           }
         };
       },

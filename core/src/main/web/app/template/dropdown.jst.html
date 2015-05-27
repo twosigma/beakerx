@@ -14,5 +14,5 @@
     limitations under the License.
 -->
 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-  <bk-dropdown-menu-item ng-repeat="item in getMenuItems() | isHidden" item="item"></bk-dropdown-menu-item>
+  <bk-dropdown-menu-item ng-repeat="item in getMenuItems() | filter:isHidden | orderBy:'sortorder'" item="item"></bk-dropdown-menu-item>
 </ul>

@@ -6,17 +6,8 @@ import java.util.Collection;
 
 public class ComboBox extends EasyFormComponent {
 
-    private String label;
     private Boolean editable;
     private Collection<String> values;
-
-    public void setLabel(final String label) {
-        this.label = label;
-    }
-
-    public String getLabel() {
-        return label;
-    }
 
     public void setEditable(final Boolean editable) {
         this.editable = editable;

@@ -2,31 +2,22 @@ package com.twosigma.beaker.easyform.serializer;
 
 import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public class RadioButtonSerializer extends JsonSerializer<RadioButtonComponent> {
+public class RadioButtonSerializer extends AbstractEasyFormComponentSerializer<RadioButtonComponent> {
+
     @Override
-    public void serialize(final RadioButtonComponent radioButtonComponent, final JsonGenerator jgen,
-                          final SerializerProvider serializerProvider)
-            throws IOException {
-        jgen.writeStartObject();
-        jgen.writeObjectField("type", radioButtonComponent.getClass().getSimpleName());
-        if (radioButtonComponent.getLabel() != null) {
-            jgen.writeObjectField("label", radioButtonComponent.getLabel().toString());
+    protected void writeSubclassFields(final JsonGenerator jgen, final RadioButtonComponent component) throws IOException {
+        if (component.getHorizontal() != null) {
+            jgen.writeObjectField("isHorizontal", component.getHorizontal().toString());
         }
-        if (radioButtonComponent.getHorizontal() != null) {
-            jgen.writeObjectField("isHorizontal", radioButtonComponent.getHorizontal().toString());
-        }
-        if (radioButtonComponent.getValues() != null && radioButtonComponent.getValues().size() > 0) {
+        if (component.getValues() != null && component.getValues().size() > 0) {
             jgen.writeArrayFieldStart("values");
-            for (String value : radioButtonComponent.getValues()) {
+            for (String value : component.getValues()) {
                 jgen.writeString(value);
             }
             jgen.writeEndArray();
         }
-        jgen.writeEndObject();
     }
 }

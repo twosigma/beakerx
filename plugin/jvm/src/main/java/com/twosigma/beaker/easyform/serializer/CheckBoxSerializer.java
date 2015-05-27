@@ -2,24 +2,15 @@ package com.twosigma.beaker.easyform.serializer;
 
 import com.twosigma.beaker.easyform.formitem.CheckBox;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.JsonSerializer;
-import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-public class CheckBoxSerializer extends JsonSerializer<CheckBox> {
+public class CheckBoxSerializer extends AbstractEasyFormComponentSerializer<CheckBox> {
+
     @Override
-    public void serialize(final CheckBox checkBox, final JsonGenerator jgen,
-                          final SerializerProvider serializerProvider)
-            throws IOException {
-        jgen.writeStartObject();
-        jgen.writeObjectField("type", checkBox.getClass().getSimpleName());
-        if (checkBox.getLabel() != null) {
-            jgen.writeObjectField("label", checkBox.getLabel().toString());
+    protected void writeSubclassFields(final JsonGenerator jgen, final CheckBox component) throws IOException {
+        if (component.getValue() != null) {
+            jgen.writeObjectField("value", component.getValue().toString());
         }
-        if (checkBox.getValue() != null) {
-            jgen.writeObjectField("value", checkBox.getValue().toString());
-        }
-        jgen.writeEndObject();
     }
 }

@@ -17,10 +17,14 @@
                 scope.ngModelAttr = component.label;
 
                 element.find('#textFieldLabel').text(component.label);
-                element.find('#textField')
-                        .attr('data-easyform-label', component.label)
-                        .attr('data-ng-model', component.label)
-                        .css('width', component.width);
+                var textField = element.find('#textField');
+                textField.attr('data-easyform-label', component.label)
+                         .attr('data-ng-model', component.label)
+                         .css('width', component.width);
+
+                if (component.enabled && component.enabled == false) {
+                    textField.attr('disabled', 'true');
+                }
 
                 var watchedExpression = function (scope) {
                     return scope[scope.ngModelAttr];
@@ -62,9 +66,13 @@
                 scope.ngModelAttr = component.label;
 
                 element.find('#textAreaLabel').text(component.label);
-                element.find('#textArea')
-                        .attr('data-easyform-label', component.label)
+                var textArea = element.find('#textArea');
+                textArea.attr('data-easyform-label', component.label)
                         .attr('data-ng-model', component.label);
+
+                if (component.enabled && component.enabled == false) {
+                    textArea.attr('disabled', 'true');
+                }
 
                 var watchedExpression = function (scope) {
                     return scope[scope.ngModelAttr];
@@ -115,6 +123,10 @@
                     checkBox.attr('checked', 'true');
                 }
 
+                if (component.enabled && component.enabled == false) {
+                    checkBox.attr('disabled', 'true');
+                }
+
                 var watchedExpression = function (scope) {
                     return scope[scope.ngModelAttr];
                 };
@@ -162,6 +174,10 @@
 
                 if (!component.editable || 'false' == component.editable) {
                     comboBox.attr('disabled', 'true');
+                }
+
+                if (component.enabled && component.enabled == false) {
+                    checkBox.attr('disabled', 'true');
                 }
 
                 if (component.values) {
@@ -229,6 +245,10 @@
                     listComponent.attr('ngOptions', 'v for v in component.values');
                 }
 
+                if (component.enabled && component.enabled == false) {
+                    listComponent.attr('disabled', 'true');
+                }
+
                 var watchedExpression = function (scope) {
                     return scope[scope.ngModelAttr];
                 };
@@ -282,6 +302,9 @@
                         var radioButton = angular.element('<input type="radio" class="radio-button-component-item"/>')
                                 .attr('data-ng-model', component.label)
                                 .attr('value', value);
+                        if (component.enabled && component.enabled == false) {
+                            radioButton.attr('disabled', 'true');
+                        }
                         outerRadioButtonLabel
                                 .text(value)
                                 .append(radioButton);
@@ -331,11 +354,16 @@
                 scope.ngModelAttr = component.label;
 
                 element.find('#datePickerLabel').text(component.label);
-                element.find('#datePicker')
-                        .attr('data-easyform-label', component.label)
-                        .attr('data-ng-model', component.label);
+                var datePicker = element.find('#datePicker');
+                datePicker.attr('data-easyform-label', component.label)
+                          .attr('data-ng-model', component.label);
+
                 if (component.showTime && 'true' == component.showTime) {
-                    element.find('#datePicker').attr('type', 'datetime');
+                    datePicker.attr('type', 'datetime');
+                }
+
+                if (component.enabled && component.enabled == false) {
+                    datePicker.attr('disabled', 'true');
                 }
 
                 var watchedExpression = function (scope) {
@@ -377,11 +405,16 @@
 
                 var clickHandler = function() {
                     //todo
-                    console.log('Want execute code cell with tag: ' + component.tag)
+                    console.log('Want to execute code cell with tag: ' + component.tag)
                 };
 
                 var buttonComponent = element.find('#buttonComponent');
-                buttonComponent.text(component.text);
+                buttonComponent.text(component.label);
+
+                if (component.enabled && component.enabled == false) {
+                    buttonComponent.attr('disabled', 'true');
+                }
+
                 if (component.tag) {
                     buttonComponent.attr('title', component.tag).on('click', clickHandler);
                 }

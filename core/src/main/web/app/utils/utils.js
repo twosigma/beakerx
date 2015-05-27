@@ -350,8 +350,9 @@
             value: value,
             publish: false
         };
-        bkUtils.httpPost(
-                bkUtils.serverUrl("beaker/rest/easyform/set"), data)
+        this.httpPost(
+                this.serverUrl("beaker/rest/easyform/set"),
+                data)
                 .success(function(ret) {
                     if (onSuccess) {
                         onSuccess(ret);

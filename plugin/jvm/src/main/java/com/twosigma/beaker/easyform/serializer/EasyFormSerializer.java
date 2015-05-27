@@ -17,7 +17,7 @@ public class EasyFormSerializer extends JsonSerializer<EasyForm> {
         jgen.writeObjectField("type", easyForm.getClass().getSimpleName());
         if (easyForm.hasComponents()) {
             jgen.writeArrayFieldStart("components");
-            for (EasyFormComponent component : easyForm.getComponents()) {
+            for (EasyFormComponent component : easyForm.getComponentMap().values()) {
                 jgen.writeObject(component);
             }
             jgen.writeEndArray();

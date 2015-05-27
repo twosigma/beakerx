@@ -6,18 +6,9 @@ import java.util.Collection;
 
 public class ListComponent extends EasyFormComponent {
 
-    private String label;
     private Integer size;
     private Boolean multipleSelection;
     private Collection<String> values;
-
-    public void setLabel(final String label) {
-        this.label = label;
-    }
-
-    public String getLabel() {
-        return label;
-    }
 
     public void setSize(final Integer size) {
         this.size = size;

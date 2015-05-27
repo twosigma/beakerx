@@ -70,7 +70,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     if (c.isEmpty())
       return false;
     for (Object obj : c) {
-      if (!isPrimitiveTypeMap(obj)) {        
+      if (obj!=null && !isPrimitiveTypeMap(obj)) {        
         return false;
       }
     }
@@ -104,7 +104,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
         return false;
       Collection<?> e = (Collection<?>) entry;
       for (Object ei : e) {
-        if (!isPrimitiveType(ei.getClass().getName()))
+        if (ei!=null && !isPrimitiveType(ei.getClass().getName()))
           return false;
       }
       if (max < e.size())

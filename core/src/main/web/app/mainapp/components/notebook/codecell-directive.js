@@ -181,6 +181,9 @@
         $scope.updateUI = function(evaluator) {
           if ($scope.cm && evaluator) {
             $scope.cm.setOption('mode', evaluator.cmMode);
+            if (evaluator.indentSpaces) {
+              $scope.cm.setOption('indentUnit', evaluator.indentSpaces);
+            }
             $timeout(function() {
               $scope.cellmodel.evaluatorReader = true;
             });

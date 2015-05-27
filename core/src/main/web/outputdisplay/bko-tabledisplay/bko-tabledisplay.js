@@ -171,6 +171,7 @@
               var d = row[j];
               if ($scope.columns[order].render !== undefined )
                 d = $scope.columns[order].render(d, "display");
+              d = d + '';
               out = out + qot + (d !== undefined && d !== null ? fix(d) : '') + qot;
             }
             out = out + eol;

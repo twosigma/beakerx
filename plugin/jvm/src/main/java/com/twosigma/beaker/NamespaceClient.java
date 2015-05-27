@@ -22,6 +22,8 @@ import com.google.inject.Provider;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.serialization.BeakerCodeCellList;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
+import com.twosigma.beaker.jvm.serialization.ObjectSerializer;
 import com.twosigma.beaker.shared.NamespaceBinding;
 import com.twosigma.beaker.shared.json.serializer.StringObject;
 
@@ -355,4 +357,20 @@ public class NamespaceClient {
     return runStringRequest("/setCodeCellTags", form);
   }
  
+  /*
+   * Autotranslation extension
+   */
+  
+  public void addTypeConversion(String from, String to) {
+    injector.getProvider(BeakerObjectConverter.class).get().addThreadSpecificTypeConversion(from, to);
+  }
+  
+  public void addTypeDeserializer(ObjectDeserializer o) {
+    injector.getProvider(BeakerObjectConverter.class).get().addThreadSpecificTypeDeserializer(o);
+  }
+  
+  public void addTypeSerializer(ObjectSerializer o) {
+    injector.getProvider(BeakerObjectConverter.class).get().addThreadSpecificTypeSerializer(o);
+  }
+  
 }

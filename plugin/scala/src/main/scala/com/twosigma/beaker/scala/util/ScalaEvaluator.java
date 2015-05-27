@@ -26,18 +26,34 @@ import java.net.URL;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Logger;
 
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
+
+import scala.collection.Iterable;
+
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.twosigma.beaker.scala.util.ScalaEvaluatorGlue;
 import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
+import com.twosigma.beaker.jvm.object.TableDisplay;
+import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
+import com.twosigma.beaker.jvm.serialization.ObjectSerializer;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
 public class ScalaEvaluator {
-  protected final String shellId;
-  protected final String sessionId;
+  private final static Logger logger = Logger.getLogger(ScalaEvaluator.class.getName());
+  
+  protected String shellId;
+  protected String sessionId;
   protected List<String> classPath;
   protected List<String> imports;
   protected String outDir;
@@ -47,7 +63,8 @@ public class ScalaEvaluator {
   protected workerThread myWorker;
   protected String currentClassPath;
   protected String currentImports;
-
+  private final Provider<BeakerObjectConverter> objectSerializerProvider;
+  
   protected class jobDescriptor {
     String codeToBeExecuted;
     SimpleEvaluationObject outputObject;
@@ -61,7 +78,13 @@ public class ScalaEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  public ScalaEvaluator(String id, String sId) {
+  @Inject
+  public ScalaEvaluator(Provider<BeakerObjectConverter> osp) {
+    objectSerializerProvider = osp;
+    executor = new BeakerCellExecutor("scala");
+  }
+
+  public void initialize(String id, String sId) {
     shellId = id;
     sessionId = sId;
     classPath = new ArrayList<String>();
@@ -72,7 +95,6 @@ public class ScalaEvaluator {
     currentImports = "";
     outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
-    executor = new BeakerCellExecutor("scala");
     startWorker();
   }
 
@@ -83,6 +105,20 @@ public class ScalaEvaluator {
 
   public String getShellId() { return shellId; }
 
+  private static boolean autoTranslationSetup = false;
+  
+  public void setupAutoTranslation() {
+    if(autoTranslationSetup)
+      return;
+    
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaCollectionSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaMapSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeListOfListSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaListOfPrimitiveTypeMapsSerializer(objectSerializerProvider.get()));
+    objectSerializerProvider.get().addfTypeSerializer(new ScalaPrimitiveTypeMapSerializer(objectSerializerProvider.get()));    
+    autoTranslationSetup = true;
+  }
+  
   public void killAllThreads() {
     executor.killAllThreads();
   }
@@ -235,7 +271,6 @@ public class ScalaEvaluator {
       @Override
       public void run() {
         theOutput.setOutputHandler();
-        Object result;
         try {
           shell.evaluate(theOutput, theCode);
         } catch(Throwable e) {
@@ -344,6 +379,248 @@ public class ScalaEvaluator {
       System.err.println("ERROR setting beaker: "+r);
     }
     
+  }
+
+  class ScalaListOfPrimitiveTypeMapsSerializer implements ObjectSerializer {
+    private final BeakerObjectConverter parent;
+    
+    public ScalaListOfPrimitiveTypeMapsSerializer(BeakerObjectConverter p) {
+      parent = p;
+    }
+    
+    @Override
+    public boolean canBeUsed(Object obj, boolean expand) {
+      if (!expand)
+        return false;
+      
+      if (! (obj instanceof scala.collection.immutable.Seq<?>))
+        return false;
+      
+      Collection<?> col = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
+      if (col.isEmpty())
+        return false;
+      
+      for (Object o : col) {
+        if (!(o instanceof scala.collection.Map<?,?>))
+          return false;
+        
+        Map<?, ?> m = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>)  o);
+        Set<?> keys = m.keySet();
+        for(Object key : keys) {
+          if (key!=null && !parent.isPrimitiveType(key.getClass().getName()))
+            return false;
+          Object val = m.get(key);
+          if (val!=null && !parent.isPrimitiveType(val.getClass().getName()))
+            return false;
+        }
+      }      
+      return true;
+    }
+
+    @Override
+    public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
+      logger.fine("list of maps");
+      // convert this 'on the fly' to a datatable
+      Collection<?> col = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
+      List<Map<?,?>> tab = new ArrayList<Map<?,?>>();
+      for (Object o : col) {
+        Map<?, ?> row = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>) o);
+        tab.add(row);
+      }
+      TableDisplay t = new TableDisplay(tab,parent);
+      jgen.writeObject(t);
+      return true;
+    }
+  }
+  
+  class ScalaPrimitiveTypeListOfListSerializer implements ObjectSerializer {
+    private final BeakerObjectConverter parent;
+    
+    public ScalaPrimitiveTypeListOfListSerializer(BeakerObjectConverter p) {
+      parent = p;
+    }
+    
+    @Override
+    public boolean canBeUsed(Object obj, boolean expand) {
+      if (!expand)
+        return false;
+      
+      if (! (obj instanceof scala.collection.immutable.Seq<?>))
+        return false;
+      
+      Collection<?> col = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
+      if (col.isEmpty())
+        return false;
+      
+      for (Object o : col) {
+        if (!(o instanceof scala.collection.immutable.Seq))
+          return false;
+        
+        Collection<?> col2 = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) o);
+        for (Object o2 : col2) {
+          if (!parent.isPrimitiveType(o2.getClass().getName()))
+            return false;
+        }
+      }
+      return true;
+    }
+
+    @Override
+    public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
+      logger.fine("collection of collections");
+      
+      Collection<?> m = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
+      int max = 0;
+              
+      for (Object entry : m) {
+        Collection<?> e = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) entry);
+        if (max < e.size())
+          max = e.size();
+      }
+      List<String> columns = new ArrayList<String>();
+      for (int i=0; i<max; i++)
+        columns.add("c"+i);
+      List<List<?>> values = new ArrayList<List<?>>();
+      for (Object entry : m) {
+        Collection<?> e = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) entry);
+        List<Object> l2 = new ArrayList<Object>(e);
+        if (l2.size() < max) {
+          for (int i=l2.size(); i<max; i++)
+            l2.add(null);
+        }
+        values.add(l2);
+      }
+      jgen.writeStartObject();
+      jgen.writeObjectField("type", "TableDisplay");
+      jgen.writeObjectField("columnNames", columns);
+      jgen.writeObjectField("values", values);
+      jgen.writeObjectField("subtype", TableDisplay.MATRIX_SUBTYPE);
+      jgen.writeEndObject();
+      return true;
+    }
+  }
+
+  class ScalaPrimitiveTypeMapSerializer implements ObjectSerializer {
+    private final BeakerObjectConverter parent;
+    
+    public ScalaPrimitiveTypeMapSerializer(BeakerObjectConverter p) {
+      parent = p;
+    }
+
+    @Override
+    public boolean canBeUsed(Object obj, boolean expand) {
+      if (!expand)
+        return false;
+
+      if (!(obj instanceof scala.collection.immutable.Map))
+        return false;
+      
+      Map<?, ?> m = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>) obj);
+      Set<?> keys = m.keySet();
+      for(Object key : keys) {
+        if (key!=null && !parent.isPrimitiveType(key.getClass().getName()))
+          return false;
+        Object val = m.get(key);
+        if (val!=null && !parent.isPrimitiveType(val.getClass().getName()))
+          return false;
+      }
+      return true;
+    }
+
+    @Override
+    public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
+      logger.fine("primitive type map");
+      
+      List<String> columns = new ArrayList<String>();
+      columns.add("Key");
+      columns.add("Value");
+
+      List<List<?>> values = new ArrayList<List<?>>();
+
+      Map<?, ?> m = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>) obj);
+      Set<?> keys = m.keySet();
+      for(Object key : keys) {
+        Object val = m.get(key);
+        List<Object> l = new ArrayList<Object>();
+        l.add(key.toString());
+        l.add(val);
+        values.add(l);
+      }
+      
+      jgen.writeStartObject();
+      jgen.writeObjectField("type", "TableDisplay");
+      jgen.writeObjectField("columnNames", columns);
+      jgen.writeObjectField("values", values);
+      jgen.writeObjectField("subtype", TableDisplay.DICTIONARY_SUBTYPE);
+      jgen.writeEndObject();
+      return true;
+    }
+  }
+
+  class ScalaCollectionSerializer implements ObjectSerializer {
+    private final BeakerObjectConverter parent;
+    
+    public ScalaCollectionSerializer(BeakerObjectConverter p) {
+      parent = p;
+    }
+
+    @Override
+    public boolean canBeUsed(Object obj, boolean expand) {
+      return obj instanceof scala.collection.immutable.Seq<?>;
+    }
+
+    @Override
+    public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
+      logger.fine("collection");
+      // convert this 'on the fly' to an array of objects
+      Collection<?> c = scala.collection.JavaConversions.asJavaCollection((Iterable<?>) obj);
+      jgen.writeStartArray();
+      for(Object o : c) {
+        if (!parent.writeObject(o, jgen, false))
+          jgen.writeObject(o.toString());
+      }
+      jgen.writeEndArray();
+      return true;
+    }
+  }
+
+  class ScalaMapSerializer implements ObjectSerializer {
+    private final BeakerObjectConverter parent;
+    
+    public ScalaMapSerializer(BeakerObjectConverter p) {
+      parent = p;
+    }
+
+    @Override
+    public boolean canBeUsed(Object obj, boolean expand) {
+      return obj instanceof scala.collection.immutable.Map<?, ?>;
+    }
+
+    @Override
+    public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws JsonProcessingException, IOException {
+      logger.fine("generic map");
+      // convert this 'on the fly' to a map of objects
+      Map<?, ?> m = scala.collection.JavaConversions.mapAsJavaMap((scala.collection.Map<?, ?>) obj);
+      
+      
+      Set<?> keys = m.keySet();
+      for(Object key : keys) {
+        if (key==null || !(key instanceof String)) {
+          jgen.writeObject(obj.toString());
+          return true;
+        }
+      }
+
+      jgen.writeStartObject();
+      for(Object key : keys) {
+        Object val = m.get(key);
+        jgen.writeFieldName(key.toString());
+        if (!parent.writeObject(val, jgen, false))
+          jgen.writeObject(val!=null ? (val.toString()) : "null");
+      }
+      jgen.writeEndObject();
+      return true;
+    }
   }
 
 }

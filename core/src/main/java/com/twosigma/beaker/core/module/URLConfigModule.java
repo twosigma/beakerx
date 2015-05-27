@@ -18,6 +18,7 @@ package com.twosigma.beaker.core.module;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.core.module.FileUploadServlet;
+import com.twosigma.beaker.core.rest.EasyFormRest;
 import com.twosigma.beaker.core.rest.NotebookControlRest;
 import com.twosigma.beaker.core.rest.OutputLogService;
 import com.twosigma.beaker.core.rest.NamespaceService;
@@ -85,5 +86,6 @@ public class URLConfigModule extends ServletModule {
     bind(SessionBackupRest.class);
     bind(RecentMenuRest.class);
     bind(LoginRest.class);
+    bind(EasyFormRest.class);
   }
 }

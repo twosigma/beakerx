@@ -1,0 +1,64 @@
+.text-field-label {
+    margin: 0 10px;
+    min-width: 100px;
+}
+.text-area-label {
+    margin: 0 10px;
+    min-width: 100px;
+}
+.check-box-label {
+    margin: 0 10px;
+    min-width: 100px;
+}
+.date-picker-label {
+    margin: 0 10px;
+    min-width: 100px;
+}
+.radio-button-label {
+    margin: 0 10px;
+    min-width: 100px;
+    float: left;
+}
+.radio-button-items-container {
+    display: table;
+}
+.radio-button-item-label {
+    display: table-row;
+    margin-top: 5px;
+}
+input[type="radio"].radio-button-component-item {
+    margin: 0 10px;
+    vertical-align: middle;
+}
+input.check-box {
+    height: 25px;
+    vertical-align: middle;
+}
+input.date-picker {
+    height: 25px;
+    width: 120px;
+}
+.text-field-container {
+    margin: 10px 0;
+}
+.text-area-container {
+    margin: 10px 0;
+}
+.check-box-container {
+    margin: 10px 0;
+}
+.combo-box-container {
+    margin: 10px 0;
+}
+.list-component-container {
+    margin: 10px 0;
+}
+.radio-button-container {
+    margin: 10px 0;
+}
+.date-picker-container {
+    margin: 10px 0;
+}
+.button-component-container {
+    margin: 10px 0;
+}

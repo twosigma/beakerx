@@ -56,6 +56,7 @@ public class NamespaceClient {
   private String auth;
   private String urlBase;
   private String ctrlUrlBase;
+  private String easyFormUrl;
   private SimpleEvaluationObject seo;
   private Class<?> [] oclasses;
 
@@ -74,6 +75,7 @@ public class NamespaceClient {
     this.auth = "Basic " + Base64.encodeBase64String(account.getBytes());
     this.urlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/namespace";
     this.ctrlUrlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/notebookctrl";
+    this.easyFormUrl = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/easyform";
     oclasses = new Class<?>[4];
     
     oclasses[0] = Object.class;
@@ -181,6 +183,27 @@ public class NamespaceClient {
     }
     return binding.getValue();
   }
+
+    public Object getEasyFormValue(final String key) throws IOException {
+        String args = "name=" + URLEncoder.encode(key, "ISO-8859-1") +
+                "&session=" + URLEncoder.encode(this.session, "ISO-8859-1");
+        return Request.Get(easyFormUrl + "/get?" + args)
+                .addHeader("Authorization", auth)
+                .execute().returnContent();
+    }
+
+    public void setEasyFormValue(final String name, final String value) throws IOException {
+        Form form = Form.form().add("name", name).add("session", this.session);
+        StringWriter sw = new StringWriter();
+        form.add("value", value);
+        form.add("publish", String.valueOf(Boolean.TRUE));
+        String reply = Request.Post(easyFormUrl + "/set")
+                .addHeader("Authorization", auth).bodyForm(form.build())
+                .execute().returnContent().asString();
+        if (!reply.equals("ok")) {
+            throw new RuntimeException(reply);
+        }
+    }
 
   /*
    * progress reporting

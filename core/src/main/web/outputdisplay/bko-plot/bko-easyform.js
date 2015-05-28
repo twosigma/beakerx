@@ -404,7 +404,11 @@
                 var component = scope.component;
 
                 var clickHandler = function() {
-                    //todo
+                    var cellOp = bkSessionManager.getNotebookCellOp;
+                    var result;
+                    if (cellOp.hasUserTag(component.tag)) {
+                        result = cellOp.getCellsWithUserTag(component.tag);
+                    }
                     console.log('Want to execute code cell with tag: ' + component.tag)
                 };
 
@@ -429,10 +433,11 @@
         return {
             template : "<div id='easyFormContainer' class='easy-form-container'></div>",
             link : function(scope, element, attrs) {
-
-                $.cometd.subscribe("/easyform/" + bkSessionManager.getSessionId(), function(reply) {
-                    scope.$broadcast(EasyFormConstants.Events.VALUE_SET, reply);
-                });
+                var subscriptions = {};
+                subscriptions[bkSessionManager.getSessionId()] =
+                        $.cometd.subscribe("/easyform/" + bkSessionManager.getSessionId(), function(reply) {
+                            scope.$broadcast(EasyFormConstants.Events.VALUE_SET, reply);
+                        });
 
                 var model = scope.model.getCellModel();
                 if (model.components) {
@@ -445,7 +450,7 @@
                         if (component.type.indexOf(easyForm.TextField.type) != -1) {
                             easyFormContainer.append($compile(angular.element(easyForm.TextField.htmlTag))(childScope));
                         } else if (component.type.indexOf(easyForm.TextArea.type) != -1) {
-                            easyFormContainer.append($compile(angular.element(easyForm.TextArea.type))(childScope));
+                            easyFormContainer.append($compile(angular.element(easyForm.TextArea.htmlTag))(childScope));
                         } else if (component.type.indexOf(easyForm.CheckBox.type) != -1) {
                             easyFormContainer.append($compile(angular.element(easyForm.CheckBox.htmlTag))(childScope));
                         } else if (component.type.indexOf(easyForm.ComboBox.type) != -1) {
@@ -463,9 +468,12 @@
                             console.log("There are no view for component with type: " + component.type);
                         }
                         scope.$on("$destroy", function () {
-                            $.cometd.unsubscribe(bkSessionManager.getSessionId());
-                            if (childScope) {
-                                childScope.$destroy();
+                            if (subscriptions[bkSessionManager.getSessionId()]) {
+                                $.cometd.unsubscribe(_subscriptions[bkSessionManager.getSessionId()]);
+                                delete subscriptions[bkSessionManager.getSessionId()];
+                                if (childScope) {
+                                    childScope.$destroy();
+                                }
                             }
                         });
                     });

@@ -33,8 +33,6 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializerProvider;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 
@@ -117,11 +115,11 @@ public class TableDisplay {
   
   public static class DeSerializer implements ObjectDeserializer {
 
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+    private final BeakerObjectConverter parent;
     
-    @Inject
-    public DeSerializer(Provider<BeakerObjectConverter> osp) {
-      objectSerializerProvider = osp;
+    public DeSerializer(BeakerObjectConverter p) {
+      parent = p;
+      parent.addKnownBeakerType("TableDisplay");
     }
     
     @SuppressWarnings("unchecked")
@@ -146,7 +144,7 @@ public class TableDisplay {
               if (nno.isArray()) {
                 ArrayList<Object> val = new ArrayList<Object>();
                 for (JsonNode nnoo : nno) {
-                  Object obj = objectSerializerProvider.get().deserialize(nnoo, mapper);
+                  Object obj = parent.deserialize(nnoo, mapper);
                   val.add(obj);
                 }
                 vals.add(val);              

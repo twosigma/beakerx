@@ -1,24 +1,10 @@
 package com.twosigma.beaker.jvm.serialization;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.DeserializationContext;
-import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.ObjectMapper;
-
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.twosigma.beaker.BeakerCodeCell;
 
 /*
  * This class is used to deserialize output data that contain standard output or error in the notebook
@@ -26,15 +12,11 @@ import com.twosigma.beaker.BeakerCodeCell;
 
 public class ResultsDeserializer implements ObjectDeserializer {
   private final static Logger logger = Logger.getLogger(ResultsDeserializer.class.getName());
-  private final Provider<BeakerObjectConverter> objectSerializerProvider;
+  private final BeakerObjectConverter parent;
 
-  @Inject
-  public ResultsDeserializer(Provider<BeakerObjectConverter> osp) {
-    objectSerializerProvider = osp;
-  }
-
-  private BeakerObjectConverter getObjectSerializer() {
-    return objectSerializerProvider.get();
+  public ResultsDeserializer(BeakerObjectConverter p) {
+    parent = p;
+    parent.addKnownBeakerType("Results");
   }
 
   @Override
@@ -47,7 +29,7 @@ public class ResultsDeserializer implements ObjectDeserializer {
     Object o = null;
     try {
       if (n.has("payload")) {
-        o = getObjectSerializer().deserialize(n.get("payload"), mapper);
+        o = parent.deserialize(n.get("payload"), mapper);
       }      
     } catch (Exception e) {
       logger.log(Level.SEVERE, "exception deserializing Results ", e);

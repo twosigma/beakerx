@@ -38,4 +38,7 @@ public interface BeakerObjectConverter {
   public void addThreadSpecificTypeConversion(String from, String to);
   public void addThreadSpecificTypeDeserializer(ObjectDeserializer o);
   public void addThreadSpecificTypeSerializer(ObjectSerializer o);
+  
+  public void addKnownBeakerType(String t);
+  public boolean isKnownBeakerType(String t);
 }

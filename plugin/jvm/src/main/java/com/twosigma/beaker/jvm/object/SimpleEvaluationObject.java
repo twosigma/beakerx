@@ -259,15 +259,11 @@ public class SimpleEvaluationObject extends Observable {
 
   public static class DeSerializer implements ObjectDeserializer {
 
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+    private final BeakerObjectConverter parent;
 
-    @Inject
-    private DeSerializer(Provider<BeakerObjectConverter> osp) {
-      objectSerializerProvider = osp;
-    }
-
-    private BeakerObjectConverter getObjectSerializer() {
-      return objectSerializerProvider.get();
+    public DeSerializer(BeakerObjectConverter p) {
+      parent = p;
+      parent.addKnownBeakerType("SimpleEvaluationObject");
     }
 
     @Override
@@ -285,7 +281,7 @@ public class SimpleEvaluationObject extends Observable {
         if (n.has("progressBar"))
           progressBar = n.get("progressBar").asInt();
         if (n.has("payload"))
-          payload = getObjectSerializer().deserialize(n.get("payload"), mapper);
+          payload = parent.deserialize(n.get("payload"), mapper);
         
         o = new SimpleEvaluationObject(expression);
         o.message = message;

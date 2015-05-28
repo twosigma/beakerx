@@ -12,6 +12,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class BufferedImageDeserializer implements ObjectDeserializer {
   private final static Logger logger = Logger.getLogger(BufferedImageDeserializer.class.getName());
   
+  public BufferedImageDeserializer(BeakerObjectConverter p) {
+    p.addKnownBeakerType("ImageIcon");
+  }
+
   @Override
   public boolean canBeUsed(JsonNode n) {
     return n.has("type") && n.get("type").asText().equals("ImageIcon");
@@ -30,7 +34,6 @@ public class BufferedImageDeserializer implements ObjectDeserializer {
       logger.log(Level.SEVERE, "exception deserializing ImageIcon ", e);
     }
     return o;
-
   }
 
 }

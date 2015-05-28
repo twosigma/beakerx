@@ -95,15 +95,11 @@ public class BeakerCodeCell {
   
   public static class DeSerializer implements ObjectDeserializer {
 
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+    private final BeakerObjectConverter parent;
 
-    @Inject
-    private DeSerializer(Provider<BeakerObjectConverter> osp) {
-      objectSerializerProvider = osp;
-    }
-
-    private BeakerObjectConverter getObjectSerializer() {
-      return objectSerializerProvider.get();
+    public DeSerializer(BeakerObjectConverter p) {
+      parent = p;
+      parent.addKnownBeakerType("BeakerCodeCell");
     }
 
     @Override
@@ -124,7 +120,7 @@ public class BeakerCodeCell {
         if (n.has("tags"))
           tags = n.get("tags").asText();
         if (n.has("output"))
-          output = getObjectSerializer().deserialize(n.get("output"), mapper);
+          output = parent.deserialize(n.get("output"), mapper);
         
         o = new BeakerCodeCell();
         o.setcellId(cellId);

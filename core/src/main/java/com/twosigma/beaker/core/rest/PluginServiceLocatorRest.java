@@ -458,7 +458,7 @@ public class PluginServiceLocatorRest {
       while ((line = br.readLine()) != null) {
         System.out.println("looking on " + startedIndicatorStream + " found:" + line);
         if (line.indexOf(startedIndicator) >= 0) {
-          System.out.println("Acknowledge " + pluginId + " plugin started");
+          System.out.println("Acknowledge " + pluginId + " plugin started due to "+startedIndicator);
           break;
         }
       }
@@ -474,7 +474,7 @@ public class PluginServiceLocatorRest {
     String url = "http://127.0.0.1:" + this.restartPort + "/restart." + restartId + "/present.html";
     try {
       spinCheck(url);
-      if (windows()) Thread.sleep(1000); // XXX unknown race condition
+      Thread.sleep(1000); // XXX unknown race condition
     } catch (Throwable t) {
       System.err.println("Nginx restart time out plugin =" + pluginId);
       this.plugins.remove(pluginId);
@@ -516,7 +516,7 @@ public class PluginServiceLocatorRest {
 
     int interval = RESTART_ENSURE_RETRY_INTERVAL;
     int totalTime = 0;
-
+    
     while (totalTime < RESTART_ENSURE_RETRY_MAX_WAIT) {
       if (Request.Get(url)
           .execute()

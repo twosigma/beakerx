@@ -93,7 +93,6 @@ public class SerializerModule extends AbstractModule {
     bind(UpdatableEvaluationResult.Serializer.class);
     bind(OutputContainer.Serializer.class);
     bind(BeakerProgressUpdate.Serializer.class);
-    bind(TableDisplay.DeSerializer.class);
   }
 
   @Provides
@@ -110,17 +109,17 @@ public class SerializerModule extends AbstractModule {
   public BeakerObjectConverter getObjectSerializer(Injector injector) {
     BeakerObjectConverter serializer = injector.getInstance(PlotObjectSerializer.class);
     try {
-      serializer.addTypeDeserializer(injector.getInstance(TableDisplay.DeSerializer.class));
-      serializer.addTypeDeserializer(injector.getInstance(OutputContainer.DeSerializer.class));
-      serializer.addTypeDeserializer(injector.getInstance(BeakerCodeCell.DeSerializer.class));
-      serializer.addTypeDeserializer(injector.getInstance(BeakerProgressUpdate.DeSerializer.class));
-      serializer.addTypeDeserializer(injector.getInstance(SimpleEvaluationObject.DeSerializer.class));
-      serializer.addTypeDeserializer(injector.getInstance(UpdatableEvaluationResult.DeSerializer.class));   
-      serializer.addTypeDeserializer(new BufferedImageDeserializer());
-      serializer.addTypeDeserializer(new DateDeserializer());
-      serializer.addTypeDeserializer(injector.getInstance(ResultsDeserializer.class)); 
-      serializer.addTypeDeserializer(injector.getInstance(CollectionDeserializer.class));
-      serializer.addTypeDeserializer(injector.getInstance(MapDeserializer.class));
+      serializer.addTypeDeserializer(new TableDisplay.DeSerializer(serializer));
+      serializer.addTypeDeserializer(new OutputContainer.DeSerializer(serializer));
+      serializer.addTypeDeserializer(new BeakerCodeCell.DeSerializer(serializer));
+      serializer.addTypeDeserializer(new BeakerProgressUpdate.DeSerializer(serializer));
+      serializer.addTypeDeserializer(new SimpleEvaluationObject.DeSerializer(serializer));
+      serializer.addTypeDeserializer(new UpdatableEvaluationResult.DeSerializer(serializer)); 
+      serializer.addTypeDeserializer(new BufferedImageDeserializer(serializer));
+      serializer.addTypeDeserializer(new DateDeserializer(serializer));
+      serializer.addTypeDeserializer(new ResultsDeserializer(serializer));
+      serializer.addTypeDeserializer(new CollectionDeserializer(serializer));
+      serializer.addTypeDeserializer(new MapDeserializer(serializer));
       } catch(Exception e) {
       logger.log(Level.SEVERE, "exception while creating ObjectSerializer", e);
     }

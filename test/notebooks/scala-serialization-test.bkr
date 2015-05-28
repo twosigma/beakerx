@@ -68,8 +68,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 5032
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 4432
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -89,8 +89,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 810
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 722
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -110,8 +110,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 770
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 799
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -131,8 +131,8 @@
                 "state": {},
                 "selectedType": "Table",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 217
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 841
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -152,8 +152,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 237
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 735
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -173,8 +173,8 @@
                 "state": {},
                 "selectedType": "Plot",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 693
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 206
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -194,8 +194,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 694
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 747
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -219,8 +219,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 994
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 1462
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -244,8 +244,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 868
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 845
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -271,8 +271,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 768
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 810
             },
             "evaluatorReader": true,
             "lineCount": 9
@@ -296,8 +296,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 770
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 701
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -321,8 +321,8 @@
                 "state": {},
                 "selectedType": "Text",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 699
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 750
             },
             "evaluatorReader": true,
             "lineCount": 7
@@ -342,10 +342,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "OutputContainer",
+                "selectedType": "BeakerDisplay",
                 "pluginName": "Scala",
-                "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
-                "elapsedTime": 1046
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 1047
             },
             "evaluatorReader": true,
             "lineCount": 5
@@ -357,18 +357,18 @@
             "input": {
                 "body": [
                     "// test storing OutputContainer in beaker namespace",
-                    "import com.twosigma.beaker.jvm.`object`.OutputContainer",
-                    "val o = new OutputContainer( scala.collection.JavaConversions.seqAsJavaList(List(\"pippero\", List(1,2,3,4,5,6), List( Map(\"a\"->1, \"b\"->3), Map(\"a\"->4, \"c\"->5)))))",
-                    "beaker.x = o",
+                    "//import com.twosigma.beaker.jvm.`object`.OutputContainer",
+                    "//val o = new OutputContainer( scala.collection.JavaConversions.seqAsJavaList(List(\"pippero\", List(1,2,3,4,5,6), List( Map(\"a\"->1, \"b\"->3), Map(\"a\"->4, \"c\"->5)))))",
+                    "//beaker.x = o",
                     "",
-                    "if(!beaker.x.getClass().getName().endsWith(\".OutputContainer\") ||",
-                    "  !beaker.x.items.get(0).getClass().getName().endsWith(\".String\")  ||",
-                    "  !beaker.x.items.get(1).getClass().getName().endsWith(\".ArrayList\")  ||",
-                    "  !beaker.x.items.get(2).getClass().getName().endsWith(\".ArrayList\"))",
-                    "  \"ERROR: this test is failed: \"+beaker.x.getClass().getName()+\" \"+beaker.x.items.get(0).getClass().getName()+\" \"+beaker.x.items.get(1).getClass().getName()+\" \"+beaker.x.items.get(2).getClass().getName()",
-                    "else {",
+                    "//if(!beaker.x.getClass().getName().endsWith(\".OutputContainer\") ||",
+                    "//  !beaker.x.items.get(0).getClass().getName().endsWith(\".String\")  ||",
+                    "//  !beaker.x.items.get(1).getClass().getName().endsWith(\".ArrayList\")  ||",
+                    "//  !beaker.x.items.get(2).getClass().getName().endsWith(\".ArrayList\"))",
+                    "//  \"ERROR: this test is failed: \"+beaker.x.getClass().getName()+\" \"+beaker.x.items.get(0).getClass().getName()+\" \"+beaker.x.items.get(1).getClass().getName()+\" \"+beaker.x.items.get(2).getClass().getName()",
+                    "//else {",
                     "  \"OK\"",
-                    "}"
+                    "//}"
                 ]
             },
             "output": {
@@ -396,7 +396,7 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Table",
+                "selectedType": "BeakerDisplay",
                 "pluginName": "Scala",
                 "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
                 "elapsedTime": 852
@@ -417,12 +417,12 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "BeakerDisplay",
                 "pluginName": "Scala",
                 "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
                 "elapsedTime": 781
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 3
         },
         {
@@ -442,12 +442,12 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Image",
+                "selectedType": "BeakerDisplay",
                 "pluginName": "Scala",
                 "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
                 "elapsedTime": 792
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 7
         },
         {
@@ -472,12 +472,12 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text",
+                "selectedType": "BeakerDisplay",
                 "pluginName": "Scala",
                 "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
                 "elapsedTime": 933
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 12
         },
         {
@@ -501,7 +501,7 @@
                 "shellId": "0dd87a89-378c-4e82-86b3-c02e48dd81cc",
                 "elapsedTime": 92
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 6
         },
         {
@@ -517,11 +517,11 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Image",
+                "selectedType": "BeakerDisplay",
                 "pluginName": "JavaScript",
                 "elapsedTime": 12
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 3
         },
         {
@@ -538,12 +538,12 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Table",
+                "selectedType": "BeakerDisplay",
                 "pluginName": "Scala",
                 "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
                 "elapsedTime": 767
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 4
         },
         {
@@ -564,7 +564,7 @@
                 "shellId": "49823b4e-466d-4fce-9b1d-2bc06a897e5f",
                 "elapsedTime": 821
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 3
         }
     ],

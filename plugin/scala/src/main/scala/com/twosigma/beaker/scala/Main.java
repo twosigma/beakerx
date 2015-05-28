@@ -28,6 +28,7 @@ import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
 
 import java.util.logging.Logger;
 
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -62,6 +63,8 @@ public class Main {
 
     Server server = injector.getInstance(Server.class);
     server.start();
+    System.out.println("waiting");
+    Thread.sleep(1000);
     System.out.println("Server started");
     BeakerStdOutErrHandler.init();
   }

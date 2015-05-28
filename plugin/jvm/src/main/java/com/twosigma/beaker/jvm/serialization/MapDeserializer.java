@@ -9,29 +9,21 @@ import java.util.logging.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-
 /*
  * This class is used to deserialize output data that contain standard output or error in the notebook
  */
 
 public class MapDeserializer implements ObjectDeserializer {
   private final static Logger logger = Logger.getLogger(MapDeserializer.class.getName());
-  private final Provider<BeakerObjectConverter> objectSerializerProvider;
+  private final BeakerObjectConverter parent;
 
-  @Inject
-  public MapDeserializer(Provider<BeakerObjectConverter> osp) {
-    objectSerializerProvider = osp;
-  }
-
-  private BeakerObjectConverter getObjectSerializer() {
-    return objectSerializerProvider.get();
+  public MapDeserializer(BeakerObjectConverter p) {
+    parent = p;
   }
 
   @Override
   public boolean canBeUsed(JsonNode n) {
-    return n.isObject();
+    return n.isObject() && (!n.has("type") || !parent.isKnownBeakerType(n.get("type").asText()));
   }
 
   @Override
@@ -42,7 +34,7 @@ public class MapDeserializer implements ObjectDeserializer {
       Iterator<Entry<String, JsonNode>> e = n.getFields();
       while(e.hasNext()) {
         Entry<String, JsonNode> ee = e.next();
-        o.put(ee.getKey(), getObjectSerializer().deserialize(ee.getValue(),mapper));
+        o.put(ee.getKey(), parent.deserialize(ee.getValue(),mapper));
       }
     } catch (Exception e) {
       logger.log(Level.SEVERE, "exception deserializing Map ", e);

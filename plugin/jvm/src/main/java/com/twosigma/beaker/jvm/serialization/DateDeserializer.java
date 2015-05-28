@@ -1,7 +1,6 @@
 package com.twosigma.beaker.jvm.serialization;
 
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,6 +10,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class DateDeserializer implements ObjectDeserializer {
   private final static Logger logger = Logger.getLogger(DateDeserializer.class.getName());
   
+  public DateDeserializer(BeakerObjectConverter p) {
+    p.addKnownBeakerType("Date");
+  }
+
   @Override
   public boolean canBeUsed(JsonNode n) {
     return n.has("type") && n.get("type").asText().equals("Date");
@@ -26,7 +29,6 @@ public class DateDeserializer implements ObjectDeserializer {
       logger.log(Level.SEVERE, "exception deserializing Date ", e);
     }
     return o;
-
   }
 
 }

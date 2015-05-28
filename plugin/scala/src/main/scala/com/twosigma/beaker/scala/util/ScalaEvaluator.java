@@ -54,7 +54,6 @@ import com.twosigma.beaker.NamespaceClient;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.object.TableDisplay;
 import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
-import com.twosigma.beaker.jvm.serialization.MapDeserializer;
 import com.twosigma.beaker.jvm.serialization.ObjectDeserializer;
 import com.twosigma.beaker.jvm.serialization.ObjectSerializer;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
@@ -351,10 +350,10 @@ public class ScalaEvaluator {
           "    _beaker.set(field,value)\n"+
           "    return value\n"+
           "  }\n"+
-          "  def applyDynamic(methodName: String)(args: AnyRef*) : Any = {\n"+
+          "  def applyDynamic(methodName: String)(args: AnyRef*) = {\n"+
           "    def argtypes = args.map(_.getClass)\n"+
           "    def method = _beaker.getClass.getMethod(methodName, argtypes: _*)\n"+
-          "    return method.invoke(_beaker,args: _*)\n"+
+          "    method.invoke(_beaker,args: _*)\n"+
           "  }\n"+
           "}\n" 
           );
@@ -658,6 +657,7 @@ public class ScalaEvaluator {
     
     public ScalaTableDeSerializer(BeakerObjectConverter p) {
       parent = p;
+      parent.addKnownBeakerType("TableDisplay");
     }
     
     @SuppressWarnings("unchecked")
@@ -774,9 +774,10 @@ public class ScalaEvaluator {
     public ScalaMapDeserializer(BeakerObjectConverter p) {
       parent = p;
     }
+    
     @Override
     public boolean canBeUsed(JsonNode n) {
-      return n.isObject();
+      return n.isObject() && (!n.has("type") || !parent.isKnownBeakerType(n.get("type").asText()));
     }
 
     @Override

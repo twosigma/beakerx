@@ -56,6 +56,7 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
   private final static Logger logger = Logger.getLogger(BasicObjectSerializer.class.getName());
 
   protected final Map<String,String> types;
+  protected final List<String> knownBeakerTypes;
   protected final List<ObjectDeserializer> supportedDeserializers;
   protected final List<ObjectSerializer> supportedSerializers;
 
@@ -112,7 +113,6 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     }
     return max>=2 && m.size()>=2;
   }
-
   
   public BasicObjectSerializer() {
     types                  = new HashMap<String,String>();
@@ -121,7 +121,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
     supportedDeserializers = new ArrayList<ObjectDeserializer>();
     supportedSerializers   = new ArrayList<ObjectSerializer>();
     threadTypes            = new ThreadLocal<Map<String,String>>();
-
+    knownBeakerTypes       = new ArrayList<String>();
+    
     addTypeConversion("java.lang.Boolean", TYPE_BOOLEAN);
     addTypeConversion("java.lang.Byte", TYPE_INTEGER);
     addTypeConversion("java.lang.Character", TYPE_STRING);
@@ -544,6 +545,16 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
       }
       return true;
     }
+  }
+
+  @Override
+  public void addKnownBeakerType(String t) {
+    knownBeakerTypes.add(t);
+  }
+
+  @Override
+  public boolean isKnownBeakerType(String t) {
+    return knownBeakerTypes.contains(t);
   }
 
 }

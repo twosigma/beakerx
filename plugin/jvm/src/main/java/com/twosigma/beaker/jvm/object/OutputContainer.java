@@ -76,15 +76,11 @@ public class OutputContainer {
   }
   
   public static class DeSerializer implements ObjectDeserializer {
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+    private final BeakerObjectConverter parent;
 
-    @Inject
-    public DeSerializer(Provider<BeakerObjectConverter> osp) {
-      objectSerializerProvider = osp;
-    }
-
-    private BeakerObjectConverter getObjectSerializer() {
-      return objectSerializerProvider.get();
+    public DeSerializer(BeakerObjectConverter p) {
+      parent = p;
+      parent.addKnownBeakerType("OutputContainer");
     }
 
     @Override
@@ -98,7 +94,7 @@ public class OutputContainer {
           if (nn.isArray()) {
             vals = new ArrayList<Object>();
             for (JsonNode no : nn) {
-              vals.add(getObjectSerializer().deserialize(no, mapper));
+              vals.add(parent.deserialize(no, mapper));
             }
           }
         }

@@ -63,8 +63,6 @@ public class Main {
 
     Server server = injector.getInstance(Server.class);
     server.start();
-    System.out.println("waiting");
-    Thread.sleep(1000);
     System.out.println("Server started");
     BeakerStdOutErrHandler.init();
   }

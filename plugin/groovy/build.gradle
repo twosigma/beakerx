@@ -38,6 +38,7 @@ dependencies {
   antlr group : 'org.antlr', name :'antlr4', version: '4.3'
   compile group: 'org.apache.ivy', name:'ivy', version:'2.2.0' 
   compile 'com.lowagie:itext:2.1.7'
+  compile 'org.graxxia:graxxia:0.9'
   compile 'org.apache.commons:commons-math3:3.5'
   compile 'junit:junit:4.4'
   compile 'commons-cli:commons-cli:1.1'

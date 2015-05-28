@@ -45,7 +45,6 @@
       $sessionStorage,
       bkUtils,
       bkRecentMenu,
-      bkEvaluatorManager,
       bkNotebookCellModelManager,
       modalDialogOp) {
 
@@ -502,22 +501,6 @@
           }
         }
 
-        var commentToggle = function(cm) {
-          var lineComment = bkEvaluatorManager.getEvaluator(scope.cellmodel.evaluator).lineComment;
-          console.log("lineComment: " + lineComment);
-          if (!lineComment) {
-            return;
-          }
-          var cursor = cm.getCursor();
-          var line = cm.getLine(cursor.line);
-          console.log("line: " + line);
-          if (line.length >= lineComment.length && line.substring(0, lineComment.length) == lineComment) {
-            console.log("uncomment");
-          } else {
-            console.log("comment");
-          }
-        }
-
         return {
           lineNumbers: true,
           matchBrackets: true,
@@ -544,8 +527,8 @@
             "Cmd-Alt-D": deleteCell,
             "Tab": tab,
             "Backspace": backspace,
-            "Ctrl-/": commentToggle,
-            "Cmd-/": commentToggle
+            "Ctrl-/": "toggleComment",
+            "Cmd-/": "toggleComment"
           }
         };
       },

@@ -41,7 +41,6 @@ define(function(require, exports, module) {
       borderColor: "",
       shortName: "Py",
       indentSpaces: 4,
-      lineComment: "#",
       newShell: function(shellID, cb) {
 
         var kernel = null;

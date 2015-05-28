@@ -526,7 +526,9 @@
             "Ctrl-Alt-D": deleteCell,
             "Cmd-Alt-D": deleteCell,
             "Tab": tab,
-            "Backspace": backspace
+            "Backspace": backspace,
+            "Ctrl-/": "toggleComment",
+            "Cmd-/": "toggleComment"
           }
         };
       },

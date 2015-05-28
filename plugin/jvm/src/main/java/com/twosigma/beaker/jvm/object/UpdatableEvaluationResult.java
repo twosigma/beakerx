@@ -90,15 +90,11 @@ public class UpdatableEvaluationResult extends Observable {
   
   public static class DeSerializer implements ObjectDeserializer {
 
-    private final Provider<BeakerObjectConverter> objectSerializerProvider;
+    private final BeakerObjectConverter parent;
 
-    @Inject
-    private DeSerializer(Provider<BeakerObjectConverter> osp) {
-      objectSerializerProvider = osp;
-    }
-
-    private BeakerObjectConverter getObjectSerializer() {
-      return objectSerializerProvider.get();
+    public DeSerializer(BeakerObjectConverter p) {
+      parent = p;
+      parent.addKnownBeakerType("UpdatableEvaluationResult");
     }
 
     @Override
@@ -108,7 +104,7 @@ public class UpdatableEvaluationResult extends Observable {
         Object payload=null;
         
         if (n.has("payload"))
-          payload = getObjectSerializer().deserialize(n.get("payload"), mapper);
+          payload = parent.deserialize(n.get("payload"), mapper);
         
         o = new UpdatableEvaluationResult(payload);
       } catch (Exception e) {

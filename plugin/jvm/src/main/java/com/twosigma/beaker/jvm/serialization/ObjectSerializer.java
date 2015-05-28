@@ -15,13 +15,12 @@
  */
 package com.twosigma.beaker.jvm.serialization;
 
-import java.util.List;
+import java.io.IOException;
 
-import com.twosigma.beaker.BeakerCodeCell;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonProcessingException;
 
-/*
- * This class is used as fake root object when accessing the notebook code cells
- */
-public class BeakerCodeCellList {
-  public List<BeakerCodeCell> theList;
+public interface ObjectSerializer {
+  public boolean canBeUsed(Object obj, boolean expand);
+  public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand)  throws JsonProcessingException, IOException;
 }

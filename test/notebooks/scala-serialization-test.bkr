@@ -1,0 +1,593 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Groovy",
+            "plugin": "Groovy",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*",
+            "view": {
+                "cm": {
+                    "mode": "groovy"
+                }
+            }
+        },
+        {
+            "name": "Scala",
+            "plugin": "Scala",
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*",
+            "view": {
+                "cm": {
+                    "mode": "text/x-scala"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "datatable",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// verify 'list of maps' to datatable conversion",
+                    "List( Map(\"a\" -> 1, \"b\" -> 3), Map(\"a\" -> 4, \"c\" -> 5))",
+                    "// expected output is a datatable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 763
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codefZlNFL",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// verify primitive type map to datatable conversion",
+                    "Map(\"a\"->1, \"b\"->2, \"c\"-> 55)",
+                    "// expected output is a datatable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 681
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeSWnl9a",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// verify non-primitive type map to datatable conversion",
+                    "Map(\"a\"->1, \"b\"->2, \"c\"->  new Plot())",
+                    "// expected output is a JSON text"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 724
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeMwBwGY",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// verify primitive type matrix to datatable conversion",
+                    "List( List(1,2,3),List(4,5,6), List(7,8,9,10))",
+                    "// expected output is a datatable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 725
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeFlU3F1",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// verify non primitive type matrix to datatable conversion",
+                    "List( List(1,2,3),List(4,5,6), List(7,8,9,new Plot()))",
+                    "// expected output is a JSON text"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 801
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codeC5170V",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// verify basic plots",
+                    "new Plot()",
+                    "// expected output is a plot"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Plot",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 656
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "code6cxIZX",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// basic collection",
+                    "List(1,2,3,4,5,6)",
+                    "// expected output is a list in javascript syntax"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 677
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codepZM8Jo",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// test storing list of maps in beaker namespace",
+                    "beaker.x = List( Map(\"a\" -> 1, \"b\" -> 3), Map(\"a\" -> 4, \"c\" -> 5))",
+                    "",
+                    "if(!beaker.x.getClass().getName().endsWith(\".ArrayList\"))",
+                    "  \"ERROR: this test is failed: \"+beaker.x.getClass().getName()",
+                    "else",
+                    "  \"OK\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 879
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "codeZVB2HL",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// test storing basic maps in beaker namespace",
+                    "beaker.x = Map(\"a\"->1, \"b\"->2, \"c\"-> 55)",
+                    "",
+                    "if(!beaker.x.getClass().getName().startsWith(\"scala.collection.immutable.Map\"))",
+                    "  \"ERROR: this test is failed: \"+beaker.x.getClass().getName()",
+                    "else",
+                    "  \"OK\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 742
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "codeIMTwpz",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "",
+                    "// test storing primitive type matrix in beaker namespace",
+                    "beaker.x = List( List(1,2,3),List(4,5,6), List(7,8,9,10))",
+                    "",
+                    "if(!beaker.x.getClass().getName().startsWith(\"scala.collection.immutable\"))",
+                    "  \"ERROR: this test is failed: \"+beaker.x.getClass().getName()",
+                    "else",
+                    "  \"OK\"",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 750
+            },
+            "evaluatorReader": true,
+            "lineCount": 9
+        },
+        {
+            "id": "code6KOVvS",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// test storing Plots in beaker namespace",
+                    "beaker.x = new Plot()",
+                    "",
+                    "if(!beaker.x.getClass().getName().startsWith(\"scala.collection.immutable.HashMap\"))",
+                    "  \"ERROR: this test is failed: \"+beaker.x.getClass().getName()",
+                    "else",
+                    "  \"OK\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 721
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "codeQ3BFZl",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// test storing basic collections in beaker namespace",
+                    "beaker.x = List(1,2,3,4,5,6)",
+                    "",
+                    "if(!beaker.x.getClass().getName().startsWith(\"scala.collection.immutable\"))",
+                    "  \"ERROR: this test is failed: \"+beaker.x.getClass().getName()",
+                    "else",
+                    "  \"OK\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 702
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "codehkAnKs",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// test output container",
+                    "import com.twosigma.beaker.jvm.`object`.OutputContainer",
+                    "val o = new OutputContainer( scala.collection.JavaConversions.seqAsJavaList(List(\"pippero\", List(1,2,3,4,5,6), List( Map(\"a\"->1, \"b\"->3), Map(\"a\"->4, \"c\"->5)))))",
+                    "o",
+                    "// expected output is a container with 3 parts"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "OutputContainer",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 869
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "codewxs5DG",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// test storing OutputContainer in beaker namespace",
+                    "//import com.twosigma.beaker.jvm.`object`.OutputContainer",
+                    "//val o = new OutputContainer( scala.collection.JavaConversions.seqAsJavaList(List(\"pippero\", List(1,2,3,4,5,6), List( Map(\"a\"->1, \"b\"->3), Map(\"a\"->4, \"c\"->5)))))",
+                    "//beaker.x = o",
+                    "",
+                    "//if(!beaker.x.getClass().getName().endsWith(\".OutputContainer\") ||",
+                    "//  !beaker.x.items.get(0).getClass().getName().endsWith(\".String\")  ||",
+                    "//  !beaker.x.items.get(1).getClass().getName().endsWith(\".ArrayList\")  ||",
+                    "//  !beaker.x.items.get(2).getClass().getName().endsWith(\".ArrayList\"))",
+                    "//  \"ERROR: this test is failed: \"+beaker.x.getClass().getName()+\" \"+beaker.x.items.get(0).getClass().getName()+\" \"+beaker.x.items.get(1).getClass().getName()+\" \"+beaker.x.items.get(2).getClass().getName()",
+                    "//else {",
+                    "  \"OK\"",
+                    "//}"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 645
+            },
+            "evaluatorReader": true,
+            "lineCount": 13
+        },
+        {
+            "id": "codeCgw2fr",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// test UpdatableEvaluationResult for delayed update",
+                    "import com.twosigma.beaker.jvm.`object`.UpdatableEvaluationResult",
+                    "val r = new UpdatableEvaluationResult(\"test 1\")",
+                    "r",
+                    "// before evaluating the next cell this should read \"test 1\""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 829
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "codeIFMQnC",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// test UpdatableEvaluationResult for delayed update",
+                    "r.setValue(List( Map(\"a\"->1, \"b\"->3), Map(\"a\"->4, \"c\"->5) ))",
+                    "// the above cell now should contain a datatable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 756
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "image",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// test creating an image",
+                    "import java.awt.image.BufferedImage",
+                    "val i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",
+                    "val g2 = i.createGraphics()",
+                    "g2.drawLine(0,0,100,100)",
+                    "i",
+                    "// expected output is a black rectangle with a white diagonal"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Image",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 764
+            },
+            "evaluatorReader": true,
+            "lineCount": 7
+        },
+        {
+            "id": "codeA8clMj",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// test creating an image and saving it in the beaker namespace",
+                    "import java.awt.image.BufferedImage",
+                    "val i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",
+                    "val g2 = i.createGraphics()",
+                    "g2.drawLine(0,0,100,100)",
+                    "beaker.i = i",
+                    "",
+                    "if(!beaker.i.getClass().getName().endsWith(\".BufferedImage\"))",
+                    "  \"ERROR: this test is failed: \"+beaker.i.getClass().getName()",
+                    "else",
+                    "  \"OK\"",
+                    ""
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Text",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 800
+            },
+            "evaluatorReader": true,
+            "lineCount": 12
+        },
+        {
+            "id": "codeBaJyH9",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// this should display both the image and a datatable",
+                    "//import com.twosigma.beaker.jvm.`object`.OutputContainer",
+                    "//val a = beaker.getCodeCells(\"image\").output[0]",
+                    "//val b = beaker.getCodeCells(\"datatable\").output[0]",
+                    "//new OutputContainer(List(a, b))",
+                    "// expected output is a container with an image and a datatable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "BeakerDisplay",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 78
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+        {
+            "id": "codeLr88WY",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// check that JavaScript can properly return objects from beaker namespace",
+                    "beaker.i",
+                    "// below you should see the image"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Image",
+                "pluginName": "JavaScript",
+                "elapsedTime": 13
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        },
+        {
+            "id": "codejZuiR5",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// now evaluate objects in javascript from groovy",
+                    "val o = beaker.evaluateCode(\"JavaScript\", \"var o={a:1, b:2}; o\")",
+                    "o",
+                    "// you should see a datatable"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "Table",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 841
+            },
+            "evaluatorReader": true,
+            "lineCount": 4
+        },
+        {
+            "id": "codefqZ7Ym",
+            "type": "code",
+            "evaluator": "Scala",
+            "input": {
+                "body": [
+                    "// now evaluate javascript with errors from groovy",
+                    "beaker.evaluateCode(\"JavaScript\", \"var o={a:1, b:2; o\")",
+                    "// you should see the error details"
+                ]
+            },
+            "output": {
+                "state": {},
+                "selectedType": "BeakerDisplay",
+                "pluginName": "Scala",
+                "shellId": "da72293b-e442-41d5-81fa-4ef685d77cb6",
+                "elapsedTime": 762
+            },
+            "evaluatorReader": true,
+            "lineCount": 3
+        }
+    ],
+    "namespace": {
+        "x": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+        ],
+        "r": {
+            "update_id": "5689ad70-16c3-424b-9461-ac2db5330a22",
+            "type": "UpdatableEvaluationResult",
+            "payload": "test 1"
+        },
+        "i": {
+            "type": "ImageIcon",
+            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+            "width": 100,
+            "height": 100
+        },
+        "a": 9
+    }
+}

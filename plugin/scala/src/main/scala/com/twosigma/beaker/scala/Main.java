@@ -28,6 +28,7 @@ import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
 
 import java.util.logging.Logger;
 
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 
 /**

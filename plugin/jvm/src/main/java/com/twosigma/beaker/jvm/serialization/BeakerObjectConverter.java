@@ -23,10 +23,22 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 public interface BeakerObjectConverter {
+  public boolean isPrimitiveType(String tn);
   public boolean writeObject(Object obj, JsonGenerator jgen, boolean expand) throws IOException, JsonProcessingException;
   public String convertType(String tn);
-  public boolean isPrimitiveType(String tn);
-  public void addTypeConversion(String from, String to);
   public Object deserialize(JsonNode n, ObjectMapper mapper);
+  
+  public void addTypeConversion(String from, String to);
   public void addTypeDeserializer(ObjectDeserializer o);
+  public void addTypeSerializer(ObjectSerializer o);
+
+  public void addfTypeDeserializer(ObjectDeserializer o);
+  public void addfTypeSerializer(ObjectSerializer o);
+
+  public void addThreadSpecificTypeConversion(String from, String to);
+  public void addThreadSpecificTypeDeserializer(ObjectDeserializer o);
+  public void addThreadSpecificTypeSerializer(ObjectSerializer o);
+  
+  public void addKnownBeakerType(String t);
+  public boolean isKnownBeakerType(String t);
 }

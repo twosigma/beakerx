@@ -946,15 +946,17 @@
         })();
         bkCoreManager.setBkAppImpl(_impl);
 
+        var documentTitleBase = document.title ? document.title + ' - ' : '';
+        var beakerDocumentTitle = '';
+
         var setDocumentTitle = function() {
-          var edited = $scope.isEdited(),
-              filename = $scope.filename(),
-              title;
+          var edited = $scope.isEdited();
+          var filename = $scope.filename();
 
-          title = filename;
-          if (edited) title = '*' + title;
+          beakerDocumentTitle = filename;
+          if (edited) beakerDocumentTitle = '*' + beakerDocumentTitle;
 
-          document.title = title;
+          document.title = documentTitleBase + beakerDocumentTitle;
         };
 
         $scope.isEdited = function() {

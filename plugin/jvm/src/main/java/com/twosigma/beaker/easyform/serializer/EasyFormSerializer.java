@@ -20,6 +20,12 @@ public class EasyFormSerializer extends JsonSerializer<EasyForm> {
             for (EasyFormComponent component : easyForm.getComponentMap().values()) {
                 jgen.writeObject(component);
             }
+            if (easyForm.hasSaveValuesButton()) {
+                jgen.writeObject(easyForm.getSaveValuesButton());
+            }
+            if (easyForm.hasLoadValuesButton()) {
+                jgen.writeObject(easyForm.getLoadValuesButton());
+            }
             jgen.writeEndArray();
         }
         jgen.writeEndObject();

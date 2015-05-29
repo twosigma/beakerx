@@ -1,7 +1,9 @@
 ( function() {
     'use strict';
     var module = angular.module('bk.outputDisplay');
-    module.directive("easyFormTextField", ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', function($compile, bkUtils, bkSessionManager, EasyFormConstants) {
+    module.directive("easyFormTextField",
+            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+                function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
         return {
             restrict : "E",
             template : "<div id='textFieldContrainer' class='text-field-container'>" +
@@ -30,6 +32,7 @@
                     return scope[scope.ngModelAttr];
                 };
                 var valueChangeHandler = function (newValue, oldValue) {
+                    EasyFormService.setComponentValue(component, newValue);
                     bkUtils.setEasyFormValue(scope.ngModelAttr, newValue, bkSessionManager.getSessionId());
                 };
                 scope.$watch(watchedExpression, valueChangeHandler);
@@ -45,6 +48,10 @@
                     }
                 });
 
+                scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
+                    scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
+                });
+
                 $compile(element.contents())(scope);
             }
         };
@@ -54,7 +61,9 @@
 ( function() {
     'use strict';
     var module = angular.module('bk.outputDisplay');
-    module.directive("easyFormTextArea", ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', function($compile, bkUtils, bkSessionManager, EasyFormConstants) {
+    module.directive("easyFormTextArea",
+            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+                function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
         return {
             restrict : "E",
             template : "<div id='textAreaContrainer' class='text-area-container'>" +
@@ -78,6 +87,7 @@
                     return scope[scope.ngModelAttr];
                 };
                 var valueChangeHandler = function (newValue, oldValue) {
+                    EasyFormService.setComponentValue(component, newValue);
                     bkUtils.setEasyFormValue(scope.ngModelAttr, newValue, bkSessionManager.getSessionId());
                 };
                 scope.$watch(watchedExpression, valueChangeHandler);
@@ -93,6 +103,10 @@
                     }
                 });
 
+                scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
+                    scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
+                });
+
                 $compile(element.contents())(scope);
             }
         };
@@ -102,7 +116,9 @@
 ( function() {
     'use strict';
     var module = angular.module('bk.outputDisplay');
-    module.directive("easyFormCheckBox", ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', function($compile, bkUtils, bkSessionManager, EasyFormConstants) {
+    module.directive("easyFormCheckBox",
+            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+                function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
         return {
             restrict : "E",
             template : "<div id='checkBoxContrainer' class='check-box-container'>" +
@@ -131,6 +147,7 @@
                     return scope[scope.ngModelAttr];
                 };
                 var valueChangeHandler = function (newValue, oldValue) {
+                    EasyFormService.setComponentValue(component, newValue);
                     bkUtils.setEasyFormValue(scope.ngModelAttr, newValue, bkSessionManager.getSessionId());
                 };
                 scope.$watch(watchedExpression, valueChangeHandler);
@@ -146,6 +163,10 @@
                     }
                 });
 
+                scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
+                    scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
+                });
+
                 $compile(element.contents())(scope);
             }
         };
@@ -155,7 +176,9 @@
 ( function() {
     'use strict';
     var module = angular.module('bk.outputDisplay');
-    module.directive("easyFormComboBox", ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', function($compile, bkUtils, bkSessionManager, EasyFormConstants) {
+    module.directive("easyFormComboBox",
+            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+                function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
         return {
             restrict : "E",
             template : "<div id='comboBoxContrainer' class='combo-box-container'>" +
@@ -188,6 +211,7 @@
                     return scope[scope.ngModelAttr];
                 };
                 var valueChangeHandler = function (newValue, oldValue) {
+                    EasyFormService.setComponentValue(component, newValue);
                     bkUtils.setEasyFormValue(scope.ngModelAttr, newValue, bkSessionManager.getSessionId());
                 };
                 scope.$watch(watchedExpression, valueChangeHandler);
@@ -203,6 +227,10 @@
                     }
                 });
 
+                scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
+                    scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
+                });
+
                 $compile(element.contents())(scope);
             }
         };
@@ -212,7 +240,9 @@
 ( function() {
     'use strict';
     var module = angular.module('bk.outputDisplay');
-    module.directive("easyFormListComponent", ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', function($compile, bkUtils, bkSessionManager, EasyFormConstants) {
+    module.directive("easyFormListComponent",
+            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+                function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
         return {
             restrict : "E",
             template : "<div id='listComponentContrainer' class='list-component-container'>" +
@@ -253,6 +283,7 @@
                     return scope[scope.ngModelAttr];
                 };
                 var valueChangeHandler = function (newValue, oldValue) {
+                    EasyFormService.setComponentValue(component, newValue);
                     bkUtils.setEasyFormValue(scope.ngModelAttr, newValue, bkSessionManager.getSessionId());
                 };
                 scope.$watch(watchedExpression, valueChangeHandler);
@@ -268,6 +299,10 @@
                     }
                 });
 
+                scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
+                    scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
+                });
+
                 $compile(element.contents())(scope);
             }
         };
@@ -277,7 +312,9 @@
 ( function() {
     'use strict';
     var module = angular.module('bk.outputDisplay');
-    module.directive("easyFormRadioButtonComponent", ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', function($compile, bkUtils, bkSessionManager, EasyFormConstants) {
+    module.directive("easyFormRadioButtonComponent",
+            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', ' EasyFormService',
+                function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
         return {
             restrict : "E",
             template : "<div id='radioButtonComponentContrainer' class='radio-button-container'>" +
@@ -318,6 +355,7 @@
                     return scope[scope.ngModelAttr];
                 };
                 var valueChangeHandler = function (newValue, oldValue) {
+                    EasyFormService.setComponentValue(component, newValue);
                     bkUtils.setEasyFormValue(scope.ngModelAttr, newValue, bkSessionManager.getSessionId());
                 };
                 scope.$watch(watchedExpression, valueChangeHandler);
@@ -333,6 +371,10 @@
                     }
                 });
 
+                scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
+                    scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
+                });
+
                 $compile(element.contents())(scope);
             }
         };
@@ -342,7 +384,9 @@
 ( function() {
     'use strict';
     var module = angular.module('bk.outputDisplay');
-    module.directive("easyFormDatePickerComponent", ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', function($compile, bkUtils, bkSessionManager, EasyFormConstants) {
+    module.directive("easyFormDatePickerComponent",
+            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+                function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
         return {
             restrict : "E",
             template : "<div id='datePickerComponentContrainer' class='date-picker-container'>" +
@@ -370,6 +414,7 @@
                     return scope[scope.ngModelAttr];
                 };
                 var valueChangeHandler = function (newValue, oldValue) {
+                    EasyFormService.setComponentValue(component, newValue);
                     bkUtils.setEasyFormValue(scope.ngModelAttr, newValue, bkSessionManager.getSessionId());
                 };
                 scope.$watch(watchedExpression, valueChangeHandler);
@@ -385,6 +430,10 @@
                     }
                 });
 
+                scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
+                    scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
+                });
+
                 $compile(element.contents())(scope);
             }
         };
@@ -394,7 +443,9 @@
 ( function() {
     'use strict';
     var module = angular.module('bk.outputDisplay');
-    module.directive("easyFormButtonComponent", ['$compile', 'bkUtils', 'bkSessionManager', function($compile, bkUtils, bkSessionManager) {
+    module.directive("easyFormButtonComponent",
+            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+        function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
         return {
             restrict : "E",
             template : "<div id='buttonComponentContrainer' class='button-component-container'>" +
@@ -403,7 +454,7 @@
             link : function(scope, element, attrs) {
                 var component = scope.component;
 
-                var clickHandler = function() {
+                var executeCellWithTag = function() {
                     var cellOp = bkSessionManager.getNotebookCellOp;
                     var result;
                     if (cellOp.hasUserTag(component.tag)) {
@@ -412,16 +463,38 @@
                     console.log('Want to execute code cell with tag: ' + component.tag)
                 };
 
+                var saveValues = function() {
+                    var contentAsJson = JSON.stringify(EasyFormService.easyForm);
+                    bkUtils.saveFile(component.path, contentAsJson, true);
+                };
+
+                var loadValues = function() {
+                    bkUtils.loadFile(component.path).then(function(contentAsJson) {
+                        EasyFormService.easyForm = JSON.parse(contentAsJson);
+                        scope.$root.$broadcast(EasyFormConstants.Events.VALUE_LOADED);
+                    });
+                };
+
                 var buttonComponent = element.find('#buttonComponent');
-                buttonComponent.text(component.label);
 
-                if (component.enabled && component.enabled == false) {
-                    buttonComponent.attr('disabled', 'true');
+                if (EasyFormConstants.Components.Button.type == component.type) {
+                    buttonComponent.text(component.label);
+
+                    if (component.enabled && component.enabled == false) {
+                        buttonComponent.attr('disabled', 'true');
+                    }
+
+                    if (component.tag) {
+                        buttonComponent.attr('title', component.tag).on('click', executeCellWithTag);
+                    }
+                } else if (EasyFormConstants.Components.SaveValuesButton.type == component.type) {
+                    buttonComponent.text("Save");
+                    buttonComponent.on('click', saveValues);
+                } else if (EasyFormConstants.Components.LoadValuesButton.type == component.type) {
+                    buttonComponent.text("Load");
+                    buttonComponent.on('click', loadValues);
                 }
 
-                if (component.tag) {
-                    buttonComponent.attr('title', component.tag).on('click', clickHandler);
-                }
             }
         };
     }]);
@@ -429,7 +502,7 @@
 
 ( function() {
     'use strict';
-    var retfunc = function($compile, bkUtils, bkSessionManager, EasyFormConstants) {
+    var retfunc = function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
         return {
             template : "<div id='easyFormContainer' class='easy-form-container'></div>",
             link : function(scope, element, attrs) {
@@ -440,6 +513,7 @@
                         });
 
                 var model = scope.model.getCellModel();
+
                 if (model.components) {
                     model.components.forEach(function(component) {
                         //depends on type, create markup for components
@@ -461,15 +535,22 @@
                             easyFormContainer.append($compile(angular.element(easyForm.RadioButton.htmlTag))(childScope));
                         } else if (component.type.indexOf(easyForm.DatePicker.type) != -1) {
                             easyFormContainer.append($compile(angular.element(easyForm.DatePicker.htmlTag))(childScope));
-                        } else if (component.type.indexOf(easyForm.Button.type) != -1) {
+                        } else if (component.type.indexOf(easyForm.Button.type) != -1
+                                || component.type.indexOf(easyForm.SaveValuesButton.type) != -1
+                                || component.type.indexOf(easyForm.LoadValuesButton.type) != -1) {
                             easyFormContainer.append($compile(angular.element(easyForm.Button.htmlTag))(childScope));
                         } else {
                             //no components for type
                             console.log("There are no view for component with type: " + component.type);
                         }
+                        if (!(component.type.includes(easyForm.SaveValuesButton.type)
+                                || component.type.includes(easyForm.LoadValuesButton.type))) {
+                            EasyFormService.addComponent(component);
+                        }
+
                         scope.$on("$destroy", function () {
                             if (subscriptions[bkSessionManager.getSessionId()]) {
-                                $.cometd.unsubscribe(_subscriptions[bkSessionManager.getSessionId()]);
+                                $.cometd.unsubscribe(subscriptions[bkSessionManager.getSessionId()]);
                                 delete subscriptions[bkSessionManager.getSessionId()];
                                 if (childScope) {
                                     childScope.$destroy();
@@ -481,14 +562,36 @@
             }
         };
     };
-    beaker.bkoDirective("EasyForm", ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', retfunc]);
+    beaker.bkoDirective("EasyForm", ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService', retfunc]);
 })();
 
 ( function() {
     var module = angular.module('bk.outputDisplay');
+
+    module.service('EasyFormService', function() {
+        var service = {
+            easyForm : {},
+            addComponent : function(component) {
+                this.easyForm[component.label] = component;
+            },
+            setComponentValue : function(component, value) {
+                if (this.easyForm[component.label]) {
+                    this.easyForm[component.label].currentValue = value;
+                }
+            },
+            getComponentValue : function(component) {
+                if (this.easyForm[component.label]) {
+                    return this.easyForm[component.label].currentValue;
+                }
+            }
+        };
+        return service;
+    });
+
     module.constant("EasyFormConstants", {
         Events : {
-            VALUE_SET : "easyformsetevent"
+            VALUE_SET : "easyformsetevent",
+            VALUE_LOADED : "easyformvalueloaded"
         },
         Components : {
             TextField : {
@@ -521,6 +624,14 @@
             },
             Button : {
                 type : "ButtonComponent",
+                htmlTag : "<easy-form-button-component/>"
+            },
+            SaveValuesButton : {
+                type : "SaveValuesButton",
+                htmlTag : "<easy-form-button-component/>"
+            },
+            LoadValuesButton : {
+                type : "LoadValuesButton",
                 htmlTag : "<easy-form-button-component/>"
             }
         }

@@ -5,18 +5,34 @@ import com.twosigma.beaker.easyform.formitem.CheckBox;
 import com.twosigma.beaker.easyform.formitem.ComboBox;
 import com.twosigma.beaker.easyform.formitem.DatePickerComponent;
 import com.twosigma.beaker.easyform.formitem.ListComponent;
+import com.twosigma.beaker.easyform.formitem.LoadValuesButton;
 import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
+import com.twosigma.beaker.easyform.formitem.SaveValuesButton;
 import com.twosigma.beaker.easyform.formitem.TextArea;
 import com.twosigma.beaker.easyform.formitem.TextField;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class EasyForm {
 
-    private Map<String, EasyFormComponent> componentMap = new HashMap<>();
+    private Map<String, EasyFormComponent> componentMap = new LinkedHashMap<>();
+    private SaveValuesButton saveValuesButton;
+    private LoadValuesButton loadValuesButton;
+
+    public void addSaveValuesButton(final String path) {
+        SaveValuesButton button = new SaveValuesButton();
+        button.setPath(path);
+        this.saveValuesButton = button;
+    }
+
+    public void addLoadValuesButton(final String path) {
+        LoadValuesButton button = new LoadValuesButton();
+        button.setPath(path);
+        this.loadValuesButton = button;
+    }
 
     public void setEnabled(final String label, final Boolean enabled) {
         if (StringUtils.isNotEmpty(label) && componentMap.containsKey(label)) {
@@ -99,5 +115,22 @@ public class EasyForm {
 
     public boolean hasComponents() {
         return getComponentMap().size() > 0;
+    }
+
+
+    public boolean hasSaveValuesButton() {
+        return this.saveValuesButton != null;
+    }
+
+    public boolean hasLoadValuesButton() {
+        return this.loadValuesButton != null;
+    }
+
+    public SaveValuesButton getSaveValuesButton() {
+        return saveValuesButton;
+    }
+
+    public LoadValuesButton getLoadValuesButton() {
+        return loadValuesButton;
     }
 }

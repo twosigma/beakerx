@@ -48,7 +48,9 @@ import com.twosigma.beaker.easyform.formitem.CheckBox;
 import com.twosigma.beaker.easyform.formitem.ComboBox;
 import com.twosigma.beaker.easyform.formitem.DatePickerComponent;
 import com.twosigma.beaker.easyform.formitem.ListComponent;
+import com.twosigma.beaker.easyform.formitem.LoadValuesButton;
 import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
+import com.twosigma.beaker.easyform.formitem.SaveValuesButton;
 import com.twosigma.beaker.easyform.formitem.TextArea;
 import com.twosigma.beaker.easyform.formitem.TextField;
 import com.twosigma.beaker.easyform.serializer.ButtonComponentSerializer;
@@ -57,7 +59,9 @@ import com.twosigma.beaker.easyform.serializer.ComboBoxSerializer;
 import com.twosigma.beaker.easyform.serializer.DatePickerComponentSerializer;
 import com.twosigma.beaker.easyform.serializer.EasyFormSerializer;
 import com.twosigma.beaker.easyform.serializer.ListComponentSerializer;
+import com.twosigma.beaker.easyform.serializer.LoadValuesButtonSerializer;
 import com.twosigma.beaker.easyform.serializer.RadioButtonSerializer;
+import com.twosigma.beaker.easyform.serializer.SaveValuesButtonSerializer;
 import com.twosigma.beaker.easyform.serializer.TextAreaSerializer;
 import com.twosigma.beaker.easyform.serializer.TextFieldSerializer;
 import com.twosigma.beaker.jvm.object.BeakerDashboard;
@@ -189,6 +193,8 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(RadioButtonComponent.class, injector.getInstance(RadioButtonSerializer.class));
       module.addSerializer(DatePickerComponent.class, injector.getInstance(DatePickerComponentSerializer.class));
       module.addSerializer(ButtonComponent.class, injector.getInstance(ButtonComponentSerializer.class));
+      module.addSerializer(LoadValuesButton.class, injector.getInstance(LoadValuesButtonSerializer.class));
+      module.addSerializer(SaveValuesButton.class, injector.getInstance(SaveValuesButtonSerializer.class));
 
       mapper.registerModule(module);
 

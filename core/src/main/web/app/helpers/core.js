@@ -504,7 +504,6 @@
         return {
           lineNumbers: true,
           matchBrackets: true,
-          electricChars: false,
           extraKeys: {
             "Up" : goUpOrMoveFocusUp,
             "Down" : goDownOrMoveFocusDown,

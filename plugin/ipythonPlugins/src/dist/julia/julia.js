@@ -40,6 +40,7 @@ define(function(require, exports, module) {
       fgColor: "#FFFFFF",
       borderColor: "",
       shortName: "Jl",
+      indentSpaces: 4,
       newShell: function(shellID, cb) {
 
         var kernel = null;

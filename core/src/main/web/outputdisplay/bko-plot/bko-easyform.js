@@ -444,8 +444,8 @@
     'use strict';
     var module = angular.module('bk.outputDisplay');
     module.directive("easyFormButtonComponent",
-            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
-        function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
+            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService', 'bkCoreManager',
+        function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService, bkCoreManager) {
         return {
             restrict : "E",
             template : "<div id='buttonComponentContrainer' class='button-component-container'>" +
@@ -455,12 +455,15 @@
                 var component = scope.component;
 
                 var executeCellWithTag = function() {
-                    var cellOp = bkSessionManager.getNotebookCellOp;
+                    var cellOp = bkSessionManager.getNotebookCellOp();
                     var result;
                     if (cellOp.hasUserTag(component.tag)) {
                         result = cellOp.getCellsWithUserTag(component.tag);
                     }
-                    console.log('Want to execute code cell with tag: ' + component.tag)
+                    bkCoreManager.getBkApp().evaluateRoot(result)
+                        .catch(function(data) {
+                            console.log('Evaluation failed');
+                        });
                 };
 
                 var saveValues = function() {

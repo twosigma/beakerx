@@ -29,12 +29,7 @@
 
         return {
           restrict: 'E',
-          template: JST['mainapp/components/notebook/markdowncell'](),
-          controller: function($scope) {
-            $scope.getFullIndex = function() {
-              return $scope.$parent.$parent.$parent.getFullIndex() + '.' + ($scope.$parent.index + 1);
-            };
-          }
+          template: JST['mainapp/components/notebook/markdowncell']()
         };
       }]);
 })();

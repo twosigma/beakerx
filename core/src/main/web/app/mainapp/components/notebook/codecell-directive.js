@@ -349,6 +349,12 @@
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
           scope.updateUI(scope.getEvaluator());
+          // Since the instantiation of codemirror instances is now lazy,
+          // we need to track and handle focusing on an async cell add
+          if (scope._shouldFocusCodeMirror) {
+            delete scope._shouldFocusCodeMirror;
+            return scope.cm.focus();
+          }
         }});
 
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
@@ -407,7 +413,11 @@
 
         scope.$on('beaker.cell.added', function(e, cellmodel) {
           if (cellmodel === scope.cellmodel) {
-            scope.cm && scope.cm.focus();
+            if (scope.cm) {
+              return scope.cm.focus();
+            }
+
+            scope._shouldFocusCodeMirror = true;
           }
         });
 

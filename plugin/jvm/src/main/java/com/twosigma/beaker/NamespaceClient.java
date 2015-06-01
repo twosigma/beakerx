@@ -194,10 +194,20 @@ public class NamespaceClient {
 
     public void setEasyFormValue(final String name, final String value) throws IOException {
         Form form = Form.form().add("name", name).add("session", this.session);
-        StringWriter sw = new StringWriter();
         form.add("value", value);
         form.add("publish", String.valueOf(Boolean.TRUE));
         String reply = Request.Post(easyFormUrl + "/set")
+                .addHeader("Authorization", auth).bodyForm(form.build())
+                .execute().returnContent().asString();
+        if (!reply.equals("ok")) {
+            throw new RuntimeException(reply);
+        }
+    }
+
+    public void setEasyFormComponentEnabled(final String label, final Boolean enabled) throws IOException {
+        Form form = Form.form().add("label", label).add("session", this.session);
+        form.add("enabled", String.valueOf(enabled));
+        String reply = Request.Post(easyFormUrl + "/setEnabled")
                 .addHeader("Authorization", auth).bodyForm(form.build())
                 .execute().returnContent().asString();
         if (!reply.equals("ok")) {

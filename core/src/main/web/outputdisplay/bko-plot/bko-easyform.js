@@ -38,12 +38,23 @@
                 scope.$watch(watchedExpression, valueChangeHandler);
 
                 scope.$on(EasyFormConstants.Events.VALUE_SET, function(event, args) {
-                    if (args && args.data) {
-                        var session = args.data.session;
-                        var name = args.data.name;
-                        if (session && session == bkSessionManager.getSessionId()
-                                && name && name == scope.ngModelAttr) {
-                            scope[scope.ngModelAttr] = args.data.value;
+                    var session = args.data.session;
+                    var name = args.data.name;
+                    if (session && session == bkSessionManager.getSessionId()
+                            && name && name == scope.ngModelAttr) {
+                        scope[scope.ngModelAttr] = args.data.value;
+                    }
+                });
+
+                scope.$on(EasyFormConstants.Events.SET_ENABLED, function(event, args) {
+                    var session = args.data.session;
+                    var label = args.data.label;
+                    if (session && session == bkSessionManager.getSessionId()
+                            && label && label == scope.ngModelAttr) {
+                        if (args.data.enabled == true) {
+                            textField.removeAttr('disabled');
+                        } else {
+                            textField.attr('disabled', 'true');
                         }
                     }
                 });
@@ -99,6 +110,19 @@
                         if (session && session == bkSessionManager.getSessionId()
                                 && name && name == scope.ngModelAttr) {
                             scope[scope.ngModelAttr] = args.data.value;
+                        }
+                    }
+                });
+
+                scope.$on(EasyFormConstants.Events.SET_ENABLED, function(event, args) {
+                    var session = args.data.session;
+                    var label = args.data.label;
+                    if (session && session == bkSessionManager.getSessionId()
+                            && label && label == scope.ngModelAttr) {
+                        if (args.data.enabled == true) {
+                            textArea.removeAttr('disabled');
+                        } else {
+                            textArea.attr('disabled', 'true');
                         }
                     }
                 });
@@ -163,6 +187,19 @@
                     }
                 });
 
+                scope.$on(EasyFormConstants.Events.SET_ENABLED, function(event, args) {
+                    var session = args.data.session;
+                    var label = args.data.label;
+                    if (session && session == bkSessionManager.getSessionId()
+                            && label && label == scope.ngModelAttr) {
+                        if (args.data.enabled == true) {
+                            checkBox.removeAttr('disabled');
+                        } else {
+                            checkBox.attr('disabled', 'true');
+                        }
+                    }
+                });
+
                 scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
                     scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
                 });
@@ -200,7 +237,7 @@
                 }
 
                 if (component.enabled && component.enabled == false) {
-                    checkBox.attr('disabled', 'true');
+                    comboBox.attr('disabled', 'true');
                 }
 
                 if (component.values) {
@@ -223,6 +260,19 @@
                         if (session && session == bkSessionManager.getSessionId()
                                 && name && name == scope.ngModelAttr) {
                             scope[scope.ngModelAttr] = args.data.value;
+                        }
+                    }
+                });
+
+                scope.$on(EasyFormConstants.Events.SET_ENABLED, function(event, args) {
+                    var session = args.data.session;
+                    var label = args.data.label;
+                    if (session && session == bkSessionManager.getSessionId()
+                            && label && label == scope.ngModelAttr) {
+                        if (args.data.enabled == true) {
+                            comboBox.removeAttr('disabled');
+                        } else {
+                            comboBox.attr('disabled', 'true');
                         }
                     }
                 });
@@ -295,6 +345,19 @@
                         if (session && session == bkSessionManager.getSessionId()
                                 && name && name == scope.ngModelAttr) {
                             scope[scope.ngModelAttr] = args.data.value;
+                        }
+                    }
+                });
+
+                scope.$on(EasyFormConstants.Events.SET_ENABLED, function(event, args) {
+                    var session = args.data.session;
+                    var label = args.data.label;
+                    if (session && session == bkSessionManager.getSessionId()
+                            && label && label == scope.ngModelAttr) {
+                        if (args.data.enabled == true) {
+                            listComponent.removeAttr('disabled');
+                        } else {
+                            listComponent.attr('disabled', 'true');
                         }
                     }
                 });
@@ -373,6 +436,23 @@
                     }
                 });
 
+                scope.$on(EasyFormConstants.Events.SET_ENABLED, function(event, args) {
+                    var session = args.data.session;
+                    var label = args.data.label;
+                    if (session && session == bkSessionManager.getSessionId()
+                            && label && label == scope.ngModelAttr) {
+
+                        element.find('#radioButtonComponentContrainer input[type="radio"]').each(function (index, el) {
+                            if (args.data.enabled == true) {
+                                el.removeAttribute('disabled');
+                            } else {
+                                el.setAttribute('disabled', 'true');
+                            }
+                        });
+
+                    }
+                });
+
                 scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
                     scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
                 });
@@ -431,6 +511,19 @@
                         }
                     }
                 });
+
+                scope.$on(EasyFormConstants.Events.SET_ENABLED, function(event, args) {
+                    var session = args.data.session;
+                    var label = args.data.label;
+                    if (session && session == bkSessionManager.getSessionId()
+                            && label && label == scope.ngModelAttr) {
+                        if (args.data.enabled == true) {
+                            datePicker.removeAttr('disabled');
+                        } else {
+                            datePicker.attr('disabled', 'true');
+                        }
+                    }
+                })
 
                 scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
                     scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
@@ -500,6 +593,19 @@
                     buttonComponent.on('click', loadValues);
                 }
 
+                scope.$on(EasyFormConstants.Events.SET_ENABLED, function(event, args) {
+                    var session = args.data.session;
+                    var label = args.data.label;
+                    if (session && session == bkSessionManager.getSessionId()
+                            && label && label == scope.ngModelAttr) {
+                        if (args.data.enabled == true) {
+                            buttonComponent.removeAttr('disabled');
+                        } else {
+                            buttonComponent.attr('disabled', 'true');
+                        }
+                    }
+                })
+
             }
         };
     }]);
@@ -514,7 +620,9 @@
                 var subscriptions = {};
                 subscriptions[bkSessionManager.getSessionId()] =
                         $.cometd.subscribe("/easyform/" + bkSessionManager.getSessionId(), function(reply) {
-                            scope.$broadcast(EasyFormConstants.Events.VALUE_SET, reply);
+                            if (reply && reply.data && reply.data.event) {
+                                scope.$broadcast(reply.data.event, reply);
+                            }
                         });
 
                 var model = scope.model.getCellModel();
@@ -596,7 +704,8 @@
     module.constant("EasyFormConstants", {
         Events : {
             VALUE_SET : "easyformsetevent",
-            VALUE_LOADED : "easyformvalueloaded"
+            VALUE_LOADED : "easyformvalueloaded",
+            SET_ENABLED : "easyformsetenabled"
         },
         Components : {
             TextField : {

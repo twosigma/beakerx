@@ -19,6 +19,8 @@ public class EasyFormService {
     private LocalSession localSession;
     private final static String CHANNEL_NAME = "/easyform";
     private Map<String, Map<String, String>> easyFormValues = new ConcurrentHashMap<String, Map<String, String>>();
+    private final static String SET_VALUE_EVENT = "easyformsetevent";
+    private final static String SET_ENABLED_EVENT = "easyformsetenabled";
 
     @Inject
     public EasyFormService(final BayeuxServer bayeuxServer) {
@@ -61,7 +63,22 @@ public class EasyFormService {
             data.put("session", session);
             data.put("name", name);
             data.put("value", value);
+            data.put("event", SET_VALUE_EVENT);
             channel.publish(this.localSession, data, null);
         }
+    }
+
+    public void setEnabled(final String session, final String label, final Boolean enabled) {
+        ServerChannel channel = getChannel(session);
+        if (null == channel) {
+            System.err.println("channel not found for session " + session);
+            return;
+        }
+        Map<String, Object> data = new HashMap<String, Object>(1);
+        data.put("session", session);
+        data.put("label", label);
+        data.put("enabled", enabled);
+        data.put("event", SET_ENABLED_EVENT);
+        channel.publish(this.localSession, data, null);
     }
 }

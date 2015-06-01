@@ -40,4 +40,12 @@ public class EasyFormRest {
         this.easyformService.set(session, name, value, publish);
         return "ok";
     }
+
+    @POST
+    @Path("setEnabled")
+    public String setEnabled(@FormParam("session") String session, @FormParam("label") String label,
+                           @FormParam("enabled") Boolean enabled) throws IOException, InterruptedException {
+        this.easyformService.setEnabled(session, label, enabled);
+        return "ok";
+    }
 }

@@ -313,7 +313,7 @@
     'use strict';
     var module = angular.module('bk.outputDisplay');
     module.directive("easyFormRadioButtonComponent",
-            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', ' EasyFormService',
+            ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
                 function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
         return {
             restrict : "E",
@@ -329,22 +329,24 @@
                 if (component.values && component.values.length > 0) {
                     var container = element.find('#radioButtonComponentContrainer');
 
-                    //todo layout horizontally
-                    var horizontal = component.isHorizontal;
+                    var horizontal = component.isHorizontal && 'true' == component.isHorizontal.toString();
 
                     var radioButtonItemsContainer = angular.element('<div class="radio-button-items-container"></div>');
 
                     component.values.forEach(function(value) {
                         var outerRadioButtonLabel = angular.element('<label class="radio-button-item-label"></label>');
+                        outerRadioButtonLabel.addClass(horizontal ? 'horizontal' : 'vertical');
                         var radioButton = angular.element('<input type="radio" class="radio-button-component-item"/>')
                                 .attr('data-ng-model', component.label)
                                 .attr('value', value);
                         if (component.enabled && component.enabled == false) {
                             radioButton.attr('disabled', 'true');
                         }
-                        outerRadioButtonLabel
-                                .text(value)
-                                .append(radioButton);
+                        var textSpanElement =
+                                angular.element('<span class="radio-button-item-text"></span>')
+                                       .addClass(horizontal ? 'horizontal' : 'vertical');
+                        textSpanElement.text(value);
+                        outerRadioButtonLabel.append(textSpanElement).append(radioButton);
                         radioButtonItemsContainer.append(outerRadioButtonLabel);
                     });
 

@@ -22,14 +22,33 @@
 }
 .radio-button-items-container {
     display: table;
+    width: 80%;
+}
+.radio-button-item-text {
+    width: 10%;
+}
+.radio-button-item-text.vertical {
+    display: table-cell;
+}
+.radio-button-item-text.horizontal {
 }
 .radio-button-item-label {
-    display: table-row;
     margin-top: 5px;
+}
+.radio-button-item-label.vertical {
+    display: table-row;
+}
+.radio-button-item-label.horizontal {
+    display: table-cell;
 }
 input[type="radio"].radio-button-component-item {
     margin: 0 10px;
     vertical-align: middle;
+}
+input[type="radio"].radio-button-component-item.vertical {
+    display: table-cell;
+}
+input[type="radio"].radio-button-component-item.horizontal {
 }
 input.check-box {
     height: 25px;

@@ -27,11 +27,6 @@
         bkCoreManager,
         $timeout) {
 
-        var notebookCellOp = bkSessionManager.getNotebookCellOp();
-        var getBkNotebookWidget = function() {
-          return bkCoreManager.getBkApp().getBkNotebookWidget();
-        };
-
         return {
           restrict: 'E',
           template: JST['mainapp/components/notebook/markdowncell'](),

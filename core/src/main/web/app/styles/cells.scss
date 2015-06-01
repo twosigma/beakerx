@@ -20,6 +20,11 @@
 
 .bkcell .CodeMirror {
     background: transparent;
+    padding-top: $grid-row-height;
+}
+
+.advanced-mode .bkcell .CodeMirror {
+  padding-top: 0;
 }
 
 .bkcelltextarea {
@@ -79,7 +84,6 @@ bk-markdown-cell .markup
     float:          left;
     z-index:        99;
     position:       relative;
-    padding-bottom: $grid-row-height;
 }
 
 bk-cell > .bkcell {

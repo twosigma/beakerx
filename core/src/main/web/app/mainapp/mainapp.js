@@ -1177,7 +1177,7 @@
         };
 
         bkUtils.addConnectedStatusListener(function(msg) {
-          if (msg.successful !== !$scope.isDisconnected()) {
+          if (msg.successful === $scope.isDisconnected()) {
             var disconnected = !msg.successful;
             if (disconnected) {
               connectionManager.onDisconnected();

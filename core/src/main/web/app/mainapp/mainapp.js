@@ -1117,7 +1117,7 @@
           var RECONNECT_TIMEOUT = 5000; // 5 seconds
           var OFFLINE_MESSAGE = "offline";
           var CONNECTING_MESSAGE = "reconnecting";
-          var reconnectTimeout = undefined;
+          var reconnectTimeout;
           var statusMessage = OFFLINE_MESSAGE;
           var disconnected = false;
           var indicateReconnectFailed = function() {

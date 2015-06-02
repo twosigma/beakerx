@@ -29,68 +29,68 @@
   module.factory('bkSession', function(bkUtils) {
     var backupSession = function(sessionId, sessionData) {
       var deferred = bkUtils.newDeferred();
-      bkUtils.httpPost(bkUtils.serverUrl("beaker/rest/session-backup/backup/" + sessionId), sessionData)
+      bkUtils.httpPost(bkUtils.serverUrl('beaker/rest/session-backup/backup/' + sessionId), sessionData)
           .success(function(data) {
             deferred.resolve();
           })
           .error(function(data, status) {
-            console.error("Failed to backup session: " + sessionId + ", " + status);
-            deferred.reject("Failed to backup session: " + sessionId + ", " + status);
+            console.error('Failed to backup session: ' + sessionId + ', ' + status);
+            deferred.reject('Failed to backup session: ' + sessionId + ', ' + status);
           });
       return deferred.promise;
     };
     var getSessions = function() {
       var deferred = bkUtils.newDeferred();
-      bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/session-backup/getExistingSessions"))
+      bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/session-backup/getExistingSessions'))
           .success(function(sessions) {
             deferred.resolve(sessions);
           })
           .error(function(data, status, headers, config) {
-            deferred.reject("Failed to get existing sessions " + status);
+            deferred.reject('Failed to get existing sessions ' + status);
           });
       return deferred.promise;
     };
     var loadSession = function(sessionId) {
       var deferred = bkUtils.newDeferred();
-      bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/session-backup/load"), {sessionid: sessionId})
+      bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/session-backup/load'), {sessionid: sessionId})
           .success(function(session, status) {
             deferred.resolve(session);
           })
           .error(function(data, status, headers, config) {
-            deferred.reject("Failed to load session: " + sessionId + ", " + status);
+            deferred.reject('Failed to load session: ' + sessionId + ', ' + status);
           });
       return deferred.promise;
     };
     var closeSession = function(sessionId) {
       var deferred = bkUtils.newDeferred();
-      bkUtils.httpPost(bkUtils.serverUrl("beaker/rest/session-backup/close"), {sessionid: sessionId})
+      bkUtils.httpPost(bkUtils.serverUrl('beaker/rest/session-backup/close'), {sessionid: sessionId})
           .success(function(ret) {
             deferred.resolve(sessionId);
           })
           .error(function(data, status, headers, config) {
-            deferred.reject("Failed to close session: " + sessionId + ", " + status);
+            deferred.reject('Failed to close session: ' + sessionId + ', ' + status);
           });
       return deferred.promise;
     };
     var recordLoadedPlugin = function(pluginName, pluginUrl) {
       bkUtils.httpPost(
-          bkUtils.serverUrl("beaker/rest/session-backup/addPlugin"),
+          bkUtils.serverUrl('beaker/rest/session-backup/addPlugin'),
           {pluginname: pluginName, pluginurl: pluginUrl})
           .success(function(ret) {
-            //console.log("recordLoadedPlugin");
+            //console.log('recordLoadedPlugin');
           })
           .error(function(data, status, headers, config) {
-            console.error("Failed to add plugin, " + pluginName + ", " + pluginUrl + ", " + status);
+            console.error('Failed to add plugin, ' + pluginName + ', ' + pluginUrl + ', ' + status);
           });
     };
     var getPlugins = function() {
       var deferred = bkUtils.newDeferred();
-      bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/session-backup/getExistingPlugins"), {})
+      bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/session-backup/getExistingPlugins'), {})
           .success(function(plugins) {
             deferred.resolve(plugins);
           })
           .error(function(data, status, headers, config) {
-            deferred.reject("Failed to get existing plugins, " + status);
+            deferred.reject('Failed to get existing plugins, ' + status);
           });
       return deferred.promise;
     };

@@ -209,7 +209,7 @@
             // HACK to fix older version of evaluator configuration
             if (notebookModel && notebookModel.cells && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.cells.length; ++i) {
-                if (notebookModel.cells[i].evaluator != undefined) {
+                if (notebookModel.cells[i].evaluator !== undefined) {
                   for (var j = 0; j < notebookModel.evaluators.length; ++j) {
                     var name = notebookModel.evaluators[j].name;
                     if (notebookModel.cells[i].evaluator === name) {

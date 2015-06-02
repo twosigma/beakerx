@@ -230,23 +230,23 @@
                   }
                 }
               }
-              for (var j = 0; j < notebookModel.evaluators.length; ++j) {
-                var name = notebookModel.evaluators[j].name;
-                var plugin = notebookModel.evaluators[j].plugin;
-                if (bkUtils.beginsWith(name,"Html")) {
-                  notebookModel.evaluators[j].name = "Html";
-                  notebookModel.evaluators[j].plugin = "Html";
-                } else if(bkUtils.beginsWith(name,"Latex")) {
-                  notebookModel.evaluators[j].name = "Latex";
-                  notebookModel.evaluators[j].plugin = "Latex";
-                } else if(bkUtils.beginsWith(name,"JavaScript")) {
-                  notebookModel.evaluators[j].name = "JavaScript";
-                  notebookModel.evaluators[j].plugin = "JavaScript";
-                } else if(bkUtils.beginsWith(name,"Groovy")) {
-                  notebookModel.evaluators[j].name = "Groovy";
-                  notebookModel.evaluators[j].plugin = "Groovy";
-                } else if(name === "Python") {
-                  notebookModel.evaluators[j].name = plugin;
+              for (var k = 0; k < notebookModel.evaluators.length; ++k) {
+                var evaluatorName = notebookModel.evaluators[k].name;
+                var evaluatorPlugin = notebookModel.evaluators[k].plugin;
+                if (bkUtils.beginsWith(evaluatorName,"Html")) {
+                  notebookModel.evaluators[k].name = "Html";
+                  notebookModel.evaluators[k].plugin = "Html";
+                } else if(bkUtils.beginsWith(evaluatorName,"Latex")) {
+                  notebookModel.evaluators[k].name = "Latex";
+                  notebookModel.evaluators[k].plugin = "Latex";
+                } else if(bkUtils.beginsWith(evaluatorName,"JavaScript")) {
+                  notebookModel.evaluators[k].name = "JavaScript";
+                  notebookModel.evaluators[k].plugin = "JavaScript";
+                } else if(bkUtils.beginsWith(evaluatorName,"Groovy")) {
+                  notebookModel.evaluators[k].name = "Groovy";
+                  notebookModel.evaluators[k].plugin = "Groovy";
+                } else if(evaluatorName=== "Python") {
+                  notebookModel.evaluators[k].name = evaluatorPlugin;
                 }
               }
             }

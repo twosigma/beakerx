@@ -335,9 +335,9 @@
                 } else {
                   clrLoadingStatusMessage("Opening URI");
                   $scope.loading = false;
-                  bkCoreManager.show1ButtonModal("Failed to open " + target.uri
-                      + " because format " + target.format
-                      + " was not recognized.", "Open Failed", function() {
+                  bkCoreManager.show1ButtonModal("Failed to open " + target.uri +
+                      " because format " + target.format +
+                      " was not recognized.", "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
                   });
                 }

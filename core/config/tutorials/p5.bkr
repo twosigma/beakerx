@@ -49,7 +49,7 @@
                 "body": [
                     "<h4>",
                     "<a target=\"_blank\" href=\"http://p5js.org\">p5.js</a> is the javascript reimplementation of the legendary <a target=\"_blank\" href=\"https://processing.org/\">Processing</a> animation language.",
-                    "The following is from a <a target=\"_blank\" href=\"http://p5js.org/learn/examples/Simulate_Particle_System.php\">p5.js example</a>.  This notebook shows",
+                    "The following is from a <a target=\"_blank\" href=\"http://p5js.org/examples/examples/Simulate_Particle_System.php\">p5.js example</a>.  This notebook shows",
                     "  how to load and use an external javascript library.</h4>",
                     "<h4>Click the Run button at the bottom of the javascript cell below to start the animation.</h4>",
                     "<div id=\"sketch\">",

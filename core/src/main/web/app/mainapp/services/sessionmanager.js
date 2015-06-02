@@ -415,6 +415,7 @@
     var _format = null;
     var _sessionId = null;
     var _edited = false;
+    var _needsBackup = false;
 
     var BeakerObject = function(nbmodel) {
       this.knownBeakerVars = { };
@@ -832,7 +833,7 @@
         _format = format;
         _notebookUri.set(notebookUri);
         _notebookModel.set(notebookModel);
-        _edited = !!edited;
+        this.setNotebookModelEdited(!!edited);
         _sessionId = sessionId;
 
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
@@ -859,9 +860,9 @@
         _format = format;
         _notebookUri.set(notebookUri);
         _notebookModel.set(notebookModel);
-        _edited = !!edited;
         _sessionId = sessionId;
 
+        this.setNotebookModelEdited(_edited);
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
@@ -876,7 +877,7 @@
         _format = null;
         _notebookModel.reset();
         _sessionId = null;
-        _edited = false;
+        this.setNotebookModelEdited(false);
       },
       close: function() {
         var self = this;
@@ -892,8 +893,13 @@
         }
       },
       backup: function() {
-        if (_sessionId && !_notebookModel.isEmpty()) {
-          return bkSession.backup(_sessionId, generateBackupData());
+        if (_sessionId && !_notebookModel.isEmpty() && _needsBackup) {
+          _needsBackup = false;
+          return bkSession.backup(_sessionId, generateBackupData())
+          .catch(function(err) {
+            _needsBackup = true;
+            throw err;
+          });
         } else {
           return bkUtils.newPromise();
         }
@@ -951,6 +957,7 @@
       // TODO, move the following impl to a dedicated notebook model manager
       // but still expose it here
       setNotebookModelEdited: function(edited) {
+        _needsBackup = edited;
         _edited = edited;
       },
       isNotebookModelEdited: function() {
@@ -966,7 +973,7 @@
           } else {
             _notebookModel.get().locked = undefined;
           }
-          _edited = true;
+          this.setNotebookModelEdited(true);
         }
       },
       evaluatorUnused: function(plugin) {
@@ -977,14 +984,14 @@
       },
       addEvaluator: function(evaluator) {
         _notebookModel.get().evaluators.push(evaluator);
-        _edited = true;
+        this.setNotebookModelEdited(true);
       },
       removeEvaluator: function(plugin) {
         var model = _notebookModel.get();
         model.evaluators = _.reject(model.evaluators, function(e) {
           return e.plugin == plugin;
         });
-        _edited = true;
+        this.setNotebookModelEdited(true);
       },
       reconnectEvaluators: function() {
         return bkEvaluatorManager.reconnectEvaluators();

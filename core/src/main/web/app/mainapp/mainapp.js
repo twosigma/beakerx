@@ -155,9 +155,9 @@
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
                 if (r.test(notebookModel.evaluators[i].plugin)) {
                   var plugList = "<ul>";
-                  for (var i = 0; i < notebookModel.evaluators.length; ++i) {
-                    if (r.test(notebookModel.evaluators[i].plugin)) {
-                      plugList += "<li>"+notebookModel.evaluators[i].plugin;
+                  for (var j = 0; j < notebookModel.evaluators.length; ++j) {
+                    if (r.test(notebookModel.evaluators[j].plugin)) {
+                      plugList += "<li>"+notebookModel.evaluators[j].plugin;
                     }
                   }
                   plugList += "</ul>";

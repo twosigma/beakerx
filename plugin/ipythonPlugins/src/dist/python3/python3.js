@@ -84,7 +84,7 @@ define(function(require, exports, module) {
                   name: "python3"
                 },
                 notebook: {
-                  path: "/fake/path"
+                  path: "/fake/path" + shellID
                 }
               };
               var fakeNotebook = {

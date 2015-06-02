@@ -876,27 +876,27 @@
                   ret.push(o);
                 }
               } else {
-                var o = {};
-                o.cellId = filter.id;
-                o.evaluatorId = filter.evaluator;
-                o.code = filter.input.body;
+                var tmpCell = {};
+                tmpCell.cellId = filter.id;
+                tmpCell.evaluatorId = filter.evaluator;
+                tmpCell.code = filter.input.body;
                 if (filter.dataresult !== undefined) {
-                  o.output = filter.dataresult;
+                  tmpCell.output = filter.dataresult;
                 } else if (filter.output !== undefined && filter.output.result !== undefined) {
                   if (filter.output.result.type !== undefined) {
                     if (filter.output.result.type === 'BeakerDisplay') {
-                      o.output = filter.output.result.object;
+                      tmpCell.output = filter.output.result.object;
                     } else {
-                      o.outputtype = filter.output.result.type;
-                      o.output = filter.output.result;
+                      tmpCell.outputtype = filter.output.result.type;
+                      tmpCell.output = filter.output.result;
                     }
                   } else {
-                    o.output = filter.output.result;
+                    tmpCell.output = filter.output.result;
                   }
                 }
-                o.tags = filter.tags;
-                o.type = "BeakerCodeCell";
-                ret.push(o);
+                tmpCell.tags = filter.tags;
+                tmpCell.type = "BeakerCodeCell";
+                ret.push(tmpCell);
               }
               return ret;
             },

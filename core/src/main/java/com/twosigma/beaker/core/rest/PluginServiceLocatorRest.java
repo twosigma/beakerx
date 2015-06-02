@@ -473,10 +473,19 @@ public class PluginServiceLocatorRest {
     // check that nginx did actually restart
     String url = "http://127.0.0.1:" + this.restartPort + "/restart." + restartId + "/present.html";
     try {
-      spinCheck(url);
-      Thread.sleep(1000); // XXX unknown race condition
+      spinCheck(url, null);
+
+      if (!nginxRules.startsWith("ipython")) {
+        // check that jetty is really ready
+        String url2 = "http://127.0.0.1:" + pConfig.port + "/rest/ready/ready";
+        String account = "beaker:" + pConfig.password;
+        String auth = "Basic " + Base64.encodeBase64String(account.getBytes());
+        System.err.println("spin check " + url2 + " " + auth);
+        spinCheck(url2, auth);
+      }
+
     } catch (Throwable t) {
-      System.err.println("Nginx restart time out plugin =" + pluginId);
+      System.err.println("time out plugin =" + pluginId);
       this.plugins.remove(pluginId);
       if (windows()) {
         new WinProcess(proc).killRecursively();
@@ -484,7 +493,9 @@ public class PluginServiceLocatorRest {
         proc.destroy(); // send SIGTERM
       }
       throw new NginxRestartFailedException("nginx restart failed.\n" + "url=" + url + "\n" + "message=" + t.getMessage());
-    }   
+    }
+
+
 
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);
@@ -510,7 +521,7 @@ public class PluginServiceLocatorRest {
         .build();
   }
 
-  private static boolean spinCheck(String url)
+  private static boolean spinCheck(String url, String auth)
       throws IOException, InterruptedException
   {
 
@@ -518,11 +529,11 @@ public class PluginServiceLocatorRest {
     int totalTime = 0;
     
     while (totalTime < RESTART_ENSURE_RETRY_MAX_WAIT) {
-      if (Request.Get(url)
-          .execute()
-          .returnResponse()
-          .getStatusLine()
-          .getStatusCode() == HttpStatus.SC_OK) {
+      Request get = Request.Get(url);
+      if (null != auth) {
+        get = get.addHeader("Authorization", auth);
+      }
+      if (get.execute().returnResponse().getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
         return true;
       }
       Thread.sleep(interval);
@@ -531,7 +542,7 @@ public class PluginServiceLocatorRest {
       if (interval > RESTART_ENSURE_RETRY_MAX_INTERVAL)
         interval = RESTART_ENSURE_RETRY_MAX_INTERVAL;
     }
-    throw new RuntimeException("Spin check timed out");
+    throw new RuntimeException("Spin check timed out: " + url);
   }
 
   private static class PluginServiceNotFoundException extends WebApplicationException {

@@ -380,6 +380,7 @@ public class PluginServiceLocatorRest {
       @QueryParam("startedIndicator") String startedIndicator,
       @QueryParam("startedIndicatorStream") @DefaultValue("stdout") String startedIndicatorStream,
       @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
+      @QueryParam("readyUrl") String readyUrl,
       @QueryParam("waitfor") String waitfor)
       throws InterruptedException, IOException {
       
@@ -475,12 +476,11 @@ public class PluginServiceLocatorRest {
     try {
       spinCheck(url, null);
 
-      if (!nginxRules.startsWith("ipython")) {
-        // check that jetty is really ready
-        String url2 = "http://127.0.0.1:" + pConfig.port + "/rest/ready/ready";
+      if (null != readyUrl) {
+        // confirm the backend is really ready
+        String url2 = "http://127.0.0.1:" + pConfig.port + readyUrl;
         String account = "beaker:" + pConfig.password;
         String auth = "Basic " + Base64.encodeBase64String(account.getBytes());
-        System.err.println("spin check " + url2 + " " + auth);
         spinCheck(url2, auth);
       }
 
@@ -529,6 +529,7 @@ public class PluginServiceLocatorRest {
     int totalTime = 0;
     
     while (totalTime < RESTART_ENSURE_RETRY_MAX_WAIT) {
+      System.err.println(url + " spinning... " + totalTime);
       Request get = Request.Get(url);
       if (null != auth) {
         get = get.addHeader("Authorization", auth);

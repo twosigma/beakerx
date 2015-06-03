@@ -74,6 +74,7 @@ http {
       proxy_set_header Authorization "Basic %(auth)s";
     }
     location = /%(urlhash)s/beaker/ {
+      autoindex off;
       return 301 %(start_page)s;
     }
 

@@ -36,7 +36,7 @@
 
         $scope.gotoControlPanel = function(event) {
           if (bkUtils.isMiddleClick(event)) {
-            window.open("./");
+            window.open("../../");
           } else {
             location.reload();
           }

@@ -232,7 +232,7 @@
         if (/^https?:\/\//.exec(notebookUri)) {
           return LOCATION_HTTP;
         }
-        else if (/^ajax:\/\//.exec(notebookUri)) {
+        else if (/^ajax:/.exec(notebookUri)) {
           return LOCATION_AJAX;
         }
         else {

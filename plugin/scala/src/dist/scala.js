@@ -166,7 +166,8 @@ define(function(require, exports, module) {
       command: COMMAND,
       startedIndicator: "Server started",
       waitfor: "Started SelectChannelConnector",
-      recordOutput: "true"
+      recordOutput: "true",
+      readyUrl: "/rest/ready/ready"
     }).success(function(ret) {
       serviceBase = ret;
       if (window.languageServiceBase == undefined) {

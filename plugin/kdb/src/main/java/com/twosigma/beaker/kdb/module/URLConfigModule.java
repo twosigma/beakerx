@@ -17,6 +17,7 @@ package com.twosigma.beaker.kdb.module;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.twosigma.beaker.jvm.rest.ReadyRest;
 import com.twosigma.beaker.kdb.rest.KdbRest;
 import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
 import org.cometd.server.JacksonJSONContextServer;
@@ -40,5 +41,6 @@ public class URLConfigModule extends ServletModule {
 
     // REST binding
     bind(KdbRest.class);
+    bind(ReadyRest.class);
   }
 }

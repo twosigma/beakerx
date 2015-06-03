@@ -17,6 +17,7 @@ package com.twosigma.beaker.scala.module;
 
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.twosigma.beaker.jvm.rest.ReadyRest;
 import com.twosigma.beaker.scala.rest.ScalaShellRest;
 import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
 
@@ -49,5 +50,6 @@ public class URLConfigModule extends ServletModule {
 
     // REST binding
     bind(ScalaShellRest.class);
+    bind(ReadyRest.class);
   }
 }

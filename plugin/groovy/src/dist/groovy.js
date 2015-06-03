@@ -173,6 +173,7 @@ define(function(require, exports, module) {
       command: COMMAND,
       startedIndicator: "Server started",
       waitfor: "Started SelectChannelConnector",
+      readyUrl: "/rest/ready/ready",
       recordOutput: "true"
     }).success(function(ret) {
       serviceBase = ret;

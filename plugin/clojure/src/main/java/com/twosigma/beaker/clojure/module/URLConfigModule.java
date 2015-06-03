@@ -18,6 +18,7 @@ package com.twosigma.beaker.clojure.module;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.twosigma.beaker.clojure.rest.ClojureShellRest;
+import com.twosigma.beaker.jvm.rest.ReadyRest;
 import com.twosigma.beaker.shared.servlet.GuiceCometdServlet;
 
 import java.util.HashMap;
@@ -49,5 +50,6 @@ public class URLConfigModule extends ServletModule {
 
     // REST binding
     bind(ClojureShellRest.class);
+    bind(ReadyRest.class);
   }
 }

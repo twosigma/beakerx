@@ -1220,6 +1220,7 @@
           var sessionId = $routeParams.sessionId;
           var sessionRouteResolve = $route.current.$$route.resolve;
           var newSession = $route.current.locals.isNewSession;
+
           if (newSession) {
             delete sessionRouteResolve.isNewSession;
             if (newSession === "new") {

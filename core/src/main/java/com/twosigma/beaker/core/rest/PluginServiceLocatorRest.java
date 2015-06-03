@@ -495,8 +495,6 @@ public class PluginServiceLocatorRest {
       throw new NginxRestartFailedException("nginx restart failed.\n" + "url=" + url + "\n" + "message=" + t.getMessage());
     }
 
-
-
     pConfig.setProcess(proc);
     System.out.println("Done starting " + pluginId);
 

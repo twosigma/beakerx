@@ -59,7 +59,13 @@
     return {
       restrict: 'E',
       template: JST["template/mainapp/mainapp"](),
-      scope: {},
+      scope: {
+        notebookUri: '@',
+        sessionId: '@',
+        notebookRequestType: '@',
+        notebookFormat: '@',
+        readOnly: '@'
+      },
       controller: function($scope, $timeout) {
         var showLoadingStatusMessage = function(message, nodigest) {
           $scope.loadingmsg = message;
@@ -1217,9 +1223,24 @@
         bkEvaluateJobManager.reset();
 
         (function() {
+          // If there's a notebook-uri or session-id passed into the scope
+          // (mostly embedded beaker), short circuit reading of the routes
+          // to determine the target/session.
+          if ($scope.notebookUri) {
+            return loadNotebook.openUri({
+              uri: $scope.notebookUri,
+              type: $scope.notebookRequestType,
+              format: $scope.notebookFormat,
+              readOnly: $scope.readOnly
+            }, $scope.sessionId, true);
+          } else if ($scope.sessionId) {
+            return loadNotebook.fromSession($scope.sessionId);
+          }
+
           var sessionId = $routeParams.sessionId;
           var sessionRouteResolve = $route.current.$$route.resolve;
           var newSession = $route.current.locals.isNewSession;
+
           if (newSession) {
             delete sessionRouteResolve.isNewSession;
             if (newSession === "new") {

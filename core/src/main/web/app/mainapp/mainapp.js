@@ -1044,7 +1044,7 @@
         startAutoBackup();
         $scope.gotoControlPanel = function(event) {
           if (bkUtils.isMiddleClick(event)) {
-            window.open("./");
+	    window.open($location.absUrl() + '/beaker');
           } else {
             bkCoreManager.gotoControlPanel();
           }

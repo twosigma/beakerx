@@ -19,7 +19,7 @@
   var module = angular.module('bk.controlPanel');
 
   module.directive('bkControlPanel', function(
-      bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack) {
+      bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, $location) {
     return {
       restrict: 'E',
       template: JST["controlpanel/controlpanel"](),
@@ -36,7 +36,7 @@
 
         $scope.gotoControlPanel = function(event) {
           if (bkUtils.isMiddleClick(event)) {
-            window.open("../../");
+            window.open($location.absUrl() + '/beaker');
           } else {
             location.reload();
           }

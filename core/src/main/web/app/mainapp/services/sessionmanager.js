@@ -657,10 +657,9 @@
       if (!node || typeof node != "object"){
         return false;
       }
-      var keys = Object.keys(node), i, value;
       parents.push(node);
-      for (i = keys.length-1; i>=0; i--) {
-        value = node[keys[i]];
+      for (var key in node) {
+        var value = node[key];
         if (value && typeof value == "object") {
           if (parents.indexOf(value)>=0) {
             return true;

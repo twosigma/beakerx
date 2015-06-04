@@ -442,7 +442,6 @@
           };
 
           if (cm.getOption('mode') === 'htmlmixed' || cm.getOption('mode') === 'javascript') {
-            console.log("using code mirror");
             cm.execCommand("autocomplete");
           } else {
             var options = {

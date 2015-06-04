@@ -10062,7 +10062,10 @@
   .beaker-sandbox.modal.output-table-options h2 {
     margin: 0; }
   .beaker-sandbox .bkcell .CodeMirror {
-    background: transparent; }
+    background: transparent;
+    padding-top: 18px; }
+  .beaker-sandbox .advanced-mode .bkcell .CodeMirror {
+    padding-top: 0; }
   .beaker-sandbox .bkcelltextarea {
     border: none;
     resize: none;
@@ -10105,8 +10108,7 @@
   .beaker-sandbox .bkcell bk-code-cell-input-menu .dropdown {
     float: left;
     z-index: 99;
-    position: relative;
-    padding-bottom: 18px; }
+    position: relative; }
   .beaker-sandbox bk-cell > .bkcell {
     position: relative; }
   .beaker-sandbox bk-section-cell {

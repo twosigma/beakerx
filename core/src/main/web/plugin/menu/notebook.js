@@ -84,10 +84,18 @@ define(function(require, exports, module) {
           sortorder: 100,
           id: "normal-edit-mode-menuitem",
           isChecked: function () {
-            return bkHelper.getInputCellKeyMapMode() === "default";
+            var notebookViewModel = bkHelper.getBkNotebookViewModel();
+            console.log(notebookViewModel.getEditMode());
+            return notebookViewModel.getEditMode() == "default"
+                    || notebookViewModel.getEditMode() == null;
+            // return bkHelper.getInputCellKeyMapMode() === "default";
           },
           action: function () {
-            bkHelper.setInputCellKeyMapMode("default");
+            var notebookViewModel = bkHelper.getBkNotebookViewModel();
+            notebookViewModel.setEditMode("default");
+            bkHelper.httpPost("../beaker/rest/util/setEditMode", {
+              editmode: notebookViewModel.getEditMode()
+            });
           }
         },
         {
@@ -95,10 +103,17 @@ define(function(require, exports, module) {
           sortorder: 120,
           id: "vim-edit-mode-menuitem",
           isChecked: function () {
-            return bkHelper.getInputCellKeyMapMode() === "vim";
+            var notebookViewModel = bkHelper.getBkNotebookViewModel();
+            console.log(notebookViewModel.getEditMode());
+            return notebookViewModel.getEditMode() == "vim";
+            // return bkHelper.getInputCellKeyMapMode() === "vim";
           },
           action: function () {
-            bkHelper.setInputCellKeyMapMode("vim");
+            var notebookViewModel = bkHelper.getBkNotebookViewModel();
+            notebookViewModel.setEditMode("vim");
+            bkHelper.httpPost("../beaker/rest/util/setEditMode", {
+              editmode: notebookViewModel.getEditMode()
+            });
           }
         },
         {
@@ -106,10 +121,17 @@ define(function(require, exports, module) {
           sortorder: 110,
           id: "emacs-edit-mode-menuitem",
           isChecked: function () {
-            return bkHelper.getInputCellKeyMapMode() === "emacs";
+            var notebookViewModel = bkHelper.getBkNotebookViewModel();
+            console.log(notebookViewModel.getEditMode());
+            return notebookViewModel.getEditMode() == "emacs";
+            // return bkHelper.getInputCellKeyMapMode() === "emacs";
           },
           action: function () {
-            bkHelper.setInputCellKeyMapMode("emacs");
+            var notebookViewModel = bkHelper.getBkNotebookViewModel();
+            notebookViewModel.setEditMode("emacs");
+            bkHelper.httpPost("../beaker/rest/util/setEditMode", {
+              editmode: notebookViewModel.getEditMode()
+            });
           }
         }
       ]

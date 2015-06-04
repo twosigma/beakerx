@@ -159,6 +159,24 @@ public class UtilRest {
   }
 
   /**
+   * This function returns a setting as a string. If the setting is null in the preference,
+   * it will use the setting in the config, otherwise, what is set in preference is used.
+   * @param settingsListName
+   * @param configs
+   * @param prefs
+   * @return
+   */
+  private static String mergeStringSetting(
+      String settingName,
+      JSONObject configs,
+      JSONObject prefs) {
+        String sc = (String) configs.get(settingName);
+        String sp = (String) prefs.get(settingName);
+        String s = (sp != null) ? sp : sc;
+        return s;
+      }
+
+  /**
    * This function returns a list of settings from the result of merging setting gotten from
    * both the config and preference files and having to-remove items specified in the preference
    * file removed
@@ -233,6 +251,12 @@ public class UtilRest {
           configJsonObject,
           preferenceJsonObject);
       setUseAdvancedMode(isUseAdvancedMode);
+
+      String pEditMode = mergeStringSetting(
+          "edit-mode",
+          configJsonObject,
+          preferenceJsonObject);
+      setEditMode(pEditMode);
 
       this.initPlugins.addAll(
           mergeListSetting("init", configJsonObject, preferenceJsonObject));
@@ -333,6 +357,49 @@ public class UtilRest {
   @Path("isUseAdvancedMode")
   public Boolean isUseAdvancedMode() {
     return this.isUseAdvancedMode;
+  }
+
+  private String editMode = "default";
+
+  @POST
+  @Path("setEditMode")
+  public void setEditMode(
+    @FormParam("editmode") String editMode) {
+    System.out.println("Edit mode post: " + editMode + "\n");
+    if (editMode == null){
+      this.editMode = "default";
+    } else if (editMode.equals("vim")){
+      this.editMode = "vim";
+    } else if (editMode.equals("emacs")){
+      this.editMode = "emacs";
+    } else {
+      this.editMode = "normal";
+    }
+    final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
+
+    // TODO, assume the url is a file path for now.
+    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
+    try {
+      ObjectMapper om = new ObjectMapper();
+      TypeReference readType = new TypeReference<HashMap<String, Object>>() {
+      };
+      Map<String, Object> prefs = om.readValue(preferenceFile.toFile(), readType);
+      String oldValue = (String) prefs.get("edit-mode");
+      // If value changed, write it to the file too
+      if (!(this.editMode.equals(oldValue))) {
+        prefs.put("edit-mode", this.editMode);
+        om.writerWithDefaultPrettyPrinter().writeValue(preferenceFile.toFile(), prefs);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+  }
+
+  @GET
+  @Path("editMode")
+  public String editMode() {
+    return this.editMode;
   }
 
   /* Init Plugins */

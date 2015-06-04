@@ -48,6 +48,7 @@
           _viewModel: {
             _debugging: false,
             _showOutput: false,
+            _editMode: "default",
             toggleShowOutput: function () {
               this._showOutput = !this._showOutput;
             },
@@ -66,6 +67,15 @@
             isAdvancedMode: function() {
               return !!(this._advancedMode);
             },
+            getEditMode: function() {
+              return this._editMode;
+            },
+            setEditMode: function(mode) {
+              console.log("Setting code mirror to: " + mode);
+              bkHelper.setInputCellKeyMapMode(mode);
+              this._editMode = mode;
+            },
+            // Add edit mode
             isHierarchyEnabled: function() {
               return !!(this._hierarchyEnabled);
             },
@@ -280,6 +290,10 @@
           if (_impl._viewModel.isAdvancedMode() != (isAdvanced === "true")) {
             _impl._viewModel.toggleAdvancedMode();
           }
+        });
+
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/util/editMode")).success(function(editMode) {
+          _impl._viewModel.setEditMode(editMode);
         });
       },
       link: function (scope, element, attrs) {

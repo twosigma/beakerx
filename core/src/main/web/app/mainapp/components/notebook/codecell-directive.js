@@ -429,6 +429,7 @@
           Scrollin.untrack(element[0]);
           CodeMirror.off(window, 'resize', resizeHandler);
           CodeMirror.off('change', changeHandler);
+          scope.cm && scope.cm.off();
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id);
           scope.bkNotebook = null;

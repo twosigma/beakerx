@@ -33,6 +33,7 @@
                                              'bk.notebookVersionManager',
                                              'bk.evaluatorManager',
                                              'bk.evaluateJobManager',
+                                             'bk.notebookRouter',
                                              'bk.notebook'
                                              ]);
 
@@ -42,8 +43,6 @@
    * - menus + plugins + notebook(notebook model + evaluator)
    */
   module.directive('bkMainApp', function(
-      $route,
-      $routeParams,
       $timeout,
       $sessionStorage,
       bkUtils,
@@ -59,7 +58,13 @@
     return {
       restrict: 'E',
       template: JST["template/mainapp/mainapp"](),
-      scope: {},
+      scope: {
+        notebook: '=',
+        sessionId: '@',
+        newSession: '@',
+        isImport: '@import',
+        isOpen: '@open'
+      },
       controller: function($scope, $timeout) {
         var showLoadingStatusMessage = function(message, nodigest) {
           $scope.loadingmsg = message;
@@ -155,9 +160,9 @@
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
                 if (r.test(notebookModel.evaluators[i].plugin)) {
                   var plugList = "<ul>";
-                  for (var i = 0; i < notebookModel.evaluators.length; ++i) {
-                    if (r.test(notebookModel.evaluators[i].plugin)) {
-                      plugList += "<li>"+notebookModel.evaluators[i].plugin;
+                  for (var j = 0; j < notebookModel.evaluators.length; ++j) {
+                    if (r.test(notebookModel.evaluators[j].plugin)) {
+                      plugList += "<li>"+notebookModel.evaluators[j].plugin;
                     }
                   }
                   plugList += "</ul>";
@@ -209,7 +214,7 @@
             // HACK to fix older version of evaluator configuration
             if (notebookModel && notebookModel.cells && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.cells.length; ++i) {
-                if (notebookModel.cells[i].evaluator != undefined) {
+                if (notebookModel.cells[i].evaluator !== undefined) {
                   for (var j = 0; j < notebookModel.evaluators.length; ++j) {
                     var name = notebookModel.evaluators[j].name;
                     if (notebookModel.cells[i].evaluator === name) {
@@ -230,23 +235,23 @@
                   }
                 }
               }
-              for (var j = 0; j < notebookModel.evaluators.length; ++j) {
-                var name = notebookModel.evaluators[j].name;
-                var plugin = notebookModel.evaluators[j].plugin;
-                if (bkUtils.beginsWith(name,"Html")) {
-                  notebookModel.evaluators[j].name = "Html";
-                  notebookModel.evaluators[j].plugin = "Html";
-                } else if(bkUtils.beginsWith(name,"Latex")) {
-                  notebookModel.evaluators[j].name = "Latex";
-                  notebookModel.evaluators[j].plugin = "Latex";
-                } else if(bkUtils.beginsWith(name,"JavaScript")) {
-                  notebookModel.evaluators[j].name = "JavaScript";
-                  notebookModel.evaluators[j].plugin = "JavaScript";
-                } else if(bkUtils.beginsWith(name,"Groovy")) {
-                  notebookModel.evaluators[j].name = "Groovy";
-                  notebookModel.evaluators[j].plugin = "Groovy";
-                } else if(name === "Python") {
-                  notebookModel.evaluators[j].name = plugin;
+              for (var k = 0; k < notebookModel.evaluators.length; ++k) {
+                var evaluatorName = notebookModel.evaluators[k].name;
+                var evaluatorPlugin = notebookModel.evaluators[k].plugin;
+                if (bkUtils.beginsWith(evaluatorName,"Html")) {
+                  notebookModel.evaluators[k].name = "Html";
+                  notebookModel.evaluators[k].plugin = "Html";
+                } else if(bkUtils.beginsWith(evaluatorName,"Latex")) {
+                  notebookModel.evaluators[k].name = "Latex";
+                  notebookModel.evaluators[k].plugin = "Latex";
+                } else if(bkUtils.beginsWith(evaluatorName,"JavaScript")) {
+                  notebookModel.evaluators[k].name = "JavaScript";
+                  notebookModel.evaluators[k].plugin = "JavaScript";
+                } else if(bkUtils.beginsWith(evaluatorName,"Groovy")) {
+                  notebookModel.evaluators[k].name = "Groovy";
+                  notebookModel.evaluators[k].plugin = "Groovy";
+                } else if(evaluatorName=== "Python") {
+                  notebookModel.evaluators[k].name = evaluatorPlugin;
                 }
               }
             }
@@ -335,9 +340,9 @@
                 } else {
                   clrLoadingStatusMessage("Opening URI");
                   $scope.loading = false;
-                  bkCoreManager.show1ButtonModal("Failed to open " + target.uri
-                      + " because format " + target.format
-                      + " was not recognized.", "Open Failed", function() {
+                  bkCoreManager.show1ButtonModal("Failed to open " + target.uri +
+                      " because format " + target.format +
+                      " was not recognized.", "Open Failed", function() {
                     bkCoreManager.gotoControlPanel();
                   });
                 }
@@ -876,27 +881,27 @@
                   ret.push(o);
                 }
               } else {
-                var o = {};
-                o.cellId = filter.id;
-                o.evaluatorId = filter.evaluator;
-                o.code = filter.input.body;
+                var tmpCell = {};
+                tmpCell.cellId = filter.id;
+                tmpCell.evaluatorId = filter.evaluator;
+                tmpCell.code = filter.input.body;
                 if (filter.dataresult !== undefined) {
-                  o.output = filter.dataresult;
+                  tmpCell.output = filter.dataresult;
                 } else if (filter.output !== undefined && filter.output.result !== undefined) {
                   if (filter.output.result.type !== undefined) {
                     if (filter.output.result.type === 'BeakerDisplay') {
-                      o.output = filter.output.result.object;
+                      tmpCell.output = filter.output.result.object;
                     } else {
-                      o.outputtype = filter.output.result.type;
-                      o.output = filter.output.result;
+                      tmpCell.outputtype = filter.output.result.type;
+                      tmpCell.output = filter.output.result;
                     }
                   } else {
-                    o.output = filter.output.result;
+                    tmpCell.output = filter.output.result;
                   }
                 }
-                o.tags = filter.tags;
-                o.type = "BeakerCodeCell";
-                ret.push(o);
+                tmpCell.tags = filter.tags;
+                tmpCell.type = "BeakerCodeCell";
+                ret.push(tmpCell);
               }
               return ret;
             },
@@ -1117,7 +1122,7 @@
           var RECONNECT_TIMEOUT = 5000; // 5 seconds
           var OFFLINE_MESSAGE = "offline";
           var CONNECTING_MESSAGE = "reconnecting";
-          var reconnectTimeout = undefined;
+          var reconnectTimeout;
           var statusMessage = OFFLINE_MESSAGE;
           var disconnected = false;
           var indicateReconnectFailed = function() {
@@ -1177,7 +1182,7 @@
         };
 
         bkUtils.addConnectedStatusListener(function(msg) {
-          if (msg.successful !== !$scope.isDisconnected()) {
+          if (msg.successful === $scope.isDisconnected()) {
             var disconnected = !msg.successful;
             if (disconnected) {
               connectionManager.onDisconnected();
@@ -1216,32 +1221,18 @@
         bkCellMenuPluginManager.reset();
         bkEvaluateJobManager.reset();
 
-        (function() {
-          var sessionId = $routeParams.sessionId;
-          var sessionRouteResolve = $route.current.$$route.resolve;
-          var newSession = $route.current.locals.isNewSession;
-          if (newSession) {
-            delete sessionRouteResolve.isNewSession;
-            if (newSession === "new") {
-              loadNotebook.defaultNotebook(sessionId);
-            } else {
-              loadNotebook.emptyNotebook(sessionId);
-            }
-          } else if ($route.current.locals.isImport) {
-            delete sessionRouteResolve.isImport;
-            loadNotebook.fromImport(sessionId);
-          } else if ($route.current.locals.isOpen) {
-            delete sessionRouteResolve.isOpen;
-            delete sessionRouteResolve.target;
-            var target = $route.current.locals.target;
-            var retry = true;
-            loadNotebook.openUri(target, sessionId, retry);
-          } else {
-            loadNotebook.fromSession(sessionId);
-          }
-        })();
+        if ($scope.newSession === "new") {
+          loadNotebook.defaultNotebook($scope.sessionId);
+        } else if ($scope.newSession === "empty") {
+          loadNotebook.emptyNotebook($scope.sessionId);
+        } else if ($scope.isImport === 'true') {
+          loadNotebook.fromImport($scope.sessionId);
+        } else if ($scope.isOpen === 'true') {
+          loadNotebook.openUri($scope.notebook, $scope.sessionId, true);
+        } else {
+          loadNotebook.fromSession($scope.sessionId);
+        }
       }
     };
   });
-
 })();

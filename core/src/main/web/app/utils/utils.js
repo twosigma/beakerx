@@ -275,7 +275,7 @@
         var that = this;
         if (_.isString(url)) {
           var deferred = this.newDeferred();
-          window.require([url], function (ret) {
+          window.requirejs([url], function (ret) {
             if (!_.isEmpty(name)) {
               that.moduleMap[name] = url;
             }

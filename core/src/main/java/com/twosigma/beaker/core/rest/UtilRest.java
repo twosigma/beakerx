@@ -29,8 +29,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.POST;
@@ -244,19 +246,19 @@ public class UtilRest {
           "allow-anonymous-usage-tracking",
           configJsonObject,
           preferenceJsonObject);
-      setAllowAnonymousTracking(isAllowTracking);
+      setPreference("allow-anonymous-usage-tracking", isAllowTracking);
 
       String isUseAdvancedMode = mergeBooleanSetting(
           "advanced-mode",
           configJsonObject,
           preferenceJsonObject);
-      setUseAdvancedMode(isUseAdvancedMode);
+      setPreference("advanced-mode", isUseAdvancedMode);
 
-      String pEditMode = mergeStringSetting(
+      String mergedEditMode = mergeStringSetting(
           "edit-mode",
           configJsonObject,
           preferenceJsonObject);
-      setEditMode(pEditMode);
+      setPreference("edit-mode", mergedEditMode);
 
       this.initPlugins.addAll(
           mergeListSetting("init", configJsonObject, preferenceJsonObject));
@@ -273,133 +275,92 @@ public class UtilRest {
   }
 
   private Boolean isAllowAnonymousTracking = null;
-
-  @POST
-  @Path("setAllowAnonymousTracking")
-  public void setAllowAnonymousTracking(
-      @FormParam("allow") String allow) {
-
-    if (allow == null) {
-      this.isAllowAnonymousTracking = null;
-    } else if (allow.equals("true")) {
-      this.isAllowAnonymousTracking = Boolean.TRUE;
-    } else if (allow.equals("false")) {
-      this.isAllowAnonymousTracking = Boolean.FALSE;
-    } else {
-      this.isAllowAnonymousTracking = null;
-    }
-    final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
-
-    // TODO, assume the url is a file path for now.
-    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
-    try {
-      ObjectMapper om = new ObjectMapper();
-      TypeReference readType = new TypeReference<HashMap<String, Object>>() {
-      };
-      Map<String, Object> prefs = om.readValue(preferenceFile.toFile(), readType);
-      Boolean oldValue = (Boolean) prefs.get("allow-anonymous-usage-tracking");
-      // If value changed, write it to the file too
-      if ((this.isAllowAnonymousTracking == null && oldValue != null)
-              || (this.isAllowAnonymousTracking != null && !(this.isAllowAnonymousTracking.equals(oldValue)))) {
-        prefs.put("allow-anonymous-usage-tracking", this.isAllowAnonymousTracking);
-        om.writerWithDefaultPrettyPrinter().writeValue(preferenceFile.toFile(), prefs);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @GET
-  @Path("isAllowAnonymousTracking")
-  public Boolean isAllowAnonymousTracking() {
-    return this.isAllowAnonymousTracking;
-  }
-
-
   private Boolean isUseAdvancedMode = null;
-
-  @POST
-  @Path("setUseAdvancedMode")
-  public void setUseAdvancedMode(
-      @FormParam("advancedmode") String advancedMode) {
-
-    if (advancedMode == null) {
-      this.isUseAdvancedMode = null;
-    } else if (advancedMode.equals("true")) {
-      this.isUseAdvancedMode = Boolean.TRUE;
-    } else if (advancedMode.equals("false")) {
-      this.isUseAdvancedMode = Boolean.FALSE;
-    } else {
-      this.isUseAdvancedMode = null;
-    }
-    final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
-
-    // TODO, assume the url is a file path for now.
-    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
-    try {
-      ObjectMapper om = new ObjectMapper();
-      TypeReference readType = new TypeReference<HashMap<String, Object>>() {
-      };
-      Map<String, Object> prefs = om.readValue(preferenceFile.toFile(), readType);
-      Boolean oldValue = (Boolean) prefs.get("advanced-mode");
-      // If value changed, write it to the file too
-      if ((this.isUseAdvancedMode == null && oldValue != null)
-              || (this.isUseAdvancedMode != null && !(this.isUseAdvancedMode.equals(oldValue)))) {
-        prefs.put("advanced-mode", this.isUseAdvancedMode);
-        om.writerWithDefaultPrettyPrinter().writeValue(preferenceFile.toFile(), prefs);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @GET
-  @Path("isUseAdvancedMode")
-  public Boolean isUseAdvancedMode() {
-    return this.isUseAdvancedMode;
-  }
-
   private String editMode = "default";
 
-  @POST
-  @Path("setEditMode")
-  public void setEditMode(
-    @FormParam("editmode") String editMode) {
-    System.out.println("Edit mode post: " + editMode + "\n");
-    if (editMode == null){
-      this.editMode = "default";
-    } else if (editMode.equals("vim")){
-      this.editMode = "vim";
-    } else if (editMode.equals("emacs")){
-      this.editMode = "emacs";
-    } else {
-      this.editMode = "normal";
+  @GET
+  @Path("getPreference")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Object getPreference(
+    @QueryParam("preference") String preferenceName) {
+    final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
+
+    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
+
+    try {
+      JSONParser parser = new JSONParser();
+      JSONObject preferenceJsonObject =
+          (JSONObject) parser.parse(this.utils.readFile(preferenceFile));
+
+      // Need to check config if not in preferences?
+      Object preference = preferenceJsonObject.get(preferenceName); // Get returns null if not found
+      return preference;
+
+    } catch (ParseException e) {
+      throw new RuntimeException("failed getting beaker configurations from config file", e);
     }
+  }
+
+  @POST
+  @Path("setPreference")
+  public void setPreference(
+    @FormParam("preferencename") String preferenceName,
+    @FormParam("preferencevalue") String preferenceValue) {
+
+    Object newValue = null;
+    // Validate boolean preferences
+    String[] booleanPrefs = {"advanced-mode", "allow-anonymous-usage-tracking"};
+    if (Arrays.asList(booleanPrefs).contains(preferenceName)){
+      Boolean set;
+
+      if (preferenceValue == null) {
+        set = null;
+      } else if (preferenceValue.equals("true")) {
+        set = Boolean.TRUE;
+      } else if (preferenceValue.equals("false")) {
+        set = Boolean.FALSE;
+      } else {
+        set = null;
+      }
+      newValue = set;
+      if (preferenceName.equals("advanced-mode"))
+        this.isUseAdvancedMode = set;
+      else if (preferenceName == "allow")
+        this.isAllowAnonymousTracking = set;
+    }
+    // Validate edit mode
+    else if (preferenceName.equals("edit-mode")){
+      String[] validModes = {"vim", "emacs", "default"};
+      if (Arrays.asList(validModes).contains(preferenceValue)){
+        newValue = preferenceValue;
+        this.editMode = preferenceValue;
+      }
+    }
+    
+    if (newValue == null)
+      return;
+
     final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
 
     // TODO, assume the url is a file path for now.
-    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
+    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);  
     try {
       ObjectMapper om = new ObjectMapper();
       TypeReference readType = new TypeReference<HashMap<String, Object>>() {
       };
       Map<String, Object> prefs = om.readValue(preferenceFile.toFile(), readType);
-      String oldValue = (String) prefs.get("edit-mode");
+
+      Object oldValue = (Object) prefs.get(preferenceName);
       // If value changed, write it to the file too
-      if (!(this.editMode.equals(oldValue))) {
-        prefs.put("edit-mode", this.editMode);
+      if (!(newValue.equals(oldValue))) {
+        java.nio.file.Files.delete(preferenceFile);
+        prefs.put(preferenceName, newValue);
         om.writerWithDefaultPrettyPrinter().writeValue(preferenceFile.toFile(), prefs);
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
 
-  }
-
-  @GET
-  @Path("editMode")
-  public String editMode() {
-    return this.editMode;
   }
 
   /* Init Plugins */

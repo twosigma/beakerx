@@ -100,7 +100,10 @@
                 allow = "false";
                 bkTrack.disable();
               }
-              bkUtils.httpPost("../beaker/rest/util/setAllowAnonymousTracking", { allow: allow });
+              bkUtils.httpPost("../beaker/rest/util/setPreference", {
+                preferencename: "allow-anonymous-usage-tracking",
+                preferencevalue: allow
+              });
             }
           });
         }

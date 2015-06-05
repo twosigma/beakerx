@@ -93,8 +93,9 @@ define(function(require, exports, module) {
           action: function () {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
             notebookViewModel.setEditMode("default");
-            bkHelper.httpPost("../beaker/rest/util/setEditMode", {
-              editmode: notebookViewModel.getEditMode()
+            bkHelper.httpPost("../beaker/rest/util/setPreference", {
+              preferencename: "edit-mode",
+              preferencevalue: "default"
             });
           }
         },
@@ -111,8 +112,9 @@ define(function(require, exports, module) {
           action: function () {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
             notebookViewModel.setEditMode("vim");
-            bkHelper.httpPost("../beaker/rest/util/setEditMode", {
-              editmode: notebookViewModel.getEditMode()
+            bkHelper.httpPost("../beaker/rest/util/setPreference", {
+              preferencename: "edit-mode",
+              preferencevalue: "vim"
             });
           }
         },
@@ -129,8 +131,9 @@ define(function(require, exports, module) {
           action: function () {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
             notebookViewModel.setEditMode("emacs");
-            bkHelper.httpPost("../beaker/rest/util/setEditMode", {
-              editmode: notebookViewModel.getEditMode()
+            bkHelper.httpPost("../beaker/rest/util/setPreference", {
+              preferencename: "edit-mode",
+              preferencevalue: "emacs"
             });
           }
         }

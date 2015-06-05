@@ -286,13 +286,17 @@
           shareMenu
         ];
 
-        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/util/isUseAdvancedMode")).success(function(isAdvanced) {
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/util/getPreference"), {
+          preference: "advanced-mode"
+        }).success(function(isAdvanced) {
           if (_impl._viewModel.isAdvancedMode() != (isAdvanced === "true")) {
             _impl._viewModel.toggleAdvancedMode();
           }
         });
 
-        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/util/editMode")).success(function(editMode) {
+        bkUtils.httpGet(bkUtils.serverUrl("beaker/rest/util/getPreference"), {
+          preference: "edit-mode"
+        }).success(function(editMode) {
           _impl._viewModel.setEditMode(editMode);
         });
       },

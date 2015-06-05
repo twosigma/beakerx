@@ -1,14 +1,14 @@
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 (the 'License');
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  distributed under the License is distributed on an 'AS IS' BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
@@ -22,7 +22,7 @@ define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
-      name: "Start Page",
+      name: 'Start Page',
       sortorder: 100,
       action: function() {
         bkHelper.gotoControlPanel();
@@ -50,19 +50,19 @@ define(function(require, exports, module) {
       action: function() {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
         notebookViewModel.toggleAdvancedMode();
-        bkHelper.httpPost("../beaker/rest/util/setPreference", {
-          preferencename: "advanced-mode",
+        bkHelper.httpPost('../beaker/rest/util/setPreference', {
+          preferencename: 'advanced-mode',
           preferencevalue: notebookViewModel.isAdvancedMode()
         });
       }
     },
     {
-      name: "Show stdout/err",
+      name: 'Show stdout/err',
       sortorder: 130,
       action: function() {
         bkHelper.getBkNotebookViewModel().toggleShowOutput();
       },
-      tooltip: "Show or hide the stdout and stderr.",
+      tooltip: 'Show or hide the stdout and stderr.',
       isChecked: function() {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
         if (notebookViewModel) {
@@ -73,8 +73,8 @@ define(function(require, exports, module) {
   ];
   var menuItemPromise = bkHelper.newPromise({
     items: menuItems,
-    id: "view-menu",
-    parent: "View"
+    id: 'view-menu',
+    parent: 'View'
   });
   exports.getMenuItems = function() {
     return menuItemPromise;

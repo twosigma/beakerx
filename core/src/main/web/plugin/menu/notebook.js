@@ -1,14 +1,14 @@
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 (the 'License');
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  distributed under the License is distributed on an 'AS IS' BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
@@ -18,25 +18,25 @@ define(function(require, exports, module) {
   'use strict';
   var menuItems = [
     {
-      name: "Language manager...",
+      name: 'Language manager...',
       sortorder: 100,
       action: function () {
         bkHelper.showLanguageManager();
       },
-      tooltip: "Show available languages and edit their settings",
-      id: "language-manager-menuitem"
+      tooltip: 'Show available languages and edit their settings',
+      id: 'language-manager-menuitem'
     },
     {
-      name: "Lock",
+      name: 'Lock',
       sortorder: 110,
       action: function () {
         bkHelper.toggleNotebookLocked();
       },
-      tooltip: "Lock notebook from further editing",
+      tooltip: 'Lock notebook from further editing',
       isChecked: function () {
         return bkHelper.isNotebookLocked();
       },
-      id: "lock-menuitem"
+      id: 'lock-menuitem'
     },
     {
       name: 'Delete all output cells',
@@ -45,95 +45,89 @@ define(function(require, exports, module) {
         bkHelper.deleteAllOutputCells();
       },
       tooltip: 'Deletes all of the output cells.',
-      id: "delete-all-menuitem"
+      id: 'delete-all-menuitem'
     },
     {
-      name: "Run all cells",
+      name: 'Run all cells',
       sortorder: 130,
       action: function() {
-        bkHelper.evaluateRoot("root");
+        bkHelper.evaluateRoot('root');
       },
-      tooltip: "Run all cells",
-      id: "run-all-cells-menuitem"
+      tooltip: 'Run all cells',
+      id: 'run-all-cells-menuitem'
     },
     {
       name: 'Collapse All Sections',
       sortorder: 135,
       action: bkHelper.collapseAllSections,
-      id: "collapse-all-menuitem"
+      id: 'collapse-all-menuitem'
     },
     {
-      name: "Edit mode",
+      name: 'Edit mode',
       sortorder: 140,
-      id: "edit-mode-menuitem"
+      id: 'edit-mode-menuitem'
     }
   ];
   var toAdd = [
     {
-      parent: "Notebook",
-      id: "notebook-menu",
+      parent: 'Notebook',
+      id: 'notebook-menu',
       items: menuItems
     },
     {
-      parent: "Notebook",
-      submenu: "Edit mode",
-      id: "edit-mode-menuitem",
+      parent: 'Notebook',
+      submenu: 'Edit mode',
+      id: 'edit-mode-menuitem',
       items: [
         {
-          name: "Normal",
+          name: 'Normal',
           sortorder: 100,
-          id: "normal-edit-mode-menuitem",
+          id: 'normal-edit-mode-menuitem',
           isChecked: function () {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
-            console.log(notebookViewModel.getEditMode());
-            return notebookViewModel.getEditMode() == "default"
+            return notebookViewModel.getEditMode() == 'default'
                     || notebookViewModel.getEditMode() == null;
-            // return bkHelper.getInputCellKeyMapMode() === "default";
           },
           action: function () {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
-            notebookViewModel.setEditMode("default");
-            bkHelper.httpPost("../beaker/rest/util/setPreference", {
-              preferencename: "edit-mode",
-              preferencevalue: "default"
+            notebookViewModel.setEditMode('default');
+            bkHelper.httpPost('../beaker/rest/util/setPreference', {
+              preferencename: 'edit-mode',
+              preferencevalue: 'default'
             });
           }
         },
         {
-          name: "Vim",
+          name: 'Vim',
           sortorder: 120,
-          id: "vim-edit-mode-menuitem",
+          id: 'vim-edit-mode-menuitem',
           isChecked: function () {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
-            console.log(notebookViewModel.getEditMode());
-            return notebookViewModel.getEditMode() == "vim";
-            // return bkHelper.getInputCellKeyMapMode() === "vim";
+            return notebookViewModel.getEditMode() == 'vim';
           },
           action: function () {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
-            notebookViewModel.setEditMode("vim");
-            bkHelper.httpPost("../beaker/rest/util/setPreference", {
-              preferencename: "edit-mode",
-              preferencevalue: "vim"
+            notebookViewModel.setEditMode('vim');
+            bkHelper.httpPost('../beaker/rest/util/setPreference', {
+              preferencename: 'edit-mode',
+              preferencevalue: 'vim'
             });
           }
         },
         {
-          name: "Emacs",
+          name: 'Emacs',
           sortorder: 110,
-          id: "emacs-edit-mode-menuitem",
+          id: 'emacs-edit-mode-menuitem',
           isChecked: function () {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
-            console.log(notebookViewModel.getEditMode());
-            return notebookViewModel.getEditMode() == "emacs";
-            // return bkHelper.getInputCellKeyMapMode() === "emacs";
+            return notebookViewModel.getEditMode() == 'emacs';
           },
           action: function () {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
-            notebookViewModel.setEditMode("emacs");
-            bkHelper.httpPost("../beaker/rest/util/setPreference", {
-              preferencename: "edit-mode",
-              preferencevalue: "emacs"
+            notebookViewModel.setEditMode('emacs');
+            bkHelper.httpPost('../beaker/rest/util/setPreference', {
+              preferencename: 'edit-mode',
+              preferencevalue: 'emacs'
             });
           }
         }

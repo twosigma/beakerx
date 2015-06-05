@@ -94,9 +94,9 @@
   var initOutputDisplay = function()
   {
     var deferred = Q.defer();
-    
+
     ZeroClipboard.config( { swfPath: "app/images/ZeroClipboard.swf", hoverClass: 'dropdown-submenu-flash' } );
-    
+
     function loadJS(url, success, failure) {
       var e = document.createElement('script');
       e.type = "text/javascript";
@@ -192,6 +192,7 @@
           })
           .when('/session/:sessionId', {
             template: JST["template/mainapp/app"](),
+            controller: 'notebookRouter',
             resolve: sessionRouteResolve
           })
           .when('/open', {

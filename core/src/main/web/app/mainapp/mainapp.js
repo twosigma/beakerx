@@ -33,6 +33,7 @@
                                              'bk.notebookVersionManager',
                                              'bk.evaluatorManager',
                                              'bk.evaluateJobManager',
+                                             'bk.notebookRouter',
                                              'bk.notebook'
                                              ]);
 
@@ -42,8 +43,6 @@
    * - menus + plugins + notebook(notebook model + evaluator)
    */
   module.directive('bkMainApp', function(
-      $route,
-      $routeParams,
       $timeout,
       $sessionStorage,
       bkUtils,
@@ -59,7 +58,13 @@
     return {
       restrict: 'E',
       template: JST["template/mainapp/mainapp"](),
-      scope: {},
+      scope: {
+        notebook: '=',
+        sessionId: '@',
+        newSession: '@',
+        isImport: '@import',
+        isOpen: '@open'
+      },
       controller: function($scope, $timeout) {
         var showLoadingStatusMessage = function(message, nodigest) {
           $scope.loadingmsg = message;
@@ -1216,32 +1221,18 @@
         bkCellMenuPluginManager.reset();
         bkEvaluateJobManager.reset();
 
-        (function() {
-          var sessionId = $routeParams.sessionId;
-          var sessionRouteResolve = $route.current.$$route.resolve;
-          var newSession = $route.current.locals.isNewSession;
-          if (newSession) {
-            delete sessionRouteResolve.isNewSession;
-            if (newSession === "new") {
-              loadNotebook.defaultNotebook(sessionId);
-            } else {
-              loadNotebook.emptyNotebook(sessionId);
-            }
-          } else if ($route.current.locals.isImport) {
-            delete sessionRouteResolve.isImport;
-            loadNotebook.fromImport(sessionId);
-          } else if ($route.current.locals.isOpen) {
-            delete sessionRouteResolve.isOpen;
-            delete sessionRouteResolve.target;
-            var target = $route.current.locals.target;
-            var retry = true;
-            loadNotebook.openUri(target, sessionId, retry);
-          } else {
-            loadNotebook.fromSession(sessionId);
-          }
-        })();
+        if ($scope.newSession === "new") {
+          loadNotebook.defaultNotebook($scope.sessionId);
+        } else if ($scope.newSession === "empty") {
+          loadNotebook.emptyNotebook($scope.sessionId);
+        } else if ($scope.isImport === 'true') {
+          loadNotebook.fromImport($scope.sessionId);
+        } else if ($scope.isOpen === 'true') {
+          loadNotebook.openUri($scope.notebook, $scope.sessionId, true);
+        } else {
+          loadNotebook.fromSession($scope.sessionId);
+        }
       }
     };
   });
-
 })();

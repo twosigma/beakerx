@@ -159,6 +159,12 @@
             bkSessionManager.setNotebookModelEdited(true);
           }
         });
+
+        scope.$on('$destroy', function() {
+          scope.bkNotebook.unregisterFocusable(scope.cellmodel.id, scope);
+          scope.bkNotebook.unregisterCM(scope.cellmodel.id, scope.cm);
+          scope.cm.off();
+        });
       }
     };
   }]);

@@ -93,6 +93,7 @@ public class WebServerModule extends AbstractModule {
     servletHandler.addFilter(GuiceFilter.class, "/*", null);
     servletHandler.addServlet(DefaultServlet.class, "/*");
     servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.resourceBase", staticDir);
+    servletHandler.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
     servletHandler.setInitParameter("maxCacheSize", "0");
     servletHandler.setInitParameter("cacheControl", "no-cache, max-age=0");
 

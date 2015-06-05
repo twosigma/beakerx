@@ -527,7 +527,6 @@ public class PluginServiceLocatorRest {
     int totalTime = 0;
     
     while (totalTime < RESTART_ENSURE_RETRY_MAX_WAIT) {
-      System.err.println(url + " spinning... " + totalTime);
       Request get = Request.Get(url);
       if (null != auth) {
         get = get.addHeader("Authorization", auth);

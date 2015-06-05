@@ -1,14 +1,14 @@
 /*
  *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
  *
- *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  Licensed under the Apache License, Version 2.0 (the 'License');
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
  *         http://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  distributed under the License is distributed on an 'AS IS' BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
@@ -22,11 +22,11 @@
       bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, $location) {
     return {
       restrict: 'E',
-      template: JST["controlpanel/controlpanel"](),
+      template: JST['controlpanel/controlpanel'](),
       controller: function($scope) {
-        document.title = "Beaker";
+        document.title = 'Beaker';
         var _impl = {
-          name: "bkControlApp",
+          name: 'bkControlApp',
           showAnonymousTrackingDialog: function() {
             $scope.isAllowAnonymousTracking = null;
           }
@@ -68,18 +68,20 @@
           bkCoreManager.newSession(true);
         };
         $scope.openTutorial = function() {
-          bkCoreManager.openNotebook("config/tutorial.bkr", undefined, true);
+          bkCoreManager.openNotebook('config/tutorial.bkr', undefined, true);
         };
 
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
         if ((window.beaker === undefined || window.beaker.isEmbedded === undefined) && bkTrack.isNeedPermission()) {
-          bkUtils.httpGet("../beaker/rest/util/isAllowAnonymousTracking").then(function(allow) {
+          bkUtils.httpGet('../beaker/rest/util/getPreference',{
+            'preference': 'allow-anonymous-usage-tracking'
+          }).then(function(allow) {
             switch (allow.data) {
-              case "true":
+              case 'true':
                 $scope.isAllowAnonymousTracking = true;
                 break;
-              case "false":
+              case 'false':
                 $scope.isAllowAnonymousTracking = false;
                 break;
               default:
@@ -90,17 +92,20 @@
           $scope.isAllowAnonymousTracking = true;
         }
         if (window.beaker === undefined || window.beaker.isEmbedded === undefined) {
-          $scope.$watch("isAllowAnonymousTracking", function(newValue, oldValue) {
+          $scope.$watch('isAllowAnonymousTracking', function(newValue, oldValue) {
             if (newValue !== oldValue) {
               var allow = null;
               if (newValue) {
-                allow = "true";
+                allow = 'true';
                 bkTrack.enable();
               } else if (newValue === false) {
-                allow = "false";
+                allow = 'false';
                 bkTrack.disable();
               }
-              bkUtils.httpPost("../beaker/rest/util/setAllowAnonymousTracking", { allow: allow });
+              bkUtils.httpPost('../beaker/rest/util/setPreference', {
+                preferencename: 'allow-anonymous-usage-tracking',
+                preferencevalue: allow
+              });
             }
           });
         }
@@ -140,7 +145,7 @@
 	var onDestroy = function() {
 	    $(document).unbind('keydown', keydownHandler);
 	}
-	$scope.$on("$destroy", onDestroy);
+	$scope.$on('$destroy', onDestroy);
 
         // sessions list UI
         $scope.sessions = null;

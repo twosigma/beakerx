@@ -312,15 +312,16 @@ public class UtilRest {
     String[] booleanPrefs = {"advanced-mode", "allow-anonymous-usage-tracking"};
     if (Arrays.asList(booleanPrefs).contains(preferenceName)){
       Boolean set;
-
-      if (preferenceValue == null) {
-        set = null;
-      } else if (preferenceValue.equals("true")) {
-        set = Boolean.TRUE;
-      } else if (preferenceValue.equals("false")) {
-        set = Boolean.FALSE;
-      } else {
-        set = null;
+      switch (preferenceValue){
+        case "true":
+          set = Boolean.TRUE;
+          break;
+        case "false":
+          set = Boolean.FALSE;
+          break;
+        default:
+          set = null;
+          break;
       }
       newValue = set;
       if (preferenceName.equals("advanced-mode"))

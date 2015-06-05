@@ -21,6 +21,8 @@ import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -307,27 +309,27 @@ public class UtilRest {
     @FormParam("preferencename") String preferenceName,
     @FormParam("preferencevalue") String preferenceValue) {
 
+    if ((preferenceName == null) || (preferenceValue == null))
+      return;
+
     Object newValue = null;
     // Validate boolean preferences
     String[] booleanPrefs = {"advanced-mode", "allow-anonymous-usage-tracking"};
     if (Arrays.asList(booleanPrefs).contains(preferenceName)){
-      Boolean set;
       switch (preferenceValue){
         case "true":
-          set = Boolean.TRUE;
+          newValue = Boolean.TRUE;
           break;
         case "false":
-          set = Boolean.FALSE;
+          newValue = Boolean.FALSE;
           break;
         default:
-          set = null;
-          break;
+          return;
       }
-      newValue = set;
       if (preferenceName.equals("advanced-mode"))
-        this.isUseAdvancedMode = set;
+        this.isUseAdvancedMode = (Boolean) newValue;
       else if (preferenceName == "allow")
-        this.isAllowAnonymousTracking = set;
+        this.isAllowAnonymousTracking = (Boolean) newValue;
     }
     // Validate edit mode
     else if (preferenceName.equals("edit-mode")){
@@ -337,14 +339,14 @@ public class UtilRest {
         this.editMode = preferenceValue;
       }
     }
-    
-    if (newValue == null)
-      return;
 
     final String preferenceFileUrl = this.bkConfig.getPreferenceFileUrl();
 
     // TODO, assume the url is a file path for now.
-    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);  
+    // System.out.println(preferenceFileUrl + " url!!!!\n");
+    // Use a temporary for atomic writing
+    java.nio.file.Path preferenceFileTmp = Paths.get(preferenceFileUrl + ".tmp");
+    java.nio.file.Path preferenceFile = Paths.get(preferenceFileUrl);
     try {
       ObjectMapper om = new ObjectMapper();
       TypeReference readType = new TypeReference<HashMap<String, Object>>() {
@@ -354,9 +356,11 @@ public class UtilRest {
       Object oldValue = (Object) prefs.get(preferenceName);
       // If value changed, write it to the file too
       if (!(newValue.equals(oldValue))) {
-        java.nio.file.Files.delete(preferenceFile);
+        Files.deleteIfExists(preferenceFileTmp);
         prefs.put(preferenceName, newValue);
-        om.writerWithDefaultPrettyPrinter().writeValue(preferenceFile.toFile(), prefs);
+        om.writerWithDefaultPrettyPrinter().writeValue(preferenceFileTmp.toFile(), prefs);
+        // Move tmp to normal
+        Files.move(preferenceFileTmp, preferenceFile, REPLACE_EXISTING);
       }
     } catch (IOException e) {
       e.printStackTrace();

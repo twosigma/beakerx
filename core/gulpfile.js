@@ -249,11 +249,11 @@ gulp.task('buildOutputDisplayTemplate', function () {
     jsfiles = '"app/dist/beakerOutputDisplay.js"';
   }
 
-  if (vendorcssarray.length > 0) {
+  if (vendorcssarray.length) {
     cssfiles = '"app/dist/beakerOutputDisplayVendor.css", ' + cssfiles;
   }
 
-  if (vendorjsarray.length > 0) {
+  if (vendorjsarray.length) {
     jsfiles = '"app/dist/beakerOutputDisplayVendor.js", ' + jsfiles;
   }
 

@@ -234,7 +234,7 @@ gulp.task('buildOutputDisplayTemplate', function () {
     }))
     .pipe(stripCssComments())
     .pipe(concat('beakerOutputDisplay.css'))
-    .pipe(header(banner ))
+    .pipe(header(banner))
     .pipe(gulp.dest(buildPath));
 
     gulp.src(jsarray.map(function(v) {
@@ -242,7 +242,7 @@ gulp.task('buildOutputDisplayTemplate', function () {
     }))
     .pipe(stripJsComments())
     .pipe(concat('beakerOutputDisplay.js'))
-    .pipe(header(banner ))
+    .pipe(header(banner))
     .pipe(gulp.dest(buildPath));
 
     cssfiles = '"app/dist/beakerOutputDisplay.css"';

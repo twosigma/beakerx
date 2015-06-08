@@ -62,6 +62,7 @@
         notebook: '=',
         sessionId: '@',
         newSession: '@',
+        allowDocumentRenaming: '@',
         isImport: '@import',
         isOpen: '@open'
       },
@@ -952,6 +953,8 @@
         bkCoreManager.setBkAppImpl(_impl);
 
         var setDocumentTitle = function() {
+          if ($scope.allowDocumentRenaming === 'false') { return; }
+
           var edited = $scope.isEdited(),
               filename = $scope.filename(),
               title;

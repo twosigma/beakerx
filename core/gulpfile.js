@@ -184,18 +184,25 @@ gulp.task("compileBeakerTemplates", function() {
   .pipe(gulp.dest(tempPath));
 });
 
-gulp.task('buildOutputDisplayTemplate', function () {
+function getFilePathArrayFromList(basePath, listPath) {
+  return fs.readFileSync(basePath + listPath)
+  .toString().split('\n')
+  .filter(function(n) {
+    return n !== undefined && n.trim() !== ''
+  });
+}
 
+gulp.task('buildOutputDisplayTemplate', function () {
   var thePath = pluginPath + 'template/';
 
   if (argv.outdisp) {
     thePath = argv.outdisp + '/';
   }
 
-  var cssarray = fs.readFileSync(thePath + 'addoutputdisplays_css.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var jsarray = fs.readFileSync(thePath + 'addoutputdisplays_javascript.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var vendorcssarray = fs.readFileSync(thePath + 'addoutputdisplays_vendorcss.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var vendorjsarray = fs.readFileSync(thePath + 'addoutputdisplays_vendorjs.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var cssarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_css.list');
+  var jsarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_javascript.list');
+  var vendorcssarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_vendorcss.list');
+  var vendorjsarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_vendorjs.list');
 
   var ca = [];
   if (vendorcssarray.length > 0) {

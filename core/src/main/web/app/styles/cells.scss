@@ -23,12 +23,6 @@
     padding-top: $grid-row-height;
 }
 
-.CodeMirror-scroll {
-    overflow-y: hidden !important;
-    overflow-x: auto !important;
-    height: auto;
-}
-
 .advanced-mode .bkcell .CodeMirror {
   padding-top: 0;
 }

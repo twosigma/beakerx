@@ -24,6 +24,6 @@ manifest.mf
 npm-debug.log
 core/src/main/web/app/templates.js
 core/config/hash
-
+core/src/main/web/vendor/
 core/src/main/web/index.html
 /bin/

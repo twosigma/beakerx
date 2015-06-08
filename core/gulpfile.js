@@ -39,7 +39,6 @@ var fs = require('fs');
 var sourcemaps = require('gulp-sourcemaps');
 
 var srcPath  = Path.join(__dirname, "/src/main/web/");
-var vendorPath  = Path.join(__dirname, "/src/");
 var pluginPath  = Path.join(__dirname, "/src/main/web/plugin/");
 var rootPath  = Path.join(__dirname, "/src/main/web/app/");
 var root2Path  = Path.join(__dirname, "/src/main/web/outputdisplay/");
@@ -98,14 +97,14 @@ function handleError(e) {
 }
 
 //pipe a glob stream into this and receive a gulp file stream
-var gulpSrc = function (isvendor) {
+var gulpSrc = function () {
   var paths = es.through();
   var files = es.through();
 
   paths.pipe(es.writeArray(function (err, srcs) {
     var ls = [];
     for (var i=0; i<srcs.length; i++) {
-      ls.push((isvendor ? vendorPath : srcPath) + srcs[i]);
+      ls.push(srcPath + srcs[i]);
     }
     gulp.src(ls).pipe(files);
   }));
@@ -294,7 +293,7 @@ gulp.task('buildIndexTemplate', function () {
           return block.pipe(block);
         }
 
-        block.pipe(gulpSrc(true))
+        block.pipe(gulpSrc())
           .pipe(sourcemaps.init({loadMaps: true}))
           .pipe(concat('beakerVendor.js'))
           .pipe(sourcemaps.write())
@@ -307,7 +306,7 @@ gulp.task('buildIndexTemplate', function () {
         if (argv.debug) {
           block.pipe(block);
         } else {
-          block.pipe(gulpSrc(false))
+          block.pipe(gulpSrc())
             .pipe(sourcemaps.init({loadMaps: true}))
             .pipe(stripJsComments())
             .pipe(concat('beakerApp.js'))
@@ -325,7 +324,7 @@ gulp.task('buildIndexTemplate', function () {
         } else if (argv.embed) {
           block.end('app/dist/beaker-sandbox.css');
         } else {
-          block.pipe(gulpSrc(false))
+          block.pipe(gulpSrc())
             .pipe(stripCssComments())
             .pipe(concat('beakerApp.css'))
             .pipe(header(banner ))

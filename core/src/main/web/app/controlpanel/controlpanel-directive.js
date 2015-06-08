@@ -139,7 +139,6 @@
             return false;
 	  }
 	}
-	console.log('installing keydownHandler');
 	$(document).bind('keydown', keydownHandler);
 
 	var onDestroy = function() {

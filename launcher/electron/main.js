@@ -37,6 +37,7 @@ app.on('ready', function() {
   mainWindow = new BrowserWindow({
   	width: 1500,
   	height: 1000,
+    'node-integration': false,
   });
 
   mainWindow.loadUrl('http://127.0.0.1:8801/');

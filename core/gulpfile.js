@@ -290,6 +290,10 @@ gulp.task('buildIndexTemplate', function () {
     .pipe(htmlbuild({
       // build js with preprocessor
       vendorjs: htmlbuild.preprocess.js(function (block) {
+        if (argv.debug) {
+          return block.pipe(block);
+        }
+
         block.pipe(gulpSrc(true))
           .pipe(sourcemaps.init({loadMaps: true}))
           .pipe(concat('beakerVendor.js'))

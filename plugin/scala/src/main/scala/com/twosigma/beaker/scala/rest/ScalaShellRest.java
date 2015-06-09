@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -41,18 +42,19 @@ public class ScalaShellRest {
   @Inject private Injector injector;
 
   private final Map<String, ScalaEvaluator> shells = new HashMap<>();
-
+  private final static Logger logger = Logger.getLogger(ScalaShellRest.class.getName());
+      
   public ScalaShellRest() throws IOException {}
 
   @POST
   @Path("getShell")
   @Produces(MediaType.TEXT_PLAIN)
-  public String getShell(@FormParam("shellId") String shellId,
-      @FormParam("sessionId") String sessionId)
-          throws InterruptedException, MalformedURLException
+  public String getShell(@FormParam("shellId") String shellId, @FormParam("sessionId") String sessionId) throws InterruptedException, MalformedURLException
   {
+    logger.fine("shellId="+shellId);
     // if the shell does not already exist, create a new shell
     if (shellId.isEmpty() || !this.shells.containsKey(shellId)) {
+      logger.finest(" creating new shell");
       shellId = UUID.randomUUID().toString();
       ScalaEvaluator js = injector.getInstance(ScalaEvaluator.class);
       js.initialize(shellId,sessionId);
@@ -65,11 +67,11 @@ public class ScalaShellRest {
 
   @POST
   @Path("evaluate")
-  public SimpleEvaluationObject evaluate(@FormParam("shellId") String shellId,
-      @FormParam("code") String code) throws InterruptedException {
+  public SimpleEvaluationObject evaluate(@FormParam("shellId") String shellId, @FormParam("code") String code) throws InterruptedException {
+    logger.fine("shellId="+shellId+" code="+code.replaceAll("\n", " \\n "));
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
-    if(!this.shells.containsKey(shellId)) {
+    if(!this.shells.containsKey(shellId)) {      
       obj.error("Cannot find shell");
       return obj;
     }
@@ -88,6 +90,7 @@ public class ScalaShellRest {
       @FormParam("shellId") String shellId,
       @FormParam("code") String code,
       @FormParam("caretPosition") int caretPosition) throws InterruptedException {
+    logger.fine("shellId="+shellId+" pos="+caretPosition+" code="+code.replaceAll("\n", " \\n "));
     if(!this.shells.containsKey(shellId)) {
       return null;
     }
@@ -97,6 +100,7 @@ public class ScalaShellRest {
   @POST
   @Path("exit")
   public void exit(@FormParam("shellId") String shellId) {
+    logger.fine("shellId="+shellId);
     if(!this.shells.containsKey(shellId)) {
       return;
     }
@@ -107,6 +111,7 @@ public class ScalaShellRest {
   @POST
   @Path("cancelExecution")
   public void cancelExecution(@FormParam("shellId") String shellId) {
+    logger.fine("shellId="+shellId);
     if(!this.shells.containsKey(shellId)) {
       return;
     }
@@ -116,6 +121,7 @@ public class ScalaShellRest {
   @POST
   @Path("killAllThreads")
   public void killAllThreads(@FormParam("shellId") String shellId) {
+    logger.fine("shellId="+shellId);
     if(!this.shells.containsKey(shellId)) {
       return;
     }
@@ -125,6 +131,7 @@ public class ScalaShellRest {
   @POST
   @Path("resetEnvironment")
   public void resetEnvironment(@FormParam("shellId") String shellId) {
+    logger.fine("shellId="+shellId);
     if(!this.shells.containsKey(shellId)) {
       return;
     }
@@ -140,6 +147,7 @@ public class ScalaShellRest {
       @FormParam("outdir") String outDir)
           throws IOException
   {
+    logger.fine("shellId="+shellId+" classPath: "+classPath.replaceAll("\n", " \\n ")+" imports: "+imports.replaceAll("\n", " \\n ")+" outDir: "+outDir);
     if(!this.shells.containsKey(shellId)) {
       return;
     }

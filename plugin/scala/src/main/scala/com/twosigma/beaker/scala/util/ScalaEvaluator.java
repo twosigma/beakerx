@@ -94,6 +94,8 @@ public class ScalaEvaluator {
   }
 
   public void initialize(String id, String sId) {
+    if (logger.isLoggable(Level.FINE))
+      logger.fine("id: "+id +", sId: "+sId);
     shellId = id;
     sessionId = sId;
     classPath = new ArrayList<String>();
@@ -174,7 +176,7 @@ public class ScalaEvaluator {
     if(cp==null || cp.isEmpty())
       classPath = new ArrayList<String>();
     else
-      classPath = Arrays.asList(cp.split("[\\s]+"));
+      classPath = Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"));
     if (imports==null || in.isEmpty())
       imports = new ArrayList<String>();
     else
@@ -202,6 +204,8 @@ public class ScalaEvaluator {
       ArrayList<String> r2 = new ArrayList<String>();
       for(CharSequence c : ret)
         r2.add(c.toString());
+      if (logger.isLoggable(Level.FINEST))
+        logger.finest("return: "+r2);
       return r2;
     }
     return null;
@@ -209,8 +213,10 @@ public class ScalaEvaluator {
 
   protected ScalaDynamicClassLoader loader = null;
   protected ScalaEvaluatorGlue shell;
+  protected String loader_cp = "";
   protected ScalaDynamicClassLoader acloader = null;
   protected ScalaEvaluatorGlue acshell;
+  protected String acloader_cp = "";
 
   protected class workerThread extends Thread {
 
@@ -227,6 +233,7 @@ public class ScalaEvaluator {
       NamespaceClient nc = null;
 
       while(!exit) {
+        logger.finest("looping");
         try {
           // wait for work
           syncObject.acquire();
@@ -244,9 +251,7 @@ public class ScalaEvaluator {
           if (shell==null) {
             updateLoader=false;
             newEvaluator();
-          }
-
-          if(loader!=null)
+          } else if(loader!=null)
             loader.clearCache();
 
           j.outputObject.started();
@@ -302,14 +307,23 @@ public class ScalaEvaluator {
       
     };
 
+    /*
+     * Scala uses multiple classloaders and (unfortunately) cannot fallback to the java one while compiling scala code so we
+     * have to build our DynamicClassLoader and also build a proper classpath for the compiler classloader.
+     */
     protected ClassLoader newClassLoader() throws MalformedURLException
     {
+      logger.fine("creating new loader");
+      loader_cp = "";
       URL[] urls = {};
       if (!classPath.isEmpty()) {
         urls = new URL[classPath.size()];
         for (int i = 0; i < classPath.size(); i++) {
           urls[i] = new URL("file://" + classPath.get(i));
-          System.out.println(urls[i].toString());
+          loader_cp += classPath.get(i);
+          loader_cp += File.pathSeparatorChar;
+          if (logger.isLoggable(Level.FINEST))
+            logger.finest("adding file: "+urls[i].toString());
         }
       }
       loader = null;
@@ -322,7 +336,8 @@ public class ScalaEvaluator {
 
     protected void newEvaluator() throws MalformedURLException
     {
-      shell = new ScalaEvaluatorGlue(newClassLoader(), System.getProperty("java.class.path"));
+      logger.fine("creating new evaluator");
+      shell = new ScalaEvaluatorGlue(newClassLoader(), loader_cp+System.getProperty("java.class.path"));
 
       if (!imports.isEmpty()) {
         for (int i = 0; i < imports.size(); i++) {
@@ -332,12 +347,16 @@ public class ScalaEvaluator {
           if (imp.endsWith(".*"))
             imp = imp.substring(0,imp.length()-1) + "_";
           if(!imp.isEmpty()) {
+            if (logger.isLoggable(Level.FINEST))
+              logger.finest("importing : "+imp);
             if(!shell.addImport(imp))
               System.err.println("ERROR: cannot add import '"+imp+"'");
           }
         }
       }
-      
+
+      logger.fine("creating beaker object");
+
       // ensure object is created
       NamespaceClient.getBeaker(sessionId);
 
@@ -358,7 +377,7 @@ public class ScalaEvaluator {
           "}\n" 
           );
       if(r!=null && !r.isEmpty()) {
-        System.err.println("ERROR setting beaker: "+r);
+        System.err.println("ERROR creating beaker object: "+r);
       }
     }
   }
@@ -366,12 +385,17 @@ public class ScalaEvaluator {
   
   protected ClassLoader newAutoCompleteClassLoader() throws MalformedURLException
   {
+    logger.fine("creating new autocomplete loader");
+    acloader_cp = "";
     URL[] urls = {};
     if (!classPath.isEmpty()) {
       urls = new URL[classPath.size()];
       for (int i = 0; i < classPath.size(); i++) {
         urls[i] = new URL("file://" + classPath.get(i));
-        System.out.println(urls[i].toString());
+        acloader_cp += classPath.get(i);
+        acloader_cp += File.pathSeparatorChar;
+        if (logger.isLoggable(Level.FINEST))
+          logger.finest("adding file: "+urls[i].toString());
       }
     }
     acloader = null;
@@ -384,7 +408,8 @@ public class ScalaEvaluator {
 
   protected void newAutoCompleteEvaluator() throws MalformedURLException
   {
-    acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(), System.getProperty("java.class.path"));
+    logger.fine("creating new autocomplete evaluator");
+    acshell = new ScalaEvaluatorGlue(newAutoCompleteClassLoader(), acloader_cp+System.getProperty("java.class.path"));
 
     if (!imports.isEmpty()) {
       for (int i = 0; i < imports.size(); i++) {
@@ -403,11 +428,26 @@ public class ScalaEvaluator {
     // ensure object is created
     NamespaceClient.getBeaker(sessionId);
 
-    String r = acshell.evaluate2("var beaker = NamespaceClient.getBeaker(\""+sessionId+"\")");
+    String r = acshell.evaluate2(
+        "var _beaker = NamespaceClient.getBeaker(\""+sessionId+"\")\n"+
+        "import language.dynamics\n"+
+        "object beaker extends Dynamic {\n"+
+        "  def selectDynamic( field : String ) = _beaker.get(field)\n"+
+        "  def updateDynamic (field : String)(value : Any) : Any = {\n"+
+        "    _beaker.set(field,value)\n"+
+        "    return value\n"+
+        "  }\n"+
+        "  def applyDynamic(methodName: String)(args: AnyRef*) = {\n"+
+        "    def argtypes = args.map(_.getClass)\n"+
+        "    def method = _beaker.getClass.getMethod(methodName, argtypes: _*)\n"+
+        "    method.invoke(_beaker,args: _*)\n"+
+        "  }\n"+
+        "}\n" 
+        );
     if(r!=null && !r.isEmpty()) {
-      System.err.println("ERROR setting beaker: "+r);
+      System.err.println("ERROR creating beaker beaker: "+r);
     }
-    
+
   }
 
   class ScalaListOfPrimitiveTypeMapsSerializer implements ObjectSerializer {
@@ -727,7 +767,8 @@ public class ScalaEvaluator {
           o = new TableDisplay(vals, cols, clas);
         }
       } catch (Exception e) {
-        logger.log(Level.SEVERE, "exception deserializing TableDisplay ", e);
+        if (logger.isLoggable(Level.SEVERE))
+          logger.log(Level.SEVERE, "exception deserializing TableDisplay ", e);
       }
       return o;
     }
@@ -759,7 +800,8 @@ public class ScalaEvaluator {
           o.add(parent.deserialize(n.get(i), mapper));
         }
       } catch (Exception e) {
-        logger.log(Level.SEVERE, "exception deserializing Collection ", e);
+        if (logger.isLoggable(Level.SEVERE))
+          logger.log(Level.SEVERE, "exception deserializing Collection ", e);
         o = null;
       }
       if (o!=null)
@@ -791,7 +833,8 @@ public class ScalaEvaluator {
           o.put(ee.getKey(), parent.deserialize(ee.getValue(),mapper));
         }
       } catch (Exception e) {
-        logger.log(Level.SEVERE, "exception deserializing Map ", e);
+        if (logger.isLoggable(Level.SEVERE))
+          logger.log(Level.SEVERE, "exception deserializing Map ", e);
         o = null;
       }
       if (o!=null)

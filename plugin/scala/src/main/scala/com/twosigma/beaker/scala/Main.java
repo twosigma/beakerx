@@ -26,9 +26,11 @@ import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 
 /**
@@ -46,8 +48,20 @@ public class Main {
     WebApplicationImplLogger.setLevel(java.util.logging.Level.WARNING);
   }
 
+  private static final LogManager logManager = LogManager.getLogManager();
+
   public static void main(String[] args) throws Exception {
-    java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
+
+    if (System.getenv("beaker_logger_file") != null) {
+      try {
+        logManager.readConfiguration(new FileInputStream(System.getenv("beaker_logger_file")));
+      } catch (IOException exception) {
+        System.err.println("Error in loading configuration: " + exception);
+      }
+    } else {
+      java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
+      java.util.logging.Logger.getLogger("com.twosigma.beaker").setLevel(java.util.logging.Level.SEVERE);
+    }
 
     if (args.length != 1) {
       System.out.println("usage: scalaPlugin <portListen>");

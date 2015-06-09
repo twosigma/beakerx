@@ -54,8 +54,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Abstract class loader that can load classes from different resources
@@ -65,13 +63,14 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractClassLoader extends ClassLoader {
-
+  private static Logger logger = Logger.getLogger(AbstractClassLoader.class.getName());
+  
     protected final List<ProxyClassLoader> loaders = new ArrayList<ProxyClassLoader>();
 
     private final ProxyClassLoader systemLoader = new SystemLoader();
     private final ProxyClassLoader parentLoader = new ParentLoader();
     private final ProxyClassLoader currentLoader = new CurrentLoader();
-
+    
     /**
      * Build a new instance of AbstractClassLoader.java.
      * @param parent parent class loader
@@ -121,6 +120,8 @@ public abstract class AbstractClassLoader extends ClassLoader {
         if (className == null || className.trim().equals(""))
             return null;
 
+        logger.finest(className);
+        
         Collections.sort(loaders);
 
         Class clazz = null;
@@ -153,6 +154,8 @@ public abstract class AbstractClassLoader extends ClassLoader {
         if (name == null || name.trim().equals(""))
             return null;
 
+        logger.finest(name);
+        
         Collections.sort(loaders);
 
         URL url = null;
@@ -183,6 +186,8 @@ public abstract class AbstractClassLoader extends ClassLoader {
         if (name == null || name.trim().equals(""))
             return null;
 
+        logger.finest(name);
+        
         Collections.sort(loaders);
 
         InputStream is = null;
@@ -204,6 +209,8 @@ public abstract class AbstractClassLoader extends ClassLoader {
     protected Enumeration<URL> findResources(String name) throws IOException {
       if (name == null || name.trim().equals(""))
         return null;
+      
+      logger.finest(name);
       
       Collections.sort(loaders);
     

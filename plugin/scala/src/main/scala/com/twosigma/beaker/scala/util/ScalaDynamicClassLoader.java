@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.twosigma.beaker.jvm.classloader.DynamicClassLoader;
 import com.twosigma.beaker.jvm.classloader.ProxyClassLoader;
@@ -29,25 +31,23 @@ import com.twosigma.beaker.jvm.classloader.ProxyClassLoader;
 public class ScalaDynamicClassLoader extends DynamicClassLoader {
   protected final ScalaLoaderProxy glp = new ScalaLoaderProxy();
   protected final List<String> paths = new ArrayList<String>();
-  
+  private final static Logger logger = Logger.getLogger(ScalaDynamicClassLoader.class.getName());
+
   public ScalaDynamicClassLoader(String dir) {
     super(dir);
     glp.setOrder(70);
     parent.addLoader(glp);
-    parent.getLocalLoader().setEnabled(false);
   }
 
   public void add(Object s) {
+    if (logger.isLoggable(Level.FINEST))
+      logger.finest("adding "+s);
     parent.add(s);
     if(s instanceof String) {
       String ss = (String)s;
       File fs = new File(ss);
       if(fs.exists() && fs.isDirectory()) {
         paths.add(ss);
-      }
-      if (ss.endsWith(".jar")) {
-    	parent.getLocalLoader().setEnabled(true);
-    	System.out.println("enabling local loader");
       }
     }
     else if(s instanceof URL && ((URL)s).toString().startsWith("file:")) {
@@ -56,10 +56,6 @@ public class ScalaDynamicClassLoader extends DynamicClassLoader {
       if(fs.exists() && fs.isDirectory()) {
         paths.add(ss);
       }        
-      if (((URL)s).toString().endsWith(".jar")) {
-    	parent.getLocalLoader().setEnabled(true);
-    	System.out.println("enabling local loader");
-      }
     }
   }
 
@@ -67,16 +63,14 @@ public class ScalaDynamicClassLoader extends DynamicClassLoader {
   public void addAll(List sources) {
     parent.addAll(sources);
     for(Object o : sources) {
+      if (logger.isLoggable(Level.FINEST))
+        logger.finest("adding "+o);
       if(o instanceof String) {
         String ss = (String)o;
         File fs = new File(ss);
         if(fs.exists() && fs.isDirectory()) {
           paths.add(ss);
         }        
-        if (ss.endsWith(".jar")) {
-        	parent.getLocalLoader().setEnabled(true);
-        	System.out.println("enabling local loader");;
-        }
       }
       else if(o instanceof URL && ((URL)o).toString().startsWith("file:")) {
         String ss = ((URL)o).toString().substring(5);
@@ -84,10 +78,6 @@ public class ScalaDynamicClassLoader extends DynamicClassLoader {
         if(fs.exists() && fs.isDirectory()) {
           paths.add(ss);
         }        
-        if (((URL)o).toString().endsWith(".jar")) {
-        	parent.getLocalLoader().setEnabled(true);
-        	System.out.println("enabling local loader");
-        }
       }
     }
   }
@@ -95,16 +85,19 @@ public class ScalaDynamicClassLoader extends DynamicClassLoader {
   class ScalaLoaderProxy extends ProxyClassLoader {
 
     public ScalaLoaderProxy() {
-        order = 10;
-        enabled = true;
+      order = 10;
+      enabled = true;
     }
     @Override
     public Class<?> loadClass(String className, boolean resolveIt) {
       Class<?> result = null;
-      
+
+      logger.finest(className);
+
       result = classes.get( className );
       if (result != null) {
-          return result;
+        logger.finest("... was cached");
+        return result;
       }
 
       for(String p : paths) {     
@@ -112,9 +105,10 @@ public class ScalaDynamicClassLoader extends DynamicClassLoader {
 
         File f = new File(tpath);
         if(f.exists()) {
+          logger.finest("ERROR: is a scala file");
           try {
             setEnabled(false);
-            System.out.println("ERROR: NOT IMPLEMENTED: Should load scala file "+tpath);
+            logger.severe("ERROR: NOT IMPLEMENTED: Should load scala file "+tpath);
             setEnabled(true);
             return null;
           } catch(Exception e) { e.printStackTrace(); }
@@ -123,7 +117,7 @@ public class ScalaDynamicClassLoader extends DynamicClassLoader {
       }
       return null;
     }
-    
+
     @Override
     public InputStream loadResource(String name) {
       for(String p : paths) {
@@ -141,8 +135,8 @@ public class ScalaDynamicClassLoader extends DynamicClassLoader {
 
     @Override
     public URL findResource(String name) {
-        return null;
+      return null;
     }
   }
-  
+
 }

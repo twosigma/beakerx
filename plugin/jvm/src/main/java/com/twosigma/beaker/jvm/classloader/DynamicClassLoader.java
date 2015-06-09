@@ -21,157 +21,166 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
 public class DynamicClassLoader {
-    @SuppressWarnings("rawtypes")
-	protected final Map<String, Class> classes;
-    protected final String dirPath;
-    protected final DynamicLoaderProxy dlp = new DynamicLoaderProxy();
-    protected SubClassLoader subLoader;
-    protected final JarClassLoader parent;
-    
-    @SuppressWarnings("rawtypes")
-	public DynamicClassLoader(String dir) {
-        classes = Collections.synchronizedMap( new HashMap<String, Class>() );
-        dirPath = dir;
-        parent = new JarClassLoader();
-        parent.getLocalLoader().setOrder(20);
-        parent.getCurrentLoader().setOrder(30);
-        parent.getParentLoader().setOrder(40); 
-        parent.getSystemLoader().setOrder(50);
-        if(dir!=null && !dir.isEmpty()) {
-          getProxy().setOrder(10);
-          parent.addLoader(getProxy());
-        }
-        subLoader = new SubClassLoader(parent);
+  @SuppressWarnings("rawtypes")
+  protected final Map<String, Class> classes;
+  protected final String dirPath;
+  protected final DynamicLoaderProxy dlp = new DynamicLoaderProxy();
+  protected SubClassLoader subLoader;
+  protected final JarClassLoader parent;
+  private final static Logger logger = Logger.getLogger(DynamicClassLoader.class.getName());
+
+  @SuppressWarnings("rawtypes")
+  public DynamicClassLoader(String dir) {
+    if (logger.isLoggable(Level.FINE))
+      logger.fine("creating with dir:"+dir);
+    classes = Collections.synchronizedMap( new HashMap<String, Class>() );
+    dirPath = dir;
+    parent = new JarClassLoader();
+    parent.getLocalLoader().setOrder(20);
+    parent.getCurrentLoader().setOrder(30);
+    parent.getParentLoader().setOrder(40); 
+    parent.getSystemLoader().setOrder(50);
+    if(dir!=null && !dir.isEmpty()) {
+      getProxy().setOrder(10);
+      parent.addLoader(getProxy());
+    }
+    subLoader = new SubClassLoader(parent);
+  }
+
+  public void add(Object s) {
+    parent.add(s);
+  }
+
+  public void addAll(List<?> sources) {
+    parent.addAll(sources);
+  }
+
+  public Class<?> loadClass(String n) throws ClassNotFoundException {
+    return parent.loadClass(n);
+  }
+
+  public ClassLoader getLoader() { return parent; }
+
+  class SubClassLoader extends ClassLoader {
+    public SubClassLoader(ClassLoader p) {
+      super(p);
+    }
+    public Class<?> my_defineClass(String s, byte [] b, int a, int x) {
+      return defineClass(s,b,a,x);
+    }
+    public void my_definePackage(String n) {
+      definePackage( n, null, null, null, null, null, null, null );
+    }
+    public void my_resolveClass(Class<?> r) {
+      resolveClass(r);
+    }
+  }
+
+  public DynamicLoaderProxy getProxy() { return dlp; }
+
+  class DynamicLoaderProxy extends ProxyClassLoader {
+
+    public DynamicLoaderProxy() {
+      order = 10;
+      enabled = true;
     }
 
-    public void add(Object s) {
-        parent.add(s);
-    }
-    
-	public void addAll(List<?> sources) {
-        parent.addAll(sources);
-    }
-    
-    public Class<?> loadClass(String n) throws ClassNotFoundException {
-        return parent.loadClass(n);
-    }
-    
-    public ClassLoader getLoader() { return parent; }
-    
-    class SubClassLoader extends ClassLoader {
-        public SubClassLoader(ClassLoader p) {
-            super(p);
-        }
-        public Class<?> my_defineClass(String s, byte [] b, int a, int x) {
-            return defineClass(s,b,a,x);
-        }
-        public void my_definePackage(String n) {
-            definePackage( n, null, null, null, null, null, null, null );
-        }
-        public void my_resolveClass(Class<?> r) {
-            resolveClass(r);
-        }
-    }
-    
-    public DynamicLoaderProxy getProxy() { return dlp; }
-    
-    class DynamicLoaderProxy extends ProxyClassLoader {
+    @Override
+    public Class<?> loadClass(String className, boolean resolveIt) {
+      Class<?> result = null;
+      byte[] classBytes;
 
-        public DynamicLoaderProxy() {
-            order = 10;
-            enabled = true;
-        }
+      logger.finest(className);
+      
+      result = classes.get( className );
+      if (result != null) {
+        logger.finest("... was cached");
+        return result;
+      }
 
-        @Override
-        public Class<?> loadClass(String className, boolean resolveIt) {
-            Class<?> result = null;
-            byte[] classBytes;
-
-            result = classes.get( className );
-            if (result != null) {
-                return result;
-            }
-
-            classBytes = loadClassBytes( className );
-            if (classBytes == null) {
-                return null;
-            }
-
-            result = subLoader.my_defineClass( className, classBytes, 0, classBytes.length );
-            if (result == null) {
-                return null;
-            }
-
-            /*
-             * Preserve package name.
-             */
-            if (result.getPackage() == null) {
-                int lastDotIndex = className.lastIndexOf( '.' );
-                String packageName = (lastDotIndex >= 0) ? className.substring( 0, lastDotIndex) : "";
-                subLoader.my_definePackage( packageName);
-            }
-
-            if (resolveIt)
-                subLoader.my_resolveClass( result );
-
-            classes.put( className, result );
-            return result;
-        }
-
-        @Override
-        public InputStream loadResource(String name) {
-            byte[] arr = loadClassBytes( name );
-            if (arr != null) {
-                return new ByteArrayInputStream( arr );
-            }
-            return null;
-        }
-
-        @Override
-        public URL findResource(String name) {
-            return null;
-        }
-    }
-    
-    
-    protected byte[] loadClassBytes(String className) {
-        String path = dirPath + File.separator + className.replace(".", File.separator) + ".class";
-        
-        File f = new File(path);
-        if (f.exists()) {
-            byte [] content = new byte[(int) f.length()];
-            FileInputStream fis = null;
-            try {
-                fis = new FileInputStream( f );
-                if (fis.read( content ) != -1) {
-                    return content;
-                }
-            } catch (IOException e) {
-                throw new JclException( e );
-            } finally {
-                if (fis != null)
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                        throw new JclException( e );
-                    }
-            }
-            
-        }
+      classBytes = loadClassBytes( className );
+      if (classBytes == null) {
         return null;
+      }
+
+      logger.finest("... loaded");
+      
+      result = subLoader.my_defineClass( className, classBytes, 0, classBytes.length );
+      if (result == null) {
+        return null;
+      }
+
+      /*
+       * Preserve package name.
+       */
+       if (result.getPackage() == null) {
+         int lastDotIndex = className.lastIndexOf( '.' );
+         String packageName = (lastDotIndex >= 0) ? className.substring( 0, lastDotIndex) : "";
+         subLoader.my_definePackage( packageName);
+       }
+
+       if (resolveIt)
+         subLoader.my_resolveClass( result );
+
+       classes.put( className, result );
+       return result;
     }
 
-    public void clearCache() {
-        classes.clear();
-        subLoader = new SubClassLoader(parent);
+    @Override
+    public InputStream loadResource(String name) {
+      byte[] arr = loadClassBytes( name );
+      if (arr != null) {
+        return new ByteArrayInputStream( arr );
+      }
+      return null;
     }
+
+    @Override
+    public URL findResource(String name) {
+      return null;
+    }
+  }
+
+
+  protected byte[] loadClassBytes(String className) {
+    String path = dirPath + File.separator + className.replace(".", File.separator) + ".class";
+
+    File f = new File(path);
+    if (f.exists()) {
+      byte [] content = new byte[(int) f.length()];
+      FileInputStream fis = null;
+      try {
+        fis = new FileInputStream( f );
+        if (fis.read( content ) != -1) {
+          return content;
+        }
+      } catch (IOException e) {
+        throw new JclException( e );
+      } finally {
+        if (fis != null)
+          try {
+            fis.close();
+          } catch (IOException e) {
+            throw new JclException( e );
+          }
+      }
+
+    }
+    return null;
+  }
+
+  public void clearCache() {
+    classes.clear();
+    subLoader = new SubClassLoader(parent);
+  }
 }

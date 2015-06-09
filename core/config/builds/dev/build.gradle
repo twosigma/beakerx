@@ -53,8 +53,16 @@ task installPlugins {
   }
 }
 
+def windows() {
+  return System.getProperty('os.name').contains('Windows')
+}
+
 task cleanPlugins (type: Exec) {
-  commandLine 'rm', '-rf', evalPluginDir.absolutePath
+  if (windows()) {
+    commandLine 'cmd', '/c', 'rd', '/s', '/q', evalPluginDir.absolutePath
+  } else {
+    commandLine 'rm', '-rf', evalPluginDir.absolutePath
+  }
 }
 
 def gitDescribe() {

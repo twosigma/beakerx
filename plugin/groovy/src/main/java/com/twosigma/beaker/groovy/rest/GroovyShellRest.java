@@ -40,6 +40,13 @@ public class GroovyShellRest {
   public GroovyShellRest() throws IOException {}
 
   @POST
+  @Path("ready")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String ready() {
+    return "ok";
+  }
+
+  @POST
   @Path("getShell")
   @Produces(MediaType.TEXT_PLAIN)
   public String getShell(@FormParam("shellId") String shellId,

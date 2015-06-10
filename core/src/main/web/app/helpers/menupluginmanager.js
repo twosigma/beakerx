@@ -62,6 +62,7 @@
     var loadedPlugins = [];
     var loadingInProgressPluginJobs = [];
     var pluginIndex = 0;
+    var menuChanged = false;
 
     var addPlugin = function(plugin, pluginIndex, secondaryIndex) {
       if (!plugin) {
@@ -82,12 +83,14 @@
           classNames: plugin.id
         };
         menus[pluginIndex + '_' + secondaryIndex + '_' + parentMenu.name] = parentMenu;
+        menuChanged = true;
       } else {
         if (pluginIndex < parentMenu.index
             || (pluginIndex === parentMenu.index && secondaryIndex < parentMenu.secondaryIndex)) {
           delete menus[parentMenu.index + '_' + parentMenu.secondaryIndex + '_' + parentMenu.name];
           menus[pluginIndex + '_' + secondaryIndex + '_' + parentMenu.name] = parentMenu;
           parentMenu.index = pluginIndex;
+          menuChanged = true;
         }
       }
 
@@ -137,6 +140,9 @@
             return a.sortorder !== undefined;
           });
         }
+      }
+      if (bkUtils.isElectron && menuChanged){
+        bkUtils.Electron.updateMenus(menus);
       }
     };
 

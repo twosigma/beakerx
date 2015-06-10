@@ -299,6 +299,17 @@
           return $location.path("/open").search(routeParams);
         },
         newSession: function(empty) {
+          if (bkUtils.isElectron){
+            var newWindow = null;
+            newWindow = new bkUtils.Electron.BrowserWindow({
+              width: 1500,
+              height: 1000,
+              // node-integration': false,
+              icon: 'beaker.png'
+            });
+            newWindow.loadUrl($location.absUrl() + '/../session/new');
+            return;
+          }
           var name = "/session/new";
           if (empty) {
             name = "/session/empty";

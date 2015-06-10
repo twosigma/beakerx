@@ -29,7 +29,7 @@ bk-code-cell-output {
 }
 
 .markup {
-  min-height: $line-height-base + 0em;
+  min-height: unit($line-height-base) + 0em;
   & > :first-child {
     margin-top: 0;
   }

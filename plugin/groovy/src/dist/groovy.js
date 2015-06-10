@@ -177,6 +177,7 @@ define(function(require, exports, module) {
       recordOutput: "true"
     }).success(function(ret) {
       serviceBase = ret;
+      // XXX what is this???
       if (window.languageServiceBase == undefined) {
         window.languageServiceBase = {};
       }

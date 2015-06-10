@@ -295,8 +295,64 @@
       require: function(nameOrUrl) {
         var url = this.moduleMap.hasOwnProperty(nameOrUrl) ? this.moduleMap[nameOrUrl] : nameOrUrl;
         return window.require(url);
-      }
+      },
+
+      // wrapper around Electron
+      // Electron: require('remote')
+      isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
     };
+    if (bkUtils.isElectron){
+      bkUtils.Electron = {};
+      bkUtils.Electron.remote = require('remote');
+      bkUtils.Electron.BrowserWindow = bkUtils.Electron.remote.require('browser-window');
+      bkUtils.Electron.Menu = bkUtils.Electron.remote.require('menu');
+      bkUtils.Electron.updateMenus = function(menus) {
+        var assignShortcut = function(name){
+          switch(name) {
+            case 'Save':
+              return 'Command+S';
+            case 'Open... (.bkr)':
+              return 'Command+O';
+            case 'New Notebook':
+              return 'Command+N';
+            case 'Tutorial':
+              return 'Command+H';
+            default:
+              return undefined;
+          }
+        }
+        var makeMenu = function(bkmenu){
+          var menu = [];
+          for (var i = 0; i < bkmenu.length; i++){
+            var bkItem = bkmenu[i];
+            var newItem = {
+              label: bkItem.name
+            }
+            if (bkItem.action !== undefined)
+              newItem.click = bkItem.action.bind({});
+            if (bkItem.isChecked !== undefined){
+              newItem.type = 'checkbox';
+              newItem.checked = 'false';
+            }
+            newItem.accelerator = assignShortcut(bkItem.name);
+            // Process submenu
+            if (Array.isArray(bkItem.items))
+              newItem.submenu = makeMenu(bkItem.items);
+            if (bkItem.index !== undefined)
+              menu[bkItem.index] = newItem;
+            else
+              menu.push(newItem);
+          }
+          return menu;
+        };
+        var template = makeMenu(Object.keys(menus).map(function(k) { return menus[k]; } ));
+        template.unshift({
+          label: 'Beaker'
+        });
+        var menu = bkUtils.Electron.Menu.buildFromTemplate(template);
+        bkUtils.Electron.Menu.setApplicationMenu(menu);
+      }
+    }
     return bkUtils;
   });
 })();

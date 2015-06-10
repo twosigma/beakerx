@@ -116,6 +116,7 @@
         }
       },
       saveNotebook: function() {
+        console.log('Saving!');
         if (getCurrentApp().saveNotebook) {
           return getCurrentApp().saveNotebook();
         } else {

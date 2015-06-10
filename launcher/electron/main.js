@@ -15,6 +15,8 @@
  */
 
 var app = require('app');  // Module to control application life.
+var Menu = require('menu');
+var MenuItem = require('menu-item');
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 
 // Report crashes to our server.
@@ -37,8 +39,13 @@ app.on('ready', function() {
   mainWindow = new BrowserWindow({
   	width: 1500,
   	height: 1000,
-    'node-integration': false,
+    // node-integration': false,
+    icon: 'beaker.png'
   });
+  
+  // var Template = require('./menu_template.js')(mainWindow);
+  // menu = Menu.buildFromTemplate(Template.template);
+  // Menu.setApplicationMenu(menu);
 
   mainWindow.loadUrl('http://127.0.0.1:8801/');
 

@@ -34,8 +34,8 @@ dependencies {
   // would prefer "groovy" over "groovy-all" but that gives me this problem:
   // http://stackoverflow.com/questions/11738732/exception-java-lang-incompatibleclasschangeerror-while-running-groovy-in-eclipse
   provided group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.3'
-  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.3'
-  antlr group : 'org.antlr', name :'antlr4', version: '4.3'
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
+  antlr group : 'org.antlr', name :'antlr4', version: '4.5'
   compile group: 'org.apache.ivy', name:'ivy', version:'2.2.0' 
   compile 'com.lowagie:itext:2.1.7'
   compile 'org.graxxia:graxxia:0.9'

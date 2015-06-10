@@ -69,3 +69,7 @@ $btn-primary-bg: $highlight-blue;
 
 $code-color: black;
 $code-bg: #F4F4F4;
+
+@function strip-units($number) {
+ @return $number / ($number * 0 + 1);
+}

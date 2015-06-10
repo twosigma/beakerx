@@ -183,38 +183,37 @@ gulp.task("compileBeakerTemplates", function() {
   .pipe(gulp.dest(tempPath));
 });
 
-gulp.task('buildOutputDisplayTemplate', function () {
+function getFilePathArrayFromList(basePath, listPath) {
+  return fs.readFileSync(basePath + listPath)
+  .toString().split('\n')
+  .filter(function(n) {
+    return n !== undefined && n.trim() !== ''
+  });
+}
 
+gulp.task('buildOutputDisplayTemplate', function () {
   var thePath = pluginPath + 'template/';
 
   if (argv.outdisp) {
     thePath = argv.outdisp + '/';
   }
 
-  var cssarray = fs.readFileSync(thePath + 'addoutputdisplays_css.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var jsarray = fs.readFileSync(thePath + 'addoutputdisplays_javascript.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var vendorcssarray = fs.readFileSync(thePath + 'addoutputdisplays_vendorcss.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
-  var vendorjsarray = fs.readFileSync(thePath + 'addoutputdisplays_vendorjs.list').toString().split("\n").filter(function(n){ return n !== undefined && n.trim() !== '' });
+  var cssarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_css.list');
+  var jsarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_javascript.list');
+  var vendorcssarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_vendorcss.list');
+  var vendorjsarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_vendorjs.list');
 
-  var ca = [];
-  if (vendorcssarray.length > 0) {
-    for (var i=0; i<vendorcssarray.length; i++) {
-      ca.push(Path.join(srcPath,vendorcssarray[i]));
-    }
-    gulp.src(ca)
-      .pipe(concat('beakerOutputDisplayVendor.css'))
-      .pipe(gulp.dest(buildPath));
-  }
+  gulp.src(vendorcssarray.map(function(v) {
+    return Path.join(srcPath, v);
+  }))
+  .pipe(concat('beakerOutputDisplayVendor.css'))
+  .pipe(gulp.dest(buildPath));
 
-  ca = [];
-  if (vendorjsarray.length > 0) {
-    for (var i=0; i<vendorjsarray.length; i++) {
-      ca.push(Path.join(srcPath,vendorjsarray[i]));
-    }
-    gulp.src(ca)
-      .pipe(concat('beakerOutputDisplayVendor.js'))
-      .pipe(gulp.dest(buildPath));
-  }
+  gulp.src(vendorjsarray.map(function(v) {
+    return Path.join(srcPath, v);
+  }))
+  .pipe(concat('beakerOutputDisplayVendor.js'))
+  .pipe(gulp.dest(buildPath));
 
   var cssfiles, jsfiles;
 
@@ -229,35 +228,31 @@ gulp.task('buildOutputDisplayTemplate', function () {
       jsfiles = jsfiles + '"' + jsarray[i] + '", ';
     }
   } else {
-    ca = [];
-    for (var i=0; i<cssarray.length; i++) {
-      ca.push(Path.join(srcPath,cssarray[i]));
-    }
-    gulp.src(ca)
-      .pipe(stripCssComments())
-      .pipe(concat('beakerOutputDisplay.css'))
-      .pipe(header(banner ))
-      .pipe(gulp.dest(buildPath));
+    gulp.src(cssarray.map(function(v) {
+      return Path.join(srcPath, v);
+    }))
+    .pipe(stripCssComments())
+    .pipe(concat('beakerOutputDisplay.css'))
+    .pipe(header(banner))
+    .pipe(gulp.dest(buildPath));
 
-    ca = [];
-    for (var i=0; i<jsarray.length; i++) {
-      ca.push(Path.join(srcPath,jsarray[i]));
-    }
-    gulp.src(ca)
-      .pipe(stripJsComments())
-      .pipe(concat('beakerOutputDisplay.js'))
-      .pipe(header(banner ))
-      .pipe(gulp.dest(buildPath));
+    gulp.src(jsarray.map(function(v) {
+      return Path.join(srcPath, v);
+    }))
+    .pipe(stripJsComments())
+    .pipe(concat('beakerOutputDisplay.js'))
+    .pipe(header(banner))
+    .pipe(gulp.dest(buildPath));
 
     cssfiles = '"app/dist/beakerOutputDisplay.css"';
     jsfiles = '"app/dist/beakerOutputDisplay.js"';
   }
 
-  if (vendorcssarray.length > 0) {
+  if (vendorcssarray.length) {
     cssfiles = '"app/dist/beakerOutputDisplayVendor.css", ' + cssfiles;
   }
 
-  if (vendorjsarray.length > 0) {
+  if (vendorjsarray.length) {
     jsfiles = '"app/dist/beakerOutputDisplayVendor.js", ' + jsfiles;
   }
 

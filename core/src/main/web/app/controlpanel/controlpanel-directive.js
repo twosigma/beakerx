@@ -19,7 +19,7 @@
   var module = angular.module('bk.controlPanel');
 
   module.directive('bkControlPanel', function(
-      bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, $location) {
+        bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, $location) {
     return {
       restrict: 'E',
       template: JST['controlpanel/controlpanel'](),
@@ -46,16 +46,16 @@
         bkMenuPluginManager.clear();
         if (window.beaker === undefined || window.beaker.isEmbedded === undefined) {
           bkUtils.httpGet('../beaker/rest/util/getControlPanelMenuPlugins')
-              .success(function(menuUrls) {
-                menuUrls.forEach(function(url) {
-                  bkMenuPluginManager.loadMenuPlugin(url);
-                });
+            .success(function(menuUrls) {
+              menuUrls.forEach(function(url) {
+                bkMenuPluginManager.loadMenuPlugin(url);
               });
+            });
         } else {
           var menues = window.beaker.getControlMenuItems();
           bkMenuPluginManager.attachMenus(menues);
         }
-        
+
         $scope.getMenus = function() {
           return bkMenuPluginManager.getMenus();
         };
@@ -111,41 +111,40 @@
         }
         $scope.showWhatWeLog = function() {
           return bkCoreManager.showModalDialog(
-            function() {},
-            JST['controlpanel/what_we_log']()
-          );
+              function() {},
+              JST['controlpanel/what_we_log']()
+              );
         };
 
-	var keydownHandler = function(e) {
+        var keydownHandler = function(e) {
           if (e.ctrlKey && e.shiftKey && (e.which === 78)) { // Ctrl + Shift + n
-	    bkUtils.fcall(function() {
-                   $scope.newNotebook();
-            });
-	    return false;
-	  } else if (e.ctrlKey && (e.which === 78)) { // Ctrl + n
-	    bkUtils.fcall(function() {
-                   $scope.newEmptyNotebook();
-             });
-	    return false;
-	  } else if (e.metaKey && !e.ctrlKey && e.shiftKey && (e.which === 78)) { // Cmd + Shift + n
-	    bkUtils.fcall(function() {
-                   $scope.newNotebook();
-            });
-            return false;
-	  } else if (e.metaKey && !e.ctrlKey && (e.which === 78)) { // Cmd + n
             bkUtils.fcall(function() {
-                   $scope.newEmptyNotebook();
+              $scope.newNotebook();
             });
             return false;
-	  }
-	}
-	console.log('installing keydownHandler');
-	$(document).bind('keydown', keydownHandler);
+          } else if (e.ctrlKey && (e.which === 78)) { // Ctrl + n
+            bkUtils.fcall(function() {
+              $scope.newEmptyNotebook();
+            });
+            return false;
+          } else if (e.metaKey && !e.ctrlKey && e.shiftKey && (e.which === 78)) { // Cmd + Shift + n
+            bkUtils.fcall(function() {
+              $scope.newNotebook();
+            });
+            return false;
+          } else if (e.metaKey && !e.ctrlKey && (e.which === 78)) { // Cmd + n
+            bkUtils.fcall(function() {
+              $scope.newEmptyNotebook();
+            });
+            return false;
+          }
+        }
+        $(document).bind('keydown', keydownHandler);
 
-	var onDestroy = function() {
-	    $(document).unbind('keydown', keydownHandler);
-	}
-	$scope.$on('$destroy', onDestroy);
+        var onDestroy = function() {
+          $(document).unbind('keydown', keydownHandler);
+        }
+        $scope.$on('$destroy', onDestroy);
 
         // sessions list UI
         $scope.sessions = null;

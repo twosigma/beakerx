@@ -15,19 +15,19 @@
  */
 
 
-@import "../../../vendor/bower_components/font-awesome/css/font-awesome.css";
-@import "../../../vendor/bower_components/codemirror/lib/codemirror.css";
-@import "../../../vendor/bower_components/codemirror/addon/hint/show-hint.css";
+@import "../vendor/bower_components/font-awesome/css/font-awesome.css";
+@import "../vendor/bower_components/codemirror/lib/codemirror.css";
+@import "../vendor/bower_components/codemirror/addon/hint/show-hint.css";
 
-@import "../../../vendor/jquery-ui/css/smoothness/jquery-ui.custom.min.css";
+@import "../vendor/jquery-ui/css/smoothness/jquery-ui.custom.min.css";
 
 @import "styles/variables.scss";
 
 $icon-font-path: "../../app/fonts/";
-@import "../../../vendor/bower_components/bootstrap-sass/assets/stylesheets/bootstrap.scss";
+@import "../vendor/bower_components/bootstrap-sass/assets/stylesheets/bootstrap.scss";
 
 @import "styles/datatables.scss";
 
-@import "../../../vendor/DataTables-1.10.5/media/css/jquery.dataTables.css";
-@import "../../../vendor/DataTables-1.10.5/extensions/FixedColumns/css/dataTables.fixedColumns.min.css";
-@import "../../../vendor/DataTables-1.10.5/extensions/ColReorder/css/dataTables.colReorder.min.css";
+@import "../vendor/DataTables-1.10.5/media/css/jquery.dataTables.css";
+@import "../vendor/DataTables-1.10.5/extensions/FixedColumns/css/dataTables.fixedColumns.min.css";
+@import "../vendor/DataTables-1.10.5/extensions/ColReorder/css/dataTables.colReorder.min.css";

@@ -307,7 +307,8 @@
               // node-integration': false,
               icon: 'beaker.png'
             });
-            newWindow.loadUrl($location.absUrl() + '/../session/new');
+            newWindow.openDevTools();
+            newWindow.loadUrl($location.absUrl() + '/../session/empty');
             return;
           }
           var name = "/session/new";

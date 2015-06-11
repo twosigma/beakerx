@@ -588,7 +588,45 @@
                   return deferred.promise;
                 }, 1);
               } else {
-                thenable = savePromptChooseUri();
+                if (bkUtils.isElectron){
+                  var BrowserWindow = bkUtils.Electron.BrowserWindow;
+                  var Dialog = bkUtils.Electron.Dialog;
+                  var thisWindow = BrowserWindow.getFocusedWindow();
+                  var deferred = bkUtils.newDeferred();
+                  bkUtils.getWorkingDirectory().then(function(defaultPath) {
+                    var options = {
+                      title: 'Save Beaker Notebook',
+                      defaultPath: defaultPath,
+                      filters: [
+                        { name: 'Beaker Notebook Files', extensions: ['bkr'] }
+                      ]
+                    };
+                    var path = Dialog.showSaveDialog(thisWindow, options);
+                    if (path === undefined){
+                      saveFailed('cancelled');
+                      return;
+                    }
+                    bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
+                    var ret = {
+                      uri: path,
+                      uriType: 'file'
+                    };
+                    bkSessionManager.dumpDisplayStatus();
+                    var saveData = bkSessionManager.getSaveData();
+                    var fileSaver = bkCoreManager.getFileSaver(ret.uriType);
+                    var content = saveData.notebookModelAsString;
+                    fileSaver.save(ret.uri, content, true).then(function() {
+                      deferred.resolve(ret);
+                    }, function(reason) {
+                      deferred.reject(reason);
+                    });
+                    return;
+                  });
+                  return deferred.promise.then(saveDone, saveFailed);
+                } else {
+                  thenable = savePromptChooseUri();
+                  return thenable.then(saveDone, saveFailed);
+                }
               }
               return thenable.then(saveDone, saveFailed);
             },

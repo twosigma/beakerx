@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<header class="navbar-fixed-top">
+<header ng-class="electron-mode" class="navbar-fixed-top">
   <div class="navbar navbar-inverse">
     <a class="navbar-brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
       <img src="app/images/beaker_icon@2x.png" />
@@ -27,7 +27,7 @@
       {{loadingmsg}}
     </div>
   </div>
-  <div class="navbar navbar-default">
+  <div class="electron-hide navbar navbar-default">
     <ul class="nav navbar-nav">
       <li class="dropdown" ng-repeat="m in getMenus()">
         <a href="#" role="button" class="dropdown-toggle" ng-class="m.classNames" data-toggle="dropdown">{{m.name}}</a>

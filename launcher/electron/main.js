@@ -43,10 +43,6 @@ app.on('ready', function() {
     icon: 'beaker.png'
   });
   
-  // var Template = require('./menu_template.js')(mainWindow);
-  // menu = Menu.buildFromTemplate(Template.template);
-  // Menu.setApplicationMenu(menu);
-
   mainWindow.loadUrl('http://127.0.0.1:8801/');
 
   // Open the devtools.

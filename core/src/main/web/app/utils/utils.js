@@ -171,6 +171,13 @@
             .error(deferred.reject);
         return deferred.promise;
       },
+      getWorkingDirectory: function() {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet(serverUrl("beaker/rest/file-io/getWorkingDirectory"))
+            .success(deferred.resolve)
+            .error(deferred.reject);
+        return deferred.promise;
+      },
       getVersionInfo: function() {
         var deferred = angularUtils.newDeferred();
         this.httpGet(serverUrl("beaker/rest/util/getVersionInfo"))
@@ -331,6 +338,7 @@
       bkUtils.Electron.remote = require('remote');
       bkUtils.Electron.BrowserWindow = bkUtils.Electron.remote.require('browser-window');
       bkUtils.Electron.Menu = bkUtils.Electron.remote.require('menu');
+      bkUtils.Electron.Dialog = bkUtils.Electron.remote.require('dialog');
       bkUtils.Electron.updateMenus = function(menus) {
         var assignShortcut = function(name){
           switch(name) {
@@ -357,7 +365,7 @@
               newItem.click = bkItem.action.bind({});
             if (bkItem.isChecked !== undefined){
               newItem.type = 'checkbox';
-              newItem.checked = 'false';
+              newItem.checked = bkItem.isChecked();
             }
             newItem.accelerator = assignShortcut(bkItem.name);
             // Process submenu

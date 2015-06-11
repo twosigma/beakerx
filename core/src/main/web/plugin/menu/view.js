@@ -47,11 +47,7 @@ define(function(require, exports, module) {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
         return notebookViewModel.isAdvancedMode();
       },
-      action: function() {
-        console.log(bkHelper);
-        if (bkUtils.isElectron){
-          console.log(bkUtils.Electron.Menu.items);
-        }
+      action: function(origin) {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
         notebookViewModel.toggleAdvancedMode();
         bkHelper.httpPost('../beaker/rest/util/setPreference', {

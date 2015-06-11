@@ -416,6 +416,7 @@
     var _sessionId = null;
     var _edited = false;
     var _needsBackup = false;
+    var _saveDir = bkUtils.getHomeDirectory(); 
 
     var BeakerObject = function(nbmodel) {
       this.knownBeakerVars = { };

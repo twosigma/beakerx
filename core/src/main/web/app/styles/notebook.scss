@@ -26,6 +26,12 @@
   }
 }
 
+.electron-mode {
+  .electron-hide {
+    display: none !important;
+  }  
+}
+
 .advanced-mode {
   .advanced-hide {
     display: none !important;

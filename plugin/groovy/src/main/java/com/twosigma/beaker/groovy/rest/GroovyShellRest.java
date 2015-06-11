@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.UUID;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -39,10 +40,11 @@ public class GroovyShellRest {
   
   public GroovyShellRest() throws IOException {}
 
-  @POST
+  @GET
   @Path("ready")
   @Produces(MediaType.TEXT_PLAIN)
   public String ready() {
+    System.err.println("ready test");
     return "ok";
   }
 

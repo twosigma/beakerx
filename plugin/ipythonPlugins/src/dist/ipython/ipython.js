@@ -82,10 +82,10 @@ define(function(require, exports, module) {
               } : {
                 kernel: {
                   id: shellID,
-                  name: "python"
+                  name: "python3"
                 },
                 notebook: {
-                  path: "/fake/path"
+                  path: "/fake/path" + shellID
                 }
               };
               var fakeNotebook = {

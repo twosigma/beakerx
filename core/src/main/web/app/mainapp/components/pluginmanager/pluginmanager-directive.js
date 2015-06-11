@@ -41,6 +41,10 @@
       return bkEvaluatorManager.getVisualParams(name);
     };
 
+    $scope.allowFromUrl = function() {
+      return (window.beaker === undefined || window.beaker.disablePluginLoadFromUrl === undefined || !window.beaker.disablePluginLoadFromUrl);
+    }
+    
     $scope.evalTabOp = {
       newPluginNameOrUrl: "",
       showURL: false,

@@ -44,7 +44,8 @@
       }
     },
     postHelperHooks: [],
-    isEmbedded: true
+    isEmbedded: true,
+    disablePluginLoadFromUrl: true
   };
 
 })();

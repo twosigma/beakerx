@@ -29,7 +29,7 @@
 
         {{pluginName}}
       </button>
-      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default">
+      <button ng-click="evalTabOp.showURL = !evalTabOp.showURL" class="btn btn-default" ng-if="allowFromUrl()">
         From URL...
       </button>
     </div>

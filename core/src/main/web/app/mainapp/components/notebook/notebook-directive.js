@@ -296,7 +296,8 @@
         bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/util/getPreference'), {
           preference: 'edit-mode'
         }).success(function(editMode) {
-          _impl._viewModel.setEditMode(editMode);
+          if (editMode !== '')
+            _impl._viewModel.setEditMode(editMode);
         });
       },
       link: function (scope, element, attrs) {

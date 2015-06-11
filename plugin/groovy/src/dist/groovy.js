@@ -171,9 +171,7 @@ define(function(require, exports, module) {
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
       command: COMMAND,
-      startedIndicator: "Server started",
       waitfor: "Started SelectChannelConnector",
-      readyUrl: "/rest/ready/ready",
       recordOutput: "true"
     }).success(function(ret) {
 

@@ -44,7 +44,6 @@ public class GroovyShellRest {
   @Path("ready")
   @Produces(MediaType.TEXT_PLAIN)
   public String ready() {
-    System.err.println("ready test");
     return "ok";
   }
 

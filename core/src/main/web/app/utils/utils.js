@@ -110,25 +110,29 @@
       httpPost: function(url, data) {
         return angularUtils.httpPost(url, data);
       },
-      spinUntilReady: function(url, n, deferred) {
-        console.log("stub spinUntilReady " + n);
-        if (n === undefined) {
-          n = 100;
+      spinUntilReady: function(url) {
+        var deferred = angularUtils.newDeferred();
+        var timeRemaining = 30 * 1000;
+        var maxInterval = 1000;
+        var interval = 10;
+        function spin() {
+          angularUtils.httpGet(url, {}).success(function (r) {
+            deferred.resolve("ok");
+          }).error(function (r) {
+            if (timeRemaining <= 0) {
+              deferred.reject("timeout");
+            } else {
+              interval *= 1.5;
+              if (interval > maxInterval) {
+                interval = maxInterval;
+              }
+              timeRemaining = timeRemaining - interval;
+              angularUtils.timeout(spin, interval);
+            }
+          });
         }
-        var d = angularUtils.newDeferred();
-
-        angularUtils.httpGet(url, {}).success(function (r) {
-          d.resolve("ok");
-        }).error(function (r) {
-          if (n == 0) {
-            d.reject("timeout");
-          } else {
-            angularUtils.timeout(function() {
-              bkUtils.spinUntilReady(url, n - 1);
-            }, 100);
-          }
-        });
-        return d.promise;
+        spin();
+        return deferred.promise;
       },
       newDeferred: function() {
         return angularUtils.newDeferred();

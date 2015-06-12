@@ -272,18 +272,21 @@
       }
     });
 
-    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkHelper) {
+    beaker.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
         gotoControlPanel: function() {
-          return $location.path("/control").search({});
+          var ret = $location.path("/control").search({});
+          if (bkUtils.isElectron) {
+            $rootScope.$apply();
+          }
+          return ret;
         },
         openNotebook: function(notebookUri, uriType, readOnly, format) {
           if (!notebookUri) {
             return;
           }
-
           var routeParams = {
             uri: notebookUri
           };
@@ -296,7 +299,11 @@
           if (format) {
             routeParams.format = format;
           }
-          return $location.path("/open").search(routeParams);
+          var ret = $location.path('/open').search(routeParams);
+          if (bkUtils.isElectron) {
+            $rootScope.$apply();
+          }
+          return ret;
         },
         newSession: function(empty) {
           if (bkUtils.isElectron){

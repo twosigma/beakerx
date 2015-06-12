@@ -64,6 +64,15 @@
         return bkCoreManager.newSession(empty);
       },
 
+      openWindow: function(path) {
+        if (bkHelper.isElectron) {
+          var shortcutWindow = new bkHelper.Electron.BrowserWindow({
+          });
+          shortcutWindow.loadUrl(bkHelper.serverUrl('beaker/' + path));
+        } else {
+          window.open('./' + path);
+        }
+      },
       // current app
       getCurrentAppName: function() {
         if (!_.isEmpty(getCurrentApp().name)) {
@@ -671,7 +680,9 @@
             }
         };
         return cometdUtil;
-      }
+      },
+      Electron: bkUtils.Electron,
+      isElectron: bkUtils.isElectron
     };
 
     return bkHelper;

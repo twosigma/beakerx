@@ -162,42 +162,45 @@ define(function(require, exports, module) {
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        startedIndicator: "Server started",
         waitfor: "Started SelectChannelConnector",
-        recordOutput: "true",
-        readyUrl: "/rest/ready/ready"
+        recordOutput: "true"
     }).success(function(ret) {
       serviceBase = ret;
-      if (window.languageServiceBase == undefined) {
-        window.languageServiceBase = {};
-      }
-      window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/rsh');
-      if (window.languageUpdateService == undefined) {
-        window.languageUpdateService = {};
-      }
-      window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
-      cometdUtil.init(PLUGIN_NAME, serviceBase);
-
-      var RShell = function(settings, doneCB) {
-        var self = this;
-        var setShellIdCB = function(id) {
-          settings.shellID = id;
-          self.settings = settings;
-          if (doneCB) {
-            doneCB(self);
-          }
-        };
-        if (!settings.shellID) {
-          settings.shellID = "";
+      bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/rest/rsh/ready")).then(function () {
+        if (window.languageServiceBase == undefined) {
+          window.languageServiceBase = {};
         }
-        this.newShell(settings.shellID, setShellIdCB);
-        this.perform = function(what) {
-          var action = this.spec[what].action;
-          this[action]();
+        window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/rsh');
+        if (window.languageUpdateService == undefined) {
+          window.languageUpdateService = {};
+        }
+        window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
+        cometdUtil.init(PLUGIN_NAME, serviceBase);
+
+        var RShell = function(settings, doneCB) {
+          var self = this;
+          var setShellIdCB = function(id) {
+            settings.shellID = id;
+            self.settings = settings;
+            if (doneCB) {
+              doneCB(self);
+            }
+          };
+          if (!settings.shellID) {
+            settings.shellID = "";
+          }
+          this.newShell(settings.shellID, setShellIdCB);
+          this.perform = function(what) {
+            var action = this.spec[what].action;
+            this[action]();
+          };
         };
-      };
-      RShell.prototype = R;
-      shellReadyDeferred.resolve(RShell);
+        RShell.prototype = R;
+        shellReadyDeferred.resolve(RShell);
+      }, function () {
+        console.log("plugin service failed to become ready", PLUGIN_NAME, arguments);
+        shellReadyDeferred.reject("plugin service failed to become ready");
+      });
     }).error(function() {
       console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
       shellReadyDeferred.reject("failed to locate plugin service");

@@ -71,6 +71,10 @@
           bkCoreManager.openNotebook('config/tutorial.bkr', undefined, true);
         };
 
+        $scope.getElectronMode = function() {
+          return bkUtils.isElectron;
+        }
+
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
         if ((window.beaker === undefined || window.beaker.isEmbedded === undefined) && bkTrack.isNeedPermission()) {

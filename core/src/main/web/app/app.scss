@@ -34,10 +34,6 @@ root {
     display: block;
 }
 
-html body {
-    padding-top: $navbar-height*2;
-}
-
 body.dragover:after {
   content: "Drop to Import";
   position: absolute;
@@ -72,6 +68,11 @@ body.dragover:after {
     padding: 0 30px;
     margin-top: 10px;
     box-sizing: border-box;
+    padding-top: 76px;
+}
+
+.notebook-container.electron-mode {
+  padding-top: 0px;
 }
 
 .output_subarea {

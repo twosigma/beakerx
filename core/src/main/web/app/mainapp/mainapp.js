@@ -1093,6 +1093,10 @@
           }
         };
 
+        $scope.getElectronMode = function() {
+          return bkUtils.isElectron;
+        }
+
         $scope.filename = function() {
           return bkSessionManager.getNotebookTitle();
         };

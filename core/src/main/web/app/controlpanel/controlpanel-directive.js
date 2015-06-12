@@ -29,6 +29,9 @@
           name: 'bkControlApp',
           showAnonymousTrackingDialog: function() {
             $scope.isAllowAnonymousTracking = null;
+            if (bkUtils.isElectron) {
+              $scope.$apply();
+            }
           }
         };
 

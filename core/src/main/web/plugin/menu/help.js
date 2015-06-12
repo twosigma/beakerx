@@ -48,7 +48,12 @@ define(function(require, exports, module) {
       name: "Report a bug or feature request",
       sortorder: 130,
       action: function() {
-        window.open("https://github.com/twosigma/beaker-notebook/issues/new");
+        if (bkHelper.isElectron) {
+          var Shell = bkHelper.Electron.Shell;
+          Shell.openExternal("https://github.com/twosigma/beaker-notebook/issues/new?title=\[Native\]");
+        } else {
+          window.open("https://github.com/twosigma/beaker-notebook/issues/new");
+        }
       },
       tooltip: "Log an issue in GitHub"
     }

@@ -314,6 +314,7 @@
       bkUtils.Electron.BrowserWindow = bkUtils.Electron.remote.require('browser-window');
       bkUtils.Electron.Menu = bkUtils.Electron.remote.require('menu');
       bkUtils.Electron.Dialog = bkUtils.Electron.remote.require('dialog');
+      bkUtils.Electron.Shell = bkUtils.Electron.remote.require('shell');
       bkUtils.Electron.updateMenus = function(menus) {
         var assignShortcut = function(name){
           switch(name) {

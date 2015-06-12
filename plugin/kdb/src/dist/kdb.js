@@ -161,40 +161,43 @@ define(function(require, exports, module) {
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        startedIndicator: "Server started",
         waitfor: "Started SelectChannelConnector",
-        recordOutput: "true",
-        readyUrl: "/rest/ready/ready"
+        recordOutput: "true"
     }).success(function(ret) {
       serviceBase = ret;
-      if (window.languageServiceBase == undefined) {
-        window.languageServiceBase = {};
-      }
-      window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/kdb');
-      if (window.languageUpdateService == undefined) {
-        window.languageUpdateService = {};
-      }
-      window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
-      cometdUtil.init(PLUGIN_NAME, serviceBase);
+      bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/rest/kdb/ready")).then(function () {
+        if (window.languageServiceBase == undefined) {
+          window.languageServiceBase = {};
+        }
+        window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/kdb');
+        if (window.languageUpdateService == undefined) {
+          window.languageUpdateService = {};
+        }
+        window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
+        cometdUtil.init(PLUGIN_NAME, serviceBase);
 
-      var kdbShell = function(settings, doneCallback) {
-        var self = this;
-        var setShellIdCB = function(id) {
-          settings.shellID = id;
-          self.settings = settings;
-          if (doneCallback) {
-            doneCallback(self);
-          }
+        var kdbShell = function(settings, doneCallback) {
+          var self = this;
+          var setShellIdCB = function(id) {
+            settings.shellID = id;
+            self.settings = settings;
+            if (doneCallback) {
+              doneCallback(self);
+            }
+          };
+          if (!settings.shellID) settings.shellID = "";
+          this.newShell(settings.shellID, setShellIdCB);
+          this.perform = function(what) {
+            var action = this.spec[what].action;
+            this[action]();
+          };
         };
-        if (!settings.shellID) settings.shellID = "";
-        this.newShell(settings.shellID, setShellIdCB);
-        this.perform = function(what) {
-          var action = this.spec[what].action;
-          this[action]();
-        };
-      };
-      kdbShell.prototype = KDB;
-      shellReadyDeferred.resolve(kdbShell);
+        kdbShell.prototype = KDB;
+        shellReadyDeferred.resolve(kdbShell);
+      }, function () {
+        console.log("plugin service failed to become ready", PLUGIN_NAME, arguments);
+        shellReadyDeferred.reject("plugin service failed to become ready");
+      });
     }).error(function() {
       console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
       shellReadyDeferred.reject("failed to locate plugin service");

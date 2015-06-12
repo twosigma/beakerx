@@ -23,6 +23,7 @@ import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.kdb.KdbShell;
 
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -58,6 +59,13 @@ public class KdbRest {
    */
   public void setCorePort(int corePort) throws IOException {
     this.corePort = corePort;
+  }
+
+  @GET
+  @Path("ready")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String ready() {
+    return "ok";
   }
 
   @POST

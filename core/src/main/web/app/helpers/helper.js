@@ -318,6 +318,9 @@
       httpPost: function(url, data) {
         return bkUtils.httpPost(url, data);
       },
+      spinUntilReady: function(url) {
+        return bkUtils.spinUntilReady(url);
+      },
       newDeferred: function() {
         return bkUtils.newDeferred();
       },

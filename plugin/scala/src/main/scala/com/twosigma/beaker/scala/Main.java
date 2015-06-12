@@ -77,7 +77,6 @@ public class Main {
 
     Server server = injector.getInstance(Server.class);
     server.start();
-    System.out.println("Server started");
     BeakerStdOutErrHandler.init();
   }
 }

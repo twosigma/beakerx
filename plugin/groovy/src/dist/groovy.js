@@ -171,51 +171,54 @@ define(function(require, exports, module) {
   var init = function() {
     bkHelper.locatePluginService(PLUGIN_NAME, {
       command: COMMAND,
-      startedIndicator: "Server started",
       waitfor: "Started SelectChannelConnector",
-      readyUrl: "/rest/ready/ready",
       recordOutput: "true"
     }).success(function(ret) {
       serviceBase = ret;
-      if (window.languageServiceBase == undefined) {
-        window.languageServiceBase = {};
-      }
-      window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/groovysh');
-      if (window.languageUpdateService == undefined) {
-        window.languageUpdateService = {};
-      }
-      window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
-      cometdUtil.init(PLUGIN_NAME, serviceBase);
-
-      var GroovyShell = function(settings, doneCB) {
-        var self = this;
-        var setShellIdCB = function(id) {
-          settings.shellID = id;
-          self.settings = settings;
-          var imports = [];
-          if ("imports" in self.settings) {
-            imports = self.settings.imports.split('\n');
-          }
-          self.settings.imports = _.union(imports, defaultImports).join('\n');
-          var cb = function() {
-            if (doneCB) {
-              doneCB(self);
-            }
-          };
-          self.updateShell(cb);
-        };
-        if (!settings.shellID) {
-          settings.shellID = "";
+      bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/rest/groovysh/ready")).then(function () {
+        if (window.languageServiceBase == undefined) {
+          window.languageServiceBase = {};
         }
-        this.newShell(settings.shellID, setShellIdCB);
-        this.perform = function(what) {
-          var action = this.spec[what].action;
-          // XXX should use promise cb to avoid silent failure
-          this[action]();
+        window.languageServiceBase[PLUGIN_NAME] = bkHelper.serverUrl(serviceBase + '/rest/groovysh');
+        if (window.languageUpdateService == undefined) {
+          window.languageUpdateService = {};
+        }
+        window.languageUpdateService[PLUGIN_NAME] = cometdUtil;
+        cometdUtil.init(PLUGIN_NAME, serviceBase);
+
+        var GroovyShell = function(settings, doneCB) {
+          var self = this;
+          var setShellIdCB = function(id) {
+            settings.shellID = id;
+            self.settings = settings;
+            var imports = [];
+            if ("imports" in self.settings) {
+              imports = self.settings.imports.split('\n');
+            }
+            self.settings.imports = _.union(imports, defaultImports).join('\n');
+            var cb = function() {
+              if (doneCB) {
+                doneCB(self);
+              }
+            };
+            self.updateShell(cb);
+          };
+          if (!settings.shellID) {
+            settings.shellID = "";
+          }
+          this.newShell(settings.shellID, setShellIdCB);
+          this.perform = function(what) {
+            var action = this.spec[what].action;
+            // XXX should use promise cb to avoid silent failure
+            this[action]();
+          };
         };
-      };
-      GroovyShell.prototype = Groovy;
-      shellReadyDeferred.resolve(GroovyShell);
+        GroovyShell.prototype = Groovy;
+        shellReadyDeferred.resolve(GroovyShell);
+      }, function () {
+        console.log("plugin service failed to become ready", PLUGIN_NAME, arguments);
+        shellReadyDeferred.reject("plugin service failed to become ready");
+      });
     }).error(function() {
       console.log("failed to locate plugin service", PLUGIN_NAME, arguments);
       shellReadyDeferred.reject("failed to locate plugin service");

@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -68,6 +69,13 @@ public class RShellRest {
   {
     logger.fine("core port = "+c);
     corePort = c;
+  }
+
+  @GET
+  @Path("ready")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String ready() {
+    return "ok";
   }
 
   @POST

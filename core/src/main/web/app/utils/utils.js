@@ -110,6 +110,30 @@
       httpPost: function(url, data) {
         return angularUtils.httpPost(url, data);
       },
+      spinUntilReady: function(url) {
+        var deferred = angularUtils.newDeferred();
+        var timeRemaining = 30 * 1000;
+        var maxInterval = 1000;
+        var interval = 10;
+        function spin() {
+          angularUtils.httpGet(url, {}).success(function (r) {
+            deferred.resolve("ok");
+          }).error(function (r) {
+            if (timeRemaining <= 0) {
+              deferred.reject("timeout");
+            } else {
+              interval *= 1.5;
+              if (interval > maxInterval) {
+                interval = maxInterval;
+              }
+              timeRemaining = timeRemaining - interval;
+              angularUtils.timeout(spin, interval);
+            }
+          });
+        }
+        spin();
+        return deferred.promise;
+      },
       newDeferred: function() {
         return angularUtils.newDeferred();
       },

@@ -380,7 +380,6 @@ public class PluginServiceLocatorRest {
       @QueryParam("startedIndicator") String startedIndicator,
       @QueryParam("startedIndicatorStream") @DefaultValue("stdout") String startedIndicatorStream,
       @QueryParam("recordOutput") @DefaultValue("false") boolean recordOutput,
-      @QueryParam("readyUrl") String readyUrl,
       @QueryParam("waitfor") String waitfor)
       throws InterruptedException, IOException {
       
@@ -474,16 +473,7 @@ public class PluginServiceLocatorRest {
     // check that nginx did actually restart
     String url = "http://127.0.0.1:" + this.restartPort + "/restart." + restartId + "/present.html";
     try {
-      spinCheck(url, null);
-
-      if (null != readyUrl) {
-        // confirm the backend is really ready
-        String url2 = "http://127.0.0.1:" + pConfig.port + readyUrl;
-        String account = "beaker:" + pConfig.password;
-        String auth = "Basic " + Base64.encodeBase64String(account.getBytes());
-        spinCheck(url2, auth);
-      }
-
+      spinCheck(url);
     } catch (Throwable t) {
       System.err.println("time out plugin =" + pluginId);
       this.plugins.remove(pluginId);
@@ -519,7 +509,7 @@ public class PluginServiceLocatorRest {
         .build();
   }
 
-  private static boolean spinCheck(String url, String auth)
+  private static boolean spinCheck(String url)
       throws IOException, InterruptedException
   {
 
@@ -528,9 +518,6 @@ public class PluginServiceLocatorRest {
     
     while (totalTime < RESTART_ENSURE_RETRY_MAX_WAIT) {
       Request get = Request.Get(url);
-      if (null != auth) {
-        get = get.addHeader("Authorization", auth);
-      }
       if (get.execute().returnResponse().getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
         return true;
       }

@@ -84,7 +84,7 @@ define(function(require, exports, module) {
                   name: "julia 0.3"
                 },
                 notebook: {
-                  path: "/fake/path"
+                  path: "/fake/path" + shellID
                 }
               };
               var fakeNotebook = {
@@ -357,8 +357,7 @@ define(function(require, exports, module) {
         command: COMMAND,
         nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2",
         startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-        startedIndicatorStream: "stderr",
-        readyUrl: "/api/sessions"
+        startedIndicatorStream: "stderr"
       }).success(function(ret) {
         serviceBase = ret;
         var JuliaShell = function(settings, doneCB) {

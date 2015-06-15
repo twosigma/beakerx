@@ -356,9 +356,9 @@ define(function(require, exports, module) {
                  kernel.stdin_channel.readyState == 1 &&
                  kernel.iopub_channel.readyState == 1)) {
               self.evaluate(self.initCode(), {}).then(function() {
-                bkHelper.show1ButtonModal('Kernerl restart completed','Success');
+                bkHelper.show1ButtonModal('Kernel restart completed','Success');
               }, function(err) {
-                bkHelper.show1ButtonModal('ERROR: '+err[0],'iPython kernel reset failed');
+                bkHelper.show1ButtonModal('ERROR: '+err[0],'IPython kernel restart failed');
               });
             } else {
               setTimeout(waitForKernel, 50);
@@ -419,7 +419,7 @@ define(function(require, exports, module) {
                   if (doneCB) {
                     doneCB(self);
                   }}, function(err) {
-                    bkHelper.show1ButtonModal('ERROR: '+err[0],'iPython initialization failed');
+                    bkHelper.show1ButtonModal('ERROR: '+err[0],'IPython initialization failed');
                     if (doneCB) {
                       doneCB(self);
                     }});

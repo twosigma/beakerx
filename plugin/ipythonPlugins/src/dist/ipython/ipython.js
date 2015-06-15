@@ -56,7 +56,7 @@ define(function(require, exports, module) {
 
         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"), {pluginId: PLUGIN_NAME})
         .success(function(result) {
-          bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2E"), {password: result})
+          bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2F"), {password: result})
           .success(function(result) {
             var baseurl = bkHelper.serverUrl(serviceBase);
             var t = baseurl.indexOf('//');
@@ -82,7 +82,7 @@ define(function(require, exports, module) {
               } : {
                 kernel: {
                   id: shellID,
-                  name: "python3"
+                  name: "python"
                 },
                 notebook: {
                   path: "/fake/path" + shellID
@@ -356,7 +356,11 @@ define(function(require, exports, module) {
                   (kernel.shell_channel.readyState == 1 &&
                       kernel.stdin_channel.readyState == 1 &&
                       kernel.iopub_channel.readyState == 1)) {
-              self.evaluate(self.initCode(), {});
+              self.evaluate(self.initCode(), {}).then(function() {
+                bkHelper.show1ButtonModal('Kernel restart completed','Success');
+              }, function(err) {
+                bkHelper.show1ButtonModal('ERROR: '+err[0],'IPython kernel restart failed');
+              });
             } else {
               setTimeout(waitForKernel, 50);
             }
@@ -415,7 +419,11 @@ define(function(require, exports, module) {
                 self.evaluate(self.initCode(), {}).then(function () {
                   if (doneCB) {
                     doneCB(self);
-                  }});
+                  }}, function(err) {
+                    bkHelper.show1ButtonModal('ERROR: '+err[0],'IPython initialization failed');
+                    if (doneCB) {
+                      doneCB(self);
+                    }});
               } else {
                 if (doneCB) {
                   doneCB(self);

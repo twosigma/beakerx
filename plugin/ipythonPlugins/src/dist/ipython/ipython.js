@@ -56,98 +56,92 @@ define(function(require, exports, module) {
 
         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
                          {pluginId: PLUGIN_NAME}).success(function(result) {
-          bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
-            bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2E"), {password: result}).success(function(result) {
-                var baseurl = bkHelper.serverUrl(serviceBase);
-                var t = baseurl.indexOf('//');
-                if (t>=0) {
-                  baseurl = baseurl.substring(t+2);
-                  t = baseurl.indexOf('/');
-                    if (t>=0) {
-                      baseurl = baseurl.substring(t);
-                    }
+                           bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
+            bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2E"),
+                              {password: result}).success(function(result) {
+              var baseurl = bkHelper.serverUrl(serviceBase);
+              var t = baseurl.indexOf('//');
+              if (t >= 0) {
+                baseurl = baseurl.substring(t+2);
+                t = baseurl.indexOf('/');
+                if (t >= 0) {
+                  baseurl = baseurl.substring(t);
                 }
-                if (ipyVersion == '1') {
-                  self.kernel = new myPython.Kernel(baseurl + "/kernels/");
-                  kernels[shellID] = self.kernel;
-                  self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
-                } else {
-                  // Required by ipython backend, but not used.
-                  var model = (ipyVersion == '2') ? {
-                    notebook : {
-                      name : "fakename" + shellID,
-                      path : "/some/path" + shellID
+              }
+              if (ipyVersion == '1') {
+                self.kernel = new myPython.Kernel(baseurl + "/kernels/");
+                kernels[shellID] = self.kernel;
+                self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
+              } else {
+                // Required by ipython backend, but not used.
+                var model = (ipyVersion == '2') ?
+                  {notebook : {name : "fakename" + shellID,
+                               path : "/some/path" + shellID}} :
+                {kernel: {id: shellID,
+                          name: "python"},
+                 notebook: {path: "/fake/path" + shellID}
+                };
+                var fakeNotebook = {
+                  events: {on: function (){},
+                           trigger: function (){}}
+                };
+                var ajaxsettings = {
+                  processData : false,
+                  cache: false,
+                  type: "POST",
+                  data: JSON.stringify(model),
+                  dataType: "json",
+                  success: function (data, status, xhr) {                   
+                    self.kernel = (ipyVersion == '2') ?
+                      (new myPython.Kernel(baseurl+ "/api/kernels")) :
+                      (new myPython.Kernel(baseurl+ "/api/kernels",
+                                           undefined,
+                                           fakeNotebook,
+                                           "fakename"));
+                    kernels[shellID] = self.kernel;
+                    // the data.id is the session id but it is not used yet
+                    if (ipyVersion == '2') {
+                      self.kernel._kernel_started({id: data.kernel.id});
+                    } else {
+                      self.kernel._kernel_created({id: data.kernel.id});
+                      self.kernel.running = true;
                     }
-                  } : {
-                    kernel: {
-                      id: shellID,
-                      name: "python"
-                    },
-                    notebook: {
-                      path: "/fake/path" + shellID
-                    }
-                  };
-                  var fakeNotebook = {
-                      events: {on: function (){},
-                               trigger: function (){}}
-                  };
-                  var ajaxsettings = {
-                    processData : false,
-                    cache: false,
-                    type: "POST",
-                    data: JSON.stringify(model),
-                    dataType: "json",
-                    success: function (data, status, xhr) {                   
-                      self.kernel = (ipyVersion == '2') ?
-                            (new myPython.Kernel(baseurl+ "/api/kernels")) :
-                            (new myPython.Kernel(baseurl+ "/api/kernels",
-                                                 undefined,
-                                                 fakeNotebook,
-                                                 "fakename"));
-                      kernels[shellID] = self.kernel;
-                      // the data.id is the session id but it is not used yet
-                      if (ipyVersion == '2') {
-                        self.kernel._kernel_started({id: data.kernel.id});
-                      } else {
-                        self.kernel._kernel_created({id: data.kernel.id});
-                        self.kernel.running = true;
-                      }
-                    }
-                  };
-                  var url = myPython.utils.url_join_encode(baseurl, 'api/sessions/');
-                  $.ajax(url, ajaxsettings);
-                }
-              });
+                  }
+                };
+                var url = myPython.utils.url_join_encode(baseurl, 'api/sessions/');
+                $.ajax(url, ajaxsettings);
+              }
             });
           });
+        });
 
-          // keepalive for the websockets
-          var nil = function() {
+        // keepalive for the websockets
+        var nil = function() {
+        };
+        window.setInterval(function() {
+          // XXX this is wrong (ipy1 layout) maybe it doesn't matter??
+          var ignore = {
+            execute_reply: nil,
+            output: nil,
+            clear_output: nil,
+            set_next_input: nil
           };
-          window.setInterval(function() {
-            // XXX this is wrong (ipy1 layout) maybe it doesn't matter??
-            var ignore = {
-                execute_reply: nil,
-                output: nil,
-                clear_output: nil,
-                set_next_input: nil
-            };
-            self.kernel.execute("", ignore, {silent: false});
-          }, 30 * 1000);
+          self.kernel.execute("", ignore, {silent: false});
+        }, 30 * 1000);
 
-          // cb cannot be called synchronously, see evaluatorManager.js, new Shell
-          // Also, do not cb until making sure kernel is running.
-          var timeout = now() + 10 * 1000; // time out 10 sec
-          var spin = function() {
-            if (self.kernel !== undefined && self.kernel.running) {
-              cb(shellID);
-            } else if (now() < timeout) {
-              setTimeout(spin, 100);
-            } else {
-              console.error("TIMED OUT - waiting for ipython kernel to start");
-            }
-          };
-          bkHelper.fcall(spin);
+        // cb cannot be called synchronously, see evaluatorManager.js, new Shell
+        // Also, do not cb until making sure kernel is running.
+        var timeout = now() + 10 * 1000; // time out 10 sec
+        var spin = function() {
+          if (self.kernel !== undefined && self.kernel.running) {
+            cb(shellID);
+          } else if (now() < timeout) {
+            setTimeout(spin, 100);
+          } else {
+            console.error("TIMED OUT - waiting for ipython kernel to start");
+          }
+        };
+        bkHelper.fcall(spin);
       },
       evaluate: function(code, modelOutput, refreshObj) {
         var deferred = bkHelper.newDeferred();

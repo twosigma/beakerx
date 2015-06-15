@@ -28,7 +28,7 @@
             if ( d === '' || d === null ) {
                 return 'moment-'+format;
             }
-            return moment(d.timestamp).isValid() ?
+            return (d.timestamp !== undefined && moment(d.timestamp).isValid()) ?
                 'moment-'+format :
                 null;
         } );

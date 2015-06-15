@@ -54,7 +54,7 @@ define(function(require, exports, module) {
           shellID = myPython.utils.uuid();
         }
 
-        bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"), 
+        bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
                          {pluginId: PLUGIN_NAME}).success(function(result) {
           bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
             bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2E"), {password: result}).success(function(result) {
@@ -396,9 +396,7 @@ define(function(require, exports, module) {
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2",
-        startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-        startedIndicatorStream: "stderr"
+        nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
       }).success(function(ret) {
         serviceBase = ret;
         var IPythonShell = function(settings, doneCB) {

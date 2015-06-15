@@ -200,14 +200,7 @@ gulp.task('buildOutputDisplayTemplate', function () {
 
   var cssarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_css.list');
   var jsarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_javascript.list');
-  var vendorcssarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_vendorcss.list');
   var vendorjsarray = getFilePathArrayFromList(thePath, 'addoutputdisplays_vendorjs.list');
-
-  gulp.src(vendorcssarray.map(function(v) {
-    return Path.join(srcPath, v);
-  }))
-  .pipe(concat('beakerOutputDisplayVendor.css'))
-  .pipe(gulp.dest(buildPath));
 
   gulp.src(vendorjsarray.map(function(v) {
     return Path.join(srcPath, v);
@@ -246,10 +239,6 @@ gulp.task('buildOutputDisplayTemplate', function () {
 
     cssfiles = '"app/dist/beakerOutputDisplay.css"';
     jsfiles = '"app/dist/beakerOutputDisplay.js"';
-  }
-
-  if (vendorcssarray.length) {
-    cssfiles = '"app/dist/beakerOutputDisplayVendor.css", ' + cssfiles;
   }
 
   if (vendorjsarray.length) {

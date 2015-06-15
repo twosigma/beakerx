@@ -56,7 +56,7 @@ define(function(require, exports, module) {
 
         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"), {pluginId: PLUGIN_NAME})
         .success(function(result) {
-          bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2E"), {password: result})
+          bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2F"), {password: result})
           .success(function(result) {
             var baseurl = bkHelper.serverUrl(serviceBase);
             var t = baseurl.indexOf('//');
@@ -276,8 +276,8 @@ define(function(require, exports, module) {
               } else if (ipyVersion == '2') {
                 oa.append_mime_type(content.data, elem);
               } else {
-		oa.append_mime_type(content, elem);
-	      }
+                oa.append_mime_type(content, elem);
+              }
               evaluation.payload = elem.html();
               if (finalStuff !== undefined) {
                 finalStuff.payload = evaluation.payload;
@@ -355,7 +355,11 @@ define(function(require, exports, module) {
                 (kernel.shell_channel.readyState == 1 &&
                  kernel.stdin_channel.readyState == 1 &&
                  kernel.iopub_channel.readyState == 1)) {
-              self.evaluate(self.initCode(), {});
+              self.evaluate(self.initCode(), {}).then(function() {
+                bkHelper.show1ButtonModal('Kernerl restart completed','Success');
+              }, function(err) {
+                bkHelper.show1ButtonModal('ERROR: '+err[0],'iPython kernel reset failed');
+              });
             } else {
               setTimeout(waitForKernel, 50);
             }
@@ -414,7 +418,11 @@ define(function(require, exports, module) {
                 self.evaluate(self.initCode(), {}).then(function () {
                   if (doneCB) {
                     doneCB(self);
-                  }});
+                  }}, function(err) {
+                    bkHelper.show1ButtonModal('ERROR: '+err[0],'iPython initialization failed');
+                    if (doneCB) {
+                      doneCB(self);
+                    }});
               } else {
                 if (doneCB) {
                   doneCB(self);

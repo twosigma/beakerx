@@ -82,12 +82,27 @@
           });
         },
         link: function(scope, element, attrs) {
+          var tagstofilter = ['applet', 'base', 'basefont', 'body', 'frame', 'frameset', 'head', 'html',
+                              'isindex', 'link', 'meta', 'noframes', 'noscript', 'object', 'param', /*'script',*/ 'iframe'];
+
+          scope.clean = function() {
+            for (var t in tagstofilter) {
+              var scripts = div[0].getElementsByTagName(tagstofilter[t]);
+              var i = scripts.length;
+              while (i--) {
+                scripts[i].parentNode.removeChild(scripts[i]);
+              }
+            }
+          }
+        
           var div = element.find("div").first();
           var cellModel = scope.model.getCellModel();
           div.html(cellModel);
+          scope.clean();
           scope.$watch('model.getCellModel()', function(newValue, oldValue) {
             if (newValue !== oldValue) {
               div.html(newValue);
+              scope.clean();
             }
           });
         }

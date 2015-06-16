@@ -1,14 +1,9 @@
-So far, the electron launcher can be used by running the following command:
+In order to build, simply run `gradle makeElectron`. This will produce a Beaker.app bundle you
+can run or install.
+
+If you want to simply run Beaker using your own installed version of electron, do:
 
 ```sh
-electron ./launcher/electron
+gradle makeDist
+electron app
 ```
-
-Electron pre-built binaries can be installed by running
-
-```sh
-npm install electron-prebuilt -g
-```
-
-Note that the server is not executed by this command, so you must start it through
-other means (`gradle run` for developers).

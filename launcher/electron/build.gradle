@@ -1,0 +1,93 @@
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+def gitDescribe() {
+  def name = "git describe --all --long".execute().text.trim()
+  if (name.startsWith('heads/')) {
+    name = name.substring(6)
+  }
+  return name
+}
+
+// XXX move all of this into makeDist python script
+task makeDist2(type: Exec, dependsOn: ':dev:build') {
+    commandLine './makeDist', 'dist'
+}
+
+task clean(dependsOn: ['cleanApp', 'cleanDist']) {
+}
+
+task cleanApp(type: Exec) {
+	commandLine 'rm', '-rf', 'Beaker.app'
+	commandLine 'rm', '-rf', 'dist'
+}
+
+task cleanDist(type: Exec) {
+	commandLine 'rm', '-rf', 'Beaker.app'
+	commandLine 'rm', '-rf', 'dist'
+}
+
+task makeElectron(dependsOn: ['clean', 'makeDist2', 'copyElectron', 'copyBeakerApp', 'copyDist', 'copyPList', 'copyIcons', 'copyJRE', 'copyTools']) {
+	println "Done building Electron"
+}
+
+task unzipElectron(type: Exec) {
+	commandLine 'unzip', '-uo', 'electron-v0.28.1-darwin-x64.zip'
+}
+
+task copyElectron(type: Exec, dependsOn: ['unzipElectron']) {
+	ignoreExitValue true
+	println "Copying electron"
+	commandLine 'cp', '-r', 'electron-v0.28.1-darwin-x64/Electron.app/', 'Beaker.app'
+}
+
+task copyBeakerApp(type: Copy, dependsOn: 'copyElectron'){
+	from 'app'
+	into 'Beaker.app/Contents/Resources/app'
+}
+
+task copyDist(type: Copy, dependsOn: ['copyElectron', 'makeDist2']) {
+	from 'dist'
+	into 'Beaker.app/Contents/Resources/dist'
+}
+
+task removePList(type: Exec, dependsOn: 'copyElectron') {
+	commandLine 'rm', 'Beaker.app/Contents/Info.plist'
+}
+
+task copyPList(type: Copy, dependsOn: ['copyElectron', 'removePList']) {
+	from 'Info.plist'
+	into 'Beaker.app/Contents'
+}
+
+task copyIcons(type: Copy, dependsOn: 'copyElectron') {
+	from 'beaker.icns'
+	into 'Beaker.app/Contents/Resources'
+}
+
+task unzipJRE(type: Exec) {
+	commandLine 'unzip', '-uo', 'jre.zip'
+}
+
+task copyJRE(type: Copy, dependsOn: ['unzipJRE', 'copyElectron']) {
+	from 'jre'
+	into 'Beaker.app/Contents/Resources/jre'
+}
+
+task copyTools(type: Copy, dependsOn: 'copyJRE') {
+	from 'tools.jar'
+	into 'Beaker.app/Contents/Resources/jre/Contents/Home/lib'
+}

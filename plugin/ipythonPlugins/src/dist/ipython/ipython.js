@@ -254,11 +254,38 @@ define(function(require, exports, module) {
               jsonres = JSON.parse(content.data['application/json']);
             }
             if (jsonres !== undefined && _.isObject(jsonres) && jsonres.type !== undefined) {
+              if (finalStuff !== undefined && finalStuff.payload !== undefined) {
+                // if we already received an output we should append this output to it
+                var temp = finalStuff.payload;
+                if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
+                  temp.items.push(jsonres);
+                  jsonres = temp;
+                } else {
+                  var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
+                  temp2.items.push(temp);
+                  temp2.items.push(jsonres);
+                  jsonres = temp2;
+                }
+              }
               evaluation.payload = jsonres;
               if (finalStuff !== undefined) {
+                finalStuff.payload = jsonres;
                 finalStuff.payload = evaluation.payload;
               }
             } else {
+              if (finalStuff !== undefined && finalStuff.jsonres !== undefined) {
+                // if we already received an output we should append this output to it
+                var temp = finalStuff.jsonres;
+                if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
+                  temp.items.push(jsonres);
+                  jsonres = temp;
+                } else {
+                  var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
+                  temp2.items.push(temp);
+                  temp2.items.push(jsonres);
+                  jsonres = temp2;
+                }
+              }
               evaluation.jsonres = jsonres;
               var elem = $(document.createElement("div"));
               var oa = (ipyVersion == '3') ?
@@ -273,14 +300,25 @@ define(function(require, exports, module) {
                   } else {
                     oa.append_mime_type(content, elem);
                   }
-                  evaluation.payload = elem.html();
+                  var payload = elem.html();
+                  if (finalStuff !== undefined && finalStuff.payload !== undefined) {
+                    // if we already received an output we should append this output to it
+                    var temp = finalStuff.payload;
+                    if (temp.type === 'OutputContainer' && temp.psubtype === 'OutputContainer' && _.isArray(temp.items)) {
+                      temp.items.push(payload);
+                      payload = temp;
+                    } else {
+                      var temp2 = { 'type' : 'OutputContainer', 'psubtype': 'OutputContainer', 'items' : []};
+                      temp2.items.push(temp);
+                      temp2.items.push(payload);
+                      payload = temp2;
+                    }
+                  }
+                  evaluation.payload =payload;
                   if (finalStuff !== undefined) {
                     finalStuff.payload = evaluation.payload;
                     finalStuff.jsonres = evaluation.jsonres;
                   }
-            }
-            if (finalStuff !== undefined) {
-              finalStuff.payload = evaluation.payload;
             }
           }
           if (finalStuff === undefined) {            

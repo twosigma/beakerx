@@ -15,7 +15,7 @@
  */
 /**
  * Python3 eval plugin
- * For creating and config evaluators that uses a IPython kernel for evaluating python code
+ * For creating and config evaluators that uses a IPython kernel for evaluating python3 code
  * and updating code cell outputs.
  */
 define(function(require, exports, module) {
@@ -54,53 +54,47 @@ define(function(require, exports, module) {
           shellID = myPython.utils.uuid();
         }
 
-        bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"), {pluginId: PLUGIN_NAME})
-        .success(function(result) {
-          bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2F"), {password: result})
-          .success(function(result) {
-            var baseurl = bkHelper.serverUrl(serviceBase);
-            var t = baseurl.indexOf('//');
-            if (t>=0) {
-              baseurl = baseurl.substring(t+2);
-              t = baseurl.indexOf('/');
-              if (t>=0) {
-                baseurl = baseurl.substring(t);
+        bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
+                         {pluginId: PLUGIN_NAME}).success(function(result) {
+                           bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
+            bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2F"),
+                              {password: result}).success(function(result) {
+              var baseurl = bkHelper.serverUrl(serviceBase);
+              var t = baseurl.indexOf('//');
+              if (t >= 0) {
+                baseurl = baseurl.substring(t+2);
+                t = baseurl.indexOf('/');
+                if (t >= 0) {
+                  baseurl = baseurl.substring(t);
+                }
               }
-            }
-            if (ipyVersion == '1') {
-              self.kernel = new myPython.Kernel(baseurl + "/kernels/");
-              kernels[shellID] = self.kernel;
-              self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
-            } else {
-              // Required by ipython backend, but not used.
-              var model = (ipyVersion == '2') ? {
-                notebook : {
-                  name : "fakename" + shellID,
-                  path : "/some/path" + shellID
-                }
-              } : {
-                kernel: {
-                  id: shellID,
-                  name: "python3"
-                },
-                notebook: {
-                  path: "/fake/path" + shellID
-                }
-              };
-              var fakeNotebook = {
-                events: {on: function (){},
-                         trigger: function (){}}
-              };
-              var ajaxsettings = {
+              if (ipyVersion == '1') {
+                self.kernel = new myPython.Kernel(baseurl + "/kernels/");
+                kernels[shellID] = self.kernel;
+                self.kernel.start("kernel." + bkHelper.getSessionId() + "." + shellID);
+              } else {
+                // Required by ipython backend, but not used.
+                var model = (ipyVersion == '2') ?
+                  {notebook : {name : "fakename" + shellID,
+                               path : "/some/path" + shellID}} :
+                {kernel: {id: shellID,
+                          name: "python3"},
+                 notebook: {path: "/fake/path" + shellID}
+                };
+                var fakeNotebook = {
+                  events: {on: function (){},
+                           trigger: function (){}}
+                };
+                var ajaxsettings = {
                   processData : false,
                   cache: false,
                   type: "POST",
                   data: JSON.stringify(model),
                   dataType: "json",
-                  success: function (data, status, xhr) {
+                  success: function (data, status, xhr) {                   
                     self.kernel = (ipyVersion == '2') ?
-                      (new myPython.Kernel(baseurl + "/api/kernels")) :
-                      (new myPython.Kernel(baseurl + "/api/kernels",
+                      (new myPython.Kernel(baseurl+ "/api/kernels")) :
+                      (new myPython.Kernel(baseurl+ "/api/kernels",
                                            undefined,
                                            fakeNotebook,
                                            "fakename"));
@@ -113,10 +107,11 @@ define(function(require, exports, module) {
                       self.kernel.running = true;
                     }
                   }
-              };
-              var url = myPython.utils.url_join_encode(baseurl, 'api/sessions/');
-              $.ajax(url, ajaxsettings);
-            }
+                };
+                var url = myPython.utils.url_join_encode(baseurl, 'api/sessions/');
+                $.ajax(url, ajaxsettings);
+              }
+            });
           });
         });
 
@@ -126,10 +121,10 @@ define(function(require, exports, module) {
         window.setInterval(function() {
           // XXX this is wrong (ipy1 layout) maybe it doesn't matter??
           var ignore = {
-              execute_reply: nil,
-              output: nil,
-              clear_output: nil,
-              set_next_input: nil
+            execute_reply: nil,
+            output: nil,
+            clear_output: nil,
+            set_next_input: nil
           };
           self.kernel.execute("", ignore, {silent: false});
         }, 30 * 1000);
@@ -162,13 +157,13 @@ define(function(require, exports, module) {
         var finalStuff = undefined;
         bkHelper.setupProgressOutput(modelOutput);
         gotError = false;
-        
+
         _theCancelFunction = function() {
           var kernel = kernels[self.settings.shellID];
           kernel.interrupt();
           bkHelper.setupCancellingOutput(modelOutput);
         };
-        
+
         var doFinish = function() {
           if (bkHelper.receiveEvaluationUpdate(modelOutput, finalStuff, PLUGIN_NAME, self.settings.shellID)) {
             _theCancelFunction = null;
@@ -201,7 +196,7 @@ define(function(require, exports, module) {
               finalStuff.status = "ERROR";
             else
               finalStuff.status = "FINISHED";
-  
+
             if (!_.isEmpty(result) && finalStuff.payload === undefined) {
               finalStuff.payload = "<pre>" + result + "</pre>";
             }
@@ -242,7 +237,7 @@ define(function(require, exports, module) {
             }, myPython.utils.fixConsole(content.evalue));
 
             evaluation.payload = (content.ename === "KeyboardInterrupt") ?
-              "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
+                "Interrupted" : [myPython.utils.fixConsole(content.evalue), trace];
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload
             }
@@ -252,7 +247,7 @@ define(function(require, exports, module) {
               evaluation.outputdata = finalStuff.outputdata;
             var text = (ipyVersion == '3') ? content.text : content.data;
             evaluation.outputdata.push({type: (content.name === "stderr") ? 'err' : 'out',
-                                        value: text});
+                value: text});
           } else {
             var jsonres;
             if(content.data['application/json'] !== undefined) {
@@ -266,23 +261,23 @@ define(function(require, exports, module) {
             } else {
               evaluation.jsonres = jsonres;
               var elem = $(document.createElement("div"));
-	      var oa = (ipyVersion == '3') ?
-                (new myPython.OutputArea({events: {trigger: function(){}},
-                                        keyboard_manager: {register_events: function(){}}})) :
-	        (new myPython.OutputArea(elem));
-              // twiddle the mime types? XXX
-              if (ipyVersion == '1') {
-                oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
-              } else if (ipyVersion == '2') {
-                oa.append_mime_type(content.data, elem);
-              } else {
-                oa.append_mime_type(content, elem);
-              }
-              evaluation.payload = elem.html();
-              if (finalStuff !== undefined) {
-                finalStuff.payload = evaluation.payload;
-                finalStuff.jsonres = evaluation.jsonres;
-              }
+              var oa = (ipyVersion == '3') ?
+                  (new myPython.OutputArea({events: {trigger: function(){}},
+                    keyboard_manager: {register_events: function(){}}})) :
+                      (new myPython.OutputArea(elem));
+                  // twiddle the mime types? XXX
+                  if (ipyVersion == '1') {
+                    oa.append_mime_type(oa.convert_mime_types({}, content.data), elem, true);
+                  } else if (ipyVersion == '2') {
+                    oa.append_mime_type(content.data, elem);
+                  } else {
+                    oa.append_mime_type(content, elem);
+                  }
+                  evaluation.payload = elem.html();
+                  if (finalStuff !== undefined) {
+                    finalStuff.payload = evaluation.payload;
+                    finalStuff.jsonres = evaluation.jsonres;
+                  }
             }
             if (finalStuff !== undefined) {
               finalStuff.payload = evaluation.payload;
@@ -316,7 +311,7 @@ define(function(require, exports, module) {
         } else {
           kernel.complete(code, cpos, function(reply) {
             cb(reply.content.matches, code.substring(reply.content.cursor_start,
-                                                     reply.content.cursor_end));
+                reply.content.cursor_end));
           });
         }
       },
@@ -340,10 +335,10 @@ define(function(require, exports, module) {
       },
       initCode: function() {
         return ("import beaker_runtime3 as beaker_runtime\n" +
-                "beaker = beaker_runtime.Beaker()\n" +
-                "beaker.register_output()\n" +
-                "beaker.set_session('" + bkHelper.getSessionId() + "')\n" +
-                this.settings.setup + "\n");
+            "beaker = beaker_runtime.Beaker()\n" +
+            "beaker.register_output()\n" +
+            "beaker.set_session('" + bkHelper.getSessionId() + "')\n" +
+            this.settings.setup + "\n");
       },
       reset: function() {
         var kernel = kernels[this.settings.shellID];
@@ -352,9 +347,9 @@ define(function(require, exports, module) {
           var waitForKernel = function() {
             if ((ipyVersion == '3') ?
                 (kernel.ws.readyState == 1) :
-                (kernel.shell_channel.readyState == 1 &&
-                 kernel.stdin_channel.readyState == 1 &&
-                 kernel.iopub_channel.readyState == 1)) {
+                  (kernel.shell_channel.readyState == 1 &&
+                      kernel.stdin_channel.readyState == 1 &&
+                      kernel.iopub_channel.readyState == 1)) {
               self.evaluate(self.initCode(), {}).then(function() {
                 bkHelper.show1ButtonModal('Kernel restart completed','Success');
               }, function(err) {
@@ -377,15 +372,15 @@ define(function(require, exports, module) {
       }
   };
   var defaultSetup = ("%matplotlib inline\n" +
-                      "import numpy\n" +
-                      "import matplotlib\n" +
-                      "from matplotlib import pylab, mlab, pyplot\n" +
-                      "np = numpy\n" +
-                      "plt = pyplot\n" +
-                      "from IPython.display import display\n" +
-                      "from IPython.core.pylabtools import figsize, getfigs\n" +
-                      "from pylab import *\n" +
-                      "from numpy import *\n");
+      "import numpy\n" +
+      "import matplotlib\n" +
+      "from matplotlib import pylab, mlab, pyplot\n" +
+      "np = numpy\n" +
+      "plt = pyplot\n" +
+      "from IPython.display import display\n" +
+      "from IPython.core.pylabtools import figsize, getfigs\n" +
+      "from pylab import *\n" +
+  "from numpy import *\n");
 
   var shellReadyDeferred = bkHelper.newDeferred();
   var init = function() {
@@ -399,10 +394,7 @@ define(function(require, exports, module) {
       myPython = (ipyVersion == '1') ? IPython1 : ((ipyVersion == '2') ? IPython2 : IPython);
       bkHelper.locatePluginService(PLUGIN_NAME, {
         command: COMMAND,
-        nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2",
-        startedIndicator: "NotebookApp] The IPython Notebook is running at: http://127.0.0.1:",
-        startedIndicatorStream: "stderr",
-        readyUrl: "/api/sessions"
+        nginxRules: (ipyVersion == '1') ? "ipython1" : "ipython2"
       }).success(function(ret) {
         serviceBase = ret;
         var Python3Shell = function(settings, doneCB) {
@@ -433,9 +425,9 @@ define(function(require, exports, module) {
             var waitForKernel = function () {
               if ((ipyVersion == '3') ?
                   (kernel.ws.readyState == 1) :
-                  (kernel.shell_channel.readyState == 1 &&
-                   kernel.stdin_channel.readyState == 1 &&
-                   kernel.iopub_channel.readyState == 1)) {
+                    (kernel.shell_channel.readyState == 1 &&
+                        kernel.stdin_channel.readyState == 1 &&
+                        kernel.iopub_channel.readyState == 1)) {
                 finish();
               } else {
                 setTimeout(waitForKernel, 50);
@@ -463,7 +455,7 @@ define(function(require, exports, module) {
       console.log("failed to load ipython libs");
     };
 
-    bkHelper.httpGet("../beaker/rest/plugin-services/getIPythonVersion",
+    bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonVersion"),
         {pluginId: PLUGIN_NAME, command: COMMAND})
         .success(function(result) {
           var backendVersion = result;

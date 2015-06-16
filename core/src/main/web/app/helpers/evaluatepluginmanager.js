@@ -30,7 +30,7 @@
       var _loadInProgress = undefined;
 
       var loadEvaluator = function(ev) {
-        bkHelper.showStatus("Loading plugin "+ev.name);
+        bkHelper.showStatus("Starting language "+ev.name);
         return bkUtils.loadModule(ev.url, ev.name);
       };
       var doNext = function() {
@@ -58,7 +58,7 @@
           return loadEvaluator(_loadInProgress)
           .then(_loadInProgress.resolve,  _loadInProgress.reject)
           .finally(function () {
-            bkHelper.clearStatus("Loading plugin " + _loadInProgress.name)
+            bkHelper.clearStatus("Starting language " + _loadInProgress.name)
             _loadInProgress = undefined;
           })
           .then(doNext);

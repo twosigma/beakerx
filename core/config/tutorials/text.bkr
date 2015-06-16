@@ -45,7 +45,7 @@
             "id": "markdown8nMuAN",
             "type": "markdown",
             "body": [
-                "Beaker has four kinds of cells for text: markdown, HTML, LaTeX, and plain text."
+                "Beaker has three kinds of cells for text: markdown, HTML and LaTeX."
             ],
             "evaluatorReader": false
         },
@@ -150,22 +150,6 @@
             },
             "evaluatorReader": true,
             "lineCount": 3
-        },
-        {
-            "id": "sectionnHVCJ3",
-            "type": "section",
-            "title": "Plain Text",
-            "level": 2,
-            "evaluatorReader": false,
-            "collapsed": false
-        },
-        {
-            "id": "textRX7EgD",
-            "type": "text",
-            "body": [
-                "Plan text is deprecated, please do not use it."
-            ],
-            "evaluatorReader": false
         }
     ],
     "namespace": {}

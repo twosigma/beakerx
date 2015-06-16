@@ -40,7 +40,8 @@
                 "cm": {
                     "mode": "python"
                 }
-            }
+            },
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n"
         }
     ],
     "cells": [
@@ -53,8 +54,8 @@
             "collapsed": false
         },
         {
-            "id": "textm8Go3V",
-            "type": "text",
+            "id": "markdownArCCu2",
+            "type": "markdown",
             "body": [
                 "Generate a random graph with Python, then visualize it with a force-directed graph via d3.js"
             ],

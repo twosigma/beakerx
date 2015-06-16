@@ -28,7 +28,8 @@
                 "cm": {
                     "mode": "python"
                 }
-            }
+            },
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n"
         },
         {
             "name": "JavaScript",
@@ -53,10 +54,10 @@
             "evaluatorReader": false
         },
         {
-            "id": "textzJ0c4e",
-            "type": "text",
+            "id": "markdowndv3lUj",
+            "type": "markdown",
             "body": [
-                "<div>This tutorial shows a basic example of creating a form with HTML and JavaScript, which causes some Python code to be run. Unlock the notebook with Notebook&nbsp;<span style=\"font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 22.3999996185303px;\">→</span>&nbsp;Lock menu above to see the code.</div>"
+                "This tutorial shows a basic example of creating a form with HTML and JavaScript, which causes some Python code to be run. Unlock the notebook with Notebook → Lock menu above to see the code."
             ],
             "evaluatorReader": false
         },
@@ -88,7 +89,9 @@
             "output": {
                 "state": {},
                 "result": "",
-                "selectedType": "Hidden"
+                "selectedType": "Hidden",
+                "pluginName": "JavaScript",
+                "elapsedTime": 22
             },
             "evaluatorReader": true,
             "lineCount": 16,
@@ -116,9 +119,9 @@
                 "result": {
                     "type": "BeakerDisplay",
                     "innertype": "Html",
-                    "object": "<script>\nvar beaker = bkHelper.getNotebookModel().namespace;\nbeaker.showProgressUpdate = function (a,b,c) { };\nbeaker.showStatus = bkHelper.showStatus;\nbeaker.clearStatus = bkHelper.clearStatus;\nbeaker.showTransientStatus = bkHelper.showTransientStatus;\nbeaker.getEvaluators = bkHelper.getEvaluators;\nbeaker.getCodeCells = bkHelper.getCodeCells;\nbeaker.setCodeCellBody = bkHelper.setCodeCellBody;\nbeaker.setCodeCellEvaluator = bkHelper.setCodeCellEvaluator;\nbeaker.setCodeCellTags = bkHelper.setCodeCellTags;\nbeaker.evaluate = bkHelper.evaluate;\nbeaker.evaluateCode = bkHelper.evaluateCode;\nbeaker.loadJS = bkHelper.loadJS;\nbeaker.loadList = bkHelper.loadList;\nbeaker.httpGet = bkHelper.httpGet;\nbeaker.httpPost = bkHelper.httpPost;\nbeaker.newDeferred = bkHelper.newDeferred;\nbeaker.newPromise = bkHelper.newPromise;\nbeaker.all = bkHelper.all;\nbeaker.timeout = bkHelper.timeout;\n</script>\n\n<!--\nA simple HTML form with a text input and a button\n-->\nValues: <input type='text' id='values' value='1,2,3,3,4,5,6,5,4,3,4,3,5'>\n<br />\n\n<button onclick='beaker.process_form()'>Get histogram</button>"
+                    "object": "<script>\nvar beaker = bkHelper.getBeakerObject().beakerObj;\n</script>\n\n<!--\nA simple HTML form with a text input and a button\n-->\nValues: <input type='text' id='values' value='1,2,3,3,4,5,6,5,4,3,4,3,5'>\n<br />\n\n<button onclick='beaker.process_form()'>Get histogram</button>"
                 },
-                "elapsedTime": 18,
+                "elapsedTime": 0,
                 "state": {}
             },
             "initialization": true,

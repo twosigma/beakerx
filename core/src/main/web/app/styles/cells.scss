@@ -179,18 +179,28 @@ bk-cell .section > .toggle-menu {
     bk-language-logo {
         display: none;
         position: relative;
-        top: 1px;
-        margin-right: 5px;
     }
 }
 
 .advanced-mode {
+    .cell-evaluator-menu {
+      right: 0;
+    }
+
     bk-language-logo {
         display: none;
     }
 
     .toggle-menu  bk-language-logo {
+        height: 24px;
+        width: 30px;
+        padding-top: 2px;
+        top: -1px;
         display: inline-block;
+        text-align: center;
+        &:hover {
+          background-color: $highlight-blue;
+        }
     }
 }
 

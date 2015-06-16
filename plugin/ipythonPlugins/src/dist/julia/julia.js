@@ -57,7 +57,7 @@ define(function(require, exports, module) {
         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
                          {pluginId: PLUGIN_NAME}).success(function(result) {
                            bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {
-            bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2E"),
+            bkHelper.httpPost(bkHelper.serverUrl(serviceBase + "/login?next=%2F"),
                               {password: result}).success(function(result) {
               var baseurl = bkHelper.serverUrl(serviceBase);
               var t = baseurl.indexOf('//');
@@ -393,7 +393,11 @@ define(function(require, exports, module) {
                 self.evaluate(self.initCode(), {}).then(function () {
                   if (doneCB) {
                     doneCB(self);
-                  }});
+                  }}, function(err) {
+                    bkHelper.show1ButtonModal('ERROR: '+err[0],'julia initialization failed');
+                    if (doneCB) {
+                      doneCB(self);
+                    }});
               } else {
                 if (doneCB) {
                   doneCB(self);

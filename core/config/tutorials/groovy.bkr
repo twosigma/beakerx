@@ -39,7 +39,7 @@
                     "mode": "groovy"
                 }
             },
-            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*"
+            "imports": "com.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ncom.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ngraxxia.*"
         }
     ],
     "cells": [
@@ -52,10 +52,12 @@
             "evaluatorReader": false
         },
         {
-            "id": "textxxB2hY",
-            "type": "text",
+            "id": "markdown92SKAh",
+            "type": "markdown",
             "body": [
-                "Groovy is a script version of Java. &nbsp;You can use it to access the contents of any JAR, which you can include via the preferences in the Plugin Manager.<div>Groovy comes included with Beaker, so it should just work.</div>"
+                "Groovy is a script version of Java.  You can use it to access the contents of any JAR, which you can include via the preferences in the Plugin Manager.",
+                "",
+                "Groovy comes included with Beaker, so it should just work."
             ],
             "evaluatorReader": false
         },
@@ -159,7 +161,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1
         },
         {
@@ -178,7 +180,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1
         },
         {
@@ -197,7 +199,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1
         },
         {
@@ -216,7 +218,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1
         },
         {
@@ -242,7 +244,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 8
         },
         {
@@ -268,7 +270,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 8
         },
         {
@@ -293,7 +295,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 7
         },
         {
@@ -318,7 +320,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 7
         },
         {
@@ -341,7 +343,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 5
         },
         {
@@ -366,7 +368,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 7
         },
         {
@@ -389,7 +391,7 @@
                 "pluginName": "Groovy",
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 5
         },
         {
@@ -411,7 +413,7 @@
                 "shellId": "ab2644a1-0984-4781-8769-7c5b6f2cc1be",
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 4
         }
     ]

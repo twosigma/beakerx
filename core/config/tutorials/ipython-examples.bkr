@@ -28,7 +28,8 @@
                 "cm": {
                     "mode": "python"
                 }
-            }
+            },
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n"
         },
         {
             "name": "JavaScript",
@@ -53,10 +54,10 @@
             "evaluatorReader": false
         },
         {
-            "id": "text7DlQga",
-            "type": "text",
+            "id": "markdownPtDAD9",
+            "type": "markdown",
             "body": [
-                "IPython is the Python language with extensions for interactivity. &nbsp;Follow the instructions on BeakerNotebook.com for how to install IPython so Beaker can use it."
+                "IPython is the Python language with extensions for interactivity.  Follow the instructions on BeakerNotebook.com for how to install IPython so Beaker can use it."
             ],
             "evaluatorReader": false
         },

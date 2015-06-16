@@ -51,10 +51,10 @@
             "evaluatorReader": false
         },
         {
-            "id": "textueitad",
-            "type": "text",
+            "id": "markdownuMdhMT",
+            "type": "markdown",
             "body": [
-                "The R Project for Statistical Computing publishes GNU R. &nbsp;Follow the instructions on BeakerNotebook.com for how to install R so Beaker can use it."
+                "The R Project for Statistical Computing publishes GNU R.  Follow the instructions on BeakerNotebook.com for how to install R so Beaker can use it."
             ],
             "evaluatorReader": false
         },
@@ -146,7 +146,7 @@
                 "elapsedTime": 68,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -164,7 +164,7 @@
                 "elapsedTime": 121,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -182,7 +182,7 @@
                 "elapsedTime": 86,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -200,7 +200,7 @@
                 "elapsedTime": 67,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -221,7 +221,7 @@
                 "elapsedTime": 56,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 5
         },
         {
@@ -239,7 +239,7 @@
                 "elapsedTime": 91,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -258,7 +258,7 @@
                 "elapsedTime": 194,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 3
         },
         {
@@ -276,7 +276,7 @@
                 "elapsedTime": 73,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -294,7 +294,7 @@
                 "elapsedTime": 177,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -312,7 +312,7 @@
                 "elapsedTime": 69,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -334,7 +334,7 @@
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 60
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 6
         },
         {
@@ -354,7 +354,7 @@
                 "elapsedTime": 397,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 4
         }
     ]

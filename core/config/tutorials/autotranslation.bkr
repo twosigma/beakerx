@@ -28,7 +28,8 @@
                 "cm": {
                     "mode": "python"
                 }
-            }
+            },
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n"
         },
         {
             "name": "JavaScript",
@@ -59,7 +60,7 @@
                     "mode": "groovy"
                 }
             },
-            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate"
+            "imports": "com.twosigma.beaker.chart.Color\ncom.twosigma.beaker.chart.xychart.*\ncom.twosigma.beaker.chart.xychart.plotitem.*\ncom.twosigma.beaker.NamespaceClient\ncom.twosigma.beaker.BeakerProgressUpdate\ngraxxia.*"
         }
     ],
     "cells": [
@@ -72,10 +73,16 @@
             "evaluatorReader": false
         },
         {
-            "id": "textNi07gO",
-            "type": "text",
+            "id": "markdownDHSZsp",
+            "type": "markdown",
             "body": [
-                "<div>Beaker can autotranslate variables in one language to another. &nbsp;You can access this feature with the notebook namespace: a collection of variables and their values stored in the notebook.&nbsp;</div><div>You can use this to produce data in one language, and consume or process it in another.</div><div><br></div><div>Because the namespace is in the notebook, the variable's values are preserved when you save a notebook to disk, or share it on the web. &nbsp;The format for data interchange is JSON.</div><div><br></div><div>The four languages that are supported are IPython, R, Groovy, and JavaScript.</div>"
+                "Beaker can autotranslate variables in one language to another.  You can access this feature with the notebook namespace: a collection of variables and their values stored in the notebook. ",
+                "",
+                "You can use this to produce data in one language, and consume or process it in another.",
+                "",
+                "Because the namespace is in the notebook, the variable's values are preserved when you save a notebook to disk, or share it on the web.  The format for data interchange is JSON.",
+                "",
+                "The four languages that are supported are IPython, R, Groovy, and JavaScript."
             ],
             "evaluatorReader": false
         },
@@ -116,8 +123,8 @@
             "lineCount": 1
         },
         {
-            "id": "text8CJDEu",
-            "type": "text",
+            "id": "markdownyE4nwZ",
+            "type": "markdown",
             "body": [
                 "In R you need to call a function:"
             ],
@@ -146,8 +153,8 @@
             "lineCount": 1
         },
         {
-            "id": "textqT83Q0",
-            "type": "text",
+            "id": "markdown5W1Krm",
+            "type": "markdown",
             "body": [
                 "In Groovy, you can either call a function, or access the namespace as properties:"
             ],
@@ -173,8 +180,8 @@
             "lineCount": 1
         },
         {
-            "id": "text9L6SMV",
-            "type": "text",
+            "id": "markdownUSyGLw",
+            "type": "markdown",
             "body": [
                 "Nested data structures and arrays are supported:"
             ],
@@ -224,10 +231,12 @@
             "collapsed": false
         },
         {
-            "id": "text3lTKGy",
-            "type": "text",
+            "id": "markdownwOKXV7",
+            "type": "markdown",
             "body": [
-                "A quirk of the R language is that there are no scalars, everything is a vector. &nbsp;So \"10\" is really an array of length one, written \"[10]\" in most other languages.&nbsp;<div>Scalars imported to R from the notebook namespace are transformed into vectors.</div>"
+                "A quirk of the R language is that there are no scalars, everything is a vector.  So \"10\" is really an array of length one, written \"[10]\" in most other languages. ",
+                "",
+                "Scalars imported to R from the notebook namespace are transformed into vectors."
             ],
             "evaluatorReader": false
         },
@@ -297,8 +306,8 @@
             "lineCount": 1
         },
         {
-            "id": "textA2RUxj",
-            "type": "text",
+            "id": "markdown3pn8H8",
+            "type": "markdown",
             "body": [
                 "In reverse, it has no problems translating scalars from other languages to R vectors:"
             ],
@@ -354,10 +363,10 @@
             "collapsed": false
         },
         {
-            "id": "textRAPjY4",
-            "type": "text",
+            "id": "markdown6TYGqA",
+            "type": "markdown",
             "body": [
-                "An important complex structure in R and Python's Pandas library is the Data Frame, essentially a table with named columns. &nbsp;They go through autotranslation like so:"
+                "An important complex structure in R and Python's Pandas library is the Data Frame, essentially a table with named columns.  They go through autotranslation like so:"
             ],
             "evaluatorReader": false
         },
@@ -383,8 +392,8 @@
             "lineCount": 2
         },
         {
-            "id": "text8tNp2l",
-            "type": "text",
+            "id": "markdownboT2sk",
+            "type": "markdown",
             "body": [
                 "In JVM based languages, which lack a Data Frame type, they are internally represented as a Table Display object:"
             ],
@@ -412,8 +421,8 @@
             "lineCount": 3
         },
         {
-            "id": "textT2NWWl",
-            "type": "text",
+            "id": "markdownRp3DrT",
+            "type": "markdown",
             "body": [
                 "Auto-translating a data frame between languages that support it (such as R and Python) is fully automatic."
             ],

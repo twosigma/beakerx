@@ -288,7 +288,15 @@
                     cellCount: notebookModel.cells.length
                   });
 
-                  bkHelper.evaluateRoot("initialization").then(function () { if(mustwait !== undefined) mustwait.close(); });
+                  bkHelper.evaluateRoot("initialization")
+                    .then(function () {
+                      if(mustwait !== undefined)
+                        mustwait.close();
+                      }, function () {
+                        if(mustwait !== undefined)
+                          mustwait.close();
+                        bkCoreManager.show1ButtonModal("Notebook initialization failed","ERROR",null,"OK");
+                      });
                 }
               });
               clrLoadingStatusMessage("Loading notebook");

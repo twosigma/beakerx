@@ -2,6 +2,7 @@ package com.twosigma.beaker.easyform;
 
 import com.twosigma.beaker.easyform.formitem.ButtonComponent;
 import com.twosigma.beaker.easyform.formitem.CheckBox;
+import com.twosigma.beaker.easyform.formitem.CheckBoxGroup;
 import com.twosigma.beaker.easyform.formitem.ComboBox;
 import com.twosigma.beaker.easyform.formitem.DatePickerComponent;
 import com.twosigma.beaker.easyform.formitem.ListComponent;
@@ -84,6 +85,14 @@ public class EasyForm {
         radioButtonComponent.setHorizontal(isHorizontal);
         radioButtonComponent.setValues(values);
         addComponentOrThrow(label, radioButtonComponent);
+    }
+
+    public void addCheckBoxGroup(final String label, final Boolean isHorizontal, final Collection<String> values) throws  Exception {
+        CheckBoxGroup checkBoxGroup = new CheckBoxGroup();
+        checkBoxGroup.setLabel(label);
+        checkBoxGroup.setHorizontal(isHorizontal);
+        checkBoxGroup.setValues(values);
+        addComponentOrThrow(label, checkBoxGroup);
     }
 
     public void addDatePicker(final String label, final Boolean showTime) throws Exception {

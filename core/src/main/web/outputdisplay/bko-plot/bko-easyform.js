@@ -8,7 +8,7 @@
             restrict : "E",
             template : "<div id='textFieldContrainer' class='text-field-container'>" +
                     "<label id='textFieldLabel' class='text-field-label'/>" +
-                    "<input type='text' id='textField' class='text-field'/>" +
+                    "<input type='text' id='textField' class='text-field' data-ng-disabled='!component.enabled'/>" +
                     "</div>",
             link : function(scope, element, attrs) {
                 var component = scope.component;
@@ -23,10 +23,6 @@
                 textField.attr('data-easyform-label', component.label)
                          .attr('data-ng-model', component.label)
                          .css('width', component.width);
-
-                if (component.enabled && component.enabled == false) {
-                    textField.attr('disabled', 'true');
-                }
 
                 var watchedExpression = function (scope) {
                     return scope[scope.ngModelAttr];
@@ -51,11 +47,7 @@
                     var label = args.data.label;
                     if (session && session == bkSessionManager.getSessionId()
                             && label && label == scope.ngModelAttr) {
-                        if (args.data.enabled == true) {
-                            textField.removeAttr('disabled');
-                        } else {
-                            textField.attr('disabled', 'true');
-                        }
+                        scope.component.enabled = args.data.enabled;
                     }
                 });
 
@@ -79,7 +71,7 @@
             restrict : "E",
             template : "<div id='textAreaContrainer' class='text-area-container'>" +
                     "<label id='textAreaLabel' class='text-area-label'/>" +
-                    "<textarea rows='4' cols='35' id='textArea' class='text-area'/>" +
+                    "<textarea rows='4' cols='35' id='textArea' class='text-area' data-ng-disabled='!component.enabled'/>" +
                     "</div>",
             link : function(scope, element, attrs) {
                 var component = scope.component;
@@ -89,10 +81,6 @@
                 var textArea = element.find('#textArea');
                 textArea.attr('data-easyform-label', component.label)
                         .attr('data-ng-model', component.label);
-
-                if (component.enabled && component.enabled == false) {
-                    textArea.attr('disabled', 'true');
-                }
 
                 var watchedExpression = function (scope) {
                     return scope[scope.ngModelAttr];
@@ -119,11 +107,7 @@
                     var label = args.data.label;
                     if (session && session == bkSessionManager.getSessionId()
                             && label && label == scope.ngModelAttr) {
-                        if (args.data.enabled == true) {
-                            textArea.removeAttr('disabled');
-                        } else {
-                            textArea.attr('disabled', 'true');
-                        }
+                        scope.component.enabled = args.data.enabled;
                     }
                 });
 
@@ -147,7 +131,7 @@
             restrict : "E",
             template : "<div id='checkBoxContrainer' class='check-box-container'>" +
                     "<label id='checkBoxLabel' class='check-box-label'/>" +
-                    "<input type='checkbox' id='checkBox' class='check-box'/>" +
+                    "<input type='checkbox' id='checkBox' data-ng-disabled='!component.enabled' class='check-box'/>" +
                     "</div>",
             link : function(scope, element, attrs) {
                 var component = scope.component;
@@ -161,10 +145,6 @@
 
                 if (component.value && 'true' == component.value) {
                     checkBox.attr('checked', 'true');
-                }
-
-                if (component.enabled && component.enabled == false) {
-                    checkBox.attr('disabled', 'true');
                 }
 
                 var watchedExpression = function (scope) {
@@ -192,11 +172,7 @@
                     var label = args.data.label;
                     if (session && session == bkSessionManager.getSessionId()
                             && label && label == scope.ngModelAttr) {
-                        if (args.data.enabled == true) {
-                            checkBox.removeAttr('disabled');
-                        } else {
-                            checkBox.attr('disabled', 'true');
-                        }
+                        scope.component.enabled = args.data.enabled;
                     }
                 });
 
@@ -207,6 +183,71 @@
                 $compile(element.contents())(scope);
             }
         };
+    }]);
+})();
+(function() {
+    'use strict';
+    var module = angular.module('bk.outputDisplay');
+    module.directive('easyFormCheckBoxGroup',
+        ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+            function($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
+                return {
+                    restrict : "E",
+                    template : "<div id='checkBoxGroupContainer' class='check-box-group-container'>" +
+                                    "<label id='checkBoxGroupLabel' class='check-box-group-label'/>" +
+                                    "<label class='check-box-group-item-label' data-ng-repeat='(value,enabled) in values track by $index' ng-class='{vertical : !horizontal}'>" +
+                                        "<input type='checkbox' data-ng-model='values[value]' data-ng-disabled='!component.enabled'> {{value}}" +
+                                    "</label>" +
+                                "</div>",
+                    link : function(scope, element, attrs) {
+                        var component = scope.component;
+                        scope.values = [];
+                        if (component.values && component.values.length > 0) {
+                            component.values.forEach(function(value) {
+                                var obj = new Object();
+                                obj[value] = false;
+                                scope.values.push(obj);
+                            });
+                        }
+                        scope.ngModelAttr = component.label;
+                        element.find('#checkBoxGroupLabel').text(component.label);
+                        scope.horizontal = component.isHorizontal && 'true' == component.isHorizontal.toString();
+
+                        var watchedExpression = function (scope) {
+                            return scope.values;
+                        };
+                        var valueChangeHandler = function (newValue, oldValue) {
+                            EasyFormService.setComponentValue(component,JSON.stringify(newValue));
+                            bkUtils.setEasyFormValue(scope.ngModelAttr, JSON.stringify(newValue), bkSessionManager.getSessionId());
+                        };
+                        scope.$watch(watchedExpression, valueChangeHandler);
+
+                        scope.$on(EasyFormConstants.Events.VALUE_SET, function(event, args) {
+                            if (args && args.data) {
+                                var session = args.data.session;
+                                var name = args.data.name;
+                                if (session && session == bkSessionManager.getSessionId()
+                                        && name && name == scope.ngModelAttr) {
+                                    scope.values = JSON.parse(args.data.value);
+                                }
+                            }
+                        });
+
+                        scope.$on(EasyFormConstants.Events.SET_ENABLED, function(event, args) {
+                            var session = args.data.session;
+                            var label = args.data.label;
+                            if (session && session == bkSessionManager.getSessionId()
+                                    && label && label == scope.ngModelAttr) {
+                                scope.component.enabled = args.data.enabled;
+                            }
+                        });
+
+                        scope.$on(EasyFormConstants.Events.VALUE_LOADED, function(event, args) {
+                            scope.values = JSON.parse(EasyFormService.getComponentValue(component));
+                        });
+                        $compile(element.contents())(scope);
+                    }
+                };
     }]);
 })();
 
@@ -220,7 +261,7 @@
             restrict : "E",
             template : "<div id='comboBoxContrainer' class='combo-box-container'>" +
                     "<label id='comboBoxLabel' class='combo-box-label'/>" +
-                    "<select id='comboBox' class='combo-box'/>" +
+                    "<select id='comboBox' class='combo-box' data-ng-disabled='!component.enabled'/>" +
                     "</div>",
             link : function(scope, element, attrs) {
                 var component = scope.component;
@@ -233,10 +274,6 @@
                         .attr('data-ng-model', component.label);
 
                 if (!component.editable || 'false' == component.editable) {
-                    comboBox.attr('disabled', 'true');
-                }
-
-                if (component.enabled && component.enabled == false) {
                     comboBox.attr('disabled', 'true');
                 }
 
@@ -269,11 +306,7 @@
                     var label = args.data.label;
                     if (session && session == bkSessionManager.getSessionId()
                             && label && label == scope.ngModelAttr) {
-                        if (args.data.enabled == true) {
-                            comboBox.removeAttr('disabled');
-                        } else {
-                            comboBox.attr('disabled', 'true');
-                        }
+                        scope.components.enabled = args.data.enabled;
                     }
                 });
 
@@ -297,7 +330,7 @@
             restrict : "E",
             template : "<div id='listComponentContrainer' class='list-component-container'>" +
                     "<label id='listComponentLabel' class='list-component-label'/>" +
-                    "<select id='listComponent' class='list-component'/>" +
+                    "<select id='listComponent' class='list-component' data-ng-disabled='!component.enabled'/>" +
                     "</div>",
             link : function(scope, element, attrs) {
                 var component = scope.component;
@@ -325,10 +358,6 @@
                     listComponent.attr('ngOptions', 'v for v in component.values');
                 }
 
-                if (component.enabled && component.enabled == false) {
-                    listComponent.attr('disabled', 'true');
-                }
-
                 var watchedExpression = function (scope) {
                     return scope[scope.ngModelAttr];
                 };
@@ -354,11 +383,7 @@
                     var label = args.data.label;
                     if (session && session == bkSessionManager.getSessionId()
                             && label && label == scope.ngModelAttr) {
-                        if (args.data.enabled == true) {
-                            listComponent.removeAttr('disabled');
-                        } else {
-                            listComponent.attr('disabled', 'true');
-                        }
+                        scope.component.enabled = args.data.enabled;
                     }
                 });
 
@@ -399,12 +424,9 @@
                     component.values.forEach(function(value) {
                         var outerRadioButtonLabel = angular.element('<label class="radio-button-item-label"></label>');
                         outerRadioButtonLabel.addClass(horizontal ? 'horizontal' : 'vertical');
-                        var radioButton = angular.element('<input type="radio" class="radio-button-component-item"/>')
+                        var radioButton = angular.element('<input type="radio" class="radio-button-component-item" data-ng-disabled="!component.enabled"/>')
                                 .attr('data-ng-model', component.label)
                                 .attr('value', value);
-                        if (component.enabled && component.enabled == false) {
-                            radioButton.attr('disabled', 'true');
-                        }
                         var textSpanElement =
                                 angular.element('<span class="radio-button-item-text"></span>')
                                        .addClass(horizontal ? 'horizontal' : 'vertical');
@@ -441,15 +463,7 @@
                     var label = args.data.label;
                     if (session && session == bkSessionManager.getSessionId()
                             && label && label == scope.ngModelAttr) {
-
-                        element.find('#radioButtonComponentContrainer input[type="radio"]').each(function (index, el) {
-                            if (args.data.enabled == true) {
-                                el.removeAttribute('disabled');
-                            } else {
-                                el.setAttribute('disabled', 'true');
-                            }
-                        });
-
+                        scope.component.enabled = args.data.enabled;
                     }
                 });
 
@@ -473,7 +487,7 @@
             restrict : "E",
             template : "<div id='datePickerComponentContrainer' class='date-picker-container'>" +
                     "<label id='datePickerLabel' class='date-picker-label'/>" +
-                    "<input type='date' id='datePicker' class='date-picker'/>" +
+                    "<input type='date' id='datePicker' class='date-picker' data-ng-disabled='!component.enabled'/>" +
                     "</div>",
             link : function(scope, element, attrs) {
                 var component = scope.component;
@@ -486,10 +500,6 @@
 
                 if (component.showTime && 'true' == component.showTime) {
                     datePicker.attr('type', 'datetime');
-                }
-
-                if (component.enabled && component.enabled == false) {
-                    datePicker.attr('disabled', 'true');
                 }
 
                 var watchedExpression = function (scope) {
@@ -517,11 +527,7 @@
                     var label = args.data.label;
                     if (session && session == bkSessionManager.getSessionId()
                             && label && label == scope.ngModelAttr) {
-                        if (args.data.enabled == true) {
-                            datePicker.removeAttr('disabled');
-                        } else {
-                            datePicker.attr('disabled', 'true');
-                        }
+                        scope.component.enabled = args.data.enabled;
                     }
                 })
 
@@ -544,7 +550,7 @@
         return {
             restrict : "E",
             template : "<div id='buttonComponentContrainer' class='button-component-container'>" +
-                    "<button type='button' id='buttonComponent' class='button-component'/>" +
+                    "<button type='button' id='buttonComponent' class='button-component' data-ng-disabled='!component.enabled'/>" +
                     "</div>",
             link : function(scope, element, attrs) {
                 var component = scope.component;
@@ -578,10 +584,6 @@
                 if (EasyFormConstants.Components.Button.type == component.type) {
                     buttonComponent.text(component.label);
 
-                    if (component.enabled && component.enabled == false) {
-                        buttonComponent.attr('disabled', 'true');
-                    }
-
                     if (component.tag) {
                         buttonComponent.attr('title', component.tag).on('click', executeCellWithTag);
                     }
@@ -598,11 +600,7 @@
                     var label = args.data.label;
                     if (session && session == bkSessionManager.getSessionId()
                             && label && label == scope.ngModelAttr) {
-                        if (args.data.enabled == true) {
-                            buttonComponent.removeAttr('disabled');
-                        } else {
-                            buttonComponent.attr('disabled', 'true');
-                        }
+                        scope.component.enabled = args.data.enabled;
                     }
                 })
 
@@ -629,35 +627,16 @@
 
                 if (model.components) {
                     model.components.forEach(function(component) {
-                        //depends on type, create markup for components
+
                         var easyFormContainer = element.find('#easyFormContainer');
                         var childScope = scope.$new();
                         childScope.component = component;
-                        var easyForm = EasyFormConstants.Components;
-                        if (component.type.indexOf(easyForm.TextField.type) != -1) {
-                            easyFormContainer.append($compile(angular.element(easyForm.TextField.htmlTag))(childScope));
-                        } else if (component.type.indexOf(easyForm.TextArea.type) != -1) {
-                            easyFormContainer.append($compile(angular.element(easyForm.TextArea.htmlTag))(childScope));
-                        } else if (component.type.indexOf(easyForm.CheckBox.type) != -1) {
-                            easyFormContainer.append($compile(angular.element(easyForm.CheckBox.htmlTag))(childScope));
-                        } else if (component.type.indexOf(easyForm.ComboBox.type) != -1) {
-                            easyFormContainer.append($compile(angular.element(easyForm.ComboBox.htmlTag))(childScope));
-                        } else if (component.type.indexOf(easyForm.List.type) != -1) {
-                            easyFormContainer.append($compile(angular.element(easyForm.List.htmlTag))(childScope));
-                        } else if (component.type.indexOf(easyForm.RadioButton.type) != -1) {
-                            easyFormContainer.append($compile(angular.element(easyForm.RadioButton.htmlTag))(childScope));
-                        } else if (component.type.indexOf(easyForm.DatePicker.type) != -1) {
-                            easyFormContainer.append($compile(angular.element(easyForm.DatePicker.htmlTag))(childScope));
-                        } else if (component.type.indexOf(easyForm.Button.type) != -1
-                                || component.type.indexOf(easyForm.SaveValuesButton.type) != -1
-                                || component.type.indexOf(easyForm.LoadValuesButton.type) != -1) {
-                            easyFormContainer.append($compile(angular.element(easyForm.Button.htmlTag))(childScope));
-                        } else {
-                            //no components for type
-                            console.log("There are no view for component with type: " + component.type);
-                        }
-                        if (!(component.type.includes(easyForm.SaveValuesButton.type)
-                                || component.type.includes(easyForm.LoadValuesButton.type))) {
+                        var newElement = angular.element(EasyFormConstants.Components[component.type].htmlTag);
+                        childScope.component.enabled = childScope.component.enabled ? true : false;
+                        easyFormContainer.append($compile(newElement)(childScope));
+
+                        if (!(component.type.includes(EasyFormConstants.Components.SaveValuesButton.type)
+                                || component.type.includes(EasyFormConstants.Components.LoadValuesButton.type))) {
                             EasyFormService.addComponent(component);
                         }
 
@@ -719,6 +698,10 @@
             CheckBox : {
                 type : "CheckBox",
                 htmlTag : "<easy-form-check-box/>"
+            },
+            CheckBoxGroup : {
+                type : "CheckBoxGroup",
+                htmlTag : "<easy-form-check-box-group/>"
             },
             ComboBox : {
                 type : "ComboBox",

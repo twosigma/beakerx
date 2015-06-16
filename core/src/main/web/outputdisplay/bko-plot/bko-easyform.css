@@ -11,6 +11,19 @@
     margin: 0 10px;
     min-width: 100px;
 }
+.check-box-group-label {
+    margin: 0 10px;
+    min-width: 100px;
+    float: left;
+}
+.check-box-group-item-label {
+    margin: 0 5px;
+}
+.check-box-group-item-label.vertical {
+    display: table-row;
+}
+.check-box-group-item-label.horizontal {
+}
 .date-picker-label {
     margin: 0 10px;
     min-width: 100px;

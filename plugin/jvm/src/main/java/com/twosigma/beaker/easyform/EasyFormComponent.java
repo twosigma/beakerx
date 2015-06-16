@@ -2,7 +2,7 @@ package com.twosigma.beaker.easyform;
 
 public class EasyFormComponent {
 
-    private boolean enabled;
+    private boolean enabled = true;
     //Acts like ID
     private String label;
 

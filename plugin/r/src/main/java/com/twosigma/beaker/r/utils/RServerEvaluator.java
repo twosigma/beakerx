@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.r.utils;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -56,6 +57,9 @@ import com.twosigma.beaker.jvm.serialization.BeakerObjectConverter;
 import com.twosigma.beaker.r.module.ErrorGobbler;
 import com.twosigma.beaker.r.module.ROutputHandler;
 
+import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.TranscoderInput;
 
 public class RServerEvaluator {
   protected static final String BEGIN_MAGIC = "**beaker_begin_magic**";
@@ -68,6 +72,19 @@ public class RServerEvaluator {
   protected workerThread myWorker;
   private int corePort;
 
+  class MyTranscoder extends ImageTranscoder {
+    private BufferedImage image = null;
+    public BufferedImage createImage(int w, int h) {
+        image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        return image;
+    }
+    public void writeImage(BufferedImage img, TranscoderOutput out) {
+    }
+    public BufferedImage getImage() {
+        return image;
+    }
+}
+  
   protected class jobDescriptor {
     String codeToBeExecuted;
     SimpleEvaluationObject outputObject;
@@ -218,19 +235,34 @@ public class RServerEvaluator {
   protected boolean addSvgResults(String name, SimpleEvaluationObject obj) {
     File file = new File(name);
     if (file.length() > 0) {
-      try (FileInputStream fis = new FileInputStream(file)) {
-        byte[] data = new byte[(int) file.length()];
-        fis.read(data);
-        fis.close();
-        String contents = new String(data, "UTF-8");
-        logger.fine("returning svg content");
-        obj.finished(fixSvgResults(contents));
-        return true;
-      } catch (FileNotFoundException e) {
-        logger.log(Level.SEVERE,"ERROR reading SVG results",e);
-      } catch (IOException e) {
-        logger.log(Level.SEVERE,"ERROR reading SVG results",e);
+      if (file.length() < 100*1024) {
+        // return small SVG as SVG
+        try (FileInputStream fis = new FileInputStream(file)) {
+          byte[] data = new byte[(int) file.length()];
+          fis.read(data);
+          fis.close();
+          String contents = new String(data, "UTF-8");
+          logger.fine("returning svg content");
+          obj.finished(fixSvgResults(contents));
+          file.delete();
+          return true;
+        } catch (Exception e) {
+          logger.log(Level.SEVERE,"ERROR reading SVG results",e);
+        }
+      } else {
+        try {
+          // return large SVG as ImageIcon
+          MyTranscoder transcoder = new MyTranscoder();
+          transcoder.transcode(new TranscoderInput(file.toURI().toURL().toString()), null);
+          BufferedImage image = transcoder.getImage();
+          obj.finished(image);
+          file.delete();
+          return true;
+        } catch(Exception e) {
+          logger.log(Level.SEVERE,"ERROR converting SVG results",e);
+        }
       }
+      file.delete();
     }
     return false;
   }

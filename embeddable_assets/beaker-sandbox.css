@@ -9997,8 +9997,7 @@
     right: 0;
     padding-right: 0;
     display: inline-block;
-    background: none;
-    margin-left: 5px; }
+    background: none; }
   .beaker-sandbox .cell-evaluator-menu b {
     margin-left: 30px;
     position: relative;
@@ -10161,13 +10160,20 @@
     top: 0; }
   .beaker-sandbox .toggle-menu bk-language-logo {
     display: none;
-    position: relative;
-    top: 1px;
-    margin-right: 5px; }
+    position: relative; }
+  .beaker-sandbox .advanced-mode .cell-evaluator-menu {
+    right: 0; }
   .beaker-sandbox .advanced-mode bk-language-logo {
     display: none; }
   .beaker-sandbox .advanced-mode .toggle-menu bk-language-logo {
-    display: inline-block; }
+    height: 24px;
+    width: 30px;
+    padding-top: 2px;
+    top: -1px;
+    display: inline-block;
+    text-align: center; }
+  .beaker-sandbox .advanced-mode .toggle-menu bk-language-logo:hover {
+    background-color: #39a9ed; }
   .beaker-sandbox bk-language-logo {
     position: absolute;
     left: 0;
@@ -10443,6 +10449,10 @@
     padding-left: 0;
     padding-right: 5px;
     min-width: 17px; }
+  .beaker-sandbox .CodeMirror-scroll {
+    overflow-y: hidden !important;
+    overflow-x: auto !important;
+    height: auto; }
   .beaker-sandbox table.dataTable.hover tbody tr:hover,
   .beaker-sandbox table.dataTable.display tbody tr:hover,
   .beaker-sandbox table.dataTable.hover tbody tr.odd:hover,

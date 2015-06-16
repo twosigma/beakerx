@@ -24,7 +24,7 @@
             if ( d === '' || d === null ) {
                 return 'moment-'+format;
             }
-            return moment( d, format, locale, true ).isValid() ?
+            return (d.timestamp !== undefined && moment(d.timestamp).isValid()) ?
                 'moment-'+format :
                 null;
         } );
@@ -32,7 +32,7 @@
         types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
             return d === '' || d === null ?
                 -Infinity :
-                parseInt( moment( d, format, locale, true ).format( 'x' ), 10 );
+                parseInt( d.timestamp, 10 );
         };
     };
   }(jQuery));

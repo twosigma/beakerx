@@ -253,10 +253,6 @@ public class RServerEvaluator {
         try {
           // return large SVG as ImageIcon
           MyTranscoder transcoder = new MyTranscoder();
-          //TranscodingHints hints = new TranscodingHints();
-          //hints.put(ImageTranscoder.KEY_WIDTH, width);
-          //hints.put(ImageTranscoder.KEY_HEIGHT, height);
-          //transcoder.setTranscodingHints(hints);
           transcoder.transcode(new TranscoderInput(file.toURI().toURL().toString()), null);
           BufferedImage image = transcoder.getImage();
           obj.finished(image);

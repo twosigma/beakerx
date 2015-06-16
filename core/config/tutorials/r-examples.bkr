@@ -51,10 +51,10 @@
             "evaluatorReader": false
         },
         {
-            "id": "textwrxRTw",
-            "type": "text",
+            "id": "markdownS0Idli",
+            "type": "markdown",
             "body": [
-                "The R Project for Statistical Computing publishes GNU R. &nbsp;Follow the instructions on BeakerNotebook.com for how to install R so Beaker can use it."
+                "The R Project for Statistical Computing publishes GNU R.  Follow the instructions on BeakerNotebook.com for how to install R so Beaker can use it."
             ],
             "evaluatorReader": false
         },
@@ -98,7 +98,7 @@
                 "pluginName": "R",
                 "shellId": "d5a6f3a1-0fb9-45a8-b384-a6a1b84f75f3"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 3
         },
         {
@@ -3175,127 +3175,68 @@
                     ]
                 },
                 "state": {
-                    "tablestate": {
-                        "time": 1423155111091,
-                        "start": 0,
-                        "length": 25,
-                        "order": [
-                            [
-                                0,
-                                "asc"
-                            ]
-                        ],
-                        "search": {
-                            "search": "",
-                            "smart": true,
-                            "regex": false,
-                            "caseInsensitive": true
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
                         },
-                        "columns": [
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            }
+                        "columnNames": [
+                            "manufacturer",
+                            "model",
+                            "displ",
+                            "year",
+                            "cyl",
+                            "trans",
+                            "drv",
+                            "cty",
+                            "hwy",
+                            "fl",
+                            "class"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L",
+                            "L",
+                            "L",
+                            "L",
+                            "L",
+                            "L",
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10,
+                            11
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            true
                         ]
                     }
                 }
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -3328,7 +3269,7 @@
                 "pluginName": "R",
                 "shellId": "d5a6f3a1-0fb9-45a8-b384-a6a1b84f75f3"
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 14
         },
         {
@@ -3371,73 +3312,44 @@
                 "selectedType": "Table",
                 "elapsedTime": 339,
                 "state": {
-                    "tablestate": {
-                        "time": 1423155111182,
-                        "start": 0,
-                        "length": 10,
-                        "order": [
-                            [
-                                0,
-                                "asc"
-                            ]
-                        ],
-                        "search": {
-                            "search": "",
-                            "smart": true,
-                            "regex": false,
-                            "caseInsensitive": true
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50
                         },
-                        "columns": [
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            },
-                            {
-                                "visible": true,
-                                "search": {
-                                    "search": "",
-                                    "smart": true,
-                                    "regex": false,
-                                    "caseInsensitive": true
-                                }
-                            }
+                        "columnNames": [
+                            "Df",
+                            "Sum Sq",
+                            "Mean Sq",
+                            "F value",
+                            "Pr(>F)"
+                        ],
+                        "actualalign": [
+                            "L",
+                            "L",
+                            "L",
+                            "L",
+                            "L"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4,
+                            5
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true,
+                            true
                         ]
                     }
                 }
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -3455,7 +3367,7 @@
                 "elapsedTime": 97,
                 "state": {}
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1
         }
     ]

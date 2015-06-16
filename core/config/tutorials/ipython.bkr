@@ -28,7 +28,8 @@
                 "cm": {
                     "mode": "python"
                 }
-            }
+            },
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n"
         },
         {
             "name": "JavaScript",
@@ -53,9 +54,11 @@
             "evaluatorReader": false
         },
         {
-            "id": "textAkq03u",
-            "type": "text",
-            "body": "IPython is the Python language with extensions for interactivity. &nbsp;Follow the instructions on BeakerNotebook.com for how to install IPython so Beaker can use it.",
+            "id": "markdowniaLsCe",
+            "type": "markdown",
+            "body": [
+                "IPython is the Python language with extensions for interactivity.  Follow the instructions on BeakerNotebook.com for how to install IPython so Beaker can use it."
+            ],
             "evaluatorReader": false
         },
         {
@@ -63,7 +66,13 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "# you an define your own functions with the \"def\" keyword\ndef secant(x):\n  return 1/cos(x)\n\nsecant(6.22)"
+                "body": [
+                    "# you an define your own functions with the \"def\" keyword",
+                    "def secant(x):",
+                    "  return 1/cos(x)",
+                    "",
+                    "secant(6.22)"
+                ]
             },
             "output": {
                 "outputArrived": true,
@@ -84,7 +93,10 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "# add a question mark to the end of a function to get help on it\ncos?"
+                "body": [
+                    "# add a question mark to the end of a function to get help on it",
+                    "cos?"
+                ]
             },
             "output": {
                 "selectedType": "BeakerDisplay",
@@ -100,7 +112,11 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "%%timeit x = range(1000)\nsecant(x)\n# magics like this one work"
+                "body": [
+                    "%%timeit x = range(1000)",
+                    "secant(x)",
+                    "# magics like this one work"
+                ]
             },
             "output": {
                 "outputArrived": true,
@@ -116,7 +132,11 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "from IPython.core.display import HTML\nhtml_text = HTML(\"generating <em>HTML</em> with <font size='+2'>IPython</font>\")\nhtml_text"
+                "body": [
+                    "from IPython.core.display import HTML",
+                    "html_text = HTML(\"generating <em>HTML</em> with <font size='+2'>IPython</font>\")",
+                    "html_text"
+                ]
             },
             "output": {
                 "outputArrived": true,
@@ -129,7 +149,7 @@
                     "object": "<div class=\"out_prompt_overlay prompt\" title=\"click to expand output; double click to hide output\" style=\"display: none;\"></div><div class=\"output vbox\" style=\"display: none;\"></div><div class=\"btn btn-default output_collapsed\" title=\"click to expand output\" style=\"display: none;\">. . .</div><div class=\"output_subarea output_html rendered_html\">generating <em>HTML</em> with <font size=\"+2\">IPython</font></div>"
                 }
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 3
         },
         {
@@ -137,7 +157,10 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "from IPython.display import Image\nImage(filename='../beaker-notebook-www/assets/img/hero.jpg')"
+                "body": [
+                    "from IPython.display import Image",
+                    "Image(filename='../beaker-notebook-www/assets/img/hero.jpg')"
+                ]
             },
             "output": {
                 "state": {},
@@ -150,7 +173,7 @@
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 66
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 2
         },
         {
@@ -158,7 +181,9 @@
             "type": "code",
             "evaluator": "IPython",
             "input": {
-                "body": "Image(url='http://python.org/images/python-logo.gif')"
+                "body": [
+                    "Image(url='http://python.org/images/python-logo.gif')"
+                ]
             },
             "output": {
                 "state": {},
@@ -171,7 +196,7 @@
                 "outputArrived": true,
                 "elapsedTime": 66
             },
-            "evaluatorReader": true,
+            "evaluatorReader": false,
             "lineCount": 1
         }
     ]

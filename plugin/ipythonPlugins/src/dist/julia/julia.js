@@ -334,7 +334,7 @@ define(function(require, exports, module) {
         }
       },
       initCode: function() {
-        return "";
+        return this.settings.setup + "\n";
       },
       reset: function() {
         var kernel = kernels[this.settings.shellID];

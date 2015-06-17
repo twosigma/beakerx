@@ -229,10 +229,49 @@ define(function(require, exports, module) {
               beakerObj.clearOutput();
             }
           } catch (err) {
+            // detect chrome or firefox stack traces
+            var stack = [];
+            try {
+              if (err.fileName !== undefined) {
+                var stackin = err.stack.split(/\n/);              
+                stack.push(err.name+': '+err.message);
+                var stage = 0;
+                for(var i=0; i<stackin.length; i++) {
+                  var line = stackin[i];
+                  if (line.indexOf(' > eval:')>=0) {
+                    var a = line.indexOf('@');
+                    var b = line.indexOf(' > eval:');
+                    stage = 1;
+                    stack.push('    at '+line.substring(0,a)+' &lt;codecell&gt;'+line.substring(b+7));
+                  } else if(stage==0) {
+                    stack.push(line);
+                  } else 
+                    break;
+                }
+                if (stack.length>1)
+                  stack.pop();
+              } else {
+                var stackin = err.stack.split(/\n/);
+              
+                stack.push(stackin[0]);
+                for(var i=1; i<stackin.length; i++) {
+                  var line = stackin[i];
+                  if (line.indexOf(' at eval (eval at <anonymous> ')>=0)
+                    break;
+                  if (line.indexOf(' (eval at <anonymous>')>=0 && line.indexOf(', <anonymous>:')>=0 ) {
+                    var a = line.indexOf(' (eval at <anonymous>');
+                    var b = line.indexOf(', <anonymous>:')+13;
+                    var c = line.indexOf(')',b);
+                    stack.push(line.substring(0,a)+' &lt;codecell&gt;'+line.substring(b,c));
+                  } else
+                     stack.push(line);
+                }
+              }
+            } catch(e) { }
             bkHelper.receiveEvaluationUpdate(modelOutput,
-                                             {status: "ERROR", payload: err.stack.split(/\n/)},
+                                             {status: "ERROR", payload: stack},
                                              PLUGIN_NAME);
-            console.log(err);
+            console.log(stack);
             beakerObj.clearOutput();
             var r;
             if (beakerObj.isCircularObject(modelOutput.result))

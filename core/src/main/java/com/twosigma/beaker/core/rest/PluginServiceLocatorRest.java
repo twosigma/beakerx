@@ -127,6 +127,7 @@ public class PluginServiceLocatorRest {
   private final String nginxStaticDir;
   private final String nginxServDir;
   private final String nginxExtraRules;
+  private final String userFolder;
   private final Map<String, String> nginxPluginRules;
   private final String pluginDir;
   private final String [] nginxCommand;
@@ -174,6 +175,7 @@ public class PluginServiceLocatorRest {
     this.nginxStaticDir = bkConfig.getNginxStaticDirectory();
     this.nginxServDir = bkConfig.getNginxServDirectory();
     this.nginxExtraRules = bkConfig.getNginxExtraRules();
+    this.userFolder = bkConfig.getUserFolder();
     this.nginxPluginRules = bkConfig.getNginxPluginRules();
     this.pluginDir = bkConfig.getPluginDirectory();
     this.publicServer = bkConfig.getPublicServer();
@@ -713,6 +715,7 @@ public class PluginServiceLocatorRest {
     }
     nginxConfig = nginxConfig.replace("%(plugin_section)s", pluginSection.toString());
     nginxConfig = nginxConfig.replace("%(extra_rules)s", this.nginxExtraRules);
+    nginxConfig = nginxConfig.replace("%(user_folder)s", this.userFolder);
     nginxConfig = nginxConfig.replace("%(host)s", hostName);
     nginxConfig = nginxConfig.replace("%(port_main)s", Integer.toString(this.portBase));
     nginxConfig = nginxConfig.replace("%(port_beaker)s", Integer.toString(this.corePort));

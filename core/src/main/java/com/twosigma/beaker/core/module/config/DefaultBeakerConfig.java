@@ -51,6 +51,7 @@ public class DefaultBeakerConfig implements BeakerConfig {
   private final String nginxStaticDir;
   private final String nginxServDir;
   private final String nginxExtraRules;
+  private final String userFolder;
   private final Map<String, String> nginxPluginRules;
   private final Boolean useKerberos;
   private final Boolean publicServer;
@@ -131,7 +132,10 @@ public class DefaultBeakerConfig implements BeakerConfig {
     else
         this.sharing_server = "http://sharing.beakernotebook.com/gist/anonymous";
     this.prefs = obj;
-    
+
+    this.userFolder = this.dotDir + "/web";
+    utils.ensureDirectoryExists(userFolder); 
+
     final String prefDefaultNotebookUrl = pref.getDefaultNotebookUrl();
     final String mainDefaultNotebookPath = this.dotDir + "/config/default.bkr";
     final String defaultDefaultNotebookPath = this.installDir + "/config/default.bkr";
@@ -235,6 +239,11 @@ public class DefaultBeakerConfig implements BeakerConfig {
   @Override
   public String getNginxExtraRules() {
     return this.nginxExtraRules;
+  }
+
+  @Override
+  public String getUserFolder() {
+    return this.userFolder;
   }
 
   @Override

@@ -86,6 +86,9 @@
               return result;
             }
           },
+          isShowOutput: function() {
+            return $scope.isShowOutput();
+          },
           getDumpState: function() {
             var result = $scope.model.state;
             return result;

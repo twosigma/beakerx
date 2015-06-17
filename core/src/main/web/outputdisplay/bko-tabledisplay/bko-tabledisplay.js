@@ -642,7 +642,7 @@
           var i;
 
           // build configuration
-          cols.push({ "title" : '' });
+          cols.push({ "title" : '    ', 'className': 'dtright', 'render': scope.allConverters[1] });
           for (i=0; i<scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
@@ -682,7 +682,7 @@
 
           if (!scope.pagination.use) {
             init.paging = false;
-            init.scrollY = scope.pagination.rowsToDisplay*27;
+            init.scrollY = scope.pagination.rowsToDisplay*27+2;
             init.scrollCollapse = true;
             init.dom = '<"bko-table"rt>';
           } else {
@@ -814,8 +814,16 @@
         scope.getCellModel = function() {
           return scope.model.getCellModel();
         };
+        scope.isShowOutput = function() {
+          return scope.model.isShowOutput();
+        };
         scope.$watch('getCellModel()', function(m) {
           scope.init(m);
+        });
+        scope.$watch('isShowOutput()', function(oldval, newval) {
+          if (scope.table!==undefined && !newval) {
+            scope.table.draw(false);
+          }
         });
 
       }

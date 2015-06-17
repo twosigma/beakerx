@@ -11,6 +11,14 @@
     margin: 0 10px;
     min-width: 100px;
 }
+.combo-box-label {
+    margin: 0 10px;
+    min-width: 100px;
+}
+.list-component-label {
+    margin: 0 10px;
+    min-width: 100px;
+}
 .check-box-group-label {
     margin: 0 10px;
     min-width: 100px;

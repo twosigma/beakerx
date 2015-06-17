@@ -33,35 +33,40 @@ import java.io.IOException;
 @Singleton
 public class EasyFormRest {
 
-    private static final String legalNamePattern = "[a-zA-Z_][a-zA-Z0-9_]*";
+  private static final String LEGAL_NAME_PATTERN = "[a-zA-Z_][a-zA-Z0-9_]*";
 
-    @Inject
-    private EasyFormService easyformService;
+  @Inject
+  private EasyFormService easyformService;
 
-    @GET
-    @Path("get")
-    public Object get(@QueryParam("session") String session, @QueryParam("name") String name)
-            throws Exception {
-        return this.easyformService.get(session, name);
+  @GET
+  @Path("get")
+  public Object get(@QueryParam("session") String session,
+                    @QueryParam("name") String name)
+      throws Exception {
+    return this.easyformService.get(session, name);
+  }
+
+  @POST
+  @Path("set")
+  public String set(@FormParam("session") String session,
+                    @FormParam("name") String name,
+                    @FormParam("value") String value,
+                    @FormParam("publish") Boolean publish)
+      throws IOException, InterruptedException {
+    if (!name.matches(LEGAL_NAME_PATTERN)) {
+      return ("name is illegal for notebook namespace: \'" + name + "\'");
     }
+    this.easyformService.set(session, name, value, publish);
+    return "ok";
+  }
 
-    @POST
-    @Path("set")
-    public String set(@FormParam("session") String session, @FormParam("name") String name,
-                      @FormParam("value") String value, @FormParam("publish") Boolean publish)
-            throws IOException, InterruptedException {
-        if (!name.matches(legalNamePattern)) {
-            return ("name is illegal for notebook namespace: \'" + name + "\'");
-        }
-        this.easyformService.set(session, name, value, publish);
-        return "ok";
-    }
-
-    @POST
-    @Path("setEnabled")
-    public String setEnabled(@FormParam("session") String session, @FormParam("label") String label,
-                           @FormParam("enabled") Boolean enabled) throws IOException, InterruptedException {
-        this.easyformService.setEnabled(session, label, enabled);
-        return "ok";
-    }
+  @POST
+  @Path("setEnabled")
+  public String setEnabled(@FormParam("session") String session,
+                           @FormParam("label") String label,
+                           @FormParam("enabled") Boolean enabled)
+      throws IOException, InterruptedException {
+    this.easyformService.setEnabled(session, label, enabled);
+    return "ok";
+  }
 }

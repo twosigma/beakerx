@@ -24,7 +24,11 @@
     return {
       link: function(scope, element, attrs) {
         scope.$watch('model.getCellModel()', function(newValue) {
-          katex.render(newValue, element[0]);
+          try {
+            katex.render(newValue, element[0]);
+          } catch(err) {
+            bkHelper.show1ButtonModal(err.message+'<br>See: <a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its <a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">list of supported functions</a>.', "KaTex error");
+          }
         });
       }
     };

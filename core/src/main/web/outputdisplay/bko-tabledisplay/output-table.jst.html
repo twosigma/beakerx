@@ -13,13 +13,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<div class="dropdown dtmenu clearfix" style="float: left" ng-if="renderMenu">
-   <a class=" dropdown-toggle dtmenu" data-toggle="dropdown" ng-click="menuToggle()">
-   Edit Table 
+<div class="dropdown dtmenu clearfix" style="float: left; z-index: 10" ng-if="renderMenu">
+   <a class="dropdown-toggle" data-toggle="dropdown" ng-click="menuToggle()">
+   <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
    </a>
    <ul class="dropdown-menu" role="menu" submenu-classes="drop-right" aria-labelledby="dLabel">
-     <li><a tabindex="-1" href="#" ng-click="doResetSort()" id="dt-reset-sort" eat-click>Reset Sort</a></li>
-     <li>&nbsp;</li>
      <li><a tabindex="-1" href="#" ng-click="doSelectAll()" id="dt-select-all" eat-click>Select All</a></li>
      <li><a tabindex="-1" href="#" ng-click="doDeselectAll()" id="dt-deselect-all" eat-click>Deselect All</a></li>
      <li><a tabindex="-1" href="#" ng-click="doReverseSelection()" id="dt-reverse-selection" eat-click>Reverse Selection</a></li>

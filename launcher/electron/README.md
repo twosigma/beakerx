@@ -1,6 +1,6 @@
 In order to build:
 
-1. Download electron-v0.28.1-darwin-x86.zip from Electron's repo (https://github.com/atom/electron/releases), put it in this folder.
+1. Download electron-v0.28.1-darwin-x64.zip from Electron's repo (https://github.com/atom/electron/releases), put it in this folder.
 
 2. Download JRE, zip it, and put it in this folder as 'jre.zip'.
 

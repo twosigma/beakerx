@@ -24,9 +24,17 @@ var events = require('events');
 var eventEmitter = new events.EventEmitter();
 
 var java_home = path.resolve(__dirname + '/../jre/Contents/Home'); 
+var backend;
 
 // Report crashes to our server.
 require('crash-reporter').start();
+
+// Kill backend and quit electron
+var ipc = require('ipc');
+ipc.on('quit', function() {
+  backend.kill('SIGTERM');
+  app.quit();
+});
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
@@ -68,12 +76,12 @@ app.on('ready', function() {
 });
 
 function runBeaker() {
-  var readLine = require('readline');
+  var ReadLine = require('readline');
   var spawn = require('child_process').spawn;
   process.env['JAVA_HOME'] = java_home;
-  var backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
+  backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
 
-  var rl = readLine.createInterface({
+  var rl = ReadLine.createInterface({
     input: backend.stdout
   });
 

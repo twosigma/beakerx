@@ -31,7 +31,7 @@ beaker = subprocess.Popen(["../core/beaker.command", "-open-browser", "false"], 
 
 for line in iter(beaker.stdout.readline, ''):
     print(">>>" + line.strip())
-    if line.startswith('Connect to '):
+    if line.startswith('Beaker listening on'):
         break
 
 result = os.system("./node_modules/protractor/bin/protractor protractorConf.js");

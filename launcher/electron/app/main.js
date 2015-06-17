@@ -87,7 +87,7 @@ function runBeaker() {
 
   rl.on('line', function(line) {
     console.log(line);
-    if (line.includes('Beaker listening on')){
+    if (line.startsWith('Beaker listening on')){
       eventEmitter.emit('backendReady', {
         beakerUrl: line.split(' ')[3]
       });

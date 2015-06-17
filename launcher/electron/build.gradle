@@ -14,15 +14,6 @@
  *  limitations under the License.
  */
 
-def gitDescribe() {
-  def name = "git describe --all --long".execute().text.trim()
-  if (name.startsWith('heads/')) {
-    name = name.substring(6)
-  }
-  return name
-}
-
-// XXX move all of this into makeDist python script
 task makeDist2(type: Exec, dependsOn: ':dev:build') {
     commandLine './makeDist', 'dist'
 }
@@ -32,11 +23,9 @@ task clean(dependsOn: ['cleanApp', 'cleanDist']) {
 
 task cleanApp(type: Exec) {
 	commandLine 'rm', '-rf', 'Beaker.app'
-	commandLine 'rm', '-rf', 'dist'
 }
 
 task cleanDist(type: Exec) {
-	commandLine 'rm', '-rf', 'Beaker.app'
 	commandLine 'rm', '-rf', 'dist'
 }
 
@@ -45,7 +34,7 @@ task makeElectron(dependsOn: ['clean', 'makeDist2', 'copyElectron', 'copyBeakerA
 }
 
 task unzipElectron(type: Exec) {
-	commandLine 'unzip', '-uo', 'electron-v0.28.1-darwin-x64.zip'
+	commandLine 'unzip', '-uo', '-d', 'electron-v0.28.1-darwin-x64', 'electron-v0.28.1-darwin-x64.zip'
 }
 
 task copyElectron(type: Exec, dependsOn: ['unzipElectron']) {

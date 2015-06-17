@@ -67,6 +67,11 @@ http {
       return 301 %(start_page)s;
     }
 
+    # user directory
+    location /user {
+      alias "%(user_folder)s";
+    }
+
     # this is the main beaker index page - auto generated via rest call
     location = /beaker/ {
       %(auth_cookie_rule)s

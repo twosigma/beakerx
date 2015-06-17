@@ -73,6 +73,11 @@ public interface BeakerConfig {
    */
   public String getNginxExtraRules();
   /**
+   * folder the user can use for storage
+   * @return
+   */
+  public String getUserFolder();
+  /**
    * optional/extra/override nginx plugin rules
    * @return
    */

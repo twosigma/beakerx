@@ -23,7 +23,8 @@ import java.io.IOException;
 
 public class TextAreaSerializer extends AbstractEasyFormComponentSerializer<TextArea> {
 
-    @Override
-    protected void writeSubclassFields(final JsonGenerator jgen, final TextArea component) throws IOException {
-    }
+  @Override
+  protected void writeSubclassFields(final JsonGenerator jgen,
+                                     final TextArea component) throws IOException {
+  }
 }

@@ -20,13 +20,13 @@ import com.twosigma.beaker.easyform.EasyFormComponent;
 
 public class DatePickerComponent extends EasyFormComponent {
 
-    private Boolean showTime;
+  private Boolean showTime;
 
-    public void setShowTime(final Boolean showTime) {
-        this.showTime = showTime;
-    }
+  public void setShowTime(final Boolean showTime) {
+    this.showTime = showTime;
+  }
 
-    public Boolean getShowTime() {
-        return showTime;
-    }
+  public Boolean getShowTime() {
+    return showTime;
+  }
 }

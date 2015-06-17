@@ -20,13 +20,13 @@ import com.twosigma.beaker.easyform.EasyFormComponent;
 
 public class LoadValuesButton extends EasyFormComponent {
 
-    private String path;
+  private String path;
 
-    public void setPath(final String path) {
-        this.path = path;
-    }
+  public void setPath(final String path) {
+    this.path = path;
+  }
 
-    public String getPath() {
-        return path;
-    }
+  public String getPath() {
+    return path;
+  }
 }

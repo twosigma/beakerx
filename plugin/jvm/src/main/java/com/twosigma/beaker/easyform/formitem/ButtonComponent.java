@@ -20,13 +20,13 @@ import com.twosigma.beaker.easyform.EasyFormComponent;
 
 public class ButtonComponent extends EasyFormComponent {
 
-    private String tag;
+  private String tag;
 
-    public void setTag(final String tag) {
-        this.tag = tag;
-    }
+  public void setTag(final String tag) {
+    this.tag = tag;
+  }
 
-    public String getTag() {
-        return tag;
-    }
+  public String getTag() {
+    return tag;
+  }
 }

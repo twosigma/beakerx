@@ -340,6 +340,7 @@
       bkUtils.Electron.Menu = bkUtils.Electron.remote.require('menu');
       bkUtils.Electron.Dialog = bkUtils.Electron.remote.require('dialog');
       bkUtils.Electron.Shell = bkUtils.Electron.remote.require('shell');
+      bkUtils.Electron.IPC = require('ipc');
       bkUtils.Electron.updateMenus = function(menus) {
         var assignShortcut = function(name){
           switch(name) {
@@ -355,6 +356,19 @@
               return undefined;
           }
         }
+        var beakerMenu = {
+          label: 'Beaker',
+          submenu: [
+            {
+              label: 'Quit',
+              click: function() {
+                console.log(bkUtils.Electron.IPC);
+                bkUtils.Electron.IPC.send('quit');
+              },
+              accelerator: 'Command+Q'
+            }
+          ]
+        };
         var makeMenu = function(bkmenu){
           var menu = [];
           for (var i = 0; i < bkmenu.length; i++){
@@ -380,9 +394,7 @@
           return menu;
         };
         var template = makeMenu(Object.keys(menus).map(function(k) { return menus[k]; } ));
-        template.unshift({
-          label: 'Beaker'
-        });
+        template.unshift(beakerMenu);
         var menu = bkUtils.Electron.Menu.buildFromTemplate(template);
         bkUtils.Electron.Menu.setApplicationMenu(menu);
       }

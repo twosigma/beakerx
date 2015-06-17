@@ -29,7 +29,8 @@
     <div class="cell-menu-item delete-cell" ng-click="deleteCell()" title="delete cell"></div>
     <div class="cell-menu-item expand-contract" ng-if="cellmodel.type=='code'" ng-click="toggleCellInput()" ng-class="cellmodel.input.hidden && 'collapsed'" title="hide/show cell input"></div>
     <div class="dropdown dropdown-promoted advanced-only" ng-if="isCodeCell()" style="float: right;">
-      <bk-code-cell-input-menu></bk-code-cell-input-menu>
+      <div ng-if="cellmodel.type=='code' && !cellmodel.evaluatorReader" class="loading-spinner rotating bkr"></div>
+      <bk-code-cell-input-menu ng-if="cellmodel.type=='code' && cellmodel.evaluatorReader"></bk-code-cell-input-menu>
     </div>
     <div class="cell-menu-item evaluate" ng-click="evaluate($event)" ng-if="isCodeCell()" title="run cell"></div>
     <div class="cell-status-item loading-state advanced-hide" ng-if="cellmodel.type=='code' && !cellmodel.evaluatorReader">Initializing {{cellmodel.evaluator}}

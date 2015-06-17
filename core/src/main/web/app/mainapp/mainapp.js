@@ -527,9 +527,20 @@
           var saveStart = function() {
             showLoadingStatusMessage("Saving");
           };
+          var updateSessionStore = function(uri, uriType) {
+            return bkSession.getSessions().then(function(sessions){
+              var sessionID = bkSessionManager.getSessionId();
+              var currentSession = sessions[sessionID];
+              currentSession.uriType = uriType;
+              currentSession.notebookModelJson = JSON.stringify(bkHelper.getNotebookModel());
+              currentSession.notebookUri = uri;
+              return bkSession.backup(sessionID, currentSession);
+            });
+          };
           var saveDone = function(ret) {
             bkSessionManager.setNotebookModelEdited(false);
             bkSessionManager.updateNotebookUri(ret.uri, ret.uriType, false, "bkr");
+            updateSessionStore(ret.uri, ret.uriType);
             showTransientStatusMessage("Saved");
           };
 

@@ -310,9 +310,11 @@
                             { type: 5, name: 'double 4 decimals'},
                             { type: 6, name: 'exponential 5'},
                             { type: 7, name: 'exponential 15'},
-                            { type: 8, name: 'time'},
+                            { type: 8, name: 'datetime'},
                             { type: 9, name: 'boolean'},
-                            { type: 10, name: 'html'}];
+                            { type: 10, name: 'html'},
+                            { type: 11, name: 'date'},
+                            { type: 12, name: 'time'}];
         $scope.allConverters = [
                                 // string
                                 function(value,type,full,meta) {
@@ -383,7 +385,7 @@
                                     return NaN;
                                   return value;
                                 },
-                                // time
+                                // datetime
                                 function(value,type,full,meta) {
                                   if ($scope.timeStrings)
                                     return $scope.timeStrings[meta.row];
@@ -416,10 +418,55 @@
                                 // html
                                 function(value,type,full,meta) {
                                   return value;
+                                },
+                                // date
+                                function(value,type,full,meta) {
+                                  if ($scope.timeStrings)
+                                    return $scope.timeStrings[meta.row];
+
+                                  if (type === 'display') {
+                                    if (_.isObject(value) && value.type === 'Date') {
+                                      var time = moment(value.timestamp);
+                                      var tz = $scope.tz;
+                                      if (tz)
+                                        time.tz(tz);
+                                      return time.format("YYYY-MM-DD");
+                                    }
+                                    var nano = value % 1000;
+                                    var micro = (value / 1000) % 1000;
+                                    var milli = value / 1000 / 1000;
+                                    var time = moment(milli);
+                                    var tz = $scope.tz;
+                                    if (tz)
+                                      time.tz(tz);
+                                    return time.format("YYYY-MM-DD");
+                                  }
+                                  return value;
+                                },
+                                // time
+                                function(value,type,full,meta) {
+                                  if ($scope.timeStrings)
+                                    return $scope.timeStrings[meta.row];
+
+                                    if (_.isObject(value) && value.type === 'Date') {
+                                      var time = moment(value.timestamp);
+                                      var tz = $scope.tz;
+                                      if (tz)
+                                        time.tz(tz);
+                                      return time.format("HH:mm:ss.SSS ZZ");
+                                    }
+                                    var nano = value % 1000;
+                                    var micro = (value / 1000) % 1000;
+                                    var milli = value / 1000 / 1000;
+                                    var time = moment(milli);
+                                    var tz = $scope.tz;
+                                    if (tz)
+                                      time.tz(tz);
+                                    return time.format("HH:mm:ss.SSS ZZ");
                                 }
                                 ];
         $scope.allStringTypes = [ { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
-        $scope.allTimeTypes   = [ { type: 8, name: 'time'}, { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
+        $scope.allTimeTypes   = [ { type: 8, name: 'datetime'}, { type: 0, name: 'string'}, { type: 11, name: 'date'}, { type: 12, name: 'time'} ];
         $scope.allIntTypes    = [ { type: 0, name: 'string'},
                                { type: 1, name: 'integer'},
                                { type: 2, name: 'formatted integer'},

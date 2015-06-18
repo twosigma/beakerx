@@ -35,6 +35,19 @@
             };
           }
         },
+        "DateTime": {
+          template: "<pre>{{getDateTime()}}</pre>",
+          controller: function($scope) {
+            $scope.getDateTime = function() {
+              var model = $scope.model.getCellModel();
+              if (model && model.timestamp) {
+                var m = moment(model.timestamp);
+                return m.format("YYYYMMDD HH:mm:ss.SSS ZZ");
+              }
+              return model;
+            };
+          }
+        },
         "Date": {
           template: "<pre>{{getDate()}}</pre>",
           controller: function($scope) {
@@ -42,7 +55,20 @@
               var model = $scope.model.getCellModel();
               if (model && model.timestamp) {
                 var m = moment(model.timestamp);
-                return m.format("YYYYMMDD HH:mm:ss.SSS ZZ");
+                return m.format("YYYY-MM-DD");
+              }
+              return model;
+            };
+          }
+        },
+        "Time": {
+          template: "<pre>{{getTime()}}</pre>",
+          controller: function($scope) {
+            $scope.getTime = function() {
+              var model = $scope.model.getCellModel();
+              if (model && model.timestamp) {
+                var m = moment(model.timestamp);
+                return m.format("HH:mm:ss.SSS ZZ");
               }
               return model;
             };
@@ -124,7 +150,7 @@
       }
     };
 
-    var types = ["Text", "Date", "BeakerStandardOutput", "BeakerStandardError", "Warning", "Error", "Html", "OutputContainer"];
+    var types = ["Text", "Date", "DateTime", "Time", "BeakerStandardOutput", "BeakerStandardError", "Warning", "Error", "Html", "OutputContainer"];
     var refresh = function(what, scope) {
       if (!what) {
         what = "all";
@@ -143,7 +169,7 @@
     var resultType2DisplayTypesMap = {
       // The first in the array will be used as default
       "text": ["Text", "Html", "Latex"],
-      "Date": ["Date", "Text"],
+      "Date": ["DateTime", "Date", "Time", "Text"],
       "TableDisplay": ["Table", "Text"],
       "html": ["Html"],
       "ImageIcon": ["Image", "Text"],

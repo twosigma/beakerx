@@ -1037,6 +1037,10 @@
         $scope.getMenus = function() {
           return bkMenuPluginManager.getMenus();
         };
+        window.addEventListener('focus', function() {
+          console.log('Im focused!');
+          bkUtils.Electron.updateMenus(bkMenuPluginManager.getMenus());
+        });
         var keydownHandler = function(e) {
           if (e.ctrlKey && !e.altKey && (e.which === 83)) { // Ctrl + s
             e.preventDefault();

@@ -64,20 +64,10 @@
         return bkCoreManager.newSession(empty);
       },
       openWindow: function(path) {
-        if (bkHelper.isElectron) {
-          var newWindow = new bkHelper.Electron.BrowserWindow({});
-          newWindow.loadUrl(bkUtils.getBaseUrl() + path);
-        } else {
-          window.open('./' + path);
-        }
+        bkUtils.openWindow(path);
       },
       openStaticWindow: function(path) {
-        if (bkHelper.isElectron) {
-          var newWindow = new bkHelper.Electron.BrowserWindow({});
-          newWindow.loadUrl(bkHelper.serverUrl('beaker/' + path));
-        } else {
-          window.open('./' + path);
-        }
+        bkUtils.openStaticWindow(path);
       },
       // current app
       getCurrentAppName: function() {

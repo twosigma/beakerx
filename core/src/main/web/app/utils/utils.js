@@ -101,6 +101,27 @@
         return location.protocol + '//' + location.host + location.pathname + '#';
       },
 
+      openWindow: function(path) {
+        if (bkHelper.isElectron) {
+          var newWindow = new bkHelper.Electron.BrowserWindow({});
+          if (path[0] == '/'){
+            newWindow.loadUrl(bkUtils.getBaseUrl() + path);
+          } else {
+            newWindow.loadUrl(path);
+          }
+        } else {
+          window.open(path);
+        }
+      },
+      openStaticWindow: function(path) {
+        if (bkHelper.isElectron) {
+          var newWindow = new bkHelper.Electron.BrowserWindow({});
+          newWindow.loadUrl(bkHelper.serverUrl('beaker/' + path));
+        } else {
+          window.open('./' + path);
+        }
+      },
+
       // wrap angularUtils
       refreshRootScope: function() {
         angularUtils.refreshRootScope();
@@ -399,6 +420,7 @@
           }
           return menu;
         };
+
         var template = makeMenu(Object.keys(menus).map(function(k) { return menus[k]; } ));
         template.unshift(beakerMenu);
         var menu = bkUtils.Electron.Menu.buildFromTemplate(template);

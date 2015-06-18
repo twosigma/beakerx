@@ -109,6 +109,10 @@
       getBaseUrl: function() {
         return location.protocol + '//' + location.host + location.pathname + '#';
       },
+      removeSpecialChars: function(str) {
+        return commonUtils.removeSpecialChars(str);
+      },
+
       // wrap angularUtils
       refreshRootScope: function() {
         angularUtils.refreshRootScope();

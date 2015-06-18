@@ -33,8 +33,6 @@ import java.io.IOException;
 @Singleton
 public class EasyFormRest {
 
-  private static final String LEGAL_NAME_PATTERN = "[a-zA-Z_][a-zA-Z0-9_]*";
-
   @Inject
   private EasyFormService easyformService;
 
@@ -53,9 +51,6 @@ public class EasyFormRest {
                     @FormParam("value") String value,
                     @FormParam("publish") Boolean publish)
       throws IOException, InterruptedException {
-    if (!name.matches(LEGAL_NAME_PATTERN)) {
-      return ("name is illegal for notebook namespace: \'" + name + "\'");
-    }
     this.easyformService.set(session, name, value, publish);
     return "ok";
   }

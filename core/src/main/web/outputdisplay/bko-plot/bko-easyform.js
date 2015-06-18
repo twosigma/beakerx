@@ -29,7 +29,8 @@
             link: function (scope, element, attrs) {
 
               var component = scope.component;
-              scope.ngModelAttr = component.label;
+              scope.componentId = component.label;
+              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
 
               if (!component.width
                   || component.width < EasyFormConstants.Components.TextField.MIN_WIDTH) {
@@ -37,8 +38,7 @@
               }
               element.find('#textFieldLabel').text(component.label);
               var textField = element.find('#textField');
-              textField.attr('data-easyform-label', component.label)
-                  .attr('data-ng-model', component.label)
+              textField.attr('data-ng-model', scope.ngModelAttr)
                   .css('width', component.width);
 
               var watchedExpression = function (scope) {
@@ -47,7 +47,7 @@
 
               var valueChangeHandler = function (newValue, oldValue) {
                 EasyFormService.setComponentValue(scope.component, newValue);
-                bkUtils.setEasyFormValue(scope.ngModelAttr, newValue,
+                bkUtils.setEasyFormValue(scope.componentId, newValue,
                     bkSessionManager.getSessionId());
               };
 
@@ -57,7 +57,7 @@
                 var session = args.data.session;
                 var name = args.data.name;
                 if (session && session == bkSessionManager.getSessionId()
-                    && name && name == scope.ngModelAttr) {
+                    && name && name == scope.componentId) {
                   scope[scope.ngModelAttr] = args.data.value;
                 }
               });
@@ -66,7 +66,7 @@
                 var session = args.data.session;
                 var label = args.data.label;
                 if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.ngModelAttr) {
+                    && label && label == scope.componentId) {
                   scope.component.enabled = args.data.enabled;
                 }
               });
@@ -96,19 +96,19 @@
                 "</div>",
             link: function (scope, element, attrs) {
               var component = scope.component;
-              scope.ngModelAttr = component.label;
+              scope.componentId = component.label;
+              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
 
               element.find('#textAreaLabel').text(component.label);
               var textArea = element.find('#textArea');
-              textArea.attr('data-easyform-label', component.label)
-                  .attr('data-ng-model', component.label);
+              textArea.attr('data-ng-model', scope.ngModelAttr);
 
               var watchedExpression = function (scope) {
                 return scope[scope.ngModelAttr];
               };
               var valueChangeHandler = function (newValue, oldValue) {
                 EasyFormService.setComponentValue(component, newValue);
-                bkUtils.setEasyFormValue(scope.ngModelAttr, newValue,
+                bkUtils.setEasyFormValue(scope.componentId, newValue,
                     bkSessionManager.getSessionId());
               };
               scope.$watch(watchedExpression, valueChangeHandler);
@@ -118,7 +118,7 @@
                   var session = args.data.session;
                   var name = args.data.name;
                   if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.ngModelAttr) {
+                      && name && name == scope.componentId) {
                     scope[scope.ngModelAttr] = args.data.value;
                   }
                 }
@@ -128,7 +128,7 @@
                 var session = args.data.session;
                 var label = args.data.label;
                 if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.ngModelAttr) {
+                    && label && label == scope.componentId) {
                   scope.component.enabled = args.data.enabled;
                 }
               });
@@ -158,13 +158,13 @@
                 "</div>",
             link: function (scope, element, attrs) {
               var component = scope.component;
-              scope.ngModelAttr = component.label;
+              scope.componentId = component.label;
+              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
 
               element.find('#checkBoxLabel').text(component.label);
               var checkBox = element.find('#checkBox');
 
-              checkBox.attr('data-easyform-label', component.label)
-                  .attr('data-ng-model', component.label);
+              checkBox.attr('data-ng-model', scope.ngModelAttr);
 
               if (component.value && 'true' == component.value) {
                 checkBox.attr('checked', 'true');
@@ -175,7 +175,7 @@
               };
               var valueChangeHandler = function (newValue, oldValue) {
                 EasyFormService.setComponentValue(component, newValue);
-                bkUtils.setEasyFormValue(scope.ngModelAttr, newValue,
+                bkUtils.setEasyFormValue(scope.componentId, newValue,
                     bkSessionManager.getSessionId());
               };
               scope.$watch(watchedExpression, valueChangeHandler);
@@ -185,7 +185,7 @@
                   var session = args.data.session;
                   var name = args.data.name;
                   if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.ngModelAttr) {
+                      && name && name == scope.componentId) {
                     scope[scope.ngModelAttr] = args.data.value;
                   }
                 }
@@ -195,7 +195,7 @@
                 var session = args.data.session;
                 var label = args.data.label;
                 if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.ngModelAttr) {
+                    && label && label == scope.componentId) {
                   scope.component.enabled = args.data.enabled;
                 }
               });
@@ -236,7 +236,8 @@
                   scope.values.push(obj);
                 });
               }
-              scope.ngModelAttr = component.label;
+              scope.componentId = component.label;
+              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
               element.find('#checkBoxGroupLabel').text(component.label);
               scope.horizontal
                   = component.isHorizontal && 'true' == component.isHorizontal.toString();
@@ -246,7 +247,7 @@
               };
               var valueChangeHandler = function (newValue, oldValue) {
                 EasyFormService.setComponentValue(component, JSON.stringify(newValue));
-                bkUtils.setEasyFormValue(scope.ngModelAttr, JSON.stringify(newValue),
+                bkUtils.setEasyFormValue(scope.componentId, JSON.stringify(newValue),
                     bkSessionManager.getSessionId());
               };
               scope.$watch(watchedExpression, valueChangeHandler);
@@ -256,7 +257,7 @@
                   var session = args.data.session;
                   var name = args.data.name;
                   if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.ngModelAttr) {
+                      && name && name == scope.componentId) {
                     scope.values = JSON.parse(args.data.value);
                   }
                 }
@@ -266,7 +267,7 @@
                 var session = args.data.session;
                 var label = args.data.label;
                 if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.ngModelAttr) {
+                    && label && label == scope.componentId) {
                   scope.component.enabled = args.data.enabled;
                 }
               });
@@ -294,13 +295,13 @@
                 "</div>",
             link: function (scope, element, attrs) {
               var component = scope.component;
-              scope.ngModelAttr = component.label;
+              scope.componentId = component.label;
+              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
 
               element.find('#comboBoxLabel').text(component.label);
               var comboBox = element.find('#comboBox');
 
-              comboBox.attr('data-easyform-label', component.label)
-                  .attr('data-ng-model', component.label);
+              comboBox.attr('data-ng-model', component.label);
 
               if (!component.editable || 'false' == component.editable) {
                 comboBox.attr('disabled', 'true');
@@ -315,7 +316,7 @@
               };
               var valueChangeHandler = function (newValue, oldValue) {
                 EasyFormService.setComponentValue(component, JSON.stringify(newValue));
-                bkUtils.setEasyFormValue(scope.ngModelAttr, JSON.stringify(newValue),
+                bkUtils.setEasyFormValue(scope.componentId, JSON.stringify(newValue),
                     bkSessionManager.getSessionId());
               };
               scope.$watch(watchedExpression, valueChangeHandler);
@@ -325,7 +326,7 @@
                   var session = args.data.session;
                   var name = args.data.name;
                   if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.ngModelAttr) {
+                      && name && name == scope.componentId) {
                     scope[scope.ngModelAttr] = JSON.parse(args.data.value);
                   }
                 }
@@ -335,7 +336,7 @@
                 var session = args.data.session;
                 var label = args.data.label;
                 if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.ngModelAttr) {
+                    && label && label == scope.componentId) {
                   scope.components.enabled = args.data.enabled;
                 }
               });
@@ -368,13 +369,13 @@
                 "</div>",
             link: function (scope, element, attrs) {
               var component = scope.component;
-              scope.ngModelAttr = component.label;
+              scope.componentId = component.label;
+              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
 
               element.find('#listComponentLabel').text(component.label);
               var listComponent = element.find('#listComponent');
 
-              listComponent.attr('data-easyform-label', component.label)
-                  .attr('data-ng-model', component.label);
+              listComponent.attr('data-ng-model', scope.ngModelAttr);
 
               if (component.multipleSelection && 'true' == component.multipleSelection) {
                 listComponent.attr('multiple', 'true');
@@ -397,7 +398,7 @@
               };
               var valueChangeHandler = function (newValue, oldValue) {
                 EasyFormService.setComponentValue(component, JSON.stringify(newValue));
-                bkUtils.setEasyFormValue(scope.ngModelAttr, JSON.stringify(newValue),
+                bkUtils.setEasyFormValue(scope.componentId, JSON.stringify(newValue),
                     bkSessionManager.getSessionId());
               };
               scope.$watch(watchedExpression, valueChangeHandler);
@@ -407,7 +408,7 @@
                   var session = args.data.session;
                   var name = args.data.name;
                   if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.ngModelAttr) {
+                      && name && name == scope.componentId) {
                     scope[scope.ngModelAttr] = JSON.parse(args.data.value);
                   }
                 }
@@ -417,7 +418,7 @@
                 var session = args.data.session;
                 var label = args.data.label;
                 if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.ngModelAttr) {
+                    && label && label == scope.componentId) {
                   scope.component.enabled = args.data.enabled;
                 }
               });
@@ -448,7 +449,8 @@
                 "</div>",
             link: function (scope, element, attrs) {
               var component = scope.component;
-              scope.ngModelAttr = component.label;
+              scope.componentId = component.label;
+              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
 
               element.find('#radioButtonComponentLabel').text(component.label);
 
@@ -468,7 +470,7 @@
                   var radioButton
                       = angular.element('<input type="radio" class="radio-button-component-item"'
                       + ' data-ng-disabled="!component.enabled"/>')
-                      .attr('data-ng-model', component.label)
+                      .attr('data-ng-model', scope.ngModelAttr)
                       .attr('value', value);
                   var textSpanElement =
                       angular.element('<span class="radio-button-item-text"></span>')
@@ -486,7 +488,7 @@
               };
               var valueChangeHandler = function (newValue, oldValue) {
                 EasyFormService.setComponentValue(component, newValue);
-                bkUtils.setEasyFormValue(scope.ngModelAttr, newValue,
+                bkUtils.setEasyFormValue(scope.componentId, newValue,
                     bkSessionManager.getSessionId());
               };
               scope.$watch(watchedExpression, valueChangeHandler);
@@ -496,7 +498,7 @@
                   var session = args.data.session;
                   var name = args.data.name;
                   if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.ngModelAttr) {
+                      && name && name == scope.componentId) {
                     scope[scope.ngModelAttr] = args.data.value;
                   }
                 }
@@ -506,7 +508,7 @@
                 var session = args.data.session;
                 var label = args.data.label;
                 if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.ngModelAttr) {
+                    && label && label == scope.componentId) {
                   scope.component.enabled = args.data.enabled;
                 }
               });
@@ -536,12 +538,12 @@
                 "</div>",
             link: function (scope, element, attrs) {
               var component = scope.component;
-              scope.ngModelAttr = component.label;
+              scope.componentId = component.label;
+              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
 
               element.find('#datePickerLabel').text(component.label);
               var datePicker = element.find('#datePicker');
-              datePicker.attr('data-easyform-label', component.label)
-                  .attr('data-ng-model', component.label);
+              datePicker.attr('data-ng-model', scope.ngModelAttr);
 
               if (component.showTime && 'true' == component.showTime) {
                 datePicker.attr('type', 'datetime');
@@ -552,7 +554,7 @@
               };
               var valueChangeHandler = function (newValue, oldValue) {
                 EasyFormService.setComponentValue(component, newValue);
-                bkUtils.setEasyFormValue(scope.ngModelAttr, newValue,
+                bkUtils.setEasyFormValue(scope.componentId, newValue,
                     bkSessionManager.getSessionId());
               };
               scope.$watch(watchedExpression, valueChangeHandler);
@@ -562,7 +564,7 @@
                   var session = args.data.session;
                   var name = args.data.name;
                   if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.ngModelAttr) {
+                      && name && name == scope.componentId) {
                     scope[scope.ngModelAttr] = args.data.value;
                   }
                 }
@@ -572,7 +574,7 @@
                 var session = args.data.session;
                 var label = args.data.label;
                 if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.ngModelAttr) {
+                    && label && label == scope.componentId) {
                   scope.component.enabled = args.data.enabled;
                 }
               })

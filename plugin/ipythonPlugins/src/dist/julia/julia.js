@@ -54,6 +54,16 @@ define(function(require, exports, module) {
           shellID = myPython.utils.uuid();
         }
 
+        var theCookies = document.cookie.split(';');
+        for (var i = 0 ; i < theCookies.length; i++) {
+          if (theCookies[i].startsWith(' username-127-0-0-1-')) {            
+            var theCookie = theCookies[i].split('=');
+            var date = new Date();
+            date.setDate(date.getDate() -1);
+            document.cookie = theCookie[0] + '=;expires=' + date;
+          }
+        }
+        
         bkHelper.httpGet(bkHelper.serverUrl("beaker/rest/plugin-services/getIPythonPassword"),
                          {pluginId: PLUGIN_NAME}).success(function(result) {
                            bkHelper.spinUntilReady(bkHelper.serverUrl(serviceBase + "/login")).then(function () {

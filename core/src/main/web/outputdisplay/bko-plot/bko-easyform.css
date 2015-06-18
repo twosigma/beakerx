@@ -14,107 +14,137 @@
  *  limitations under the License.
  */
 .text-field-label {
-    margin: 0 10px;
-    min-width: 100px;
+  margin: 0 10px;
+  min-width: 100px;
 }
+
 .text-area-label {
-    vertical-align: top;
-    margin: 5px 10px;
-    min-width: 100px;
+  vertical-align: top;
+  margin: 5px 10px;
+  min-width: 100px;
 }
+
 .check-box-label {
-    margin: 0 10px;
-    min-width: 100px;
+  margin: 0 10px;
+  min-width: 100px;
 }
+
 .combo-box-label {
-    margin: 0 10px;
-    min-width: 100px;
+  margin: 0 10px;
+  min-width: 100px;
 }
+
 .list-component-label {
-    margin: 0 10px;
-    min-width: 100px;
+  margin: 0 10px;
+  min-width: 100px;
 }
+
 .check-box-group-label {
-    margin: 0 10px;
-    min-width: 100px;
-    float: left;
+  margin: 0 10px;
+  min-width: 100px;
+  float: left;
 }
+
 .check-box-group-item-label {
-    margin: 0 5px;
+  margin: 0 5px;
 }
+
 .check-box-group-item-label.vertical {
-    display: table-row;
+  display: table-row;
 }
+
 .check-box-group-item-label.horizontal {
 }
+
 .date-picker-label {
-    margin: 0 10px;
-    min-width: 100px;
+  margin: 0 10px;
+  min-width: 100px;
 }
+
 .radio-button-label {
-    margin: 0 10px;
-    min-width: 100px;
-    float: left;
+  margin: 0 10px;
+  min-width: 100px;
+  float: left;
 }
+
 .radio-button-items-container {
-    display: table;
-    width: 80%;
+  display: table;
+  width: 80%;
 }
+
 .radio-button-item-text {
-    width: 10%;
+  width: 10%;
 }
+
 .radio-button-item-text.vertical {
-    display: table-cell;
+  display: table-cell;
 }
+
 .radio-button-item-text.horizontal {
 }
+
 .radio-button-item-label {
-    margin-top: 5px;
+  margin-top: 5px;
 }
+
 .radio-button-item-label.vertical {
-    display: table-row;
+  display: table-row;
 }
+
 .radio-button-item-label.horizontal {
-    display: table-cell;
+  display: table-cell;
 }
+
 input[type="radio"].radio-button-component-item {
-    margin: 0 10px;
-    vertical-align: middle;
+  margin: 0 10px;
+  vertical-align: middle;
 }
+
 input[type="radio"].radio-button-component-item.vertical {
-    display: table-cell;
+  display: table-cell;
 }
+
 input[type="radio"].radio-button-component-item.horizontal {
 }
+
 input.check-box {
-    height: 25px;
-    vertical-align: middle;
+  height: 25px;
+  vertical-align: middle;
 }
+
 input.date-picker {
-    height: 25px;
-    width: 120px;
+  height: 25px;
+  width: 120px;
 }
+
 .text-field-container {
-    margin: 10px 0;
+  margin: 10px 0;
 }
+
 .text-area-container {
-    margin: 10px 0;
+  margin: 10px 0;
 }
+
 .check-box-container {
-    margin: 10px 0;
+  margin: 10px 0;
 }
+
 .combo-box-container {
-    margin: 10px 0;
+  margin: 10px 0;
 }
+
 .list-component-container {
-    margin: 10px 0;
+  margin: 10px 0;
 }
+
 .radio-button-container {
-    margin: 10px 0;
+  margin: 10px 0;
 }
+
 .date-picker-container {
-    margin: 10px 0;
+  margin: 10px 0;
 }
+
 .button-component-container {
-    margin: 10px 0;
+  margin: 10px 0;
 }

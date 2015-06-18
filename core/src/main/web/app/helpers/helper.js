@@ -63,12 +63,18 @@
       newSession: function(empty) {
         return bkCoreManager.newSession(empty);
       },
-
       openWindow: function(path) {
         if (bkHelper.isElectron) {
-          var shortcutWindow = new bkHelper.Electron.BrowserWindow({
-          });
-          shortcutWindow.loadUrl(bkHelper.serverUrl('beaker/' + path));
+          var newWindow = new bkHelper.Electron.BrowserWindow({});
+          newWindow.loadUrl(bkUtils.getBaseUrl() + path);
+        } else {
+          window.open('./' + path);
+        }
+      },
+      openStaticWindow: function(path) {
+        if (bkHelper.isElectron) {
+          var newWindow = new bkHelper.Electron.BrowserWindow({});
+          newWindow.loadUrl(bkHelper.serverUrl('beaker/' + path));
         } else {
           window.open('./' + path);
         }

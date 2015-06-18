@@ -25,6 +25,7 @@ var eventEmitter = new events.EventEmitter();
 
 var java_home = path.resolve(__dirname + '/../jre/Contents/Home'); 
 var backend;
+var mainMenuTemplate;
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -42,7 +43,9 @@ var mainWindow = null;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
-  // app.quit();
+  // If all windows are dead, must handle menus from main thread (this thread)
+  var menu = Menu.buildFromTemplate(mainMenuTemplate);
+  Menu.setApplicationMenu(menu); 
 });
 
 // This method will be called when Electron has done everything
@@ -54,13 +57,13 @@ app.on('ready', function() {
   eventEmitter.on('backendReady', function(data) {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-      width: 1500,
-      height: 1000,
       // node-integration': false,
-      icon: 'beaker.png'
+      width: 1500,
+      height: 1000
     });
     
     mainWindow.loadUrl(data.beakerUrl);
+    mainMenuTemplate = require('./main-menu-template.js')(data.beakerUrl);
 
     // Open the devtools.
     mainWindow.openDevTools();

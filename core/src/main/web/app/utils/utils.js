@@ -94,6 +94,13 @@
         return commonUtils.saveAsClientFile(data, filename);
       },
 
+      // give the angular base URL
+      // This function is a HACK: '$location' should probably be used instead of
+      // 'location', but '$location' seems to return the wron path.
+      getBaseUrl: function() {
+        return location.protocol + '//' + location.host + location.pathname + '#';
+      },
+
       // wrap angularUtils
       refreshRootScope: function() {
         angularUtils.refreshRootScope();
@@ -362,7 +369,6 @@
             {
               label: 'Quit',
               click: function() {
-                console.log(bkUtils.Electron.IPC);
                 bkUtils.Electron.IPC.send('quit');
               },
               accelerator: 'Command+Q'

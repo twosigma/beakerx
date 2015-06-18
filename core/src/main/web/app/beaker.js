@@ -306,21 +306,13 @@
           return ret;
         },
         newSession: function(empty) {
-          if (bkUtils.isElectron){
-            var newWindow = null;
-            newWindow = new bkUtils.Electron.BrowserWindow({
-              width: 1500,
-              height: 1000,
-              // node-integration': false,
-              icon: 'beaker.png'
-            });
-            newWindow.openDevTools();
-            newWindow.loadUrl($location.absUrl() + '/../session/empty');
-            return;
-          }
           var name = "/session/new";
           if (empty) {
             name = "/session/empty";
+          }
+          if (bkUtils.isElectron){
+            bkHelper.openWindow(name);
+            return;
           }
           if ($location.$$path === name) {
             return $route.reload();

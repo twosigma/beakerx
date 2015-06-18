@@ -175,14 +175,12 @@
           return bkEvaluatorManager.getEvaluator($scope.cellmodel.evaluator);
         };
         $scope.updateUI = function(evaluator) {
+          $scope.cellmodel.evaluatorReader = Boolean(evaluator);
           if ($scope.cm && evaluator) {
             $scope.cm.setOption('mode', evaluator.cmMode);
             if (evaluator.indentSpaces) {
               $scope.cm.setOption('indentUnit', evaluator.indentSpaces);
             }
-            $timeout(function() {
-              $scope.cellmodel.evaluatorReader = true;
-            });
           }
         };
         $scope.$watch('getEvaluator()', function(newValue, oldValue) {

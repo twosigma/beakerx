@@ -78,7 +78,7 @@ define(function(require, exports, module) {
                   {notebook : {name : "fakename" + shellID,
                                path : "/some/path" + shellID}} :
                 {kernel: {id: shellID,
-                          name: "julia 0.3"},
+                          name: "julia-0.3"},
                  notebook: {path: "/fake/path" + shellID}
                 };
                 var fakeNotebook = {

@@ -35,9 +35,17 @@ import java.util.Map;
 
 public class EasyForm {
 
+  public static Integer HORIZONTAL = 1;
+  public static Integer VERTICAL = 2;
+
+  private final String caption;
   private Map<String, EasyFormComponent> componentMap = new LinkedHashMap<>();
   private SaveValuesButton saveValuesButton;
   private LoadValuesButton loadValuesButton;
+
+  public EasyForm(final String caption) {
+    this.caption = caption;
+  }
 
   public void addSaveValuesButton(final String path) {
     SaveValuesButton button = new SaveValuesButton();
@@ -74,6 +82,10 @@ public class EasyForm {
     addComponentOrThrow(label, textArea);
   }
 
+  public void addCheckBox(final String label) throws Exception {
+    addCheckBox(label, Boolean.FALSE);
+  }
+
   public void addCheckBox(final String label, final Boolean value) throws Exception {
     CheckBox checkBox = new CheckBox();
     checkBox.setLabel(label);
@@ -82,8 +94,13 @@ public class EasyForm {
   }
 
   public void addComboBox(final String label,
-                          final Boolean editable,
                           final Collection<String> values) throws Exception {
+    addComboBox(label, values, Boolean.FALSE);
+  }
+
+  public void addComboBox(final String label,
+                          final Collection<String> values,
+                          final Boolean editable) throws Exception {
     ComboBox comboBox = new ComboBox();
     comboBox.setLabel(label);
     comboBox.setEditable(editable);
@@ -92,9 +109,26 @@ public class EasyForm {
   }
 
   public void addList(final String label,
-                      final Integer size,
-                      final Boolean multipleSelection,
                       final Collection<String> values) throws Exception {
+    addList(label, values, Boolean.TRUE, values.size());
+  }
+
+  public void addList(final String label,
+                      final Collection<String> values,
+                      final Boolean multipleSelection) throws Exception {
+    addList(label, values, multipleSelection, values.size());
+  }
+
+  public void addList(final String label,
+                      final Collection<String> values,
+                      final Integer size) throws Exception {
+    addList(label, values, Boolean.TRUE, size);
+  }
+
+  public void addList(final String label,
+                      final Collection<String> values,
+                      final Boolean multipleSelection,
+                      final Integer size) throws Exception {
     ListComponent list = new ListComponent();
     list.setLabel(label);
     list.setSize(size);
@@ -104,23 +138,42 @@ public class EasyForm {
   }
 
   public void addRadioButtons(final String label,
-                              final Boolean isHorizontal,
                               final Collection<String> values) throws Exception {
+    addRadioButtons(label, values, EasyForm.VERTICAL);
+  }
+
+  public void addRadioButtons(final String label,
+                              final Collection<String> values,
+                              final Integer orientation) throws Exception {
     RadioButtonComponent radioButtonComponent = new RadioButtonComponent();
     radioButtonComponent.setLabel(label);
-    radioButtonComponent.setHorizontal(isHorizontal);
+    radioButtonComponent.setHorizontal(
+        orientation != null && EasyForm.HORIZONTAL.equals(orientation));
     radioButtonComponent.setValues(values);
     addComponentOrThrow(label, radioButtonComponent);
   }
 
-  public void addCheckBoxGroup(final String label,
-                               final Boolean isHorizontal,
-                               final Collection<String> values) throws Exception {
+  public void addCheckBoxes(final String label,
+                            final Collection<String> values) throws Exception {
+    addCheckBoxes(label, values, EasyForm.VERTICAL);
+  }
+
+  public void addCheckBoxes(final String label,
+                            final Collection<String> values,
+                            final Integer orientation) throws Exception {
     CheckBoxGroup checkBoxGroup = new CheckBoxGroup();
     checkBoxGroup.setLabel(label);
-    checkBoxGroup.setHorizontal(isHorizontal);
+    checkBoxGroup.setHorizontal(orientation != null && EasyForm.HORIZONTAL.equals(orientation));
     checkBoxGroup.setValues(values);
     addComponentOrThrow(label, checkBoxGroup);
+  }
+
+  public void addDatePicker(final String label) throws Exception {
+    addDatePicker(label, Boolean.FALSE);
+  }
+
+  public void addDateTimePicker(final String label) throws Exception {
+    addDatePicker(label, Boolean.TRUE);
   }
 
   public void addDatePicker(final String label, final Boolean showTime) throws Exception {
@@ -172,4 +225,9 @@ public class EasyForm {
   public LoadValuesButton getLoadValuesButton() {
     return loadValuesButton;
   }
+
+  public String getCaption() {
+    return caption;
+  }
+
 }

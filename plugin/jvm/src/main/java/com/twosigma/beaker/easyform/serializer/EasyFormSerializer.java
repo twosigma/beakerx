@@ -31,6 +31,7 @@ public class EasyFormSerializer extends JsonSerializer<EasyForm> {
                         final SerializerProvider serializerProvider) throws IOException {
     jgen.writeStartObject();
     jgen.writeObjectField("type", easyForm.getClass().getSimpleName());
+    jgen.writeStringField("caption", easyForm.getCaption());
     if (easyForm.hasComponents()) {
       jgen.writeArrayFieldStart("components");
       for (EasyFormComponent component : easyForm.getComponentMap().values()) {

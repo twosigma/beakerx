@@ -676,11 +676,18 @@
             });
 
         var model = scope.model.getCellModel();
+        var easyFormContainer = element.find('#easyFormContainer');
+
+        if (model.caption) {
+          var fieldsetElement = angular.element('<fieldset></fieldset>');
+          var legendElement = angular.element('<legend></legend>').text(model.caption);
+          easyFormContainer.append(fieldsetElement.append(legendElement));
+          easyFormContainer = legendElement;
+        }
 
         if (model.components) {
           model.components.forEach(function (component) {
 
-            var easyFormContainer = element.find('#easyFormContainer');
             var childScope = scope.$new();
             childScope.component = component;
             var newElement = angular.element(EasyFormConstants.Components[component.type].htmlTag);

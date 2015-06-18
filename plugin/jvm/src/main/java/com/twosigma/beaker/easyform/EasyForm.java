@@ -57,6 +57,10 @@ public class EasyForm {
     }
   }
 
+  public void addTextField(final String label) throws Exception {
+    addTextField(label, TextField.MIN_WIDTH);
+  }
+
   public void addTextField(final String label, final Integer width) throws Exception {
     TextField textField = new TextField();
     textField.setLabel(label);

@@ -30,7 +30,7 @@
 
               var component = scope.component;
               scope.componentId = component.label;
-              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
+              scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
 
               if (!component.width
                   || component.width < EasyFormConstants.Components.TextField.MIN_WIDTH) {
@@ -97,7 +97,7 @@
             link: function (scope, element, attrs) {
               var component = scope.component;
               scope.componentId = component.label;
-              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
+              scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
 
               element.find('#textAreaLabel').text(component.label);
               var textArea = element.find('#textArea');
@@ -159,7 +159,7 @@
             link: function (scope, element, attrs) {
               var component = scope.component;
               scope.componentId = component.label;
-              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
+              scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
 
               element.find('#checkBoxLabel').text(component.label);
               var checkBox = element.find('#checkBox');
@@ -237,7 +237,7 @@
                 });
               }
               scope.componentId = component.label;
-              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
+              scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
               element.find('#checkBoxGroupLabel').text(component.label);
               scope.horizontal
                   = component.isHorizontal && 'true' == component.isHorizontal.toString();
@@ -296,7 +296,7 @@
             link: function (scope, element, attrs) {
               var component = scope.component;
               scope.componentId = component.label;
-              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
+              scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
 
               element.find('#comboBoxLabel').text(component.label);
               var comboBox = element.find('#comboBox');
@@ -370,7 +370,7 @@
             link: function (scope, element, attrs) {
               var component = scope.component;
               scope.componentId = component.label;
-              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
+              scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
 
               element.find('#listComponentLabel').text(component.label);
               var listComponent = element.find('#listComponent');
@@ -450,7 +450,7 @@
             link: function (scope, element, attrs) {
               var component = scope.component;
               scope.componentId = component.label;
-              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
+              scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
 
               element.find('#radioButtonComponentLabel').text(component.label);
 
@@ -539,7 +539,7 @@
             link: function (scope, element, attrs) {
               var component = scope.component;
               scope.componentId = component.label;
-              scope.ngModelAttr = bkUtils.removeSpecialChars(component.label);
+              scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
 
               element.find('#datePickerLabel').text(component.label);
               var datePicker = element.find('#datePicker');

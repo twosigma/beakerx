@@ -70,6 +70,10 @@ public class EasyForm extends Observable implements Map<String, Object> {
     addTextField(label, TextField.MIN_WIDTH);
   }
 
+  public void addTextField(final String label) throws Exception {
+    addTextField(label, TextField.MIN_WIDTH);
+  }
+
   public void addTextField(final String label, final Integer width) throws Exception {
     TextField textField = new TextField();
     textField.setLabel(label);

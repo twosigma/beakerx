@@ -21,7 +21,7 @@
     <i class='fa fa-times-circle fa-lg text-danger cursor_hand'
        ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
   </div>
-  <div class="progress" style="width: 150px; float: left; margin-left: 30px;">
+  <div class="progress" style="width: 150px; float: left; margin-left: 30px;" ng-if='hasProgressBar()'>
 	<div class="progress-bar" role="progressbar"
                      aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100"
                      style="width: {{getProgressBar()}}%;">

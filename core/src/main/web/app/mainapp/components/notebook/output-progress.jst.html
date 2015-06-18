@@ -14,23 +14,21 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div ng-if='elapsed > 200' class='row'>
-  <div class='col-sm-2'>
-      <i class='fa fa-cog fa-spin fa-lg'></i>
-      <span> &nbsp; Elapsed: {{getElapsedTime()}} &nbsp; </span>
-      <i class='fa fa-times-circle fa-lg text-danger cursor_hand'
-         ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
+<div ng-if='elapsed > 200'>
+  <div style="float: left">
+    <i class='fa fa-cog fa-spin fa-lg'></i>
+    <span> &nbsp; Elapsed: {{getElapsedTime()}} &nbsp; </span>
+    <i class='fa fa-times-circle fa-lg text-danger cursor_hand'
+       ng-click='cancel()' ng-if='isCancellable()' title='cancel'></i>
   </div>
-  <div class='col-sm-2' ng-if='hasProgressBar()'>
-	  <div class="progress">
-		  <div class="progress-bar" role="progressbar"
-                       aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100"
-                       style="width: {{getProgressBar()}}%;">
-		    {{getProgressBar()}} %
-		  </div>
-	  </div>
+  <div class="progress" style="width: 150px; float: left; margin-left: 30px;">
+	<div class="progress-bar" role="progressbar"
+                     aria-valuenow="{{getProgressBar()}}" aria-valuemin="0" aria-valuemax="100"
+                     style="width: {{getProgressBar()}}%;">
+	    {{getProgressBar()}} %
+	</div>
   </div>
-  <div ng-if='hasMessage()' class='col-sm-8'> {{getMessage()}}</div>
+  <div ng-if='hasMessage()' style="float: left; margin-left: 30px;">{{getMessage()}}</div><br/>
 </div>
 <div ng-if='hasPayload() || hasOutputData()' >
   <hr>

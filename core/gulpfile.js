@@ -128,8 +128,15 @@ gulp.task("buildSingleOutDispJs", function() {
   .pipe(gulp.dest(buildPath));
 });
 
+gulp.task("compileVendorScss", function() {
+  return gulp.src(Path.join(rootPath, "vendor.scss"))
+  .pipe(sass().on('error', handleError))
+  .pipe(importCss())
+  .pipe(gulp.dest(tempPath));
+});
+
 gulp.task("compileBeakerScss", function() {
-  return gulp.src(Path.join(rootPath, "**.scss"))
+  return gulp.src(Path.join(rootPath, "app.scss"))
   .pipe(sourcemaps.init())
   .pipe(sass().on('error', handleError))
   .pipe(importCss())
@@ -352,7 +359,7 @@ gulp.task("namespaceCss", function(cb) {
 });
 
 gulp.task("compile", function(cb) {
-  var seq = ["compileBeakerScss", "compileBeakerTemplates"];
+  var seq = ["compileBeakerScss", "compileVendorScss", "compileBeakerTemplates"];
   if (argv.embed) {
     seq.push("namespaceCss");
   }

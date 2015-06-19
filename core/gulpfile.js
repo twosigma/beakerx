@@ -38,12 +38,12 @@ var es = require('event-stream');
 var fs = require('fs');
 var sourcemaps = require('gulp-sourcemaps');
 
-var srcPath  = Path.join(__dirname, "/src/main/web/");
-var pluginPath  = Path.join(__dirname, "/src/main/web/plugin/");
-var rootPath  = Path.join(__dirname, "/src/main/web/app/");
-var root2Path  = Path.join(__dirname, "/src/main/web/outputdisplay/");
-var buildPath = Path.join(__dirname, "/src/main/web/app/dist/");
-var tempPath = Path.join(__dirname, "/src/main/web/app/temp/");
+var srcPath  = Path.join(__dirname, "src", "main", "web");
+var pluginPath  = Path.join(__dirname, "src", "main", "web", "plugin");
+var rootPath  = Path.join(__dirname, "src", "main", "web", "app");
+var root2Path  = Path.join(__dirname, "src", "main", "web", "outputdisplay");
+var buildPath = Path.join(__dirname, "src", "main", "web", "app", "dist");
+var tempPath = Path.join(__dirname, "src", "main", "web", "app", "temp");
 
 var banner = ['/*',
               ' *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC',

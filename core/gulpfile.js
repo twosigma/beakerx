@@ -38,12 +38,12 @@ var es = require('event-stream');
 var fs = require('fs');
 var sourcemaps = require('gulp-sourcemaps');
 
-var srcPath  = Path.join(__dirname, "src", "main", "web");
-var pluginPath  = Path.join(__dirname, "src", "main", "web", "plugin");
-var rootPath  = Path.join(__dirname, "src", "main", "web", "app");
-var root2Path  = Path.join(__dirname, "src", "main", "web", "outputdisplay");
-var buildPath = Path.join(__dirname, "src", "main", "web", "app", "dist");
-var tempPath = Path.join(__dirname, "src", "main", "web", "app", "temp");
+var srcPath  = Path.join(__dirname, "/src/main/web/");
+var pluginPath  = Path.join(__dirname, "/src/main/web/plugin/");
+var rootPath  = Path.join(__dirname, "/src/main/web/app/");
+var root2Path  = Path.join(__dirname, "/src/main/web/outputdisplay/");
+var buildPath = Path.join(__dirname, "/src/main/web/app/dist/");
+var tempPath = Path.join(__dirname, "/src/main/web/app/temp/");
 
 var banner = ['/*',
               ' *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC',
@@ -128,15 +128,8 @@ gulp.task("buildSingleOutDispJs", function() {
   .pipe(gulp.dest(buildPath));
 });
 
-gulp.task("compileVendorScss", function() {
-  return gulp.src(Path.join(rootPath, "vendor.scss"))
-  .pipe(sass().on('error', handleError))
-  .pipe(importCss())
-  .pipe(gulp.dest(tempPath));
-});
-
 gulp.task("compileBeakerScss", function() {
-  return gulp.src(Path.join(rootPath, "app.scss"))
+  return gulp.src(Path.join(rootPath, "**.scss"))
   .pipe(sourcemaps.init())
   .pipe(sass().on('error', handleError))
   .pipe(importCss())
@@ -191,7 +184,7 @@ gulp.task("compileBeakerTemplates", function() {
 });
 
 function getFilePathArrayFromList(basePath, listPath) {
-  return fs.readFileSync(Path.join(basePath, listPath))
+  return fs.readFileSync(basePath + listPath)
   .toString().split('\n')
   .filter(function(n) {
     return n !== undefined && n.trim() !== ''
@@ -199,7 +192,7 @@ function getFilePathArrayFromList(basePath, listPath) {
 }
 
 gulp.task('buildOutputDisplayTemplate', function () {
-  var thePath = Path.join(pluginPath, 'template');
+  var thePath = pluginPath + 'template/';
 
   if (argv.outdisp) {
     thePath = argv.outdisp + '/';
@@ -359,7 +352,7 @@ gulp.task("namespaceCss", function(cb) {
 });
 
 gulp.task("compile", function(cb) {
-  var seq = ["compileBeakerScss", "compileVendorScss", "compileBeakerTemplates"];
+  var seq = ["compileBeakerScss", "compileBeakerTemplates"];
   if (argv.embed) {
     seq.push("namespaceCss");
   }

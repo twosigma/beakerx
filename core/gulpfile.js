@@ -191,7 +191,7 @@ gulp.task("compileBeakerTemplates", function() {
 });
 
 function getFilePathArrayFromList(basePath, listPath) {
-  return fs.readFileSync(basePath + listPath)
+  return fs.readFileSync(Path.join(basePath, listPath))
   .toString().split('\n')
   .filter(function(n) {
     return n !== undefined && n.trim() !== ''
@@ -199,7 +199,7 @@ function getFilePathArrayFromList(basePath, listPath) {
 }
 
 gulp.task('buildOutputDisplayTemplate', function () {
-  var thePath = pluginPath + 'template/';
+  var thePath = Path.join(pluginPath, 'template');
 
   if (argv.outdisp) {
     thePath = argv.outdisp + '/';

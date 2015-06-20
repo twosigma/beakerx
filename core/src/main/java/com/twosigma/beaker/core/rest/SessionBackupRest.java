@@ -40,6 +40,8 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
+import org.cometd.bayeux.server.BayeuxServer;
+import org.cometd.bayeux.server.LocalSession;
 
 /**
  * The service that backs up session to file that offers a RESTful API
@@ -51,11 +53,16 @@ public class SessionBackupRest {
 
   private final File backupDirectory;
   private final GeneralUtils utils;
+  private BayeuxServer bayeux;
+  private LocalSession localSession;
 
   @Inject
-  public SessionBackupRest(BeakerConfig bkConfig, GeneralUtils utils) {
+  public SessionBackupRest(BeakerConfig bkConfig, GeneralUtils utils, BayeuxServer bayeuxServer) {
     this.backupDirectory = new File(bkConfig.getSessionBackupsDirectory());
     this.utils = utils;
+    this.bayeux = bayeuxServer;
+    this.localSession = bayeuxServer.newLocalSession(getClass().getCanonicalName());
+    this.localSession.handshake();
   }
 
   public static class Session {
@@ -117,6 +124,12 @@ public class SessionBackupRest {
     }
     this.sessions.put(sessionId, new Session(
         notebookUri, uriType, readOnly, format, notebookModelJson, edited, date));
+
+    // Notify client of changes in session
+    Map<String, Object> data = new HashMap<String, Object>();
+    bayeux.getChannel("/sessionChange").publish(this.localSession, data, null);
+
+
     try {
       recordToFile(sessionId, notebookUri, notebookModelJson);
     } catch (IOException | InterruptedException ex) {
@@ -150,6 +163,10 @@ public class SessionBackupRest {
   public void close(
       @FormParam("sessionid") String sessionID) {
     this.sessions.remove(sessionID);
+
+    // Notify client of changes
+    Map<String, Object> data = new HashMap<String, Object>();
+    bayeux.getChannel("/sessionChange").publish(this.localSession, data, null);
   }
 
   @GET

@@ -31,7 +31,11 @@ task copyVendorStuff
 
 task run (type: Exec) {
   workingDir coreDir
-  commandLine './beaker.command'
+  if (windows()) {
+    commandLine 'cmd', '/beaker.command.bat'
+  } else {
+    commandLine './beaker.command'
+  }
 }
 task runOnly (type: Exec) {
   workingDir coreDir

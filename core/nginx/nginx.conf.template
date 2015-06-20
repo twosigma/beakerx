@@ -69,6 +69,9 @@ http {
 
     # user directory
     location /user {
+      sendfile off;
+      expires           0s;
+      add_header        Cache-Control private;
       alias "%(user_folder)s";
     }
 

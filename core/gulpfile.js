@@ -232,7 +232,7 @@ gulp.task('buildOutputDisplayTemplate', function () {
     gulp.src(jsarray.map(function(v) {
       return Path.join(srcPath, v);
     }))
-    .pipe(stripJsComments())
+//    .pipe(stripJsComments())
     .pipe(concat('beakerOutputDisplay.js'))
     .pipe(header(banner))
     .pipe(gulp.dest(buildPath));
@@ -292,7 +292,7 @@ gulp.task('buildIndexTemplate', function () {
         } else {
           block.pipe(gulpSrc())
             .pipe(sourcemaps.init({loadMaps: true}))
-            .pipe(stripJsComments())
+//            .pipe(stripJsComments())
             .pipe(concat('beakerApp.js'))
             .pipe(header(banner ))
             .pipe(sourcemaps.write())

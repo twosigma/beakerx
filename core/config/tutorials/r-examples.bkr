@@ -54,7 +54,7 @@
             "id": "markdownS0Idli",
             "type": "markdown",
             "body": [
-                "The R Project for Statistical Computing publishes GNU R.  Follow the instructions on BeakerNotebook.com for how to install R so Beaker can use it."
+                "The R Project for Statistical Computing publishes [GNU R](http://www.r-project.org/).  Follow the [instructions](http://beakernotebook.com/getting-started#R) for how to install it so Beaker can find it."
             ],
             "evaluatorReader": false
         },

@@ -54,7 +54,10 @@
             "id": "markdownLn3DJ5",
             "type": "markdown",
             "body": [
-                "[Node](https://nodejs.org/) is programmable in JavaScript and is powered by Chrome's V8 runtime, but runs on the server as a backend.  Node uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices."
+                "[Node](https://nodejs.org/) is programmable in JavaScript and is powered by Chrome's V8 runtime, but runs on the server as a backend.",
+                "Node uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.",
+                "This notebook shows how you can write a client and a server on the same page.",
+                "Follow the [instructions](http://beakernotebook.com/getting-started#Node) for how to install Node so Beaker can find it."
             ],
             "evaluatorReader": false
         },
@@ -78,7 +81,6 @@
             },
             "output": {
                 "state": {},
-                "result": "server started",
                 "selectedType": "Text"
             },
             "evaluatorReader": true,
@@ -95,11 +97,6 @@
             },
             "output": {
                 "state": {},
-                "result": {
-                    "type": "BeakerDisplay",
-                    "innertype": "Html",
-                    "object": "<script>\nvar beaker = (window !== undefined && window.beaker !== undefined) ? window.beaker.beaker : undefined;\n</script>\n<div id=\"message\"></div>"
-                },
                 "selectedType": "BeakerDisplay",
                 "elapsedTime": 0
             },

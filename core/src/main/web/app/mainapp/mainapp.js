@@ -1081,6 +1081,10 @@
           return bkSessionManager.getNotebookTitle();
         };
 
+        $scope.pathname = function() {
+          return bkSessionManager.getNotebookPath();
+        };
+
         $scope.$on("$locationChangeStart", function(event, next, current) {
           if (bkEvaluateJobManager.isAnyInProgress() && next.indexOf("force=yes") === -1) {
             event.preventDefault();

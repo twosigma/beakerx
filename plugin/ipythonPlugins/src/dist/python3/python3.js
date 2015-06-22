@@ -139,7 +139,7 @@ define(function(require, exports, module) {
 
         // cb cannot be called synchronously, see evaluatorManager.js, new Shell
         // Also, do not cb until making sure kernel is running.
-        var timeout = now() + 10 * 1000; // time out 10 sec
+        var timeout = now() + 30 * 1000; // time out 30 sec
         var spin = function() {
           if (self.kernel !== undefined && self.kernel.running) {
             cb(shellID);

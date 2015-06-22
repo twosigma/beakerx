@@ -640,12 +640,10 @@
                     }, function(reason) {
                       deferred.reject(reason);
                     });
-                    return;
                   });
-                  return deferred.promise.then(saveDone, saveFailed);
+                  thenable = deferred.promise;
                 } else {
                   thenable = savePromptChooseUri();
-                  return thenable.then(saveDone, saveFailed);
                 }
               }
               return thenable.then(saveDone, saveFailed);

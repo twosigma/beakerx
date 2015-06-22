@@ -72,13 +72,62 @@
       openBrowserWindow: function(path) {
         bkUtils.openBrowserWindow(path);
       },
-      // Open file with electron or web dialog
-      openWithDialog: function(ext, uriType, readOnly, format) {
+      // Save file with electron or web dialog
+      saveWithDialog: function(thenable) {
         if (bkUtils.isElectron){
           var BrowserWindow = bkUtils.Electron.BrowserWindow;
           var Dialog = bkUtils.Electron.Dialog;
-          var deferred = bkUtils.newDeferred();
-          bkUtils.getWorkingDirectory().then(function(defaultPath) {
+          var thisWindow = BrowserWindow.getFocusedWindow();
+          var path = showElectronSaveDialog(thisWindow, options).then(function(path) {
+            if (path === undefined){
+              saveFailed('cancelled');
+              return;
+            }
+            bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
+            var ret = {
+              uri: path,
+              uriType: 'file'
+            };
+            bkSessionManager.dumpDisplayStatus();
+            var saveData = bkSessionManager.getSaveData();
+            var fileSaver = bkCoreManager.getFileSaver(ret.uriType);
+            var content = saveData.notebookModelAsString;
+            fileSaver.save(ret.uri, content, true).then(function() {
+              thenable.resolve(ret);
+            }, function(reason) {
+              thenable.reject(reason);
+            });
+          });
+          return thenable.promise.then(saveDone, saveFailed);
+        } else {
+          thenable = savePromptChooseUri();
+          return thenable.then(saveDone, saveFailed);
+        }
+      },
+      showElectronSaveDialog: function() {
+        var BrowserWindow = bkUtils.Electron.BrowserWindow;
+        var Dialog = bkUtils.Electron.Dialog;
+        var def = bkUtils.newDeferred();
+        bkUtils.getWorkingDirectory().then(function(defaultPath) {
+          var options = {
+            title: 'Save Beaker Notebook',
+            defaultPath: defaultPath,
+            filters: [
+              { name: 'Beaker Notebook Files', extensions: ['bkr'] }
+            ]
+          };
+          var path = Dialog.showSaveDialog(options);
+          def.resolve(path);
+        });
+        return def.promise;
+      },
+      // Open file with electron or web dialog
+      openWithDialog: function(ext, uriType, readOnly, format) {
+        var promise;
+        if (bkUtils.isElectron){
+          var BrowserWindow = bkUtils.Electron.BrowserWindow;
+          var Dialog = bkUtils.Electron.Dialog;
+          promise = bkUtils.getWorkingDirectory().then(function(defaultPath) {
             var options = {
               title: 'Open Beaker Notebook',
               defaultPath: defaultPath,
@@ -100,12 +149,15 @@
             bkCoreManager.openNotebook(path, uriType, readOnly, format);
           });
         } else {
-          bkCoreManager.showModalDialog(
-              bkCoreManager.openNotebook,
-              JST['template/opennotebook']({homedir: homeDir, extension: '.' + ext}),
-              bkUtils.getFileSystemFileChooserStrategy()
-          );
+          promise = bkUtils.getHomeDirectory().then(function(homeDir) {
+            bkCoreManager.showModalDialog(
+                bkHelper.openNotebook,
+                JST['template/opennotebook']({homedir: homeDir, extension: '.' + ext}),
+                bkHelper.getFileSystemFileChooserStrategy()
+            );
+          });
         }
+        return promise;
       },
       // current app
       getCurrentAppName: function() {

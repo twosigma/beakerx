@@ -34,47 +34,7 @@ define(function(require, exports, module) {
             tooltip: "Open a bkr notebook file",
             sortorder: 100,
             action: function() {
-              if (bkHelper.isElectron){
-                var BrowserWindow = bkUtils.Electron.BrowserWindow;
-                var Dialog = bkUtils.Electron.Dialog;
-                var deferred = bkUtils.newDeferred();
-                bkUtils.getWorkingDirectory().then(function(defaultPath) {
-                  var options = {
-                    title: 'Open Beaker Notebook',
-                    defaultPath: defaultPath,
-                    filters: [
-                      { name: 'Beaker Notebook Files', extensions: ['bkr'] }
-                    ]
-                  };
-                  var path = Dialog.showSaveDialog(options);
-                  if (path === undefined){
-                    saveFailed('cancelled');
-                    return;
-                  }
-                  bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
-                  var ret = {
-                    uri: path,
-                    uriType: 'file'
-                  };
-                  bkSessionManager.dumpDisplayStatus();
-                  var saveData = bkSessionManager.getSaveData();
-                  var fileSaver = bkCoreManager.getFileSaver(ret.uriType);
-                  var content = saveData.notebookModelAsString;
-                  fileSaver.save(ret.uri, content, true).then(function() {
-                    deferred.resolve(ret);
-                  }, function(reason) {
-                    deferred.reject(reason);
-                  });
-                  return;
-                });
-                return deferred.promise.then(saveDone, saveFailed);
-              } else {
-                bkHelper.showModalDialog(
-                    bkHelper.openNotebook,
-                    JST['template/opennotebook']({homedir: homeDir, extension: '.bkr'}),
-                    bkHelper.getFileSystemFileChooserStrategy()
-                );
-              }
+              bkHelper.openWithDialog('bkr');
             }
           }
         ]

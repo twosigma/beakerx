@@ -72,6 +72,41 @@
       openBrowserWindow: function(path) {
         bkUtils.openBrowserWindow(path);
       },
+      // Open file with electron or web dialog
+      openWithDialog: function(ext, uriType, readOnly, format) {
+        if (bkUtils.isElectron){
+          var BrowserWindow = bkUtils.Electron.BrowserWindow;
+          var Dialog = bkUtils.Electron.Dialog;
+          var deferred = bkUtils.newDeferred();
+          bkUtils.getWorkingDirectory().then(function(defaultPath) {
+            var options = {
+              title: 'Open Beaker Notebook',
+              defaultPath: defaultPath,
+              multiSelections: false,
+              filters: [
+                { name: 'Beaker Notebook Files', extensions: [ext] }
+              ]
+            };
+            // Note that the open dialog return an array of paths (strings)
+            var path = Dialog.showOpenDialog(options); 
+            if (path === undefined){
+              console.log('Open cancelled');
+              return;
+            } else {
+              // For now, multiSelections are off, only get the first
+              path = path[0];
+            }
+            bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
+            bkCoreManager.openNotebook(path, uriType, readOnly, format);
+          });
+        } else {
+          bkCoreManager.showModalDialog(
+              bkCoreManager.openNotebook,
+              JST['template/opennotebook']({homedir: homeDir, extension: '.' + ext}),
+              bkUtils.getFileSystemFileChooserStrategy()
+          );
+        }
+      },
       // current app
       getCurrentAppName: function() {
         if (!_.isEmpty(getCurrentApp().name)) {
@@ -349,6 +384,9 @@
       },
       getHomeDirectory: function() {
         return bkUtils.getHomeDirectory();
+      },
+      getWorkingDirectory: function() {
+        return bkUtils.getWorkingDirectory();
       },
       saveFile: function(path, contentAsJson, overwrite) {
         return bkUtils.saveFile(path, contentAsJson, overwrite);

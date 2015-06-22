@@ -248,13 +248,7 @@ define(function(require, exports, module) {
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
             sortorder: 110,
             action: function() {
-              bkHelper.showModalDialog(
-                  function(originalUrl) {
-                    bkHelper.openNotebook(originalUrl, null, true, IPYNB_PATH_PREFIX);
-                  },
-                  JST['template/opennotebook']({homedir: homeDir, extension: '.ipynb'}),
-                  strategy
-              );
+              bkHelper.openWithDialog('ipynb', null, true, IPYNB_PATH_PREFIX);
             }
           }
         ]

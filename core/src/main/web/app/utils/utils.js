@@ -99,6 +99,7 @@
       getBaseUrl: function() {
         return location.protocol + '//' + location.host + location.pathname + '#';
       },
+      // Open tab/window functions that handle the electron case
       openWindow: function(path) {
         if (bkHelper.isElectron) {
           var newWindow = new bkHelper.Electron.BrowserWindow({});

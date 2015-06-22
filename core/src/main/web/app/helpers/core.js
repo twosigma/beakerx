@@ -555,7 +555,6 @@
       getNotebookCellManager: function() {
         return bkNotebookCellModelManager;
       },
-      // general
       showModalDialog: function(callback, template, strategy) {
         var options = {
           windowClass: 'beaker-sandbox',

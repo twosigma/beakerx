@@ -40,7 +40,6 @@
         $scope.gotoControlPanel = function(event) {
           if (bkUtils.isMiddleClick(event)) {
             bkHelper.openWindow($location.absUrl() + '/beaker');
-            // window.open($location.absUrl() + '/beaker');
           } else {
             location.reload();
           }
@@ -63,9 +62,12 @@
         $scope.getMenus = function() {
           return bkMenuPluginManager.getMenus();
         };
-        window.addEventListener('focus', function() {
-          bkUtils.Electron.updateMenus(bkMenuPluginManager.getMenus());
-        });
+
+        if (bkUtils.isElectron){
+          window.addEventListener('focus', function() {
+            bkUtils.Electron.updateMenus(bkMenuPluginManager.getMenus());
+          });
+        }
 
         // actions for UI
         $scope.newNotebook = function() {

@@ -30,7 +30,7 @@ task cleanDist(type: Exec) {
 }
 
 task makeElectron(dependsOn: ['clean', 'makeDist2', 'copyElectron', 'copyBeakerApp', 'copyDist', 'copyPList', 'copyIcons', 'copyJRE', 'copyTools']) {
-	println "Done building Electron"
+	println "Starting Electron build"
 }
 
 task unzipElectron(type: Exec) {

@@ -103,7 +103,6 @@
       openWindow: function(path) {
         if (bkHelper.isElectron) {
           var newWindow = new bkHelper.Electron.BrowserWindow({});
-          newWindow.openDevTools();
           if (path[0] == '/'){
             newWindow.loadUrl(bkUtils.getBaseUrl() + path);
           } else {
@@ -375,6 +374,9 @@
       bkUtils.Electron.Dialog = bkUtils.Electron.remote.require('dialog');
       bkUtils.Electron.Shell = bkUtils.Electron.remote.require('shell');
       bkUtils.Electron.IPC = require('ipc');
+      bkUtils.Electron.toggleDevTools = function() {
+        bkUtils.Electron.BrowserWindow.getFocusedWindow().toggleDevTools();
+      },
       bkUtils.Electron.updateMenus = function(menus) {
         var assignShortcut = function(name){
           switch(name) {

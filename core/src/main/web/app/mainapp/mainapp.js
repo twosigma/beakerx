@@ -1081,6 +1081,8 @@
                 bkSessionManager.redo();
               });
               return false;
+            } else if (e.which === 123){
+              bkUtils.Electron.toggleDevTools();
             }
             // TODO implement global redo
           }

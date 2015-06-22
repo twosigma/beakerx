@@ -150,6 +150,8 @@
               $scope.newEmptyNotebook();
             });
             return false;
+          } else if (e.which === 123){
+            bkUtils.Electron.toggleDevTools();
           }
         }
         $(document).bind('keydown', keydownHandler);

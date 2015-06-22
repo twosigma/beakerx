@@ -69,6 +69,9 @@
       openStaticWindow: function(path) {
         bkUtils.openStaticWindow(path);
       },
+      openBrowserWindow: function(path) {
+        bkUtils.openBrowserWindow(path);
+      },
       // current app
       getCurrentAppName: function() {
         if (!_.isEmpty(getCurrentApp().name)) {

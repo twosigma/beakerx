@@ -93,14 +93,12 @@
       saveAsClientFile: function(data, filename) {
         return commonUtils.saveAsClientFile(data, filename);
       },
-
       // give the angular base URL
       // This function is a HACK: '$location' should probably be used instead of
       // 'location', but '$location' seems to return the wron path.
       getBaseUrl: function() {
         return location.protocol + '//' + location.host + location.pathname + '#';
       },
-
       openWindow: function(path) {
         if (bkHelper.isElectron) {
           var newWindow = new bkHelper.Electron.BrowserWindow({});
@@ -122,7 +120,13 @@
           window.open('./' + path);
         }
       },
-
+      openBrowserWindow: function(path) {
+        if (bkHelper.isElectron) {
+          bkHelper.Electron.Shell.openExternal(path);
+        } else {
+          window.open(path);
+        }
+      },
       // wrap angularUtils
       refreshRootScope: function() {
         angularUtils.refreshRootScope();

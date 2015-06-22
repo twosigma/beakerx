@@ -18,180 +18,56 @@
 <html ng-app="bk.notebook.share">
 <head lang="en">
 <meta charset="UTF-8">
-<title>beaker.share</title>
+<title>Beaker Sharing Server</title>
   <base href="/static/viewer/"></base>
   <link rel="shortcut icon" href="favicon.png" />
-  <link rel="stylesheet" href="vendor/bower_components/font-awesome/css/font-awesome.css">
-  <link rel="stylesheet" href="vendor/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="vendor/bower_components/angular-datatables/dist/datatables.bootstrap.css">
-  <link rel="stylesheet" href="vendor/bower_components/datatables/media/css/jquery.dataTables.css">
-  <link rel="stylesheet" href="vendor/ColVis-1.1.1/css/dataTables.colVis.min.css">
-  <link rel="stylesheet" href="vendor/ColReorder-1.1.2/css/dataTables.colReorder.min.css">
-  <link rel="stylesheet" href="vendor/Responsive-1.0.1/css/dataTables.responsive.css">
-  <link rel="stylesheet" href="vendor/TableTools-2.2.3/css/dataTables.tableTools.min.css">
-  <link rel="stylesheet" href="app/dist/vendor.css">
-  <link rel="stylesheet" href="app/dist/app.css">
-  <link rel="stylesheet" href="outputdisplay/bko-plot/bko-plot.css">
-  <link rel="stylesheet" href="outputdisplay/bko-plot/bko-combinedplot.css">
+  <link rel="stylesheet" href="app/beakerApp.css">
+  <link rel="stylesheet" href="app/beakerOutputDisplay.css">
 
-  <script src="vendor/flotr2/flotr2.js"></script>
-  <script src="vendor/bower_components/big.js/big.min.js"></script>
-  <script src="vendor/bower_components/jquery/jquery.min.js"></script>
-  <script src="vendor/bower_components/datatables/media/js/jquery.dataTables.js"></script>
-  <script src="vendor/ColVis-1.1.1/js/dataTables.colVis.min.js"></script>
-  <script src="vendor/ColReorder-1.1.2/js/dataTables.colReorder.min.js"></script>
-  <script src="vendor/Responsive-1.0.1/js/dataTables.responsive.min.js"></script>
-  <script src="vendor/TableTools-2.2.3/js/dataTables.tableTools.min.js"></script>
-  <script src="vendor/bower_components/angular/angular.js"></script>
-  <script src="vendor/bower_components/angular-datatables/dist/angular-datatables.js"></script>
-  <script src="vendor/bower_components/angular-route/angular-route.js"></script>
-  <script src="vendor/bower_components/angular-animate/angular-animate.js"></script>
-  <script src="vendor/bower_components/d3/d3.js"></script>
-  <script src="vendor/bower_components/codemirror/lib/codemirror.js"></script>
-  <script src="vendor/bower_components/codemirror/addon/hint/show-hint.js"></script>
-  <script src="vendor/bower_components/codemirror/addon/hint/javascript-hint.js"></script>
-  <script src="vendor/bower_components/codemirror/addon/edit/matchbrackets.js"></script>
-  <script src="vendor/bower_components/codemirror/addon/dialog/dialog.js"></script>
-  <script src="vendor/bower_components/codemirror/addon/search/searchcursor.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/r/r.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/ruby/ruby.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/javascript/javascript.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/python/python.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/julia/julia.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/groovy/groovy.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/stex/stex.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/xml/xml.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/css/css.js"></script>
-  <script src="vendor/bower_components/codemirror/mode/clike/clike.js"></script>
-  <script src="vendor/bower_components/codemirror/keymap/vim.js"></script>
-  <script src="vendor/bower_components/codemirror/keymap/emacs.js"></script>
-  <script src="vendor/bower_components/q/q.js"></script>
-  <script src="vendor/epiceditor/js/epiceditor.js"></script>
-  <script src="vendor/bower_components/lodash/dist/lodash.underscore.js"></script>
-  <script src="vendor/bower_components/underscore.string/dist/underscore.string.min.js"></script>
-  <script src="vendor/angular-ui/ui-utils.min.js"></script>
-  <script src="vendor/cometd/cometd.js"></script>
-  <script src="vendor/cometd/jquery/jquery.cometd.js"></script>
-  <script src="vendor/jquery.event.drag/jquery.event.drag.js"></script>
-  <script src="vendor/jquery-ui/js/jquery-ui.custom.min.js"></script>
-  <script src="vendor/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-  <script src="vendor/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-  <script src="vendor/vega/vega.js"></script>
-  <script src="vendor/vega/d3.geo.projection.min.js"></script>
-  <script src="vendor/vega/d3.layout.cloud.js"></script>
-  <script src="vendor/moment/moment.min.js"></script>
-  <script src="vendor/moment/moment-timezone.js"></script>
-  <script src="vendor/moment/moment-timezone-data.js"></script>
-  <script src="vendor/bower_components/requirejs/require.js" data-main="app/main.js"></script>
-  <script src="app/utils/basic/commonutils.js"></script>
-  <script src="app/utils/basic/angularutils.js"></script>
-  <script src="app/utils/utils.js"></script>
+  <!--  we include katex styles here so it can require its font files relatively -->
+  <link rel="stylesheet" href="vendor/katex-build/katex.min.css" />
+
+  <script src="app/beakerVendor.js"></script>
+  <script src="app/beakerOutputDisplayVendor.js"></script>
+  
+  <script src="vendor/requirejs/require.js" data-main="app/main.js"></script>
+
+  <script src="app/commonutils.js"></script>
+  <script src="app/angularutils.js"></script>
+  <script src="app/utils.js"></script>
+  <script src="app/outputdisplay.js"></script>
+  <script src="app/outputdisplayfactory-service.js"></script>
+  <script src="app/outputdisplay-directive.js"></script>
+  <script src="app/outputdisplayservicemanager-service.js"></script>
+  <script src="app/templates.js"></script>
   <script src="app/app.js"></script>
-  <script src="app/helpers/datatables.js"></script>
-  <script src="app/mainapp/services/notebookcellmodelmanager.js"></script>
-  <script src="app/bkChart_static.js"></script>
+  <script src="app/notebookcellmodelmanager.js"></script>
+  <!--  script src="app/bkChart_static.js"></script>
   <script src="app/bkImage_static.js"></script>
   <script src="app/bkTable_static.js"></script>
-  <script src="app/latexView_static.js"></script>
-  <script src="outputdisplay/bko-plot/plotutils.js"></script>
-  <script src="outputdisplay/bko-plot/plotsampler.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/auxes/plotauxbox.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/auxes/plotauxriver.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/auxes/plotauxstem.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/std/plotline.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/std/plotbar.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/std/plotstem.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/std/plotarea.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/std/plotpoint.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/std/plotconstline.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/std/plotconstband.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/std/plottext.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/lod/plotlodline.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/lod/plotlodriver.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/lod/plotlodbox.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/lod/plotlodpoint.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/lod/plotlodstem.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/lodloader/plotlinelodloader.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/lodloader/plotarealodloader.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/lodloader/plotbarlodloader.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/lodloader/plotstemlodloader.js"></script>
-  <script src="outputdisplay/bko-plot/plotitems/lodloader/plotpointlodloader.js"></script>
-  <script src="outputdisplay/bko-plot/plotaxis.js"></script>
-  <script src="outputdisplay/bko-plot/plotfactory.js"></script>
-  <script src="outputdisplay/bko-plot/plotconverter.js"></script>
-  <script src="outputdisplay/bko-plot/plotformatter.js"></script>
-  <script src="outputdisplay/bko-plot/combinedplotformatter.js"></script>
-  <script src="outputdisplay/bko-plot/bko-plot.js"></script>
-  <script src="outputdisplay/bko-plot/bko-combinedplot.js"></script>
+  <script src="app/latexView_static.js" --></script>
+  <script src="app/beakerOutputDisplay.js"></script>
 
-        {% include "beaker_tracking.html" %}
+  {% include "beaker_tracking.html" %}
 
-        <!-- templates for typed cells -->
-        <script type="text/ng-template" id="section-cell.html">
-            <bk-section-cell></bk-section-cell>
-        </script>
-        <script type="text/ng-template" id="text-cell.html">
-            <div class="text-cell">
-                <bk-text-cell></bk-text-cell>
-            </div>
-        </script>
-        <script type="text/ng-template" id="markdown-cell.html">
-            <bk-markdown-cell></bk-markdown-cell>
-        </script>
-        <script type="text/ng-template" id="code-cell.html">
-            <bk-code-cell cellmodel="cellmodel" cellmenu="cellview.menu"></bk-code-cell>
-        </script>
+  <!-- templates for typed cells -->
+  <script type="text/ng-template" id="section-cell.html">
+    <bk-section-cell></bk-section-cell>
+  </script>
+  <script type="text/ng-template" id="text-cell.html">
+    <div class="text-cell">
+      <bk-text-cell></bk-text-cell>
+    </div>
+  </script>
+  <script type="text/ng-template" id="markdown-cell.html">
+    <bk-markdown-cell></bk-markdown-cell>
+  </script>
+  <script type="text/ng-template" id="code-cell.html">
+    <bk-code-cell cellmodel="cellmodel" cellmenu="cellview.menu"></bk-code-cell>
+  </script>
 
-        <!-- outputDisplayTemplates -->
-        <script type="text/ng-template" id="bkoHidden.html">
-            <div></div>
-        </script>
-        <script type="text/ng-template" id="bkoText.html">
-            <bko-text></bko-text>
-        </script>
-        <script type="text/ng-template" id="bkoWarning.html">
-            <bko-warning></bko-warning>
-        </script>
-        <script type="text/ng-template" id="bkoError.html">
-            <bko-error></bko-error>
-        </script>
-        <script type="text/ng-template" id="bkoHtml.html">
-            <bko-html></bko-html>
-        </script>
-        <script type="text/ng-template" id="bkoTable.html">
-            <bko-table-display></bko-table-display>
-        </script>
-        <script type="text/ng-template" id="bkoChart.html">
-            <bko-chart></bko-chart>
-        </script>
-        <script type="text/ng-template" id="bkoImage.html">
-            <bko-image></bko-image>
-        </script>
-        <script type="text/ng-template" id="bkoJSON.html">
-            <bko-json></bko-json>
-        </script>
-        <script type="text/ng-template" id="bkoLatex.html">
-            <bko-latex></bko-latex>
-        </script>
-        <script type="text/ng-template" id="bkoVega.html">
-            <bko-vega></bko-vega>
-        </script>
-        <script type="text/ng-template" id="bkoDcatJobBatch.html">
-            <bko-job-batch></bko-job-batch>
-        </script>
-        <script type="text/ng-template" id="bkoFunctionContext.html">
-            <bko-function-context></bko-function-context>
-        </script>
-        <script type="text/ng-template" id="bkoOutputContainer.html">
-            <bko-output-container></bko-output-container>
-        </script>
-        <script type="text/ng-template" id="bkoPlot.html">
-            <div bko-plot></div>
-        </script>
-        <script type="text/ng-template" id="bkoCombinedPlot.html">
-            <div bko-combined-plot></div>
-        </script>
+      
+
 
         <script type="text/ng-template" id="cell.html">
             <div ng-class="isLocked() && 'locked'" class="bkcell {{"{{"}}cellmodel.type{{"}}"}}">
@@ -200,25 +76,24 @@
                     ({{"{{"}}cellmodel.lineCount{{"}}"}} lines)
                 </div>
                 <div ng-include="getTypeCellUrl()"></div>
-                <div>&nbsp</div><!-- <bk-new-cell-menu> -->
+                <div>&nbsp</div>
             </div>
         </script>
 
         <script type="text/ng-template" id="sectioncell.html">
-	  <div ng-hide='cellmodel.hideTitle'>
-	    <span class='bksectiontoggleplus section-toggle' ng-click='toggleShowChildren()' ng-hide='isShowChildren()'>
-	      <i class='fa fa-plus'></i>
-	    </span>
-	    <span class='bksectiontoggleminus section-toggle' ng-click='toggleShowChildren()' ng-show='isShowChildren()'>
-	      <i class='fa fa-minus'></i>
-	    </span>
-	    <p class='depth-indicator'>{{"{{"}}getFullIndex()}}"}}"}}</p>
-	    <span class='section{{"{{"}}cellmodel.level{{"}}"}} bk-section-title' contenteditable="true">{{"{{"}}cellmodel.title{{"}}"}}</span>
-	  </div>
-	  <div>&nbsp</div>
-	  <div ng-show="isShowChildren()" class="section-children">
-	    <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell"></bk-cell>
-	  </div>
+        <div ng-hide='cellmodel.hideTitle'>
+          <span class='bksectiontoggleplus section-toggle' ng-click='toggleShowChildren()' ng-hide='isShowChildren()'>
+            <i class='fa fa-plus'></i>
+          </span>
+          <span class='bksectiontoggleminus section-toggle' ng-click='toggleShowChildren()' ng-show='isShowChildren()'>
+            <i class='fa fa-minus'></i>
+          </span>
+          <p class='depth-indicator'>{{"{{"}}getFullIndex(){{"}}"}}</p>
+          <bk-markdown-editable class='section{{"{{"}}cellmodel.level{{"}}"}} bk-section-title' cellmodel="cellmodel"></bk-markdown-editable>
+        </div>
+        <div ng-show="isShowChildren()" class="section-children">
+          <bk-cell ng-repeat="cell in getChildren()" cellmodel="cell" index="$index" cellid="{{"{{"}}cell.id{{"}}"}}"></bk-cell>
+        </div>
         </script>
 
         <script type="text/ng-template" id="codecell.html">
@@ -227,30 +102,34 @@
                 'locked': isLocked(),
                 'empty': isEmpty()
                 }">
-                <p class='depth-indicator'>{{"{{"}}getFullIndex()}}"}}"}}</p>
                 <div class="bkcell code-cell-area">
-                    <div class="code-cell-input" ng-show="isShowInput()">
+                    <div class="code-cell-input"  ng-hide="isLocked()" ng-class="{'input-hidden': cellmodel.input.hidden}">
                         <bk-code-cell-input-menu><!-- no acutal directive defined, only for styling -->
-                        <div class="dropdown">
-                            <div class="dropdown-toggle cell-evaluator-menu advanced-hide" style="background:none !important" data-toggle="dropdown">
-                                <b>{{"{{"}}cellmodel.evaluator{{"}}"}}</b>
-                            </div>
-                        </div>
+<div class="dropdown bk-code-cell-input">
+  <div class="dropdown-toggle cell-evaluator-menu" data-toggle="dropdown" style="background: none;">
+    <bk-language-logo
+        name="{{"{{"}}getEvaluator().shortName{{"}}"}}"
+        bg-color="{{"{{"}}getEvaluator().bgColor{{"}}"}}"
+        fg-color="{{"{{"}}getEvaluator().fgColor{{"}}"}}"
+        border-color="{{"{{"}}getEvaluator().borderColor{{"}}"}}">
+    </bk-language-logo>
+    <b class="advanced-hide">{{"{{"}}cellmodel.evaluator{{"}}"}}</b>
+  </div>
+</div>
                         </bk-code-cell-input-menu>
                         <textarea class="bkcelltextarea" ng-model="cellmodel.input.body"></textarea>
                     </div>
                     <div ng-if ="hasOutput()" class="code-cell-output" ng-class="{
                       'no-output': isHiddenOutput(),
-                      'output-hidden': cellmodel.output.hidden
+                      'input-hidden': cellmodel.input.hidden,
+                      'output-hidden': cellmodel.output.hidden,
+                      'error': isError()
                     }">
-                        <ul class="cell-output-labels advanced-hide">
-                            <li ng-if="!isShowOutput()"><b> Output Hidden</b></li>
-                            <li ng-if='cellmodel.output.result.innertype != "Error" && isShowOutput()'><b>Cell Output</b></li>
-                            <li class="error-title" ng-if='cellmodel.output.result.innertype == "Error" && isShowOutput()'><b>Error</b></li>
-                        </ul>
+                      <h6 ng-if="outputTitle()">{{"{{"}}outputTitle(){{"}}"}}</h6>
                         <bk-code-cell-output
                             model="cellmodel.output"
-                            evaluator-id="{{"{{"}} cellmodel.evaluator {{"}}"}}">
+                            evaluator-id="{{"{{"}} cellmodel.evaluator {{"}}"}}"
+                            cell-id="{{"{{"}} cellmodel.id {{"}}"}}">
                         </bk-code-cell-output>
                     </div>
                 </div>
@@ -268,15 +147,15 @@
 
     </head>
     <body>
-        <div id='menubar' class="navbar navbar-fixed-top"  ng-controller="navBarCtrl">
+        <div id='menubar' class="navbar navbar-fixed-top"  ng-controller="navBarCtrl" style="background-color: buttonface; margin-bottom: 5px; min-height: 60px;">
             <div class="container-fluid">
-                <div class="nav-collapse collapse">
+                <div class="nav-collapse">
                     <a class="navbar-brand" href="http://beakernotebook.com">
                         <img src="images/beaker_icon@2x.png"></img>
                         Beaker - The data scientist's laboratory
                     </a>
-                    <button ng-if="isGist" class="btn pull-right" ng-click="openGist()">Open gist</button>
-                    <button class="btn pull-right" ng-click="download()">Download notebook</button>
+                    <button ng-if="isGist" class="pull-right" ng-click="openGist()">Open gist</button>
+                    <button class="pull-right" ng-click="download()">Download notebook</button>
                 </div>
             </div>
         </div>

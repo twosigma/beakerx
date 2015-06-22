@@ -729,6 +729,10 @@ public class PluginServiceLocatorRest {
     nginxConfig = nginxConfig.replace("%(urlhash)s", urlHash.isEmpty() ? "" : urlHash+"/");
     nginxConfig = nginxConfig.replace("%(static_dir)s", this.nginxStaticDir.replaceAll("\\\\", "/"));
     nginxConfig = nginxConfig.replace("%(nginx_dir)s", this.nginxServDir.replaceAll("\\\\", "/"));
+    // Apparently on windows our jetty backends network stack can be
+    // in a state where the spin/probe connection from the client gets
+    // stuck and it does not fail until it times out.
+    nginxConfig = nginxConfig.replace("%(proxy_connect_timeout)s", windows() ? "1" : "90");
     java.nio.file.Path targetFile = Paths.get(this.nginxServDir, "conf/nginx.conf");
     writePrivateFile(targetFile, nginxConfig);
     return restartId;

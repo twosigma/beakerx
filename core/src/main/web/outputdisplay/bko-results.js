@@ -18,8 +18,8 @@
  */
 (function() {
   'use strict';
-  beaker.bkoDirective("Results", ["$interval", "$compile", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
-      $interval, $compile, bkEvaluateJobManager, bkUtils, bkOutputDisplayFactory) {
+  beaker.bkoDirective("Results", ["$interval", "$compile", "bkOutputDisplayFactory", function(
+      $interval, $compile, bkOutputDisplayFactory) {
     return {
       template: JST['mainapp/components/notebook/output-results'],
       link: function(scope, element, attrs) {

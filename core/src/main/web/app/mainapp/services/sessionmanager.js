@@ -910,6 +910,13 @@
         _format = format;
         _notebookUri.set(notebookUri);
       },
+      getNotebookPath: function() {
+        if (_notebookUri.get()) {
+          return _notebookUri.get();
+        } else {
+          return "New Notebook";
+        }
+      },
       getNotebookTitle: function() {
         if (_notebookUri.get()) {
           return _notebookUri.get().replace(/^.*[\\\/]/, '');

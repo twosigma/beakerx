@@ -126,9 +126,11 @@ public class SessionBackupRest {
         notebookUri, uriType, readOnly, format, notebookModelJson, edited, date));
 
     // Notify client of changes in session
-    Map<String, Object> data = new HashMap<String, Object>();
-    bayeux.getChannel("/sessionChange").publish(this.localSession, data, null);
-
+    ServerChannel sessionChangeChannel;
+    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionChange")) != null))) {
+      Map<String, Object> data = new HashMap<String, Object>();
+      sessionChangeChannel.publish(this.localSession, data, null);
+    }
 
     try {
       recordToFile(sessionId, notebookUri, notebookModelJson);
@@ -164,9 +166,12 @@ public class SessionBackupRest {
       @FormParam("sessionid") String sessionID) {
     this.sessions.remove(sessionID);
 
-    // Notify client of changes
-    Map<String, Object> data = new HashMap<String, Object>();
-    bayeux.getChannel("/sessionChange").publish(this.localSession, data, null);
+    // Notify client of changes in session
+    ServerChannel sessionChangeChannel;
+    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionChange")) != null))) {
+      Map<String, Object> data = new HashMap<String, Object>();
+      sessionChangeChannel.publish(this.localSession, data, null);
+    }
   }
 
   @GET

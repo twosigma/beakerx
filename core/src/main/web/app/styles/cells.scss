@@ -27,6 +27,10 @@
   padding-top: 0;
 }
 
+bk-markdown-editable .CodeMirror {
+  padding-top: 0 !important;
+}
+
 .bkcelltextarea {
     border: none;
     resize: none;

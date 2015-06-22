@@ -42,6 +42,7 @@ import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
 import org.cometd.bayeux.server.BayeuxServer;
 import org.cometd.bayeux.server.LocalSession;
+import org.cometd.bayeux.server.ServerChannel;
 
 /**
  * The service that backs up session to file that offers a RESTful API
@@ -127,7 +128,7 @@ public class SessionBackupRest {
 
     // Notify client of changes in session
     ServerChannel sessionChangeChannel;
-    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionChange")) != null))) {
+    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionChange")) != null)) {
       Map<String, Object> data = new HashMap<String, Object>();
       sessionChangeChannel.publish(this.localSession, data, null);
     }
@@ -168,7 +169,7 @@ public class SessionBackupRest {
 
     // Notify client of changes in session
     ServerChannel sessionChangeChannel;
-    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionChange")) != null))) {
+    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionChange")) != null)) {
       Map<String, Object> data = new HashMap<String, Object>();
       sessionChangeChannel.publish(this.localSession, data, null);
     }

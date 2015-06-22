@@ -104,6 +104,7 @@
       openWindow: function(path) {
         if (bkHelper.isElectron) {
           var newWindow = new bkHelper.Electron.BrowserWindow({});
+          newWindow.openDevTools();
           if (path[0] == '/'){
             newWindow.loadUrl(bkUtils.getBaseUrl() + path);
           } else {

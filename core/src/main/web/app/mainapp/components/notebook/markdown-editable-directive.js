@@ -66,16 +66,24 @@
       link: function(scope, element, attrs) {
         var contentAttribute = scope.cellmodel.type === "section" ? 'title' : 'body';
 
+        var doktex = function(markdownFragment) {
+          try {
+            renderMathInElement(markdownFragment[0], {
+              delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right:  "$", display: false},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false}
+              ]
+            });
+          } catch(err) {
+            bkHelper.show1ButtonModal(err.message+'<br>See: <a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its <a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">list of supported functions</a>.', "KaTex error");
+          }
+        }
+        
         var preview = function() {
           var markdownFragment = $('<div>' + scope.cellmodel[contentAttribute] + '</div>');
-          renderMathInElement(markdownFragment[0], {
-            delimiters: [
-              {left: "$$", right: "$$", display: true},
-              {left: "$", right:  "$", display: false},
-              {left: "\\[", right: "\\]", display: true},
-              {left: "\\(", right: "\\)", display: false}
-            ]
-          });
+          doktex(markdownFragment);
           element.find('.markup').html(marked(markdownFragment.html(), {gfm: true, renderer: bkRenderer}));
           markdownFragment.remove();
           scope.mode = 'preview';

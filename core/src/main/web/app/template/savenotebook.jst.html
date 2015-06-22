@@ -32,8 +32,6 @@
 <div class="modal-body fixed" style="padding-bottom: 106px"> <!-- padding-bottom linked with modal-footer height -->
   <tree-view rooturi="/" fs="getStrategy().treeViewfs"></tree-view>
   <tree-view rooturi="<%- homedir %>" fs="getStrategy().treeViewfs"></tree-view>
-  <tree-view ng-if="'<%- homedir %>' != '<%- pwd %>'" rooturi="<%- pwd %>" fs="getStrategy().treeViewfs"></tree-view>
-  <!-- this ng-if above should be removed and made template logic once this issue is resolved: https://github.com/ingro/gulp-template-compile/issues/5 -->
 </div>
 <div class="modal-footer fixed" style="height: 106px"> <!-- height linked with modal-body padding-bottom -->
   <p>

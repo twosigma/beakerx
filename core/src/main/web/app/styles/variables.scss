@@ -40,7 +40,7 @@ $border-radius-base: 0;
 $border-radius-large: 0;
 $border-radius-small: 0;
 
-$navbar-height: 38px;
+$navbar-height: 30px;
 $navbar-inverse-bg: #3f5264;
 $navbar-default-bg: #eff2f8;
 $navbar-default-link-color: #3f5264;
@@ -69,3 +69,7 @@ $btn-primary-bg: $highlight-blue;
 
 $code-color: black;
 $code-bg: #F4F4F4;
+
+@function strip-units($number) {
+ @return $number / ($number * 0 + 1);
+}

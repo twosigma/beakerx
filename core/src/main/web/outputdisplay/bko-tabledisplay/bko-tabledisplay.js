@@ -198,11 +198,6 @@
         };
 
         // these are the menu actions
-        $scope.doResetSort = function() {
-          if ($scope.table === undefined)
-            return;
-          $scope.table.order( [ 0, 'asc' ] ).draw();
-        };
         $scope.doSelectAll = function(idx) {
           if ($scope.table === undefined)
             return;
@@ -215,7 +210,7 @@
           if ($scope.table === undefined)
             return;
           for (var i in $scope.selected) {
-            $scope.selected[i] = true;
+            $scope.selected[i] = false;
           }
           $scope.update_selected();
         }
@@ -239,9 +234,9 @@
         $scope.getCellDispOpts =  [];
         $scope.pagination = {
             'use' : true,
-            'rowsToDisplay' : 50
-//            'fixLeft' : false,
-//            'fixRight' : false
+            'rowsToDisplay' : 50,
+            'fixLeft' : false,
+            'fixRight' : false
         };
 
         $scope.getCellDispOptsF = function(i) {
@@ -315,9 +310,11 @@
                             { type: 5, name: 'double 4 decimals'},
                             { type: 6, name: 'exponential 5'},
                             { type: 7, name: 'exponential 15'},
-                            { type: 8, name: 'time'},
+                            { type: 8, name: 'datetime'},
                             { type: 9, name: 'boolean'},
-                            { type: 10, name: 'html'}];
+                            { type: 10, name: 'html'},
+                            { type: 11, name: 'date'},
+                            { type: 12, name: 'time'}];
         $scope.allConverters = [
                                 // string
                                 function(value,type,full,meta) {
@@ -388,7 +385,7 @@
                                     return NaN;
                                   return value;
                                 },
-                                // time
+                                // datetime
                                 function(value,type,full,meta) {
                                   if ($scope.timeStrings)
                                     return $scope.timeStrings[meta.row];
@@ -421,10 +418,55 @@
                                 // html
                                 function(value,type,full,meta) {
                                   return value;
+                                },
+                                // date
+                                function(value,type,full,meta) {
+                                  if ($scope.timeStrings)
+                                    return $scope.timeStrings[meta.row];
+
+                                  if (type === 'display') {
+                                    if (_.isObject(value) && value.type === 'Date') {
+                                      var time = moment(value.timestamp);
+                                      var tz = $scope.tz;
+                                      if (tz)
+                                        time.tz(tz);
+                                      return time.format("YYYY-MM-DD");
+                                    }
+                                    var nano = value % 1000;
+                                    var micro = (value / 1000) % 1000;
+                                    var milli = value / 1000 / 1000;
+                                    var time = moment(milli);
+                                    var tz = $scope.tz;
+                                    if (tz)
+                                      time.tz(tz);
+                                    return time.format("YYYY-MM-DD");
+                                  }
+                                  return value;
+                                },
+                                // time
+                                function(value,type,full,meta) {
+                                  if ($scope.timeStrings)
+                                    return $scope.timeStrings[meta.row];
+
+                                    if (_.isObject(value) && value.type === 'Date') {
+                                      var time = moment(value.timestamp);
+                                      var tz = $scope.tz;
+                                      if (tz)
+                                        time.tz(tz);
+                                      return time.format("HH:mm:ss.SSS ZZ");
+                                    }
+                                    var nano = value % 1000;
+                                    var micro = (value / 1000) % 1000;
+                                    var milli = value / 1000 / 1000;
+                                    var time = moment(milli);
+                                    var tz = $scope.tz;
+                                    if (tz)
+                                      time.tz(tz);
+                                    return time.format("HH:mm:ss.SSS ZZ");
                                 }
                                 ];
         $scope.allStringTypes = [ { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
-        $scope.allTimeTypes   = [ { type: 8, name: 'time'}, { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
+        $scope.allTimeTypes   = [ { type: 8, name: 'datetime'}, { type: 0, name: 'string'}, { type: 11, name: 'date'}, { type: 12, name: 'time'} ];
         $scope.allIntTypes    = [ { type: 0, name: 'string'},
                                { type: 1, name: 'integer'},
                                { type: 2, name: 'formatted integer'},
@@ -453,8 +495,8 @@
           $scope.getCellAlignOld  = $scope.getCellAlign.slice(0);
           $scope.usePaginationOld = $scope.pagination.use;
           $scope.rowsToDisplayOld = $scope.pagination.rowsToDisplay;
-//          $scope.fixLeftOld = $scope.pagination.fixLeft;
-//          $scope.fixRightOld = $scope.pagination.fixRight;
+          $scope.fixLeftOld       = $scope.pagination.fixLeft;
+          $scope.fixRightOld      = $scope.pagination.fixRight;
           $scope.modal = $modal.open(options);
         };
 
@@ -470,8 +512,8 @@
             }
           }
 
-          if (($scope.usePaginationOld !== $scope.pagination.use) || ($scope.rowsToDisplayOld !== $scope.pagination.rowsToDisplay) /* ||
-              ($scope.fixLeftOld !== $scope.pagination.fixLeft) || ($scope.fixRightOld !== $scope.pagination.fixRight)*/ ) {
+          if (($scope.usePaginationOld !== $scope.pagination.use) || ($scope.rowsToDisplayOld !== $scope.pagination.rowsToDisplay) ||
+              ($scope.fixLeftOld !== $scope.pagination.fixLeft) || ($scope.fixRightOld !== $scope.pagination.fixRight) ) {
             doit = 2;
           } else {
            for (i=0; i<$scope.getCellDisp.length; i++) {
@@ -520,7 +562,8 @@
               scope.clipclient.destroy();
               delete scope.clipclient;
             }
-//            delete scope.fixcols;
+            delete scope.fixcols;
+            scope.fixcreated = false;
             scope.renderMenu = false;
           }
           if (all) {
@@ -639,7 +682,6 @@
               }
             }
           } );
-
         }
 
         scope.doCreateTable = function() {
@@ -647,8 +689,7 @@
           var i;
 
           // build configuration
-          cols.push({ "title" : scope.id, "visible" : false });
-
+          cols.push({ "title" : '    ', 'className': 'dtright', 'render': scope.allConverters[1] });
           for (i=0; i<scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
@@ -688,11 +729,11 @@
 
           if (!scope.pagination.use) {
             init.paging = false;
-            init.scrollY = scope.pagination.rowsToDisplay*27;
+            init.scrollY = scope.pagination.rowsToDisplay*27+2;
             init.scrollCollapse = true;
-            init.dom = 'rt';
+            init.dom = '<"bko-table"rt>';
           } else {
-            init.dom = 'rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>S';
+            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>S>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25
@@ -703,6 +744,7 @@
               init.scrollCollapse = true;
             }
           }
+          scope.fixcreated = false;
 
           bkHelper.timeout(function() {
             // we must wait for the DOM elements to appear
@@ -710,6 +752,8 @@
             scope.renderMenu = true;
             scope.colreorg = new $.fn.dataTable.ColReorder( $(id), {
               "fnReorderCallback": function () {
+                if (scope.colreorg===undefined)
+                  return;
                 scope.colorder = scope.colreorg.fnOrder().slice(0);
                 scope.refreshCells();
                 scope.$digest();
@@ -720,20 +764,7 @@
               scope.colreorg.fnOrder(scope.colorder);
             else
               scope.colorder = scope.colreorg.fnOrder().slice(0);
-            /*
-            if (scope.pagination.fixLeft || scope.pagination.fixRight) {
-              var inits = {};
-              if (scope.pagination.fixLeft)
-                inits.leftColumns = 1;
-              else
-                inits.leftColumns = 0;
-              if (scope.pagination.fixRight)
-                inits.rightColumns = 1;
-              else
-                inits.rightColumns = 0;
-              scope.fixcols = new $.fn.dataTable.FixedColumns( $(id), inits);
-            }
-            */
+            
             scope.refreshCells();
 
             $(id + ' tbody').off( 'click');
@@ -753,6 +784,21 @@
               clearTimeout(scope.refresh_size);
               scope.refresh_size = setTimeout(function() { scope.update_size(); }, 250);
             });
+            
+            var inits = {};
+            if ((scope.pagination.fixLeft+scope.pagination.fixRight) > (scope.columns.length-1)) {
+              scope.pagination.fixLeft=0;
+              scope.pagination.fixRight=0;
+            }
+            if (scope.pagination.fixLeft)
+              inits.leftColumns = 1+scope.pagination.fixLeft;
+            else
+              inits.leftColumns = 1;
+            if (scope.pagination.fixRight)
+              inits.rightColumns = 1;
+            else
+              inits.rightColumns = 0;
+            scope.fixcols = new $.fn.dataTable.FixedColumns( $(id), inits);
 
           },0);
         };
@@ -815,8 +861,16 @@
         scope.getCellModel = function() {
           return scope.model.getCellModel();
         };
+        scope.isShowOutput = function() {
+          return scope.model.isShowOutput();
+        };
         scope.$watch('getCellModel()', function(m) {
           scope.init(m);
+        });
+        scope.$watch('isShowOutput()', function(oldval, newval) {
+          if (scope.table!==undefined && !newval) {
+            scope.table.draw(false);
+          }
         });
 
       }

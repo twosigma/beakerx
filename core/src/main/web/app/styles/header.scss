@@ -30,15 +30,29 @@ header {
     margin-bottom: 0;
   }
 
-  .navbar-brand {
+  .navbar-left {
     color: #fff !important;
     font-size: 20px;
+    padding-top: 5px;
+  }
+  a:hover.navbar-left {
+    text-decoration: none;
+  }
+  
+  .navbar-brand {
+    color: #fff !important;
     padding-top: 10px;
-    padding-bottom: 7px;
 
     img {
       height: 22px;
       margin-top: -7px;
     }
+  }
+  
+  .navbar-text {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    color: #bdbdad !important;
+    padding-left: 15px;
   }
 }

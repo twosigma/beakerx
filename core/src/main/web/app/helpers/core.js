@@ -282,7 +282,6 @@
         bkUtils.all([bkUtils.getHomeDirectory(), bkUtils.getStartUpDirectory()])
             .then(function(values) {
           var homeDir = values[0];
-          var pwd = values[1];
           var fileChooserStrategy = self.getFileSystemFileChooserStrategy();
           fileChooserStrategy.input = initPath;
           fileChooserStrategy.getResult = function () {
@@ -295,7 +294,7 @@
             } else if (_.string.startsWith(result, '~/')) {
               result = result.replace('~', homeDir);
             } else if (!_.string.startsWith(result, '/') && !result.match(/^\w+:\\/)) {
-              result = pwd + "/" + result;
+              result = homeDir + "/" + result;
             }
             if (!_.string.endsWith(result, '.bkr')
                 && !_.string.endsWith(result, '/')) {
@@ -315,7 +314,7 @@
             return _.isEmpty(this.input) || _.string.endsWith(this.input, '/');
           };
           fileChooserStrategy.treeViewfs.applyExtFilter = false;
-          var fileChooserTemplate = JST['template/savenotebook']({homedir: homeDir, pwd: pwd });
+          var fileChooserTemplate = JST['template/savenotebook']({homedir: homeDir });
           var fileChooserResultHandler = function (chosenFilePath) {
             deferred.resolve({
               uri: chosenFilePath,
@@ -473,11 +472,12 @@
 
         var tab = function(cm) {
           var cursor = cm.getCursor();
-          var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
-          if (leftLine.match(/^\s*$/)) {
-            cm.execCommand("indentMore");
-          } else {
+          var lineLen = cm.getLine(cursor.line).length;
+          var rightLine = cm.getRange(cursor, {line: cursor.line, ch: lineLen});
+          if (rightLine.match(/^\s*$/)) {
             showAutoComplete(cm);
+          } else {
+            cm.execCommand("indentMore");
           }
         }
 

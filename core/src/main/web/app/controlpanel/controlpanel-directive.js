@@ -169,6 +169,12 @@
           });
         };
         $scope.reloadSessionsList();
+
+        // Listen to backend for changes to session list
+        $.cometd.subscribe('/sessionChange', function(reply){
+          $scope.reloadSessionsList();
+        });
+
         $scope.isSessionsListEmpty = function() {
           return _.isEmpty($scope.sessions);
         };

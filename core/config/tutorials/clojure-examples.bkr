@@ -1,0 +1,204 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "Clojure",
+            "plugin": "Clojure",
+            "view": {
+                "cm": {
+                    "mode": "text/x-clojure"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionc43Qpl",
+            "type": "section",
+            "title": "Clojure Examples",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownvJAVkY",
+            "type": "markdown",
+            "body": [
+                "[Clojure](http://clojure.org/) is a dialect of Lisp that runs in the JVM.",
+                "It shares with Lisp the code-as-data philosophy and a powerful macro system.",
+                "Clojure is predominantly a functional programming language, and features a rich set of immutable, persistent data structures.",
+                "When mutable state is needed, Clojure offers a software transactional memory system and reactive Agent system that ensure clean, correct, multithreaded designs.",
+                "Clojure comes built-in to Beaker so it should just work."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codejnXAl6",
+            "type": "code",
+            "evaluator": "Clojure",
+            "input": {
+                "body": [
+                    "; lazy infinite sequence with recursive definition",
+                    "(def fib-seq-lazy ",
+                    "  ((fn rfib [a b] ",
+                    "     (lazy-seq (cons a (rfib b (+ a b)))))",
+                    "   0 1))",
+                    "(take 20 fib-seq-lazy)"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": [
+                    0,
+                    1,
+                    1,
+                    2,
+                    3,
+                    5,
+                    8,
+                    13,
+                    21,
+                    34,
+                    55,
+                    89,
+                    144,
+                    233,
+                    377,
+                    610,
+                    987,
+                    1597,
+                    2584,
+                    4181
+                ],
+                "selectedType": "Text",
+                "pluginName": "Clojure",
+                "shellId": "1a85b444-60d4-4a82-a3ce-189adba48bf7",
+                "elapsedTime": 532
+            },
+            "evaluatorReader": true,
+            "lineCount": 6
+        },
+        {
+            "id": "codextC4q9",
+            "type": "code",
+            "evaluator": "Clojure",
+            "input": {
+                "body": [
+                    "; 'unless' cannot be defined with a function because",
+                    "; it does not always evaluate both its arguments.",
+                    "(defmacro unless [pred a b]",
+                    "  `(if (not ~pred) ~a ~b))",
+                    "(unless false (println \"Will print\") (println \"Will not print\"))"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "Will print\n"
+                        }
+                    ]
+                },
+                "selectedType": "Results",
+                "pluginName": "Clojure",
+                "shellId": "1a85b444-60d4-4a82-a3ce-189adba48bf7",
+                "elapsedTime": 535
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "markdownQ7NY0y",
+            "type": "markdown",
+            "body": [
+                "In this example a vector of references to vectors is created, each containing (initially sequential) unique numbers. Then a set of threads are started that repeatedly select two random positions in two random vectors and swap them, in a transaction. No special effort is made to prevent the inevitable conflicts other than the use of transactions."
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeHnlYry",
+            "type": "code",
+            "evaluator": "Clojure",
+            "input": {
+                "body": [
+                    "(defn run [nvecs nitems nthreads niters]",
+                    "  (let [vec-refs (vec (map (comp ref vec)",
+                    "                           (partition nitems (range (* nvecs nitems)))))",
+                    "        swap #(let [v1 (rand-int nvecs)",
+                    "                    v2 (rand-int nvecs)",
+                    "                    i1 (rand-int nitems)",
+                    "                    i2 (rand-int nitems)]",
+                    "                (dosync",
+                    "                 (let [temp (nth @(vec-refs v1) i1)]",
+                    "                   (alter (vec-refs v1) assoc i1 (nth @(vec-refs v2) i2))",
+                    "                   (alter (vec-refs v2) assoc i2 temp))))",
+                    "        report #(do",
+                    "                 (prn (map deref vec-refs))",
+                    "                 (println \"Distinct:\"",
+                    "                          (count (distinct (apply concat (map deref vec-refs))))))]",
+                    "    (report)",
+                    "    (dorun (apply pcalls (repeat nthreads #(dotimes [_ niters] (swap)))))",
+                    "    (report)))",
+                    "; When run, we see no values get lost or duplicated in the shuffle.",
+                    "; There are 36 distinct numbers before and after. ",
+                    "(run 6 6 6 100000)"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "([0 1 2 3 4 5] [6 7 8 9 10 11] [12 13 14 15 16 17] [18 19 20 21 22 23] [24 25 26 27 28 29] [30 31 32 33 34 35])\nDistinct: 36\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "([10 25 28 27 0 21] [13 23 22 35 15 19] [33 3 16 32 2 17] [18 12 20 4 29 11] [8 14 5 30 6 31] [1 7 9 34 24 26])\nDistinct: 36\n"
+                        }
+                    ]
+                },
+                "selectedType": "Results",
+                "pluginName": "Clojure",
+                "shellId": "1a85b444-60d4-4a82-a3ce-189adba48bf7",
+                "elapsedTime": 3461
+            },
+            "evaluatorReader": true,
+            "lineCount": 21
+        }
+    ]
+}

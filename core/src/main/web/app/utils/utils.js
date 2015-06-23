@@ -102,10 +102,9 @@
       // Open tab/window functions that handle the electron case
       openWindow: function(path) {
         if (bkHelper.isElectron) {
-          var thisWindow = bkUtils.Electron.thisWindow();
+          var thisWindow = bkUtils.Electron.thisWindow;
           var width = 800;
           var height = 800;
-          console.log(thisWindow);
           if (thisWindow !== undefined){
             var bounds = thisWindow.getBounds();
             width = bounds.width;
@@ -389,16 +388,7 @@
       bkUtils.Electron.toggleDevTools = function() {
         bkUtils.Electron.BrowserWindow.getFocusedWindow().toggleDevTools();
       },
-
-      // Call main thread to get ID
-      bkUtils.Electron.IPC.on('window-id', function(id) {
-        bkUtils.Electron.windowId = id;
-      });
-      bkUtils.Electron.IPC.send('window-ready');
-
-      bkUtils.Electron.thisWindow = function() {
-        return bkUtils.Electron.BrowserWindow.fromId(bkUtils.Electron.windowId);
-      };
+      bkUtils.Electron.thisWindow = bkUtils.Electron.remote.getCurrentWindow();
 
       bkUtils.Electron.updateMenus = function(menus) {
         var assignShortcut = function(name){

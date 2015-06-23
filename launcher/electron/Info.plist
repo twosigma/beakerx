@@ -6,7 +6,7 @@
 	<string>14C1514</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
-<!-- 	<key>CFBundleDocumentTypes</key>
+	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -15,17 +15,10 @@
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>DocumentType</string>
-			<key>CFBundleTypeOSTypes</key>
-			<array>
-				<string>????</string>
-			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
-			<key>NSDocumentClass</key>
-			<string>BeakerDocument</string>
 		</dict>
 	</array>
- -->
 	<key>CFBundleExecutable</key>
 	<string>Electron</string>
 	<key>CFBundleIconFile</key>

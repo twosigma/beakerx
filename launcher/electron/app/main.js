@@ -26,6 +26,7 @@ var eventEmitter = new events.EventEmitter();
 
 var java_home = path.resolve(__dirname + '/../jre/Contents/Home'); 
 var backend;
+var openFile;
 var mainMenuTemplate;
 
 // Report crashes to our server.
@@ -43,7 +44,7 @@ app.on('window-all-closed', function() {
   Menu.setApplicationMenu(menu); 
 });
 
-require(__dirname + '/main-thread-ipc.js');
+// require(__dirname + '/main-thread-ipc.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
@@ -63,8 +64,13 @@ app.on('ready', function() {
       height: 1000
     });
     
-    mainWindow.loadUrl(data.beakerUrl);
-    mainMenuTemplate = require('./main-menu-template.js')(data.beakerUrl);
+    backend.url = data.beakerUrl;
+    if (openFile !== undefined) {
+      mainWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + openFile);
+    } else {
+      mainWindow.loadUrl(backend.url);
+    }
+    mainMenuTemplate = require('./main-menu-template.js')(backend.url);
 
     // Open the devtools.
     mainWindow.openDevTools();
@@ -79,6 +85,12 @@ app.on('ready', function() {
   });
 });
 
+// Have to make sure this waits until backend launches
+app.on('open-file', function(event, path) {
+  event.preventDefault();
+  openFile = path;
+});
+
 function runBeaker() {
   var ReadLine = require('readline');
   var spawn = require('child_process').spawn;
@@ -90,7 +102,7 @@ function runBeaker() {
   });
 
   rl.on('line', function(line) {
-    console.log(line); // Send backend output to electron's output
+    console.log(line); // Pipe backend's stdout to electron's stdout
     if (line.startsWith('Beaker listening on')){
       eventEmitter.emit('backendReady', {
         beakerUrl: line.split(' ')[3]

@@ -60,7 +60,6 @@ function spinUntilReady(url, done) {
   var spin = function() {
     var callback = function(response) {
       if (response.statusCode == 200){
-        console.log('All good, continuing');
         done();
       } else {
         if (timeout <= 0) {
@@ -112,7 +111,7 @@ app.on('ready', function() {
       });
       appReady = true;
     };
-    spinUntilReady(backend.hash + '/beaker/rest/session-backup/ready', allReady);
+    spinUntilReady(backend.hash + '/beaker/rest/util/ready', allReady);
   });
 });
 

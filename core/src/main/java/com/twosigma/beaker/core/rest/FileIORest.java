@@ -308,7 +308,7 @@ public class FileIORest {
         }
       }
     } else if (lp == -1) {    
-      String p = path;
+      final String p = path;
       FilenameFilter fileNameFilter = new FilenameFilter() {          
         @Override
         public boolean accept(File dir, String name) {
@@ -328,7 +328,7 @@ public class FileIORest {
       String p = path.substring(0,lp);
       f = new File(p);
       if (f.exists() && f.isDirectory()) {
-        String n = path.substring(lp+1);
+        final String n = path.substring(lp+1);
         FilenameFilter fileNameFilter = new FilenameFilter() {          
           @Override
           public boolean accept(File dir, String name) {

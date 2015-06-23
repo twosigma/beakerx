@@ -106,6 +106,17 @@ public class SessionBackupRest {
   private final Map<String, Session> sessions = new HashMap<>();
   private final List<Plugin> plugins = new ArrayList<>();
 
+  private void refreshFrontend() {
+    // Notify client of changes in session
+    ServerChannel sessionChangeChannel;
+    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionChange")) != null)) {
+      Map<String, Object> data = new HashMap<String, Object>();
+      sessionChangeChannel.publish(this.localSession, data, null);
+    } else {
+      System.out.println("Warning: Caught NPE of unknown origin.");
+    }
+  }
+
   @POST
   @Path("backup/{session-id}")
   public void backup(
@@ -127,11 +138,7 @@ public class SessionBackupRest {
         notebookUri, uriType, readOnly, format, notebookModelJson, edited, date));
 
     // Notify client of changes in session
-    ServerChannel sessionChangeChannel;
-    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionChange")) != null)) {
-      Map<String, Object> data = new HashMap<String, Object>();
-      sessionChangeChannel.publish(this.localSession, data, null);
-    }
+    refreshFrontend();
 
     try {
       recordToFile(sessionId, notebookUri, notebookModelJson);
@@ -167,12 +174,7 @@ public class SessionBackupRest {
       @FormParam("sessionid") String sessionID) {
     this.sessions.remove(sessionID);
 
-    // Notify client of changes in session
-    ServerChannel sessionChangeChannel;
-    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionChange")) != null)) {
-      Map<String, Object> data = new HashMap<String, Object>();
-      sessionChangeChannel.publish(this.localSession, data, null);
-    }
+    refreshFrontend();
   }
 
   @GET

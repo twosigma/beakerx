@@ -387,7 +387,7 @@
       bkUtils.Electron.IPC = require('ipc');
       bkUtils.Electron.toggleDevTools = function() {
         bkUtils.Electron.BrowserWindow.getFocusedWindow().toggleDevTools();
-      },
+      };
       bkUtils.Electron.thisWindow = bkUtils.Electron.remote.getCurrentWindow();
 
       bkUtils.Electron.updateMenus = function(menus) {

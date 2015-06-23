@@ -129,7 +129,6 @@ public class SessionBackupRest {
     Map<String, Object> data = new HashMap<String, Object>();
     bayeux.getChannel("/sessionChange").publish(this.localSession, data, null);
 
-
     try {
       recordToFile(sessionId, notebookUri, notebookModelJson);
     } catch (IOException | InterruptedException ex) {
@@ -149,6 +148,15 @@ public class SessionBackupRest {
     file.setWritable(false, false);
     file.setReadable(true, true);
     file.setWritable(true, true);
+  }
+
+  // Clients can spin on this until the backend's REST endpoints are ready 
+  @GET
+  @Path("ready")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String ready() 
+  {
+    return "ok";
   }
 
   @GET

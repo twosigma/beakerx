@@ -66,6 +66,15 @@ public class UtilRest {
     resetConfig();
   }
 
+  // Clients can spin on this until the backend's REST endpoints are ready 
+  @GET
+  @Path("ready")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String ready() 
+  {
+    return "ok";
+  }
+
   @GET
   @Path("whoami")
   @Produces(MediaType.TEXT_PLAIN)

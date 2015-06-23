@@ -19,6 +19,7 @@ var Menu = require('menu');
 var MenuItem = require('menu-item');
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var ipc = require('ipc');
+var http = require('http');
 
 var path = require('path');
 var events = require('events');
@@ -51,39 +52,67 @@ app.on('window-all-closed', function() {
 // be closed automatically when the javascript object is GCed.
 var mainWindow = null;
 
+function spinUntilReady(url, done) {
+  var interval = 100;
+  var dur = 10; // In seconds
+  var timeout = dur * (1000 / interval);
+  console.log("note: probing until backend is ready, an error here is normal");
+  var spin = function() {
+    var callback = function(response) {
+      if (response.statusCode == 200){
+        console.log('All good, continuing');
+        done();
+      } else {
+        if (timeout <= 0) {
+          console.log('Application did not start correctly. Please try relaunching it.');
+          app.quit();
+        } else {
+          timeout--;
+          setTimeout(spin, interval);
+        }
+      }
+    }
+    http.get(backend.url + url, callback);
+  }
+  spin();
+}
+
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
   // Run beaker backend
   runBeaker();
 
-  eventEmitter.on('backendReady', function(data) {
-    // Create the browser window.
-    mainWindow = new BrowserWindow({
-      // node-integration': false,
-      width: 1500,
-      height: 1000
-    });
-    
-    backend.url = data.beakerUrl;
-    if (openFile !== undefined) {
-      mainWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + openFile);
-    } else {
-      mainWindow.loadUrl(backend.url);
-    }
-    mainMenuTemplate = require('./main-menu-template.js')(backend.url);
+  eventEmitter.on('backendReady', function() {
+    // Have to wait until actually ready
+    var allReady = function(){
+      // Create the browser window.
+      mainWindow = new BrowserWindow({
+        // node-integration': false,
+        width: 1500,
+        height: 1000
+      });
+      
+      if (openFile !== undefined) {
+        mainWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + openFile);
+      } else {
+        mainWindow.loadUrl(backend.url);
+      }
+      mainMenuTemplate = require('./main-menu-template.js')(backend.url);
 
-    // Open the devtools.
-    mainWindow.openDevTools();
-    
-    // Emitted when the window is closed.
-    mainWindow.on('closed', function() {
-      // Dereference the window object, usually you would store windows
-      // in an array if your app supports multi windows, this is the time
-      // when you should delete the corresponding element.
-      mainWindow = null;
-    });
-    appReady = true;
+      // Open the devtools.
+      mainWindow.openDevTools();
+      
+      // Emitted when the window is closed.
+      mainWindow.on('closed', function() {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        mainWindow = null;
+      });
+      appReady = true;
+    };
+    spinUntilReady(backend.hash + '/beaker/rest/session-backup/ready', allReady);
   });
 });
 
@@ -113,10 +142,12 @@ function runBeaker() {
 
   rl.on('line', function(line) {
     console.log(line); // Pipe backend's stdout to electron's stdout
-    if (line.startsWith('Beaker listening on')){
-      eventEmitter.emit('backendReady', {
-        beakerUrl: line.split(' ')[3]
-      });
+    if (line.startsWith('Beaker hash')){
+      backend.hash = line.split(' ')[2];
+    }
+    else if (line.startsWith('Beaker listening on')){
+      backend.url = line.split(' ')[3];
+      eventEmitter.emit('backendReady', {});
     }
   });
 }

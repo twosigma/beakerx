@@ -27,6 +27,10 @@
   padding-top: 0;
 }
 
+bk-markdown-editable .CodeMirror {
+  padding-top: 0 !important;
+}
+
 .bkcelltextarea {
     border: none;
     resize: none;
@@ -82,8 +86,13 @@ bk-markdown-cell .markup
 
 .bkcell bk-code-cell-input-menu .dropdown {
     float:          left;
-    z-index:        99;
     position:       relative;
+}
+
+// Ensure that the cell type container is stacked below the cell menu in advanced mode since the two are overlapping elements.
+.advanced-mode bk-cell .cell-type {
+  z-index: -1;
+  position: relative;
 }
 
 bk-cell > .bkcell {

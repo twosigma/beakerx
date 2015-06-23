@@ -47,6 +47,6 @@
       <pre>{{cellmodel | json}}</pre>
     </div>
   </div>
-  <div ng-include="getTypeCellUrl()"></div>
+  <div ng-include="getTypeCellUrl()" class="cell-type"></div>
   <bk-new-cell-menu config="newCellMenuConfig" ng-class="isLarge && 'large'" is-large="isLarge" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
 </div>

@@ -28,8 +28,6 @@ if len(sys.argv) > 1:
                   "create", "beaker_backend_" + sys.argv[3],
                   "--ipython-dir=" + sys.argv[2])
 
-port = sys.argv.pop()
-
 # set pythonpath to include this directory so we can import beaker_runtime.py
 plugin_dir = os.path.dirname(sys.argv.pop(0))
 if "PYTHONPATH" in os.environ:
@@ -38,6 +36,4 @@ else:
     old_path = ''
 os.environ["PYTHONPATH"] = plugin_dir + old_path
 
-os.execlp("ipython", "ipython", "notebook",
-          "--ipython-dir=" + os.environ["beaker_tmp_dir"],
-          "--profile", "beaker_backend_Python3")
+os.execlp("python", "python", plugin_dir+"/python3PluginStart.py")

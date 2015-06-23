@@ -37,21 +37,41 @@
             });
 
     var module = angular.module('bk.notebook.share', [
+                                                      'ui.bootstrap',
         'bk.utils',
-        "bk.notebookCellModelManager",
-        "M_bkTable_static",
-        "M_bkChart_static",
-        "M_bkImage_static",
-        "M_latexDisplay_static"
+        'bk.outputDisplay',
+        "bk.notebookCellModelManager"        
     ]);
 
+    window.bkHelper = {
+        getNotebookModel: function() {
+          return window.notebookModel;
+        },
+        getBeakerObject: function() {
+          return window.notebookModel.namespace;
+        }
+    };
     window.beaker = {};
-    window.beaker.bkoDirective = function(name, list) {
-        module.directive("bko" + name, list);
+    window.beaker.toBeAddedToOutputDisplayFactory = {};
+    window.beaker.toBeAddedToOutputDisplayType = {};
+    window.beaker.bkoDirective = function(type, impl) {
+      if (window.beaker.outputDisplayFactory) {
+        window.beaker.outputDisplayFactory.add(type, impl);
+      } else {
+        window.beaker.toBeAddedToOutputDisplayFactory[type] = impl;
+      }
     };
     window.beaker.bkoFactory = function(name, list) {
         module.factory(name, list);
     };
+    window.beaker.registerOutputDisplay = function(type, displays) {
+      if (window.beaker.outputDisplayFactory) {
+        window.beaker.outputDisplayFactory.addOutputDisplayType(type, displays);
+      } else {
+        window.beaker.toBeAddedToOutputDisplayType[type] = displays;
+      }
+    };
+ 
     module.factory("bkCellMenuPluginManager", function() {
         return {
             getPlugin: function() {
@@ -63,12 +83,18 @@
         };
     });
 
+    module.factory('bkEvaluateJobManager', function() {
+      return {
+        isCancellable: function() { return false; }
+      };
+    });
+    
     module.factory("notebookModel", function() {
         return window.notebookModel;
     });
 
-    module.directive("bkNotebook", ["notebookModel", "bkNotebookCellModelManager",
-        function(notebookModel, bkNotebookCellModelManager) {
+    module.directive("bkNotebook", ["notebookModel", "bkNotebookCellModelManager", "$timeout",
+        function(notebookModel, bkNotebookCellModelManager,$timeout) {
         return {
             restrict: 'E',
             template:
@@ -77,6 +103,11 @@
                     '</div>',
             scope: {},
             link: function(scope) {
+              
+              bkHelper.timeout = function (func, ms) {
+                return $timeout(func, ms);
+              };
+              
                 window.bkNotebookCellModelManager = bkNotebookCellModelManager; // for debug only
                 window.notebookModel = notebookModel; // for debug only
                 bkNotebookCellModelManager.reset(notebookModel.cells);
@@ -101,6 +132,9 @@
                 };
                 scope.isLocked = function() {
                     return notebookModel.locked;
+                };
+                scope.isShowOutput = function() {
+                  return !cellmodel.output.hidden;
                 };
             }
         };
@@ -134,45 +168,82 @@
     module.directive('bkTextCell', function() {
         return {
             restrict: 'E',
-            template: "<div></div>",
+            template: '<div class="textcell-wrapper" style="min-height: 14px; min-width: 14px;"></div>',
             link: function(scope, element, attrs) {
                 element.find('div').html(scope.cellmodel.body);
             }
         };
     });
 
+    var bkRenderer = new marked.Renderer();
+    bkRenderer.link = function(href, title, text) {
+      var prot;
+      if (this.options.sanitize) {
+        try {
+          prot = decodeURIComponent(unescape(href))
+          .replace(/[^\w:]/g, '')
+          .toLowerCase();
+        } catch (e) {
+          return '';
+        }
+        //jshint ignore:start
+        if (prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0) {
+          //jshint ignore:end
+          return '';
+        }
+      };
+      var out = '<a href="' + href + '"';
+      if (title) {
+        out += ' title="' + title + '"';
+      }
+      out += ' target="_blank"'; // < ADDED THIS LINE ONLY
+      out += '>' + text + '</a>';
+      return out;
+    }
+
+    bkRenderer.paragraph = function(text) {
+      // Allow users to write \$ to escape $
+      return marked.Renderer.prototype.paragraph.call(this, text.replace(/\\\$/g, '$'));
+    };
+
+    module.directive('bkMarkdownEditable', [function() {
+      return {
+        restrict: 'E',
+        template: '<div class="markup"></div>',
+        scope: {
+          cellmodel: '='
+        },
+        link: function(scope, element, attrs) {
+          var contentAttribute = scope.cellmodel.type === "section" ? 'title' : 'body';
+          var doktex = function(markdownFragment) {
+            try {
+              renderMathInElement(markdownFragment[0], {
+                delimiters: [
+                  {left: "$$", right: "$$", display: true},
+                  {left: "$", right:  "$", display: false},
+                  {left: "\\[", right: "\\]", display: true},
+                  {left: "\\(", right: "\\)", display: false}
+                ]
+              });
+            } catch(err) {
+            }
+          }
+          
+          var preview = function() {
+            var markdownFragment = $('<div>' + scope.cellmodel[contentAttribute] + '</div>');
+            doktex(markdownFragment);
+            element.find('.markup').html(marked(markdownFragment.html(), {gfm: true, renderer: bkRenderer}));
+            markdownFragment.remove();
+          };
+          preview();
+        }
+        };
+      }]);
+    
     module.directive('bkMarkdownCell', function() {
         return {
             restrict: 'E',
-            template: "<div></div>",
-            link: function(scope, element, attrs) {
-                // always overwrite mode to "preview" for "Read-Only"
-                scope.cellmodel.mode = "preview";
-
-                var div = element.find("div").first().get()[0];
-                var options = {
-                    basePath: 'vendor/epiceditor',
-                    container: div,
-		    theme: {
-			editor: '../../../src/css/markdown-edit.css',
-			preview: '../../../src/css/markdown-preview.css'
-		    },
-                    file: {
-                        defaultContent: scope.cellmodel.body
-                    },
-                    clientSideStorage: false,
-                    button: false,
-                    autogrow: {
-                        minHeight: 50,
-                        maxHeight: false,
-                        scroll: true
-                    }
-                };
-                var editor = new EpicEditor(options).load();
-                setTimeout(function() {
-                    editor.preview();
-                }, 1000);
-            }
+            template: '<bk-markdown-editable cellmodel="cellmodel"></bk-markdown-editable>',
         };
     });
 
@@ -188,6 +259,27 @@
                 var isLocked = function() {
                     return notebookModel.locked;
                 };
+                var evalData =  {
+                    "Html": { bgColor: "#E3502B", fgColor: "#FFFFFF", borderColor: "",        shortName: "Ht" },
+                    "Latex": { bgColor: "#FFFFFF", fgColor: "#030303", borderColor: "#3D4444", shortName: "La" },
+                    "JavaScript": { bgColor: "#EFDB52", fgColor: "#4A4A4A", borderColor: "",        shortName: "Js" },
+                    "IPython": { bgColor: "#EEBD48", fgColor: "#FFFFFF", borderColor: "", shortName: "Py" },
+                    "Python3": { bgColor: "#EEBD48", fgColor: "#FFFFFF", borderColor: "", shortName: "Py" },
+                    "IRuby": { bgColor: "#AF1712", fgColor: "#FFFFFF", borderColor: "", shortName: "Rb" },
+                    "Julia": { bgColor: "#6EAC5E", fgColor: "#FFFFFF", borderColor: "", shortName: "Jl" },
+                    "Groovy": { bgColor: "#6497A9", fgColor: "#FFFFFF", borderColor: "", shortName: "Gv" },
+                    "Java": { bgColor: "#EB0000", fgColor: "#FFFFFF", borderColor: "", shortName: "Jv" },
+                    "R": { bgColor: "#8495BB", fgColor: "#FFFFFF", borderColor: "", shortName: "R" },
+                    "Scala": { bgColor: "#B41703", fgColor: "#FFFFFF", borderColor: "", shortName: "Sc" },
+                    "Clojure": { bgColor: "#5881d8", fgColor: "#FFFFFF", borderColor: "", shortName: "Cj" },
+                    "Node": { bgColor: "#8EC453", fgColor: "#FFFFFF", borderColor: "", shortName: "N" },
+                    "Kdb": { bgColor: "#005e99", fgColor: "#FFFFFF", borderColor: "", shortName: "K" }
+                    };
+                
+                scope.isLocked = function() {
+                  return notebookModel.locked;
+                };
+
                 scope.isShowInput = function() {
                     if (isLocked()) {
                         return false;
@@ -210,7 +302,9 @@
                     }
                     return !(result === undefined || result === null);
                 };
-
+                scope.getEvaluator = function() {
+                  return evalData[scope.cellmodel.evaluator];
+                };
                 var evaluator = _(notebookModel.evaluators).find(function(evaluator) {
                     return evaluator.name === scope.cellmodel.evaluator;
                 });
@@ -228,215 +322,112 @@
         };
     }]);
 
+    module.directive('bkLanguageLogo', function() {
+      return {
+        restrict: 'E',
+        template: '<span ng-style="style">{{name}}</span>',
+        scope: {
+          name: '@',
+          bgColor: '@',
+          fgColor: '@',
+          borderColor: '@'
+        },
+        link: function(scope, element, attrs) {
+          scope.style = {
+            'background-color': scope.bgColor,
+            'color': scope.fgColor
+          };
+          var updateStyle = function() {
+            scope.style = {
+              'background-color': scope.bgColor,
+              'color': scope.fgColor
+            };
+            if (scope.borderColor) {
+              scope.style['border-width'] = '1px';
+              scope.style['border-color'] = scope.borderColor;
+              scope.style['border-style'] = 'solid';
+            } else {
+              delete scope.style['border-width'];
+              delete scope.style['border-color'];
+              delete scope.style['border-style'];
+            }
+          };
+          scope.$watch('bgColor', updateStyle);
+          scope.$watch('fgColor', updateStyle);
+          scope.$watch('borderColor', updateStyle);
+        }
+      };
+    });
+    
     module.directive('bkCodeCellOutput', function() {
         return {
             restrict: "E",
-            template: '<bk-output-display ng-show="isShowOutput()" model="getOutputDisplayModel()" type="getOutputDisplayType()" show-separator="false"></bk-output-display>',
+            template: '<bk-output-display ng-show="isShowOutput()" model="outputDisplayModel" type="{{getOutputDisplayType()}}" show-separator="false"></bk-output-display>',
             link: function($scope, outputDisplayFactory) {
+              
+              $scope.getOutputResult = function() {
+                if ($scope.cellmodel !== undefined)
+                  return $scope.cellmodel.output.result;
+                if ($scope.$parent.cellmodel)
+                  return $scope.$parent.cellmodel.output.result;
+              };
+
+              var dummy = {};
+              
+              $scope.outputDisplayModel = {
+                  getCellModel: function() {
+                    var result = $scope.getOutputResult();
+                    if (result && result.type === "BeakerDisplay") {
+                      return result.object;
+                    } else if (result && result.type === "UpdatableEvaluationResult") {
+                        return result.payload;
+                    } else {
+                      return result;
+                    }
+                  },
+                  isShowOutput: function() {
+                    return $scope.$parent.isShowOutput();
+                  },
+                  getDumpState: function() {
+                    return undefined;
+                  },
+                  setDumpState: function(s) {
+                  },
+                  resetShareMenuItems: function(newItems) {
+                  },
+                  getCometdUtil: function() {
+                    return undefined;
+                  },
+                  getEvaluatorId: function() {
+                    var id = $scope;
+                    while (id !== undefined) {
+                      if (id.evaluatorId !== undefined)
+                        return id.evaluatorId;
+                      id = id.$parent;
+                    }
+                    return undefined;
+                  }
+                };
+
                 $scope.getOutputDisplayType = function() {
-                    var display = $scope.cellmodel.output.selectedType;
-                    if (!display) {
-                        display = outputDisplayFactory.getApplicableDisplays($scope.cellmodel.output.result)[0];
-                    }
-                    if (display === "BeakerDisplay") {
-                        return $scope.cellmodel.output.result.innertype;
-                    } else {
-                        return display;
-                    }
+                  if ($scope.cellmodel === undefined)
+                    return "Text";
+                  var type = $scope.cellmodel.output.selectedType;
+                  if (type === "BeakerDisplay") {
+                    var result = $scope.cellmodel.output.result;
+                    type = result ? result.innertype : "Hidden";
+                  }
+                  return type;
                 };
-                var dummyPlotModel = {
-                    getCellModel: function() {
-                        return $scope.cellmodel.output.result;
-                    },
-                    resetShareMenuItems: function() {
-
-                    }
-                };
+               
+                $scope.type = $scope.getOutputDisplayType();
+                
                 $scope.isShowOutput = function() {
-                  return $scope.$parent.isShowOutput();
+                  if ($scope.$parent!== undefined && $scope.$parent.isShowOutput !== undefined)
+                    return $scope.$parent.isShowOutput();
                 };
-                $scope.getOutputDisplayModel = function() {
-                    var display = $scope.cellmodel.output.selectedType;
-                    if (!display) {
-                        display = outputDisplayFactory.getApplicableDisplays($scope.cellmodel.output.result)[0];
-                    }
-                    if (display === "BeakerDisplay") {
-                        return $scope.cellmodel.output.result.object;
-                    } else if (display === "Plot" || display === "CombinedPlot") {
-                        return dummyPlotModel;
-                    } else {
-                        return $scope.cellmodel.output.result;
-                    }
-                };
+              
             }
-        };
-    });
-
-    module.directive('bkOutputDisplay', function() {
-        return {
-            restrict: 'E',
-            scope: {
-                type: "=", // optional
-                model: "=",
-                showSeparator: "@"
-            },
-            template: '<hr ng-if="showSeparator" /><div ng-include="getType()"></div>',
-            controller: ["$scope", "outputDisplayFactory", function($scope, outputDisplayFactory) {
-                var getDefaultType = function(model) {
-                    var display = outputDisplayFactory.getApplicableDisplays(model)[0];
-                    if (display === "BeakerDisplay") {
-                        if (model) {
-                            return "bko" + model.innertype + ".html";
-                        } else {
-                            return "bkoHidden.html";
-                        }
-                    } else {
-                        return "bko" + display + ".html";
-                    }
-                };
-                $scope.getType = function() {
-                    if ($scope.type) {
-                        return "bko" + $scope.type + ".html";
-                    } else if ($scope.model.getCellModel && $scope.model.getCellModel().type === "plot") {
-                        return "bkoPlot.html";
-                    } else {
-                        return getDefaultType($scope.model);
-                    }
-                };
-            }]
-        };
-    });
-
-    module.factory('outputDisplayFactory', function() {
-        var resultType2DisplayTypesMap = {
-            // The first in the array will be used as default
-            "text": ["Text", "Html", "Latex"],
-            "TableDisplay": ["Table", "Text"],
-            "html": ["Html"],
-            "ImageIcon": ["Image", "Text"],
-            "BeakerDisplay": ["BeakerDisplay", "Text"],
-            "Plot": ["Chart", "Text"],
-            "TimePlot": ["Chart", "Text"],
-            "HiddenOutputCell": ["Hidden"],
-            "Warning": ["Warning"],
-            "BeakerOutputContainerDisplay": ["OutputContainer", "Text"],
-            "OutputContainerCell": ["OutputContainer", "Text"]
-        };
-
-        var isJSON = function(value) {
-            var ret = true;
-            try {
-                JSON.parse(value);
-            } catch (err) {
-                ret = false;
-            }
-            return ret;
-        };
-
-        var isHTML = function(value) {
-            return /<[a-z][\s\S]*>/i.test(value);
-        };
-
-        // TODO: think how to dynamically add more display types
-        return {
-            getApplicableDisplays: function(result) {
-                if (!result) {
-                    return ["Text"];
-                }
-                if (!result.type) {
-                    var ret = ["Text", "Html", "Latex"];
-                    if (isJSON(result)) {
-                        //ret.splice(0, 0, "JSON", "Vega");
-                        ret.push("JSON", "Vega");
-                    }
-                    if (isHTML(result)) {
-                        ret = ["Html", "Text", "Latex"];
-                    }
-                    if (_.isArray(result)) {
-                        if (_.isObject(result[0])) {
-                            ret.push("Table");
-                        }
-                    }
-                    return ret;
-                }
-                if (resultType2DisplayTypesMap.hasOwnProperty(result.type)) {
-                    return resultType2DisplayTypesMap[result.type];
-                } else {
-                    return ["Text"];
-                }
-            }
-        };
-    });
-
-    module.directive('bkoText', function() {
-        return {
-            restrict: "E",
-            template: "<pre>{{getText()}}</pre>",
-            controller: ["$scope", function($scope) {
-                $scope.getText = function() {
-                    if ($scope.model && $scope.model.text) {
-                        return $scope.model.text;
-                    } else {
-                        return $scope.model;
-                    }
-                };
-            }]
-        };
-    });
-
-    module.directive('bkoWarning', function() {
-        return {
-            restrict: "E",
-            template: "<pre class='out_warning'>{{model.message}}</pre>"
-        };
-    });
-
-    module.directive('bkoError', function() {
-        return {
-            restrict: "E",
-            template: "<pre class='out_error'>" +
-            "<span ng-show='canExpand' class='toggle-error' ng-click='expanded = !expanded'>{{expanded ? '-' : '+'}}</span>" +
-            "<span></span></pre>" +
-            "<pre ng-show='expanded'><span></span>" +
-            "</pre>",
-            controller: ["$scope", "$element", function($scope, $element) {
-                $scope.expanded = false;
-                $scope.canExpand = _.isArray($scope.model);
-                $scope.$watch('model', function() {
-                    if ($scope.canExpand) {
-                        $($element.find('span')[1]).html($scope.model[0]);
-                        $element.find('span').last().html($scope.model[1]);
-                    } else {
-                        $($element.find('span')[1]).html($scope.model);
-                        $element.find('span').last().html("");
-                    }
-                });
-            }]
-        };
-    });
-
-    module.directive('bkoHtml', function() {
-        return {
-            restrict: "E",
-            template: "<div></div>",
-            link: function(scope, element, attrs) {
-              var div = element.find("div").first();
-              div.html(scope.model);
-	      div.on('click', 'a', function(e) {
-		var target = $(this).attr('href');
-		var i = target.indexOf('http');
-		if(target.indexOf('http') !== 0 && target.indexOf('ftp') !== 0) {
-		  e.preventDefault();
-		}
-	      });
-            }
-        };
-    });
-
-    module.directive('bkoOutputContainer', function() {
-        return {
-            restrict: 'E',
-            template: '<bk-output-display ng-repeat="m in model.items" model="m" show-separator="{{ $index != 0}}"></bk-output-display>'
         };
     });
 

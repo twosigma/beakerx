@@ -43,11 +43,7 @@ app.on('window-all-closed', function() {
   Menu.setApplicationMenu(menu); 
 });
 
-ipc.on('window-ready', function(event) {
-  // Use sender to find window to find id
-  var id = BrowserWindow.fromWebContents(event.sender).id;
-  event.sender.send('window-id', id);
-})
+require(__dirname + '/main-thread-ipc.js');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
@@ -94,7 +90,7 @@ function runBeaker() {
   });
 
   rl.on('line', function(line) {
-    console.log(line);
+    console.log(line); // Send backend output to electron's output
     if (line.startsWith('Beaker listening on')){
       eventEmitter.emit('backendReady', {
         beakerUrl: line.split(' ')[3]

@@ -414,6 +414,12 @@
                 bkUtils.Electron.IPC.send('quit');
               },
               accelerator: 'Command+Q'
+            },
+            {
+              label: 'Change server',
+              click: function() {
+                bkUtils.Electron.IPC.send('try-change-server');
+              }
             }
           ]
         };

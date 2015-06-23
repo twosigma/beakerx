@@ -31,11 +31,38 @@ var openFile;
 var mainMenuTemplate;
 var appReady = false;
 
+var defaultWindowOptions = {
+  width: 1500,
+  height: 1000
+};
+
+var popupOptions = {
+  width: 300,
+  height: 100
+};
+
 // Report crashes to our server.
 require('crash-reporter').start();
 
 ipc.on('quit', function() {
   app.quit();
+});
+
+ipc.on('try-change-server', function() {
+  // Open new window asking for ip
+  var popup = new BrowserWindow(popupOptions);
+  popup.loadUrl(__dirname + 'change-server.html');
+
+  ipc.on('change-server', function(addr){
+    // Check validity?
+    var windows = BrowserWindow.getAllWindows();
+    for (var i = 0; i < windows.length; ++i){
+      windows[i].close();
+    }
+    // Open new control panel there
+    var newWindow = new BrowserWindow(defaultWindowOptions);
+    newWindow.loadUrl(addr);
+  });
 });
 
 // Kill backend before exiting 
@@ -94,11 +121,7 @@ app.on('ready', function() {
     // Have to wait until actually ready
     var allReady = function(){
       // Create the browser window.
-      mainWindow = new BrowserWindow({
-        // node-integration': false,
-        width: 1500,
-        height: 1000
-      });
+      mainWindow = new BrowserWindow(defaultWindowOptions);
       
       if (openFile !== undefined) {
         mainWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + openFile);
@@ -127,10 +150,7 @@ app.on('ready', function() {
 app.on('open-file', function(event, path) {
   event.preventDefault();
   if (appReady){
-    var newWindow = new BrowserWindow({
-      width: 1500,
-      height: 1000
-    });
+    var newWindow = new BrowserWindow(defaultWindowOptions);
     newWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + path);
   } else {
     openFile = path;

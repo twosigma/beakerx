@@ -34,9 +34,13 @@ var appReady = false;
 // Report crashes to our server.
 require('crash-reporter').start();
 
+ipc.on('quit', function() {
+  app.quit();
+});
+
 // Kill backend before exiting 
 app.on('quit', function() {
-  backend.kill('SIGTERM');
+  exit();
 });
 
 // Quit when all windows are closed.
@@ -51,6 +55,10 @@ app.on('window-all-closed', function() {
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the javascript object is GCed.
 var mainWindow = null;
+
+function exit() {
+  backend.kill('SIGTERM');
+}
 
 function spinUntilReady(url, done) {
   var interval = 100;

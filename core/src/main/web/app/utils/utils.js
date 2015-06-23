@@ -373,11 +373,11 @@
         return window.require(url);
       },
 
-      // wrapper around Electron
       // Electron: require('remote')
       isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
     };
     if (bkUtils.isElectron){
+      // Should I refactor this?
       bkUtils.Electron = {};
       bkUtils.Electron.remote = require('remote');
       bkUtils.Electron.BrowserWindow = bkUtils.Electron.remote.require('browser-window');

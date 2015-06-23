@@ -19,6 +19,15 @@
     {{cellmodel.evaluator}} &nbsp;
     ({{cellmodel.lineCount}} lines)
   </div>
+  <div ng-if="isDebugging()">
+    [Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}}
+    <a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>
+    <a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()">show less</a>
+    <div collapse="!isShowDebugInfo()">
+      <pre>{{cellmodel | json}}</pre>
+    </div>
+  </div>
+  <div ng-include="getTypeCellUrl()"></div>
   <div class="toggle-menu">
     <div class="dropdown dropdown-promoted" data-toggle="dropdown" style="float: right;">
       <div class="cell-menu-item cell-dropdown dropdown-toggle" title="cell menu"></div>
@@ -39,14 +48,5 @@
       <div class="loading-spinner rotating"></div>
     </div>
   </div>
-  <div ng-if="isDebugging()">
-    [Debug]: cell Id = {{cellmodel.id}}, parent = {{getParentId()}}, level = {{cellmodel.level}}
-    <a ng-click="toggleShowDebugInfo()" ng-hide="isShowDebugInfo()">show more</a>
-    <a ng-click="toggleShowDebugInfo()" ng-show="isShowDebugInfo()">show less</a>
-    <div collapse="!isShowDebugInfo()">
-      <pre>{{cellmodel | json}}</pre>
-    </div>
-  </div>
-  <div ng-include="getTypeCellUrl()"></div>
   <bk-new-cell-menu config="newCellMenuConfig" ng-class="isLarge && 'large'" is-large="isLarge" ng-if="newCellMenuConfig.isShow()"></bk-new-cell-menu>
 </div>

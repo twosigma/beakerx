@@ -28,6 +28,7 @@ var java_home = path.resolve(__dirname + '/../jre/Contents/Home');
 var backend;
 var openFile;
 var mainMenuTemplate;
+var appReady = false;
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -82,13 +83,22 @@ app.on('ready', function() {
       // when you should delete the corresponding element.
       mainWindow = null;
     });
+    appReady = true;
   });
 });
 
 // Have to make sure this waits until backend launches
 app.on('open-file', function(event, path) {
   event.preventDefault();
-  openFile = path;
+  if (appReady){
+    var newWindow = new BrowserWindow({
+      width: 1500,
+      height: 1000
+    });
+    newWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + path);
+  } else {
+    openFile = path;
+  }
 });
 
 function runBeaker() {

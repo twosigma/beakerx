@@ -18,6 +18,7 @@ var app = require('app');  // Module to control application life.
 var Menu = require('menu');
 var MenuItem = require('menu-item');
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
+var ipc = require('ipc');
 
 var path = require('path');
 var events = require('events');
@@ -30,16 +31,10 @@ var mainMenuTemplate;
 // Report crashes to our server.
 require('crash-reporter').start();
 
-// Kill backend and quit electron
-var ipc = require('ipc');
-ipc.on('quit', function() {
+// Kill backend before exiting 
+app.on('quit', function() {
   backend.kill('SIGTERM');
-  app.quit();
 });
-
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the javascript object is GCed.
-var mainWindow = null;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -47,6 +42,16 @@ app.on('window-all-closed', function() {
   var menu = Menu.buildFromTemplate(mainMenuTemplate);
   Menu.setApplicationMenu(menu); 
 });
+
+ipc.on('window-ready', function(event) {
+  // Use sender to find window to find id
+  var id = BrowserWindow.fromWebContents(event.sender).id;
+  event.sender.send('window-id', id);
+})
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the javascript object is GCed.
+var mainWindow = null;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.

@@ -95,7 +95,7 @@
       },
       // give the angular base URL
       // This function is a HACK: '$location' should probably be used instead of
-      // 'location', but '$location' seems to return the wron path.
+      // 'location', but '$location' seems to return the wrong path.
       getBaseUrl: function() {
         return location.protocol + '//' + location.host + location.pathname + '#';
       },
@@ -377,6 +377,13 @@
       bkUtils.Electron.toggleDevTools = function() {
         bkUtils.Electron.BrowserWindow.getFocusedWindow().toggleDevTools();
       },
+
+      // Call main thread to get ID
+      bkUtils.Electron.IPC.on('window-id', function(id) {
+        bkUtils.Electron.windowID = id;
+      });
+      bkUtils.Electron.IPC.send('window-ready');
+
       bkUtils.Electron.updateMenus = function(menus) {
         var assignShortcut = function(name){
           switch(name) {

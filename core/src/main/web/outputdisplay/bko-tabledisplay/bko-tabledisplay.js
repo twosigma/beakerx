@@ -873,6 +873,14 @@
           }
         });
 
+        scope.$on('beaker.section.toggled', function(e, isCollapsed) {
+          if (!isCollapsed && scope.table!==undefined) {
+            bkHelper.timeout(function() {
+              scope.table.draw(false);
+            });
+          }
+        });
+
       }
     };
   }]);

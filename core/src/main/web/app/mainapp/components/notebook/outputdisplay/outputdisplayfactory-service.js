@@ -140,12 +140,24 @@
           model: "="
         },
         controller: function($scope) {
+          $scope.isShowOutput = function() {
+            return $scope.model.isShowOutput();
+          };
+
+          $scope.showoutput = $scope.model.isShowOutput();
           $scope.items = _($scope.model.getCellModel().items).map(function(it) {
             return {
-              result: it
+              result: it,
+              isShowOutput: function() {
+                return $scope.showoutput;
+              }
             };
           });
           $scope.isShowMenu = function() { return false; };
+          $scope.$watch('isShowOutput()', function(oldval, newval) {
+            $scope.showoutput = newval;
+          });
+
         }
       }
     };

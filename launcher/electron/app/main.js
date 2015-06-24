@@ -27,6 +27,7 @@ var eventEmitter = new events.EventEmitter();
 
 var java_home = path.resolve(__dirname + '/../jre/Contents/Home'); 
 var backend;
+var serverUrl;
 var openFile;
 var mainMenuTemplate;
 var appReady = false;
@@ -37,8 +38,8 @@ var defaultWindowOptions = {
 };
 
 var popupOptions = {
-  width: 300,
-  height: 100
+  width: 420,
+  height: 153
 };
 
 // Report crashes to our server.
@@ -51,18 +52,24 @@ ipc.on('quit', function() {
 ipc.on('try-change-server', function() {
   // Open new window asking for ip
   var popup = new BrowserWindow(popupOptions);
-  popup.loadUrl(__dirname + 'change-server.html');
+  popup.loadUrl(serverUrl + '/beaker/#/changeserver');
+});
 
-  ipc.on('change-server', function(addr){
-    // Check validity?
-    var windows = BrowserWindow.getAllWindows();
-    for (var i = 0; i < windows.length; ++i){
-      windows[i].close();
-    }
-    // Open new control panel there
-    var newWindow = new BrowserWindow(defaultWindowOptions);
-    newWindow.loadUrl(addr);
-  });
+ipc.on('change-server', function(event, addr){
+  var windows = BrowserWindow.getAllWindows();
+  for (var i = 0; i < windows.length; ++i){
+    windows[i].close();
+  }
+  // Open new control panel there
+  var newWindow = new BrowserWindow(defaultWindowOptions);
+  console.log('Killing backend');
+  if ((!backend.dead) && (addr != serverUrl)){
+    killBackend();
+  }
+  console.log('Switching to ' + addr);
+  newWindow.loadUrl(addr);
+  newWindow.toggleDevTools();
+  serverUrl = addr;
 });
 
 // Kill backend before exiting 
@@ -84,7 +91,12 @@ app.on('window-all-closed', function() {
 var mainWindow = null;
 
 function exit() {
+  killBackend();
+}
+
+function killBackend() {
   backend.kill('SIGTERM');
+  backend.dead = true;
 }
 
 function spinUntilReady(url, done) {
@@ -106,7 +118,7 @@ function spinUntilReady(url, done) {
         }
       }
     }
-    http.get(backend.url + url, callback);
+    http.get(serverUrl + url, callback);
   }
   spin();
 }
@@ -124,11 +136,11 @@ app.on('ready', function() {
       mainWindow = new BrowserWindow(defaultWindowOptions);
       
       if (openFile !== undefined) {
-        mainWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + openFile);
+        mainWindow.loadUrl(serverUrl + '/beaker/#/open?uri=' + openFile);
       } else {
-        mainWindow.loadUrl(backend.url);
+        mainWindow.loadUrl(serverUrl);
       }
-      mainMenuTemplate = require('./main-menu-template.js')(backend.url);
+      mainMenuTemplate = require('./main-menu-template.js')(serverUrl);
 
       // Open the devtools.
       mainWindow.openDevTools();
@@ -151,7 +163,7 @@ app.on('open-file', function(event, path) {
   event.preventDefault();
   if (appReady){
     var newWindow = new BrowserWindow(defaultWindowOptions);
-    newWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + path);
+    newWindow.loadUrl(serverUrl + '/beaker/#/open?uri=' + path);
   } else {
     openFile = path;
   }
@@ -173,7 +185,7 @@ function runBeaker() {
       backend.hash = line.split(' ')[2];
     }
     else if (line.startsWith('Beaker listening on')){
-      backend.url = line.split(' ')[3];
+      serverUrl = line.split(' ')[3];
       eventEmitter.emit('backendReady', {});
     }
   });

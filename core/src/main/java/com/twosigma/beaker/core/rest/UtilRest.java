@@ -83,6 +83,13 @@ public class UtilRest {
   }
 
   @GET
+  @Path("version")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String version(@Context HttpServletRequest request) {
+    return "Beaker version " + this.bkConfig.getVersion();
+  }
+
+  @GET
   @Path("getVersionInfo")
   @Produces(MediaType.APPLICATION_JSON)
   public String getVersionInfo(@Context HttpServletRequest request) {

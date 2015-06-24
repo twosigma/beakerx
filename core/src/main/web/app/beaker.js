@@ -211,6 +211,9 @@
             template: JST["template/dashboard/app"](),
           }).otherwise({
             redirectTo: "/control"
+          })
+          .when('/changeserver', {
+            template: JST["mainapp/dialogs/changeserver"]()
           });
     });
 

@@ -83,6 +83,5 @@ public class URLConfigModule extends ServletModule {
     bind(SessionBackupRest.class);
     bind(RecentMenuRest.class);
     bind(LoginRest.class);
-    bind(EasyFormRest.class);
   }
 }

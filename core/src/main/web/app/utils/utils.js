@@ -347,28 +347,6 @@
         var url = this.moduleMap.hasOwnProperty(nameOrUrl) ? this.moduleMap[nameOrUrl] : nameOrUrl;
         return window.require(url);
       },
-      setEasyFormValue: function (name, value, session, onSuccess, onError) {
-        var data = {
-            session: session,
-            name: name,
-            value: value,
-            publish: false
-        };
-        this.httpPost(
-                this.serverUrl("beaker/rest/easyform/set"),
-                data)
-                .success(function(ret) {
-                    if (onSuccess) {
-                        onSuccess(ret);
-                    }
-                })
-                .error(function(data, status, headers, config) {
-                    console.error("Failed to set easyform value. " + status);
-                    if (onError) {
-                        onError(data);
-                    }
-                });
-    },
     getValidNgModelString: function(str) {
       if (str) {
         return str.replace(/[\s\d`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');

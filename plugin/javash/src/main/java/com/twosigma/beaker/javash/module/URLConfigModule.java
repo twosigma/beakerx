@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.javash.module;
 
+import com.twosigma.beaker.javash.rest.EasyFormRest;
 import com.twosigma.beaker.javash.rest.JavashShellRest;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
@@ -49,5 +50,6 @@ public class URLConfigModule extends ServletModule {
     // REST binding
     bind(JavashShellRest.class);
     bind(ReadyRest.class);
+    bind(EasyFormRest.class);
   }
 }

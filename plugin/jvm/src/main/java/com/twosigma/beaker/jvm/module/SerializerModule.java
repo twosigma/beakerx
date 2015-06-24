@@ -43,6 +43,7 @@ import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
 import com.twosigma.beaker.easyform.EasyForm;
+import com.twosigma.beaker.easyform.EasyFormObjectManager;
 import com.twosigma.beaker.easyform.formitem.ButtonComponent;
 import com.twosigma.beaker.easyform.formitem.CheckBox;
 import com.twosigma.beaker.easyform.formitem.CheckBoxGroup;
@@ -115,6 +116,8 @@ public class SerializerModule extends AbstractModule {
     bind(UpdatableEvaluationResult.Serializer.class);
     bind(OutputContainer.Serializer.class);
     bind(BeakerProgressUpdate.Serializer.class);
+    bind(EasyFormObjectManager.class);
+    bind(EasyFormSerializer.class);
   }
 
   @Provides

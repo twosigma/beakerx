@@ -16,8 +16,9 @@
 
 package com.twosigma.beaker.easyform;
 
-public class EasyFormComponent {
+public class EasyFormComponent<T> {
 
+  private T value;
   private boolean enabled = true;
   //Acts like ID
   private String label;
@@ -36,5 +37,13 @@ public class EasyFormComponent {
 
   public void setLabel(final String label) {
     this.label = label;
+  }
+
+  public T getValue() {
+    return value;
+  }
+
+  public void setValue(final T value) {
+    this.value = value;
   }
 }

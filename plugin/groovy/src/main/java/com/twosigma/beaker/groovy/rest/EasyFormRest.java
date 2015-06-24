@@ -14,10 +14,12 @@
  *  limitations under the License.
  */
 
-package com.twosigma.beaker.core.rest;
+package com.twosigma.beaker.groovy.rest;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.twosigma.beaker.easyform.EasyForm;
+import com.twosigma.beaker.easyform.EasyFormObjectManager;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -28,40 +30,41 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 
-@Path("easyform")
+@Path("groovysh/easyform")
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
 public class EasyFormRest {
 
+  private final EasyFormObjectManager _easyFormObjectManager;
+
   @Inject
-  private EasyFormService easyformService;
+  public EasyFormRest(EasyFormObjectManager easyFormObjectManager) {
+    _easyFormObjectManager = easyFormObjectManager;
+  }
 
   @GET
   @Path("get")
-  public Object get(@QueryParam("session") String session,
-                    @QueryParam("name") String name)
+  public Object get(@QueryParam("id") String id,
+                    @QueryParam("key") String key)
       throws Exception {
-    return this.easyformService.get(session, name);
+    EasyForm easyForm = _easyFormObjectManager.getForm(id);
+    if (easyForm == null) {
+      return null;
+    }
+    return easyForm.get(key);
   }
 
   @POST
   @Path("set")
-  public String set(@FormParam("session") String session,
-                    @FormParam("name") String name,
-                    @FormParam("value") String value,
-                    @FormParam("publish") Boolean publish)
+  public void set(@FormParam("id") String id,
+                    @FormParam("key") String key,
+                    @FormParam("value") String value)
       throws IOException, InterruptedException {
-    this.easyformService.set(session, name, value, publish);
-    return "ok";
+    EasyForm easyForm = _easyFormObjectManager.getForm(id);
+    if (easyForm == null) {
+      return;
+    }
+    easyForm.put(key, value);
   }
 
-  @POST
-  @Path("setEnabled")
-  public String setEnabled(@FormParam("session") String session,
-                           @FormParam("label") String label,
-                           @FormParam("enabled") Boolean enabled)
-      throws IOException, InterruptedException {
-    this.easyformService.setEnabled(session, label, enabled);
-    return "ok";
-  }
 }

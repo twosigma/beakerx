@@ -32,19 +32,26 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Set;
 
-public class EasyForm {
+public class EasyForm extends Observable implements Map<String, Object> {
 
-  public static Integer HORIZONTAL = 1;
-  public static Integer VERTICAL = 2;
+  public static final Integer HORIZONTAL = 1;
+  public static final Integer VERTICAL = 2;
 
   private final String caption;
+  private String id;
   private Map<String, EasyFormComponent> componentMap = new LinkedHashMap<>();
   private SaveValuesButton saveValuesButton;
   private LoadValuesButton loadValuesButton;
 
   public EasyForm(final String caption) {
     this.caption = caption;
+  }
+
+  public void setId(final String id) {
+    this.id = id;
   }
 
   public void addSaveValuesButton(final String path) {
@@ -57,12 +64,6 @@ public class EasyForm {
     LoadValuesButton button = new LoadValuesButton();
     button.setPath(path);
     this.loadValuesButton = button;
-  }
-
-  public void setEnabled(final String label, final Boolean enabled) {
-    if (StringUtils.isNotEmpty(label) && componentMap.containsKey(label)) {
-      componentMap.get(label).setEnabled(enabled);
-    }
   }
 
   public void addTextField(final String label) throws Exception {
@@ -230,4 +231,75 @@ public class EasyForm {
     return caption;
   }
 
+  @Override
+  public int size() {
+    return 0;
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return false;
+  }
+
+  @Override
+  public boolean containsKey(Object key) {
+    return false;
+  }
+
+  @Override
+  public boolean containsValue(Object value) {
+    return false;
+  }
+
+  @Override
+  public Object get(final Object key) {
+    return getComponentMap().get(key).getValue();
+  }
+
+  @Override
+  public Object put(final String key, final Object value) {
+    Object previousValue = get(key);
+    getComponentMap().get(key).setValue(value);
+    setChanged();
+    notifyObservers();
+    return previousValue;
+  }
+
+  public void setEnabled(final String label, final Boolean enabled) {
+    if (StringUtils.isNotEmpty(label) && componentMap.containsKey(label)) {
+      componentMap.get(label).setEnabled(enabled);
+      setChanged();
+      notifyObservers();
+    }
+  }
+
+  @Override
+  public Object remove(Object key) {
+    return null;
+  }
+
+  @Override
+  public void putAll(Map<? extends String, ?> m) {
+
+  }
+
+  @Override
+  public void clear() {
+
+  }
+
+  @Override
+  public Set<String> keySet() {
+    return null;
+  }
+
+  @Override
+  public Collection<Object> values() {
+    return null;
+  }
+
+  @Override
+  public Set<Entry<String, Object>> entrySet() {
+    return null;
+  }
 }

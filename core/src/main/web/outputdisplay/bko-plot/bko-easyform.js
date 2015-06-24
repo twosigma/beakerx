@@ -41,34 +41,30 @@
               textField.attr('data-ng-model', scope.ngModelAttr)
                   .css('width', component.width);
 
+              if (component.value) {
+                scope[scope.ngModelAttr] = component.value;
+              }
+
               var watchedExpression = function (scope) {
                 return scope[scope.ngModelAttr];
               };
 
               var valueChangeHandler = function (newValue, oldValue) {
-                EasyFormService.setComponentValue(scope.component, newValue);
-                bkUtils.setEasyFormValue(scope.componentId, newValue,
-                    bkSessionManager.getSessionId());
+                if (newValue != undefined && newValue != null) {
+                  EasyFormService.setComponentValue(
+                      scope.formId, scope.evaluatorId, component, newValue);
+                }
               };
 
               scope.$watch(watchedExpression, valueChangeHandler);
 
-              scope.$on(EasyFormConstants.Events.VALUE_SET, function (event, args) {
-                var session = args.data.session;
-                var name = args.data.name;
-                if (session && session == bkSessionManager.getSessionId()
-                    && name && name == scope.componentId) {
-                  scope[scope.ngModelAttr] = args.data.value;
-                }
-              });
-
-              scope.$on(EasyFormConstants.Events.SET_ENABLED, function (event, args) {
-                var session = args.data.session;
-                var label = args.data.label;
-                if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.componentId) {
-                  scope.component.enabled = args.data.enabled;
-                }
+              scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
+                args.components.forEach(function(component) {
+                  if (component.label === scope.componentId) {
+                    scope[scope.ngModelAttr] = component.value;
+                    scope.component.enabled = component.enabled;
+                  }
+                });
               });
 
               scope.$on(EasyFormConstants.Events.VALUE_LOADED, function (event, args) {
@@ -103,34 +99,29 @@
               var textArea = element.find('#textArea');
               textArea.attr('data-ng-model', scope.ngModelAttr);
 
+              if (component.value) {
+                scope[scope.ngModelAttr] = component.value;
+              }
+
               var watchedExpression = function (scope) {
                 return scope[scope.ngModelAttr];
               };
+
               var valueChangeHandler = function (newValue, oldValue) {
-                EasyFormService.setComponentValue(component, newValue);
-                bkUtils.setEasyFormValue(scope.componentId, newValue,
-                    bkSessionManager.getSessionId());
+                if (newValue != undefined && newValue != null) {
+                  EasyFormService.setComponentValue(
+                      scope.formId, scope.evaluatorId, component, newValue);
+                }
               };
               scope.$watch(watchedExpression, valueChangeHandler);
 
-              scope.$on(EasyFormConstants.Events.VALUE_SET, function (event, args) {
-                if (args && args.data) {
-                  var session = args.data.session;
-                  var name = args.data.name;
-                  if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.componentId) {
-                    scope[scope.ngModelAttr] = args.data.value;
+              scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
+                args.components.forEach(function(component) {
+                  if (component.label === scope.componentId) {
+                    scope[scope.ngModelAttr] = component.value;
+                    scope.component.enabled = component.enabled;
                   }
-                }
-              });
-
-              scope.$on(EasyFormConstants.Events.SET_ENABLED, function (event, args) {
-                var session = args.data.session;
-                var label = args.data.label;
-                if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.componentId) {
-                  scope.component.enabled = args.data.enabled;
-                }
+                });
               });
 
               scope.$on(EasyFormConstants.Events.VALUE_LOADED, function (event, args) {
@@ -165,8 +156,10 @@
               var checkBox = element.find('#checkBox');
 
               checkBox.attr('data-ng-model', scope.ngModelAttr);
+              scope[scope.ngModelAttr] = false;
 
               if (component.value && 'true' == component.value) {
+                scope[scope.ngModelAttr] = true;
                 checkBox.attr('checked', 'true');
               }
 
@@ -174,30 +167,20 @@
                 return scope[scope.ngModelAttr];
               };
               var valueChangeHandler = function (newValue, oldValue) {
-                EasyFormService.setComponentValue(component, newValue);
-                bkUtils.setEasyFormValue(scope.componentId, newValue,
-                    bkSessionManager.getSessionId());
+                if (newValue != undefined && newValue != null) {
+                  EasyFormService.setComponentValue(
+                      scope.formId, scope.evaluatorId, component, newValue);
+                }
               };
               scope.$watch(watchedExpression, valueChangeHandler);
 
-              scope.$on(EasyFormConstants.Events.VALUE_SET, function (event, args) {
-                if (args && args.data) {
-                  var session = args.data.session;
-                  var name = args.data.name;
-                  if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.componentId) {
-                    scope[scope.ngModelAttr] = args.data.value;
+              scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
+                args.components.forEach(function(component) {
+                  if (component.label === scope.componentId) {
+                    scope[scope.ngModelAttr] = component.value;
+                    scope.component.enabled = component.enabled;
                   }
-                }
-              });
-
-              scope.$on(EasyFormConstants.Events.SET_ENABLED, function (event, args) {
-                var session = args.data.session;
-                var label = args.data.label;
-                if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.componentId) {
-                  scope.component.enabled = args.data.enabled;
-                }
+                });
               });
 
               scope.$on(EasyFormConstants.Events.VALUE_LOADED, function (event, args) {
@@ -238,6 +221,11 @@
               }
               scope.componentId = component.label;
               scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
+
+              if (component.value) {
+                scope[scope.ngModelAttr] = component.value;
+              }
+
               element.find('#checkBoxGroupLabel').text(component.label);
               scope.horizontal
                   = component.isHorizontal && 'true' == component.isHorizontal.toString();
@@ -245,31 +233,22 @@
               var watchedExpression = function (scope) {
                 return scope.values;
               };
+
               var valueChangeHandler = function (newValue, oldValue) {
-                EasyFormService.setComponentValue(component, JSON.stringify(newValue));
-                bkUtils.setEasyFormValue(scope.componentId, JSON.stringify(newValue),
-                    bkSessionManager.getSessionId());
+                if (newValue != undefined && newValue != null) {
+                  EasyFormService.setComponentValue(
+                      scope.formId, scope.evaluatorId, component, newValue);
+                }
               };
               scope.$watch(watchedExpression, valueChangeHandler);
 
-              scope.$on(EasyFormConstants.Events.VALUE_SET, function (event, args) {
-                if (args && args.data) {
-                  var session = args.data.session;
-                  var name = args.data.name;
-                  if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.componentId) {
-                    scope.values = JSON.parse(args.data.value);
+              scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
+                args.components.forEach(function(component) {
+                  if (component.label === scope.componentId) {
+                    scope[scope.ngModelAttr] = component.value;
+                    scope.component.enabled = component.enabled;
                   }
-                }
-              });
-
-              scope.$on(EasyFormConstants.Events.SET_ENABLED, function (event, args) {
-                var session = args.data.session;
-                var label = args.data.label;
-                if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.componentId) {
-                  scope.component.enabled = args.data.enabled;
-                }
+                });
               });
 
               scope.$on(EasyFormConstants.Events.VALUE_LOADED, function (event, args) {
@@ -298,13 +277,17 @@
               scope.componentId = component.label;
               scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
 
+              if (component.value) {
+                scope[scope.ngModelAttr] = component.value;
+              }
+
               element.find('#comboBoxLabel').text(component.label);
               var comboBox = element.find('#comboBox');
 
-              comboBox.attr('data-ng-model', component.label);
+              comboBox.attr('data-ng-model', scope.ngModelAttr);
 
               if (!component.editable || 'false' == component.editable) {
-                comboBox.attr('disabled', 'true');
+                scope.component.enabled = false;
               }
 
               if (component.values) {
@@ -314,31 +297,22 @@
               var watchedExpression = function (scope) {
                 return scope[scope.ngModelAttr];
               };
+
               var valueChangeHandler = function (newValue, oldValue) {
-                EasyFormService.setComponentValue(component, JSON.stringify(newValue));
-                bkUtils.setEasyFormValue(scope.componentId, JSON.stringify(newValue),
-                    bkSessionManager.getSessionId());
+                if (newValue != undefined && newValue != null) {
+                  EasyFormService.setComponentValue(
+                      scope.formId, scope.evaluatorId, component, newValue);
+                }
               };
               scope.$watch(watchedExpression, valueChangeHandler);
 
-              scope.$on(EasyFormConstants.Events.VALUE_SET, function (event, args) {
-                if (args && args.data) {
-                  var session = args.data.session;
-                  var name = args.data.name;
-                  if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.componentId) {
-                    scope[scope.ngModelAttr] = JSON.parse(args.data.value);
+              scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
+                args.components.forEach(function(component) {
+                  if (component.label === scope.componentId) {
+                    scope[scope.ngModelAttr] = component.value;
+                    scope.component.enabled = component.enabled;
                   }
-                }
-              });
-
-              scope.$on(EasyFormConstants.Events.SET_ENABLED, function (event, args) {
-                var session = args.data.session;
-                var label = args.data.label;
-                if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.componentId) {
-                  scope.components.enabled = args.data.enabled;
-                }
+                });
               });
 
               scope.$on(EasyFormConstants.Events.VALUE_LOADED, function (event, args) {
@@ -372,6 +346,10 @@
               scope.componentId = component.label;
               scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
 
+              if (component.value) {
+                scope[scope.ngModelAttr] = component.value;
+              }
+
               element.find('#listComponentLabel').text(component.label);
               var listComponent = element.find('#listComponent');
 
@@ -396,31 +374,22 @@
               var watchedExpression = function (scope) {
                 return scope[scope.ngModelAttr];
               };
+
               var valueChangeHandler = function (newValue, oldValue) {
-                EasyFormService.setComponentValue(component, JSON.stringify(newValue));
-                bkUtils.setEasyFormValue(scope.componentId, JSON.stringify(newValue),
-                    bkSessionManager.getSessionId());
+                if (newValue != undefined && newValue != null) {
+                  EasyFormService.setComponentValue(
+                      scope.formId, scope.evaluatorId, component, newValue);
+                }
               };
               scope.$watch(watchedExpression, valueChangeHandler);
 
-              scope.$on(EasyFormConstants.Events.VALUE_SET, function (event, args) {
-                if (args && args.data) {
-                  var session = args.data.session;
-                  var name = args.data.name;
-                  if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.componentId) {
-                    scope[scope.ngModelAttr] = JSON.parse(args.data.value);
+              scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
+                args.components.forEach(function(component) {
+                  if (component.label === scope.componentId) {
+                    scope[scope.ngModelAttr] = component.value;
+                    scope.component.enabled = component.enabled;
                   }
-                }
-              });
-
-              scope.$on(EasyFormConstants.Events.SET_ENABLED, function (event, args) {
-                var session = args.data.session;
-                var label = args.data.label;
-                if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.componentId) {
-                  scope.component.enabled = args.data.enabled;
-                }
+                });
               });
 
               scope.$on(EasyFormConstants.Events.VALUE_LOADED, function (event, args) {
@@ -451,6 +420,10 @@
               var component = scope.component;
               scope.componentId = component.label;
               scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
+
+              if (component.value) {
+                scope[scope.ngModelAttr] = component.value;
+              }
 
               element.find('#radioButtonComponentLabel').text(component.label);
 
@@ -486,31 +459,22 @@
               var watchedExpression = function (scope) {
                 return scope[scope.ngModelAttr];
               };
+
               var valueChangeHandler = function (newValue, oldValue) {
-                EasyFormService.setComponentValue(component, newValue);
-                bkUtils.setEasyFormValue(scope.componentId, newValue,
-                    bkSessionManager.getSessionId());
+                if (newValue != undefined && newValue != null) {
+                  EasyFormService.setComponentValue(
+                      scope.formId, scope.evaluatorId, component, newValue);
+                }
               };
               scope.$watch(watchedExpression, valueChangeHandler);
 
-              scope.$on(EasyFormConstants.Events.VALUE_SET, function (event, args) {
-                if (args && args.data) {
-                  var session = args.data.session;
-                  var name = args.data.name;
-                  if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.componentId) {
-                    scope[scope.ngModelAttr] = args.data.value;
+              scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
+                args.components.forEach(function(component) {
+                  if (component.label === scope.componentId) {
+                    scope[scope.ngModelAttr] = component.value;
+                    scope.component.enabled = component.enabled;
                   }
-                }
-              });
-
-              scope.$on(EasyFormConstants.Events.SET_ENABLED, function (event, args) {
-                var session = args.data.session;
-                var label = args.data.label;
-                if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.componentId) {
-                  scope.component.enabled = args.data.enabled;
-                }
+                });
               });
 
               scope.$on(EasyFormConstants.Events.VALUE_LOADED, function (event, args) {
@@ -541,6 +505,10 @@
               scope.componentId = component.label;
               scope.ngModelAttr = bkUtils.getValidNgModelString(component.label);
 
+              if (component.value) {
+                scope[scope.ngModelAttr] = component.value;
+              }
+
               element.find('#datePickerLabel').text(component.label);
               var datePicker = element.find('#datePicker');
               datePicker.attr('data-ng-model', scope.ngModelAttr);
@@ -552,32 +520,23 @@
               var watchedExpression = function (scope) {
                 return scope[scope.ngModelAttr];
               };
+
               var valueChangeHandler = function (newValue, oldValue) {
-                EasyFormService.setComponentValue(component, newValue);
-                bkUtils.setEasyFormValue(scope.componentId, newValue,
-                    bkSessionManager.getSessionId());
+                if (newValue != undefined && newValue != null) {
+                  EasyFormService.setComponentValue(
+                      scope.formId, scope.evaluatorId, component, newValue);
+                }
               };
               scope.$watch(watchedExpression, valueChangeHandler);
 
-              scope.$on(EasyFormConstants.Events.VALUE_SET, function (event, args) {
-                if (args && args.data) {
-                  var session = args.data.session;
-                  var name = args.data.name;
-                  if (session && session == bkSessionManager.getSessionId()
-                      && name && name == scope.componentId) {
-                    scope[scope.ngModelAttr] = args.data.value;
+              scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
+                args.components.forEach(function(component) {
+                  if (component.label === scope.componentId) {
+                    scope[scope.ngModelAttr] = component.value;
+                    scope.component.enabled = component.enabled;
                   }
-                }
+                });
               });
-
-              scope.$on(EasyFormConstants.Events.SET_ENABLED, function (event, args) {
-                var session = args.data.session;
-                var label = args.data.label;
-                if (session && session == bkSessionManager.getSessionId()
-                    && label && label == scope.componentId) {
-                  scope.component.enabled = args.data.enabled;
-                }
-              })
 
               scope.$on(EasyFormConstants.Events.VALUE_LOADED, function (event, args) {
                 scope[scope.ngModelAttr] = EasyFormService.getComponentValue(component);
@@ -662,59 +621,95 @@
 
 (function () {
   'use strict';
-  var retfunc
-      = function ($compile, bkUtils, bkSessionManager, EasyFormConstants, EasyFormService) {
+  var retfunc = function ($compile, bkUtils, bkEvaluatorManager, bkSessionManager,
+                          EasyFormConstants, EasyFormService) {
     return {
       template: "<div id='easyFormContainer' class='easy-form-container'></div>",
-      link: function (scope, element, attrs) {
-        var subscriptions = {};
-        subscriptions[bkSessionManager.getSessionId()] =
-            $.cometd.subscribe("/easyform/" + bkSessionManager.getSessionId(), function (reply) {
-              if (reply && reply.data && reply.data.event) {
-                scope.$broadcast(reply.data.event, reply);
+
+      controller: function($scope) {
+        $scope.getUpdateService = function() {
+          if (window !== undefined && window.languageUpdateService !== undefined
+              && bkEvaluatorManager.getEvaluator($scope.model.getEvaluatorId())!==undefined)
+            return window.languageUpdateService[$scope.model.getEvaluatorId()];
+          return undefined;
+        };
+
+        $scope.ingestUpdate = function (model) {
+          $scope.update_id = model.update_id;
+          var srv = $scope.getUpdateService();
+
+          if ($scope.subscribedId && $scope.subscribedId !== $scope.update_id) {
+            if (srv !== undefined)
+              srv.unsubscribe($scope.subscribedId);
+            $scope.subscribedId = null;
+          }
+
+          if (!$scope.subscribedId && $scope.update_id && srv !== undefined) {
+            var onUpdate = function(update) {
+              $scope.ingestUpdate(update);
+              $scope.$broadcast(EasyFormConstants.Events.UPDATED, update);
+            };
+            srv.subscribe($scope.update_id, onUpdate);
+            $scope.subscribedId = $scope.update_id;
+          }
+
+        };
+
+        $scope.fetchFromCellModel = function (model, element) {
+          $scope.ingestUpdate(model);
+          var easyFormContainer = element.find('#easyFormContainer');
+
+          if (model.caption) {
+            var fieldsetElement = angular.element('<fieldset></fieldset>');
+            var legendElement = angular.element('<legend></legend>').text(model.caption);
+            easyFormContainer.append(fieldsetElement.append(legendElement));
+            easyFormContainer = legendElement;
+          }
+
+          if (model.components) {
+            model.components.forEach(function (component) {
+
+              var childScope = $scope.$new();
+              childScope.component = component;
+              childScope.formId = $scope.update_id;
+              childScope.evaluatorId = $scope.model.getEvaluatorId();
+              var newElement = angular.element(EasyFormConstants.Components[component.type].htmlTag);
+              childScope.component.enabled = childScope.component.enabled ? true : false;
+              easyFormContainer.append($compile(newElement)(childScope));
+
+              if (!(component.type.includes(EasyFormConstants.Components.SaveValuesButton.type)
+                  || component.type.includes(EasyFormConstants.Components.LoadValuesButton.type))) {
+                EasyFormService.addComponent(component);
               }
+
             });
+          }
 
-        var model = scope.model.getCellModel();
-        var easyFormContainer = element.find('#easyFormContainer');
+        };
 
-        if (model.caption) {
-          var fieldsetElement = angular.element('<fieldset></fieldset>');
-          var legendElement = angular.element('<legend></legend>').text(model.caption);
-          easyFormContainer.append(fieldsetElement.append(legendElement));
-          easyFormContainer = legendElement;
-        }
-
-        if (model.components) {
-          model.components.forEach(function (component) {
-
-            var childScope = scope.$new();
-            childScope.component = component;
-            var newElement = angular.element(EasyFormConstants.Components[component.type].htmlTag);
-            childScope.component.enabled = childScope.component.enabled ? true : false;
-            easyFormContainer.append($compile(newElement)(childScope));
-
-            if (!(component.type.includes(EasyFormConstants.Components.SaveValuesButton.type)
-                || component.type.includes(EasyFormConstants.Components.LoadValuesButton.type))) {
-              EasyFormService.addComponent(component);
+        $scope.$on('$destroy', function () {
+          if ($scope.subscribedId) {
+            var srv = $scope.getUpdateService();
+            if (srv !== undefined) {
+              srv.unsubscribe($scope.subscribedId);
             }
+          }
+        });
+      },
 
-            scope.$on("$destroy", function () {
-              if (subscriptions[bkSessionManager.getSessionId()]) {
-                $.cometd.unsubscribe(subscriptions[bkSessionManager.getSessionId()]);
-                delete subscriptions[bkSessionManager.getSessionId()];
-                if (childScope) {
-                  childScope.$destroy();
-                }
-              }
-            });
-          });
-        }
+      link: function (scope, element, attrs) {
+
+        scope.getState = function() {
+          return scope.model.getCellModel();
+        };
+
+        scope.fetchFromCellModel(scope.getState(), element);
+
       }
     };
   };
   beaker.bkoDirective("EasyForm",
-      ['$compile', 'bkUtils', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
+      ['$compile', 'bkUtils', 'bkEvaluatorManager', 'bkSessionManager', 'EasyFormConstants', 'EasyFormService',
         retfunc]);
 })();
 
@@ -727,10 +722,25 @@
       addComponent: function (component) {
         this.easyForm[component.label] = component;
       },
-      setComponentValue: function (component, value) {
+      setComponentValue: function (formId, evaluatorId, component, value) {
         if (this.easyForm[component.label]) {
           this.easyForm[component.label].currentValue = value;
         }
+        var req = $.ajax({
+          type: "POST",
+          datatype: "json",
+          url: window.languageServiceBase[evaluatorId] + '/easyform/set',
+          data: {
+            id: formId,
+            key: component.label,
+            value: value
+          }
+        });
+        req.done(function (ret) {
+        });
+        req.error(function (jqXHR, textStatus) {
+          console.error("Unable to set easyform value");
+        });
       },
       getComponentValue: function (component) {
         if (this.easyForm[component.label]) {
@@ -743,9 +753,8 @@
 
   module.constant("EasyFormConstants", {
     Events: {
-      VALUE_SET: "easyformsetevent",
-      VALUE_LOADED: "easyformvalueloaded",
-      SET_ENABLED: "easyformsetenabled"
+      UPDATED: "easyformupdated",
+      VALUE_LOADED: "easyformvalueloaded"
     },
     Components: {
       TextField: {

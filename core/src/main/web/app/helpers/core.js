@@ -790,5 +790,9 @@
         servError();
       });
     };
+
+    $scope.newBackend = function() {
+      bkUtils.Electron.IPC.send('new-backend');
+    };
   });
 })();

@@ -32,15 +32,7 @@ var openFile;
 var mainMenuTemplate;
 var appReady = false;
 
-var defaultWindowOptions = {
-  width: 1500,
-  height: 1000
-};
-
-var popupOptions = {
-  width: 420,
-  height: 153
-};
+var windowOptions = require('./window-options.js');
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -50,9 +42,20 @@ ipc.on('quit', function() {
 });
 
 ipc.on('try-change-server', function() {
-  // Open new window asking for ip
-  var popup = new BrowserWindow(popupOptions);
+  var popup = new BrowserWindow(windowOptions.popupOptions);
   popup.loadUrl(serverUrl + '/beaker/#/changeserver');
+});
+
+ipc.on('new-backend', function() {
+  var windows = BrowserWindow.getAllWindows();
+  for (var i = 0; i < windows.length; ++i){
+    windows[i].close();
+  }
+  console.log('Killing backend');
+  if ((!backend.dead) && (addr != serverUrl)){
+    killBackend();
+  }
+  runBeaker();
 });
 
 ipc.on('change-server', function(event, addr){
@@ -60,12 +63,12 @@ ipc.on('change-server', function(event, addr){
   for (var i = 0; i < windows.length; ++i){
     windows[i].close();
   }
-  // Open new control panel there
-  var newWindow = new BrowserWindow(defaultWindowOptions);
   console.log('Killing backend');
   if ((!backend.dead) && (addr != serverUrl)){
     killBackend();
   }
+  // Open new control panel there
+  var newWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
   console.log('Switching to ' + addr);
   newWindow.loadUrl(addr);
   newWindow.toggleDevTools();
@@ -133,7 +136,7 @@ app.on('ready', function() {
     // Have to wait until actually ready
     var allReady = function(){
       // Create the browser window.
-      mainWindow = new BrowserWindow(defaultWindowOptions);
+      mainWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
       
       if (openFile !== undefined) {
         mainWindow.loadUrl(serverUrl + '/beaker/#/open?uri=' + openFile);
@@ -162,7 +165,7 @@ app.on('ready', function() {
 app.on('open-file', function(event, path) {
   event.preventDefault();
   if (appReady){
-    var newWindow = new BrowserWindow(defaultWindowOptions);
+    var newWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
     newWindow.loadUrl(serverUrl + '/beaker/#/open?uri=' + path);
   } else {
     openFile = path;

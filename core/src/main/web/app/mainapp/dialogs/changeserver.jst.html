@@ -17,6 +17,7 @@
 <div class="bkr-dialog" ng-controller="changeServer">
   <form novalidate class="change-server-form" ng-submit="change(address)">
     <input class="server-input" type="text" ng-model="address" placeholder="E.g. http://127.0.0.1:8801/"/>
-    <a class="btn btn-default text-center bkr server-button" ng-click="change(address)">Change Beaker Server</a>
+    <a class="btn btn-default text-center bkr server-dialog-button" ng-click="change(address)">Change Beaker Server</a>
+    <a class="btn btn-default text-center bkr server-dialog-button" ng-click="newBackend()">New Local Backend</a>
   </form>
 </div>

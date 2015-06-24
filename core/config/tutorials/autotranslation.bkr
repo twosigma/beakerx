@@ -82,9 +82,17 @@
                 "",
                 "Because the namespace is in the notebook, the variable's values are preserved when you save a notebook to disk, or share it on the web.  The format for data interchange is JSON.",
                 "",
-                "The four languages that are supported are IPython, R, Groovy, and JavaScript."
+                "The languages that are supported include IPython, Python3, R, Java, Groovy, Scala, KDB and JavaScript."
             ],
             "evaluatorReader": false
+        },
+        {
+            "id": "sectionhUw6oj",
+            "type": "section",
+            "title": "Basic Examples",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": true
         },
         {
             "id": "codeMXyZnW",
@@ -228,7 +236,7 @@
             "title": "Scalars in R",
             "level": 2,
             "evaluatorReader": false,
-            "collapsed": false
+            "collapsed": true
         },
         {
             "id": "markdownwOKXV7",
@@ -360,7 +368,7 @@
             "title": "Data Frames",
             "level": 2,
             "evaluatorReader": false,
-            "collapsed": false
+            "collapsed": true
         },
         {
             "id": "markdown6TYGqA",
@@ -512,6 +520,14 @@
             "lineCount": 1
         },
         {
+            "id": "sectionZ2uJyW",
+            "type": "section",
+            "title": "Autotranslated types",
+            "level": 2,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
             "id": "markdownScGaZR",
             "type": "markdown",
             "body": [
@@ -535,6 +551,216 @@
                 ""
             ],
             "evaluatorReader": false
+        },
+        {
+            "id": "code16S3aP",
+            "type": "code",
+            "evaluator": "Groovy",
+            "input": {
+                "body": [
+                    "// Store a DataTable, an Image and a Matrix in the beaker object",
+                    "beaker.dt = new com.twosigma.beaker.jvm.object.TableDisplay([ [1,2],[4,5] ], ['a','b'], ['integer','integer'])",
+                    "",
+                    "import java.awt.image.BufferedImage",
+                    "BufferedImage i = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)",
+                    "g2 = i.createGraphics()",
+                    "g2.drawLine(0,0,100,100)",
+                    "beaker.img = i",
+                    "beaker.matrix = [[1.5,2,3,0.3],[4,5,6,7], [7,8,9,10.3]]",
+                    "''"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": "",
+                "selectedType": "Hidden",
+                "pluginName": "Groovy",
+                "shellId": "d55d383b-4d71-4396-8fc1-bcea607f79c8",
+                "elapsedTime": 647
+            },
+            "evaluatorReader": true,
+            "lineCount": 10
+        },
+        {
+            "id": "codeXtRVUM",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// Display the shared datatable",
+                    "beaker.dt"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "a",
+                            "b"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "getCellSho": [
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "TableDisplay",
+                    "values": [
+                        [
+                            1,
+                            2
+                        ],
+                        [
+                            4,
+                            5
+                        ]
+                    ],
+                    "types": [
+                        "integer",
+                        "integer"
+                    ],
+                    "columnNames": [
+                        "a",
+                        "b"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 12
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codeEMqWcS",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// display the shared image",
+                    "beaker.img"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "ImageIcon",
+                    "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+                    "width": 100,
+                    "height": 100
+                },
+                "selectedType": "Image",
+                "pluginName": "JavaScript",
+                "elapsedTime": 13
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
+        },
+        {
+            "id": "codewMaJxB",
+            "type": "code",
+            "evaluator": "JavaScript",
+            "input": {
+                "body": [
+                    "// display the shared matrix",
+                    "beaker.matrix"
+                ]
+            },
+            "output": {
+                "state": {
+                    "datatablestate": {
+                        "pagination": {
+                            "use": true,
+                            "rowsToDisplay": 50,
+                            "fixLeft": false,
+                            "fixRight": false
+                        },
+                        "columnNames": [
+                            "c0",
+                            "c1",
+                            "c2",
+                            "c3"
+                        ],
+                        "actualalign": [
+                            "R",
+                            "R",
+                            "R",
+                            "R"
+                        ],
+                        "colorder": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "getCellSho": [
+                            true,
+                            true,
+                            true,
+                            true
+                        ]
+                    }
+                },
+                "result": {
+                    "type": "TableDisplay",
+                    "values": [
+                        [
+                            1.5,
+                            2,
+                            3,
+                            0.3
+                        ],
+                        [
+                            4,
+                            5,
+                            6,
+                            7
+                        ],
+                        [
+                            7,
+                            8,
+                            9,
+                            10.3
+                        ]
+                    ],
+                    "subtype": "Matrix",
+                    "columnNames": [
+                        "c0",
+                        "c1",
+                        "c2",
+                        "c3"
+                    ],
+                    "types": [
+                        "double",
+                        "double",
+                        "double",
+                        "double"
+                    ]
+                },
+                "selectedType": "Table",
+                "pluginName": "JavaScript",
+                "elapsedTime": 7
+            },
+            "evaluatorReader": true,
+            "lineCount": 2
         }
     ],
     "namespace": {
@@ -659,6 +885,70 @@
             "columnNames": [
                 "X1",
                 "X2"
+            ]
+        },
+        "dt": {
+            "type": "TableDisplay",
+            "columnNames": [
+                "a",
+                "b"
+            ],
+            "values": [
+                [
+                    1,
+                    2
+                ],
+                [
+                    4,
+                    5
+                ]
+            ],
+            "types": [
+                "integer",
+                "integer"
+            ],
+            "subtype": "TableDisplay"
+        },
+        "img": {
+            "type": "ImageIcon",
+            "imageData": "iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAkElEQVR42u3QMQEAAAwCIPuXdhX89kAE0jbsfPny5cuXL3z58uXLly98+fLlyxe+fPny5csXvnz58uXLly9fvnz58oUvX758+fKFL1++fPnCly9fvnz5wpcvX758+cKXL1++fOHLly9fvnzhy5cvX77w5cuXL1++8OXLly9fvvDly5cvX/jy5cuXL1/48vX6dU54KuTluc2vAAAAAElFTkSuQmCC",
+            "width": 100,
+            "height": 100
+        },
+        "matrix": {
+            "type": "TableDisplay",
+            "values": [
+                [
+                    1.5,
+                    2,
+                    3,
+                    0.3
+                ],
+                [
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                [
+                    7,
+                    8,
+                    9,
+                    10.3
+                ]
+            ],
+            "subtype": "Matrix",
+            "columnNames": [
+                "c0",
+                "c1",
+                "c2",
+                "c3"
+            ],
+            "types": [
+                "double",
+                "double",
+                "double",
+                "double"
             ]
         }
     }

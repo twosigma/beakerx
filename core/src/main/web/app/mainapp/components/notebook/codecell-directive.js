@@ -339,16 +339,17 @@
         });
         
         Scrollin.track(element[0], {handler: function() {
-          scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
-          scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
-          scope.cm.on('change', changeHandler);
-          
-          scope.updateUI(scope.getEvaluator());
-          // Since the instantiation of codemirror instances is now lazy,
-          // we need to track and handle focusing on an async cell add
-          if (scope._shouldFocusCodeMirror) {
-            delete scope._shouldFocusCodeMirror;
-            return scope.cm.focus();
+          if (scope.cm === undefined) {
+            scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
+            scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
+            scope.cm.on('change', changeHandler);
+            scope.updateUI(scope.getEvaluator());
+            // Since the instantiation of codemirror instances is now lazy,
+            // we need to track and handle focusing on an async cell add
+            if (scope._shouldFocusCodeMirror) {
+              delete scope._shouldFocusCodeMirror;
+              return scope.cm.focus();
+            }
           }
         }});
 
@@ -419,7 +420,14 @@
         scope.$on('beaker.section.toggled', function(e, isCollapsed) {
           if (!isCollapsed) {
             $timeout(function() {
-              scope.cm.refresh();
+              if (scope.cm === undefined) {
+                scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
+                scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
+                scope.cm.on('change', changeHandler);
+                scope.updateUI(scope.getEvaluator());
+              } else {
+                scope.cm.refresh();
+              }
             });
           }
         });

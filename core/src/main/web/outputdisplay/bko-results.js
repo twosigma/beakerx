@@ -38,15 +38,28 @@
         scope.getOutputResult = function() {
           return scope.model.getCellModel().payload;
         };
+        scope.isShowOutput = function() {
+          return scope.model.isShowOutput();
+        };
 
         scope.isShowMenu = function() { return false; };
+        scope.showoutput = scope.model.isShowOutput();
+        
+        scope.payload = {
+            result : undefined,
+            isShowOutput : function() {
+              return scope.showoutput;
+            }
+        }
         
         scope.$watch('getPayload()', function() {
           if (scope.hasPayload()) {
-            scope.payload = {
-                result : scope.getPayload()
-            };
+            scope.payload.result = scope.getPayload();
           }
+        });
+
+        scope.$watch('isShowOutput()', function(oldval, newval) {
+          scope.showoutput = newval;
         });
 
         scope.$watch('getOutputData()', function() {

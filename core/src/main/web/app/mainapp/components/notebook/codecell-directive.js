@@ -337,11 +337,12 @@
             bkUtils.refreshRootScope();
           }
         });
-
+        
         Scrollin.track(element[0], {handler: function() {
           scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
           scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
           scope.cm.on('change', changeHandler);
+          
           scope.updateUI(scope.getEvaluator());
           // Since the instantiation of codemirror instances is now lazy,
           // we need to track and handle focusing on an async cell add

@@ -24,12 +24,13 @@ var http = require('http');
 var path = require('path');
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
+var makeMenuTemplate = require('./default-menu-maker.js');
 
 var java_home = path.resolve(__dirname + '/../jre/Contents/Home'); 
 var backend;
 var serverUrl;
 var openFile;
-var mainMenuTemplate;
+var mainMenu;
 var appReady = false;
 
 var windowOptions = require('./window-options.js');
@@ -73,6 +74,7 @@ ipc.on('change-server', function(event, addr){
   newWindow.loadUrl(addr);
   newWindow.toggleDevTools();
   serverUrl = addr;
+  MainMenu = Menu.buildFromTemplate(makeMenuTemplate(serverUrl));
 });
 
 // Kill backend before exiting 
@@ -83,8 +85,7 @@ app.on('quit', function() {
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
   // If all windows are dead, must handle menus from main thread (this thread)
-  var menu = Menu.buildFromTemplate(mainMenuTemplate);
-  Menu.setApplicationMenu(menu); 
+  Menu.setApplicationMenu(MainMenu); 
 });
 
 // require(__dirname + '/main-thread-ipc.js');
@@ -143,7 +144,8 @@ app.on('ready', function() {
       } else {
         mainWindow.loadUrl(serverUrl);
       }
-      mainMenuTemplate = require('./main-menu-template.js')(serverUrl);
+
+      MainMenu = Menu.buildFromTemplate(makeMenuTemplate(serverUrl));
 
       // Open the devtools.
       mainWindow.openDevTools();

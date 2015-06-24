@@ -20,66 +20,34 @@ var MenuItem = require('menu-item');
 var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var ipc = require('ipc');
 var http = require('http');
+var crashReporter = require('crash-reporter');
 
-var path = require('path');
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
 var makeMenuTemplate = require('./default-menu-maker.js');
-
-var java_home = path.resolve(__dirname + '/../jre/Contents/Home'); 
-var backend;
-var serverUrl;
-var openFile;
-var mainMenu;
-var appReady = false;
-
+var backendRunner = require('./backend-runner.js');
 var windowOptions = require('./window-options.js');
 
+var appReady = false;
+var backend;
+var openFile;
+var mainMenu;
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the javascript object is GCed.
+var mainWindow = null;
+
 // Report crashes to our server.
-require('crash-reporter').start();
+crashReporter.start();
 
-ipc.on('quit', function() {
-  app.quit();
-});
-
-ipc.on('try-change-server', function() {
-  var popup = new BrowserWindow(windowOptions.popupOptions);
-  popup.loadUrl(serverUrl + '/beaker/#/changeserver');
-});
-
-ipc.on('new-backend', function() {
-  var windows = BrowserWindow.getAllWindows();
-  for (var i = 0; i < windows.length; ++i){
-    windows[i].close();
-  }
-  console.log('Killing backend');
-  if ((!backend.dead) && (addr != serverUrl)){
-    killBackend();
-  }
-  runBeaker();
-});
-
-ipc.on('change-server', function(event, addr){
-  var windows = BrowserWindow.getAllWindows();
-  for (var i = 0; i < windows.length; ++i){
-    windows[i].close();
-  }
-  console.log('Killing backend');
-  if ((!backend.dead) && (addr != serverUrl)){
-    killBackend();
-  }
-  // Open new control panel there
-  var newWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
-  console.log('Switching to ' + addr);
-  newWindow.loadUrl(addr);
-  newWindow.toggleDevTools();
-  serverUrl = addr;
-  MainMenu = Menu.buildFromTemplate(makeMenuTemplate(serverUrl));
+// Electron ready
+app.on('ready', function() {
+  // Run beaker backend
+  backendRunner.startNew().on('ready', connectToBackend);
 });
 
 // Kill backend before exiting 
 app.on('quit', function() {
-  exit();
+  killBackend();
 });
 
 // Quit when all windows are closed.
@@ -88,19 +56,90 @@ app.on('window-all-closed', function() {
   Menu.setApplicationMenu(MainMenu); 
 });
 
-// require(__dirname + '/main-thread-ipc.js');
+// Fired when OS opens file with application
+app.on('open-file', function(event, path) {
+  event.preventDefault();
+  if (appReady){
+    var newWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
+    newWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + path);
+  } else {
+    openFile = path;
+  }
+});
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the javascript object is GCed.
-var mainWindow = null;
+ipc.on('quit', function() {
+  app.quit();
+});
 
-function exit() {
+ipc.on('try-change-server', function() {
+  var popup = new BrowserWindow(windowOptions.popupOptions);
+  popup.loadUrl(backend.url + '/beaker/#/changeserver');
+});
+
+ipc.on('new-backend', function() {
+  var windows = BrowserWindow.getAllWindows();
+  for (var i = 0; i < windows.length; ++i){
+    windows[i].close();
+  }
+  console.log('Killing backend');
   killBackend();
+  
+  backendRunner.startNew().on('ready', connectToBackend);
+});
+
+ipc.on('change-server', function(event, addr){
+  var windows = BrowserWindow.getAllWindows();
+  for (var i = 0; i < windows.length; ++i){
+    windows[i].close();
+  }
+  console.log('Killing backend');
+  if (addr != backend.url) {
+    killBackend();
+  }
+  // Open new control panel there
+  var newWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
+  console.log('Switching to ' + addr);
+  newWindow.loadUrl(addr);
+  newWindow.toggleDevTools();
+  backend.url = addr;
+  backend.local = false;
+  MainMenu = Menu.buildFromTemplate(makeMenuTemplate(backend.url));
+});
+
+function connectToBackend(newBackend){
+  backend = newBackend;
+  // Have to wait until actually ready
+  spinUntilReady(backend.hash + '/beaker/rest/util/ready', function() {
+    // Create the browser window.
+    mainWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
+    
+    if (openFile !== undefined) {
+      mainWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + openFile);
+      openFile = null;
+    } else {
+      mainWindow.loadUrl(backend.url);
+    }
+
+    MainMenu = Menu.buildFromTemplate(makeMenuTemplate(backend.url));
+
+    // Open the devtools.
+    mainWindow.openDevTools();
+    
+    // Emitted when the window is closed.
+    mainWindow.on('closed', function() {
+      // Dereference the window object, usually you would store windows
+      // in an array if your app supports multi windows, this is the time
+      // when you should delete the corresponding element.
+      mainWindow = null;
+    });
+    appReady = true;
+  });
 }
 
 function killBackend() {
-  backend.kill('SIGTERM');
-  backend.dead = true;
+  if (backend.local)
+    backend.kill('SIGTERM');
+  backend.local = false;
 }
 
 function spinUntilReady(url, done) {
@@ -122,76 +161,8 @@ function spinUntilReady(url, done) {
         }
       }
     }
-    http.get(serverUrl + url, callback);
+    http.get(backend.url + url, callback);
   }
   spin();
 }
 
-// This method will be called when Electron has done everything
-// initialization and ready for creating browser windows.
-app.on('ready', function() {
-  // Run beaker backend
-  runBeaker();
-
-  eventEmitter.on('backendReady', function() {
-    // Have to wait until actually ready
-    var allReady = function(){
-      // Create the browser window.
-      mainWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
-      
-      if (openFile !== undefined) {
-        mainWindow.loadUrl(serverUrl + '/beaker/#/open?uri=' + openFile);
-      } else {
-        mainWindow.loadUrl(serverUrl);
-      }
-
-      MainMenu = Menu.buildFromTemplate(makeMenuTemplate(serverUrl));
-
-      // Open the devtools.
-      mainWindow.openDevTools();
-      
-      // Emitted when the window is closed.
-      mainWindow.on('closed', function() {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
-        mainWindow = null;
-      });
-      appReady = true;
-    };
-    spinUntilReady(backend.hash + '/beaker/rest/util/ready', allReady);
-  });
-});
-
-// Have to make sure this waits until backend launches
-app.on('open-file', function(event, path) {
-  event.preventDefault();
-  if (appReady){
-    var newWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
-    newWindow.loadUrl(serverUrl + '/beaker/#/open?uri=' + path);
-  } else {
-    openFile = path;
-  }
-});
-
-function runBeaker() {
-  var ReadLine = require('readline');
-  var spawn = require('child_process').spawn;
-  process.env['JAVA_HOME'] = java_home;
-  backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
-
-  var rl = ReadLine.createInterface({
-    input: backend.stdout
-  });
-
-  rl.on('line', function(line) {
-    console.log(line); // Pipe backend's stdout to electron's stdout
-    if (line.startsWith('Beaker hash')){
-      backend.hash = line.split(' ')[2];
-    }
-    else if (line.startsWith('Beaker listening on')){
-      serverUrl = line.split(' ')[3];
-      eventEmitter.emit('backendReady', {});
-    }
-  });
-}

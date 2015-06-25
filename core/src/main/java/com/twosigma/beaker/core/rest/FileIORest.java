@@ -20,8 +20,12 @@ import com.google.inject.Singleton;
 import com.sun.jersey.api.Responses;
 import com.twosigma.beaker.core.module.config.BeakerConfig;
 import com.twosigma.beaker.shared.module.util.GeneralUtils;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -33,6 +37,7 @@ import java.util.Map;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -42,7 +47,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import jcifs.util.MimeMap;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
@@ -256,6 +263,107 @@ public class FileIORest {
       }
     }
     return ret;
+  }
+
+
+  @GET
+  @Path("autocomplete")
+  @Produces(MediaType.APPLICATION_JSON)
+  public String [] autocomplete(@QueryParam("path") String path) throws IOException {
+
+    /*
+     * type of paths:
+     * 
+     * /a/b/c
+     * ./a/b/c
+     * ~/a/b/c
+     * ~davide/a/b/c
+     * ~davide
+     * a
+     */
+
+    if (path.startsWith("~")) {
+      int lp = path.lastIndexOf(File.separatorChar);
+      String n="";
+      if (lp>=0) {
+        n = path.substring(lp);
+        path = path.substring(0,lp);
+      }
+      try {
+        String command = "ls -d " + path;
+        Process shellExec = Runtime.getRuntime().exec(new String[]{"bash", "-c", command});
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(shellExec.getInputStream()));
+        String expandedPath = reader.readLine();
+
+        // Only return a new value if expansion worked.
+        // We're reading from stdin. If there was a problem, it was written
+        // to stderr and our result will be null.
+        if (expandedPath != null) {
+          if (!expandedPath.startsWith("~"))
+            path = expandedPath+n;
+          else
+            return new String[0];
+        }
+      } catch (java.io.IOException ex) {
+        return new String[0];
+      }
+    }
+
+    List<String> s = new ArrayList<String>();
+    int lp = path.lastIndexOf(File.separatorChar);    
+
+    File f = new File(path);
+    if (f.exists() && f.isDirectory()) {
+      File[] filesList = f.listFiles();
+      for (File file : filesList) {
+        if (file.isFile()) {
+          if (path.endsWith(File.separator))
+            s.add(path + file.getName());
+          else
+            s.add(path + File.separator + file.getName());
+        }
+      }
+    } else if (lp == -1) {    
+      final String p = path;
+      FilenameFilter fileNameFilter = new FilenameFilter() {          
+        @Override
+        public boolean accept(File dir, String name) {
+          if(name.startsWith(p))
+            return true;
+          return false;
+        }
+      };
+      File dir = new File(".");
+      File[] filesList = dir.listFiles(fileNameFilter);
+      for (File file : filesList) {
+        if (file.isFile()) {
+          s.add(file.getName());
+        }
+      }
+    } else {
+      String p = path.substring(0,lp);
+      f = new File(p);
+      if (f.exists() && f.isDirectory()) {
+        final String n = path.substring(lp+1);
+        FilenameFilter fileNameFilter = new FilenameFilter() {          
+          @Override
+          public boolean accept(File dir, String name) {
+            if(name.startsWith(n))
+              return true;
+            return false;
+          }
+        };
+        File[] filesList = f.listFiles(fileNameFilter);
+        for (File file : filesList) {
+          if (file.isFile()) {
+            s.add(p + File.separator + file.getName());
+          }
+        }
+      }
+    }
+
+    return  s.toArray(new String[s.size()]);
   }
 
   private static class DirectoryCreationException extends WebApplicationException {

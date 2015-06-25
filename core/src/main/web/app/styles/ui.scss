@@ -26,6 +26,11 @@
   }
 }
 
+.btn {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
 .text-danger {
   color: #a94442 !important;
 }

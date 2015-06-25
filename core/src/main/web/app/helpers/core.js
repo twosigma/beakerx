@@ -43,6 +43,7 @@
       $document,
       $location,
       $sessionStorage,
+      $q,
       bkUtils,
       bkRecentMenu,
       bkNotebookCellModelManager,
@@ -207,6 +208,29 @@
       return $input;
     };
 
+    var codeMirrorExtension = undefined;
+    
+    var codeMirrorFileName = {
+        type : 'string',
+        hint: function(token) {
+          var deferred = bkHelper.newDeferred();
+          $.ajax({
+            type: "GET",
+            datatype: "json",
+            url: "../beaker/rest/file-io/autocomplete",
+            data: { path: token.string.substr(1)}
+          }).done(function(x) {
+            for (var i in x) {
+              x[i] = token.string[0] + x[i];
+            }
+            deferred.resolve(x);
+          }).error(function(x) {
+            deferred.resolve([]);
+          });            
+          return deferred.promise;
+        }
+    };
+    
     var bkCoreManager = {
 
       setNotebookImporter: function(format, importer) {
@@ -412,7 +436,7 @@
           }
         };
 
-        var showAutoComplete = function(cm) {
+        var showAutoComplete = function(cm) {          
           var getToken = function(editor, cur) {
             return editor.getTokenAt(cur);
           };
@@ -420,7 +444,15 @@
             var cur = editor.getCursor();
             var token = getToken(editor, cur);
             var cursorPos = editor.indexFromPos(cur);
-            // We might want this defined by the plugin.
+            
+            var waitfor = [];
+            for(var i in codeMirrorExtension.autocomplete) {
+              var t = codeMirrorExtension.autocomplete[i];
+              if (t.type === token.type || t.type === '*') {
+                waitfor.push(t.hint(token));
+              }
+            }
+            
             var onResults = function(results, matched_text, dotFix) {
               var start = token.start;
               var end = token.end;
@@ -431,11 +463,30 @@
                 start += (cur.ch - token.start - matched_text.length);
                 end = start + matched_text.length;
               }
-              showHintCB({
-                list: _.uniq(results),
-                from: CodeMirror.Pos(cur.line, start),
-                to: CodeMirror.Pos(cur.line, end)
-              });
+              if (waitfor.length > 0) {
+                $q.all(waitfor).then(function (res) {
+                  for (var i in res) {
+                    results = results.concat(res[i]);
+                  }
+                  showHintCB({
+                    list: _.uniq(results),
+                    from: CodeMirror.Pos(cur.line, start),
+                    to: CodeMirror.Pos(cur.line, end)
+                  });
+                }, function(err) {
+                  showHintCB({
+                    list: _.uniq(results),
+                    from: CodeMirror.Pos(cur.line, start),
+                    to: CodeMirror.Pos(cur.line, end)
+                  });                  
+                })
+              } else {
+                showHintCB({
+                  list: _.uniq(results),
+                  from: CodeMirror.Pos(cur.line, start),
+                  to: CodeMirror.Pos(cur.line, end)
+                });
+              }
             };
             scope.autocomplete(cursorPos, onResults);
           };
@@ -500,10 +551,7 @@
           }
         }
 
-        return {
-          lineNumbers: true,
-          matchBrackets: true,
-          extraKeys: {
+        var keys = {
             "Up" : goUpOrMoveFocusUp,
             "Down" : goDownOrMoveFocusDown,
             "Ctrl-S": "save",
@@ -527,7 +575,26 @@
             "Backspace": backspace,
             "Ctrl-/": "toggleComment",
             "Cmd-/": "toggleComment"
+          };
+          
+
+        if (codeMirrorExtension === undefined) {
+          codeMirrorExtension = window.bkInit.codeMirrorExtension;
+          if (codeMirrorExtension === undefined) {
+            codeMirrorExtension = { autocomplete : [ codeMirrorFileName ]};
+          } else {
+            codeMirrorExtension.autocomplete.push(codeMirrorFileName);
           }
+        }
+
+        if (codeMirrorExtension.extraKeys !== undefined) {
+          _.extend(keys, codeMirrorExtension.extraKeys);
+        }
+        
+        return {
+          lineNumbers: true,
+          matchBrackets: true,
+          extraKeys: keys
         };
       },
 

@@ -149,11 +149,16 @@
             bkCoreManager.openNotebook(path, uriType, readOnly, format);
           });
         } else {
+          var strategy = bkHelper.getFileSystemFileChooserStrategy();
+          strategy.treeViewfs.extFilter = [ext];
           promise = bkUtils.getHomeDirectory().then(function(homeDir) {
             bkCoreManager.showModalDialog(
                 bkHelper.openNotebook,
                 JST['template/opennotebook']({homedir: homeDir, extension: '.' + ext}),
-                bkHelper.getFileSystemFileChooserStrategy()
+                strategy,
+                uriType,
+                readOnly,
+                format 
             );
           });
         }

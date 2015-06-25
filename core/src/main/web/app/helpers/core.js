@@ -622,7 +622,7 @@
       getNotebookCellManager: function() {
         return bkNotebookCellModelManager;
       },
-      showModalDialog: function(callback, template, strategy) {
+      showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
         var options = {
           windowClass: 'beaker-sandbox',
           backdropClass: 'beaker-sandbox',
@@ -660,7 +660,7 @@
           removeSubmitListener();
 
           if (callback) {
-            callback(result);
+            callback(result, uriType, readOnly, format);
           }
         }).catch(function() {
           removeSubmitListener();

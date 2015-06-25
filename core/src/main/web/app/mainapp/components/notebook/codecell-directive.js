@@ -337,7 +337,7 @@
             bkUtils.refreshRootScope();
           }
         });
-
+        
         Scrollin.track(element[0], {handler: function() {
           if (scope.cm === undefined) {
             scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);

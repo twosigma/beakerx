@@ -18,7 +18,12 @@ module.exports = function(serverUrl){
                     label: 'Change server',
                     click: function() {
                         var popup = new BrowserWindow(windowOptions.popupOptions);
-                        popup.loadUrl(serverUrl + '/beaker/#/changeserver');
+                        popup.loadUrl('file://' + __dirname + '/templates/change-server-dialog.html');
+                    }
+                },
+                {
+                    label: 'Start local backend',
+                    click: function() {
                     }
                 }
             ]

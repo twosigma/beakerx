@@ -73,7 +73,7 @@ ipc.on('quit', function() {
 
 ipc.on('try-change-server', function() {
   var popup = new BrowserWindow(windowOptions.popupOptions);
-  popup.loadUrl(backend.url + '/beaker/#/changeserver');
+  popup.loadUrl('file://' + __dirname + '/templates/change-server-dialog.html');
 });
 
 ipc.on('change-server', function(event, addr){

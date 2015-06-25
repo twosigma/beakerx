@@ -837,29 +837,4 @@
       }
     };
   });
-
-  module.controller('changeServer', function(bkUtils, $scope) {
-    var servError = function() {
-      alert('Address does not point to a Beaker server.');  
-    };
-
-    $scope.change = function(address) {
-      if (address.charAt(address.length - 1) != '/'){
-        address += '/';
-      }
-      bkUtils.httpGet(address + 'version', {}).success(function(result) {
-        if (result.startsWith('Beaker version')) {
-          bkUtils.Electron.IPC.send('change-server', address);
-        } else {
-          servError();
-        }
-      }).error(function() {
-        servError();
-      });
-    };
-
-    $scope.newBackend = function() {
-      bkUtils.Electron.IPC.send('new-backend');
-    };
-  });
 })();

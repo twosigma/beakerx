@@ -92,7 +92,7 @@
             "title": "Basic Examples",
             "level": 2,
             "evaluatorReader": false,
-            "collapsed": true
+            "collapsed": false
         },
         {
             "id": "codeMXyZnW",
@@ -106,10 +106,10 @@
             "output": {
                 "selectedType": "Hidden",
                 "outputArrived": false,
-                "elapsedTime": 359,
+                "elapsedTime": 396,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "489311AAD38B4730A87E3A09C9A30F04"
+                "shellId": "177760DEB3404CB6B4633A5792EDBCFE"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -125,7 +125,10 @@
             },
             "output": {
                 "selectedType": "Text",
-                "state": {}
+                "state": {},
+                "result": "Strings work fine",
+                "pluginName": "JavaScript",
+                "elapsedTime": 12
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -149,13 +152,14 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 614,
+                "elapsedTime": 593,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "887712be-eb7a-4ae3-936e-3f102a68a6f2",
+                "shellId": "c58cdf2d-e020-43e0-ad8e-13b8712528a9",
                 "dataresult": [
                     "Strings work fine"
-                ]
+                ],
+                "result": "[1] \"Strings work fine\""
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -179,10 +183,11 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 616,
+                "elapsedTime": 1068,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "8c2f32e3-da05-43c8-bfec-57882267129d"
+                "shellId": "0bb454cc-d2a5-41d0-be3b-949f987ae8d2",
+                "result": "Strings work fineStrings work fine"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -206,7 +211,19 @@
             },
             "output": {
                 "selectedType": "Text",
-                "state": {}
+                "state": {},
+                "result": {
+                    "a": 1,
+                    "b": 2.2,
+                    "c": "three",
+                    "d": [
+                        4,
+                        5,
+                        6
+                    ]
+                },
+                "pluginName": "JavaScript",
+                "elapsedTime": 12
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -222,10 +239,20 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 616,
+                "elapsedTime": 578,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "8c2f32e3-da05-43c8-bfec-57882267129d"
+                "shellId": "0bb454cc-d2a5-41d0-be3b-949f987ae8d2",
+                "result": {
+                    "a": 1,
+                    "b": 2.2,
+                    "c": "three",
+                    "d": [
+                        4,
+                        5,
+                        6
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -236,7 +263,7 @@
             "title": "Scalars in R",
             "level": 2,
             "evaluatorReader": false,
-            "collapsed": true
+            "collapsed": false
         },
         {
             "id": "markdownwOKXV7",
@@ -259,13 +286,14 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 583,
+                "elapsedTime": 570,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "887712be-eb7a-4ae3-936e-3f102a68a6f2",
+                "shellId": "c58cdf2d-e020-43e0-ad8e-13b8712528a9",
                 "dataresult": [
                     12
-                ]
+                ],
+                "result": "[1] 12"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -282,13 +310,14 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Html",
-                "elapsedTime": 294,
+                "elapsedTime": 215,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "489311AAD38B4730A87E3A09C9A30F04",
+                "shellId": "177760DEB3404CB6B4633A5792EDBCFE",
                 "dataresult": [
                     12
-                ]
+                ],
+                "result": "<div class=\"output_subarea output_text\"><pre>[12]</pre></div>"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -305,10 +334,11 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Text",
-                "elapsedTime": 612,
+                "elapsedTime": 588,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "8c2f32e3-da05-43c8-bfec-57882267129d"
+                "shellId": "0bb454cc-d2a5-41d0-be3b-949f987ae8d2",
+                "result": 24
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -332,10 +362,11 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 595,
+                "elapsedTime": 573,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "8c2f32e3-da05-43c8-bfec-57882267129d"
+                "shellId": "0bb454cc-d2a5-41d0-be3b-949f987ae8d2",
+                "result": 13
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -351,13 +382,14 @@
             },
             "output": {
                 "selectedType": "Text",
-                "elapsedTime": 597,
+                "elapsedTime": 568,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "887712be-eb7a-4ae3-936e-3f102a68a6f2",
+                "shellId": "c58cdf2d-e020-43e0-ad8e-13b8712528a9",
                 "dataresult": [
                     13
-                ]
+                ],
+                "result": "[1] 13"
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -368,7 +400,7 @@
             "title": "Data Frames",
             "level": 2,
             "evaluatorReader": false,
-            "collapsed": true
+            "collapsed": false
         },
         {
             "id": "markdown6TYGqA",
@@ -391,10 +423,10 @@
             "output": {
                 "outputArrived": false,
                 "selectedType": "Hidden",
-                "elapsedTime": 326,
+                "elapsedTime": 315,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "489311AAD38B4730A87E3A09C9A30F04"
+                "shellId": "177760DEB3404CB6B4633A5792EDBCFE"
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -420,10 +452,81 @@
             },
             "output": {
                 "selectedType": "Results",
-                "elapsedTime": 630,
+                "elapsedTime": 608,
                 "state": {},
                 "pluginName": "Groovy",
-                "shellId": "8c2f32e3-da05-43c8-bfec-57882267129d"
+                "shellId": "0bb454cc-d2a5-41d0-be3b-949f987ae8d2",
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "com.twosigma.beaker.jvm.object.TableDisplay\n"
+                        }
+                    ],
+                    "payload": {
+                        "type": "TableDisplay",
+                        "columnNames": [
+                            "Index",
+                            "A",
+                            "B",
+                            "C",
+                            "D"
+                        ],
+                        "values": [
+                            [
+                                0,
+                                0.04228332988920018,
+                                0.7497507754067756,
+                                0.5526437701427581,
+                                0.04575860643616507
+                            ],
+                            [
+                                1,
+                                1.1661741038784328,
+                                3.4337175505779314,
+                                0.9101406921609515,
+                                -0.8475569551358467
+                            ],
+                            [
+                                2,
+                                0.14374509512854244,
+                                -0.17658777885450172,
+                                -0.6028399040953317,
+                                0.20207850928958065
+                            ],
+                            [
+                                3,
+                                -0.01247807255449394,
+                                0.9044568492813911,
+                                0.6552981009040952,
+                                1.1740285477203545
+                            ],
+                            [
+                                4,
+                                2.1965268952609383,
+                                -0.3191832185245914,
+                                0.2894683426892904,
+                                1.7407702150553326
+                            ],
+                            [
+                                5,
+                                -0.7797974263415961,
+                                -0.35463161535700677,
+                                0.010402478418954503,
+                                -2.377265962432797
+                            ]
+                        ],
+                        "types": [
+                            "integer",
+                            "double",
+                            "double",
+                            "double",
+                            "double"
+                        ],
+                        "subtype": "TableDisplay"
+                    }
+                }
             },
             "evaluatorReader": true,
             "lineCount": 3
@@ -447,10 +550,72 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 616,
+                "elapsedTime": 595,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "887712be-eb7a-4ae3-936e-3f102a68a6f2"
+                "shellId": "c58cdf2d-e020-43e0-ad8e-13b8712528a9",
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "TableDisplay",
+                    "columnNames": [
+                        "Index",
+                        "A",
+                        "B",
+                        "C",
+                        "D"
+                    ],
+                    "values": [
+                        [
+                            0,
+                            0.042283,
+                            0.74975,
+                            0.55264,
+                            0.045759
+                        ],
+                        [
+                            1,
+                            1.1662,
+                            3.4337,
+                            0.91014,
+                            -0.84756
+                        ],
+                        [
+                            2,
+                            0.14375,
+                            -0.17659,
+                            -0.60284,
+                            0.20208
+                        ],
+                        [
+                            3,
+                            -0.012478,
+                            0.90446,
+                            0.6553,
+                            1.174
+                        ],
+                        [
+                            4,
+                            2.1965,
+                            -0.31918,
+                            0.28947,
+                            1.7408
+                        ],
+                        [
+                            5,
+                            -0.7798,
+                            -0.35463,
+                            0.010402,
+                            -2.3773
+                        ]
+                    ],
+                    "types": [
+                        "string",
+                        "string",
+                        "string",
+                        "string",
+                        "string"
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -466,10 +631,64 @@
             },
             "output": {
                 "selectedType": "Table",
-                "elapsedTime": 733,
+                "elapsedTime": 567,
                 "state": {},
                 "pluginName": "R",
-                "shellId": "887712be-eb7a-4ae3-936e-3f102a68a6f2"
+                "shellId": "c58cdf2d-e020-43e0-ad8e-13b8712528a9",
+                "result": {
+                    "type": "TableDisplay",
+                    "subtype": "TableDisplay",
+                    "columnNames": [
+                        "X1",
+                        "X2"
+                    ],
+                    "values": [
+                        [
+                            -0.96119,
+                            -0.66459
+                        ],
+                        [
+                            -1.4942,
+                            -1.2114
+                        ],
+                        [
+                            -0.18175,
+                            -0.36426
+                        ],
+                        [
+                            1.2751,
+                            0.41288
+                        ],
+                        [
+                            -0.89103,
+                            3.1755
+                        ],
+                        [
+                            0.072775,
+                            -0.42882
+                        ],
+                        [
+                            -0.81373,
+                            2.4512
+                        ],
+                        [
+                            0.81349,
+                            0.4549
+                        ],
+                        [
+                            -2.5719,
+                            -1.0655
+                        ],
+                        [
+                            0.94654,
+                            -0.65474
+                        ]
+                    ],
+                    "types": [
+                        "string",
+                        "string"
+                    ]
+                }
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -487,10 +706,73 @@
             "output": {
                 "outputArrived": true,
                 "selectedType": "Results",
-                "elapsedTime": 303,
+                "elapsedTime": 220,
                 "state": {},
                 "pluginName": "IPython",
-                "shellId": "489311AAD38B4730A87E3A09C9A30F04"
+                "shellId": "177760DEB3404CB6B4633A5792EDBCFE",
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "<class 'pandas.core.frame.DataFrame'>\n"
+                        }
+                    ],
+                    "payload": {
+                        "values": [
+                            [
+                                -0.96119,
+                                -0.66459
+                            ],
+                            [
+                                -1.4942,
+                                -1.2114
+                            ],
+                            [
+                                -0.18175,
+                                -0.36426
+                            ],
+                            [
+                                1.2751,
+                                0.41288
+                            ],
+                            [
+                                -0.89103,
+                                3.1755
+                            ],
+                            [
+                                0.072775,
+                                -0.42882
+                            ],
+                            [
+                                -0.81373,
+                                2.4512
+                            ],
+                            [
+                                0.81349,
+                                0.4549
+                            ],
+                            [
+                                -2.5719,
+                                -1.0655
+                            ],
+                            [
+                                0.94654,
+                                -0.65474
+                            ]
+                        ],
+                        "subtype": "TableDisplay",
+                        "type": "TableDisplay",
+                        "types": [
+                            "double",
+                            "double"
+                        ],
+                        "columnNames": [
+                            "Index",
+                            "X2"
+                        ]
+                    }
+                }
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -514,7 +796,10 @@
             },
             "output": {
                 "state": {},
-                "selectedType": "Text"
+                "selectedType": "Text",
+                "result": "DataFrame:  Rows: 10\n  Data columns (total 2 columns):\n    X1   string\n    X2   string\n",
+                "pluginName": "JavaScript",
+                "elapsedTime": 6
             },
             "evaluatorReader": true,
             "lineCount": 1
@@ -575,8 +860,8 @@
                 "result": "",
                 "selectedType": "Hidden",
                 "pluginName": "Groovy",
-                "shellId": "d55d383b-4d71-4396-8fc1-bcea607f79c8",
-                "elapsedTime": 647
+                "shellId": "0bb454cc-d2a5-41d0-be3b-949f987ae8d2",
+                "elapsedTime": 1186
             },
             "evaluatorReader": true,
             "lineCount": 10
@@ -592,33 +877,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
-                        },
-                        "columnNames": [
-                            "a",
-                            "b"
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2
-                        ],
-                        "getCellSho": [
-                            true,
-                            true
-                        ]
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "subtype": "TableDisplay",
@@ -643,7 +902,7 @@
                 },
                 "selectedType": "Table",
                 "pluginName": "JavaScript",
-                "elapsedTime": 12
+                "elapsedTime": 6
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -668,7 +927,7 @@
                 },
                 "selectedType": "Image",
                 "pluginName": "JavaScript",
-                "elapsedTime": 13
+                "elapsedTime": 5
             },
             "evaluatorReader": true,
             "lineCount": 2
@@ -684,41 +943,7 @@
                 ]
             },
             "output": {
-                "state": {
-                    "datatablestate": {
-                        "pagination": {
-                            "use": true,
-                            "rowsToDisplay": 50,
-                            "fixLeft": false,
-                            "fixRight": false
-                        },
-                        "columnNames": [
-                            "c0",
-                            "c1",
-                            "c2",
-                            "c3"
-                        ],
-                        "actualalign": [
-                            "R",
-                            "R",
-                            "R",
-                            "R"
-                        ],
-                        "colorder": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
-                        "getCellSho": [
-                            true,
-                            true,
-                            true,
-                            true
-                        ]
-                    }
-                },
+                "state": {},
                 "result": {
                     "type": "TableDisplay",
                     "values": [
@@ -782,51 +1007,59 @@
         "df": {
             "values": [
                 [
-                    -1.2958876950943388,
-                    1.0339679030229096,
-                    -0.33379370943515296,
-                    -0.6022573057996473
+                    0,
+                    0.04228332988920018,
+                    0.7497507754067756,
+                    0.5526437701427581,
+                    0.04575860643616507
                 ],
                 [
-                    0.8546098548244025,
-                    0.5996820877126882,
-                    -1.5666121888633597,
-                    0.8458988534040274
+                    1,
+                    1.1661741038784328,
+                    3.4337175505779314,
+                    0.9101406921609515,
+                    -0.8475569551358467
                 ],
                 [
-                    0.8866675451368726,
-                    0.3882221415754354,
-                    1.0138164206114364,
-                    0.3417681078289333
+                    2,
+                    0.14374509512854244,
+                    -0.17658777885450172,
+                    -0.6028399040953317,
+                    0.20207850928958065
                 ],
                 [
-                    -0.048217875901571026,
-                    -1.3753301978590344,
-                    0.543873081497888,
-                    -0.6569179877983308
+                    3,
+                    -0.01247807255449394,
+                    0.9044568492813911,
+                    0.6552981009040952,
+                    1.1740285477203545
                 ],
                 [
-                    0.15771688297221204,
-                    -0.005865576051299158,
-                    0.31994159378396314,
-                    0.7136720919173277
+                    4,
+                    2.1965268952609383,
+                    -0.3191832185245914,
+                    0.2894683426892904,
+                    1.7407702150553326
                 ],
                 [
-                    0.3129964220818653,
-                    -0.8903837774528159,
-                    -0.5089736879791984,
-                    0.22314907965245487
+                    5,
+                    -0.7797974263415961,
+                    -0.35463161535700677,
+                    0.010402478418954503,
+                    -2.377265962432797
                 ]
             ],
             "subtype": "TableDisplay",
             "type": "TableDisplay",
             "types": [
+                "integer",
                 "double",
                 "double",
                 "double",
                 "double"
             ],
             "columnNames": [
+                "Index",
                 "A",
                 "B",
                 "C",
@@ -838,49 +1071,49 @@
             "subtype": "TableDisplay",
             "values": [
                 [
-                    0.39988,
-                    -1.9575
+                    -0.96119,
+                    -0.66459
                 ],
                 [
-                    -0.75126,
-                    0.78968
+                    -1.4942,
+                    -1.2114
                 ],
                 [
-                    -2.5769,
-                    1.0347
+                    -0.18175,
+                    -0.36426
                 ],
                 [
-                    1.8385,
-                    0.66085
+                    1.2751,
+                    0.41288
                 ],
                 [
-                    0.35921,
-                    0.52431
+                    -0.89103,
+                    3.1755
                 ],
                 [
-                    0.1243,
-                    0.98659
+                    0.072775,
+                    -0.42882
                 ],
                 [
-                    -0.65199,
-                    1.8162
+                    -0.81373,
+                    2.4512
                 ],
                 [
-                    0.59188,
-                    -0.6463
+                    0.81349,
+                    0.4549
                 ],
                 [
-                    -0.90175,
-                    -2.1602
+                    -2.5719,
+                    -1.0655
                 ],
                 [
-                    -1.1589,
-                    1.1526
+                    0.94654,
+                    -0.65474
                 ]
             ],
             "types": [
-                "double",
-                "double"
+                "string",
+                "string"
             ],
             "columnNames": [
                 "X1",
@@ -889,10 +1122,7 @@
         },
         "dt": {
             "type": "TableDisplay",
-            "columnNames": [
-                "a",
-                "b"
-            ],
+            "subtype": "TableDisplay",
             "values": [
                 [
                     1,
@@ -907,7 +1137,10 @@
                 "integer",
                 "integer"
             ],
-            "subtype": "TableDisplay"
+            "columnNames": [
+                "a",
+                "b"
+            ]
         },
         "img": {
             "type": "ImageIcon",

@@ -76,17 +76,6 @@ ipc.on('try-change-server', function() {
   popup.loadUrl(backend.url + '/beaker/#/changeserver');
 });
 
-ipc.on('new-backend', function() {
-  var windows = BrowserWindow.getAllWindows();
-  for (var i = 0; i < windows.length; ++i){
-    windows[i].close();
-  }
-  console.log('Killing backend');
-  killBackend();
-  
-  backendRunner.startNew().on('ready', connectToBackend);
-});
-
 ipc.on('change-server', function(event, addr){
   var windows = BrowserWindow.getAllWindows();
   for (var i = 0; i < windows.length; ++i){
@@ -104,6 +93,17 @@ ipc.on('change-server', function(event, addr){
   backend.url = addr;
   backend.local = false;
   MainMenu = Menu.buildFromTemplate(makeMenuTemplate(backend.url));
+});
+
+ipc.on('new-backend', function() {
+  var windows = BrowserWindow.getAllWindows();
+  for (var i = 0; i < windows.length; ++i){
+    windows[i].close();
+  }
+  console.log('Killing backend at' + backend.url);
+  killBackend();
+  
+  backendRunner.startNew().on('ready', connectToBackend);
 });
 
 function connectToBackend(newBackend){

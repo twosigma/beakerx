@@ -21,7 +21,6 @@ var crashReporter = require('crash-reporter');
 
 var events = require('events');
 var backendRunner = require('./backend-runner.js');
-var windowOptions = require('./window-options.js');
 var mainMenu = require('./main-menu.js');
 var windowManager = require('./window-manager.js');
 

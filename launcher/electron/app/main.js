@@ -15,26 +15,20 @@
  */
 
 var app = require('app');  // Module to control application life.
-var Menu = require('menu');
-var MenuItem = require('menu-item');
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
 var ipc = require('ipc');
 var http = require('http');
 var crashReporter = require('crash-reporter');
 
 var events = require('events');
-var eventEmitter = new events.EventEmitter();
-var makeMenuTemplate = require('./default-menu-maker.js');
 var backendRunner = require('./backend-runner.js');
 var windowOptions = require('./window-options.js');
+var mainMenu = require('./main-menu.js');
+var windowManager = require('./window-manager.js');
 
 var appReady = false;
 var backend;
 var openFile;
 var mainMenu;
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the javascript object is GCed.
-var mainWindow = null;
 
 // Report crashes to our server.
 crashReporter.start();
@@ -50,18 +44,11 @@ app.on('quit', function() {
   killBackend();
 });
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function() {
-  // If all windows are dead, must handle menus from main thread (this thread)
-  Menu.setApplicationMenu(MainMenu); 
-});
-
 // Fired when OS opens file with application
 app.on('open-file', function(event, path) {
   event.preventDefault();
   if (appReady){
-    var newWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
-    newWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + path);
+    windowManager.newWindow(backend.url + '/beaker/#/open?uri=' + path)
   } else {
     openFile = path;
   }
@@ -71,75 +58,76 @@ ipc.on('quit', function() {
   app.quit();
 });
 
-ipc.on('try-change-server', function() {
-  var popup = new BrowserWindow(windowOptions.popupOptions);
-  popup.loadUrl('file://' + __dirname + '/templates/change-server-dialog.html');
+mainMenu.on('quit', function() {
+  app.quit();
 });
 
-ipc.on('change-server', function(event, addr){
-  var windows = BrowserWindow.getAllWindows();
-  for (var i = 0; i < windows.length; ++i){
-    windows[i].close();
-  }
-  console.log('Killing backend');
-  if (addr != backend.url) {
-    killBackend();
-  }
-  // Open new control panel there
-  var newWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
-  console.log('Switching to ' + addr);
-  newWindow.loadUrl(addr);
-  newWindow.toggleDevTools();
-  backend.url = addr;
-  backend.local = false;
-  MainMenu = Menu.buildFromTemplate(makeMenuTemplate(backend.url));
+ipc.on('try-change-server', function() {
+  windowManager.newWindow('file://' + __dirname + '/templates/change-server-dialog.html', 'popup');
+});
+
+mainMenu.on('try-change-server', function() {
+  windowManager.newWindow('file://' + __dirname + '/templates/change-server-dialog.html', 'popup');
+});
+
+ipc.on('change-server', function(e, address) {
+  switchToBackend(address);
+});
+
+mainMenu.on('change-server', function(e, address) {
+  switchToBackend(address);
 });
 
 ipc.on('new-backend', function() {
-  var windows = BrowserWindow.getAllWindows();
-  for (var i = 0; i < windows.length; ++i){
-    windows[i].close();
-  }
-  console.log('Killing backend at' + backend.url);
   killBackend();
-  
   backendRunner.startNew().on('ready', connectToBackend);
 });
 
-function connectToBackend(newBackend){
+mainMenu.on('new-backend', function() {
+  killBackend();
+  backendRunner.startNew().on('ready', connectToBackend);
+});
+
+mainMenu.on('new-empty-notebook', function() {
+  windowManager.newWindow(backend.url + 'beaker/#/session/empty');
+});
+
+mainMenu.on('new-default-notebook', function() {
+  windowManager.newWindow(backend.url + 'beaker/#/session/new');
+});
+
+function switchToBackend(address) {
+  if (address != backend.url) {
+    killBackend();
+  }
+  // Open new control panel there
+  console.log('Switching to ' + address);
+  windowManager.newWindow(address);
+  backend.url = address;
+  backend.local = false;
+}
+
+function connectToBackend(newBackend) {
   backend = newBackend;
-  // Have to wait until actually ready
-  spinUntilReady(backend.hash + '/beaker/rest/util/ready', function() {
-    // Create the browser window.
-    mainWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
-    
+  // Have to wait until backend is fully ready
+  spinUntilReady(newBackend.hash + '/beaker/rest/util/ready', function() {
+    // Open file if launched with file
     if (openFile !== undefined) {
-      mainWindow.loadUrl(backend.url + '/beaker/#/open?uri=' + openFile);
+      windowManager.newWindow(backend.url + '/beaker/#/open?uri=' + openFile);
       openFile = null;
     } else {
-      mainWindow.loadUrl(backend.url);
+      windowManager.newWindow(backend.url);
     }
-
-    MainMenu = Menu.buildFromTemplate(makeMenuTemplate(backend.url));
-
-    // Open the devtools.
-    mainWindow.openDevTools();
-    
-    // Emitted when the window is closed.
-    mainWindow.on('closed', function() {
-      // Dereference the window object, usually you would store windows
-      // in an array if your app supports multi windows, this is the time
-      // when you should delete the corresponding element.
-      mainWindow = null;
-    });
     appReady = true;
   });
 }
 
 function killBackend() {
+  windowManager.closeAll();
+  console.log('Killing backend at ' + backend.url);
   if (backend.local)
     backend.kill('SIGTERM');
-  backend.local = false;
+  backend = {};
 }
 
 function spinUntilReady(url, done) {

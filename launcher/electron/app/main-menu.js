@@ -1,29 +1,32 @@
-module.exports = function(serverUrl){
+module.exports = (function() {
     var app = require('app');
     var BrowserWindow = require('browser-window');
+    var Menu = require('menu');
     var windowOptions = require('./window-options.js');
+    var events = require('events');
+    var eventEmitter = new events.EventEmitter();
 
-    var template =[
+    template = [
         {
             label: 'Beaker',
             submenu: [
                 {
                     label: 'Quit',
                     click: function() {
-                        app.quit();
+                        eventEmitter.emit('quit');
                     },
                     accelerator: 'Command+Q'
                 },
                 {
                     label: 'Change server',
                     click: function() {
-                        var popup = new BrowserWindow(windowOptions.popupOptions);
-                        popup.loadUrl('file://' + __dirname + '/templates/change-server-dialog.html');
+                        eventEmitter.emit('try-change-server');
                     }
                 },
                 {
                     label: 'Start local backend',
                     click: function() {
+                        eventEmitter.emit('new-backend');
                     }
                 }
             ]
@@ -34,27 +37,26 @@ module.exports = function(serverUrl){
                 {
                     label: 'New Empty Notebook',
                     click: function() {
-                        var newWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
-                        newWindow.loadUrl(serverUrl + 'beaker/#/session/empty')
+                        eventEmitter.emit('new-empty-notebook');
                     }
                 },
                 {
                     label: 'New Default Notebook',
                     click: function() {
-                        var newWindow = new BrowserWindow(windowOptions.defaultWindowOptions);
-                        newWindow.loadUrl(serverUrl + 'beaker/#/session/new')
-
-                        newWindow.on('closed', function() {
-                            // Dereference the window object, usually you would store windows
-                            // in an array if your app supports multi windows, this is the time
-                            // when you should delete the corresponding element.
-                            newWindow = null;
-                        });
-
+                        eventEmitter.emit('new-default-notebook');
                     }
                 }
             ]
         }
     ];
-    return template;
-};
+
+    MainMenu = Menu.buildFromTemplate(template);
+    // Quit when all windows are closed.
+    app.on('window-all-closed', function() {
+      // If all windows are dead, must handle menus from main thread (this thread)
+      Menu.setApplicationMenu(MainMenu); 
+    });
+
+
+    return eventEmitter;
+})();

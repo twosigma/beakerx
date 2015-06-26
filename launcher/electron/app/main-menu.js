@@ -2,7 +2,6 @@ module.exports = (function() {
     var app = require('app');
     var BrowserWindow = require('browser-window');
     var Menu = require('menu');
-    var windowOptions = require('./window-options.js');
     var events = require('events');
     var eventEmitter = new events.EventEmitter();
 

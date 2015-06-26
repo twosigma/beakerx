@@ -100,10 +100,9 @@ task mCopyTools(type: Copy, dependsOn: 'mCopyJRE') {
 
 /***********************************************************************************/
 
-task makeWinElectron(dependsOn: ['clean', 'makeDist2', 'wCopyBeakerApp', 'wCopyDist', 'wCopyJRE', 'wCopyTools']) {
+task makeWinElectron(dependsOn: ['clean', 'makeDist2', 'wCopyBeakerApp', 'wCopyDist', 'wCopyJRE', 'wCopyTools', 'wCopyPython']) {
 	println "Starting Electron build"
 }
-
 
 task wUnzipElectron(type: Exec) {
 	commandLine 'unzip', '-uo', '-d', 'beaker', 'electron-v0.28.3-win32-x64.zip'
@@ -131,4 +130,13 @@ task wCopyJRE(type: Copy, dependsOn: ['unzipJRE', 'wUnzipElectron']) {
 task wCopyTools(type: Copy, dependsOn: 'wCopyJRE') {
 	from 'tools.jar'
 	into 'beaker/resources/jre/lib'
+}
+
+task unzipPython(type: Exec) {
+	commandLine 'unzip', '-uo', '-d', 'python', 'python.zip'
+}
+
+task wCopyPython(type: Copy, dependsOn: ['unzipPython', 'wCopyDist']) {
+	from 'python'
+	into 'beaker/resources/dist'
 }

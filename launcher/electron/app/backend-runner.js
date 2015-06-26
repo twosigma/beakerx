@@ -1,10 +1,12 @@
 module.exports = (function() {
 	var path = require('path');
-	var java_home = path.resolve(__dirname + '/../jre/Contents/Home'); 
+	// var java_home = path.resolve(__dirname + '/../jre/Contents/Home');
+	// var java_home = path.resolve(__dirname + '/../jre');
 	
 	var ReadLine = require('readline');
 	var spawn = require('child_process').spawn;
 	var events = require('events');
+	var os = require('os');
 
 	return {
 		startNew: function() {
@@ -12,8 +14,14 @@ module.exports = (function() {
 			var hash;
 			var eventEmitter = new events.EventEmitter();
 
-		  process.env['JAVA_HOME'] = java_home;
-		  backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
+			var osName = os.type();
+			if (osName.startsWith('Windows')){
+				backend = spawn(path.resolve(__dirname + '/../dist/beaker.command.bat'), ['--open-browser', 'false']);
+			} else {
+				backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
+			}
+		  // process.env['JAVA_HOME'] = java_home;
+		  // backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
 
 		  var rl = ReadLine.createInterface({
 		    input: backend.stdout

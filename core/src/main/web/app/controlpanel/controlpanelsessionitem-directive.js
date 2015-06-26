@@ -43,8 +43,11 @@
               }
             }
             return bkSession.close(session.id).then(function() {
+             // Notify the main thread
+              bkUtils.Electron.IPC.send('session-closed', session.id);
               $scope.reloadSessionsList();
             });
+
           };
           if (!edited) {
             // close session

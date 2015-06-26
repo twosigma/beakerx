@@ -1,7 +1,17 @@
 module.exports = (function() {
 	var BrowserWindow = require('browser-window');
+	var ipc = require('ipc');
 
 	var _windows = {};
+	var _sessions = {};
+
+	ipc.on('window-session', function(event, msg) {
+		_sessions[msg.sessionId] = msg.windowId;
+	});
+
+	ipc.on('session-closed', function(event, id) {
+		BrowserWindow.fromId(_sessions[id]).close();
+	})
 
 	var defaultOptions = {
 		  width: 1500,

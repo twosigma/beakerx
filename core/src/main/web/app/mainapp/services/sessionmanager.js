@@ -854,6 +854,12 @@
           sessionId = bkUtils.generateId(6);
         }
 
+        // tell main thread that session lives in this window
+        bkUtils.Electron.IPC.send('window-session', {
+          windowId: bkUtils.Electron.remote.getCurrentWindow().id,
+          sessionId: sessionId 
+        });
+
         // reset
         _uriType = uriType;
         _readOnly = readOnly;

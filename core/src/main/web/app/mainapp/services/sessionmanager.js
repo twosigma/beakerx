@@ -855,10 +855,12 @@
         }
 
         // tell main thread that session lives in this window
-        bkUtils.Electron.IPC.send('window-session', {
-          windowId: bkUtils.Electron.remote.getCurrentWindow().id,
-          sessionId: sessionId 
-        });
+        if (bkUtils.isElectron) {
+          bkUtils.Electron.IPC.send('window-session', {
+            windowId: bkUtils.Electron.remote.getCurrentWindow().id,
+            sessionId: sessionId 
+          });
+        }
 
         // reset
         _uriType = uriType;

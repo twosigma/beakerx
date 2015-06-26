@@ -34,7 +34,7 @@
         {
             "name": "IPython",
             "plugin": "IPython",
-            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n\n# Configure the necessary Spark environment\nimport os\nimport sys\n\nspark_home = os.environ.get('SPARK_HOME', None)\nsys.path.insert(0, spark_home + \"/python\")\n\n# Add the py4j to the path.\n# You may need to change the version number to match your install\nsys.path.insert(0, os.path.join(spark_home, 'python/lib/py4j-0.8.2.1-src.zip'))\n\n# Initialize PySpark to predefine the SparkContext variable 'sc'\nexecfile(os.path.join(spark_home, 'python/pyspark/shell.py'))",
+            "setup": "%matplotlib inline\nimport numpy\nimport matplotlib\nfrom matplotlib import pylab, mlab, pyplot\nnp = numpy\nplt = pyplot\nfrom IPython.display import display\nfrom IPython.core.pylabtools import figsize, getfigs\nfrom pylab import *\nfrom numpy import *\n\n# Configure the necessary Spark environment\nimport os\nimport sys\n\nspark_home = os.environ.get('SPARK_HOME', None)\nif not spark_home:\n    raise LookupError(\"SPARK_HOME envar not defined\")\nsys.path.insert(0, spark_home + \"/python\")\n\n# Add the py4j to the path.\n# You may need to change the version number to match your install\nsys.path.insert(0, os.path.join(spark_home, 'python/lib/py4j-0.8.2.1-src.zip'))\n\n# Initialize PySpark to predefine the SparkContext variable 'sc'\nexecfile(os.path.join(spark_home, 'python/pyspark/shell.py'))",
             "view": {
                 "cm": {
                     "mode": "python"
@@ -55,8 +55,8 @@
             "id": "markdownyvt7AX",
             "type": "markdown",
             "body": [
-                "Getting Python to work with Spark is just a matter of setting some environment variables and the setup code.",
-                "I followed [John Ramey's blog post](http://ramhiser.com/2015/02/01/configuring-ipython-notebook-support-for-pyspark/) to get Beaker working with Spark v1.3.1.",
+                "Getting Beaker to work with [Spark](https://spark.apache.org/) is just a matter of setting some environment variables and the setup code.",
+                "We followed [John Ramey's blog post](http://ramhiser.com/2015/02/01/configuring-ipython-notebook-support-for-pyspark/) to get Beaker working with Spark v1.3.1.",
                 "Besides downloading and compiling Spark, you just set these two environment variables in your `.bash_profile`",
                 "```",
                 "export SPARK_HOME=\"$HOME/spark-1.3.1\"",
@@ -71,7 +71,8 @@
                 "sys.path.insert(0, os.path.join(spark_home, 'python/lib/py4j-0.8.2.1-src.zip'))",
                 "execfile(os.path.join(spark_home, 'python/pyspark/shell.py'))",
                 "```",
-                "Don't forget to click \"Set\" after editing the setup code.  And voilà, the following cell runs:"
+                "Just click \"Set\" after editing the setup code.  The setup code is run to initialize the python environment for the notebook, typically default imports.",
+                "That's already been done on this notebook, so just setup Spark and voilà, the following cell runs:"
             ],
             "evaluatorReader": false
         },

@@ -20,12 +20,12 @@ sudo apt-get install -y git
 # java
 sudo add-apt-repository --yes ppa:webupd8team/java
 sudo apt-get update
-sudo apt-get install -y oracle-java7-installer # javac -v = 1.7.XXX
+sudo apt-get install -y oracle-java8-installer # javac -v = 1.8.XXX
 
 # gradle
 sudo add-apt-repository --yes ppa:cwchien/gradle
 sudo apt-get update
-sudo apt-get install -y gradle-1.12
+sudo apt-get install -y gradle-2.4
 
 # nginx
 sudo add-apt-repository --yes ppa:nginx/stable

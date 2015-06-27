@@ -33,7 +33,7 @@ RUN add-apt-repository -y ppa:webupd8team/java && \
     add-apt-repository -y ppa:cwchien/gradle && \
     add-apt-repository -y ppa:nginx/stable
 
-RUN apt-get update && apt-get install -y nginx gradle-2.4 python g++ make git
+RUN apt-get update && apt-get install -y nginx gradle-1.12 python g++ make git
 
 RUN useradd beaker --create-home
 
@@ -42,7 +42,7 @@ RUN useradd beaker --create-home
 ##########
 
 RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
-RUN apt-get install -y oracle-java8-installer
+RUN apt-get install -y oracle-java7-installer
 
 ############
 #  Python  #
@@ -88,8 +88,8 @@ RUN apt-get install -y julia && \
 ##########
 
 # First install zmq3, as per Python instructions above. Then:
-#RUN apt-get install -y ruby1.9.1 ruby1.9.1-dev && \
-#    gem install iruby
+RUN apt-get install -y ruby1.9.1 ruby1.9.1-dev && \
+    gem install iruby
 
 ##########
 #  Node  #

@@ -62,7 +62,8 @@
                 "",
                 "The first cell of this notebook graphs a math function. The 2nd and 3rd cells download data from the internet and chart it.",
                 "The data is saved in the notebook in addition to this text, the code, and the charts.",
-                "That way later you can rerun the charts without depending on the internet query to be available and give the same results."
+                "That way later you can rerun the charts without depending on the internet query to be available and give the same results.",
+                "This ability to easily save data in the notebook makes your work more *reproducible*."
             ],
             "evaluatorReader": false
         },

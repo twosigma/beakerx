@@ -34,8 +34,7 @@ var BeakerPageObject = function() {
   };
 
   this.isLanguageCellMenuOpen = function() {
-    return element(by.css('.inputcellmenu'))
-    .isDisplayed();
+    return browser.executeScript('return $(".inputcellmenu:visible").length > 0')
   }
 
   this.toggleCellMenu = function(opts) {

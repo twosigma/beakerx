@@ -92,12 +92,18 @@ public abstract class AbstractClassLoader extends ClassLoader {
         loaders.add(systemLoader);
         loaders.add(parentLoader);
         loaders.add(currentLoader);
+        Collections.sort(loaders);
     }
 
     public void addLoader(ProxyClassLoader loader) {
         loaders.add(loader);
+        Collections.sort(loaders);
     }
 
+    public void doSort() {
+      Collections.sort(loaders);
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -122,7 +128,7 @@ public abstract class AbstractClassLoader extends ClassLoader {
 
         logger.finest(className);
         
-        Collections.sort(loaders);
+        //Collections.sort(loaders);
 
         Class clazz = null;
 
@@ -156,7 +162,7 @@ public abstract class AbstractClassLoader extends ClassLoader {
 
         logger.finest(name);
         
-        Collections.sort(loaders);
+        //Collections.sort(loaders);
 
         URL url = null;
         
@@ -188,7 +194,7 @@ public abstract class AbstractClassLoader extends ClassLoader {
 
         logger.finest(name);
         
-        Collections.sort(loaders);
+        //Collections.sort(loaders);
 
         InputStream is = null;
 
@@ -212,7 +218,7 @@ public abstract class AbstractClassLoader extends ClassLoader {
       
       logger.finest(name);
       
-      Collections.sort(loaders);
+      //Collections.sort(loaders);
     
       Enumeration<URL> url = null;
     

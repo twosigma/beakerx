@@ -137,8 +137,12 @@ public class SessionBackupRest {
     this.sessions.put(sessionId, new Session(
         notebookUri, uriType, readOnly, format, notebookModelJson, edited, date));
 
+<<<<<<< HEAD
     // Notify client of changes in session
     refreshFrontend();
+=======
+    notifyChangesToFrontend();
+>>>>>>> master
 
     try {
       recordToFile(sessionId, notebookUri, notebookModelJson);
@@ -174,7 +178,28 @@ public class SessionBackupRest {
       @FormParam("sessionid") String sessionID) {
     this.sessions.remove(sessionID);
 
+<<<<<<< HEAD
     refreshFrontend();
+=======
+    notifyChangesToFrontend();
+  }
+
+  @GET
+  @Path("getEdited")
+  @Produces(MediaType.APPLICATION_JSON)
+  public String getEdited(
+      @QueryParam("sessionid") String sessionID) {
+    return "{\"edited\":" + this.sessions.get(sessionID).edited + "}";
+  }
+
+  @POST
+  @Path("setEdited")
+  public void setEdited(
+      @FormParam("sessionid") String sessionID,
+      @FormParam("edited") boolean edited) {
+
+    this.sessions.get(sessionID).edited = edited;
+>>>>>>> master
   }
 
   @GET

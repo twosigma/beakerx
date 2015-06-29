@@ -23,7 +23,8 @@ module.exports = (function() {
 		  width: 420,
 		  height: 153,
 		  show: false,
-		  resizable: false
+		  resizable: false,
+		  auto-hide-menu-bar: false
 	};
 
 	function newWindow(url, type){

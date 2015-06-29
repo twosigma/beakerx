@@ -682,16 +682,26 @@
         if (!msgHeader) {
           msgHeader = "Oops...";
         }
-        btnText = btnText ? btnText : "Close";
-        btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
-        var template = "<div class='modal-header'>" +
-            "<h1>" + msgHeader + "</h1>" +
-            "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
-            '<div class="modal-footer">' +
-            "   <button class='btn " + btnClass +"' ng-click='close(\"OK\")'>" + btnText + "</button>" +
-            "</div>";
-        return this.showModalDialog(callback, template);
+        if (bkUtils.isElectron) {
+          var options = {
+            type: 'none',
+            buttons: ['OK'],
+            title: msgHeader,
+            message: msgBody
+          };
+          bkUtils.Electron.Dialog.showMessageBox(options, callback);
+        } else {
+          btnText = btnText ? btnText : "Close";
+          btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
+          var template = "<div class='modal-header'>" +
+              "<h1>" + msgHeader + "</h1>" +
+              "</div>" +
+              "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+              '<div class="modal-footer">' +
+              "   <button class='btn " + btnClass +"' ng-click='close(\"OK\")'>" + btnText + "</button>" +
+              "</div>";
+          return this.showModalDialog(callback, template);
+        }
       },
       show2ButtonModal: function(
           msgBody,
@@ -709,19 +719,36 @@
             cancelCB ? cancelCB() : null;
           }
         };
-        okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
-        cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
-        okBtnClass = okBtnClass ? _.isArray(okBtnClass) ? okBtnClass.join(' ') : okBtnClass : 'btn-default';
-        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
-        var template = "<div class='modal-header'>" +
-            "<h1>" + msgHeader + "</h1>" +
-            "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
-            '<div class="modal-footer">' +
-            "   <button class='Yes btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
-            "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
-            "</div>";
-        return this.showModalDialog(close, template);
+        if (bkUtils.isElectron) {
+          var options = {
+            type: 'none',
+            buttons: ['OK', 'Cancel'],
+            title: msgHeader,
+            message: msgBody
+          };
+          var callback = function(idx) {
+            if (idx == 0) {
+              okCB ? okCB() : null;
+            } else { // cancel
+              cancelCB ? cancelCB() : null;
+            }
+          }
+          bkUtils.Electron.Dialog.showMessageBox(options, callback);
+        } else {
+          okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
+          cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+          okBtnClass = okBtnClass ? _.isArray(okBtnClass) ? okBtnClass.join(' ') : okBtnClass : 'btn-default';
+          cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
+          var template = "<div class='modal-header'>" +
+              "<h1>" + msgHeader + "</h1>" +
+              "</div>" +
+              "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+              '<div class="modal-footer">' +
+              "   <button class='Yes btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
+              "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
+              "</div>";
+          return this.showModalDialog(close, template);
+        }
       },
       show3ButtonModal: function(
           msgBody, msgHeader,

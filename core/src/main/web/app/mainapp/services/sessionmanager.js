@@ -861,7 +861,6 @@
         _notebookModel.set(notebookModel);
         _sessionId = sessionId;
 
-        // this.setNotebookModelEdited(_edited);
         _needsBackup = _edited;
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
         connectcontrol(sessionId);
@@ -877,7 +876,8 @@
         _format = null;
         _notebookModel.reset();
         _sessionId = null;
-        this.setNotebookModelEdited(false);
+        _edited = false;
+        _needsBackup = false;
       },
       close: function() {
         var self = this;

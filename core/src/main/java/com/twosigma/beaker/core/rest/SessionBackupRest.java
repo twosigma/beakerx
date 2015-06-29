@@ -185,10 +185,8 @@ public class SessionBackupRest {
   public void setEdited(
       @FormParam("sessionid") String sessionID,
       @FormParam("edited") boolean edited) {
-    Session target = this.sessions.get(sessionID);
-    if (target != null) {
-      target.edited = edited;
-    }
+
+    this.sessions.get(sessionID).edited = edited;
   }
 
   @GET

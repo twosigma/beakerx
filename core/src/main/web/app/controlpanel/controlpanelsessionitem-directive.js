@@ -48,7 +48,7 @@
           bkUtils.httpGet("rest/session-backup/getEdited", {
             sessionid: session.id
           }).then(function(response) {
-            var edited = (response.data === "true") ? true : false;
+            var edited = response.data.edited;
             if (!edited) {
               // close session
               closeSession();

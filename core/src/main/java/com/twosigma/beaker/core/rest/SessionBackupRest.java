@@ -175,9 +175,10 @@ public class SessionBackupRest {
 
   @GET
   @Path("getEdited")
-  public boolean getEdited(
+  @Produces(MediaType.APPLICATION_JSON)
+  public String getEdited(
       @QueryParam("sessionid") String sessionID) {
-    return this.sessions.get(sessionID).edited;
+    return "{\"edited\":" + this.sessions.get(sessionID).edited + "}";
   }
 
   @POST

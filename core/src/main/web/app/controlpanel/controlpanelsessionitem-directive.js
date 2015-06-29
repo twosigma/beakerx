@@ -35,7 +35,6 @@
         $scope.close = function(session) {
           var format = session.format;
           var notebookModel = angular.fromJson(session.notebookModelJson);
-          var edited = session.edited;
           var closeSession = function() {
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
@@ -46,69 +45,74 @@
               $scope.reloadSessionsList();
             });
           };
-          if (!edited) {
-            // close session
-            closeSession();
-          } else {
-            // ask if user want to save first
-            bkHelper.show3ButtonModal(
-                "Do you want to save [" + $scope.getCaption(session) + "]?",
-                "Confirm close",
-                function() { // yes
-                  // save session
-                  var saveSession = function() {
-                    var notebookModelAsString = bkUtils.toPrettyJson(notebookModel);
-                    if (!_.isEmpty(session.notebookUri) && !session.readOnly) {
-                      var fileSaver = bkCoreManager.getFileSaver(session.uriType);
-                      return fileSaver.save(session.notebookUri, notebookModelAsString, true);
-                    } else {
-                      var deferred = bkUtils.newDeferred();
-                      bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
-                        if (!pathInfo.uri) {
-                          deferred.reject({
-                            cause: "Save cancelled"
-                          });
-                        } else {
-                          var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
-                          fileSaver.save(pathInfo.uri, notebookModelAsString).then(function () {
-                            bkRecentMenu.recordRecentDocument(angular.toJson({
-                              uri: pathInfo.uri,
-                              type: pathInfo.uriType,
-                              readOnly: false,
-                              format: _.isEmpty(format) ? "" : format
-                            }));
-                            deferred.resolve();
-                          }, function (error) {
+          bkUtils.httpGet("rest/session-backup/getEdited", {
+            sessionid: session.id
+          }).then(function(response) {
+            var edited = response.data.edited;
+            if (!edited) {
+              // close session
+              closeSession();
+            } else {
+              // ask if user want to save first
+              bkHelper.show3ButtonModal(
+                  "Do you want to save [" + $scope.getCaption(session) + "]?",
+                  "Confirm close",
+                  function() { // yes
+                    // save session
+                    var saveSession = function() {
+                      var notebookModelAsString = bkUtils.toPrettyJson(notebookModel);
+                      if (!_.isEmpty(session.notebookUri) && !session.readOnly) {
+                        var fileSaver = bkCoreManager.getFileSaver(session.uriType);
+                        return fileSaver.save(session.notebookUri, notebookModelAsString, true);
+                      } else {
+                        var deferred = bkUtils.newDeferred();
+                        bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
+                          if (!pathInfo.uri) {
                             deferred.reject({
-                              cause: "error saving to file",
-                              error: error
+                              cause: "Save cancelled"
                             });
-                          });
-                        }
-                      });
-                      return deferred.promise;
-                    }
-                  };
-                  var savingFailedHandler = function(info) {
-                    if (info.cause === "Save cancelled") {
-                      console.log("File saving cancelled");
-                    } else {
-                      bkHelper.show1ButtonModal(info.error, info.cause);
-                    }
-                  };
-                  saveSession().then(closeSession, savingFailedHandler);
-                },
-                function() { // no
-                  console.log("close without saving");
-                  closeSession();
-                },
-                function() { // cancel
-                  // no-op
-                },
-                "Save",
-                "Don't Save"
-            );
-          }
+                          } else {
+                            var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
+                            fileSaver.save(pathInfo.uri, notebookModelAsString).then(function () {
+                              bkRecentMenu.recordRecentDocument(angular.toJson({
+                                uri: pathInfo.uri,
+                                type: pathInfo.uriType,
+                                readOnly: false,
+                                format: _.isEmpty(format) ? "" : format
+                              }));
+                              deferred.resolve();
+                            }, function (error) {
+                              deferred.reject({
+                                cause: "error saving to file",
+                                error: error
+                              });
+                            });
+                          }
+                        });
+                        return deferred.promise;
+                      }
+                    };
+                    var savingFailedHandler = function(info) {
+                      if (info.cause === "Save cancelled") {
+                        console.log("File saving cancelled");
+                      } else {
+                        bkHelper.show1ButtonModal(info.error, info.cause);
+                      }
+                    };
+                    saveSession().then(closeSession, savingFailedHandler);
+                  },
+                  function() { // no
+                    console.log("close without saving");
+                    closeSession();
+                  },
+                  function() { // cancel
+                    // no-op
+                  },
+                  "Save",
+                  "Don't Save"
+              );
+            }
+          });
         };
 
         $scope.getCaption = function(session) {

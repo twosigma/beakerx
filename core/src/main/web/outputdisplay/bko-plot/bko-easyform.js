@@ -203,10 +203,10 @@
             template: "<div id='checkBoxGroupContainer' class='check-box-group-container'>" +
                 "<label id='checkBoxGroupLabel' class='check-box-group-label'/>" +
                 "<label class='check-box-group-item-label'" +
-                " data-ng-repeat='(value,enabled) in values track by $index' " +
+                " ng-repeat='value in values track by $index' " +
                 " ng-class='{vertical : !horizontal}'>" +
-                "<input type='checkbox' data-ng-model='values[value]' " +
-                " data-ng-disabled='!component.enabled'> {{value}}" +
+                " <input type='checkbox' ng-model='value.selected' name='selectedValues[]' " +
+                " ng-disabled='!component.enabled'/> {{value.name}}" +
                 "</label>" +
                 "</div>",
             link: function (scope, element, attrs) {
@@ -214,8 +214,10 @@
               scope.values = [];
               if (component.values && component.values.length > 0) {
                 component.values.forEach(function (value) {
-                  var obj = new Object();
-                  obj[value] = false;
+                  var obj = {
+                    name: value,
+                    selected: false
+                  };
                   scope.values.push(obj);
                 });
               }
@@ -236,15 +238,26 @@
 
               var valueChangeHandler = function (newValue, oldValue) {
                 if (newValue != undefined && newValue != null) {
+                  var stringValue = newValue
+                      .filter(function(x) { return x.selected; })
+                      .map(function(x) { return x.name; })
+                      .join(', ');
+                  if (stringValue) {
+                    stringValue = '[' + stringValue + ']';
+                  }
                   EasyFormService.setComponentValue(
-                      scope.formId, scope.evaluatorId, component, newValue);
+                      scope.formId, scope.evaluatorId, component, stringValue);
                 }
               };
-              scope.$watch(watchedExpression, valueChangeHandler);
+              scope.$watch(watchedExpression, valueChangeHandler, true);
 
               scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
                 args.components.forEach(function(component) {
-                  if (component.label === scope.componentId) {
+                  if (component.label === scope.componentId && component.value) {
+                    var selectedValues = component.value.substring(1, component.value.length - 1).split(', ');
+                    scope.values.forEach(function(value) {
+                      value.selected = selectedValues.indexOf(value.name) != -1
+                    });
                     scope[scope.ngModelAttr] = component.value;
                     scope.component.enabled = component.enabled;
                   }

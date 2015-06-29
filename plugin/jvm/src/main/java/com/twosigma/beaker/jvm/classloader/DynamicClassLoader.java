@@ -55,6 +55,7 @@ public class DynamicClassLoader {
       parent.addLoader(getProxy());
     }
     subLoader = new SubClassLoader(parent);
+    parent.doSort();
   }
 
   public void add(Object s) {

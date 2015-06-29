@@ -103,22 +103,24 @@
                 'empty': isEmpty()
                 }">
                 <div class="bkcell code-cell-area">
-                    <div class="code-cell-input"  ng-hide="isLocked()" ng-class="{'input-hidden': cellmodel.input.hidden}">
-                        <bk-code-cell-input-menu><!-- no acutal directive defined, only for styling -->
-<div class="dropdown bk-code-cell-input">
-  <div class="dropdown-toggle cell-evaluator-menu" data-toggle="dropdown" style="background: none;">
-    <bk-language-logo
-        name="{{"{{"}}getEvaluator().shortName{{"}}"}}"
-        bg-color="{{"{{"}}getEvaluator().bgColor{{"}}"}}"
-        fg-color="{{"{{"}}getEvaluator().fgColor{{"}}"}}"
-        border-color="{{"{{"}}getEvaluator().borderColor{{"}}"}}">
-    </bk-language-logo>
-    <b class="advanced-hide">{{"{{"}}cellmodel.evaluator{{"}}"}}</b>
-  </div>
-</div>
+                  <div class="code-cell-input"  ng-hide="isLocked()" ng-class="{'input-hidden': cellmodel.input.hidden}">
+		    <div class="code-cell-input-content">
+                      <bk-code-cell-input-menu><!-- no acutal directive defined, only for styling -->
+		      <div class="dropdown bk-code-cell-input">
+			<div class="dropdown-toggle cell-evaluator-menu" data-toggle="dropdown" style="background: none;">
+			  <bk-language-logo
+			      name="{{"{{"}}getEvaluator().shortName{{"}}"}}"
+			      bg-color="{{"{{"}}getEvaluator().bgColor{{"}}"}}"
+			      fg-color="{{"{{"}}getEvaluator().fgColor{{"}}"}}"
+			      border-color="{{"{{"}}getEvaluator().borderColor{{"}}"}}">
+			  </bk-language-logo>
+			  <b class="advanced-hide">{{"{{"}}cellmodel.evaluator{{"}}"}}</b>
+		        </div>
+		      </div>
                         </bk-code-cell-input-menu>
                         <textarea class="bkcelltextarea" ng-model="cellmodel.input.body"></textarea>
-                    </div>
+                      </div>
+		    </div>
                     <div ng-if ="hasOutput()" class="code-cell-output" ng-class="{
                       'no-output': isHiddenOutput(),
                       'input-hidden': cellmodel.input.hidden,

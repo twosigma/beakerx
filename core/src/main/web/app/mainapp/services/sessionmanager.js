@@ -861,7 +861,8 @@
         _notebookModel.set(notebookModel);
         _sessionId = sessionId;
 
-        this.setNotebookModelEdited(_edited);
+        // this.setNotebookModelEdited(_edited);
+        _needsBackup = _edited;
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
@@ -965,6 +966,10 @@
       setNotebookModelEdited: function(edited) {
         _needsBackup = edited;
         _edited = edited;
+        bkUtils.httpPost("rest/session-backup/setEdited", {
+          sessionid: _sessionId,
+          edited: edited
+        });
       },
       isNotebookModelEdited: function() {
         return _edited;

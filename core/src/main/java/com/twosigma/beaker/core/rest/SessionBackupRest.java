@@ -174,6 +174,24 @@ public class SessionBackupRest {
   }
 
   @GET
+  @Path("getEdited")
+  public boolean getEdited(
+      @QueryParam("sessionid") String sessionID) {
+    return this.sessions.get(sessionID).edited;
+  }
+
+  @POST
+  @Path("setEdited")
+  public void setEdited(
+      @FormParam("sessionid") String sessionID,
+      @FormParam("edited") boolean edited) {
+    Session target = this.sessions.get(sessionID);
+    if (target != null) {
+      target.edited = edited;
+    }
+  }
+
+  @GET
   @Path("getExistingSessions")
   public Map<String, Session> getExistingSessions() {
     return this.sessions;

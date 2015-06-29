@@ -44,7 +44,6 @@
             }
             return bkSession.close(session.id).then(function() {
              // Notify the main thread
-              console.log('closing!');
               if (bkUtils.isElectron) {
                 bkUtils.Electron.IPC.send('session-closed', session.id);
               }
@@ -54,8 +53,6 @@
           };
           if (!edited) {
             // close session
-            console.log('not edited');
-            console.trace();
             closeSession();
           } else {
             // ask if user want to save first

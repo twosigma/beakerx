@@ -355,7 +355,7 @@
 
               listComponent.attr('data-ng-model', scope.ngModelAttr);
 
-              if (component.multipleSelection && 'true' == component.multipleSelection) {
+              if (component.multipleSelection) {
                 listComponent.attr('multiple', 'true');
               }
 
@@ -377,8 +377,11 @@
 
               var valueChangeHandler = function (newValue, oldValue) {
                 if (newValue != undefined && newValue != null) {
-                  EasyFormService.setComponentValue(
-                      scope.formId, scope.evaluatorId, component, newValue);
+                  if (component.multipleSelection) {
+                    newValue = '[' + newValue.join(', ') + ']';
+                  }
+                  EasyFormService.setComponentValue(scope.formId, scope.evaluatorId, component,
+                      newValue);
                 }
               };
               scope.$watch(watchedExpression, valueChangeHandler);
@@ -386,7 +389,9 @@
               scope.$on(EasyFormConstants.Events.UPDATED, function (event, args) {
                 args.components.forEach(function(component) {
                   if (component.label === scope.componentId) {
-                    scope[scope.ngModelAttr] = component.value;
+                    if (component.value) {
+                      scope[scope.ngModelAttr] = component.value.substring(1, component.value.length - 1).split(', ');
+                    }
                     scope.component.enabled = component.enabled;
                   }
                 });

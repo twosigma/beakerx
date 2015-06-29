@@ -36,16 +36,17 @@
           var format = session.format;
           var notebookModel = angular.fromJson(session.notebookModelJson);
           var closeSession = function() {
+            // Notify the main thread
+            if (bkUtils.isElectron) {
+              bkUtils.Electron.IPC.sendSync('session-closed', session.id);
+            }
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+                // Outdated notebook model is used, consider getting most recent version from backend
                 bkEvaluatePluginManager.createEvaluatorThenExit(notebookModel.evaluators[i]);
               }
             }
             return bkSession.close(session.id).then(function() {
-             // Notify the main thread
-              if (bkUtils.isElectron) {
-                bkUtils.Electron.IPC.send('session-closed', session.id);
-              }
               $scope.reloadSessionsList();
             });
 
@@ -107,7 +108,6 @@
                     saveSession().then(closeSession, savingFailedHandler);
                   },
                   function() { // no
-                    console.log("close without saving");
                     closeSession();
                   },
                   function() { // cancel

@@ -10,7 +10,11 @@ module.exports = (function() {
 	});
 
 	ipc.on('session-closed', function(event, id) {
+		// Cannot use _windows instead of BrowserWindow until it is completely accurate.
+		// Right now, windows that are closed through non-beaker means remain in this map.
+		// There is also no handling of multiple windows working on the same session.
 		BrowserWindow.fromId(_sessions[id]).close();
+		event.returnValue = 'done';
 	})
 
 	var defaultOptions = {

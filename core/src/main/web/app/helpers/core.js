@@ -755,7 +755,6 @@
           yesCB, noCB, cancelCB,
           yesBtnTxt, noBtnTxt, cancelBtnTxt,
           yesBtnClass, noBtnClass, cancelBtnClass) {
-        console.log('in modal func');
         if (!msgHeader) {
           msgHeader = "Question...";
         }

@@ -20,11 +20,13 @@ module.exports = (function() {
 	};
 
 	var popupOptions = {
+			type: 'toolbar',
 		  width: 420,
 		  height: 153,
 		  show: false,
 		  resizable: false,
-		  auto-hide-menu-bar: false
+		  'auto-hide-menu-bar': true,
+		  'skip-taskbar': true
 	};
 
 	function newWindow(url, type){

@@ -92,7 +92,10 @@ var BeakerPageObject = function() {
   this.closeNotebook = function() {
     return this.fileMenu.click()
     .then(this.closeMenuItem.click)
-    .then(this.modalDialogNoButton.click);
+    .then(this.modalDialogNoButton.click)
+    .thenCatch(function(e) {
+      //if there has been no change do not fail here;
+    });
   }.bind(this);
 
   this.codeCell = function(index) {

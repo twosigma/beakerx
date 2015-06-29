@@ -338,7 +338,7 @@
           }
         });
 
-        Scrollin.track(element[0], {handler: function() {
+        Scrollin.track(element[0], function() {
           if (scope.cm === undefined) {
             var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
             $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
@@ -354,7 +354,7 @@
               return scope.cm.focus();
             }
           }
-        }});
+        });
 
         scope.bkNotebook.registerFocusable(scope.cellmodel.id, scope);
 

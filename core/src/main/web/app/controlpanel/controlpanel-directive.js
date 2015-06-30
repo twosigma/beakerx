@@ -150,7 +150,7 @@
               $scope.newEmptyNotebook();
             });
             return false;
-          } else if ((e.which === 123) && bkUtils.isElectron){
+          } else if ((e.which === 123) && bkUtils.isElectron) {
             bkUtils.Electron.toggleDevTools();
           }
         }

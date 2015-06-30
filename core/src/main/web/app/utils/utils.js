@@ -429,6 +429,18 @@
             }
           ]
         };
+        var editMenu = {
+          label: 'Edit',
+          submenu:[
+            { label: 'Undo', accelerator: 'Command+Z', selector: 'undo:' },
+            { label: 'Redo', accelerator: 'Command+Shift+Z', selector: 'redo:' },
+            { type: 'separator' },
+            { label: 'Cut', accelerator: 'Command+X', selector: 'cut:' },
+            { label: 'Copy', accelerator: 'Command+C', selector: 'copy:' },
+            { label: 'Paste', accelerator: 'Command+V', selector: 'paste:' },
+            { label: 'Select All', accelerator: 'Command+A', selector: 'selectAll:' }
+          ]
+        };
         var makeMenu = function(bkmenu){
           var menu = [];
           for (var i = 0; i < bkmenu.length; i++){
@@ -455,7 +467,8 @@
         };
 
         var template = makeMenu(Object.keys(menus).map(function(k) { return menus[k]; } ));
-        template.unshift(beakerMenu);
+        template.splice(1, 0, editMenu);
+        template.splice(0, 0, beakerMenu);
         var menu = bkUtils.Electron.Menu.buildFromTemplate(template);
         bkUtils.Electron.Menu.setApplicationMenu(menu);
       }

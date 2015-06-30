@@ -20,7 +20,7 @@ describe('notebook', function() {
 
   beakerPO = new BeakerPageObject();
 
-  beforeAll(function() {
+  beforeEach(function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular();
   });
@@ -28,47 +28,63 @@ describe('notebook', function() {
   it('can load', function() {
     beakerPO.newEmptyNotebook.click();
     expect(browser.getTitle()).toEqual('New Notebook');
+    beakerPO.closeNotebook();
   });
 
   it('can add a cell', function() {
+    beakerPO.newEmptyNotebook.click();
     beakerPO.insertCellButton.click();
     expect(beakerPO.evaluateButton.isDisplayed()).toBe(true);
+    beakerPO.closeNotebook();
   });
 
-  it('can set a cell language to Groovy', function(done) {
-    /* load iPython */
-    beakerPO.notebookMenu.click();
-    beakerPO.languageManagerMenuItem.click();
-    beakerPO.languageManagerButton('Groovy').click();
-    beakerPO.waitForPlugin('Groovy');
-    beakerPO.languageManagerCloseButton.click();
+  describe('interacting with a code cell', function() {
+    beforeEach(function() {
+      beakerPO.newEmptyNotebook.click();
+      beakerPO.insertCellButton.click();
+      // load Groovy
+      beakerPO.notebookMenu.click();
+      beakerPO.languageManagerMenuItem.click();
+      beakerPO.languageManagerButton('Groovy').click();
+      beakerPO.waitForPlugin('Groovy');
+      beakerPO.languageManagerCloseButton.click();
 
-    beakerPO.cellEvaluatorMenu.click();
-    beakerPO.cellEvaluatorMenuItem('Groovy').click();
-    expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual('Groovy');
-    done();
-  });
+      beakerPO.cellEvaluatorMenu.click();
+      beakerPO.cellEvaluatorMenuItem('Groovy').click();
+    });
 
-  it('can enter code into a cell and evaluate it', function(done) {
-    beakerPO.setCellInput('1+1');
-    beakerPO.evaluateButton.click();
-    beakerPO.waitForCellOutput();
-    expect(beakerPO.getCellOutput().getText()).toMatch('2');
-    done();
-  });
+    afterEach(function() {
+      beakerPO.closeNotebook();
+    });
 
-  it('can hide the input', function(done) {
-    var cell = beakerPO.codeCell(0);
+    it('can set a cell language to Groovy', function(done) {
+      expect(beakerPO.cellEvaluatorDisplay.getText()).toEqual('Groovy');
+      done();
+    });
 
-    cell.toggleInput().click();
+    it('can enter code into a cell and evaluate it', function(done) {
+      beakerPO.setCellInput('1+1');
+      beakerPO.evaluateButton.click();
+      beakerPO.waitForCellOutput();
+      expect(beakerPO.getCellOutput().getText()).toMatch('2');
+      done();
+    });
 
-    expect(cell.inputWrapper().isDisplayed()).toBe(true);
-    expect(cell.input().isDisplayed()).toBe(false);
-    expect(cell.miniCellStatus().isDisplayed()).toBe(true);
-    done();
+    it('can hide the input', function(done) {
+      var cell = beakerPO.codeCell(0);
+
+      cell.toggleInput().click();
+
+      expect(cell.inputWrapper().isDisplayed()).toBe(true);
+      expect(cell.input().isDisplayed()).toBe(false);
+      expect(cell.miniCellStatus().isDisplayed()).toBe(true);
+      done();
+    });
   });
 
   it('can close the notebook', function(done) {
+    beakerPO.newEmptyNotebook.click();
+
     beakerPO.closeNotebook()
     .then(done);
   });
@@ -92,7 +108,7 @@ describe('notebook', function() {
     beakerPO.newEmptyNotebook.click()
     .then(beakerPO.insertCellButton.click)
     .then(beakerPO.toggleAdvancedMode)
-    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 0}))
+    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 1}))
     .then(beakerPO.isLanguageCellMenuOpen)
     .then(function(isOpen) {
       expect(isOpen).toEqual(true);
@@ -106,7 +122,7 @@ describe('notebook', function() {
     beakerPO.newEmptyNotebook.click()
     .then(beakerPO.insertCellButton.click)
     .then(beakerPO.toggleAdvancedMode)
-    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 0}))
+    .then(beakerPO.toggleLanguageCellMenu.bind(this, {cellIndex: 1}))
     .then(element(by.css('body')).click)
     .then(beakerPO.isLanguageCellMenuOpen)
     .then(function(isOpen) {

@@ -147,11 +147,9 @@ task doRemove() {
       delete fileTree(dir: "src/main/web/app/temp")
       delete fileTree(dir: "src/main/web/app/dist")
       delete fileTree(dir: "src/main/web/app/vendor")
-      delete fileTree(dir: "src/main/web/vendor")
       delete "src/main/web/app/temp"
       delete "src/main/web/app/dist"
       delete "src/main/web/app/vendor"
-      delete "src/main/web/vendor"
       delete "src/main/web/plugin/init/addoutputdisplays.js"
   }
 }

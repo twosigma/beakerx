@@ -1,0 +1,14 @@
+{
+  "name": "rAF",
+  "_cacheHeaders": {
+    "ETag": "\"99393f8025871121fd22456e7baa1450\"",
+    "Content-Length": "1256",
+    "Content-Type": "text/plain",
+    "Content-Disposition": "inline"
+  },
+  "_release": "e-tag:99393f802",
+  "main": "index.js",
+  "_source": "https://gist.githubusercontent.com/paulirish/1579671/raw/3d42a3a76ed09890434a07be2212f376959e616f/rAF.js",
+  "_target": "*",
+  "_originalSource": "https://gist.githubusercontent.com/paulirish/1579671/raw/3d42a3a76ed09890434a07be2212f376959e616f/rAF.js"
+}

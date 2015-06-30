@@ -35,8 +35,10 @@ bk-markdown-editable .CodeMirror {
     border: none;
     resize: none;
     font-family: monospace;
-    padding-top: 19px;
-    padding-left: 29px;
+    padding: 19px 0 0 29px;
+    width: 100%;
+    min-height: 36px;
+    white-space: pre;
 }
 
 .mini-cell-stats {
@@ -186,6 +188,11 @@ bk-cell .section > .toggle-menu {
 }
 
 .advanced-mode {
+    .bkcelltextarea {
+        min-height: 18px;
+        padding: 0 0 0 26px;
+    }
+
     .cell-evaluator-menu {
       right: 0;
     }

@@ -14,7 +14,7 @@
 
 # to build: sudo docker build -t ubuntu/beaker . # consider "build --no-cache" to sync network deps
 # to run:   sudo docker run -p 8800:8800 -t ubuntu/beaker
-# results hosted at: https://registry.hub.docker.com/u/scottdraves/beaker/
+# results hosted at: https://registry.hub.docker.com/u/beakernotebook/beaker/
 
 FROM ubuntu:14.04
 

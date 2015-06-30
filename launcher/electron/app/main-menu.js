@@ -23,7 +23,7 @@ module.exports = (function() {
                     }
                 },
                 {
-                    label: 'Start local backend',
+                    label: 'Start new local backend',
                     click: function() {
                         eventEmitter.emit('new-backend');
                     }

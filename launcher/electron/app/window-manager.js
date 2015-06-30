@@ -15,7 +15,7 @@ module.exports = (function() {
 		// There is also no handling of multiple windows working on the same session.
 		BrowserWindow.fromId(_sessions[id]).close();
 		event.returnValue = 'done';
-	})
+	});
 
 	var defaultOptions = {
 		  width: 1500,

@@ -689,7 +689,7 @@
             title: msgHeader,
             message: msgBody
           };
-          bkUtils.Electron.Dialog.showMessageBox(options, callback);
+          return bkUtils.Electron.Dialog.showMessageBox(options, callback);
         } else {
           btnText = btnText ? btnText : "Close";
           btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
@@ -733,7 +733,7 @@
               cancelCB ? cancelCB() : null;
             }
           }
-          bkUtils.Electron.Dialog.showMessageBox(options, callback);
+          return bkUtils.Electron.Dialog.showMessageBox(options, callback);
         } else {
           okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
           cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
@@ -783,7 +783,7 @@
               cancelCB ? cancelCB() : null;
             }
           }
-          bkUtils.Electron.Dialog.showMessageBox(options, callback);
+          return bkUtils.Electron.Dialog.showMessageBox(options, callback);
         } else {
           yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
           noBtnTxt = noBtnTxt ? noBtnTxt : "No";

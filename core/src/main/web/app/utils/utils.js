@@ -420,6 +420,12 @@
               click: function() {
                 bkUtils.Electron.IPC.send('try-change-server');
               }
+            },
+            {
+              label: 'Start new local backend',
+              click: function() {
+                  bkUtils.Electron.IPC.send('new-backend');
+              }
             }
           ]
         };

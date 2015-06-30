@@ -24,7 +24,7 @@
       <div class="code-cell-input-content">
         <bk-code-cell-input-menu class="advanced-hide"></bk-code-cell-input-menu>
         <div ng-click="$event.stopPropagation()">
-          <textarea class="bkcelltextarea" ng-model='cellmodel.input.body'></textarea>
+          <div class="bkcelltextarea">{{cellmodel.input.body}}</div>
         </div>
         <a href="#"
            class="btn btn-default evaluate-script advanced-hide"

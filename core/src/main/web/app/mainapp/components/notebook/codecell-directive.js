@@ -337,9 +337,12 @@
             bkUtils.refreshRootScope();
           }
         });
-        
+
         Scrollin.track(element[0], {handler: function() {
           if (scope.cm === undefined) {
+            var template = '<textarea class="bkcelltextarea" ng-model="cellmodel.input.body">' + scope.cellmodel.input.body + '</textarea>';
+            $(element.find('.bkcelltextarea')[0]).replaceWith($(template));
+
             scope.cm = CodeMirror.fromTextArea(element.find('textarea')[0], codeMirrorOptions);
             scope.bkNotebook.registerCM(scope.cellmodel.id, scope.cm);
             scope.cm.on('change', changeHandler);
@@ -436,7 +439,9 @@
           Scrollin.untrack(element[0]);
           CodeMirror.off(window, 'resize', resizeHandler);
           CodeMirror.off('change', changeHandler);
-          scope.cm && scope.cm.off();
+          if (scope.cm) {
+            scope.cm.off();
+          }
           scope.bkNotebook.unregisterFocusable(scope.cellmodel.id);
           scope.bkNotebook.unregisterCM(scope.cellmodel.id);
           scope.bkNotebook = null;

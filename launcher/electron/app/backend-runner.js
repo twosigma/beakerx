@@ -15,6 +15,7 @@ module.exports = (function() {
 			var osName = os.type();
 			if (osName.startsWith('Windows')){
 			  process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jre');
+			  process.chdir(__dirname + '/../dist');
 				backend = spawn(path.resolve(__dirname + '/../dist/beaker.command.bat'), ['--open-browser', 'false']);
 			} else  if (osName.startsWith('Darwin')) {
 			  process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jre/Contents/Home');

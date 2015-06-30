@@ -1,0 +1,39 @@
+{
+  "scripts": {
+    "dev": "watchify index.js -t babelify --standalone Scrollin -o dist/index.js",
+    "compile": "browserify index.js -t babelify --standalone Scrollin -o dist/index.js"
+  },
+  "devDependencies": {
+    "babel": "^5.2.17",
+    "babelify": "^6.1.0",
+    "browserify": "^10.2.0",
+    "umd": "^3.0.1",
+    "watchify": "^3.2.1"
+  },
+  "name": "scrollin",
+  "description": "Do something great when an element enters the viewport.",
+  "version": "0.1.5",
+  "main": "dist/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samccone/scrollin.git"
+  },
+  "keywords": [
+    "scroll",
+    "scrolling",
+    "viewport",
+    "🐴"
+  ],
+  "author": "Sam Saccone",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/samccone/scrollin/issues"
+  },
+  "homepage": "https://github.com/samccone/scrollin",
+  "dependencies": {
+    "lodash.throttle": "^3.0.2"
+  }
+}

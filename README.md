@@ -18,6 +18,9 @@
 
 Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.
 
+Beaker is both a server that you can run in the cloud, an application that you can download and run, and
+a [Docker container](https://registry.hub.docker.com/u/beakernotebook/beaker/) that you can run anywhere.
+
 This page is for developers.  If you want to use or learn more about Beaker, see the [home page](http://beakernotebook.com).
 
 #Screenshots

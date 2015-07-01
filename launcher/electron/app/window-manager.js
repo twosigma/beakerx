@@ -9,7 +9,6 @@ module.exports = (function() {
 	var _sessionToWindow = {};
 
 	// Initialize cometd
-	console.log(backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
 	var client = new Faye.Client(backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
 	var subscription = client.subscribe('/sessionClosed', function(msg) {
 		var windowId = _sessionToWindow[msg.id];

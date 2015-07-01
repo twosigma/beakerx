@@ -117,6 +117,18 @@ public class SessionBackupRest {
     }
   }
 
+  private void refreshElectron(String sessionid) {
+    // Notify client of changes in session
+    ServerChannel sessionChangeChannel;
+    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionClosed")) != null)) {
+      Map<String, Object> data = new HashMap<String, Object>();
+      data.put("id", sessionid);
+      sessionChangeChannel.publish(this.localSession, data, null);
+    } else {
+      System.out.println("Warning: Caught NPE of unknown origin.");
+    }
+  }
+
   @POST
   @Path("backup/{session-id}")
   public void backup(
@@ -175,6 +187,7 @@ public class SessionBackupRest {
     this.sessions.remove(sessionID);
 
     refreshFrontend();
+    refreshElectron(sessionID);
   }
 
   @GET

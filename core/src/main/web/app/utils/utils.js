@@ -101,23 +101,11 @@
       },
       // Open tab/window functions that handle the electron case
       openWindow: function(path) {
-        if (bkHelper.isElectron) {
-          var thisWindow = bkUtils.Electron.thisWindow;
-          var width = 800;
-          var height = 800;
-          if (thisWindow !== undefined){
-            var bounds = thisWindow.getBounds();
-            width = bounds.width;
-            height = bounds.height;
-          }
-          var newWindow = new bkUtils.Electron.BrowserWindow({
-            width: width,
-            height: height
-          });
+        if (bkUtils.isElectron) {
           if (path[0] == '/'){
-            newWindow.loadUrl(bkUtils.getBaseUrl() + path);
+            bkUtils.Electron.IPC.send('new-window', bkUtils.getBaseUrl() + path);
           } else {
-            newWindow.loadUrl(path);
+            bkUtils.Electron.IPC.send('new-window', path);
           }
         } else {
           window.open(path);

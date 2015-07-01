@@ -541,7 +541,52 @@
             }
           };
 
+          function _closeNotebook() {
+            var self = this;
+            var closeSession = function() {
+              bkSessionManager.close().then(function() {
+                bkCoreManager.gotoControlPanel();
+              });
+            };
+            if (bkSessionManager.isNotebookModelEdited() === false) {
+              closeSession();
+            } else {
+              var notebookTitle = bkSessionManager.getNotebookTitle();
+              bkHelper.show3ButtonModal(
+                  "Do you want to save " + notebookTitle + "?",
+                  "Confirm close",
+                  function() {
+                    self.saveNotebook().then(closeSession);
+                  },
+                  function() {
+                    closeSession();
+                  },
+                  null, "Save", "Don't save"
+              );
+            }
+          };
+
+          function closeNotebook() {
+            if (bkEvaluateJobManager.isAnyInProgress() ) {
+              bkCoreManager.show2ButtonModal(
+                  "All running and pending cells will be cancelled.",
+                  "Warning!",
+                  function() {
+                    bkEvaluateJobManager.cancelAll().then(function() {
+                      self._closeNotebook();
+                    }
+                  ); });
+            } else
+              _closeNotebook();
+          };
+
           var evalCodeId = 0;
+
+          if (bkUtils.isElectron) {
+            bkUtils.Electron.IPC.on('close-window', function() {
+              closeNotebook();
+            });
+          }
 
           return {
             name: "bkNotebookApp",
@@ -636,45 +681,8 @@
               saveStart();
               return savePromptIfOverwrite(notebookUri, uriType).then(saveDone, saveFailed);
             },
-            closeNotebook: function() {
-              var self = this;
-              if (bkEvaluateJobManager.isAnyInProgress() ) {
-                bkCoreManager.show2ButtonModal(
-                    "All running and pending cells will be cancelled.",
-                    "Warning!",
-                    function() {
-                      bkEvaluateJobManager.cancelAll().then(function() {
-                        self._closeNotebook();
-                      }
-                    ); });
-              } else
-                self._closeNotebook();
-            },
-            _closeNotebook: function() {
-              var self = this;
-              var closeSession = function() {
-                bkSessionManager.close().then(function() {
-                  bkCoreManager.gotoControlPanel();
-                });
-              };
-              if (bkSessionManager.isNotebookModelEdited() === false) {
-                closeSession();
-              } else {
-                var notebookTitle = bkSessionManager.getNotebookTitle();
-                bkHelper.show3ButtonModal(
-                    "Do you want to save " + notebookTitle + "?",
-                    "Confirm close",
-                    function() {
-                      self.saveNotebook().then(closeSession);
-                    },
-                    function() {
-                      console.log("close without saving");
-                      closeSession();
-                    },
-                    null, "Save", "Don't save"
-                );
-              }
-            },
+            closeNotebook: closeNotebook,
+            _closeNotebook: _closeNotebook,
             collapseAllSections: function() {
               _.each(this.getNotebookModel().cells, function(cell) {
                 if (cell.type == "section") {

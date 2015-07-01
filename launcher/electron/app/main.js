@@ -22,10 +22,9 @@ var crashReporter = require('crash-reporter');
 var events = require('events');
 var backendRunner = require('./backend-runner.js');
 var mainMenu = require('./main-menu.js');
-var windowManager = require('./window-manager.js');
+var windowManager;
 
 var appReady = false;
-var backend;
 var openFile;
 var mainMenu;
 
@@ -47,7 +46,7 @@ app.on('quit', function() {
 app.on('open-file', function(event, path) {
   event.preventDefault();
   if (appReady){
-    windowManager.newWindow(backend.url + '/beaker/#/open?uri=' + path)
+    windowManager.newWindow(backend.getUrl() + '/beaker/#/open?uri=' + path)
   } else {
     openFile = path;
   }
@@ -88,34 +87,38 @@ mainMenu.on('new-backend', function() {
 });
 
 mainMenu.on('new-empty-notebook', function() {
-  windowManager.newWindow(backend.url + 'beaker/#/session/empty');
+  windowManager.newWindow(backendRunner.getUrl() + 'beaker/#/session/empty');
 });
 
 mainMenu.on('new-default-notebook', function() {
-  windowManager.newWindow(backend.url + 'beaker/#/session/new');
+  windowManager.newWindow(backendRunner.getUrl() + 'beaker/#/session/new');
+});
+
+ipc.on('new-window', function(e, url) {
+  windowManager.newWindow(url);
 });
 
 function switchToBackend(address) {
-  if (address != backend.url) {
+  if (address != backendRunner.getUrl()) {
     killBackend();
   }
   // Open new control panel there
   console.log('Switching to ' + address);
   windowManager.newWindow(address);
-  backend.url = address;
-  backend.local = false;
+  backendRunner.setUrl(address);
+  backendRunner.setLocal(false);
 }
 
-function connectToBackend(newBackend) {
-  backend = newBackend;
+function connectToBackend() {
+  windowManager = require('./window-manager.js');
   // Have to wait until backend is fully ready
-  spinUntilReady(newBackend.hash + '/beaker/rest/util/ready', function() {
+  spinUntilReady(backendRunner.getHash() + '/beaker/rest/util/ready', function() {
     // Open file if launched with file
     if (openFile !== undefined) {
-      windowManager.newWindow(backend.url + '/beaker/#/open?uri=' + openFile);
+      windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + openFile);
       openFile = null;
     } else {
-      windowManager.newWindow(backend.url);
+      windowManager.newWindow(backendRunner.getUrl());
     }
     appReady = true;
   });
@@ -123,10 +126,8 @@ function connectToBackend(newBackend) {
 
 function killBackend() {
   windowManager.closeAll();
-  console.log('Killing backend at ' + backend.url);
-  if (backend.local)
-    backend.kill('SIGTERM');
-  backend = {};
+  console.log('Killing backend at ' + backendRunner.getUrl());
+  backendRunner.kill();
 }
 
 function spinUntilReady(url, done) {
@@ -148,7 +149,7 @@ function spinUntilReady(url, done) {
         }
       }
     }
-    http.get(backend.url + url, callback);
+    http.get(backendRunner.getUrl() + url, callback);
   }
   spin();
 }

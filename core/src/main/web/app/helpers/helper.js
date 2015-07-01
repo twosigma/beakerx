@@ -63,6 +63,9 @@
       newSession: function(empty) {
         return bkCoreManager.newSession(empty);
       },
+      getBaseUrl: function() {
+        return bkUtils.getBaseUrl();
+      },
       openWindow: function(path) {
         bkUtils.openWindow(path);
       },

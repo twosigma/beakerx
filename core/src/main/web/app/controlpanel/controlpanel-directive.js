@@ -67,6 +67,11 @@
           window.addEventListener('focus', function() {
             bkUtils.Electron.updateMenus(bkMenuPluginManager.getMenus());
           });
+
+          bkUtils.Electron.IPC.on('close-window', function() {
+            bkUtils.Electron.thisWindow.destroy();
+          });
+
         }
 
         // actions for UI

@@ -1,19 +1,33 @@
 module.exports = (function() {
 	var BrowserWindow = require('browser-window');
+	var backendRunner = require('./backend-runner.js');
 	var ipc = require('ipc');
+	var Faye = require('faye');
 
 	var _windows = {};
-	var _sessions = {};
+	var _windowToSession = {};
+	var _sessionToWindow = {};
 
-	ipc.on('window-session', function(event, msg) {
-		_sessions[msg.sessionId] = msg.windowId;
+	// Initialize cometd
+	console.log(backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
+	var client = new Faye.Client(backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
+	var subscription = client.subscribe('/sessionClosed', function(msg) {
+		var windowId = _sessionToWindow[msg.id];
+		// Still have to clear map!
+		BrowserWindow.fromId(windowId).destroy();
 	});
 
-	ipc.on('session-closed', function(event, id) {
+	ipc.on('window-session', function(event, msg) {
+		_sessionToWindow[msg.sessionId] = msg.windowId;
+		_windowToSession[msg.windowId] = msg.sessionId;
+	});
+
+	ipc.on('session-closed', function(event, sessionId) {
 		// Cannot use _windows instead of BrowserWindow until it is completely accurate.
 		// Right now, windows that are closed through non-beaker means remain in this map.
 		// There is also no handling of multiple windows working on the same session.
-		BrowserWindow.fromId(_sessions[id]).close();
+		var windowId = _sessionToWindow[sessionId];
+		BrowserWindow.fromId(windowId).close();
 		event.returnValue = 'done';
 	});
 
@@ -53,8 +67,20 @@ module.exports = (function() {
 	    delete _windows[window.id];
 	  }
 
-	  window.once('closed', function () {
-	    window.unref()
+	  if (type != 'popup'){
+	  	// Let smarter windows handle their own close
+		  window.on('close', function(e) {
+		  	// Start close sequence
+		  	window.webContents.send('close-window');
+		  	e.preventDefault();
+		  });
+		}
+
+	  window.on('closed', function (e){
+	  	var sessionId = _windowToSession[window.id];
+			_sessionToWindow[sessionId] = null,
+			_windowToSession[window.id] = null
+	  	window.unref();
 	  });
 
 	  if (devTools){
@@ -68,8 +94,9 @@ module.exports = (function() {
 	}
 
 	function closeAll() {
-		for(var i in _windows) {
-			_windows[i].close();
+		var windows = BrowserWindow.getAllWindows();
+		for (var i = 0; i < windows.length; ++i) {
+			windows[i].close();
 		}
 	}
 

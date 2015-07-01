@@ -187,7 +187,7 @@ function getFilePathArrayFromList(basePath, listPath) {
   return fs.readFileSync(basePath + listPath)
   .toString().split('\n')
   .filter(function(n) {
-    return n !== undefined && n.trim() !== ''
+    return n !== undefined && n.trim() !== '';
   });
 }
 

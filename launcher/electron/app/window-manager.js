@@ -54,7 +54,7 @@ module.exports = (function() {
 				options = popupOptions;
 				break;
 			default:
-				devTools = true;
+				devTools = false;
 				options = defaultOptions;
 				break;
 		}

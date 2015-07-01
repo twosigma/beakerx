@@ -46,6 +46,10 @@ task cleanDist(type: Exec) {
 	commandLine 'rm', '-rf', 'dist'
 }
 
+task makeMacInstaller(type: Exec, dependsOn: 'makeMacElectron') {
+	commandLine './makeMacInstaller'
+}
+
 task makeMacElectron(dependsOn: ['clean', 'makeDist2', 'mCopyElectron', 'mCopyBeakerApp', 'mCopyDist', 'mCopyPList', 'mCopyIcons', 'mCopyJRE', 'mCopyTools']) {
 	println "Starting Electron build"
 }

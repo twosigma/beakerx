@@ -114,13 +114,13 @@
               .filter(function(cell) {
                 return cell.type === 'code';
               })
-              .map(function (cell) {
+              .map(function(cell) {
                 return cell.evaluator;
               })
               .unique().value();
           var evaluators = bkSessionManager.getRawNotebookModel().evaluators
-              .filter(function (evaluator) {
-                return _.any(usedEvaluatorsNames, function (ev) {
+              .filter(function(evaluator) {
+                return _.any(usedEvaluatorsNames, function(ev) {
                   return evaluator.name === ev;
                 });
               });

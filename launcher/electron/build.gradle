@@ -51,7 +51,7 @@ task makeMacElectron(dependsOn: ['clean', 'makeDist2', 'mCopyElectron', 'mCopyBe
 }
 
 task mUnzipElectron(type: Exec) {
-	commandLine 'unzip', '-uo', '-d', 'electron-v0.28.1-darwin-x64', 'electron-v0.28.1-darwin-x64.zip'
+	commandLine 'unzip', '-uo', 'electron-v0.28.1-darwin-x64.zip'
 }
 
 task mCopyElectron(type: Exec, dependsOn: ['mUnzipElectron']) {

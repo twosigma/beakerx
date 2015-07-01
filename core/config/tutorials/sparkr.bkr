@@ -1,0 +1,243 @@
+{
+    "beaker": "2",
+    "evaluators": [
+        {
+            "name": "Html",
+            "plugin": "Html",
+            "view": {
+                "cm": {
+                    "mode": "htmlmixed"
+                }
+            }
+        },
+        {
+            "name": "Latex",
+            "plugin": "Latex",
+            "view": {
+                "cm": {
+                    "mode": "stex"
+                }
+            }
+        },
+        {
+            "name": "JavaScript",
+            "plugin": "JavaScript",
+            "jsSetting2": "",
+            "jsSetting1": "",
+            "view": {
+                "cm": {
+                    "mode": "javascript",
+                    "background": "#FFE0F0"
+                }
+            }
+        },
+        {
+            "name": "R",
+            "plugin": "R",
+            "view": {
+                "cm": {
+                    "mode": "r"
+                }
+            }
+        }
+    ],
+    "cells": [
+        {
+            "id": "sectionN1BYS5",
+            "type": "section",
+            "title": "SparkR example",
+            "level": 1,
+            "evaluatorReader": false,
+            "collapsed": false
+        },
+        {
+            "id": "markdownpixCiu",
+            "type": "markdown",
+            "body": [
+                "As of v1.4 Spark supports the R language with the [SparkR](https://amplab-extras.github.io/SparkR-pkg/) library, including data frames, though the API is evolving.  "
+            ],
+            "evaluatorReader": false
+        },
+        {
+            "id": "codeK9oakp",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# this cell downloads and installs SparkR from github",
+                    "library(devtools)",
+                    "install_github(\"amplab-extras/SparkR-pkg\", subdir=\"pkg\")",
+                    "library(SparkR)",
+                    "# voluminous output hidden"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "[warn] Merging 'org/apache/commons/beanutils/ConvertingWrapDynaBean.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/BigIntegerLocaleConverter.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/basic/AccessibleInstantiator.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/LocaleConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/collections/Buffer.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/FloatConverter.class' with strategy 'first'\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "[warn] Merging 'org/apache/commons/beanutils/locale/converters/DoubleLocaleConverter.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/basic/ObjectStreamClassInstantiator.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/ObjectInstantiator.class' with strategy 'first'\n[warn] Merging 'META-INF/ECLIPSEF.RSA' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/IntegerConverter.class' with strategy 'first'\n[warn] Merging 'about_files/NOTICE.txt' with strategy 'first'\n[warn] Merging 'org/objenesis/Objenesis.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/sun/SunReflectionFactoryInstantiator.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/IntegerArrayConverter.class' with strategy 'first'\n[warn] Merging 'META-INF/mailcap' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/SqlDateLocaleConverter.class' with strategy 'first'\n[warn] Merging 'plugin.properties' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/NullInstantiator.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/DynaClass.class' with strategy 'first'\n[warn] Merging 'META-INF/NOTICE.txt' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/minlog/Log.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/MethodUtils.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/IntegerLocaleConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/SqlTimeLocaleConverter.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/gcj/GCJInstantiatorBase.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/ShortConverter.class' with strategy 'first'\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "[warn] Merging 'org/apache/commons/beanutils/locale/LocaleBeanUtilsBean$Descriptor.class' with strategy 'first'\n[warn] Merging 'org/objenesis/strategy/SerializingInstantiatorStrategy.class' with strategy 'first'\n[warn] Merging 'org/objenesis/strategy/StdInstantiatorStrategy.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/Converter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/DynaProperty.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/sun/Sun13SerializationInstantiator.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/basic/ObjectInputStreamInstantiator$MockStream.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/ConstructorUtils.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/AccessClassLoader.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/ClassConverter.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/Opcodes.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/BeanAccessLanguageException.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/gcj/GCJInstantiatorBase$DummyStream.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/CharacterArrayConverter.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/jrockit/JRockitLegacyInstantiator.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/LocaleConvertUtils.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/MappedPropertyDescriptor.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/gcj/GCJSerializationInstantiator.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/perc/PercSerializationInstantiator.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/ConvertUtils.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/BeanUtils.class' with strategy 'first'\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/Frame.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/JDBCDynaClass.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/FileConverter.class' with strategy 'first'\n[warn] Merging 'META-INF/NOTICE' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/basic/ObjectInputStreamInstantiator.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/DynaBean.class' with strategy 'first'\n[warn] Merging 'META-INF/MANIFEST.MF' with strategy 'discard'\n[warn] Merging 'org/apache/commons/beanutils/LazyDynaMap.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/FieldWriter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/BigDecimalLocaleConverter.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/Type.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/StringLocaleConverter.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/Item.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/AnnotationWriter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/DateLocaleConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/logging/impl/SimpleLog.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/MutableDynaClass.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/Edge.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/BigDecimalConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/StringConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/ByteLocaleConverter.class' with strategy 'first'\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "[warn] Merging 'org/apache/commons/beanutils/RowSetDynaClass.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/SqlTimestampLocaleConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/BigIntegerConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/collections/FastHashMap$KeySet.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/LocaleBeanUtilsBean$1.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/MethodWriter.class' with strategy 'first'\n[warn] Merging 'org/objenesis/ObjenesisHelper.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/Handler.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/Handle.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/perc/PercInstantiator.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/WrapDynaClass.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/sun/Sun13InstantiatorBase.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/NestedNullException.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/collections/FastHashMap$CollectionView$CollectionViewIterator.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/SqlTimestampConverter.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/FieldAccess.class' with strategy 'first'\n[warn] Merging 'META-INF/DEPENDENCIES' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/ByteArrayConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/StringArrayConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/DoubleConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/MethodUtils$MethodDescriptor.class' with strategy 'first'\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "[warn] Merging 'org/apache/commons/collections/FastHashMap.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/AbstractArrayConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/WrapDynaBean.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/DoubleArrayConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/ShortLocaleConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/ShortArrayConverter.class' with strategy 'first'\n[warn] Merging 'org/objenesis/ObjenesisBase.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/BooleanConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/ContextClassLoaderLocal.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/ConversionException.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/Attribute.class' with strategy 'first'\n[warn] Merging 'log4j.properties' with strategy 'first'\n[warn] Merging 'META-INF/ECLIPSEF.SF' with strategy 'discard'\n[warn] Merging 'org/apache/commons/beanutils/converters/LongConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/CharacterConverter.class' with strategy 'first'\n[warn] Merging 'org/objenesis/ObjenesisStd.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/SqlDateConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/BasicDynaClass.class' with strategy 'first'\n[warn] Merging 'META-INF/eclipse.inf' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/LocaleBeanUtilsBean.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/ResultSetDynaClass.class' with strategy 'first'\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "[warn] Merging 'com/esotericsoftware/reflectasm/ConstructorAccess.class' with strategy 'first'\n[warn] Merging 'org/objenesis/strategy/InstantiatorStrategy.class' with strategy 'first'\n[warn] Merging 'META-INF/INDEX.LIST' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/MethodAccess.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/BeanUtilsBean$1.class' with strategy 'first'\n[warn] Merging 'reference.conf' with strategy 'concat'\n[warn] Merging 'org/objenesis/instantiator/sun/Sun13Instantiator.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/SerializationInstantiatorHelper.class' with strategy 'first'\n[warn] Merging 'about.html' with strategy 'first'\n[warn] Merging 'org/objenesis/strategy/BaseInstantiatorStrategy.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/PropertyUtils.class' with strategy 'first'\n[warn] Merging 'META-INF/LICENSE.txt' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/BooleanArrayConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/BeanUtilsBean.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/collections/FastHashMap$Values.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/logging/LogFactory.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/SqlTimeConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/logging/LogConfigurationException.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/LocaleBeanUtils$Descriptor.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/LazyDynaBean.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/ConvertUtilsBean.class' with strategy 'first'\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/ClassWriter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/URLConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/FloatLocaleConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/LongArrayConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/collections/ArrayStack.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/ByteVector.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/BasicDynaBean.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/collections/FastHashMap$CollectionView.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/LocaleConvertUtilsBean.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/LongLocaleConverter.class' with strategy 'first'\n[warn] Merging 'rootdoc.txt' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/converters/ByteConverter.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/basic/ConstructorInstantiator.class' with strategy 'first'\n[warn] Merging 'org/objenesis/instantiator/jrockit/JRockit131Instantiator.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/converters/DecimalLocaleConverter.class' with strategy 'first'\n[warn] Merging 'META-INF/LICENSE' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/LazyDynaClass.class' with strategy 'first'\n[warn] Merging 'com/esotericsoftware/reflectasm/shaded/org/objectweb/asm/AnnotationVisitor.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/logging/impl/NoOpLog.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/logging/Log.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/collections/BufferUnderflowException.class' with strategy 'first'\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "[warn] Merging 'org/objenesis/instantiator/basic/NewInstanceInstantiator.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/logging/impl/SimpleLog$1.class' with strategy 'first'\n[warn] Merging 'org/objenesis/ObjenesisException.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/beanutils/locale/BaseLocaleConverter.class' with strategy 'first'\n[warn] Merging 'org/apache/commons/collections/FastHashMap$1.class' with strategy 'first'\n[warn] Strategy 'concat' was applied to a file\n[warn] Strategy 'discard' was applied to 2 files\n[warn] Strategy 'first' was applied to 170 files\n[info] Checking every *.class/*.jar file's SHA-1.\n[info] SHA-1: c0a919b9405ec3f8c794c195bc1484dd110aec61\n[info] Packaging /private/var/folders/0b/3p8qhrbs1jjgkprnj_57gn2m0000gn/T/RtmpVxm0KF/devtools12a15473fdfde/SparkR-pkg-master/pkg/src/target/scala-2.10/sparkr-assembly-0.1.jar ...\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "[info] Done packaging.\n[success] Total time: 37 s, completed Jun 25, 2015 4:15:33 PM\ncp -f target/scala-2.10/sparkr-assembly-0.1.jar ../inst/\nR CMD SHLIB -o SparkR.so string_hash_code.c\nclang -I/Library/Frameworks/R.framework/Resources/include -DNDEBUG  -I/usr/local/include -I/usr/local/include/freetype2 -I/opt/X11/include    -fPIC  -Wall -mtune=core2 -g -O2  -c string_hash_code.c -o string_hash_code.o\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "clang -dynamiclib -Wl,-headerpad_max_install_names -undefined dynamic_lookup -single_module -multiply_defined suppress -L/usr/local/lib -o SparkR.so string_hash_code.o -F/Library/Frameworks/R.framework/.. -framework R -Wl,-framework -Wl,Cor\neFoundation\n"
+                        },
+                        {
+                            "type": "err",
+                            "value": "installing to /Library/Frameworks/R.framework/Versions/3.1/Resources/library/SparkR/libs\n** R\n** inst\n** tests\n** preparing package for lazy loading\n"
+                        },
+                        {
+                            "type": "err",
+                            "value": "Creating a generic function for 'lapply' from package 'base' in package 'SparkR'\nCreating a generic function for 'Filter' from package 'base' in package 'SparkR'\n** help\n"
+                        },
+                        {
+                            "type": "err",
+                            "value": "*** installing help indices\n** building package indices\n** testing if installed package can be loaded\n"
+                        },
+                        {
+                            "type": "err",
+                            "value": "* DONE (SparkR)\n"
+                        },
+                        {
+                            "type": "err",
+                            "value": "[SparkR] Initializing with classpath /Library/Frameworks/R.framework/Versions/3.1/Resources/library/SparkR/sparkr-assembly-0.1.jar\n"
+                        }
+                    ],
+                    "payload": ""
+                },
+                "selectedType": "Results",
+                "pluginName": "R",
+                "shellId": "bda5d926-5514-4847-ad0e-526d5823a1d8",
+                "elapsedTime": 62542,
+                "dataresult": [
+                    "SparkR",
+                    "devtools",
+                    "beaker",
+                    "RJSONIO",
+                    "RCurl",
+                    "bitops",
+                    "methods",
+                    "Rserve",
+                    "stats",
+                    "graphics",
+                    "grDevices",
+                    "utils",
+                    "datasets",
+                    "base"
+                ],
+                "hidden": true
+            },
+            "evaluatorReader": true,
+            "lineCount": 5
+        },
+        {
+            "id": "code7OZg8C",
+            "type": "code",
+            "evaluator": "R",
+            "input": {
+                "body": [
+                    "# this cell computes Pi using a local cluster",
+                    "sc <- sparkR.init(\"local[2]\", \"PiR\")",
+                    "",
+                    "slices <- 2",
+                    "",
+                    "n <- 100000 * slices",
+                    "",
+                    "piFunc <- function(elem) {",
+                    "  rands <- runif(n = 2, min = -1, max = 1)",
+                    "  val <- ifelse((rands[1]^2 + rands[2]^2) < 1, 1.0, 0.0)",
+                    "  val",
+                    "}",
+                    "",
+                    "",
+                    "piFuncVec <- function(elems) {",
+                    "  message(length(elems))",
+                    "  rands1 <- runif(n = length(elems), min = -1, max = 1)",
+                    "  rands2 <- runif(n = length(elems), min = -1, max = 1)",
+                    "  val <- ifelse((rands1^2 + rands2^2) < 1, 1.0, 0.0)",
+                    "  sum(val)",
+                    "}",
+                    "",
+                    "rdd <- parallelize(sc, 1:n, slices)",
+                    "count <- reduce(lapplyPartition(rdd, piFuncVec), sum)",
+                    "cat(\"Pi is roughly\", 4.0 * count / n, \"\\n\")",
+                    "cat(\"Num elements in RDD \", count(rdd), \"\\n\")"
+                ]
+            },
+            "output": {
+                "state": {},
+                "result": {
+                    "type": "Results",
+                    "outputdata": [
+                        {
+                            "type": "out",
+                            "value": "Launching java with command  java   -Xmx512m -cp '/Library/Frameworks/R.framework/Versions/3.1/Resources/library/SparkR/sparkr-assembly-0.1.jar:' edu.berkeley.cs.amplab.sparkr.SparkRBackend /var/folders/0b/3p8qhrbs1jjgkprnj_57gn2m0000gn/T//\nRtmpVxm0KF/backend_port12a154d16109d \n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "15/06/25 16:15:42 INFO Slf4jLogger: Slf4jLogger started\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "15/06/25 16:15:43 WARN TaskSetManager: Stage 0 contains a task of very large size (391 KB). The maximum recommended task size is 100 KB.\n"
+                        },
+                        {
+                            "type": "err",
+                            "value": "100000\n100000\n"
+                        },
+                        {
+                            "type": "out",
+                            "value": "15/06/25 16:15:44 INFO RRDD: Times: boot = 0.364 s, init = 0.009 s, broadcast = 0.000 s, read-input = 0.002 s, compute = 0.110 s, write-output = 0.001 s, total = 0.486 s\n15/06/25 16:15:44 INFO RRDD: Times: boot = 0.364 s, init = 0.009 s, broadcast = 0.000 s, read-input = 0.002 s, compute = 0.110 s, write-output = 0.001 s, total = 0.486 s\nPi is roughly 3.14172 \n15/06/25 16:15:44 WARN TaskSetManager: Stage 1 contains a task of very large size (391 KB). The maximum recommended task size is 100 KB.\n15/06/25 16:15:44 INFO RRDD: Times: boot = 0.010 s, init = 0.006 s, broadcast = 0.001 s, read-input = 0.002 s, compute = 0.000 s, write-output = 0.000 s, total = 0.019 s\n15/06/25 16:15:44 INFO RRDD: Times: boot = 0.011 s, init = 0.006 s, broadcast = 0.001 s, read-input = 0.001 s, compute = 0.000 s, write-output = 0.001 s, total = 0.020 s\nNum elements in RDD  200000 \n"
+                        }
+                    ],
+                    "payload": ""
+                },
+                "selectedType": "Results",
+                "pluginName": "R",
+                "shellId": "bda5d926-5514-4847-ad0e-526d5823a1d8",
+                "elapsedTime": 3338,
+                "dataresult": "ERROR: invalid object type NULL"
+            },
+            "evaluatorReader": true,
+            "lineCount": 26
+        }
+    ]
+}

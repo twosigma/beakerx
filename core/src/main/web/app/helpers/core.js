@@ -525,10 +525,15 @@
           var cursor = cm.getCursor();
           var lineLen = cm.getLine(cursor.line).length;
           var rightLine = cm.getRange(cursor, {line: cursor.line, ch: lineLen});
-          if (rightLine.match(/^\s*$/)) {
-            showAutoComplete(cm);
-          } else {
+          var leftLine = cm.getRange({line: cursor.line, ch: 0}, cursor);
+          if (leftLine.match(/^\s*$/)) {
             cm.execCommand("indentMore");
+          } else {
+            if (rightLine.match(/^\s*$/)) {
+              showAutoComplete(cm);
+            } else {
+              cm.execCommand("indentMore");
+            }
           }
         }
 

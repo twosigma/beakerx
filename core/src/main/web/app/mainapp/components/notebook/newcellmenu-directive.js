@@ -23,7 +23,7 @@
     var cellOps = bkSessionManager.getNotebookCellOp();
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/newcellmenu"](),
+      template: JST['mainapp/components/notebook/newcellmenu'](),
       scope: {
         config: '=',
         isLarge: '=',

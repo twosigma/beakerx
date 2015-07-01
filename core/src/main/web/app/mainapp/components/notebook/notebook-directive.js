@@ -259,6 +259,15 @@
         $scope.$watch('getShareMenuPlugin()', function() {
           shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
         });
+
+        $scope.$watch(function() {
+          return document.body.clientHeight;
+        }, function(v, prev) {
+          if (v !== prev) {
+            $scope.$evalAsync(Scrollin.checkForVisibleElements);
+          }
+        });
+
         $scope.isInitializationCell = function () {
           return bkSessionManager.isRootCellInitialization();
         };

@@ -13,15 +13,16 @@
 
 ### Use
 ```js
-Scrollin.track(document.querySelector('#hi'), {handler: () => alert('hi!')})
+Scrollin.track(document.querySelector('#hi'), () => alert('hi!'))
 ```
 
 ## API
 
-* `Scrollin.track(document.querySelector('#hi'), {handler: () => alert('hi!')})`
+* `Scrollin.track(document.querySelector('#hi'), () => alert('hi!'))`
 * `Scrollin.untrackAll()`
 * `Scrollin.untrack(document.querySelector('#hi'))`
 * `Scrollin.checkForVisibleElements()`
+* `Scrollin.getTracking()`
 
 ### Dev
 
@@ -39,3 +40,5 @@ Scrollin.track(document.querySelector('#hi'), {handler: () => alert('hi!')})
 * You may need to polyfill `Array.prototype.some`
 
 📜
+
+[![Build Status](https://travis-ci.org/samccone/scrollin.svg)](https://travis-ci.org/samccone/scrollin)

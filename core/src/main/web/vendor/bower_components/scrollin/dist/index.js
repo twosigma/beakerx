@@ -477,52 +477,57 @@ var _onScroll = throttle(function () {
   return window.requestAnimationFrame(checkForVisibleElements);
 }, 100, { leading: false });
 
+function getTracking() {
+  return tracking;
+}
+
 function isVisible(elm) {
   var rect = elm.getBoundingClientRect();
 
   return rect.bottom > 0 && rect.right > 0 && rect.left < (window.innerWidth || document.documentElement.clientWidth) && rect.top < (window.innerHeight || document.documentElement.clientHeight);
 }
 
-function _handleVisible(elm, options) {
+function _handleVisible(elm, fn, options) {
   untrack(elm);
-
-  if (options.handler !== void 0) {
-    options.handler(elm);
-  }
+  fn(elm);
 }
 
-function _trackNewElement(elm, options) {
+function _trackNewElement(elm, fn, options) {
   if (isVisible(elm)) {
-    return _handleVisible(elm, options);
+    return _handleVisible(elm, fn, options);
   }
-
-  tracking.push({ elm: elm, options: options });
+  tracking.push({ elm: elm, fn: fn, options: options });
 }
 
 function checkForVisibleElements() {
-  tracking.forEach(function (v) {
+  tracking.slice(0).forEach(function (v) {
     if (isVisible(v.elm)) {
-      _handleVisible(v.elm, v.options);
+      _handleVisible(v.elm, v.fn, v.options);
     }
   });
 
   if (tracking.length === 0) {
-    window.removeEventListener('scroll', _onScroll);
+    untrackAll();
   }
 }
 
-function track(elm, options) {
-  window.requestAnimationFrame(function () {
-    return _trackNewElement(elm, options);
-  });
-
-  if (tracking.length === 0) {
-    window.addEventListener('scroll', _onScroll);
+function track(elm, fn, options) {
+  if (typeof fn !== 'function') {
+    throw new Error('You must pass a callback function');
   }
+
+  window.requestAnimationFrame(function () {
+    _trackNewElement(elm, fn, options);
+
+    if (tracking.length === 1) {
+      window.addEventListener('scroll', _onScroll);
+    }
+  });
 }
 
 function untrackAll() {
   tracking = [];
+  window.removeEventListener('scroll', _onScroll);
 }
 
 function untrack(elm) {
@@ -540,7 +545,7 @@ function untrack(elm) {
   }
 }
 
-exports['default'] = { track: track, untrackAll: untrackAll, untrack: untrack, checkForVisibleElements: checkForVisibleElements };
+exports['default'] = { track: track, untrackAll: untrackAll, untrack: untrack, checkForVisibleElements: checkForVisibleElements, getTracking: getTracking };
 module.exports = exports['default'];
 
 },{"lodash.throttle":1}]},{},[4])(4)

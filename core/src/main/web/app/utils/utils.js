@@ -454,7 +454,7 @@
           return menu;
         };
 
-        var template = makeMenu(Object.keys(menus).map(function(k) { return menus[k]; } ));
+        var template = makeMenu(_.values(menus));
         template.splice(1, 0, editMenu);
         template.splice(0, 0, beakerMenu);
         var menu = bkUtils.Electron.Menu.buildFromTemplate(template);

@@ -38,7 +38,7 @@
       if (getCurrentApp().getBkNotebookWidget) {
         return getCurrentApp().getBkNotebookWidget();
       } else {
-        console.error("Current app doesn't support getBkNotebookWidget");
+        console.error('Current app doesn\'t support getBkNotebookWidget');
       }
     };
 
@@ -77,16 +77,16 @@
       },
       // Save file with electron or web dialog
       saveWithDialog: function(thenable) {
-        if (bkUtils.isElectron){
+        if (bkUtils.isElectron) {
           var BrowserWindow = bkUtils.Electron.BrowserWindow;
           var Dialog = bkUtils.Electron.Dialog;
           var thisWindow = BrowserWindow.getFocusedWindow();
           var path = showElectronSaveDialog(thisWindow, options).then(function(path) {
-            if (path === undefined){
+            if (path === undefined) {
               saveFailed('cancelled');
               return;
             }
-            bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
+            bkUtils.httpPost('rest/file-io/setWorkingDirectory', {dir: path});
             var ret = {
               uri: path,
               uriType: 'file'
@@ -116,7 +116,7 @@
             title: 'Save Beaker Notebook',
             defaultPath: defaultPath,
             filters: [
-              { name: 'Beaker Notebook Files', extensions: ['bkr'] }
+              {name: 'Beaker Notebook Files', extensions: ['bkr']}
             ]
           };
           var path = Dialog.showSaveDialog(options);
@@ -127,7 +127,7 @@
       // Open file with electron or web dialog
       openWithDialog: function(ext, uriType, readOnly, format) {
         var promise;
-        if (bkUtils.isElectron){
+        if (bkUtils.isElectron) {
           var BrowserWindow = bkUtils.Electron.BrowserWindow;
           var Dialog = bkUtils.Electron.Dialog;
           promise = bkUtils.getWorkingDirectory().then(function(defaultPath) {
@@ -136,19 +136,19 @@
               defaultPath: defaultPath,
               multiSelections: false,
               filters: [
-                { name: 'Beaker Notebook Files', extensions: [ext] }
+                {name: 'Beaker Notebook Files', extensions: [ext]}
               ]
             };
             // Note that the open dialog return an array of paths (strings)
-            var path = Dialog.showOpenDialog(options); 
-            if (path === undefined){
+            var path = Dialog.showOpenDialog(options);
+            if (path === undefined) {
               console.log('Open cancelled');
               return;
             } else {
               // For now, multiSelections are off, only get the first
               path = path[0];
             }
-            bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
+            bkUtils.httpPost('rest/file-io/setWorkingDirectory', {dir: path});
             // Format this accordingly!
             bkUtils.openWindow(bkUtils.getBaseUrl() + '/open?uri=' + path);
             // bkCoreManager.openNotebook(path, uriType, readOnly, format);
@@ -163,7 +163,7 @@
                 strategy,
                 uriType,
                 readOnly,
-                format 
+                format
             );
           });
         }
@@ -525,21 +525,21 @@
 
       // other JS utils
       updateDocumentModelFromDOM: function(id) {
-	  function convertCanvasToImage(elem) {
-	      if (elem.nodeName == "CANVAS") {
-		  var img = document.createElement("img");
-		  img.src = elem.toDataURL();
-		  return img;
-	      }
-	      var childNodes = elem.childNodes;
-	      for (var i = 0; i < childNodes.length; i++) {
-		  var result = convertCanvasToImage(childNodes[i]);
-		  if (result != childNodes[i]) {
-		      elem.replaceChild(result, childNodes[i]);
-		  }
-	      }
-	      return elem;
-	  }
+        function convertCanvasToImage(elem) {
+          if (elem.nodeName == 'CANVAS') {
+            var img = document.createElement('img');
+            img.src = elem.toDataURL();
+            return img;
+          }
+      var childNodes = elem.childNodes;
+      for (var i = 0; i < childNodes.length; i++) {
+      var result = convertCanvasToImage(childNodes[i]);
+      if (result != childNodes[i]) {
+          elem.replaceChild(result, childNodes[i]);
+      }
+        }
+        return elem;
+    }
           // 1) find the cell that contains elem
           var elem = $("#" + id).closest("bk-cell");
           if (elem === undefined || elem[0] === undefined) {
@@ -556,8 +556,8 @@
             console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
             return;
           }
-	  // 2.5) search for any canvas elements in body and replace each with an image.
-	  body = convertCanvasToImage(body[0]);
+    // 2.5) search for any canvas elements in body and replace each with an image.
+    body = convertCanvasToImage(body[0]);
 
           // 2) convert that part of the DOM to a string
           var newOutput = body.innerHTML;

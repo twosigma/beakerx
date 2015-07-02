@@ -69,3 +69,5 @@ if (hasProperty('includeDepsInJar')) {
 
 task realclean
 realclean.dependsOn(clean)
+// should also remove 
+// Java.tokens JavaBaseListener.java JavaLexer.java JavaLexer.tokens JavaListener.java JavaParser.java       

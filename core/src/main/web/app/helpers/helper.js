@@ -97,9 +97,7 @@
             var content = saveData.notebookModelAsString;
             fileSaver.save(ret.uri, content, true).then(function() {
               thenable.resolve(ret);
-            }, function(reason) {
-              thenable.reject(reason);
-            });
+            }, thenable.reject);
           });
           return thenable.promise.then(saveDone, saveFailed);
         } else {
@@ -110,8 +108,7 @@
       showElectronSaveDialog: function() {
         var BrowserWindow = bkUtils.Electron.BrowserWindow;
         var Dialog = bkUtils.Electron.Dialog;
-        var def = bkUtils.newDeferred();
-        bkUtils.getWorkingDirectory().then(function(defaultPath) {
+        return bkUtils.getWorkingDirectory().then(function(defaultPath) {
           var options = {
             title: 'Save Beaker Notebook',
             defaultPath: defaultPath,
@@ -120,17 +117,15 @@
             ]
           };
           var path = Dialog.showSaveDialog(options);
-          def.resolve(path);
+          return path;
         });
-        return def.promise;
       },
       // Open file with electron or web dialog
       openWithDialog: function(ext, uriType, readOnly, format) {
-        var promise;
         if (bkUtils.isElectron) {
           var BrowserWindow = bkUtils.Electron.BrowserWindow;
           var Dialog = bkUtils.Electron.Dialog;
-          promise = bkUtils.getWorkingDirectory().then(function(defaultPath) {
+          return bkUtils.getWorkingDirectory().then(function(defaultPath) {
             var options = {
               title: 'Open Beaker Notebook',
               defaultPath: defaultPath,
@@ -156,7 +151,7 @@
         } else {
           var strategy = bkHelper.getFileSystemFileChooserStrategy();
           strategy.treeViewfs.extFilter = [ext];
-          promise = bkUtils.getHomeDirectory().then(function(homeDir) {
+          return bkUtils.getHomeDirectory().then(function(homeDir) {
             bkCoreManager.showModalDialog(
                 bkHelper.openNotebook,
                 JST['template/opennotebook']({homedir: homeDir, extension: '.' + ext}),
@@ -167,7 +162,6 @@
             );
           });
         }
-        return promise;
       },
       // current app
       getCurrentAppName: function() {

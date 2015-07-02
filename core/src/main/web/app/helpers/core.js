@@ -712,11 +712,11 @@
         if (!msgHeader) {
           msgHeader = "Question...";
         }
-        var close = function(result) {
-          if (result === "OK") {
-            okCB ? okCB() : null;
-          } else { // cancel
-            cancelCB ? cancelCB() : null;
+        var callback = function(result) {
+          if (((result == "OK") || (result == 0)) && okCB) {
+            okCB();
+          } else if (cancelCB){
+            cancelCB();
           }
         };
         if (bkUtils.isElectron) {
@@ -726,13 +726,6 @@
             title: msgHeader,
             message: msgBody
           };
-          var callback = function(idx) {
-            if (idx == 0) {
-              okCB ? okCB() : null;
-            } else { // cancel
-              cancelCB ? cancelCB() : null;
-            }
-          }
           return bkUtils.Electron.Dialog.showMessageBox(options, callback);
         } else {
           okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
@@ -747,7 +740,7 @@
               "   <button class='Yes btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
               "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
               "</div>";
-          return this.showModalDialog(close, template);
+          return this.showModalDialog(callback, template);
         }
       },
       show3ButtonModal: function(
@@ -758,13 +751,13 @@
         if (!msgHeader) {
           msgHeader = "Question...";
         }
-        var close = function(result) {
-          if (result === "Yes") {
-            yesCB ? yesCB() : null;
-          } else if (result === "No") {
-            noCB ? noCB() : null;
-          } else { // cancel
-            cancelCB ? cancelCB() : null;
+        var callback = function(result) {
+          if (((result === "Yes") || (result == 0)) && yesCB) {
+            yesCB();
+          } else if (((result === "No") || (result == 1)) && noCB) {
+            noCB();
+          } else if (cancelCB) {
+            cancelCB();
           }
         };
         if (bkUtils.isElectron) {
@@ -774,15 +767,6 @@
             title: msgHeader,
             message: msgBody
           };
-          var callback = function(idx) {
-            if (idx == 0) {
-              yesCB ? yesCB() : null;
-            } else if (idx == 1) {
-              noCB ? noCB() : null;
-            } else { // cancel
-              cancelCB ? cancelCB() : null;
-            }
-          }
           return bkUtils.Electron.Dialog.showMessageBox(options, callback);
         } else {
           yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
@@ -800,7 +784,7 @@
               "   <button class='no btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
               "   <button class='cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
               "</div>";
-          return this.showModalDialog(close, template);
+          return this.showModalDialog(callback, template);
         }
       },
       getFileSystemFileChooserStrategy: function() {

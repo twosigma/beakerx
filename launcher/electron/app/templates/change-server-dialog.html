@@ -1,56 +1,56 @@
 <html>
-	<head>
-		<title>Change Beaker Server</title>
-		<script type=text/javascript>
-			var ipc = require('ipc');
+  <head>
+    <title>Change Beaker Server</title>
+    <script type=text/javascript>
+      var ipc = require('ipc');
 
-			function keypressHandler(e) {
-				if (e.keyCode == 13){
-					changeServer();
-				}
-			}
+      function keypressHandler(e) {
+        if (e.keyCode == 13){
+          changeServer();
+        }
+      }
 
-			function newBackend() {
-				ipc.send('new-backend');
-			}
+      function newBackend() {
+        ipc.send('new-backend');
+      }
 
-			function changeServer() {
-				// Check server is actually Beaker
-				var address = document.getElementById('server-input').value;
-	      if (address.charAt(address.length - 1) != '/'){
-	        address += '/';
-	      }
-				var request = new XMLHttpRequest();
-				request.open('GET', address + 'version', true);
-				request.onload = function() {
-				  if (request.status >= 200 && request.status < 400) {
-				    var resp = request.responseText;
-				    if (resp.startsWith('Beaker version')){
-							ipc.send('change-server', document.getElementById('server-input').value);
-				    }
-				  } else {
-						alert('The address you typed does not belong to a Beaker server');
-				  }
-				};
-				request.onerror = function() {
-					alert('The address you typed does not belong to a Beaker server');
-				};
-				request.send();
-			}
+      function changeServer() {
+        // Check server is actually Beaker
+        var address = document.getElementById('server-input').value;
+        if (address.charAt(address.length - 1) != '/'){
+          address += '/';
+        }
+        var request = new XMLHttpRequest();
+        request.open('GET', address + 'version', true);
+        request.onload = function() {
+          if (request.status >= 200 && request.status < 400) {
+            var resp = request.responseText;
+            if (resp.startsWith('Beaker version')){
+              ipc.send('change-server', document.getElementById('server-input').value);
+            }
+          } else {
+            alert('The address you typed does not belong to a Beaker server');
+          }
+        };
+        request.onerror = function() {
+          alert('The address you typed does not belong to a Beaker server');
+        };
+        request.send();
+      }
 
-			document.addEventListener('DOMContentLoaded', function() {
-				document.getElementById('server-input').addEventListener('keypress', keypressHandler);
-				document.getElementById('change-server-button').addEventListener('click', changeServer);
-				document.getElementById('new-backend-button').addEventListener('click', newBackend);
-			});
-		</script>
-	</head>
-	<link rel="stylesheet" type="text/css" href="../styles/dialog.css">
-	<body>
-		<div class="change-server-dialog">
-			<input id="server-input" placeholder="E.g. http://127.0.0.1:8801">
-			<button id="change-server-button">Change Server</button>
-			<button id="new-backend-button">Start Local Backend</button>
-		</div>
-	</body>
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('server-input').addEventListener('keypress', keypressHandler);
+        document.getElementById('change-server-button').addEventListener('click', changeServer);
+        document.getElementById('new-backend-button').addEventListener('click', newBackend);
+      });
+    </script>
+  </head>
+  <link rel="stylesheet" type="text/css" href="../styles/dialog.css">
+  <body>
+    <div class="change-server-dialog">
+      <input id="server-input" placeholder="E.g. http://127.0.0.1:8801">
+      <button id="change-server-button">Change Server</button>
+      <button id="new-backend-button">Start Local Backend</button>
+    </div>
+  </body>
 </html>

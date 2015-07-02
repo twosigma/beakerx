@@ -1,0 +1,35 @@
+{
+  "name": "katex-build",
+  "version": "0.3.0",
+  "authors": [
+    "Tyler Long <tyler4long@gmail.com>"
+  ],
+  "description": "The fastest math typesetting library for the web.",
+  "main": "katex.min.js",
+  "keywords": [
+    "katex",
+    "tex",
+    "typesetting",
+    "math"
+  ],
+  "license": "MIT",
+  "homepage": "http://khan.github.io/KaTeX/",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "README.md",
+    "fabfile.py"
+  ],
+  "_release": "0.3.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.3.0",
+    "commit": "1f9c3ed4b92c52feea802acf2e5bcb21a974f037"
+  },
+  "_source": "git://github.com/tylerlong/katex-build.git",
+  "_target": "~0.3.0",
+  "_originalSource": "katex-build"
+}

@@ -65,10 +65,6 @@ task (bowerInstall, type: Exec) {
   }
 }
 
-task (zipPackages, type: Exec) {
-  commandLine(*(winOrUnix('zip', '-FSr', '../data/allDeps.zip', 'src/main/web/vendor/')))
-}
-
 task (publishAssets, type: Copy) {
   from 'src/main/web/app/dist/'
   into '../embeddable_assets/'
@@ -113,16 +109,6 @@ task copyVendorStuff
 copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
 
-task (extractPackages, type: Exec) {
-  inputs.file '../data/allDeps.zip'
-  outputs.dir 'src/main/web/vendor/'
-  if (windows()) {
-    commandLine 'cmd', '/c', '7za', 'x', '-y', '..\\data\\allDeps.zip';
-  } else {
-    commandLine 'unzip', '-oq', '../data/allDeps.zip'
-  }
-}
-
 task (compileAssets, type: Exec) {
   commandLine(*(winOrUnix('npm', 'run-script', 'compile')))
 }
@@ -161,11 +147,9 @@ task doRemove() {
       delete fileTree(dir: "src/main/web/app/temp")
       delete fileTree(dir: "src/main/web/app/dist")
       delete fileTree(dir: "src/main/web/app/vendor")
-      delete fileTree(dir: "src/main/web/vendor")
       delete "src/main/web/app/temp"
       delete "src/main/web/app/dist"
       delete "src/main/web/app/vendor"
-      delete "src/main/web/vendor"
       delete "src/main/web/plugin/init/addoutputdisplays.js"
   }
 }
@@ -179,18 +163,12 @@ task realclean
 realclean.dependsOn doRemove
 bowerInstall.dependsOn npmInstall
 compileAssets.dependsOn npmInstall
-compileAssets.dependsOn extractPackages
 compileAssetsEmbed.dependsOn npmInstall
-compileAssetsEmbed.dependsOn extractPackages
 compileAssetsEmbed.dependsOn compileAssets // not ideal, but htmlbuild creates manifests
 compileAssetsDebug.dependsOn npmInstall
-compileAssetsDebug.dependsOn extractPackages
-updatePackages.dependsOn extractPackages
 updatePackages.dependsOn bowerInstall
 updatePackages.dependsOn copyStuff
-bowerInstall.mustRunAfter extractPackages
 copyStuff.mustRunAfter bowerInstall
-copyVendorStuff.mustRunAfter extractPackages
 build.dependsOn compileAssets
 buildembed.dependsOn compileAssetsEmbed
 publishAssets.dependsOn buildembed

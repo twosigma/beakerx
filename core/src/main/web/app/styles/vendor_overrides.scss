@@ -24,6 +24,14 @@
   background-color: white;
 }
 
+.CodeMirror pre {
+  z-index: initial;
+}
+
+.CodeMirror-lines div[style="position: relative; z-index: 1;"] {
+  z-index: 0 !important;
+}
+
 .CodeMirror-fullscreen {
   display: block;
   position: fixed;

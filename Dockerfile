@@ -14,7 +14,7 @@
 
 # to build: sudo docker build -t ubuntu/beaker . # consider "build --no-cache" to sync network deps
 # to run:   sudo docker run -p 8800:8800 -t ubuntu/beaker
-# results hosted at: https://registry.hub.docker.com/u/scottdraves/beaker/
+# results hosted at: https://registry.hub.docker.com/u/beakernotebook/beaker/
 
 FROM ubuntu:14.04
 
@@ -31,9 +31,10 @@ RUN add-apt-repository -y ppa:webupd8team/java && \
     add-apt-repository -y ppa:staticfloat/julia-deps  && \
     add-apt-repository -y ppa:chris-lea/node.js && \
     add-apt-repository -y ppa:cwchien/gradle && \
-    add-apt-repository -y ppa:nginx/stable
+    add-apt-repository -y ppa:nginx/stable && \
+    add-apt-repository -y ppa:brightbox/ruby-ng
 
-RUN apt-get update && apt-get install -y nginx gradle-1.12 python g++ make git
+RUN apt-get update && apt-get install -y nginx gradle-2.4 python g++ make git
 
 RUN useradd beaker --create-home
 
@@ -42,7 +43,7 @@ RUN useradd beaker --create-home
 ##########
 
 RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
-RUN apt-get install -y oracle-java7-installer
+RUN apt-get install -y oracle-java8-installer
 
 ############
 #  Python  #
@@ -88,7 +89,7 @@ RUN apt-get install -y julia && \
 ##########
 
 # First install zmq3, as per Python instructions above. Then:
-RUN apt-get install -y ruby1.9.1 ruby1.9.1-dev && \
+RUN apt-get install -y ruby2.1 ruby2.1-dev libtool && \
     gem install iruby
 
 ##########

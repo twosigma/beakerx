@@ -18,6 +18,9 @@
 
 Beaker is a code notebook that allows you to analyze, visualize, and document data using multiple programming languages. Beaker's plugin-based polyglot architecture enables you to seamlessly switch between languages in your documents and add support for your favorite languages that we've missed.
 
+Beaker is both a server that you can run in the cloud, an application that you can download and run, and
+a [Docker container](https://registry.hub.docker.com/u/beakernotebook/beaker/) that you can run anywhere.
+
 This page is for developers.  If you want to use or learn more about Beaker, see the [home page](http://beakernotebook.com).
 
 #Screenshots
@@ -29,8 +32,8 @@ This page is for developers.  If you want to use or learn more about Beaker, see
 See the page for your platform for how to build from source:
 [Ubuntu](https://github.com/twosigma/beaker-notebook/wiki/Ubuntu-build-and-run),
 [Mac](https://github.com/twosigma/beaker-notebook/wiki/Mac-build-and-run),
-[Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run).
-We use gradle to compile the project.
+[Windows](https://github.com/twosigma/beaker-notebook/wiki/Windows-build-and-run), and
+[Docker](https://github.com/twosigma/beaker-notebook/blob/master/Dockerfile).  We use gradle to compile the project.
 
 Say `cd test; ./runner` to run the end-to-end tests with Protractor.
 

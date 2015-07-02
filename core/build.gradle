@@ -144,9 +144,11 @@ task (copyNginx, type: Exec) {
 
 task doRemove() {
   doLast {
+      delete fileTree(dir: "node_modules")
       delete fileTree(dir: "src/main/web/app/temp")
       delete fileTree(dir: "src/main/web/app/dist")
       delete fileTree(dir: "src/main/web/app/vendor")
+      delete "node_modules"
       delete "src/main/web/app/temp"
       delete "src/main/web/app/dist"
       delete "src/main/web/app/vendor"

@@ -38,7 +38,7 @@
           var closeSession = function() {
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
-                // Outdated notebook model is used, consider getting most recent version from backend
+                // XXX Outdated notebook model is used, consider getting most recent version from backend
                 bkEvaluatePluginManager.createEvaluatorThenExit(notebookModel.evaluators[i]);
               }
             }

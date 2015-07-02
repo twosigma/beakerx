@@ -93,8 +93,8 @@
       saveAsClientFile: function(data, filename) {
         return commonUtils.saveAsClientFile(data, filename);
       },
-      // give the angular base URL
-      // This function is a HACK: '$location' should probably be used instead of
+      // Give the angular base URL
+      // XXX This function is a HACK: '$location' should probably be used instead of
       // 'location', but '$location' seems to return the wrong path.
       getBaseUrl: function() {
         return location.protocol + '//' + location.host + location.pathname + '#';

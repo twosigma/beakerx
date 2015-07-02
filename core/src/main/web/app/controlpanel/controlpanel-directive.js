@@ -155,7 +155,7 @@
               $scope.newEmptyNotebook();
             });
             return false;
-          } else if ((e.which === 123) && bkUtils.isElectron) {
+          } else if ((e.which === 123) && bkUtils.isElectron) { // F12
             bkUtils.Electron.toggleDevTools();
           }
         }

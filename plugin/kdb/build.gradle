@@ -43,3 +43,6 @@ compileJava {
 if (hasProperty('evalPluginDir')) {
   installApp.into new File(evalPluginDir, 'kdb')
 }
+
+task realclean
+realclean.dependsOn(clean)

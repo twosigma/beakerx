@@ -66,3 +66,6 @@ if (hasProperty('includeDepsInJar')) {
     }
   }
 }
+
+task realclean
+realclean.dependsOn(clean)

@@ -144,13 +144,20 @@ task (copyNginx, type: Exec) {
 
 task doRemove() {
   doLast {
+      delete fileTree(dir: "node_modules")
+      delete "node_modules"
       delete fileTree(dir: "src/main/web/app/temp")
-      delete fileTree(dir: "src/main/web/app/dist")
-      delete fileTree(dir: "src/main/web/app/vendor")
       delete "src/main/web/app/temp"
+      delete fileTree(dir: "src/main/web/app/dist")
       delete "src/main/web/app/dist"
+      delete fileTree(dir: "src/main/web/app/vendor") // why does this exist? XXX
       delete "src/main/web/app/vendor"
+      delete fileTree(dir: "config/plugins")
+      delete "config/plugins"
       delete "src/main/web/plugin/init/addoutputdisplays.js"
+      delete "config/build_time"
+      delete "config/hash"
+      delete "config/version"
   }
 }
 

@@ -321,7 +321,11 @@
           }
         },
         openSession: function(sessionId) {
-          return $location.path("session/" + sessionId).search({});
+          if (bkUtils.isElectron) {
+            bkUtils.Electron.IPC.send('session-focused', sessionId);
+          } else {
+            return $location.path("session/" + sessionId).search({});
+          }
         }
       };
       bkUtils.initializeCometd(document.baseURI+'cometd/');

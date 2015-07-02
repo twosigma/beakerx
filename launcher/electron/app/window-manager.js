@@ -42,6 +42,12 @@ module.exports = (function() {
     event.returnValue = 'done';
   });
 
+  ipc.on('session-focused', function(event, sessionId) {
+    var windowId = _sessionToWindow[sessionId];
+    BrowserWindow.fromId(windowId).focus()
+    ;
+  });
+
   var defaultOptions = {
     width: 800,
     height: 900,

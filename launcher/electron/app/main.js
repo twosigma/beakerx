@@ -37,7 +37,7 @@ app.on('ready', function() {
   backendRunner.startNew().on('ready', connectToBackend);
 });
 
-// Kill backend before exiting 
+// Kill backend before exiting
 app.on('quit', function() {
   killBackend();
 });
@@ -45,7 +45,7 @@ app.on('quit', function() {
 // Fired when OS opens file with application
 app.on('open-file', function(event, path) {
   event.preventDefault();
-  if (appReady){
+  if (appReady) {
     windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path)
   } else {
     openFile = path;
@@ -134,10 +134,10 @@ function spinUntilReady(url, done) {
   var interval = 100;
   var dur = 10; // In seconds
   var timeout = dur * (1000 / interval);
-  console.log("note: probing until backend is ready, an error here is normal");
+  console.log('note: probing until backend is ready, an error here is normal');
   var spin = function() {
     var callback = function(response) {
-      if (response.statusCode == 200){
+      if (response.statusCode == 200) {
         done();
       } else {
         if (timeout <= 0) {

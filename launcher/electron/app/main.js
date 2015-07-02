@@ -22,7 +22,7 @@ var crashReporter = require('crash-reporter');
 var events = require('events');
 var backendRunner = require('./backend-runner.js');
 var mainMenu = require('./main-menu.js');
-var windowManager;
+var windowManager = require('./window-manager.js');
 
 var appReady = false;
 var openFile;
@@ -46,7 +46,7 @@ app.on('quit', function() {
 app.on('open-file', function(event, path) {
   event.preventDefault();
   if (appReady){
-    windowManager.newWindow(backend.getUrl() + '/beaker/#/open?uri=' + path)
+    windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path)
   } else {
     openFile = path;
   }
@@ -110,9 +110,9 @@ function switchToBackend(address) {
 }
 
 function connectToBackend() {
-  windowManager = require('./window-manager.js');
   // Have to wait until backend is fully ready
   spinUntilReady(backendRunner.getHash() + '/beaker/rest/util/ready', function() {
+    windowManager.connectToBackend();
     // Open file if launched with file
     if (openFile !== undefined) {
       windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + openFile);

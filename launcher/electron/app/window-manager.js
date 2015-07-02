@@ -8,13 +8,9 @@ module.exports = (function() {
 	var _windowToSession = {};
 	var _sessionToWindow = {};
 
+	var client;
+
 	// Initialize cometd
-	var client = new Faye.Client(backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
-	var subscription = client.subscribe('/sessionClosed', function(msg) {
-		var windowId = _sessionToWindow[msg.id];
-		// Still have to clear map!
-		BrowserWindow.fromId(windowId).destroy();
-	});
 
 	ipc.on('window-session', function(event, msg) {
 		_sessionToWindow[msg.sessionId] = msg.windowId;
@@ -31,8 +27,8 @@ module.exports = (function() {
 	});
 
 	var defaultOptions = {
-		  width: 1500,
-		  height: 1000,
+		  width: 800,
+		  height: 900,
 		  show: false
 	};
 
@@ -45,6 +41,15 @@ module.exports = (function() {
 		  'auto-hide-menu-bar': true,
 		  'skip-taskbar': true
 	};
+
+	function connectToBackend() {
+		console.log('Rebinding faye to: ' + backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
+		client = new Faye.Client(backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
+		var subscription = client.subscribe('/sessionClosed', function(msg) {
+			var windowId = _sessionToWindow[msg.id];
+			BrowserWindow.fromId(windowId).destroy();
+		});
+	}
 
 	function newWindow(url, type){
 		var options;
@@ -102,6 +107,7 @@ module.exports = (function() {
 	return {
 		newWindow: newWindow,
 		closeAll: closeAll,
-		windows: _windows
+		windows: _windows,
+		connectToBackend: connectToBackend
 	};
 })();

@@ -47,7 +47,9 @@ module.exports = (function() {
 		  return eventEmitter;
 		},
 		kill: function() {
-			_backend.kill('SIGTERM');
+			if (_backend.local) {
+				_backend.kill('SIGTERM');
+			}
 			_backend = {};
 		},
 		getInfo: function() {

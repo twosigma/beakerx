@@ -149,7 +149,9 @@
               path = path[0];
             }
             bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
-            bkCoreManager.openNotebook(path, uriType, readOnly, format);
+            // Format this accordingly!
+            bkUtils.openWindow(bkUtils.getBaseUrl() + '/open?uri=' + path);
+            // bkCoreManager.openNotebook(path, uriType, readOnly, format);
           });
         } else {
           var strategy = bkHelper.getFileSystemFileChooserStrategy();

@@ -15,132 +15,132 @@
  */
 
 task makeDist2(type: Exec, dependsOn: ':dev:build') {
-	def osName = System.properties['os.name']
-	def platform = 'windows'
-	if (osName.startsWith('Mac')) {
-		platform = 'mac'
-	}
-	if (osName.startsWith('Linux')) {
-		platform = 'ubuntu'
-	}
+  def osName = System.properties['os.name']
+  def platform = 'windows'
+  if (osName.startsWith('Mac')) {
+    platform = 'mac'
+  }
+  if (osName.startsWith('Linux')) {
+    platform = 'ubuntu'
+  }
 
-	def zipName = 'dist'
-	if (platform == 'windows') {
-		workingDir '../../core'
-		commandLine 'cmd', '/c', '7za', 'a',
-		            ('../launcher/electron/' + zipName + '.zip'), 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
-		            'beaker.command.bat', '-xr!.~', '-xr!.gradle'
-	} else {
-		commandLine './makeDist', 'dist'
-	}
+  def zipName = 'dist'
+  if (platform == 'windows') {
+    workingDir '../../core'
+    commandLine 'cmd', '/c', '7za', 'a',
+                ('../launcher/electron/' + zipName + '.zip'), 'config', 'src/main/web', 'build/install/core', 'nginx', 'LICENSE',
+                'beaker.command.bat', '-xr!.~', '-xr!.gradle'
+  } else {
+    commandLine './makeDist', 'dist'
+  }
 }
 
 task clean(dependsOn: ['cleanApp', 'cleanDist']) {
 }
 
 task cleanApp(type: Exec) {
-	commandLine 'rm', '-rf', 'Beaker.app'
+  commandLine 'rm', '-rf', 'Beaker.app'
 }
 
 task cleanDist(type: Exec) {
-	commandLine 'rm', '-rf', 'dist'
+  commandLine 'rm', '-rf', 'dist'
 }
 
 task makeMacInstaller(type: Exec, dependsOn: 'makeMacElectron') {
-	commandLine './makeMacInstaller'
+  commandLine './makeMacInstaller'
 }
 
 task makeMacElectron(dependsOn: ['clean', 'makeDist2', 'mCopyElectron', 'mCopyBeakerApp', 'mCopyDist', 'mCopyPList', 'mCopyIcons', 'mCopyJRE', 'mCopyTools']) {
-	println "Starting Electron build"
+  println "Starting Electron build"
 }
 
 task mUnzipElectron(type: Exec) {
-	commandLine 'unzip', '-uo', 'electron-v0.28.1-darwin-x64.zip'
+  commandLine 'unzip', '-uo', 'electron-v0.28.1-darwin-x64.zip'
 }
 
 task mCopyElectron(type: Exec, dependsOn: ['mUnzipElectron']) {
-	ignoreExitValue true
-	println "Copying electron"
-	commandLine 'cp', '-r', 'electron-v0.28.1-darwin-x64/Electron.app/', 'Beaker.app'
+  ignoreExitValue true
+  println "Copying electron"
+  commandLine 'cp', '-r', 'electron-v0.28.1-darwin-x64/Electron.app/', 'Beaker.app'
 }
 
 task mCopyBeakerApp(type: Copy, dependsOn: 'mCopyElectron'){
-	from 'app'
-	into 'Beaker.app/Contents/Resources/app'
+  from 'app'
+  into 'Beaker.app/Contents/Resources/app'
 }
 
 task mCopyDist(type: Copy, dependsOn: ['mCopyElectron', 'makeDist2']) {
-	from 'dist'
-	into 'Beaker.app/Contents/Resources/dist'
+  from 'dist'
+  into 'Beaker.app/Contents/Resources/dist'
 }
 
 task mRemovePList(type: Exec, dependsOn: 'mCopyElectron') {
-	commandLine 'rm', 'Beaker.app/Contents/Info.plist'
+  commandLine 'rm', 'Beaker.app/Contents/Info.plist'
 }
 
 task mCopyPList(type: Copy, dependsOn: ['mCopyElectron', 'mRemovePList']) {
-	from 'Info.plist'
-	into 'Beaker.app/Contents'
+  from 'Info.plist'
+  into 'Beaker.app/Contents'
 }
 
 task mCopyIcons(type: Copy, dependsOn: 'mCopyElectron') {
-	from 'beaker.icns'
-	into 'Beaker.app/Contents/Resources'
+  from 'beaker.icns'
+  into 'Beaker.app/Contents/Resources'
 }
 
 task unzipJRE(type: Exec) {
-	commandLine 'unzip', '-uo', 'jre.zip'
+  commandLine 'unzip', '-uo', 'jre.zip'
 }
 
 task mCopyJRE(type: Copy, dependsOn: ['unzipJRE', 'mCopyElectron']) {
-	from 'jre'
-	into 'Beaker.app/Contents/Resources/jre'
+  from 'jre'
+  into 'Beaker.app/Contents/Resources/jre'
 }
 
 task mCopyTools(type: Copy, dependsOn: 'mCopyJRE') {
-	from 'tools.jar'
-	into 'Beaker.app/Contents/Resources/jre/Contents/Home/lib'
+  from 'tools.jar'
+  into 'Beaker.app/Contents/Resources/jre/Contents/Home/lib'
 }
 
 /***********************************************************************************/
 
 task makeWinElectron(dependsOn: ['clean', 'makeDist2', 'wCopyBeakerApp', 'wCopyDist', 'wCopyJRE', 'wCopyTools', 'wCopyPython']) {
-	println "Starting Electron build"
+  println "Starting Electron build"
 }
 
 task wUnzipElectron(type: Exec) {
-	commandLine 'unzip', '-uo', '-d', 'beaker', 'electron-v0.28.3-win32-x64.zip'
+  commandLine 'unzip', '-uo', '-d', 'beaker', 'electron-v0.28.3-win32-x64.zip'
 }
 
 task wCopyBeakerApp(type: Copy, dependsOn: 'wUnzipElectron'){
-	from 'app'
-	into 'beaker/resources/app'
+  from 'app'
+  into 'beaker/resources/app'
 }
 
 task wUnzipDist(type: Exec) {
-	commandLine 'unzip', '-uo', '-d', 'dist', 'dist.zip'
+  commandLine 'unzip', '-uo', '-d', 'dist', 'dist.zip'
 }
 
 task wCopyDist(type: Copy, dependsOn: ['wUnzipElectron', 'wUnzipDist', 'makeDist2']) {
-	from 'dist'
-	into 'beaker/resources/dist'
+  from 'dist'
+  into 'beaker/resources/dist'
 }
 
 task wCopyJRE(type: Copy, dependsOn: ['unzipJRE', 'wUnzipElectron']) {
-	from 'jre'
-	into 'beaker/resources/jre'
+  from 'jre'
+  into 'beaker/resources/jre'
 }
 
 task wCopyTools(type: Copy, dependsOn: 'wCopyJRE') {
-	from 'tools.jar'
-	into 'beaker/resources/jre/lib'
+  from 'tools.jar'
+  into 'beaker/resources/jre/lib'
 }
 
 task unzipPython(type: Exec) {
-	commandLine 'unzip', '-uo', '-d', 'python', 'python.zip'
+  commandLine 'unzip', '-uo', '-d', 'python', 'python.zip'
 }
 
 task wCopyPython(type: Copy, dependsOn: ['unzipPython', 'wCopyDist']) {
-	from 'python'
-	into 'beaker/resources/dist'
+  from 'python'
+  into 'beaker/resources/dist'
 }

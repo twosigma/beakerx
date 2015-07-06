@@ -70,7 +70,6 @@
       openWindow: function(path) {
         if (bkUtils.isElectron) {
           if (path[0] == '/'){
-            console.log(bkElectron);
             bkElectron.IPC.send('new-window', bkUtils.getBaseUrl() + path);
           } else {
             bkElectron.IPC.send('new-window', path);
@@ -544,50 +543,50 @@
             img.src = elem.toDataURL();
             return img;
           }
-      var childNodes = elem.childNodes;
-      for (var i = 0; i < childNodes.length; i++) {
-      var result = convertCanvasToImage(childNodes[i]);
-      if (result != childNodes[i]) {
-          elem.replaceChild(result, childNodes[i]);
-      }
+          var childNodes = elem.childNodes;
+          for (var i = 0; i < childNodes.length; i++) {
+            var result = convertCanvasToImage(childNodes[i]);
+            if (result != childNodes[i]) {
+              elem.replaceChild(result, childNodes[i]);
+            }
+          }
+          return elem;
         }
-        return elem;
-    }
-          // 1) find the cell that contains elem
-          var elem = $("#" + id).closest("bk-cell");
-          if (elem === undefined || elem[0] === undefined) {
-            console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-            return;
-          }
-          var cellid = elem[0].getAttribute("cellid");
-          if (cellid === undefined) {
-            console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-            return;
-          }
-          var body = elem.find( "bk-output-display[type='Html'] div div" );
-          if (body === undefined || body[0] === undefined) {
-            console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-            return;
-          }
-    // 2.5) search for any canvas elements in body and replace each with an image.
-    body = convertCanvasToImage(body[0]);
+        // 1) find the cell that contains elem
+        var elem = $("#" + id).closest("bk-cell");
+        if (elem === undefined || elem[0] === undefined) {
+          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
+          return;
+        }
+        var cellid = elem[0].getAttribute("cellid");
+        if (cellid === undefined) {
+          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
+          return;
+        }
+        var body = elem.find( "bk-output-display[type='Html'] div div" );
+        if (body === undefined || body[0] === undefined) {
+          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
+          return;
+        }
+        // 2.5) search for any canvas elements in body and replace each with an image.
+        body = convertCanvasToImage(body[0]);
 
-          // 2) convert that part of the DOM to a string
-          var newOutput = body.innerHTML;
+        // 2) convert that part of the DOM to a string
+        var newOutput = body.innerHTML;
 
-          // 3) set the result.object to that string.
-          var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);
-          if (cell === undefined) {
-            console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-            return;
-          }
+        // 3) set the result.object to that string.
+        var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);
+        if (cell === undefined) {
+          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
+          return;
+        }
 
-          var res = cell.output.result;
-          if (res.innertype === "Html") {
-            res.object = newOutput;
-          } else {
-            console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-          }
+        var res = cell.output.result;
+        if (res.innertype === "Html") {
+          res.object = newOutput;
+        } else {
+          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
+        }
       },
 
       // bkShare
@@ -606,7 +605,7 @@
               payload: undefined
             }
           };
-          modelOutput.result = progressObj;
+        modelOutput.result = progressObj;
       },
 
       setupCancellingOutput: function(modelOutput) {

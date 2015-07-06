@@ -28,7 +28,8 @@
     'bk.utils',
     'bk.recentMenu',
     'bk.notebookCellModelManager',
-    'bk.treeView'
+    'bk.treeView',
+    'bk.electron'
   ]);
 
   /**
@@ -47,6 +48,7 @@
       bkUtils,
       bkRecentMenu,
       bkNotebookCellModelManager,
+      bkElectron,
       modalDialogOp) {
 
     var FileSystemFileChooserStrategy = function (){
@@ -694,7 +696,7 @@
             title: msgHeader,
             message: msgBody
           };
-          return bkUtils.Electron.Dialog.showMessageBox(options, callback);
+          return bkElectron.Dialog.showMessageBox(options, callback);
         } else {
           btnText = btnText ? btnText : "Close";
           btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
@@ -731,7 +733,7 @@
             title: msgHeader,
             message: msgBody
           };
-          return bkUtils.Electron.Dialog.showMessageBox(options, callback);
+          return bkElectron.Dialog.showMessageBox(options, callback);
         } else {
           okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
           cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
@@ -772,7 +774,7 @@
             title: msgHeader,
             message: msgBody
           };
-          return bkUtils.Electron.Dialog.showMessageBox(options, callback);
+          return bkElectron.Dialog.showMessageBox(options, callback);
         } else {
           yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
           noBtnTxt = noBtnTxt ? noBtnTxt : "No";

@@ -20,7 +20,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share', 'bk.debug']);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share', 'bk.debug', 'bk.electron']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare, bkDebug) {
+  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare, bkDebug, bkElectron) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -66,20 +66,39 @@
       getBaseUrl: function() {
         return bkUtils.getBaseUrl();
       },
+      // Open tab/window functions that handle the electron case
       openWindow: function(path) {
-        bkUtils.openWindow(path);
+        if (bkUtils.isElectron) {
+          if (path[0] == '/'){
+            console.log(bkElectron);
+            bkElectron.IPC.send('new-window', bkUtils.getBaseUrl() + path);
+          } else {
+            bkElectron.IPC.send('new-window', path);
+          }
+        } else {
+          window.open(path);
+        }
       },
       openStaticWindow: function(path) {
-        bkUtils.openStaticWindow(path);
+        if (bkHelper.isElectron) {
+          var newWindow = new bkElectron.BrowserWindow({});
+          newWindow.loadUrl(bkHelper.serverUrl('beaker/' + path));
+        } else {
+          window.open('./' + path);
+        }
       },
       openBrowserWindow: function(path) {
-        bkUtils.openBrowserWindow(path);
+        if (bkUtils.isElectron) {
+          bkElectron.Shell.openExternal(path);
+        } else {
+          window.open(path);
+        }
       },
       // Save file with electron or web dialog
       saveWithDialog: function(thenable) {
         if (bkUtils.isElectron) {
-          var BrowserWindow = bkUtils.Electron.BrowserWindow;
-          var Dialog = bkUtils.Electron.Dialog;
+          var BrowserWindow = bkElectron.BrowserWindow;
+          var Dialog = bkElectron.Dialog;
           var thisWindow = BrowserWindow.getFocusedWindow();
           var path = showElectronSaveDialog(thisWindow, options).then(function(path) {
             if (path === undefined) {
@@ -106,8 +125,8 @@
         }
       },
       showElectronSaveDialog: function() {
-        var BrowserWindow = bkUtils.Electron.BrowserWindow;
-        var Dialog = bkUtils.Electron.Dialog;
+        var BrowserWindow = bkElectron.BrowserWindow;
+        var Dialog = bkElectron.Dialog;
         return bkUtils.getWorkingDirectory().then(function(defaultPath) {
           var options = {
             title: 'Save Beaker Notebook',
@@ -123,8 +142,8 @@
       // Open file with electron or web dialog
       openWithDialog: function(ext, uriType, readOnly, format) {
         if (bkUtils.isElectron) {
-          var BrowserWindow = bkUtils.Electron.BrowserWindow;
-          var Dialog = bkUtils.Electron.Dialog;
+          var BrowserWindow = bkElectron.BrowserWindow;
+          var Dialog = bkElectron.Dialog;
           return bkUtils.getWorkingDirectory().then(function(defaultPath) {
             var options = {
               title: 'Open Beaker Notebook',
@@ -145,7 +164,7 @@
             }
             bkUtils.httpPost('rest/file-io/setWorkingDirectory', {dir: path});
             // Format this accordingly!
-            bkUtils.openWindow(bkUtils.getBaseUrl() + '/open?uri=' + path);
+            bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?uri=' + path);
             // bkCoreManager.openNotebook(path, uriType, readOnly, format);
           });
         } else {
@@ -774,7 +793,6 @@
         };
         return cometdUtil;
       },
-      Electron: bkUtils.Electron,
       isElectron: bkUtils.isElectron
     };
 

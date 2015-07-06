@@ -24,7 +24,8 @@
     'bk.notebookCellModelManager',
     'bk.notebookNamespaceModelManager',
     'bk.recentMenu',
-    'bk.evaluatorManager'
+    'bk.evaluatorManager',
+    'bk.electron'
   ]);
 
   module.factory('bkSessionManager', function(
@@ -33,7 +34,8 @@
       bkNotebookCellModelManager,
       bkNotebookNamespaceModelManager,
       bkEvaluatorManager,
-      bkRecentMenu) {
+      bkRecentMenu,
+      bkElectron) {
 
     var ImageIcon = function(data) {
       if (data === undefined || data.type !== "ImageIcon") {
@@ -856,9 +858,9 @@
 
         // tell main thread that session lives in this window
         if (bkUtils.isElectron) {
-          bkUtils.Electron.IPC.send('window-session', {
-            windowId: bkUtils.Electron.remote.getCurrentWindow().id,
-            sessionId: sessionId 
+          bkElectron.IPC.send('window-session', {
+            windowId: bkElectron.remote.getCurrentWindow().id,
+            sessionId: sessionId
           });
         }
 

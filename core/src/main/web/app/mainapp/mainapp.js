@@ -34,7 +34,8 @@
                                              'bk.evaluatorManager',
                                              'bk.evaluateJobManager',
                                              'bk.notebookRouter',
-                                             'bk.notebook'
+                                             'bk.notebook',
+                                             'bk.electron'
                                              ]);
 
   /**
@@ -54,6 +55,7 @@
       bkNotebookVersionManager,
       bkEvaluatorManager,
       bkEvaluateJobManager,
+      bkElectron,
       $location) {
     return {
       restrict: 'E',
@@ -583,7 +585,7 @@
           var evalCodeId = 0;
 
           if (bkUtils.isElectron) {
-            bkUtils.Electron.IPC.on('close-window', function() {
+            bkElectron.IPC.on('close-window', function() {
               closeNotebook();
             });
           }
@@ -634,9 +636,9 @@
                 }, 1);
               } else {
                 if (bkUtils.isElectron){
-                  var BrowserWindow = bkUtils.Electron.BrowserWindow;
-                  var Dialog = bkUtils.Electron.Dialog;
-                  var thisWindow = BrowserWindow.getFocusedWindow();
+                  var BrowserWindow = bkElectron.BrowserWindow;
+                  var Dialog = bkElectron.Dialog;
+                  var thisWindow = bkElectron.thisWindow;
                   var deferred = bkUtils.newDeferred();
                   bkUtils.getWorkingDirectory().then(function(defaultPath) {
                     var options = {
@@ -1036,7 +1038,7 @@
         };
         if (bkUtils.isElectron) {
           window.addEventListener('focus', function() {
-            bkUtils.Electron.updateMenus(bkMenuPluginManager.getMenus());
+            bkElectron.updateMenus(bkMenuPluginManager.getMenus());
           });
         }
         var keydownHandler = function(e) {
@@ -1070,7 +1072,7 @@
               });
               return false;
             } else if (e.which === 123){ // F12
-              bkUtils.Electron.toggleDevTools();
+              bkElectron.toggleDevTools();
             }
             // TODO implement global redo
           }

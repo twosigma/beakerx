@@ -28,5 +28,6 @@
     'bk.session',
     'bk.menuPluginManager',
     'bk.recentMenu',
-    'bk.evaluatePluginManager']);
+    'bk.evaluatePluginManager',
+    'bk.electron']);
 })();

@@ -322,7 +322,7 @@
         },
         openSession: function(sessionId) {
           if (bkUtils.isElectron) {
-            bkUtils.Electron.IPC.send('session-focused', sessionId);
+            bkElectron.IPC.send('session-focused', sessionId);
           } else {
             return $location.path("session/" + sessionId).search({});
           }

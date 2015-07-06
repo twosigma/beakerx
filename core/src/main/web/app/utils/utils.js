@@ -23,7 +23,7 @@
     'bk.commonUtils',
     'bk.angularUtils',
     'bk.cometdUtils',
-    'bk.track'
+    'bk.track',
   ]);
   /**
    * bkUtils
@@ -98,33 +98,6 @@
       // 'location', but '$location' seems to return the wrong path.
       getBaseUrl: function() {
         return location.protocol + '//' + location.host + location.pathname + '#';
-      },
-      // Open tab/window functions that handle the electron case
-      openWindow: function(path) {
-        if (bkUtils.isElectron) {
-          if (path[0] == '/'){
-            bkUtils.Electron.IPC.send('new-window', bkUtils.getBaseUrl() + path);
-          } else {
-            bkUtils.Electron.IPC.send('new-window', path);
-          }
-        } else {
-          window.open(path);
-        }
-      },
-      openStaticWindow: function(path) {
-        if (bkHelper.isElectron) {
-          var newWindow = new bkHelper.Electron.BrowserWindow({});
-          newWindow.loadUrl(bkHelper.serverUrl('beaker/' + path));
-        } else {
-          window.open('./' + path);
-        }
-      },
-      openBrowserWindow: function(path) {
-        if (bkHelper.isElectron) {
-          bkHelper.Electron.Shell.openExternal(path);
-        } else {
-          window.open(path);
-        }
       },
       // wrap angularUtils
       refreshRootScope: function() {
@@ -364,103 +337,6 @@
       // Electron: require('remote')
       isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
     };
-    if (bkUtils.isElectron){
-      // Should I refactor this?
-      bkUtils.Electron = {};
-      bkUtils.Electron.remote = require('remote');
-      bkUtils.Electron.BrowserWindow = bkUtils.Electron.remote.require('browser-window');
-      bkUtils.Electron.Menu = bkUtils.Electron.remote.require('menu');
-      bkUtils.Electron.Dialog = bkUtils.Electron.remote.require('dialog');
-      bkUtils.Electron.Shell = bkUtils.Electron.remote.require('shell');
-      bkUtils.Electron.IPC = require('ipc');
-      bkUtils.Electron.toggleDevTools = function() {
-        bkUtils.Electron.BrowserWindow.getFocusedWindow().toggleDevTools();
-      };
-      bkUtils.Electron.thisWindow = bkUtils.Electron.remote.getCurrentWindow();
-
-      bkUtils.Electron.updateMenus = function(menus) {
-        var assignShortcut = function(name){
-          switch(name) {
-            case 'Save':
-              return 'Command+S';
-            case 'Open... (.bkr)':
-              return 'Command+O';
-            case 'New Notebook':
-              return 'Command+N';
-            case 'Tutorial':
-              return 'Command+H';
-            default:
-              return undefined;
-          }
-        }
-        var beakerMenu = {
-          label: 'Beaker',
-          submenu: [
-            {
-              label: 'Quit',
-              click: function() {
-                bkUtils.Electron.IPC.send('quit');
-              },
-              accelerator: 'Command+Q'
-            },
-            {
-              label: 'Change server',
-              click: function() {
-                bkUtils.Electron.IPC.send('try-change-server');
-              }
-            },
-            {
-              label: 'Start new local backend',
-              click: function() {
-                  bkUtils.Electron.IPC.send('new-backend');
-              }
-            }
-          ]
-        };
-        var editMenu = {
-          label: 'Edit',
-          submenu:[
-            { label: 'Undo', accelerator: 'Command+Z', selector: 'undo:' },
-            { label: 'Redo', accelerator: 'Command+Shift+Z', selector: 'redo:' },
-            { type: 'separator' },
-            { label: 'Cut', accelerator: 'Command+X', selector: 'cut:' },
-            { label: 'Copy', accelerator: 'Command+C', selector: 'copy:' },
-            { label: 'Paste', accelerator: 'Command+V', selector: 'paste:' },
-            { label: 'Select All', accelerator: 'Command+A', selector: 'selectAll:' }
-          ]
-        };
-        var makeMenu = function(bkmenu){
-          var menu = [];
-          for (var i = 0; i < bkmenu.length; i++){
-            var bkItem = bkmenu[i];
-            var newItem = {
-              label: bkItem.name
-            }
-            if (bkItem.action !== undefined)
-              newItem.click = bkItem.action.bind({});
-            if (bkItem.isChecked !== undefined){
-              newItem.type = 'checkbox';
-              newItem.checked = bkItem.isChecked();
-            }
-            newItem.accelerator = assignShortcut(bkItem.name);
-            // Process submenu
-            if (Array.isArray(bkItem.items))
-              newItem.submenu = makeMenu(bkItem.items);
-            if (bkItem.index !== undefined)
-              menu[bkItem.index] = newItem;
-            else
-              menu.push(newItem);
-          }
-          return menu;
-        };
-
-        var template = makeMenu(_.values(menus));
-        template.splice(1, 0, editMenu);
-        template.splice(0, 0, beakerMenu);
-        var menu = bkUtils.Electron.Menu.buildFromTemplate(template);
-        bkUtils.Electron.Menu.setApplicationMenu(menu);
-      }
-    }
     return bkUtils;
   });
 })();

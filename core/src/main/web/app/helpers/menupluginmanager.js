@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var module = angular.module('bk.menuPluginManager', ['bk.utils']);
+  var module = angular.module('bk.menuPluginManager', ['bk.utils', 'bk.electron']);
 
   var utils = (function() {
     var DEFAULT_PRIORITY = 0;
@@ -56,7 +56,7 @@
     };
   })();
 
-  module.factory('bkMenuPluginManager', function(bkUtils) {
+  module.factory('bkMenuPluginManager', function(bkUtils, bkElectron) {
 
     var menus = {};
     var loadedPlugins = [];
@@ -142,7 +142,7 @@
         }
       }
       if (bkUtils.isElectron && menuChanged){
-        bkUtils.Electron.updateMenus(menus);
+        bkElectron.updateMenus(menus);
       }
     };
 

@@ -19,7 +19,7 @@
   var module = angular.module('bk.controlPanel');
 
   module.directive('bkControlPanel', function(
-        bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, $location) {
+        bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, bkElectron, $location) {
     return {
       restrict: 'E',
       template: JST['controlpanel/controlpanel'](),
@@ -65,11 +65,11 @@
 
         if (bkUtils.isElectron){
           window.addEventListener('focus', function() {
-            bkUtils.Electron.updateMenus(bkMenuPluginManager.getMenus());
+            bkElectron.updateMenus(bkMenuPluginManager.getMenus());
           });
 
-          bkUtils.Electron.IPC.on('close-window', function() {
-            bkUtils.Electron.thisWindow.destroy();
+          bkElectron.IPC.on('close-window', function() {
+            bkElectron.thisWindow.destroy();
           });
 
         }
@@ -156,7 +156,7 @@
             });
             return false;
           } else if ((e.which === 123) && bkUtils.isElectron) { // F12
-            bkUtils.Electron.toggleDevTools();
+            bkElectron.toggleDevTools();
           }
         }
         $(document).bind('keydown', keydownHandler);

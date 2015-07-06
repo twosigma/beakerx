@@ -720,7 +720,7 @@
           msgHeader = "Question...";
         }
         var callback = function(result) {
-          if (((result == "OK") || (result == 0)) && okCB) {
+          if (okCB && (result == 0)) {
             okCB();
           } else if (cancelCB){
             cancelCB();
@@ -744,7 +744,7 @@
               "</div>" +
               "<div class='modal-body'><p>" + msgBody + "</p></div>" +
               '<div class="modal-footer">' +
-              "   <button class='Yes btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
+              "   <button class='Yes btn " + okBtnClass +"' ng-click='close(0)'>" + okBtnTxt + "</button>" +
               "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
               "</div>";
           return this.showModalDialog(callback, template);
@@ -759,9 +759,9 @@
           msgHeader = "Question...";
         }
         var callback = function(result) {
-          if (((result === "Yes") || (result == 0)) && yesCB) {
+          if (yesCB && (result == 0)) {
             yesCB();
-          } else if (((result === "No") || (result == 1)) && noCB) {
+          } else if (noCB && (result == 1)) {
             noCB();
           } else if (cancelCB) {
             cancelCB();
@@ -787,8 +787,8 @@
               "</div>" +
               "<div class='modal-body'><p>" + msgBody + "</p></div>" +
               '<div class="modal-footer">' +
-              "   <button class='yes btn " + yesBtnClass +"' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
-              "   <button class='no btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
+              "   <button class='yes btn " + yesBtnClass +"' ng-click='close(0)'>" + yesBtnTxt + "</button>" +
+              "   <button class='no btn " + noBtnClass +"' ng-click='close(1)'>" + noBtnTxt + "</button>" +
               "   <button class='cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
               "</div>";
           return this.showModalDialog(callback, template);

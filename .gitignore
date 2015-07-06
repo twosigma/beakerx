@@ -40,6 +40,7 @@ launcher/electron/app/main-menu-template.js
 tags
 launcher/electron/BeakerOSX
 launcher/electron/create-dmg
+launcher/electron/_MACOSX
 launcher/windows/python
 
 core/src/main/web/vendor/bower_components/jquery/test

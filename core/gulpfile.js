@@ -130,7 +130,7 @@ gulp.task("buildSingleOutDispJs", function() {
 
 gulp.task("compileBeakerScss", function() {
   return gulp.src(Path.join(rootPath, "**.scss"))
-  .pipe(sourcemaps.init())
+  .pipe(sourcemaps.init('./'))
   .pipe(sass().on('error', handleError))
   .pipe(importCss())
   .pipe(stripCssComments())
@@ -280,7 +280,7 @@ gulp.task('buildIndexTemplate', function () {
         block.pipe(gulpSrc())
           .pipe(sourcemaps.init({loadMaps: true}))
           .pipe(concat('beakerVendor.js'))
-          .pipe(sourcemaps.write())
+          .pipe(sourcemaps.write('./'))
           .pipe(gulp.dest(buildPath));
         block.end('app/dist/beakerVendor.js');
       }),
@@ -295,7 +295,7 @@ gulp.task('buildIndexTemplate', function () {
 //            .pipe(stripJsComments())
             .pipe(concat('beakerApp.js'))
             .pipe(header(banner ))
-            .pipe(sourcemaps.write())
+            .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest(buildPath));
           block.end('app/dist/beakerApp.js');
         }

@@ -153,7 +153,8 @@
       'bk.controlPanel',
       'bk.mainApp',
       'bk.helper',
-      'bk.utils'
+      'bk.utils',
+      'bk.electron'
     ]);
 
 
@@ -272,7 +273,7 @@
       }
     });
 
-    beaker.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper) {
+    beaker.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkElectron) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {

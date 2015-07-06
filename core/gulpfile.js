@@ -217,7 +217,7 @@ gulp.task('buildOutputDisplayTemplate', function () {
     }
 
     jsfiles = '';
-    for (var i=0; i<jsarray.length; i++) {
+    for (i=0; i<jsarray.length; i++) {
       jsfiles = jsfiles + '"' + jsarray[i] + '", ';
     }
   } else {

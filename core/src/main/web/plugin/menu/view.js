@@ -47,7 +47,7 @@ define(function(require, exports, module) {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
         return notebookViewModel.isAdvancedMode();
       },
-      action: function(origin) {
+      action: function() {
         var notebookViewModel = bkHelper.getBkNotebookViewModel();
         notebookViewModel.toggleAdvancedMode();
         bkHelper.httpPost('../beaker/rest/util/setPreference', {

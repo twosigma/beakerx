@@ -187,7 +187,7 @@ function getFilePathArrayFromList(basePath, listPath) {
   return fs.readFileSync(basePath + listPath)
   .toString().split('\n')
   .filter(function(n) {
-    return n !== undefined && n.trim() !== ''
+    return n !== undefined && n.trim() !== '';
   });
 }
 
@@ -217,7 +217,7 @@ gulp.task('buildOutputDisplayTemplate', function () {
     }
 
     jsfiles = '';
-    for (var i=0; i<jsarray.length; i++) {
+    for (i=0; i<jsarray.length; i++) {
       jsfiles = jsfiles + '"' + jsarray[i] + '", ';
     }
   } else {

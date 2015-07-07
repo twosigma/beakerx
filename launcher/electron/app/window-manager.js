@@ -73,27 +73,27 @@ module.exports = (function() {
     });
   }
 
-  function newWindow(url, type){
+  function newWindow(url, type) {
     var options;
     var devTools = false;
     switch (type){
       case 'popup':
-      options = popupOptions;
-      break;
+        options = popupOptions;
+        break;
       default:
-      devTools = false;
-      options = defaultOptions;
-      break;
+        devTools = false;
+        options = defaultOptions;
+        break;
     }
     var window = new BrowserWindow(options);
 
     _windows[window.id] = window;
 
-    window.unref = function () {
+    window.unref = function() {
       delete _windows[window.id];
     }
 
-    if (type != 'popup'){
+    if (type != 'popup') {
       // Let smarter windows handle their own close
       window.on('close', function(e) {
         // Start close sequence
@@ -102,18 +102,18 @@ module.exports = (function() {
       });
     }
 
-    window.on('closed', function (e){
+    window.on('closed', function(e) {
       var sessionId = _windowToSession[window.id];
-      _sessionToWindow[sessionId] = null,
-      _windowToSession[window.id] = null
+      _sessionToWindow[sessionId] = null;
+      _windowToSession[window.id] = null;
       window.unref();
     });
 
-    if (devTools){
+    if (devTools) {
       window.toggleDevTools();
     }
 
-    window.webContents.once('did-finish-load', function () {
+    window.webContents.once('did-finish-load', function() {
       window.show();
     });
     window.loadUrl(url);

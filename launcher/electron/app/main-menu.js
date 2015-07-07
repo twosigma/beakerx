@@ -34,9 +34,7 @@ module.exports = (function() {
     },
     {
       label: 'Change server',
-      click: function() {
-        eventEmitter.emit('try-change-server');
-      }
+      click: eventEmitter.emit.bind(eventEmitter, 'try-change-server')
     },
     {
       label: 'Start new local backend',

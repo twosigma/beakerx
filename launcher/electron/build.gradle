@@ -129,8 +129,10 @@ task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
   }
 }
 
-task makeBundle(dependsOn: ['copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython']) {
-  
+task makeBundle(type: Exec, dependsOn: ['copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython']) {
+  if (mac) {
+    commandLine 'codesign', '--deep', '--force', '--verbose', '--sign', "Developer ID Application: Two Sigma Open Source LLC.", 'Beaker.app'
+  }
 }
 
 // OSX build

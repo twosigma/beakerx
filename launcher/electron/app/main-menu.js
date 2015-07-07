@@ -40,7 +40,7 @@ module.exports = (function() {
     },
     {
       label: 'Start new local backend',
-      click: eventEmitter.emit.bind(eventEmitter, 'new-backend');
+      click: eventEmitter.emit.bind(eventEmitter, 'new-backend')
     }
     ]
   },
@@ -49,11 +49,11 @@ module.exports = (function() {
     submenu: [
     {
       label: 'New Empty Notebook',
-      click: eventEmitter.emit.bind(eventEmitter, 'new-empty-notebook');
+      click: eventEmitter.emit.bind(eventEmitter, 'new-empty-notebook')
     },
     {
       label: 'New Default Notebook',
-      click: eventEmitter.emit.bind(eventEmitter, 'new-default-notebook');
+      click: eventEmitter.emit.bind(eventEmitter, 'new-default-notebook')
     }
     ]
   }

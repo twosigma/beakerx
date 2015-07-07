@@ -312,7 +312,7 @@
             name = "/session/empty";
           }
           if (bkUtils.isElectron){
-            bkHelper.openWindow(name);
+            bkHelper.openWindow(name, 'notebook');
             return;
           }
           if ($location.$$path === name) {

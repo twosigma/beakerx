@@ -26,6 +26,8 @@ module.exports = (function() {
 
   var client;
 
+  var changeServerDialogId;
+
   // Initialize cometd
 
   ipc.on('window-session', function(event, msg) {
@@ -76,14 +78,11 @@ module.exports = (function() {
   function newWindow(url, type) {
     var options;
     var devTools = false;
-    switch (type){
-      case 'popup':
-        options = popupOptions;
-        break;
-      default:
-        devTools = false;
-        options = defaultOptions;
-        break;
+    if (type && type.startsWith('popup')) {
+      options = popupOptions;
+    } else {
+      devTools = false;
+      options = defaultOptions;
     }
     var window = new BrowserWindow(options);
 
@@ -93,21 +92,39 @@ module.exports = (function() {
       delete _windows[window.id];
     }
 
-    if (type != 'popup') {
-      // Let smarter windows handle their own close
-      window.on('close', function(e) {
-        // Start close sequence
-        window.webContents.send('close-window');
-        e.preventDefault();
-      });
+    switch (type) {
+      case 'notebook':
+        // Let smarter windows handle their own close
+        window.on('close', function(e) {
+          // Start close sequence
+          window.webContents.send('close-window');
+          e.preventDefault();
+        });
+        window.on('closed', function(e) {
+          console.log('destroy!');
+          var sessionId = _windowToSession[window.id];
+          _sessionToWindow[sessionId] = null;
+          _windowToSession[window.id] = null;
+          window.unref();
+        });
+        break;
+      case 'control-panel':
+        break;
+      case 'popup-change-server-dialog':
+        window.on('close', function(e) {
+          changeServerDialogId = undefined;
+        });
+        break;
+      default:
+        break;
     }
 
-    window.on('closed', function(e) {
-      var sessionId = _windowToSession[window.id];
-      _sessionToWindow[sessionId] = null;
-      _windowToSession[window.id] = null;
-      window.unref();
-    });
+    if (type != 'notebook') {
+      window.on('closed', function(e) {
+        console.log('Destroy!');
+        window.unref();
+      });
+    }
 
     if (devTools) {
       window.toggleDevTools();
@@ -117,6 +134,18 @@ module.exports = (function() {
       window.show();
     });
     window.loadUrl(url);
+
+    return window;
+  }
+
+  function openChangeServerDialog() {
+    if ((typeof changeServerDialogId) != 'undefined') {
+      BrowserWindow.fromId(changeServerDialogId).focus();
+    } else {
+      var dialog = newWindow('file://' + __dirname + '/templates/change-server-dialog.html',
+        'popup-change-server-dialog');
+      changeServerDialogId = dialog.id;
+    }
   }
 
   function closeAll() {
@@ -128,6 +157,7 @@ module.exports = (function() {
 
   return {
     newWindow: newWindow,
+    openChangeServerDialog: openChangeServerDialog,
     closeAll: closeAll,
     windows: _windows,
     connectToBackend: connectToBackend

@@ -38,7 +38,7 @@
 
         $scope.gotoControlPanel = function(event) {
           if (bkUtils.isMiddleClick(event)) {
-            bkHelper.openWindow($location.absUrl() + '/beaker');
+            bkHelper.openWindow($location.absUrl() + '/beaker', 'control-panel');
           } else {
             location.reload();
           }
@@ -66,11 +66,6 @@
           window.addEventListener('focus', function() {
             bkElectron.updateMenus(bkMenuPluginManager.getMenus());
           });
-
-          bkElectron.IPC.on('close-window', function() {
-            bkElectron.thisWindow.destroy();
-          });
-
         }
 
         // actions for UI

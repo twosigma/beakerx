@@ -67,12 +67,12 @@
         return bkUtils.getBaseUrl();
       },
       // Open tab/window functions that handle the electron case
-      openWindow: function(path) {
+      openWindow: function(path, type) {
         if (bkUtils.isElectron) {
           if (path[0] == '/'){
-            bkElectron.IPC.send('new-window', bkUtils.getBaseUrl() + path);
+            bkElectron.IPC.send('new-window', bkUtils.getBaseUrl() + path, type);
           } else {
-            bkElectron.IPC.send('new-window', path);
+            bkElectron.IPC.send('new-window', path, type);
           }
         } else {
           window.open(path);
@@ -163,8 +163,7 @@
             }
             bkUtils.httpPost('rest/file-io/setWorkingDirectory', {dir: path});
             // Format this accordingly!
-            bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?uri=' + path);
-            // bkCoreManager.openNotebook(path, uriType, readOnly, format);
+            bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?uri=' + path, 'notebook');
           });
         } else {
           var strategy = bkHelper.getFileSystemFileChooserStrategy();

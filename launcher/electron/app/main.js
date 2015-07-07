@@ -61,11 +61,11 @@ mainMenu.on('quit', function() {
 });
 
 ipc.on('try-change-server', function() {
-  windowManager.newWindow('file://' + __dirname + '/templates/change-server-dialog.html', 'popup');
+  windowManager.openChangeServerDialog();
 });
 
 mainMenu.on('try-change-server', function() {
-  windowManager.newWindow('file://' + __dirname + '/templates/change-server-dialog.html', 'popup');
+  windowManager.openChangeServerDialog();
 });
 
 ipc.on('change-server', function(e, address) {
@@ -87,15 +87,15 @@ mainMenu.on('new-backend', function() {
 });
 
 mainMenu.on('new-empty-notebook', function() {
-  windowManager.newWindow(backendRunner.getUrl() + 'beaker/#/session/empty');
+  windowManager.newWindow(backendRunner.getUrl() + 'beaker/#/session/empty', 'notebook');
 });
 
 mainMenu.on('new-default-notebook', function() {
-  windowManager.newWindow(backendRunner.getUrl() + 'beaker/#/session/new');
+  windowManager.newWindow(backendRunner.getUrl() + 'beaker/#/session/new', 'notebook');
 });
 
-ipc.on('new-window', function(e, url) {
-  windowManager.newWindow(url);
+ipc.on('new-window', function(e, url, type) {
+  windowManager.newWindow(url, type);
 });
 
 function switchToBackend(address) {

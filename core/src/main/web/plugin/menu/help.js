@@ -24,7 +24,7 @@ define(function(require, exports, module) {
       name: "Tutorial",
       sortorder: 100,
       action: function() {
-        bkHelper.openWindow(bkHelper.getBaseUrl() + '/open?uri=config/tutorial.bkr');
+        bkHelper.openWindow(bkHelper.getBaseUrl() + '/open?uri=config/tutorial.bkr', 'notebook');
       },
       tooltip: "Open the tutorial notebook"
     },

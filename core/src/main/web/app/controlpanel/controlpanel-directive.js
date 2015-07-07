@@ -28,10 +28,9 @@
         var _impl = {
           name: 'bkControlApp',
           showAnonymousTrackingDialog: function() {
-            $scope.isAllowAnonymousTracking = null;
-            if (bkUtils.isElectron) {
-              $scope.$apply();
-            }
+            $scope.$evalAsync(function() {
+              $scope.isAllowAnonymousTracking = null;
+            });
           }
         };
 
@@ -92,7 +91,7 @@
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
         if ((window.beaker === undefined || window.beaker.isEmbedded === undefined) && bkTrack.isNeedPermission()) {
-          bkUtils.httpGet('../beaker/rest/util/getPreference',{
+          bkUtils.httpGet('../beaker/rest/util/getPreference', {
             'preference': 'allow-anonymous-usage-tracking'
           }).then(function(allow) {
             switch (allow.data) {

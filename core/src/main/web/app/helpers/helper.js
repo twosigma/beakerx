@@ -181,6 +181,7 @@
           });
         }
       },
+      Electron: bkElectron,
       // current app
       getCurrentAppName: function() {
         if (!_.isEmpty(getCurrentApp().name)) {

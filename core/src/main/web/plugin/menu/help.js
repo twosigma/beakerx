@@ -50,8 +50,7 @@ define(function(require, exports, module) {
       action: function() {
         var url = 'https://github.com/twosigma/beaker-notebook/issues/new';
         if (bkHelper.isElectron) {
-          var Shell = bkHelper.Electron.Shell;
-          Shell.openExternal(url + '?title=\[Native Beaker\]');
+          bkHelper.Electron.Shell.openExternal(url + '?title=\[Native Beaker\]');
         } else {
           window.open(url);
         }

@@ -214,6 +214,10 @@
           return type + '-cell.html';
         };
 
+        $scope.isMarkdownCell = function() {
+          return $scope.cellmodel.type === 'markdown';
+        };
+
         $scope.isCodeCell = function() {
           return $scope.cellmodel.type == 'code';
         };

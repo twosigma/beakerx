@@ -114,7 +114,7 @@ function connectToBackend() {
   spinUntilReady(backendRunner.getHash() + '/beaker/rest/util/ready', function() {
     windowManager.connectToBackend();
     // Open file if launched with file
-    if (openFile !== undefined) {
+    if ((typeof openFile) !== 'undefined') {
       windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + openFile);
       openFile = null;
     } else {

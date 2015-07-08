@@ -38,12 +38,14 @@
           var closeSession = function() {
             if (notebookModel && notebookModel.evaluators) {
               for (var i = 0; i < notebookModel.evaluators.length; ++i) {
+                // XXX Outdated notebook model is used, consider getting most recent version from backend
                 bkEvaluatePluginManager.createEvaluatorThenExit(notebookModel.evaluators[i]);
               }
             }
             return bkSession.close(session.id).then(function() {
               $scope.reloadSessionsList();
             });
+
           };
           bkUtils.httpGet("rest/session-backup/getEdited", {
             sessionid: session.id
@@ -102,7 +104,6 @@
                     saveSession().then(closeSession, savingFailedHandler);
                   },
                   function() { // no
-                    console.log("close without saving");
                     closeSession();
                   },
                   function() { // cancel

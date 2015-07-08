@@ -67,6 +67,21 @@ http {
       return 301 %(start_page)s;
     }
 
+    # version get request
+    location = /version {
+      add_header Access-Control-Allow-Origin *;
+      return 301 "/%(urlhash)sbeaker/rest/util/version";
+    }
+
+    location /%(urlhash)sbeaker/rest/util/version {
+      proxy_pass http://127.0.0.1:%(port_beaker)s/rest/util/version;
+      proxy_http_version 1.1;
+      proxy_set_header Authorization "Basic %(auth)s";
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
+      add_header Access-Control-Allow-Origin *;
+    }
+
     # user directory
     location /user {
       sendfile off;

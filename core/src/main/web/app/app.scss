@@ -29,13 +29,10 @@
 @import "styles/modal";
 @import "styles/plugin-manager";
 @import "styles/vendor_overrides";
+@import "styles/dialogs";
 
 root {
     display: block;
-}
-
-html body {
-    padding-top: $navbar-height*2;
 }
 
 body.dragover:after {
@@ -72,6 +69,11 @@ body.dragover:after {
     padding: 0 30px;
     margin-top: 10px;
     box-sizing: border-box;
+    padding-top: $navbar-height*2;
+}
+
+.notebook-container.electron-mode {
+  padding-top: 0;
 }
 
 .output_subarea {

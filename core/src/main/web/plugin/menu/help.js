@@ -24,7 +24,7 @@ define(function(require, exports, module) {
       name: "Tutorial",
       sortorder: 100,
       action: function() {
-        bkHelper.openNotebook("config/tutorial.bkr", undefined, true);
+        bkHelper.openWindow(bkHelper.getBaseUrl() + '/open?uri=config/tutorial.bkr', 'notebook');
       },
       tooltip: "Open the tutorial notebook"
     },
@@ -40,7 +40,7 @@ define(function(require, exports, module) {
       name: "Keyboard shortcuts",
       sortorder: 110,
       action: function() {
-        window.open("./keyboardShortcuts.html");
+        bkHelper.openStaticWindow('keyboardshortcuts.html');
       },
       tooltip: "Show keyboard shortcuts"
     },
@@ -48,7 +48,12 @@ define(function(require, exports, module) {
       name: "Report a bug or feature request",
       sortorder: 130,
       action: function() {
-        window.open("https://github.com/twosigma/beaker-notebook/issues/new");
+        var url = 'https://github.com/twosigma/beaker-notebook/issues/new';
+        if (bkHelper.isElectron) {
+          bkHelper.Electron.Shell.openExternal(url + '?title=\[Native Beaker\]');
+        } else {
+          window.open(url);
+        }
       },
       tooltip: "Log an issue in GitHub"
     }

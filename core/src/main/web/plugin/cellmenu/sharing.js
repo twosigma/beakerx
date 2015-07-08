@@ -27,7 +27,7 @@ define(function(require, exports, module) {
     })
     .success(function(reply) {
       bkHelper.clearStatus('Sharing to Web');
-      window.open(reply);
+      bkHelper.openBrowserWindow(reply);
     })
     .error(function(msg) {
       bkHelper.clearStatus('Sharing to Web');

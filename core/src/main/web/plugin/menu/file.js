@@ -35,7 +35,7 @@ define(function(require, exports, module) {
       sortorder: 105,
       id: "new-beaker-window-menuitem",
       action: function() {
-        window.open('/beaker', '_blank');
+        bkHelper.openWindow('/beaker', 'control-panel');
       },
       tooltip: "Open a new browser tab or window to work on more than one notebook at the same time"
     },

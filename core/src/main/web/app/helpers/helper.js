@@ -20,7 +20,7 @@
  */
 (function() {
   'use strict';
-  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share', 'bk.debug']);
+  var module = angular.module('bk.helper', ['bk.utils', 'bk.core', 'bk.share', 'bk.debug', 'bk.electron']);
   /**
    * bkHelper
    * - should be the only thing plugins depend on to interact with general beaker stuffs (other than
@@ -30,7 +30,7 @@
    *   plugins dynamically
    * - it mostly should just be a subset of bkUtil
    */
-  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare, bkDebug) {
+  module.factory('bkHelper', function(bkUtils, bkCoreManager, bkShare, bkDebug, bkElectron) {
     var getCurrentApp = function() {
       return bkCoreManager.getBkApp();
     };
@@ -38,7 +38,7 @@
       if (getCurrentApp().getBkNotebookWidget) {
         return getCurrentApp().getBkNotebookWidget();
       } else {
-        console.error("Current app doesn't support getBkNotebookWidget");
+        console.error('Current app doesn\'t support getBkNotebookWidget');
       }
     };
 
@@ -63,7 +63,124 @@
       newSession: function(empty) {
         return bkCoreManager.newSession(empty);
       },
-
+      getBaseUrl: function() {
+        return bkUtils.getBaseUrl();
+      },
+      // Open tab/window functions that handle the electron case
+      openWindow: function(path, type) {
+        if (bkUtils.isElectron) {
+          if (path[0] == '/'){
+            bkElectron.IPC.send('new-window', bkUtils.getBaseUrl() + path, type);
+          } else {
+            bkElectron.IPC.send('new-window', path, type);
+          }
+        } else {
+          window.open(path);
+        }
+      },
+      openStaticWindow: function(path) {
+        if (bkHelper.isElectron) {
+          var newWindow = new bkElectron.BrowserWindow({});
+          newWindow.loadUrl(bkHelper.serverUrl('beaker/' + path));
+        } else {
+          window.open('./' + path);
+        }
+      },
+      openBrowserWindow: function(path) {
+        if (bkUtils.isElectron) {
+          bkElectron.Shell.openExternal(path);
+        } else {
+          window.open(path);
+        }
+      },
+      // Save file with electron or web dialog
+      saveWithDialog: function(thenable) {
+        if (bkUtils.isElectron) {
+          var BrowserWindow = bkElectron.BrowserWindow;
+          var Dialog = bkElectron.Dialog;
+          var thisWindow = BrowserWindow.getFocusedWindow();
+          var path = showElectronSaveDialog(thisWindow, options).then(function(path) {
+            if (path === undefined) {
+              saveFailed('cancelled');
+              return;
+            }
+            bkUtils.httpPost('rest/file-io/setWorkingDirectory', {dir: path});
+            var ret = {
+              uri: path,
+              uriType: 'file'
+            };
+            bkSessionManager.dumpDisplayStatus();
+            var saveData = bkSessionManager.getSaveData();
+            var fileSaver = bkCoreManager.getFileSaver(ret.uriType);
+            var content = saveData.notebookModelAsString;
+            fileSaver.save(ret.uri, content, true).then(function() {
+              thenable.resolve(ret);
+            }, thenable.reject);
+          });
+          return thenable.promise.then(saveDone, saveFailed);
+        } else {
+          thenable = savePromptChooseUri();
+          return thenable.then(saveDone, saveFailed);
+        }
+      },
+      showElectronSaveDialog: function() {
+        var BrowserWindow = bkElectron.BrowserWindow;
+        var Dialog = bkElectron.Dialog;
+        return bkUtils.getWorkingDirectory().then(function(defaultPath) {
+          var options = {
+            title: 'Save Beaker Notebook',
+            defaultPath: defaultPath,
+            filters: [
+              {name: 'Beaker Notebook Files', extensions: ['bkr']}
+            ]
+          };
+          var path = Dialog.showSaveDialog(options);
+          return path;
+        });
+      },
+      // Open file with electron or web dialog
+      openWithDialog: function(ext, uriType, readOnly, format) {
+        if (bkUtils.isElectron) {
+          var BrowserWindow = bkElectron.BrowserWindow;
+          var Dialog = bkElectron.Dialog;
+          return bkUtils.getWorkingDirectory().then(function(defaultPath) {
+            var options = {
+              title: 'Open Beaker Notebook',
+              defaultPath: defaultPath,
+              multiSelections: false,
+              filters: [
+                {name: 'Beaker Notebook Files', extensions: [ext]}
+              ]
+            };
+            // Note that the open dialog return an array of paths (strings)
+            var path = Dialog.showOpenDialog(options);
+            if (path === undefined) {
+              console.log('Open cancelled');
+              return;
+            } else {
+              // For now, multiSelections are off, only get the first
+              path = path[0];
+            }
+            bkUtils.httpPost('rest/file-io/setWorkingDirectory', {dir: path});
+            // Format this accordingly!
+            bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?uri=' + path, 'notebook');
+          });
+        } else {
+          var strategy = bkHelper.getFileSystemFileChooserStrategy();
+          strategy.treeViewfs.extFilter = [ext];
+          return bkUtils.getHomeDirectory().then(function(homeDir) {
+            bkCoreManager.showModalDialog(
+                bkHelper.openNotebook,
+                JST['template/opennotebook']({homedir: homeDir, extension: '.' + ext}),
+                strategy,
+                uriType,
+                readOnly,
+                format
+            );
+          });
+        }
+      },
+      Electron: bkElectron,
       // current app
       getCurrentAppName: function() {
         if (!_.isEmpty(getCurrentApp().name)) {
@@ -342,6 +459,9 @@
       getHomeDirectory: function() {
         return bkUtils.getHomeDirectory();
       },
+      getWorkingDirectory: function() {
+        return bkUtils.getWorkingDirectory();
+      },
       saveFile: function(path, contentAsJson, overwrite) {
         return bkUtils.saveFile(path, contentAsJson, overwrite);
       },
@@ -417,56 +537,56 @@
 
       // other JS utils
       updateDocumentModelFromDOM: function(id) {
-	  function convertCanvasToImage(elem) {
-	      if (elem.nodeName == "CANVAS") {
-		  var img = document.createElement("img");
-		  img.src = elem.toDataURL();
-		  return img;
-	      }
-	      var childNodes = elem.childNodes;
-	      for (var i = 0; i < childNodes.length; i++) {
-		  var result = convertCanvasToImage(childNodes[i]);
-		  if (result != childNodes[i]) {
-		      elem.replaceChild(result, childNodes[i]);
-		  }
-	      }
-	      return elem;
-	  }
-          // 1) find the cell that contains elem
-          var elem = $("#" + id).closest("bk-cell");
-          if (elem === undefined || elem[0] === undefined) {
-            console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-            return;
+        function convertCanvasToImage(elem) {
+          if (elem.nodeName == 'CANVAS') {
+            var img = document.createElement('img');
+            img.src = elem.toDataURL();
+            return img;
           }
-          var cellid = elem[0].getAttribute("cellid");
-          if (cellid === undefined) {
-            console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-            return;
+          var childNodes = elem.childNodes;
+          for (var i = 0; i < childNodes.length; i++) {
+            var result = convertCanvasToImage(childNodes[i]);
+            if (result != childNodes[i]) {
+              elem.replaceChild(result, childNodes[i]);
+            }
           }
-          var body = elem.find( "bk-output-display[type='Html'] div div" );
-          if (body === undefined || body[0] === undefined) {
-            console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-            return;
-          }
-	  // 2.5) search for any canvas elements in body and replace each with an image.
-	  body = convertCanvasToImage(body[0]);
+          return elem;
+        }
+        // 1) find the cell that contains elem
+        var elem = $("#" + id).closest("bk-cell");
+        if (elem === undefined || elem[0] === undefined) {
+          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
+          return;
+        }
+        var cellid = elem[0].getAttribute("cellid");
+        if (cellid === undefined) {
+          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
+          return;
+        }
+        var body = elem.find( "bk-output-display[type='Html'] div div" );
+        if (body === undefined || body[0] === undefined) {
+          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
+          return;
+        }
+        // 2.5) search for any canvas elements in body and replace each with an image.
+        body = convertCanvasToImage(body[0]);
 
-          // 2) convert that part of the DOM to a string
-          var newOutput = body.innerHTML;
+        // 2) convert that part of the DOM to a string
+        var newOutput = body.innerHTML;
 
-          // 3) set the result.object to that string.
-          var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);
-          if (cell === undefined) {
-            console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-            return;
-          }
+        // 3) set the result.object to that string.
+        var cell = bkCoreManager.getNotebookCellManager().getCell(cellid);
+        if (cell === undefined) {
+          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
+          return;
+        }
 
-          var res = cell.output.result;
-          if (res.innertype === "Html") {
-            res.object = newOutput;
-          } else {
-            console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
-          }
+        var res = cell.output.result;
+        if (res.innertype === "Html") {
+          res.object = newOutput;
+        } else {
+          console.log("ERROR: cannot find an Html cell containing the element '" + id + "'.");
+        }
       },
 
       // bkShare
@@ -485,7 +605,7 @@
               payload: undefined
             }
           };
-          modelOutput.result = progressObj;
+        modelOutput.result = progressObj;
       },
 
       setupCancellingOutput: function(modelOutput) {
@@ -671,7 +791,8 @@
             }
         };
         return cometdUtil;
-      }
+      },
+      isElectron: bkUtils.isElectron
     };
 
     return bkHelper;

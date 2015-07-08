@@ -19,7 +19,7 @@
   var module = angular.module('bk.controlPanel');
 
   module.directive('bkControlPanel', function(
-        bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, $location) {
+        bkUtils, bkCoreManager, bkSession, bkMenuPluginManager, bkTrack, bkElectron, $location) {
     return {
       restrict: 'E',
       template: JST['controlpanel/controlpanel'](),
@@ -28,7 +28,9 @@
         var _impl = {
           name: 'bkControlApp',
           showAnonymousTrackingDialog: function() {
-            $scope.isAllowAnonymousTracking = null;
+            $scope.$evalAsync(function() {
+              $scope.isAllowAnonymousTracking = null;
+            });
           }
         };
 
@@ -36,7 +38,7 @@
 
         $scope.gotoControlPanel = function(event) {
           if (bkUtils.isMiddleClick(event)) {
-            window.open($location.absUrl() + '/beaker');
+            bkHelper.openWindow($location.absUrl() + '/beaker', 'control-panel');
           } else {
             location.reload();
           }
@@ -60,6 +62,12 @@
           return bkMenuPluginManager.getMenus();
         };
 
+        if (bkUtils.isElectron){
+          window.addEventListener('focus', function() {
+            bkElectron.updateMenus(bkMenuPluginManager.getMenus());
+          });
+        }
+
         // actions for UI
         $scope.newNotebook = function() {
           bkCoreManager.newSession(false);
@@ -71,10 +79,14 @@
           bkCoreManager.openNotebook('config/tutorial.bkr', undefined, true);
         };
 
+        $scope.getElectronMode = function() {
+          return bkUtils.isElectron;
+        }
+
         // ask for tracking permission
         $scope.isAllowAnonymousTracking = false;
         if ((window.beaker === undefined || window.beaker.isEmbedded === undefined) && bkTrack.isNeedPermission()) {
-          bkUtils.httpGet('../beaker/rest/util/getPreference',{
+          bkUtils.httpGet('../beaker/rest/util/getPreference', {
             'preference': 'allow-anonymous-usage-tracking'
           }).then(function(allow) {
             switch (allow.data) {
@@ -137,6 +149,8 @@
               $scope.newEmptyNotebook();
             });
             return false;
+          } else if ((e.which === 123) && bkUtils.isElectron) { // F12
+            bkElectron.toggleDevTools();
           }
         }
         $(document).bind('keydown', keydownHandler);

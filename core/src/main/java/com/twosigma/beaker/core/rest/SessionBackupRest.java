@@ -106,11 +106,26 @@ public class SessionBackupRest {
   private final Map<String, Session> sessions = new HashMap<>();
   private final List<Plugin> plugins = new ArrayList<>();
 
-  private void notifyChangesToFrontend(){
+  private void refreshFrontend() {
+    // Notify client of changes in session
     ServerChannel sessionChangeChannel;
     if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionChange")) != null)) {
       Map<String, Object> data = new HashMap<String, Object>();
       sessionChangeChannel.publish(this.localSession, data, null);
+    } else {
+      System.out.println("Warning: Caught NPE of unknown origin.");
+    }
+  }
+
+  private void refreshElectron(String sessionid) {
+    // Notify client of changes in session
+    ServerChannel sessionChangeChannel;
+    if ((bayeux != null) && ((sessionChangeChannel = bayeux.getChannel("/sessionClosed")) != null)) {
+      Map<String, Object> data = new HashMap<String, Object>();
+      data.put("id", sessionid);
+      sessionChangeChannel.publish(this.localSession, data, null);
+    } else {
+      System.out.println("Warning: Caught NPE of unknown origin.");
     }
   }
 
@@ -134,7 +149,8 @@ public class SessionBackupRest {
     this.sessions.put(sessionId, new Session(
         notebookUri, uriType, readOnly, format, notebookModelJson, edited, date));
 
-    notifyChangesToFrontend();
+    // Notify client of changes in session
+    refreshFrontend();
 
     try {
       recordToFile(sessionId, notebookUri, notebookModelJson);
@@ -170,7 +186,8 @@ public class SessionBackupRest {
       @FormParam("sessionid") String sessionID) {
     this.sessions.remove(sessionID);
 
-    notifyChangesToFrontend();
+    refreshFrontend();
+    refreshElectron(sessionID);
   }
 
   @GET

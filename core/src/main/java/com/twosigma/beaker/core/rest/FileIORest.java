@@ -80,6 +80,23 @@ public class FileIORest {
     this.searchDirs = bkConfig.getFileSearchDirs();
   }
 
+  private String workingDirectory = System.getProperty("user.home");
+  // private String workingDirectory = "/User/diego/notebook";
+
+  @GET
+  @Path("getWorkingDirectory")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String getWorkingDirectory() {
+    return workingDirectory;
+  }
+
+  @POST
+  @Path("setWorkingDirectory")
+  public void setWorkingDirectory(
+      @FormParam("dir") String dir) {
+    this.workingDirectory = dir; 
+  }
+
   @GET
   @Path("getHomeDirectory")
   @Produces(MediaType.TEXT_PLAIN)

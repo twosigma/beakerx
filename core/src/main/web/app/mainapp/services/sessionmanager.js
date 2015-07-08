@@ -24,7 +24,8 @@
     'bk.notebookCellModelManager',
     'bk.notebookNamespaceModelManager',
     'bk.recentMenu',
-    'bk.evaluatorManager'
+    'bk.evaluatorManager',
+    'bk.electron'
   ]);
 
   module.factory('bkSessionManager', function(
@@ -33,7 +34,8 @@
       bkNotebookCellModelManager,
       bkNotebookNamespaceModelManager,
       bkEvaluatorManager,
-      bkRecentMenu) {
+      bkRecentMenu,
+      bkElectron) {
 
     var ImageIcon = function(data) {
       if (data === undefined || data.type !== "ImageIcon") {
@@ -416,6 +418,7 @@
     var _sessionId = null;
     var _edited = false;
     var _needsBackup = false;
+    var _saveDir = bkUtils.getHomeDirectory(); 
 
     var BeakerObject = function(nbmodel) {
       this.knownBeakerVars = { };
@@ -851,6 +854,14 @@
         // check inputs
         if (!sessionId) {
           sessionId = bkUtils.generateId(6);
+        }
+
+        // tell main thread that session lives in this window
+        if (bkUtils.isElectron) {
+          bkElectron.IPC.send('window-session', {
+            windowId: bkElectron.remote.getCurrentWindow().id,
+            sessionId: sessionId
+          });
         }
 
         // reset

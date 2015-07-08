@@ -66,11 +66,27 @@ public class UtilRest {
     resetConfig();
   }
 
+  // Clients can spin on this until the backend's REST endpoints are ready 
+  @GET
+  @Path("ready")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String ready() 
+  {
+    return "ok";
+  }
+
   @GET
   @Path("whoami")
   @Produces(MediaType.TEXT_PLAIN)
   public String whoami(@Context HttpServletRequest request) {
     return "\"" + System.getProperty("user.name") + "\"";
+  }
+
+  @GET
+  @Path("version")
+  @Produces(MediaType.TEXT_PLAIN)
+  public String version(@Context HttpServletRequest request) {
+    return "Beaker version " + this.bkConfig.getVersion();
   }
 
   @GET

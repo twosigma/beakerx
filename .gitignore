@@ -27,6 +27,22 @@ core/config/hash
 core/src/main/web/index.html
 /bin/
 
+launcher/electron/tools.jar
+launcher/electron/jre.zip
+launcher/electron/jre
+launcher/electron/dist
+launcher/electron/electron-v0.28.1-darwin-x64
+launcher/electron/electron-v0.28.1-darwin-x64.zip
+core/src/main/web/animation.gif
+core/src/main/web/foo.html
+launcher/electron/Beaker.app
+launcher/electron/app/main-menu-template.js
+tags
+launcher/electron/BeakerOSX
+launcher/electron/create-dmg
+launcher/electron/_MACOSX
+launcher/windows/python
+
 core/src/main/web/vendor/bower_components/jquery/test
 core/src/main/web/vendor/bower_components/jquery/speed
 core/src/main/web/vendor/bower_components/jquery/src

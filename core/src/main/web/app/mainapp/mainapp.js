@@ -34,7 +34,8 @@
                                              'bk.evaluatorManager',
                                              'bk.evaluateJobManager',
                                              'bk.notebookRouter',
-                                             'bk.notebook'
+                                             'bk.notebook',
+                                             'bk.electron'
                                              ]);
 
   /**
@@ -54,7 +55,9 @@
       bkNotebookVersionManager,
       bkEvaluatorManager,
       bkEvaluateJobManager,
+      bkElectron,
       $location) {
+
     return {
       restrict: 'E',
       template: JST["template/mainapp/mainapp"](),
@@ -68,22 +71,38 @@
       },
       controller: function($scope, $timeout) {
         var showLoadingStatusMessage = function(message, nodigest) {
-          $scope.loadingmsg = message;
-          if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
-            $scope.$digest();
+          if (bkHelper.isElectron) {
+            bkElectron.setStatus(message);
+          } else {
+            $scope.loadingmsg = message;
+            if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
+              $scope.$digest();
+          }
         };
         var updateLoadingStatusMessage = function() {
+          if (bkHelper.isElectron) {
+            return;
+          }
           if (!($scope.$$phase || $scope.$root.$$phase))
             $scope.$digest();
         };
         var getLoadingStatusMessage = function() {
+          if (bkHelper.isElectron) {
+            return bkElectron.getStatus();
+          }
           return $scope.loadingmsg;
         };
         var clrLoadingStatusMessage = function(message, nodigest) {
-          if ($scope.loadingmsg === message) {
-            $scope.loadingmsg = "";
-            if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
-              $scope.$digest();
+          if (bkHelper.isElectron) {
+            if (bkElectron.getStatus() === message) {
+              bkElectron.setStatus('');
+            }
+          } else {
+            if ($scope.loadingmsg === message) {
+              $scope.loadingmsg = "";
+              if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
+                $scope.$digest();
+            }
           }
         };
         var showTransientStatusMessage = function(message, nodigest) {
@@ -541,7 +560,52 @@
             }
           };
 
+          function _closeNotebook() {
+            var self = this;
+            var closeSession = function() {
+              bkSessionManager.close().then(function() {
+                bkCoreManager.gotoControlPanel();
+              });
+            };
+            if (bkSessionManager.isNotebookModelEdited() === false) {
+              closeSession();
+            } else {
+              var notebookTitle = bkSessionManager.getNotebookTitle();
+              bkHelper.show3ButtonModal(
+                  "Do you want to save " + notebookTitle + "?",
+                  "Confirm close",
+                  function() {
+                    self.saveNotebook().then(closeSession);
+                  },
+                  function() {
+                    closeSession();
+                  },
+                  null, "Save", "Don't save"
+              );
+            }
+          };
+
+          function closeNotebook() {
+            if (bkEvaluateJobManager.isAnyInProgress() ) {
+              bkCoreManager.show2ButtonModal(
+                  "All running and pending cells will be cancelled.",
+                  "Warning!",
+                  function() {
+                    bkEvaluateJobManager.cancelAll().then(function() {
+                      self._closeNotebook();
+                    }
+                  ); });
+            } else
+              _closeNotebook();
+          };
+
           var evalCodeId = 0;
+
+          if (bkUtils.isElectron) {
+            bkElectron.IPC.on('close-window', function() {
+              closeNotebook();
+            });
+          }
 
           return {
             name: "bkNotebookApp",
@@ -588,7 +652,43 @@
                   return deferred.promise;
                 }, 1);
               } else {
-                thenable = savePromptChooseUri();
+                if (bkUtils.isElectron){
+                  var BrowserWindow = bkElectron.BrowserWindow;
+                  var Dialog = bkElectron.Dialog;
+                  var thisWindow = bkElectron.thisWindow;
+                  var deferred = bkUtils.newDeferred();
+                  bkUtils.getWorkingDirectory().then(function(defaultPath) {
+                    var options = {
+                      title: 'Save Beaker Notebook',
+                      defaultPath: defaultPath,
+                      filters: [
+                        { name: 'Beaker Notebook Files', extensions: ['bkr'] }
+                      ]
+                    };
+                    var path = Dialog.showSaveDialog(thisWindow, options);
+                    if (path === undefined){
+                      saveFailed('cancelled');
+                      return;
+                    }
+                    bkUtils.httpPost('rest/file-io/setWorkingDirectory', { dir: path });
+                    var ret = {
+                      uri: path,
+                      uriType: 'file'
+                    };
+                    bkSessionManager.dumpDisplayStatus();
+                    var saveData = bkSessionManager.getSaveData();
+                    var fileSaver = bkCoreManager.getFileSaver(ret.uriType);
+                    var content = saveData.notebookModelAsString;
+                    fileSaver.save(ret.uri, content, true).then(function() {
+                      deferred.resolve(ret);
+                    }, function(reason) {
+                      deferred.reject(reason);
+                    });
+                  });
+                  thenable = deferred.promise;
+                } else {
+                  thenable = savePromptChooseUri();
+                }
               }
               return thenable.then(saveDone, saveFailed);
             },
@@ -600,45 +700,8 @@
               saveStart();
               return savePromptIfOverwrite(notebookUri, uriType).then(saveDone, saveFailed);
             },
-            closeNotebook: function() {
-              var self = this;
-              if (bkEvaluateJobManager.isAnyInProgress() ) {
-                bkCoreManager.show2ButtonModal(
-                    "All running and pending cells will be cancelled.",
-                    "Warning!",
-                    function() {
-                      bkEvaluateJobManager.cancelAll().then(function() {
-                        self._closeNotebook();
-                      }
-                    ); });
-              } else
-                self._closeNotebook();
-            },
-            _closeNotebook: function() {
-              var self = this;
-              var closeSession = function() {
-                bkSessionManager.close().then(function() {
-                  bkCoreManager.gotoControlPanel();
-                });
-              };
-              if (bkSessionManager.isNotebookModelEdited() === false) {
-                closeSession();
-              } else {
-                var notebookTitle = bkSessionManager.getNotebookTitle();
-                bkHelper.show3ButtonModal(
-                    "Do you want to save " + notebookTitle + "?",
-                    "Confirm close",
-                    function() {
-                      self.saveNotebook().then(closeSession);
-                    },
-                    function() {
-                      console.log("close without saving");
-                      closeSession();
-                    },
-                    null, "Save", "Don't save"
-                );
-              }
-            },
+            closeNotebook: closeNotebook,
+            _closeNotebook: _closeNotebook,
             collapseAllSections: function() {
               _.each(this.getNotebookModel().cells, function(cell) {
                 if (cell.type == "section") {
@@ -959,9 +1022,14 @@
               title;
 
           title = filename;
-          if (edited) title = '*' + title;
+          if (edited) {
+            title = '*' + title;
+          }
 
           document.title = title;
+          if (bkHelper.isElectron) {
+            bkElectron.thisWindow.pageTitle = title;
+          }
         };
 
         $scope.isEdited = function() {
@@ -990,6 +1058,11 @@
         $scope.getMenus = function() {
           return bkMenuPluginManager.getMenus();
         };
+        if (bkUtils.isElectron) {
+          window.addEventListener('focus', function() {
+            bkElectron.updateMenus(bkMenuPluginManager.getMenus());
+          });
+        }
         var keydownHandler = function(e) {
           if (e.ctrlKey && !e.altKey && (e.which === 83)) { // Ctrl + s
             e.preventDefault();
@@ -1020,6 +1093,8 @@
                 bkSessionManager.redo();
               });
               return false;
+            } else if (e.which === 123){ // F12
+              bkElectron.toggleDevTools();
             }
             // TODO implement global redo
           }
@@ -1056,6 +1131,10 @@
             bkCoreManager.gotoControlPanel();
           }
         };
+
+        $scope.getElectronMode = function() {
+          return bkUtils.isElectron;
+        }
 
         $scope.filename = function() {
           return bkSessionManager.getNotebookTitle();

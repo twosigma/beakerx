@@ -28,7 +28,8 @@
     'bk.utils',
     'bk.recentMenu',
     'bk.notebookCellModelManager',
-    'bk.treeView'
+    'bk.treeView',
+    'bk.electron'
   ]);
 
   /**
@@ -47,6 +48,7 @@
       bkUtils,
       bkRecentMenu,
       bkNotebookCellModelManager,
+      bkElectron,
       modalDialogOp) {
 
     var FileSystemFileChooserStrategy = function (){
@@ -627,8 +629,7 @@
       getNotebookCellManager: function() {
         return bkNotebookCellModelManager;
       },
-      // general
-      showModalDialog: function(callback, template, strategy) {
+      showModalDialog: function(callback, template, strategy, uriType, readOnly, format) {
         var options = {
           windowClass: 'beaker-sandbox',
           backdropClass: 'beaker-sandbox',
@@ -666,7 +667,7 @@
           removeSubmitListener();
 
           if (callback) {
-            callback(result);
+            callback(result, uriType, readOnly, format);
           }
         }).catch(function() {
           removeSubmitListener();
@@ -688,16 +689,26 @@
         if (!msgHeader) {
           msgHeader = "Oops...";
         }
-        btnText = btnText ? btnText : "Close";
-        btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
-        var template = "<div class='modal-header'>" +
-            "<h1>" + msgHeader + "</h1>" +
-            "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
-            '<div class="modal-footer">' +
-            "   <button class='btn " + btnClass +"' ng-click='close(\"OK\")'>" + btnText + "</button>" +
-            "</div>";
-        return this.showModalDialog(callback, template);
+        if (bkUtils.isElectron) {
+          var options = {
+            type: 'none',
+            buttons: ['OK'],
+            title: msgHeader,
+            message: msgBody
+          };
+          return bkElectron.Dialog.showMessageBox(options, callback);
+        } else {
+          btnText = btnText ? btnText : "Close";
+          btnClass = btnClass ? _.isArray(btnClass) ? btnClass.join(' ') : btnClass : 'btn-primary';
+          var template = "<div class='modal-header'>" +
+              "<h1>" + msgHeader + "</h1>" +
+              "</div>" +
+              "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+              '<div class="modal-footer">' +
+              "   <button class='btn " + btnClass +"' ng-click='close(\"OK\")'>" + btnText + "</button>" +
+              "</div>";
+          return this.showModalDialog(callback, template);
+        }
       },
       show2ButtonModal: function(
           msgBody,
@@ -708,26 +719,36 @@
         if (!msgHeader) {
           msgHeader = "Question...";
         }
-        var close = function(result) {
-          if (result === "OK") {
-            okCB ? okCB() : null;
-          } else { // cancel
-            cancelCB ? cancelCB() : null;
+        var callback = function(result) {
+          if (okCB && (result == 0)) {
+            okCB();
+          } else if (cancelCB){
+            cancelCB();
           }
         };
-        okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
-        cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
-        okBtnClass = okBtnClass ? _.isArray(okBtnClass) ? okBtnClass.join(' ') : okBtnClass : 'btn-default';
-        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
-        var template = "<div class='modal-header'>" +
-            "<h1>" + msgHeader + "</h1>" +
-            "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
-            '<div class="modal-footer">' +
-            "   <button class='Yes btn " + okBtnClass +"' ng-click='close(\"OK\")'>" + okBtnTxt + "</button>" +
-            "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
-            "</div>";
-        return this.showModalDialog(close, template);
+        if (bkUtils.isElectron) {
+          var options = {
+            type: 'none',
+            buttons: ['OK', 'Cancel'],
+            title: msgHeader,
+            message: msgBody
+          };
+          return bkElectron.Dialog.showMessageBox(options, callback);
+        } else {
+          okBtnTxt = okBtnTxt ? okBtnTxt : "OK";
+          cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+          okBtnClass = okBtnClass ? _.isArray(okBtnClass) ? okBtnClass.join(' ') : okBtnClass : 'btn-default';
+          cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
+          var template = "<div class='modal-header'>" +
+              "<h1>" + msgHeader + "</h1>" +
+              "</div>" +
+              "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+              '<div class="modal-footer">' +
+              "   <button class='Yes btn " + okBtnClass +"' ng-click='close(0)'>" + okBtnTxt + "</button>" +
+              "   <button class='Cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
+              "</div>";
+          return this.showModalDialog(callback, template);
+        }
       },
       show3ButtonModal: function(
           msgBody, msgHeader,
@@ -737,31 +758,41 @@
         if (!msgHeader) {
           msgHeader = "Question...";
         }
-        var close = function(result) {
-          if (result === "Yes") {
-            yesCB ? yesCB() : null;
-          } else if (result === "No") {
-            noCB ? noCB() : null;
-          } else { // cancel
-            cancelCB ? cancelCB() : null;
+        var callback = function(result) {
+          if (yesCB && (result == 0)) {
+            yesCB();
+          } else if (noCB && (result == 1)) {
+            noCB();
+          } else if (cancelCB) {
+            cancelCB();
           }
         };
-        yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
-        noBtnTxt = noBtnTxt ? noBtnTxt : "No";
-        cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
-        yesBtnClass = yesBtnClass ? _.isArray(yesBtnClass) ? okBtnClass.join(' ') : yesBtnClass : 'btn-default';
-        noBtnClass = noBtnClass ? _.isArray(noBtnClass) ? noBtnClass.join(' ') : noBtnClass : 'btn-default';
-        cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
-        var template = "<div class='modal-header'>" +
-            "<h1>" + msgHeader + "</h1>" +
-            "</div>" +
-            "<div class='modal-body'><p>" + msgBody + "</p></div>" +
-            '<div class="modal-footer">' +
-            "   <button class='yes btn " + yesBtnClass +"' ng-click='close(\"Yes\")'>" + yesBtnTxt + "</button>" +
-            "   <button class='no btn " + noBtnClass +"' ng-click='close(\"No\")'>" + noBtnTxt + "</button>" +
-            "   <button class='cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
-            "</div>";
-        return this.showModalDialog(close, template);
+        if (bkUtils.isElectron) {
+          var options = {
+            type: 'none',
+            buttons: ['Yes', 'No', 'Cancel'],
+            title: msgHeader,
+            message: msgBody
+          };
+          return bkElectron.Dialog.showMessageBox(options, callback);
+        } else {
+          yesBtnTxt = yesBtnTxt ? yesBtnTxt : "Yes";
+          noBtnTxt = noBtnTxt ? noBtnTxt : "No";
+          cancelBtnTxt = cancelBtnTxt ? cancelBtnTxt : "Cancel";
+          yesBtnClass = yesBtnClass ? _.isArray(yesBtnClass) ? okBtnClass.join(' ') : yesBtnClass : 'btn-default';
+          noBtnClass = noBtnClass ? _.isArray(noBtnClass) ? noBtnClass.join(' ') : noBtnClass : 'btn-default';
+          cancelBtnClass = cancelBtnClass ? _.isArray(cancelBtnClass) ? cancelBtnClass.join(' ') : cancelBtnClass : 'btn-default';
+          var template = "<div class='modal-header'>" +
+              "<h1>" + msgHeader + "</h1>" +
+              "</div>" +
+              "<div class='modal-body'><p>" + msgBody + "</p></div>" +
+              '<div class="modal-footer">' +
+              "   <button class='yes btn " + yesBtnClass +"' ng-click='close(0)'>" + yesBtnTxt + "</button>" +
+              "   <button class='no btn " + noBtnClass +"' ng-click='close(1)'>" + noBtnTxt + "</button>" +
+              "   <button class='cancel btn " + cancelBtnClass +"' ng-click='close()'>" + cancelBtnTxt + "</button>" +
+              "</div>";
+          return this.showModalDialog(callback, template);
+        }
       },
       getFileSystemFileChooserStrategy: function() {
         return new FileSystemFileChooserStrategy();
@@ -843,5 +874,4 @@
       }
     };
   });
-
 })();

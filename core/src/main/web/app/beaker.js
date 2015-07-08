@@ -153,7 +153,8 @@
       'bk.controlPanel',
       'bk.mainApp',
       'bk.helper',
-      'bk.utils'
+      'bk.utils',
+      'bk.electron'
     ]);
 
 
@@ -272,18 +273,21 @@
       }
     });
 
-    beaker.run(function($location, $route, $document, bkUtils, bkCoreManager, bkHelper) {
+    beaker.run(function($rootScope, $location, $route, $document, bkUtils, bkCoreManager, bkHelper, bkElectron) {
       var user;
       var lastAction = new Date();
       var beakerRootOp = {
         gotoControlPanel: function() {
-          return $location.path("/control").search({});
+          var ret = $location.path("/control").search({});
+          if (bkUtils.isElectron) {
+            $rootScope.$apply();
+          }
+          return ret;
         },
         openNotebook: function(notebookUri, uriType, readOnly, format) {
           if (!notebookUri) {
             return;
           }
-
           var routeParams = {
             uri: notebookUri
           };
@@ -296,12 +300,20 @@
           if (format) {
             routeParams.format = format;
           }
-          return $location.path("/open").search(routeParams);
+          var ret = $location.path('/open').search(routeParams);
+          if (bkUtils.isElectron) {
+            $rootScope.$apply();
+          }
+          return ret;
         },
         newSession: function(empty) {
           var name = "/session/new";
           if (empty) {
             name = "/session/empty";
+          }
+          if (bkUtils.isElectron){
+            bkHelper.openWindow(name, 'notebook');
+            return;
           }
           if ($location.$$path === name) {
             return $route.reload();
@@ -310,7 +322,11 @@
           }
         },
         openSession: function(sessionId) {
-          return $location.path("session/" + sessionId).search({});
+          if (bkUtils.isElectron) {
+            bkElectron.IPC.send('session-focused', sessionId);
+          } else {
+            return $location.path("session/" + sessionId).search({});
+          }
         }
       };
       bkUtils.initializeCometd(document.baseURI+'cometd/');

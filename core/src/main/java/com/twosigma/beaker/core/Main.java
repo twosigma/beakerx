@@ -222,7 +222,8 @@ public class Main {
       injector.getInstance(GeneralUtils.class).openUrl(initUrl);
       System.out.println("\nConnecting to " + initUrl);
     } else {
-      System.out.println("\nConnect to " + initUrl);
+      System.out.println("\nBeaker hash " + bkConfig.getHash());
+      System.out.println("Beaker listening on " + initUrl);
     }
     if (publicServer) {
       System.out.println("Submit this password: " + bkConfig.getPassword());

@@ -13,7 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<header class="navbar-fixed-top">
+<header class="navbar-fixed-top" ng-class="{'electron-hide': getElectronMode()}">
   <div class="navbar navbar-inverse">
     <a class="navbar-brand" href="/beaker/#/control" ng-click="gotoControlPanel($event)" eat-click>
       <img src="app/images/beaker_icon@2x.png" />
@@ -43,7 +43,7 @@
   </div>
 </header>
 
-<div class="container-fluid notebook-container">
+<div ng-class="{'electron-mode': getElectronMode()}" class="container-fluid notebook-container">
   <div class="row">
     <div class="col-md-12">
       <bk-notebook set-bk-notebook="setBkNotebook(bkNotebook)" is-loading="loading"></bk-notebook>

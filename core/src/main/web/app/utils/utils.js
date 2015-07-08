@@ -23,7 +23,7 @@
     'bk.commonUtils',
     'bk.angularUtils',
     'bk.cometdUtils',
-    'bk.track'
+    'bk.track',
   ]);
   /**
    * bkUtils
@@ -93,7 +93,12 @@
       saveAsClientFile: function(data, filename) {
         return commonUtils.saveAsClientFile(data, filename);
       },
-
+      // Give the angular base URL
+      // XXX This function is a HACK: '$location' should probably be used instead of
+      // 'location', but '$location' seems to return the wrong path.
+      getBaseUrl: function() {
+        return location.protocol + '//' + location.host + location.pathname + '#';
+      },
       // wrap angularUtils
       refreshRootScope: function() {
         angularUtils.refreshRootScope();
@@ -167,6 +172,13 @@
       getHomeDirectory: function() {
         var deferred = angularUtils.newDeferred();
         this.httpGet(serverUrl("beaker/rest/file-io/getHomeDirectory"))
+            .success(deferred.resolve)
+            .error(deferred.reject);
+        return deferred.promise;
+      },
+      getWorkingDirectory: function() {
+        var deferred = angularUtils.newDeferred();
+        this.httpGet(serverUrl("beaker/rest/file-io/getWorkingDirectory"))
             .success(deferred.resolve)
             .error(deferred.reject);
         return deferred.promise;
@@ -300,7 +312,7 @@
         var that = this;
         if (_.isString(url)) {
           var deferred = this.newDeferred();
-          window.require([url], function (ret) {
+          window.requirejs([url], function (ret) {
             if (!_.isEmpty(name)) {
               that.moduleMap[name] = url;
             }
@@ -320,7 +332,10 @@
       require: function(nameOrUrl) {
         var url = this.moduleMap.hasOwnProperty(nameOrUrl) ? this.moduleMap[nameOrUrl] : nameOrUrl;
         return window.require(url);
-      }
+      },
+
+      // Electron: require('remote')
+      isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
     };
     return bkUtils;
   });

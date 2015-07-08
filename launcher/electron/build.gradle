@@ -1,0 +1,200 @@
+/*
+ *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+def macElectron = 'electron-v0.29.2-darwin-x64.zip'
+def winElectron = 'electron-v0.28.3-win32-x64.zip'
+
+def osName = System.properties['os.name']
+def mac = false
+def win = false
+def linux = false
+if (osName.startsWith('Mac')) {
+  mac = true
+} else if (osName.startsWith('Windows')) {
+  win = true
+} else if (osName.startsWith('Linux')) {
+  linux = true
+}
+
+task makeDist (dependsOn: ':dev:build') << {
+  copy {
+    from '../../core/config'
+    into './dist/config'
+  }
+  copy {
+    from '../../core/src/main/web'
+    into './dist/src/main/web'
+  }
+  copy {
+    from '../../core/build/install/core'
+    into './dist/build/install/core'
+  }
+  copy {
+    from '../../core/nginx'
+    into './dist/nginx'
+  }
+  copy {
+    from '../../core/LICENSE'
+    into './dist/'
+  }
+  if (mac || linux) {
+    copy {
+      from '../../core/beaker.command'
+      into './dist/'
+    }
+  }
+  else if (win) {
+    copy {
+      from '../../core/beaker.command.bat'
+      into './dist/'
+    }
+  }
+}
+
+task cleanElectron(type: Delete) {
+  delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg', 'Beaker.dmg', 'python', 'beaker_setup.exe'
+}
+
+// Global tasks
+task unzipJRE(type: Exec) {
+  commandLine 'unzip', '-uo', 'jre.zip'
+}
+
+task unzipElectron(type: Exec) {
+  if (mac) {
+    commandLine 'unzip', '-uo', '-d', 'beaker', macElectron 
+  } else if (win){
+    commandLine 'unzip', '-uo', '-d', 'beaker', winElectron
+  }
+}
+
+task copyBeakerApp(type: Copy){
+  from 'app'
+  if (mac) {
+    dependsOn 'macCopyElectron'
+    into 'Beaker.app/Contents/Resources/app'
+  } else if (win){
+    dependsOn 'unzipElectron'
+    into 'beaker/resources/app'
+  }
+}
+
+task copyDist(type: Copy, dependsOn: ['makeDist']) {
+  from 'dist'
+  if (mac) {
+    dependsOn 'macCopyElectron'
+    into 'Beaker.app/Contents/Resources/dist'
+  } else if (win){
+    into 'beaker/resources/dist'
+  }
+}
+
+task copyJRE(type: Copy, dependsOn: ['unzipJRE']) {
+  from 'jre'
+  if (mac) {
+    dependsOn 'macCopyElectron'
+    into 'Beaker.app/Contents/Resources/jre'
+  } else if (win){
+    into 'beaker/resources/jre'
+  }
+}
+
+task copyTools(type: Copy, dependsOn: 'copyJRE') {
+  from 'tools.jar'
+  if (mac) {
+    into 'Beaker.app/Contents/Resources/jre/Contents/Home/lib'
+  } else if (win){
+    into 'beaker/resources/jre/lib'
+  }
+}
+
+task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
+  if (mac) {
+    commandLine './create-dmg/create-dmg', '--volname', '"Beaker"', '--window-pos', '200', '120', '--window-size', '800', '400', '--icon-size', '100', '--icon', 'Beaker.app', '200', '190', '--hide-extension', 'Beaker.app', '--app-drop-link', '600', '185', 'Beaker.dmg', 'osxdmg/'
+  } else if (win) {
+    commandLine 'iscc', '/o./', '/fbeaker_setup', 'makeWinInstaller.iss'
+  }
+}
+
+task createBundle(dependsOn: ['copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython']) {
+}
+
+task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
+  
+}
+
+// OSX build
+task signBundle (type: Exec, dependsOn: ['createBundle', 'checkIdentity']){
+  commandLine 'codesign', '--deep', '--force', '--verbose', '--sign', "Developer ID Application: Two Sigma Open Source LLC.", 'Beaker.app'
+}
+signBundle.onlyIf { mac }
+
+task checkIdentity(type: Exec, dependsOn: 'createBundle') {
+  ignoreExitValue = true
+  standardOutput = new ByteArrayOutputStream()
+  errorOutput = standardOutput
+  commandLine 'codesign', '--sign', "Two Sigma Open Source LLC."
+  doLast {
+    // Identity valid
+    if (execResult.exitValue != 2) {
+      println 'Two Sigma Identity not found. Unsigned Beaker.app still produced'
+      signBundle.enabled = false
+    }
+  }
+}
+checkIdentity.onlyIf { mac }
+
+
+task macCopyElectron(type: Exec, dependsOn: ['unzipElectron']) {
+  commandLine 'rsync', '-a', 'beaker/Electron.app/', 'Beaker.app'
+}
+macCopyElectron.onlyIf { mac }
+
+task makeOSXDMG(dependsOn: 'makeBundle') {
+  doLast {
+    ant.move(file: 'Beaker.app', tofile: 'osxdmg/Beaker.app')
+  }
+}
+makeOSXDMG.onlyIf { mac }
+
+task removePList(type: Delete, dependsOn: 'macCopyElectron') {
+  delete 'Beaker.app/Contents/Info.plist', 'Beaker.app/Contents/Resources/atom.icns'
+}
+removePList.onlyIf { mac }
+
+task copyPList(type: Copy, dependsOn: ['macCopyElectron', 'removePList']) {
+  from 'Info.plist'
+  into 'Beaker.app/Contents'
+}
+copyPList.onlyIf { mac }
+
+task copyIcons(type: Copy, dependsOn: 'macCopyElectron') {
+  from 'beaker.icns'
+  into 'Beaker.app/Contents/Resources'
+}
+copyIcons.onlyIf { mac }
+
+// Windows build
+task unzipPython(type: Exec) {
+  commandLine 'unzip', '-uo', '-d', 'python', 'python.zip'
+}
+unzipPython.onlyIf { win }
+
+task winCopyPython(type: Copy, dependsOn: ['unzipPython', 'copyDist']) {
+  from 'python'
+  into 'beaker/resources/dist'
+}
+winCopyPython.onlyIf { win }

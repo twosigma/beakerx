@@ -132,7 +132,7 @@
         });
 
         $scope.exportTo = function(data, format) {
-          var i, j;
+          var i, j, order;
           var out = '';
           var eol = '\n';
           var sep = ',';
@@ -148,7 +148,7 @@
             eol = '\r\n';
 
           for(i=1; i<$scope.columns.length; i++) {
-            var order = $scope.colorder[i];
+            order = $scope.colorder[i];
             if (!$scope.table.column(order).visible())
               continue;
             if (out !== '')
@@ -161,7 +161,7 @@
             var row = data[i];
             var some = false;
             for(j=1; j<row.length; j++) {
-              var order = $scope.colorder[j];
+              order = $scope.colorder[j];
               if (!$scope.table.column(order).visible())
                 continue;
               if (!some)
@@ -387,13 +387,14 @@
           },
           // datetime
           function(value,type,full,meta) {
+            var time, tz;
             if ($scope.timeStrings)
               return $scope.timeStrings[meta.row];
 
             if (type === 'display') {
               if (_.isObject(value) && value.type === 'Date') {
-                var time = moment(value.timestamp);
-                var tz = $scope.tz;
+                time = moment(value.timestamp);
+                tz = $scope.tz;
                 if (tz)
                   time.tz(tz);
                 return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
@@ -401,8 +402,8 @@
               var nano = value % 1000;
               var micro = (value / 1000) % 1000;
               var milli = value / 1000 / 1000;
-              var time = moment(milli);
-              var tz = $scope.tz;
+              time = moment(milli);
+              tz = $scope.tz;
               if (tz)
                 time.tz(tz);
               return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
@@ -421,13 +422,14 @@
           },
           // date
           function(value,type,full,meta) {
+            var time, tz;
             if ($scope.timeStrings)
               return $scope.timeStrings[meta.row];
 
             if (type === 'display') {
               if (_.isObject(value) && value.type === 'Date') {
-                var time = moment(value.timestamp);
-                var tz = $scope.tz;
+                time = moment(value.timestamp);
+                tz = $scope.tz;
                 if (tz)
                   time.tz(tz);
                 return time.format("YYYY-MM-DD");
@@ -435,8 +437,8 @@
               var nano = value % 1000;
               var micro = (value / 1000) % 1000;
               var milli = value / 1000 / 1000;
-              var time = moment(milli);
-              var tz = $scope.tz;
+              time = moment(milli);
+              tz = $scope.tz;
               if (tz)
                 time.tz(tz);
               return time.format("YYYY-MM-DD");
@@ -445,12 +447,13 @@
           },
           // time
           function(value,type,full,meta) {
+            var time, tz;
             if ($scope.timeStrings)
               return $scope.timeStrings[meta.row];
 
             if (_.isObject(value) && value.type === 'Date') {
-              var time = moment(value.timestamp);
-              var tz = $scope.tz;
+              time = moment(value.timestamp);
+              tz = $scope.tz;
               if (tz)
                 time.tz(tz);
               return time.format("HH:mm:ss.SSS ZZ");
@@ -458,8 +461,8 @@
             var nano = value % 1000;
             var micro = (value / 1000) % 1000;
             var milli = value / 1000 / 1000;
-            var time = moment(milli);
-            var tz = $scope.tz;
+            time = moment(milli);
+            tz = $scope.tz;
             if (tz)
               time.tz(tz);
             return time.format("HH:mm:ss.SSS ZZ");

@@ -300,7 +300,7 @@
           if ($.type(text) === "string")
             return text.replace(/[\"&'\/<>]/g, function (a) { return chr[a]; });
           return text;
-        },
+        };
 
         $scope.allTypes = [ { type: 0, name: 'string'},
         { type: 1, name: 'integer'},

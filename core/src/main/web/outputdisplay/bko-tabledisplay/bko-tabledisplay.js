@@ -205,7 +205,7 @@
             $scope.selected[i] = true;
           }
           $scope.update_selected();
-        }
+        };
         $scope.doDeselectAll = function(idx) {
           if ($scope.table === undefined)
             return;
@@ -213,7 +213,7 @@
             $scope.selected[i] = false;
           }
           $scope.update_selected();
-        }
+        };
         $scope.doReverseSelection = function(idx) {
           if ($scope.table === undefined)
             return;
@@ -221,10 +221,10 @@
             $scope.selected[i] = !$scope.selected[i];
           }
           $scope.update_selected();
-        }
+        };
         $scope.doCopyToClipboard = function(idx) {
           // this is handled by the invisible flash movie
-        }
+        };
 
         $scope.getCellIdx      =  [];
         $scope.getCellNam      =  [];
@@ -489,7 +489,7 @@
             windowClass: 'output-table-options beaker-sandbox',
             backdropClass: 'beaker-sandbox',
             template: JST['bko-tabledisplay/output-table-options']()
-          }
+          };
           $scope.getCellShoOld    = $scope.getCellSho.slice(0);
           $scope.getCellDispOld   = $scope.getCellDisp.slice(0);
           $scope.getCellAlignOld  = $scope.getCellAlign.slice(0);
@@ -682,7 +682,7 @@
               }
             }
           } );
-        }
+        };
 
         scope.doCreateTable = function() {
           var cols = [];
@@ -736,7 +736,7 @@
             init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>S>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
-              init.pageLength = 25
+              init.pageLength = 25;
                 init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]];
             } else {
               init.paging = false;
@@ -823,7 +823,7 @@
               clipboard.setData( "text/plain", out );
             });
           }
-        }
+        };
 
         scope.getDumpState = function() {
           return scope.model.getDumpState();

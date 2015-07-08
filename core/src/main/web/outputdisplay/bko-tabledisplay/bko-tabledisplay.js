@@ -20,10 +20,10 @@
 (function() {
   'use strict';
   (function($) {
-    $.fn.dataTable.moment = function ( format, locale ) {
+    $.fn.dataTable.moment = function(format, locale) {
       var types = $.fn.dataTable.ext.type;
       // Add type detection
-      types.detect.unshift( function ( d ) {
+      types.detect.unshift(function(d) {
         // Null and empty values are acceptable
         if ( d === '' || d === null ) {
           return 'moment-'+format;
@@ -33,7 +33,7 @@
           null;
       } );
       // Add sorting method - use an integer for the sorting
-      types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
+      types.order[ 'moment-'+format+'-pre' ] = function(d) {
         return d === '' || d === null ?
           -Infinity :
           parseInt( d.timestamp, 10 );
@@ -47,21 +47,21 @@
 
   // detect and sort by file size
   jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    'file-size-pre': function ( a ) {
+    'file-size-pre': function(a) {
       var x = a.substring(0,a.length - 2);
       var x_unit = (a.substring(a.length - 2, a.length).toLowerCase() == 'mb' ?
           1000 : (a.substring(a.length - 2, a.length).toLowerCase() == 'gb' ? 1000000 : 1));
       return parseInt( x * x_unit, 10 );
     },
-    'file-size-asc': function ( a, b ) {
+    'file-size-asc': function(a, b) {
       return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
-    'file-size-desc': function ( a, b ) {
+    'file-size-desc': function(a, b) {
       return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
   } );
 
-  jQuery.fn.dataTableExt.aTypes.unshift( function ( sData ) {
+  jQuery.fn.dataTableExt.aTypes.unshift( function(sData) {
     if (typeof sData !== 'string')
       return;
 
@@ -85,7 +85,7 @@
   } );
 
   // detect and sort by IP addresses
-  jQuery.fn.dataTableExt.aTypes.unshift( function ( sData ) {
+  jQuery.fn.dataTableExt.aTypes.unshift( function(sData) {
     if (/^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$/.test(sData)) {
       return 'ip-address';
     }
@@ -93,7 +93,7 @@
   } );
 
   jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    'ip-address-pre': function ( a ) {
+    'ip-address-pre': function(a) {
       var m = a.split('.'), x = '';
       for(var i = 0; i < m.length; i++) {
         var item = m[i];
@@ -107,10 +107,10 @@
       }
       return x;
     },
-    'ip-address-asc': function ( a, b ) {
+    'ip-address-asc': function(a, b) {
       return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
-    'ip-address-desc': function ( a, b ) {
+    'ip-address-desc': function(a, b) {
       return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
   } );
@@ -137,12 +137,12 @@
           var eol = '\n';
           var sep = ',';
           var qot = '"';
-          var fix = function (s) { return s.replace(/"/g, '""');};
+          var fix = function(s) { return s.replace(/"/g, '""');};
 
           if (format === 'tabs') {
             sep = '\t';
             qot = '';
-            fix = function (s) { return s.replace(/\t/g, ' ');};
+            fix = function(s) { return s.replace(/\t/g, ' ');};
           }
           if (navigator.appVersion.indexOf('Win')!=-1)
             eol = '\r\n';
@@ -296,9 +296,9 @@
           '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
         };
 
-        $scope.escapeHTML = function (text) {
+        $scope.escapeHTML = function(text) {
           if ($.type(text) === 'string')
-            return text.replace(/[\'&'\/<>]/g, function (a) { return chr[a]; });
+            return text.replace(/[\'&'\/<>]/g, function(a) { return chr[a]; });
           return text;
         };
 
@@ -516,7 +516,7 @@
           }
 
           if (($scope.usePaginationOld !== $scope.pagination.use) || ($scope.rowsToDisplayOld !== $scope.pagination.rowsToDisplay) ||
-              ($scope.fixLeftOld !== $scope.pagination.fixLeft) || ($scope.fixRightOld !== $scope.pagination.fixRight) ) {
+              ($scope.fixLeftOld !== $scope.pagination.fixLeft) || ($scope.fixRightOld !== $scope.pagination.fixRight)) {
             doit = 2;
           } else {
             for (i=0; i<$scope.getCellDisp.length; i++) {
@@ -673,7 +673,7 @@
           if (scope.table === undefined)
             return;
 
-          scope.table.rows().eq(0).each( function (index) {
+          scope.table.rows().eq(0).each( function(index) {
             var row = scope.table.row(index);
             var tr = row.node();
             if (tr !== undefined) {
@@ -724,7 +724,7 @@
             'scrollX': '10%',
             'searching': false,
             'deferRender': true,
-            'drawCallback': function( settings ) {
+            'drawCallback': function(settings) {
               scope.update_size();
               scope.update_selected();
             }
@@ -754,7 +754,7 @@
             scope.table = $(id).DataTable(init);
             scope.renderMenu = true;
             scope.colreorg = new $.fn.dataTable.ColReorder( $(id), {
-              'fnReorderCallback': function () {
+              'fnReorderCallback': function() {
                 if (scope.colreorg===undefined)
                   return;
                 scope.colorder = scope.colreorg.fnOrder().slice(0);
@@ -771,7 +771,7 @@
             scope.refreshCells();
 
             $(id + ' tbody').off( 'click');
-            $(id + ' tbody').on( 'click', 'tr', function (event) {
+            $(id + ' tbody').on( 'click', 'tr', function(event) {
               var iPos = scope.table.row( this ).index();
               if (scope.selected[iPos]) {
                 scope.selected[iPos] = false;
@@ -813,7 +813,7 @@
 
             scope.clipclient.clip( d );
 
-            scope.clipclient.on( 'copy', function (event) {
+            scope.clipclient.on( 'copy', function(event) {
               var clipboard = event.clipboardData;
 
               var data = scope.table.rows(function(index, data, node) {

@@ -76,9 +76,9 @@
       }
     }
     /* Check for size unit KB, MB or GB */
-    if ( sData.substring(sData.length - 2, sData.length).toLowerCase() == "kb"
-        || sData.substring(sData.length - 2, sData.length).toLowerCase() == "mb"
-        || sData.substring(sData.length - 2, sData.length).toLowerCase() == "gb" ) {
+    if ( sData.substring(sData.length - 2, sData.length).toLowerCase() == "kb" ||
+      sData.substring(sData.length - 2, sData.length).toLowerCase() == "mb" ||
+      sData.substring(sData.length - 2, sData.length).toLowerCase() == "gb" ) {
       return 'file-size';
     }
     return null;

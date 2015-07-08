@@ -95,7 +95,8 @@
 
   jQuery.extend(jQuery.fn.dataTableExt.oSort, {
     'ip-address-pre': function(a) {
-      var m = a.split('.'), x = '';
+      var m = a.split('.');
+      var x = '';
       for (var i = 0; i < m.length; i++) {
         var item = m[i];
         if (item.length === 1) {
@@ -132,7 +133,9 @@
         });
 
         $scope.exportTo = function(data, format) {
-          var i, j, order;
+          var i;
+          var j;
+          var order;
           var out = '';
           var eol = '\n';
           var sep = ',';
@@ -687,7 +690,8 @@
 
         scope.doCreateData = function(model) {
           // create a dummy column to keep server ordering
-          var data = [], r;
+          var data = [];
+          var r;
           var selected = [];
           for (r = 0; r < model.values.length; r++) {
             var row = [];

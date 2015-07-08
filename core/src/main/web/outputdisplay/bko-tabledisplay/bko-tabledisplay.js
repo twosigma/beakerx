@@ -116,7 +116,9 @@
       return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
   });
+  //jscs:disable
   beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
+  //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     return {
       template: JST['bko-tabledisplay/output-table'],
@@ -217,7 +219,9 @@
           for (var i in $scope.selected) {
             $scope.selected[i] = true;
           }
+          //jscs:disable
           $scope.update_selected();
+          //jscs:enable
         };
         $scope.doDeselectAll = function(idx) {
           if ($scope.table === undefined) {
@@ -226,7 +230,9 @@
           for (var i in $scope.selected) {
             $scope.selected[i] = false;
           }
+          //jscs:disable
           $scope.update_selected();
+          //jscs:enable
         };
         $scope.doReverseSelection = function(idx) {
           if ($scope.table === undefined) {
@@ -235,7 +241,9 @@
           for (var i in $scope.selected) {
             $scope.selected[i] = !$scope.selected[i];
           }
+          //jscs:disable
           $scope.update_selected();
+          //jscs:enable
         };
         $scope.doCopyToClipboard = function(idx) {
           // this is handled by the invisible flash movie
@@ -559,12 +567,16 @@
               doit = 1;
             }
           }
+          //jscs:disable
           if (($scope.usePaginationOld !== $scope.pagination.use) || ($scope.rowsToDisplayOld !== $scope.pagination.rowsToDisplay) ||
               ($scope.fixLeftOld !== $scope.pagination.fixLeft) || ($scope.fixRightOld !== $scope.pagination.fixRight)) {
+          //jscs:enable
             doit = 2;
           } else {
             for (i = 0; i < $scope.getCellDisp.length; i++) {
+              //jscs:disable
               if (($scope.getCellDisp[i] !== $scope.getCellDispOld[i]) || ($scope.getCellAlign[i] !== $scope.getCellAlignOld[i])) {
+              //jscs:enable
                 doit = 2;
               }
             }
@@ -597,7 +609,9 @@
 
         scope.doDestroy = function(all) {
           if (scope.table) {
+            //jscs:disable
             clearTimeout(scope.refresh_size);
+            //jscs:enable
             $(window).unbind('resize.' + scope.id);
             $('#' + scope.id + ' tbody').off('click');
             $('#' + scope.id).html('');
@@ -702,7 +716,9 @@
           scope.data = data;
           scope.selected = selected;
         };
+        //jscs:disable
         scope.update_size = function() {
+        //jscs:enable
           var me = $('#' + scope.id);
           // this is dataTables_scrollBody
           var pp = me.parent();
@@ -710,7 +726,9 @@
             pp.width(me.width() + 16);
           }
         };
+        //jscs:disable
         scope.update_selected = function() {
+        //jscs:enable
           if (scope.table === undefined) {
             return;
           }
@@ -768,8 +786,10 @@
             'searching': false,
             'deferRender': true,
             'drawCallback': function(settings) {
+              //jscs:disable
               scope.update_size();
               scope.update_selected();
+              //jscs:enable
             }
           };
 
@@ -828,8 +848,10 @@
             });
 
             $(window).bind('resize.' + scope.id, function() {
+              //jscs:disable
               clearTimeout(scope.refresh_size);
               scope.refresh_size = setTimeout(function() { scope.update_size(); }, 250);
+              //jscs:enable
             });
 
             var inits = {};

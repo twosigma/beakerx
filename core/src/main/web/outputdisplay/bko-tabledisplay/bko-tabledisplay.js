@@ -47,16 +47,16 @@
 
   // detect and sort by file size
   jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    "file-size-pre": function ( a ) {
+    'file-size-pre': function ( a ) {
       var x = a.substring(0,a.length - 2);
-      var x_unit = (a.substring(a.length - 2, a.length).toLowerCase() == "mb" ?
-          1000 : (a.substring(a.length - 2, a.length).toLowerCase() == "gb" ? 1000000 : 1));
+      var x_unit = (a.substring(a.length - 2, a.length).toLowerCase() == 'mb' ?
+          1000 : (a.substring(a.length - 2, a.length).toLowerCase() == 'gb' ? 1000000 : 1));
       return parseInt( x * x_unit, 10 );
     },
-    "file-size-asc": function ( a, b ) {
+    'file-size-asc': function ( a, b ) {
       return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
-    "file-size-desc": function ( a, b ) {
+    'file-size-desc': function ( a, b ) {
       return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
   } );
@@ -65,7 +65,7 @@
     if (typeof sData !== 'string')
       return;
 
-    var sValidChars = "0123456789";
+    var sValidChars = '123456789';
     var Char;
 
     /* Check the numeric part */
@@ -76,9 +76,9 @@
       }
     }
     /* Check for size unit KB, MB or GB */
-    if ( sData.substring(sData.length - 2, sData.length).toLowerCase() == "kb" ||
-      sData.substring(sData.length - 2, sData.length).toLowerCase() == "mb" ||
-      sData.substring(sData.length - 2, sData.length).toLowerCase() == "gb" ) {
+    if ( sData.substring(sData.length - 2, sData.length).toLowerCase() == 'kb' ||
+      sData.substring(sData.length - 2, sData.length).toLowerCase() == 'mb' ||
+      sData.substring(sData.length - 2, sData.length).toLowerCase() == 'gb' ) {
       return 'file-size';
     }
     return null;
@@ -93,40 +93,40 @@
   } );
 
   jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    "ip-address-pre": function ( a ) {
-      var m = a.split("."), x = "";
+    'ip-address-pre': function ( a ) {
+      var m = a.split('.'), x = '';
       for(var i = 0; i < m.length; i++) {
         var item = m[i];
         if(item.length == 1) {
-          x += "00" + item;
+          x += '00' + item;
         } else if(item.length == 2) {
-          x += "0" + item;
+          x += '0' + item;
         } else {
           x += item;
         }
       }
       return x;
     },
-    "ip-address-asc": function ( a, b ) {
+    'ip-address-asc': function ( a, b ) {
       return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
-    "ip-address-desc": function ( a, b ) {
+    'ip-address-desc': function ( a, b ) {
       return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
   } );
 
-  beaker.bkoDirective('Table', ["bkCellMenuPluginManager", "bkUtils", '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
-    var CELL_TYPE = "bko-tabledisplay";
+  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
+    var CELL_TYPE = 'bko-tabledisplay';
     return {
       template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $modal) {
 
-        $scope.id = "table_" + bkUtils.generateId(6);
+        $scope.id = 'table_' + bkUtils.generateId(6);
 
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
-        $scope.$watch("getShareMenuPlugin()", function() {
+        $scope.$watch('getShareMenuPlugin()', function() {
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
@@ -144,7 +144,7 @@
             qot = '';
             fix = function (s) { return s.replace(/\t/g, ' ');};
           }
-          if (navigator.appVersion.indexOf("Win")!=-1)
+          if (navigator.appVersion.indexOf('Win')!=-1)
             eol = '\r\n';
 
           for(i=1; i<$scope.columns.length; i++) {
@@ -170,7 +170,7 @@
                 out = out + sep;
               var d = row[j];
               if ($scope.columns[order].render !== undefined )
-                d = $scope.columns[order].render(d, "display");
+                d = $scope.columns[order].render(d, 'display');
               d = d + '';
               out = out + qot + (d !== undefined && d !== null ? fix(d) : '') + qot;
             }
@@ -187,14 +187,14 @@
             data = $scope.table.rows(function(index, data, node) { return $scope.selected[index]; }).data();
           var out = $scope.exportTo(data, 'csv');
           bkHelper.selectFile(function(n) {
-            var suffix = ".csv";
+            var suffix = '.csv';
             if(n === undefined)
               return;
             if (n.indexOf(suffix,n.length-suffix.length) === -1)
               n = n + suffix;
             // TODO check for error, prompt for overwrite
             return bkHelper.saveFile(n, out, true);
-          } , "Select name for CSV file to save", "csv", "Save");
+          } , 'Select name for CSV file to save', 'csv', 'Save');
         };
 
         // these are the menu actions
@@ -292,13 +292,13 @@
         $scope.renderMenu     = false;
 
         var chr = {
-          '"': '&quot;', '&': '&amp;', "'": '&#39;',
+          '"': '&quot;', '&': '&amp;', '\'': '&#39;',
           '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
         };
 
         $scope.escapeHTML = function (text) {
-          if ($.type(text) === "string")
-            return text.replace(/[\"&'\/<>]/g, function (a) { return chr[a]; });
+          if ($.type(text) === 'string')
+            return text.replace(/[\'&'\/<>]/g, function (a) { return chr[a]; });
           return text;
         };
 
@@ -319,7 +319,7 @@
           // string
           function(value,type,full,meta) {
             if (_.isObject(value) && value.type === 'Date') {
-              value = moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS ZZ");
+              value = moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ');
             }
             if (type === 'display' && value !== null && value !== undefined)
               return $scope.escapeHTML(value);
@@ -338,7 +338,7 @@
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               var x = parseInt(value);
               if (!isNan(x))
-                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
               return x;
             }
             if (type === 'sort')
@@ -397,7 +397,7 @@
                 tz = $scope.tz;
                 if (tz)
                   time.tz(tz);
-                return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
+                return time.format('YYYYMMDD HH:mm:ss.SSS ZZ');
               }
               var nano = value % 1000;
               var micro = (value / 1000) % 1000;
@@ -406,7 +406,7 @@
               tz = $scope.tz;
               if (tz)
                 time.tz(tz);
-              return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
+              return time.format('YYYYMMDD HH:mm:ss.SSS ZZ');
             }
             return value;
           },
@@ -432,7 +432,7 @@
                 tz = $scope.tz;
                 if (tz)
                   time.tz(tz);
-                return time.format("YYYY-MM-DD");
+                return time.format('YYYY-MM-DD');
               }
               var nano = value % 1000;
               var micro = (value / 1000) % 1000;
@@ -441,7 +441,7 @@
               tz = $scope.tz;
               if (tz)
                 time.tz(tz);
-              return time.format("YYYY-MM-DD");
+              return time.format('YYYY-MM-DD');
             }
             return value;
           },
@@ -456,7 +456,7 @@
               tz = $scope.tz;
               if (tz)
                 time.tz(tz);
-              return time.format("HH:mm:ss.SSS ZZ");
+              return time.format('HH:mm:ss.SSS ZZ');
             }
             var nano = value % 1000;
             var micro = (value / 1000) % 1000;
@@ -465,7 +465,7 @@
             tz = $scope.tz;
             if (tz)
               time.tz(tz);
-            return time.format("HH:mm:ss.SSS ZZ");
+            return time.format('HH:mm:ss.SSS ZZ');
           }
         ];
         $scope.allStringTypes = [ { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
@@ -692,12 +692,12 @@
           var i;
 
           // build configuration
-          cols.push({ "title" : '    ', 'className': 'dtright', 'render': scope.allConverters[1] });
+          cols.push({ 'title' : '    ', 'className': 'dtright', 'render': scope.allConverters[1] });
           for (i=0; i<scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
             var col = {
-              "title" : scope.columnNames[i]
+              'title' : scope.columnNames[i]
             };
             if (al === 'R')
               col.className = 'dtright';
@@ -714,17 +714,17 @@
 
           var id = '#' + scope.id;
           var init = {
-            "destroy" : true,
-            "data": scope.data,
-            "columns": scope.columns,
-            "stateSave": true,
-            "processing": true,
-            "autoWidth": true,
-            "order": [[ 0, "asc" ]],
-            "scrollX": '10%',
-            "searching": false,
-            "deferRender": true,
-            "drawCallback": function( settings ) {
+            'destroy' : true,
+            'data': scope.data,
+            'columns': scope.columns,
+            'stateSave': true,
+            'processing': true,
+            'autoWidth': true,
+            'order': [[ 0, 'asc' ]],
+            'scrollX': '10%',
+            'searching': false,
+            'deferRender': true,
+            'drawCallback': function( settings ) {
               scope.update_size();
               scope.update_selected();
             }
@@ -740,7 +740,7 @@
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25;
-                init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]];
+                init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']];
             } else {
               init.paging = false;
               init.scrollY = 350;
@@ -754,14 +754,14 @@
             scope.table = $(id).DataTable(init);
             scope.renderMenu = true;
             scope.colreorg = new $.fn.dataTable.ColReorder( $(id), {
-              "fnReorderCallback": function () {
+              'fnReorderCallback': function () {
                 if (scope.colreorg===undefined)
                   return;
                 scope.colorder = scope.colreorg.fnOrder().slice(0);
                 scope.refreshCells();
                 scope.$digest();
               },
-              "iFixedColumns": 1
+              'iFixedColumns': 1
             } );
             if (scope.colorder !== undefined)
               scope.colreorg.fnOrder(scope.colorder);
@@ -813,7 +813,7 @@
 
             scope.clipclient.clip( d );
 
-            scope.clipclient.on( "copy", function (event) {
+            scope.clipclient.on( 'copy', function (event) {
               var clipboard = event.clipboardData;
 
               var data = scope.table.rows(function(index, data, node) {
@@ -823,7 +823,7 @@
               }
               var out = scope.exportTo(data, 'tabs');
 
-              clipboard.setData( "text/plain", out );
+              clipboard.setData( 'text/plain', out );
             });
           }
         };
@@ -837,7 +837,7 @@
           scope.savedstate = savedstate.datatablestate;
         }
 
-        scope.$on("$destroy", function() {
+        scope.$on('$destroy', function() {
           scope.doDestroy(true);
         });
 

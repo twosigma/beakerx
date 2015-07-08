@@ -129,13 +129,35 @@ task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
   }
 }
 
-task makeBundle(type: Exec, dependsOn: ['copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython']) {
-  if (mac) {
-    commandLine 'codesign', '--deep', '--force', '--verbose', '--sign', "Developer ID Application: Two Sigma Open Source LLC.", 'Beaker.app'
-  }
+task createBundle(dependsOn: ['copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython']) {
+}
+
+task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
+  
 }
 
 // OSX build
+task signBundle (type: Exec, dependsOn: ['createBundle', 'checkIdentity']){
+  commandLine 'codesign', '--deep', '--force', '--verbose', '--sign', "Developer ID Application: Two Sigma Open Source LLC.", 'Beaker.app'
+}
+signBundle.onlyIf { mac }
+
+task checkIdentity(type: Exec, dependsOn: 'createBundle') {
+  ignoreExitValue = true
+  standardOutput = new ByteArrayOutputStream()
+  errorOutput = standardOutput
+  commandLine 'codesign', '--sign', "Two Sigma Open Source LLC."
+  doLast {
+    // Identity valid
+    if (execResult.exitValue != 2) {
+      println 'Two Sigma Identity not found. Unsigned Beaker.app still produced'
+      signBundle.enabled = false
+    }
+  }
+}
+checkIdentity.onlyIf { mac }
+
+
 task macCopyElectron(type: Exec, dependsOn: ['unzipElectron']) {
   commandLine 'rsync', '-a', 'beaker/Electron.app/', 'Beaker.app'
 }

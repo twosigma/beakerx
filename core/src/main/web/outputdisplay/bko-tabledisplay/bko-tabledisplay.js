@@ -21,23 +21,23 @@
   'use strict';
   (function($) {
     $.fn.dataTable.moment = function ( format, locale ) {
-        var types = $.fn.dataTable.ext.type;
-        // Add type detection
-        types.detect.unshift( function ( d ) {
-            // Null and empty values are acceptable
-            if ( d === '' || d === null ) {
-                return 'moment-'+format;
-            }
-            return (d.timestamp !== undefined && moment(d.timestamp).isValid()) ?
-                'moment-'+format :
-                null;
-        } );
-        // Add sorting method - use an integer for the sorting
-        types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
-            return d === '' || d === null ?
-                -Infinity :
-                parseInt( d.timestamp, 10 );
-        };
+      var types = $.fn.dataTable.ext.type;
+      // Add type detection
+      types.detect.unshift( function ( d ) {
+        // Null and empty values are acceptable
+        if ( d === '' || d === null ) {
+          return 'moment-'+format;
+        }
+        return (d.timestamp !== undefined && moment(d.timestamp).isValid()) ?
+          'moment-'+format :
+          null;
+      } );
+      // Add sorting method - use an integer for the sorting
+      types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
+        return d === '' || d === null ?
+          -Infinity :
+          parseInt( d.timestamp, 10 );
+      };
     };
   }(jQuery));
 
@@ -48,16 +48,16 @@
   // detect and sort by file size
   jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "file-size-pre": function ( a ) {
-        var x = a.substring(0,a.length - 2);
-        var x_unit = (a.substring(a.length - 2, a.length).toLowerCase() == "mb" ?
-            1000 : (a.substring(a.length - 2, a.length).toLowerCase() == "gb" ? 1000000 : 1));
-        return parseInt( x * x_unit, 10 );
+      var x = a.substring(0,a.length - 2);
+      var x_unit = (a.substring(a.length - 2, a.length).toLowerCase() == "mb" ?
+          1000 : (a.substring(a.length - 2, a.length).toLowerCase() == "gb" ? 1000000 : 1));
+      return parseInt( x * x_unit, 10 );
     },
     "file-size-asc": function ( a, b ) {
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+      return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
     "file-size-desc": function ( a, b ) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+      return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
   } );
 
@@ -77,7 +77,7 @@
     }
     /* Check for size unit KB, MB or GB */
     if ( sData.substring(sData.length - 2, sData.length).toLowerCase() == "kb"
-      || sData.substring(sData.length - 2, sData.length).toLowerCase() == "mb"
+        || sData.substring(sData.length - 2, sData.length).toLowerCase() == "mb"
         || sData.substring(sData.length - 2, sData.length).toLowerCase() == "gb" ) {
       return 'file-size';
     }
@@ -111,7 +111,7 @@
       return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
     "ip-address-desc": function ( a, b ) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+      return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
   } );
 
@@ -233,10 +233,10 @@
         $scope.getCellDisp     =  [];
         $scope.getCellDispOpts =  [];
         $scope.pagination = {
-            'use' : true,
-            'rowsToDisplay' : 50,
-            'fixLeft' : false,
-            'fixRight' : false
+          'use' : true,
+          'rowsToDisplay' : 50,
+          'fixLeft' : false,
+          'fixRight' : false
         };
 
         $scope.getCellDispOptsF = function(i) {
@@ -292,8 +292,8 @@
         $scope.renderMenu     = false;
 
         var chr = {
-            '"': '&quot;', '&': '&amp;', "'": '&#39;',
-            '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
+          '"': '&quot;', '&': '&amp;', "'": '&#39;',
+          '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
         };
 
         $scope.escapeHTML = function (text) {
@@ -303,182 +303,182 @@
         },
 
         $scope.allTypes = [ { type: 0, name: 'string'},
-                            { type: 1, name: 'integer'},
-                            { type: 2, name: 'formatted integer'},
-                            { type: 3, name: 'double'},
-                            { type: 4, name: 'double 2 decimals'},
-                            { type: 5, name: 'double 4 decimals'},
-                            { type: 6, name: 'exponential 5'},
-                            { type: 7, name: 'exponential 15'},
-                            { type: 8, name: 'datetime'},
-                            { type: 9, name: 'boolean'},
-                            { type: 10, name: 'html'},
-                            { type: 11, name: 'date'},
-                            { type: 12, name: 'time'}];
+        { type: 1, name: 'integer'},
+        { type: 2, name: 'formatted integer'},
+        { type: 3, name: 'double'},
+        { type: 4, name: 'double 2 decimals'},
+        { type: 5, name: 'double 4 decimals'},
+        { type: 6, name: 'exponential 5'},
+        { type: 7, name: 'exponential 15'},
+        { type: 8, name: 'datetime'},
+        { type: 9, name: 'boolean'},
+        { type: 10, name: 'html'},
+        { type: 11, name: 'date'},
+        { type: 12, name: 'time'}];
         $scope.allConverters = [
-                                // string
-                                function(value,type,full,meta) {
-                                  if (_.isObject(value) && value.type === 'Date') {
-                                    value = moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS ZZ");
-                                  }
-                                  if (type === 'display' && value !== null && value !== undefined)
-                                    return $scope.escapeHTML(value);
-                                  return value;
-                                },
-                                // integer
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseInt(value);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                                // formatted integer
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
-                                    var x = parseInt(value);
-                                    if (x !== NaN)
-                                      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                    return x;
-                                  }
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                                // double
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseFloat(value);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                                // double 2 decimals
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseFloat(value).toFixed(2);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                                // double 4 decimals
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseFloat(value).toFixed(4);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                                // exponential 5
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseFloat(value).toExponential(5);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                                // exponential 15
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseFloat(value).toExponential(15);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                                // datetime
-                                function(value,type,full,meta) {
-                                  if ($scope.timeStrings)
-                                    return $scope.timeStrings[meta.row];
+          // string
+          function(value,type,full,meta) {
+            if (_.isObject(value) && value.type === 'Date') {
+              value = moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS ZZ");
+            }
+            if (type === 'display' && value !== null && value !== undefined)
+              return $scope.escapeHTML(value);
+            return value;
+          },
+          // integer
+          function(value,type,full,meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null)
+              return parseInt(value);
+            if (type === 'sort')
+              return NaN;
+            return value;
+          },
+          // formatted integer
+          function(value,type,full,meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
+              var x = parseInt(value);
+              if (x !== NaN)
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              return x;
+            }
+            if (type === 'sort')
+              return NaN;
+            return value;
+          },
+          // double
+          function(value,type,full,meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null)
+              return parseFloat(value);
+            if (type === 'sort')
+              return NaN;
+            return value;
+          },
+          // double 2 decimals
+          function(value,type,full,meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null)
+              return parseFloat(value).toFixed(2);
+            if (type === 'sort')
+              return NaN;
+            return value;
+          },
+          // double 4 decimals
+          function(value,type,full,meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null)
+              return parseFloat(value).toFixed(4);
+            if (type === 'sort')
+              return NaN;
+            return value;
+          },
+          // exponential 5
+          function(value,type,full,meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null)
+              return parseFloat(value).toExponential(5);
+            if (type === 'sort')
+              return NaN;
+            return value;
+          },
+          // exponential 15
+          function(value,type,full,meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null)
+              return parseFloat(value).toExponential(15);
+            if (type === 'sort')
+              return NaN;
+            return value;
+          },
+          // datetime
+          function(value,type,full,meta) {
+            if ($scope.timeStrings)
+              return $scope.timeStrings[meta.row];
 
-                                  if (type === 'display') {
-                                    if (_.isObject(value) && value.type === 'Date') {
-                                      var time = moment(value.timestamp);
-                                      var tz = $scope.tz;
-                                      if (tz)
-                                        time.tz(tz);
-                                      return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
-                                    }
-                                    var nano = value % 1000;
-                                    var micro = (value / 1000) % 1000;
-                                    var milli = value / 1000 / 1000;
-                                    var time = moment(milli);
-                                    var tz = $scope.tz;
-                                    if (tz)
-                                      time.tz(tz);
-                                    return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
-                                  }
-                                  return value;
-                                },
-                                // boolean
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== null && (value.toLowerCase() === 'true' || value === 1))
-                                    return 'true';
-                                  return 'false';
-                                },
-                                // html
-                                function(value,type,full,meta) {
-                                  return value;
-                                },
-                                // date
-                                function(value,type,full,meta) {
-                                  if ($scope.timeStrings)
-                                    return $scope.timeStrings[meta.row];
+            if (type === 'display') {
+              if (_.isObject(value) && value.type === 'Date') {
+                var time = moment(value.timestamp);
+                var tz = $scope.tz;
+                if (tz)
+                  time.tz(tz);
+                return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
+              }
+              var nano = value % 1000;
+              var micro = (value / 1000) % 1000;
+              var milli = value / 1000 / 1000;
+              var time = moment(milli);
+              var tz = $scope.tz;
+              if (tz)
+                time.tz(tz);
+              return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
+            }
+            return value;
+          },
+          // boolean
+          function(value,type,full,meta) {
+            if (value !== undefined && value !== null && (value.toLowerCase() === 'true' || value === 1))
+              return 'true';
+            return 'false';
+          },
+          // html
+          function(value,type,full,meta) {
+            return value;
+          },
+          // date
+          function(value,type,full,meta) {
+            if ($scope.timeStrings)
+              return $scope.timeStrings[meta.row];
 
-                                  if (type === 'display') {
-                                    if (_.isObject(value) && value.type === 'Date') {
-                                      var time = moment(value.timestamp);
-                                      var tz = $scope.tz;
-                                      if (tz)
-                                        time.tz(tz);
-                                      return time.format("YYYY-MM-DD");
-                                    }
-                                    var nano = value % 1000;
-                                    var micro = (value / 1000) % 1000;
-                                    var milli = value / 1000 / 1000;
-                                    var time = moment(milli);
-                                    var tz = $scope.tz;
-                                    if (tz)
-                                      time.tz(tz);
-                                    return time.format("YYYY-MM-DD");
-                                  }
-                                  return value;
-                                },
-                                // time
-                                function(value,type,full,meta) {
-                                  if ($scope.timeStrings)
-                                    return $scope.timeStrings[meta.row];
+            if (type === 'display') {
+              if (_.isObject(value) && value.type === 'Date') {
+                var time = moment(value.timestamp);
+                var tz = $scope.tz;
+                if (tz)
+                  time.tz(tz);
+                return time.format("YYYY-MM-DD");
+              }
+              var nano = value % 1000;
+              var micro = (value / 1000) % 1000;
+              var milli = value / 1000 / 1000;
+              var time = moment(milli);
+              var tz = $scope.tz;
+              if (tz)
+                time.tz(tz);
+              return time.format("YYYY-MM-DD");
+            }
+            return value;
+          },
+          // time
+          function(value,type,full,meta) {
+            if ($scope.timeStrings)
+              return $scope.timeStrings[meta.row];
 
-                                    if (_.isObject(value) && value.type === 'Date') {
-                                      var time = moment(value.timestamp);
-                                      var tz = $scope.tz;
-                                      if (tz)
-                                        time.tz(tz);
-                                      return time.format("HH:mm:ss.SSS ZZ");
-                                    }
-                                    var nano = value % 1000;
-                                    var micro = (value / 1000) % 1000;
-                                    var milli = value / 1000 / 1000;
-                                    var time = moment(milli);
-                                    var tz = $scope.tz;
-                                    if (tz)
-                                      time.tz(tz);
-                                    return time.format("HH:mm:ss.SSS ZZ");
-                                }
-                                ];
+            if (_.isObject(value) && value.type === 'Date') {
+              var time = moment(value.timestamp);
+              var tz = $scope.tz;
+              if (tz)
+                time.tz(tz);
+              return time.format("HH:mm:ss.SSS ZZ");
+            }
+            var nano = value % 1000;
+            var micro = (value / 1000) % 1000;
+            var milli = value / 1000 / 1000;
+            var time = moment(milli);
+            var tz = $scope.tz;
+            if (tz)
+              time.tz(tz);
+            return time.format("HH:mm:ss.SSS ZZ");
+          }
+        ];
         $scope.allStringTypes = [ { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
         $scope.allTimeTypes   = [ { type: 8, name: 'datetime'}, { type: 0, name: 'string'}, { type: 11, name: 'date'}, { type: 12, name: 'time'} ];
         $scope.allIntTypes    = [ { type: 0, name: 'string'},
-                               { type: 1, name: 'integer'},
-                               { type: 2, name: 'formatted integer'},
-                               { type: 8, name: 'time'} ];
+        { type: 1, name: 'integer'},
+        { type: 2, name: 'formatted integer'},
+        { type: 8, name: 'time'} ];
         $scope.allDoubleTypes = [ { type: 0, name: 'string'},
-                                  { type: 3, name: 'double'},
-                                  { type: 4, name: 'double 2 decimals'},
-                                  { type: 5, name: 'double 4 decimals'},
-                                  { type: 6, name: 'exponential 5'},
-                                  { type: 7, name: 'exponential 15'} ];
+        { type: 3, name: 'double'},
+        { type: 4, name: 'double 2 decimals'},
+        { type: 5, name: 'double 4 decimals'},
+        { type: 6, name: 'exponential 5'},
+        { type: 7, name: 'exponential 15'} ];
         $scope.allBoolTypes = [ { type: 0, name: 'string'},
-                                { type: 9, name: 'boolean'} ];
+        { type: 9, name: 'boolean'} ];
 
         $scope.openOptionsDialog = function() {
           var options = {
@@ -516,7 +516,7 @@
               ($scope.fixLeftOld !== $scope.pagination.fixLeft) || ($scope.fixRightOld !== $scope.pagination.fixRight) ) {
             doit = 2;
           } else {
-           for (i=0; i<$scope.getCellDisp.length; i++) {
+            for (i=0; i<$scope.getCellDisp.length; i++) {
               if (($scope.getCellDisp[i] !== $scope.getCellDispOld[i]) || ($scope.getCellAlign[i] !== $scope.getCellAlignOld[i])) {
                 doit = 2;
               }
@@ -694,7 +694,7 @@
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
             var col = {
-                "title" : scope.columnNames[i]
+              "title" : scope.columnNames[i]
             };
             if (al === 'R')
               col.className = 'dtright';
@@ -711,21 +711,21 @@
 
           var id = '#' + scope.id;
           var init = {
-              "destroy" : true,
-              "data": scope.data,
-              "columns": scope.columns,
-              "stateSave": true,
-              "processing": true,
-              "autoWidth": true,
-              "order": [[ 0, "asc" ]],
-              "scrollX": '10%',
-              "searching": false,
-              "deferRender": true,
-              "drawCallback": function( settings ) {
-                scope.update_size();
-                scope.update_selected();
-              }
-            };
+            "destroy" : true,
+            "data": scope.data,
+            "columns": scope.columns,
+            "stateSave": true,
+            "processing": true,
+            "autoWidth": true,
+            "order": [[ 0, "asc" ]],
+            "scrollX": '10%',
+            "searching": false,
+            "deferRender": true,
+            "drawCallback": function( settings ) {
+              scope.update_size();
+              scope.update_selected();
+            }
+          };
 
           if (!scope.pagination.use) {
             init.paging = false;
@@ -737,7 +737,7 @@
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
               init.pageLength = 25
-              init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]];
+                init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]];
             } else {
               init.paging = false;
               init.scrollY = 350;
@@ -759,12 +759,12 @@
                 scope.$digest();
               },
               "iFixedColumns": 1
-             } );
+            } );
             if (scope.colorder !== undefined)
               scope.colreorg.fnOrder(scope.colorder);
             else
               scope.colorder = scope.colreorg.fnOrder().slice(0);
-            
+
             scope.refreshCells();
 
             $(id + ' tbody').off( 'click');
@@ -784,7 +784,7 @@
               clearTimeout(scope.refresh_size);
               scope.refresh_size = setTimeout(function() { scope.update_size(); }, 250);
             });
-            
+
             var inits = {};
             if ((scope.pagination.fixLeft+scope.pagination.fixRight) > (scope.columns.length-1)) {
               scope.pagination.fixLeft=0;
@@ -805,23 +805,23 @@
 
         scope.menuToggle = function() {
           if (scope.clipclient === undefined) {
-              scope.clipclient = new ZeroClipboard( );
-              var d = document.getElementById(scope.id + '_dt_copy');
+            scope.clipclient = new ZeroClipboard( );
+            var d = document.getElementById(scope.id + '_dt_copy');
 
-              scope.clipclient.clip( d );
+            scope.clipclient.clip( d );
 
-              scope.clipclient.on( "copy", function (event) {
-                var clipboard = event.clipboardData;
+            scope.clipclient.on( "copy", function (event) {
+              var clipboard = event.clipboardData;
 
-                var data = scope.table.rows(function(index, data, node) {
-                  return scope.selected[index]; }).data();
-                if (data === undefined || data.length === 0) {
-                  data = scope.table.rows().data();
-                }
-                var out = scope.exportTo(data, 'tabs');
+              var data = scope.table.rows(function(index, data, node) {
+                return scope.selected[index]; }).data();
+              if (data === undefined || data.length === 0) {
+                data = scope.table.rows().data();
+              }
+              var out = scope.exportTo(data, 'tabs');
 
-                clipboard.setData( "text/plain", out );
-              });
+              clipboard.setData( "text/plain", out );
+            });
           }
         }
 
@@ -841,7 +841,7 @@
         scope.$watch('getDumpState()', function(result) {
           if (result !== undefined && result.datatablestate === undefined) {
             var state = {
-                'pagination'  : scope.pagination
+              'pagination'  : scope.pagination
             };
             if (scope.columnNames !== undefined)
               state.columnNames = scope.columnNames.slice(0);

@@ -38,7 +38,7 @@ app.on('ready', function() {
 });
 
 // Kill backend before exiting
-app.on('quit', function() {
+app.on('before-quit', function() {
   killBackend();
 });
 

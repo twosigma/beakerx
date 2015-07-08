@@ -66,8 +66,15 @@ module.exports = (function() {
     'skip-taskbar': true
   };
 
+  function inheritOptions(child, parent) {
+    var parentBounds = parent.getBounds();
+    child.height = parentBounds.height;
+    child.width = parentBounds.width;
+    child.x = parentBounds.x + 20;
+    child.y = parentBounds.y + 20;
+  }
+
   function connectToBackend() {
-    console.log('Rebinding faye to: ' + backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
     client = new Faye.Client(backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
     var subscription = client.subscribe('/sessionClosed', function(msg) {
       var windowId = _sessionToWindow[msg.id];
@@ -75,7 +82,7 @@ module.exports = (function() {
     });
   }
 
-  function newWindow(url, type) {
+  function newWindow(url, type, parentContents) {
     var options;
     var devTools = false;
     if (type && type.startsWith('popup')) {
@@ -84,6 +91,13 @@ module.exports = (function() {
       devTools = false;
       options = defaultOptions;
     }
+
+    // Inherit properties from parent
+    if (parentContents) {
+      var parent = BrowserWindow.fromWebContents(parentContents);
+      inheritOptions(options, parent);
+    }
+
     var window = new BrowserWindow(options);
 
     _windows[window.id] = window;
@@ -101,7 +115,6 @@ module.exports = (function() {
           e.preventDefault();
         });
         window.on('closed', function(e) {
-          console.log('destroy!');
           var sessionId = _windowToSession[window.id];
           _sessionToWindow[sessionId] = null;
           _windowToSession[window.id] = null;
@@ -121,7 +134,6 @@ module.exports = (function() {
 
     if (type != 'notebook') {
       window.on('closed', function(e) {
-        console.log('Destroy!');
         window.unref();
       });
     }

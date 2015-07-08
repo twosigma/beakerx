@@ -95,7 +95,7 @@ mainMenu.on('new-default-notebook', function() {
 });
 
 ipc.on('new-window', function(e, url, type) {
-  windowManager.newWindow(url, type);
+  windowManager.newWindow(url, type, e.sender);
 });
 
 function switchToBackend(address) {

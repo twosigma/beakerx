@@ -32,10 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Set;
 
-public class EasyForm extends Observable implements Map<String, Object> {
+public class EasyForm extends ObservableMap<String, Object> {
 
   public static final Integer HORIZONTAL = 1;
   public static final Integer VERTICAL = 2;
@@ -235,32 +233,10 @@ public class EasyForm extends Observable implements Map<String, Object> {
     return caption;
   }
 
-  @Override
-  public int size() {
-    return 0;
-  }
-
-  @Override
-  public boolean isEmpty() {
-    return false;
-  }
-
-  @Override
-  public boolean containsKey(Object key) {
-    return false;
-  }
-
-  @Override
-  public boolean containsValue(Object value) {
-    return false;
-  }
-
-  @Override
   public Object get(final Object key) {
     return getComponentMap().get(key).getValue();
   }
 
-  @Override
   public Object put(final String key, final Object value) {
     Object previousValue = get(key);
     getComponentMap().get(key).setValue(value);
@@ -277,33 +253,4 @@ public class EasyForm extends Observable implements Map<String, Object> {
     }
   }
 
-  @Override
-  public Object remove(Object key) {
-    return null;
-  }
-
-  @Override
-  public void putAll(Map<? extends String, ?> m) {
-
-  }
-
-  @Override
-  public void clear() {
-
-  }
-
-  @Override
-  public Set<String> keySet() {
-    return null;
-  }
-
-  @Override
-  public Collection<Object> values() {
-    return null;
-  }
-
-  @Override
-  public Set<Entry<String, Object>> entrySet() {
-    return null;
-  }
 }

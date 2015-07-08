@@ -34,6 +34,9 @@
       var Dialog = remote.require('dialog');
       var Shell = remote.require('shell');
       var IPC = require('ipc');
+      var thisWindow = remote.getCurrentWindow();
+      
+      var _status = '';
 
       var _assignShortcut = function(name) {
         switch (name) {
@@ -86,6 +89,14 @@
         ]
       };
 
+      var _refreshWindowTitle = function() {
+        if (_status !== '') {
+          thisWindow.setTitle(thisWindow.pageTitle + ' - ' + _status);
+        } else {
+          thisWindow.setTitle(thisWindow.pageTitle);
+        }
+      }
+
       var bkElectron = {
         remote: remote,
         BrowserWindow: BrowserWindow,
@@ -98,7 +109,7 @@
           BrowserWindow.getFocusedWindow().toggleDevTools();
         },
 
-        thisWindow: remote.getCurrentWindow(),
+        thisWindow: thisWindow,
 
         updateMenus: function(menus) {
           var makeMenu = function(bkmenu) {
@@ -134,6 +145,15 @@
           template.splice(0, 0, _beakerMenu);
           var menu = Menu.buildFromTemplate(template);
           Menu.setApplicationMenu(menu);
+        },
+
+        setStatus: function(msg) {
+          _status = msg;
+          _refreshWindowTitle();
+        },
+
+        getStatus: function() {
+          return _status;
         }
       };
       return bkElectron;

@@ -57,6 +57,7 @@
       bkEvaluateJobManager,
       bkElectron,
       $location) {
+
     return {
       restrict: 'E',
       template: JST["template/mainapp/mainapp"](),
@@ -70,22 +71,38 @@
       },
       controller: function($scope, $timeout) {
         var showLoadingStatusMessage = function(message, nodigest) {
-          $scope.loadingmsg = message;
-          if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
-            $scope.$digest();
+          if (bkHelper.isElectron) {
+            bkElectron.setStatus(message);
+          } else {
+            $scope.loadingmsg = message;
+            if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
+              $scope.$digest();
+          }
         };
         var updateLoadingStatusMessage = function() {
+          if (bkHelper.isElectron) {
+            return;
+          }
           if (!($scope.$$phase || $scope.$root.$$phase))
             $scope.$digest();
         };
         var getLoadingStatusMessage = function() {
+          if (bkHelper.isElectron) {
+            return bkElectron.getStatus();
+          }
           return $scope.loadingmsg;
         };
         var clrLoadingStatusMessage = function(message, nodigest) {
-          if ($scope.loadingmsg === message) {
-            $scope.loadingmsg = "";
-            if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
-              $scope.$digest();
+          if (bkHelper.isElectron) {
+            if (bkElectron.getStatus() === message) {
+              bkElectron.setStatus('');
+            }
+          } else {
+            if ($scope.loadingmsg === message) {
+              $scope.loadingmsg = "";
+              if (nodigest !== true && !($scope.$$phase || $scope.$root.$$phase))
+                $scope.$digest();
+            }
           }
         };
         var showTransientStatusMessage = function(message, nodigest) {
@@ -1005,9 +1022,14 @@
               title;
 
           title = filename;
-          if (edited) title = '*' + title;
+          if (edited) {
+            title = '*' + title;
+          }
 
           document.title = title;
+          if (bkHelper.isElectron) {
+            bkElectron.thisWindow.pageTitle = title;
+          }
         };
 
         $scope.isEdited = function() {

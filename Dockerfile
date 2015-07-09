@@ -68,7 +68,7 @@ RUN apt-get install -y python-virtualenv python3-dev pkgconf libfreetype6-dev li
 #  R  #
 #######
 
-RUN apt-get install -y r-base r-base-dev libcurl4-gnutls-dev && \
+RUN apt-get install -y r-base r-base-dev libxml2-dev libssl-dev libcurl4-gnutls-dev && \
     Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')" && \
     Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')" && \
     Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')" && \

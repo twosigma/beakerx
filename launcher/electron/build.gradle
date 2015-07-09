@@ -16,6 +16,7 @@
 
 def macElectron = 'electron-v0.29.2-darwin-x64.zip'
 def winElectron = 'electron-v0.28.3-win32-x64.zip'
+def linuxElectron = 'electron-v0.29.2-linux-x64.zip'
 
 def osName = System.properties['os.name']
 def mac = false
@@ -27,6 +28,37 @@ if (osName.startsWith('Mac')) {
   win = true
 } else if (osName.startsWith('Linux')) {
   linux = true
+}
+
+task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
+  if (mac) {
+    commandLine './create-dmg/create-dmg', '--volname', '"Beaker"', '--window-pos', '200', '120', '--window-size', '800', '400', '--icon-size', '100', '--icon', 'Beaker.app', '200', '190', '--hide-extension', 'Beaker.app', '--app-drop-link', '600', '185', 'Beaker.dmg', 'osxdmg/'
+  } else if (win) {
+    commandLine 'iscc', '/o./', '/fbeaker_setup', 'makeWinInstaller.iss'
+  }
+}
+
+task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython', 'linuxDepScript']) {
+}
+
+task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
+}
+
+task run(type: Exec, dependsOn: ['unzipJRE', 'unzipPython', 'nodeInstall', 'makeDist']) {
+  commandLine 'electron', '--disable-http-cache', 'app'
+}
+
+task installElectron(type: Exec) {
+  if (win || mac) {
+    commandLine 'npm', 'install', 'electron-prebuilt', '-g'
+  } else if (linux) {
+    commandLine 'sudo', 'npm', 'install', 'electron-prebuilt', '-g'
+  }
+}
+
+task nodeInstall(type: Exec) {
+  workingDir 'app'
+  commandLine 'npm', 'install'
 }
 
 task makeDist (dependsOn: ':dev:build') << {
@@ -68,6 +100,10 @@ task cleanElectron(type: Delete) {
   delete 'dist', 'Beaker.app', '__MACOSX', 'jre', 'beaker', 'osxdmg', 'Beaker.dmg', 'python', 'beaker_setup.exe'
 }
 
+task realCleanElectron(type: Delete, dependsOn: 'cleanElectron') {
+  delete 'app/node_modules'
+}
+
 // Global tasks
 task unzipJRE(type: Exec) {
   commandLine 'unzip', '-uo', 'jre.zip'
@@ -76,17 +112,19 @@ task unzipJRE(type: Exec) {
 task unzipElectron(type: Exec) {
   if (mac) {
     commandLine 'unzip', '-uo', '-d', 'beaker', macElectron 
-  } else if (win){
+  } else if (win) {
     commandLine 'unzip', '-uo', '-d', 'beaker', winElectron
+  } else if (linux) {
+    commandLine 'unzip', '-uo', '-d', 'beaker', linuxElectron
   }
 }
 
-task copyBeakerApp(type: Copy){
+task copyBeakerApp(type: Copy, dependsOn: 'nodeInstall'){
   from 'app'
   if (mac) {
     dependsOn 'macCopyElectron'
     into 'Beaker.app/Contents/Resources/app'
-  } else if (win){
+  } else if (win || linux) {
     dependsOn 'unzipElectron'
     into 'beaker/resources/app'
   }
@@ -97,7 +135,7 @@ task copyDist(type: Copy, dependsOn: ['makeDist']) {
   if (mac) {
     dependsOn 'macCopyElectron'
     into 'Beaker.app/Contents/Resources/dist'
-  } else if (win){
+  } else if (win || linux) {
     into 'beaker/resources/dist'
   }
 }
@@ -107,7 +145,7 @@ task copyJRE(type: Copy, dependsOn: ['unzipJRE']) {
   if (mac) {
     dependsOn 'macCopyElectron'
     into 'Beaker.app/Contents/Resources/jre'
-  } else if (win){
+  } else if (win || linux) {
     into 'beaker/resources/jre'
   }
 }
@@ -116,24 +154,9 @@ task copyTools(type: Copy, dependsOn: 'copyJRE') {
   from 'tools.jar'
   if (mac) {
     into 'Beaker.app/Contents/Resources/jre/Contents/Home/lib'
-  } else if (win){
+  } else if (win || linux) {
     into 'beaker/resources/jre/lib'
   }
-}
-
-task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
-  if (mac) {
-    commandLine './create-dmg/create-dmg', '--volname', '"Beaker"', '--window-pos', '200', '120', '--window-size', '800', '400', '--icon-size', '100', '--icon', 'Beaker.app', '200', '190', '--hide-extension', 'Beaker.app', '--app-drop-link', '600', '185', 'Beaker.dmg', 'osxdmg/'
-  } else if (win) {
-    commandLine 'iscc', '/o./', '/fbeaker_setup', 'makeWinInstaller.iss'
-  }
-}
-
-task createBundle(dependsOn: ['copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython']) {
-}
-
-task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
-  
 }
 
 // OSX build
@@ -156,7 +179,6 @@ task checkIdentity(type: Exec, dependsOn: 'createBundle') {
   }
 }
 checkIdentity.onlyIf { mac }
-
 
 task macCopyElectron(type: Exec, dependsOn: ['unzipElectron']) {
   commandLine 'rsync', '-a', 'beaker/Electron.app/', 'Beaker.app'
@@ -198,3 +220,9 @@ task winCopyPython(type: Copy, dependsOn: ['unzipPython', 'copyDist']) {
   into 'beaker/resources/dist'
 }
 winCopyPython.onlyIf { win }
+
+// Linux build
+task linuxDepScript(type: Exec, dependsOn: 'copyDist') {
+  commandLine 'cp', '../ubuntu/install-dependencies.sh', 'beaker/resources/dist/'
+}
+linuxDepScript.onlyIf { linux }

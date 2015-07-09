@@ -38,6 +38,9 @@ module.exports = (function() {
       } else if (osName.startsWith('Darwin')) {
         process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jre/Contents/Home');
         _backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
+      } else if (osName.startsWith('Linux')) {
+        process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jre');
+        _backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
       }
 
       var rl = ReadLine.createInterface({

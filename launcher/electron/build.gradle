@@ -42,7 +42,7 @@ task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
   }
 }
 
-task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython', 'linuxDepScript']) {
+task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJRE', 'copyTools', 'macCopyElectron', 'copyPList', 'copyIcons', 'winCopyPython', 'winRename', 'winChangeIcon', 'linuxDepScript']) {
 }
 
 task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
@@ -105,8 +105,11 @@ task installElectron(type: Exec) {
 }
 
 task nodeInstall(type: Exec) {
-  workingDir 'app'
-  commandLine 'npm', 'install'
+  if (win) {
+    commandLine 'cmd', '/c', 'npm', '--prefix', './app', 'install', './app'
+  } else {
+    commandLine 'npm', '--prefix', './app', 'install', './app'
+  }
 }
 
 task unzipJRE(type: Exec) {
@@ -114,11 +117,17 @@ task unzipJRE(type: Exec) {
 }
 
 task downloadElectron(type: Exec) {
-  outputs.file electronName + '.zip'
-  commandLine 'curl', '-LO', 'https://github.com/atom/electron/releases/download/v' + version + '/' + electronName + '.zip'
+  if (win) {
+    def url = '\\"https://github.com/atom/electron/releases/download/v' + version + '/' + electronName + '.zip\\"'
+    def fileName = '\\"' + electronName + '.zip\\"'
+    commandLine 'PowerShell', "(New-Object System.Net.WebClient).DownloadFile(" + url + ", " + fileName + ")"
+  } else {
+    outputs.file('./' + electronName + '.zip')
+    commandLine 'curl', '-LO', 'https://github.com/atom/electron/releases/download/v' + version + '/' + electronName + '.zip'
+  }
 }
 
-task unzipElectron(type: Exec, dependsOn: 'downloadElectron') {
+task unzipElectron(type: Exec, dependsOn: ['downloadElectron']) {
   commandLine 'unzip', '-uo', '-d', 'beaker', electronName 
 }
 
@@ -216,11 +225,21 @@ task unzipPython(type: Exec) {
 }
 unzipPython.onlyIf { win }
 
-task winCopyPython(type: Copy, dependsOn: ['unzipPython', 'copyDist']) << {
+task winCopyPython(type: Copy, dependsOn: ['unzipPython', 'copyDist']) {
   from 'python'
   into 'beaker/resources/dist'
 }
 winCopyPython.onlyIf { win }
+
+task winRename(type: Exec, dependsOn: ['unzipElectron']){
+  commandLine 'mv', 'beaker/electron.exe', 'beaker/beaker.exe'
+}
+winRename.onlyIf{ win }
+
+task winChangeIcon(type: Exec, dependsOn: ['winRename', 'unzipElectron']) {
+  commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-icon', 'icon.ico' 
+}
+winChangeIcon.onlyIf{ win }
 
 // Linux build
 task linuxDepScript(type: Copy, dependsOn: 'copyDist') {

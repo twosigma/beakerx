@@ -134,6 +134,11 @@ define(function(require, exports, module) {
 
   var JavascriptCancelFunction = null;
 
+  function showErrorState(err) {
+    bkHelper.receiveEvaluationUpdate(err.modelOutput,
+        {status: "ERROR", payload: err.payload},
+        PLUGIN_NAME);
+  }
 
   var JavaScript_0 = {
     pluginName: PLUGIN_NAME,
@@ -167,7 +172,16 @@ define(function(require, exports, module) {
           beakerObj.setupBeakerObject(modelOutput);
           beakerObj.notebookToBeakerObject();
           var beaker = beakerObj.beakerObj;
-          acorn.parse(code);
+          try {
+            acorn.parse(code);
+          } catch (e) {
+            showErrorState({
+              modelOutput: modelOutput,
+              payload: e.stack.split('\n')[0]
+            });
+            beakerObj.clearOutput();
+            return deferred.reject();
+          }
           var output = eval(code);
           beakerObj.beakerObjectToNotebook();
           if ( typeof output === 'object' ) {

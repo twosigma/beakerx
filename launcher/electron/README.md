@@ -56,13 +56,17 @@ gradle installElectron
 
 To produce an executable you can run (an app bundle on OSX, a folder with an executable on Windows and Linux), do:
 ```sh
-gradle makeBundle
+gradle makeBundle -Pversion=0.29.2 -Parch=x64
 ```
 
 To produce an installer for your platform (DMG on OSX, .exe on Windows), do:
 ```sh
-gradle makeInstaller
+gradle makeInstaller -Pversion=0.29.2 -Parch=x64
 ```
+
+The 'version' parameter determines the version of electron that will be used to build your application. You can use any
+version available at https://github.com/atom/electron/releases. The 'arch' parameter determines the architecture of the
+Electron build. Acceptable 'arch' parameters are 'x64', 'ia32' and 'arm'.
 
 Currently there are no Linux installers.
 

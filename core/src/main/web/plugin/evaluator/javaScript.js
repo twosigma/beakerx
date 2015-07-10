@@ -144,153 +144,153 @@ define(function(require, exports, module) {
     borderColor: "",
     shortName: "Js",
     evaluate: function(code, modelOutput, refreshObj) {
-        var deferred = bkHelper.newDeferred();
-        bkHelper.timeout(function () {
-          // this is visible to JS code in cell
-          var beakerObj = bkHelper.getBeakerObject();
-          try {
-            var progressObj = {
-                type: "BeakerDisplay",
-                innertype: "Progress",
-                object: {
-                  message: "running...",
-                  startTime: new Date().getTime(),
-                  outputdata: []
-                }
-              };
-            modelOutput.result = progressObj;
-            if (refreshObj !== undefined)
-              refreshObj.outputRefreshed();
-            else
-              bkHelper.refreshRootScope();
+      var deferred = bkHelper.newDeferred();
+      bkHelper.timeout(function () {
+        // this is visible to JS code in cell
+        var beakerObj = bkHelper.getBeakerObject();
+        try {
+          var progressObj = {
+            type: "BeakerDisplay",
+            innertype: "Progress",
+            object: {
+              message: "running...",
+              startTime: new Date().getTime(),
+              outputdata: []
+            }
+          };
+          modelOutput.result = progressObj;
+          if (refreshObj !== undefined)
+            refreshObj.outputRefreshed();
+          else
+            bkHelper.refreshRootScope();
 
-            beakerObj.setupBeakerObject(modelOutput);
-            beakerObj.notebookToBeakerObject();
-            var beaker = beakerObj.beakerObj;
-            acorn.parse(code);
-            var output = eval(code);
-            beakerObj.beakerObjectToNotebook();
-            if ( typeof output === 'object' ) {
-              if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {
-                output = output.promise;
-              }
-              if(typeof output.then === 'function') {
-                JavascriptCancelFunction = function () {
-                  bkHelper.receiveEvaluationUpdate(modelOutput,
-                                                   {status: "ERROR", payload: "cancelled..."},
-                                                   PLUGIN_NAME);
-                  if (modelOutput !== undefined && modelOutput.object !== undefined)
-                    modelOutput.elapsedTime = new Date().getTime() - modelOutput.object.startTime;
-                  JavascriptCancelFunction = null;
-                  beakerObj.beakerObjectToNotebook();
-                  if ( typeof output.reject === 'function') {
-                    output.reject();
-                    output = undefined;
-                  } else {
-                    deferred.reject();
-                  }
+          beakerObj.setupBeakerObject(modelOutput);
+          beakerObj.notebookToBeakerObject();
+          var beaker = beakerObj.beakerObj;
+          acorn.parse(code);
+          var output = eval(code);
+          beakerObj.beakerObjectToNotebook();
+          if ( typeof output === 'object' ) {
+            if(typeof output.promise === 'object' && typeof output.promise.then === 'function') {
+              output = output.promise;
+            }
+            if(typeof output.then === 'function') {
+              JavascriptCancelFunction = function () {
+                bkHelper.receiveEvaluationUpdate(modelOutput,
+                    {status: "ERROR", payload: "cancelled..."},
+                    PLUGIN_NAME);
+                if (modelOutput !== undefined && modelOutput.object !== undefined)
+                  modelOutput.elapsedTime = new Date().getTime() - modelOutput.object.startTime;
+                JavascriptCancelFunction = null;
+                beakerObj.beakerObjectToNotebook();
+                if ( typeof output.reject === 'function') {
+                  output.reject();
+                  output = undefined;
+                } else {
+                  deferred.reject();
                 }
-                output.then(function(o) {
-                  JavascriptCancelFunction = null;
-                  if (beakerObj.isCircularObject(o))
-                    o = "ERROR: circular objects are not supported";
-                  else
-                    o = beakerObj.transform(o);
-                  bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: o}, PLUGIN_NAME);
-                  beakerObj.beakerObjectToNotebook();
-                  deferred.resolve(o);
-                  beakerObj.clearOutput();
-                }, function(e) {
-                  JavascriptCancelFunction = null;
-                  bkHelper.receiveEvaluationUpdate(modelOutput,
-                                                   {status: "ERROR", payload: e}, PLUGIN_NAME);
-                  console.log(e);
-                  beakerObj.beakerObjectToNotebook();
-                  var r;
-                  if (beakerObj.isCircularObject(modelOutput.result))
-                    r = "ERROR: circular objects are not supported";
-                  else
-                    r = beakerObj.transform(modelOutput.result);
-                  deferred.reject(r);
-                  beakerObj.clearOutput();
-                });
-              } else {
-                if (beakerObj.isCircularObject(output))
-                  output = "ERROR: circular objects are not supported";
-                else
-                  output = beakerObj.transform(output);
-                bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: output}, PLUGIN_NAME);
-                deferred.resolve(output);
-                beakerObj.clearOutput();
               }
+              output.then(function(o) {
+                JavascriptCancelFunction = null;
+                if (beakerObj.isCircularObject(o))
+                  o = "ERROR: circular objects are not supported";
+                else
+                  o = beakerObj.transform(o);
+                bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: o}, PLUGIN_NAME);
+                beakerObj.beakerObjectToNotebook();
+                deferred.resolve(o);
+                beakerObj.clearOutput();
+              }, function(e) {
+                JavascriptCancelFunction = null;
+                bkHelper.receiveEvaluationUpdate(modelOutput,
+                    {status: "ERROR", payload: e}, PLUGIN_NAME);
+                console.log(e);
+                beakerObj.beakerObjectToNotebook();
+                var r;
+                if (beakerObj.isCircularObject(modelOutput.result))
+                  r = "ERROR: circular objects are not supported";
+                else
+                  r = beakerObj.transform(modelOutput.result);
+                deferred.reject(r);
+                beakerObj.clearOutput();
+              });
             } else {
+              if (beakerObj.isCircularObject(output))
+                output = "ERROR: circular objects are not supported";
+              else
+                output = beakerObj.transform(output);
               bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: output}, PLUGIN_NAME);
               deferred.resolve(output);
               beakerObj.clearOutput();
             }
-          } catch (err) {
-            // detect chrome or firefox stack traces
-            var stack = [];
-            try {
-              if (err.fileName !== undefined) {
-                var stackin = err.stack.split(/\n/);              
-                stack.push(err.name+': '+err.message);
-                var stage = 0;
-                for(var i=0; i<stackin.length; i++) {
-                  var line = stackin[i];
-                  if (line.indexOf(' > eval:')>=0) {
-                    var a = line.indexOf('@');
-                    var b = line.indexOf(' > eval:');
-                    stage = 1;
-                    stack.push('    at '+line.substring(0,a)+' &lt;codecell&gt;'+line.substring(b+7));
-                  } else if(stage==0) {
-                    stack.push(line);
-                  } else 
-                    break;
-                }
-                if (stack.length>1)
-                  stack.pop();
-              } else {
-                var stackin = err.stack.split(/\n/);
-              
-                stack.push(stackin[0]);
-                for(var i=1; i<stackin.length; i++) {
-                  var line = stackin[i];
-                  if (line.indexOf(' at eval (eval at <anonymous> ')>=0)
-                    break;
-                  if (line.indexOf(' (eval at <anonymous>')>=0 && line.indexOf(', <anonymous>:')>=0 ) {
-                    var a = line.indexOf(' (eval at <anonymous>');
-                    var b = line.indexOf(', <anonymous>:')+13;
-                    var c = line.indexOf(')',b);
-                    stack.push(line.substring(0,a)+' &lt;codecell&gt;'+line.substring(b,c));
-                  } else
-                     stack.push(line);
-                }
-              }
-            } catch(e) { }
-            bkHelper.receiveEvaluationUpdate(modelOutput,
-                                             {status: "ERROR", payload: stack},
-                                             PLUGIN_NAME);
-            console.log(stack);
+          } else {
+            bkHelper.receiveEvaluationUpdate(modelOutput, {status: "FINISHED", payload: output}, PLUGIN_NAME);
+            deferred.resolve(output);
             beakerObj.clearOutput();
-            var r;
-            if (beakerObj.isCircularObject(modelOutput.result))
-              r = "ERROR: circular objects are not supported";
-            else
-              r = beakerObj.transform(modelOutput.result);
-            deferred.reject(r);
           }
-        }, 0);
-        return deferred.promise;
-      },
-      interrupt: function() {
-        this.cancelExecution();
-      },
-      cancelExecution: function () {
-        if (JavascriptCancelFunction) {
-          JavascriptCancelFunction();
+        } catch (err) {
+          // detect chrome or firefox stack traces
+          var stack = [];
+          try {
+            if (err.fileName !== undefined) {
+              var stackin = err.stack.split(/\n/);
+              stack.push(err.name+': '+err.message);
+              var stage = 0;
+              for(var i=0; i<stackin.length; i++) {
+                var line = stackin[i];
+                if (line.indexOf(' > eval:')>=0) {
+                  var a = line.indexOf('@');
+                  var b = line.indexOf(' > eval:');
+                  stage = 1;
+                  stack.push('    at '+line.substring(0,a)+' &lt;codecell&gt;'+line.substring(b+7));
+                } else if(stage==0) {
+                  stack.push(line);
+                } else
+                  break;
+              }
+              if (stack.length>1)
+                stack.pop();
+            } else {
+              var stackin = err.stack.split(/\n/);
+
+              stack.push(stackin[0]);
+              for(var i=1; i<stackin.length; i++) {
+                var line = stackin[i];
+                if (line.indexOf(' at eval (eval at <anonymous> ')>=0)
+                    break;
+                    if (line.indexOf(' (eval at <anonymous>')>=0 && line.indexOf(', <anonymous>:')>=0 ) {
+                      var a = line.indexOf(' (eval at <anonymous>');
+                          var b = line.indexOf(', <anonymous>:')+13;
+                          var c = line.indexOf(')',b);
+                          stack.push(line.substring(0,a)+' &lt;codecell&gt;'+line.substring(b,c));
+                          } else
+                          stack.push(line);
+                          }
+                          }
+                          } catch(e) { }
+                          bkHelper.receiveEvaluationUpdate(modelOutput,
+                            {status: "ERROR", payload: stack},
+                            PLUGIN_NAME);
+                          console.log(stack);
+                          beakerObj.clearOutput();
+                          var r;
+                          if (beakerObj.isCircularObject(modelOutput.result))
+                          r = "ERROR: circular objects are not supported";
+                          else
+                          r = beakerObj.transform(modelOutput.result);
+                          deferred.reject(r);
         }
-      },
+      }, 0);
+      return deferred.promise;
+    },
+    interrupt: function() {
+      this.cancelExecution();
+    },
+    cancelExecution: function () {
+      if (JavascriptCancelFunction) {
+        JavascriptCancelFunction();
+      }
+    },
 
     autocomplete2: function(editor, options, cb) {
       var ret = scriptHint(editor, javascriptKeywords,

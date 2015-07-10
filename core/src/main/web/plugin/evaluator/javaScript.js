@@ -190,9 +190,10 @@ define(function(require, exports, module) {
             }
             if(typeof output.then === 'function') {
               JavascriptCancelFunction = function () {
-                bkHelper.receiveEvaluationUpdate(modelOutput,
-                    {status: "ERROR", payload: "cancelled..."},
-                    PLUGIN_NAME);
+                showErrorState({
+                  modelOutput: modelOutput,
+                  payload: 'cancelled...'
+                });
                 if (modelOutput !== undefined && modelOutput.object !== undefined)
                   modelOutput.elapsedTime = new Date().getTime() - modelOutput.object.startTime;
                 JavascriptCancelFunction = null;
@@ -282,9 +283,10 @@ define(function(require, exports, module) {
                           }
                           }
                           } catch(e) { }
-                          bkHelper.receiveEvaluationUpdate(modelOutput,
-                            {status: "ERROR", payload: stack},
-                            PLUGIN_NAME);
+                          showErrorState({
+                            modelOutput: modelOutput,
+                            payload: stack
+                          });
                           console.log(stack);
                           beakerObj.clearOutput();
                           var r;

@@ -227,7 +227,7 @@ unzipPython.onlyIf { win }
 
 task winCopyPython(type: Copy, dependsOn: ['unzipPython', 'copyDist']) {
   from 'python'
-  into 'beaker/resources/dist'
+  into 'beaker/resources/dist/python'
 }
 winCopyPython.onlyIf { win }
 

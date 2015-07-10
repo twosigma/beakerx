@@ -33,9 +33,9 @@ sudo apt-get update
 sudo apt-get install -y nginx # nginx -v = 1.6.0
 
 # npm
-sudo add-apt-repository --yes ppa:chris-lea/node.js
-sudo apt-get update
-sudo apt-get install -y nodejs # nodejs -v = 0.10.28
+# Note the new setup script name for Node.js v0.12
+curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
+sudo apt-get install -y nodejs
 
 # for R
 sudo add-apt-repository --yes ppa:marutter/rrutter

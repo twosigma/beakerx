@@ -33,17 +33,28 @@ Windows:
 
 4. Put a copy of tools.jar in this folder. Get it from a similar place as OSX.
 
-5. Run `gradle makeWinElectron`. This will produce a beaker folder with an executable you can run.
+Linux:
 
-To build:
+1. Download electron-v0.29.2-linux-x64.zip from Electron's repo (https://github.com/atom/electron/releases) and put it in this folder.
+
+2. Download JRE, untar it, zip it, and put it in this folder as 'jre.zip'
+
+3. Put a copy of tools.jar in this folder. Get it from a similar place as OSX.
+
+To build and/or run:
 If you want to simply run Beaker using your own installed version of electron, do:
 
 ```sh
-gradle makeDist
-electron app
+gradle run
 ```
 
-To produce an executable you can run (an app bundle on OSX, a folder with an executable on Windows), do:
+If you do not have Electron's prebuilt binaries installed, simply do
+
+```sh
+gradle installElectron
+```
+
+To produce an executable you can run (an app bundle on OSX, a folder with an executable on Windows and Linux), do:
 ```sh
 gradle makeBundle
 ```
@@ -52,4 +63,6 @@ To produce an installer for your platform (DMG on OSX, .exe on Windows), do:
 ```sh
 gradle makeInstaller
 ```
+
+Currently there are no Linux installers.
 

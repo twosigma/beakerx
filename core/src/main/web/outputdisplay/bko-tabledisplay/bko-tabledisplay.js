@@ -365,7 +365,7 @@
           function(value, type, full, meta) {
             if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
               var x = parseInt(value);
-              if (!isNan(x)) {
+              if (!isNaN(x)) {
                 return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
               }
               return x;

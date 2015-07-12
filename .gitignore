@@ -59,6 +59,11 @@ core/src/main/web/vendor/bower_components/acorn/test
 
 core/src/main/web/vendor/bower_components/underscore.string/test
 
+core/src/main/web/vendor/bower_components/moment-timezone/data
+core/src/main/web/vendor/bower_components/moment/src
+core/src/main/web/vendor/bower_components/moment/locale
+core/src/main/web/vendor/bower_components/moment/templates
+
 core/src/main/web/vendor/DataTables-1.10.7/extensions/ColVis
 core/src/main/web/vendor/DataTables-1.10.7/extensions/FixedColumns/examples
 core/src/main/web/vendor/DataTables-1.10.7/extensions/ColReorder/examples

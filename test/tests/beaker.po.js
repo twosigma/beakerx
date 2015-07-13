@@ -158,13 +158,8 @@ var BeakerPageObject = function() {
     browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
   };
   this.waitForCellOutput = function(plugin) {
-    browser.wait(function() {
-      var deferred = protractor.promise.defer();
-      this.getCellOutput().isPresent()
-        .then(function(result) {
-          deferred.fulfill(result);
-        });
-      return deferred.promise;
+    return browser.wait(function() {
+      return this.getCellOutput().isPresent();
     }.bind(this));
   };
   this.getCellOutput = function() {

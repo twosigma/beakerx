@@ -30,9 +30,7 @@ if (osName.startsWith('Mac')) {
   platform = 'linux'
 }
 def electronName = ''
-if (project.hasProperty('version') && project.hasProperty('arch')) {
-  electronName = 'electron-v' + version + '-' + platform + '-' + arch
-}
+electronName = 'electron-v' + version + '-' + platform + '-' + arch
 
 task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
   if (mac) {
@@ -237,7 +235,7 @@ task winRename(type: Exec, dependsOn: ['unzipElectron']){
 winRename.onlyIf{ win }
 
 task winChangeIcon(type: Exec, dependsOn: ['winRename', 'unzipElectron']) {
-  commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-icon', 'icon.ico' 
+  commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-icon', 'beaker.ico' 
 }
 winChangeIcon.onlyIf{ win }
 

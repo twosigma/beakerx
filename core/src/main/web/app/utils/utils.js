@@ -38,6 +38,16 @@
     }
     
     var serverRoot = endsWith(document.baseURI, 'beaker/') ? document.baseURI.substring(0,document.baseURI.length-7): document.baseURI;
+
+    var osName = "Unknown";
+    if (navigator.appVersion.indexOf("Win") != -1) {
+      osName="Windows";
+    } else if (navigator.appVersion.indexOf("Mac") != -1) {
+      osName="MacOS";
+    } else if (navigator.appVersion.indexOf("Linux") != -1) {
+      osName="Linux";
+    }
+
     
     function serverUrl(path) {
       return serverRoot + path;
@@ -336,6 +346,7 @@
 
       // Electron: require('remote')
       isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
+      osName: osName
     };
     return bkUtils;
   });

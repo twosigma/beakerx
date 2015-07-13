@@ -16,13 +16,14 @@
 
 var app = require('app');  // Module to control application life.
 var ipc = require('ipc');
-var http = require('http');
+var request = require('request');
 var crashReporter = require('crash-reporter');
 
 var events = require('events');
 var backendRunner = require('./backend-runner.js');
 var mainMenu = require('./main-menu.js');
 var windowManager = require('./window-manager.js');
+var server = require('./server.js');
 
 var appReady = false;
 var openFile;
@@ -30,6 +31,20 @@ var mainMenu;
 
 // Report crashes to our server.
 crashReporter.start();
+
+var osName = os.type();
+
+if (process.argv.length > 2) {
+  for (var i = 2; i < process.argv.length; ++i) {
+    console.log(process.argv[i]);
+    if (osName.startsWith('Windows') || osName.startsWith('Linux')) {
+      request.post('http://localhost:3001').form({
+        path: process.argv[i]
+      });
+    }
+  }
+  return;
+}
 
 // Electron ready
 app.on('ready', function() {
@@ -50,6 +65,10 @@ app.on('open-file', function(event, path) {
   } else {
     openFile = path;
   }
+});
+
+server.on('open-file', function(event, path) {
+  windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path);
 });
 
 ipc.on('quit', function() {
@@ -149,7 +168,7 @@ function spinUntilReady(url, done) {
         }
       }
     }
-    http.get(backendRunner.getUrl() + url, callback);
+    request.get(backendRunner.getUrl() + url).on('response' callback);
   }
   spin();
 }

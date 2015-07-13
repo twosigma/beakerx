@@ -15,6 +15,7 @@
  */
 
 module.exports = function(ipcPort) {
+  console.log('ipcport is ' + ipcPort);
   var http = require('http');
   var events = require('events');
   var qs = require('querystring');
@@ -35,13 +36,12 @@ module.exports = function(ipcPort) {
         var body = '';
         request.on('data', function(data) {
           body += data;
-          if (body.length > '1000') {
+          if (body.length > '10000') {
             response.writeHead(413, 'Request Entity Too Large', {'Content-Type': 'text/html'});
             response.end('413: Request Entity Too Large');
           }
         });
         request.on('end', function() {
-          console.log('here: opening at: ' + qs.parse(body)['path']);
           emitter.emit('open-file', qs.parse(body)['path']);
         });
       }

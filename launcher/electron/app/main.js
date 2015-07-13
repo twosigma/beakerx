@@ -40,11 +40,9 @@ var osName = os.type();
 
 if (process.argv.length > 1) {
   var resolve = function(onlyInstance) {
-    console.log('1Asking nicely');
     for (var i = 1; i < process.argv.length; ++i) {
       if (osName.startsWith('Windows') || osName.startsWith('Linux')) {
         if (!onlyInstance) {
-          console.log('2Asking nicely');
           request.post('http://localhost:' + ipcPort + '/open-file').form({
             path: process.argv[i]
           });
@@ -56,12 +54,10 @@ if (process.argv.length > 1) {
     if (onlyInstance){
       app.emit('ready');
     } else {
-
     }
   };
 
   // Check if an Electron instance already exists
-  console.log('*************CHECKING');
   http.get('http://localhost:' + ipcPort + '/version', function(res){
     var body = '';
     res.on('data', function(data) {
@@ -69,7 +65,6 @@ if (process.argv.length > 1) {
     });
     res.on('end', function() {
       if (body.startsWith('Electron')) {
-        console.log('Found beaker');
         resolve(false);
       } else {
         resolve(true);

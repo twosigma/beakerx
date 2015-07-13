@@ -38,6 +38,29 @@ describe('notebook', function() {
     beakerPO.closeNotebook();
   });
 
+  describe('evaluating JS', function() {
+    beforeEach(function() {
+      beakerPO.newEmptyNotebook.click();
+      beakerPO.insertCellButton.click();
+      beakerPO.cellEvaluatorMenu.click();
+      beakerPO.cellEvaluatorMenuItem('JavaScript').click();
+    });
+
+    it('displays syntax errors correctly', function(done) {
+      beakerPO.setCellInput(',');
+      beakerPO.evaluateButton.click();
+      beakerPO.waitForCellOutput();
+      beakerPO.getCellOutput().getText().then(function(txt) {
+        expect(txt).toEqual('Unexpected token (1:0)', txt);
+        done();
+      });
+    });
+
+    afterEach(function() {
+      beakerPO.closeNotebook();
+    });
+  });
+
   describe('interacting with a code cell', function() {
     beforeEach(function() {
       beakerPO.newEmptyNotebook.click();

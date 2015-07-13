@@ -38,16 +38,18 @@
       
       var _status = '';
 
+      var _ctrlKey = (bkUtils.osName == 'MacOS') ? 'Command' : 'Control';
+
       var _assignShortcut = function(name) {
         switch (name) {
           case 'Save':
-            return 'Command+S';
+            return _ctrlKey + '+S';
           case 'Open... (.bkr)':
-            return 'Command+O';
+            return _ctrlKey + '+O';
           case 'New Notebook':
-            return 'Command+N';
+            return _ctrlKey + '+N';
           case 'Tutorial':
-            return 'Command+H';
+            return _ctrlKey + '+H';
           default:
             return undefined;
         }
@@ -60,7 +62,7 @@
             click: function() {
               IPC.send('quit');
             },
-            accelerator: 'Command+Q'
+            accelerator: _ctrlKey + '+Q'
           },
           {
             label: 'Change server',
@@ -79,13 +81,13 @@
       var _editMenu = {
         label: 'Edit',
         submenu:[
-          {label: 'Undo', accelerator: 'Command+Z', selector: 'undo:'},
-          {label: 'Redo', accelerator: 'Command+Shift+Z', selector: 'redo:'},
+          {label: 'Undo', accelerator: _ctrlKey + '+Z', selector: 'undo:'},
+          {label: 'Redo', accelerator: _ctrlKey + '+Shift+Z', selector: 'redo:'},
           {type: 'separator'},
-          {label: 'Cut', accelerator: 'Command+X', selector: 'cut:'},
-          {label: 'Copy', accelerator: 'Command+C', selector: 'copy:'},
-          {label: 'Paste', accelerator: 'Command+V', selector: 'paste:'},
-          {label: 'Select All', accelerator: 'Command+A', selector: 'selectAll:'}
+          {label: 'Cut', accelerator: _ctrlKey + '+X', selector: 'cut:'},
+          {label: 'Copy', accelerator: _ctrlKey + '+C', selector: 'copy:'},
+          {label: 'Paste', accelerator: _ctrlKey + '+V', selector: 'paste:'},
+          {label: 'Select All', accelerator: _ctrlKey + '+A', selector: 'selectAll:'}
         ]
       };
 

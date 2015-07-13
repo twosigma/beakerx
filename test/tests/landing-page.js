@@ -23,8 +23,8 @@ describe('beaker landing page', function() {
     browser.get(beakerPO.baseURL);
     browser.waitForAngular().then(function() {
       var stop = new Date().getTime();
-      var len = stop-start;
-      console.log("Loading time: "+len+" milliSeconds");
+      var len = stop - start;
+      console.log('Loading time: ' + len + ' milliSeconds');
     });
   });
 

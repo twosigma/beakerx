@@ -19,7 +19,9 @@ var _ = require('underscore');
 var BeakerPageObject = function() {
   this.baseURL = 'http://localhost:8801/';
   this.mainmenu = element.all(by.repeater('m in getMenus()'));
+  //jscs:disable
   this.submenu = element.all(by.repeater("item in getMenuItems() | filter:isHidden | orderBy:'sortorder'"))
+  //jscs:enable
     .filter(function(e, i) { return e.isDisplayed(); });
 
   this.openMenuAtIndex = function(index) {

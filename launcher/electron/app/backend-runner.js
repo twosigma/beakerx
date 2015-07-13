@@ -26,19 +26,20 @@ module.exports = (function() {
   var _local;
   var _backend;
 
+  var _osName = os.type();
+
   return {
     startNew: function() {
       var eventEmitter = new events.EventEmitter();
 
-      var osName = os.type();
-      if (osName.startsWith('Windows')) {
+      if (_osName.startsWith('Windows')) {
         process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jre');
         process.chdir(__dirname + '/../dist');
         _backend = spawn(path.resolve(__dirname + '/../dist/beaker.command.bat'), ['--open-browser', 'false']);
-      } else if (osName.startsWith('Darwin')) {
+      } else if (_osName.startsWith('Darwin')) {
         process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jre/Contents/Home');
         _backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
-      } else if (osName.startsWith('Linux')) {
+      } else if (_osName.startsWith('Linux')) {
         process.env['JAVA_HOME'] = path.resolve(__dirname + '/../jre');
         _backend = spawn(path.resolve(__dirname + '/../dist/beaker.command'), ['--open-browser', 'false']);
       }
@@ -64,7 +65,9 @@ module.exports = (function() {
       return eventEmitter;
     },
     kill: function() {
-      if (_backend.local) {
+      if ((_backend.local) && (_osName.startsWith('Windows'))) {
+        _backend.kill('SIGINT')
+      } else if (_backend.local) {
         _backend.kill('SIGTERM');
       }
       _backend = {};

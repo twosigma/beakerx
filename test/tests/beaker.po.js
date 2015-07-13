@@ -168,7 +168,7 @@ var BeakerPageObject = function() {
     }.bind(this));
   };
   this.getCellOutput = function() {
-    return element(by.css('bk-output-display div pre'));
+    return element(by.css('bk-output-display > div'));
   };
 };
 module.exports = BeakerPageObject;

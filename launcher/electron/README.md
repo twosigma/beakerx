@@ -70,9 +70,12 @@ To produce an installer for your platform (DMG on OSX, .exe on Windows), do:
 gradle makeInstaller -P version=0.29.2 -P arch=x64
 ```
 
-The 'version' parameter determines the version of electron that will be used to build your application. You can use any
-version available at https://github.com/atom/electron/releases. The 'arch' parameter determines the architecture of the
-Electron build. Acceptable 'arch' parameters are 'x64', 'ia32' and 'arm'.
+The 'version' parameter determines the version of electron that will be used
+to build your application. You can use any version available at
+https://github.com/atom/electron/releases. The 'arch' parameter determines the
+architecture of the Electron build. Acceptable 'arch' parameters are 'x64',
+'ia32' and 'arm'. You can also omit the 'version' and 'arch' parameters. Their
+default values are '0.29.2' and 'x64', respectively.
 
 Currently there are no Linux installers.
 

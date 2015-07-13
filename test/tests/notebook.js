@@ -61,6 +61,48 @@ describe('notebook', function() {
     });
   });
 
+  describe('evaluating languages', function() {
+    function evalInLanguage(language, code, expected, done) {
+      beakerPO.activateLanguageInManager(language);
+      beakerPO.waitForPlugin(language);
+      beakerPO.languageManagerCloseButton.click();
+
+      beakerPO.cellEvaluatorMenu.click();
+      beakerPO.cellEvaluatorMenuItem(language).click();
+      beakerPO.setCellInput(code);
+      beakerPO.evaluateButton.click();
+      beakerPO.waitForCellOutput();
+      return beakerPO.getCellOutput().getText()
+      .then(function(output) {
+        expect(output).toEqual(expected);
+        done();
+      });
+    }
+
+    beforeEach(function() {
+      beakerPO.newEmptyNotebook.click();
+      beakerPO.insertCellButton.click();
+      beakerPO.notebookMenu.click();
+      beakerPO.languageManagerMenuItem.click();
+    });
+
+    afterEach(function() {
+      beakerPO.closeNotebook();
+    });
+
+    it('HTML', function(done) {
+      evalInLanguage('Html', '1+1', '1+1', done);
+    });
+
+    it('JavaScript', function(done) {
+      evalInLanguage('JavaScript', '1+1', '2', done);
+    });
+
+    it('Groovy', function(done) {
+      evalInLanguage('Groovy', '1+1', '2', done);
+    });
+  });
+
   describe('interacting with a code cell', function() {
     beforeEach(function() {
       beakerPO.newEmptyNotebook.click();

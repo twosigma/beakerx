@@ -130,6 +130,15 @@ var BeakerPageObject = function() {
     });
   };
 
+  this.activateLanguageInManager = function(language) {
+    this.languageManagerButtonActive(language).isPresent()
+    .then(function(isActive) {
+      if (!isActive) {
+        return this.languageManagerButton(language).click();
+      }
+    }.bind(this));
+  };
+
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {
     return element(by.css('.plugin-manager .' + language + ' .plugin-known'));

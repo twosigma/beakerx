@@ -25,11 +25,13 @@ var events = require('events');
 var backendRunner = require('./backend-runner.js');
 var mainMenu = require('./main-menu.js');
 var windowManager = require('./window-manager.js');
+var server;
 
+var backendReady = false;
 var appReady = false;
-var launch = true;
-var openFile;
+var filesToOpen = [];
 var mainMenu;
+var ipcPort = 35046;
 
 // Report crashes to our server.
 crashReporter.start();
@@ -37,39 +39,57 @@ crashReporter.start();
 var osName = os.type();
 
 if (process.argv.length > 1) {
+  var resolve = function(onlyInstance) {
+    console.log('1Asking nicely');
+    for (var i = 1; i < process.argv.length; ++i) {
+      if (osName.startsWith('Windows') || osName.startsWith('Linux')) {
+        if (!onlyInstance) {
+          console.log('2Asking nicely');
+          request.post('http://localhost:' + ipcPort + '/open-file').form({
+            path: process.argv[i]
+          });
+        } else {
+          filesToOpen.push(process.argv[i]);
+        }
+      }
+    }
+    if (onlyInstance){
+      app.emit('ready');
+    } else {
+
+    }
+  };
+
   // Check if an Electron instance already exists
-  http.get('http://localhost:3001/version', function(res){
+  console.log('*************CHECKING');
+  http.get('http://localhost:' + ipcPort + '/version', function(res){
     var body = '';
     res.on('data', function(data) {
       body += data;
     });
     res.on('end', function() {
-      console.log('**********' + body);
       if (body.startsWith('Electron')) {
-        for (var i = 1; i < process.argv.length; ++i) {
-          if (process.argv[i][0] == '/' && (osName.startsWith('Windows') || osName.startsWith('Linux'))) {
-            request.post('http://localhost:3001/openFile').form({
-              path: process.argv[i]
-            });
-          }
-        }
-      // Continue launching, open those files
+        console.log('Found beaker');
+        resolve(false);
       } else {
-        openFile = process.argv[i];
+        resolve(true);
       }
-    });
-    // Electron instance exists, open files there, kill this thread
+    })
+  }).on('error', function() {
+    resolve(true);
   });
+} else {
+  appReady = true;
 }
-
-var server = require('./server.js');
-console.log(server);
 
 // Electron ready
 app.on('ready', function() {
   // Run beaker backend
-  if (launch) {
+  if (appReady) {
+    startServer();
     backendRunner.startNew().on('ready', connectToBackend);
+  } else {
+    appReady = true;
   }
 });
 
@@ -81,16 +101,11 @@ app.on('before-quit', function() {
 // Fired when OS opens file with application
 app.on('open-file', function(event, path) {
   event.preventDefault();
-  if (appReady) {
+  if (backendReady) {
     windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path)
   } else {
-    openFile = path;
+    filesToOpen.push(path);
   }
-});
-
-server.on('open-file', function(path) {
-  console.log('open file at: ' + path);
-  windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path);
 });
 
 ipc.on('quit', function() {
@@ -139,6 +154,16 @@ ipc.on('new-window', function(e, url, type) {
   windowManager.newWindow(url, type, e.sender);
 });
 
+// Launches a server in this thread. Used for IPC between
+// multiple electron threads (e.g. for opening files with
+// only one instance)
+function startServer() {
+  server = require('./server.js')(ipcPort);
+  server.on('open-file', function(path) {
+    windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path);
+  });
+}
+
 function switchToBackend(address) {
   if (address != backendRunner.getUrl()) {
     killBackend();
@@ -155,13 +180,14 @@ function connectToBackend() {
   spinUntilReady(backendRunner.getHash() + '/beaker/rest/util/ready', function() {
     windowManager.connectToBackend();
     // Open file if launched with file
-    if ((typeof openFile) !== 'undefined') {
-      windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + openFile);
-      openFile = null;
+    if (filesToOpen.length > 0) {
+      for (var i = 0; i < filesToOpen.length; ++i){
+        windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + filesToOpen[i]);
+      }
     } else {
       windowManager.newWindow(backendRunner.getUrl());
     }
-    appReady = true;
+    backendReady = true;
   });
 }
 

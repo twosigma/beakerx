@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-module.exports = (function() {
+module.exports = function(ipcPort) {
   var http = require('http');
   var events = require('events');
   var qs = require('querystring');
@@ -30,7 +30,8 @@ module.exports = (function() {
         response.end();
       }
     } else if (request.method === 'POST') {
-      if (request.url === '/openFile') {
+      if (request.url === '/open-file') {
+        console.log('asked to open file');
         var body = '';
         request.on('data', function(data) {
           body += data;
@@ -45,7 +46,9 @@ module.exports = (function() {
         });
       }
     }
-  }).listen(3001);
+  }).listen(ipcPort).on('error', function() {
+    console.log('Beaker port taken. Please clear this port.');
+  });
 
   return emitter;
-})();
+};

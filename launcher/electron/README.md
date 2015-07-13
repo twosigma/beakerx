@@ -33,6 +33,9 @@ Windows:
 
 4. Put a copy of tools.jar in this folder. Get it from a similar place as OSX.
 
+(Only if you want to create an installer)
+5. Download Inno Setup 5, install it, and add its folder to your path (http://www.jrsoftware.org/isdl.php)
+
 Linux:
 
 1. Download electron-v0.29.2-linux-x64.zip from Electron's repo (https://github.com/atom/electron/releases) and put it in this folder.
@@ -54,15 +57,25 @@ If you do not have Electron's prebuilt binaries installed, simply do
 gradle installElectron
 ```
 
+If you are on Windows you will have to add the prebuilt binaries to your path (they should
+be in your global node_modules folder if you called `gradle installElectron`)
+
 To produce an executable you can run (an app bundle on OSX, a folder with an executable on Windows and Linux), do:
 ```sh
-gradle makeBundle
+gradle makeBundle -P version=0.29.2 -P arch=x64
 ```
 
 To produce an installer for your platform (DMG on OSX, .exe on Windows), do:
 ```sh
-gradle makeInstaller
+gradle makeInstaller -P version=0.29.2 -P arch=x64
 ```
+
+The 'version' parameter determines the version of electron that will be used
+to build your application. You can use any version available at
+https://github.com/atom/electron/releases. The 'arch' parameter determines the
+architecture of the Electron build. Acceptable 'arch' parameters are 'x64',
+'ia32' and 'arm'. You can also omit the 'version' and 'arch' parameters. Their
+default values are '0.29.2' and 'x64', respectively.
 
 Currently there are no Linux installers.
 

@@ -17,10 +17,19 @@
 module.exports = (function() {
   var http = require('http');
   var events = require('events');
+  var qs = require('querystring');
+
   var emitter = new events.EventEmitter();
 
-  http.createServer(function(req, res) {
-    if (request.method === 'POST') {
+  http.createServer(function(request, response) {
+    if (request.method === 'GET') {
+      if (request.url === '/version') {
+        console.log('Got version req');
+        response.writeHead(200, {'Content-Type': 'text/html'});
+        response.write('Electron');
+        response.end();
+      }
+    } else if (request.method === 'POST') {
       if (request.url === '/openFile') {
         var body = '';
         request.on('data', function(data) {
@@ -31,7 +40,8 @@ module.exports = (function() {
           }
         });
         request.on('end', function() {
-          emitter.emit('openFile', path);
+          console.log('here: opening at: ' + qs.parse(body)['path']);
+          emitter.emit('open-file', qs.parse(body)['path']);
         });
       }
     }

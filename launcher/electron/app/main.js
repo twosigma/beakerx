@@ -16,16 +16,18 @@
 
 var app = require('app');  // Module to control application life.
 var ipc = require('ipc');
+var http = require('http');
 var request = require('request');
 var crashReporter = require('crash-reporter');
+var os = require('os');
 
 var events = require('events');
 var backendRunner = require('./backend-runner.js');
 var mainMenu = require('./main-menu.js');
 var windowManager = require('./window-manager.js');
-var server = require('./server.js');
 
 var appReady = false;
+var launch = true;
 var openFile;
 var mainMenu;
 
@@ -34,22 +36,41 @@ crashReporter.start();
 
 var osName = os.type();
 
-if (process.argv.length > 2) {
-  for (var i = 2; i < process.argv.length; ++i) {
-    console.log(process.argv[i]);
-    if (osName.startsWith('Windows') || osName.startsWith('Linux')) {
-      request.post('http://localhost:3001').form({
-        path: process.argv[i]
-      });
-    }
-  }
-  return;
+if (process.argv.length > 1) {
+  // Check if an Electron instance already exists
+  http.get('http://localhost:3001/version', function(res){
+    var body = '';
+    res.on('data', function(data) {
+      body += data;
+    });
+    res.on('end', function() {
+      console.log('**********' + body);
+      if (body.startsWith('Electron')) {
+        for (var i = 1; i < process.argv.length; ++i) {
+          if (process.argv[i][0] == '/' && (osName.startsWith('Windows') || osName.startsWith('Linux'))) {
+            request.post('http://localhost:3001/openFile').form({
+              path: process.argv[i]
+            });
+          }
+        }
+      // Continue launching, open those files
+      } else {
+        openFile = process.argv[i];
+      }
+    });
+    // Electron instance exists, open files there, kill this thread
+  });
 }
+
+var server = require('./server.js');
+console.log(server);
 
 // Electron ready
 app.on('ready', function() {
   // Run beaker backend
-  backendRunner.startNew().on('ready', connectToBackend);
+  if (launch) {
+    backendRunner.startNew().on('ready', connectToBackend);
+  }
 });
 
 // Kill backend before exiting
@@ -67,7 +88,8 @@ app.on('open-file', function(event, path) {
   }
 });
 
-server.on('open-file', function(event, path) {
+server.on('open-file', function(path) {
+  console.log('open file at: ' + path);
   windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path);
 });
 
@@ -168,7 +190,7 @@ function spinUntilReady(url, done) {
         }
       }
     }
-    request.get(backendRunner.getUrl() + url).on('response' callback);
+    http.get(backendRunner.getUrl() + url, callback);
   }
   spin();
 }

@@ -65,9 +65,9 @@ module.exports = (function() {
       return eventEmitter;
     },
     kill: function() {
-      if ((_backend.local) && (_osName.startsWith('Windows'))) {
-        _backend.kill('SIGINT')
-      } else if (_backend.local) {
+      if (_local && (_osName.startsWith('Windows'))) {
+        spawn("taskkill", ["/pid", _backend.pid, '/f', '/t']);
+      } else if (_local) {
         _backend.kill('SIGTERM');
       }
       _backend = {};

@@ -46,8 +46,12 @@ task createBundle(dependsOn: ['nodeInstall', 'copyBeakerApp', 'copyDist', 'copyJ
 task makeBundle(dependsOn: ['createBundle', 'checkIdentity', 'signBundle']) {
 }
 
-task run(type: Exec, dependsOn: ['unzipJRE', 'unzipPython', 'nodeInstall', 'makeDist']) {
-  commandLine 'electron', '--disable-http-cache', 'app'
+task runElectron(type: Exec, dependsOn: ['unzipJRE', 'unzipPython', 'nodeInstall', 'makeDist']) {
+  if (win) {
+    commandLine 'cmd', '/c', 'electron', '--disable-http-cache', 'app'
+  } else {
+    commandLine 'electron', '--disable-http-cache', 'app'
+  }
 }
 
 task makeDist (dependsOn: ':dev:build') << {

@@ -16,39 +16,34 @@
 
 module.exports = function(ipcPort) {
   console.log('ipcport is ' + ipcPort);
-  var http = require('http');
+  // var http = require('http');
   var events = require('events');
-  var qs = require('querystring');
+  // var qs = require('querystring');
+  var express = require('express');
+  var bodyParser = require('body-parser');
+  var app = express();
+
+  process.on('uncaughtException', function(err) {
+    if(err.errno === 'EADDRINUSE') {
+      console.log('Electron port ' + ipcPort + ' taken. Please free this port.');
+    }
+    else {
+      console.log(err);
+      process.exit(1);
+    }
+  });
 
   var emitter = new events.EventEmitter();
 
-  http.createServer(function(request, response) {
-    if (request.method === 'GET') {
-      if (request.url === '/version') {
-        console.log('Got version req');
-        response.writeHead(200, {'Content-Type': 'text/html'});
-        response.write('Electron');
-        response.end();
-      }
-    } else if (request.method === 'POST') {
-      if (request.url === '/open-file') {
-        console.log('asked to open file');
-        var body = '';
-        request.on('data', function(data) {
-          body += data;
-          if (body.length > '10000') {
-            response.writeHead(413, 'Request Entity Too Large', {'Content-Type': 'text/html'});
-            response.end('413: Request Entity Too Large');
-          }
-        });
-        request.on('end', function() {
-          emitter.emit('open-file', qs.parse(body)['path']);
-        });
-      }
-    }
-  }).listen(ipcPort).on('error', function() {
-    console.log('Beaker port taken. Please clear this port.');
-  });
+  app.use(bodyParser.urlencoded({ extended: false }));
+  console.log('Using port ' + (ipcPort || 3000) + 'for main thread IPC');
+  app.set('port', ipcPort || 3000);
+  app.listen(ipcPort || 3000);
+
+  app.post('/open-files', function(request, response) {
+    response.end('Electron success!');
+    emitter.emit('open-files', JSON.parse(request.body.paths));
+  })
 
   return emitter;
 };

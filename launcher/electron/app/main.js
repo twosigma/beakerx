@@ -31,60 +31,35 @@ var backendReady = false;
 var appReady = false;
 var filesToOpen = [];
 var mainMenu;
-var ipcPort = 35046;
+var ipcPort = 32326;
 
 // Report crashes to our server.
 crashReporter.start();
 
 var osName = os.type();
 
-if (process.argv.length > 1) {
-  var resolve = function(onlyInstance) {
-    for (var i = 1; i < process.argv.length; ++i) {
-      if (osName.startsWith('Windows') || osName.startsWith('Linux')) {
-        if (!onlyInstance) {
-          request.post('http://localhost:' + ipcPort + '/open-file').form({
-            path: process.argv[i]
-          });
-        } else {
-          filesToOpen.push(process.argv[i]);
-        }
-      }
-    }
-    if (onlyInstance){
-      app.emit('ready');
-    } else {
-    }
-  };
-
-  // Check if an Electron instance already exists
-  http.get('http://localhost:' + ipcPort + '/version', function(res){
-    var body = '';
-    res.on('data', function(data) {
-      body += data;
-    });
-    res.on('end', function() {
-      if (body.startsWith('Electron')) {
-        resolve(false);
-      } else {
-        resolve(true);
-      }
-    })
-  }).on('error', function() {
-    resolve(true);
-  });
-} else {
-  appReady = true;
-}
-
 // Electron ready
 app.on('ready', function() {
-  // Run beaker backend
-  if (appReady) {
+  if (process.argv.length > 1) {
+    var paths = process.argv.splice(1, process.argv.length);
+    request.post({
+      'url':'http://localhost:' + ipcPort + '/open-files',
+      'form': {
+        'paths': JSON.stringify(paths)
+      }
+    }, function(err, response, body){
+      console.log('body: ' + body);
+      if (body && body.startsWith('Electron')) {
+        app.quit();
+      } else {
+        filesToOpen = paths;
+        startServer();
+        backendRunner.startNew().on('ready', connectToBackend);
+      }
+    });
+  } else {
     startServer();
     backendRunner.startNew().on('ready', connectToBackend);
-  } else {
-    appReady = true;
   }
 });
 
@@ -154,8 +129,10 @@ ipc.on('new-window', function(e, url, type) {
 // only one instance)
 function startServer() {
   server = require('./server.js')(ipcPort);
-  server.on('open-file', function(path) {
-    windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path);
+  server.on('open-files', function(paths) {
+    for (var i = 0; i < paths.length; ++i) {
+      windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + paths[i]);
+    }
   });
 }
 
@@ -211,7 +188,7 @@ function spinUntilReady(url, done) {
         }
       }
     }
-    http.get(backendRunner.getUrl() + url, callback);
+    request.get(backendRunner.getUrl() + url).on('response', callback);
   }
   spin();
 }

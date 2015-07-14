@@ -86,8 +86,8 @@ public class RServerEvaluator {
 }
   
   protected class jobDescriptor {
-    String codeToBeExecuted;
-    SimpleEvaluationObject outputObject;
+    public String codeToBeExecuted;
+    public SimpleEvaluationObject outputObject;
 
     jobDescriptor(String c , SimpleEvaluationObject o) {
       codeToBeExecuted = c;
@@ -300,14 +300,14 @@ public class RServerEvaluator {
   }
 
   protected class workerThread extends Thread {
-    RConnection connection;
-    ROutputHandler outputHandler;
-    ErrorGobbler errorGobbler;
-    int port;
-    String password;
-    int pid;
-    Process rServe;
-    protected final Semaphore mutex = new Semaphore(1);
+    public RConnection connection;
+    public ROutputHandler outputHandler;
+    public ErrorGobbler errorGobbler;
+    public int port;
+    public String password;
+    public int pid;
+    public Process rServe;
+    public final Semaphore mutex = new Semaphore(1);
     
     public workerThread() {
       super("groovy worker");

@@ -177,7 +177,7 @@ define(function(require, exports, module) {
           } catch (e) {
             showErrorState({
               modelOutput: modelOutput,
-              payload: e.stack.split('\n')[0]
+              payload: e.message
             });
             beakerObj.clearOutput();
             return deferred.reject();

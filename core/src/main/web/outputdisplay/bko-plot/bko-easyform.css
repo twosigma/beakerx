@@ -148,3 +148,12 @@ input.date-picker {
 .button-component-container {
   margin: 10px 0;
 }
+
+.list-component {
+  padding: 5px;
+}
+
+.radio-button-item-spacer {
+  display: table-cell;
+  width: 100%;
+}

@@ -378,12 +378,18 @@
                   listComponent.attr('multiple', 'true');
                 }
 
+                var size;
                 if (efc.getComponent().size && efc.getComponent().size > 0) {
-                  listComponent.attr('size', efc.getComponent().size);
+                  size = efc.getComponent().size;
+                  listComponent.attr('size', size);
                 } else if (efc.getComponent().values && efc.getComponent().values.length > 0) {
-                  listComponent.attr('size', efc.getComponent().values.length);
-                } else {
-                  listComponent.attr('size', 1);
+                  size = efc.getComponent().values.length;
+                  listComponent.attr('size', size);
+                }
+
+                if (size >= efc.getComponent().values.length) {
+                  //hide scrollbar
+                  listComponent.css('overflow', 'hidden');
                 }
 
                 if (efc.getComponent().values) {
@@ -468,7 +474,8 @@
                         angular.element('<span class="radio-button-item-text"></span>')
                             .addClass(horizontal ? 'horizontal' : 'vertical');
                     textSpanElement.text(value);
-                    outerRadioButtonLabel.append(textSpanElement).append(radioButton);
+                    var divSpacer = angular.element('<div class="radio-button-item-spacer"/>');
+                    outerRadioButtonLabel.append(radioButton).append(textSpanElement).append(divSpacer);
                     radioButtonItemsContainer.append(outerRadioButtonLabel);
                   });
 

@@ -90,4 +90,3 @@ task publishAssets (type: GradleBuild) {
   buildFile = mainGradle
   tasks = ['publishAssets']
 }
-

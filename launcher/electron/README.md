@@ -17,17 +17,13 @@
 Before building, you have to follow these instructions:
 OSX:
 
-1. Download electron-v0.29.2-darwin-x64.zip from Electron's repo (https://github.com/atom/electron/releases) and put it in this folder (You can use another version, just change its name at the top of build.gradle).
+1. Download JRE, unzip it, rename it as simply 'jre', rezip it and put it in this folder as 'jre.zip'.
 
-2. Download JRE, unzip it, rename it as simply 'jre', rezip it and put it in this folder as 'jre.zip'.
-
-3. Put a copy of tools.jar in this folder. This is a Java compiler, implemented in Java. You can probably find one in `/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home/lib/tools.jar`, or in any JDK distribution.
+2. Put a copy of tools.jar in this folder. This is a Java compiler, implemented in Java. You can probably find one in `/Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home/lib/tools.jar`, or in any JDK distribution.
 
 Windows:
 
-1. Download electron-v0.28.3-win32-x64.zip from Electron's repo (https://github.com/atom/electron/releases) and put it in this folder.
-
-2. Download JRE, unzip it, rename it as simply 'jre', rezip it and put it in this folder as 'jre.zip'.
+1. Download JRE, unzip it, rename it as simply 'jre', rezip it and put it in this folder as 'jre.zip'.
 
 3. Copy python.zip from launcher/windows into this folder.
 
@@ -38,11 +34,9 @@ Windows:
 
 Linux:
 
-1. Download electron-v0.29.2-linux-x64.zip from Electron's repo (https://github.com/atom/electron/releases) and put it in this folder.
+1. Download JRE, unzip it, rename it as simply 'jre', rezip it and put it in this folder as 'jre.zip'.
 
-2. Download JRE, unzip it, rename it as simply 'jre', rezip it and put it in this folder as 'jre.zip'.
-
-3. Put a copy of tools.jar in this folder. Get it from a similar place as OSX.
+2. Put a copy of tools.jar in this folder. Get it from a similar place as OSX.
 
 To build and/or run:
 If you want to simply run Beaker using your own installed version of electron, do:

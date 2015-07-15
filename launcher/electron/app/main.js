@@ -17,6 +17,7 @@
 var app = require('app');  // Module to control application life.
 var ipc = require('ipc');
 var http = require('http');
+var request = require('request');
 var os = require('os');
 var crashReporter = require('crash-reporter');
 
@@ -24,18 +25,42 @@ var events = require('events');
 var backendRunner = require('./backend-runner.js');
 var mainMenu = require('./main-menu.js');
 var windowManager = require('./window-manager.js');
+var server;
 
+var backendReady = false;
 var appReady = false;
+var filesToOpen = [];
+var ipcPort = 32326;
 var osName = os.type();
-var openFile;
 
 // Report crashes to our server.
 crashReporter.start();
 
+var osName = os.type();
+
 // Electron ready
 app.on('ready', function() {
-  // Run beaker backend
-  backendRunner.startNew().on('ready', connectToBackend);
+  if (process.argv.length > 1) {
+    var paths = process.argv.splice(1, process.argv.length);
+    request.post({
+      'url':'http://localhost:' + ipcPort + '/open-files',
+      'form': {
+        'paths': JSON.stringify(paths)
+      }
+    }, function(err, response, body) {
+      console.log('body: ' + body);
+      if (body && body.startsWith('Electron')) {
+        app.quit();
+      } else {
+        filesToOpen = paths;
+        startServer();
+        backendRunner.startNew().on('ready', connectToBackend);
+      }
+    });
+  } else {
+    startServer();
+    backendRunner.startNew().on('ready', connectToBackend);
+  }
 });
 
 // Kill backend before exiting
@@ -46,10 +71,10 @@ app.on('before-quit', function() {
 // Fired when OS opens file with application
 app.on('open-file', function(event, path) {
   event.preventDefault();
-  if (appReady) {
+  if (backendReady) {
     windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path)
   } else {
-    openFile = path;
+    filesToOpen.push(path);
   }
 });
 
@@ -108,6 +133,18 @@ ipc.on('new-window', function(e, url, type) {
   windowManager.newWindow(url, type, e.sender);
 });
 
+// Launches a server in this thread. Used for IPC between
+// multiple electron threads (e.g. for opening files with
+// only one instance)
+function startServer() {
+  server = require('./server.js')(ipcPort);
+  server.on('open-files', function(paths) {
+    for (var i = 0; i < paths.length; ++i) {
+      windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + paths[i]);
+    }
+  });
+}
+
 function switchToBackend(address) {
   if (address != backendRunner.getUrl()) {
     killBackend();
@@ -124,13 +161,14 @@ function connectToBackend() {
   spinUntilReady(backendRunner.getHash() + '/beaker/rest/util/ready', function() {
     windowManager.connectToBackend();
     // Open file if launched with file
-    if ((typeof openFile) !== 'undefined') {
-      windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + openFile);
-      openFile = null;
+    if (filesToOpen.length > 0) {
+      for (var i = 0; i < filesToOpen.length; ++i) {
+        windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + filesToOpen[i]);
+      }
     } else {
       windowManager.newWindow(backendRunner.getUrl());
     }
-    appReady = true;
+    backendReady = true;
   });
 }
 
@@ -159,7 +197,7 @@ function spinUntilReady(url, done) {
         }
       }
     }
-    http.get(backendRunner.getUrl() + url, callback);
+    request.get(backendRunner.getUrl() + url).on('response', callback);
   }
   spin();
 }

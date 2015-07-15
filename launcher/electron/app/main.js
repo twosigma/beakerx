@@ -47,7 +47,7 @@ app.on('ready', function() {
       'form': {
         'paths': JSON.stringify(paths)
       }
-    }, function(err, response, body){
+    }, function(err, response, body) {
       console.log('body: ' + body);
       if (body && body.startsWith('Electron')) {
         app.quit();
@@ -153,7 +153,7 @@ function connectToBackend() {
     windowManager.connectToBackend();
     // Open file if launched with file
     if (filesToOpen.length > 0) {
-      for (var i = 0; i < filesToOpen.length; ++i){
+      for (var i = 0; i < filesToOpen.length; ++i) {
         windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + filesToOpen[i]);
       }
     } else {

@@ -24,10 +24,9 @@ module.exports = function(ipcPort) {
   var app = express();
 
   process.on('uncaughtException', function(err) {
-    if(err.errno === 'EADDRINUSE') {
+    if (err.errno === 'EADDRINUSE') {
       console.log('Electron port ' + ipcPort + ' taken. Please free this port.');
-    }
-    else {
+    } else {
       console.log(err);
       process.exit(1);
     }
@@ -35,7 +34,7 @@ module.exports = function(ipcPort) {
 
   var emitter = new events.EventEmitter();
 
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.urlencoded({extended: false}));
   console.log('Using port ' + (ipcPort || 3000) + 'for main thread IPC');
   app.set('port', ipcPort || 3000);
   app.listen(ipcPort || 3000);

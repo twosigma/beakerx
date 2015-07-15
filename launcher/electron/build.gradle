@@ -54,7 +54,7 @@ task runElectron(type: Exec, dependsOn: ['unzipJRE', 'unzipPython', 'nodeInstall
   }
 }
 
-task makeDist (dependsOn: ':dev:build') << {
+task makeDist (dependsOn: ":beaker:build") << {
   copy {
     from '../../core/config'
     into './dist/config'
@@ -130,7 +130,7 @@ task downloadElectron(type: Exec) {
 }
 
 task unzipElectron(type: Exec, dependsOn: ['downloadElectron']) {
-  commandLine 'unzip', '-uo', '-d', 'beaker', electronName 
+  commandLine 'unzip', '-uo', '-d', 'beaker', electronName
 }
 
 task copyBeakerApp(type: Copy, dependsOn: 'nodeInstall') {
@@ -239,7 +239,7 @@ task winRename(type: Exec, dependsOn: ['unzipElectron']){
 winRename.onlyIf{ win }
 
 task winChangeIcon(type: Exec, dependsOn: ['winRename', 'unzipElectron']) {
-  commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-icon', 'beaker.ico' 
+  commandLine './rcedit.exe', 'beaker/beaker.exe', '--set-icon', 'beaker.ico'
 }
 winChangeIcon.onlyIf{ win }
 

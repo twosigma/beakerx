@@ -124,8 +124,11 @@
               if (bkItem.action !== undefined) {
                 newItem.click = bkItem.action.bind({});
               }
-              if (bkItem.isChecked !== undefined) {
+              if ((bkItem.isRadio !== true) && (bkItem.isChecked !== undefined)) {
                 newItem.type = 'checkbox';
+                newItem.checked = bkItem.isChecked();
+              } else if (bkItem.isRadio === true) {
+                newItem.type = 'radio';
                 newItem.checked = bkItem.isChecked();
               }
               newItem.accelerator = _assignShortcut(bkItem.name);

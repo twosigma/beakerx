@@ -20,7 +20,6 @@ import com.twosigma.beaker.easyform.EasyFormComponent;
 
 public class TextField extends EasyFormComponent {
 
-  public static final Integer MIN_WIDTH = 50;
   private Integer width;
 
   public Integer getWidth() {

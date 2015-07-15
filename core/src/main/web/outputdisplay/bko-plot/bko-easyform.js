@@ -117,14 +117,20 @@
                   scope, element, EasyFormConstants, EasyFormService, bkUtils);
 
               efc.buildUI = function() {
+                var fixedSize = false;
                 if (!efc.getComponent().width
                     || efc.getComponent().width < efc.constants.Components.TextField.MIN_WIDTH) {
                   efc.getComponent().width = efc.constants.Components.TextField.MIN_WIDTH;
+                } else {
+                  fixedSize = true;
                 }
                 element.find('#textFieldLabel').text(efc.getComponent().label);
                 var textField = element.find('#textField');
                 textField.attr('ng-model', scope.ngModelAttr)
-                    .css('width', efc.getComponent().width);
+                    .attr('size', efc.getComponent().width);
+                if (fixedSize) {
+                  textField.addClass('fixed-size');
+                }
               };
 
               efc.init();
@@ -654,9 +660,55 @@
                   });
                 }
 
+                $scope.alignTextFields();
               };
 
+              $scope.alignTextFields = function() {
+                var labels = $('.text-field-label');
+                var textFields = $('.text-field');
+                var maxLabelWidth = findMaxLabelWidth();
+                var maxTextFieldWidth = countMaxTextFieldWidth(maxLabelWidth);
+                setTextFieldsWidthInPercents(maxTextFieldWidth);
+                setEqualLabelsWidth(maxLabelWidth);
+
+                function findMaxLabelWidth() {
+                  var maxWidth = -1;
+                  for (var i = 0; i < labels.size(); i++) {
+                    var elementWidth = labels.eq(i).width();
+                    maxWidth = maxWidth < elementWidth ? elementWidth : maxWidth;
+                  }
+                  return maxWidth;
+                }
+
+                function countMaxTextFieldWidth(labelWidth) {
+                  var maxTextFieldWidth = 0;
+                  if (textFields) {
+                    var parentWidth = textFields.eq(0).parent().width();
+                    maxTextFieldWidth = (parentWidth - labelWidth - 10) / parentWidth * 100;
+                  }
+                  return maxTextFieldWidth;
+                }
+
+                function setTextFieldsWidthInPercents(width) {
+                  for (var i = 0; i < textFields.size(); i++) {
+                    var textField = textFields.eq(i);
+                    if (!textField.hasClass('fixed-size')) {
+                      textField.css('width', width + '%');
+                    }
+                  }
+                }
+
+                function setEqualLabelsWidth(width) {
+                  for (var i = 0; i < labels.size(); i++) {
+                    labels.eq(i).width(width);
+                  }
+                }
+              };
+
+              $(window).resize($scope.alignTextFields);
+
               $scope.$on('$destroy', function () {
+                $(window).off('resize', $scope.alignTextFields);
                 if ($scope.subscribedId) {
                   var srv = $scope.getUpdateService();
                   if (srv !== undefined) {
@@ -722,7 +774,7 @@
       TextField: {
         type: "TextField",
         htmlTag: "<easy-form-text-field/>",
-        MIN_WIDTH: 50
+        MIN_WIDTH: 1
       },
       TextArea: {
         type: "TextArea",

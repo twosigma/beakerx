@@ -69,7 +69,7 @@ public class EasyForm extends ObservableMap<String, Object> {
   }
 
   public void addTextField(final String label) throws Exception {
-    addTextField(label, TextField.MIN_WIDTH);
+    addTextField(label, -1);
   }
 
   public void addTextField(final String label, final Integer width) throws Exception {

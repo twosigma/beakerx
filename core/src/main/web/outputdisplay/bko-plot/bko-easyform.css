@@ -14,8 +14,7 @@
  *  limitations under the License.
  */
 .text-field-label {
-  margin: 0 10px;
-  min-width: 100px;
+  display: inline-block;
 }
 
 .text-area-label {
@@ -156,4 +155,14 @@ input.date-picker {
 .radio-button-item-spacer {
   display: table-cell;
   width: 100%;
+}
+
+.text-field {
+  float: right;
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.text-field.fixed-size {
+  float: none;
 }

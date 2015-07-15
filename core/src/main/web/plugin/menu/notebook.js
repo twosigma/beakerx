@@ -83,12 +83,13 @@ define(function(require, exports, module) {
           name: 'Normal',
           sortorder: 100,
           id: 'normal-edit-mode-menuitem',
-          isChecked: function () {
+          isRadio: true,
+          isChecked: function() {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
-            return notebookViewModel.getEditMode() == 'default'
-                    || notebookViewModel.getEditMode() == null;
+            return notebookViewModel.getEditMode() == 'default' ||
+                      notebookViewModel.getEditMode() == null;
           },
-          action: function () {
+          action: function() {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
             notebookViewModel.setEditMode('default');
             bkHelper.httpPost('../beaker/rest/util/setPreference', {
@@ -101,11 +102,12 @@ define(function(require, exports, module) {
           name: 'Vim',
           sortorder: 120,
           id: 'vim-edit-mode-menuitem',
-          isChecked: function () {
+          isRadio: true,
+          isChecked: function() {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
             return notebookViewModel.getEditMode() == 'vim';
           },
-          action: function () {
+          action: function() {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
             notebookViewModel.setEditMode('vim');
             bkHelper.httpPost('../beaker/rest/util/setPreference', {
@@ -118,11 +120,12 @@ define(function(require, exports, module) {
           name: 'Emacs',
           sortorder: 110,
           id: 'emacs-edit-mode-menuitem',
-          isChecked: function () {
+          isRadio: true,
+          isChecked: function() {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
             return notebookViewModel.getEditMode() == 'emacs';
           },
-          action: function () {
+          action: function() {
             var notebookViewModel = bkHelper.getBkNotebookViewModel();
             notebookViewModel.setEditMode('emacs');
             bkHelper.httpPost('../beaker/rest/util/setPreference', {
@@ -137,7 +140,7 @@ define(function(require, exports, module) {
 
   var menuItemPromise = bkHelper.newPromise(toAdd);
 
-  exports.getMenuItems = function () {
+  exports.getMenuItems = function() {
     return menuItemPromise;
   };
 });

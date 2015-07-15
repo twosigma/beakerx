@@ -58,11 +58,12 @@ module.exports = (function() {
   ];
 
   MainMenu = Menu.buildFromTemplate(template);
-  // Quit when all windows are closed.
-  app.on('window-all-closed', function() {
-    // If all windows are dead, must handle menus from main thread (this thread)
-    Menu.setApplicationMenu(MainMenu);
-  });
 
-  return eventEmitter;
+  return {
+    emitter: eventEmitter,
+    show: function() {
+      Menu.setApplicationMenu(MainMenu);
+    }
+  }
+
 })();

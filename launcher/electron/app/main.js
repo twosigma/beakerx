@@ -17,6 +17,7 @@
 var app = require('app');  // Module to control application life.
 var ipc = require('ipc');
 var http = require('http');
+var os = require('os');
 var crashReporter = require('crash-reporter');
 
 var events = require('events');
@@ -25,8 +26,8 @@ var mainMenu = require('./main-menu.js');
 var windowManager = require('./window-manager.js');
 
 var appReady = false;
+var osName = os.type();
 var openFile;
-var mainMenu;
 
 // Report crashes to our server.
 crashReporter.start();
@@ -52,11 +53,20 @@ app.on('open-file', function(event, path) {
   }
 });
 
+// When all windows die
+app.on('window-all-closed', function() {
+  if (osName.startsWith('Darwin')) {
+    mainMenu.show();
+  } else {
+    app.quit();
+  }
+});
+
 ipc.on('quit', function() {
   app.quit();
 });
 
-mainMenu.on('quit', function() {
+mainMenu.emitter.on('quit', function() {
   app.quit();
 });
 
@@ -64,7 +74,7 @@ ipc.on('try-change-server', function() {
   windowManager.openChangeServerDialog();
 });
 
-mainMenu.on('try-change-server', function() {
+mainMenu.emitter.on('try-change-server', function() {
   windowManager.openChangeServerDialog();
 });
 
@@ -72,7 +82,7 @@ ipc.on('change-server', function(e, address) {
   switchToBackend(address);
 });
 
-mainMenu.on('change-server', function(e, address) {
+mainMenu.emitter.on('change-server', function(e, address) {
   switchToBackend(address);
 });
 
@@ -81,16 +91,16 @@ ipc.on('new-backend', function() {
   backendRunner.startNew().on('ready', connectToBackend);
 });
 
-mainMenu.on('new-backend', function() {
+mainMenu.emitter.on('new-backend', function() {
   killBackend();
   backendRunner.startNew().on('ready', connectToBackend);
 });
 
-mainMenu.on('new-empty-notebook', function() {
+mainMenu.emitter.on('new-empty-notebook', function() {
   windowManager.newWindow(backendRunner.getUrl() + 'beaker/#/session/empty', 'notebook');
 });
 
-mainMenu.on('new-default-notebook', function() {
+mainMenu.emitter.on('new-default-notebook', function() {
   windowManager.newWindow(backendRunner.getUrl() + 'beaker/#/session/new', 'notebook');
 });
 

@@ -34,21 +34,21 @@ describe('beaker landing page', function() {
     expect(beakerPO.mainmenu.getText()).toEqual(['File', 'Settings', 'Help']);
   });
 
-  it('has no menu displayed', function () {
+  it('has no menu displayed', function() {
     expect(beakerPO.submenu.count()).toEqual(0);
   });
 
-  it('has a file menu with 4 items', function () {
+  it('has a file menu with 4 items', function() {
     beakerPO.openMenuAtIndex(0);
     expect(beakerPO.submenu.count()).toEqual(4);
   });
 
-  it('has a settings menu with 1 item', function () {
+  it('has a settings menu with 1 item', function() {
     beakerPO.openMenuAtIndex(1);
     expect(beakerPO.submenu.count()).toEqual(1);
   });
 
-  it('has a help menu with 4 items', function () {
+  it('has a help menu with 4 items', function() {
     beakerPO.openMenuAtIndex(2);
     expect(beakerPO.submenu.count()).toEqual(4);
   });

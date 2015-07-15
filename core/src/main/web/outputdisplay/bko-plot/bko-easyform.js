@@ -638,7 +638,7 @@
                   var fieldsetElement = angular.element('<fieldset></fieldset>');
                   var legendElement = angular.element('<legend></legend>').text(model.caption);
                   easyFormContainer.append(fieldsetElement.append(legendElement));
-                  easyFormContainer = legendElement;
+                  easyFormContainer = fieldsetElement;
                 }
 
                 if (model.components) {

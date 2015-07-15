@@ -166,3 +166,15 @@ input.date-picker {
 .text-field.fixed-size {
   float: none;
 }
+
+div#easyFormContainer fieldset {
+  border: 1px solid #c0c0c0;
+  padding: 0.35em 0.625em 0.75em;
+}
+
+div#easyFormContainer fieldset legend {
+  width: auto;
+  border: 0;
+  margin: 0;
+  padding: 0 5px;
+}

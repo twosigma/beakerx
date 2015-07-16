@@ -166,13 +166,28 @@ var BeakerPageObject = function() {
   this.setCellInput = function(code) {
     browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
   };
-  this.waitForCellOutput = function(plugin) {
-    return browser.wait(function() {
-      return this.getCellOutput().isPresent();
-    }.bind(this));
-  };
+
   this.getCellOutput = function() {
     return element(by.css('bk-output-display > div'));
   };
+
+  this.waitForCellOutput = function(plugin) {
+    var self = this;
+
+    browser.wait(function() {
+      return self.getCellOutput().isPresent();
+    });
+
+    return browser.wait(function() {
+      return self.getCellOutput().getText()
+      .then(function(txt) {
+        return txt.indexOf('Elapsed:') === -1;
+      })
+      .thenCatch(function() {
+        return false;
+      });
+    }, 10000);
+  };
+
 };
 module.exports = BeakerPageObject;

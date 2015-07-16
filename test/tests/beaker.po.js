@@ -130,6 +130,15 @@ var BeakerPageObject = function() {
     });
   };
 
+  this.activateLanguageInManager = function(language) {
+    this.languageManagerButtonActive(language).isPresent()
+    .then(function(isActive) {
+      if (!isActive) {
+        return this.languageManagerButton(language).click();
+      }
+    }.bind(this));
+  };
+
   this.languageManager = element(by.className('plugin-manager'));
   this.languageManagerButtonKnown = function(language) {
     return element(by.css('.plugin-manager .' + language + ' .plugin-known'));
@@ -141,10 +150,13 @@ var BeakerPageObject = function() {
     return element(by.css('.plugin-manager .' + language));
   };
 
+  this.getEvaluateButton = function() {
+    return element(by.className('evaluate-script'));
+  };
+
   this.languageManagerCloseButton = element(by.className('language-manager-close-button'));
   this.insertCellButton = element(by.className('insert-cell'));
-  this.evaluateButton = element(by.className('evaluate-script'));
-
+  this.evaluateButton = this.getEvaluateButton();
   this.modalDialogYesButton = element(by.css('.modal .yes'));
   this.modalDialogNoButton = element(by.css('.modal .no'));
   this.modalDialogCancelButton = element(by.css('.modal .cancel'));
@@ -157,18 +169,43 @@ var BeakerPageObject = function() {
   this.setCellInput = function(code) {
     browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
   };
-  this.waitForCellOutput = function(plugin) {
-    browser.wait(function() {
-      var deferred = protractor.promise.defer();
-      this.getCellOutput().isPresent()
-        .then(function(result) {
-          deferred.fulfill(result);
-        });
-      return deferred.promise;
-    }.bind(this));
+
+
+  this.evaluateCell = function() {
+    var self = this;
+
+    return browser.wait(function() {
+      return self.getEvaluateButton().click()
+      .then(function() {
+        return true;
+      })
+      .thenCatch(function() {
+        return false;
+      });
+    }, 5000);
   };
+
   this.getCellOutput = function() {
-    return element(by.css('bk-output-display div pre'));
+    return element(by.css('bk-output-display > div'));
   };
+
+  this.waitForCellOutput = function(plugin) {
+    var self = this;
+
+    browser.wait(function() {
+      return self.getCellOutput().isPresent();
+    });
+
+    return browser.wait(function() {
+      return self.getCellOutput().getText()
+      .then(function(txt) {
+        return txt.indexOf('Elapsed:') === -1;
+      })
+      .thenCatch(function() {
+        return false;
+      });
+    }, 10000);
+  };
+
 };
 module.exports = BeakerPageObject;

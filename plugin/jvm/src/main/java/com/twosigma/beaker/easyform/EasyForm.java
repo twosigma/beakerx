@@ -105,7 +105,7 @@ public class EasyForm extends ObservableMap<String, Object> {
 
   public void addComboBox(final String label,
                           final Collection<String> values) throws Exception {
-    addComboBox(label, values, Boolean.FALSE);
+    addComboBox(label, values, Boolean.TRUE);
   }
 
   public void addComboBox(final String label,

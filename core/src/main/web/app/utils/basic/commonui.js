@@ -49,21 +49,6 @@
       }
     };
   });
-  module.directive('bkcell', function() {
-    return {
-      restrict: 'C',
-      link: function(scope, element, attrs) {
-        element.mouseover(function(event) {
-          element.addClass('cell-bracket-selected');
-          event.stopPropagation();
-        });
-        element.mouseout(function(event) {
-          element.removeClass('cell-bracket-selected');
-          event.stopPropagation();
-        });
-      }
-    };
-  });
   module.filter('isHidden', function() {
     return function(input) {
       return _(input).filter(function(it) {

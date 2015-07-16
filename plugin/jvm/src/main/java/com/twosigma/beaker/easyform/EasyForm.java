@@ -85,6 +85,13 @@ public class EasyForm extends ObservableMap<String, Object> {
     addComponentOrThrow(label, textArea);
   }
 
+  public void addTextArea(final String label, final String initialValue) throws Exception {
+    TextArea textArea = new TextArea();
+    textArea.setLabel(label);
+    textArea.setValue(initialValue);
+    addComponentOrThrow(label, textArea);
+  }
+
   public void addCheckBox(final String label) throws Exception {
     addCheckBox(label, Boolean.FALSE);
   }
@@ -238,11 +245,23 @@ public class EasyForm extends ObservableMap<String, Object> {
   }
 
   public Object put(final String key, final Object value) {
+    checkValueForComponent(getComponentMap().get(key), value);
     Object previousValue = get(key);
     getComponentMap().get(key).setValue(value);
     setChanged();
     notifyObservers();
     return previousValue;
+  }
+
+  private void checkValueForComponent(final EasyFormComponent component, final Object value) {
+    if (component instanceof CheckBox
+        && !((value instanceof Boolean)
+        || "true".equalsIgnoreCase(String.valueOf(value))
+        || "false".equalsIgnoreCase(String.valueOf(value)))) {
+      throw new IllegalArgumentException(
+          String.format("Only boolean values allowed for CheckBox. Component: %s, value: %s",
+              component.getLabel(), value));
+    }
   }
 
   public void setEnabled(final String label, final Boolean enabled) {

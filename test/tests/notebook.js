@@ -34,7 +34,7 @@ describe('notebook', function() {
   it('can add a cell', function() {
     beakerPO.newEmptyNotebook.click();
     beakerPO.insertCellButton.click();
-    expect(beakerPO.evaluateButton.isDisplayed()).toBe(true);
+    expect(beakerPO.getEvaluateButton().isDisplayed()).toBe(true);
     beakerPO.closeNotebook();
   });
 
@@ -48,7 +48,7 @@ describe('notebook', function() {
 
     it('displays syntax errors correctly', function(done) {
       beakerPO.setCellInput(',');
-      beakerPO.evaluateButton.click();
+      beakerPO.evaluateCell();
       beakerPO.waitForCellOutput();
       beakerPO.getCellOutput().getText().then(function(txt) {
         expect(txt).toEqual('Unexpected token (1:0)', txt);
@@ -70,7 +70,7 @@ describe('notebook', function() {
       beakerPO.cellEvaluatorMenu.click();
       beakerPO.cellEvaluatorMenuItem(language).click();
       beakerPO.setCellInput(code);
-      beakerPO.evaluateButton.click();
+      beakerPO.evaluateCell();
       beakerPO.waitForCellOutput();
       return beakerPO.getCellOutput().getText()
       .then(function(output) {
@@ -129,7 +129,7 @@ describe('notebook', function() {
 
     it('can enter code into a cell and evaluate it', function(done) {
       beakerPO.setCellInput('1+1');
-      beakerPO.evaluateButton.click();
+      beakerPO.evaluateCell();
       beakerPO.waitForCellOutput();
       expect(beakerPO.getCellOutput().getText()).toMatch('2');
       done();

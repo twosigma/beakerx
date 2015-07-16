@@ -150,10 +150,13 @@ var BeakerPageObject = function() {
     return element(by.css('.plugin-manager .' + language));
   };
 
+  this.getEvaluateButton = function() {
+    return element(by.className('evaluate-script'));
+  };
+
   this.languageManagerCloseButton = element(by.className('language-manager-close-button'));
   this.insertCellButton = element(by.className('insert-cell'));
-  this.evaluateButton = element(by.className('evaluate-script'));
-
+  this.evaluateButton = this.getEvaluateButton();
   this.modalDialogYesButton = element(by.css('.modal .yes'));
   this.modalDialogNoButton = element(by.css('.modal .no'));
   this.modalDialogCancelButton = element(by.css('.modal .cancel'));
@@ -165,6 +168,21 @@ var BeakerPageObject = function() {
   this.cellEvaluatorDisplay = element(by.css('.code-cell-area .cell-evaluator-menu b'));
   this.setCellInput = function(code) {
     browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
+  };
+
+
+  this.evaluateCell = function() {
+    var self = this;
+
+    return browser.wait(function() {
+      return self.getEvaluateButton().click()
+      .then(function() {
+        return true;
+      })
+      .thenCatch(function() {
+        return false;
+      });
+    }, 5000);
   };
 
   this.getCellOutput = function() {

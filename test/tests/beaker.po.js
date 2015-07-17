@@ -30,10 +30,7 @@ var BeakerPageObject = function() {
 
   this.toggleLanguageCellMenu = function(opts) {
     return element.all(by.css('.dropdown-toggle bk-language-logo'))
-    .get(opts.cellIndex)
-    .then(function(elm) {
-      return elm.click();
-    });
+    .get(opts.cellIndex).click();
   };
 
   this.isLanguageCellMenuOpen = function() {
@@ -43,9 +40,7 @@ var BeakerPageObject = function() {
   this.toggleCellMenu = function(opts) {
     return element.all(by.css('.bkcell .dropdown-promoted'))
     .get(opts.cellIndex)
-    .then(function(elm) {
-      return elm.click();
-    });
+    .click();
   };
 
   this.toggleAdvancedMode = function() {
@@ -57,11 +52,9 @@ var BeakerPageObject = function() {
   this.isCellMenuOpen = function(opts) {
     return element.all(by.css('.bkcell .open.toggle-menu.bkr'))
     .get(opts.cellIndex)
-    .then(function(elm) {
-      return elm.isDisplayed()
-      .then(function() {
-        return true;
-      });
+    .isDisplayed()
+    .then(function() {
+      return true;
     })
     .thenCatch(function() {
       return false;
@@ -117,17 +110,9 @@ var BeakerPageObject = function() {
   };
 
   this.readMarkdownCell = function() {
-    return element(by.css('body'))
-    .then(function(el) {
-      // click on the body to refocus editor
-      return el.click();
-    })
-    .then(function() {
-      return element(by.css('.markup p'));
-    })
-    .then(function(el) {
-      return el.getText();
-    });
+    element(by.css('body')).click();
+
+    return element(by.css('.markup p')).getText();
   };
 
   this.activateLanguageInManager = function(language) {
@@ -170,7 +155,6 @@ var BeakerPageObject = function() {
     browser.executeScript('$(".CodeMirror")[0].CodeMirror.setValue("' + code + '")');
   };
 
-
   this.evaluateCell = function() {
     var self = this;
 
@@ -183,6 +167,11 @@ var BeakerPageObject = function() {
         return false;
       });
     }, 5000);
+  };
+
+  this.insertNewCell = function() {
+    element(by.css('bk-new-cell-menu')).click();
+    return this.insertCellButton.click();
   };
 
   this.getCellOutput = function() {

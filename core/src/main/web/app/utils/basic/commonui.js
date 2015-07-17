@@ -64,6 +64,7 @@
       restrict: 'C',
       link: function(scope, element, attrs) {
         $(window).on('click.' + scope.$id, hideDropdown);
+        $(document).on('hide.bs.dropdown', hideDropdown);
 
         var dropdown = element.find('.dropdown-menu').first();
         var toggle = element.find('.dropdown-toggle').first();
@@ -96,6 +97,7 @@
         function hideDropdown() { dropdown.hide();}
 
         scope.$on('$destroy', function() {
+          $(document).off('hide.bs.dropdown', hideDropdown);
           $(window).off('.' + scope.$id);
           // Since the dropdown is external to the directive we need
           // to make sure to clean it up when the directive goes away

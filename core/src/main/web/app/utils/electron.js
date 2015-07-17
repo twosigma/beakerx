@@ -34,11 +34,13 @@
       var Dialog = remote.require('dialog');
       var Shell = remote.require('shell');
       var IPC = require('ipc');
+      var WebFrame = require('web-frame');
       var thisWindow = remote.getCurrentWindow();
 
       var _status = '';
 
       var _ctrlKey = (bkUtils.osName == 'MacOS') ? 'Command' : 'Control';
+      var _zoomFactor = 1.0;
 
       var _assignShortcut = function(name) {
         switch (name) {
@@ -106,6 +108,22 @@
         Dialog: Dialog,
         Shell: Shell,
         IPC: IPC,
+        WebFrame: WebFrame,
+
+        increaseZoom: function() {
+          _zoomFactor += 0.1;
+          WebFrame.setZoomFactor(_zoomFactor);
+        },
+        decreaseZoom: function() {
+          if (_zoomFactor > 0.1) {
+            _zoomFactor -= 0.1;
+          }
+          WebFrame.setZoomFactor(_zoomFactor);
+        },
+        resetZoom: function() {
+          _zoomFactor = 1.0;
+          WebFrame.setZoomFactor(_zoomFactor);
+        },
 
         toggleDevTools: function() {
           BrowserWindow.getFocusedWindow().toggleDevTools();

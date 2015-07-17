@@ -1093,12 +1093,20 @@
                 bkSessionManager.redo();
               });
               return false;
-            } else if (e.which === 123){ // F12
-              if (bkUtils.isElectron) {
-                bkElectron.toggleDevTools();
-              }
-            }
             // TODO implement global redo
+            } else if (bkUtils.isElectron) {
+              var ctrlXORCmd = (e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.metaKey);
+              if (e.which === 123) { // F12
+                bkElectron.toggleDevTools();
+              } else if (ctrlXORCmd && ((e.which === 187) || (e.which === 107))) { // Ctrl + '+'
+                bkElectron.increaseZoom();
+              } else if (ctrlXORCmd && ((e.which === 189) || (e.which === 109))) { // Ctrl + '-'
+                bkElectron.decreaseZoom();
+              } else if (ctrlXORCmd && ((e.which === 48) || (e.which === 13))) {
+                bkElectron.resetZoom();
+              }
+              return false;
+            }
           }
         };
         $(document).bind('keydown', keydownHandler);

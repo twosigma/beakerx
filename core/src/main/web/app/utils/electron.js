@@ -35,7 +35,7 @@
       var Shell = remote.require('shell');
       var IPC = require('ipc');
       var thisWindow = remote.getCurrentWindow();
-      
+
       var _status = '';
 
       var _ctrlKey = (bkUtils.osName == 'MacOS') ? 'Command' : 'Control';

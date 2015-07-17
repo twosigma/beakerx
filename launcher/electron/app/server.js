@@ -15,10 +15,7 @@
  */
 
 module.exports = function(ipcPort) {
-  console.log('ipcport is ' + ipcPort);
-  // var http = require('http');
   var events = require('events');
-  // var qs = require('querystring');
   var express = require('express');
   var bodyParser = require('body-parser');
   var app = express();
@@ -35,7 +32,7 @@ module.exports = function(ipcPort) {
   var emitter = new events.EventEmitter();
 
   app.use(bodyParser.urlencoded({extended: false}));
-  console.log('Using port ' + (ipcPort || 3000) + 'for main thread IPC');
+  console.log('Using port ' + (ipcPort || 3000) + ' for main thread IPC');
   app.set('port', ipcPort || 3000);
   app.listen(ipcPort || 3000);
 

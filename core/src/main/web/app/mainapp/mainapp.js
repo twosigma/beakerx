@@ -1094,7 +1094,9 @@
               });
               return false;
             } else if (e.which === 123){ // F12
-              bkElectron.toggleDevTools();
+              if (bkUtils.isElectron) {
+                bkElectron.toggleDevTools();
+              }
             }
             // TODO implement global redo
           }

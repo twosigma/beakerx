@@ -97,7 +97,8 @@
 
         scope.$on('$destroy', function() {
           $(window).off('.' + scope.$id);
-          // Since the dropdown is external to the directive we need to make sure to clean it up when the directive goes away
+          // Since the dropdown is external to the directive we need
+          // to make sure to clean it up when the directive goes away
           dropdown.remove();
           element.off('click');
         });

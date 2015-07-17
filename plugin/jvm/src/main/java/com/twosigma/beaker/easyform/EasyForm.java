@@ -105,7 +105,7 @@ public class EasyForm extends ObservableMap<String, Object> {
 
   public void addComboBox(final String label,
                           final Collection<String> values) throws Exception {
-    addComboBox(label, values, Boolean.TRUE);
+    addComboBox(label, values, Boolean.FALSE);
   }
 
   public void addComboBox(final String label,
@@ -115,6 +115,9 @@ public class EasyForm extends ObservableMap<String, Object> {
     comboBox.setLabel(label);
     comboBox.setEditable(editable);
     comboBox.setValues(values);
+    if (values != null && values.size() > 0) {
+      comboBox.setValue(values.iterator().next());
+    }
     addComponentOrThrow(label, comboBox);
   }
 

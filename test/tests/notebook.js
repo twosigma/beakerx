@@ -198,41 +198,55 @@ describe('notebook', function() {
     .then(done);
   });
 
-  it('can close a cell menu by clicking off', function(done) {
-    beakerPO.newEmptyNotebook.click()
-    .then(beakerPO.insertCellButton.click)
-    .then(beakerPO.toggleCellMenu.bind(this, {cellIndex: 0}))
-    .then(element(by.css('body')).click)
-    .then(beakerPO.isCellMenuOpen.bind(this, {cellIndex: 0}))
-    .then(function(isOpen) {
-      expect(isOpen).toEqual(false);
-    })
-    .then(beakerPO.closeNotebook)
-    .then(done);
-  });
+  describe('menu', function() {
+    beforeEach(function(done) {
+      beakerPO.newEmptyNotebook.click();
+      beakerPO.insertNewCell()
+      .then(done);
+    });
 
-  it('can open the menu', function(done) {
-    beakerPO.newEmptyNotebook.click()
-    .then(beakerPO.insertCellButton.click)
-    .then(beakerPO.toggleCellMenu.bind(this, {cellIndex: 0}))
-    .then(beakerPO.isCellMenuOpen.bind(this, {cellIndex: 0}))
-    .then(function(isOpen) {
-      expect(isOpen).toEqual(true);
-    })
-    .then(beakerPO.closeNotebook)
-    .then(done);
-  });
+    afterEach(function(done) {
+      beakerPO.closeNotebook()
+      .then(done);
+    });
 
-  it('can close the menu', function(done) {
-    beakerPO.newEmptyNotebook.click()
-    .then(beakerPO.insertCellButton.click)
-    .then(beakerPO.toggleCellMenu.bind(this, {cellIndex: 0}))
-    .then(beakerPO.toggleCellMenu.bind(this, {cellIndex: 0}))
-    .then(beakerPO.isCellMenuOpen.bind(this, {cellIndex: 0}))
-    .then(function(isOpen) {
-      expect(isOpen).toEqual(false);
-    })
-    .then(beakerPO.closeNotebook)
-    .then(done);
+    it('closes a menu when when another menu is opened', function(done) {
+      beakerPO.insertNewCell();
+      beakerPO.toggleCellMenu({cellIndex: 0});
+      beakerPO.toggleCellMenu({cellIndex: 2})
+      .then(done);
+    });
+
+    it('closes a menu by clicking off', function(done) {
+      beakerPO.toggleCellMenu({cellIndex: 0});
+      element(by.css('body')).click();
+
+      beakerPO.isCellMenuOpen({cellIndex: 0})
+      .then(function(isOpen) {
+        expect(isOpen).toEqual(false);
+        done();
+      });
+    });
+
+    it('can be opened', function(done) {
+      beakerPO.toggleCellMenu({cellIndex: 0});
+
+      beakerPO.isCellMenuOpen({cellIndex: 0})
+      .then(function(isOpen) {
+        expect(isOpen).toEqual(true);
+        done();
+      });
+    });
+
+    it('can be closed', function(done) {
+      beakerPO.toggleCellMenu({cellIndex: 0});
+      beakerPO.toggleCellMenu({cellIndex: 0});
+
+      beakerPO.isCellMenuOpen({cellIndex: 0})
+      .then(function(isOpen) {
+        expect(isOpen).toEqual(false);
+        done();
+      });
+    });
   });
 });

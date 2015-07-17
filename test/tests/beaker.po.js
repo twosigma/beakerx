@@ -169,6 +169,11 @@ var BeakerPageObject = function() {
     }, 5000);
   };
 
+  this.insertNewCell = function() {
+    element(by.css('bk-new-cell-menu')).click();
+    return this.insertCellButton.click();
+  };
+
   this.getCellOutput = function() {
     return element(by.css('bk-output-display > div'));
   };

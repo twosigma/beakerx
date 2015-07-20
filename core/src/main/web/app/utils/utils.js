@@ -368,18 +368,15 @@
                         onError(data);
                     }
                 });
-    }
-      },
+    },
     getValidNgModelString: function(str) {
       if (str) {
         return str.replace(/[\s\d`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
       }
-    }
-      },
-
-      // Electron: require('remote')
-      isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
-      osName: osName
+    },
+    // Electron: require('remote')
+    isElectron: navigator.userAgent.indexOf('beaker-desktop') > -1,
+    osName: osName
     };
     return bkUtils;
   });

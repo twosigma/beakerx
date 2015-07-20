@@ -20,7 +20,7 @@
 (function() {
   'use strict';
   var module = angular.module('bk.electron', [
-    'bk.utils',
+    'bk.utils'
   ]);
   /**
    * bkElectron

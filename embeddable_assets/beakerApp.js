@@ -4052,7 +4052,7 @@ return __p
       },
       getOutputCell: function(id) {
         return outputMap[id];
-      },
+      }
 
     };
   });
@@ -8557,7 +8557,7 @@ return __p
 
             dropdown.show().css({
               top: togglePosition.top - notebookPosition.top + 'px',
-              left: togglePosition.left - notebookPosition.left - dropdown.outerWidth() + 'px',
+              left: togglePosition.left - notebookPosition.left - dropdown.outerWidth() + 'px'
             });
           });
         };

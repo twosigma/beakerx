@@ -584,13 +584,15 @@
             "Cmd-/": "toggleComment"
           };
 
-        if (codeMirrorExtension === undefined) {
+
+        if (typeof window.bkInit === 'undefined') {
           codeMirrorExtension = window.bkInit.codeMirrorExtension;
-          if (codeMirrorExtension === undefined) {
-            codeMirrorExtension = { autocomplete : [ codeMirrorFileName ]};
-          } else {
-            codeMirrorExtension.autocomplete.push(codeMirrorFileName);
-          }
+        }
+
+        if (typeof codeMirrorExtension === 'undefined') {
+          codeMirrorExtension = { autocomplete : [ codeMirrorFileName ]};
+        } else {
+          codeMirrorExtension.autocomplete.push(codeMirrorFileName);
         }
 
         if (codeMirrorExtension.extraKeys !== undefined) {

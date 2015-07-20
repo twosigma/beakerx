@@ -1,11 +1,11 @@
-/*! FixedColumns 3.0.4
+/*! FixedColumns 3.0.5-dev
  * ©2010-2014 SpryMedia Ltd - datatables.net/license
  */
 
 /**
  * @summary     FixedColumns
  * @description Freeze columns in place on a scrolling DataTable
- * @version     3.0.4
+ * @version     3.0.5-dev
  * @file        dataTables.fixedColumns.js
  * @author      SpryMedia Ltd (www.sprymedia.co.uk)
  * @contact     www.sprymedia.co.uk/contact
@@ -503,7 +503,7 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 						}
 					}
 				} )
-				.on( wheelType, function(e) { // xxx update the destroy as well
+				.on( wheelType, function(e) {
 					// Pass horizontal scrolling through
 					var xDelta = e.type === 'wheel' ?
 						-e.originalEvent.deltaX :
@@ -557,15 +557,15 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 				that._fnDraw( true );
 			} )
 			.on( 'destroy.dt.DTFC', function () {
-				jqTable.off( 'column-sizing.dt.DTFC destroy.dt.DTFC draw.dt.DTFC' );
+				jqTable.off( 'column-sizing.dt.DTFC column-visibility.dt.DTFC destroy.dt.DTFC draw.dt.DTFC' );
 
-				$(that.dom.scroller).off( 'scroll.DTFC mouseover.DTFC' );
+				$(that.dom.scroller).off( 'mouseover.DTFC touchstart.DTFC scroll.DTFC' );
 				$(window).off( 'resize.DTFC' );
 
-				$(that.dom.grid.left.liner).off( 'scroll.DTFC mouseover.DTFC '+wheelType );
+				$(that.dom.grid.left.liner).off( 'mouseover.DTFC touchstart.DTFC scroll.DTFC '+wheelType );
 				$(that.dom.grid.left.wrapper).remove();
 
-				$(that.dom.grid.right.liner).off( 'scroll.DTFC mouseover.DTFC '+wheelType );
+				$(that.dom.grid.right.liner).off( 'mouseover.DTFC touchstart.DTFC scroll.DTFC '+wheelType );
 				$(that.dom.grid.right.wrapper).remove();
 			} );
 
@@ -922,9 +922,10 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 	 *  @returns {Array} Copy of the layout array
 	 *  @param   {Object} aoOriginal Layout array from DataTables (aoHeader or aoFooter)
 	 *  @param   {Object} aiColumns Columns to copy
+	 *  @param   {boolean} events Copy cell events or not
 	 *  @private
 	 */
-	"_fnCopyLayout": function ( aoOriginal, aiColumns )
+	"_fnCopyLayout": function ( aoOriginal, aiColumns, events )
 	{
 		var aReturn = [];
 		var aClones = [];
@@ -933,7 +934,7 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 		for ( var i=0, iLen=aoOriginal.length ; i<iLen ; i++ )
 		{
 			var aRow = [];
-			aRow.nTr = $(aoOriginal[i].nTr).clone(true, true)[0];
+			aRow.nTr = $(aoOriginal[i].nTr).clone(events, false)[0];
 
 			for ( var j=0, jLen=this.s.iTableColumns ; j<jLen ; j++ )
 			{
@@ -945,7 +946,7 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 				var iCloned = $.inArray( aoOriginal[i][j].cell, aCloned );
 				if ( iCloned === -1 )
 				{
-					var nClone = $(aoOriginal[i][j].cell).clone(true, true)[0];
+					var nClone = $(aoOriginal[i][j].cell).clone(events, false)[0];
 					aClones.push( nClone );
 					aCloned.push( aoOriginal[i][j].cell );
 
@@ -992,17 +993,15 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 		 */
 		if ( bAll )
 		{
-			if ( oClone.header !== null )
-			{
-				oClone.header.parentNode.removeChild( oClone.header );
-			}
-			oClone.header = $(this.dom.header).clone(true, true)[0];
+			$(oClone.header).remove();
+
+			oClone.header = $(this.dom.header).clone(true, false)[0];
 			oClone.header.className += " DTFC_Cloned";
 			oClone.header.style.width = "100%";
 			oGrid.head.appendChild( oClone.header );
 
 			/* Copy the DataTables layout cache for the header for our floating column */
-			aoCloneLayout = this._fnCopyLayout( dt.aoHeader, aiColumns );
+			aoCloneLayout = this._fnCopyLayout( dt.aoHeader, aiColumns, true );
 			jqCloneThead = $('>thead', oClone.header);
 			jqCloneThead.empty();
 
@@ -1024,7 +1023,7 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 			 * cloned cells, just copy the classes across. To get the matching layout for the
 			 * fixed component, we use the DataTables _fnDetectHeader method, allowing 1:1 mapping
 			 */
-			aoCloneLayout = this._fnCopyLayout( dt.aoHeader, aiColumns );
+			aoCloneLayout = this._fnCopyLayout( dt.aoHeader, aiColumns, false );
 			aoFixedHeader=[];
 
 			dt.oApi._fnDetectHeader( aoFixedHeader, $('>thead', oClone.header)[0] );
@@ -1055,7 +1054,7 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 
 		if ( oClone.body !== null )
 		{
-			oClone.body.parentNode.removeChild( oClone.body );
+			$(oClone.body).remove();
 			oClone.body = null;
 		}
 
@@ -1169,7 +1168,7 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 				oGrid.foot.appendChild( oClone.footer );
 
 				/* Copy the footer just like we do for the header */
-				aoCloneLayout = this._fnCopyLayout( dt.aoFooter, aiColumns );
+				aoCloneLayout = this._fnCopyLayout( dt.aoFooter, aiColumns, true );
 				var jqCloneTfoot = $('>tfoot', oClone.footer);
 				jqCloneTfoot.empty();
 
@@ -1181,7 +1180,7 @@ FixedColumns.prototype = /** @lends FixedColumns.prototype */{
 			}
 			else
 			{
-				aoCloneLayout = this._fnCopyLayout( dt.aoFooter, aiColumns );
+				aoCloneLayout = this._fnCopyLayout( dt.aoFooter, aiColumns, false );
 				var aoCurrFooter=[];
 
 				dt.oApi._fnDetectHeader( aoCurrFooter, $('>tfoot', oClone.footer)[0] );
@@ -1376,7 +1375,7 @@ FixedColumns.defaults = /** @lends FixedColumns.defaults */{
  *  @default   See code
  *  @static
  */
-FixedColumns.version = "3.0.4";
+FixedColumns.version = "3.0.5-dev";
 
 
 

@@ -147,6 +147,9 @@ public class EasyForm extends ObservableMap<String, Object> {
     list.setSize(size);
     list.setMultipleSelection(multipleSelection);
     list.setValues(values);
+    if (values != null && values.size() > 0) {
+      list.setValue(values.iterator().next());
+    }
     addComponentOrThrow(label, list);
   }
 

@@ -405,7 +405,11 @@
 
               efc.prepareValueForSave = function(value) {
                 if ('true' === efc.getComponent().multipleSelection) {
-                  value = '[' + value.join(', ') + ']';
+                  if (value.join) {
+                    value = '[' + value.join(', ') + ']';
+                  } else {
+                    value = '[' + value + ']';
+                  }
                 }
                 return value;
               };

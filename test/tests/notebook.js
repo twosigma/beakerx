@@ -94,6 +94,10 @@ describe('notebook', function() {
       evalInLanguage('Html', '1+1', '1+1', done);
     });
 
+    it('R', function(done) {
+      evalInLanguage('R', '1+1', '[1] 2', done);
+    });
+
     it('JavaScript', function(done) {
       evalInLanguage('JavaScript', '1+1', '2', done);
     });

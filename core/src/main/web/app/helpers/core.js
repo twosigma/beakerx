@@ -211,7 +211,7 @@
     };
 
     var codeMirrorExtension = undefined;
-    
+
     var codeMirrorFileName = {
         type : 'string',
         hint: function(token) {
@@ -228,11 +228,11 @@
             deferred.resolve(x);
           }).error(function(x) {
             deferred.resolve([]);
-          });            
+          });
           return deferred.promise;
         }
     };
-    
+
     var bkCoreManager = {
 
       setNotebookImporter: function(format, importer) {
@@ -438,7 +438,7 @@
           }
         };
 
-        var showAutoComplete = function(cm) {          
+        var showAutoComplete = function(cm) {
           var getToken = function(editor, cur) {
             return editor.getTokenAt(cur);
           };
@@ -446,7 +446,7 @@
             var cur = editor.getCursor();
             var token = getToken(editor, cur);
             var cursorPos = editor.indexFromPos(cur);
-            
+
             var waitfor = [];
             for(var i in codeMirrorExtension.autocomplete) {
               var t = codeMirrorExtension.autocomplete[i];
@@ -454,7 +454,7 @@
                 waitfor.push(t.hint(token));
               }
             }
-            
+
             var onResults = function(results, matched_text, dotFix) {
               var start = token.start;
               var end = token.end;
@@ -480,7 +480,7 @@
                     list: _.uniq(results),
                     from: CodeMirror.Pos(cur.line, start),
                     to: CodeMirror.Pos(cur.line, end)
-                  });                  
+                  });
                 })
               } else {
                 showHintCB({
@@ -583,7 +583,6 @@
             "Ctrl-/": "toggleComment",
             "Cmd-/": "toggleComment"
           };
-          
 
         if (codeMirrorExtension === undefined) {
           codeMirrorExtension = window.bkInit.codeMirrorExtension;
@@ -597,7 +596,7 @@
         if (codeMirrorExtension.extraKeys !== undefined) {
           _.extend(keys, codeMirrorExtension.extraKeys);
         }
-        
+
         return {
           lineNumbers: true,
           matchBrackets: true,

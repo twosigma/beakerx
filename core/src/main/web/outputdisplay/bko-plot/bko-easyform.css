@@ -15,6 +15,7 @@
  */
 .text-field-label {
   display: inline-block;
+  max-width: 200px;
 }
 
 .text-area-label {
@@ -118,6 +119,7 @@ input.date-picker {
 
 .text-field-container {
   margin: 10px 0;
+  word-wrap: break-word;
 }
 
 .text-area-container {

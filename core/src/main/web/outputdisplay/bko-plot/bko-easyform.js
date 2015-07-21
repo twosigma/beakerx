@@ -688,7 +688,9 @@
                   var maxTextFieldWidth = 0;
                   if (textFields) {
                     var parentWidth = textFields.eq(0).parent().width();
-                    maxTextFieldWidth = (parentWidth - labelWidth - 10) / parentWidth * 100;
+                    var defaultBorder = 2, defaultPadding = 1, textFieldMargin = 5,
+                        delta = (defaultBorder + defaultPadding + textFieldMargin) * 2;
+                    maxTextFieldWidth = (parentWidth - labelWidth - delta) / parentWidth * 100;
                   }
                   return maxTextFieldWidth;
                 }

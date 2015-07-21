@@ -131,14 +131,6 @@ describe('notebook', function() {
       done();
     });
 
-    it('can enter code into a cell and evaluate it', function(done) {
-      beakerPO.setCellInput('1+1');
-      beakerPO.evaluateCell();
-      beakerPO.waitForCellOutput();
-      expect(beakerPO.getCellOutput().getText()).toMatch('2');
-      done();
-    });
-
     it('can hide the input', function(done) {
       var cell = beakerPO.codeCell(0);
 

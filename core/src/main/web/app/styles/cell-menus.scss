@@ -57,6 +57,7 @@ bk-new-cell-menu {
     position:   absolute;
     background: rgba(255, 255, 255, 0.5);
     padding-right: $grid-gutter-width;
+    z-index: 1;
 }
 
 .cell-menu-item {

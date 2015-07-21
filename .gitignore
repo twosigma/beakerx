@@ -89,3 +89,5 @@ core/src/main/web/vendor/bower_components/datatables/media/js/jquery.dataTables.
 core/src/main/web/vendor/bower_components/datatables/media/js/jquery.js
 core/src/main/web/vendor/bower_components/datatables/media/images/Sorting icons.psd
 core/src/main/web/vendor/bower_components/datatables/media/images/favicon.ico
+
+core/src/main/web/vendor/bower_components/katex-build/katex.html

@@ -70,3 +70,69 @@ html {
   position: relative;
   top: 6px;
 }
+
+.sign-in {
+  .field {
+    border: 1px solid #e6e6e6;
+    width: 40%;
+  }
+  input, label, select, h1, .error {
+    display: block;
+    margin-bottom: 10px;
+  }
+  .error {
+    color: $error_red;
+  }
+  .sign-up {
+    margin-top: 10px;
+  }
+}
+
+.publish  {
+  h1 {
+    margin-bottom: 20px;
+  }
+  .field{
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  input, label, select, h1 {
+    display: block;
+  }
+  input.btn {
+    display: inline-block;
+  }
+  input.field, select, textarea {
+    border: 1px solid #e6e6e6;
+  }
+  select {
+    padding: 9px 11px;
+    outline: 0;
+    background-color: #e6e6e6;
+    border-radius: 0;
+    -webkit-appearance: none;
+    border-color: #dbdbdb;
+    background: #e6e6e6 url(../images/arrow_down.svg) no-repeat right 8px center;
+    background-repeat: no-repeat;
+  }
+  ul.publication-details {
+    list-style: none;
+    li {
+      div {
+        display: inline-block;
+      }
+      .time-label {
+        width: 100px;
+      }
+      .value {
+        color: #6fc21d;
+      }
+    }
+  }
+  .actions {
+    margin-top: 20px;
+    .warning {
+      font-style: italic;
+    }
+  }
+}

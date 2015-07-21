@@ -534,7 +534,9 @@
       showLanguageManager: function() {
         return bkCoreManager.showLanguageManager();
       },
-
+      showPublishForm: function() {
+        return bkCoreManager.showPublishForm();
+      },
       // other JS utils
       updateDocumentModelFromDOM: function(id) {
         function convertCanvasToImage(elem) {

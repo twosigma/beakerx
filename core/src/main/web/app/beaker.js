@@ -154,6 +154,7 @@
       'bk.mainApp',
       'bk.helper',
       'bk.utils',
+      'bk.publication',
       'bk.electron'
     ]);
 
@@ -409,6 +410,10 @@
           return window.beaker.buildTime;
         };
       });
+    });
+
+    beaker.run(function(bkPublicationAuth) {
+      return bkPublicationAuth.initSession();
     });
   };
   var bootstrapBkApp = function() {

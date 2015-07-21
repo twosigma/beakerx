@@ -55,7 +55,7 @@ define(function(require, exports, module) {
 
         var theCookies = document.cookie.split(';');
         for (var i = 0 ; i < theCookies.length; i++) {
-          if (theCookies[i].startsWith(' username-127-0-0-1-')) {            
+          if (theCookies[i].indexOf(' username-127-0-0-1-') === 0) {
             var theCookie = theCookies[i].split('=');
             document.cookie = theCookie[0] + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/";
           }

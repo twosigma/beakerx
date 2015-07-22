@@ -58,8 +58,8 @@ public class GroovyEvaluator {
   protected String currentImports;
 
   protected class jobDescriptor {
-    String codeToBeExecuted;
-    SimpleEvaluationObject outputObject;
+    public String codeToBeExecuted;
+    public SimpleEvaluationObject outputObject;
 
     jobDescriptor(String c , SimpleEvaluationObject o) {
       codeToBeExecuted = c;

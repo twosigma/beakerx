@@ -71,5 +71,5 @@ $code-color: black;
 $code-bg: #F4F4F4;
 
 @function strip-units($number) {
- @return $number / ($number * 0 + 1);
+  @return $number / ($number * 0 + 1);
 }

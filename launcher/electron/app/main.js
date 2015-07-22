@@ -48,7 +48,6 @@ app.on('ready', function() {
         'paths': JSON.stringify(paths)
       }
     }, function(err, response, body) {
-      console.log('body: ' + body);
       if (body && body.startsWith('Electron')) {
         app.quit();
       } else {

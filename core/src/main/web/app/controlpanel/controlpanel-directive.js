@@ -150,7 +150,9 @@
             });
             return false;
           } else if ((e.which === 123) && bkUtils.isElectron) { // F12
-            bkElectron.toggleDevTools();
+            if (bkUtils.isElectron) {
+              bkElectron.toggleDevTools();
+            }
           }
         }
         $(document).bind('keydown', keydownHandler);

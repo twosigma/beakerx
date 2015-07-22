@@ -19,8 +19,8 @@
 @import "cell-outputs";
 
 .bkcell .CodeMirror {
-    background: transparent;
-    padding-top: $grid-row-height;
+  background: transparent;
+  padding-top: $grid-row-height;
 }
 
 .advanced-mode .bkcell .CodeMirror {
@@ -32,26 +32,26 @@ bk-markdown-editable .CodeMirror {
 }
 
 .bkcelltextarea {
-    border: none;
-    resize: none;
-    font-family: monospace;
-    padding: 19px 0 0 29px;
-    width: 100%;
-    min-height: 36px;
-    white-space: pre;
+  border: none;
+  resize: none;
+  font-family: monospace;
+  padding: 19px 0 0 29px;
+  width: 100%;
+  min-height: 36px;
+  white-space: pre;
 }
 
 .mini-cell-stats {
-    top: 22px;
-    left: 20px;
-    color: $font-grey;
-    position: absolute;
-    font-size: 12px;
+  top: 22px;
+  left: 20px;
+  color: $font-grey;
+  position: absolute;
+  font-size: 12px;
 }
 .loading-state {
-    color: $font-grey;
-    font-size: 11px;
-    line-height: 25px;
+  color: $font-grey;
+  font-size: 11px;
+  line-height: 25px;
 }
 
 bk-section-cell, bk-markdown-cell {
@@ -71,155 +71,150 @@ bk-markdown-cell bk-markdown-editable {
 }
 
 bk-markdown-cell bk-markdown-editable, .bkcell.code-cell-area, .textcell-wrapper {
-    border: solid 1px $cell-border;
-    background-color: white;
+  border: solid 1px $cell-border;
+  background-color: white;
 
-    .locked & {
-        border: solid 1px transparent;
-    }
+  .locked & {
+    border: solid 1px transparent;
+  }
 }
 
 .textcell-wrapper,
 bk-markdown-cell .CodeMirror-lines,
 bk-markdown-cell .markup
 {
-    padding: $grid-row-height $grid-gutter-width;
+  padding: $grid-row-height $grid-gutter-width;
 }
 
 .bkcell bk-code-cell-input-menu .dropdown {
-    float:          left;
-    position:       relative;
+  float:          left;
+  position:       relative;
 }
 
 bk-cell > .bkcell {
-    position: relative;
+  position: relative;
 }
 
 bk-section-cell {
-    display: block;
-    margin: $grid-row-height 0;
+  display: block;
+  margin: $grid-row-height 0;
 }
 
 .editable-text {
-    outline: none;
-    // contenteditable requires manual override
-    font: $font-size-base $font-family-sans-serif;
-    line-height: $line-height-base;
-    white-space: pre;
+  outline: none;
+  // contenteditable requires manual override
+  font: $font-size-base $font-family-sans-serif;
+  line-height: $line-height-base;
+  white-space: pre;
 }
 
 .bkcell bk-code-cell-input-menu .dropdown .dropdown-menu {
-    margin-top: -$grid-row-height;
+  margin-top: -$grid-row-height;
 }
 
 .code-cell-area {
-    .code-cell-input {
-        padding: $grid-row-height*2 $grid-gutter-width $grid-row-height;
+  .code-cell-input {
+    padding: $grid-row-height*2 $grid-gutter-width $grid-row-height;
 
-        .advanced-mode & {
-            padding: 8px $grid-gutter-width;
+    .advanced-mode & {
+      padding: 8px $grid-row-height;
 
-            &.input-hidden {
-                padding-top: $grid-row-height*2;
-            }
-        }
-
-        &.input-hidden .code-cell-input-content {
-            display: none;
-        }
+      &.input-hidden {
+        padding-top: $grid-row-height*2;
+      }
     }
 
-    .code-cell-output {
-        padding: $grid-row-height $grid-gutter-width;
-        position: relative;
-        border-top: solid 1px #CCC;
-        box-sizing: content-box;
-        min-height: 20px;
-
-        .advanced-mode & {
-          min-height: 17px;
-          padding: 8px $grid-gutter-width;
-        }
-
-        .out_error {
-            padding-bottom: 0;
-
-            .advanced-mode & {
-                padding-top: 0;
-            }
-        }
-
-        .advanced-mode &.no-output .cell-menu-item {
-            display: none;
-        }
-
-        .bkcell {
-            margin-bottom: 0;
-        }
-
-        &.error {
-            border: 1px solid $error_red;
-            margin: -1px;
-        }
+    &.input-hidden .code-cell-input-content {
+      display: none;
     }
+  }
+
+  .code-cell-output {
+    padding: $grid-row-height $grid-gutter-width;
+    position: relative;
+    border-top: solid 1px #CCC;
+    box-sizing: content-box;
+    min-height: 20px;
+
+    .out_error {
+      padding-bottom: 0;
+
+      .advanced-mode & {
+        padding: 8px $grid-gutter-width;
+      }
+    }
+
+    .advanced-mode &.no-output .cell-menu-item {
+      display: none;
+    }
+
+    .bkcell {
+      margin-bottom: 0;
+    }
+
+    &.error {
+      border: 1px solid $error_red;
+      margin: -1px;
+    }
+  }
 }
 
 bk-code-cell .locked .code-cell-output {
-    border: none;
-    margin-top: 0;
+  border: none;
+  margin-top: 0;
 }
 
 bk-output-display pre {
-    border:     none;
-    margin:     0;
-    padding:    0;
-    overflow:   visible;
-    line-height: 1;
-    background: transparent;
+  border:     none;
+  margin:     0;
+  padding:    0;
+  overflow:   visible;
+  line-height: 1;
+  background: transparent;
 }
 
 .code-cell-hidden {
-    padding-top: $grid-row-height;
+  padding-top: $grid-row-height;
 }
 
 bk-cell .section > .toggle-menu {
-    top: 0;
+  top: 0;
 }
 
 .toggle-menu {
-    bk-language-logo {
-        display: none;
-        position: relative;
-    }
+  bk-language-logo {
+    display: none;
+    position: relative;
+  }
 }
 
 .advanced-mode {
-    .bkcelltextarea {
-        min-height: 18px;
-        padding: 0 0 0 26px;
-    }
+  .bkcelltextarea {
+    min-height: 18px;
+    padding: 0 0 0 26px;
+  }
 
-    .cell-evaluator-menu {
-      right: 0;
-    }
+  .cell-evaluator-menu {
+    right: 0;
+  }
+
+  bk-language-logo {
+    display: none;
+  }
+
+  .toggle-menu {
+    top: 5px;
 
     bk-language-logo {
-        display: none;
-    }
-
-    .toggle-menu {
-      top: 5px;
-
-      bk-language-logo {
-        height: 24px;
-        width: 30px;
-        padding-top: 2px;
-        top: -1px;
-        display: inline-block;
-        text-align: center;
-        &:hover {
-          background-color: $highlight-blue;
-        }
+      height: 24px;
+      width: 30px;
+      padding-top: 2px;
+      top: -1px;
+      display: inline-block;
+      text-align: center;
+      &:hover {
+        background-color: $highlight-blue;
+      }
     }
   }
 }
@@ -243,5 +238,5 @@ bk-language-logo {
 }
 
 .cell-run-time {
-color: #BDBDBD;
+  color: #BDBDBD;
 }

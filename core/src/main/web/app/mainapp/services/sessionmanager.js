@@ -76,7 +76,6 @@
       for (var i in this.columnNames) {
         s = s + '    '+this.columnNames[i]+'   '+this.types[i]+'\n';
       }
-      ;
       return s;
     };
 
@@ -168,7 +167,7 @@
       if (_.isDate(v) || _.isString(v) || _.isNumber(v) || _.isBoolean(v) || _.isNaN(v) || _.isNull(v) || _.isUndefined(v))
         return true;
       return false;
-    };
+    }
 
     function getDataType(v) {
       if (_.isDate(v))
@@ -178,7 +177,7 @@
       if(_.isBoolean(v))
         return "boolean";
       return "string";
-    };
+    }
 
     function isDictionary(v) {
       if (!_.isObject(v))
@@ -188,33 +187,33 @@
           return false;
       }
       return true;
-    };
+    }
 
     function transform(v, norecurse) {
       if (_.isFunction(v) || _.isUndefined(v))
         return null;
 
       if (_.isDate(v)) {
-        var o = {}
+        var o = {};
         o.type = "Date";
         o.timestamp = v.valueOf();
-        return o
+        return o;
       }
 
       if (isPrimitiveType(v))
         return v;
 
       if (v instanceof ImageIcon && norecurse === undefined) {
-        var o = {}
+        var o = {};
         o.type = "ImageIcon";
         o.imageData = v.imageData;
         o.width = v.width;
         o.height = v.height;
-        return o
+        return o;
       }
 
       if (v instanceof DataFrame && norecurse === undefined) {
-        var o = {}
+        var o = {};
         o.type = "TableDisplay";
         o.subtype = "TableDisplay";
         o.values = [];
@@ -227,7 +226,7 @@
         }
         o.types = _.isArray(v.types) ? v.types.slice(0) : undefined;
         o.columnNames = _.isArray(v.columnNames) ? v.columnNames.slice(0) : undefined;
-        return o
+        return o;
       }
 
       if (_.isArray(v) && v.length>0) {
@@ -245,7 +244,7 @@
           }
         }
         if (doit && norecurse === undefined) {
-          var o = {}
+          var o = {};
           o.type = "TableDisplay";
           o.values = [];
           for (var i in v) {
@@ -317,7 +316,7 @@
       }
 
       if (_.isObject(v) && isDictionary(v) && norecurse === undefined) {
-        var o = {}
+        var o = {};
         o.type = "TableDisplay";
         o.values = [];
         o.subtype = "Dictionary";
@@ -335,7 +334,7 @@
         o[p] = transform(v[p], true);
       }
       return o;
-    };
+    }
 
     function transformBack(v) {
       if(v === undefined || (!_.isObject(v) && !_.isArray(v)))
@@ -347,7 +346,7 @@
         }
         if (v.type === "TableDisplay") {
           if (v.subtype === "Dictionary") {
-            var o = {}
+            var o = {};
             for (var r in v.values) {
               o[v.values[r][0]] = transformBack(v.values[r][1]);
             }
@@ -390,7 +389,7 @@
         o.push(transformBack(v[p]));
       }
       return o;
-    };
+    }
 
 
     var _notebookUri = (function() {
@@ -424,7 +423,7 @@
       this.knownBeakerVars = { };
       this.getCache = { };
       this.setCache = { };
-      this.beakerObj = { }
+      this.beakerObj = { };
       this.nbmodel = nbmodel;
     };
 
@@ -560,11 +559,11 @@
             delete this.beakerObj[p];
             this.knownBeakerVars[p] = true;
             var makeGetter = function(self, name) {
-              return function() { return self.beakerGetter(name); }
-            }
+              return function() { return self.beakerGetter(name); };
+            };
             var makeSetter = function(self, name) {
-              return function(v) { self.beakerSetter(name,v); }
-            }
+              return function(v) { self.beakerSetter(name,v); };
+            };
             Object.defineProperty(this.beakerObj, p,
                 { writeable: true,
                   get: makeGetter(this, p),
@@ -608,11 +607,11 @@
             this.setCache[p] = t;
             this.knownBeakerVars[p] = true;
             var makeGetter = function(self, name) {
-              return function() { return self.beakerGetter(name); }
-            }
+              return function() { return self.beakerGetter(name); };
+            };
             var makeSetter = function(self, name) {
-              return function(v) { self.beakerSetter(name,v); }
-            }
+              return function(v) { self.beakerSetter(name,v); };
+            };
             Object.defineProperty(this.beakerObj, p,
                 { writeable: true,
                   get: makeGetter(this,p),
@@ -635,11 +634,11 @@
         if (this.knownBeakerVars[p] === undefined && this.beakerObj[p] === undefined) {
             this.knownBeakerVars[p] = true;
             var makeGetter = function(self, name) {
-              return function() { return self.beakerGetter(name); }
-            }
+              return function() { return self.beakerGetter(name); };
+            };
             var makeSetter = function(self, name) {
-              return function(v) { self.beakerSetter(name,v); }
-            }
+              return function(v) { self.beakerSetter(name,v); };
+            };
             Object.defineProperty(this.beakerObj, p,
                 { writeable: true,
                   get: makeGetter(this,p),
@@ -675,7 +674,7 @@
       }
       parents.pop(node);
       return false;
-  }
+  };
 
     var _bo = {};
 

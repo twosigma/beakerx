@@ -73,32 +73,32 @@
   var generateTagMap = function(cellMap) {
     // initialization cells
     var initializationCells = _(cellMap).chain()
-        .filter(function(cell) {
-          return cell.raw && cell.raw.initialization;
+    .filter(function(cell) {
+      return cell.raw && cell.raw.initialization;
+    })
+    .map(function(cell) {
+      if (cell.raw.type === 'code') {
+        return cell;
+      } else {
+        return _(cell.allDescendants).chain()
+        .map(function(childId) {
+          return cellMap[childId];
         })
-        .map(function(cell) {
-          if (cell.raw.type === 'code') {
-            return cell;
-          } else {
-            return _(cell.allDescendants).chain()
-                .map(function(childId) {
-                  return cellMap[childId];
-                })
-                .filter(function(c) {
-                  return c.raw.type === 'code';
-                })
-                .value();
-          }
-        })
-        .flatten()
-        .uniq()
-        .sortBy(function(cell) {
-          return cell.rawIndex;
-        })
-        .map(function(cell) {
-          return cell.raw;
+        .filter(function(c) {
+          return c.raw.type === 'code';
         })
         .value();
+      }
+    })
+    .flatten()
+    .uniq()
+    .sortBy(function(cell) {
+      return cell.rawIndex;
+    })
+    .map(function(cell) {
+      return cell.raw;
+    })
+    .value();
 
     // evaluators
     var evaluatorMap = {};
@@ -109,12 +109,12 @@
       this[key].push(value);
     };
     _(cellMap).chain()
-        .filter(function(cell) {
-          return cell.raw && cell.raw.type === 'code';
-        })
-        .each(function(codeCell) {
-          evaluatorMap.add(codeCell.raw.evaluator, codeCell.raw);
-        });
+    .filter(function(cell) {
+      return cell.raw && cell.raw.type === 'code';
+    })
+    .each(function(codeCell) {
+      evaluatorMap.add(codeCell.raw.evaluator, codeCell.raw);
+    });
 
     // user tags
     var userTagsMap = {};
@@ -354,9 +354,9 @@
       },
       undoableDelete: function() {
         this.deleteUndo = {
-            type: 'single',
-            index: this.getIndex(id),
-            cell: this.getCell(id)
+          type: 'single',
+          index: this.getIndex(id),
+          cell: this.getCell(id)
         };
         this.delete(id);
       },

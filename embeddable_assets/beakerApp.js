@@ -1341,7 +1341,7 @@ return __p
           };
 
 
-        if (typeof window.bkInit === 'undefined') {
+        if (typeof window.bkInit !== 'undefined') {
           codeMirrorExtension = window.bkInit.codeMirrorExtension;
         }
 

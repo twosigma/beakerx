@@ -10426,7 +10426,8 @@ li.CodeMirror-hint-active {
     right: 1px;
     position: absolute;
     background: rgba(255, 255, 255, 0.5);
-    padding-right: 20px; }
+    padding-right: 20px;
+    z-index: 1; }
   .beaker-sandbox .cell-menu-item {
     float: right;
     cursor: pointer;

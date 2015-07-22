@@ -117,7 +117,7 @@ bk-section-cell {
         padding: $grid-row-height*2 $grid-gutter-width $grid-row-height;
 
         .advanced-mode & {
-            padding-top: $grid-row-height;
+            padding: 8px $grid-gutter-width;
 
             &.input-hidden {
                 padding-top: $grid-row-height*2;
@@ -135,6 +135,11 @@ bk-section-cell {
         border-top: solid 1px #CCC;
         box-sizing: content-box;
         min-height: 20px;
+
+        .advanced-mode & {
+          min-height: 17px;
+          padding: 8px $grid-gutter-width;
+        }
 
         .out_error {
             padding-bottom: 0;
@@ -202,7 +207,10 @@ bk-cell .section > .toggle-menu {
         display: none;
     }
 
-    .toggle-menu  bk-language-logo {
+    .toggle-menu {
+      top: 5px;
+
+      bk-language-logo {
         height: 24px;
         width: 30px;
         padding-top: 2px;
@@ -213,6 +221,7 @@ bk-cell .section > .toggle-menu {
           background-color: $highlight-blue;
         }
     }
+  }
 }
 
 bk-language-logo {

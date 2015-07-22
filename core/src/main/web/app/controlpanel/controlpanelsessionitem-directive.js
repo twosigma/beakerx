@@ -68,33 +68,35 @@
                         return fileSaver.save(session.notebookUri, notebookModelAsString, true);
                       }
 
-                      var deferred = bkUtils.newDeferred();
-                      bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
+                      return bkCoreManager.showDefaultSavingFileChooser()
+                      .then(function(pathInfo) {
                         if (!pathInfo.uri) {
-                          return deferred.reject({
+                          return bkUtils.newDeferred().reject({
                             cause: 'Save cancelled'
                           });
                         }
 
-                        var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
-                        fileSaver.save(pathInfo.uri, notebookModelAsString).then(function() {
-                          bkRecentMenu.recordRecentDocument(angular.toJson({
-                            uri: pathInfo.uri,
-                            type: pathInfo.uriType,
-                            readOnly: false,
-                            format: _.isEmpty(format) ? '' : format
-                          }));
-                          deferred.resolve();
-                        }, function(error) {
-                          deferred.reject({
+                        return bkSession.load(session.id)
+                        .then(function(session) {
+                          var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
+                          return fileSaver.save(pathInfo.uri, session.notebookModelJson).then(function() {
+                            bkRecentMenu.recordRecentDocument(angular.toJson({
+                              uri: pathInfo.uri,
+                              type: pathInfo.uriType,
+                              readOnly: false,
+                              format: _.isEmpty(format) ? '' : format
+                            }));
+                          });
+                        })
+                        .catch(function(error) {
+                          return bkUtils.newDeferred().reject({
                             cause: 'error saving to file',
                             error: error
                           });
                         });
                       });
-
-                      return deferred.promise;
                     };
+
                     var savingFailedHandler = function(info) {
                       if (info.cause === 'Save cancelled') {
                         console.log('File saving cancelled');

@@ -66,33 +66,34 @@
                       if (!_.isEmpty(session.notebookUri) && !session.readOnly) {
                         var fileSaver = bkCoreManager.getFileSaver(session.uriType);
                         return fileSaver.save(session.notebookUri, notebookModelAsString, true);
-                      } else {
-                        var deferred = bkUtils.newDeferred();
-                        bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
-                          if (!pathInfo.uri) {
-                            deferred.reject({
-                              cause: 'Save cancelled'
-                            });
-                          } else {
-                            var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
-                            fileSaver.save(pathInfo.uri, notebookModelAsString).then(function() {
-                              bkRecentMenu.recordRecentDocument(angular.toJson({
-                                uri: pathInfo.uri,
-                                type: pathInfo.uriType,
-                                readOnly: false,
-                                format: _.isEmpty(format) ? '' : format
-                              }));
-                              deferred.resolve();
-                            }, function(error) {
-                              deferred.reject({
-                                cause: 'error saving to file',
-                                error: error
-                              });
-                            });
-                          }
-                        });
-                        return deferred.promise;
                       }
+
+                      var deferred = bkUtils.newDeferred();
+                      bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
+                        if (!pathInfo.uri) {
+                          return deferred.reject({
+                            cause: 'Save cancelled'
+                          });
+                        }
+
+                        var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
+                        fileSaver.save(pathInfo.uri, notebookModelAsString).then(function() {
+                          bkRecentMenu.recordRecentDocument(angular.toJson({
+                            uri: pathInfo.uri,
+                            type: pathInfo.uriType,
+                            readOnly: false,
+                            format: _.isEmpty(format) ? '' : format
+                          }));
+                          deferred.resolve();
+                        }, function(error) {
+                          deferred.reject({
+                            cause: 'error saving to file',
+                            error: error
+                          });
+                        });
+                      });
+
+                      return deferred.promise;
                     };
                     var savingFailedHandler = function(info) {
                       if (info.cause === 'Save cancelled') {

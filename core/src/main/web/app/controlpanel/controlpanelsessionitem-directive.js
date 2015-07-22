@@ -47,7 +47,7 @@
             });
 
           };
-          bkUtils.httpGet("rest/session-backup/getEdited", {
+          bkUtils.httpGet('rest/session-backup/getEdited', {
             sessionid: session.id
           }).then(function(response) {
             var edited = response.data.edited;
@@ -57,8 +57,8 @@
             } else {
               // ask if user want to save first
               bkHelper.show3ButtonModal(
-                  "Do you want to save [" + $scope.getCaption(session) + "]?",
-                  "Confirm close",
+                  'Do you want to save [' + $scope.getCaption(session) + ']?',
+                  'Confirm close',
                   function() { // yes
                     // save session
                     var saveSession = function() {
@@ -66,37 +66,40 @@
                       if (!_.isEmpty(session.notebookUri) && !session.readOnly) {
                         var fileSaver = bkCoreManager.getFileSaver(session.uriType);
                         return fileSaver.save(session.notebookUri, notebookModelAsString, true);
-                      } else {
-                        var deferred = bkUtils.newDeferred();
-                        bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
-                          if (!pathInfo.uri) {
-                            deferred.reject({
-                              cause: "Save cancelled"
-                            });
-                          } else {
-                            var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
-                            fileSaver.save(pathInfo.uri, notebookModelAsString).then(function () {
-                              bkRecentMenu.recordRecentDocument(angular.toJson({
-                                uri: pathInfo.uri,
-                                type: pathInfo.uriType,
-                                readOnly: false,
-                                format: _.isEmpty(format) ? "" : format
-                              }));
-                              deferred.resolve();
-                            }, function (error) {
-                              deferred.reject({
-                                cause: "error saving to file",
-                                error: error
-                              });
-                            });
-                          }
-                        });
-                        return deferred.promise;
                       }
+
+                      return bkCoreManager.showDefaultSavingFileChooser()
+                      .then(function(pathInfo) {
+                        if (!pathInfo.uri) {
+                          return bkUtils.newDeferred().reject({
+                            cause: 'Save cancelled'
+                          });
+                        }
+
+                        return bkSession.load(session.id)
+                        .then(function(session) {
+                          var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
+                          return fileSaver.save(pathInfo.uri, session.notebookModelJson).then(function() {
+                            bkRecentMenu.recordRecentDocument(angular.toJson({
+                              uri: pathInfo.uri,
+                              type: pathInfo.uriType,
+                              readOnly: false,
+                              format: _.isEmpty(format) ? '' : format
+                            }));
+                          });
+                        })
+                        .catch(function(error) {
+                          return bkUtils.newDeferred().reject({
+                            cause: 'error saving to file',
+                            error: error
+                          });
+                        });
+                      });
                     };
+
                     var savingFailedHandler = function(info) {
-                      if (info.cause === "Save cancelled") {
-                        console.log("File saving cancelled");
+                      if (info.cause === 'Save cancelled') {
+                        console.log('File saving cancelled');
                       } else {
                         bkHelper.show1ButtonModal(info.error, info.cause);
                       }
@@ -109,8 +112,8 @@
                   function() { // cancel
                     // no-op
                   },
-                  "Save",
-                  "Don't Save"
+                  'Save',
+                  'Don\'t Save'
               );
             }
           });
@@ -119,9 +122,9 @@
         $scope.getCaption = function(session) {
           var url = session.notebookUri;
           if (!url) {
-            return "New Notebook";
+            return 'New Notebook';
           }
-          if (url[url.length - 1] === "/") {
+          if (url[url.length - 1] === '/') {
             url = url.substring(0, url.length - 1);
           }
           return url.replace(/^.*[\\\/]/, '');

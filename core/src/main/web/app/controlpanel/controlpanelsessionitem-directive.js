@@ -75,7 +75,7 @@
                             });
                           } else {
                             var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
-                            fileSaver.save(pathInfo.uri, notebookModelAsString).then(function () {
+                            fileSaver.save(pathInfo.uri, notebookModelAsString).then(function() {
                               bkRecentMenu.recordRecentDocument(angular.toJson({
                                 uri: pathInfo.uri,
                                 type: pathInfo.uriType,
@@ -83,7 +83,7 @@
                                 format: _.isEmpty(format) ? '' : format
                               }));
                               deferred.resolve();
-                            }, function (error) {
+                            }, function(error) {
                               deferred.reject({
                                 cause: 'error saving to file',
                                 error: error

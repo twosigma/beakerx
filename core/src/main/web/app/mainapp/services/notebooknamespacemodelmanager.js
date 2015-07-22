@@ -23,9 +23,8 @@
   module.factory("bkNotebookNamespaceModelManager", function() {
     var _subscriptions = {};
     return {
-      init: function(sessionId, notebookModel) {
-        _subscriptions[sessionId] =
-          $.cometd.subscribe("/namespace/" + sessionId, function(reply) {
+      init: function(sessionId, notebookModel, generateSaveData) {
+        _subscriptions[sessionId] = $.cometd.subscribe("/namespace/" + sessionId, function(reply) {
             var name = reply.data.name;
             var value = reply.data.value;
             var sync = reply.data.sync;

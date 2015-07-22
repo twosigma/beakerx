@@ -25,6 +25,33 @@
 
   module.directive('bkControlPanelSessionItem', function(
       bkUtils, bkSession, bkCoreManager, bkRecentMenu, bkEvaluatePluginManager) {
+
+    function saveMostRecentNotebookContents(sessionId, pathInfo, format) {
+      var deferred = bkUtils.newDeferred();
+
+      $.cometd.subscribe('/latest-notebook-model', function(resp) {
+
+        var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
+        fileSaver.save(pathInfo.uri, resp.data.notebookJson)
+        .then(function() {
+          bkRecentMenu.recordRecentDocument(JSON.stringify({
+            uri: pathInfo.uri,
+            type: pathInfo.uriType,
+            readOnly: false,
+            format: _.isEmpty(format) ? '' : format
+          }));
+        })
+        .then(deferred.resolve)
+        .catch(deferred.reject);
+
+        $.cometd.unsubscribe('/latest-notebook-model');
+      });
+
+      $.cometd.publish('/request-latest-notebook-model', {sessionId: sessionId});
+
+      return deferred.promise;
+    }
+
     return {
       restrict: 'E',
       template: JST['controlpanel/table'],
@@ -67,33 +94,24 @@
                         return fileSaver.save(session.notebookUri, notebookModelAsString, true);
                       }
 
-                      var deferred = bkUtils.newDeferred();
-                      bkCoreManager.showDefaultSavingFileChooser().then(function(pathInfo) {
+                      return bkCoreManager.showDefaultSavingFileChooser()
+                      .then(function(pathInfo) {
                         if (!pathInfo.uri) {
-                          return deferred.reject({
+                          return bkUtils.newDeferred().reject({
                             cause: 'Save cancelled'
                           });
                         }
 
-                        var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
-                        fileSaver.save(pathInfo.uri, notebookModelAsString).then(function() {
-                          bkRecentMenu.recordRecentDocument(JSON.stringify({
-                            uri: pathInfo.uri,
-                            type: pathInfo.uriType,
-                            readOnly: false,
-                            format: _.isEmpty(format) ? '' : format
-                          }));
-                          deferred.resolve();
-                        }, function(error) {
-                          deferred.reject({
+                        return saveMostRecentNotebookContents(session.id, pathInfo, format)
+                        .catch(function(error) {
+                          return bkUtils.newDeferred().reject({
                             cause: 'error saving to file',
                             error: error
                           });
                         });
                       });
-
-                      return deferred.promise;
                     };
+
                     var savingFailedHandler = function(info) {
                       if (info.cause === 'Save cancelled') {
                         console.log('File saving cancelled');

@@ -13,158 +13,190 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * bkoTableDisplay
+ * This is the output display component for displaying tables.
+ */
 (function() {
   'use strict';
   (function($) {
-    $.fn.dataTable.moment = function ( format, locale ) {
-        var types = $.fn.dataTable.ext.type;
-       
-        types.detect.unshift( function ( d ) {
-           
-            if ( d === '' || d === null ) {
-                return 'moment-'+format;
-            }
-            return (d.timestamp !== undefined && moment(d.timestamp).isValid()) ?
-                'moment-'+format :
-                null;
-        } );
-       
-        types.order[ 'moment-'+format+'-pre' ] = function ( d ) {
-            return d === '' || d === null ?
-                -Infinity :
-                parseInt( d.timestamp, 10 );
-        };
+    $.fn.dataTable.moment = function(format, locale) {
+      var types = $.fn.dataTable.ext.type;
+      // Add type detection
+      types.detect.unshift(function(d) {
+        // Null and empty values are acceptable
+        if (d === '' || d === null) {
+          return 'moment-' + format;
+        }
+        return (d.timestamp !== undefined && moment(d.timestamp).isValid()) ?
+          'moment-' + format :
+          null;
+      });
+      // Add sorting method - use an integer for the sorting
+      types.order['moment-' + format + '-pre'] = function(d) {
+        return d === '' || d === null ?
+          -Infinity :
+          parseInt(d.timestamp, 10);
+      };
     };
   }(jQuery));
 
-  $.fn.dataTable.moment( 'YYYYMMDD HH:mm:ss' );
-  $.fn.dataTable.moment( 'YYYYMMDD' );
-  $.fn.dataTable.moment( 'DD/MM/YYYY' );
+  $.fn.dataTable.moment('YYYYMMDD HH:mm:ss');
+  $.fn.dataTable.moment('YYYYMMDD');
+  $.fn.dataTable.moment('DD/MM/YYYY');
 
- 
-  jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    "file-size-pre": function ( a ) {
-        var x = a.substring(0,a.length - 2);
-        var x_unit = (a.substring(a.length - 2, a.length).toLowerCase() == "mb" ?
-            1000 : (a.substring(a.length - 2, a.length).toLowerCase() == "gb" ? 1000000 : 1));
-        return parseInt( x * x_unit, 10 );
+  // detect and sort by file size
+  jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+    'file-size-pre': function(a) {
+      var x = a.substring(0, a.length - 2);
+      var xUnit = (a.substring(a.length - 2, a.length).toLowerCase() == 'mb' ?
+          1000 : (a.substring(a.length - 2, a.length).toLowerCase() == 'gb' ? 1000000 : 1));
+      return parseInt(x * xUnit, 10);
     },
-    "file-size-asc": function ( a, b ) {
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+    'file-size-asc': function(a, b) {
+      return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
-    "file-size-desc": function ( a, b ) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    'file-size-desc': function(a, b) {
+      return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
-  } );
+  });
 
-  jQuery.fn.dataTableExt.aTypes.unshift( function ( sData ) {
-    if (typeof sData !== 'string')
+  jQuery.fn.dataTableExt.aTypes.unshift(function(sData) {
+    if (typeof sData !== 'string') {
       return;
+    }
 
-    var sValidChars = "0123456789";
+    var sValidChars = '123456789';
     var Char;
 
-        for ( var i=0 ; i<(sData.length - 3) ; i++ ) {
+    /* Check the numeric part */
+    for (var i = 0; i < (sData.length - 3); i++) {
       Char = sData.charAt(i);
       if (sValidChars.indexOf(Char) == -1) {
         return null;
       }
     }
-        if ( sData.substring(sData.length - 2, sData.length).toLowerCase() == "kb"
-      || sData.substring(sData.length - 2, sData.length).toLowerCase() == "mb"
-        || sData.substring(sData.length - 2, sData.length).toLowerCase() == "gb" ) {
+    /* Check for size unit KB, MB or GB */
+    if (sData.substring(sData.length - 2, sData.length).toLowerCase() == 'kb' ||
+      sData.substring(sData.length - 2, sData.length).toLowerCase() == 'mb' ||
+      sData.substring(sData.length - 2, sData.length).toLowerCase() == 'gb') {
       return 'file-size';
     }
     return null;
-  } );
+  });
 
- 
-  jQuery.fn.dataTableExt.aTypes.unshift( function ( sData ) {
+  // detect and sort by IP addresses
+  jQuery.fn.dataTableExt.aTypes.unshift(function(sData) {
     if (/^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$/.test(sData)) {
       return 'ip-address';
     }
     return null;
-  } );
+  });
 
-  jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    "ip-address-pre": function ( a ) {
-      var m = a.split("."), x = "";
-      for(var i = 0; i < m.length; i++) {
+  jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+    'ip-address-pre': function(a) {
+      var m = a.split('.');
+      var x = '';
+      for (var i = 0; i < m.length; i++) {
         var item = m[i];
-        if(item.length == 1) {
-          x += "00" + item;
-        } else if(item.length == 2) {
-          x += "0" + item;
+        if (item.length === 1) {
+          x += '00' + item;
+        } else if (item.length === 2) {
+          x += '0' + item;
         } else {
           x += item;
         }
       }
       return x;
     },
-    "ip-address-asc": function ( a, b ) {
+    'ip-address-asc': function(a, b) {
       return ((a < b) ? -1 : ((a > b) ? 1 : 0));
     },
-    "ip-address-desc": function ( a, b ) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+    'ip-address-desc': function(a, b) {
+      return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
-  } );
-
-  beaker.bkoDirective('Table', ["bkCellMenuPluginManager", "bkUtils", '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
-    var CELL_TYPE = "bko-tabledisplay";
+  });
+  //jscs:disable
+  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
+  //jscs:enable
+    var CELL_TYPE = 'bko-tabledisplay';
     return {
       template: JST['bko-tabledisplay/output-table'],
       controller: function($scope, $modal) {
 
-        $scope.id = "table_" + bkUtils.generateId(6);
+        $scope.id = 'table_' + bkUtils.generateId(6);
 
         $scope.getShareMenuPlugin = function() {
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
-        $scope.$watch("getShareMenuPlugin()", function() {
+        $scope.$watch('getShareMenuPlugin()', function() {
           var newItems = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
           $scope.model.resetShareMenuItems(newItems);
         });
 
         $scope.exportTo = function(data, format) {
-          var i, j;
+          var i;
+          var j;
+          var order;
           var out = '';
           var eol = '\n';
           var sep = ',';
           var qot = '"';
-          var fix = function (s) { return s.replace(/"/g, '""');};
+          var fix = function(s) { return s.replace(/"/g, '""');};
 
           if (format === 'tabs') {
             sep = '\t';
             qot = '';
-            fix = function (s) { return s.replace(/\t/g, ' ');};
+            fix = function(s) { return s.replace(/\t/g, ' ');};
           }
-          if (navigator.appVersion.indexOf("Win")!=-1)
+          if (navigator.appVersion.indexOf('Win') !== -1) {
             eol = '\r\n';
+          }
 
-          for(i=1; i<$scope.columns.length; i++) {
-            var order = $scope.colorder[i];
-            if (!$scope.table.column(order).visible())
+          for (i = 1; i < $scope.columns.length; i++) {
+            order = $scope.colorder[i];
+            if (!$scope.table.column(order).visible()) {
               continue;
-            if (out !== '')
+            }
+            if (out !== '') {
               out = out + sep;
+            }
             out = out + qot + fix($scope.columns[order].title) + qot;
           }
           out = out + eol;
 
-          for(i=0; i<data.length; i++) {
+          for (i = 0; i < data.length; i++) {
             var row = data[i];
             var some = false;
-            for(j=1; j<row.length; j++) {
-              var order = $scope.colorder[j];
-              if (!$scope.table.column(order).visible())
+            for (j = 1; j < row.length; j++) {
+              order = $scope.colorder[j];
+              if (!$scope.table.column(order).visible()) {
                 continue;
-              if (!some)
+              }
+              if (!some) {
                 some = true;
-              else
+              } else {
                 out = out + sep;
+              }
               var d = row[j];
-              if ($scope.columns[order].render !== undefined )
-                d = $scope.columns[order].render(d, "display");
+              if ($scope.columns[order].render !== undefined) {
+                d = $scope.columns[order].render(d, 'display');
+              }
               d = d + '';
               out = out + qot + (d !== undefined && d !== null ? fix(d) : '') + qot;
             }
@@ -175,55 +207,62 @@
 
         $scope.doCSVExport = function(all) {
           var data;
-          if (!all)
+          if (!all) {
             data = $scope.table.rows().data();
-          else
+          } else {
             data = $scope.table.rows(function(index, data, node) { return $scope.selected[index]; }).data();
+          }
           var out = $scope.exportTo(data, 'csv');
           bkHelper.selectFile(function(n) {
-            var suffix = ".csv";
-            if(n === undefined)
+            var suffix = '.csv';
+            if (n === undefined) {
               return;
-            if (n.indexOf(suffix,n.length-suffix.length) === -1)
+            }
+            if (n.indexOf(suffix, n.length - suffix.length) === -1) {
               n = n + suffix;
-           
+            }
+            // TODO check for error, prompt for overwrite
             return bkHelper.saveFile(n, out, true);
-          } , "Select name for CSV file to save", "csv", "Save");
+          } , 'Select name for CSV file to save', 'csv', 'Save');
         };
 
-       
-        $scope.doResetSort = function() {
-          if ($scope.table === undefined)
-            return;
-          $scope.table.order( [ 0, 'asc' ] ).draw();
-        };
+        // these are the menu actions
         $scope.doSelectAll = function(idx) {
-          if ($scope.table === undefined)
+          if ($scope.table === undefined) {
             return;
+          }
           for (var i in $scope.selected) {
             $scope.selected[i] = true;
           }
+          //jscs:disable
           $scope.update_selected();
-        }
+          //jscs:enable
+        };
         $scope.doDeselectAll = function(idx) {
-          if ($scope.table === undefined)
+          if ($scope.table === undefined) {
             return;
-          for (var i in $scope.selected) {
-            $scope.selected[i] = true;
           }
+          for (var i in $scope.selected) {
+            $scope.selected[i] = false;
+          }
+          //jscs:disable
           $scope.update_selected();
-        }
+          //jscs:enable
+        };
         $scope.doReverseSelection = function(idx) {
-          if ($scope.table === undefined)
+          if ($scope.table === undefined) {
             return;
+          }
           for (var i in $scope.selected) {
             $scope.selected[i] = !$scope.selected[i];
           }
+          //jscs:disable
           $scope.update_selected();
-        }
+          //jscs:enable
+        };
         $scope.doCopyToClipboard = function(idx) {
-         
-        }
+          // this is handled by the invisible flash movie
+        };
 
         $scope.getCellIdx      =  [];
         $scope.getCellNam      =  [];
@@ -232,10 +271,10 @@
         $scope.getCellDisp     =  [];
         $scope.getCellDispOpts =  [];
         $scope.pagination = {
-            'use' : true,
-            'rowsToDisplay' : 50
-
-
+          'use' : true,
+          'rowsToDisplay' : 50,
+          'fixLeft' : false,
+          'fixRight' : false
         };
 
         $scope.getCellDispOptsF = function(i) {
@@ -244,7 +283,7 @@
 
         $scope.displayAll = function() {
           var i;
-          for(i=0; i<$scope.getCellSho.length; i++) {
+          for (i = 0; i < $scope.getCellSho.length; i++) {
             $scope.getCellSho[i] = true;
           }
         };
@@ -257,27 +296,28 @@
           $scope.getCellDisp     =  [];
           $scope.getCellDispOpts =  [];
 
-          if ($scope.table === undefined)
+          if ($scope.table === undefined) {
             return;
+          }
 
           var i;
-          for(i=1; i<$scope.columns.length; i++) {
-            $scope.getCellIdx.push(i-1);
+          for (i = 1; i < $scope.columns.length; i++) {
+            $scope.getCellIdx.push(i - 1);
             var order = $scope.colorder[i];
             $scope.getCellNam.push($scope.columns[order].title);
             $scope.getCellSho.push($scope.table.column(order).visible());
-            $scope.getCellDisp.push($scope.actualtype[order-1]);
-            $scope.getCellAlign.push($scope.actualalign[order-1]);
+            $scope.getCellDisp.push($scope.actualtype[order - 1]);
+            $scope.getCellAlign.push($scope.actualalign[order - 1]);
             if ($scope.types) {
-              if ($scope.types[order-1] === 'string') {
+              if ($scope.types[order - 1] === 'string') {
                 $scope.getCellDispOpts.push($scope.allStringTypes);
-              } else if ($scope.types[order-1] === 'double') {
+              } else if ($scope.types[order - 1] === 'double') {
                 $scope.getCellDispOpts.push($scope.allDoubleTypes);
-              } else if ($scope.types[order-1] === 'integer') {
+              } else if ($scope.types[order - 1] === 'integer') {
                 $scope.getCellDispOpts.push($scope.allIntTypes);
-              } else if ($scope.types[order-1] === 'time') {
+              } else if ($scope.types[order - 1] === 'time') {
                 $scope.getCellDispOpts.push($scope.allTimeTypes);
-              } else if ($scope.types[order-1] === 'boolean') {
+              } else if ($scope.types[order - 1] === 'boolean') {
                 $scope.getCellDispOpts.push($scope.allBoolTypes);
               } else {
                 $scope.getCellDispOpts.push($scope.allStringTypes);
@@ -291,146 +331,225 @@
         $scope.renderMenu     = false;
 
         var chr = {
-            '"': '&quot;', '&': '&amp;', "'": '&#39;',
-            '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
+          '"': '&quot;', '&': '&amp;', '\'': '&#39;',
+          '/': '&#47;',  '<': '&lt;',  '>': '&gt;'
         };
 
-        $scope.escapeHTML = function (text) {
-          if ($.type(text) === "string")
-            return text.replace(/[\"&'\/<>]/g, function (a) { return chr[a]; });
+        $scope.escapeHTML = function(text) {
+          if ($.type(text) === 'string') {
+            return text.replace(/[\'&'\/<>]/g, function(a) { return chr[a]; });
+          }
           return text;
-        },
+        };
 
-        $scope.allTypes = [ { type: 0, name: 'string'},
-                            { type: 1, name: 'integer'},
-                            { type: 2, name: 'formatted integer'},
-                            { type: 3, name: 'double'},
-                            { type: 4, name: 'double 2 decimals'},
-                            { type: 5, name: 'double 4 decimals'},
-                            { type: 6, name: 'exponential 5'},
-                            { type: 7, name: 'exponential 15'},
-                            { type: 8, name: 'time'},
-                            { type: 9, name: 'boolean'},
-                            { type: 10, name: 'html'}];
+        $scope.allTypes = [{type: 0, name: 'string'},
+        {type: 1, name: 'integer'},
+        {type: 2, name: 'formatted integer'},
+        {type: 3, name: 'double'},
+        {type: 4, name: 'double 2 decimals'},
+        {type: 5, name: 'double 4 decimals'},
+        {type: 6, name: 'exponential 5'},
+        {type: 7, name: 'exponential 15'},
+        {type: 8, name: 'datetime'},
+        {type: 9, name: 'boolean'},
+        {type: 10, name: 'html'},
+        {type: 11, name: 'date'},
+        {type: 12, name: 'time'}];
         $scope.allConverters = [
-                               
-                                function(value,type,full,meta) {
-                                  if (_.isObject(value) && value.type === 'Date') {
-                                    value = moment(value.timestamp).format("YYYYMMDD HH:mm:ss.SSS ZZ");
-                                  }
-                                  if (type === 'display' && value !== null && value !== undefined)
-                                    return $scope.escapeHTML(value);
-                                  return value;
-                                },
-                               
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseInt(value);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                               
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
-                                    var x = parseInt(value);
-                                    if (x !== NaN)
-                                      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                    return x;
-                                  }
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                               
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseFloat(value);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                               
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseFloat(value).toFixed(2);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                               
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseFloat(value).toFixed(4);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                               
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseFloat(value).toExponential(5);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                               
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== '' && value !== 'null' && value !== null)
-                                    return parseFloat(value).toExponential(15);
-                                  if (type === 'sort')
-                                    return NaN;
-                                  return value;
-                                },
-                               
-                                function(value,type,full,meta) {
-                                  if ($scope.timeStrings)
-                                    return $scope.timeStrings[meta.row];
-
-                                  if (type === 'display') {
-                                    if (_.isObject(value) && value.type === 'Date') {
-                                      var time = moment(value.timestamp);
-                                      var tz = $scope.tz;
-                                      if (tz)
-                                        time.tz(tz);
-                                      return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
-                                    }
-                                    var nano = value % 1000;
-                                    var micro = (value / 1000) % 1000;
-                                    var milli = value / 1000 / 1000;
-                                    var time = moment(milli);
-                                    var tz = $scope.tz;
-                                    if (tz)
-                                      time.tz(tz);
-                                    return time.format("YYYYMMDD HH:mm:ss.SSS ZZ");
-                                  }
-                                  return value;
-                                },
-                               
-                                function(value,type,full,meta) {
-                                  if (value !== undefined && value !== null && (value.toLowerCase() === 'true' || value === 1))
-                                    return 'true';
-                                  return 'false';
-                                },
-                               
-                                function(value,type,full,meta) {
-                                  return value;
-                                }
-                                ];
-        $scope.allStringTypes = [ { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
-        $scope.allTimeTypes   = [ { type: 8, name: 'time'}, { type: 0, name: 'string'}, { type: 10, name: 'html'} ];
-        $scope.allIntTypes    = [ { type: 0, name: 'string'},
-                               { type: 1, name: 'integer'},
-                               { type: 2, name: 'formatted integer'},
-                               { type: 8, name: 'time'} ];
-        $scope.allDoubleTypes = [ { type: 0, name: 'string'},
-                                  { type: 3, name: 'double'},
-                                  { type: 4, name: 'double 2 decimals'},
-                                  { type: 5, name: 'double 4 decimals'},
-                                  { type: 6, name: 'exponential 5'},
-                                  { type: 7, name: 'exponential 15'} ];
-        $scope.allBoolTypes = [ { type: 0, name: 'string'},
-                                { type: 9, name: 'boolean'} ];
+          // string
+          function(value, type, full, meta) {
+            if (_.isObject(value) && value.type === 'Date') {
+              value = moment(value.timestamp).format('YYYYMMDD HH:mm:ss.SSS ZZ');
+            }
+            if (type === 'display' && value !== null && value !== undefined) {
+              return $scope.escapeHTML(value);
+            }
+            return value;
+          },
+          // integer
+          function(value, type, full, meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
+              return parseInt(value);
+            }
+            if (type === 'sort') {
+              return NaN;
+            }
+            return value;
+          },
+          // formatted integer
+          function(value, type, full, meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
+              var x = parseInt(value);
+              if (!isNaN(x)) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+              }
+              return x;
+            }
+            if (type === 'sort') {
+              return NaN;
+            }
+            return value;
+          },
+          // double
+          function(value, type, full, meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
+              return parseFloat(value);
+            }
+            if (type === 'sort') {
+              return NaN;
+            }
+            return value;
+          },
+          // double 2 decimals
+          function(value, type, full, meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
+              return parseFloat(value).toFixed(2);
+            }
+            if (type === 'sort') {
+              return NaN;
+            }
+            return value;
+          },
+          // double 4 decimals
+          function(value, type, full, meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
+              return parseFloat(value).toFixed(4);
+            }
+            if (type === 'sort') {
+              return NaN;
+            }
+            return value;
+          },
+          // exponential 5
+          function(value, type, full, meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
+              return parseFloat(value).toExponential(5);
+            }
+            if (type === 'sort') {
+              return NaN;
+            }
+            return value;
+          },
+          // exponential 15
+          function(value, type, full, meta) {
+            if (value !== undefined && value !== '' && value !== 'null' && value !== null) {
+              return parseFloat(value).toExponential(15);
+            }
+            if (type === 'sort') {
+              return NaN;
+            }
+            return value;
+          },
+          // datetime
+          function(value, type, full, meta) {
+            var time;
+            var tz;
+            if ($scope.timeStrings) {
+              return $scope.timeStrings[meta.row];
+            }
+            if (type === 'display') {
+              if (_.isObject(value) && value.type === 'Date') {
+                time = moment(value.timestamp);
+                tz = $scope.tz;
+                if (tz) {
+                  time.tz(tz);
+                }
+                return time.format('YYYYMMDD HH:mm:ss.SSS ZZ');
+              }
+              var nano = value % 1000;
+              var micro = (value / 1000) % 1000;
+              var milli = value / 1000 / 1000;
+              time = moment(milli);
+              tz = $scope.tz;
+              if (tz) {
+                time.tz(tz);
+              }
+              return time.format('YYYYMMDD HH:mm:ss.SSS ZZ');
+            }
+            return value;
+          },
+          // boolean
+          function(value, type, full, meta) {
+            if (value !== undefined && value !== null && (value.toLowerCase() === 'true' || value === 1)) {
+              return 'true';
+            }
+            return 'false';
+          },
+          // html
+          function(value, type, full, meta) {
+            return value;
+          },
+          // date
+          function(value, type, full, meta) {
+            var time;
+            var tz;
+            if ($scope.timeStrings) {
+              return $scope.timeStrings[meta.row];
+            }
+            if (type === 'display') {
+              if (_.isObject(value) && value.type === 'Date') {
+                time = moment(value.timestamp);
+                tz = $scope.tz;
+                if (tz) {
+                  time.tz(tz);
+                }
+                return time.format('YYYY-MM-DD');
+              }
+              var nano = value % 1000;
+              var micro = (value / 1000) % 1000;
+              var milli = value / 1000 / 1000;
+              time = moment(milli);
+              tz = $scope.tz;
+              if (tz) {
+                time.tz(tz);
+              }
+              return time.format('YYYY-MM-DD');
+            }
+            return value;
+          },
+          // time
+          function(value, type, full, meta) {
+            var time;
+            var tz;
+            if ($scope.timeStrings) {
+              return $scope.timeStrings[meta.row];
+            }
+            if (_.isObject(value) && value.type === 'Date') {
+              time = moment(value.timestamp);
+              tz = $scope.tz;
+              if (tz) {
+                time.tz(tz);
+              }
+              return time.format('HH:mm:ss.SSS ZZ');
+            }
+            var nano = value % 1000;
+            var micro = (value / 1000) % 1000;
+            var milli = value / 1000 / 1000;
+            time = moment(milli);
+            tz = $scope.tz;
+            if (tz) {
+              time.tz(tz);
+            }
+            return time.format('HH:mm:ss.SSS ZZ');
+          }
+        ];
+        $scope.allStringTypes = [{type: 0, name: 'string'}, {type: 10, name: 'html'}];
+        $scope.allTimeTypes   = [{type: 8, name: 'datetime'},
+                                 {type: 0, name: 'string'},
+                                 {type: 11, name: 'date'},
+                                 {type: 12, name: 'time'}];
+        $scope.allIntTypes    = [{type: 0, name: 'string'},
+        {type: 1, name: 'integer'},
+        {type: 2, name: 'formatted integer'},
+        {type: 8, name: 'time'}];
+        $scope.allDoubleTypes = [{type: 0, name: 'string'},
+        {type: 3, name: 'double'},
+        {type: 4, name: 'double 2 decimals'},
+        {type: 5, name: 'double 4 decimals'},
+        {type: 6, name: 'exponential 5'},
+        {type: 7, name: 'exponential 15'}];
+        $scope.allBoolTypes = [{type: 0, name: 'string'},
+        {type: 9, name: 'boolean'}];
 
         $scope.openOptionsDialog = function() {
           var options = {
@@ -441,14 +560,14 @@
             windowClass: 'output-table-options beaker-sandbox',
             backdropClass: 'beaker-sandbox',
             template: JST['bko-tabledisplay/output-table-options']()
-          }
+          };
           $scope.getCellShoOld    = $scope.getCellSho.slice(0);
           $scope.getCellDispOld   = $scope.getCellDisp.slice(0);
           $scope.getCellAlignOld  = $scope.getCellAlign.slice(0);
           $scope.usePaginationOld = $scope.pagination.use;
           $scope.rowsToDisplayOld = $scope.pagination.rowsToDisplay;
-
-
+          $scope.fixLeftOld       = $scope.pagination.fixLeft;
+          $scope.fixRightOld      = $scope.pagination.fixRight;
           $scope.modal = $modal.open(options);
         };
 
@@ -457,36 +576,39 @@
           var i;
           var doit = 0;
 
-          for (i=0; i<$scope.getCellDisp.length; i++) {
+          for (i = 0; i < $scope.getCellDisp.length; i++) {
             if ($scope.getCellSho[i] !== $scope.getCellShoOld[i]) {
-             
+              // refresh only visibility
               doit = 1;
             }
           }
-
-          if (($scope.usePaginationOld !== $scope.pagination.use) || ($scope.rowsToDisplayOld !== $scope.pagination.rowsToDisplay)  ) {
+          //jscs:disable
+          if (($scope.usePaginationOld !== $scope.pagination.use) || ($scope.rowsToDisplayOld !== $scope.pagination.rowsToDisplay) ||
+              ($scope.fixLeftOld !== $scope.pagination.fixLeft) || ($scope.fixRightOld !== $scope.pagination.fixRight)) {
+          //jscs:enable
             doit = 2;
           } else {
-           for (i=0; i<$scope.getCellDisp.length; i++) {
+            for (i = 0; i < $scope.getCellDisp.length; i++) {
+              //jscs:disable
               if (($scope.getCellDisp[i] !== $scope.getCellDispOld[i]) || ($scope.getCellAlign[i] !== $scope.getCellAlignOld[i])) {
+              //jscs:enable
                 doit = 2;
               }
             }
           }
           if (doit == 1) {
-            for (i=0; i<$scope.getCellDisp.length; i++) {
-              $scope.table.column(i+1).visible( $scope.getCellSho[i], false );
+            for (i = 0; i < $scope.getCellDisp.length; i++) {
+              $scope.table.column(i + 1).visible($scope.getCellSho[i], false);
             }
-            $scope.table.columns.adjust().draw( false );
-          }
-          else if (doit == 2) {
+            $scope.table.columns.adjust().draw(false);
+          } else if (doit == 2) {
             $scope.doDestroy(false);
-           
-            for (i=0; i<$scope.getCellDisp.length; i++) {
-              $scope.actualtype[$scope.colorder[i+1]-1] = $scope.getCellDisp[i];
-              $scope.actualalign[$scope.colorder[i+1]-1] = $scope.getCellAlign[i];
+            // update table display
+            for (i = 0; i < $scope.getCellDisp.length; i++) {
+              $scope.actualtype[$scope.colorder[i + 1] - 1] = $scope.getCellDisp[i];
+              $scope.actualalign[$scope.colorder[i + 1] - 1] = $scope.getCellAlign[i];
             }
-           
+            // reorder the table data
             var model = $scope.model.getCellModel();
             $scope.doCreateData(model);
             $scope.doCreateTable();
@@ -502,8 +624,10 @@
 
         scope.doDestroy = function(all) {
           if (scope.table) {
+            //jscs:disable
             clearTimeout(scope.refresh_size);
-            $(window).unbind('resize.'+scope.id);
+            //jscs:enable
+            $(window).unbind('resize.' + scope.id);
             $('#' + scope.id + ' tbody').off('click');
             $('#' + scope.id).html('');
             scope.table.destroy();
@@ -513,7 +637,8 @@
               scope.clipclient.destroy();
               delete scope.clipclient;
             }
-
+            delete scope.fixcols;
+            scope.fixcreated = false;
             scope.renderMenu = false;
           }
           if (all) {
@@ -531,14 +656,14 @@
 
           var i;
 
-         
+          // validate saved state (if any) by using column \Names
           if (scope.savedstate !== undefined) {
-            if (scope.savedstate.columnNames === undefined)
+            if (scope.savedstate.columnNames === undefined) {
               scope.savedstate = undefined;
-            else if (scope.savedstate.columnNames.length !== model.columnNames.length)
+            } else if (scope.savedstate.columnNames.length !== model.columnNames.length) {
               scope.savedstate = undefined;
-            else {
-              for(i=0; i<scope.savedstate.columnNames.length; i++) {
+            } else {
+              for (i = 0; i < scope.savedstate.columnNames.length; i++) {
                 if (model.columnNames[i] !== scope.savedstate.columnNames[i]) {
                   scope.savedstate = undefined;
                   break;
@@ -547,15 +672,15 @@
             }
           }
 
-         
+          // copy basic data
           scope.columnNames = model.columnNames;
           scope.timeStrings = model.timeStrings;
           scope.tz          = model.timeZone;
           scope.types       = model.types;
 
-         
+          // compute how to display columns (remind: dummy column to keep server ordering)
           if (scope.savedstate !== undefined) {
-           
+            // we have a display state to recover
             scope.actualtype  = scope.savedstate.actualtype;
             scope.actualalign = scope.savedstate.actualalign;
             scope.colorder    = scope.savedstate.colorder;
@@ -563,11 +688,11 @@
             scope.pagination  = scope.savedstate.pagination;
             scope.savedstate  = undefined;
           }
-         
+          // auto compute types
           if (scope.actualtype === undefined || scope.actualtype.length === 0) {
             scope.actualtype = [];
             scope.actualalign = [];
-            for (i=0; i<scope.columnNames.length; i++) {
+            for (i = 0; i < scope.columnNames.length; i++) {
               if (scope.types !== undefined) {
                 if (scope.types[i] === 'time') {
                   scope.actualtype.push(8);
@@ -593,10 +718,11 @@
         };
 
         scope.doCreateData = function(model) {
-         
-          var data = [], r;
+          // create a dummy column to keep server ordering
+          var data = [];
+          var r;
           var selected = [];
-          for (r=0; r<model.values.length; r++) {
+          for (r = 0; r < model.values.length; r++) {
             var row = [];
             row.push(r);
             data.push(row.concat(model.values[r]));
@@ -605,119 +731,127 @@
           scope.data = data;
           scope.selected = selected;
         };
-
+        //jscs:disable
         scope.update_size = function() {
+        //jscs:enable
           var me = $('#' + scope.id);
-         
+          // this is dataTables_scrollBody
           var pp = me.parent();
           if (pp.width() > me.width() + 16) {
-            pp.width( me.width() + 16);
+            pp.width(me.width() + 16);
           }
         };
-
+        //jscs:disable
         scope.update_selected = function() {
-
-          if (scope.table === undefined)
+        //jscs:enable
+          if (scope.table === undefined) {
             return;
-
-          scope.table.rows().eq(0).each( function (index) {
+          }
+          scope.table.rows().eq(0).each(function(index) {
             var row = scope.table.row(index);
             var tr = row.node();
             if (tr !== undefined) {
-              var iPos =row.index();
+              var iPos = row.index();
               if (!scope.selected[iPos]) {
                 $(tr).removeClass('selected');
               } else {
                 $(tr).addClass('selected');
               }
             }
-          } );
-
-        }
+          });
+        };
 
         scope.doCreateTable = function() {
           var cols = [];
           var i;
 
-         
-          cols.push({ "title" : scope.id, "visible" : false });
-
-          for (i=0; i<scope.columnNames.length; i++) {
+          // build configuration
+          cols.push({'title' : '    ', 'className': 'dtright', 'render': scope.allConverters[1]});
+          for (i = 0; i < scope.columnNames.length; i++) {
             var type = scope.actualtype[i];
             var al = scope.actualalign[i];
             var col = {
-                "title" : scope.columnNames[i]
+              'title' : scope.columnNames[i]
             };
-            if (al === 'R')
+            if (al === 'R') {
               col.className = 'dtright';
-            else if (al === 'C')
+            } else if (al === 'C') {
               col.className = 'dtcenter';
+            }
             if (scope.allConverters[type] !== undefined) {
               col.render = scope.allConverters[type];
             }
-            if (scope.getCellSho)
+            if (scope.getCellSho) {
               col.visible = scope.getCellSho[i];
+            }
             cols.push(col);
           }
           scope.columns = cols;
 
           var id = '#' + scope.id;
           var init = {
-              "destroy" : true,
-              "data": scope.data,
-              "columns": scope.columns,
-              "stateSave": true,
-              "processing": true,
-              "autoWidth": true,
-              "order": [[ 0, "asc" ]],
-              "scrollX": '10%',
-              "searching": false,
-              "deferRender": true,
-              "drawCallback": function( settings ) {
-                scope.update_size();
-                scope.update_selected();
-              }
-            };
+            'destroy' : true,
+            'data': scope.data,
+            'columns': scope.columns,
+            'stateSave': true,
+            'processing': true,
+            'autoWidth': true,
+            'order': [[0, 'asc']],
+            'scrollX': '10%',
+            'searching': false,
+            'deferRender': true,
+            'drawCallback': function(settings) {
+              //jscs:disable
+              scope.update_size();
+              scope.update_selected();
+              //jscs:enable
+            }
+          };
 
           if (!scope.pagination.use) {
             init.paging = false;
-            init.scrollY = scope.pagination.rowsToDisplay*27;
+            init.scrollY = scope.pagination.rowsToDisplay * 27 + 2;
             init.scrollCollapse = true;
-            init.dom = 'rt';
+            init.dom = '<"bko-table"rt>';
           } else {
-            init.dom = 'rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>S';
+            init.dom = '<"bko-table"rt<"bko-table-bottom"<"bko-table-selector"l><"bko-table-pagenum"p>>S>';
             if (scope.data.length > 25) {
               init.pagingType = 'simple_numbers';
-              init.pageLength = 25
-              init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]];
+              init.pageLength = 25;
+              init.lengthMenu = [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']];
             } else {
               init.paging = false;
               init.scrollY = 350;
               init.scrollCollapse = true;
             }
           }
+          scope.fixcreated = false;
 
           bkHelper.timeout(function() {
-           
+            // we must wait for the DOM elements to appear
             scope.table = $(id).DataTable(init);
             scope.renderMenu = true;
-            scope.colreorg = new $.fn.dataTable.ColReorder( $(id), {
-              "fnReorderCallback": function () {
+            scope.colreorg = new $.fn.dataTable.ColReorder($(id), {
+              'fnReorderCallback': function() {
+                if (scope.colreorg === undefined) {
+                  return;
+                }
                 scope.colorder = scope.colreorg.fnOrder().slice(0);
                 scope.refreshCells();
                 scope.$digest();
               },
-              "iFixedColumns": 1
-             } );
-            if (scope.colorder !== undefined)
+              'iFixedColumns': 1
+            });
+            if (scope.colorder !== undefined) {
               scope.colreorg.fnOrder(scope.colorder);
-            else
+            } else {
               scope.colorder = scope.colreorg.fnOrder().slice(0);
-                        scope.refreshCells();
+            }
+            scope.refreshCells();
 
-            $(id + ' tbody').off( 'click');
-            $(id + ' tbody').on( 'click', 'tr', function (event) {
-              var iPos = scope.table.row( this ).index();
+            $(id + ' tbody').off('click');
+            $(id + ' tbody').on('click', 'tr', function(event) {
+              var iPos = scope.table.row(this).index();
               if (scope.selected[iPos]) {
                 scope.selected[iPos] = false;
                 $(this).removeClass('selected');
@@ -726,83 +860,140 @@
                 $(this).addClass('selected');
               }
               event.stopPropagation();
-            } );
-
-            $(window).bind('resize.'+scope.id, function() {
-              clearTimeout(scope.refresh_size);
-              scope.refresh_size = setTimeout(function() { scope.update_size(); }, 250);
             });
 
-          },0);
+            $(window).bind('resize.' + scope.id, function() {
+              //jscs:disable
+              clearTimeout(scope.refresh_size);
+              scope.refresh_size = setTimeout(function() { scope.update_size(); }, 250);
+              //jscs:enable
+            });
+
+            var inits = {};
+            if ((scope.pagination.fixLeft + scope.pagination.fixRight) > (scope.columns.length - 1)) {
+              scope.pagination.fixLeft = 0;
+              scope.pagination.fixRight = 0;
+            }
+            if (scope.pagination.fixLeft) {
+              inits.leftColumns = 1 + scope.pagination.fixLeft;
+            } else {
+              inits.leftColumns = 1;
+            }
+            if (scope.pagination.fixRight) {
+              inits.rightColumns = 1;
+            } else {
+              inits.rightColumns = 0;
+            }
+            scope.fixcols = new $.fn.dataTable.FixedColumns($(id), inits);
+          }, 0);
         };
 
         scope.menuToggle = function() {
           if (scope.clipclient === undefined) {
-              scope.clipclient = new ZeroClipboard( );
-              var d = document.getElementById(scope.id + '_dt_copy');
+            scope.clipclient = new ZeroClipboard();
+            var d = document.getElementById(scope.id + '_dt_copy');
 
-              scope.clipclient.clip( d );
+            scope.clipclient.clip(d);
 
-              scope.clipclient.on( "copy", function (event) {
-                var clipboard = event.clipboardData;
+            scope.clipclient.on('copy', function(event) {
+              var clipboard = event.clipboardData;
 
-                var data = scope.table.rows(function(index, data, node) {
-                  return scope.selected[index]; }).data();
-                if (data === undefined || data.length === 0) {
-                  data = scope.table.rows().data();
-                }
-                var out = scope.exportTo(data, 'tabs');
+              var data = scope.table.rows(function(index, data, node) {
+                return scope.selected[index]; }).data();
+              if (data === undefined || data.length === 0) {
+                data = scope.table.rows().data();
+              }
+              var out = scope.exportTo(data, 'tabs');
 
-                clipboard.setData( "text/plain", out );
-              });
+              clipboard.setData('text/plain', out);
+            });
           }
-        }
+        };
 
         scope.getDumpState = function() {
           return scope.model.getDumpState();
         };
 
         var savedstate = scope.model.getDumpState();
-        if (savedstate !== undefined && savedstate.datatablestate !== undefined ) {
+        if (savedstate !== undefined && savedstate.datatablestate !== undefined) {
           scope.savedstate = savedstate.datatablestate;
         }
 
-        scope.$on("$destroy", function() {
+        scope.$on('$destroy', function() {
           scope.doDestroy(true);
         });
 
         scope.$watch('getDumpState()', function(result) {
           if (result !== undefined && result.datatablestate === undefined) {
             var state = {
-                'pagination'  : scope.pagination
+              'pagination'  : scope.pagination
             };
-            if (scope.columnNames !== undefined)
+            if (scope.columnNames !== undefined) {
               state.columnNames = scope.columnNames.slice(0);
-            if (scope.actualtypes !== undefined)
+            }
+            if (scope.actualtypes !== undefined) {
               state.actualtypes = scope.actualtypes.slice(0);
-            if (scope.actualalign !== undefined)
+            }
+            if (scope.actualalign !== undefined) {
               state.actualalign = scope.actualalign.slice(0);
-            if (scope.colorder !== undefined)
+            }
+            if (scope.colorder !== undefined) {
               state.colorder = scope.colorder.slice(0);
-            if (scope.getCellSho !== undefined)
+            }
+            if (scope.getCellSho !== undefined) {
               state.getCellSho = scope.getCellSho;
+            }
 
-            scope.model.setDumpState({ datatablestate: state });
+            scope.model.setDumpState({datatablestate: state});
           }
         });
 
         scope.getCellModel = function() {
           return scope.model.getCellModel();
         };
+        scope.isShowOutput = function() {
+          return scope.model.isShowOutput();
+        };
         scope.$watch('getCellModel()', function(m) {
           scope.init(m);
         });
+        scope.$watch('isShowOutput()', function(oldval, newval) {
+          if (scope.table !== undefined && !newval) {
+            scope.table.draw(false);
+          }
+        });
 
+        scope.$on('beaker.section.toggled', function(e, isCollapsed) {
+          if (!isCollapsed && scope.table !== undefined) {
+            bkHelper.timeout(function() {
+              scope.table.draw(false);
+            });
+          }
+        });
       }
     };
   }]);
 })();
 
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * bkoImage
+ * This is the output display component for displaying images transferred in byte arrays.
+ */
 (function() {
   'use strict';
   beaker.bkoDirective("Image", function() {
@@ -819,6 +1010,25 @@
   });
 })();
 
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * bkoLatex
+ * This is the output display component for displaying results of LaTex code.
+ */
 (function() {
   'use strict';
   beaker.bkoDirective('Latex', ["bkUtils", function(bkUtils) {
@@ -826,13 +1036,35 @@
     return {
       link: function(scope, element, attrs) {
         scope.$watch('model.getCellModel()', function(newValue) {
-          katex.render(newValue, element[0]);
+          try {
+            katex.render(newValue, element[0]);
+          } catch(err) {
+            bkHelper.show1ButtonModal(err.message+'<br>See: <a target="_blank" href="http://khan.github.io/KaTeX/">KaTeX website</a> and its <a target="_blank" href="https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX">list of supported functions</a>.', "KaTex error");
+          }
         });
       }
     };
   }]);
 })();
 
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * bkoProgress
+ */
 (function() {
   'use strict';
   beaker.bkoDirective("Progress", ["$interval", "$compile", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
@@ -850,7 +1082,7 @@
             start = now;
           scope.elapsed = now - start;
           if (!(scope.$$phase || scope.$root.$$phase)) {
-           
+            // we don't execute the $interval within $apply so we have to manually refresh it. This refreshes only this scope.
             scope.$digest();
           }
         };
@@ -919,10 +1151,28 @@
   }]);
 })();
 
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * bkoResults
+ */
 (function() {
   'use strict';
-  beaker.bkoDirective("Results", ["$interval", "$compile", "bkEvaluateJobManager", "bkUtils", "bkOutputDisplayFactory", function(
-      $interval, $compile, bkEvaluateJobManager, bkUtils, bkOutputDisplayFactory) {
+  beaker.bkoDirective("Results", ["$interval", "$compile", "bkOutputDisplayFactory", function(
+      $interval, $compile, bkOutputDisplayFactory) {
     return {
       template: JST['mainapp/components/notebook/output-results'],
       link: function(scope, element, attrs) {
@@ -941,15 +1191,28 @@
         scope.getOutputResult = function() {
           return scope.model.getCellModel().payload;
         };
+        scope.isShowOutput = function() {
+          return scope.model.isShowOutput();
+        };
 
         scope.isShowMenu = function() { return false; };
+        scope.showoutput = scope.model.isShowOutput();
+        
+        scope.payload = {
+            result : undefined,
+            isShowOutput : function() {
+              return scope.showoutput;
+            }
+        }
         
         scope.$watch('getPayload()', function() {
           if (scope.hasPayload()) {
-            scope.payload = {
-                result : scope.getPayload()
-            };
+            scope.payload.result = scope.getPayload();
           }
+        });
+
+        scope.$watch('isShowOutput()', function(oldval, newval) {
+          scope.showoutput = newval;
         });
 
         scope.$watch('getOutputData()', function() {
@@ -963,6 +1226,25 @@
   beaker.registerOutputDisplay("Results", ["Results", "Text"]);
 })();
 
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+/**
+ * bkoVega
+ * This is the output display component for displaying vega JSON (http://trifacta.github.io/vega/).
+ */
 (function() {
   'use strict';
   beaker.bkoDirective('bkoVega', function() {
@@ -1011,7 +1293,7 @@
         if (itemrange.yl != null) { datarange.yl = Math.min(datarange.yl, itemrange.yl); }
         if (itemrange.yr != null) { datarange.yr = Math.max(datarange.yr, itemrange.yr); }
       },
-      getDataRange : function(data) {
+      getDataRange : function(data) { // data range is in [0,1] x [0,1]
         var datarange = {
           xl : Infinity,
           xr : -Infinity,
@@ -1091,7 +1373,7 @@
           .attr("y1", function(d) { return d.y1; })
           .attr("y2", function(d) { return d.y2; });
       },
-      plotLabels: function(scope) {  
+      plotLabels: function(scope) {   // redraw
         var pipe = scope.rpipeTexts;
         scope.labelg.selectAll("text").remove();
         scope.labelg.selectAll("text")
@@ -1327,7 +1609,7 @@
         }
         if (typeof(val) === "number") {
           if (fixed === true) {
-           
+            // do nothing, keep full val
           } else if (typeof(fixed) === "number"){
             val = val.toFixed(fixed);
           } else {
@@ -1375,6 +1657,22 @@
   beaker.bkoFactory('plotUtils', ["bkUtils", retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
@@ -1403,7 +1701,7 @@
       }
     };
 
-    PlotSampler.prototype.debug = false; 
+    PlotSampler.prototype.debug = false;  // set time estimation
 
     PlotSampler.prototype.sample = function(xl, xr, step) {
       if (step <= 0 || xr < xl) {
@@ -1416,7 +1714,7 @@
       while (nsl < xr) {
         sl = nsl;
         nsl += step;
-        sr = sl + step - 1E-12;
+        sr = sl + step - 1E-12; // [sl,sr) closed open, be ware of precision problem
 
         var qret = this.query(sl, sr);
         if (qret == null) {
@@ -1428,7 +1726,7 @@
         } else {
           this.hashes[h] = 1;
         }
-       
+        // prevent segtree from being modified
         var avg = qret.sum / qret.cnt;
         var ele = {
           min : qret.min,
@@ -1466,13 +1764,13 @@
     };
 
     PlotSampler.prototype.buildCoordTable = function() {
-      this.x = this.xs.slice(0);
+      this.x = this.xs.slice(0); // copy xs to x
 
       if (this.debug) {
         var t = Date.now();
       }
 
-      _.uniq(this.xs, true);
+      _.uniq(this.xs, true); // keep unique values in xs
 
       if (this.debug) {
         console.log("uniq ", Date.now() - t, "ms");
@@ -1480,9 +1778,10 @@
       }
 
       for (var i = 0; i < this.n; i++) {
-       
-       
-       
+        //if (this.x[i] == null || isNaN(this.x[i]) === true) {
+        //  console.error("invalid value passed to sampler");
+        //}
+        this.x[i] = this.mapIndex(this.x[i]);
       }
 
       if (this.debug) {
@@ -1561,7 +1860,7 @@
     };
 
     PlotSampler.prototype.mapIndex = function(x) {
-     
+      // find the largest element in xs that is <= x, may return -1 (no such element)
       var l = 0, r = this.xs.length - 1;
       while (l <= r) {
         var m = Math.floor((l + r) / 2);
@@ -1579,11 +1878,27 @@
   beaker.bkoFactory('PlotSampler', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotAuxBox = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
 
@@ -1660,8 +1975,8 @@
       var itemsvg = svg.select("#" + this.id);
 
       if (itemsvg.select("#" + groupid).empty()) {
-       
-       
+        // aux box are ploted as bars with normal coloring
+        // if special coloring is needed, it is set from the loader
         itemsvg.selectAll("#" + groupid)
           .data([props]).enter().append("g")
           .attr("id", groupid);
@@ -1675,7 +1990,7 @@
 
       var groupsvg = itemsvg.select("#" + groupid);
 
-     
+      // draw boxes
       groupsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
       groupsvg.selectAll("rect")
@@ -1701,11 +2016,27 @@
   beaker.bkoFactory('PlotAuxBox', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotAuxRiver = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
     PlotAuxRiver.prototype.plotClass = "";
@@ -1777,8 +2108,8 @@
       var itemsvg = svg.select("#" + this.id);
 
       if (itemsvg.select("#" + groupid).empty()) {
-       
-       
+        // aux box are ploted as bars with normal coloring
+        // if special coloring is needed, it is set from the loader
         itemsvg.selectAll("#" + groupid)
           .data([props]).enter().append("g")
           .attr("id", groupid);
@@ -1803,11 +2134,27 @@
   beaker.bkoFactory('PlotAuxRiver', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotAuxStem = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
 
@@ -1877,8 +2224,8 @@
       var itemsvg = svg.select("#" + this.id);
 
       if (itemsvg.select("#" + groupid).empty()) {
-       
-       
+        // aux box are ploted as bars with normal coloring
+        // if special coloring is needed, it is set from the loader
         itemsvg.selectAll("#" + groupid)
           .data([props]).enter().append("g")
           .attr("id", groupid);
@@ -1891,7 +2238,7 @@
 
       var groupsvg = itemsvg.select("#" + groupid);
 
-     
+      // draw stems
       groupsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
       groupsvg.selectAll("line")
@@ -1915,15 +2262,31 @@
   beaker.bkoFactory('PlotAuxStem', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotLine = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
 
-   
+    // constants
     PlotLine.prototype.respR = 5;
     PlotLine.prototype.plotClass = "plot-line";
     PlotLine.prototype.respClass = "plot-resp plot-respdot";
@@ -1990,7 +2353,7 @@
     PlotLine.prototype.filter = function(scope) {
       var eles = this.elements;
       if (this.isUnorderedItem === true) {
-       
+        // cannot do truncation on unordered item, force rendering all
         this.vindexL = 0;
         this.vindexR = eles.length - 1;
         this.vlength = eles.length;
@@ -2003,7 +2366,7 @@
       r = Math.min(r, eles.length - 1);
 
       if (l > r || l == r && eles[l].x < scope.focus.xl) {
-       
+        // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
       }
@@ -2067,7 +2430,7 @@
             nxtp += x + "," +y + " " + x2 + "," + y + " ";
 
           } else if (this.interpolation === "curve") {
-           
+            // TODO curve implementation
           }
         }
         pstr += nxtp;
@@ -2153,12 +2516,28 @@
 })();
 
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
 
     var PlotBar = function(data) {
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
     PlotBar.prototype.plotClass = "plot-bar";
@@ -2234,7 +2613,7 @@
       r = Math.min(r, eles.length - 1);
 
       if (l > r || l == r && eles[l].x2 < focus.xl) {
-       
+        // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
       }
@@ -2260,7 +2639,7 @@
         if (x2 - x < 1) x2 = x + 1;
         var y = mapY(ele.y), y2 = mapY(ele.y2);
         sw = x2 - x;
-        if (y < y2) { continue; }
+        if (y < y2) { continue; } // prevent negative height
 
 
         if (plotUtils.rangeAssert([x, x2, y, y2])) {
@@ -2361,6 +2740,22 @@
   beaker.bkoFactory('PlotBar', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
@@ -2440,7 +2835,7 @@
       r = Math.min(r, eles.length - 1);
 
       if (l > r || l == r && eles[l].x < scope.focus.xl) {
-       
+        // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
       }
@@ -2557,12 +2952,28 @@
   beaker.bkoFactory('PlotStem', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
 
     var PlotArea = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
 
@@ -2636,7 +3047,7 @@
     PlotArea.prototype.filter = function(scope) {
       var eles = this.elements;
       if (this.isUnorderedItem === true) {
-       
+        // cannot do truncation on unordered item, force rendering all
         this.vindexL = 0;
         this.vindexR = eles.length - 1;
         this.vlength = eles.length;
@@ -2649,7 +3060,7 @@
       r = Math.min(r, eles.length - 1);
 
       if (l > r || l == r && eles[l].x < scope.focus.xl) {
-       
+        // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
       }
@@ -2698,7 +3109,7 @@
             "isresp" : true,
             "x" : x - this.respWidth / 2,
             "y" : y2,
-            "h" : Math.max(y - y2, this.respMinHeight), 
+            "h" : Math.max(y - y2, this.respMinHeight),  // min height to be hoverable
             "op" : scope.tips[id] == null ? 0 : 1
           };
           eleprops.push(prop);
@@ -2805,11 +3216,27 @@
   beaker.bkoFactory('PlotArea', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotPoint = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
 
@@ -2892,7 +3319,7 @@
       r = Math.min(r, eles.length - 1);
 
       if (l > r || l == r && eles[l].x < scope.focus.xl) {
-       
+        // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
       }
@@ -2953,7 +3380,7 @@
               "r" : s
             });
             break;
-          default:   
+          default:    // rects
             _(prop).extend({
               "x" : x - s / 2,
               "y" : y - s / 2,
@@ -3025,7 +3452,7 @@
               .data(eleprops, function(d) { return d.id; })
               .attr("points", function(d) { return d.pts; });
             break;
-          default: 
+          default:  // rect
             shapesvg.selectAll(tag)
               .data(eleprops, function(d) { return d.id; })
               .attr("x", function(d) { return d.x; })
@@ -3069,11 +3496,27 @@
   beaker.bkoFactory('PlotPoint', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotConstline = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
 
@@ -3142,7 +3585,7 @@
     };
 
     PlotConstline.prototype.filter = function(scope) {
-     
+      // do nothing and show everything
       var l = 0, r = this.elements.length - 1;
       this.vindexL = l;
       this.vindexR = r;
@@ -3179,7 +3622,7 @@
         };
         eleprops.push(prop);
 
-       
+        // does not need range assert, clipped directly
         if (ele.type === "x") {
           if (ele.x < focus.xl || ele.x > focus.xr) {
             this.rmlabelpipe.push(eleprops[i]);
@@ -3252,7 +3695,7 @@
       svgitem.selectAll("line")
         .data(eleprops, function(d) { return d.id; }).enter().append("line")
         .attr("id", function(d) { return d.id; })
-       
+        //.attr("class", this.respClass) // does not need resp
         .style("stroke", function(d) { return d.st; })
         .style("stroke-opacity", function(d) { return d.st_op; })
         .style("stroke-width", function(d) { return d.st_w; })
@@ -3264,7 +3707,7 @@
         .attr("y1", function(d) { return d.y1; })
         .attr("y2", function(d) { return d.y2; });
 
-     
+      // add and remove labels
       for (var i = 0; i < this.labelpipe.length; i++) {
         var lb = this.labelpipe[i], lbid = lb.lbid;
 
@@ -3295,7 +3738,7 @@
     };
 
     PlotConstline.prototype.clearTips = function(scope) {
-     
+      // do nothing, no tip for this type
     };
 
     return PlotConstline;
@@ -3303,11 +3746,27 @@
   beaker.bkoFactory('PlotConstline', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotConstband = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
 
@@ -3378,7 +3837,7 @@
     };
 
     PlotConstband.prototype.filter = function(scope) {
-     
+      // do nothing and show everything
       var l = 0, r = this.elements.length - 1;
       this.vindexL = l;
       this.vindexR = r;
@@ -3414,7 +3873,7 @@
           "st_da" : ele.stroke_dasharray
         };
 
-       
+        // does not need range assert, clipped directly
         if (ele.type === "x") {
           if (ele.x > focus.xr || ele.x2 < focus.xl) {
             continue;
@@ -3482,7 +3941,7 @@
       itemsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).enter().append("rect")
         .attr("id", function(d) { return d.id; })
-       
+        // does not need resp class
         .style("fill", function(d) { return d.fi; })
         .style("fill-opacity", function(d) { return d.fi_op; })
         .style("stroke", function(d) { return d.st; })
@@ -3501,13 +3960,29 @@
     };
 
     PlotConstband.prototype.clearTips = function(scope) {
-     
+      // do nothing, no tip for this type
     };
 
     return PlotConstband;
   };
   beaker.bkoFactory('PlotConstband', ['plotUtils', retfunc]);
 })();
+
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
 
 (function() {
   'use strict';
@@ -3585,7 +4060,7 @@
       r = Math.min(r, eles.length - 1);
 
       if (l > r || l == r && eles[l].x < scope.focus.xl) {
-       
+        // nothing visible, or all elements are to the left of the svg, vlength = 0
         l = 0;
         r = -1;
       }
@@ -3700,11 +4175,27 @@
   beaker.bkoFactory('PlotText', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotLodLine = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
     PlotLodLine.prototype.respR = 5;
@@ -3786,7 +4277,7 @@
             var x2 = mapX(ele2.x);
             nxtp += x + "," + y + " " + x2 + "," + y + " ";
           } else if (this.interpolation === "curve") {
-           
+            // TODO curve implementation
           }
         }
 
@@ -3864,11 +4355,27 @@
   beaker.bkoFactory('PlotLodLine', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotLodRiver = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
     PlotLodRiver.prototype.respWidth = 5;
@@ -3931,7 +4438,7 @@
           var ym = mapY(ele.avg);
         }
 
-        if (plotUtils.rangeAssert([x, y, y2])) { 
+        if (plotUtils.rangeAssert([x, y, y2])) {  // no need to put ym here
           eleprops.length = 0;
           return;
         }
@@ -3955,7 +4462,7 @@
             "isresp" : true,
             "x" : x - this.respWidth / 2,
             "y" : y2,
-            "h" : Math.max(y - y2, this.respMinHeight), 
+            "h" : Math.max(y - y2, this.respMinHeight),  // min height to be hoverable
             "op" : scope.tips[hashid] == null ? 0 : 1
           };
           eleprops.push(prop);
@@ -3990,8 +4497,8 @@
       var itemsvg = svg.select("#" + this.id);
 
       if (itemsvg.select("#" + groupid).empty()) {
-       
-       
+        // aux box are ploted as bars with normal coloring
+        // if special coloring is needed, it is set from the loader
         itemsvg.selectAll("#" + groupid)
           .data([props]).enter().append("g")
           .attr("id", groupid);
@@ -3999,7 +4506,7 @@
 
       var groupsvg = itemsvg.select("#" + groupid);
 
-     
+      // draw the river
       groupsvg.selectAll("polygon")
         .data([props]).enter().append("polygon");
       groupsvg.select("polygon")
@@ -4012,7 +4519,7 @@
         .style("stroke-width", props.st_w);
 
       if (this.avgOn === true) {
-       
+        // draw the middle line
         var clr = props.st == null ? "black" : props.st;
         groupsvg.selectAll("path")
           .data([props]).enter().append("path");
@@ -4059,11 +4566,27 @@
   beaker.bkoFactory('PlotLodRiver', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotLodBox = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
 
@@ -4180,7 +4703,7 @@
 
       var groupsvg = itemsvg.select("#" + groupid);
 
-     
+      // draw boxes
       groupsvg.selectAll("rect")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
       groupsvg.selectAll("rect")
@@ -4196,7 +4719,7 @@
 
       if (this.avgOn === true) {
         var clr = props.st == null ? "black" : props.st;
-       
+        // draw avg lines
         groupsvg.selectAll("line")
           .data(eleprops, function(d) { return d.id + "l"; }).exit().remove();
         groupsvg.selectAll("line")
@@ -4230,11 +4753,27 @@
   beaker.bkoFactory('PlotLodBox', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotLodPoint = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
 
@@ -4308,7 +4847,7 @@
           "st_w" : ele.stroke_width,
           "st_da" : ele.stroke_dasharray
         };
-       
+        // lod point does not accept shape for individual element
         switch (this.shape) {
           case "diamond":
             var pstr = "";
@@ -4327,7 +4866,7 @@
               "r" : s
             });
             break;
-          default:   
+          default:    // rect
             _(prop).extend({
               "x" : x - s / 2,
               "y" : y - s / 2,
@@ -4397,7 +4936,7 @@
             .data(eleprops, function(d) { return d.id; })
             .attr("points", function(d) { return d.pts; });
           break;
-        default: 
+        default:  // rect
           groupsvg.selectAll(tag)
             .data(eleprops, function(d) { return d.id; })
             .attr("x", function(d) { return d.x; })
@@ -4423,11 +4962,27 @@
   beaker.bkoFactory('PlotLodPoint', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils) {
     var PlotLodStem = function(data){
-      _(this).extend(data);
+      _(this).extend(data); // copy properties to itself
       this.format();
     };
 
@@ -4542,7 +5097,7 @@
 
       var groupsvg = itemsvg.select("#" + groupid);
 
-     
+      // draw stems
       groupsvg.selectAll("line")
         .data(eleprops, function(d) { return d.id; }).exit().remove();
       groupsvg.selectAll("line")
@@ -4558,7 +5113,7 @@
 
       if (this.avgOn === true) {
         var clr = props.st == null ? "gray" : props.st;
-       
+        // draw avg lines
         groupsvg.selectAll("circle")
           .data(eleprops, function(d) { return d.id + "l"; }).exit().remove();
         groupsvg.selectAll("circle")
@@ -4591,31 +5146,47 @@
   beaker.bkoFactory('PlotLodStem', ['plotUtils', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils, PlotSampler, PlotLine, PlotLodLine, PlotLodBox, PlotLodRiver) {
     var PlotLineLodLoader = function(data, lodthresh){
       this.datacopy = {};
-      _(this.datacopy).extend(data); 
-      _(this).extend(data);
+      _(this.datacopy).extend(data);  // save for later use
+      _(this).extend(data); // copy properties to itself
       this.lodthresh = lodthresh;
       this.format(lodthresh);
     };
-   
+    // class constants
     PlotLineLodLoader.prototype.lodTypes = ["line", "box", "river"];
     PlotLineLodLoader.prototype.lodSteps = [5, 10, 5];
 
     PlotLineLodLoader.prototype.format = function() {
-     
+      // create plot type index
       this.lodTypeIndex = 0;
       this.lodType = this.lodTypes[this.lodTypeIndex];
 
-     
+      // create the plotters
       this.zoomHash = plotUtils.randomString(3);
       this.plotter = new PlotLine(this.datacopy);
       this.createLodPlotter();
 
-     
+      // a few switches and constants
       this.isLodItem = true;
       this.lodOn = false;
       this.lodAuto = true;
@@ -4651,7 +5222,7 @@
     };
 
     PlotLineLodLoader.prototype.switchLodType = function(scope) {
-      this.clear(scope); 
+      this.clear(scope);  // must clear first before changing lodType
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
       this.createLodPlotter();
@@ -4659,7 +5230,7 @@
 
     PlotLineLodLoader.prototype.applyLodType = function(type) {
       this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type); 
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
       if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
       this.createLodPlotter();
     };
@@ -4678,7 +5249,7 @@
         this.lodplotter.setWidthShrink(1);
         this.lodplotter.setZoomHash(this.zoomHash);
       } else if (this.lodType === "river") {
-        data.stroke = data.color; 
+        data.stroke = data.color;  // assume the user has no way to set outline for line
         data.color_opacity *= .25;
         data.stroke_opacity = 1.0;
         this.lodplotter = new PlotLodRiver(data);
@@ -4741,7 +5312,7 @@
       this.xAxis = xAxis;
       this.yAxis = yAxis;
       this.plotter.applyAxis(xAxis, yAxis);
-     
+      // sampler is created AFTER coordinate axis remapping
       this.createSampler();
     };
 
@@ -4823,32 +5394,48 @@
     retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils, PlotSampler, PlotArea, PlotLodLine, PlotLodRiver,
     PlotAuxRiver) {
     var PlotAreaLodLoader = function(data, lodthresh){
       this.datacopy = {};
-      _(this.datacopy).extend(data); 
-      _(this).extend(data);
+      _(this.datacopy).extend(data);  // save for later use
+      _(this).extend(data); // copy properties to itself
       this.lodthresh = lodthresh;
       this.format(lodthresh);
     };
-   
+    // class constants
     PlotAreaLodLoader.prototype.lodTypes = ["area", "river"];
     PlotAreaLodLoader.prototype.lodSteps = [5, 5];
 
     PlotAreaLodLoader.prototype.format = function() {
-     
+      // create plot type index
       this.lodTypeIndex = 0;
-      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
-     
+      // create the plotters
       this.zoomHash = plotUtils.randomString(3);
       this.plotter = new PlotArea(this.datacopy);
       this.createLodPlotter();
 
-     
+      // a few switches and constants
       this.isLodItem = true;
       this.lodOn = false;
       this.lodAuto = true;
@@ -4904,7 +5491,7 @@
 
     PlotAreaLodLoader.prototype.applyLodType = function(type) {
       this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type); 
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
       if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
       this.createLodPlotter();
     };
@@ -4916,7 +5503,7 @@
         this.lodplotter = new PlotLodRiver(data);
         this.lodplotter.setZoomHash(this.zoomHash);
       } else if (this.lodType === "river") {
-        data.stroke = data.color; 
+        data.stroke = data.color;  // assume the user has no way to set outline for area
         data.color_opacity *= .25;
         data.stroke_opacity = 1.0;
         this.lodplotter = new PlotLodRiver(data);
@@ -4991,7 +5578,7 @@
       this.xAxis = xAxis;
       this.yAxis = yAxis;
       this.plotter.applyAxis(xAxis, yAxis);
-     
+      // sampler is created AFTER coordinate axis remapping
       this.createSampler();
     };
 
@@ -5051,7 +5638,7 @@
         this.elementSamples = elements;
       } else if (this.lodType === "river") {
         this.elementAuxes = [];
-       
+        // prepare the aux river in between
         for (var i = 0; i < count; i++) {
           this.elementAuxes.push({
             x : this.elementSamples[i].x,
@@ -5113,31 +5700,47 @@
     retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils, PlotSampler, PlotBar, PlotLodBox, PlotAuxBox) {
     var PlotBarLodLoader = function(data, lodthresh){
       this.datacopy = {};
-      _(this.datacopy).extend(data); 
-      _(this).extend(data);
+      _(this.datacopy).extend(data);  // save for later use
+      _(this).extend(data); // copy properties to itself
       this.lodthresh = lodthresh;
       this.format(lodthresh);
     };
-   
+    // class constants
     PlotBarLodLoader.prototype.lodTypes = ["bar", "box"];
     PlotBarLodLoader.prototype.lodSteps = [5, 10];
 
     PlotBarLodLoader.prototype.format = function() {
-     
+      // create plot type index
       this.lodTypeIndex = 0;
-      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
-     
+      // create the plotters
       this.zoomHash = plotUtils.randomString(3);
       this.plotter = new PlotBar(this.datacopy);
       this.createLodPlotter();
 
-     
+      // a few switches and constants
       this.isLodItem = true;
       this.lodOn = false;
       this.lodAuto = true;
@@ -5185,7 +5788,7 @@
     };
 
     PlotBarLodLoader.prototype.switchLodType = function(scope) {
-      this.clear(scope); 
+      this.clear(scope);  // must clear first before changing lodType
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
       this.createLodPlotter();
@@ -5193,7 +5796,7 @@
 
     PlotBarLodLoader.prototype.applyLodType = function(type) {
       this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type); 
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
       if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
       this.createLodPlotter();
     };
@@ -5206,10 +5809,10 @@
         this.lodplotter.setWidthShrink(1);
         this.lodplotter.setZoomHash(this.zoomHash);
       } else if (this.lodType === "box") {
-       
-       
+        // lod boxes are plotted with special coloring (inversed color)
+        // user can set outline for bar
         data.stroke_opacity = 1.0;
-        data.color_opacity *= .25; 
+        data.color_opacity *= .25;  // set box to be transparent
         this.lodplotter = new PlotLodBox(data);
         this.lodplotter2 = new PlotLodBox(data);
         this.lodplotter.setWidthShrink(1);
@@ -5217,9 +5820,9 @@
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash);
 
-        _(data).extend(this.datacopy);
+        _(data).extend(this.datacopy); // normal color for aux box
         this.auxplotter = new PlotAuxBox(data);
-        this.auxplotter.setWidthShrink(1); 
+        this.auxplotter.setWidthShrink(1);  // reduce box width by 1px (left and right)
       }
     };
 
@@ -5284,7 +5887,7 @@
       this.xAxis = xAxis;
       this.yAxis = yAxis;
       this.plotter.applyAxis(xAxis, yAxis);
-     
+      // sampler is created AFTER coordinate axis remapping
       this.createSampler();
     };
 
@@ -5345,7 +5948,7 @@
         this.elementSamples = elements;
       } else if (this.lodType === "box") {
         this.elementAuxes = [];
-       
+        // prepare the aux box in between
         for (var i = 0; i < count; i++) {
           this.elementAuxes.push({
             x : this.elementSamples[i].xl,
@@ -5405,32 +6008,48 @@
     ['plotUtils', 'PlotSampler', 'PlotBar', 'PlotLodBox', 'PlotAuxBox', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils, PlotSampler, PlotStem,
     PlotLodStem, PlotAuxStem, PlotLodBox, PlotAuxBox) {
     var PlotStemLodLoader = function(data, lodthresh){
       this.datacopy = {};
-      _(this.datacopy).extend(data); 
-      _(this).extend(data);
+      _(this.datacopy).extend(data);  // save for later use
+      _(this).extend(data); // copy properties to itself
       this.lodthresh = lodthresh;
       this.format(lodthresh);
     };
-   
+    // class constants
     PlotStemLodLoader.prototype.lodTypes = ["stem", "stem+", "box"];
     PlotStemLodLoader.prototype.lodSteps = [5, 10, 10];
 
     PlotStemLodLoader.prototype.format = function() {
-     
+      // create plot type index
       this.lodTypeIndex = 0;
-      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
-     
+      // create the plotters
       this.zoomHash = plotUtils.randomString(3);
       this.plotter = new PlotStem(this.datacopy);
       this.createLodPlotter();
 
-     
+      // a few switches and constants
       this.isLodItem = true;
       this.lodOn = false;
       this.lodAuto = true;
@@ -5478,7 +6097,7 @@
     };
 
     PlotStemLodLoader.prototype.switchLodType = function(scope) {
-      this.clear(scope); 
+      this.clear(scope);  // must clear first before changing lodType
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
       this.createLodPlotter();
@@ -5486,7 +6105,7 @@
 
     PlotStemLodLoader.prototype.applyLodType = function(type) {
       this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type); 
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
       if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
       this.createLodPlotter();
     };
@@ -5508,8 +6127,8 @@
         _(data).extend(this.datacopy);
         this.auxplotter = new PlotAuxStem(data);
       } else if (this.lodType === "box") {
-       
-        data.stroke = data.color;
+        // lod boxes are plotted with special coloring (inversed color)
+        data.stroke = data.color; // assume the user has no way to set outline for stem
         data.color_opacity *= .25;
         data.stroke_opacity = 1.0;
         this.lodplotter = new PlotLodBox(data);
@@ -5519,9 +6138,9 @@
         this.lodplotter.setZoomHash(this.zoomHash);
         this.lodplotter2.setZoomHash(this.zoomHash);
 
-        _(data).extend(this.datacopy);
+        _(data).extend(this.datacopy); // normal color for aux box
         this.auxplotter = new PlotAuxBox(data);
-        this.auxplotter.setWidthShrink(1); 
+        this.auxplotter.setWidthShrink(1);  // reduce box width by 1px (left and right)
       }
     };
 
@@ -5586,7 +6205,7 @@
       this.xAxis = xAxis;
       this.yAxis = yAxis;
       this.plotter.applyAxis(xAxis, yAxis);
-     
+      // sampler is created AFTER coordinate axis remapping
       this.createSampler();
     };
 
@@ -5646,7 +6265,7 @@
         this.elementSamples = elements;
       } else if (this.lodType === "stem+") {
         this.elementAuxes = [];
-       
+        // prepare the aux box in between
         for (var i = 0; i < count; i++) {
           this.elementAuxes.push({
             x : this.elementSamples[i].x,
@@ -5656,7 +6275,7 @@
         }
       } else if (this.lodType === "box") {
         this.elementAuxes = [];
-       
+        // prepare the aux box in between
         for (var i = 0; i < count; i++) {
           this.elementAuxes.push({
             x : this.elementSamples[i].xl,
@@ -5717,31 +6336,47 @@
     'PlotLodStem', 'PlotAuxStem', 'PlotLodBox', 'PlotAuxBox', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(plotUtils, PlotSampler, PlotPoint, PlotLodPoint, PlotLodBox) {
     var PlotPointLodLoader = function(data, lodthresh){
       this.datacopy = {};
-      _(this.datacopy).extend(data); 
-      _(this).extend(data);
+      _(this.datacopy).extend(data);  // save for later use
+      _(this).extend(data); // copy properties to itself
       this.lodthresh = lodthresh;
       this.format(lodthresh);
     };
-   
+    // class constants
     PlotPointLodLoader.prototype.lodTypes = ["point", "box"];
     PlotPointLodLoader.prototype.lodSteps = [5, 10];
 
     PlotPointLodLoader.prototype.format = function() {
-     
+      // create plot type index
       this.lodTypeIndex = 0;
-      this.lodType = this.lodTypes[this.lodTypeIndex];
+      this.lodType = this.lodTypes[this.lodTypeIndex]; // line, box
 
-     
+      // create the plotters
       this.zoomHash = plotUtils.randomString(3);
       this.plotter = new PlotPoint(this.datacopy);
       this.createLodPlotter();
 
-     
+      // a few switches and constants
       this.isLodItem = true;
       this.lodOn = false;
       this.lodAuto = true;
@@ -5777,7 +6412,7 @@
     };
 
     PlotPointLodLoader.prototype.switchLodType = function(scope) {
-      this.clear(scope); 
+      this.clear(scope);  // must clear first before changing lodType
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
       this.createLodPlotter();
@@ -5790,7 +6425,7 @@
         this.lodplotter = new PlotLodPoint(data);
         this.lodplotter.setZoomHash(this.zoomHash);
       } else if (this.lodType === "box") {
-       
+        // user can set outline for point
         data.color_opacity *= .25;
         data.stroke_opacity = 1.0;
         this.lodplotter = new PlotLodBox(data);
@@ -5841,7 +6476,7 @@
       if (this.lodOn === true) {
         this.sample(scope);
         if (this.lodType === "point") {
-         
+          // lod point plotter needs size information
           this.lodplotter.render(scope, this.elementSamples, this.sizeSamples);
         } else if (this.lodType === "box") {
           this.lodplotter.render(scope, this.elementSamples);
@@ -5859,12 +6494,12 @@
       this.xAxis = xAxis;
       this.yAxis = yAxis;
       this.plotter.applyAxis(xAxis, yAxis);
-     
+      // sampler is created AFTER coordinate axis remapping
       this.createSampler();
     };
 
     PlotPointLodLoader.prototype.switchLodType = function(scope) {
-      this.clear(scope); 
+      this.clear(scope);  // must clear first before changing lodType
       this.lodTypeIndex = (this.lodTypeIndex + 1) % this.lodTypes.length;
       this.lodType = this.lodTypes[this.lodTypeIndex];
       this.createLodPlotter();
@@ -5872,7 +6507,7 @@
 
     PlotPointLodLoader.prototype.applyLodType = function(type) {
       this.lodType = type;
-      this.lodTypeIndex = this.lodTypes.indexOf(type); 
+      this.lodTypeIndex = this.lodTypes.indexOf(type);  // maybe -1
       if (this.lodTypeIndex === -1) { this.lodTypeIndex = 0; }
       this.createLodPlotter();
     };
@@ -5955,12 +6590,28 @@
     ['plotUtils', 'PlotSampler', 'PlotPoint', 'PlotLodPoint', 'PlotLodBox', retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function() {
     var PlotAxis = function(type) {
       this.type = "axis";
-      this.axisType = type == null ? "linear" : type;
+      this.axisType = type == null ? "linear" : type; // linear, log, time, [nanotime, category]
       this.axisBase = 10;
       this.axisTime = 0;
       this.axisTimezone = "America/New_York";
@@ -5977,24 +6628,24 @@
       this.axisFixed = 0;
     };
     var dateIntws = [
-     
+      // milliseconds
       1, 5, 10, 50, 100, 500,
-     
+      // 1, 5, 10, 30, 60 seconds
       1000, 5000, 10000, 30000, 60000,
-     
+      // 5, 10, 30, 60 minutes
       300000, 600000, 1800000, 3600000,
-     
+      // 3, 6, 12, 24 hours
       3600000 * 3, 3600000 * 6, 3600000 * 12, 3600000 * 24,
-     
+      // 7, 30, 90, 180, 360 days
       86400000 * 7, 86400000 * 30, 86400000 * 90, 86400000 * 180, 86400000 * 360,
-     
+      // 5, 10, 25, 50, 100 years
       31104000000 * 5, 31104000000 * 10, 31104000000 * 25, 31104000000 * 50, 31104000000 * 100
     ];
     var numIntws = [], numFixs = [];
     var bs = 1E-6;
     for (var i = 0; i < 18; i++) {
       var f = Math.max(6 - i, 0);
-      numIntws = numIntws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs]); 
+      numIntws = numIntws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs]);  // generate 1s, 5s
       numFixs = numFixs.concat([f, i <= 6 ? f + 1 : f, f]);
       bs *= 10;
     }
@@ -6121,12 +6772,41 @@
         ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
       }
 
-            return ret;
+      /*
+      // Nanoplot TODO
+      if (this.axisType === "nanotime"  && span < 1000000) {
+        var digits = bval.mod(1000000000).toFixed(0);
+        if (span < 1000) {
+          ret += "." + padStr(Math.floor(digits / 1), 9);
+        } else if (span < 1000000) {
+          ret += "." + padStr(Math.floor(digits / 1000), 6);
+        } else {
+          ret += "." + padStr(Math.floor(digits / 1000000), 3);
+        }
+      }
+      */
+      return ret;
     };
     return PlotAxis;
   };
   beaker.bkoFactory('PlotAxis', [retfunc]);
 })();
+
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
 
 
 (function() {
@@ -6239,6 +6919,22 @@
       retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(bkUtils) {
@@ -6270,7 +6966,7 @@
       interpolationMap : {
         0 : "none",
         1 : "linear",
-        2 : "linear",
+        2 : "linear", // should be "curve" but right now it is not implemented yet
         "" : "linear"
       },
 
@@ -6291,9 +6987,9 @@
           logx = true;
           logxb = model.x_log_base == null ? 10 : model.x_log_base;
         }
-       
+        // set margin
         newmodel.margin = {};
-       
+        // set axis bound as focus
         if (model.x_auto_range === false) {
           if (model.x_lower_bound != null) {
             newmodel.userFocus.xl = model.x_lower_bound;
@@ -6346,13 +7042,13 @@
           _.extend(newmodel.yCursor, cursor);
         }
 
-       
+        // log scaling
         if (logx) {
           newmodel.xAxis.type = "log";
           newmodel.xAxis.base = logxb;
         } else if (model.type === "TimePlot") {
           newmodel.xAxis.type = "time";
-        } else if (model.type === "NanoPlot"){ 
+        } else if (model.type === "NanoPlot"){  // TODO
         } else {
           newmodel.xAxis.type = "linear";
         }
@@ -6398,7 +7094,7 @@
           item.type = this.dataTypeMap[item.type];
 
           if(item.type === "bar" || item.type === "area") {
-           
+            //newmodel.yPreventNegative = true; // auto range to y = 0
           }
 
           if(item.type === "line" || item.type === "stem") {
@@ -6434,7 +7130,7 @@
             ele.x = item.x[j];
             ele.y = item.y[j];
 
-           
+            // discard NaN entries
             if (ele.x === "NaN" || ele.y === "NaN")
               continue;
 
@@ -6577,6 +7273,22 @@
   beaker.bkoFactory('plotConverter', ["bkUtils", retfunc]);
 })();
 
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
 (function() {
   'use strict';
   var retfunc = function(bkUtils, plotConverter, PlotAxis, plotFactory, plotUtils) {
@@ -6591,7 +7303,7 @@
       },
 
       remapModel : function(model) {
-       
+        // map data entrie to [0, 1] of axis range
         var vrange = model.vrange;
         var xAxisLabel = model.xAxis.label,
             yAxisLabel = model.yAxis.label;
@@ -6623,11 +7335,11 @@
         for (var i = 0; i < data.length; i++) {
           var item = data[i], eles = item.elements;
 
-         
-         
+          // map coordinates using percentage
+          // tooltips are possibly generated at the same time
           item.applyAxis(xAxis, yAxis);
         }
-       
+        // map focus region
         var focus = model.userFocus;
         if (focus.xl != null) { focus.xl = xAxis.getPercent(focus.xl); }
         if (focus.xr != null) { focus.xr = xAxis.getPercent(focus.xr); }
@@ -6667,7 +7379,7 @@
           }
 
           if(item.type === "bar" || item.type === "area") {
-           
+            //newmodel.yPreventNegative = true; // prevent move to y < 0
           }
 
           if(item.type === "line" || item.type === "stem") {
@@ -6733,10 +7445,10 @@
           }
 
           if (item.color_opacity == null) {
-            item.color_opacity = 1.0;
+            item.color_opacity = 1.0; // default show fully
           }
           if (item.stroke_opacity == null) {
-           
+            // default show based on whether stroke is set
             item.stroke_opacity = item.stroke == null ? 0.0 : 1.0;
           }
 
@@ -6784,7 +7496,7 @@
                 item.interpolation = "linear";
               }
             }
-           
+            // swap y, y2
             if (ele.y != null && ele.y2 != null && ele.y > ele.y2) {
               var temp = ele.y;
               ele.y = ele.y2;
@@ -6816,13 +7528,13 @@
               }
             }
           }
-         
+          // recreate rendering objects
           item.index = i;
           item.id = "i" + i;
           data[i] = plotFactory.createPlotItem(item);
         }
 
-       
+        // apply log to focus
         var focus = newmodel.userFocus;
         if (logx) {
           if (focus.xl != null) {
@@ -6871,19 +7583,19 @@
 
       standardizeModel : function(_model) {
         var model = {};
-        $.extend(true, model, _model);
+        $.extend(true, model, _model); // deep copy model to prevent changing the original JSON
 
         if (model.graphics_list != null) {
-          model.version = "groovy"; 
+          model.version = "groovy";  // TODO, a hack now to check DS source
         }
-        if (model.version === "complete") {
+        if (model.version === "complete") { // skip standardized model in combined plot
           return model;
         } else if (model.version === "groovy") {
         } else {
           model.version = "direct";
         }
         var newmodel;
-        if (model.version === "groovy") { 
+        if (model.version === "groovy") {  // model returned from serializer
           newmodel = {
             type : "plot",
             title : model.chart_title != null ? model.chart_title : model.title,
@@ -6923,13 +7635,13 @@
 
         if (model.version === "groovy") {
           plotConverter.convertGroovyData(newmodel, model);
-        } else { 
+        } else {  // DS generated directly
           _.extend(newmodel, model);
         }
-        this.formatModel(newmodel);
+        this.formatModel(newmodel); // fill in null entries, compute y2, etc.
         this.sortModel(newmodel);
 
-       
+        // at this point, data is in standard format (log is applied as well)
 
         var range = plotUtils.getDataRange(newmodel.data).datarange;
 
@@ -6940,7 +7652,7 @@
         if (margin.right == null) { margin.right = .05; }
 
         if (newmodel.vrange == null) {
-         
+          // visible range initially is 10x larger than data range by default
           newmodel.vrange = {
             xl : range.xl - range.xspan * 10.0,
             xr : range.xr + range.xspan * 10.0,
@@ -6957,7 +7669,7 @@
               vrange.yl = 0;
             }
           }
-          var focus = newmodel.userFocus;
+          var focus = newmodel.userFocus; // allow user to overide vrange
           if (focus.xl != null) { vrange.xl = Math.min(focus.xl, vrange.xl); }
           if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
           if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
@@ -6977,6 +7689,22 @@
   beaker.bkoFactory('plotFormatter',
     ["bkUtils", 'plotConverter', 'PlotAxis', 'plotFactory', 'plotUtils', retfunc]);
 })();
+
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
 
 
 (function() {
@@ -7041,7 +7769,7 @@
           plotmodel.type = plotType;
           var newplotmodel = plotFormatter.standardizeModel(plotmodel);
 
-          if (i < plots.length - 1) { 
+          if (i < plots.length - 1) {  // turn off x coordinate labels
             newplotmodel.xAxis.axisLabel = null;
             newplotmodel.xAxis.showGridlineLabels = false;
           } else {
@@ -7059,6 +7787,27 @@
   };
   beaker.bkoFactory('combinedplotFormatter', ["bkUtils", "plotFormatter", retfunc]);
 })();
+
+/*
+*  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*         http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+
+/*
+ * bkoPlot
+ * This is the output display component for displaying xyChart
+ */
 
 ( function() {
   'use strict';
@@ -7090,9 +7839,9 @@
         });
       },
       link : function(scope, element, attrs) {
-       
+        // rendering code
         element.find("#plotContainer").resizable({
-          maxWidth : element.width(),
+          maxWidth : element.width(), // no wider than the width of the cell
           minWidth : 450,
           minHeight: 150,
           handles : "e, s, se",
@@ -7118,7 +7867,7 @@
         });
         
         scope.resizeFunction = function() {
-         
+          // update resize maxWidth when the browser window resizes
           var width = element.width();
           scope.jqcontainer.resizable({
             maxWidth : width
@@ -7129,8 +7878,8 @@
           var model = scope.stdmodel;
 
           element.find(".ui-icon-gripsmall-diagonal-se")
-            .removeClass("ui-icon ui-icon-gripsmall-diagonal-se");
-         
+            .removeClass("ui-icon ui-icon-gripsmall-diagonal-se"); // remove the ugly handle :D
+          // hook container to use jquery interaction
           scope.container = d3.select(element[0]).select("#plotContainer");
           scope.jqcontainer = element.find("#plotContainer");
           scope.svg = d3.select(element[0]).select("#plotContainer svg");
@@ -7142,7 +7891,7 @@
 
           $(window).resize(scope.resizeFunction);
 
-         
+          // set title
           scope.jqplottitle = element.find("#plotTitle");
           scope.jqplottitle.text(model.title).css("width", plotSize.width);
 
@@ -7150,10 +7899,10 @@
           scope.gridg = d3.select(element[0]).select("#gridg");
           scope.labelg = d3.select(element[0]).select("#labelg");
 
-         
+          // set some constants
 
           scope.renderFixed = 1;
-          scope.layout = {   
+          scope.layout = {    // TODO, specify space for left/right y-axis, also avoid half-shown labels
             bottomLayoutMargin : 30,
             topLayoutMargin : 0,
             leftLayoutMargin : 80,
@@ -7232,7 +7981,7 @@
         scope.emitSizeChange = function() {
           if (scope.model.updateWidth != null) {
             scope.model.updateWidth(scope.width);
-          }
+          } // not stdmodel here
         };
         scope.calcRange = function() {
           var ret = plotUtils.getDefaultFocus(scope.stdmodel);
@@ -7242,7 +7991,7 @@
           scope.fixFocus(scope.defaultFocus);
         };
         scope.calcGridlines = function() {
-         
+          // prepare the gridlines
           var focus = scope.focus, model = scope.stdmodel;
           model.xAxis.setGridlines(focus.xl, focus.xr, scope.numIntervals.x);
           model.yAxis.setGridlines(focus.yl, focus.yr, scope.numIntervals.y);
@@ -7343,7 +8092,7 @@
         };
 
         scope.toggleTooltip = function(d) {
-          if (scope.zoomed === true) { return; }
+          if (scope.zoomed === true) { return; } // prevent dragging and toggling at the same time
 
           var id = d.id, nv = !scope.tips[id];
           if (nv === true) {
@@ -7409,7 +8158,7 @@
                 .on('mouseup', function(e) {
                   if (e.which == 3) {
                     delete scope.tips[d.id];
-                    if (d.isresp === true) { 
+                    if (d.isresp === true) {  // is interaction responsive element
                       scope.jqsvg.find("#" + d.id).css("opacity", 0);
                     } else {
                       scope.jqsvg.find("#" + d.id).removeAttr("filter");
@@ -7575,7 +8324,7 @@
         };
 
         scope.renderLegends = function() {
-         
+          // legend redraw is controlled by legendDone
           if (scope.legendableItem === 0 ||
             scope.stdmodel.showLegend === false || scope.legendDone === true) { return; }
 
@@ -7606,7 +8355,7 @@
           }
           legend.css(scope.legendPosition);
 
-          if (scope.legendableItem > 1) { 
+          if (scope.legendableItem > 1) {  // skip "All" check when there is only one line
             var unit = $("<tr></tr>").appendTo(legend)
               .attr("id", "legend_all");
             $("<input type='checkbox'></input>")
@@ -7636,7 +8385,7 @@
             if (dat.legend == null || dat.legend === "") { continue; }
             var unit = $("<tr></tr>").appendTo(legend)
               .attr("id", "legend_" + i);
-           
+            // checkbox
             $("<input type='checkbox'></input>")
               .attr("id", "legendcheck_" + i)
               .attr("class", "plot-legendcheckbox")
@@ -7649,7 +8398,7 @@
             var clr = plotUtils.createColor(dat.color, dat.color_opacity),
                 st_clr = plotUtils.createColor(dat.stroke, dat.stroke_opacity);
             var sty = dat.color == null ? "dotted " : "solid ";
-           
+            // color box
             $("<span></span>")
               .attr("id", "legendbox_" + i)
               .attr("class", "plot-legendbox")
@@ -7660,7 +8409,7 @@
                 dat.stroke != null ? "1px " + sty + st_clr :
                 (dat.color != null ? "1px " + sty + clr : "1px dotted gray"))
               .appendTo($("<td></td>").appendTo(unit));
-           
+            // legend text
             $("<td></td>").appendTo(unit)
               .attr("id", "legendtext_" + i)
               .attr("class", "plot-label")
@@ -7730,23 +8479,23 @@
           var light = hint.find("#light"),
               type = hint.find("#type"),
               auto = hint.find("#auto");
-         
+          // lod hint light
           light.attr("title",
             dat.lodOn === true ? "LOD is on" : "")
           .css("background-color",
             dat.lodOn === true ? "red" : "gray")
           .css("border",
             dat.lodOn === true ? "1px solid red" : "1px solid gray");
-         
+          // lod hint text
           type.css("color", dat.lodOn === true ? "red" : "gray")
             .text(dat.lodType);
-         
+          // lod auto hint
           auto.css("color", dat.lodOn === true ? "red" : "gray")
             .text(dat.lodType === "off" ? "" : (dat.lodAuto === true ? "auto" : "on"));
         };
         scope.toggleVisibility = function(e) {
           var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
-         
+          // id in the format "legendcheck_i"
           if (id == "all") {
             scope.showAllItems = !scope.showAllItems;
             
@@ -7920,7 +8669,7 @@
         scope.zooming = function(d) {
           if (scope.interactMode === "other") { return; }
           if (scope.interactMode === "zoom") {
-           
+            // left click zoom
             var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
             var W = scope.jqsvg.width() - lMargin, H = scope.jqsvg.height() - bMargin;
             var d3trans = d3.event.translate, d3scale = d3.event.scale;
@@ -7936,7 +8685,7 @@
               scope.zoomed = true;
             }
             if (ds == 1.0) {
-             
+              // translate only
               var tx = -dx / W * focus.xspan, ty = dy / H * focus.yspan;
               if (focus.xl + tx >= 0 && focus.xr + tx <= 1) {
                 focus.xl += tx;
@@ -7964,10 +8713,10 @@
               }
               scope.jqsvg.css("cursor", "move");
             } else {
-             
+              // scale only
               var level = scope.zoomLevel;
               if (my <= scope.jqsvg.height() - scope.layout.bottomLayoutMargin) {
-               
+                // scale y
                 var ym = focus.yl + scope.scr2dataYp(my) * focus.yspan;
                 var nyl = ym - ds * (ym - focus.yl), nyr = ym + ds * (focus.yr - ym),
                     nyspan = nyr - nyl;
@@ -7986,7 +8735,7 @@
                 }
               }
               if (mx >= scope.layout.leftLayoutMargin) {
-               
+                // scale x
                 var xm = focus.xl + scope.scr2dataXp(mx) * focus.xspan;
                 var nxl = xm - ds * (xm - focus.xl), nxr = xm + ds * (focus.xr - xm),
                     nxspan = nxr - nxl;
@@ -8013,7 +8762,7 @@
             });
             scope.update();
           } else if (scope.interactMode === "locate") {
-           
+            // right click zoom
             scope.mousep2 = {
               "x" : d3.mouse(scope.svg[0][0])[0],
               "y" : d3.mouse(scope.svg[0][0])[1]
@@ -8121,7 +8870,7 @@
         };
 
         scope.calcMapping = function(emitFocusUpdate) {
-         
+          // called every time after the focus is changed
           var focus = scope.focus;
           var lMargin = scope.layout.leftLayoutMargin,
               bMargin = scope.layout.bottomLayoutMargin,
@@ -8220,7 +8969,7 @@
         };
 
         scope.clearRemovePipe = function() {
-         
+          // some hints are set to be removed at the end of the next rendering cycle
           for (var i = 0; i < scope.removePipe.length; i++) {
             var id = scope.removePipe[i];
             scope.jqcontainer.find("#" + id).remove();
@@ -8230,25 +8979,25 @@
 
         scope.init = function() {
 
-         
+          // first standardize data
           scope.standardizeData();
-         
+          // init flags
           scope.initFlags();
           
-         
+          // see if previous state can be applied
           scope.focus = {};
           scope.tips = {};
           scope.plotSize = {};
           
           _(scope.plotSize).extend(scope.stdmodel.plotSize);
 
-         
+          // create layout elements
           scope.initLayout();
 
           scope.resetSvg();
           scope.zoomObj = d3.behavior.zoom();
 
-         
+          // set zoom object
           scope.svg.on("mousedown", function() {
             return scope.mouseDown();
           }).on("mouseup", function() {
@@ -8262,10 +9011,10 @@
           scope.enableZoom();
           scope.calcRange();
           
-         
+          // init copies focus to defaultFocus, called only once
           _(scope.focus).extend(scope.defaultFocus);
 
-         
+          // init remove pipe
           scope.removePipe = [];
 
           if (scope.model.getDumpState !== undefined) {
@@ -8288,12 +9037,12 @@
 
           scope.renderData();
           scope.renderGridlineLabels();
-          scope.renderCoverBox();
-          plotUtils.plotLabels(scope);
+          scope.renderCoverBox(); // redraw
+          plotUtils.plotLabels(scope); // redraw
 
           scope.renderTips();
-          scope.renderLocateBox();
-          scope.renderLegends();
+          scope.renderLocateBox(); // redraw
+          scope.renderLegends(); // redraw
 
           scope.prepareInteraction();
 
@@ -8306,7 +9055,7 @@
           };
         }
 
-        scope.init();
+        scope.init(); // initialize
 
         if (scope.model.getDumpState !== undefined) {
           scope.$watch('getDumpState()', function(result) {
@@ -8333,6 +9082,27 @@
   };
   beaker.bkoDirective("Plot", ["plotUtils", "plotFormatter", "plotFactory", "bkCellMenuPluginManager", retfunc]);
 })();
+
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+/*
+ * bkoCombinedPlot
+ * This is the output display component for displaying multiple Plots
+ */
 
 (function() {
   'use strict';
@@ -8379,7 +9149,7 @@
           var models = [];
           var plots = scope.stdmodel.plots;
           
-         
+          // create a plot model and a saved state for each plot
           for (var i = 0; i < plots.length; i++) {
 
             var plotmodel = plots[i];
@@ -8427,7 +9197,7 @@
           var xl = 1E100, xr = 0;
           var plots = scope.stdmodel.plots;
           for (var i = 0; i < plots.length; i++) {
-            var plotmodel = plots[i];
+            var plotmodel = plots[i]; // models are already standardized at this point
             var ret = plotUtils.getDefaultFocus(plotmodel);
             xl = Math.min(xl, ret.defaultFocus.xl);
             xr = Math.max(xr, ret.defaultFocus.xr);
@@ -8505,6 +9275,22 @@
   beaker.bkoDirective("CombinedPlot",
       ["plotUtils", "combinedplotFormatter", "bkCellMenuPluginManager", retfunc]);
 })();
+
+/*
+ *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
 (function () {
   'use strict';

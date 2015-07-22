@@ -4,6 +4,9 @@
 @import "src/vendor/bower_components/bootstrap-sass/assets/stylesheets/bootstrap/glyphicons";
 @import "src/vendor/bower_components/font-awesome/css/font-awesome";
 
+// Declare Codemirror Hint styles globally (these append to body)
+@import "src/vendor/bower_components/codemirror/addon/hint/show-hint";
+
 .beaker-sandbox {
   @import "src/main/web/app/temp/namespacedCss/beakerApp";
   @import "src/main/web/app/temp/namespacedCss/beakerOutputDisplay";

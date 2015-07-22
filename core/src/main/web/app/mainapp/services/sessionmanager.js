@@ -418,7 +418,7 @@
     var _sessionId = null;
     var _edited = false;
     var _needsBackup = false;
-    var _saveDir = bkUtils.getHomeDirectory(); 
+    var _saveDir = bkUtils.getHomeDirectory();
 
     var BeakerObject = function(nbmodel) {
       this.knownBeakerVars = { };
@@ -977,6 +977,10 @@
       setNotebookModelEdited: function(edited) {
         _needsBackup = edited;
         _edited = edited;
+        if (edited === true) {
+          this.backup();
+        }
+
         bkUtils.httpPost("rest/session-backup/setEdited", {
           sessionid: _sessionId,
           edited: edited

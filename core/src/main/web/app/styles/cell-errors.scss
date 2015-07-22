@@ -53,11 +53,11 @@
 }
 
 pre {
-    &.out_warning {
-      @include error_state($warning_yellow);
-    }
+  &.out_warning {
+    @include error_state($warning_yellow);
+  }
 
-    &.out_error {
-      @include error_state($error_red);
-    }
+  &.out_error {
+    @include error_state($error_red);
+  }
 }

@@ -15,69 +15,69 @@
  */
 
 .outputlogbox {
-    overflow: auto;
+  overflow: auto;
 }
 
 .outputlog {
-    vertical-align: top;
+  vertical-align: top;
 }
 
 .btn-toolbar {
-    padding:    10px;
-    text-align: center;
-    .btn-group {
-        float: none;
-    }
+  padding:    10px;
+  text-align: center;
+  .btn-group {
+    float: none;
+  }
 }
 
 .alt-controls {
-    float: right !important;
+  float: right !important;
 }
 
 .outputlogerr, .outputlogout {
-    float:      left;
-    width:      50%;
-    display:    block;
-    padding:    0 10px;
-    box-sizing: border-box;
-    &.single {
-        float: none;
-        width: auto;
-    }
+  float:      left;
+  width:      50%;
+  display:    block;
+  padding:    0 10px;
+  box-sizing: border-box;
+  &.single {
+    float: none;
+    width: auto;
+  }
 }
 
 .outputlogbox {
-    height:     200px;
-    overflow:   auto;
+  height:     200px;
+  overflow:   auto;
 }
 
 .output-label {
-    font-family: pt_sansbold;
+  font-family: pt_sansbold;
 }
 
 .outputlogcontainer {
-    background-color: #eff2f8;
-    position: fixed;
-    left: 0;
-    width: 100%;
-    z-index: 100;
-    bottom: 0;
-    height: 300px;
+  background-color: #eff2f8;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  bottom: 0;
+  height: 300px;
 }
 
 .prelog {
-    border:         none;
-    margin:         0 auto;
-    padding:        0;
-    background:     transparent;
-    font-family:    monospace;
-    border-radius:  0;
+  border:         none;
+  margin:         0 auto;
+  padding:        0;
+  background:     transparent;
+  font-family:    monospace;
+  border-radius:  0;
 }
 
 .outputloghandle {
-    background: linear-gradient(#DDE0E6, #EFF2F8, #DDE0E6);
-    border: 1;
-    height: 10px;
-    width: 100%;
-    cursor: ns-resize;
+  background: linear-gradient(#DDE0E6, #EFF2F8, #DDE0E6);
+  border: 1;
+  height: 10px;
+  width: 100%;
+  cursor: ns-resize;
 }

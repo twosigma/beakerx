@@ -15,14 +15,14 @@
  */
 
 @-webkit-keyframes rotating {
-    from{
-        -webkit-transform: rotate(0deg);
-    }
-    to{
-        -webkit-transform: rotate(360deg);
-    }
+  from{
+    -webkit-transform: rotate(0deg);
+  }
+  to{
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 .rotating {
-    -webkit-animation: rotating 2s linear infinite;
+  -webkit-animation: rotating 2s linear infinite;
 }

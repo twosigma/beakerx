@@ -15,22 +15,22 @@
  */
 
 bk-new-cell-menu {
-    display: block;
-    margin: 15px 0;
+  display: block;
+  margin: 15px 0;
 
+  .new-cell {
+    visibility: hidden;
+  }
+
+  &:hover, &.only-child {
     .new-cell {
-      visibility: hidden;
+      visibility: visible;
     }
+  }
 
-    &:hover, &.only-child {
-      .new-cell {
-        visibility: visible;
-      }
-    }
-
-    .advanced-mode &:not(.large) {
-      margin: 0;
-    }
+  .advanced-mode &:not(.large) {
+    margin: 0;
+  }
 }
 
 .new-cell {
@@ -48,68 +48,68 @@ bk-new-cell-menu {
 }
 
 .locked .toggle-menu {
-    display: none;
+  display: none;
 }
 
 .toggle-menu {
-    top: $grid-row-height - 5px;
-    right: 1px;
-    position:   absolute;
-    background: rgba(255, 255, 255, 0.5);
-    padding-right: $grid-gutter-width;
-    z-index: 1;
+  top: $grid-row-height - 5px;
+  right: 1px;
+  position:   absolute;
+  background: rgba(255, 255, 255, 0.5);
+  padding-right: $grid-gutter-width;
+  z-index: 1;
 }
 
 .cell-menu-item {
-    float:      right;
-    cursor:     pointer;
-    height:     24px;
-    padding:    0 15px;
-    position: relative;
+  float:      right;
+  cursor:     pointer;
+  height:     24px;
+  padding:    0 15px;
+  position: relative;
 }
 
 .cell-status-item {
-    float:      right;
-    height:     24px;
-    padding:    0 15px;
+  float:      right;
+  height:     24px;
+  padding:    0 15px;
 }
 
 .cell-menu-item.disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .cell-menu-item:hover {
-    color: #FFF;
-    background-color: $highlight-blue;
+  color: #FFF;
+  background-color: $highlight-blue;
 
-    &.delete-cell {
-        background-image: url(../images/trash_white@2x.png);
+  &.delete-cell {
+    background-image: url(../images/trash_white@2x.png);
+  }
+
+  &.move-cell-up {
+    background-image: url(../images/up_white@2x.png);
+  }
+
+  &.move-cell-down {
+    background-image: url(../images/down_white@2x.png);
+  }
+
+  &.expand-contract {
+    background-image: url(../images/collapse_white@2x.png);
+    &.collapsed {
+      background-image: url(../images/expand_white@2x.png);
     }
+  }
 
-    &.move-cell-up {
-        background-image: url(../images/up_white@2x.png);
-    }
-
-    &.move-cell-down {
-        background-image: url(../images/down_white@2x.png);
-    }
-
-    &.expand-contract {
-        background-image: url(../images/collapse_white@2x.png);
-        &.collapsed {
-            background-image: url(../images/expand_white@2x.png);
-        }
-    }
-
-    &.cell-dropdown {
-        background-image: url(../images/menu_white@2x.png);
-    }
+  &.cell-dropdown {
+    background-image: url(../images/menu_white@2x.png);
+  }
 
 
-    &.loading-state .loading-spinner {
-        background-image: url(../images/loading_white@2x.png);
-    }
+  &.loading-state .loading-spinner {
+    background-image: url(../images/loading_white@2x.png);
+  }
 }
 
 .cell-menu-item.evaluate {
@@ -132,28 +132,28 @@ bk-new-cell-menu {
 }
 
 .delete-cell {
-    background: url(../images/trash@2x.png) no-repeat center;
-    background-size: 9px;
+  background: url(../images/trash@2x.png) no-repeat center;
+  background-size: 9px;
 }
 
 .move-cell-up {
-    background: url(../images/up@2x.png) no-repeat center;
-    background-size: 8px;
+  background: url(../images/up@2x.png) no-repeat center;
+  background-size: 8px;
 }
 
 .move-cell-down {
-    background: url(../images/down@2x.png) no-repeat center;
-    background-size: 8px;
+  background: url(../images/down@2x.png) no-repeat center;
+  background-size: 8px;
 }
 
 .expand-contract {
-    background: url(../images/collapse@2x.png) no-repeat center {
-        size: 11px;
-    }
+  background: url(../images/collapse@2x.png) no-repeat center {
+    size: 11px;
+  }
 
-    &.collapsed {
-        background-image: url(../images/expand@2x.png);
-    }
+  &.collapsed {
+    background-image: url(../images/expand@2x.png);
+  }
 }
 
 .advanced-mode .loading-spinner {
@@ -161,55 +161,55 @@ bk-new-cell-menu {
 }
 
 .loading-spinner {
-    top: 4px;
-    width: 15px;
-    margin: 0 -10px 0 10px;
-    height: 15px;
-    display: inline-block;
-    position: relative;
-    background-image: url(../images/loading@2x.png);
-    background-size: cover;
+  top: 4px;
+  width: 15px;
+  margin: 0 -10px 0 10px;
+  height: 15px;
+  display: inline-block;
+  position: relative;
+  background-image: url(../images/loading@2x.png);
+  background-size: cover;
 }
 
 .cell-dropdown {
-    background: url(../images/menu@2x.png) no-repeat center;
-    background-size: 3px;
+  background: url(../images/menu@2x.png) no-repeat center;
+  background-size: 3px;
 }
 
 .cell-evaluator-menu {
-    top:                -20px;
-    color:              $green;
-    cursor:             pointer;
-    display:            inline-block;
-    position:           absolute;
-    font-size:          12px;
-    background:         url(../images/down@2x.png) no-repeat center right;
-    padding-right:      13px;
-    background-size:    8px;
+  top:                -20px;
+  color:              $green;
+  cursor:             pointer;
+  display:            inline-block;
+  position:           absolute;
+  font-size:          12px;
+  background:         url(../images/down@2x.png) no-repeat center right;
+  padding-right:      13px;
+  background-size:    8px;
 
-    &:hover {
-        color: darken($green, 5%);
+  &:hover {
+    color: darken($green, 5%);
+  }
+
+  .toggle-menu & {
+    top: 1px;
+    right: 8px;
+    height: 19px;
+    position: relative;
+    display: none;
+
+    .advanced-mode & {
+      right: 0;
+      padding-right: 0;
+      display: inline-block;
+      background: none;
     }
+  }
 
-    .toggle-menu & {
-        top: 1px;
-        right: 8px;
-        height: 19px;
-        position: relative;
-        display: none;
-
-        .advanced-mode & {
-            right: 0;
-            padding-right: 0;
-            display: inline-block;
-            background: none;
-        }
-    }
-
-    b {
-        margin-left: 30px;
-        position: relative;
-        display: inline-block;
-        margin-top: 2px;
-    }
+  b {
+    margin-left: 30px;
+    position: relative;
+    display: inline-block;
+    margin-top: 2px;
+  }
 }

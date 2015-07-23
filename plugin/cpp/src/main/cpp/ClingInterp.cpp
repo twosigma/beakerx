@@ -11,9 +11,9 @@
 #include "CppEvaluator.h"
 
 JNIEXPORT jobject JNICALL Java_com_twosigma_beaker_cpp_utils_CppEvaluator_clingInterp(JNIEnv *env, jobject obj, jstring code) {
-  char *argv[] = {"/Users/diego/cling2/bin/cling", "-std=c++11", NULL};
+  char *argv[] = {"/Users/diego/cling3/bin/cling", "-std=c++11", NULL};
   std::cout << "**********CONSTRUCTOR STARTED*************" << std::endl;
-  cling::Interpreter interp(2, argv, "/Users/diego/cling2", true);
+  cling::Interpreter interp(2, argv, "/Users/diego/cling3", true);
   cling::Value val;
   jobject ret;
 

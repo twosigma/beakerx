@@ -1,10 +1,10 @@
 all: libClingInterp.jnilib
 
 libClingInterp.jnilib: ClingInterp.cpp CppEvaluator.h
-	clang++ --std=c++11 -o libClingInterp.jnilib -L/usr/lib -L/Users/diego/cling2/lib \
+	clang++ -g --std=c++11 -o libClingInterp.jnilib -L/usr/lib -L/Users/diego/cling3/lib \
 	 -m64  \
 	ClingInterp.cpp \
-	-I"/System/Library/Frameworks/JavaVM.framework/Headers" -I/Users/diego/cling2/include \
+	-I"/System/Library/Frameworks/JavaVM.framework/Headers" -I/Users/diego/cling3/include \
 	-lclingUserInterface -lclingMetaProcessor -lclingInterpreter -lclingUtils \
 	-lclangFrontend -lclangSerialization -lclangDriver -lclangCodeGen -lclangParse -lclangSema \
 	-lclangEdit -lclangAnalysis -lclangAST -lclangLex -lclangBasic -lLLVMObjCARCOpts \

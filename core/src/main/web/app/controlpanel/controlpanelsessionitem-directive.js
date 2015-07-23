@@ -47,9 +47,8 @@
             });
 
           };
-          bkUtils.httpGet('rest/session-backup/getEdited', {
-            sessionid: session.id
-          }).then(function(response) {
+          bkSession.getSessionEditedState(session.id)
+          .then(function(response) {
             var edited = response.data.edited;
             if (!edited) {
               // close session

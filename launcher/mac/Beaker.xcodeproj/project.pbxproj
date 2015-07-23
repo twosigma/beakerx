@@ -3759,7 +3759,7 @@
 		422E7C88195E2E8300522EF6 /* resources.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = resources.jar; sourceTree = "<group>"; };
 		422E7C89195E2E8300522EF6 /* rt.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = rt.jar; sourceTree = "<group>"; };
 		422E7C8B195E2E8300522EF6 /* blacklist */ = {isa = PBXFileReference; lastKnownFileType = text; path = blacklist; sourceTree = "<group>"; };
-		422E7C8C195E2E8300522EF6 /* cacerts */ = {isa = PBXFileReference; lastKnownFileType = file; path = cacerts; sourceTree = "<group>"; };
+		422E7C8C195E2E8300522EF6 /* cacerts */ = {isa = PBXFileReference; lastKnownFileType = text; path = cacerts; sourceTree = "<group>"; };
 		422E7C8D195E2E8300522EF6 /* java.policy */ = {isa = PBXFileReference; lastKnownFileType = text; path = java.policy; sourceTree = "<group>"; };
 		422E7C8E195E2E8300522EF6 /* java.security */ = {isa = PBXFileReference; lastKnownFileType = text; path = java.security; sourceTree = "<group>"; };
 		422E7C8F195E2E8300522EF6 /* javafx.policy */ = {isa = PBXFileReference; lastKnownFileType = text; path = javafx.policy; sourceTree = "<group>"; };

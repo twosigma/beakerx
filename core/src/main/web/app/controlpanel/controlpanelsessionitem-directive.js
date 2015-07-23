@@ -77,7 +77,7 @@
 
                         var fileSaver = bkCoreManager.getFileSaver(pathInfo.uriType);
                         fileSaver.save(pathInfo.uri, notebookModelAsString).then(function() {
-                          bkRecentMenu.recordRecentDocument(angular.toJson({
+                          bkRecentMenu.recordRecentDocument(JSON.stringify({
                             uri: pathInfo.uri,
                             type: pathInfo.uriType,
                             readOnly: false,

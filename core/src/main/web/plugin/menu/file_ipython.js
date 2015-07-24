@@ -248,7 +248,7 @@ define(function(require, exports, module) {
             tooltip: "Open a IPython notebook from file system and convert it to Beaker notebook",
             sortorder: 110,
             action: function() {
-              bkHelper.openWithDialog('ipynb', null, true, IPYNB_PATH_PREFIX);
+              bkHelper.openWithDialog('ipynb', 'file', true, IPYNB_PATH_PREFIX);
             }
           }
         ]

@@ -71,7 +71,7 @@ app.on('before-quit', function() {
 app.on('open-file', function(event, path) {
   event.preventDefault();
   if (backendReady) {
-    windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path)
+    windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + path, 'notebook');
   } else {
     filesToOpen.push(path);
   }
@@ -139,7 +139,7 @@ function startServer() {
   server = require('./server.js')(ipcPort);
   server.on('open-files', function(paths) {
     for (var i = 0; i < paths.length; ++i) {
-      windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + paths[i]);
+      windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + paths[i], 'notebook');
     }
   });
 }
@@ -162,7 +162,7 @@ function connectToBackend() {
     // Open file if launched with file
     if (filesToOpen.length > 0) {
       for (var i = 0; i < filesToOpen.length; ++i) {
-        windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + filesToOpen[i]);
+        windowManager.newWindow(backendRunner.getUrl() + '/beaker/#/open?uri=' + filesToOpen[i], 'notebook');
       }
     } else {
       windowManager.newWindow(backendRunner.getUrl());

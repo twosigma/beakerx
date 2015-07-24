@@ -121,4 +121,3 @@ check.dependsOn(installPlugins)
 check.dependsOn(":core:copyVendorStuff")
 check.dependsOn(":test:check")
 updatePackages.dependsOn(":core:updatePackages")
-

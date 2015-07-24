@@ -24,8 +24,8 @@ var crashReporter = require('crash-reporter');
 var events = require('events');
 var backendRunner = require('./backend-runner.js');
 var mainMenu = require('./main-menu.js');
-var windowManager = require('./window-manager.js');
 var server;
+var windowManager;
 
 var backendReady = false;
 var appReady = false;
@@ -40,8 +40,11 @@ var osName = os.type();
 
 // Electron ready
 app.on('ready', function() {
+  windowManager = require('./window-manager.js');
+
   if (process.argv.length > 1) {
     var paths = process.argv.splice(1, process.argv.length);
+    paths = paths.filter(function(el) { return el.startsWith('/'); });
     request.post({
       'url':'http://localhost:' + ipcPort + '/open-files',
       'form': {

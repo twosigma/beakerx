@@ -602,9 +602,8 @@
           var evalCodeId = 0;
 
           if (bkUtils.isElectron) {
-            bkElectron.IPC.on('close-window', function() {
-              closeNotebook();
-            });
+            bkElectron.IPC.removeAllListeners('close-window');
+            bkElectron.IPC.on('close-window', closeNotebook);
           }
 
           return {

@@ -34,7 +34,7 @@ electronName = 'electron-v' + version + '-' + platform + '-' + arch
 
 task makeInstaller(type: Exec, dependsOn: ['makeBundle', 'makeOSXDMG']) {
   if (mac) {
-    commandLine './create-dmg/create-dmg', '--volname', '"Beaker"', '--window-pos', '200', '120', '--window-size', '800', '400', '--icon-size', '100', '--icon', 'Beaker.app', '200', '190', '--hide-extension', 'Beaker.app', '--app-drop-link', '600', '185', 'Beaker.dmg', 'osxdmg/'
+    commandLine './create-dmg/create-dmg', '--volname', 'Beaker', '--window-pos', '200', '120', '--window-size', '800', '400', '--icon-size', '100', '--icon', 'Beaker.app', '200', '190', '--hide-extension', 'Beaker.app', '--app-drop-link', '600', '185', 'Beaker.dmg', 'osxdmg/'
   } else if (win) {
     commandLine 'iscc', '/o./', '/fbeaker_setup', 'makeWinInstaller.iss'
   }

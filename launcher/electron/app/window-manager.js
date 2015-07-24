@@ -19,10 +19,16 @@ module.exports = (function() {
   var backendRunner = require('./backend-runner.js');
   var ipc = require('ipc');
   var Faye = require('faye');
+  // Do not rename to 'screen', because window.screen exists
+  var electronScreen = require('screen');
+  var request = require('request');
 
   var _windows = {};
   var _windowToSession = {};
   var _sessionToWindow = {};
+
+  var windowRelativeWidth = 0.4;
+  var windowRelativeHeight = 0.8;
 
   var client;
 
@@ -31,28 +37,33 @@ module.exports = (function() {
   // Initialize cometd
 
   ipc.on('window-session', function(event, msg) {
+    var oldSession = _windowToSession[msg.windowId];
+
     _sessionToWindow[msg.sessionId] = msg.windowId;
     _windowToSession[msg.windowId] = msg.sessionId;
-  });
 
-  ipc.on('session-closed', function(event, sessionId) {
-    // Cannot use _windows instead of BrowserWindow until it is completely accurate.
-    // Right now, windows that are closed through non-beaker means remain in this map.
-    // There is also no handling of multiple windows working on the same session.
-    var windowId = _sessionToWindow[sessionId];
-    BrowserWindow.fromId(windowId).close();
-    event.returnValue = 'done';
+    // Check if that window already had a session
+    if (typeof oldSession !== 'undefined') {
+      delete _sessionToWindow[oldSession];
+      // If so, close that session
+      request.post({
+        'url': backendRunner.getUrl() + '/' + backendRunner.getHash() + '/beaker/rest/session-backup/close',
+        'form': {
+          'sessionid': oldSession
+        }
+      });
+    }
   });
 
   ipc.on('session-focused', function(event, sessionId) {
     var windowId = _sessionToWindow[sessionId];
-    BrowserWindow.fromId(windowId).focus()
-    ;
+    BrowserWindow.fromId(windowId).focus();
   });
 
+  var primaryDisplay = electronScreen.getPrimaryDisplay();
   var defaultOptions = {
-    width: 800,
-    height: 900,
+    width: primaryDisplay.bounds.width * windowRelativeWidth,
+    height: primaryDisplay.bounds.height * windowRelativeHeight,
     show: false
   };
 
@@ -78,7 +89,9 @@ module.exports = (function() {
     client = new Faye.Client(backendRunner.getUrl() + backendRunner.getHash() + '/beaker/cometd/');
     var subscription = client.subscribe('/sessionClosed', function(msg) {
       var windowId = _sessionToWindow[msg.id];
-      BrowserWindow.fromId(windowId).destroy();
+      if (typeof windowId !== 'undefined') {
+        BrowserWindow.fromId(windowId).destroy();
+      }
     });
   }
 
@@ -116,8 +129,8 @@ module.exports = (function() {
         });
         window.on('closed', function(e) {
           var sessionId = _windowToSession[window.id];
-          _sessionToWindow[sessionId] = null;
-          _windowToSession[window.id] = null;
+          delete _sessionToWindow[sessionId];
+          delete _windowToSession[window.id];
           window.unref();
         });
         break;

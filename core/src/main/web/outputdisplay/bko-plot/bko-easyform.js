@@ -673,7 +673,8 @@
               $scope.alignTextFields = function() {
                 var labels = $('.text-field-label');
                 var textFields = $('.text-field');
-                var maxLabelWidth = findMaxLabelWidth();
+                var safeIndent = 5;
+                var maxLabelWidth = findMaxLabelWidth() + safeIndent;
                 var maxTextFieldWidth = countMaxTextFieldWidth(maxLabelWidth);
                 setTextFieldsWidthInPercents(maxTextFieldWidth);
                 setEqualLabelsWidth(maxLabelWidth);

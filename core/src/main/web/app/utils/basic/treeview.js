@@ -128,7 +128,9 @@
           }
         };
         $scope.dblClick = function() {
-          if ($scope.data.type === 'directory') return;
+          if ($scope.data.type === 'directory') {
+            return;
+          }
 
           $scope.fs.open($scope.data.uri);
         };

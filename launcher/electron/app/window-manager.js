@@ -57,6 +57,11 @@ module.exports = (function() {
 
   ipc.on('session-focused', function(event, sessionId) {
     var windowId = _sessionToWindow[sessionId];
+    if (typeof windowId === 'undefined') {
+      // Have to open window with session
+      newWindow(backendRunner.getUrl() + '/beaker/#/session/' + sessionId, 'notebook');
+      return;
+    }
     BrowserWindow.fromId(windowId).focus();
   });
 

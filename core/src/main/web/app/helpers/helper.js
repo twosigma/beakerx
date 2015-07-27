@@ -163,7 +163,19 @@
             }
             bkUtils.httpPost('rest/file-io/setWorkingDirectory', {dir: path});
             // Format this accordingly!
-            bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?uri=' + path, 'notebook');
+            var routeParams = {
+              uri: path
+            }
+            if (uriType) {
+              routeParams.type = uriType;
+            }
+            if (readOnly) {
+              routeParams.readOnly = true;
+            }
+            if (format) {
+              routeParams.format = format;
+            }
+            bkHelper.openWindow(bkUtils.getBaseUrl() + '/open?' + jQuery.param(routeParams), 'notebook');
           });
         } else {
           var strategy = bkHelper.getFileSystemFileChooserStrategy();

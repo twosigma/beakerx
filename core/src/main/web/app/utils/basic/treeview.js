@@ -45,7 +45,9 @@
       scope: {rooturi: '@', fs: '='},
       controller: function($scope) {
         if (!$templateCache.get('treeNodeChildren.html')) {
+          //jscs:disable
           $templateCache.put('treeNodeChildren.html', '<tree-node class="bk-treeview" ng-repeat="d in data.children | fileFilter:fs.filter | orderBy:fs.getOrderBy():fs.getOrderReverse()" data="d" fs="fs"></tree-node>');
+          //jscs:enable
         }
 
         if (!_.string.endsWith($scope.rooturi, '/')) {
@@ -82,10 +84,12 @@
   treeView.directive('treeNode', function() {
     return {
       restrict: 'E',
+      //jscs:disable
       template: '<span ng-dblclick="dblClick()" ng-click="click()"><i class="{{ getIcon() }}"></i> <span>{{ getDisplayName() }}</span></span>' +
           '<div class="pushright">' +
           '<div ng-include="\'treeNodeChildren.html\'"></div>' +
           '</div>',
+      //jscs:enable
       scope: {data: '=', fs: '=', displayname: '@'},
       controller: function($scope, $rootScope) {
         var transform = function(c) {

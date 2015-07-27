@@ -21,6 +21,7 @@
   var module = angular.module('bk.sessionManager',[
     'bk.utils',
     'bk.session',
+    'bk.notebookManager',
     'bk.notebookCellModelManager',
     'bk.notebookNamespaceModelManager',
     'bk.recentMenu',
@@ -31,6 +32,7 @@
   module.factory('bkSessionManager', function(
       bkUtils,
       bkSession,
+      bkNotebookManager,
       bkNotebookCellModelManager,
       bkNotebookNamespaceModelManager,
       bkEvaluatorManager,
@@ -418,7 +420,7 @@
     var _sessionId = null;
     var _edited = false;
     var _needsBackup = false;
-    var _saveDir = bkUtils.getHomeDirectory(); 
+    var _saveDir = bkUtils.getHomeDirectory();
 
     var BeakerObject = function(nbmodel) {
       this.knownBeakerVars = { };
@@ -821,7 +823,7 @@
 
         if (_sessionId)
           disconnectcontrol(_sessionId);
-
+        bkNotebookManager.reset();
         bkEvaluatorManager.reset();
 
         // check inputs
@@ -837,10 +839,10 @@
         _notebookModel.set(notebookModel);
         this.setNotebookModelEdited(!!edited);
         _sessionId = sessionId;
-
-        bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
+        bkNotebookNamespaceModelManager.init(sessionId, notebookModel, generateSaveData);
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
+        bkNotebookManager.init(this);
       },
       setSessionId: function(sessionId) {
         if (!sessionId) {
@@ -874,6 +876,7 @@
 
         _needsBackup = _edited;
         bkNotebookNamespaceModelManager.init(sessionId, notebookModel);
+        bkNotebookManager.init(this);
         connectcontrol(sessionId);
         bkSession.backup(_sessionId, generateBackupData());
       },
@@ -881,6 +884,7 @@
         disconnectcontrol(_sessionId);
         bkEvaluatorManager.reset();
         bkNotebookNamespaceModelManager.clear(_sessionId);
+        bkNotebookManager.reset();
         _notebookUri.reset();
         _uriType = null;
         _readOnly = null;

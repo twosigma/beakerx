@@ -40,9 +40,10 @@
         request.open('GET', address + 'version', true);
         request.onload = function() {
           if (request.status >= 200 && request.status < 400) {
-            var resp = request.responseText;
-            if (resp.startsWith('Beaker version')){
-              ipc.send('change-server', document.getElementById('server-input').value);
+            var words = request.responseText.split(' ');
+            if (words[0] === 'Beaker') {
+              // words[1] will be the server's hash, see UtilRest.java
+              ipc.send('change-server', address, words[1]);
             }
           } else {
             alert('The address you typed does not belong to a Beaker server');

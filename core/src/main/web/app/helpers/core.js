@@ -103,7 +103,7 @@
           var prettyNames = {
             uri: 'Name',
             modified: 'Date Modified'
-          }
+          };
 
           return prettyNames[$rootScope.fsPrefs.orderBy || 'uri'];
         },

@@ -60,7 +60,7 @@
           type: "directory",
           uri: $scope.rooturi,
           children: []
-        }
+        };
 
         if (_.contains($rootScope.fsPrefs.openFolders, $scope.rooturi)) {
           $scope.fs.getChildren($scope.rooturi, $rootScope.fsPrefs.openFolders).then(function(response) {
@@ -77,7 +77,7 @@
     return function(children, filter) {
       return _.isFunction(filter) ? _(children).filter(filter) : children;
     };
-  })
+  });
 
   treeView.directive("treeNode", function() {
     return {
@@ -95,7 +95,7 @@
             modified: c.modified,
             displayName: c.displayName,
             children: _.map(c.children, transform)
-          }
+          };
         };
         $scope.click = function() {
           if ($scope.data.type === 'directory') {

@@ -38,14 +38,14 @@
     };
   });
 
-  treeView.directive("treeView", function($templateCache, $rootScope) {
+  treeView.directive('treeView', function($templateCache, $rootScope) {
     return {
       restrict: 'E',
-      template: "<tree-node data='root' fs='fs' displayname='{{ rooturi }}'></tree-node>",
-      scope: {rooturi: "@", fs: "="},
+      template: '<tree-node data="root" fs="fs" displayname="{{ rooturi }}"></tree-node>',
+      scope: {rooturi: '@', fs: '='},
       controller: function($scope) {
         if (!$templateCache.get('treeNodeChildren.html')) {
-          $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children | fileFilter:fs.filter | orderBy:fs.getOrderBy():fs.getOrderReverse()' data='d' fs='fs'></tree-node>");
+          $templateCache.put('treeNodeChildren.html', '<tree-node class="bk-treeview" ng-repeat="d in data.children | fileFilter:fs.filter | orderBy:fs.getOrderBy():fs.getOrderReverse()" data="d" fs="fs"></tree-node>');
         }
 
         if (!_.string.endsWith($scope.rooturi, '/')) {
@@ -57,7 +57,7 @@
         };
 
         $scope.root = {
-          type: "directory",
+          type: 'directory',
           uri: $scope.rooturi,
           children: []
         };
@@ -73,20 +73,20 @@
     };
   });
 
-  treeView.filter("fileFilter", function() {
+  treeView.filter('fileFilter', function() {
     return function(children, filter) {
       return _.isFunction(filter) ? _(children).filter(filter) : children;
     };
   });
 
-  treeView.directive("treeNode", function() {
+  treeView.directive('treeNode', function() {
     return {
       restrict: 'E',
-      template: "<span ng-dblclick='dblClick()' ng-click='click()'><i class='{{ getIcon() }}'></i> <span>{{ getDisplayName() }}</span></span>" +
-          "<div class='pushright'>" +
-          "<div ng-include='\"treeNodeChildren.html\"'></div>" +
-          "</div>",
-      scope: {data: "=", fs: "=", displayname: "@"},
+      template: '<span ng-dblclick="dblClick()" ng-click="click()"><i class="{{ getIcon() }}"></i> <span>{{ getDisplayName() }}</span></span>' +
+          '<div class="pushright">' +
+          '<div ng-include="\'treeNodeChildren.html\'"></div>' +
+          '</div>',
+      scope: {data: '=', fs: '=', displayname: '@'},
       controller: function($scope, $rootScope) {
         var transform = function(c) {
           return {
@@ -114,8 +114,8 @@
               $rootScope.fsPrefs.openFolders.push(uri);
               $scope.fs.getChildren($scope.data.uri).success(function(children) {
                 children = _.sortBy(children, function(c) {
-                  if (c.type === "directory") {
-                    return "!!!!!" + c.uri.toLowerCase();
+                  if (c.type === 'directory') {
+                    return '!!!!!' + c.uri.toLowerCase();
                   } else {
                     return c.uri.toLowerCase();
                   }
@@ -133,10 +133,10 @@
           $scope.fs.open($scope.data.uri);
         };
         $scope.getIcon = function() {
-          if ($scope.data.type === "directory") {
+          if ($scope.data.type === 'directory') {
             return 'folder-icon';
           }
-          if ($scope.data.type === "application/prs.twosigma.beaker.notebook+json") {
+          if ($scope.data.type === 'application/prs.twosigma.beaker.notebook+json') {
             return 'glyphicon glyphicon-book';
           } else if ($scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
             return $scope.fs.getIcon($scope.data.type);

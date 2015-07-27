@@ -149,8 +149,23 @@ input.date-picker {
   margin: 10px 0;
 }
 
-.list-component {
-  padding: 5px;
+.list-component option {
+  margin: 2px;
+}
+
+.list-component-outer {
+  display: inline-block;
+}
+
+.list-component-outer.hide-scrollbar {
+  vertical-align: top;
+  overflow: hidden;
+  border: solid grey 1px;
+}
+
+.list-component-outer.hide-scrollbar select {
+  padding: 10px;
+  margin: -5px -20px -5px -5px;
 }
 
 .radio-button-item-spacer {

@@ -367,8 +367,10 @@
             restrict: "E",
             template: "<div id='listComponentContrainer' class='list-component-container'>" +
                 "<label id='listComponentLabel' class='list-component-label'/>" +
+                "<div class='list-component-outer'>" +
                 "<select id='listComponent' class='list-component' " +
                 "ng-disabled='!component.enabled'/>" +
+                "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
 
@@ -395,7 +397,8 @@
 
                 if (size >= efc.getComponent().values.length) {
                   //hide scrollbar
-                  listComponent.css('overflow', 'hidden');
+                  var outerDiv = element.find('.list-component-outer');
+                  outerDiv.addClass('hide-scrollbar');
                 }
 
                 if (efc.getComponent().values) {

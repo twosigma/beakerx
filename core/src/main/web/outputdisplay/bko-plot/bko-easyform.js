@@ -304,9 +304,15 @@
         function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
           return {
             restrict: "E",
-            template: "<div id='comboBoxContrainer' class='combo-box-container'>" +
-                "<label id='comboBoxLabel' class='combo-box-label'/>" +
-                "<select id='comboBox' class='combo-box' ng-disabled='!component.enabled'/>" +
+            template:
+                "<div id='comboBoxContrainer' class='combo-box-container'>" +
+                  "<label id='comboBoxLabel' class='combo-box-label'/>" +
+                  "<div class='combo-box-input-outer' id='outerFilterDiv'>" +
+                    "<input type='text' class='combo-box-input' />" +
+                    "<div class='combo-box-outer'>" +
+                      "<select id='comboBox' class='combo-box' ng-disabled='!component.enabled'/>" +
+                    "</div>" +
+                  "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
 
@@ -319,8 +325,12 @@
                 comboBox.attr('ng-model', scope.ngModelAttr);
 
                 scope.component.enabled = true;
-                if (efc.getComponent().editable) {
-                  scope.component.enabled = efc.getComponent().editable === 'true' ? true : false;
+                var editable = efc.getComponent().editable && efc.getComponent().editable === 'true';
+                var textField = element.find('.combo-box-input');
+                if (editable) {
+                  textField.attr('ng-model', scope.ngModelAttr);
+                } else {
+                  textField.hide();
                 }
 
                 if (efc.getComponent().values) {
@@ -334,9 +344,7 @@
                     if (component.label === scope.componentId) {
                       scope.$apply(function() {
                         scope[scope.ngModelAttr] = component.value;
-                        scope.component.enabled
-                            = efc.getComponent().editable === 'true' ? true : false;
-                        scope.component.enabled = scope.component.enabled && component.enabled;
+                        scope.component.enabled = component.enabled;
                       });
                     }
                   });

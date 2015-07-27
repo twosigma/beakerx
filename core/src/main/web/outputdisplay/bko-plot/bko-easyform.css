@@ -133,6 +133,33 @@ input.date-picker {
   margin: 10px 0;
 }
 
+.combo-box {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+  width: 165px;
+}
+
+.combo-box-outer {
+  position: absolute;
+}
+
+.combo-box-input {
+  width: 140px;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  z-index: 2;
+  border: none;
+  padding: 0;
+}
+
+.combo-box-input-outer {
+  position: absolute;
+  display: inline-block;
+}
+
 .list-component-container {
   margin: 10px 0;
 }

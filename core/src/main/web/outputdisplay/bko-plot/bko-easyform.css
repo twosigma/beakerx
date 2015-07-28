@@ -176,6 +176,10 @@ input.date-picker {
   margin: 10px 0;
 }
 
+select.list-component {
+  border: 1px solid #CCC;
+}
+
 .list-component option {
   margin: 2px;
 }
@@ -187,7 +191,7 @@ input.date-picker {
 .list-component-outer.hide-scrollbar {
   vertical-align: top;
   overflow: hidden;
-  border: solid grey 1px;
+  border: 1px solid #CCC;
 }
 
 .list-component-outer.hide-scrollbar select {
@@ -211,7 +215,7 @@ input.date-picker {
 }
 
 div#easyFormContainer fieldset {
-  border: 1px solid #c0c0c0;
+  border: 1px solid #CCC;
   padding: 0.35em 0.625em 0.75em;
 }
 

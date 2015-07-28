@@ -45,6 +45,14 @@ var root2Path  = Path.join(__dirname, "/src/main/web/outputdisplay/");
 var buildPath = Path.join(__dirname, "/src/main/web/app/dist/");
 var tempPath = Path.join(__dirname, "/src/main/web/app/temp/");
 
+var srcAssets = {
+	images  : Path.join(__dirname, "/src/main/web/vendor/jquery-ui/css/smoothness/images/")
+};
+
+var destAssets = {
+	images  : Path.join(__dirname, "/src/main/web/app/dist/images/")
+};
+
 var banner = ['/*',
               ' *  Copyright 2014 TWO SIGMA OPEN SOURCE, LLC',
               ' *',
@@ -136,6 +144,12 @@ gulp.task("compileBeakerScss", function() {
   .pipe(stripCssComments())
   .pipe(sourcemaps.write())
   .pipe(gulp.dest(tempPath));
+});
+
+
+gulp.task('copyImages', function() {
+	return gulp.src(srcAssets.images+ "/*.{png, gif, jpg, ico}")
+		.pipe(gulp.dest(destAssets.images));
 });
 
 gulp.task('prepareCssForNamespacing', function(){
@@ -358,6 +372,7 @@ gulp.task("compile", function(cb) {
   }
   seq = seq.concat("buildIndexTemplate",
                    "buildOutputDisplayTemplate",
+		               "copyImages",
                    cb);
   runSequence.apply(this, seq);
 });

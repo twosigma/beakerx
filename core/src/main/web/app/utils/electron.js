@@ -36,6 +36,7 @@
       var IPC = require('ipc');
       var WebFrame = require('web-frame');
       var thisWindow = remote.getCurrentWindow();
+      var app = remote.require('app');
 
       var _status = '';
 
@@ -109,6 +110,7 @@
         Shell: Shell,
         IPC: IPC,
         WebFrame: WebFrame,
+        app: app,
 
         increaseZoom: function() {
           _zoomFactor += 0.1;

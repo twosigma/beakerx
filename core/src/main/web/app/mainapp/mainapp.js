@@ -337,6 +337,10 @@
                 target.format = bkCoreManager.guessFormat(target.uri);
               }
 
+              if (target.type == 'file'){
+                bkElectron.app.addRecentDocument(target.uri);
+              }
+
               var importer = bkCoreManager.getNotebookImporter(target.format);
               if (!importer) {
                 if (retry) {

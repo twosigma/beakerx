@@ -120,7 +120,7 @@ bk-section-cell {
       padding: 8px $grid-gutter-width;
 
       &.input-hidden {
-        padding-top: $grid-row-height*2;
+        padding-top: 26px;
       }
     }
 
@@ -137,7 +137,7 @@ bk-section-cell {
     min-height: 20px;
 
     .advanced-mode & {
-      min-height: 17px;
+      min-height: 18px;
       padding: 8px $grid-gutter-width;
     }
 

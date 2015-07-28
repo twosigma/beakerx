@@ -337,7 +337,7 @@
                 target.format = bkCoreManager.guessFormat(target.uri);
               }
 
-              if (target.type == 'file'){
+              if (bkUtils.isElectron && (target.type == 'file')){
                 bkElectron.app.addRecentDocument(target.uri);
               }
 

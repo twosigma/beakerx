@@ -19,20 +19,20 @@
   var module = angular.module('bk.notebook');
 
   module.directive('bkSectionCell', function(
-      bkUtils,
-      bkEvaluatorManager,
-      bkSessionManager,
-      bkCoreManager,
-      bkCellMenuPluginManager,
-      $timeout) {
-    var CELL_TYPE = "section";
+        bkUtils,
+        bkEvaluatorManager,
+        bkSessionManager,
+        bkCoreManager,
+        bkCellMenuPluginManager,
+        $timeout) {
+    var CELL_TYPE = 'section';
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
       return bkCoreManager.getBkApp().getBkNotebookWidget();
     };
     return {
       restrict: 'E',
-      template: JST["mainapp/components/notebook/sectioncell"](),
+      template: JST['mainapp/components/notebook/sectioncell'](),
       controller: function($scope) {
         var notebookCellOp = bkSessionManager.getNotebookCellOp();
 
@@ -64,66 +64,66 @@
         });
 
         $scope.cellview.menu.renameItem({
-          name: "Delete cell",
-          newName: "Delete heading and keep contents"
+          name: 'Delete cell',
+          newName: 'Delete heading and keep contents'
         });
 
         $scope.cellview.menu.addItemToHead({
-          name: "Delete section and all sub-sections",
+          name: 'Delete section and all sub-sections',
           action: function() {
             notebookCellOp.deleteSection($scope.cellmodel.id, true);
           }
         });
         $scope.cellview.menu.addItem({
-          name: "Change Header Level",
+          name: 'Change Header Level',
           items: [
-            {
-              name: "H1",
-              action: function() {
-                $scope.cellmodel.level = 1;
-                notebookCellOp.reset();
-              }
-            },
-            {
-              name: "H2",
-              action: function() {
-                $scope.cellmodel.level = 2;
-                notebookCellOp.reset();
-              }
-            },
-            {
-              name: "H3",
-              action: function() {
-                $scope.cellmodel.level = 3;
-                notebookCellOp.reset();
-              }
-            },
-            {
-              name: "H4",
-              action: function() {
-                $scope.cellmodel.level = 4;
-                notebookCellOp.reset();
-              }
+          {
+            name: 'H1',
+            action: function() {
+              $scope.cellmodel.level = 1;
+              notebookCellOp.reset();
             }
+          },
+          {
+            name: 'H2',
+            action: function() {
+              $scope.cellmodel.level = 2;
+              notebookCellOp.reset();
+            }
+          },
+          {
+            name: 'H3',
+            action: function() {
+              $scope.cellmodel.level = 3;
+              notebookCellOp.reset();
+            }
+          },
+          {
+            name: 'H4',
+            action: function() {
+              $scope.cellmodel.level = 4;
+              notebookCellOp.reset();
+            }
+          }
           ]
         });
         $scope.getShareData = function() {
           var cells = [$scope.cellmodel]
-              .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
+          .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
           var usedEvaluatorsNames = _(cells).chain()
-              .filter(function(cell) {
-                return cell.type === "code";
-              })
-              .map(function (cell) {
-                return cell.evaluator;
-              })
-              .unique().value();
+            .filter(function(cell) {
+              return cell.type === 'code';
+            })
+          .map(function(cell) {
+            return cell.evaluator;
+          })
+          .unique().value();
           var evaluators = bkSessionManager.getRawNotebookModel().evaluators
-              .filter(function (evaluator) {
-                return _.any(usedEvaluatorsNames, function (ev) {
-                  return evaluator.name === ev;
-                });
+            .filter(function(evaluator) {
+              return _.any(usedEvaluatorsNames, function(ev) {
+                return evaluator.name === ev;
               });
+            });
           return bkUtils.generateNotebook(evaluators, cells);
         };
 
@@ -131,27 +131,27 @@
           return bkCellMenuPluginManager.getPlugin(CELL_TYPE);
         };
         $scope.cellview.menu.addItem({
-          name: "Run all",
+          name: 'Run all',
           action: function() {
             bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel.id).
-                catch(function(data) {
-                  console.error(data);
-                });
+              catch(function(data) {
+                console.error(data);
+              });
           }
         });
         var shareMenu = {
-          name: "Share",
+          name: 'Share',
           items: []
         };
         $scope.cellview.menu.addItem(shareMenu);
-        $scope.$watch("getShareMenuPlugin()", function() {
+        $scope.$watch('getShareMenuPlugin()', function() {
           shareMenu.items = bkCellMenuPluginManager.getMenuItems(CELL_TYPE, $scope);
         });
         $scope.isInitializationCell = function() {
           return $scope.cellmodel.initialization;
         };
         $scope.cellview.menu.addItem({
-          name: "Initialization Cell",
+          name: 'Initialization Cell',
           isChecked: function() {
             return $scope.isInitializationCell();
           },

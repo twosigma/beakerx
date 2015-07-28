@@ -79,6 +79,14 @@
         range.yl = Math.min(range.yl, ele.y);
         range.yr = Math.max(range.yr, ele.y);
       }
+      if(range.xl == range.xr){
+        range.xl = range.xl - 0.1;
+        range.xr = range.xr + 0.1;
+      }
+      if(range.yl == range.yr){
+        range.yl = range.yl - 0.1;
+        range.yr = range.yr + 0.1;
+      }
       return range;
     };
 

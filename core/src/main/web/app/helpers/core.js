@@ -64,8 +64,8 @@
       };
       newStrategy.treeViewfs = { // file service
         getChildren: function(basePath, openFolders) {
-          var self = this
-              paths = [basePath];
+          var self = this;
+          var paths = [basePath];
 
           this.showSpinner = true;
 

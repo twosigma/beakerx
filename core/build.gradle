@@ -105,9 +105,15 @@ task (copyRequireJS, type: Copy) {
 	into 'src/main/web/app/vendor/requirejs/'
 }
 
+task (copyJQueryUIImages, type: Copy) {
+    from 'src/main/web/vendor/jquery-ui/css/smoothness/images/'
+    into 'src/main/web/app/dist/images/'
+}
+
 task copyVendorStuff
 copyVendorStuff.dependsOn copyKatex
 copyVendorStuff.dependsOn copyRequireJS
+copyVendorStuff.dependsOn copyJQueryUIImages
 
 task (compileAssets, type: Exec) {
   commandLine(*(winOrUnix('npm', 'run-script', 'compile')))

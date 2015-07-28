@@ -544,17 +544,25 @@
           scope.jqcontainer.find("#legends").remove();
 
           scope.legendDone = true;
-          var legend = $("<table></table>").appendTo(scope.jqcontainer)
-            .attr("id", "legends")
-            .attr("class", "plot-legendcontainer")
+          var legendScrollableContainer = $("<div></div>").appendTo(scope.jqcontainer)
+            .attr("class", "plot-legendscrollablecontainer")
             .draggable({
               stop : function(event, ui) {
                 scope.legendPosition = {
                   "left" : ui.position.left,
                   "top" : ui.position.top
                 };
-              }
-            });
+              },
+              handle : "#legendDraggableContainer"
+            })
+            .css("max-height", scope.jqsvg.height() - scope.layout.bottomLayoutMargin);
+
+          var legendDraggableContainer = $("<div></div>").appendTo(legendScrollableContainer)
+            .attr("id", "legendDraggableContainer")
+            .attr("class", "plot-legenddraggablecontainer");
+
+          var legend = $("<table></table>").appendTo(legendDraggableContainer)
+            .attr("id", "legends");
 
           if (scope.legendResetPosition === true) {
             scope.legendPosition = {
@@ -563,7 +571,7 @@
             };
             scope.legendResetPosition = false;
           }
-          legend.css(scope.legendPosition);
+          legendScrollableContainer.css(scope.legendPosition);
 
           if (scope.legendableItem > 1) {  // skip "All" check when there is only one line
             var unit = $("<tr></tr>").appendTo(legend)

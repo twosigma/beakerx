@@ -157,12 +157,16 @@
   cursor: pointer;
 }
 
-.plot-legendcontainer {
+.plot-legendscrollablecontainer {
   position: absolute;
-  padding: .25em;
   border: 1px solid #BBBBBB;
   background-color: #FEFEFE;
   border-collapse: initial; /* override the global table setting*/
+  overflow-y: auto;
+}
+
+.plot-legenddraggablecontainer{
+  padding: .25em 23px 0 .25em;
 }
 
 .plot-coverbox {

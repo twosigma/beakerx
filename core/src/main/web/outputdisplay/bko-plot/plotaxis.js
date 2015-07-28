@@ -104,15 +104,43 @@
         fixs = this.numFixs;
       }
       var w, f, mindiff = 1E100;
-      for (var i = intws.length - 1; i >= 0; i--) {
-        var nowcount = span / intws[i];
-        var diff = Math.abs(nowcount - count);
-        if (diff < mindiff) {
-          mindiff = diff;
-          w = intws[i];
-          f = fixs[i];
+
+      var diff = mindiff;
+      var i = 0;
+
+      var calcW = function (i) {
+        if (i >= intws.length) {
+          if (PlotAxis.prototype.axisType === "time") {
+            intws = intws.push(intws[intws.length - 1] * 2);
+          } else {
+            var bs = (intws[intws.length - 1] / 0.5) * 10;
+            intws = intws.concat([1.0 * bs, 2.5 * bs, 5.0 * bs])
+          }
         }
+        return intws[i];
+      };
+
+      var calcF = function (i) {
+        if (i >= fixs.length) {
+          if (PlotAxis.prototype.axisType !== "time") {
+            var f = Math.max(6 - i, 0);
+            fixs = fixs.concat([f, i <= 6 ? f + 1 : f, f]);
+          }
+        }
+        return fixs[i];
+      };
+
+      while (diff === mindiff) {
+        var nowcount = span / calcW(i);
+        diff = Math.abs(nowcount - count);
+        if (diff < mindiff) {
+          w = calcW(i);
+          f = calcF(i);
+          mindiff = diff;
+        }
+        i++;
       }
+
       this.axisStep = w;
       this.axisFixed = f;
       var val = Math.ceil(this.getValue(pl) / w) * w,

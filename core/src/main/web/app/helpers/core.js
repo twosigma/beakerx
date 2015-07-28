@@ -51,8 +51,13 @@
       bkElectron,
       modalDialogOp) {
 
+    function isFilePath(path) {
+      return path.split('/').pop() !== '';
+    }
+
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
+      newStrategy.manualName = '';
       newStrategy.input = "";
       newStrategy.getResult = function() {
         return newStrategy.input;
@@ -61,6 +66,9 @@
         if (ev.which === 13) {
           closeFunc(this.getResult());
         }
+      };
+      newStrategy.manualEntry = function() {
+        newStrategy.manualName = this.input.split('/').pop();
       };
       newStrategy.treeViewfs = { // file service
         getChildren: function(basePath, openFolders) {
@@ -83,6 +91,12 @@
           });
         },
         fillInput: function(path) {
+          if (isFilePath(path)) {
+            newStrategy.manualName = "";
+          } else {
+            path += newStrategy.manualName;
+          }
+
           newStrategy.input = path;
         },
         open: function(path) {

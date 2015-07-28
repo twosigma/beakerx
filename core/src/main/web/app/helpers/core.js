@@ -70,7 +70,7 @@
           this.showSpinner = true;
 
           if (openFolders) {
-            var paths = [paths].concat(openFolders);
+            paths = [paths].concat(openFolders);
           }
 
           return bkUtils.httpPost("../beaker/rest/file-io/getDecoratedChildren", {

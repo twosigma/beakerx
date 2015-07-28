@@ -38,14 +38,16 @@
     };
   });
 
-  treeView.directive("treeView", function($templateCache, $rootScope) {
+  treeView.directive('treeView', function($templateCache, $rootScope) {
     return {
       restrict: 'E',
-      template: "<tree-node data='root' fs='fs' displayname='{{ rooturi }}'></tree-node>",
-      scope: {rooturi: "@", fs: "="},
+      template: '<tree-node data="root" fs="fs" displayname="{{ rooturi }}"></tree-node>',
+      scope: {rooturi: '@', fs: '='},
       controller: function($scope) {
         if (!$templateCache.get('treeNodeChildren.html')) {
-          $templateCache.put('treeNodeChildren.html', "<tree-node class='bk-treeview' ng-repeat='d in data.children | fileFilter:fs.filter | orderBy:fs.getOrderBy():fs.getOrderReverse()' data='d' fs='fs'></tree-node>");
+          //jscs:disable
+          $templateCache.put('treeNodeChildren.html', '<tree-node class="bk-treeview" ng-repeat="d in data.children | fileFilter:fs.filter | orderBy:fs.getOrderBy():fs.getOrderReverse()" data="d" fs="fs"></tree-node>');
+          //jscs:enable
         }
 
         if (!_.string.endsWith($scope.rooturi, '/')) {
@@ -57,10 +59,10 @@
         };
 
         $scope.root = {
-          type: "directory",
+          type: 'directory',
           uri: $scope.rooturi,
           children: []
-        }
+        };
 
         if (_.contains($rootScope.fsPrefs.openFolders, $scope.rooturi)) {
           $scope.fs.getChildren($scope.rooturi, $rootScope.fsPrefs.openFolders).then(function(response) {
@@ -73,20 +75,22 @@
     };
   });
 
-  treeView.filter("fileFilter", function() {
+  treeView.filter('fileFilter', function() {
     return function(children, filter) {
       return _.isFunction(filter) ? _(children).filter(filter) : children;
     };
-  })
+  });
 
-  treeView.directive("treeNode", function() {
+  treeView.directive('treeNode', function() {
     return {
       restrict: 'E',
-      template: "<span ng-dblclick='dblClick()' ng-click='click()'><i class='{{ getIcon() }}'></i> <span>{{ getDisplayName() }}</span></span>" +
-          "<div class='pushright'>" +
-          "<div ng-include='\"treeNodeChildren.html\"'></div>" +
-          "</div>",
-      scope: {data: "=", fs: "=", displayname: "@"},
+      //jscs:disable
+      template: '<span ng-dblclick="dblClick()" ng-click="click()"><i class="{{ getIcon() }}"></i> <span>{{ getDisplayName() }}</span></span>' +
+          '<div class="pushright">' +
+          '<div ng-include="\'treeNodeChildren.html\'"></div>' +
+          '</div>',
+      //jscs:enable
+      scope: {data: '=', fs: '=', displayname: '@'},
       controller: function($scope, $rootScope) {
         var transform = function(c) {
           return {
@@ -95,7 +99,7 @@
             modified: c.modified,
             displayName: c.displayName,
             children: _.map(c.children, transform)
-          }
+          };
         };
         $scope.click = function() {
           if ($scope.data.type === 'directory') {
@@ -114,8 +118,8 @@
               $rootScope.fsPrefs.openFolders.push(uri);
               $scope.fs.getChildren($scope.data.uri).success(function(children) {
                 children = _.sortBy(children, function(c) {
-                  if (c.type === "directory") {
-                    return "!!!!!" + c.uri.toLowerCase();
+                  if (c.type === 'directory') {
+                    return '!!!!!' + c.uri.toLowerCase();
                   } else {
                     return c.uri.toLowerCase();
                   }
@@ -128,15 +132,17 @@
           }
         };
         $scope.dblClick = function() {
-          if ($scope.data.type === 'directory') return;
+          if ($scope.data.type === 'directory') {
+            return;
+          }
 
           $scope.fs.open($scope.data.uri);
         };
         $scope.getIcon = function() {
-          if ($scope.data.type === "directory") {
+          if ($scope.data.type === 'directory') {
             return 'folder-icon';
           }
-          if ($scope.data.type === "application/prs.twosigma.beaker.notebook+json") {
+          if ($scope.data.type === 'application/prs.twosigma.beaker.notebook+json') {
             return 'glyphicon glyphicon-book';
           } else if ($scope.fs.getIcon && $scope.fs.getIcon($scope.data.type)) {
             return $scope.fs.getIcon($scope.data.type);

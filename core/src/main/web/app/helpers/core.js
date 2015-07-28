@@ -51,8 +51,13 @@
       bkElectron,
       modalDialogOp) {
 
+    function isFilePath(path) {
+      return path.split('/').pop() !== '';
+    }
+
     var FileSystemFileChooserStrategy = function (){
       var newStrategy = this;
+      newStrategy.manualName = '';
       newStrategy.input = "";
       newStrategy.getResult = function() {
         return newStrategy.input;
@@ -62,15 +67,18 @@
           closeFunc(this.getResult());
         }
       };
+      newStrategy.manualEntry = function() {
+        newStrategy.manualName = this.input.split('/').pop();
+      };
       newStrategy.treeViewfs = { // file service
         getChildren: function(basePath, openFolders) {
-          var self = this
-              paths = [basePath];
+          var self = this;
+          var paths = [basePath];
 
           this.showSpinner = true;
 
           if (openFolders) {
-            var paths = [paths].concat(openFolders);
+            paths = [paths].concat(openFolders);
           }
 
           return bkUtils.httpPost("../beaker/rest/file-io/getDecoratedChildren", {
@@ -83,6 +91,12 @@
           });
         },
         fillInput: function(path) {
+          if (isFilePath(path)) {
+            newStrategy.manualName = "";
+          } else {
+            path += newStrategy.manualName;
+          }
+
           newStrategy.input = path;
         },
         open: function(path) {
@@ -103,7 +117,7 @@
           var prettyNames = {
             uri: 'Name',
             modified: 'Date Modified'
-          }
+          };
 
           return prettyNames[$rootScope.fsPrefs.orderBy || 'uri'];
         },

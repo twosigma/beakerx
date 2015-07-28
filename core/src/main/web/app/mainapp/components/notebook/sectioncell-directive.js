@@ -19,12 +19,12 @@
   var module = angular.module('bk.notebook');
 
   module.directive('bkSectionCell', function(
-      bkUtils,
-      bkEvaluatorManager,
-      bkSessionManager,
-      bkCoreManager,
-      bkCellMenuPluginManager,
-      $timeout) {
+        bkUtils,
+        bkEvaluatorManager,
+        bkSessionManager,
+        bkCoreManager,
+        bkCellMenuPluginManager,
+        $timeout) {
     var CELL_TYPE = 'section';
     var notebookCellOp = bkSessionManager.getNotebookCellOp();
     var getBkNotebookWidget = function() {
@@ -77,53 +77,53 @@
         $scope.cellview.menu.addItem({
           name: 'Change Header Level',
           items: [
-            {
-              name: 'H1',
-              action: function() {
-                $scope.cellmodel.level = 1;
-                notebookCellOp.reset();
-              }
-            },
-            {
-              name: 'H2',
-              action: function() {
-                $scope.cellmodel.level = 2;
-                notebookCellOp.reset();
-              }
-            },
-            {
-              name: 'H3',
-              action: function() {
-                $scope.cellmodel.level = 3;
-                notebookCellOp.reset();
-              }
-            },
-            {
-              name: 'H4',
-              action: function() {
-                $scope.cellmodel.level = 4;
-                notebookCellOp.reset();
-              }
+          {
+            name: 'H1',
+            action: function() {
+              $scope.cellmodel.level = 1;
+              notebookCellOp.reset();
             }
+          },
+          {
+            name: 'H2',
+            action: function() {
+              $scope.cellmodel.level = 2;
+              notebookCellOp.reset();
+            }
+          },
+          {
+            name: 'H3',
+            action: function() {
+              $scope.cellmodel.level = 3;
+              notebookCellOp.reset();
+            }
+          },
+          {
+            name: 'H4',
+            action: function() {
+              $scope.cellmodel.level = 4;
+              notebookCellOp.reset();
+            }
+          }
           ]
         });
         $scope.getShareData = function() {
           var cells = [$scope.cellmodel]
-              .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
+          .concat(notebookCellOp.getAllDescendants($scope.cellmodel.id));
           var usedEvaluatorsNames = _(cells).chain()
-              .filter(function(cell) {
-                return cell.type === 'code';
-              })
-              .map(function(cell) {
-                return cell.evaluator;
-              })
-              .unique().value();
+            .filter(function(cell) {
+              return cell.type === 'code';
+            })
+          .map(function(cell) {
+            return cell.evaluator;
+          })
+          .unique().value();
           var evaluators = bkSessionManager.getRawNotebookModel().evaluators
-              .filter(function(evaluator) {
-                return _.any(usedEvaluatorsNames, function(ev) {
-                  return evaluator.name === ev;
-                });
+            .filter(function(evaluator) {
+              return _.any(usedEvaluatorsNames, function(ev) {
+                return evaluator.name === ev;
               });
+            });
           return bkUtils.generateNotebook(evaluators, cells);
         };
 
@@ -134,9 +134,9 @@
           name: 'Run all',
           action: function() {
             bkCoreManager.getBkApp().evaluateRoot($scope.cellmodel.id).
-                catch(function(data) {
-                  console.error(data);
-                });
+              catch(function(data) {
+                console.error(data);
+              });
           }
         });
         var shareMenu = {

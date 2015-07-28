@@ -89,6 +89,10 @@ app.on('window-all-closed', function() {
   }
 });
 
+app.on('activate-with-no-open-windows', function() {
+  windowManager.openControlPanel();
+});
+
 ipc.on('quit', function() {
   app.quit();
 });

@@ -40,7 +40,7 @@ sudo apt-get install -y nodejs
 # for R
 sudo add-apt-repository --yes ppa:marutter/rrutter
 sudo apt-get update
-sudo apt-get install -y r-base r-base-dev libcurl4-gnutls-dev # R -v = 3.1.0
+sudo apt-get install -y r-base r-base-dev libxml2-dev libssl-dev libcurl4-gnutls-dev # R -v = 3.1.0
 sudo Rscript -e "install.packages('Rserve',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('ggplot2',,'http://cran.us.r-project.org')"
 sudo Rscript -e "install.packages('devtools',,'http://cran.us.r-project.org')"
@@ -65,7 +65,9 @@ virtualenv ~/py3k -p python3
 ~/py3k/bin/pip install numpy matplotlib scipy jinja2 tornado pyzmq pandas pyaml
 
 # ruby
-sudo apt-get install -y ruby1.9.1 ruby1.9.1-dev
+sudo add-apt-repository -y ppa:brightbox/ruby-ng
+sudo apt-get update
+sudo apt-get install -y ruby2.1 ruby2.1-dev libtool
 sudo gem install iruby
 
 # julia

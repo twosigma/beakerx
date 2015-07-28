@@ -22,7 +22,7 @@
   var module = angular.module('bk.publication', ['bk.utils']);
 
   module.factory('bkPublicationApi', function (bkUtils) {
-    var baseUrl = 'http://pub.beakernotebook.com';
+    var baseUrl = 'https://pub.beakernotebook.com';
 
     return {
       createSession: function(params) {

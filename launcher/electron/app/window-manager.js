@@ -185,11 +185,16 @@ module.exports = (function() {
     }
   }
 
+  function openControlPanel() {
+    return newWindow(backendRunner.getUrl());
+  }
+
   return {
     newWindow: newWindow,
     openChangeServerDialog: openChangeServerDialog,
     closeAll: closeAll,
     windows: _windows,
-    connectToBackend: connectToBackend
+    connectToBackend: connectToBackend,
+    openControlPanel: openControlPanel
   };
 })();

@@ -105,12 +105,8 @@ mainMenu.emitter.on('try-change-server', function() {
   windowManager.openChangeServerDialog();
 });
 
-ipc.on('change-server', function(e, address) {
-  switchToBackend(address);
-});
-
-mainMenu.emitter.on('change-server', function(e, address) {
-  switchToBackend(address);
+ipc.on('change-server', function(e, address, hash) {
+  switchToBackend(address, hash);
 });
 
 ipc.on('new-backend', function() {
@@ -147,15 +143,17 @@ function startServer() {
   });
 }
 
-function switchToBackend(address) {
+function switchToBackend(address, hash) {
   if (address != backendRunner.getUrl()) {
     killBackend();
   }
   // Open new control panel there
   console.log('Switching to ' + address);
-  windowManager.newWindow(address);
   backendRunner.setUrl(address);
+  backendRunner.setHash(hash);
   backendRunner.setLocal(false);
+  windowManager.connectToBackend();
+  windowManager.newWindow(address);
 }
 
 function connectToBackend() {

@@ -834,6 +834,20 @@
 
         var dd = $modal.open(options);
         return dd.result;
+      },
+      showPublishForm: function() {
+        var options = {
+          windowClass: 'beaker-sandbox',
+          backdropClass: 'beaker-sandbox',
+          backdrop: true,
+          keyboard: true,
+          backdropClick: true,
+          controller: 'publicationCtrl',
+          template: JST['mainapp/components/publication/publish']()
+        };
+
+        var dd = $modal.open(options);
+        return dd.result;
       }
     };
     return bkCoreManager;

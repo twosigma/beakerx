@@ -122,8 +122,20 @@
       httpGet: function(url, data) {
         return angularUtils.httpGet(url, data);
       },
+      httpGetJson: function(url, data) {
+        return angularUtils.httpGetJson(url, data);
+      },
+      httpDeleteJson: function(url, data) {
+        return angularUtils.httpDeleteJson(url, data);
+      },
       httpPost: function(url, data) {
         return angularUtils.httpPost(url, data);
+      },
+      httpPostJson: function(url, data) {
+        return angularUtils.httpPostJson(url, data);
+      },
+      httpPutJson: function(url, data) {
+        return angularUtils.httpPutJson(url, data);
       },
       spinUntilReady: function(url) {
         var deferred = angularUtils.newDeferred();

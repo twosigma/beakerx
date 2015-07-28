@@ -74,6 +74,15 @@ define(function(require, exports, module) {
       items: []
     },
     {
+      name: "Publish",
+      sortorder: 145,
+      id: "publish-menuitem",
+      action: function () {
+        bkHelper.showPublishForm();
+      },
+      tooltip: "Publish the notebook to Beaker Publications"
+    },
+    {
       name: "Share to Web",
       sortorder: 150,
       id: "share-to-web-menuitem",

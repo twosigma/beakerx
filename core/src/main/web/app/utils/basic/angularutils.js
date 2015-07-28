@@ -69,6 +69,24 @@
       httpGet: function(url, data) {
         return $http({method: "GET", url: url, params: data});
       },
+      httpGetJson: function(url, data) {
+        return $http({
+          method: "GET",
+          url: url,
+          params: data,
+          withCredentials: true,
+          headers: {'Content-Type': 'application/json'}
+        });
+      },
+      httpDeleteJson: function(url, data) {
+        return $http({
+          method: "DELETE",
+          url: url,
+          params: data,
+          withCredentials: true,
+          headers: {'Content-Type': 'application/json'}
+        });
+      },
       httpPost: function(url, data) {
         return $http({
           method: "POST",
@@ -77,11 +95,22 @@
           headers: {'Content-Type': 'application/x-www-form-urlencoded'}
         });
       },
+      httpPostJson: function(url, data) {
+        return $http({
+          method: "POST",
+          url: url,
+          data: data,
+          withCredentials: true,
+          headers: {'Content-Type': 'application/json'}
+        });
+      },
       httpPutJson: function(url, data) {
         return $http({
           method: "PUT",
           url: url,
-          data: data
+          data: data,
+          withCredentials: true,
+          headers: {'Content-Type': 'application/json'}
         });
       },
       newDeferred: function() {

@@ -32,6 +32,7 @@ var appReady = false;
 var filesToOpen = [];
 var ipcPort = 32326;
 var osName = os.type();
+var willQuit = false;
 
 // Report crashes to our server.
 crashReporter.start();
@@ -65,9 +66,16 @@ app.on('ready', function() {
   }
 });
 
-// Kill backend before exiting
+// As soon as quitting is started
 app.on('before-quit', function() {
-  killBackend();
+  // windowManager.closeAll();
+  willQuit = true;
+});
+
+// When all windows have closed
+app.on('will-quit', function() {
+  console.log('Killing backend at ' + backendRunner.getUrl());
+  backendRunner.kill();
 });
 
 // Fired when OS opens file with application
@@ -82,7 +90,7 @@ app.on('open-file', function(event, path) {
 
 // When all windows die
 app.on('window-all-closed', function() {
-  if (osName.startsWith('Darwin')) {
+  if (!willQuit && (osName.startsWith('Darwin'))) {
     mainMenu.show();
   } else {
     app.quit();
@@ -176,12 +184,6 @@ function connectToBackend() {
     }
     backendReady = true;
   });
-}
-
-function killBackend() {
-  windowManager.closeAll();
-  console.log('Killing backend at ' + backendRunner.getUrl());
-  backendRunner.kill();
 }
 
 function spinUntilReady(url, done) {

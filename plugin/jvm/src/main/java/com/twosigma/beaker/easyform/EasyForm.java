@@ -243,6 +243,10 @@ public class EasyForm extends ObservableMap<String, Object> {
   }
 
   public Object get(final Object key) {
+    if (!getComponentMap().containsKey(key)) {
+      throw new IllegalArgumentException(
+          String.format("The requested component \"%s\" does not exist.", key));
+    }
     return getComponentMap().get(key).getValue();
   }
 

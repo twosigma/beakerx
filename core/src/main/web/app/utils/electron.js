@@ -37,6 +37,7 @@
       var WebFrame = require('web-frame');
       var thisWindow = remote.getCurrentWindow();
       var app = remote.require('app');
+      var clipboard = remote.require('clipboard');
 
       var _status = '';
 
@@ -111,6 +112,7 @@
         IPC: IPC,
         WebFrame: WebFrame,
         app: app,
+        clipboard: clipboard,
 
         increaseZoom: function() {
           _zoomFactor += 0.1;

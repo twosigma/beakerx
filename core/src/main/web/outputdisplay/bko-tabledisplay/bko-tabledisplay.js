@@ -117,7 +117,7 @@
     }
   });
   //jscs:disable
-  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', '$interval', function(bkCellMenuPluginManager, bkUtils, $interval) {
+  beaker.bkoDirective('Table', ['bkCellMenuPluginManager', 'bkUtils', 'bkElectron', '$interval', function(bkCellMenuPluginManager, bkUtils, bkElectron, $interval) {
   //jscs:enable
     var CELL_TYPE = 'bko-tabledisplay';
     return {
@@ -874,24 +874,29 @@
         };
 
         scope.menuToggle = function() {
-          if (scope.clipclient === undefined) {
+          var getTableData = function() {
+            var data = scope.table.rows(function(index, data, node) {
+              return scope.selected[index];
+            }).data();
+            if (data === undefined || data.length === 0) {
+              data = scope.table.rows().data();
+            }
+            var out = scope.exportTo(data, 'tabs');
+            return out;
+          }
+          if ((!bkUtils.isElectron) && (scope.clipclient === undefined)) {
             scope.clipclient = new ZeroClipboard();
             var d = document.getElementById(scope.id + '_dt_copy');
-
             scope.clipclient.clip(d);
 
             scope.clipclient.on('copy', function(event) {
               var clipboard = event.clipboardData;
-
-              var data = scope.table.rows(function(index, data, node) {
-                return scope.selected[index]; }).data();
-              if (data === undefined || data.length === 0) {
-                data = scope.table.rows().data();
-              }
-              var out = scope.exportTo(data, 'tabs');
-
-              clipboard.setData('text/plain', out);
+              clipboard.setData('text/plain', getTableData());
             });
+          } else if (bkUtils.isElectron) {
+            document.getElementById(scope.id + '_dt_copy').onclick = function() {
+              bkElectron.clipboard.writeText(getTableData(), 'text/plain');
+            }
           }
         };
 

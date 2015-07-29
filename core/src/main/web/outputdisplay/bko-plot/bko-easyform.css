@@ -146,13 +146,14 @@ input.date-picker {
 }
 
 .combo-box-input {
+  height: 17px;
+  padding: 0 4px;
   width: 140px;
   position: absolute;
   top: 1px;
   left: 1px;
   z-index: 2;
   border: none;
-  padding: 0;
 }
 
 .combo-box-input-outer {

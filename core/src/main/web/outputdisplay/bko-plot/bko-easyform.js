@@ -663,12 +663,15 @@
                     childScope.component = component;
                     childScope.formId = $scope.update_id;
                     childScope.evaluatorId = $scope.model.getEvaluatorId();
-                    var newElement = angular.element(EasyFormConstants.Components[component.type].htmlTag);
+                    var newElement
+                        = angular.element(EasyFormConstants.Components[component.type].htmlTag);
                     childScope.component.enabled = childScope.component.enabled ? true : false;
                     easyFormContainer.append($compile(newElement)(childScope));
 
-                    if (!(component.type.includes(EasyFormConstants.Components.SaveValuesButton.type)
-                        || component.type.includes(EasyFormConstants.Components.LoadValuesButton.type))) {
+                    if ((component.type.indexOf(
+                        EasyFormConstants.Components.SaveValuesButton.type) == -1
+                        || component.type.indexOf(
+                        EasyFormConstants.Components.LoadValuesButton.type) == -1)) {
                       EasyFormService.addComponent(component);
                     }
 

@@ -111,12 +111,15 @@ public class PluginServiceLocatorRest {
   private static final String IPYTHON2_RULES =
     "location %(base_url)s/api/kernels/kill/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/api/kernels/;\n" +
+    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
     "}\n" +
     "location %(base_url)s/api/kernels/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/api/kernels;\n" +
+    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
     "}\n" +
     "location %(base_url)s/api/sessions/ {\n" +
     "  proxy_pass http://127.0.0.1:%(port)s/api/sessions;\n" +
+    "  proxy_set_header Origin \"http://127.0.0.1:%(port)s\";\n" +
     "}\n" +
     "location ~ %(base_url)s/api/kernels/[0-9a-f-]+/ {\n" +
     IPYTHON_RULES_BASE;

@@ -109,7 +109,7 @@
         },
         link: function(scope, element, attrs) {
           var tagstofilter = ['applet', 'base', 'basefont', 'body', 'frame', 'frameset', 'head', 'html',
-                              'isindex', 'link', 'meta', 'noframes', 'noscript', 'object', 'param', /*'script',*/ 'iframe'];
+                              'isindex', 'link', 'meta', 'noframes', 'noscript', 'object', 'param'];
 
           scope.clean = function() {
             for (var t in tagstofilter) {

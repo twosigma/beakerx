@@ -13,40 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-.text-field-label {
+.position-absolute {
+  position: absolute;
+}
+
+.easyform-label {
   display: inline-block;
   max-width: 200px;
-}
-
-.text-area-label {
   vertical-align: top;
-  margin: 5px 10px;
-  min-width: 100px;
 }
 
-.check-box-label {
-  margin: 0 10px;
-  min-width: 100px;
-}
-
-.combo-box-label {
-  margin: 0 10px;
-  min-width: 100px;
-}
-
-.list-component-label {
-  margin: 0 10px;
-  min-width: 100px;
-}
-
-.check-box-group-label {
-  margin: 0 10px;
-  min-width: 100px;
-  float: left;
+.text-field, .text-area {
+  width: 100%;
 }
 
 .check-box-group-item-label {
-  margin: 0 5px;
+  margin: 0 5px 0 0;
+}
+
+.check-box-group-item-label input[type="checkbox"] {
+  vertical-align: middle;
+  margin: 0;
 }
 
 .check-box-group-item-label.vertical {
@@ -56,30 +43,9 @@
 .check-box-group-item-label.horizontal {
 }
 
-.date-picker-label {
-  margin: 0 10px;
-  min-width: 100px;
-}
-
-.radio-button-label {
-  margin: 0 10px;
-  min-width: 100px;
-  float: left;
-}
-
-.radio-button-items-container {
-  display: table;
-}
-
 .radio-button-item-text {
   width: 10%;
-}
-
-.radio-button-item-text.vertical {
-  display: table-cell;
-}
-
-.radio-button-item-text.horizontal {
+  margin: 0 10px 0 5px;
 }
 
 .radio-button-item-label {
@@ -87,28 +53,17 @@
 }
 
 .radio-button-item-label.vertical {
-  display: table-row;
-}
-
-.radio-button-item-label.horizontal {
-  display: table-cell;
+  display: inline;
 }
 
 input[type="radio"].radio-button-component-item {
-  margin: 0 10px;
   vertical-align: middle;
-}
-
-input[type="radio"].radio-button-component-item.vertical {
-  display: table-cell;
-}
-
-input[type="radio"].radio-button-component-item.horizontal {
+  margin: 0;
 }
 
 input.check-box {
-  height: 25px;
   vertical-align: middle;
+  margin: 0;
 }
 
 input.date-picker {
@@ -116,21 +71,11 @@ input.date-picker {
   width: 120px;
 }
 
-.text-field-container {
+.easyform-container {
   margin: 10px 0;
   word-wrap: break-word;
-}
-
-.text-area-container {
-  margin: 10px 0;
-}
-
-.check-box-container {
-  margin: 10px 0;
-}
-
-.combo-box-container {
-  margin: 10px 0;
+  display: inline-block;
+  width: 100%;
 }
 
 .combo-box {
@@ -159,18 +104,6 @@ input.date-picker {
 .combo-box-input-outer {
   position: absolute;
   display: inline-block;
-}
-
-.list-component-container {
-  margin: 10px 0;
-}
-
-.radio-button-container {
-  margin: 10px 0;
-}
-
-.date-picker-container {
-  margin: 10px 0;
 }
 
 .button-component-container {
@@ -205,13 +138,12 @@ select.list-component {
   width: 100%;
 }
 
-.text-field {
-  float: right;
+.easyform-component-container {
   display: inline-block;
   margin: 0 5px;
 }
 
-.text-field.fixed-size {
+.easyform-component-container.fixed-size {
   float: none;
 }
 

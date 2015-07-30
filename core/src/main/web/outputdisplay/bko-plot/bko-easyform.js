@@ -339,6 +339,13 @@
                 var textField = element.find('.combo-box-input');
                 if (editable) {
                   textField.attr('ng-model', scope.ngModelAttr);
+                  //todo replace this hack
+                  var tmp = document.createElement("span");
+                  tmp.innerHTML = efc.getComponent().value;
+                  document.body.appendChild(tmp);
+                  var theWidth = tmp.getBoundingClientRect().width;
+                  document.body.removeChild(tmp);
+                  textField.width(theWidth);
                 } else {
                   textField.hide();
                 }

@@ -83,7 +83,6 @@ input.date-picker {
   top: 0px;
   left: 0px;
   z-index: 1;
-  width: 165px;
 }
 
 .combo-box-outer {
@@ -93,7 +92,6 @@ input.date-picker {
 .combo-box-input {
   height: 17px;
   padding: 0 4px;
-  width: 140px;
   position: absolute;
   top: 1px;
   left: 1px;
@@ -134,7 +132,6 @@ select.list-component {
 }
 
 .radio-button-item-spacer {
-  display: table-cell;
   width: 100%;
 }
 

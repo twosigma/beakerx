@@ -70,7 +70,8 @@ public class CppShellRest {
   @Path("evaluate")
   public SimpleEvaluationObject evaluate(
       @FormParam("shellId") String shellId,
-      @FormParam("code") String code) throws InterruptedException {
+      @FormParam("code") String code,
+      @FormParam("cellId") String cellId) throws InterruptedException {
 
     SimpleEvaluationObject obj = new SimpleEvaluationObject(code);
     obj.started();
@@ -79,7 +80,7 @@ public class CppShellRest {
       return obj;
     }
     try {
-      this.shells.get(shellId).evaluate(obj, code);
+      this.shells.get(shellId).evaluate(obj, code, cellId);
     } catch (Exception e) {
       obj.error(e.toString());
       return obj;

@@ -47,7 +47,7 @@ task compileCppEvaluator(type: JavaCompile) {
 
 task makeCppEvaluatorHeader(type: Exec) {
   workingDir './src/main/java'
-  commandLine 'javah', '-jni', '-o', '../cpp/CppEvaluator.h', 'com.twosigma.beaker.cpp.utils.CppEvaluator' 
+  commandLine 'javah', '-jni', '-o', '../cpp/CppEvaluator.h', 'com.twosigma.beaker.cpp.utils.CppEvaluator'
 }
 
 dependencies {

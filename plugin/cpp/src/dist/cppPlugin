@@ -22,7 +22,7 @@ self_path = sys.argv.pop(0)
 
 os.chdir(os.path.dirname(self_path))
 
-os.environ["CPPSH_OPTS"] = "-Djava.library.path=/Users/diego/beaker-notebook/core/config/plugins/eval/cpp/lib/libClingInterp.jnilib".join(sys.argv)
+os.environ["CPP_OPTS"] = "-Djava.library.path=/Users/diego/beaker-notebook/core/config/plugins/eval/cpp/lib".join(sys.argv)
 
 if os.name == 'nt':
     bin = "bin\\cpp"

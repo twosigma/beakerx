@@ -43,7 +43,7 @@ define(function(require, exports, module) {
             console.log('failed to create shell', arguments);
           });
     },
-    evaluate: function(code, modelOutput, refreshObj) {
+    evaluate: function(code, modelOutput, refreshObj, cellId) {
       var deferred = Q.defer();
 
       if (CppCancelFunction) {
@@ -57,7 +57,11 @@ define(function(require, exports, module) {
         type: 'POST',
         datatype: 'json',
         url: bkHelper.serverUrl(serviceBase + '/rest/cpp/evaluate'),
-        data: {shellId: self.settings.shellID, code: code}
+        data: {
+          shellId: self.settings.shellID,
+          cellId: cellId,
+          code: code
+        }
       }).done(function(ret) {
         CppCancelFunction = function() {
           $.ajax({
@@ -162,12 +166,6 @@ define(function(require, exports, module) {
     },
     cometdUtil: cometdUtil
   };
-  // var defaultImports = [
-  //   'com.twosigma.beaker.chart.Color',
-  //   'com.twosigma.beaker.BeakerProgressUpdate',
-  //   'com.twosigma.beaker.chart.xychart.*',
-  //   'com.twosigma.beaker.chart.xychart.plotitem.*',
-  //   'com.twosigma.beaker.NamespaceClient'];
   var defaultImports = [];
   var shellReadyDeferred = bkHelper.newDeferred();
 

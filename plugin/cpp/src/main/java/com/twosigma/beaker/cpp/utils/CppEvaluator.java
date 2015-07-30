@@ -35,6 +35,8 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.*;
 import java.io.File;
 
+import java.io.BufferedWriter;
+
 public class CppEvaluator {
   protected final String shellId;
   protected final String sessionId;
@@ -52,22 +54,36 @@ public class CppEvaluator {
   protected String currentImports;
 
   protected class jobDescriptor {
-    String codeToBeExecuted;
     SimpleEvaluationObject outputObject;
+    String codeToBeExecuted;
+    String cellId;
     
-    jobDescriptor(String c , SimpleEvaluationObject o) {
-      codeToBeExecuted = c;
+    jobDescriptor(SimpleEvaluationObject o, String c, String cid) {
       outputObject = o;
+      codeToBeExecuted = c;
+      cellId = cid;
     }
   }
-  
+
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  public native Object clingInterp(String code);
+  public class CppReturn {
+    public Object value;
+    public String output;
+
+    public CppReturn(Object val, String out) {
+      value = val;
+      output = out;
+    }
+  }
+  
+  public native void clingInit(String includePath);
+  public native CppReturn clingInterp(String code);
 
   static {
     System.load(System.getProperty("user.dir") + "/lib/libClingInterp.jnilib");
+    // System.loadLibrary("clingInterp");
   }
 
   public CppEvaluator(String id, String sId) {
@@ -85,6 +101,10 @@ public class CppEvaluator {
     outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     executor = new BeakerCellExecutor("cpp");
+
+    String tmpDir = System.getenv("beaker_tmp_dir");
+    clingInit(tmpDir);
+
     startWorker();
   }
 
@@ -164,9 +184,9 @@ public class CppEvaluator {
     resetEnvironment();
   }
 
-  public void evaluate(SimpleEvaluationObject seo, String code) {
+  public void evaluate(SimpleEvaluationObject seo, String code, String cellId) {
     // send job to thread
-    jobQueue.add(new jobDescriptor(code,seo));
+    jobQueue.add(new jobDescriptor(seo, code, cellId));
     syncObject.release();
   }
 
@@ -256,7 +276,7 @@ public class CppEvaluator {
           // normalize and analyze code
           String code = normalizeCode(j.codeToBeExecuted);
 
-          if (!executor.executeTask(new MyRunnable(code, j.outputObject, true))) {
+          if (!executor.executeTask(new MyRunnable(j.outputObject, code, j.cellId, true))) {
             j.outputObject.error("... cancelled!");
           }
           if(nc!=null) {
@@ -280,26 +300,41 @@ public class CppEvaluator {
     
     protected class MyRunnable implements Runnable {
 
-      protected final String theCode;
       protected final SimpleEvaluationObject theOutput;
+      protected final String theCode;
+      protected final String theCellId;
       protected final boolean retObject;
 
-      public MyRunnable(String code, SimpleEvaluationObject out, boolean ro) {
-        theCode = code;
+      public MyRunnable(SimpleEvaluationObject out, String code, String cid, boolean ro) {
         theOutput = out;
+        theCode = code;
+        theCellId = cid;
         retObject = ro;
       }
       
       @Override
       public void run() {
+        System.out.println("Not here");
         theOutput.setOutputHandler();
+        System.out.println("here");
         try {          
-          Object o = clingInterp(theCode);
+          CppReturn ret = new CppReturn(true, null);
+         
+          // Rename entrypoint
+          String formattedCode = theCode.replace("beaker_main", theCellId);
+          // Write code to temp file cid.cpp
+          String tmpDir = System.getenv("beaker_tmp_dir");
+          java.nio.file.Path filePath = java.nio.file.Paths.get(tmpDir + "/" + theCellId + ".cpp");
+          Files.write(filePath, formattedCode.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+          theOutput.setOutputHandler();
+          ret = clingInterp(".X " + theCellId + ".cpp");
           if (retObject) {
-            theOutput.finished(o);
+            theOutput.finished(ret);
           } else {
             theOutput.finished(null);
           }          
+          return;
         } catch(Throwable e) {
           if (e instanceof InvocationTargetException)
             e = ((InvocationTargetException)e).getTargetException();

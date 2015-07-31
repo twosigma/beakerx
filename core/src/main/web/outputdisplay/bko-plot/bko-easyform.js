@@ -343,7 +343,7 @@
                   var tmp = document.createElement("span");
                   tmp.innerHTML = efc.getComponent().value;
                   document.body.appendChild(tmp);
-                  var theWidth = tmp.getBoundingClientRect().width;
+                  var theWidth = tmp.getBoundingClientRect().width + 10;
                   document.body.removeChild(tmp);
                   textField.width(theWidth);
                 } else {

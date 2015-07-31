@@ -20,11 +20,13 @@
 .easyform-label {
   display: inline-block;
   max-width: 200px;
+  min-width: 100px;
   vertical-align: top;
 }
 
 .text-field, .text-area {
   width: 100%;
+  border: 1px solid #CCC;;
 }
 
 .check-box-group-item-label {
@@ -69,6 +71,7 @@ input.check-box {
 input.date-picker {
   height: 25px;
   width: 120px;
+  border: 1px solid #CCC;;
 }
 
 .easyform-container {

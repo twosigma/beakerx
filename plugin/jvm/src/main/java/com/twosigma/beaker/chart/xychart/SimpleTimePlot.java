@@ -30,11 +30,10 @@ public class SimpleTimePlot extends TimePlot {
   private List<Map<String, Object>> data;
   private String timeColumn = "time";
   private List<String> columns;
-  private List<String> displayLineNames;
-  private List<String> displayPointNames;
+  private List<String> displayNames;
   private List<Object> colors;
   private boolean displayLines  = true;
-  private boolean displayPoints = true;
+  private boolean displayPoints = false;
 
 
   //saturation 75%
@@ -72,12 +71,8 @@ public class SimpleTimePlot extends TimePlot {
     }
 
     //default the names for the lines and points to the same as the column
-    if (displayLineNames == null || displayLineNames.size() == 0) {
-      displayLineNames = columns;
-    }
-
-    if (displayPointNames == null || displayPointNames.size() == 0) {
-      displayPointNames = columns;
+    if (displayNames == null || displayNames.size() == 0) {
+      displayNames = columns;
     }
 
     reinitialize();
@@ -85,6 +80,7 @@ public class SimpleTimePlot extends TimePlot {
 
   private List<Color> getChartColors() {
     if (colors != null) {
+
       List<Color> chartColors = new ArrayList<>();
       for (int i = 0; i < columns.size(); i++) {
         Color color = null;
@@ -120,24 +116,29 @@ public class SimpleTimePlot extends TimePlot {
   }
 
   private Color createChartColor(Object color) {
-    try {
-      if (color instanceof List) {
+    if (color instanceof List) {
+      try {
         return new Color((int) ((List) color).get(0), (int) ((List) color).get(1), (int) ((List) color).get(2));
-      } else if (color instanceof String) {
-        String colorAsStr = (String) color;
-        if (colorAsStr.indexOf("#") == 0) {
-          return Color.decode(colorAsStr);
-        } else {
-          Field field = Class.forName("com.twosigma.beaker.chart.Color").getField(colorAsStr);
-          return (Color) field.get(null);
-        }
+      } catch (IndexOutOfBoundsException x) {
+        throw new RuntimeException("Color list too short");
       }
-    } catch (Throwable ignored) {
-      //expected
+
     }
-    return null;
+    String colorAsStr = (String) color;
+    if (colorAsStr.indexOf("#") == 0) {
+      return Color.decode(colorAsStr);
+    }
+    return colorFromName(colorAsStr);
   }
 
+  private Color colorFromName(String color) {
+    try {
+      Field field = Class.forName("com.twosigma.beaker.chart.Color").getField(color);
+      return (Color) field.get(null);
+    } catch (ClassNotFoundException | IllegalAccessException | NoSuchFieldException x) {
+      throw new RuntimeException(String.format("Can not parse color '%s'", color), x);
+    }
+  }
 
   private Color createNiceColor() {
     Random random = new Random();
@@ -183,8 +184,8 @@ public class SimpleTimePlot extends TimePlot {
           line.setX(xs);
           line.setY(ys);
 
-          if (displayLineNames != null && i < displayLineNames.size()) {
-            line.setDisplayName(displayLineNames.get(i));
+          if (displayNames != null && i < displayNames.size()) {
+            line.setDisplayName(displayNames.get(i));
           } else {
             line.setDisplayName(columns.get(i));
           }
@@ -198,8 +199,8 @@ public class SimpleTimePlot extends TimePlot {
           points.setX(xs);
           points.setY(ys);
 
-          if (displayPointNames != null && i < displayPointNames.size()) {
-            points.setDisplayName(displayPointNames.get(i));
+          if (displayNames != null && i < displayNames.size()) {
+            points.setDisplayName(displayNames.get(i));
           } else {
             points.setDisplayName(columns.get(i));
           }
@@ -230,39 +231,23 @@ public class SimpleTimePlot extends TimePlot {
     reinitialize();
   }
 
-  public void setDisplayLineNames(List<String> displayLineNames) {
-    this.displayLineNames = displayLineNames;
-    if (displayLineNames != null) {
+  public void setDisplayNames(List<String> displayNames) {
+    this.displayNames = displayNames;
+    if (displayNames != null) {
       List<XYGraphics> graphics = getGraphics();
       int i = 0;
       for (XYGraphics graphic : graphics) {
         if (graphic instanceof Line) {
-          graphic.setDisplayName(displayLineNames.get(++i));
+          graphic.setDisplayName(displayNames.get(++i));
         }
       }
     }
   }
 
-  public List<String> getDisplayLineNames() {
-    return displayLineNames;
+  public List<String> getDisplayNames() {
+    return displayNames;
   }
 
-  public void setDisplayPointNames(List<String> displayPointNames) {
-    this.displayPointNames = displayPointNames;
-    if (displayPointNames != null) {
-      List<XYGraphics> graphics = getGraphics();
-      int i = 0;
-      for (XYGraphics graphic : graphics) {
-        if (graphic instanceof Points) {
-          graphic.setDisplayName(displayPointNames.get(++i));
-        }
-      }
-    }
-  }
-
-  public List<String> getDisplayPointNames() {
-    return displayPointNames;
-  }
 
   public void setColors(List<Object> colors) {
     this.colors = colors;

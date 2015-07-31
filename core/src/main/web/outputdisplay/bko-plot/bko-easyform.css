@@ -148,6 +148,7 @@ select.list-component {
 }
 
 div#easyFormContainer fieldset {
+  margin-top: 10px;
   border: 1px solid #CCC;
   padding: 0.35em 0.625em 0.75em;
 }

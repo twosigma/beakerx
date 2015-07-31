@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "chalk": "^1.1.0",
+    "drool": "^0.1.1",
+    "humanize": "0.0.9",
     "protractor": "2.1.0",
     "underscore": "^1.7.0"
   }

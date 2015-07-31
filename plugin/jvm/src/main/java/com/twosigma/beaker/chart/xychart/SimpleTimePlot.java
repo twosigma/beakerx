@@ -51,7 +51,9 @@ public class SimpleTimePlot extends TimePlot {
     this(null, data, columns);
   }
 
-  public SimpleTimePlot(Map<String, Object> parameters, List<Map<String, Object>> data, List<String> columns) {
+  public SimpleTimePlot(Map<String, Object> parameters,
+                        List<Map<String, Object>> data,
+                        List<String> columns) {
 
     this.data = data;
     this.columns = columns;
@@ -118,7 +120,9 @@ public class SimpleTimePlot extends TimePlot {
   private Color createChartColor(Object color) {
     if (color instanceof List) {
       try {
-        return new Color((int) ((List) color).get(0), (int) ((List) color).get(1), (int) ((List) color).get(2));
+        return new Color((int) ((List) color).get(0),
+                         (int) ((List) color).get(1),
+                         (int) ((List) color).get(2));
       } catch (IndexOutOfBoundsException x) {
         throw new RuntimeException("Color list too short");
       }

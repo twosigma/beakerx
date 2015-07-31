@@ -28,13 +28,25 @@ import java.util.*;
 public class SimpleTimePlot extends TimePlot {
 
     private List<Map<String, Object>> data;
-    private String                    timeColumn;
-    private List<String>              columns;
-    private List<String>              displayLineNames;
-    private List<String>              displayPointNames;
-    private List<Object>              colors;
-    private boolean                   displayLines = true;
-    private boolean                   displayPoints = true;
+    private String timeColumn = "time";
+    private List<String> columns;
+    private List<String> displayLineNames;
+    private List<String> displayPointNames;
+    private List<Object> colors;
+    private boolean displayLines  = true;
+    private boolean displayPoints = true;
+
+
+    //saturation 75%
+    //brightness 85%
+    private static final Color[] NICE_COLORS = {
+            new Color(54, 54, 217),   //blue hue = 240
+            new Color(216, 54, 54),   //red hue = 0
+            new Color(54, 216, 170),  //green hue = 163
+            new Color(192, 54, 216),  //purple hue = 291
+            new Color(54, 126, 186),  //cyan hue = 169
+            new Color(216, 178, 54),  //yellow hue = 46
+    };
 
     public SimpleTimePlot(List<Map<String, Object>> data, List<String> columns) {
         this(null, data, columns);
@@ -49,8 +61,6 @@ public class SimpleTimePlot extends TimePlot {
         setUseToolTip(true);
         setShowLegend(true);
         setXLabel("Time");
-
-        setTimeColumn("time");
 
         if (parameters != null) {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
@@ -77,28 +87,39 @@ public class SimpleTimePlot extends TimePlot {
         if (colors != null) {
             List<Color> chartColors = new ArrayList<>();
             for (int i = 0; i < columns.size(); i++) {
-                int size = columns.size();
+                    Color color = null;
                 if (i < colors.size()) {
-                    Object color = colors.get(i);
-                    chartColors.add(createChartColor(color, (float) i / size));
-                } else {
-                    chartColors.add(createNiceColor((float) i / size));
+                    color = createChartColor(colors.get(i));
                 }
+                if (color == null){
+                    color = createNiceColor();
+                    while (chartColors.contains(color)){
+                        color = createNiceColor();
+                    }
+                }
+                chartColors.add(color);
             }
-
             return chartColors;
         }
         return getNiceColors(columns.size());
     }
 
     private List<Color> getNiceColors(int n) {
-        List<Color> cols = new ArrayList<>();
+        List<Color> colors = new ArrayList<>();
         for (int i = 0; i < n; i++)
-            cols.add(createNiceColor((float) i / n));
-        return cols;
+            if (i < NICE_COLORS.length)
+                colors.add(NICE_COLORS[i]);
+            else {
+                Color color = createNiceColor();
+                while (colors.contains(color)){
+                    color = createNiceColor();
+                }
+                colors.add(color);
+            }
+        return colors;
     }
 
-    private Color createChartColor(Object color, float i) {
+    private Color createChartColor(Object color) {
         try {
             if (color instanceof List) {
                 return new Color((int) ((List) color).get(0), (int) ((List) color).get(1), (int) ((List) color).get(2));
@@ -114,22 +135,25 @@ public class SimpleTimePlot extends TimePlot {
         } catch (Throwable ignored) {
             //expected
         }
-        return createNiceColor(i);
+        return null;
     }
 
 
-    private Color createNiceColor(float i) {
-        return new Color(java.awt.Color.getHSBColor(i, 1, 1).getRGB());
+    private Color createNiceColor() {
+        Random random = new Random();
+        final float hue = random.nextFloat();
+        final float saturation = 0.75f;
+        final float luminance = 0.85f;
+        return  new Color(java.awt.Color.getHSBColor(hue, saturation, luminance).getRGB());
     }
 
     private void reinitialize() {
         List<XYGraphics> graphics = getGraphics();
         filter(graphics, new Predicate<XYGraphics>() {
             public boolean test(XYGraphics graphic) {
-                return graphic instanceof Line || graphic instanceof Points;
+                return !(graphic instanceof Line || graphic instanceof Points);
             }
         });
-
 
         List<Number> xs = new ArrayList<>();
         List<List<Number>> yss = new ArrayList<>();
@@ -161,6 +185,8 @@ public class SimpleTimePlot extends TimePlot {
 
                     if (displayLineNames != null && i < displayLineNames.size()) {
                         line.setDisplayName(displayLineNames.get(i));
+                    }else{
+                        line.setDisplayName(columns.get(i));
                     }
                     line.setColor(colors.get(i));
 
@@ -174,6 +200,8 @@ public class SimpleTimePlot extends TimePlot {
 
                     if (displayPointNames != null && i < displayPointNames.size()) {
                         points.setDisplayName(displayPointNames.get(i));
+                    }else{
+                        points.setDisplayName(columns.get(i));
                     }
                     points.setColor(colors.get(i));
 

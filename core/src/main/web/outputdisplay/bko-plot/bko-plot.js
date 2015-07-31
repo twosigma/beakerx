@@ -533,6 +533,70 @@
           }
         };
 
+        scope.prepareMergedLegendData = function() {
+          var data = scope.stdmodel.data;
+
+          var mergedLines = {};
+          var lineUniqueAttributesSet = {};
+
+          function getColorInfoUid(dat) {
+            var color = plotUtils.createColor(dat.color, dat.color_opacity),
+                border = plotUtils.createColor(dat.stroke, dat.stroke_opacity);
+            return color + border;
+          }
+
+          function addNewLegendLineData(dat, lineUniqueIndex) {
+            var line = {
+              dataIds: [i],
+              legend: dat.legend,
+              showItem: dat.showItem,
+              isLodItem: dat.isLodItem === true,
+              color: dat.color,
+              color_opacity: dat.color_opacity,
+              stroke: dat.stroke,
+              stroke_opacity: dat.stroke_opacity
+            };
+            if (dat.isLodItem === true) {
+              line.lodDataIds = [i];
+            }
+            var lineId = plotUtils.randomString(32);
+            mergedLines[lineId] = line;
+            lineUniqueAttributesSet[lineUniqueIndex] = lineId;
+            return lineId;
+          }
+
+          function addDataForExistingLegendLine(dat, line) {
+            line.dataIds.push(i);
+            if (dat.isLodItem === true) {
+              line.isLodItem = true;
+              if (line.lodDataIds) {
+                line.lodDataIds.push(i);
+              } else {
+                line.lodDataIds = [i];
+              }
+            }
+            if (line.showItem !== true) {
+              line.showItem = dat.showItem
+            }
+          }
+
+          for (var i = 0; i < data.length; i++) {
+            var dat = data[i];
+            if (dat.legend == null || dat.legend === "") {
+              continue;
+            }
+
+            var lineUniqueIndex = dat.legend + getColorInfoUid(dat);
+
+            if (lineUniqueAttributesSet[lineUniqueIndex] == null) {
+              addNewLegendLineData(dat, lineUniqueIndex);
+            } else {
+              addDataForExistingLegendLine(dat, mergedLines[lineUniqueAttributesSet[lineUniqueIndex]])
+            }
+          }
+          return mergedLines;
+        };
+
         scope.renderLegends = function() {
           // legend redraw is controlled by legendDone
           if (scope.legendableItem === 0 ||
@@ -565,7 +629,9 @@
           }
           legend.css(scope.legendPosition);
 
-          if (scope.legendableItem > 1) {  // skip "All" check when there is only one line
+          scope.legendMergedLines = scope.prepareMergedLegendData();
+
+          if (Object.keys(scope.legendMergedLines).length > 1) {  // skip "All" check when there is only one line
             var unit = $("<tr></tr>").appendTo(legend)
               .attr("id", "legend_all");
             $("<input type='checkbox'></input>")
@@ -589,45 +655,45 @@
             $("<td></td>").appendTo(unit);
           }
 
-          var content = "";
-          for (var i = 0; i < data.length; i++) {
-            var dat = data[i];
-            if (dat.legend == null || dat.legend === "") { continue; }
+          for (var id in scope.legendMergedLines) {
+            if (!scope.legendMergedLines.hasOwnProperty(id)) { continue; }
+            var line = scope.legendMergedLines[id];
+            if (line.legend == null || line.legend === "") { continue; }
             var unit = $("<tr></tr>").appendTo(legend)
-              .attr("id", "legend_" + i);
+              .attr("id", "legend_" + id);
             // checkbox
             $("<input type='checkbox'></input>")
-              .attr("id", "legendcheck_" + i)
+              .attr("id", "legendcheck_" + id)
               .attr("class", "plot-legendcheckbox")
-              .prop("checked", dat.showItem)
+              .prop("checked", line.showItem)
               .click(function(e) {
                 return scope.toggleVisibility(e);
               })
               .appendTo($("<td></td>").appendTo(unit));
 
-            var clr = plotUtils.createColor(dat.color, dat.color_opacity),
-                st_clr = plotUtils.createColor(dat.stroke, dat.stroke_opacity);
-            var sty = dat.color == null ? "dotted " : "solid ";
+            var clr = plotUtils.createColor(line.color, line.color_opacity),
+                st_clr = plotUtils.createColor(line.stroke, line.stroke_opacity);
+            var sty = line.color == null ? "dotted " : "solid ";
             // color box
             $("<span></span>")
-              .attr("id", "legendbox_" + i)
+              .attr("id", "legendbox_" + id)
               .attr("class", "plot-legendbox")
-              .attr("title", dat.color == null ? "Element-based colored item" : "")
+              .attr("title", line.color == null ? "Element-based colored item" : "")
               .css("background-color",
-                dat.color == null ? "none" : clr)
+                line.color == null ? "none" : clr)
               .css("border",
-                dat.stroke != null ? "1px " + sty + st_clr :
-                (dat.color != null ? "1px " + sty + clr : "1px dotted gray"))
+                line.stroke != null ? "1px " + sty + st_clr :
+                (line.color != null ? "1px " + sty + clr : "1px dotted gray"))
               .appendTo($("<td></td>").appendTo(unit));
             // legend text
             $("<td></td>").appendTo(unit)
-              .attr("id", "legendtext_" + i)
+              .attr("id", "legendtext_" + id)
               .attr("class", "plot-label")
-              .text(dat.legend);
+              .text(line.legend);
             var lodhint = $("<td></td>").appendTo(unit)
-                .attr("id", "hint_" + i);
+                .attr("id", "hint_" + id);
 
-            if (dat.isLodItem === true) {
+            if (line.isLodItem === true) {
               var light = $("<span></span>").appendTo(lodhint)
                 .attr("id", "light")
                 .attr("class", "plot-legendlod");
@@ -639,12 +705,12 @@
                 .attr("id", "auto")
                 .attr("class", "plot-legendlodauto")
                 .css("min-width", "2em");
-              scope.setLodHint(dat);
-              lodhint.on('mousedown', {"dat" : dat}, function(e) {
-                var dat = e.data.dat;
+              scope.setMergedLodHint(line.lodDataIds, id);
+              lodhint.on('mousedown', {"dataIds": line.lodDataIds, "id": id}, function(e) {
+                var dataIds = e.data.dataIds;
                 e.stopPropagation();
                 if (e.which === 3) {
-                  if (dat.lodType === "off") { return; }
+                  if (scope.getMergedLodInfo(dataIds).lodType === "off") { return; }
                   scope.removePipe.push("msg_lodoff");
                   scope.renderMessage("LOD is being turned off. Are you sure?",
                     [ "You are trying to turning off LOD. Loading full resolution data is " +
@@ -652,87 +718,138 @@
                     "PROCEED (left click) / CANCEL (right click)"],
                     "msg_lodoff",
                     function() {
-                      dat.toggleLod(scope);
+                      for (var j = 0; j < dataIds.length; j++) {
+                        scope.stdmodel.data[dataIds[j]].toggleLod(scope);
+                      }
                       scope.update();
-                      scope.setLodHint(dat);
+                      scope.setMergedLodHint(dataIds, e.data.id);
                     }, null);
                 }
               });
-              type.on('mousedown', {"dat" : dat}, function(e) {
+              type.on('mousedown', {"dataIds": line.lodDataIds, "id": id}, function(e) {
                 if (e.which === 3) { return; }
-                var dat = e.data.dat;
-                if (dat.lodType === "off") {
-                  dat.toggleLod(scope);
-                } else {
-                  dat.switchLodType(scope);
+                var dataIds = e.data.dataIds;
+                for (var j = 0; j < dataIds.length; j++) {
+                  var dat = scope.stdmodel.data[dataIds[j]];
+                  if (dat.lodType === "off") {
+                    dat.toggleLod(scope);
+                  } else {
+                    dat.switchLodType(scope);
+                  }
+                  dat.zoomLevelChanged(scope);
                 }
-                dat.zoomLevelChanged(scope);
                 scope.update();
-                scope.setLodHint(dat);
+                scope.setMergedLodHint(dataIds, e.data.id);
               });
-              auto.on('mousedown', {"dat" : dat}, function(e) {
+              auto.on('mousedown', {"dataIds": line.lodDataIds, "id": id}, function(e) {
                 if (e.which === 3) { return; }
-                var dat = e.data.dat;
-                if (dat.lodType === "off") return;
-                dat.toggleLodAuto(scope);
+                var dataIds = e.data.dataIds;
+                for (var j = 0; j < dataIds.length; j++) {
+                  var dat = scope.stdmodel.data[dataIds[j]];
+                  if (dat.lodType === "off") return;
+                  dat.toggleLodAuto(scope);
+                }
                 scope.update();
-                scope.setLodHint(dat);
+                scope.setMergedLodHint(dataIds, e.data.id);
               });
             } else {
               $("<td></td>").appendTo(unit);
             }
           }
         };
-        scope.setLodHint = function(dat) {
+
+        scope.getMergedLodInfo = function(lodDataIds) {
+          var firstLine = scope.stdmodel.data[lodDataIds[0]];
+          var lodInfo = {
+            lodType: firstLine.lodType,
+            lodOn: firstLine.lodOn,
+            lodAuto: firstLine.lodAuto //consider all lines have the same lodAuto
+          };
+
+          for (var j = 0; j < lodDataIds.length; j++) {
+            var dat = scope.stdmodel.data[lodDataIds[j]];
+            if (lodInfo.lodType !== dat.lodType) {
+              lodInfo.lodType = "mixed";//if merged lines have different lod types
+            }
+            if (lodInfo.lodOn !== true) {//switch off lod only if all lines has lod off
+              lodInfo.lodOn = dat.lodOn;
+            }
+          }
+          return lodInfo;
+        };
+        scope.setMergedLodHint = function(lodDataIds, legendLineId) {
+          var lodInfo = scope.getMergedLodInfo(lodDataIds);
           var legend = scope.jqcontainer.find("#legends");
-          var hint = legend.find("#hint_" + dat.index);
+          var hint = legend.find("#hint_" + legendLineId);
           var light = hint.find("#light"),
               type = hint.find("#type"),
               auto = hint.find("#auto");
           // lod hint light
           light.attr("title",
-            dat.lodOn === true ? "LOD is on" : "")
+            lodInfo.lodOn === true ? "LOD is on" : "")
           .css("background-color",
-            dat.lodOn === true ? "red" : "gray")
+            lodInfo.lodOn === true ? "red" : "gray")
           .css("border",
-            dat.lodOn === true ? "1px solid red" : "1px solid gray");
+            lodInfo.lodOn === true ? "1px solid red" : "1px solid gray");
           // lod hint text
-          type.css("color", dat.lodOn === true ? "red" : "gray")
-            .text(dat.lodType);
+          type.css("color", lodInfo.lodOn === true ? "red" : "gray")
+            .text(lodInfo.lodType);
           // lod auto hint
-          auto.css("color", dat.lodOn === true ? "red" : "gray")
-            .text(dat.lodType === "off" ? "" : (dat.lodAuto === true ? "auto" : "on"));
+          auto.css("color", lodInfo.lodOn === true ? "red" : "gray")
+            .text(lodInfo.lodType === "off" ? "" : (lodInfo.lodAuto === true ? "auto" : "on"));
         };
         scope.toggleVisibility = function(e) {
-          var id = e.target.id.split("_")[1], data = scope.stdmodel.data;
-          // id in the format "legendcheck_i"
+          var id = e.target.id.split("_")[1], data = scope.stdmodel.data, line;
+          // id in the format "legendcheck_id"
           if (id == "all") {
             scope.showAllItems = !scope.showAllItems;
-            
-            for (var i = 0; i < data.length; i++) {
-              data[i].showItem = scope.showAllItems;
-              if (data[i].showItem === false) {
-                data[i].clearTips(scope);
-                if (data[i].isLodItem === true) {
-                  data[i].lodOn = false;
-                  scope.setLodHint(data[i]);
+
+            for (var lineId in scope.legendMergedLines) {
+              if (scope.legendMergedLines.hasOwnProperty(lineId)) {
+                line = scope.legendMergedLines[lineId];
+                line.showItem = scope.showAllItems;
+                for (var i = 0; i < line.dataIds.length; i++) {
+                  var dat = data[line.dataIds[i]];
+                  dat.showItem = scope.showAllItems;
+                  if (dat.showItem === false) {
+                    dat.clearTips(scope);
+                    if (dat.isLodItem === true) {
+                      dat.lodOn = false;
+                    }
+                  }
                 }
+                if (line.showItem === false) {
+                  if (line.isLodItem === true) {
+                    scope.setMergedLodHint(line.lodDataIds, lineId);
+                  }
+                }
+                scope.jqcontainer.find("#legendcheck_" + lineId).prop("checked", line.showItem);
               }
-              scope.jqcontainer.find("#legendcheck_" + i).prop("checked", data[i].showItem);
             }
+
             scope.calcRange();
             scope.update();
             return;
           }
-          data[id].showItem = !data[id].showItem;
 
-          if (data[id].showItem === false) {
-            data[id].clearTips(scope);
-            if (data[id].isLodItem === true) {
-              data[id].lodOn = false;
-              scope.setLodHint(data[id]);
+          line = scope.legendMergedLines[id];
+          line.showItem = !line.showItem;
+          for (var j = 0; j < line.dataIds.length; j++) {
+            var dat = data[line.dataIds[j]];
+            dat.showItem = !dat.showItem;
+            if (dat.showItem === false) {
+              dat.clearTips(scope);
+              if (dat.isLodItem === true) {
+                dat.lodOn = false;
+              }
             }
           }
+          if (line.showItem === false) {
+            if (line.isLodItem === true) {
+              scope.setMergedLodHint(line.lodDataIds, id);
+            }
+          }
+
           scope.calcRange();
           scope.update();
         };
@@ -1258,7 +1375,7 @@
 
           scope.clearRemovePipe();
         };
-        
+          
         if (scope.model.getDumpState !== undefined) {
           scope.getDumpState = function() {
             return scope.model.getDumpState();
@@ -1274,14 +1391,14 @@
             }
           });
         }
-        
+          
         scope.getCellModel = function() {
           return scope.model.getCellModel();
         };
         scope.$watch('getCellModel()', function() {
           scope.init();
         });
-        
+          
         scope.$on('$destroy', function() {     
           $(window).off('resize',scope.resizeFunction);
           scope.svg.selectAll("*").remove();

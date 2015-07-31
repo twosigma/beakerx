@@ -42,7 +42,7 @@ public class SimpleTimePlot extends TimePlot {
     private static final Color[] NICE_COLORS = {
             new Color(54, 54, 217),   //blue hue = 240
             new Color(216, 54, 54),   //red hue = 0
-            new Color(54, 216, 170),  //green hue = 163
+            new Color(54, 216, 54),   //green hue = 120
             new Color(192, 54, 216),  //purple hue = 291
             new Color(54, 126, 186),  //cyan hue = 169
             new Color(216, 178, 54),  //yellow hue = 46

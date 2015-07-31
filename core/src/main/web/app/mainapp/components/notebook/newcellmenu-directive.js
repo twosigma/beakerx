@@ -45,6 +45,9 @@
           var newCell = newCellFactory.newCodeCell(evaluatorName);
           attachCell(newCell);
         };
+        $scope.newDefaultCodeCell = function() {
+          $scope.newCodeCell($scope.defaultEvaluator());
+        };
         $scope.showPluginManager = function() {
           bkHelper.showLanguageManager($scope);
         };

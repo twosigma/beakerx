@@ -15,6 +15,7 @@
  */
 package com.twosigma.beaker.groovy.module;
 
+import com.twosigma.beaker.groovy.rest.EasyFormRest;
 import com.twosigma.beaker.groovy.rest.GroovyShellRest;
 import com.twosigma.beaker.jvm.rest.ReadyRest;
 import com.google.inject.servlet.ServletModule;
@@ -49,5 +50,6 @@ public class URLConfigModule extends ServletModule {
     // REST binding
     bind(GroovyShellRest.class);
     bind(ReadyRest.class);
+    bind(EasyFormRest.class);
   }
 }

@@ -210,7 +210,7 @@
             }
           })
           .when('/control', {
-            template: JST["template/dashboard/app"](),
+            template: JST["template/dashboard/app"]()
           }).otherwise({
             redirectTo: "/control"
           });

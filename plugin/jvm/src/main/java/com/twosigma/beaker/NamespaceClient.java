@@ -56,6 +56,7 @@ public class NamespaceClient {
   private String auth;
   private String urlBase;
   private String ctrlUrlBase;
+  private String easyFormUrl;
   private SimpleEvaluationObject seo;
   private Class<?> [] oclasses;
 
@@ -74,6 +75,7 @@ public class NamespaceClient {
     this.auth = "Basic " + Base64.encodeBase64String(account.getBytes());
     this.urlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/namespace";
     this.ctrlUrlBase = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/notebookctrl";
+    this.easyFormUrl = "http://127.0.0.1:" + System.getenv("beaker_core_port") + "/rest/easyform";
     oclasses = new Class<?>[4];
     
     oclasses[0] = Object.class;

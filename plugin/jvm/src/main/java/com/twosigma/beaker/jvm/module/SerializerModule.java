@@ -15,13 +15,6 @@
  */
 package com.twosigma.beaker.jvm.module;
 
-import java.awt.image.BufferedImage;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.ImageIcon;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
@@ -29,15 +22,16 @@ import com.google.inject.Singleton;
 import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
 import com.twosigma.beaker.NamespaceClient;
+import com.twosigma.beaker.chart.Color;
 import com.twosigma.beaker.chart.serializer.AreaSerializer;
 import com.twosigma.beaker.chart.serializer.BarsSerializer;
 import com.twosigma.beaker.chart.serializer.ColorSerializer;
 import com.twosigma.beaker.chart.serializer.CombinedPlotSerializer;
 import com.twosigma.beaker.chart.serializer.CrosshairSerializer;
 import com.twosigma.beaker.chart.serializer.LineSerializer;
-import com.twosigma.beaker.chart.serializer.XYChartSerializer;
 import com.twosigma.beaker.chart.serializer.PointsSerializer;
 import com.twosigma.beaker.chart.serializer.StemsSerializer;
+import com.twosigma.beaker.chart.serializer.XYChartSerializer;
 import com.twosigma.beaker.chart.serializer.YAxisSerializer;
 import com.twosigma.beaker.chart.xychart.CombinedPlot;
 import com.twosigma.beaker.chart.xychart.XYChart;
@@ -48,8 +42,31 @@ import com.twosigma.beaker.chart.xychart.plotitem.Line;
 import com.twosigma.beaker.chart.xychart.plotitem.Points;
 import com.twosigma.beaker.chart.xychart.plotitem.Stems;
 import com.twosigma.beaker.chart.xychart.plotitem.YAxis;
-import com.twosigma.beaker.shared.NamespaceBinding;
-import com.twosigma.beaker.shared.json.serializer.StringObject;
+import com.twosigma.beaker.easyform.EasyForm;
+import com.twosigma.beaker.easyform.EasyFormObjectManager;
+import com.twosigma.beaker.easyform.formitem.ButtonComponent;
+import com.twosigma.beaker.easyform.formitem.CheckBox;
+import com.twosigma.beaker.easyform.formitem.CheckBoxGroup;
+import com.twosigma.beaker.easyform.formitem.ComboBox;
+import com.twosigma.beaker.easyform.formitem.DatePickerComponent;
+import com.twosigma.beaker.easyform.formitem.ListComponent;
+import com.twosigma.beaker.easyform.formitem.LoadValuesButton;
+import com.twosigma.beaker.easyform.formitem.RadioButtonComponent;
+import com.twosigma.beaker.easyform.formitem.SaveValuesButton;
+import com.twosigma.beaker.easyform.formitem.TextArea;
+import com.twosigma.beaker.easyform.formitem.TextField;
+import com.twosigma.beaker.easyform.serializer.ButtonComponentSerializer;
+import com.twosigma.beaker.easyform.serializer.CheckBoxGroupSerializer;
+import com.twosigma.beaker.easyform.serializer.CheckBoxSerializer;
+import com.twosigma.beaker.easyform.serializer.ComboBoxSerializer;
+import com.twosigma.beaker.easyform.serializer.DatePickerComponentSerializer;
+import com.twosigma.beaker.easyform.serializer.EasyFormSerializer;
+import com.twosigma.beaker.easyform.serializer.ListComponentSerializer;
+import com.twosigma.beaker.easyform.serializer.LoadValuesButtonSerializer;
+import com.twosigma.beaker.easyform.serializer.RadioButtonSerializer;
+import com.twosigma.beaker.easyform.serializer.SaveValuesButtonSerializer;
+import com.twosigma.beaker.easyform.serializer.TextAreaSerializer;
+import com.twosigma.beaker.easyform.serializer.TextFieldSerializer;
 import com.twosigma.beaker.jvm.object.BeakerDashboard;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.OutputContainer;
@@ -71,14 +88,20 @@ import com.twosigma.beaker.jvm.serialization.PlotObjectSerializer;
 import com.twosigma.beaker.jvm.serialization.ResultsDeserializer;
 import com.twosigma.beaker.jvm.updater.ObservableUpdaterFactory;
 import com.twosigma.beaker.jvm.updater.UpdateManager;
-import com.twosigma.beaker.chart.Color;
-
+import com.twosigma.beaker.shared.NamespaceBinding;
+import com.twosigma.beaker.shared.json.serializer.StringObject;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
 import org.cometd.bayeux.server.BayeuxServer;
+
+import javax.swing.ImageIcon;
+import java.awt.image.BufferedImage;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The Guice module as the registry of mapping from classes to serializers
@@ -93,6 +116,8 @@ public class SerializerModule extends AbstractModule {
     bind(UpdatableEvaluationResult.Serializer.class);
     bind(OutputContainer.Serializer.class);
     bind(BeakerProgressUpdate.Serializer.class);
+    bind(EasyFormObjectManager.class);
+    bind(EasyFormSerializer.class);
   }
 
   @Provides
@@ -163,6 +188,19 @@ public class SerializerModule extends AbstractModule {
       module.addSerializer(Area.class, injector.getInstance(AreaSerializer.class));
       module.addSerializer(YAxis.class, injector.getInstance(YAxisSerializer.class));
       module.addSerializer(Crosshair.class, injector.getInstance(CrosshairSerializer.class));
+
+      module.addSerializer(EasyForm.class, injector.getInstance(EasyFormSerializer.class));
+      module.addSerializer(TextField.class, injector.getInstance(TextFieldSerializer.class));
+      module.addSerializer(TextArea.class, injector.getInstance(TextAreaSerializer.class));
+      module.addSerializer(CheckBox.class, injector.getInstance(CheckBoxSerializer.class));
+      module.addSerializer(ComboBox.class, injector.getInstance(ComboBoxSerializer.class));
+      module.addSerializer(ListComponent.class, injector.getInstance(ListComponentSerializer.class));
+      module.addSerializer(RadioButtonComponent.class, injector.getInstance(RadioButtonSerializer.class));
+      module.addSerializer(CheckBoxGroup.class, injector.getInstance(CheckBoxGroupSerializer.class));
+      module.addSerializer(DatePickerComponent.class, injector.getInstance(DatePickerComponentSerializer.class));
+      module.addSerializer(ButtonComponent.class, injector.getInstance(ButtonComponentSerializer.class));
+      module.addSerializer(LoadValuesButton.class, injector.getInstance(LoadValuesButtonSerializer.class));
+      module.addSerializer(SaveValuesButton.class, injector.getInstance(SaveValuesButtonSerializer.class));
 
       mapper.registerModule(module);
 

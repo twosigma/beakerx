@@ -1,0 +1,161 @@
+/*
+ *  Copyright 2015 TWO SIGMA OPEN SOURCE, LLC
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+.position-absolute {
+  position: absolute;
+}
+
+.easyform-label {
+  display: inline-block;
+  max-width: 200px;
+  min-width: 100px;
+  vertical-align: top;
+}
+
+.text-field, .text-area {
+  width: 100%;
+  border: 1px solid #CCC;;
+}
+
+.check-box-group-item-label {
+  margin: 0 5px 0 0;
+}
+
+.check-box-group-item-label input[type="checkbox"] {
+  vertical-align: middle;
+  margin: 0;
+}
+
+.check-box-group-item-label.vertical {
+  display: table-row;
+}
+
+.check-box-group-item-label.horizontal {
+}
+
+.radio-button-item-text {
+  width: 10%;
+  margin: 0 10px 0 5px;
+}
+
+.radio-button-item-label {
+  margin-top: 5px;
+}
+
+.radio-button-item-label.vertical {
+  display: inline;
+}
+
+input[type="radio"].radio-button-component-item {
+  vertical-align: middle;
+  margin: 0;
+}
+
+input.check-box {
+  vertical-align: middle;
+  margin: 0;
+}
+
+input.date-picker {
+  height: 25px;
+  width: 120px;
+  border: 1px solid #CCC;;
+}
+
+.easyform-container {
+  margin: 10px 0;
+  word-wrap: break-word;
+  display: inline-block;
+  width: 100%;
+}
+
+.combo-box {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+}
+
+.combo-box-outer {
+  position: absolute;
+}
+
+.combo-box-input {
+  height: 17px;
+  padding: 0 4px;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  z-index: 2;
+  border: none;
+}
+
+.combo-box-input-outer {
+  position: absolute;
+  display: inline-block;
+}
+
+.button-component-container {
+  margin: 10px 0;
+}
+
+select.list-component {
+  border: 1px solid #CCC;
+}
+
+.list-component option {
+  margin: 2px;
+}
+
+.list-component-outer {
+  display: inline-block;
+}
+
+.list-component-outer.hide-scrollbar {
+  vertical-align: top;
+  overflow: hidden;
+  border: 1px solid #CCC;
+}
+
+.list-component-outer.hide-scrollbar select {
+  padding: 10px;
+  margin: -5px -20px -5px -5px;
+}
+
+.radio-button-item-spacer {
+  width: 100%;
+}
+
+.easyform-component-container {
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.easyform-component-container.fixed-size {
+  float: none;
+}
+
+div#easyFormContainer fieldset {
+  margin-top: 10px;
+  border: 1px solid #CCC;
+  padding: 0.35em 0.625em 0.75em;
+}
+
+div#easyFormContainer fieldset legend {
+  width: auto;
+  border: 0;
+  margin: 0;
+  padding: 0 5px;
+}

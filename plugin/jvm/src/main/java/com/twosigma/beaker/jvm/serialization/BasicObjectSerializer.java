@@ -17,6 +17,7 @@ package com.twosigma.beaker.jvm.serialization;
 
 import com.twosigma.beaker.BeakerCodeCell;
 import com.twosigma.beaker.BeakerProgressUpdate;
+import com.twosigma.beaker.easyform.EasyForm;
 import com.twosigma.beaker.jvm.object.BeakerDashboard;
 import com.twosigma.beaker.jvm.object.EvaluationResult;
 import com.twosigma.beaker.jvm.object.OutputContainer;
@@ -180,7 +181,8 @@ public class BasicObjectSerializer implements BeakerObjectConverter {
                   (obj instanceof BeakerDashboard) ||
                   (obj instanceof BufferedImage) ||
                   (obj instanceof OutputContainer)  ||
-                  (obj instanceof BeakerProgressUpdate) ) {
+                  (obj instanceof BeakerProgressUpdate) ||
+                  (obj instanceof EasyForm) ) {
         logger.fine("basic object");
         jgen.writeObject(obj);
       } else if(runThreadSerializers(obj,jgen,expand)) {

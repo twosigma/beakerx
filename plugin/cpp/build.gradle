@@ -28,15 +28,15 @@ configurations {
   compile.extendsFrom provided
 }
 
-task makeClingLib(type: Exec, dependsOn: ['compileCppEvaluator', 'makeCppEvaluatorHeader']) {
-  inputs.file('./src/main/cpp/ClingInterp.cpp')
-  //outputs.file('./src/main/cpp/libClingInterp.jnilib')
+task makeCRunLib(type: Exec, dependsOn: ['compileCppEvaluator', 'makeCppEvaluatorHeader']) {
+  inputs.file('./src/main/cpp/CRun.cpp')
+  outputs.file('./src/main/cpp/libCRun.jnilib')
   workingDir './src/main/cpp'
   commandLine 'make', 'all'
 }
 
-task copyClingInterp(type: Copy, dependsOn: installApp) {
-  from './src/main/cpp/libClingInterp.jnilib'
+task copyCRun(type: Copy, dependsOn: installApp) {
+  from './src/main/cpp/libCRun.jnilib'
   into evalPluginDir.getAbsolutePath() + '/cpp/lib'
 }
 
@@ -56,14 +56,14 @@ dependencies {
 }
 
 compileJava {
-  dependsOn makeClingLib
+  dependsOn makeCRunLib
   options.compilerArgs << '-Xlint:deprecation'
   options.compilerArgs << '-Xlint:unchecked'
 }
 
 if (hasProperty('evalPluginDir')) {
   installApp.into new File(evalPluginDir, 'cpp')
-  installApp.finalizedBy copyClingInterp
+  installApp.finalizedBy copyCRun
 }
 
 if (hasProperty('includeDepsInJar')) {

@@ -18,6 +18,7 @@ package com.twosigma.beaker.cpp.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
+import java.util.HashSet;
 
 import com.twosigma.beaker.NamespaceClient;
 // import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
@@ -35,7 +36,13 @@ import java.util.concurrent.Semaphore;
 import java.util.regex.*;
 import java.io.File;
 
+import java.lang.ProcessBuilder;
+import java.lang.ProcessBuilder.Redirect;
+
 import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class CppEvaluator {
   protected final String shellId;
@@ -43,6 +50,7 @@ public class CppEvaluator {
   protected final String packageId;
   protected List<String> classPath;
   protected List<String> imports;
+  protected HashSet<String> loadedCells;
   protected String outDir;
   // protected ClasspathScanner cps;
   // protected JavaAutocomplete jac;
@@ -68,21 +76,11 @@ public class CppEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  public class CppReturn {
-    public Object value;
-    public String output;
-
-    public CppReturn(Object val, String out) {
-      value = val;
-      output = out;
-    }
-  }
-  
-  public native void clingInit(String includePath);
-  public native CppReturn clingInterp(String code);
+  public native Object cLoadAndRun(String fileName, String type);
+  // public native int cUnload(String fileName);
 
   static {
-    System.load(System.getProperty("user.dir") + "/lib/libClingInterp.jnilib");
+    System.load(System.getProperty("user.dir") + "/lib/libCRun.jnilib");
     // System.loadLibrary("clingInterp");
   }
 
@@ -94,6 +92,7 @@ public class CppEvaluator {
     // jac = createJavaAutocomplete(cps);
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
+    loadedCells = new HashSet<String>();
     exit = false;
     // updateLoader = false;
     currentClassPath = "";
@@ -101,9 +100,6 @@ public class CppEvaluator {
     outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
     try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
     executor = new BeakerCellExecutor("cpp");
-
-    String tmpDir = System.getenv("beaker_tmp_dir");
-    clingInit(tmpDir);
 
     startWorker();
   }
@@ -314,21 +310,75 @@ public class CppEvaluator {
       
       @Override
       public void run() {
-        System.out.println("Not here");
         theOutput.setOutputHandler();
-        System.out.println("here");
         try {          
-          CppReturn ret = new CppReturn(true, null);
-         
-          // Rename entrypoint
-          String formattedCode = theCode.replace("beaker_main", theCellId);
-          // Write code to temp file cid.cpp
+          // Compile the file send it to /<temp>/<cell>.cpp << Have to redirect stderr
+          // Create .cpp file
           String tmpDir = System.getenv("beaker_tmp_dir");
           java.nio.file.Path filePath = java.nio.file.Paths.get(tmpDir + "/" + theCellId + ".cpp");
-          Files.write(filePath, formattedCode.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+          Files.write(filePath, theCode.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+          // Prepare to compile
+          String inputFile = tmpDir + "/" + theCellId + ".cpp";
+          String outputFile = tmpDir + "/lib" + theCellId + ".so";
+          // Compile
+          // Process p = Runtime.getRuntime().exec("clang++ -shared -fPIC -m64 -o " + outputFile + " " + inputFile);
+          // InputStream is = p.getInputStream();
+          // InputStreamReader isr = new InputStreamReader(is);
+          // BufferedReader buff = new BufferedReader(isr);
 
-          theOutput.setOutputHandler();
-          ret = clingInterp(".X " + theCellId + ".cpp");
+          // int exitCode = p.waitFor();
+          // String line;
+          // while((line = buff.readLine()) != null)
+          //     System.out.print(line);
+
+          ArrayList<String> command = new ArrayList<String>();
+          command.add("clang++");
+          command.add("-shared");
+          command.add("-undefined");
+          command.add("dynamic_lookup");
+          command.add("-fPIC");
+          command.add("-m64");
+          // command.add("-L");
+          // command.add(tmpDir);
+          command.add("-o");
+          command.add(outputFile);
+          command.add(inputFile);
+          // if (loadedCells.contains(theCellId)){
+          //   Files.delete(Paths.get(outputFile));
+          // }
+          // for (String s : loadedCells) {
+          //   if (s.equals(theCellId)) {
+          //     System.out.println("Continuing");
+          //     continue;
+          //   }
+          //   String newS = "-l" + s;
+          //   command.add(newS);
+          // }
+          String cmd = "";
+          for (String s : command)
+          {
+              cmd += s + "\t";
+          }
+          System.out.println(cmd);
+
+          ProcessBuilder pb = new ProcessBuilder(command);
+          pb.redirectOutput(Redirect.INHERIT);
+          pb.redirectError(Redirect.INHERIT);
+          Process p = pb.start();
+          int exitCode = p.waitFor();
+          if (exitCode == 0){
+            loadedCells.add(theCellId);
+          }
+
+          // Figure out type of main, if any
+          // Load and run
+          System.out.println("Loading and running");
+          Object ret = cLoadAndRun(outputFile, "int");
+          if (ret == null) { 
+            System.out.println("Null!");
+          } else if (ret instanceof Integer){
+            System.out.println("Integer!");
+          }
           if (retObject) {
             theOutput.finished(ret);
           } else {
@@ -347,7 +397,7 @@ public class CppEvaluator {
             theOutput.error(sw.toString());
           }
         }
-        theOutput.clrOutputHandler();
+        // theOutput.clrOutputHandler();
       }
     };
     

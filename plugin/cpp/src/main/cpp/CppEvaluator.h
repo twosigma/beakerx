@@ -9,19 +9,11 @@ extern "C" {
 #endif
 /*
  * Class:     com_twosigma_beaker_cpp_utils_CppEvaluator
- * Method:    clingInit
- * Signature: (Ljava/lang/String;)V
+ * Method:    cLoadAndRun
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
  */
-JNIEXPORT void JNICALL Java_com_twosigma_beaker_cpp_utils_CppEvaluator_clingInit
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     com_twosigma_beaker_cpp_utils_CppEvaluator
- * Method:    clingInterp
- * Signature: (Ljava/lang/String;)Lcom/twosigma/beaker/cpp/utils/CppEvaluator/CppReturn;
- */
-JNIEXPORT jobject JNICALL Java_com_twosigma_beaker_cpp_utils_CppEvaluator_clingInterp
-  (JNIEnv *, jobject, jstring);
+JNIEXPORT jobject JNICALL Java_com_twosigma_beaker_cpp_utils_CppEvaluator_cLoadAndRun
+  (JNIEnv *, jobject, jstring, jstring);
 
 #ifdef __cplusplus
 }
@@ -31,17 +23,6 @@ JNIEXPORT jobject JNICALL Java_com_twosigma_beaker_cpp_utils_CppEvaluator_clingI
 
 #ifndef _Included_com_twosigma_beaker_cpp_utils_CppEvaluator_jobDescriptor
 #define _Included_com_twosigma_beaker_cpp_utils_CppEvaluator_jobDescriptor
-#ifdef __cplusplus
-extern "C" {
-#endif
-#ifdef __cplusplus
-}
-#endif
-#endif
-/* Header for class com_twosigma_beaker_cpp_utils_CppEvaluator_CppReturn */
-
-#ifndef _Included_com_twosigma_beaker_cpp_utils_CppEvaluator_CppReturn
-#define _Included_com_twosigma_beaker_cpp_utils_CppEvaluator_CppReturn
 #ifdef __cplusplus
 extern "C" {
 #endif

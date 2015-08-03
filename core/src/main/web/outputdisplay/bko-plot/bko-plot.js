@@ -203,8 +203,16 @@
         scope.calcGridlines = function() {
           // prepare the gridlines
           var focus = scope.focus, model = scope.stdmodel;
-          model.xAxis.setGridlines(focus.xl, focus.xr, scope.numIntervals.x);
-          model.yAxis.setGridlines(focus.yl, focus.yr, scope.numIntervals.y);
+          model.xAxis.setGridlines(focus.xl,
+            focus.xr,
+            scope.numIntervals.x,
+            model.margin.left,
+            model.margin.right);
+          model.yAxis.setGridlines(focus.yl,
+            focus.yr,
+            scope.numIntervals.y,
+            model.margin.bottom,
+            model.margin.top);
         };
         scope.renderGridlines = function() {
           var focus = scope.focus, model = scope.stdmodel;

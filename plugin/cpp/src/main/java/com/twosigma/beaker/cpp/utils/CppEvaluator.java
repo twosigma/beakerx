@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import com.twosigma.beaker.NamespaceClient;
-// import com.twosigma.beaker.javash.autocomplete.JavaAutocomplete;
 import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
@@ -43,6 +42,16 @@ import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.ParserRuleContext;
+import com.twosigma.beaker.cpp.utils.Extractor;
+import com.twosigma.beaker.cpp.autocomplete.CPP14Lexer;
+import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
+import com.twosigma.beaker.cpp.autocomplete.CPP14Listener;
 
 public class CppEvaluator {
   protected final String shellId;
@@ -71,13 +80,13 @@ public class CppEvaluator {
       codeToBeExecuted = c;
       cellId = cid;
     }
+    
   }
 
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
   public native Object cLoadAndRun(String fileName, String type);
-  // public native int cUnload(String fileName);
 
   static {
     System.load(System.getProperty("user.dir") + "/lib/libCRun.jnilib");
@@ -272,7 +281,7 @@ public class CppEvaluator {
           // normalize and analyze code
           String code = normalizeCode(j.codeToBeExecuted);
 
-          if (!executor.executeTask(new MyRunnable(j.outputObject, code, j.cellId, true))) {
+          if(!executor.executeTask(new MyRunnable(j.outputObject, code, j.cellId, true))) {
             j.outputObject.error("... cancelled!");
           }
           if(nc!=null) {
@@ -312,25 +321,36 @@ public class CppEvaluator {
       public void run() {
         theOutput.setOutputHandler();
         try {          
-          // Compile the file send it to /<temp>/<cell>.cpp << Have to redirect stderr
+          // Parse code to find beaker_main and type
+          CPP14Lexer lexer = new CPP14Lexer(new ANTLRInputStream(theCode));
+          // Get a list of matched tokens
+          CommonTokenStream tokens = new CommonTokenStream(lexer);
+          // Pass the tokens to the parser
+          CPP14Parser parser = new CPP14Parser(tokens);
+          // Parse code
+          ParserRuleContext t = parser.translationunit();
+          ParseTreeWalker walker = new ParseTreeWalker();
+          Extractor extractor = new Extractor();
+          walker.walk(extractor, t);
+          String cellType = extractor.returnType;
+          int beakerMainStart = extractor.beakerMainStart;
+
+          String processedCode = theCode;
+          // If beaker_main was found
+          if (!cellType.equals("none")){
+            int beakerMainPos = tokens.get(beakerMainStart).getStartIndex();
+            StringBuilder builder = new StringBuilder(theCode);
+            builder.insert(beakerMainPos, " extern \"C\" ");
+            processedCode = builder.toString();
+          }
+
           // Create .cpp file
           String tmpDir = System.getenv("beaker_tmp_dir");
           java.nio.file.Path filePath = java.nio.file.Paths.get(tmpDir + "/" + theCellId + ".cpp");
-          Files.write(filePath, theCode.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+          Files.write(filePath, processedCode.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
           // Prepare to compile
           String inputFile = tmpDir + "/" + theCellId + ".cpp";
           String outputFile = tmpDir + "/lib" + theCellId + ".so";
-          // Compile
-          // Process p = Runtime.getRuntime().exec("clang++ -shared -fPIC -m64 -o " + outputFile + " " + inputFile);
-          // InputStream is = p.getInputStream();
-          // InputStreamReader isr = new InputStreamReader(is);
-          // BufferedReader buff = new BufferedReader(isr);
-
-          // int exitCode = p.waitFor();
-          // String line;
-          // while((line = buff.readLine()) != null)
-          //     System.out.print(line);
-
           ArrayList<String> command = new ArrayList<String>();
           command.add("clang++");
           command.add("-shared");
@@ -338,29 +358,12 @@ public class CppEvaluator {
           command.add("dynamic_lookup");
           command.add("-fPIC");
           command.add("-m64");
-          // command.add("-L");
-          // command.add(tmpDir);
+          command.add("-Wno-return-type-c-linkage");
           command.add("-o");
           command.add(outputFile);
           command.add(inputFile);
-          // if (loadedCells.contains(theCellId)){
-          //   Files.delete(Paths.get(outputFile));
-          // }
-          // for (String s : loadedCells) {
-          //   if (s.equals(theCellId)) {
-          //     System.out.println("Continuing");
-          //     continue;
-          //   }
-          //   String newS = "-l" + s;
-          //   command.add(newS);
-          // }
-          String cmd = "";
-          for (String s : command)
-          {
-              cmd += s + "\t";
-          }
-          System.out.println(cmd);
 
+          // Compile
           ProcessBuilder pb = new ProcessBuilder(command);
           pb.redirectOutput(Redirect.INHERIT);
           pb.redirectError(Redirect.INHERIT);
@@ -370,25 +373,18 @@ public class CppEvaluator {
             loadedCells.add(theCellId);
           }
 
-          // Figure out type of main, if any
           // Load and run
-          System.out.println("Loading and running");
-          Object ret = cLoadAndRun(outputFile, "int");
-          if (ret == null) { 
-            System.out.println("Null!");
-          } else if (ret instanceof Integer){
-            System.out.println("Integer!");
-          }
-          if (retObject) {
+          Object ret = cLoadAndRun(outputFile, cellType);
+          if(retObject) {
             theOutput.finished(ret);
           } else {
             theOutput.finished(null);
           }          
           return;
         } catch(Throwable e) {
-          if (e instanceof InvocationTargetException)
+          if(e instanceof InvocationTargetException)
             e = ((InvocationTargetException)e).getTargetException();
-          if ((e instanceof InterruptedException) || (e instanceof ThreadDeath)) {
+          if((e instanceof InterruptedException) || (e instanceof ThreadDeath)) {
             theOutput.error("... cancelled!");
           } else {
             StringWriter sw = new StringWriter();

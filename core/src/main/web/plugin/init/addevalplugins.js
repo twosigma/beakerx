@@ -28,7 +28,7 @@
       "Clojure": { url : "./plugins/eval/clojure/clojure.js", bgColor: "#5881d8", fgColor: "#FFFFFF", borderColor: "", shortName: "Cj" },
       "Node": { url : "./plugins/eval/node/node.js", bgColor: "#8EC453", fgColor: "#FFFFFF", borderColor: "", shortName: "N" },
       "Kdb": { url : "./plugins/eval/kdb/kdb.js", bgColor: "#005e99", fgColor: "#FFFFFF", borderColor: "", shortName: "K" },
-      "C/C++": {url: "./plugins/eval/cpp/cpp.js", bgColor: "#000000", fgColor: "#FFFFFF", borderColor: "", shortName: "Cpp"}
+      "C++": {url: "./plugins/eval/cpp/cpp.js", bgColor: "#7B477D", fgColor: "#FFFFFF", borderColor: "", shortName: "C"}
     };
   };
 })();

@@ -19,7 +19,7 @@
  */
 define(function(require, exports, module) {
   'use strict';
-  var PLUGIN_NAME = 'C/C++';
+  var PLUGIN_NAME = 'C++';
   var COMMAND = 'cpp/cppPlugin';
   var serviceBase = null;
   var cometdUtil = bkHelper.getUpdateService();
@@ -27,12 +27,12 @@ define(function(require, exports, module) {
 
   var CppSh = {
     pluginName: PLUGIN_NAME,
-    cmMode: 'text/x-cpp',
-    background: '#000000',
-    bgColor: '#000000',
+    cmMode: 'text/x-c++src',
+    background: '#7B477D',
+    bgColor: '#7B477D',
     fgColor: '#FFFFFF',
     borderColor: '',
-    shortName: 'Cpp',
+    shortName: 'C',
     newShell: function(shellId, cb) {
       if (!shellId) {
         shellId = '';

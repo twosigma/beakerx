@@ -32,10 +32,12 @@ task makeCRunLib(type: Exec, dependsOn: ['compileCppEvaluator', 'makeCppEvaluato
   inputs.file('./src/main/cpp/CRun.cpp')
   outputs.file('./src/main/cpp/libCRun.jnilib')
   workingDir './src/main/cpp'
-  commandLine 'make', 'all'
+ // commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', '/System/Library/Frameworks/JavaVM.framework/Headers', '-I', 'llvm/tools/clang/include', '-I', '/usr/local/opt/llvm/include', '-I', 'llvm-build/include', '-o', 'libCRun.jnilib', 'CRun.cpp', '`/usr/local/opt/llvm/bin/llvm-config --cxxflags`', '-D__STDC_CONSTANT_MACROS', '-D__STDC_LIMIT_MACROS'
+ //commandLine 'make', 'all'
+ commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', '/System/Library/Frameworks/JavaVM.framework/Headers', '-o', 'libCRun.jnilib', 'CRun.cpp'
 }
 
-task copyCRun(type: Copy, dependsOn: installApp) {
+task copyCRun(type: Copy, dependsOn: ['installApp', 'makeCRunLib']) {
   from './src/main/cpp/libCRun.jnilib'
   into evalPluginDir.getAbsolutePath() + '/cpp/lib'
 }
@@ -45,9 +47,13 @@ task compileCppEvaluator(type: JavaCompile) {
   source 'com.twosigma.beaker.cpp.utils.CppEvaluator'
 }
 
-task makeCppEvaluatorHeader(type: Exec) {
-  workingDir './src/main/java'
-  commandLine 'javah', '-jni', '-o', '../cpp/CppEvaluator.h', 'com.twosigma.beaker.cpp.utils.CppEvaluator'
+task makeCppEvaluatorHeader(type: Exec, dependsOn: compileCppEvaluator) {
+  workingDir './build/classes/main'
+  def jvmDir = project(':plugin:jvm').projectDir
+  commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/cpp/CppEvaluator.h', 'com.twosigma.beaker.cpp.utils.CppEvaluator'
+  //commandLine 'ls', 'com/twosigma/beaker/cpp/utils'
+  //commandLine 'printenv'
+  //commandLine 'echo', "${jvmDir}"
 }
 
 dependencies {
@@ -55,8 +61,23 @@ dependencies {
   compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
 }
 
+dependencies {
+  compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
+  antlr group : 'org.antlr', name :'antlr4', version: '4.5'
+  provided project(':plugin:jvm')
+  compile group: 'org.abstractmeta', name: 'compilation-toolbox', version: '0.3.2'
+}
+
+task antlr4_java(type: JavaExec) {
+    main = "org.antlr.v4.Tool"
+    workingDir = "src/main/antlr4/"
+    args = ["CPP14.g4", "-o", "../java/com/twosigma/beaker/cpp/autocomplete","-listener", "-no-visitor", "-package", "com.twosigma.beaker.cpp.autocomplete", "-encoding", "UTF-8" ]
+    classpath =  configurations.antlr
+}
+
+compileJava.dependsOn antlr4_java
+
 compileJava {
-  dependsOn makeCRunLib
   options.compilerArgs << '-Xlint:deprecation'
   options.compilerArgs << '-Xlint:unchecked'
 }

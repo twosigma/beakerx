@@ -981,7 +981,7 @@
       setNotebookModelEdited: function(edited) {
         _needsBackup = edited;
         _edited = edited;
-        bkUtils.httpPost("rest/session-backup/setEdited", {
+        bkUtils.httpPost(bkUtils.serverUrl('beaker/rest/session-backup/setEdited'), {
           sessionid: _sessionId,
           edited: edited
         });

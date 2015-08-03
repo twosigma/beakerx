@@ -44,10 +44,11 @@ bk-new-cell-menu {
   position: relative;
 
   .btn-xs {
+    padding-top: 0;
     line-height: 1em;
 
     &.dropdown-toggle {
-      padding: 2px 6px 0 !important;
+      padding: 0 6px 0 !important;
     }
     &.insert-cell {
       padding-top: 4px;
@@ -58,15 +59,13 @@ bk-new-cell-menu {
   }
   .advanced-mode &:not(.large) {
     .btn {
-      height: 10px;
-      width: $grid-gutter-width;
-      padding: 0 !important;
+      min-width: $grid-gutter-width;
+      padding: 0 10px;
+      line-height: 9px;
+      font-size: 10px;
     }
     .insert-cell {
       width: $grid-gutter-width*2;
-    }
-    .dropdown-toggle {
-      font-size: 10px;
     }
   }
 }

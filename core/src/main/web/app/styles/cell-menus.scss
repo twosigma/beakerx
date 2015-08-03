@@ -18,6 +18,11 @@ bk-new-cell-menu {
   display: block;
   margin: 15px 0;
 
+  .btn {
+    margin-right: 3px;
+    margin-left: 0 !important; //overriding bootstrap default
+  }
+
   .new-cell {
     visibility: hidden;
   }
@@ -28,20 +33,26 @@ bk-new-cell-menu {
     }
   }
 
+  &.large .fa-sort-down {
+    position: relative;
+    top: -2px;
+  }
+
   .advanced-mode &:not(.large) {
     margin: 0;
+  }
+
+  .section-menu.dropdown-menu {
+    left: auto;
+    right: 0;
+  }
+
+  .dropdown-menu.open {
+    display: block;
   }
 }
 
 .new-cell {
-  .insert-cell {
-    border-right-width: 4px;
-  }
-
-  .btn {
-    border-color: white !important;
-  }
-
   &.last {
     margin-top: $grid-row-height;
   }

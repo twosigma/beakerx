@@ -774,6 +774,10 @@
                 return scope.model.getCellModel();
               };
 
+              scope.$watch(function () {
+                return element.is(':visible')
+              }, scope.alignComponents);
+
               scope.fetchFromCellModel(scope.getState(), element);
             }
           };

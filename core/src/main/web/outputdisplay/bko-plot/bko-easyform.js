@@ -106,12 +106,12 @@
         function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
           return {
             restrict: "E",
-            template: "<div id='textFieldContrainer' class='easyform-container'>" +
-                "<label class='easyform-label'/>" +
-                "<div class='easyform-component-container'>" +
-                "<input type='text' id='textField' class='text-field' " +
-                "ng-disabled='!component.enabled'/>" +
-                "</div>" +
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                    "<input type='text' class='text-field' ng-disabled='!component.enabled'/>" +
+                  "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
 
@@ -127,7 +127,7 @@
                   fixedSize = true;
                 }
                 element.find('.easyform-label').text(efc.getComponent().label);
-                var textField = element.find('#textField');
+                var textField = element.find('.text-field');
                 textField.attr('ng-model', scope.ngModelAttr)
                     .attr('size', efc.getComponent().width);
                 if (fixedSize) {
@@ -146,12 +146,13 @@
         function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
           return {
             restrict: "E",
-            template: "<div id='textAreaContrainer' class='easyform-container'>" +
-                "<label class='easyform-label'/>" +
-                "<div class='easyform-component-container'>" +
-                "<textarea rows='4' cols='35' id='textArea' class='text-area' "
-                + "ng-disabled='!component.enabled'/>" +
-                "</div>" +
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                    "<textarea rows='4' cols='35' class='text-area' " +
+                    "ng-disabled='!component.enabled'/>" +
+                  "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
 
@@ -160,7 +161,7 @@
 
               efc.buildUI = function() {
                 element.find('.easyform-label').text(efc.getComponent().label);
-                var textArea = element.find('#textArea');
+                var textArea = element.find('.text-area');
                 textArea.attr('ng-model', scope.ngModelAttr);
               };
 
@@ -175,12 +176,12 @@
         function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
           return {
             restrict: "E",
-            template: "<div id='checkBoxContrainer' class='easyform-container'>" +
-                "<label id='checkBoxLabel' class='easyform-label'/>" +
-                "<div class='easyform-component-container'>" +
-                "<input type='checkbox' id='checkBox' "
-                + "ng-disabled='!component.enabled' class='check-box'/>" +
-                "</div>" +
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                    "<input type='checkbox' ng-disabled='!component.enabled' class='check-box'/>" +
+                  "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
 
@@ -189,7 +190,7 @@
 
               efc.buildUI = function() {
                 element.find('.easyform-label').text(efc.getComponent().label);
-                var checkBox = element.find('#checkBox');
+                var checkBox = element.find('.check-box');
                 checkBox.attr('ng-model', scope.ngModelAttr);
                 if ('true' === efc.getComponent().value) {
                   efc.getComponent().value = true;
@@ -223,16 +224,17 @@
         function ($compile, bkUtils, EasyFormConstants, EasyFormService) {
           return {
             restrict: "E",
-            template: "<div id='checkBoxGroupContainer' class='easyform-container'>" +
-                "<label id='checkBoxGroupLabel' class='easyform-label'/>" +
-                "<div class='easyform-component-container'>" +
-                "<label class='check-box-group-item-label'" +
-                " ng-repeat='value in values track by $index' " +
-                " ng-class='{vertical : !horizontal}'>" +
-                " <input type='checkbox' ng-model='value.selected' name='selectedValues[]' " +
-                " ng-disabled='!component.enabled'/> {{value.name}}" +
-                "</label>" +
-                "</div>" +
+            template:
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
+                  "<div class='easyform-component-container'>" +
+                    "<label class='check-box-group-item-label'" +
+                    " ng-repeat='value in values track by $index' " +
+                    " ng-class='{vertical : !horizontal}'>" +
+                    " <input type='checkbox' ng-model='value.selected' name='selectedValues[]' " +
+                    " ng-disabled='!component.enabled'/> {{value.name}}" +
+                    "</label>" +
+                  "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
 
@@ -313,13 +315,13 @@
           return {
             restrict: "E",
             template:
-                "<div id='comboBoxContrainer' class='easyform-container'>" +
-                  "<label id='comboBoxLabel' class='easyform-label'/>" +
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
                   "<div class='easyform-component-container position-absolute'>" +
-                    "<div class='combo-box-input-outer' id='outerFilterDiv'>" +
+                    "<div class='combo-box-input-outer'>" +
                       "<input type='text' class='combo-box-input' />" +
                       "<div class='combo-box-outer'>" +
-                        "<select id='comboBox' class='combo-box' ng-disabled='!component.enabled'/>" +
+                        "<select class='combo-box' ng-disabled='!component.enabled'/>" +
                       "</div>" +
                     "</div>" +
                   "</div>" +
@@ -331,7 +333,7 @@
 
               efc.buildUI = function() {
                 element.find('.easyform-label').text(efc.getComponent().label);
-                var comboBox = element.find('#comboBox');
+                var comboBox = element.find('.combo-box');
                 comboBox.attr('ng-model', scope.ngModelAttr);
 
                 scope.component.enabled = true;
@@ -391,12 +393,11 @@
           return {
             restrict: "E",
             template:
-                "<div id='listComponentContrainer' class='easyform-container'>" +
-                  "<label id='listComponentLabel' class='easyform-label'/>" +
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
                   "<div class='easyform-component-container'>" +
                     "<div class='list-component-outer'>" +
-                      "<select id='listComponent' class='list-component' " +
-                      "ng-disabled='!component.enabled'/>" +
+                      "<select class='list-component' ng-disabled='!component.enabled'/>" +
                     "</div>" +
                   "</div>" +
                 "</div>",
@@ -407,7 +408,7 @@
 
               efc.buildUI = function() {
                 element.find('.easyform-label').text(efc.getComponent().label);
-                var listComponent = element.find('#listComponent');
+                var listComponent = element.find('.list-component');
                 listComponent.attr('ng-model', scope.ngModelAttr);
 
                 if ('true' === efc.getComponent().multipleSelection) {
@@ -486,8 +487,8 @@
           return {
             restrict: "E",
             template:
-                "<div id='radioButtonComponentContrainer' class='easyform-container'>" +
-                  "<label id='radioButtonComponentLabel' class='easyform-label'/>" +
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
                   "<div class='easyform-component-container'>" +
                   "</div>" +
                 "</div>",
@@ -539,11 +540,10 @@
           return {
             restrict: "E",
             template:
-                "<div id='datePickerComponentContrainer' class='easyform-container'>" +
-                  "<label id='datePickerLabel' class='easyform-label'/>" +
+                "<div class='easyform-container'>" +
+                  "<label class='easyform-label'/>" +
                   "<div class='easyform-component-container'>" +
-                    "<input type='date' id='datePicker' class='date-picker' " +
-                    " ng-disabled='!component.enabled'/>" +
+                    "<input type='date' class='date-picker' ng-disabled='!component.enabled'/>" +
                   "</div>" +
                 "</div>",
             link: function (scope, element, attrs) {
@@ -553,7 +553,7 @@
 
               efc.buildUI = function() {
                 element.find('.easyform-label').text(efc.getComponent().label);
-                var datePicker = element.find('#datePicker');
+                var datePicker = element.find('.date-picker');
                 datePicker.attr('ng-model', scope.ngModelAttr);
 
                 if ('true' === efc.getComponent().showTime) {
@@ -574,9 +574,10 @@
                   bkCoreManager) {
           return {
             restrict: "E",
-            template: "<div id='buttonComponentContrainer' class='button-component-container'>" +
-                "<button type='button' id='buttonComponent' class='button-component' " +
-                "ng-disabled='!component.enabled'/>" +
+            template:
+                "<div class='button-component-container'>" +
+                  "<button type='button' class='button-component' " +
+                  "ng-disabled='!component.enabled'/>" +
                 "</div>",
             link: function (scope, element, attrs) {
               var component = scope.component;
@@ -605,7 +606,7 @@
                 });
               };
 
-              var buttonComponent = element.find('#buttonComponent');
+              var buttonComponent = element.find('.button-component');
 
               if (EasyFormConstants.Components.ButtonComponent.type == component.type) {
                 buttonComponent.text(component.label);
@@ -640,7 +641,7 @@
         function ($compile, bkUtils, bkEvaluatorManager, bkSessionManager, EasyFormConstants,
                   EasyFormService) {
           return {
-            template: "<div id='easyFormContainer' class='easy-form-container'></div>",
+            template: "<div class='easy-form-container'></div>",
 
             controller: function ($scope) {
               $scope.getUpdateService = function () {
@@ -673,7 +674,7 @@
 
               $scope.fetchFromCellModel = function (model, element) {
                 $scope.ingestUpdate(model);
-                var easyFormContainer = element.find('#easyFormContainer');
+                var easyFormContainer = element.find('.easy-form-container');
 
                 if (model.caption) {
                   var fieldsetElement = angular.element('<fieldset></fieldset>');
@@ -710,9 +711,12 @@
               $scope.alignComponents = function() {
                 var labels = $('.easyform-label');
                 var components = $('.easyform-component-container');
+                var maxLabelWidth = findMaxLabelWidth();
+                if (maxLabelWidth <= 0) {
+                  return;
+                }
                 var safeIndent = 5;
-                var maxLabelWidth = findMaxLabelWidth() + safeIndent;
-                var maxComponentWidth = countMaxComponentWidth(maxLabelWidth);
+                var maxComponentWidth = countMaxComponentWidth(maxLabelWidth + safeIndent);
                 setComponentsWidthInPercents(maxComponentWidth);
                 setEqualLabelsWidth(maxLabelWidth);
 
@@ -770,6 +774,10 @@
               scope.getState = function () {
                 return scope.model.getCellModel();
               };
+
+              scope.$watch(function () {
+                return element.is(':visible')
+              }, scope.alignComponents);
 
               scope.fetchFromCellModel(scope.getState(), element);
             }

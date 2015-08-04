@@ -51,7 +51,7 @@
       return deferred.promise;
     };
     var getSessionEditedState = function(sessionId) {
-      return bkUtils.httpGet('rest/session-backup/getEdited', {sessionid: sessionId});
+      return bkUtils.httpGet(bkUtils.serverUrl('beaker/rest/session-backup/getEdited'), {sessionid: sessionId});
     };
 
     var loadSession = function(sessionId) {

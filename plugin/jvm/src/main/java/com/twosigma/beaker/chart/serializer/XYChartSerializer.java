@@ -57,7 +57,12 @@ public class XYChartSerializer extends JsonSerializer<XYChart> {
     }
 
     jgen.writeStartObject();
-    jgen.writeObjectField("type", xychart.getClass().getSimpleName());
+    String type = xychart.getClass().getSimpleName();
+    if ("SimpleTimePlot".equals(type)){
+      jgen.writeObjectField("type", "TimePlot");
+    }else {
+      jgen.writeObjectField("type", type);
+    }
     jgen.writeObjectField("init_width", xychart.getInitWidth());
     jgen.writeObjectField("init_height", xychart.getInitHeight());
     jgen.writeObjectField("chart_title", xychart.getTitle());

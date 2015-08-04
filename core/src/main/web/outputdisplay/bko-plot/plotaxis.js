@@ -34,6 +34,9 @@
       this.axisGridlineLabels = [];
       this.axisStep = 1;
       this.axisFixed = 0;
+
+      this.axisMarginValL = 0;
+      this.axisMarginValR = 0;
     };
     var dateIntws = [
       // milliseconds
@@ -82,7 +85,7 @@
       }
       this.axisValSpan = this.axisValR - this.axisValL;
     };
-    PlotAxis.prototype.setGridlines = function(pl, pr, count) {
+    PlotAxis.prototype.setGridlines = function(pl, pr, count, ml, mr) {
       if (pr < pl) {
         console.error("cannot set right coord < left coord");
         return;
@@ -94,6 +97,12 @@
       this.axisPctL = pl;
       this.axisPctR = pr;
       this.axisPctSpan = pr - pl;
+
+      if (this.axisType === "time") {
+        this.axisMarginValL = ml * this.axisValSpan;
+        this.axisMarginValR = mr * this.axisValSpan;
+      }
+
       var span = this.axisPctSpan * this.axisValSpan;
       var intws, fixs;
       if (this.axisType === "time") {
@@ -177,7 +186,7 @@
         }
       }
       var val = this.getValue(pct);
-      var span = this.axisValSpan * this.axisPctSpan;
+      var span = (this.axisValSpan - (this.axisMarginValL + this.axisMarginValR)) * this.axisPctSpan;
 
       var d, ret = "";
       if (this.axisType === "time") {
@@ -200,12 +209,14 @@
         ret = moment(d).tz(this.axisTimezone).format("mm:ss.SSS");
       } else if (span <= 1000 * 60 * 60) {
         ret = moment(d).tz(this.axisTimezone).format("HH:mm:ss");
-      } else if (span <= 1000) {
-        ret = moment(d).tz(this.axisTimeozne).format("MMM DD ddd, HH:mm");
+      } else if (span <= 1000 * 60 * 60 * 24) {
+        ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd, HH:mm");
       } else if (span <= 1000 * 60 * 60 * 24 * 30) {
         ret = moment(d).tz(this.axisTimezone).format("MMM DD ddd");
-      } else {
+      } else if (span <= 1000 * 60 * 60 * 24 * 365) {
         ret = moment(d).tz(this.axisTimezone).format("YYYY MMM");
+      } else {
+        ret = moment(d).tz(this.axisTimezone).format("YYYY");
       }
 
       /*

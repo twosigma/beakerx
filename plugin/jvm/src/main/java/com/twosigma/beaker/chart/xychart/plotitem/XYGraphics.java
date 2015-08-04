@@ -70,6 +70,10 @@ abstract public class XYGraphics {
     this.yAxisName = yAxisName;
   }
 
+  public String getYAxis() {
+    return yAxisName;
+  }
+
   private void generateXs() {
     this.xs = new ArrayList<>(this.ys.size());
     for (int i = 0; i < ys.size(); ++i) {

@@ -48,6 +48,7 @@ public class LineSerializer extends JsonSerializer<Line> {
     if (line.getInterpolation() != null) {
       jgen.writeObjectField("interpolation", line.getInterpolation());
     }
+    jgen.writeObjectField("yAxis", line.getYAxis());
     jgen.writeEndObject();
   }
 

@@ -30,31 +30,41 @@
       remapModel : function(model) {
         // map data entrie to [0, 1] of axis range
         var vrange = model.vrange;
-        var xAxisLabel = model.xAxis.label,
-            yAxisLabel = model.yAxis.label;
+        var xAxisLabel = model.xAxis.label;
 
-        var xAxis = new PlotAxis(model.xAxis.type),
-            yAxis = new PlotAxis(model.yAxis.type);
+        var xAxis = new PlotAxis(model.xAxis.type);
 
         if (xAxis.axisType !== "time") {
           xAxis.setRange(vrange.xl, vrange.xr, model.xAxis.base);
         } else {
           xAxis.setRange(vrange.xl, vrange.xr, model.timezone);
         }
-        if (yAxis.axisType !== "time") {
-          yAxis.setRange(vrange.yl, vrange.yr, model.yAxis.base);
-        } else {
-          yAxis.setRange(vrange.yl, vrange.yr, model.timezone);
-        }
 
         if (xAxisLabel != null) {
           xAxis.setLabel(xAxisLabel);
         }
-        if (yAxisLabel != null) {
-          yAxis.setLabel(yAxisLabel);
-        }
         model.xAxis = xAxis;
-        model.yAxis = yAxis;
+
+        var updateYAxisRange = function(modelAxis, axisVRange){
+          if(modelAxis == null || axisVRange == null) { return null; }
+
+          var axisLabel = modelAxis.label;
+
+          var axis = new PlotAxis(modelAxis.type);
+
+          if (axis.axisType !== "time") {
+            axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.base);
+          } else {
+            axis.setRange(axisVRange.yl, axisVRange.yr, modelAxis.timezone);
+          }
+
+          if (axisLabel != null) {
+            axis.setLabel(axisLabel);
+          }
+          return axis;
+        };
+        model.yAxis = updateYAxisRange(model.yAxis, model.vrange);
+        model.yAxisR = updateYAxisRange(model.yAxisR, model.vrangeR);
 
         var data = model.data;
         for (var i = 0; i < data.length; i++) {
@@ -62,7 +72,11 @@
 
           // map coordinates using percentage
           // tooltips are possibly generated at the same time
-          item.applyAxis(xAxis, yAxis);
+          if(plotUtils.useYAxisR(model, item)){
+            item.applyAxis(xAxis, model.yAxisR);
+          }else{
+            item.applyAxis(xAxis, model.yAxis);
+          }
         }
         // map focus region
         var focus = model.userFocus;
@@ -88,12 +102,18 @@
         var logx = newmodel.xAxis.type === "log",
             logxb = newmodel.xAxis.base,
             logy = newmodel.yAxis.type === "log",
-            logyb = newmodel.yAxis.base;
+            logyb = newmodel.yAxis.base,
+            logyR = newmodel.yAxisR && newmodel.yAxisR.type === "log",
+            logybR = newmodel.yAxisR && newmodel.yAxisR.base;
 
         if (newmodel.data == null) { newmodel.data = []; }
         var data = newmodel.data;
         for (var i = 0; i < data.length; i++) {
           var item = data[i], eles = item.elements;
+
+          var useYAxisR = plotUtils.useYAxisR(newmodel, item);
+          var itemlogy = useYAxisR ? logyR : logy;
+          var itemlogyb = useYAxisR ? logybR : logyb;
 
           if (eles == null) eles = [];
 
@@ -204,7 +224,7 @@
               } else if (item.base != null) {
                 ele.y2 = item.base;
               } else {
-                ele.y2 = logy ? 1 : 0;
+                ele.y2 = itemlogy ? 1 : 0;
               }
             }
 
@@ -242,14 +262,14 @@
             }
             if (ele.y != null) {
               ele._y = ele.y;
-              if (logy) {
-                ele.y = Math.log(ele.y) / Math.log(logyb);
+              if (itemlogy) {
+                ele.y = Math.log(ele.y) / Math.log(itemlogyb);
               }
             }
             if (ele.y2 != null) {
               ele._y2 = ele.y2;
-              if (logy) {
-                ele.y2 = Math.log(ele.y2) / Math.log(logyb);
+              if (itemlogy) {
+                ele.y2 = Math.log(ele.y2) / Math.log(itemlogyb);
               }
             }
           }
@@ -321,6 +341,7 @@
         }
         var newmodel;
         if (model.version === "groovy") {  // model returned from serializer
+
           newmodel = {
             type : "plot",
             title : model.chart_title != null ? model.chart_title : model.title,
@@ -328,6 +349,7 @@
             userFocus : {},
             xAxis : { label : model.domain_axis_label },
             yAxis : { label : model.y_label },
+            yAxisR : model.rangeAxes.length > 1 ? { label : model.rangeAxes[1].label } : null,
             showLegend : model.show_legend != null ? model.show_legend : false,
             useToolTip : model.use_tool_tip != null ? model.use_tool_tip : false,
             plotSize : {
@@ -343,6 +365,7 @@
             useToolTip : model.useToolTip != null ? model.useToolTip : false,
             xAxis : model.xAxis != null ? model.xAxis : {},
             yAxis : model.yAxis != null ? model.yAxis : {},
+            yAxisR : model.yAxisR,
             margin : model.margin != null ? model.margin : {},
             range : model.range != null ? model.range : null,
             userFocus : model.focus != null ? model.focus : {},
@@ -368,7 +391,18 @@
 
         // at this point, data is in standard format (log is applied as well)
 
-        var range = plotUtils.getDataRange(newmodel.data).datarange;
+        var yAxisData = [], yAxisRData = [];
+        for (var i = 0; i < newmodel.data.length; i++) {
+          var item = newmodel.data[i];
+          if(plotUtils.useYAxisR(newmodel, item)){
+            yAxisRData.push(item);
+          }else{
+            yAxisData.push(item);
+          }
+        }
+
+        var range = plotUtils.getDataRange(yAxisData).datarange;
+        var rangeR = _.isEmpty(yAxisRData) ? null : plotUtils.getDataRange(yAxisRData).datarange;
 
         var margin = newmodel.margin;
         if (margin.bottom == null) { margin.bottom = .05; }
@@ -378,13 +412,19 @@
 
         if (newmodel.vrange == null) {
           // visible range initially is 10x larger than data range by default
-          newmodel.vrange = {
-            xl : range.xl - range.xspan * 10.0,
-            xr : range.xr + range.xspan * 10.0,
-            yl : range.yl - range.yspan * 10.0,
-            yr : range.yr + range.yspan * 10.0
+          var getModelRange = function(r){
+            return r ? {
+              xl : r.xl - r.xspan * 10.0,
+              xr : r.xr + r.xspan * 10.0,
+              yl : r.yl - r.yspan * 10.0,
+              yr : r.yr + r.yspan * 10.0
+            } : null;
           };
+          newmodel.vrange = getModelRange(range);
+          newmodel.vrangeR = getModelRange(rangeR);
+
           var vrange = newmodel.vrange;
+          var vrangeR = newmodel.vrangeR;
 
           if (newmodel.yPreventNegative === true) {
             vrange.yl = Math.min(0, range.yl);
@@ -394,14 +434,27 @@
               vrange.yl = 0;
             }
           }
+
+          if(vrangeR && newmodel.yRIncludeZero === true){
+            if (vrangeR.yl > 0) {
+              vrangeR.yl = 0;
+            }
+          }
+
           var focus = newmodel.userFocus; // allow user to overide vrange
           if (focus.xl != null) { vrange.xl = Math.min(focus.xl, vrange.xl); }
           if (focus.xr != null) { vrange.xr = Math.max(focus.xr, vrange.xr); }
           if (focus.yl != null) { vrange.yl = Math.min(focus.yl, vrange.yl); }
           if (focus.yr != null) { vrange.yr = Math.max(focus.yr, vrange.yr); }
 
-          vrange.xspan = vrange.xr - vrange.xl;
-          vrange.yspan = vrange.yr - vrange.yl;
+          var updateRangeSpan = function(r){
+            if(r){
+              r.xspan = r.xr - r.xl;
+              r.yspan = r.yr - r.yl;
+            }
+          };
+          updateRangeSpan(vrange);
+          updateRangeSpan(vrangeR);
         }
 
         this.remapModel(newmodel);

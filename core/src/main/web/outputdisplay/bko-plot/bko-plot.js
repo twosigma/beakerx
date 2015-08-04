@@ -116,7 +116,7 @@
             bottomLayoutMargin : 30,
             topLayoutMargin : 0,
             leftLayoutMargin : 80,
-            rightLayoutMargin : 0,
+            rightLayoutMargin : scope.stdmodel.yAxisR ? 80 : 0,
             legendMargin : 10,
             legendBoxSize : 10
           };
@@ -156,6 +156,9 @@
 
           if (model.yAxis.axisLabel != null) {
             scope.layout.leftLayoutMargin += scope.fonts.labelHeight;
+          }
+          if(model.yAxisR != null) {
+            scope.layout.rightLayoutMargin += scope.fonts.labelHeight;
           }
           scope.legendResetPosition = true;
 
@@ -205,6 +208,9 @@
           var focus = scope.focus, model = scope.stdmodel;
           model.xAxis.setGridlines(focus.xl, focus.xr, scope.numIntervals.x);
           model.yAxis.setGridlines(focus.yl, focus.yr, scope.numIntervals.y);
+          if(model.yAxisR){
+            model.yAxisR.setGridlines(focus.yl, focus.yr, scope.numIntervals.y);
+          }
         };
         scope.renderGridlines = function() {
           var focus = scope.focus, model = scope.stdmodel;
@@ -248,6 +254,14 @@
             "x1" : mapX(focus.xl),
             "y1" : mapY(focus.yl),
             "x2" : mapX(focus.xl),
+            "y2" : mapY(focus.yr)
+          });
+          scope.rpipeGridlines.push({
+            "id" : "gridline_yr_base",
+            "class" : "plot-gridline-base",
+            "x1" : mapX(focus.xr),
+            "y1" : mapY(focus.yl),
+            "x2" : mapX(focus.xr),
             "y2" : mapY(focus.yr)
           });
         };
@@ -407,7 +421,7 @@
 
         scope.renderGridlineLabels = function() {
           var mapX = scope.data2scrX, mapY = scope.data2scrY;
-          var model = scope.stdmodel, ys = model.yScale;
+          var model = scope.stdmodel;
           if (model.xAxis.showGridlineLabels !== false) {
             var lines = model.xAxis.getGridlines(),
                 labels = model.xAxis.getGridlineLabels();
@@ -440,6 +454,21 @@
               });
             }
           }
+          if (model.yAxisR && model.yAxisR.showGridlineLabels !== false) {
+            lines = model.yAxisR.getGridlines();
+            labels = model.yAxisR.getGridlineLabels();
+            for (var i = 0; i < labels.length; i++) {
+              var y = lines[i];
+              scope.rpipeTexts.push({
+                "id" : "label_yr_" + i,
+                "class" : "plot-label",
+                "text" : labels[i],
+                "x" : mapX(scope.focus.xr) + scope.labelPadding.x,
+                "y" : mapY(y),
+                "dominant-baseline" : "central"
+              });
+            }
+          }
           var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
           if (model.xAxis.axisLabel != null) {
             scope.rpipeTexts.push({
@@ -461,18 +490,30 @@
               "transform" : "rotate(-90 " + x + " " + y + ")"
             });
           }
+          if (model.yAxisR && model.yAxisR.axisLabel != null) {
+            var x = scope.jqsvg.width() - scope.fonts.labelHeight, y = (scope.jqsvg.height() - bMargin) / 2;
+            scope.rpipeTexts.push({
+              "id" : "yrlabel",
+              "class" : "plot-xylabel",
+              "text" : model.yAxisR.axisLabel,
+              "x" : x,
+              "y" : y,
+              "transform" : "rotate(-90 " + x + " " + y + ")"
+            });
+          }
         };
 
         scope.renderCursor = function(e) {
           var x = e.offsetX, y = e.offsetY;
           var W = scope.jqsvg.width(), H = scope.jqsvg.height();
-          var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin;
-          if (x < lMargin || y > H - bMargin) {
+          var lMargin = scope.layout.leftLayoutMargin, bMargin = scope.layout.bottomLayoutMargin,
+              rMargin = scope.layout.rightLayoutMargin;
+          var model = scope.stdmodel;
+          if (x < lMargin || model.yAxisR != null && x > W - rMargin || y > H - bMargin) {
             scope.svg.selectAll(".plot-cursor").remove();
             scope.jqcontainer.find(".plot-cursorlabel").remove();
             return;
           }
-          var model = scope.stdmodel;
           var mapX = scope.scr2dataX, mapY = scope.scr2dataY;
           if (model.xCursor != null) {
             var opt = model.xCursor;
@@ -513,23 +554,30 @@
             scope.svg.select("#cursor_y")
               .attr("x1", lMargin)
               .attr("y1", y)
-              .attr("x2", W)
+              .attr("x2", W - rMargin)
               .attr("y2", y);
 
-            scope.jqcontainer.find("#cursor_ylabel").remove();
-            var label = $("<div id='cursor_ylabel' class='plot-cursorlabel'></div>")
-              .appendTo(scope.jqcontainer)
-              .text(plotUtils.getTipStringPercent(mapY(y), model.yAxis));
-            var w = label.outerWidth(), h = label.outerHeight();
-            var p = {
-              "x" : lMargin + scope.labelPadding.x,
-              "y" : y - h / 2
+            var renderCursorLabel = function(axis, id, alignRight){
+              if(axis == null) { return };
+              scope.jqcontainer.find("#" + id).remove();
+              var label = $("<div id='" + id + "' class='plot-cursorlabel'></div>")
+                .appendTo(scope.jqcontainer)
+                .text(plotUtils.getTipStringPercent(mapY(y), axis));
+              var w = label.outerWidth(), h = label.outerHeight();
+              var p = {
+                "x" : (alignRight ? rMargin : lMargin) + scope.labelPadding.x,
+                "y" : y - h / 2
+              };
+              var css = {
+                "top" : p.y ,
+                "background-color" : opt.color != null ? opt.color : "black"
+              };
+              css[alignRight ? "right" : "left"] = p.x;
+              label.css(css);
             };
-            label.css({
-              "left" : p.x ,
-              "top" : p.y ,
-              "background-color" : opt.color != null ? opt.color : "black"
-            });
+
+            renderCursorLabel(model.yAxis, "cursor_ylabel", false);
+            renderCursorLabel(model.yAxisR, "cursor_yrlabel", true);
           }
         };
 
@@ -541,7 +589,7 @@
           var data = scope.stdmodel.data;
           var margin = scope.layout.legendMargin;
 
-          scope.jqcontainer.find("#legends").remove();
+          scope.jqcontainer.find(".plot-legendscrollablecontainer").remove();
 
           scope.legendDone = true;
           var legendScrollableContainer = $("<div></div>").appendTo(scope.jqcontainer)
@@ -818,7 +866,7 @@
             "class" : "plot-coverbox",
             "x" : W - scope.layout.rightLayoutMargin,
             "y" : 0,
-            "width" : scope.layout.rightLayoutMargin,
+            "width" : scope.stdmodel.yAxisR ? scope.layout.rightLayoutMargin : 0,
             "height" : H
           });
 

@@ -51,6 +51,7 @@ public class AreaSerializer extends JsonSerializer<Area> {
     if (area.getInterpolation() != null) {
       jgen.writeObjectField("interpolation", area.getInterpolation());
     }
+    jgen.writeObjectField("yAxis", area.getYAxis());
     jgen.writeEndObject();
   }
 

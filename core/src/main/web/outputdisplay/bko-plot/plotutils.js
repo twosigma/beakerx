@@ -1,4 +1,3 @@
-
 (function() {
     'use strict';
     var retfunc = function(bkUtils) {
@@ -385,6 +384,11 @@
           }
         });
         return false;
+      },
+
+      useYAxisR : function(model, data){
+        var yAxisR = model.yAxisR;
+        return yAxisR && (yAxisR.axisLabel === data.yAxis || yAxisR.label === data.yAxis);
       }
     };
   };

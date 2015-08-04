@@ -31,6 +31,7 @@ public class YAxisSerializer extends JsonSerializer<YAxis> {
 
     jgen.writeStartObject();
     jgen.writeObjectField("type", yAxis.getClass().getSimpleName());
+    jgen.writeObjectField("label", yAxis.getLabel());
     jgen.writeObjectField("auto_range", yAxis.getAutoRange());
     jgen.writeObjectField("auto_range_includes_zero", yAxis.getAutoRangeIncludesZero());
     jgen.writeObjectField("lower_margin", yAxis.getLowerMargin());

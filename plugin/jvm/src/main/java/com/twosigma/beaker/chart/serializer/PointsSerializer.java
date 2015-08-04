@@ -64,6 +64,7 @@ public class PointsSerializer extends JsonSerializer<Points> {
     } else {
       jgen.writeObjectField("outline_color", points.getOutlineColor());
     }
+    jgen.writeObjectField("yAxis", points.getYAxis());
     jgen.writeEndObject();
   }
 

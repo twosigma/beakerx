@@ -16,7 +16,7 @@
 
 (function() {
   'use strict';
-  var retfunc = function(bkUtils) {
+  var retfunc = function(bkUtils, plotUtils) {
     return {
       dataTypeMap : {
         "Line" : "line",
@@ -50,16 +50,23 @@
       },
 
       convertGroovyData : function(newmodel, model) {
-        var yIncludeZero = false;
-        var logx = false, logy = false, logxb, logyb;
+        var logx = false, logxb;
+        var yAxisSettings = {yIncludeZero: false, logy: false, logyb: null};
+        var yAxisRSettings = _.clone(yAxisSettings);
         if (model.rangeAxes != null) {
-          var axis = model.rangeAxes[0];
-          if (axis.auto_range_includes_zero === true) {
-            yIncludeZero = true;
-          }
-          if (axis.use_log === true) {
-            logy = true;
-            logyb = axis.log_base == null ? 10 : axis.log_base;
+          var updateAxisSettings = function(axis, settings){
+            if (axis.auto_range_includes_zero === true) {
+              settings.yIncludeZero = true;
+            }
+            if (axis.use_log === true) {
+              settings.logy = true;
+              settings.logyb = axis.log_base == null ? 10 : axis.log_base;
+            }
+          };
+
+          updateAxisSettings(model.rangeAxes[0], yAxisRSettings);
+          if(model.rangeAxes.length > 1){
+            updateAxisSettings(model.rangeAxes[1], yAxisRSettings);
           }
         }
         if (model.log_x === true) {
@@ -132,12 +139,17 @@
           newmodel.xAxis.type = "linear";
         }
 
-        if (logy) {
-          newmodel.yAxis.type = "log";
-          newmodel.yAxis.base = logyb;
-        } else {
-          newmodel.yAxis.type = "linear";
-        }
+        var setYAxisType = function(axis, settings){
+          if(axis == null){ return; };
+          if (settings.logy) {
+            axis.type = "log";
+            axis.base = settings.logyb;
+          } else {
+            axis.type = "linear";
+          }
+        };
+        setYAxisType(newmodel.yAxis, yAxisSettings);
+        setYAxisType(newmodel.yAxisR, yAxisRSettings);
 
         var list = model.graphics_list;
         var numLines = list.length;
@@ -197,7 +209,8 @@
             item.shape = this.pointShapeMap[item.shape];
           }
 
-          if (item.base != null && logy) {
+          var axisSettings = plotUtils.useYAxisR(newmodel, item) ? yAxisRSettings : yAxisSettings;
+          if (item.base != null && axisSettings.logy) {
             if (item.base === 0) {
               item.base = 1;
             }
@@ -333,7 +346,8 @@
             newmodel.data.push(item);
           }
         }
-        newmodel.yIncludeZero = yIncludeZero;
+        newmodel.yIncludeZero = yAxisSettings.yIncludeZero;
+        newmodel.yRIncludeZero = yAxisRSettings.yIncludeZero;
       },
 
       cleanupModel : function(model) {
@@ -349,5 +363,5 @@
       }
     };
   };
-  beaker.bkoFactory('plotConverter', ["bkUtils", retfunc]);
+  beaker.bkoFactory('plotConverter', ["bkUtils", "plotUtils", retfunc]);
 })();

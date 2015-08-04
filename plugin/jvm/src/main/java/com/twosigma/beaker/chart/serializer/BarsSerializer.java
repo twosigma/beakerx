@@ -59,6 +59,7 @@ public class BarsSerializer extends JsonSerializer<Bars> {
     } else {
       jgen.writeObjectField("outline_color", bars.getOutlineColor());
     }
+    jgen.writeObjectField("yAxis", bars.getYAxis());
     jgen.writeEndObject();
   }
 

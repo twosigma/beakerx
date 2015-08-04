@@ -43,7 +43,13 @@ public class CombinedPlotSerializer extends JsonSerializer<CombinedPlot> {
     jgen.writeObjectField("x_label", plot.getXLabel());
     List<XYChart> subplots = plot.getSubplots();
     if (!subplots.isEmpty()) {
-      jgen.writeObjectField("plot_type", subplots.get(0).getClass().getSimpleName());
+
+      String plot_type = subplots.get(0).getClass().getSimpleName();
+      if ("SimpleTimePlot".equals(plot_type)){
+        jgen.writeObjectField("plot_type", "TimePlot");
+      }else {
+        jgen.writeObjectField("plot_type", plot_type);
+      }
     }
     jgen.writeObjectField("plots", subplots);
     jgen.writeObjectField("weights", plot.getWeights());

@@ -710,9 +710,12 @@
               $scope.alignComponents = function() {
                 var labels = $('.easyform-label');
                 var components = $('.easyform-component-container');
+                var maxLabelWidth = findMaxLabelWidth();
+                if (maxLabelWidth <= 0) {
+                  return;
+                }
                 var safeIndent = 5;
-                var maxLabelWidth = findMaxLabelWidth() + safeIndent;
-                var maxComponentWidth = countMaxComponentWidth(maxLabelWidth);
+                var maxComponentWidth = countMaxComponentWidth(maxLabelWidth + safeIndent);
                 setComponentsWidthInPercents(maxComponentWidth);
                 setEqualLabelsWidth(maxLabelWidth);
 
@@ -770,6 +773,10 @@
               scope.getState = function () {
                 return scope.model.getCellModel();
               };
+
+              scope.$watch(function () {
+                return element.is(':visible')
+              }, scope.alignComponents);
 
               scope.fetchFromCellModel(scope.getState(), element);
             }

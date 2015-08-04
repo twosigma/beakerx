@@ -147,13 +147,13 @@ select.list-component {
   float: none;
 }
 
-div#easyFormContainer fieldset {
+div.easy-form-container fieldset {
   margin-top: 10px;
   border: 1px solid #CCC;
   padding: 0.35em 0.625em 0.75em;
 }
 
-div#easyFormContainer fieldset legend {
+div.easy-form-container fieldset legend {
   width: auto;
   border: 0;
   margin: 0;

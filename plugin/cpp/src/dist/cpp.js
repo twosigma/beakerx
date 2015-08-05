@@ -28,8 +28,8 @@ define(function(require, exports, module) {
   var CppSh = {
     pluginName: PLUGIN_NAME,
     cmMode: 'text/x-c++src',
-    background: '#7B477D',
-    bgColor: '#7B477D',
+    background: '#4757B8',
+    bgColor: '#4757B8',
     fgColor: '#FFFFFF',
     borderColor: '',
     shortName: 'C',
@@ -37,11 +37,13 @@ define(function(require, exports, module) {
       if (!shellId) {
         shellId = '';
       }
-      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + '/rest/cpp/getShell'), {shellId: shellId, sessionId: bkHelper.getSessionId()})
-          .success(cb)
-          .error(function() {
-            console.log('failed to create shell', arguments);
-          });
+      bkHelper.httpPost(bkHelper.serverUrl(serviceBase + '/rest/cpp/getShell'), {
+        shellId: shellId,
+        sessionId: bkHelper.getSessionId()})
+      .success(cb)
+      .error(function() {
+        console.log('failed to create shell', arguments);
+      });
     },
     evaluate: function(code, modelOutput, refreshObj, cellId) {
       var deferred = Q.defer();
@@ -150,9 +152,8 @@ define(function(require, exports, module) {
     updateShell: function(cb) {
       var p = bkHelper.httpPost(bkHelper.serverUrl(serviceBase + '/rest/cpp/setShellOptions'), {
         shellId: this.settings.shellID,
-        classPath: this.settings.classPath,
-        imports: this.settings.imports,
-        outdir: this.settings.outdir});
+        flags: this.settings.flags
+      });
       if (cb) {
         p.success(cb);
       }
@@ -161,6 +162,7 @@ define(function(require, exports, module) {
       // outdir:      {type: 'settableString', action: 'updateShell', name: 'Dynamic classes directory'},
       // classPath:   {type: 'settableString', action: 'updateShell', name: 'Class path (jar files, one per line)'},
       // imports:     {type: 'settableString', action: 'updateShell', name: 'Imports (classes, one per line)'},
+      flags:       {type: 'settableString', action: 'updateShell', name: 'Compiler flags'},
       resetEnv:    {type: 'action', action: 'resetEnvironment', name: 'Reset Environment'},
       killAllThr:  {type: 'action', action: 'killAllThreads', name: 'Kill All Threads'}
     },

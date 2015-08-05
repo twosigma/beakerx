@@ -141,15 +141,13 @@ public class CppShellRest {
   @Path("setShellOptions")
   public void setShellOptions(
       @FormParam("shellId") String shellId,
-      @FormParam("classPath") String classPath,
-      @FormParam("imports") String imports,
-      @FormParam("outdir") String outDir)
+      @FormParam("flags") String flags)
     throws MalformedURLException, IOException
   {
     if(!this.shells.containsKey(shellId)) {
       return;
     }
-    this.shells.get(shellId).setShellOptions(classPath, imports, outDir);
+    this.shells.get(shellId).setShellOptions(flags);
   }
 
 }

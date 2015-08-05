@@ -25,6 +25,7 @@ import com.twosigma.beaker.jvm.object.SimpleEvaluationObject;
 import com.twosigma.beaker.jvm.threads.BeakerCellExecutor;
 
 import java.io.IOException;
+import java.io.EOFException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -42,6 +43,9 @@ import java.io.BufferedWriter;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.FileInputStream;
+import java.io.BufferedInputStream;
+import java.io.ObjectInputStream;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -53,6 +57,8 @@ import com.twosigma.beaker.cpp.autocomplete.CPP14Lexer;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Parser;
 import com.twosigma.beaker.cpp.autocomplete.CPP14Listener;
 
+import com.twosigma.beaker.cpp.utils.CellGobbler;
+
 public class CppEvaluator {
   protected final String shellId;
   protected final String sessionId;
@@ -61,14 +67,15 @@ public class CppEvaluator {
   protected List<String> imports;
   protected HashSet<String> loadedCells;
   protected String outDir;
-  // protected ClasspathScanner cps;
+  protected ArrayList<String> compileCommand;
   // protected JavaAutocomplete jac;
   protected boolean exit;
-  // protected boolean updateLoader;
   protected workerThread myWorker;
   protected final BeakerCellExecutor executor;
   protected String currentClassPath;
   protected String currentImports;
+  protected ArrayList<String> userFlags;
+  protected Process cellProc;
 
   protected class jobDescriptor {
     SimpleEvaluationObject outputObject;
@@ -86,24 +93,29 @@ public class CppEvaluator {
   protected final Semaphore syncObject = new Semaphore(0, true);
   protected final ConcurrentLinkedQueue<jobDescriptor> jobQueue = new ConcurrentLinkedQueue<jobDescriptor>();
 
-  public native Object cLoadAndRun(String fileName, String type);
-
-  static {
-    System.load(System.getProperty("user.dir") + "/lib/libCRun.jnilib");
-    // System.loadLibrary("clingInterp");
-  }
-
   public CppEvaluator(String id, String sId) {
     shellId = id;
     sessionId = sId;
     packageId = "com.twosigma.beaker.cpp.bkr"+shellId.split("-")[0];
-    // cps = new ClasspathScanner();
-    // jac = createJavaAutocomplete(cps);
     classPath = new ArrayList<String>();
     imports = new ArrayList<String>();
     loadedCells = new HashSet<String>();
+    compileCommand = new ArrayList<String>();
+    compileCommand.add("clang++");
+    compileCommand.add("-std=c++14");
+    compileCommand.add("-shared");
+    compileCommand.add("-undefined");
+    compileCommand.add("dynamic_lookup");
+    compileCommand.add("-fPIC");
+    compileCommand.add("-m64");
+    compileCommand.add("-Wno-return-type-c-linkage");
+    compileCommand.add("-I");
+    compileCommand.add("./include");
+    compileCommand.add("-I");
+    // Should add something appropriate for Linux
+    compileCommand.add("/System/Library/Frameworks/JavaVM.framework/Headers");
+
     exit = false;
-    // updateLoader = false;
     currentClassPath = "";
     currentImports = "";
     outDir = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
@@ -118,73 +130,33 @@ public class CppEvaluator {
     myWorker.start();
   }
 
-  // protected JavaAutocomplete createJavaAutocomplete(ClasspathScanner c)
-  // {
-  //   return new JavaAutocomplete(c);
-  // }
-
   public String getShellId() { return shellId; }
 
   public void killAllThreads() {
-    executor.killAllThreads();
+    // executor.killAllThreads();
   }
 
   public void cancelExecution() {
-    executor.cancelExecution();
+    if (cellProc != null){
+      cellProc.destroy();
+    }
   }
 
   public void resetEnvironment() {
+    loadedCells.clear();
     executor.killAllThreads();
-   
-    // String cpp = "";
-    // for(String pt : classPath) {
-    //   cpp += pt;
-    //   cpp += File.pathSeparator;
-    // }
-    // cpp += File.pathSeparator;
-    // cpp += System.getProperty("java.class.path");
-    // cps = new ClasspathScanner(cpp);
-    // jac = createJavaAutocomplete(cps);
-    
-    // for(String st : imports)
-    //   jac.addImport(st);
-    
-    // signal thread to create loader
-    // updateLoader = true;
     syncObject.release();
   }
-    
+
   public void exit() {
     exit = true;
     cancelExecution();
     syncObject.release();
   }
 
-  public void setShellOptions(String cp, String in, String od) throws IOException {
-    if (od==null || od.isEmpty()) {
-      od = FileSystems.getDefault().getPath(System.getenv("beaker_tmp_dir"),"dynclasses",sessionId).toString();
-    } else {
-      od = od.replace("$BEAKERDIR",System.getenv("beaker_tmp_dir"));
-    }
-    
-    // check if we are not changing anything
-    if (currentClassPath.equals(cp) && currentImports.equals(in) && outDir.equals(od))
-      return;
-
-    currentClassPath = cp;
-    currentImports = in;
-    outDir = od;
-
-    if (cp.isEmpty())
-      classPath = new ArrayList<String>();
-    else
-      classPath = Arrays.asList(cp.split("[\\s"+File.pathSeparatorChar+"]+"));
-    if (in.isEmpty())
-      imports = new ArrayList<String>();
-    else
-      imports = Arrays.asList(in.split("\\s+"));
-
-    try { (new File(outDir)).mkdirs(); } catch (Exception e) { }
+  public void setShellOptions(String flagString) throws IOException {
+    String[] flags = flagString.split("\\s+");
+    userFlags = new ArrayList<String>(Arrays.asList(flags)); 
 
     resetEnvironment();
   }
@@ -195,72 +167,24 @@ public class CppEvaluator {
     syncObject.release();
   }
 
-  // public List<String> autocomplete(String code, int caretPosition) {
-  //   List<String> ret = jac.doAutocomplete(code, caretPosition);
-    
-  //   if (!ret.isEmpty())
-  //     return ret;
-    
-  //   // this is a code sniplet... 
-  //   String [] codev = code.split("\n");
-  //   int insert = 0;
-  //   while(insert < codev.length) {
-  //     if (!codev[insert].contains("package") && !codev[insert].contains("import") && !codev[insert].trim().isEmpty())
-  //       break;
-  //     insert++;
-  //   }
-     
-  //   final String CODE_TO_INSERT = "public class Foo { public static void beakerRun() { \n";
-      
-  //   StringBuilder sb = new StringBuilder();
-  //   for ( int i=0; i<insert; i++) {
-  //     sb.append(codev[i]);
-  //     sb.append('\n');
-  //   }
-      
-  //   if (caretPosition>=sb.length()) {
-  //     caretPosition += CODE_TO_INSERT.length();
-  //   }
-  //   sb.append(CODE_TO_INSERT);
-  //   for ( int i=insert; i<codev.length; i++) {
-  //     sb.append(codev[i]);
-  //     sb.append('\n');
-  //   }
-  
-  //   return jac.doAutocomplete(sb.toString(), caretPosition);    
-  // }
-
   protected class workerThread extends Thread {
   
     public workerThread() {
       super("cpp worker");
     }
-    
     /*
      * This thread performs all the evaluation
      */
     
     public void run() {
-      // DynamicClassLoader loader = null;;
       jobDescriptor j = null;
-      // JavaSourceCompiler javaSourceCompiler;
-  
-      // javaSourceCompiler = new JavaSourceCompilerImpl();
+      NamespaceClient nc = null;
 
-      NamespaceClient nc =null;
       
       while(!exit) {
         try {
           // wait for work
           syncObject.acquire();
-          
-          // check if we must create or update class loader
-          // if (loader == null || updateLoader) {
-          //   loader = new DynamicClassLoader(outDir);
-          //   for(String pt : classPath) {
-          //     loader.add(pt);
-          //   }
-          // }
           
           // get next job descriptor
           j = jobQueue.poll();
@@ -276,8 +200,6 @@ public class CppEvaluator {
           Matcher m;
           String pname = packageId;
           
-          // JavaSourceCompiler.CompilationUnit compilationUnit = javaSourceCompiler.createCompilationUnit(new File(outDir));
-        
           // normalize and analyze code
           String code = normalizeCode(j.codeToBeExecuted);
 
@@ -288,8 +210,6 @@ public class CppEvaluator {
             nc.setOutputObj(null);
             nc = null;
           }
-          //   } catch(Exception e) { j.outputObject.error("ERROR: "+e.toString()); }    
-          // }
           j = null;
         } catch(Throwable e) {
           e.printStackTrace();
@@ -316,6 +236,22 @@ public class CppEvaluator {
         theCellId = cid;
         retObject = ro;
       }
+
+      private String createMainCaller(String type){
+        StringBuilder builder = new StringBuilder();
+        if (type != "void") {
+          builder.append("\nextern \"C\" jobject call_beaker_main() {\n");
+          builder.append(type + " ret;\n");
+          builder.append("beaker_main(ret);\n");
+          builder.append("return convert(ret);\n");
+        } else {
+          builder.append("\nextern \"C\" void call_beaker_main() {\n");
+          builder.append("beaker_main();\n");
+          builder.append("return;\n");
+        }
+        builder.append("}\n");
+        return builder.toString();
+      }
       
       @Override
       public void run() {
@@ -333,16 +269,19 @@ public class CppEvaluator {
           Extractor extractor = new Extractor();
           walker.walk(extractor, t);
           String cellType = extractor.returnType;
-          int beakerMainStart = extractor.beakerMainStart;
+          int beakerMainLastToken = extractor.beakerMainLastToken;
 
           String processedCode = theCode;
           // If beaker_main was found
           if (!cellType.equals("none")){
-            int beakerMainPos = tokens.get(beakerMainStart).getStartIndex();
+            int beakerMainEnd = tokens.get(beakerMainLastToken).getStopIndex();
             StringBuilder builder = new StringBuilder(theCode);
-            builder.insert(beakerMainPos, " extern \"C\" ");
+            builder.insert(beakerMainEnd + 1, createMainCaller(cellType));
+            builder.insert(0, "#include <beaker.hpp>\n");
             processedCode = builder.toString();
           }
+
+          // System.out.println("Processed code is: " + processedCode);
 
           // Create .cpp file
           String tmpDir = System.getenv("beaker_tmp_dir");
@@ -351,36 +290,77 @@ public class CppEvaluator {
           // Prepare to compile
           String inputFile = tmpDir + "/" + theCellId + ".cpp";
           String outputFile = tmpDir + "/lib" + theCellId + ".so";
-          ArrayList<String> command = new ArrayList<String>();
-          command.add("clang++");
-          command.add("-shared");
-          command.add("-undefined");
-          command.add("dynamic_lookup");
-          command.add("-fPIC");
-          command.add("-m64");
-          command.add("-Wno-return-type-c-linkage");
-          command.add("-o");
-          command.add(outputFile);
-          command.add(inputFile);
+          ArrayList<String> clangCommand = new ArrayList<String>(compileCommand);
+          clangCommand.add("-o");
+          clangCommand.add(outputFile);
+          clangCommand.add(inputFile);
+          clangCommand.addAll(userFlags);
+
+          ProcessBuilder pb;
 
           // Compile
-          ProcessBuilder pb = new ProcessBuilder(command);
-          pb.redirectOutput(Redirect.INHERIT);
-          pb.redirectError(Redirect.INHERIT);
+          pb = new ProcessBuilder(clangCommand);
+          pb.directory(new File(System.getProperty("user.dir")));
+          pb.redirectInput(Redirect.PIPE);
+          pb.redirectOutput(Redirect.PIPE);
+          pb.redirectError(Redirect.PIPE);
           Process p = pb.start();
-          int exitCode = p.waitFor();
-          if (exitCode == 0){
+          CellGobbler clangOut = new CellGobbler(p.getInputStream(), "stderr", theOutput);
+          CellGobbler clangErr = new CellGobbler(p.getErrorStream(), "stderr", theOutput);
+          clangOut.start();
+          clangErr.start();
+          if((p.waitFor()) == 0) {
             loadedCells.add(theCellId);
+          } else {
+            theOutput.error("Compilation failed");
+            theOutput.finished(null);
           }
 
-          // Load and run
-          Object ret = cLoadAndRun(outputFile, cellType);
-          if(retObject) {
-            theOutput.finished(ret);
-          } else {
-            theOutput.finished(null);
-          }          
-          return;
+          Object ret = null;
+
+          // Execute if type is recognized
+          if (!cellType.equals("none")){
+            ArrayList<String> runCommand = new ArrayList<String>();
+            runCommand.add("./bin/cpp");
+            runCommand.add("execute");
+            runCommand.add(sessionId);
+            runCommand.add(theCellId);
+            runCommand.add(cellType);
+            for (String cell : loadedCells) {
+              if (!cell.equals(theCellId)){
+                runCommand.add(cell);
+              }
+            }
+
+            pb = new ProcessBuilder(runCommand);
+            pb.directory(new File(System.getProperty("user.dir")));
+            pb.redirectInput(Redirect.PIPE);
+            pb.redirectOutput(Redirect.PIPE);
+            pb.redirectError(Redirect.PIPE);
+            cellProc = pb.start();
+            CellGobbler cellOut = new CellGobbler(cellProc.getInputStream(), "stdout", theOutput);
+            CellGobbler cellErr = new CellGobbler(cellProc.getErrorStream(), "stderr", theOutput);
+            cellOut.start();
+            cellErr.start();
+            if((cellProc.waitFor()) == 0) {
+              try {
+                InputStream file = new FileInputStream(tmpDir + "/" + theCellId + ".result");
+                InputStream buffer = new BufferedInputStream(file);
+                ObjectInputStream input = new ObjectInputStream(buffer);
+                ret = input.readObject();
+              } catch (EOFException ex){
+                System.out.println("EOFException!");
+              } catch(IOException ex){
+                System.out.println("IOException!");
+                theOutput.error("Failed to read serialized cell output");
+              }
+            } else {
+              theOutput.error("Execution failed");
+              theOutput.finished(null);
+            }
+          }
+          theOutput.finished(ret);
+
         } catch(Throwable e) {
           if(e instanceof InvocationTargetException)
             e = ((InvocationTargetException)e).getTargetException();
@@ -393,7 +373,7 @@ public class CppEvaluator {
             theOutput.error(sw.toString());
           }
         }
-        // theOutput.clrOutputHandler();
+        theOutput.clrOutputHandler();
       }
     };
     

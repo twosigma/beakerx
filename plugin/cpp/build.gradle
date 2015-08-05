@@ -28,32 +28,32 @@ configurations {
   compile.extendsFrom provided
 }
 
-task makeCRunLib(type: Exec, dependsOn: ['compileCppEvaluator', 'makeCppEvaluatorHeader']) {
+task makeCRunLib(type: Exec, dependsOn: ['compileCppKernel', 'makeCppKernelHeader']) {
   inputs.file('./src/main/cpp/CRun.cpp')
   outputs.file('./src/main/cpp/libCRun.jnilib')
   workingDir './src/main/cpp'
- // commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', '/System/Library/Frameworks/JavaVM.framework/Headers', '-I', 'llvm/tools/clang/include', '-I', '/usr/local/opt/llvm/include', '-I', 'llvm-build/include', '-o', 'libCRun.jnilib', 'CRun.cpp', '`/usr/local/opt/llvm/bin/llvm-config --cxxflags`', '-D__STDC_CONSTANT_MACROS', '-D__STDC_LIMIT_MACROS'
- //commandLine 'make', 'all'
- commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', '/System/Library/Frameworks/JavaVM.framework/Headers', '-o', 'libCRun.jnilib', 'CRun.cpp'
+  commandLine 'clang++', '-m64', '-shared', '-fPIC', '--std=c++11', '-I', '/System/Library/Frameworks/JavaVM.framework/Headers', '-o', 'libCRun.jnilib', 'CRun.cpp'
 }
 
-task copyCRun(type: Copy, dependsOn: ['installApp', 'makeCRunLib']) {
+task copyBeakerHeader(type: Copy) {
+  from './src/main/cpp/beaker.hpp'
+  into evalPluginDir.getAbsolutePath() + '/cpp/include'
+}
+
+task copyCRun(type: Copy, dependsOn: ['installApp', 'makeCRunLib', 'copyBeakerHeader']) {
   from './src/main/cpp/libCRun.jnilib'
   into evalPluginDir.getAbsolutePath() + '/cpp/lib'
 }
 
-task compileCppEvaluator(type: JavaCompile) {
+task compileCppKernel(type: JavaCompile) {
   classpath = files(project(':plugin:jvm').projectDir)
-  source 'com.twosigma.beaker.cpp.utils.CppEvaluator'
+  source 'com.twosigma.beaker.cpp.utils.CppKernel'
 }
 
-task makeCppEvaluatorHeader(type: Exec, dependsOn: compileCppEvaluator) {
+task makeCppKernelHeader(type: Exec, dependsOn: compileCppKernel) {
   workingDir './build/classes/main'
   def jvmDir = project(':plugin:jvm').projectDir
-  commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/cpp/CppEvaluator.h', 'com.twosigma.beaker.cpp.utils.CppEvaluator'
-  //commandLine 'ls', 'com/twosigma/beaker/cpp/utils'
-  //commandLine 'printenv'
-  //commandLine 'echo', "${jvmDir}"
+  commandLine 'javah', '-cp', "./:${jvmDir}/build/classes/main", '-jni', '-o', '../../../src/main/cpp/CppKernel.h', 'com.twosigma.beaker.cpp.utils.CppKernel'
 }
 
 dependencies {
@@ -76,6 +76,7 @@ task antlr4_java(type: JavaExec) {
 }
 
 compileJava.dependsOn antlr4_java
+compileJava.dependsOn compileCppKernel
 
 compileJava {
   options.compilerArgs << '-Xlint:deprecation'

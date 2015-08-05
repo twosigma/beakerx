@@ -45,12 +45,13 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
-
 public class NamespaceClient {
 
   private static Injector injector;
   
-  public static void setInjector(Injector m) { injector = m; }
+  public static void setInjector(Injector m) {
+    injector = m;
+  }
   
   private String session;
   private String auth;
@@ -65,7 +66,7 @@ public class NamespaceClient {
 
   @Inject
   private NamespaceClient(Provider<ObjectMapper> ump, Provider<BeakerObjectConverter> osp) {
-    objectMapper       = ump;
+    objectMapper = ump;
     objectSerializerProvider = osp;
   }
   
@@ -106,7 +107,7 @@ public class NamespaceClient {
     return null;
   }
 
-  public synchronized  static NamespaceClient getBeaker(String s) {
+  public synchronized static NamespaceClient getBeaker(String s) {
     if (!nsClients.containsKey(s)) {
       NamespaceClient c = injector.getInstance(NamespaceClient.class);
       c.setup(s);

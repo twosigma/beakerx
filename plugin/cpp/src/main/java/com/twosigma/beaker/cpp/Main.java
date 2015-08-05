@@ -25,8 +25,12 @@ import com.twosigma.beaker.shared.module.GuiceCometdModule;
 import com.twosigma.beaker.shared.module.config.DefaultWebServerConfigModule;
 import com.twosigma.beaker.shared.module.config.WebAppConfigPref;
 import com.twosigma.beaker.shared.module.config.DefaultWebAppConfigPref;
+import com.twosigma.beaker.cpp.utils.CppKernel;
+import com.twosigma.beaker.NamespaceClient;
 
 import java.util.logging.Logger;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 import org.eclipse.jetty.server.Server;
 
@@ -48,20 +52,42 @@ public class Main {
   public static void main(String[] args) throws Exception {
     java.util.logging.Logger.getLogger("com.sun.jersey").setLevel(java.util.logging.Level.OFF);
 
-    if (args.length != 1) {
-      System.out.println("usage: cppPlugin <portListen>");
-    }
-    final int port = Integer.parseInt(args[0]);
-    WebAppConfigPref webAppPref = new DefaultWebAppConfigPref(port);
-    Injector injector = Guice.createInjector(
-        new DefaultWebServerConfigModule(webAppPref),
-        new WebServerModule(),
-        new URLConfigModule(),
-        new SerializerModule(),
-        new GuiceCometdModule());
+    if ((args.length > 3) && (args[0].equals("execute"))) {
+      Injector injector = Guice.createInjector(
+          new SerializerModule(),
+          new GuiceCometdModule());
 
-    Server server = injector.getInstance(Server.class);
-    server.start();
-    BeakerStdOutErrHandler.init();
+      NamespaceClient.setInjector(injector);
+      String sessionId = args[1];
+      String mainCell = args[2];
+      String type = args[3];
+
+      ArrayList<String> otherCells = new ArrayList<String>(Arrays.asList(args));
+      // Remove first four arguments
+      otherCells.subList(0, 4).clear();
+
+      CppKernel kern = new CppKernel(sessionId);
+      kern.execute(mainCell, type, otherCells);
+      return;
+    } else if (args.length == 1){
+      final int port = Integer.parseInt(args[0]);
+      WebAppConfigPref webAppPref = new DefaultWebAppConfigPref(port);
+      Injector injector = Guice.createInjector(
+          new DefaultWebServerConfigModule(webAppPref),
+          new WebServerModule(),
+          new URLConfigModule(),
+          new SerializerModule(),
+          new GuiceCometdModule());
+
+      Server server = injector.getInstance(Server.class);
+      server.start();
+      BeakerStdOutErrHandler.init();
+    } else {
+      System.out.println("usage: cppPlugin execute <sessionId> <id of cell to execute> <type> [other cells to load]");
+      System.out.println("or: cppPlugin <portListen>");
+      for (String s : args){
+        System.out.println(s);
+      }
+    }
   }
 }

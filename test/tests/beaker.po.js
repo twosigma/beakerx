@@ -65,7 +65,7 @@ var BeakerPageObject = function() {
     element(by.css('bk-new-cell-menu .dropdown-toggle'))
     .click()
     .then(function() {
-      return element(by.css('a[ng-click="newMarkdownCell()"]'));
+      return element(by.css('.insert-text'));
     })
     .then(function(el) {
       return el.click();
